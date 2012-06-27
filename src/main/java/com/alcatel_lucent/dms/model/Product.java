@@ -1,5 +1,8 @@
 package com.alcatel_lucent.dms.model;
 
-public class Product extends BaseEntity {
+import java.util.Collection;
 
+public class Product extends BaseEntity {
+	private String name;
+	private Collection<ProductVersion> versions;
 }
