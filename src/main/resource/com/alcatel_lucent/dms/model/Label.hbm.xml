@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.alcatel_lucent.dms.model" schema="dms" default-cascade="all">
+
+	<class name="Label" table="LABEL">
+		<id column="ID" name="id">
+			<generator class="native" />
+		</id>
+		
+		<many-to-one name="dictionary" column="DICTIONARY_ID"/>
+		
+		<property name="reference" type="string" column="REFERENCE"/>
+		<property name="key" type="string" column="LABEL_KEY"/>
+		<property name="description" type="string" column="DESCRIPTION"/>
+		<property name="maxLength" type="string" column="MAX_LENGTH"/>
+		
+		<many-to-one name="context" column="CONTEXT_ID" unique="true" not-null="true"/>
+		<many-to-one name="text" column="TEXT_ID" unique="true" not-null="true"/>
+		
+	</class>
+
+</hibernate-mapping>
