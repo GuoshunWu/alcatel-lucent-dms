@@ -7,7 +7,12 @@ import java.lang.reflect.InvocationTargetException;
  * Date: 2008-11-13
  */
 public class SystemError extends RuntimeException {
-    private String eventID;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 5230272920055990274L;
+	
+	private String eventID;
 
     public SystemError(String message) {
         super(message);
