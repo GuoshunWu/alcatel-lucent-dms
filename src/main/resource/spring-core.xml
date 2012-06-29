@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+        <property name="configLocation">
+            <value>classpath:hibernate.cfg.xml</value>
+        </property>
+    </bean>
+
+    <bean id="transactionManager"
+        class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        <property name="sessionFactory">
+            <ref local="sessionFactory"/>
+        </property>
+    </bean>
+
+    <bean id="matchAllWithPropReq"
+        class="org.springframework.transaction.interceptor.MatchAlwaysTransactionAttributeSource">
+        <property name="transactionAttribute">
+            <value>PROPAGATION_REQUIRED</value>
+        </property>
+    </bean>
+
+    <bean id="matchAllTxInterceptor"
+        class="org.springframework.transaction.interceptor.TransactionInterceptor">
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="matchAllWithPropReq"/>
+        </property>
+    </bean>
+
+    <bean id="hibInterceptor"
+        class="org.springframework.orm.hibernate3.HibernateInterceptor">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
+
+    <!-- One BeanNameAutoProxyCreator handles all beans where we want all methods to use
+         PROPAGATION_REQUIRED -->
+    <bean id="autoProxyCreator"
+        class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+        <property name="interceptorNames">
+            <list>
+                <idref local="matchAllTxInterceptor"/>
+                <idref bean="hibInterceptor"/>
+            </list>
+        </property>
+        <property name="beanNames">
+            <list>
+                <idref bean="daoService"  />
+                <idref bean="dictionaryService"  />
+            </list>
+        </property>
+    </bean>
+
+</beans>
