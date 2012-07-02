@@ -15,6 +15,7 @@ import com.alcatel_lucent.dms.SystemError;
  * Author: Allan YANG
  * Date: 2008-11-13
  */
+
 public class DaoServiceImpl implements DaoService {
     private static Logger log = Logger.getLogger(DaoServiceImpl.class);
     private SessionFactory sessionFactory;

@@ -21,23 +21,20 @@
 		</layout>
 	</appender>
 
-	<!--<appender name="DATABASE" class="org.apache.log4j.jdbc.JDBCAppender">
-		<param name="URL" value="jdbc:oracle:thin:@192.168.0.59:1521:oanet" />
-		<param name="driver" value="oracle.jdbc.driver.OracleDriver" />
-		<param name="user" value="hdczoa" />
-		<param name="password" value="system" />
+	<appender name="DATABASE" class="org.apache.log4j.jdbc.JDBCAppender">
+		<param name="URL" value="jdbc:mysql://localhost:3306/dms" />
+		<param name="driver" value="com.mysql.jdbc.Driver" />
+		<param name="user" value="root" />
+		<param name="password" value="root123" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern"
-				value="INSERT INTO hdczoa.LOG4J(stamp,thread, info_level,class,message) VALUES ('%d', '%t', '%p', '%c', %m)" />
+				value="insert into `dms`.`log4j` (`stamp`, `thread`, `info_level`, `class`, `message`) values   ('%d{yyyy-MM-dd HH:mm:ss}', '%t', '%p', '%c', '%m')" />
 		</layout>
 	</appender>
 
-	 发邮件（只有ERROR时才会发送！） 
 	<appender name="MAIL" class="org.apache.log4j.net.SMTPAppender">
 		<param name="threshold" value="debug" />
-		 日志的错误级别 <param name="threshold" value="fatal"/> 
-		 缓存文件大小，日志达到512K时发送Email 
-		<param name="BufferSize" value="512" /> 单位K 
+		<param name="BufferSize" value="512" />
 		<param name="From" value="test@163.com" />
 		<param name="SMTPHost" value="smtp.163.com" />
 		<param name="Subject" value="juyee-log4jMessage" />
@@ -50,22 +47,20 @@
 	</appender>
 
 	<appender name="ASYNC" class="org.apache.log4j.AsyncAppender">
-		<param name="BufferSize" value="256" />
+		<param name="BufferSize" value="25" />
 		<appender-ref ref="DATABASE" />
 	</appender>
-	-->
-	
-	<!--通过<logger></logger>的定义可以将各个包中的类日志输出到不同的日志文件中 -->
+
 	<logger name="com.alcatel_lucent.dms.service" additivity="false">
 		<level value="WARN" />
 		<appender-ref ref="CONSOLE" />
 	</logger>
 
 	<root>
-		<priority value="debug" />
-		<appender-ref ref="CONSOLE" /><!--
-		<appender-ref ref="FILE" />
-	--></root>
+		<priority value="info" />
+		<appender-ref ref="CONSOLE" />
+		<!-- <appender-ref ref="FILE" /> <appender-ref ref="ASYNC" /> -->
+	</root>
 
 
 </log4j:configuration>

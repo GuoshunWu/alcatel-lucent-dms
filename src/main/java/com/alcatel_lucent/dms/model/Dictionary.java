@@ -18,6 +18,24 @@ public class Dictionary extends BaseEntity {
 	private boolean locked;
 	
 	
+	
+	public Dictionary() {
+		super();
+	}
+	
+	public Dictionary(String name, String format, String encoding, String path,
+			Application application,
+			Collection<DictionaryLanguage> dictLanguages,
+			Collection<Label> labels, boolean locked) {
+		this.name = name;
+		this.format = format;
+		this.encoding = encoding;
+		this.path = path;
+		this.application = application;
+		this.dictLanguages = dictLanguages;
+		this.labels = labels;
+		this.locked = locked;
+	}
 	public String getName() {
 		return name;
 	}
