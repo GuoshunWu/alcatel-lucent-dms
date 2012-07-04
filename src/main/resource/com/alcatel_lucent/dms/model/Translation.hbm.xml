@@ -10,7 +10,7 @@
 		</id>
 		
 		<property name="translation" type="string" column="TRANSLATION"/>
-		<many-to-one name="text" column="TEXT_ID" unique="true" not-null="true"/>
+		<many-to-one name="text" column="TEXT_ID" not-null="true"/>
 		<many-to-one name="language" column="LANGUAGE_ID" unique="true" not-null="true"/>
 	
 	</class>

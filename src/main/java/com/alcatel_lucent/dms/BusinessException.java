@@ -14,7 +14,11 @@ public class BusinessException extends RuntimeException {
     static public final BusinessException ACCESS_DENIED = new BusinessException(100);
     static public final BusinessException INVALID_DCT_FILE = new BusinessException(200);
     static public final BusinessException DUPLICATE_DCT_NAME = new BusinessException(201);
-
+    static public final BusinessException DCT_FILE_NOT_FOUND = new BusinessException(202);
+    static public final BusinessException CHARSET_NOT_FOUND = new BusinessException(301);
+    static public final BusinessException LANGUAGE_NOT_FOUND = new BusinessException(401);
+    static public final BusinessException APPLICATION_NOT_FOUND = new BusinessException(501);
+    
     public BusinessException(int errorCode) {
         this.errorCode = errorCode;
     }

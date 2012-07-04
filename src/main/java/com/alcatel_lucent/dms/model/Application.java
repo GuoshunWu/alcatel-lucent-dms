@@ -36,4 +36,10 @@ public class Application extends BaseEntity {
 		this.dictionaries = dictionaries;
 	}
 
+	@Override
+	public String toString() {
+		return String.format(
+				"Application [name=%s, productVersion=%s, dictionaries=%s]",
+				name, productVersion, dictionaries);
+	}
 }

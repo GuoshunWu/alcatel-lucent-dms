@@ -37,4 +37,12 @@ public class AlcatelLanguageCode implements Serializable {
 		this.defaultCode = defaultCode;
 	}
 
+	@Override
+	public String toString() {
+		return String.format(
+				"AlcatelLanguageCode [code=%s, language=%s, defaultCode=%s]",
+				code, language, defaultCode);
+	}
+
+	
 }

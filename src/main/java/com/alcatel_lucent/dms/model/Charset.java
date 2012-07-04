@@ -6,16 +6,18 @@ public class Charset extends BaseEntity {
 	 */
 	private static final long serialVersionUID = -7987985981036760543L;
 	
-	private int no;
+	private Integer no;
 	private String name;
 	
 	
-	public int getNo() {
+	
+	public Integer getNo() {
 		return no;
 	}
-	public void setNo(int no) {
+	public void setNo(Integer no) {
 		this.no = no;
 	}
+	
 	public String getName() {
 		return name;
 	}

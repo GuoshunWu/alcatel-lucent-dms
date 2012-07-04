@@ -1,5 +1,7 @@
 package com.alcatel_lucent.dms.model;
 
+import java.util.Collection;
+
 public class Text extends BaseEntity {
 	/**
 	 * 
@@ -8,7 +10,10 @@ public class Text extends BaseEntity {
 	
 	private Context context;
 	private String reference;
+	private Collection<Translation> translations;
+
 	private int status;
+	
 	
 	public Context getContext() {
 		return context;
@@ -28,6 +33,11 @@ public class Text extends BaseEntity {
 	public void setStatus(int status) {
 		this.status = status;
 	}
-	
+	public Collection<Translation> getTranslations() {
+		return translations;
+	}
+	public void setTranslations(Collection<Translation> translations) {
+		this.translations = translations;
+	}
 	
 }

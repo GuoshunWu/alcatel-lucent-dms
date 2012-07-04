@@ -26,13 +26,10 @@
 			<artifactId>spring-remoting</artifactId>
 			<version>2.0.8</version>
 		</dependency>
-		
-		
-		<!-- <dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
-		</dependency> -->
+
+
+		<!-- <dependency> <groupId>log4j</groupId> <artifactId>log4j</artifactId> 
+			<version>1.2.17</version> </dependency> -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
@@ -43,12 +40,24 @@
 			<artifactId>proxool</artifactId>
 			<version>0.8.3</version>
 		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.10</version>
+		</dependency>
+
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
 			<version>1.8.3</version>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>org.kohsuke.stapler</groupId>
+			<artifactId>json-lib</artifactId>
+			<version>2.1-rev6</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -61,4 +70,5 @@
 			</plugin>
 		</plugins>
 	</build>
+
 </project>

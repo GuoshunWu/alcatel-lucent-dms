@@ -57,7 +57,7 @@
 	</logger>
 
 	<root>
-		<priority value="info" />
+		<priority value="debug" />
 		<appender-ref ref="CONSOLE" />
 		<!-- <appender-ref ref="FILE" /> <appender-ref ref="ASYNC" /> -->
 	</root>

@@ -31,6 +31,11 @@ public class Language extends BaseEntity {
 	public void setCharsets(Collection<Charset> charsets) {
 		this.charsets = charsets;
 	}
+	@Override
+	public String toString() {
+		return String.format("Language [name=%s, isoCode=%s, charsets=%s]",
+				name, isoCode, charsets);
+	}
 	
 	
 }

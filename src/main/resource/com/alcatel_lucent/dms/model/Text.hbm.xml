@@ -11,8 +11,12 @@
 		
 		<property name="reference" type="string" column="REFERENCE"/>
 		<property name="status" type="integer" column="STATUS"/>
-		<many-to-one name="context" unique="true" not-null="true"/>
+		<many-to-one name="context" not-null="true"/>
 		
+		<set name="translations" cascade="all" inverse="true">
+			<key column="TEXT_ID" />
+			<one-to-many class="Translation" />
+		</set>
 	</class>
 
 </hibernate-mapping>
