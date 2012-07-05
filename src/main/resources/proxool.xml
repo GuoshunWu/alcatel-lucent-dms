@@ -5,14 +5,14 @@
 	<proxool>
 		<alias>DBPool</alias>
 		<driver-url>jdbc:MySQL://172.24.191.199:3306/dms</driver-url>
-		<!-- <driver-url>jdbc:MySQL://localhost:3306/dms</driver-url> -->
+		<driver-url>jdbc:MySQL://localhost:3306/dms</driver-url>
 
 		<driver-class>com.mysql.jdbc.Driver</driver-class>
 		<driver-properties>
 			<property name="user" value="dms" />
 			<property name="password" value="alcatel123" />
-<!-- 			<property name="user" value="root" />
-			<property name="password" value="root123" /> -->
+			<property name="user" value="root" />
+			<property name="password" value="root123" />
 		</driver-properties>
 		<maximum-connection-count>10</maximum-connection-count>
 		<house-keeping-test-sql>select CURRENT_DATE</house-keeping-test-sql>

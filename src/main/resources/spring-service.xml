@@ -7,11 +7,11 @@
         <property name="sessionFactory" ref="sessionFactory" />
     </bean>
 
-    <bean id="dictionaryService" class="com.alcatel_lucent.dms.service.DictionaryServiceImpl">
-        <property name="dao">
-            <ref bean="daoService"/>
-        </property>
-    </bean>
+	<bean id="dictionaryService" class="com.alcatel_lucent.dms.service.DictionaryServiceImpl">
+		<property name="dao">
+			<ref bean="daoService" />
+		</property>
+	</bean>
 
 
 </beans>
