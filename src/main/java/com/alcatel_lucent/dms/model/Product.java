@@ -22,4 +22,9 @@ public class Product extends BaseEntity {
 		this.versions = versions;
 	}
 	private Collection<ProductVersion> versions;
+
+	@Override
+	public String toString() {
+		return String.format("Product [name=%s, versions=%s]", name, versions);
+	}
 }

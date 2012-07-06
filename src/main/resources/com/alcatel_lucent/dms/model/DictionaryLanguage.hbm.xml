@@ -13,8 +13,9 @@
 		<property name="languageCode" type="string" column="LANGUAGE_CODE" />
 		<many-to-one name="language" column="LANGUAGE_ID"
 			not-null="true" unique="true" />
+			
 		<many-to-one name="charset" column="CHARSET_ID"
-			not-null="true" unique="true" />
+			not-null="true" />
 
 	</class>
 

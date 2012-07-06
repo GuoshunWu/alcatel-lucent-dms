@@ -1,6 +1,8 @@
 package com.alcatel_lucent.dms.model;
 
 public class Label extends BaseEntity {
+
+	
 	/**
 	 * 
 	 */
@@ -55,5 +57,13 @@ public class Label extends BaseEntity {
 	public void setText(Text text) {
 		this.text = text;
 	}
+	@Override
+	public String toString() {
+		return String
+				.format("Label [dictionary=%s, key=%s, reference=%s, description=%s, maxLength=%s, context=%s, text=%s]",
+						dictionary, key, reference, description, maxLength,
+						context, text);
+	}
 
+	
 }

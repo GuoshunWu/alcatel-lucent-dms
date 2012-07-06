@@ -11,12 +11,12 @@
 		
 		<many-to-one name="dictionary" column="DICTIONARY_ID"/>
 		
-		<property name="reference" type="string" column="REFERENCE"/>
+		<property name="reference" type="string" column="REFERENCE" length="512" />
 		<property name="key" type="string" column="LABEL_KEY"/>
 		<property name="description" type="string" column="DESCRIPTION"/>
 		<property name="maxLength" type="string" column="MAX_LENGTH"/>
 		
-		<many-to-one name="context" column="CONTEXT_ID" unique="true" not-null="true"/>
+		<many-to-one name="context" column="CONTEXT_ID" not-null="true"/>
 		<many-to-one name="text" column="TEXT_ID" unique="true" not-null="true"/>
 		
 	</class>

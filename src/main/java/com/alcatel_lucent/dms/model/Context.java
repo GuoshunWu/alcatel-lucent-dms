@@ -13,5 +13,9 @@ public class Context extends BaseEntity {
 	public void setName(String name) {
 		this.name = name;
 	}
+	@Override
+	public String toString() {
+		return String.format("Context [name=%s]", name);
+	}
 	
 }

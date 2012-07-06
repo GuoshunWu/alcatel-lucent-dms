@@ -84,5 +84,13 @@ public class Dictionary extends BaseEntity {
 	public void setLocked(boolean locked) {
 		this.locked = locked;
 	}
+
+	@Override
+	public String toString() {
+		return String
+				.format("Dictionary [name=%s, format=%s, encoding=%s, path=%s, application=%s, dictLanguages=%s, labels=%s, locked=%s]",
+						name, format, encoding, path, application,
+						dictLanguages, labels, locked);
+	}
 	
 }

@@ -32,6 +32,12 @@ public class ProductVersion extends BaseEntity {
 	public void setApplications(Collection<Application> applications) {
 		this.applications = applications;
 	}
+	@Override
+	public String toString() {
+		return String.format(
+				"ProductVersion [name=%s, product=%s, applications=%s]", name,
+				product, applications);
+	}
 
 
 }

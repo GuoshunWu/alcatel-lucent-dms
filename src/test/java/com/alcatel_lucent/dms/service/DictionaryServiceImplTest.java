@@ -13,6 +13,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import junit.framework.Assert;
+
+import net.sf.json.JSONObject;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -21,6 +25,7 @@ import org.junit.Test;
 import org.logicalcobwebs.proxool.ProxoolFacade;
 
 import com.alcatel_lucent.dms.SpringContext;
+import com.alcatel_lucent.dms.model.Dictionary;
 
 /**
  * @author guoshunw
@@ -32,17 +37,21 @@ public class DictionaryServiceImplTest {
 	private static DictionaryService ds;
 	private static Class<? extends DictionaryService> cls = DictionaryServiceImpl.class;
 
+	private static DaoService dao;
+
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		dictService = new DictionaryServiceImpl();
 		ds = (DictionaryService) SpringContext
 				.getService(DictionaryService.class);
+		dao = (DaoService) SpringContext.getService(DaoService.class);
 	}
 
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		dictService = null;
 		ds = null;
+		dao = null;
 		ProxoolFacade.shutdown(2);
 	}
 
@@ -110,16 +119,44 @@ public class DictionaryServiceImplTest {
 		List<String> keys = Arrays
 				.asList("CHK, GAE, FR0, EN0, DE0, IT0, PT0, ES0, US0, PL0, KO0, NO0, NL0, RU0, CH0, FI0, ES1, CS0, HU0, CH1, SV0, AR0, DA0, HE0"
 						.split(","));
-		for(String key:keys){
+		for (String key : keys) {
 			langCharset.put(key.trim(), "GBK");
 		}
 
-		String dctFileRelativePath = "dct_test_files/CH0/About.dic";
+		String testFile = "About.dic";
+//		testFile="BandHistory.dic";
+//		testFile="communicateBy.dic";
+		
+		String dctFileRelativePath = "dct_test_files/CH0/" + testFile;
+
+		// dctFileRelativePath = "dct_test_files/CH0";
+
 		String testFilePath = new File(cls.getResource(dctFileRelativePath)
 				.toURI()).getAbsolutePath();
 
-		ds.deliverDCT(testFilePath, appId, encoding, langCodes, langCharset);
+		File file = new File(testFilePath);
+		deliverDCTFiles(file, appId, encoding, langCodes, langCharset);
 
+		Dictionary dict = (Dictionary) dao.retrieveOne(
+				"from Dictionary where name =:name",
+				JSONObject.fromObject(String.format("{'name': '%s'}", testFile)),
+				new String[] { "name" });
+		
+		Assert.assertNotNull(dict);
+		Assert.assertEquals(testFile, dict.getName());
+	}
+
+	private void deliverDCTFiles(File file, Long appId, String encoding,
+			String[] langCodes, Map<String, String> langCharset) {
+		if (file.isDirectory()) {
+			for (File f : file.listFiles()) {
+				deliverDCTFiles(f, appId, encoding, langCodes, langCharset);
+			}
+		} else {
+
+			ds.deliverDCT(file.getAbsolutePath(), appId, encoding, langCodes,
+					langCharset);
+		}
 	}
 
 }

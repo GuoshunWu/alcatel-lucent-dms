@@ -12,6 +12,7 @@
 			<param name="LevelMax" value="ERROR" />
 			<param name="LevelMin" value="TRACE" />
 		</filter>
+
 	</appender>
 
 	<appender name="FILE" class="org.apache.log4j.FileAppender">
@@ -56,8 +57,13 @@
 		<appender-ref ref="CONSOLE" />
 	</logger>
 
+	<logger name="org.hibernate.type">
+		<level value="TRACE" />
+	</logger>
+
+
 	<root>
-		<priority value="debug" />
+		<priority value="WARN" />
 		<appender-ref ref="CONSOLE" />
 		<!-- <appender-ref ref="FILE" /> <appender-ref ref="ASYNC" /> -->
 	</root>

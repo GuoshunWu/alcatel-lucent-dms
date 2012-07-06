@@ -36,5 +36,11 @@ public class DictionaryLanguage extends BaseEntity {
 	public void setCharset(Charset charset) {
 		this.charset = charset;
 	}
+	@Override
+	public String toString() {
+		return String
+				.format("DictionaryLanguage [dictionary=%s, language=%s, languageCode=%s, charset=%s]",
+						dictionary, language, languageCode, charset);
+	}
 	
 }

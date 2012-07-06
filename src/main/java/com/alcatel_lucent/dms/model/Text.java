@@ -39,5 +39,11 @@ public class Text extends BaseEntity {
 	public void setTranslations(Collection<Translation> translations) {
 		this.translations = translations;
 	}
+	@Override
+	public String toString() {
+		return String.format(
+				"Text [context=%s, reference=%s, translations=%s, status=%s]",
+				context, reference, translations, status);
+	}
 	
 }

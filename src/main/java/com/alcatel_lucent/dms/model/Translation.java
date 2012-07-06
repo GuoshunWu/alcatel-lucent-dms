@@ -28,6 +28,12 @@ public class Translation extends BaseEntity {
 	public void setTranslation(String translation) {
 		this.translation = translation;
 	}
+	@Override
+	public String toString() {
+		return String.format(
+				"Translation [text=%s, language=%s, translation=%s]", text,
+				language, translation);
+	}
 	
 	
 }

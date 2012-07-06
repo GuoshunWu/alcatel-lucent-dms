@@ -25,5 +25,10 @@ public class Charset extends BaseEntity {
 		this.name = name;
 	}
 	
+	@Override
+	public String toString() {
+		return String.format("Charset [no=%s, name=%s]", no, name);
+	}
+	
 	
 }

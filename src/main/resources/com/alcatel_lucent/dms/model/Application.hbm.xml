@@ -10,6 +10,10 @@
 		
 		<property name="name" type="string" column="NAME"/>
 		<many-to-one name="productVersion" column="PRODUCT_VERSION_ID" not-null="true"/>
+		<set name="dictionaries" inverse="true" >
+			<key column="APPLICATION_ID"/>
+			<one-to-many class="Dictionary"/>
+		</set>
 	</class>
 
 </hibernate-mapping>
