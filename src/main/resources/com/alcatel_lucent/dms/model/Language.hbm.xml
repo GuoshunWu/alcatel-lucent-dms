@@ -2,7 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<hibernate-mapping package="com.alcatel_lucent.dms.model" schema="dms" default-cascade="all">
+<hibernate-mapping package="com.alcatel_lucent.dms.model" schema="dms">
 
 	<class name="Language" table="LANGUAGE">
 		<id column="ID" name="id">
@@ -12,7 +12,7 @@
 		<property name="name" type="string" column="NAME"/>
 		<property name="isoCode" type="string" column="ISO_CODE"/>
 		
-		<set name="charsets" cascade="all" inverse="true">
+		<set name="charsets" inverse="true">
 			<key column="LANGUAGE_ID"/>
 			<one-to-many class="Charset"/>
 		</set>

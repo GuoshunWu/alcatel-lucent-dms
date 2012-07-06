@@ -33,8 +33,8 @@ public class Language extends BaseEntity {
 	}
 	@Override
 	public String toString() {
-		return String.format("Language [name=%s, isoCode=%s, charsets=%s]",
-				name, isoCode, charsets);
+		return String.format("Language [name=%s, isoCode=%s]",
+				name, isoCode);
 	}
 	
 	

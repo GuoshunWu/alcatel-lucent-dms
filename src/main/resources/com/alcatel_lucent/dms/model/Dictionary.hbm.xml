@@ -2,7 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<hibernate-mapping package="com.alcatel_lucent.dms.model" schema="dms" default-cascade="all">
+<hibernate-mapping package="com.alcatel_lucent.dms.model" schema="dms" >
 	<class name="Dictionary" table="DICTIONARY">
 		<id column="ID" name="id">
 			<generator class="native" />
@@ -15,12 +15,12 @@
 		
 		<many-to-one name="application" column="APPLICATION_ID" not-null="true"/>
 		
-		<set name="dictLanguages" cascade="all" inverse="true">
+		<set name="dictLanguages" cascade="delete" inverse="true">
 			<key column="DICTIONARY_ID"/>
 			<one-to-many class="DictionaryLanguage"/>
 		</set>
 		
-		<set name="labels" cascade="all" inverse="true">
+		<set name="labels" cascade="delete" inverse="true">
 			<key column="DICTIONARY_ID"/>
 			<one-to-many class="Label"/>
 		</set>

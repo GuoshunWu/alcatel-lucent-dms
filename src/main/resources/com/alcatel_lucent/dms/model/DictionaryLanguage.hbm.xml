@@ -2,8 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<hibernate-mapping package="com.alcatel_lucent.dms.model"
-	schema="dms" default-cascade="all">
+<hibernate-mapping package="com.alcatel_lucent.dms.model" schema="dms">
 	<class name="DictionaryLanguage" table="DICTIONARY_LANGUAGE">
 		<id column="ID" name="id">
 			<generator class="native" />
@@ -13,9 +12,8 @@
 		<property name="languageCode" type="string" column="LANGUAGE_CODE" />
 		<many-to-one name="language" column="LANGUAGE_ID"
 			not-null="true" unique="true" />
-			
-		<many-to-one name="charset" column="CHARSET_ID"
-			not-null="true" />
+
+		<many-to-one name="charset" column="CHARSET_ID" not-null="true" />
 
 	</class>
 

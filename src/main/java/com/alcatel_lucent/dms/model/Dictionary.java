@@ -88,9 +88,9 @@ public class Dictionary extends BaseEntity {
 	@Override
 	public String toString() {
 		return String
-				.format("Dictionary [name=%s, format=%s, encoding=%s, path=%s, application=%s, dictLanguages=%s, labels=%s, locked=%s]",
+				.format("Dictionary [name=%s, format=%s, encoding=%s, path=%s, application=%s, dictLanguagesSize=%d, labelsSize=%d, locked=%s]",
 						name, format, encoding, path, application,
-						dictLanguages, labels, locked);
+						dictLanguages.size(), labels.size(), locked);
 	}
 	
 }

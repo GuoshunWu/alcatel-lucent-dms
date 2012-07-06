@@ -16,10 +16,15 @@
 	</appender>
 
 	<appender name="FILE" class="org.apache.log4j.FileAppender">
-		<param name="File" value="C:/log4j1.log" />
+		<param name="File" value="C:/log4j.log" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%d - %c -%-4r [%t] %-5p %x - %m%n" />
 		</layout>
+
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMax" value="ERROR" />
+			<param name="LevelMin" value="TRACE" />
+		</filter>
 	</appender>
 
 	<appender name="DATABASE" class="org.apache.log4j.jdbc.JDBCAppender">
@@ -52,10 +57,6 @@
 		<appender-ref ref="DATABASE" />
 	</appender>
 
-	<logger name="com.alcatel_lucent.dms.service" additivity="false">
-		<level value="WARN" />
-		<appender-ref ref="CONSOLE" />
-	</logger>
 
 	<logger name="org.hibernate.type">
 		<level value="TRACE" />
@@ -63,9 +64,10 @@
 
 
 	<root>
-		<priority value="WARN" />
+		<level value="DEBUG" />
 		<appender-ref ref="CONSOLE" />
-		<!-- <appender-ref ref="FILE" /> <appender-ref ref="ASYNC" /> -->
+		<!-- <appender-ref ref="FILE" /> -->
+		<!-- <appender-ref ref="ASYNC" /> -->
 	</root>
 
 

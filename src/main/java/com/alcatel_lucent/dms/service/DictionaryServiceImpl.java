@@ -42,22 +42,26 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	public static final String lineSeparator = System
 			.getProperty("line.separator");
 
+	// Language pattern in dct file
+	private static final Pattern patternLanguage = Pattern
+			.compile("^LANGUAGES\\s*\\{((?:\\w{3},?\\s*)+)\\}$");
+
 	// current line in file
 	private String currentLine = null;
 	// current file reader
-	private BufferedReader br = null;
+	private BufferedReader dctReader = null;
 
 	// langCharset mapping of language code and its source charset name
 	private Map<String, String> langCharset = null;
 
-	private List<String> allAlcatelLangCodes = null;
+	
 
 	// current dictionary
 	private Dictionary dict = null;
 
 	// langCodes Alcatel code of languages to generate, null if all languages
 	// should be exported
-	
+
 	private String[] langCodes;
 
 	// current file encoding
@@ -67,34 +71,28 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 		super();
 	}
 
-	@SuppressWarnings("unchecked")
+
 	public Dictionary deliverDCT(String filename, Long appId, String encoding,
 			String[] langCodes, Map<String, String> langCharset)
 			throws BusinessException {
 		this.langCharset = langCharset;
 		this.langCodes = langCodes;
 		this.encoding = encoding;
-		
-		
+
 		File dctFile = new File(filename);
 		if (!dctFile.exists()) {
 			throw BusinessException.DCT_FILE_NOT_FOUND;
 		}
 
-		
-		log.warn("\n######################begin deliver: "+filename+"##########################\n");
-		
-		// get all alcatel language codes
+		log.warn("\n######################begin deliver: " + dctFile.getName()
+				+ "##########################\n");
 
-		this.allAlcatelLangCodes = getDao().retrieve(
-				"select code from AlcatelLanguageCode");
-		// an special check code
-		allAlcatelLangCodes.add("CHK");
 
 		dict = new Dictionary();
 		dict.setName(dctFile.getName());
 		dict.setFormat("dct");
 		dict.setPath(dctFile.getPath());
+
 		// retrieve dict related Application
 		Application app = (Application) getDao().retrieve(Application.class,
 				appId);
@@ -122,17 +120,14 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
 			FileInputStream fis = new FileInputStream(dctFile);
 			// Creates an BufferedReader that uses the encoding charset.
-			br = new BufferedReader(new InputStreamReader(fis, this.encoding));
+			dctReader = new BufferedReader(new InputStreamReader(fis, this.encoding));
 
 			// languageCodes in current dictionary file
 			String[] languageCodes = null;
-			// Language pattern in dct file
-			Pattern patternLanguage = Pattern
-					.compile("^LANGUAGES\\s*\\{((?:\\w{3},?\\s*)+)\\}$");
 
 			Collection<Label> labels = new HashSet<Label>();
 
-			while (null != (currentLine = br.readLine())) {
+			while (null != (currentLine = dctReader.readLine())) {
 				currentLine = currentLine.trim();
 				// ignore the comment line and blank line
 				if (isCommentOrBlankLine(currentLine)) {
@@ -144,7 +139,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 				// is LANGUAGES
 				if (m.matches()) {
 					languageCodes = m.group(1).split(",");
-					dict.setDictLanguages(getDictLanguages(languageCodes));
+					dict.setDictLanguages(generateDictLanguages(languageCodes));
 				} else if (currentLine.endsWith(":")) {// a label start
 					labels.add(readLabel(ctx));
 				} else {
@@ -152,9 +147,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 				}
 
 			}
-
 			dict.setLabels(labels);
-			br.close();
+			dctReader.close();
 		} catch (IOException e) {
 			throw new SystemError(e.getMessage());
 		}
@@ -206,7 +200,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 		Map<String, String> entriesInLable = new HashMap<String, String>();
 
 		// read the entries one by one
-		while (null != (currentLine = br.readLine())) {
+		while (null != (currentLine = dctReader.readLine())) {
 			currentLine = currentLine.trim();
 			// ignore the comment line and blank line
 			if (isCommentOrBlankLine(currentLine)) {
@@ -217,7 +211,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 			String langCode = null;
 			String content = null;
 			// an entry start, end with ","
-			if (null != (langCode = isLineStartLangCode(allAlcatelLangCodes))) {
+			if (null != (langCode = isLineStartLangCode(getAllAlcatelLangCodes()))) {
 				// remove the langCode, blank characters and quotation marks
 				currentLine = currentLine.replaceFirst(langCode, "").trim()
 						.replace("\"", "");
@@ -309,7 +303,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 		// multiple line
 		StringBuilder buffer = new StringBuilder(currentLine);
 
-		while (null != (currentLine = br.readLine())) {
+		while (null != (currentLine = dctReader.readLine())) {
 			currentLine = currentLine.trim();
 			// ignore the comment line and blank line
 			if (isCommentOrBlankLine(currentLine)) {
@@ -361,7 +355,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	 *            mapping of language code and its source charset name
 	 * @return DictionaryLanguage collection
 	 * */
-	private Collection<DictionaryLanguage> getDictLanguages(
+	private Collection<DictionaryLanguage> generateDictLanguages(
 			String[] languageCodes) {
 		Collection<DictionaryLanguage> dictLanguages = new HashSet<DictionaryLanguage>();
 

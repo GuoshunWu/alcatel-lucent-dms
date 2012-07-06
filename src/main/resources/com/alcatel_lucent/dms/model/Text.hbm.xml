@@ -2,7 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<hibernate-mapping package="com.alcatel_lucent.dms.model" schema="dms" default-cascade="all">
+<hibernate-mapping package="com.alcatel_lucent.dms.model" schema="dms">
 
 	<class name="Text" table="TEXT">
 		<id column="ID" name="id">
@@ -13,7 +13,7 @@
 		<property name="status" type="integer" column="STATUS"/>
 		<many-to-one name="context" not-null="true"/>
 		
-		<set name="translations" cascade="all" inverse="true">
+		<set name="translations" cascade="delete" inverse="true">
 			<key column="TEXT_ID" />
 			<one-to-many class="Translation" />
 		</set>

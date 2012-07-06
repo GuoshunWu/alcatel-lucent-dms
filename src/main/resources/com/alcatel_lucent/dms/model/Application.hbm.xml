@@ -2,7 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<hibernate-mapping package="com.alcatel_lucent.dms.model" schema="dms" default-cascade="all">
+<hibernate-mapping package="com.alcatel_lucent.dms.model" schema="dms" >
 	<class name="Application" table="APPLICATION" >
 		<id column="ID" name="id">
 			<generator class="native" />
@@ -10,7 +10,7 @@
 		
 		<property name="name" type="string" column="NAME"/>
 		<many-to-one name="productVersion" column="PRODUCT_VERSION_ID" not-null="true"/>
-		<set name="dictionaries" inverse="true" >
+		<set name="dictionaries" cascade="delete" inverse="true" >
 			<key column="APPLICATION_ID"/>
 			<one-to-many class="Dictionary"/>
 		</set>

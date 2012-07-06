@@ -3,7 +3,7 @@
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="com.alcatel_lucent.dms.model"
-	schema="dms" default-cascade="all">
+	schema="dms" >
 
 	<class name="Charset" table="CHARSET">
 		<id column="ID" name="id">
