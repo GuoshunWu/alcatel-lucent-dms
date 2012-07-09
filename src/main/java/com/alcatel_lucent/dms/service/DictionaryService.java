@@ -8,15 +8,34 @@ import com.alcatel_lucent.dms.model.Dictionary;
 public interface DictionaryService {
 	/**
 	 * Deliver a DCT dictionary
-	 * @param filename 
+	 * @param filename DCT filename with full path
 	 * @param appId application id
 	 * @param encoding encoding of source file, null if auto-detected (ANSI/UTF8/UTF16)
 	 * @param langCodes Alcatel code of languages to import, null if all languages should be imported
 	 * @param langCharset mapping of language code and its source charset name
-	 * @return Dictionary object created
+	 * @return persistent Dictionary object created
 	 * @throws BusinessException
 	 */
 	Dictionary deliverDCT(String filename, Long appId, String encoding, String[] langCodes, Map<String, String> langCharset) throws BusinessException;
+	
+	/**
+	 * Parse and preview a DCT dictionary
+	 * @param filename DCT filename with full path
+	 * @param appId application id
+	 * @param encoding encoding of source file, null if auto-detected (ANSI/UTF8/UTF16)
+	 * @return transient Dictionary object
+	 * @throws BusinessException
+	 */
+	Dictionary previewDCT(String filename, Long appId, String encoding) throws BusinessException;
+	
+	/**
+	 * Import a DCT dictionary
+	 * @param dict transient Dictionary object
+	 * @param langCodes Alcatel code of languages to import, null if all languages should be imported
+	 * @param langCharset mapping of language code and its source charset name
+	 * @return persistent Dictionary object created
+	 */
+	Dictionary importDCT(Dictionary dict, String[] langCodes, Map<String, String> langCharset);
 	
 	/**
 	 * Generate a DCT dictionary
