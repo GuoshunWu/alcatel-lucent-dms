@@ -1,6 +1,14 @@
-syntax: glob
+# Remove some patch or backup files from SCM
+syntax:glob
+*~
+*.orig
+*.rej
+
+# Java
 *.class
 target/
-.settings/
-.classpath
+
+# Eclipse config files
 .project
+.classpath
+.settings
