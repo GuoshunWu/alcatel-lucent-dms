@@ -4,8 +4,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.ListableBeanFactory;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
 
 import java.util.Map;
 
@@ -19,7 +18,7 @@ public class SpringContext {
     }
 
     private static ListableBeanFactory instance;
-    private static Log log = LogFactory.getLog(SpringContext.class);
+//    private static Log log = LogFactory.getLog(SpringContext.class);
 
     public static ListableBeanFactory getBeanFactory() {
         if (instance == null) {

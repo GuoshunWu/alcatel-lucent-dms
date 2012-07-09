@@ -17,7 +17,7 @@
 		<property name="maxLength" type="string" column="MAX_LENGTH"/>
 		
 		<many-to-one name="context" column="CONTEXT_ID" not-null="true"/>
-		<many-to-one name="text" column="TEXT_ID" unique="true" not-null="true"/>
+		<many-to-one name="text" column="TEXT_ID" not-null="true"/>
 		
 	</class>
 

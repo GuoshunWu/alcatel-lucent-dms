@@ -36,8 +36,7 @@ public abstract class BaseEntity implements Serializable {
 			return false;
 		BaseEntity other = (BaseEntity) obj;
 		if (id == null) {
-			if (other.id != null)
-				return false;
+			return false;
 		} else if (!id.equals(other.id))
 			return false;
 		return true;

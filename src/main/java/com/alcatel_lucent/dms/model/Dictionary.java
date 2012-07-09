@@ -92,5 +92,5 @@ public class Dictionary extends BaseEntity {
 						name, format, encoding, path, application,
 						dictLanguages.size(), labels.size(), locked);
 	}
-	
+
 }

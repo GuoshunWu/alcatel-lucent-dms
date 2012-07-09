@@ -3,6 +3,8 @@
  */
 package com.alcatel_lucent.dms.test;
 
+import org.logicalcobwebs.proxool.ProxoolFacade;
+
 import com.alcatel_lucent.dms.model.HibernateSessionFactory;
 
 /**
@@ -17,5 +19,6 @@ public class HibernateTest {
 	 */
 	public static void main(String[] args) {
 		HibernateSessionFactory.getConfiguration();
+		ProxoolFacade.shutdown(0);
 	}
 }

@@ -31,7 +31,7 @@ import com.alcatel_lucent.dms.model.Dictionary;
  * @author guoshunw
  * 
  */
-public class DictionaryServiceImplTest {
+public class DictionaryServiceImplTest{
 
 	private static DictionaryServiceImpl dictService;
 	private static DictionaryService ds;

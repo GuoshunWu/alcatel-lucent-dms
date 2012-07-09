@@ -5,12 +5,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -51,18 +53,17 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	// current file reader
 	private BufferedReader dctReader = null;
 
-	// langCharset mapping of language code and its source charset name
-	private Map<String, String> langCharset = null;
-
-	
-
 	// current dictionary
 	private Dictionary dict = null;
+	// current context
+	private Context context;
 
 	// langCodes Alcatel code of languages to generate, null if all languages
 	// should be exported
-
 	private String[] langCodes;
+
+	// langCharset mapping of language code and its source charset name
+	private Map<String, String> langCharset = null;
 
 	// current file encoding
 	private String encoding;
@@ -70,7 +71,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	public DictionaryServiceImpl() {
 		super();
 	}
-
 
 	public Dictionary deliverDCT(String filename, Long appId, String encoding,
 			String[] langCodes, Map<String, String> langCharset)
@@ -87,7 +87,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 		log.warn("\n######################begin deliver: " + dctFile.getName()
 				+ "##########################\n");
 
-
 		dict = new Dictionary();
 		dict.setName(dctFile.getName());
 		dict.setFormat("dct");
@@ -102,15 +101,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 		}
 		dict.setApplication(app);
 
-		// create or retrieve dict related context
-		Context ctx = (Context) getDao().retrieveOne(
-				"from Context where name = :name",
-				JSONObject.fromObject("{'name':'" + dict.getName() + "'}"));
-		if (null == ctx) {
-			ctx = new Context();
-			ctx.setName(dict.getName());
-			getDao().create(ctx);
-		}
+		// create or related context
+		context = new Context();
+		context.setName(dict.getName());
 
 		try {
 			if (null == this.encoding) {
@@ -120,7 +113,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
 			FileInputStream fis = new FileInputStream(dctFile);
 			// Creates an BufferedReader that uses the encoding charset.
-			dctReader = new BufferedReader(new InputStreamReader(fis, this.encoding));
+			dctReader = new BufferedReader(new InputStreamReader(fis,
+					this.encoding));
 
 			// languageCodes in current dictionary file
 			String[] languageCodes = null;
@@ -130,10 +124,10 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 			while (null != (currentLine = dctReader.readLine())) {
 				currentLine = currentLine.trim();
 				// ignore the comment line and blank line
-				if (isCommentOrBlankLine(currentLine)) {
+				if (isCommentOrBlankLine()) {
 					continue;
 				}
-				currentLine = removeComments(currentLine);
+				removeComments();
 
 				Matcher m = patternLanguage.matcher(currentLine);
 				// is LANGUAGES
@@ -141,7 +135,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 					languageCodes = m.group(1).split(",");
 					dict.setDictLanguages(generateDictLanguages(languageCodes));
 				} else if (currentLine.endsWith(":")) {// a label start
-					labels.add(readLabel(ctx));
+					labels.add(readLabel());
 				} else {
 					throw BusinessException.INVALID_DCT_FILE;
 				}
@@ -153,32 +147,94 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 			throw new SystemError(e.getMessage());
 		}
 
-		// TODO update or insert dictionary object to DB
-		getDao().create(dict);
+		mergeDictionary(dict);
 		return dict;
 	}
 
 	/**
+	 * Merge the generated Dictionary object to database based on langCodes
+	 * 
+	 * @param dict
+	 *            The dictionary object
+	 * @author Guoshun.Wu
+	 * */
+	private void mergeDictionary(Dictionary dict) {
+		Dictionary dbDict = (Dictionary) getDao().retrieveOne(
+				"from Dictionary where name=:name",
+				JSONObject.fromObject(String.format("{'name':'%s'}",
+						dict.getName())));
+		// first time import
+		if (null == dbDict) {
+			dbDict = (Dictionary) getDao().create(dict);
+			context = (Context) getDao().create(context);
+
+			for (DictionaryLanguage dictLanguage : dbDict.getDictLanguages()) {
+				getDao().create(dictLanguage);
+			}
+
+			for (Label label : dbDict.getLabels()) {
+				Text text = label.getText();
+
+				Map params = new HashMap();
+				params.put("reference", text.getReference());
+				params.put("context", text.getContext());
+				Text dbText = (Text) getDao()
+						.retrieveOne(
+								"from Text where reference= :reference and context=:context",
+								params);
+				if (null != dbText) {
+					label.setText(dbText);
+				} else {
+					getDao().create(text);
+				}
+				getDao().create(label);
+
+				for (Translation trans : text.getTranslations()) {
+					if (langCodes == null || isLanguageInLangCodes(trans.getLanguage())) {
+						getDao().create(trans);
+					}
+				}
+			}
+
+		} else { // import again
+
+		}
+
+	}
+
+	/**
+	 * 
+	 * */
+	private boolean isLanguageInLangCodes(Language language){
+		List<String> langCodeList = new ArrayList<String>();
+		for (AlcatelLanguageCode alCode : this
+				.getAlcatelLanguageCodes().values()) {
+			if (alCode.getLanguage().getId() == language.getId()) {
+				langCodeList.add(alCode.getCode());
+			}
+		}
+		return langCodeList.removeAll(Arrays.asList(langCodes));
+	}
+	
+	/**
 	 * Remove the trailing comments on line
 	 * 
 	 * @author Guoshun.Wu Date: 2012-07-04
-	 * 
-	 * @param line
-	 *            to be processed line
 	 * @return processed line
 	 * */
-	private String removeComments(String line) {
-		String nLine = line.trim();
+	private String removeComments() {
+		currentLine.trim();
 		// remove trailing comments
-		Matcher m_line = Pattern.compile("(.*?[^\"\'])--.*").matcher(nLine);
-		if (!m_line.matches()) {
-			return nLine;
+		Matcher m_line = Pattern.compile("(.*?[^\"\'])--.*").matcher(
+				currentLine);
+		if (m_line.matches()) {
+			currentLine = m_line.group(1).trim();
 		}
-		return m_line.group(1).trim();
+		return currentLine;
 	}
 
-	private boolean isCommentOrBlankLine(String line) {
-		return line.startsWith("--") || line.isEmpty();
+	private boolean isCommentOrBlankLine() {
+		return currentLine.startsWith("--") || currentLine.isEmpty();
 	}
 
 	/**
@@ -190,11 +246,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	 * @throws BusinessException
 	 * @throws IOException
 	 * */
-	private Label readLabel(Context ctx) throws BusinessException, IOException {
+	private Label readLabel() throws BusinessException, IOException {
 		String key = currentLine.replace(":", "");
 		Label label = new Label();
 		label.setDictionary(dict);
-		label.setContext(ctx);
+		label.setContext(context);
 		label.setKey(key);
 
 		Map<String, String> entriesInLable = new HashMap<String, String>();
@@ -203,15 +259,15 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 		while (null != (currentLine = dctReader.readLine())) {
 			currentLine = currentLine.trim();
 			// ignore the comment line and blank line
-			if (isCommentOrBlankLine(currentLine)) {
+			if (isCommentOrBlankLine()) {
 				continue;
 			}
-			currentLine = removeComments(currentLine);
+			removeComments();
 
 			String langCode = null;
 			String content = null;
 			// an entry start, end with ","
-			if (null != (langCode = isLineStartLangCode(getAllAlcatelLangCodes()))) {
+			if (null != (langCode = isLineStartLangCode())) {
 				// remove the langCode, blank characters and quotation marks
 				currentLine = currentLine.replaceFirst(langCode, "").trim()
 						.replace("\"", "");
@@ -239,7 +295,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 		}
 		label.setReference(gae);
 		Text text = new Text();
-		text.setContext(ctx);
+		text.setContext(context);
 		text.setReference(gae);
 		text.setStatus(0);
 
@@ -248,7 +304,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
 		for (Map.Entry<String, String> entry : entriesInLable.entrySet()) {
 
-			if (entry.getKey().equals("CHK")) {
+			if (entry.getKey().equals("CHK") || entry.getKey().equals("GAE")) {
 				continue;
 			}
 
@@ -306,10 +362,10 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 		while (null != (currentLine = dctReader.readLine())) {
 			currentLine = currentLine.trim();
 			// ignore the comment line and blank line
-			if (isCommentOrBlankLine(currentLine)) {
+			if (isCommentOrBlankLine()) {
 				continue;
 			}
-			currentLine = removeComments(currentLine);
+			removeComments();
 
 			currentLine = currentLine.replace("\"", "");
 			if (currentLine.endsWith(",") || currentLine.endsWith(";")) {
@@ -335,8 +391,12 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	 *            alcatel-lucent language codes list
 	 * 
 	 * */
-	private String isLineStartLangCode(List<String> langCodes) {
-		for (Object langCode : langCodes) {
+	private String isLineStartLangCode() {
+		Set<String> allAlLangCodes = new HashSet(getAlcatelLanguageCodes()
+				.keySet());
+		allAlLangCodes.add("CHK");
+
+		for (Object langCode : allAlLangCodes) {
 			if (currentLine.startsWith((String) langCode)) {
 				return (String) langCode;
 			}
@@ -357,7 +417,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	 * */
 	private Collection<DictionaryLanguage> generateDictLanguages(
 			String[] languageCodes) {
-		Collection<DictionaryLanguage> dictLanguages = new HashSet<DictionaryLanguage>();
+		Set<DictionaryLanguage> dictLanguages = new HashSet<DictionaryLanguage>();
+		List<DictionaryLanguage> temp = new ArrayList<DictionaryLanguage>();
 
 		for (String languageCode : languageCodes) {
 			languageCode = languageCode.trim();
@@ -370,25 +431,22 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 			dictLanguage.setDictionary(dict);
 
 			String charsetName = langCharset.get(languageCode);
-			if (null == charsetName) {
-				// TODO Do a more detailed error handling
-				throw BusinessException.CHARSET_NOT_FOUND;
-			}
-			// query database by charsetName to find find the specific Charset
-			// Object
-			Charset charset = (Charset) getDao().retrieveOne(
-					"from Charset where name = :name",
-					JSONObject.fromObject("{'name':'" + charsetName + "'}"));
-			if (null == charset) {
-				// TODO Do a more detailed error handling
-				throw BusinessException.CHARSET_NOT_FOUND;
+
+			Charset charset = null;
+			if (charsetName != null) {
+				charset = getCharsets().get(charsetName);
+				if (null == charset) {
+					// TODO Do a more detailed error handling
+					throw BusinessException.CHARSET_NOT_FOUND;
+				}
 			}
 			dictLanguage.setCharset(charset);
 
 			// language
 			// query alcatelLanguageCode table to find the related Language
-			AlcatelLanguageCode alCode = (AlcatelLanguageCode) getDao()
-					.retrieve(AlcatelLanguageCode.class, languageCode);
+			AlcatelLanguageCode alCode = getAlcatelLanguageCodes().get(
+					languageCode);
+
 			if (null == alCode) {
 				// TODO Do a more detailed error handling
 				throw BusinessException.LANGUAGE_NOT_FOUND;
@@ -400,6 +458,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 			}
 			dictLanguage.setLanguage(language);
 			dictLanguages.add(dictLanguage);
+			temp.add(dictLanguage);
 		}
 		return dictLanguages;
 	}
