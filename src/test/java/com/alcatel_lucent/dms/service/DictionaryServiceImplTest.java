@@ -3,8 +3,6 @@
  */
 package com.alcatel_lucent.dms.service;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -12,10 +10,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import junit.framework.Assert;
-
-import net.sf.json.JSONObject;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -31,7 +25,7 @@ import com.alcatel_lucent.dms.model.Dictionary;
  * @author guoshunw
  * 
  */
-public class DictionaryServiceImplTest{
+public class DictionaryServiceImplTest {
 
 	private static DictionaryServiceImpl dictService;
 	private static DictionaryService ds;
@@ -71,33 +65,34 @@ public class DictionaryServiceImplTest{
 
 	}
 
-	/**
-	 * Test method for
-	 * {@link com.alcatel_lucent.dms.service.DictionaryServiceImpl#detectEncoding(java.io.InputStream)}
-	 * .
-	 * 
-	 * @throws IOException
-	 * @throws URISyntaxException
-	 */
-	@Test
-	public void testDetectEncoding() throws IOException, URISyntaxException {
-
-		String expect = "UTF-16";
-		File testFile = new File(cls.getResource("testUTF16BE.txt").toURI());
-		assertEquals(expect, dictService.detectEncoding(testFile));
-
-		testFile = new File(cls.getResource("testUTF16LE.txt").toURI());
-		assertEquals(expect, dictService.detectEncoding(testFile));
-
-		expect = "UTF-8";
-		testFile = new File(cls.getResource("testUTF8.txt").toURI());
-		assertEquals(expect, dictService.detectEncoding(testFile));
-
-		expect = "ISO-8859-1";
-		testFile = new File(cls.getResource("testNoBOM.txt").toURI());
-		assertEquals(expect, dictService.detectEncoding(testFile));
-
-	}
+	// /**
+	// * Test method for
+	// * {@link
+	// com.alcatel_lucent.dms.service.DictionaryServiceImpl#detectEncoding(java.io.InputStream)}
+	// * .
+	// *
+	// * @throws IOException
+	// * @throws URISyntaxException
+	// */
+	// @Test
+	// public void testDetectEncoding() throws IOException, URISyntaxException {
+	//
+	// String expect = "UTF-16";
+	// File testFile = new File(cls.getResource("testUTF16BE.txt").toURI());
+	// assertEquals(expect, dictService.detectEncoding(testFile));
+	//
+	// testFile = new File(cls.getResource("testUTF16LE.txt").toURI());
+	// assertEquals(expect, dictService.detectEncoding(testFile));
+	//
+	// expect = "UTF-8";
+	// testFile = new File(cls.getResource("testUTF8.txt").toURI());
+	// assertEquals(expect, dictService.detectEncoding(testFile));
+	//
+	// expect = "ISO-8859-1";
+	// testFile = new File(cls.getResource("testNoBOM.txt").toURI());
+	// assertEquals(expect, dictService.detectEncoding(testFile));
+	//
+	// }
 
 	/**
 	 * 
@@ -111,6 +106,7 @@ public class DictionaryServiceImplTest{
 		// encoding encoding of source file, null if auto-detected
 		// (ANSI/UTF8/UTF16)
 		String encoding = null;
+
 		// langCodes Alcatel code of languages to import, null if all languages
 		// should be imported
 		String[] langCodes = null;
@@ -124,9 +120,26 @@ public class DictionaryServiceImplTest{
 		}
 
 		String testFile = "About.dic";
-//		testFile="BandHistory.dic";
-//		testFile="communicateBy.dic";
-		
+		testFile = "BandHistory.dic";
+		// testFile="communicateBy.dic";
+
+		String dctFileRelativePath = "dct_test_files/CH0/" + testFile;
+
+		// dctFileRelativePath = "dct_test_files/CH0";
+
+		String testFilePath = new File(cls.getResource(dctFileRelativePath)
+				.toURI()).getAbsolutePath();
+
+		Dictionary dict = ds.deliverDCT(testFilePath, appId, encoding,
+				langCodes, langCharset);
+	}
+
+	// @Test
+	public void testPreviewDCT() throws URISyntaxException {
+		String testFile = "About.dic";
+		// testFile="BandHistory.dic";
+		// testFile="communicateBy.dic";
+
 		String dctFileRelativePath = "dct_test_files/CH0/" + testFile;
 
 		// dctFileRelativePath = "dct_test_files/CH0";
@@ -135,28 +148,9 @@ public class DictionaryServiceImplTest{
 				.toURI()).getAbsolutePath();
 
 		File file = new File(testFilePath);
-		deliverDCTFiles(file, appId, encoding, langCodes, langCharset);
+		Long appId = 1L;
+		String encoding = null;
 
-		Dictionary dict = (Dictionary) dao.retrieveOne(
-				"from Dictionary where name =:name",
-				JSONObject.fromObject(String.format("{'name': '%s'}", testFile)),
-				new String[] { "name" });
-		
-		Assert.assertNotNull(dict);
-		Assert.assertEquals(testFile, dict.getName());
+		ds.previewDCT(file.getAbsolutePath(), appId, encoding);
 	}
-
-	private void deliverDCTFiles(File file, Long appId, String encoding,
-			String[] langCodes, Map<String, String> langCharset) {
-		if (file.isDirectory()) {
-			for (File f : file.listFiles()) {
-				deliverDCTFiles(f, appId, encoding, langCodes, langCharset);
-			}
-		} else {
-
-			ds.deliverDCT(file.getAbsolutePath(), appId, encoding, langCodes,
-					langCharset);
-		}
-	}
-
 }

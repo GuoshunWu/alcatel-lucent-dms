@@ -64,6 +64,36 @@ public class Label extends BaseEntity {
 						dictionary, key, reference, description, maxLength,
 						context, text);
 	}
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((context == null) ? 0 : context.hashCode());
+		result = prime * result + ((key == null) ? 0 : key.hashCode());
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Label other = (Label) obj;
+		if (context == null) {
+			if (other.context != null)
+				return false;
+		} else if (!context.equals(other.context))
+			return false;
+		if (key == null) {
+			if (other.key != null)
+				return false;
+		} else if (!key.equals(other.key))
+			return false;
+		return true;
+	}
 
+	
 	
 }

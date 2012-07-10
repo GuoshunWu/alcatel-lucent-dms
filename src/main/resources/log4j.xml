@@ -59,12 +59,15 @@
 
 
 	<logger name="org.hibernate.type">
-		<level value="TRACE" />
+		<!-- <level value="TRACE" /> -->
 	</logger>
 
+	<logger name="com.alcatel_lucent.dms.service">
+		<level value="DEBUG" />
+	</logger>
 
 	<root>
-		<level value="DEBUG" />
+		<level value="WARN" />
 		<appender-ref ref="CONSOLE" />
 		<!-- <appender-ref ref="FILE" /> -->
 		<!-- <appender-ref ref="ASYNC" /> -->

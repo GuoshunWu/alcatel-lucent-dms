@@ -43,5 +43,29 @@ public class DictionaryLanguage extends BaseEntity {
 				.format("DictionaryLanguage [dictionary=%s, language=%s, languageCode=%s, charset=%s]",
 						dictionary, language, languageCode, charset);
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		DictionaryLanguage other = (DictionaryLanguage) obj;
+		if (dictionary == null) {
+			if (other.dictionary != null)
+				return false;
+		} else if (!dictionary.equals(other.dictionary))
+			return false;
+		if (languageCode == null) {
+			if (other.languageCode != null)
+				return false;
+		} else if (!languageCode.equals(other.languageCode))
+			return false;
+		return true;
+	}
+
+	
 	
 }

@@ -15,7 +15,7 @@
 		<!-- <property name="hibernate.proxool.xml">proxool.xml</property> -->
 		<property name="hibernate.proxool.properties">proxool.properties</property>
 		<property name="hibernate.proxool.existing_pool">false</property>
-		
+
 		<property name="connection.pool_size">10</property>
 
 
@@ -28,7 +28,7 @@
 		</property>
 
 		<!-- Echo all executed SQL to stdout -->
-		<property name="show_sql">true</property>
+		<!-- <property name="show_sql">true</property> -->
 		<property name="hibernate.format_sql">true</property>
 		<property name="hibernate.use_sql_comments">true</property>
 		<property name="hibernate.default_schema">dms</property>
@@ -36,13 +36,12 @@
 		<!-- Drop and re-create the database schema on startup (create-drop, update, 
 			create) -->
 
-		<property name="hbm2ddl.auto">create</property>
-		
-	<!-- 	<property name="myeclipse.connection.profile">MySQL_Local</property>
-		<property name="connection.url">jdbc:mysql://localhost:3306/dms</property>
-		<property name="connection.username">root</property>
-		<property name="connection.password">root123</property>
-		<property name="connection.driver_class">com.mysql.jdbc.Driver</property> -->
+		<!-- <property name="hbm2ddl.auto">create</property> -->
+
+		<!-- <property name="myeclipse.connection.profile">MySQL_Local</property> 
+			<property name="connection.url">jdbc:mysql://localhost:3306/dms</property> 
+			<property name="connection.username">root</property> <property name="connection.password">root123</property> 
+			<property name="connection.driver_class">com.mysql.jdbc.Driver</property> -->
 
 		<mapping resource="com/alcatel_lucent/dms/model/Product.hbm.xml" />
 		<mapping resource="com/alcatel_lucent/dms/model/ProductVersion.hbm.xml" />
