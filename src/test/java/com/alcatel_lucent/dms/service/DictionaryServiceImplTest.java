@@ -129,7 +129,7 @@ public class DictionaryServiceImplTest {
 
 	@Test
 	public void testgenerateDCT() {
-		Long dctId = 2L;
+		Long dctId = 1L;
 		String encoding = "GBK";
 		String fileName = "Test" + encoding + ".sql";
 

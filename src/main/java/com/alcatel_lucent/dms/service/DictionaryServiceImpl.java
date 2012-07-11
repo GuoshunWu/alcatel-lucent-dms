@@ -62,6 +62,19 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 					+ " Dictionary is not found in database.");
 			throw BusinessException.DICTIONARY_NOT_FOUND;
 		}
+
+		// all the language code in dictionary
+		Collection dictLangCodes = getObjectProperiesList(
+				dict.getDictLanguages(), "languageCode");
+
+		if (langCodes != null) {
+			List<String> listLangCodes = Arrays.asList(langCodes);
+			listLangCodes.removeAll(dictLangCodes);
+			if (!listLangCodes.isEmpty()) {
+				throw BusinessException.LANGUAGE_NOT_FOUND;
+			}
+		}
+
 		if (null == encoding) {
 			encoding = dict.getEncoding();
 		}
@@ -72,8 +85,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 					new FileOutputStream(filename)), true, encoding);
 			// output support languages
 
-			Collection dictLangCodes = getObjectProperiesList(
-					dict.getDictLanguages(), "languageCode");
 			out.println("LANGUAGES {" + join(dictLangCodes, ", ") + "}");
 			out.println();
 
@@ -101,40 +112,49 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 								System.getProperty("line.separator")));
 				// output translation separator
 				out.println(",");
-				
+
 				out.print("  GAE "
 						+ convertContent(indentSize, label.getReference(),
 								"\n", System.getProperty("line.separator")));
 				//
-				
-				Translation translation = null;
-				Translation[] translations = label.getText().getTranslations()
-						.toArray(new Translation[0]);
 
-				for (int j = 0; j < translations.length; ++j) {
-					translation = translations[j];
+				for (DictionaryLanguage dictLang : dict.getDictLanguages()) {
 					if (langCodes != null
-							&& !isLanguageInLangCodes(
-									translation.getLanguage(), langCodes)) {
+							&& Arrays.asList(langCodes).contains(
+									dictLang.getLanguageCode())) {
 						continue;
 					}
 					// output translation separator
 					out.println(",");
 
-					List<String> langCodeList = getLangCodes(getLanguageAlcatelLanguageCode(translation
-							.getLanguage()));
-					String langCode = langCodeList.get(0);
-					out.print("  " + langCode + " ");
+					out.print("  " + dictLang.getLanguageCode() + " ");
 
-					String charsetName = langCharset.get(langCode);
+					// output langCode translation
+					String translationString = label.getReference();
+
+					Language dictLangCodeLanguage = getAlcatelLanguageCodes()
+							.get(dictLang.getLanguageCode()).getLanguage();
+					for (Translation translation : label.getText()
+							.getTranslations()) {
+						if (translation.getLanguage().getId() == dictLangCodeLanguage
+								.getId()) {
+							translationString = translation.getTranslation();
+							break;
+						}
+					}
+
+					String converedString = convertContent(indentSize,
+							translationString, "\n",
+							System.getProperty("line.separator"));
+
+					String charsetName = langCharset.get(dictLang
+							.getLanguageCode());
 					if (null == charsetName) {
 						throw BusinessException.CHARSET_NOT_FOUND;
 					}
-					String converedString = convertContent(indentSize,
-							translation.getTranslation(), "\n",
-							System.getProperty("line.separator"));
 					out.write(converedString.getBytes(charsetName));
 				}
+
 			}
 
 		} catch (IOException e) {
