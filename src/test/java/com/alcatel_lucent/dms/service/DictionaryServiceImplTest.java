@@ -93,7 +93,7 @@ public class DictionaryServiceImplTest {
 		String[] langCodes = new String[] { "CH1" };
 		langCodes = null;
 		String testFile = "About.dic";
-		//testFile = "BandHistory.dic";
+		// testFile = "BandHistory.dic";
 		// testFile="communicateBy.dic";
 
 		String dctFileRelativePath = "dct_test_files/CH0/" + testFile;
@@ -103,8 +103,7 @@ public class DictionaryServiceImplTest {
 		String testFilePath = new File(cls.getResource(dctFileRelativePath)
 				.toURI()).getAbsolutePath();
 
-		Dictionary dict = ds.deliverDCT(testFilePath, appId, encoding,
-				langCodes, langCharset);
+		ds.deliverDCT(testFilePath, appId, encoding, langCodes, langCharset);
 	}
 
 	// @Test
@@ -126,6 +125,7 @@ public class DictionaryServiceImplTest {
 
 		ds.previewDCT(file.getAbsolutePath(), appId, encoding);
 	}
+
 	@Test
 	public void testAbnormalDCT() throws Exception {
 		Long appId = 1L;

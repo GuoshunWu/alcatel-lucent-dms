@@ -183,7 +183,7 @@ public class DictionaryParser {
 
 			StringBuilder buffer = new StringBuilder();
 			// an entry start, end with ","
-			if (null != (langCode = isLineStartLangCode(line))) {
+			if (null != (langCode = isLineStartWithLangCode(line))) {
 				if (!languageCodes.contains(langCode)) {
 					throw BusinessException.UNDEFINED_LANG_CODE.param(langCode);
 				}
@@ -293,7 +293,7 @@ public class DictionaryParser {
 	 *            alcatel-lucent language codes list
 	 * 
 	 * */
-	private String isLineStartLangCode(String line) {
+	private String isLineStartWithLangCode(String line) {
 		Set<String> allAlLangCodes = new HashSet<String>(baseService
 				.getAlcatelLanguageCodes().keySet());
 		allAlLangCodes.add("CHK");
