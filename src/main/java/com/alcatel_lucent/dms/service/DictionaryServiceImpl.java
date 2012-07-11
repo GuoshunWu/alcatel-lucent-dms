@@ -1,5 +1,7 @@
 package com.alcatel_lucent.dms.service;
 
+import static com.alcatel_lucent.dms.util.Util.generateSpace;
+import static com.alcatel_lucent.dms.util.Util.getObjectProperiesList;
 import static org.apache.commons.lang.StringUtils.join;
 
 import java.io.BufferedOutputStream;
@@ -7,8 +9,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -18,13 +18,11 @@ import java.util.Map;
 
 import net.sf.json.JSONObject;
 
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.log4j.Logger;
 
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.SpringContext;
 import com.alcatel_lucent.dms.SystemError;
-import com.alcatel_lucent.dms.model.AlcatelLanguageCode;
 import com.alcatel_lucent.dms.model.Application;
 import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Dictionary;
@@ -93,7 +91,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 			// output labels
 
 			Label label = null;
-			int indentSize = "  CHK ".length();
+			String checkFieldLangCodeString = String.format("  %s ",
+					Label.CHECK_FIELD_NAME);
+			String referenceFieldLangCodeString = String.format("  %s ",
+					Label.REFERENCE_FIELD_NAME);
+			int indentSize = checkFieldLangCodeString.length();
 
 			Label[] labels = dict.getLabels().toArray(new Label[0]);
 			for (int i = 0; i < labels.length; ++i) {
@@ -106,7 +108,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 				}
 				out.println(label.getKey() + ":");
 
-				out.print("  CHK "
+				out.print(checkFieldLangCodeString
 						+ convertContent(
 								indentSize,
 								generateCHK(label.getMaxLength(),
@@ -115,10 +117,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 				// output translation separator
 				out.println(",");
 
-				out.print("  GAE "
+				out.print(referenceFieldLangCodeString
 						+ convertContent(indentSize, label.getReference(),
 								"\n", System.getProperty("line.separator")));
-				//
 
 				for (DictionaryLanguage dictLang : dict.getDictLanguages()) {
 					if (langCodes != null
@@ -218,7 +219,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 			Map<String, String> langCharset) {
 		if (null == dict)
 			return null;
-		TextService textService = (TextService) SpringContext.getService(TextService.class);
+		TextService textService = (TextService) SpringContext
+				.getService(TextService.class);
 		Dictionary dbDict = (Dictionary) getDao().retrieveOne(
 				"from Dictionary where name=:name",
 				JSONObject.fromObject(String.format("{'name':'%s'}",
@@ -229,7 +231,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 			log.info("Dictionary " + dict.getName()
 					+ " not exist in database, create new one in database...");
 			dbDict = new Dictionary();
-			dbDict.setApplication((Application) dao.retrieve(Application.class, dict.getApplication().getId()));
+			dbDict.setApplication((Application) dao.retrieve(Application.class,
+					dict.getApplication().getId()));
 			dbDict.setEncoding(dict.getEncoding());
 			dbDict.setFormat(dict.getFormat());
 			dbDict.setName(dict.getName());
@@ -237,10 +240,12 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 			dbDict.setLocked(false);
 			dbDict = (Dictionary) getDao().create(dbDict);
 		}
-		
+
 		// update dictionary languages
 		for (DictionaryLanguage dictLanguage : dict.getDictLanguages()) {
-			mergeDictLanguage(dbDict, dictLanguage.getLanguage().getId(), dictLanguage.getLanguageCode(), dictLanguage.getCharset().getName());
+			mergeDictLanguage(dbDict, dictLanguage.getLanguage().getId(),
+					dictLanguage.getLanguageCode(), dictLanguage.getCharset()
+							.getName());
 		}
 
 		for (Label label : dict.getLabels()) {
@@ -253,7 +258,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 			if (dbContext == null) {
 				dbContext = (Context) getDao().create(context);
 			}
-			
+
 			// create or update text and translations
 			Text text = label.getText();
 			HashSet<String> langCodeSet = null;
@@ -262,26 +267,35 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 			}
 			Map<Long, String> translationMap = new HashMap<Long, String>();
 			for (DictionaryLanguage dictLanguage : dict.getDictLanguages()) {
-				if (langCodeSet != null && !langCodeSet.contains(dictLanguage.getLanguageCode())) {
+				if (langCodeSet != null
+						&& !langCodeSet
+								.contains(dictLanguage.getLanguageCode())) {
 					continue;
 				}
-				String charsetName = langCharset.get(dictLanguage.getLanguageCode());
+				String charsetName = langCharset.get(dictLanguage
+						.getLanguageCode());
 				if (null == charsetName) {
-					throw BusinessException.CHARSET_NOT_DEFINED.param(dictLanguage.getLanguageCode());
+					throw BusinessException.CHARSET_NOT_DEFINED
+							.param(dictLanguage.getLanguageCode());
 				}
-				Translation trans = text.getTranslation(dictLanguage.getLanguage().getId());
+				Translation trans = text.getTranslation(dictLanguage
+						.getLanguage().getId());
 				if (null == trans) {
 					continue;
 				}
 				try {
-					String encodedTranslation = new String(trans.getTranslation()
-							.getBytes(dict.getEncoding()), charsetName);
-					translationMap.put(dictLanguage.getLanguage().getId(), encodedTranslation);
+					String encodedTranslation = new String(trans
+							.getTranslation().getBytes(dict.getEncoding()),
+							charsetName);
+					translationMap.put(dictLanguage.getLanguage().getId(),
+							encodedTranslation);
 				} catch (UnsupportedEncodingException e) {
-					throw BusinessException.CHARSET_NOT_FOUND.param(charsetName);
+					throw BusinessException.CHARSET_NOT_FOUND
+							.param(charsetName);
 				}
 			}
-			Text dbText = textService.addTranslations(dbContext.getId(), label.getReference(), translationMap);
+			Text dbText = textService.addTranslations(dbContext.getId(),
+					label.getReference(), translationMap);
 
 			// create or update label
 			Label dbLabel = dbDict.getLabel(label.getKey());
@@ -301,61 +315,25 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 		}
 		return dbDict;
 	}
-	public static String generateSpace(int count) {
-		if (count < 0) {
-			throw new IllegalArgumentException(
-					"count must be greater than or equal 0.");
-		}
-		char[] chs = new char[count];
-		for (int i = 0; i < count; i++) {
-			chs[i] = ' ';
-		}
-		return new String(chs);
-	}
 
-	private List<String> getLangCodes(
-			List<AlcatelLanguageCode> alcatelLanguageCodes) {
-		List<String> langCodes = new ArrayList<String>();
-		for (AlcatelLanguageCode alCode : alcatelLanguageCodes) {
-			langCodes.add(alCode.getCode());
-		}
-		return langCodes;
-	}
-
-	private DictionaryLanguage mergeDictLanguage(Dictionary dbDict, Long languageId, String languageCode, String charsetName) {
+	private DictionaryLanguage mergeDictLanguage(Dictionary dbDict,
+			Long languageId, String languageCode, String charsetName) {
 		DictionaryLanguage dbDictLang = dbDict.getDictLanguage(languageId);
 		if (dbDictLang == null) {
 			dbDictLang = new DictionaryLanguage();
 			dbDictLang.setDictionary(dbDict);
-			dbDictLang.setLanguage((Language) dao.retrieve(Language.class, languageId));
+			dbDictLang.setLanguage((Language) dao.retrieve(Language.class,
+					languageId));
 			dbDictLang.setCharset(getCharset(charsetName));
 			dbDictLang.setLanguageCode(languageCode);
 			dbDictLang = (DictionaryLanguage) dao.create(dbDictLang);
 		} else {
-			dbDictLang.setLanguage((Language) dao.retrieve(Language.class, languageId));
+			dbDictLang.setLanguage((Language) dao.retrieve(Language.class,
+					languageId));
 			dbDictLang.setCharset(getCharset(charsetName));
 			dbDictLang.setLanguageCode(languageCode);
 		}
 		return dbDictLang;
 	}
-	
 
-	public List getObjectProperiesList(Collection collection,
-			String propertyName) {
-		List propertiesList = new ArrayList<Object>();
-		for (Object obj : collection) {
-			Object value = null;
-			try {
-				value = PropertyUtils.getProperty(obj, propertyName);
-			} catch (IllegalAccessException e) {
-				throw new SystemError(e.getMessage());
-			} catch (InvocationTargetException e) {
-				throw new SystemError(e.getMessage());
-			} catch (NoSuchMethodException e) {
-				throw new SystemError(e.getMessage());
-			}
-			propertiesList.add(value);
-		}
-		return propertiesList;
-	}
 }
