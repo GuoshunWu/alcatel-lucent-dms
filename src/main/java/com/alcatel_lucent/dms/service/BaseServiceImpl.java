@@ -9,7 +9,7 @@ import com.alcatel_lucent.dms.model.Charset;
 import com.alcatel_lucent.dms.model.Language;
 
 public class BaseServiceImpl {
-	private DaoService dao;
+	protected DaoService dao;
 
 	// base data for dms
 	private static Map<String, AlcatelLanguageCode> alcatelLanguageCodes = null;
@@ -44,6 +44,10 @@ public class BaseServiceImpl {
 		}
 		return charsets;
 	}
+	
+	public Charset getCharset(String name) {
+		return getCharsets().get(name);
+	}
 
 	public Map<Long, Language> getLanguages() {
 		if (null != languages)
@@ -56,7 +60,7 @@ public class BaseServiceImpl {
 		}
 		return languages;
 	}
-
+	
 	public void destroy() {
 
 	}

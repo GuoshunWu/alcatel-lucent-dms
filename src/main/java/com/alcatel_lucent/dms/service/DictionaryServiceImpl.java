@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.log4j.Logger;
 
 import com.alcatel_lucent.dms.BusinessException;
+import com.alcatel_lucent.dms.SpringContext;
 import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.model.AlcatelLanguageCode;
 import com.alcatel_lucent.dms.model.Application;
@@ -197,7 +199,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 				+ generateSpace(indentSize));
 	}
 
-	@Override
 	public Dictionary previewDCT(String filename, Long appId, String encoding)
 			throws BusinessException {
 		Application app = (Application) getDao().retrieve(Application.class,
@@ -213,243 +214,93 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 		return dict;
 	}
 
-	@Override
 	public Dictionary importDCT(Dictionary dict, String[] langCodes,
 			Map<String, String> langCharset) {
 		if (null == dict)
 			return null;
+		TextService textService = (TextService) SpringContext.getService(TextService.class);
 		Dictionary dbDict = (Dictionary) getDao().retrieveOne(
 				"from Dictionary where name=:name",
 				JSONObject.fromObject(String.format("{'name':'%s'}",
 						dict.getName())));
 		// first time import
 		if (null == dbDict) {
+			// create dictionary
 			log.info("Dictionary " + dict.getName()
 					+ " not exist in database, create new one in database...");
-			dbDict = (Dictionary) getDao().create(dict);
-
-			for (DictionaryLanguage dictLanguage : dbDict.getDictLanguages()) {
-				getDao().create(dictLanguage);
-			}
-
-			for (Label label : dbDict.getLabels()) {
-				Context context = label.getContext();
-				Context dbContext = (Context) getDao().retrieveOne(
-						"from Context where name=:name",
-						JSONObject.fromObject(String.format("{'name':'%s'}",
-								context.getName())));
-				if (dbContext == null) {
-					dbContext = (Context) getDao().create(context);
-				}
-				label.setContext(dbContext);
-
-				Text text = label.getText();
-
-				Map params = new HashMap();
-				params.put("reference", text.getReference());
-				params.put("contextid", dbContext.getId());
-
-				Text dbText = (Text) getDao()
-						.retrieveOne(
-								"from Text where reference= :reference and context.id=:contextid",
-								params);
-				if (null == dbText) {
-					dbText = (Text) getDao().create(text);
-				}
-				label.setText(dbText);
-				getDao().create(label);
-
-				for (Translation trans : text.getTranslations()) {
-					if (langCodes != null
-							&& !isLanguageInLangCodes(trans.getLanguage(),
-									langCodes)) {
-						continue;
-					}
-
-					List<AlcatelLanguageCode> alCodes = getLanguageAlcatelLanguageCode(trans
-							.getLanguage());
-					if (alCodes.isEmpty()) {
-						throw BusinessException.CHARSET_NOT_FOUND;
-					}
-					String encodedTranslation = null;
-
-					String charsetName = null;
-					for (AlcatelLanguageCode alCode : alCodes) {
-						charsetName = langCharset.get(alCode.getCode());
-						if (null != charsetName) {
-							break;
-						}
-					}
-					if (null == charsetName) {
-						throw BusinessException.CHARSET_NOT_FOUND;
-					}
-					try {
-						encodedTranslation = new String(trans.getTranslation()
-								.getBytes(dict.getEncoding()), charsetName);
-					} catch (UnsupportedEncodingException e) {
-						throw BusinessException.CHARSET_NOT_FOUND;
-					}
-					trans.setTranslation(encodedTranslation);
-					getDao().create(trans);
-				}
-			}
-			return dbDict;
+			dbDict = new Dictionary();
+			dbDict.setApplication((Application) dao.retrieve(Application.class, dict.getApplication().getId()));
+			dbDict.setEncoding(dict.getEncoding());
+			dbDict.setFormat(dict.getFormat());
+			dbDict.setName(dict.getName());
+			dbDict.setPath(dict.getPath());
+			dbDict.setLocked(false);
+			dbDict = (Dictionary) getDao().create(dbDict);
 		}
-
-		log.info("Dictionary " + dict.getName()
-				+ " exist in database, merge it in database...");
-		// merged memory dict to dbDict
-
-		/*
-		 * 具有相同字典，且具有相同languageCode可认为是同一DictionaryLanguage对象
-		 * 如此需要重写DictionaryLanguage, Dictionary 等Entity的equals方法
-		 */
+		
+		// update dictionary languages
 		for (DictionaryLanguage dictLanguage : dict.getDictLanguages()) {
-			DictionaryLanguage dbDictLang = (DictionaryLanguage) getDao()
-					.retrieveOne(
-							"from DictionaryLanguage where dictionary.name=:dictName and languageCode=:languageCode",
-							JSONObject.fromObject(String.format(
-									"{'dictName':'%s','languageCode':'%s'}",
-									dictLanguage.getDictionary().getName(),
-									dictLanguage.getLanguageCode())));
-			if (dbDictLang == null) {
-				log.info("added " + dictLanguage.getLanguageCode()
-						+ " to DictionaryLanguage");
-				dictLanguage.setDictionary(dbDict);
-				dictLanguage = (DictionaryLanguage) getDao().create(
-						dictLanguage);
-			}
+			mergeDictLanguage(dbDict, dictLanguage.getLanguage().getId(), dictLanguage.getLanguageCode(), dictLanguage.getCharset().getName());
 		}
 
-		/*
-		 * 具有相同字典，相同key的Label可认为是同一Label对象
-		 */
-		// dict.getLabels().removeAll(dbDict.getLabels());
-		Context dbContext = dbDict.getLabels().toArray(new Label[0])[0]
-				.getContext();
 		for (Label label : dict.getLabels()) {
-			Label dbLabel = (Label) getDao()
-					.retrieveOne(
-							"from Label where dictionary.name=:dictName and key =:key",
-							JSONObject.fromObject(String.format(
-									"{'dictName':'%s','key':'%s'}", label
-											.getDictionary().getName(), label
-											.getKey())));
-			if (null == dbLabel) {
-				label.setContext(dbContext);
-				Text text = label.getText();
-
-				Map params = new HashMap();
-				params.put("reference", text.getReference());
-				params.put("contextid", dbContext.getId());
-
-				Text dbText = (Text) getDao()
-						.retrieveOne(
-								"from Text where reference= :reference and context.id=:contextid",
-								params);
-				if (null == dbText) {
-					dbText = (Text) getDao().create(text);
+			// create context if necessary
+			Context context = label.getContext();
+			Context dbContext = (Context) getDao().retrieveOne(
+					"from Context where name=:name",
+					JSONObject.fromObject(String.format("{'name':'%s'}",
+							context.getName())));
+			if (dbContext == null) {
+				dbContext = (Context) getDao().create(context);
+			}
+			
+			// create or update text and translations
+			Text text = label.getText();
+			HashSet<String> langCodeSet = null;
+			if (langCodes != null) {
+				langCodeSet = new HashSet<String>(Arrays.asList(langCodes));
+			}
+			Map<Long, String> translationMap = new HashMap<Long, String>();
+			for (DictionaryLanguage dictLanguage : dict.getDictLanguages()) {
+				if (langCodeSet != null && !langCodeSet.contains(dictLanguage.getLanguageCode())) {
+					continue;
 				}
-				label.setText(dbText);
-				getDao().create(label);
-
-				for (Translation trans : text.getTranslations()) {
-					if (langCodes != null
-							&& !isLanguageInLangCodes(trans.getLanguage(),
-									langCodes)) {
-						continue;
-					}
-
-					List<AlcatelLanguageCode> alCodes = getLanguageAlcatelLanguageCode(trans
-							.getLanguage());
-					if (alCodes.isEmpty()) {
-						throw BusinessException.CHARSET_NOT_FOUND;
-					}
-					String encodedTranslation = null;
-
-					String charsetName = null;
-					for (AlcatelLanguageCode alCode : alCodes) {
-						charsetName = langCharset.get(alCode.getCode());
-						if (null != charsetName) {
-							break;
-						}
-					}
-					if (null == charsetName) {
-						throw BusinessException.CHARSET_NOT_FOUND;
-					}
-					try {
-						encodedTranslation = new String(trans.getTranslation()
-								.getBytes(dict.getEncoding()), charsetName);
-					} catch (UnsupportedEncodingException e) {
-						throw BusinessException.CHARSET_NOT_FOUND;
-					}
-					trans.setTranslation(encodedTranslation);
-					getDao().create(trans);
+				String charsetName = langCharset.get(dictLanguage.getLanguageCode());
+				if (null == charsetName) {
+					throw BusinessException.CHARSET_NOT_DEFINED.param(dictLanguage.getLanguageCode());
 				}
-
-			} else {
-				/*
-				 * 若Label在本Dictionary中存在，则只需要添加或者更新每个Translation 词条
-				 */
-
-				for (Translation trans : label.getText().getTranslations()) {
-					if (langCodes != null
-							&& !isLanguageInLangCodes(trans.getLanguage(),
-									langCodes)) {
-						continue;
-					}
-					/*
-					 * 若此Translation词条在数据库本Label中存在则用内存对象更新数据库对象，否则 将内存对象插入到数据库
-					 */
-
-					Map<String, Object> params = new HashMap<String, Object>();
-					params.put("langid", trans.getLanguage().getId());
-					params.put("textref", trans.getText().getReference());
-
-					Translation dbTrans = (Translation) getDao()
-							.retrieveOne(
-									"from Translation where language.id=:langid and text.reference=:textref",
-									params);
-
-					List<AlcatelLanguageCode> alCodes = getLanguageAlcatelLanguageCode(trans
-							.getLanguage());
-					if (alCodes.isEmpty()) {
-						throw BusinessException.CHARSET_NOT_FOUND;
-					}
-					String encodedTranslation = null;
-
-					String charsetName = null;
-					for (AlcatelLanguageCode alCode : alCodes) {
-						charsetName = langCharset.get(alCode.getCode());
-						if (null != charsetName) {
-							break;
-						}
-					}
-					if (null == charsetName) {
-						throw BusinessException.CHARSET_NOT_FOUND;
-					}
-
-					try {
-						encodedTranslation = new String(trans.getTranslation()
-								.getBytes(dict.getEncoding()), charsetName);
-					} catch (UnsupportedEncodingException e) {
-						throw BusinessException.CHARSET_NOT_FOUND;
-					}
-
-					if (null != dbTrans) {
-						dbTrans.setTranslation(encodedTranslation);
-					} else {
-						trans.setText(dbLabel.getText());
-						trans.setTranslation(encodedTranslation);
-						getDao().create(trans);
-					}
+				Translation trans = text.getTranslation(dictLanguage.getLanguage().getId());
+				if (null == trans) {
+					continue;
+				}
+				try {
+					String encodedTranslation = new String(trans.getTranslation()
+							.getBytes(dict.getEncoding()), charsetName);
+					translationMap.put(dictLanguage.getLanguage().getId(), encodedTranslation);
+				} catch (UnsupportedEncodingException e) {
+					throw BusinessException.CHARSET_NOT_FOUND.param(charsetName);
 				}
 			}
+			Text dbText = textService.addTranslations(dbContext.getId(), label.getReference(), translationMap);
 
+			// create or update label
+			Label dbLabel = dbDict.getLabel(label.getKey());
+			if (dbLabel == null) {
+				label.setDictionary(dbDict);
+				label.setContext(dbContext);
+				label.setText(dbText);
+				dbLabel = (Label) dao.create(label);
+			} else {
+				dbLabel.setContext(dbContext);
+				dbLabel.setText(dbText);
+				dbLabel.setKey(label.getKey());
+				dbLabel.setDescription(label.getDescription());
+				dbLabel.setMaxLength(label.getMaxLength());
+				dbLabel.setReference(label.getReference());
+			}
 		}
 		return dbDict;
 	}
-
 	public static String generateSpace(int count) {
 		if (count < 0) {
 			throw new IllegalArgumentException(
@@ -471,25 +322,23 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 		return langCodes;
 	}
 
-	private List<AlcatelLanguageCode> getLanguageAlcatelLanguageCode(
-			Language language) {
-		List<AlcatelLanguageCode> alCodes = new ArrayList<AlcatelLanguageCode>();
-		for (AlcatelLanguageCode alCode : this.getAlcatelLanguageCodes()
-				.values()) {
-			if (alCode.getLanguage().getId() == language.getId()) {
-				alCodes.add(alCode);
-			}
+	private DictionaryLanguage mergeDictLanguage(Dictionary dbDict, Long languageId, String languageCode, String charsetName) {
+		DictionaryLanguage dbDictLang = dbDict.getDictLanguage(languageId);
+		if (dbDictLang == null) {
+			dbDictLang = new DictionaryLanguage();
+			dbDictLang.setDictionary(dbDict);
+			dbDictLang.setLanguage((Language) dao.retrieve(Language.class, languageId));
+			dbDictLang.setCharset(getCharset(charsetName));
+			dbDictLang.setLanguageCode(languageCode);
+			dbDictLang = (DictionaryLanguage) dao.create(dbDictLang);
+		} else {
+			dbDictLang.setLanguage((Language) dao.retrieve(Language.class, languageId));
+			dbDictLang.setCharset(getCharset(charsetName));
+			dbDictLang.setLanguageCode(languageCode);
 		}
-		return alCodes;
+		return dbDictLang;
 	}
-
-	/**
-	 * 
-	 * */
-	private boolean isLanguageInLangCodes(Language language, String[] langCodes) {
-		List<String> langCodeList = getLangCodes(getLanguageAlcatelLanguageCode(language));
-		return langCodeList.removeAll(Arrays.asList(langCodes));
-	}
+	
 
 	public List getObjectProperiesList(Collection collection,
 			String propertyName) {

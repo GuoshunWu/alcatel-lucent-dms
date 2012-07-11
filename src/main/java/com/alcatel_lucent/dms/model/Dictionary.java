@@ -1,6 +1,8 @@
 package com.alcatel_lucent.dms.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 
 public class Dictionary extends BaseEntity {
 	/**
@@ -90,7 +92,8 @@ public class Dictionary extends BaseEntity {
 		return String
 				.format("Dictionary [name=%s, format=%s, encoding=%s, path=%s, application=%s, dictLanguagesSize=%d, labelsSize=%d, locked=%s]",
 						name, format, encoding, path, application,
-						dictLanguages.size(), labels.size(), locked);
+						dictLanguages == null ? 0 : dictLanguages.size(), 
+						labels == null ? 0 : labels.size(), locked);
 	}
 
 	@Override
@@ -123,6 +126,70 @@ public class Dictionary extends BaseEntity {
 		} else if (!name.equals(other.name))
 			return false;
 		return true;
+	}
+	
+	public Language getLanguageByCode(String langCode) {
+		if (dictLanguages != null) {
+			for (DictionaryLanguage dl : dictLanguages) {
+				if (dl.getLanguageCode().equals(langCode)) {
+					return dl.getLanguage();
+				}
+			}
+		}
+		return null;
+	}
+	
+	public String getLanguageCode(Long languageId) {
+		if (dictLanguages != null) {
+			for (DictionaryLanguage dl : dictLanguages) {
+				if (dl.getLanguage().getId().equals(languageId)) {
+					return dl.getLanguageCode();
+				}
+			}
+		}
+		return null;
+	}
+	
+	public HashSet<String> getAllLanguageCodes() {
+		HashSet<String> result = new HashSet<String>();
+		if (dictLanguages != null) {
+			for (DictionaryLanguage dl : dictLanguages) {
+				result.add(dl.getLanguageCode());
+			}
+		}
+		return result;
+	}
+	
+	public ArrayList<Language> getAllLanguages() {
+		ArrayList<Language> result = new ArrayList<Language>();
+		if (dictLanguages != null) {
+			for (DictionaryLanguage dl : dictLanguages) {
+				result.add(dl.getLanguage());
+			}
+		}
+		return result;
+	}
+
+	public DictionaryLanguage getDictLanguage(Long languageId) {
+		if (dictLanguages != null) {
+			for (DictionaryLanguage dl : dictLanguages) {
+				if (dl.getLanguage().getId().equals(languageId)) {
+					return dl;
+				}
+			}
+		}
+		return null;
+	}
+
+	public Label getLabel(String key) {
+		if (labels != null) {
+			for (Label label : labels) {
+				if (label.getKey().equals(key)) {
+					return label;
+				}
+			}
+		}
+		return null;
 	}
 	
 }
