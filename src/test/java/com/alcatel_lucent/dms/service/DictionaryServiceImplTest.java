@@ -65,41 +65,12 @@ public class DictionaryServiceImplTest {
 
 	}
 
-	// /**
-	// * Test method for
-	// * {@link
-	// com.alcatel_lucent.dms.service.DictionaryServiceImpl#detectEncoding(java.io.InputStream)}
-	// * .
-	// *
-	// * @throws IOException
-	// * @throws URISyntaxException
-	// */
-	// @Test
-	// public void testDetectEncoding() throws IOException, URISyntaxException {
-	//
-	// String expect = "UTF-16";
-	// File testFile = new File(cls.getResource("testUTF16BE.txt").toURI());
-	// assertEquals(expect, dictService.detectEncoding(testFile));
-	//
-	// testFile = new File(cls.getResource("testUTF16LE.txt").toURI());
-	// assertEquals(expect, dictService.detectEncoding(testFile));
-	//
-	// expect = "UTF-8";
-	// testFile = new File(cls.getResource("testUTF8.txt").toURI());
-	// assertEquals(expect, dictService.detectEncoding(testFile));
-	//
-	// expect = "ISO-8859-1";
-	// testFile = new File(cls.getResource("testNoBOM.txt").toURI());
-	// assertEquals(expect, dictService.detectEncoding(testFile));
-	//
-	// }
-
 	/**
 	 * 
 	 * @throws IOException
 	 * @throws URISyntaxException
 	 */
-	@Test
+//	@Test
 	public void testDeliverDCT() throws IOException, URISyntaxException {
 
 		Long appId = 1L;
@@ -107,9 +78,6 @@ public class DictionaryServiceImplTest {
 		// (ANSI/UTF8/UTF16)
 		String encoding = null;
 
-		// langCodes Alcatel code of languages to import, null if all languages
-		// should be imported
-		String[] langCodes = null;
 		// langCharset mapping of language code and its source charset name
 		Map<String, String> langCharset = new HashMap<String, String>();
 		List<String> keys = Arrays
@@ -118,9 +86,14 @@ public class DictionaryServiceImplTest {
 		for (String key : keys) {
 			langCharset.put(key.trim(), "GBK");
 		}
+		langCharset.put("CH1", "BIG5");
 
+		// langCodes Alcatel code of languages to import, null if all languages
+		// should be imported
+		String[] langCodes = new String[] { "CH1" };
+		langCodes = null;
 		String testFile = "About.dic";
-		testFile = "BandHistory.dic";
+//		testFile = "BandHistory.dic";
 		// testFile="communicateBy.dic";
 
 		String dctFileRelativePath = "dct_test_files/CH0/" + testFile;
@@ -137,7 +110,7 @@ public class DictionaryServiceImplTest {
 	// @Test
 	public void testPreviewDCT() throws URISyntaxException {
 		String testFile = "About.dic";
-		// testFile="BandHistory.dic";
+		testFile = "BandHistory.dic";
 		// testFile="communicateBy.dic";
 
 		String dctFileRelativePath = "dct_test_files/CH0/" + testFile;
@@ -152,5 +125,26 @@ public class DictionaryServiceImplTest {
 		String encoding = null;
 
 		ds.previewDCT(file.getAbsolutePath(), appId, encoding);
+	}
+
+	@Test
+	public void testgenerateDCT() {
+		Long dctId = 2L;
+		String encoding = "GBK";
+		String fileName = "Test" + encoding + ".sql";
+
+		Map<String, String> langCharset = new HashMap<String, String>();
+
+		List<String> keys = Arrays
+				.asList("CHK, ZH0, GAE, FR0, EN0, DE0, IT0, PT0, ES0, US0, PL0, KO0, NO0, NL0, RU0, CH0, FI0, ES1, CS0, HU0, CH1, SV0, AR0, DA0, HE0"
+						.split(","));
+		for (String key : keys) {
+			langCharset.put(key.trim(), "GBK");
+		}
+		langCharset.put("CH1", "BIG5");
+
+		String[] langCodes = new String[] { "CH0", "CH1" };
+		langCodes = null;
+		ds.generateDCT(fileName, dctId, encoding, langCodes, langCharset);
 	}
 }

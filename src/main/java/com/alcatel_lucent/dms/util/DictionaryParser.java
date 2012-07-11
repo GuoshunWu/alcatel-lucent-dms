@@ -372,7 +372,7 @@ public class DictionaryParser {
 	 *            given File
 	 * @return file encoding
 	 * */
-	public String detectEncoding(File file) throws IOException {
+	public static String  detectEncoding(File file) throws IOException {
 		byte[] utf8BOM = new byte[] { (byte) 0xef, (byte) 0xbb, (byte) 0xbf, };
 		byte[] utf16LEBOM = new byte[] { (byte) 0xff, (byte) 0xfe };
 		byte[] utf16BEBOM = new byte[] { (byte) 0xfe, (byte) 0xff };
