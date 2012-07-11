@@ -27,7 +27,6 @@ import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryLanguage;
 import com.alcatel_lucent.dms.model.Label;
-import com.alcatel_lucent.dms.model.Language;
 import com.alcatel_lucent.dms.model.Text;
 import com.alcatel_lucent.dms.model.Translation;
 import com.alcatel_lucent.dms.service.BaseServiceImpl;
@@ -108,6 +107,9 @@ public class DictionaryParser {
 		BufferedReader dctReader = new BufferedReader(new InputStreamReader(
 				fis, encoding));
 		String line = null;
+		HashSet<String> declaredLangCodes = new HashSet<String>();
+		HashSet<String> labelKeys = new HashSet<String>();
+		log.debug("Processing DCT file " + filename);
 		while (null != (line = dctReader.readLine())) {
 			line = line.trim();
 			// ignore the comment line and blank line
@@ -121,13 +123,22 @@ public class DictionaryParser {
 			if (m.matches()) {
 				// languageCodes in current dictionary file
 				String[] languageCodes = m.group(1).split(",");
+				for (int i = 0; i < languageCodes.length; i++) {
+					declaredLangCodes.add(languageCodes[i].trim());
+				}
 				Collection<DictionaryLanguage> dictLanguages = generateDictLanguages(
 						languageCodes, dict, encoding);
 				dict.setDictLanguages(dictLanguages);
 			} else if (line.endsWith(":")) {// a label start
-				Label newLabel=readLabel(dctReader, line, dict, context);
+				log.debug("Processing label " + line);
+				Label newLabel = readLabel(dctReader, line, dict, context, declaredLangCodes);
+				if (labelKeys.contains(newLabel.getKey())) {
+					throw BusinessException.DUPLICATE_LABEL_KEY.param(newLabel.getKey());
+				}
+				labelKeys.add(newLabel.getKey());
 				labels.add(newLabel);
 			} else {
+				log.error("Parser was broken on line: " + line);
 				throw BusinessException.INVALID_DCT_FILE;
 			}
 		}
@@ -147,7 +158,7 @@ public class DictionaryParser {
 	 * @throws IOException
 	 * */
 	private Label readLabel(BufferedReader dctReader, String line,
-			Dictionary dict, Context context) throws BusinessException,
+			Dictionary dict, Context context, HashSet<String> languageCodes) throws BusinessException,
 			IOException {
 
 		String key = line.replace(":", "");
@@ -160,7 +171,7 @@ public class DictionaryParser {
 
 		boolean isLabelEnds = false;
 		// read the entries one by one
-		while (null != (line = dctReader.readLine()) && !isLabelEnds) {
+		while (!isLabelEnds && null != (line = dctReader.readLine())) {
 			line = line.trim();
 			// ignore the comment line and blank line
 			if (isCommentOrBlankLine(line)) {
@@ -173,6 +184,12 @@ public class DictionaryParser {
 			StringBuilder buffer = new StringBuilder();
 			// an entry start, end with ","
 			if (null != (langCode = isLineStartLangCode(line))) {
+				if (!languageCodes.contains(langCode)) {
+					throw BusinessException.UNDEFINED_LANG_CODE.param(langCode);
+				}
+				if (entriesInLable.containsKey(langCode)) {
+					throw BusinessException.DUPLICATE_LANG_CODE.param(langCode);
+				}
 				isLabelEnds = false;
 				// remove the langCode, blank characters and quotation marks
 				line = line.replaceFirst(langCode, "").trim().replace("\"", "");
@@ -218,7 +235,7 @@ public class DictionaryParser {
 		// analysis entries for reference, maxLength, text
 		String gae = entriesInLable.get("GAE");
 		if (null == gae) {
-			throw BusinessException.INVALID_DCT_FILE;
+			throw BusinessException.NO_REFERENCE_TEXT;
 		}
 		label.setReference(gae);
 		Text text = new Text();
@@ -253,18 +270,15 @@ public class DictionaryParser {
 		label.setText(text);
 
 		String maxLenStr = entriesInLable.get("CHK");
-		if (null == maxLenStr) {
-			throw BusinessException.INVALID_DCT_FILE;
-		}
-		String[] maxLenArray = maxLenStr.split(lineSeparator);
+		if (null != maxLenStr) {
+			String[] maxLenArray = maxLenStr.split(lineSeparator);
 
-		String maxLength = "" + maxLenArray[0].length();
-		if (maxLenArray.length > 1) {
+			String maxLength = "" + maxLenArray[0].length();
 			for (int i = 1; i < maxLenArray.length; ++i) {
-				maxLength += ", " + maxLenArray[i].length();
+				maxLength += "," + maxLenArray[i].length();
 			}
+			label.setMaxLength(maxLength);
 		}
-		label.setMaxLength(maxLength);
 
 		return label;
 	}
@@ -280,13 +294,13 @@ public class DictionaryParser {
 	 * 
 	 * */
 	private String isLineStartLangCode(String line) {
-		Set<String> allAlLangCodes = new HashSet(baseService
+		Set<String> allAlLangCodes = new HashSet<String>(baseService
 				.getAlcatelLanguageCodes().keySet());
 		allAlLangCodes.add("CHK");
 
-		for (Object langCode : allAlLangCodes) {
-			if (line.startsWith((String) langCode)) {
-				return (String) langCode;
+		for (String langCode : allAlLangCodes) {
+			if (line.startsWith(langCode + " ")) {
+				return langCode;
 			}
 		}
 		return null;
@@ -318,8 +332,7 @@ public class DictionaryParser {
 			Charset charset = null;
 			charset = baseService.getCharsets().get(encoding);
 			if (null == charset) {
-				// TODO Do a more detailed error handling
-				throw BusinessException.CHARSET_NOT_FOUND;
+				throw BusinessException.CHARSET_NOT_FOUND.param(encoding);
 			}
 			dictLanguage.setCharset(charset);
 
@@ -329,15 +342,9 @@ public class DictionaryParser {
 					.get(languageCode);
 
 			if (null == alCode) {
-				// TODO Do a more detailed error handling
-				throw BusinessException.LANGUAGE_NOT_FOUND;
+				throw BusinessException.UNKNOWN_LANG_CODE.param(languageCode);
 			}
-			Language language = alCode.getLanguage();
-			if (null == language) {
-				// TODO Do a more detailed error handling
-				throw BusinessException.LANGUAGE_NOT_FOUND;
-			}
-			dictLanguage.setLanguage(language);
+			dictLanguage.setLanguage(alCode.getLanguage());
 			dictLanguages.add(dictLanguage);
 		}
 		return dictLanguages;

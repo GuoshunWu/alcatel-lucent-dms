@@ -70,7 +70,7 @@ public class DictionaryServiceImplTest {
 	 * @throws IOException
 	 * @throws URISyntaxException
 	 */
-//	@Test
+	@Test
 	public void testDeliverDCT() throws IOException, URISyntaxException {
 
 		Long appId = 1L;
@@ -93,7 +93,7 @@ public class DictionaryServiceImplTest {
 		String[] langCodes = new String[] { "CH1" };
 		langCodes = null;
 		String testFile = "About.dic";
-//		testFile = "BandHistory.dic";
+		//testFile = "BandHistory.dic";
 		// testFile="communicateBy.dic";
 
 		String dctFileRelativePath = "dct_test_files/CH0/" + testFile;
@@ -125,6 +125,27 @@ public class DictionaryServiceImplTest {
 		String encoding = null;
 
 		ds.previewDCT(file.getAbsolutePath(), appId, encoding);
+	}
+	@Test
+	public void testAbnormalDCT() throws Exception {
+		Long appId = 1L;
+		String encoding = null;
+		String[] langCodes = null;
+		// langCharset mapping of language code and its source charset name
+		Map<String, String> langCharset = new HashMap<String, String>();
+		List<String> keys = Arrays
+				.asList("CHK, GAE, FR0, EN0, DE0, IT0, PT0, ES0, US0, PL0, KO0, NO0, NL0, RU0, CH0, FI0, ES1, CS0, HU0, CH1, SV0, AR0, DA0, HE0"
+						.split(","));
+		for (String key : keys) {
+			langCharset.put(key.trim(), "GBK");
+		}
+		String dctFileRelativePath = "dct_test_files/abnormal/invalid-utf8.dct";
+
+		String testFilePath = new File(cls.getResource(dctFileRelativePath)
+				.toURI()).getAbsolutePath();
+
+		Dictionary dict = ds.deliverDCT(testFilePath, appId, encoding,
+				langCodes, langCharset);
 	}
 
 	@Test

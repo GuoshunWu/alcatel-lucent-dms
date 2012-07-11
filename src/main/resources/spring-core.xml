@@ -58,6 +58,7 @@
 			<list>
 				<idref bean="daoService" />
 				<idref bean="dictionaryService" />
+				<idref bean="textService" />
 			</list>
 		</property>
 	</bean>
