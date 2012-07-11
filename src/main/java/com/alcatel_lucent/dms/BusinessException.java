@@ -18,6 +18,7 @@ public class BusinessException extends RuntimeException {
     static public final BusinessException CHARSET_NOT_FOUND = new BusinessException(301);
     static public final BusinessException LANGUAGE_NOT_FOUND = new BusinessException(401);
     static public final BusinessException APPLICATION_NOT_FOUND = new BusinessException(501);
+    static public final BusinessException DICTIONARY_NOT_FOUND = new BusinessException(502);
     
     public BusinessException(int errorCode) {
         this.errorCode = errorCode;
