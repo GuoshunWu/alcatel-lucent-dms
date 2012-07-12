@@ -3,14 +3,16 @@
  */
 package com.alcatel_lucent.dms.service;
 
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -18,8 +20,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.logicalcobwebs.proxool.ProxoolFacade;
 
+import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.SpringContext;
-import com.alcatel_lucent.dms.model.Dictionary;
 
 /**
  * @author guoshunw
@@ -27,25 +29,29 @@ import com.alcatel_lucent.dms.model.Dictionary;
  */
 public class DictionaryServiceImplTest {
 
-	private static DictionaryServiceImpl dictService;
 	private static DictionaryService ds;
-	private static Class<? extends DictionaryService> cls = DictionaryServiceImpl.class;
-
-	private static DaoService dao;
+	private static String testFilesPathDir;
+	private static Logger log;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		dictService = new DictionaryServiceImpl();
+		log = Logger.getLogger(DictionaryServiceImplTest.class);
 		ds = (DictionaryService) SpringContext
 				.getService(DictionaryService.class);
-		dao = (DaoService) SpringContext.getService(DaoService.class);
+
+		File testFilePath = new File(DictionaryServiceImpl.class.getResource(
+				"/").toURI());
+		testFilePath = testFilePath.getParentFile().getParentFile();
+		testFilesPathDir = new File(testFilePath, "dct_test_files")
+				.getAbsolutePath() + "/";
+		log.info("Test file path is: " + testFilesPathDir);
 	}
 
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
-		dictService = null;
 		ds = null;
-		dao = null;
+		testFilesPathDir = null;
+		log = null;
 		ProxoolFacade.shutdown(2);
 	}
 
@@ -71,7 +77,7 @@ public class DictionaryServiceImplTest {
 	 * @throws URISyntaxException
 	 */
 	@Test
-	public void testDeliverDCT() throws IOException, URISyntaxException {
+	public void testDeliverDCT() throws Exception{
 
 		Long appId = 1L;
 		// encoding encoding of source file, null if auto-detected
@@ -96,33 +102,26 @@ public class DictionaryServiceImplTest {
 		// testFile = "BandHistory.dic";
 		// testFile="communicateBy.dic";
 
-		String dctFileRelativePath = "dct_test_files/CH0/" + testFile;
+		String dctFileRelativePath = "CH0/";
+		// dctFileRelativePath = "CH1";
 
-		// dctFileRelativePath = "dct_test_files/CH0";
-
-		String testFilePath = new File(cls.getResource(dctFileRelativePath)
-				.toURI()).getAbsolutePath();
-
+		String testFilePath = testFilesPathDir + dctFileRelativePath + testFile;
 		ds.deliverDCT(testFilePath, appId, encoding, langCodes, langCharset);
 	}
 
-	// @Test
-	public void testPreviewDCT() throws URISyntaxException {
+	@Test
+	public void testPreviewDCT() throws Exception {
 		String testFile = "About.dic";
 		testFile = "BandHistory.dic";
 		// testFile="communicateBy.dic";
 
-		String dctFileRelativePath = "dct_test_files/CH0/" + testFile;
+		String dctFileRelativePath = "CH0/";
+		// dctFileRelativePath = "CH1/";
 
-		// dctFileRelativePath = "dct_test_files/CH0";
+		File file = new File(testFilesPathDir, dctFileRelativePath + testFile);
 
-		String testFilePath = new File(cls.getResource(dctFileRelativePath)
-				.toURI()).getAbsolutePath();
-
-		File file = new File(testFilePath);
 		Long appId = 1L;
 		String encoding = null;
-
 		ds.previewDCT(file.getAbsolutePath(), appId, encoding);
 	}
 
@@ -139,20 +138,23 @@ public class DictionaryServiceImplTest {
 		for (String key : keys) {
 			langCharset.put(key.trim(), "GBK");
 		}
-		String dctFileRelativePath = "dct_test_files/abnormal/invalid-utf8.dct";
+		String dctFileRelativePath = testFilesPathDir + "abnormal/";
 
-		String testFilePath = new File(cls.getResource(dctFileRelativePath)
-				.toURI()).getAbsolutePath();
-
-		Dictionary dict = ds.deliverDCT(testFilePath, appId, encoding,
-				langCodes, langCharset);
+		String testFilePath = dctFileRelativePath + "invalid-utf8.dct";
+		try {
+			ds.deliverDCT(testFilePath, appId, encoding, langCodes, langCharset);
+			fail("No expected BusinessException be thrown.");
+		} catch (BusinessException e) {
+			org.junit.Assert
+					.assertTrue("Got Exception " + e.getMessage(), true);
+		}
 	}
 
 	@Test
 	public void testgenerateDCT() {
 		Long dctId = 1L;
 		String encoding = "GBK";
-		String fileName = "Test" + encoding + ".sql";
+		String fileName = testFilesPathDir + "Test" + encoding + ".sql";
 
 		Map<String, String> langCharset = new HashMap<String, String>();
 
@@ -168,4 +170,5 @@ public class DictionaryServiceImplTest {
 		langCodes = null;
 		ds.generateDCT(fileName, dctId, encoding, langCodes, langCharset);
 	}
+
 }

@@ -58,6 +58,7 @@ public class BusinessException extends RuntimeException {
             result.append(" ").append(errorMessage);
         }
         int pos = 0;
+
         for (String param : parameters) {
         	pos = result.indexOf("%s", pos);
         	if (pos == -1) break;
