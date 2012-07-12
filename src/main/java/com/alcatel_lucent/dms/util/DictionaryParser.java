@@ -26,7 +26,9 @@ import com.alcatel_lucent.dms.model.Charset;
 import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryLanguage;
+import com.alcatel_lucent.dms.model.ISOLanguageCode;
 import com.alcatel_lucent.dms.model.Label;
+import com.alcatel_lucent.dms.model.LanguageCode;
 import com.alcatel_lucent.dms.model.Text;
 import com.alcatel_lucent.dms.model.Translation;
 import com.alcatel_lucent.dms.service.BaseServiceImpl;
@@ -43,7 +45,7 @@ public class DictionaryParser {
 
 	// Language pattern in dct file
 	private static final Pattern patternLanguage = Pattern
-			.compile("^LANGUAGES\\s*\\{((?:\\w{3},?\\s*)+)\\}$");
+			.compile("^LANGUAGES\\s*\\{((?:[\\w-]{2,5},?\\s*)+)\\}$");
 
 	public static final int UTF8_BOM_LENGTH = 3;
 	public static final int UTF16_BOM_LENGTH = 2;
@@ -75,7 +77,8 @@ public class DictionaryParser {
 			throws IOException {
 		File dctFile = new File(filename);
 		if (!dctFile.exists()) {
-			throw BusinessException.DCT_FILE_NOT_FOUND;
+			throw new BusinessException(BusinessException.DCT_FILE_NOT_FOUND,
+					filename);
 		}
 
 		log.warn("\n######################begin deliver: " + dctFile.getName()
@@ -86,9 +89,6 @@ public class DictionaryParser {
 		dict.setFormat("dct");
 		dict.setPath(dctFile.getPath());
 
-		if (null == app) {
-			throw BusinessException.APPLICATION_NOT_FOUND;
-		}
 		dict.setApplication(app);
 
 		// create or related context
@@ -131,19 +131,23 @@ public class DictionaryParser {
 				dict.setDictLanguages(dictLanguages);
 			} else if (line.endsWith(":")) {// a label start
 				log.debug("Processing label " + line);
-				Label newLabel = readLabel(dctReader, line, dict, context, declaredLangCodes);
+				Label newLabel = readLabel(dctReader, line, dict, context,
+						declaredLangCodes);
 				if (labelKeys.contains(newLabel.getKey())) {
-					throw BusinessException.DUPLICATE_LABEL_KEY.param(newLabel.getKey());
+					throw new BusinessException(
+							BusinessException.DUPLICATE_LABEL_KEY,
+							newLabel.getKey());
 				}
 				labelKeys.add(newLabel.getKey());
 				labels.add(newLabel);
 			} else {
 				log.error("Parser was broken on line: " + line);
-				throw BusinessException.INVALID_DCT_FILE;
+				throw new BusinessException(BusinessException.INVALID_DCT_FILE,
+						dict.getName());
 			}
 		}
 		dict.setLabels(labels);
-		
+
 		fis.close();
 		return dict;
 	}
@@ -158,8 +162,8 @@ public class DictionaryParser {
 	 * @throws IOException
 	 * */
 	private Label readLabel(BufferedReader dctReader, String line,
-			Dictionary dict, Context context, HashSet<String> languageCodes) throws BusinessException,
-			IOException {
+			Dictionary dict, Context context, HashSet<String> languageCodes)
+			throws BusinessException, IOException {
 
 		String key = line.replace(":", "");
 		Label label = new Label();
@@ -185,10 +189,12 @@ public class DictionaryParser {
 			// an entry start, end with ","
 			if (null != (langCode = isLineStartWithLangCode(line))) {
 				if (!languageCodes.contains(langCode)) {
-					throw BusinessException.UNDEFINED_LANG_CODE.param(langCode);
+					throw new BusinessException(
+							BusinessException.UNDEFINED_LANG_CODE, langCode);
 				}
 				if (entriesInLable.containsKey(langCode)) {
-					throw BusinessException.DUPLICATE_LANG_CODE.param(langCode);
+					throw new BusinessException(
+							BusinessException.DUPLICATE_LANG_CODE, langCode);
 				}
 				isLabelEnds = false;
 				// remove the langCode, blank characters and quotation marks
@@ -235,7 +241,8 @@ public class DictionaryParser {
 		// analysis entries for reference, maxLength, text
 		String gae = entriesInLable.get("GAE");
 		if (null == gae) {
-			throw BusinessException.NO_REFERENCE_TEXT;
+			throw new BusinessException(BusinessException.NO_REFERENCE_TEXT,
+					label.getKey());
 		}
 		label.setReference(gae);
 		Text text = new Text();
@@ -254,13 +261,9 @@ public class DictionaryParser {
 
 			trans = new Translation();
 			trans.setText(text);
-			AlcatelLanguageCode alCode = (AlcatelLanguageCode) baseService
-					.getAlcatelLanguageCodes().get(entry.getKey());
-			if (null == alCode) {
-				throw BusinessException.LANGUAGE_NOT_FOUND;
-			}
 
-			trans.setLanguage(alCode.getLanguage());
+			LanguageCode lCode=languageCodeCheck(entry.getKey());
+			trans.setLanguage(lCode.getLanguage());
 			trans.setTranslation(entry.getValue());
 
 			translations.add(trans);
@@ -294,11 +297,12 @@ public class DictionaryParser {
 	 * 
 	 * */
 	private String isLineStartWithLangCode(String line) {
-		Set<String> allAlLangCodes = new HashSet<String>(baseService
+		Set<String> allLangCodes = new HashSet<String>(baseService
 				.getAlcatelLanguageCodes().keySet());
-		allAlLangCodes.add("CHK");
+		allLangCodes.addAll(baseService.getISOLanguageCodes().keySet());
+		allLangCodes.add("CHK");
 
-		for (String langCode : allAlLangCodes) {
+		for (String langCode : allLangCodes) {
 			if (line.startsWith(langCode + " ")) {
 				return langCode;
 			}
@@ -332,22 +336,34 @@ public class DictionaryParser {
 			Charset charset = null;
 			charset = baseService.getCharsets().get(encoding);
 			if (null == charset) {
-				throw BusinessException.CHARSET_NOT_FOUND.param(encoding);
+				throw new BusinessException(
+						BusinessException.CHARSET_NOT_FOUND, encoding);
 			}
+			dictLanguage.setLanguage(languageCodeCheck(languageCode)
+					.getLanguage());
+
 			dictLanguage.setCharset(charset);
-
-			// language
-			// query alcatelLanguageCode table to find the related Language
-			AlcatelLanguageCode alCode = baseService.getAlcatelLanguageCodes()
-					.get(languageCode);
-
-			if (null == alCode) {
-				throw BusinessException.UNKNOWN_LANG_CODE.param(languageCode);
-			}
-			dictLanguage.setLanguage(alCode.getLanguage());
 			dictLanguages.add(dictLanguage);
 		}
 		return dictLanguages;
+	}
+
+	private LanguageCode languageCodeCheck(String languageCode) {
+		// language
+		// query alcatelLanguageCode table to find the related Language
+		ISOLanguageCode isoCode = null;
+		AlcatelLanguageCode alCode = baseService
+				.getAlcatelLanguageCode(languageCode);
+		if (null == alCode) {
+			isoCode = baseService.getISOLanguageCode(languageCode.replace('_',
+					'-'));
+			if (null == isoCode) {
+				throw new BusinessException(
+						BusinessException.UNKNOWN_LANG_CODE, languageCode);
+			}
+			return isoCode;
+		}
+		return alCode;
 	}
 
 	/**
@@ -379,7 +395,7 @@ public class DictionaryParser {
 	 *            given File
 	 * @return file encoding
 	 * */
-	public static String  detectEncoding(File file) throws IOException {
+	public static String detectEncoding(File file) throws IOException {
 		byte[] utf8BOM = new byte[] { (byte) 0xef, (byte) 0xbb, (byte) 0xbf, };
 		byte[] utf16LEBOM = new byte[] { (byte) 0xff, (byte) 0xfe };
 		byte[] utf16BEBOM = new byte[] { (byte) 0xfe, (byte) 0xff };

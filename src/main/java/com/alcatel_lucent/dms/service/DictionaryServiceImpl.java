@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -60,7 +61,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 		if (null == dict) {
 			log.warn("ID for " + dctId
 					+ " Dictionary is not found in database.");
-			throw BusinessException.DICTIONARY_NOT_FOUND;
+			throw new BusinessException(BusinessException.DICTIONARY_NOT_FOUND,
+					dctId);
 		}
 
 		// all the language code in dictionary
@@ -68,11 +70,15 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 				dict.getDictLanguages(), "languageCode");
 
 		if (langCodes != null) {
-			List<String> listLangCodes = Arrays.asList(langCodes);
+			List<String> listLangCodes = new ArrayList(Arrays.asList(langCodes));
 			listLangCodes.removeAll(dictLangCodes);
 			if (!listLangCodes.isEmpty()) {
-				throw BusinessException.LANGUAGE_NOT_FOUND;
+				throw new BusinessException(
+						BusinessException.UNKNOWN_LANG_CODE,
+						listLangCodes.get(0));
 			}
+			// used for iteration.
+			dictLangCodes = Arrays.asList(langCodes);
 		}
 
 		if (null == encoding) {
@@ -121,22 +127,19 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 						+ convertContent(indentSize, label.getReference(),
 								"\n", System.getProperty("line.separator")));
 
-				for (DictionaryLanguage dictLang : dict.getDictLanguages()) {
-					if (langCodes != null
-							&& Arrays.asList(langCodes).contains(
-									dictLang.getLanguageCode())) {
-						continue;
-					}
+				String dictLang = null;
+				for (Object objDictLang : dictLangCodes) {
+					dictLang = (String) objDictLang;
 					// output translation separator
 					out.println(",");
 
-					out.print("  " + dictLang.getLanguageCode() + " ");
+					out.print("  " + dictLang + " ");
 
 					// output langCode translation
 					String translationString = label.getReference();
 
 					Language dictLangCodeLanguage = getAlcatelLanguageCodes()
-							.get(dictLang.getLanguageCode()).getLanguage();
+							.get(dictLang).getLanguage();
 					for (Translation translation : label.getText()
 							.getTranslations()) {
 						if (translation.getLanguage().getId() == dictLangCodeLanguage
@@ -150,10 +153,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 							translationString, "\n",
 							System.getProperty("line.separator"));
 
-					String charsetName = langCharset.get(dictLang
-							.getLanguageCode());
+					String charsetName = langCharset.get(dictLang);
 					if (null == charsetName) {
-						throw BusinessException.CHARSET_NOT_FOUND;
+						throw new BusinessException(
+								BusinessException.CHARSET_NOT_FOUND,
+								charsetName);
 					}
 					out.write(converedString.getBytes(charsetName));
 				}
@@ -204,6 +208,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 			throws BusinessException {
 		Application app = (Application) getDao().retrieve(Application.class,
 				appId);
+		
+		if (null == app) {
+			throw new BusinessException(BusinessException.APPLICATION_NOT_FOUND, appId);
+		}
+		
 		Dictionary dict = null;
 		try {
 			DictionaryParser dictParser = DictionaryParser
@@ -219,6 +228,23 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 			Map<String, String> langCharset) {
 		if (null == dict)
 			return null;
+
+		// all the language code in dictionary
+		Collection dictLangCodes = getObjectProperiesList(
+				dict.getDictLanguages(), "languageCode");
+
+		if (langCodes != null) {
+			List<String> listLangCodes = new ArrayList(Arrays.asList(langCodes));
+			listLangCodes.removeAll(dictLangCodes);
+			if (!listLangCodes.isEmpty()) {
+				throw new BusinessException(
+						BusinessException.UNKNOWN_LANG_CODE,
+						listLangCodes.get(0));
+			}
+			// used for iteration.
+			dictLangCodes = Arrays.asList(langCodes);
+		}
+		
 		TextService textService = (TextService) SpringContext
 				.getService(TextService.class);
 		Dictionary dbDict = (Dictionary) getDao().retrieveOne(
@@ -272,8 +298,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 				String charsetName = langCharset.get(dictLanguage
 						.getLanguageCode());
 				if (null == charsetName) {
-					throw BusinessException.CHARSET_NOT_DEFINED
-							.param(dictLanguage.getLanguageCode());
+					throw new BusinessException(
+							BusinessException.CHARSET_NOT_DEFINED,
+							dictLanguage.getLanguageCode());
 				}
 				Translation trans = text.getTranslation(dictLanguage
 						.getLanguage().getId());
@@ -287,8 +314,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 					translationMap.put(dictLanguage.getLanguage().getId(),
 							encodedTranslation);
 				} catch (UnsupportedEncodingException e) {
-					throw BusinessException.CHARSET_NOT_FOUND
-							.param(charsetName);
+					throw new BusinessException(
+							BusinessException.CHARSET_NOT_FOUND, charsetName);
 				}
 			}
 			Text dbText = textService.addTranslations(dbContext.getId(),
