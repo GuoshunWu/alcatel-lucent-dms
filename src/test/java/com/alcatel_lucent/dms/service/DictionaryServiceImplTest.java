@@ -3,10 +3,9 @@
  */
 package com.alcatel_lucent.dms.service;
 
-import static org.junit.Assert.fail;
-
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +19,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.logicalcobwebs.proxool.ProxoolFacade;
 
-import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.SpringContext;
 
 /**
@@ -77,7 +75,7 @@ public class DictionaryServiceImplTest {
 	 * @throws URISyntaxException
 	 */
 	@Test
-	public void testDeliverDCT() throws Exception{
+	public void testDeliverDCT() throws Exception {
 
 		Long appId = 1L;
 		// encoding encoding of source file, null if auto-detected
@@ -103,7 +101,7 @@ public class DictionaryServiceImplTest {
 		// testFile="communicateBy.dic";
 
 		String dctFileRelativePath = "CH0/";
-		// dctFileRelativePath = "CH1";
+		// dctFileRelativePath = "CH1/";
 
 		String testFilePath = testFilesPathDir + dctFileRelativePath + testFile;
 		ds.deliverDCT(testFilePath, appId, encoding, langCodes, langCharset);
@@ -133,7 +131,7 @@ public class DictionaryServiceImplTest {
 		// langCharset mapping of language code and its source charset name
 		Map<String, String> langCharset = new HashMap<String, String>();
 		List<String> keys = Arrays
-				.asList("CHK, GAE, FR0, EN0, DE0, IT0, PT0, ES0, US0, PL0, KO0, NO0, NL0, RU0, CH0, FI0, ES1, CS0, HU0, CH1, SV0, AR0, DA0, HE0"
+				.asList("CHK, GAE, FR0, EN0, DE0, IT0, PT0, ES0, US0, PL0, KO0, NO0, NL0, RU0, CH0, FI0, ES1, CS0, HU0, CH1, SV0, AR0, DA0, HE0, en, ru, en_US, en_GB, fr, de, es, it, nl, no, pt, ko_KR, zh_CN, pl, fi, ca_ES, cs, sv, hu, zh_TW, ar, he, tr, da"
 						.split(","));
 		for (String key : keys) {
 			langCharset.put(key.trim(), "GBK");
@@ -141,13 +139,9 @@ public class DictionaryServiceImplTest {
 		String dctFileRelativePath = testFilesPathDir + "abnormal/";
 
 		String testFilePath = dctFileRelativePath + "invalid-utf8.dct";
-		try {
-			ds.deliverDCT(testFilePath, appId, encoding, langCodes, langCharset);
-			fail("No expected BusinessException be thrown.");
-		} catch (BusinessException e) {
-			org.junit.Assert
-					.assertTrue("Got Exception " + e.getMessage(), true);
-		}
+
+		ds.deliverDCT(testFilePath, appId, encoding, langCodes, langCharset);
+
 	}
 
 	@Test

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.alcatel_lucent.dms.model.AlcatelLanguageCode;
 import com.alcatel_lucent.dms.model.Charset;
+import com.alcatel_lucent.dms.model.ISOLanguageCode;
 import com.alcatel_lucent.dms.model.Language;
 
 public class BaseServiceImpl {
@@ -13,11 +14,25 @@ public class BaseServiceImpl {
 
 	// base data for dms
 	private static Map<String, AlcatelLanguageCode> alcatelLanguageCodes = null;
+	private static Map<String, ISOLanguageCode> isoLanguageCodes = null;
 	private static Map<String, Charset> charsets = null;
 	private static Map<Long, Language> languages = null;
 
 	public void init() {
 		// Load the base data
+	}
+
+	public Map<String, ISOLanguageCode> getISOLanguageCodes() {
+		if (null != isoLanguageCodes)
+			return isoLanguageCodes;
+
+		isoLanguageCodes = new HashMap<String, ISOLanguageCode>();
+		List<ISOLanguageCode> isoLangCodes = dao
+				.retrieve("from ISOLanguageCode");
+		for (ISOLanguageCode isoLangCode : isoLangCodes) {
+			isoLanguageCodes.put(isoLangCode.getCode(), isoLangCode);
+		}
+		return isoLanguageCodes;
 	}
 
 	public Map<String, AlcatelLanguageCode> getAlcatelLanguageCodes() {
@@ -44,9 +59,17 @@ public class BaseServiceImpl {
 		}
 		return charsets;
 	}
-	
+
 	public Charset getCharset(String name) {
 		return getCharsets().get(name);
+	}
+
+	public AlcatelLanguageCode getAlcatelLanguageCode(String code) {
+		return getAlcatelLanguageCodes().get(code);
+	}
+
+	public ISOLanguageCode getISOLanguageCode(String code) {
+		return getISOLanguageCodes().get(code);
 	}
 
 	public Map<Long, Language> getLanguages() {
@@ -60,7 +83,7 @@ public class BaseServiceImpl {
 		}
 		return languages;
 	}
-	
+
 	public void destroy() {
 
 	}

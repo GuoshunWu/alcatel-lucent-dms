@@ -2,12 +2,7 @@ package com.alcatel_lucent.dms.model;
 
 import java.io.Serializable;
 
-public class AlcatelLanguageCode implements Serializable, LanguageCode{
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -7050518854634982880L;
+public class ISOLanguageCode implements Serializable, LanguageCode{
 
 	private String code;
 	private Language language;
@@ -39,7 +34,7 @@ public class AlcatelLanguageCode implements Serializable, LanguageCode{
 
 	@Override
 	public String toString() {
-		return String.format("AlcatelLanguageCode [code=%s]", code);
+		return String.format("ISOLanguageCode [code=%s]", code);
 	}
 
 }

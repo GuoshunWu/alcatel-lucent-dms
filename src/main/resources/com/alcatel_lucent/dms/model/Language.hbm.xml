@@ -10,7 +10,10 @@
 		</id>
 		
 		<property name="name" type="string" column="NAME"/>
-		<property name="isoCode" type="string" column="ISO_CODE"/>
+		<set name="isoCodes" inverse="true">
+			<key column="LANGUAGE_ID"/>
+			<one-to-many class="ISOLanguageCode"/>
+		</set>
 		
 		<set name="charsets" inverse="true">
 			<key column="LANGUAGE_ID"/>
