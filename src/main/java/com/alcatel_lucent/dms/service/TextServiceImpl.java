@@ -3,6 +3,8 @@ package com.alcatel_lucent.dms.service;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.sf.json.JSONObject;
+
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Language;
@@ -10,6 +12,14 @@ import com.alcatel_lucent.dms.model.Text;
 import com.alcatel_lucent.dms.model.Translation;
 
 public class TextServiceImpl extends BaseServiceImpl implements TextService {
+	
+	public Context getContextByName(String name) {
+		return (Context) getDao().retrieveOne(
+				"from Context where name=:name",
+				JSONObject.fromObject(String.format("{'name':'%s'}",
+						name)));
+	}
+	
 	public Text getText(Long ctxId, String reference) {
 		Map params = new HashMap();
 		params.put("reference", reference);

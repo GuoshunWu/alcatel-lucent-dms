@@ -251,10 +251,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 		for (Label label : dict.getLabels()) {
 			// create context if necessary
 			Context context = label.getContext();
-			Context dbContext = (Context) getDao().retrieveOne(
-					"from Context where name=:name",
-					JSONObject.fromObject(String.format("{'name':'%s'}",
-							context.getName())));
+			Context dbContext = textService.getContextByName(context.getName());
 			if (dbContext == null) {
 				dbContext = (Context) getDao().create(context);
 			}
