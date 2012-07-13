@@ -3,11 +3,13 @@
  */
 package com.alcatel_lucent.dms.service;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +30,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
+import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Dictionary;
+import com.alcatel_lucent.dms.model.Label;
+import com.alcatel_lucent.dms.model.Text;
+import com.alcatel_lucent.dms.model.Translation;
 
 /**
  * @author guoshunw
@@ -36,7 +42,7 @@ import com.alcatel_lucent.dms.model.Dictionary;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/spring.xml" })
-@TransactionConfiguration(transactionManager="transactionManager", defaultRollback=true)
+@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 public class DictionaryServiceImplTest {
 
 	@Autowired
@@ -52,10 +58,6 @@ public class DictionaryServiceImplTest {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-//		ds = (DictionaryService) SpringContext
-//				.getService(DictionaryService.class);
-//		dao = (DaoService) SpringContext.getService(DaoService.class);
-
 		File testFilePath = new File(DictionaryServiceImpl.class.getResource(
 				"/").toURI());
 		testFilePath = testFilePath.getParentFile().getParentFile();
@@ -91,7 +93,7 @@ public class DictionaryServiceImplTest {
 	 * @throws IOException
 	 * @throws URISyntaxException
 	 */
-	
+
 	@Test
 	public void testDeliverDCT() throws Exception {
 		Long appId = 1L;
@@ -126,13 +128,84 @@ public class DictionaryServiceImplTest {
 
 		// asserts
 		// dictionary check
-		Dictionary dbDict=(Dictionary) dao.retrieveOne("from Dictionary where name=:name",
-				JSONObject.fromObject("{'name':'" + testFile + "'}"));
+		Dictionary dbDict = (Dictionary) dao.retrieveOne(
+				"from Dictionary where name=:name",
+				JSONObject.fromObject("{'name':'" + testFile + "'}"),
+				new String[] { "labels" });
 		assertNotNull(dbDict);
 		// labels check
-		
-		// translation check
 
+		Context dbCtx = (Context) dao.retrieveOne(
+				"from Context where name=:name",
+				JSONObject.fromObject("{'name':'" + dbDict.getName() + "'}"));
+		assertNotNull(dbCtx);
+
+		List<Label> validateLabels = new ArrayList<Label>();
+		Label tmpLabel = new Label();
+		tmpLabel.setDictionary(dbDict);
+		tmpLabel.setReference("Warning: This computer program is protected by copyright law and international treaties. Unauthorized reproduction or distribution of this program, or any portion of it may result in severe civil and criminal penalties, and will be prosecuted to the maximum extent possible under the law.");
+		tmpLabel.setKey("WARNING");
+		tmpLabel.setMaxLength("399");
+
+		validateLabels.add(tmpLabel);
+
+		tmpLabel = new Label();
+		tmpLabel.setDictionary(dbDict);
+		tmpLabel.setReference("Copyright 2007-2012 by Alcatel-Lucent. All rights reserved.\nAlcatel-Lucent and Alcatel-Lucent Logo are respectively registered\ntrademark and service mark of Alcatel-Lucent.");
+		tmpLabel.setKey("COPYRIGHT");
+		tmpLabel.setMaxLength("79,86,97");
+
+		validateLabels.add(tmpLabel);
+
+		tmpLabel = new Label();
+		tmpLabel.setDictionary(dbDict);
+		tmpLabel.setReference("My Instant Communicator client software version ");
+		tmpLabel.setKey("MPC_VERSION");
+		tmpLabel.setMaxLength("57");
+
+		validateLabels.add(tmpLabel);
+
+		// check if there are ('EN0','CH0','US0') language codes related
+		// translations
+		List<Long> validateTranslationsLangIDs = dao
+				.retrieve("select al.language.id from AlcatelLanguageCode al where code in ('EN0','CH0','US0')");
+
+		for (Label label : validateLabels) {
+			Label dbLabel = dbDict.getLabel(label.getKey());
+			assertNotNull(dbLabel);
+
+			label.setContext(dbCtx);
+
+			assertEquals(label.getReference(), dbLabel.getReference());
+			assertEquals(label.getMaxLength(), dbLabel.getMaxLength());
+
+			Map<String, Object> params = new HashMap<String, Object>();
+
+			params.put("reference", label.getReference());
+			params.put("contextid", label.getContext().getId());
+
+			Text dbText = (Text) dao
+					.retrieveOne(
+							"from Text where reference=:reference and context.id=:contextid",
+							params, new String[] { "translations" });
+
+			assertNotNull(dbText);
+
+			Translation trans = null;
+			log.info("validating if there are ('EN0','CH0','US0') translation in database.");
+			System.out.println(validateTranslationsLangIDs);
+			for (Long langID : validateTranslationsLangIDs) {
+				trans = dbText.getTranslation(langID);
+				assertNotNull("Translation item not found.", trans);
+			}
+			
+		}
+
+	}
+
+	// @Test
+	public void testDeleteDictionary() {
+		// dao.delete(null);
 	}
 
 	// @Test

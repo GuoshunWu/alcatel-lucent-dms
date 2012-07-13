@@ -11,7 +11,7 @@
 		
 		<property name="translation" type="string" column="TRANSLATION" length="512"/>
 		<many-to-one name="text" column="TEXT_ID"  not-null="true"/>
-		<many-to-one name="language" column="LANGUAGE_ID" not-null="true"/>
+		<many-to-one lazy="false" name="language" column="LANGUAGE_ID" not-null="true"/>
 	
 	</class>
 

@@ -10,7 +10,7 @@
 		</id>
 
 		<property name="defaultCode" type="boolean" column="DEFAULT_CODE" />
-		<many-to-one name="language" column="LANGUAGE_ID" not-null="true" />
+		<many-to-one name="language" lazy="false" column="LANGUAGE_ID" not-null="true" />
 	</class>
 
 </hibernate-mapping>
