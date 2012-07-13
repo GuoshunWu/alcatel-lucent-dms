@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
+import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.Label;
@@ -123,8 +125,8 @@ public class DictionaryServiceImplTest {
 		// dctFileRelativePath = "CH1/";
 
 		String testFilePath = testFilesPathDir + dctFileRelativePath + testFile;
-
-		ds.deliverDCT(testFilePath, appId, encoding, langCodes, langCharset);
+		Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
+		ds.deliverDCT(testFilePath, appId, encoding, langCodes, langCharset, warnings);
 
 		// asserts
 		// dictionary check
@@ -224,10 +226,11 @@ public class DictionaryServiceImplTest {
 
 		Long appId = 1L;
 		String encoding = null;
-		ds.previewDCT(file.getAbsolutePath(), appId, encoding);
+		Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
+		ds.previewDCT(file.getAbsolutePath(), appId, encoding, warnings);
 	}
 
-	// @Test
+	@Test
 	public void testAbnormalDCT() throws Exception {
 		Long appId = 1L;
 		String encoding = null;
@@ -246,7 +249,8 @@ public class DictionaryServiceImplTest {
 
 		String testFilePath = dctFileRelativePath + "dup_label.dic";
 
-		ds.deliverDCT(testFilePath, appId, encoding, langCodes, langCharset);
+		Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
+		ds.deliverDCT(testFilePath, appId, encoding, langCodes, langCharset, warnings);
 
 	}
 
