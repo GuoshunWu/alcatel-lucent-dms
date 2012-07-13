@@ -138,7 +138,7 @@ public class DictionaryServiceImplTest {
 		}
 		String dctFileRelativePath = testFilesPathDir + "abnormal/";
 
-		String testFilePath = dctFileRelativePath + "invalid-utf8.dct";
+		String testFilePath = dctFileRelativePath + "dup_label.dic";
 
 		ds.deliverDCT(testFilePath, appId, encoding, langCodes, langCharset);
 

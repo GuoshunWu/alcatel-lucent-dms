@@ -91,6 +91,9 @@ public class DictionaryParser {
 
 		dict.setApplication(app);
 
+		BusinessException nonBreakExceptions = new BusinessException(
+				BusinessException.NESTED_DCT_PARSE_ERROR, dict.getName());
+
 		// create or related context
 		Context context = new Context();
 		context.setName(dict.getName());
@@ -102,54 +105,71 @@ public class DictionaryParser {
 
 		Set<Label> labels = new HashSet<Label>();
 
-		FileInputStream fis = new FileInputStream(dctFile);
-		// Creates an BufferedReader that uses the encoding charset.
-		BufferedReader dctReader = new BufferedReader(new InputStreamReader(
-				fis, encoding));
-		String line = null;
-		HashSet<String> declaredLangCodes = new HashSet<String>();
-		HashSet<String> labelKeys = new HashSet<String>();
-		log.debug("Processing DCT file " + filename);
-		while (null != (line = dctReader.readLine())) {
-			line = line.trim();
-			// ignore the comment line and blank line
-			if (isCommentOrBlankLine(line)) {
-				continue;
-			}
-			line = removeComments(line);
-
-			Matcher m = patternLanguage.matcher(line);
-			// is LANGUAGES
-			if (m.matches()) {
-				// languageCodes in current dictionary file
-				String[] languageCodes = m.group(1).split(",");
-				for (int i = 0; i < languageCodes.length; i++) {
-					declaredLangCodes.add(languageCodes[i].trim());
+		FileInputStream fis = null;
+		
+		try {
+			fis = new FileInputStream(dctFile);
+			// Creates an BufferedReader that uses the encoding charset.
+			BufferedReader dctReader = new BufferedReader(new InputStreamReader(
+					fis, encoding));
+			String line = null;
+			HashSet<String> declaredLangCodes = new HashSet<String>();
+			HashSet<String> labelKeys = new HashSet<String>();
+			log.debug("Processing DCT file " + filename);
+			while (null != (line = dctReader.readLine())) {
+				line = line.trim();
+				// ignore the comment line and blank line
+				if (isCommentOrBlankLine(line)) {
+					continue;
 				}
-				Collection<DictionaryLanguage> dictLanguages = generateDictLanguages(
-						languageCodes, dict, encoding);
-				dict.setDictLanguages(dictLanguages);
-			} else if (line.endsWith(":")) {// a label start
-				log.debug("Processing label " + line);
-				Label newLabel = readLabel(dctReader, line, dict, context,
-						declaredLangCodes);
-				if (labelKeys.contains(newLabel.getKey())) {
-					throw new BusinessException(
-							BusinessException.DUPLICATE_LABEL_KEY,
-							newLabel.getKey());
+				line = removeComments(line);
+	
+				Matcher m = patternLanguage.matcher(line);
+				// is LANGUAGES
+				if (m.matches()) {
+					// languageCodes in current dictionary file
+					String[] languageCodes = m.group(1).split(",");
+					for (int i = 0; i < languageCodes.length; i++) {
+						declaredLangCodes.add(languageCodes[i].trim());
+					}
+					try {
+						Collection<DictionaryLanguage> dictLanguages = generateDictLanguages(
+								languageCodes, dict, encoding);
+						dict.setDictLanguages(dictLanguages);
+					} catch (BusinessException e) {
+						nonBreakExceptions.addNestedException(e);
+					}
+				} else if (line.endsWith(":")) {// a label start
+					log.debug("Processing label " + line);
+					try {
+						Label newLabel = readLabel(dctReader, line, dict, context,
+								declaredLangCodes);
+						if (labelKeys.contains(newLabel.getKey())) {
+							nonBreakExceptions.addNestedException(new BusinessException(
+									BusinessException.DUPLICATE_LABEL_KEY,
+									newLabel.getKey()));
+						} else {
+							labelKeys.add(newLabel.getKey());
+							labels.add(newLabel);
+						}
+					} catch (BusinessException e) {
+						nonBreakExceptions.addNestedException(e);
+					}
+				} else {
+					log.error("Parser was broken on line: " + line);
+					throw new BusinessException(BusinessException.INVALID_DCT_FILE,
+							dict.getName());
 				}
-				labelKeys.add(newLabel.getKey());
-				labels.add(newLabel);
-			} else {
-				log.error("Parser was broken on line: " + line);
-				throw new BusinessException(BusinessException.INVALID_DCT_FILE,
-						dict.getName());
 			}
+			dict.setLabels(labels);
+			
+			if (nonBreakExceptions.hasNestedException()) {
+				throw nonBreakExceptions;
+			}
+			return dict;
+		} finally {
+			if (fis != null) fis.close();
 		}
-		dict.setLabels(labels);
-
-		fis.close();
-		return dict;
 	}
 
 	/**
@@ -164,12 +184,14 @@ public class DictionaryParser {
 	private Label readLabel(BufferedReader dctReader, String line,
 			Dictionary dict, Context context, HashSet<String> languageCodes)
 			throws BusinessException, IOException {
-
 		String key = line.replace(":", "");
 		Label label = new Label();
 		label.setDictionary(dict);
 		label.setContext(context);
 		label.setKey(key);
+
+		BusinessException exceptions = new BusinessException(
+				BusinessException.NESTED_LABEL_ERROR, key);
 
 		Map<String, String> entriesInLable = new HashMap<String, String>();
 
@@ -189,12 +211,12 @@ public class DictionaryParser {
 			// an entry start, end with ","
 			if (null != (langCode = isLineStartWithLangCode(line))) {
 				if (!languageCodes.contains(langCode)) {
-					throw new BusinessException(
-							BusinessException.UNDEFINED_LANG_CODE, langCode);
+					exceptions.addNestedException(new BusinessException(
+							BusinessException.UNDEFINED_LANG_CODE, langCode));
 				}
 				if (entriesInLable.containsKey(langCode)) {
-					throw new BusinessException(
-							BusinessException.DUPLICATE_LANG_CODE, langCode);
+					exceptions.addNestedException(new BusinessException(
+							BusinessException.DUPLICATE_LANG_CODE, langCode));
 				}
 				isLabelEnds = false;
 				// remove the langCode, blank characters and quotation marks
@@ -241,8 +263,9 @@ public class DictionaryParser {
 		// analysis entries for reference, maxLength, text
 		String gae = entriesInLable.get("GAE");
 		if (null == gae) {
-			throw new BusinessException(BusinessException.NO_REFERENCE_TEXT,
-					label.getKey());
+			exceptions.addNestedException(new BusinessException(
+					BusinessException.NO_REFERENCE_TEXT,
+					label.getKey()));
 		}
 		label.setReference(gae);
 		Text text = new Text();
@@ -281,6 +304,10 @@ public class DictionaryParser {
 				maxLength += "," + maxLenArray[i].length();
 			}
 			label.setMaxLength(maxLength);
+		}
+		
+		if (exceptions.hasNestedException()) {
+			throw exceptions;
 		}
 
 		return label;
@@ -322,7 +349,6 @@ public class DictionaryParser {
 	private Collection<DictionaryLanguage> generateDictLanguages(
 			String[] languageCodes, Dictionary dict, String encoding) {
 		Set<DictionaryLanguage> dictLanguages = new HashSet<DictionaryLanguage>();
-
 		for (String languageCode : languageCodes) {
 			languageCode = languageCode.trim();
 			if ("CHK".equals(languageCode)) {// length code
