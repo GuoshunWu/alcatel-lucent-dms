@@ -1,24 +1,43 @@
 package com.alcatel_lucent.dms.test;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.UnsupportedEncodingException;
-import java.text.MessageFormat;
-import java.util.Locale;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
 
+import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.logicalcobwebs.proxool.ProxoolFacade;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-public class SimpleTest {
+import com.alcatel_lucent.dms.service.DictionaryService;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/spring.xml" })
+public class SimpleTest{
+	
+
+	private static Logger log=Logger.getLogger(SimpleTest.class);
+
+	@Autowired
+	private DictionaryService ds;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+		log.info("Let's begin.");
 	}
 
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
+		ProxoolFacade.shutdown(2);
+		log.info("I am going to shutdown.");
 	}
 
 	@Before
@@ -29,51 +48,37 @@ public class SimpleTest {
 	public void tearDown() throws Exception {
 	}
 
-//	@Test
+	// @Test
 	public void testDeEncoding() throws UnsupportedEncodingException {
 		String testString = "測試中國";
 		// real encoding
-		String realEncoding = "gb2312";
-		realEncoding = "utf8";
-		realEncoding = "utf16";
-		realEncoding = "big5";
 
-		// detected encoding
-		String assumedEncoding = "iso8859-1";
-		// assumedEncoding = "utf8";
-		// assumedEncoding = "utf16";
+		Charset gbkCharset = Charset.forName("gbk");
+		Charset utf8Charset = Charset.forName("utf8");
+		// Charset big5Charset=Charset.forName("big5");
+		// Charset utf16Charset=Charset.forName("utf16");
 
 		// in file bytes
-		byte[] realBytes = testString.getBytes(realEncoding);
+		ByteBuffer buf = gbkCharset.encode(testString);
 
 		// String in previewDCT
-		String assumedString = new String(realBytes, assumedEncoding);
+		CharBuffer assumedCharBuf = utf8Charset.decode(buf);
 
-		System.out.println(assumedString);
+		System.out.println(assumedCharBuf);
 
-		byte[] assumedBytes = assumedString.getBytes(assumedEncoding);
+		ByteBuffer assumedByteBuffer = utf8Charset.encode(assumedCharBuf);
 
 		// String in importDCT
-		String resultString = new String(assumedBytes, realEncoding);
+		CharBuffer resultString = gbkCharset.decode(assumedByteBuffer);
 		System.out.println(resultString);
-
-		assertEquals(testString, resultString);
+		//
+		// assertEquals(testString, resultString);
 
 	}
 
-//	@Test
+	@Test
 	public void testMessageFormat() {
-		String localizedString = "This is {0}, 测试 {1}, Who. {5}";
-		Object[] params =new Object[] { "Test", "Hello", 23 };
-		params=null;
-		MessageFormat msgFmt = new MessageFormat(localizedString,
-				Locale.getDefault());
-		StringBuffer result=new StringBuffer();
-		StringBuffer r1=msgFmt.format(params,result, null);
-		System.out.println(result);
-		System.out.println(r1);
+		ds=null;
 	}
-	
-
 
 }
