@@ -1,5 +1,9 @@
 package com.alcatel_lucent.dms.model;
 
+import java.io.UnsupportedEncodingException;
+
+import com.alcatel_lucent.dms.SystemError;
+
 public class Label extends BaseEntity {
 
 	/**
@@ -109,6 +113,31 @@ public class Label extends BaseEntity {
 				return false;
 		} else if (!key.equals(other.key))
 			return false;
+		return true;
+	}
+
+	/**
+	 * Check if text meets max length constraint of the label
+	 * @param text
+	 * @return
+	 */
+	public boolean checkLength(String text) {
+		if (maxLength == null || maxLength.isEmpty()) {
+			return true;	// no constraint
+		}
+		String[] lens = maxLength.split(",");
+		String[] texts = text.split("\n");
+		for (int i = 0; i < texts.length; i++) {
+			try {
+				if (i >= lens.length || texts[i].getBytes("ISO-8859-1").length > Integer.parseInt(lens[i])) {
+					return false;
+				}
+			} catch (NumberFormatException e) {
+				throw new SystemError(e);
+			} catch (UnsupportedEncodingException e) {
+				throw new SystemError(e);
+			}
+		}
 		return true;
 	}
 
