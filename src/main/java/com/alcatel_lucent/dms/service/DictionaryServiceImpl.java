@@ -23,6 +23,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.alcatel_lucent.dms.BusinessException;
+import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.model.Application;
 import com.alcatel_lucent.dms.model.Context;
@@ -47,11 +48,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	}
 
 	public Dictionary deliverDCT(String filename, Long appId, String encoding,
-			String[] langCodes, Map<String, String> langCharset)
+			String[] langCodes, Map<String, String> langCharset, Collection<BusinessWarning> warnings)
 			throws BusinessException {
 
-		Dictionary dict = previewDCT(filename, appId, encoding);
-		dict = importDCT(dict, langCodes, langCharset);
+		Dictionary dict = previewDCT(filename, appId, encoding, warnings);
+		dict = importDCT(dict, langCodes, langCharset, warnings);
 		return dict;
 	}
 
@@ -145,8 +146,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 							.get(dictLang).getLanguage();
 					for (Translation translation : label.getText()
 							.getTranslations()) {
-						if (translation.getLanguage().getId() == dictLangCodeLanguage
-								.getId()) {
+						if (translation.getLanguage().getId().equals(dictLangCodeLanguage
+								.getId())) {
 							translationString = translation.getTranslation();
 							break;
 						}
@@ -207,7 +208,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 				+ generateSpace(indentSize));
 	}
 
-	public Dictionary previewDCT(String filename, Long appId, String encoding)
+	public Dictionary previewDCT(String filename, Long appId, String encoding, Collection<BusinessWarning> warnings)
 			throws BusinessException {
 		Application app = (Application) getDao().retrieve(Application.class,
 				appId);
@@ -220,7 +221,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 		try {
 			DictionaryParser dictParser = DictionaryParser
 					.getDictionaryParser(this);
-			dict = dictParser.parse(app, filename, encoding);
+			dict = dictParser.parse(app, filename, encoding, warnings);
 		} catch (IOException e) {
 			throw new SystemError(e.getMessage());
 		}
@@ -228,7 +229,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	}
 
 	public Dictionary importDCT(Dictionary dict, String[] langCodes,
-			Map<String, String> langCharset) {
+			Map<String, String> langCharset, Collection<BusinessWarning> warnings) {
 		if (null == dict)
 			return null;
 
@@ -315,6 +316,13 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 							charsetName);
 					translationMap.put(dictLanguage.getLanguage().getId(),
 							encodedTranslation);
+					
+					// check length
+					if (!label.checkLength(encodedTranslation)) {
+						warnings.add(new BusinessWarning(
+								BusinessWarning.EXCEED_MAX_LENGTH, 
+								dictLanguage.getLanguageCode(), label.getKey()));
+					}
 				} catch (UnsupportedEncodingException e) {
 					throw new BusinessException(
 							BusinessException.CHARSET_NOT_FOUND, charsetName);

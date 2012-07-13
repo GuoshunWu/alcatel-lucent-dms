@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 
 import com.alcatel_lucent.dms.BusinessException;
+import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.model.AlcatelLanguageCode;
 import com.alcatel_lucent.dms.model.Application;
 import com.alcatel_lucent.dms.model.Charset;
@@ -73,7 +74,7 @@ public class DictionaryParser {
 	 * 
 	 * */
 
-	public Dictionary parse(Application app, String filename, String encoding)
+	public Dictionary parse(Application app, String filename, String encoding, Collection<BusinessWarning> warnings)
 			throws IOException {
 		File dctFile = new File(filename);
 		if (!dctFile.exists()) {
@@ -143,7 +144,7 @@ public class DictionaryParser {
 					log.debug("Processing label " + line);
 					try {
 						Label newLabel = readLabel(dctReader, line, dict, context,
-								declaredLangCodes);
+								declaredLangCodes, warnings);
 						if (labelKeys.contains(newLabel.getKey())) {
 							nonBreakExceptions.addNestedException(new BusinessException(
 									BusinessException.DUPLICATE_LABEL_KEY,
@@ -182,7 +183,7 @@ public class DictionaryParser {
 	 * @throws IOException
 	 * */
 	private Label readLabel(BufferedReader dctReader, String line,
-			Dictionary dict, Context context, HashSet<String> languageCodes)
+			Dictionary dict, Context context, HashSet<String> languageCodes, Collection<BusinessWarning> warnings)
 			throws BusinessException, IOException {
 		String key = line.replace(":", "");
 		Label label = new Label();
@@ -219,6 +220,10 @@ public class DictionaryParser {
 							BusinessException.DUPLICATE_LANG_CODE, langCode));
 				}
 				isLabelEnds = false;
+				
+				if (isUnclosedQuota(line)) {
+					warnings.add(new BusinessWarning(BusinessWarning.UNCLOSED_QUOTA, langCode, key));
+				}
 				// remove the langCode, blank characters and quotation marks
 				line = line.replaceFirst(langCode, "").trim().replace("\"", "");
 
@@ -240,6 +245,9 @@ public class DictionaryParser {
 						}
 						line = removeComments(line);
 
+						if (isUnclosedQuota(line)) {
+							warnings.add(new BusinessWarning(BusinessWarning.UNCLOSED_QUOTA, langCode, key));
+						}
 						line = line.replace("\"", "");
 						if (line.endsWith(",") || line.endsWith(";")) {
 							buffer.append(lineSeparator);
@@ -311,6 +319,18 @@ public class DictionaryParser {
 		}
 
 		return label;
+	}
+
+	/**
+	 * Check if text has ending quota
+	 * @param line
+	 * @return
+	 */
+	private boolean isUnclosedQuota(String line) {
+		if (line.endsWith(",") || line.endsWith(";")) {
+			line = line.substring(0, line.length() - 1).trim();
+		}
+		return !line.endsWith("\"");
 	}
 
 	/**
