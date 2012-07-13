@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.alcatel_lucent.dms.model" schema="dms">
+
+	<class name="Language" table="LANGUAGE">
+		<id column="ID" name="id">
+			<generator class="native" />
+		</id>
+		
+		<property name="name" type="string" column="NAME"/>
+		<set name="isoCodes" inverse="true">
+			<key column="LANGUAGE_ID"/>
+			<one-to-many class="ISOLanguageCode"/>
+		</set>
+		
+		<set name="charsets" inverse="true">
+			<key column="LANGUAGE_ID"/>
+			<one-to-many class="Charset"/>
+		</set>
+		
+	</class>
+
+</hibernate-mapping>
