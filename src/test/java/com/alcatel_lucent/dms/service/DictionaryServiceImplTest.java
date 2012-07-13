@@ -3,6 +3,8 @@
  */
 package com.alcatel_lucent.dms.service;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -11,31 +13,48 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.json.JSONObject;
+
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.logicalcobwebs.proxool.ProxoolFacade;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
 
-import com.alcatel_lucent.dms.SpringContext;
+import com.alcatel_lucent.dms.model.Dictionary;
 
 /**
  * @author guoshunw
  * 
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/spring.xml" })
+@TransactionConfiguration(transactionManager="transactionManager", defaultRollback=true)
 public class DictionaryServiceImplTest {
 
-	private static DictionaryService ds;
+	@Autowired
+	private DictionaryService ds;
+
+	@Autowired
+	private DaoService dao;
+
 	private static String testFilesPathDir;
-	private static Logger log;
+
+	private static Logger log = Logger
+			.getLogger(DictionaryServiceImplTest.class);
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		log = Logger.getLogger(DictionaryServiceImplTest.class);
-		ds = (DictionaryService) SpringContext
-				.getService(DictionaryService.class);
+//		ds = (DictionaryService) SpringContext
+//				.getService(DictionaryService.class);
+//		dao = (DaoService) SpringContext.getService(DaoService.class);
 
 		File testFilePath = new File(DictionaryServiceImpl.class.getResource(
 				"/").toURI());
@@ -47,9 +66,7 @@ public class DictionaryServiceImplTest {
 
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
-		ds = null;
-		testFilesPathDir = null;
-		log = null;
+
 		ProxoolFacade.shutdown(2);
 	}
 
@@ -74,9 +91,9 @@ public class DictionaryServiceImplTest {
 	 * @throws IOException
 	 * @throws URISyntaxException
 	 */
+	
 	@Test
 	public void testDeliverDCT() throws Exception {
-
 		Long appId = 1L;
 		// encoding encoding of source file, null if auto-detected
 		// (ANSI/UTF8/UTF16)
@@ -104,10 +121,21 @@ public class DictionaryServiceImplTest {
 		// dctFileRelativePath = "CH1/";
 
 		String testFilePath = testFilesPathDir + dctFileRelativePath + testFile;
+
 		ds.deliverDCT(testFilePath, appId, encoding, langCodes, langCharset);
+
+		// asserts
+		// dictionary check
+		Dictionary dbDict=(Dictionary) dao.retrieveOne("from Dictionary where name=:name",
+				JSONObject.fromObject("{'name':'" + testFile + "'}"));
+		assertNotNull(dbDict);
+		// labels check
+		
+		// translation check
+
 	}
 
-	@Test
+	// @Test
 	public void testPreviewDCT() throws Exception {
 		String testFile = "About.dic";
 		testFile = "BandHistory.dic";
@@ -123,7 +151,7 @@ public class DictionaryServiceImplTest {
 		ds.previewDCT(file.getAbsolutePath(), appId, encoding);
 	}
 
-	@Test
+	// @Test
 	public void testAbnormalDCT() throws Exception {
 		Long appId = 1L;
 		String encoding = null;
@@ -136,6 +164,8 @@ public class DictionaryServiceImplTest {
 		for (String key : keys) {
 			langCharset.put(key.trim(), "GBK");
 		}
+		langCharset.put("ko_KR", "KOI8-R");
+
 		String dctFileRelativePath = testFilesPathDir + "abnormal/";
 
 		String testFilePath = dctFileRelativePath + "invalid-utf8.dct";
@@ -144,7 +174,7 @@ public class DictionaryServiceImplTest {
 
 	}
 
-	@Test
+	// @Test
 	public void testgenerateDCT() {
 		Long dctId = 1L;
 		String encoding = "GBK";

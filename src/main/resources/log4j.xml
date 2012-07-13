@@ -62,10 +62,11 @@
 		<!-- <level value="TRACE" /> -->
 	</logger>
 
-	<logger name="com.alcatel_lucent.dms.service">
+	<logger name="com.alcatel_lucent.dms">
 		<level value="DEBUG" />
 	</logger>
 
+	
 
 	<root>
 		<level value="WARN" />

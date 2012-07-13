@@ -20,9 +20,9 @@ import java.util.Map;
 import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.alcatel_lucent.dms.BusinessException;
-import com.alcatel_lucent.dms.SpringContext;
 import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.model.Application;
 import com.alcatel_lucent.dms.model.Context;
@@ -38,7 +38,10 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 		DictionaryService {
 
 	private static Logger log = Logger.getLogger(DictionaryServiceImpl.class);
-
+	
+	@Autowired
+	private TextService textService;
+	
 	public DictionaryServiceImpl() {
 		super();
 	}
@@ -245,8 +248,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 			dictLangCodes = Arrays.asList(langCodes);
 		}
 		
-		TextService textService = (TextService) SpringContext
-				.getService(TextService.class);
+
 		Dictionary dbDict = (Dictionary) getDao().retrieveOne(
 				"from Dictionary where name=:name",
 				JSONObject.fromObject(String.format("{'name':'%s'}",
