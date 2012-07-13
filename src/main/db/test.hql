@@ -1,0 +1,1 @@
+select code from AlcatelLanguageCode
