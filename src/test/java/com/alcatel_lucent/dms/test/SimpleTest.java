@@ -1,5 +1,7 @@
 package com.alcatel_lucent.dms.test;
 
+import static org.junit.Assert.*;
+
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -78,7 +80,15 @@ public class SimpleTest{
 
 	@Test
 	public void testMessageFormat() {
-		ds=null;
+		Long long1=new Long(1);
+		Long long2=new Long(1);
+//		assertTrue(long1.equals(long2));
+//		assertTrue();
+		System.out.println(long1==long2);
+		
+		
+		
 	}
 
+	
 }

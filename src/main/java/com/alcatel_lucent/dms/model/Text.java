@@ -17,7 +17,7 @@ public class Text extends BaseEntity {
 	public static final int STATUS_NOT_TRANSLATED = 0;
 	public static final int STATUS_IN_PROGRESS = 1;
 	public static final int STATUS_TRANSLATED = 2;
-	
+
 	public Context getContext() {
 		return context;
 	}
@@ -59,7 +59,7 @@ public class Text extends BaseEntity {
 	public Translation getTranslation(Long languageId) {
 		if (translations != null) {
 			for (Translation trans : translations) {
-				if (trans.getLanguage().getId() == languageId) {
+				if (trans.getLanguage().getId().equals(languageId)) {
 					return trans;
 				}
 			}
