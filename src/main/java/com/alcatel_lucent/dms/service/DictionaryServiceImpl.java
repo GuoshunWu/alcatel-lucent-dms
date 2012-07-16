@@ -46,12 +46,27 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	public DictionaryServiceImpl() {
 		super();
 	}
-
+	
+	public int deleteDCT(String dctName){
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("name", dctName);
+		
+		List<Dictionary> dicts=dao.retrieve("from Dictionary where name=:name",
+				params);
+		int result=0;
+		for(Dictionary dict:dicts){
+			dao.delete(dict);
+			result++;
+		}
+		return result;
+	}
+	
 	public Dictionary deliverDCT(String filename, Long appId, String encoding,
 			String[] langCodes, Map<String, String> langCharset, Collection<BusinessWarning> warnings)
 			throws BusinessException {
 
 		Dictionary dict = previewDCT(filename, appId, encoding, warnings);
+		
 		dict = importDCT(dict, langCodes, langCharset, warnings);
 		return dict;
 	}

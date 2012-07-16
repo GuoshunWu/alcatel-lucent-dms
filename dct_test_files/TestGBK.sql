@@ -14,7 +14,7 @@ POWERED_BY:
   GAE "Powered by",
   FR0 "Powered by",
   FI0 "Powered by",
-  CH0 "Powered by",
+  CH0 "提供",
   IT0 "Powered by",
   PT0 "Powered by",
   EN0 "Powered by",
@@ -41,7 +41,7 @@ OMNITOUCH_VERSION:
   GAE "Alcatel-Lucent OmniTouch 8400 ICS",
   FR0 "Alcatel-Lucent OmniTouch 8400 ICS",
   FI0 "Alcatel-Lucent OmniTouch 8400 ICS",
-  CH0 "Alcatel-Lucent OmniTouch 8400 ICS",
+  CH0 "阿尔卡特朗讯OmniTouch 8400 ICS",
   IT0 "Alcatel-Lucent OmniTouch 8400 ICS",
   PT0 "Alcatel-Lucent OmniTouch 8400 ICS",
   EN0 "Alcatel-Lucent OmniTouch 8400 ICS",
@@ -94,9 +94,8 @@ COPYRIGHT:
   FI0 "Copyright 2007-2012 by Alcatel-Lucent. All rights reserved."
       "Alcatel-Lucent and Alcatel-Lucent Logo are respectively registered"
       "trademark and service mark of Alcatel-Lucent.",
-  CH0 "Copyright 2007-2012 by Alcatel-Lucent. All rights reserved."
-      "Alcatel-Lucent and Alcatel-Lucent Logo are respectively registered"
-      "trademark and service mark of Alcatel-Lucent.",
+  CH0 "2007-2012年阿尔卡特朗讯版权所有。保留所有权力。"
+      "Alcatel-Lucent与Alcatel-Lucent标识是阿尔卡特朗讯各自的注册商标和服务标记。",
   IT0 "Copyright 2007-2012 by Alcatel-Lucent. All rights reserved."
       "Alcatel-Lucent and Alcatel-Lucent Logo are respectively registered"
       "trademark and service mark of Alcatel-Lucent.",
@@ -145,7 +144,7 @@ BUTTON_OK:
   GAE "OK",
   FR0 "OK",
   FI0 "OK",
-  CH0 "OK",
+  CH0 "确定",
   IT0 "OK",
   PT0 "OK",
   EN0 "OK",
@@ -172,7 +171,7 @@ MPC_VERSION:
   GAE "My Instant Communicator client software version ",
   FR0 "My Instant Communicator client software version ",
   FI0 "My Instant Communicator client software version ",
-  CH0 "My Instant Communicator client software version ",
+  CH0 "我的即时通客户端软件版本 ",
   IT0 "My Instant Communicator client software version ",
   PT0 "My Instant Communicator client software version ",
   EN0 "My Instant Communicator client software version ",
@@ -199,7 +198,7 @@ ABOUT_TITLE:
   GAE "About My Instant Communicator",
   FR0 "About My Instant Communicator",
   FI0 "About My Instant Communicator",
-  CH0 "About My Instant Communicator",
+  CH0 "关于我的即时通",
   IT0 "About My Instant Communicator",
   PT0 "About My Instant Communicator",
   EN0 "About My Instant Communicator",
@@ -226,14 +225,14 @@ WARNING:
   GAE "Warning: This computer program is protected by copyright law and international treaties. Unauthorized reproduction or distribution of this program, or any portion of it may result in severe civil and criminal penalties, and will be prosecuted to the maximum extent possible under the law.",
   FR0 "Warning: This computer program is protected by copyright law and international treaties. Unauthorized reproduction or distribution of this program, or any portion of it may result in severe civil and criminal penalties, and will be prosecuted to the maximum extent possible under the law.",
   FI0 "Warning: This computer program is protected by copyright law and international treaties. Unauthorized reproduction or distribution of this program, or any portion of it may result in severe civil and criminal penalties, and will be prosecuted to the maximum extent possible under the law.",
-  CH0 "Warning: This computer program is protected by copyright law and international treaties. Unauthorized reproduction or distribution of this program, or any portion of it may result in severe civil and criminal penalties, and will be prosecuted to the maximum extent possible under the law.",
+  CH0 "警告：本计算机程序受到版权法和国际条约的保护。未经授权而复制或披露本程序或其任何部分程序，可能会受到严重的民事或刑事处罚，并将依法进行起诉",
   IT0 "Warning: This computer program is protected by copyright law and international treaties. Unauthorized reproduction or distribution of this program, or any portion of it may result in severe civil and criminal penalties, and will be prosecuted to the maximum extent possible under the law.",
   PT0 "Warning: This computer program is protected by copyright law and international treaties. Unauthorized reproduction or distribution of this program, or any portion of it may result in severe civil and criminal penalties, and will be prosecuted to the maximum extent possible under the law.",
   EN0 "Warning: This computer program is protected by copyright law and international treaties. Unauthorized reproduction or distribution of this program, or any portion of it may result in severe civil and criminal penalties, and will be prosecuted to the maximum extent possible under the law.",
   DE0 "Warning: This computer program is protected by copyright law and international treaties. Unauthorized reproduction or distribution of this program, or any portion of it may result in severe civil and criminal penalties, and will be prosecuted to the maximum extent possible under the law.",
   KO0 "Warning: This computer program is protected by copyright law and international treaties. Unauthorized reproduction or distribution of this program, or any portion of it may result in severe civil and criminal penalties, and will be prosecuted to the maximum extent possible under the law.",
   PL0 "Warning: This computer program is protected by copyright law and international treaties. Unauthorized reproduction or distribution of this program, or any portion of it may result in severe civil and criminal penalties, and will be prosecuted to the maximum extent possible under the law.",
-  US0 "Warning: This computer program is protected by copyright law and international treaties. Unauthorized reproduction or distribution of this program, or any portion of it may result in severe civil and criminal penalties, and will be prosecuted to the maximum extent possible under the law.",
+  US0 "Warning: This program is protected by copyright law and international treaties. Unauthorized reproduction or distribution of this program, or any portion of it may result in severe civil and criminal penalties, and violators will be prosecuted to the maximum extent possible under the law.",
   ES0 "Warning: This computer program is protected by copyright law and international treaties. Unauthorized reproduction or distribution of this program, or any portion of it may result in severe civil and criminal penalties, and will be prosecuted to the maximum extent possible under the law.",
   RU0 "Warning: This computer program is protected by copyright law and international treaties. Unauthorized reproduction or distribution of this program, or any portion of it may result in severe civil and criminal penalties, and will be prosecuted to the maximum extent possible under the law.",
   NL0 "Warning: This computer program is protected by copyright law and international treaties. Unauthorized reproduction or distribution of this program, or any portion of it may result in severe civil and criminal penalties, and will be prosecuted to the maximum extent possible under the law.",

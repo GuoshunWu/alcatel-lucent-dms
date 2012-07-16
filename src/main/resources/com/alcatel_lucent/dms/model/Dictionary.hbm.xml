@@ -1,32 +1,32 @@
 <?xml version="1.0"?>
-<!DOCTYPE hibernate-mapping PUBLIC
-        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<hibernate-mapping package="com.alcatel_lucent.dms.model" schema="dms" >
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+                                   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.alcatel_lucent.dms.model">
 	<class name="Dictionary" table="DICTIONARY">
 		<id column="ID" name="id">
 			<generator class="native" />
 		</id>
-
-		<property name="name" type="string" column="NAME" not-null="true" unique="true"/>
-		<property name="format" type="string" column="FORMAT" length="20" />
-		<property name="encoding" type="string" column="ENCODING" length="20" />
-		<property name="path" type="string" column="PATH" />
+		<property column="NAME" generated="never" lazy="false" name="name"
+			not-null="true" type="string" unique="true" />
+		<property column="FORMAT" generated="never" lazy="false"
+			length="20" name="format" type="string" />
+		<property column="ENCODING" generated="never" lazy="false"
+			length="20" name="encoding" type="string" />
+		<property column="PATH" generated="never" lazy="false" name="path"
+			type="string" />
+		<many-to-one column="APPLICATION_ID" name="application"
+			not-null="true" />
 		
-		<many-to-one name="application" column="APPLICATION_ID" not-null="true"/>
-		
-		<set name="dictLanguages" cascade="delete" inverse="true">
-			<key column="DICTIONARY_ID"/>
-			<one-to-many class="DictionaryLanguage"/>
+		<set cascade="delete" inverse="true" name="dictLanguages" sort="unsorted">
+			<key column="DICTIONARY_ID" />
+			<one-to-many class="DictionaryLanguage" />
 		</set>
 		
-		<set name="labels" cascade="delete" inverse="true">
-			<key column="DICTIONARY_ID"/>
-			<one-to-many class="Label"/>
+		<set cascade="delete" inverse="true" name="labels" sort="unsorted">
+			<key column="DICTIONARY_ID" />
+			<one-to-many class="Label" />
 		</set>
-		
-		<property name="locked" type="boolean" column="LOCKED"/>
-		
+		<property column="LOCKED" generated="never" lazy="false"
+			name="locked" type="boolean" />
 	</class>
-
 </hibernate-mapping>
