@@ -1,7 +1,5 @@
 package com.alcatel_lucent.dms.test;
 
-import static org.junit.Assert.*;
-
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -12,25 +10,21 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.logicalcobwebs.proxool.ProxoolFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.alcatel_lucent.dms.service.DictionaryService;
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/spring.xml" })
-public class SimpleTest{
-	
+public class SimpleTest {
 
-	private static Logger log=Logger.getLogger(SimpleTest.class);
+	private static Logger log = Logger.getLogger(SimpleTest.class);
 
 	@Autowired
-	private DictionaryService ds;
-
+	// private DictionaryService ds;
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		log.info("Let's begin.");
@@ -38,7 +32,6 @@ public class SimpleTest{
 
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
-		ProxoolFacade.shutdown(2);
 		log.info("I am going to shutdown.");
 	}
 
@@ -50,7 +43,8 @@ public class SimpleTest{
 	public void tearDown() throws Exception {
 	}
 
-	// @Test
+	@Test
+	@Ignore
 	public void testDeEncoding() throws UnsupportedEncodingException {
 		String testString = "測試中國";
 		// real encoding
@@ -76,14 +70,6 @@ public class SimpleTest{
 		//
 		// assertEquals(testString, resultString);
 
-	}
-
-	@Test
-	public void testMessageFormat() {
-
-		
-		
-		
 	}
 
 	

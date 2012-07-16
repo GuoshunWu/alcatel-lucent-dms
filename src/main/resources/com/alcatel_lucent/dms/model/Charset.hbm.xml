@@ -2,15 +2,14 @@
 <!DOCTYPE hibernate-mapping PUBLIC
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<hibernate-mapping package="com.alcatel_lucent.dms.model"
-	schema="dms" >
+<hibernate-mapping package="com.alcatel_lucent.dms.model">
 
 	<class name="Charset" table="CHARSET">
 		<id column="ID" name="id">
 			<generator class="native" />
 		</id>
 
-		<property name="name" type="string" column="NAME" not-null="true"/>
+		<property name="name" type="string" column="NAME" not-null="true" />
 		<property name="no" type="integer" column="NO" />
 	</class>
 

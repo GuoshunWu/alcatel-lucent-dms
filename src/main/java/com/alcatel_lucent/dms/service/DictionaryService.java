@@ -52,4 +52,6 @@ public interface DictionaryService {
 	 * @throws BusinessException
 	 */
 	void generateDCT(String filename, Long dctId, String encoding, String[] langCodes, Map<String, String> langCharset) throws BusinessException;
+
+	int deleteDCT(String dctName);
 }

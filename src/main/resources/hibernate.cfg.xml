@@ -8,13 +8,24 @@
 
 	<session-factory>
 		<!-- SQL dialect -->
-		<property name="dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
+
+		<!-- <property name="dialect">org.hibernate.dialect.MySQL5Dialect</property> -->
+		<!-- <property name="dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property> 
+			<property name="hibernate.proxool.pool_alias">MySQL_Pool</property> -->
+
+
+		<!-- <property name="dialect">org.hibernate.dialect.Oracle10gDialect</property> 
+			<property name="hibernate.proxool.pool_alias">Oracle_Pool</property> -->
+
+		<property name="dialect">org.hibernate.dialect.H2Dialect</property>
+		<property name="hibernate.proxool.pool_alias">H2_Pool</property>
 
 		<property name="hibernate.connection.provider_class">org.hibernate.connection.ProxoolConnectionProvider</property>
-		<property name="hibernate.proxool.pool_alias">DBPool</property>
 		<property name="hibernate.proxool.properties">proxool.properties</property>
 		<property name="hibernate.proxool.existing_pool">false</property>
 
+		<!-- connection.pool_size is used to configure the number of connections 
+			in Hibernate's built-in connection pool. -->
 		<property name="connection.pool_size">10</property>
 
 
@@ -27,34 +38,33 @@
 		</property>
 
 		<!-- Echo all executed SQL to stdout -->
-		<property name="hibernate.format_sql">true</property>
-		<property name="hibernate.use_sql_comments">true</property>
+		<property name="show_sql">false</property>
+		<property name="format_sql">true</property>
+		<property name="use_sql_comments">true</property>
 		<property name="hibernate.default_schema">dms</property>
 
 		<!-- Drop and re-create the database schema on startup (create-drop, update, 
 			create) -->
 
-		<!-- <property name="hbm2ddl.auto">create</property> -->
+		<property name="hbm2ddl.auto">create</property>
 
-	<!-- 	<property name="myeclipse.connection.profile">MySQL_Local</property>
-		<property name="connection.url">jdbc:mysql://localhost:3306/dms</property>
-		<property name="connection.username">root</property>
-		<property name="connection.password">root123</property>
-		<property name="connection.driver_class">com.mysql.jdbc.Driver</property> -->
+		<!-- <property name="myeclipse.connection.profile">MySQL_Local</property> 
+			<property name="connection.url">jdbc:mysql://localhost:3306/dms</property> 
+			<property name="connection.username">root</property> <property name="connection.password">root123</property> 
+			<property name="connection.driver_class">com.mysql.jdbc.Driver</property> -->
 
 		<mapping resource="com/alcatel_lucent/dms/model/Product.hbm.xml" />
 		<mapping resource="com/alcatel_lucent/dms/model/ProductVersion.hbm.xml" />
 		<mapping resource="com/alcatel_lucent/dms/model/Application.hbm.xml" />
 		<mapping resource="com/alcatel_lucent/dms/model/Dictionary.hbm.xml" />
+		<mapping resource="com/alcatel_lucent/dms/model/DictionaryLanguage.hbm.xml" />
 		<mapping resource="com/alcatel_lucent/dms/model/Label.hbm.xml" />
 		<mapping resource="com/alcatel_lucent/dms/model/Text.hbm.xml" />
 		<mapping resource="com/alcatel_lucent/dms/model/Context.hbm.xml" />
 		<mapping resource="com/alcatel_lucent/dms/model/Charset.hbm.xml" />
 		<mapping resource="com/alcatel_lucent/dms/model/Language.hbm.xml" />
-		<mapping resource="com/alcatel_lucent/dms/model/DictionaryLanguage.hbm.xml" />
 		<mapping resource="com/alcatel_lucent/dms/model/AlcatelLanguageCode.hbm.xml" />
 		<mapping resource="com/alcatel_lucent/dms/model/ISOLanguageCode.hbm.xml" />
-
 		<mapping resource="com/alcatel_lucent/dms/model/Translation.hbm.xml" />
 
 	</session-factory>

@@ -3,8 +3,13 @@
  */
 package com.alcatel_lucent.dms.service;
 
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,7 +17,9 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -23,9 +30,9 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.logicalcobwebs.proxool.ProxoolFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -39,7 +46,16 @@ import com.alcatel_lucent.dms.model.Text;
 import com.alcatel_lucent.dms.model.Translation;
 
 /**
- * @author guoshunw
+ * Some test cases are contained by another, so the cases need to be tested by
+ * following order. before test, clean the database. 1. testPreviewDCT. 2.
+ * testImportDCT. 3. testDeliverDCT. this one need to be tested twice. The first
+ * time one dct file will be imported to the database and the second time the
+ * same changed file will be imported and check if the the related dictionary in
+ * database is updated.
+ * 
+ * 4. testGenerateDCT. 5. testDeleteDCT.
+ * 
+ * @author Guoshun.Wu
  * 
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -70,8 +86,6 @@ public class DictionaryServiceImplTest {
 
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
-
-		ProxoolFacade.shutdown(2);
 	}
 
 	/**
@@ -88,6 +102,23 @@ public class DictionaryServiceImplTest {
 	@After
 	public void tearDown() throws Exception {
 
+	}
+
+	@Test
+	public void testPreviewDCT() throws Exception {
+		String testFile = "About.dic";
+		testFile = "BandHistory.dic";
+		// testFile="communicateBy.dic";
+
+		String dctFileRelativePath = "CH0/";
+		// dctFileRelativePath = "CH1/";
+
+		File file = new File(testFilesPathDir, dctFileRelativePath + testFile);
+
+		Long appId = 1L;
+		String encoding = null;
+		Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
+		ds.previewDCT(file.getAbsolutePath(), appId, encoding, warnings);
 	}
 
 	/**
@@ -107,7 +138,7 @@ public class DictionaryServiceImplTest {
 		Map<String, String> langCharset = new HashMap<String, String>();
 		List<String> keys = Arrays
 				.asList("CHK, GAE, FR0, EN0, DE0, IT0, PT0, ES0, US0, PL0, KO0, NO0, NL0, RU0, CH0, FI0, ES1, CS0, HU0, CH1, SV0, AR0, DA0, HE0"
-						.split(","));
+						.split(", *"));
 		for (String key : keys) {
 			langCharset.put(key.trim(), "GBK");
 		}
@@ -126,15 +157,27 @@ public class DictionaryServiceImplTest {
 
 		String testFilePath = testFilesPathDir + dctFileRelativePath + testFile;
 		Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
-		ds.deliverDCT(testFilePath, appId, encoding, langCodes, langCharset, warnings);
+		ds.deliverDCT(testFilePath, appId, encoding, langCodes, langCharset,
+				warnings);
 
 		// asserts
 		// dictionary check
 		Dictionary dbDict = (Dictionary) dao.retrieveOne(
 				"from Dictionary where name=:name",
 				JSONObject.fromObject("{'name':'" + testFile + "'}"),
-				new String[] { "labels" });
-		assertNotNull(dbDict);
+				new String[] { "labels", "dictLanguages" });
+		assertThat(dbDict, is(not(nullValue())));
+
+		// dictionary language check
+		HashSet dbLangCodes = dbDict.getAllLanguageCodes();
+
+		// CHK is not saved in database.
+		List<String> filelangCodes = Arrays
+				.asList("FR0, EN0, DE0, IT0, PT0, ES0, US0, PL0, KO0, NO0, NL0, RU0, CH0, FI0, ES1, CS0, HU0, CH1, SV0, AR0, DA0, HE0"
+						.split(", *"));
+		Collections.sort(filelangCodes);
+
+		assertTrue(dbLangCodes.containsAll(filelangCodes));
 		// labels check
 
 		Context dbCtx = (Context) dao.retrieveOne(
@@ -195,7 +238,7 @@ public class DictionaryServiceImplTest {
 
 			Translation trans = null;
 			log.info("validating if there are ('EN0','CH0','US0') translation in database.");
-			System.out.println(validateTranslationsLangIDs);
+
 			for (Object langIDCode : validateTranslationsLangIDs) {
 				Object[] arrayLangIDCode = (Object[]) langIDCode;
 				Long langID = (Long) (arrayLangIDCode[0]);
@@ -206,31 +249,45 @@ public class DictionaryServiceImplTest {
 						+ " not found.", trans);
 			}
 		}
-	}
 
-	// @Test
-	public void testDeleteDictionary() {
-		// dao.delete(null);
-	}
+		// re deliver the updated DCT file
 
-	// @Test
-	public void testPreviewDCT() throws Exception {
-		String testFile = "About.dic";
-		testFile = "BandHistory.dic";
-		// testFile="communicateBy.dic";
+		// check result
+		// check dictionary language
+		// check labels
+		// check translations
 
-		String dctFileRelativePath = "CH0/";
-		// dctFileRelativePath = "CH1/";
-
-		File file = new File(testFilesPathDir, dctFileRelativePath + testFile);
-
-		Long appId = 1L;
-		String encoding = null;
-		Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
-		ds.previewDCT(file.getAbsolutePath(), appId, encoding, warnings);
 	}
 
 	@Test
+	// @Ignore
+	public void testGenerateDCT() {
+		String testFile = "About.dic";
+		Dictionary dict = (Dictionary) dao.retrieveOne("from Dictionary where name=:name",
+				JSONObject.fromObject("{'name':'" + testFile + "'}"));
+		
+		Long dctId = dict.getId();
+		String encoding = "GBK";
+		String fileName = testFilesPathDir + "Test" + encoding + ".sql";
+
+		Map<String, String> langCharset = new HashMap<String, String>();
+
+		List<String> keys = Arrays
+				.asList("CHK, ZH0, GAE, FR0, EN0, DE0, IT0, PT0, ES0, US0, PL0, KO0, NO0, NL0, RU0, CH0, FI0, ES1, CS0, HU0, CH1, SV0, AR0, DA0, HE0"
+						.split(","));
+		for (String key : keys) {
+			langCharset.put(key.trim(), "GBK");
+		}
+		langCharset.put("CH1", "BIG5");
+
+		String[] langCodes = new String[] { "CH0", "CH1" };
+		langCodes = null;
+		//
+		ds.generateDCT(fileName, dctId, encoding, langCodes, langCharset);
+	}
+
+	@Test
+	@Ignore("It's time consuming")
 	public void testAbnormalDCT() throws Exception {
 		Long appId = 1L;
 		String encoding = null;
@@ -250,29 +307,22 @@ public class DictionaryServiceImplTest {
 		String testFilePath = dctFileRelativePath + "dup_label.dic";
 
 		Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
-		ds.deliverDCT(testFilePath, appId, encoding, langCodes, langCharset, warnings);
+		ds.deliverDCT(testFilePath, appId, encoding, langCodes, langCharset,
+				warnings);
 
 	}
 
-	// @Test
-	public void testgenerateDCT() {
-		Long dctId = 1L;
-		String encoding = "GBK";
-		String fileName = testFilesPathDir + "Test" + encoding + ".sql";
+	@Test(timeout = 3000)
+	// @Ignore(value = "Debugging now.")
+	public void testDeleteDictionary() {
 
-		Map<String, String> langCharset = new HashMap<String, String>();
+		String dictName = "About.dic";
+		int result = ds.deleteDCT(dictName);
 
-		List<String> keys = Arrays
-				.asList("CHK, ZH0, GAE, FR0, EN0, DE0, IT0, PT0, ES0, US0, PL0, KO0, NO0, NL0, RU0, CH0, FI0, ES1, CS0, HU0, CH1, SV0, AR0, DA0, HE0"
-						.split(","));
-		for (String key : keys) {
-			langCharset.put(key.trim(), "GBK");
-		}
-		langCharset.put("CH1", "BIG5");
-
-		String[] langCodes = new String[] { "CH0", "CH1" };
-		langCodes = null;
-		ds.generateDCT(fileName, dctId, encoding, langCodes, langCharset);
+		// query validating
+		assertThat("No " + dictName
+				+ " dictionary in database or delete failed.", result,
+				greaterThanOrEqualTo(1));
 	}
 
 }

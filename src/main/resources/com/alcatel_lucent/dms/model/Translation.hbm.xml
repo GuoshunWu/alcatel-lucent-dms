@@ -2,17 +2,19 @@
 <!DOCTYPE hibernate-mapping PUBLIC
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<hibernate-mapping package="com.alcatel_lucent.dms.model" schema="dms">
+<hibernate-mapping package="com.alcatel_lucent.dms.model">
 
 	<class name="Translation" table="TRANSLATION">
 		<id column="ID" name="id">
 			<generator class="native" />
 		</id>
-		
-		<property name="translation" type="string" column="TRANSLATION" length="512"/>
-		<many-to-one name="text" column="TEXT_ID"  not-null="true"/>
-		<many-to-one lazy="false" name="language" column="LANGUAGE_ID" not-null="true"/>
-	
+
+		<property name="translation" type="string" column="TRANSLATION"
+			length="512" />
+		<many-to-one name="text" column="TEXT_ID" not-null="true" />
+		<many-to-one lazy="false" name="language" column="LANGUAGE_ID"
+			not-null="true" />
+
 	</class>
 
 </hibernate-mapping>
