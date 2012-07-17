@@ -3,8 +3,10 @@
  */
 package com.alcatel_lucent.dms.service;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -13,18 +15,23 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import net.sf.json.JSONObject;
 
+import org.apache.commons.collections.map.MultiKeyMap;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -38,6 +45,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
+import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Dictionary;
@@ -81,6 +89,7 @@ public class DictionaryServiceImplTest {
 		testFilePath = testFilePath.getParentFile().getParentFile();
 		testFilesPathDir = new File(testFilePath, "dct_test_files")
 				.getAbsolutePath() + "/";
+		// log.setLevel(Level.DEBUG);
 		log.info("Test file path is: " + testFilesPathDir);
 	}
 
@@ -104,23 +113,6 @@ public class DictionaryServiceImplTest {
 
 	}
 
-	@Test
-	public void testPreviewDCT() throws Exception {
-		String testFile = "About.dic";
-		testFile = "BandHistory.dic";
-		// testFile="communicateBy.dic";
-
-		String dctFileRelativePath = "CH0/";
-		// dctFileRelativePath = "CH1/";
-
-		File file = new File(testFilesPathDir, dctFileRelativePath + testFile);
-
-		Long appId = 1L;
-		String encoding = null;
-		Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
-		ds.previewDCT(file.getAbsolutePath(), appId, encoding, warnings);
-	}
-
 	/**
 	 * 
 	 * @throws IOException
@@ -128,10 +120,9 @@ public class DictionaryServiceImplTest {
 	 */
 
 	@Test
-	public void testDeliverDCT() throws Exception {
+	public void testSampleAbout_DCT() throws Exception {
+
 		Long appId = 1L;
-		// encoding encoding of source file, null if auto-detected
-		// (ANSI/UTF8/UTF16)
 		String encoding = null;
 
 		// langCharset mapping of language code and its source charset name
@@ -142,31 +133,31 @@ public class DictionaryServiceImplTest {
 		for (String key : keys) {
 			langCharset.put(key.trim(), "GBK");
 		}
-		langCharset.put("CH1", "BIG5");
 
 		// langCodes Alcatel code of languages to import, null if all languages
 		// should be imported
 		String[] langCodes = new String[] { "CH1" };
 		langCodes = null;
-		String testFile = "About.dic";
-		// testFile = "BandHistory.dic";
-		// testFile="communicateBy.dic";
 
-		String dctFileRelativePath = "CH0/";
-		// dctFileRelativePath = "CH1/";
+		String dictName = "About.dic";
+		String testFile = "CH0/About.dic";
+		String updatedTestFile = "CH0/About_Changed.dic";
 
-		String testFilePath = testFilesPathDir + dctFileRelativePath + testFile;
+		String testFilePath = testFilesPathDir + testFile;
+
 		Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
-		ds.deliverDCT(testFilePath, appId, encoding, langCodes, langCharset,
-				warnings);
 
-		// asserts
+		/***************************************** Test for deliver DCT ****************************************/
+
+		Dictionary dbDict = ds.deliverDCT(dictName, testFilePath, appId,
+				encoding, langCodes, langCharset, warnings);
+
 		// dictionary check
-		Dictionary dbDict = (Dictionary) dao.retrieveOne(
+		dbDict = (Dictionary) dao.retrieveOne(
 				"from Dictionary where name=:name",
-				JSONObject.fromObject("{'name':'" + testFile + "'}"),
+				JSONObject.fromObject("{'name':'" + dictName + "'}"),
 				new String[] { "labels", "dictLanguages" });
-		assertThat(dbDict, is(not(nullValue())));
+		assertThat(dbDict, is(notNullValue()));
 
 		// dictionary language check
 		HashSet dbLangCodes = dbDict.getAllLanguageCodes();
@@ -185,6 +176,7 @@ public class DictionaryServiceImplTest {
 				JSONObject.fromObject("{'name':'" + dbDict.getName() + "'}"));
 		assertNotNull(dbCtx);
 
+		// prepare expected result data
 		List<Label> validateLabels = new ArrayList<Label>();
 		Label tmpLabel = new Label();
 		tmpLabel.setDictionary(dbDict);
@@ -210,10 +202,53 @@ public class DictionaryServiceImplTest {
 
 		validateLabels.add(tmpLabel);
 
-		// check if there are ('EN0','CH0','US0') language codes related
-		// translations
-		List validateTranslationsLangIDs = dao
+		MultiKeyMap translatedStringMap = new MultiKeyMap();
+
+		translatedStringMap
+				.put("WARNING",
+						"EN0",
+						"Warning: This computer program is protected by copyright law and international treaties. Unauthorized reproduction or distribution of this program, or any portion of it may result in severe civil and criminal penalties, and will be prosecuted to the maximum extent possible under the law.");
+		translatedStringMap
+				.put("WARNING", "CH0",
+						"警告：本计算机程序受到版权法和国际条约的保护。未经授权而复制或披露本程序或其任何部分程序，可能会受到严重的民事或刑事处罚，并将依法进行起诉");
+		translatedStringMap
+				.put("WARNING",
+						"US0",
+						"Warning: This program is protected by copyright law and international treaties. Unauthorized reproduction or distribution of this program, or any portion of it may result in severe civil and criminal penalties, and violators will be prosecuted to the maximum extent possible under the law.");
+
+		translatedStringMap
+				.put("COPYRIGHT",
+						"EN0",
+						"Copyright 2007-2012 by Alcatel-Lucent. All rights reserved.\nAlcatel-Lucent and Alcatel-Lucent Logo are respectively registered\ntrademark and service mark of Alcatel-Lucent.");
+		translatedStringMap
+				.put("COPYRIGHT",
+						"CH0",
+						"2007-2012年阿尔卡特朗讯版权所有。保留所有权力。\nAlcatel-Lucent与Alcatel-Lucent标识是阿尔卡特朗讯各自的注册商标和服务标记。");
+		translatedStringMap
+				.put("COPYRIGHT",
+						"US0",
+						"Copyright 2007-2012 by Alcatel-Lucent. All rights reserved.\nAlcatel-Lucent and Alcatel-Lucent Logo are respectively registered\ntrademark and service mark of Alcatel-Lucent.");
+
+		translatedStringMap.put("MPC_VERSION", "EN0",
+				"My Instant Communicator client software version ");
+		translatedStringMap.put("MPC_VERSION", "CH0", "我的即时通客户端软件版本 ");
+		translatedStringMap.put("MPC_VERSION", "US0",
+				"My Instant Communicator client software version ");
+
+		/*
+		 * check if there are ('EN0','CH0','US0') language codes related
+		 * translations
+		 */
+		List validateTranslationsLangCodeAndIDList = dao
 				.retrieve("select al.language.id,al.code from AlcatelLanguageCode al where code in ('EN0','CH0','US0')");
+
+		Map<String, Long> validateTranslationsLangCodeAndIDMap = new HashMap<String, Long>();
+		for (Object langIDCode : validateTranslationsLangCodeAndIDList) {
+			Object[] arrayLangIDCode = (Object[]) langIDCode;
+			Long langID = (Long) (arrayLangIDCode[0]);
+			String langCode = (String) (arrayLangIDCode[1]);
+			validateTranslationsLangCodeAndIDMap.put(langCode, langID);
+		}
 
 		for (Label label : validateLabels) {
 			Label dbLabel = dbDict.getLabel(label.getKey());
@@ -239,55 +274,124 @@ public class DictionaryServiceImplTest {
 			Translation trans = null;
 			log.info("validating if there are ('EN0','CH0','US0') translation in database.");
 
-			for (Object langIDCode : validateTranslationsLangIDs) {
-				Object[] arrayLangIDCode = (Object[]) langIDCode;
-				Long langID = (Long) (arrayLangIDCode[0]);
-				String langCode = (String) (arrayLangIDCode[1]);
+			// key:langCode, value:langID
+			for (Map.Entry<String, Long> codeAndId : validateTranslationsLangCodeAndIDMap
+					.entrySet()) {
 
-				trans = dbText.getTranslation(langID);
-				assertNotNull("Translation item for " + langCode
+				trans = dbText.getTranslation(codeAndId.getValue());
+				assertNotNull("Translation item for " + codeAndId.getKey()
 						+ " not found.", trans);
+				log.info("label key: " + label.getKey() + ", language code: "
+						+ codeAndId.getKey());
+				assertThat(trans.getTranslation(),
+						equalTo(translatedStringMap.get(label.getKey(),
+								codeAndId.getKey())));
 			}
 		}
 
+		/***************************************** Test updated test file deliver DCT ****************************************/
+		testFilePath = testFilesPathDir + updatedTestFile;
 		// re deliver the updated DCT file
-
-		// check result
-		// check dictionary language
-		// check labels
-		// check translations
-
-	}
-
-	@Test
-	// @Ignore
-	public void testGenerateDCT() {
-		String testFile = "About.dic";
-		Dictionary dict = (Dictionary) dao.retrieveOne("from Dictionary where name=:name",
-				JSONObject.fromObject("{'name':'" + testFile + "'}"));
-		
-		Long dctId = dict.getId();
-		String encoding = "GBK";
-		String fileName = testFilesPathDir + "Test" + encoding + ".sql";
-
-		Map<String, String> langCharset = new HashMap<String, String>();
-
-		List<String> keys = Arrays
-				.asList("CHK, ZH0, GAE, FR0, EN0, DE0, IT0, PT0, ES0, US0, PL0, KO0, NO0, NL0, RU0, CH0, FI0, ES1, CS0, HU0, CH1, SV0, AR0, DA0, HE0"
-						.split(","));
-		for (String key : keys) {
-			langCharset.put(key.trim(), "GBK");
-		}
 		langCharset.put("CH1", "BIG5");
 
-		String[] langCodes = new String[] { "CH0", "CH1" };
-		langCodes = null;
-		//
-		ds.generateDCT(fileName, dctId, encoding, langCodes, langCharset);
+		dbDict = ds.deliverDCT(dictName, testFilePath, appId, encoding,
+				langCodes, langCharset, warnings);
+		// check result
+
+		dbDict = (Dictionary) dao.retrieveOne(
+				"from Dictionary where name=:name",
+				JSONObject.fromObject("{'name':'" + dictName + "'}"),
+				new String[] { "labels", "dictLanguages" });
+
+		// check added dictionary language
+		assertThat(dbDict.getAllLanguageCodes(), hasItem("CH1"));
+
+		// check added new label TESTLABEL
+		Label dbLabel = dbDict.getLabel("TESTLABEL");
+		assertThat(dbLabel, is(notNullValue()));
+
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("reference", dbLabel.getReference());
+		params.put("contextid", dbLabel.getContext().getId());
+		Text dbText = (Text) dao
+				.retrieveOne(
+						"from Text where reference=:reference and context.id=:contextid",
+						params, new String[] { "translations" });
+		// check translations
+
+		// added translation
+		translatedStringMap.put("TESTLABEL", "EN0", "Test");
+		translatedStringMap.put("TESTLABEL", "US0", "Test");
+		translatedStringMap.put("TESTLABEL", "CH0", "测试");
+
+		// key:langCode, value:langID
+		for (Map.Entry<String, Long> codeAndId : validateTranslationsLangCodeAndIDMap
+				.entrySet()) {
+
+			Translation trans = dbText.getTranslation(codeAndId.getValue());
+			assertNotNull("Translation item for " + codeAndId.getKey()
+					+ " not found.", trans);
+			log.info("label key: " + dbLabel.getKey() + ", language code: "
+					+ codeAndId.getKey());
+			assertThat(
+					trans.getTranslation(),
+					equalTo(translatedStringMap.get(dbLabel.getKey(),
+							codeAndId.getKey())));
+		}
+
+		// updated translation
+
+		translatedStringMap
+				.put("COPYRIGHT",
+						"CH0",
+						"用于测试的改变，2007-2012年阿尔卡特朗讯版权所有。保留所有权力\nAlcatel-Lucent与Alcatel-Lucent标识是阿尔卡特朗讯各自的注册商标和服务标记。");
+
+		dbLabel = dbDict.getLabel("COPYRIGHT");
+		params = new HashMap<String, Object>();
+		params.put("reference", dbLabel.getReference());
+		params.put("contextid", dbLabel.getContext().getId());
+		dbText = (Text) dao
+				.retrieveOne(
+						"from Text where reference=:reference and context.id=:contextid",
+						params, new String[] { "translations" });
+
+		Translation trans = dbText
+				.getTranslation(validateTranslationsLangCodeAndIDMap.get("CH0"));
+
+		assertThat(trans.getTranslation(),
+				equalTo(translatedStringMap.get(dbLabel.getKey(), "CH0")));
+
+		/*************************** Test generate dct file from dictionary in database *************************/
+		String targetFileName = "target/" + dictName + "_generated.dct";
+		ds.generateDCT(targetFileName, dbDict.getId(), encoding, langCodes,
+				langCharset);
+		File generatedFile = new File(targetFileName);
+		assertTrue("Dictionary " + generatedFile.getName()
+				+ " is not generated.", generatedFile.exists());
+
+		/*************************** Test deletel dictionary in database *************************/
+		ds.deleteDCT(dictName);
+		Dictionary origDict = dbDict;
+		dbDict = (Dictionary) dao.retrieveOne(
+				"from Dictionary where name=:name",
+				JSONObject.fromObject("{'name':'" + dictName + "'}"),
+				new String[] { "labels", "dictLanguages" });
+
+		// check dictionary
+		assertThat(dbDict, is(nullValue()));
+
+		// check labels
+		params.clear();
+		params.put("dictId", origDict.getId());
+		List<Label> labels = dao.retrieve(
+				"from Label where dictionary.id=:dictId", params);
+		assertTrue("Some label(s): " + labels + " in " + origDict.getName()
+				+ " dictionary is(are) not deleted.", labels.isEmpty());
+
 	}
 
-	@Test
-	@Ignore("It's time consuming")
+	// @Ignore("It will throw dup_label BusinessException")
+	@Test(expected = BusinessException.class, timeout = 10000)
 	public void testAbnormalDCT() throws Exception {
 		Long appId = 1L;
 		String encoding = null;
@@ -307,22 +411,90 @@ public class DictionaryServiceImplTest {
 		String testFilePath = dctFileRelativePath + "dup_label.dic";
 
 		Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
-		ds.deliverDCT(testFilePath, appId, encoding, langCodes, langCharset,
-				warnings);
-
+		ds.deliverDCT("dup_label.dic", testFilePath, appId, encoding,
+				langCodes, langCharset, warnings);
 	}
 
-	@Test(timeout = 3000)
-	// @Ignore(value = "Debugging now.")
-	public void testDeleteDictionary() {
+	@Ignore("Not ready yet.")
+	@Test
+	public void testActualDctFile() throws Exception {
+		File testFile = new File("../AR.zip");
 
-		String dictName = "About.dic";
-		int result = ds.deleteDCT(dictName);
+		assertTrue("File not exists.", testFile.exists());
 
-		// query validating
-		assertThat("No " + dictName
-				+ " dictionary in database or delete failed.", result,
-				greaterThanOrEqualTo(1));
+		ZipFile testZipFile = new ZipFile(testFile);
+
+		Enumeration<ZipEntry> entries = (Enumeration<ZipEntry>) testZipFile
+				.entries();
+
+		ZipEntry entry = null;
+		while (entries.hasMoreElements()) {
+			entry = entries.nextElement();
+			if (entry.isDirectory() || isDCTFile(entry.getName()))
+				continue;
+			log.info("Begin deliver " + entry.getName() + " file in zip file "
+					+ testFile.getName());
+			deliverDCTFile(testZipFile.getInputStream(entry));
+		}
+		testZipFile.close();
 	}
 
+	private boolean isDCTFile(String name) {
+		List<String> dctFileExts = Arrays.asList(".dct", ".dict", ".dic");
+		for (String ext : dctFileExts) {
+			if (name.endsWith(ext)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private void deliverDCTFile(InputStream dctFile) {
+		// TODO: Determine the arguments
+		// ds.deliverDCT(dictionaryName, filename, appId, encoding, langCodes,
+		// langCharset, warnings);
+
+	}
+	
+	@Test
+//	@Ignore("Debug...")
+	public void testRealDCTFile(){
+		Long appId = 1L;
+		String encoding = "ISO-8859-1";
+
+		// langCharset mapping of language code and its source charset name
+		Map<String, String> langCharset = new HashMap<String, String>();
+		List<String> keys = Arrays
+				.asList("CHK, GAE, FR0, EN0, DE0, IT0, PT0, ES0, US0, PL0, KO0, NO0, NL0, RU0, CH0, FI0, ES1, CS0, HU0, CH1, SV0, AR0, DA0, HE0"
+						.split(", *"));
+		for (String key : keys) {
+			langCharset.put(key.trim(), "GBK");
+		}
+
+		// langCodes Alcatel code of languages to import, null if all languages
+		// should be imported
+		String[] langCodes = new String[] { "CH1" };
+		langCodes = null;
+
+		
+		testFilesPathDir="E:/tmp/AR/6.6.000.107.a/web_administration/wadmin/Ihm/CommonAdmin/xml/";
+		String testFile="appli.labels.dct";
+		String testFilePath = testFilesPathDir + testFile;
+		String dictName = "appli.labels.dct";
+
+//		testFilesPathDir="E:/tmp/AR/6.6.000.107.a/voice_applications/eCC_tui/VoiceApplications/dictionaries/";
+//		testFile="TUI.dct";
+//		testFilePath = testFilesPathDir + testFile;
+//		dictName = "TUI.dct";
+//		
+//		testFilesPathDir="E:/tmp/AR/6.6.000.107.a/data_access_service/dataaccess/WEB-INF/classes/com/alcatel/dataaccess/global/dico/";
+//		testFile="DtaEccServer.dct";
+//		testFilePath = testFilesPathDir + testFile;
+//		dictName = "DtaEccServer.dct";
+//		
+		
+		
+		Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
+		ds.deliverDCT(dictName, testFilePath, appId, encoding, langCodes, langCharset, warnings);
+	}
 }

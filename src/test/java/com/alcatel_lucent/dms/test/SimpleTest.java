@@ -1,16 +1,11 @@
 package com.alcatel_lucent.dms.test;
 
-import java.io.UnsupportedEncodingException;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
-
+import org.apache.commons.collections.map.MultiKeyMap;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,32 +39,14 @@ public class SimpleTest {
 	}
 
 	@Test
-	@Ignore
-	public void testDeEncoding() throws UnsupportedEncodingException {
-		String testString = "測試中國";
-		// real encoding
-
-		Charset gbkCharset = Charset.forName("gbk");
-		Charset utf8Charset = Charset.forName("utf8");
-		// Charset big5Charset=Charset.forName("big5");
-		// Charset utf16Charset=Charset.forName("utf16");
-
-		// in file bytes
-		ByteBuffer buf = gbkCharset.encode(testString);
-
-		// String in previewDCT
-		CharBuffer assumedCharBuf = utf8Charset.decode(buf);
-
-		System.out.println(assumedCharBuf);
-
-		ByteBuffer assumedByteBuffer = utf8Charset.encode(assumedCharBuf);
-
-		// String in importDCT
-		CharBuffer resultString = gbkCharset.decode(assumedByteBuffer);
-		System.out.println(resultString);
-		//
-		// assertEquals(testString, resultString);
-
+//	@Ignore
+	public void testMe(){
+		MultiKeyMap translatedStringMap=new MultiKeyMap();
+		translatedStringMap.put("China","Gansu","LanZhou");
+		translatedStringMap.put("China","Qinhai","Xining");
+		translatedStringMap.put("China","Shannxi","XiAn");
+		
+		System.out.println(translatedStringMap.get("China", "Shannxi"));
 	}
 
 	

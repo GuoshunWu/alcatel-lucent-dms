@@ -5,6 +5,7 @@ import static com.alcatel_lucent.dms.util.Util.getObjectProperiesList;
 import static org.apache.commons.lang.StringUtils.join;
 
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -16,6 +17,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+
+import java.io.FileFilter;
 
 import net.sf.json.JSONObject;
 
@@ -33,42 +36,86 @@ import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.Language;
 import com.alcatel_lucent.dms.model.Text;
 import com.alcatel_lucent.dms.model.Translation;
+
 import com.alcatel_lucent.dms.util.DictionaryParser;
 
 public class DictionaryServiceImpl extends BaseServiceImpl implements
 		DictionaryService {
 
 	private static Logger log = Logger.getLogger(DictionaryServiceImpl.class);
-	
+
 	@Autowired
 	private TextService textService;
-	
+
 	public DictionaryServiceImpl() {
 		super();
 	}
-	
-	public int deleteDCT(String dctName){
+
+	public int deleteDCT(String dctName) {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("name", dctName);
-		
-		List<Dictionary> dicts=dao.retrieve("from Dictionary where name=:name",
-				params);
-		int result=0;
-		for(Dictionary dict:dicts){
+
+		List<Dictionary> dicts = dao.retrieve(
+				"from Dictionary where name=:name", params);
+		int result = 0;
+		for (Dictionary dict : dicts) {
 			dao.delete(dict);
 			result++;
 		}
 		return result;
 	}
-	
-	public Dictionary deliverDCT(String filename, Long appId, String encoding,
-			String[] langCodes, Map<String, String> langCharset, Collection<BusinessWarning> warnings)
-			throws BusinessException {
 
-		Dictionary dict = previewDCT(filename, appId, encoding, warnings);
-		
+	public Dictionary deliverDCT(String dictionaryName, String filename,
+			Long appId, String encoding, String[] langCodes,
+			Map<String, String> langCharset,
+			Collection<BusinessWarning> warnings) throws BusinessException {
+
+		Dictionary dict = previewDCT(dictionaryName, filename, appId, encoding,
+				warnings);
+
 		dict = importDCT(dict, langCodes, langCharset, warnings);
 		return dict;
+	}
+
+	/**
+	 * Deliver dct files in a directory
+	 * */
+	public int deliverDCTFiles(File file, int deliveredFileNum, Long appId,
+			String encoding, String[] langCodes,
+			Map<String, String> langCharset,
+			Collection<BusinessWarning> warnings) {
+		if (file.isDirectory()) {
+			File[] dctFileOrDirs = file.listFiles(new FileFilter() {
+				private List<String> dctAndZipFileExts = Arrays.asList(".dct",
+						".dict", ".dic", ".zip");
+
+				@Override
+				public boolean accept(File pathname) {
+					for (String ext : dctAndZipFileExts) {
+						if (pathname.getName().endsWith(ext)) {
+							return true;
+						}
+					}
+					return false;
+				}
+
+			});
+			for (File dctFile : dctFileOrDirs) {
+				if (dctFile.getName().endsWith(".zip")) {
+					// call the deliverZIPDCTFile
+				} else {
+					deliverDCTFiles(dctFile, deliveredFileNum, appId, encoding,
+							langCodes, langCharset, warnings);
+				}
+			}
+		} else {
+			// deliver a file.
+			// TODO: Need to rethink
+			deliverDCT(file.getName(), file.getAbsolutePath(), appId, encoding,
+					langCodes, langCharset, warnings);
+			deliveredFileNum++;
+		}
+		return 0;
 	}
 
 	public void generateDCT(String filename, Long dctId, String encoding,
@@ -161,8 +208,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 							.get(dictLang).getLanguage();
 					for (Translation translation : label.getText()
 							.getTranslations()) {
-						if (translation.getLanguage().getId().equals(dictLangCodeLanguage
-								.getId())) {
+						if (translation.getLanguage().getId()
+								.equals(dictLangCodeLanguage.getId())) {
 							translationString = translation.getTranslation();
 							break;
 						}
@@ -223,20 +270,23 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 				+ generateSpace(indentSize));
 	}
 
-	public Dictionary previewDCT(String filename, Long appId, String encoding, Collection<BusinessWarning> warnings)
+	public Dictionary previewDCT(String dictionaryName, String filename,
+			Long appId, String encoding, Collection<BusinessWarning> warnings)
 			throws BusinessException {
 		Application app = (Application) getDao().retrieve(Application.class,
 				appId);
-		
+
 		if (null == app) {
-			throw new BusinessException(BusinessException.APPLICATION_NOT_FOUND, appId);
+			throw new BusinessException(
+					BusinessException.APPLICATION_NOT_FOUND, appId);
 		}
-		
+
 		Dictionary dict = null;
 		try {
 			DictionaryParser dictParser = DictionaryParser
 					.getDictionaryParser(this);
-			dict = dictParser.parse(app, filename, encoding, warnings);
+			dict = dictParser.parse(app, dictionaryName, filename, encoding,
+					warnings);
 		} catch (IOException e) {
 			throw new SystemError(e.getMessage());
 		}
@@ -244,7 +294,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	}
 
 	public Dictionary importDCT(Dictionary dict, String[] langCodes,
-			Map<String, String> langCharset, Collection<BusinessWarning> warnings) {
+			Map<String, String> langCharset,
+			Collection<BusinessWarning> warnings) {
 		if (null == dict)
 			return null;
 
@@ -263,7 +314,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 			// used for iteration.
 			dictLangCodes = Arrays.asList(langCodes);
 		}
-		
 
 		Dictionary dbDict = (Dictionary) getDao().retrieveOne(
 				"from Dictionary where name=:name",
@@ -331,12 +381,12 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 							charsetName);
 					translationMap.put(dictLanguage.getLanguage().getId(),
 							encodedTranslation);
-					
+
 					// check length
 					if (!label.checkLength(encodedTranslation)) {
 						warnings.add(new BusinessWarning(
-								BusinessWarning.EXCEED_MAX_LENGTH, 
-								dictLanguage.getLanguageCode(), label.getKey()));
+								BusinessWarning.EXCEED_MAX_LENGTH, dictLanguage
+										.getLanguageCode(), label.getKey()));
 					}
 				} catch (UnsupportedEncodingException e) {
 					throw new BusinessException(
