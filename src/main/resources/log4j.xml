@@ -58,7 +58,7 @@
 	</appender>
 
 
-<!-- 	<logger name="org.hibernate.type">
+	<logger name="org.hibernate.type">
 		<level value="TRACE" />
 	</logger>
 	<logger name="org.hibernate.SQL">
@@ -67,12 +67,12 @@
 	
 	<logger name="com.alcatel_lucent.dms">
 		<level value="DEBUG" />
-	</logger> -->
+	</logger>
 
 	<root>
-		<level value="WARN" />
+		<level value="DEBUG" />
 		<appender-ref ref="CONSOLE" />
-		<!-- <appender-ref ref="FILE" /> -->
+		<appender-ref ref="FILE" />
 		<!-- <appender-ref ref="ASYNC" /> -->
 	</root>
 
