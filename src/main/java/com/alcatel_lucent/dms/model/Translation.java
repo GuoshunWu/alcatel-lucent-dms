@@ -1,5 +1,7 @@
 package com.alcatel_lucent.dms.model;
 
+import com.alcatel_lucent.dms.util.CharsetUtil;
+
 public class Translation extends BaseEntity {
 	/**
 	 * 
@@ -35,5 +37,11 @@ public class Translation extends BaseEntity {
 				language, translation);
 	}
 	
+	public boolean isValidText() {
+		if (translation != null) {
+			return CharsetUtil.isValid(translation, language.getName());
+		}
+		return true;
+	}
 	
 }
