@@ -7,8 +7,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -48,9 +48,6 @@ public class DictionaryParser {
 	private static final Pattern patternLanguage = Pattern
 			.compile("^LANGUAGES\\s*\\{((?:[\\w-]{2,5},?\\s*)+)\\}$");
 
-	public static final int UTF8_BOM_LENGTH = 3;
-	public static final int UTF16_BOM_LENGTH = 2;
-
 	private BaseServiceImpl baseService;
 	private static DictionaryParser dictionaryParser;
 
@@ -69,54 +66,40 @@ public class DictionaryParser {
 
 	}
 
-	/**
-	 * Parse a given dct file and generate a Dictionary Object
-	 * 
-	 * */
-
-	public Dictionary parse(Application app, String filename, String encoding, Collection<BusinessWarning> warnings)
-			throws IOException {
-		File dctFile = new File(filename);
-		if (!dctFile.exists()) {
-			throw new BusinessException(BusinessException.DCT_FILE_NOT_FOUND,
-					filename);
-		}
-
-		log.warn("\n######################begin deliver: " + dctFile.getName()
-				+ "##########################\n");
+	public Dictionary parse(Application app, String dictionaryName,
+			String path, InputStream dctInputStream, String encoding,
+			Collection<BusinessWarning> warnings) throws IOException {
 
 		Dictionary dict = new Dictionary();
-		dict.setName(dctFile.getName());
+		dict.setName(dictionaryName);
 		dict.setFormat("dct");
-		dict.setPath(dctFile.getPath());
+		dict.setPath(path);
 
 		dict.setApplication(app);
-
-		BusinessException nonBreakExceptions = new BusinessException(
-				BusinessException.NESTED_DCT_PARSE_ERROR, dict.getName());
-
-		// create or related context
-		Context context = new Context();
-		context.setName(dict.getName());
-		if (null == encoding) {
-
-			encoding = detectEncoding(dctFile);
-		}
 		dict.setEncoding(encoding);
 
 		Set<Label> labels = new HashSet<Label>();
 
-		FileInputStream fis = null;
-		
+		// create or related context
+		Context context = new Context();
+		context.setName(dict.getName());
+
+		BusinessException nonBreakExceptions = new BusinessException(
+				BusinessException.NESTED_DCT_PARSE_ERROR, dict.getName());
+
 		try {
-			fis = new FileInputStream(dctFile);
 			// Creates an BufferedReader that uses the encoding charset.
-			BufferedReader dctReader = new BufferedReader(new InputStreamReader(
-					fis, encoding));
+			if (null == encoding) {
+				throw new NullPointerException("Encoding is null.");
+			}
+			BufferedReader dctReader = new BufferedReader(
+					new InputStreamReader(dctInputStream, encoding));
+
 			String line = null;
 			HashSet<String> declaredLangCodes = new HashSet<String>();
 			HashSet<String> labelKeys = new HashSet<String>();
-			log.debug("Processing DCT file " + filename);
+			log.debug("Processing DCT file " + dictionaryName);
+
 			while (null != (line = dctReader.readLine())) {
 				line = line.trim();
 				// ignore the comment line and blank line
@@ -124,7 +107,7 @@ public class DictionaryParser {
 					continue;
 				}
 				line = removeComments(line);
-	
+
 				Matcher m = patternLanguage.matcher(line);
 				// is LANGUAGES
 				if (m.matches()) {
@@ -143,12 +126,13 @@ public class DictionaryParser {
 				} else if (line.endsWith(":")) {// a label start
 					log.debug("Processing label " + line);
 					try {
-						Label newLabel = readLabel(dctReader, line, dict, context,
-								declaredLangCodes, warnings);
+						Label newLabel = readLabel(dctReader, line, dict,
+								context, declaredLangCodes, warnings);
 						if (labelKeys.contains(newLabel.getKey())) {
-							nonBreakExceptions.addNestedException(new BusinessException(
-									BusinessException.DUPLICATE_LABEL_KEY,
-									newLabel.getKey()));
+							nonBreakExceptions
+									.addNestedException(new BusinessException(
+											BusinessException.DUPLICATE_LABEL_KEY,
+											newLabel.getKey()));
 						} else {
 							labelKeys.add(newLabel.getKey());
 							labels.add(newLabel);
@@ -158,19 +142,47 @@ public class DictionaryParser {
 					}
 				} else {
 					log.error("Parser was broken on line: " + line);
-					throw new BusinessException(BusinessException.INVALID_DCT_FILE,
-							dict.getName());
+					throw new BusinessException(
+							BusinessException.INVALID_DCT_FILE, dict.getName());
 				}
 			}
 			dict.setLabels(labels);
-			
+
 			if (nonBreakExceptions.hasNestedException()) {
 				throw nonBreakExceptions;
 			}
-			return dict;
 		} finally {
-			if (fis != null) fis.close();
+			if (dctInputStream != null)
+				dctInputStream.close();
 		}
+
+		return dict;
+	}
+
+	/**
+	 * Parse a given dct file and generate a Dictionary Object
+	 * 
+	 * */
+
+	public Dictionary parse(Application app, String dictionaryName,
+			String filename, String encoding,
+			Collection<BusinessWarning> warnings) throws IOException {
+		File dctFile = new File(filename);
+		if (!dctFile.exists()) {
+			throw new BusinessException(BusinessException.DCT_FILE_NOT_FOUND,
+					filename);
+		}
+
+		log.info("\n######################begin deliver: " + dctFile.getName()
+				+ "##########################\n");
+		if(null==encoding){
+			encoding=Util.detectEncoding(dctFile);
+		}
+		InputStream is= new FileInputStream(dctFile);
+		Dictionary dict = parse(app, dictionaryName, dctFile.getPath(), is,
+				encoding, warnings);
+		is.close();
+		return dict;
 	}
 
 	/**
@@ -183,8 +195,9 @@ public class DictionaryParser {
 	 * @throws IOException
 	 * */
 	private Label readLabel(BufferedReader dctReader, String line,
-			Dictionary dict, Context context, HashSet<String> languageCodes, Collection<BusinessWarning> warnings)
-			throws BusinessException, IOException {
+			Dictionary dict, Context context, HashSet<String> languageCodes,
+			Collection<BusinessWarning> warnings) throws BusinessException,
+			IOException {
 		String key = line.replace(":", "");
 		Label label = new Label();
 		label.setDictionary(dict);
@@ -220,9 +233,10 @@ public class DictionaryParser {
 							BusinessException.DUPLICATE_LANG_CODE, langCode));
 				}
 				isLabelEnds = false;
-				
+
 				if (isUnclosedQuota(line)) {
-					warnings.add(new BusinessWarning(BusinessWarning.UNCLOSED_QUOTA, langCode, key));
+					warnings.add(new BusinessWarning(
+							BusinessWarning.UNCLOSED_QUOTA, langCode, key));
 				}
 				// remove the langCode, blank characters and quotation marks
 				line = line.replaceFirst(langCode, "").trim().replace("\"", "");
@@ -246,7 +260,9 @@ public class DictionaryParser {
 						line = removeComments(line);
 
 						if (isUnclosedQuota(line)) {
-							warnings.add(new BusinessWarning(BusinessWarning.UNCLOSED_QUOTA, langCode, key));
+							warnings.add(new BusinessWarning(
+									BusinessWarning.UNCLOSED_QUOTA, langCode,
+									key));
 						}
 						line = line.replace("\"", "");
 						if (line.endsWith(",") || line.endsWith(";")) {
@@ -272,8 +288,7 @@ public class DictionaryParser {
 		String gae = entriesInLable.get("GAE");
 		if (null == gae) {
 			exceptions.addNestedException(new BusinessException(
-					BusinessException.NO_REFERENCE_TEXT,
-					label.getKey()));
+					BusinessException.NO_REFERENCE_TEXT, label.getKey()));
 		}
 		label.setReference(gae);
 		Text text = new Text();
@@ -293,7 +308,7 @@ public class DictionaryParser {
 			trans = new Translation();
 			trans.setText(text);
 
-			LanguageCode lCode=languageCodeCheck(entry.getKey());
+			LanguageCode lCode = languageCodeCheck(entry.getKey());
 			trans.setLanguage(lCode.getLanguage());
 			trans.setTranslation(entry.getValue());
 
@@ -313,7 +328,7 @@ public class DictionaryParser {
 			}
 			label.setMaxLength(maxLength);
 		}
-		
+
 		if (exceptions.hasNestedException()) {
 			throw exceptions;
 		}
@@ -323,6 +338,7 @@ public class DictionaryParser {
 
 	/**
 	 * Check if text has ending quota
+	 * 
 	 * @param line
 	 * @return
 	 */
@@ -421,7 +437,7 @@ public class DictionaryParser {
 	private String removeComments(String line) {
 		line.trim();
 		// remove trailing comments
-		Matcher m_line = Pattern.compile("(.*?[^\"\'])--.*").matcher(line);
+		Matcher m_line = Pattern.compile("((?:.|[\\u0085])*)--.*").matcher(line);
 		if (m_line.matches()) {
 			line = m_line.group(1).trim();
 		}
@@ -430,35 +446,6 @@ public class DictionaryParser {
 
 	private boolean isCommentOrBlankLine(String line) {
 		return line.startsWith("--") || line.isEmpty();
-	}
-
-	/**
-	 * Detect the encoding of a File by BOM(byte order mark).
-	 * 
-	 * @author Guoshun.Wu Date: 2012-07-01
-	 * 
-	 * @param file
-	 *            given File
-	 * @return file encoding
-	 * */
-	public static String detectEncoding(File file) throws IOException {
-		byte[] utf8BOM = new byte[] { (byte) 0xef, (byte) 0xbb, (byte) 0xbf, };
-		byte[] utf16LEBOM = new byte[] { (byte) 0xff, (byte) 0xfe };
-		byte[] utf16BEBOM = new byte[] { (byte) 0xfe, (byte) 0xff };
-
-		byte[] buf = new byte[UTF8_BOM_LENGTH];
-		FileInputStream fis = new FileInputStream(file);
-		fis.read(buf);
-		fis.close();
-		if (Arrays.equals(utf8BOM, buf)) {
-			return "UTF-8";
-		}
-		if (Arrays.equals(utf16LEBOM, Arrays.copyOf(buf, UTF16_BOM_LENGTH))
-				|| Arrays.equals(utf16BEBOM,
-						Arrays.copyOf(buf, UTF16_BOM_LENGTH))) {
-			return "UTF-16";
-		}
-		return "ISO-8859-1";
 	}
 
 }
