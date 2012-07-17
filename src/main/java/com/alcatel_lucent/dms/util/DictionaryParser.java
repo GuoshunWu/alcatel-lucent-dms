@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.alcatel_lucent.dms.BusinessException;
@@ -175,10 +176,10 @@ public class DictionaryParser {
 
 		log.info("\n######################begin deliver: " + dctFile.getName()
 				+ "##########################\n");
-		if(null==encoding){
-			encoding=Util.detectEncoding(dctFile);
+		if (null == encoding) {
+			encoding = Util.detectEncoding(dctFile);
 		}
-		InputStream is= new FileInputStream(dctFile);
+		InputStream is = new FileInputStream(dctFile);
 		Dictionary dict = parse(app, dictionaryName, dctFile.getPath(), is,
 				encoding, warnings);
 		is.close();
@@ -433,15 +434,19 @@ public class DictionaryParser {
 	 * 
 	 * @author Guoshun.Wu Date: 2012-07-04
 	 * @return processed line
+	 * @throws IOException
 	 * */
-	private String removeComments(String line) {
+	private String removeComments(String line) throws IOException {
 		line.trim();
-		// remove trailing comments
-		Matcher m_line = Pattern.compile("((?:.|[\\u0085])*)--.*").matcher(line);
-		if (m_line.matches()) {
-			line = m_line.group(1).trim();
+		int quotIndex = line.lastIndexOf("\"");
+		if (-1 == quotIndex) {
+			quotIndex = 0;
 		}
-		return line;
+		int commentIndex = line.indexOf("--", quotIndex);
+		if (-1 != commentIndex) {
+			line = line.substring(0, commentIndex);
+		}
+		return line.trim();
 	}
 
 	private boolean isCommentOrBlankLine(String line) {

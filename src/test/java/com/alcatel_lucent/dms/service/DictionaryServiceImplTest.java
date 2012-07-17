@@ -32,6 +32,7 @@ import java.util.zip.ZipFile;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.collections.map.MultiKeyMap;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -89,7 +90,7 @@ public class DictionaryServiceImplTest {
 		testFilePath = testFilePath.getParentFile().getParentFile();
 		testFilesPathDir = new File(testFilePath, "dct_test_files")
 				.getAbsolutePath() + "/";
-		// log.setLevel(Level.DEBUG);
+		log.setLevel(Level.DEBUG);
 		log.info("Test file path is: " + testFilesPathDir);
 	}
 
@@ -455,18 +456,18 @@ public class DictionaryServiceImplTest {
 		// langCharset, warnings);
 
 	}
-	
+
 	@Test
-//	@Ignore("Debug...")
-	public void testRealDCTFile(){
+	// @Ignore("Debug...")
+	public void testRealDCTFile() {
 		Long appId = 1L;
 		String encoding = "ISO-8859-1";
 
 		// langCharset mapping of language code and its source charset name
 		Map<String, String> langCharset = new HashMap<String, String>();
 		List<String> keys = Arrays
-				.asList("CHK, GAE, FR0, EN0, DE0, IT0, PT0, ES0, US0, PL0, KO0, NO0, NL0, RU0, CH0, FI0, ES1, CS0, HU0, CH1, SV0, AR0, DA0, HE0"
-						.split(", *"));
+				.asList("CHK, GAE, FR0, EN0, DE0, IT0, PT0, ES0, US0, PL0, KO0, NO0, NL0, RU0, CH0, FI0, ES1, CS0, HU0, CH1, SV0, AR0, DA0, HE0, en, fr, de, es, pt, it, no, ko, nl, zh_CN, ru, fi, pl, en_US, ca, cs, hu, zh, sv, ar, he, tr, da"
+						.split(",\\s*"));
 		for (String key : keys) {
 			langCharset.put(key.trim(), "GBK");
 		}
@@ -476,25 +477,27 @@ public class DictionaryServiceImplTest {
 		String[] langCodes = new String[] { "CH1" };
 		langCodes = null;
 
-		
-		testFilesPathDir="E:/tmp/AR/6.6.000.107.a/web_administration/wadmin/Ihm/CommonAdmin/xml/";
-		String testFile="appli.labels.dct";
+		testFilesPathDir = "E:/tmp/AR/6.6.000.107.a/web_administration/wadmin/Ihm/CommonAdmin/xml/";
+		String testFile = "appli.labels.dct";
 		String testFilePath = testFilesPathDir + testFile;
 		String dictName = "appli.labels.dct";
 
-//		testFilesPathDir="E:/tmp/AR/6.6.000.107.a/voice_applications/eCC_tui/VoiceApplications/dictionaries/";
-//		testFile="TUI.dct";
-//		testFilePath = testFilesPathDir + testFile;
-//		dictName = "TUI.dct";
-//		
-//		testFilesPathDir="E:/tmp/AR/6.6.000.107.a/data_access_service/dataaccess/WEB-INF/classes/com/alcatel/dataaccess/global/dico/";
-//		testFile="DtaEccServer.dct";
-//		testFilePath = testFilesPathDir + testFile;
-//		dictName = "DtaEccServer.dct";
-//		
-		
-		
+		// testFilesPathDir="E:/tmp/AR/6.6.000.107.a/voice_applications/eCC_tui/VoiceApplications/dictionaries/";
+		// testFile="TUI.dct";
+		// testFilePath = testFilesPathDir + testFile;
+		// dictName = "TUI.dct";
+		//
+		// testFilesPathDir="E:/tmp/AR/6.6.000.107.a/data_access_service/dataaccess/WEB-INF/classes/com/alcatel/dataaccess/global/dico/";
+		// testFile="DtaEccServer.dct";
+		// testFilePath = testFilesPathDir + testFile;
+		// dictName = "DtaEccServer.dct";
+		//
+
 		Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
-		ds.deliverDCT(dictName, testFilePath, appId, encoding, langCodes, langCharset, warnings);
+		long now=System.currentTimeMillis();
+		ds.deliverDCT(dictName, testFilePath, appId, encoding, langCodes,
+				langCharset, warnings);
+		
+		log.info(System.currentTimeMillis()-now + "milliseconds used.");
 	}
 }
