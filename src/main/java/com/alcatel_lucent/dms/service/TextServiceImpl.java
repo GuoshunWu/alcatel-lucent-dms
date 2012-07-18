@@ -73,6 +73,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 				dbTrans.setTranslation(translations.get(languageId));
 			}
 		}
+		dao.getSession().flush();
 		return text;
 	}
 	

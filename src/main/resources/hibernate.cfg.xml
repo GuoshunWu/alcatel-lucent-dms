@@ -13,7 +13,6 @@
 		<!-- <property name="dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property> 
 			<property name="hibernate.proxool.pool_alias">MySQL_Pool</property> -->
 
-
 		<!-- <property name="dialect">org.hibernate.dialect.Oracle10gDialect</property> 
 			<property name="hibernate.proxool.pool_alias">Oracle_Pool</property> -->
 
@@ -31,7 +30,10 @@
 
 		<!-- Enable Hibernate's automatic session context management -->
 		<property name="current_session_context_class">thread</property>
-
+		
+<!-- 		<property name="jdbc.batch_size">50</property>
+		<property name="jdbc.fetch_size">100</property> -->
+		
 		<!-- Disable the second-level cache -->
 		<property name="cache.provider_class">
 			org.hibernate.cache.NoCacheProvider

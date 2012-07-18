@@ -22,9 +22,13 @@ import com.alcatel_lucent.dms.SystemError;
  * 
  */
 public class Util {
-	
+
 	public static final int UTF8_BOM_LENGTH = 3;
 	public static final int UTF16_BOM_LENGTH = 2;
+
+	private static List<String> dctFileExts = Arrays.asList(".dct", ".dict",
+			".dic");
+	private static List<String> zipFileExts = Arrays.asList(".zip", ".jar");
 
 	/**
 	 * <p>
@@ -60,7 +64,9 @@ public class Util {
 
 	/**
 	 * Generate the specified number of space as a String.
-	 * @param count the number of spaces.
+	 * 
+	 * @param count
+	 *            the number of spaces.
 	 * @return String of the concatenated space
 	 * */
 	public static String generateSpace(int count) {
@@ -74,8 +80,7 @@ public class Util {
 		}
 		return new String(chs);
 	}
-	
-	
+
 	/**
 	 * Detect the encoding of a File by BOM(byte order mark).
 	 * 
@@ -87,13 +92,13 @@ public class Util {
 	 * */
 	public static String detectEncoding(File file) throws IOException {
 		InputStream is = new FileInputStream(file);
-		byte[] buf=new byte[UTF8_BOM_LENGTH];
+		byte[] buf = new byte[UTF8_BOM_LENGTH];
 		is.read(buf);
 		is.close();
 		return detectEncoding(buf);
 	}
 
-	public static String detectEncoding(byte[] bom){
+	public static String detectEncoding(byte[] bom) {
 		byte[] utf8BOM = new byte[] { (byte) 0xef, (byte) 0xbb, (byte) 0xbf, };
 		byte[] utf16LEBOM = new byte[] { (byte) 0xff, (byte) 0xfe };
 		byte[] utf16BEBOM = new byte[] { (byte) 0xfe, (byte) 0xff };
@@ -107,5 +112,36 @@ public class Util {
 			return "UTF-16";
 		}
 		return "ISO-8859-1";
+	}
+
+	/**
+	 * Tell if a specific file is a DCT file.
+	 * */
+	public static boolean isDCTFile(String fileName) {
+		return isSpecificFile(fileName, dctFileExts);
+	}
+	
+	/**
+	 * Tell if a specific file is a Zip file.
+	 * */
+	public static boolean isZipFile(String fileName) {
+		return isSpecificFile(fileName, zipFileExts);
+	}
+	
+	public static boolean isDCTFile(File file) {
+		return isDCTFile(file.getName());
+	}
+
+	public static boolean isZipFile(File file) {
+		return isZipFile(file.getName());
+	}
+
+	private static boolean isSpecificFile(String fileName, List<String> fileExts) {
+		for (String ext : fileExts) {
+			if (fileName.endsWith(ext)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
