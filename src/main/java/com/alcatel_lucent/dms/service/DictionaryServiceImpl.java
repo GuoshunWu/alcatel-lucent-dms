@@ -391,6 +391,13 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 							charsetName);
 					trans.setTranslation(encodedTranslation);
 
+					// check charset
+					if (!trans.isValidText()) {
+						warnings.add(new BusinessWarning(
+								BusinessWarning.INVALID_TEXT, 
+								encodedTranslation, charsetName, langCode, label.getKey()));
+					}
+					
 					// check length
 					if (!label.checkLength(encodedTranslation)) {
 						warnings.add(new BusinessWarning(
