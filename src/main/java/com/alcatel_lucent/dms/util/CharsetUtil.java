@@ -20,7 +20,10 @@ public class CharsetUtil {
 	 */
 	public static boolean isValid(String text, String lang) {
 		for (Character c : text.toCharArray()) {
-			if (!isValid(c, lang)) return false;
+			if (!isValid(c, lang)) {
+				//System.out.println("###Invalid char: '" + c + "', ub:" + getUnicodeBlock(c) + " for language " + lang);
+				return false;
+			}
 		}
 		return true;
 	}
@@ -34,9 +37,9 @@ public class CharsetUtil {
 	public static boolean isValid(char c, String lang) {
 		String ub = getUnicodeBlock(c);
 		if (ub == null) return false;
-		if (ub.equals("BASIC_LATIN")) return true;
+		if (ub.equals("BASIC_LATIN") || ub.equals("GENERAL_PUNCTUATION")) return true;
 		if (lang.startsWith("Chinese") || lang.equals("Japanese")) {
-			return ub.startsWith("CJK_");
+			return ub.startsWith("CJK_") || ub.equals("HALFWIDTH_AND_FULLWIDTH_FORMS");
 		} else if (lang.equals("Korean")) {
 			return ub.equals("HANGUL_SYLLABLES") || ub.startsWith("CJK_");
 		} else if (lang.equals("Arabic")) {
@@ -44,7 +47,7 @@ public class CharsetUtil {
 		} else if (lang.equals("Russian")) {
 			return ub.equals("CYRILLIC");
 		} else {
-			return ub.equals("LATIN_1_SUPPLEMENT");
+			return ub.startsWith("LATIN_");
 		}
 	}
 }
