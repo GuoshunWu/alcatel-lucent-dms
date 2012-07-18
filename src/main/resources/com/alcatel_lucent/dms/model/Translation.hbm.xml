@@ -6,7 +6,11 @@
 
 	<class name="Translation" table="TRANSLATION">
 		<id column="ID" name="id">
-			<generator class="native" />
+			<generator class="hilo">
+                <param name="table">ID_TRANSLATION</param>
+                <param name="column">next_hi</param>
+                <param name="max_lo">100</param>
+        	</generator>
 		</id>
 
 		<property name="translation" type="string" column="TRANSLATION"

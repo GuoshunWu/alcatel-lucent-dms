@@ -6,7 +6,11 @@
 
 	<class name="Text" table="TEXT">
 		<id column="ID" name="id">
-			<generator class="native" />
+			<generator class="hilo">
+                <param name="table">ID_TEXT</param>
+                <param name="column">next_hi</param>
+                <param name="max_lo">100</param>
+        	</generator>
 		</id>
 
 		<property name="reference" type="string" column="REFERENCE"
