@@ -53,6 +53,8 @@
 			<property name="connection.username">root</property> <property name="connection.password">root123</property> 
 			<property name="connection.driver_class">com.mysql.jdbc.Driver</property> -->
 
+		<property name="hibernate.jdbc.batch_size">100</property>
+		
 		<mapping resource="com/alcatel_lucent/dms/model/Product.hbm.xml" />
 		<mapping resource="com/alcatel_lucent/dms/model/ProductVersion.hbm.xml" />
 		<mapping resource="com/alcatel_lucent/dms/model/Application.hbm.xml" />

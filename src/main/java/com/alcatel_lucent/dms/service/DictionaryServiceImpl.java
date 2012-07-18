@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -89,7 +90,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 				private List<String> dctAndZipFileExts = Arrays.asList(".dct",
 						".dict", ".dic", ".zip");
 
-				@Override
 				public boolean accept(File pathname) {
 					for (String ext : dctAndZipFileExts) {
 						if (pathname.getName().endsWith(ext)) {
@@ -296,14 +296,15 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	public Dictionary importDCT(Dictionary dict, String[] langCodes,
 			Map<String, String> langCharset,
 			Collection<BusinessWarning> warnings) {
+		log.info("Start importing DCT");
 		if (null == dict)
 			return null;
 
-		// all the language code in dictionary
-		Collection dictLangCodes = getObjectProperiesList(
-				dict.getDictLanguages(), "languageCode");
-
+		// check langCodes parameter
+		Collection<String> langCodeList = null;
 		if (langCodes != null) {
+			Collection dictLangCodes = getObjectProperiesList(
+					dict.getDictLanguages(), "languageCode");
 			List<String> listLangCodes = new ArrayList(Arrays.asList(langCodes));
 			listLangCodes.removeAll(dictLangCodes);
 			if (!listLangCodes.isEmpty()) {
@@ -311,15 +312,14 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 						BusinessException.UNKNOWN_LANG_CODE,
 						listLangCodes.get(0));
 			}
-			// used for iteration.
-			dictLangCodes = Arrays.asList(langCodes);
+			langCodeList = Arrays.asList(langCodes);		
 		}
 
 		Dictionary dbDict = (Dictionary) getDao().retrieveOne(
 				"from Dictionary where name=:name",
 				JSONObject.fromObject(String.format("{'name':'%s'}",
 						dict.getName())));
-		// first time import
+		// create dictionary if not exists
 		if (null == dbDict) {
 			// create dictionary
 			log.info("Dictionary " + dict.getName()
@@ -342,76 +342,98 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 							.getName());
 		}
 
+		// prepare textMap, labelMap by context
+		log.info("Prepare data to import");
+		Map<String, Collection<Text>> textMap = new HashMap<String, Collection<Text>>();
+		Map<String, Collection<Label>> labelMap = new HashMap<String, Collection<Label>>();
+		Map<Long, String> langCodeMap = dict.getLangCodeMap();
 		for (Label label : dict.getLabels()) {
-			// create context if necessary
-			Context context = label.getContext();
-			Context dbContext = textService.getContextByName(context.getName());
-			if (dbContext == null) {
-				dbContext = (Context) getDao().create(context);
-			}
-
-			// create or update text and translations
+			String contextName = label.getContext().getName();
 			Text text = label.getText();
-			HashSet<String> langCodeSet = null;
-			if (langCodes != null) {
-				langCodeSet = new HashSet<String>(Arrays.asList(langCodes));
+			
+			Collection<Text> texts = textMap.get(contextName);
+			if (texts == null) {
+				texts = new ArrayList<Text>();
+				textMap.put(contextName, texts);
 			}
-			Map<Long, String> translationMap = new HashMap<Long, String>();
-			for (DictionaryLanguage dictLanguage : dict.getDictLanguages()) {
-				if (langCodeSet != null
-						&& !langCodeSet
-								.contains(dictLanguage.getLanguageCode())) {
-					continue;
+			texts.add(text);
+
+			Collection<Label> labels = labelMap.get(contextName);
+			if (labels == null) {
+				labels = new ArrayList<Label>();
+				labelMap.put(contextName, labels);
+			}
+			labels.add(label);
+
+			// filter by langCodes parameter 
+			if (langCodeList != null) {
+				for (Iterator<Translation> iterator = text.getTranslations().iterator();iterator.hasNext();) {
+					Translation trans = iterator.next();
+					String langCode = langCodeMap.get(trans.getLanguage().getId());
+					if (!langCodeList.contains(langCode)) {
+						iterator.remove();
+					}
 				}
-				String charsetName = langCharset.get(dictLanguage
-						.getLanguageCode());
+			}
+			
+			// convert charset of translation strings
+			for (Translation trans : text.getTranslations()) {
+				String langCode = langCodeMap.get(trans.getLanguage().getId());
+				String charsetName = langCharset.get(langCode);
 				if (null == charsetName) {
 					throw new BusinessException(
 							BusinessException.CHARSET_NOT_DEFINED,
-							dictLanguage.getLanguageCode());
-				}
-				Translation trans = text.getTranslation(dictLanguage
-						.getLanguage().getId());
-				if (null == trans) {
-					continue;
+							langCode);
 				}
 				try {
 					String encodedTranslation = new String(trans
 							.getTranslation().getBytes(dict.getEncoding()),
 							charsetName);
-					translationMap.put(dictLanguage.getLanguage().getId(),
-							encodedTranslation);
+					trans.setTranslation(encodedTranslation);
 
 					// check length
 					if (!label.checkLength(encodedTranslation)) {
 						warnings.add(new BusinessWarning(
-								BusinessWarning.EXCEED_MAX_LENGTH, dictLanguage
-										.getLanguageCode(), label.getKey()));
+								BusinessWarning.EXCEED_MAX_LENGTH, langCode, label.getKey()));
 					}
 				} catch (UnsupportedEncodingException e) {
 					throw new BusinessException(
 							BusinessException.CHARSET_NOT_FOUND, charsetName);
 				}
 			}
-			Text dbText = textService.addTranslations(dbContext.getId(),
-					label.getReference(), translationMap);
-
-			// create or update label
-			Label dbLabel = dbDict.getLabel(label.getKey());
-			if (dbLabel == null) {
-				label.setDictionary(dbDict);
-				label.setContext(dbContext);
-				label.setText(dbText);
-				dbLabel = (Label) dao.create(label);
-			} else {
-				dbLabel.setContext(dbContext);
-				dbLabel.setText(dbText);
-				dbLabel.setKey(label.getKey());
-				dbLabel.setDescription(label.getDescription());
-				dbLabel.setMaxLength(label.getMaxLength());
-				dbLabel.setReference(label.getReference());
+		}
+		
+		// for each context, insert or update label/text/translation data
+		for (String contextName : textMap.keySet()) {
+			log.info("Importing data into context " + contextName);
+			Context context = textService.getContextByName(contextName);
+			if (context == null) {
+				context = new Context();
+				context.setName(contextName);
+				context = (Context) dao.create(context);
+			}
+			Collection<Text> texts = textMap.get(contextName);
+			Map<String, Text> dbTextMap = textService.updateTranslations(context.getId(), texts);
+			Collection<Label> labels = labelMap.get(contextName);
+			for (Label label : labels) {
+				// create or update label
+				Label dbLabel = dbDict.getLabel(label.getKey());
+				if (dbLabel == null) {
+					label.setDictionary(dbDict);
+					label.setContext(context);
+					label.setText(dbTextMap.get(label.getReference()));
+					dbLabel = (Label) dao.create(label, false);
+				} else {
+					dbLabel.setContext(context);
+					dbLabel.setText(dbTextMap.get(label.getReference()));
+					dbLabel.setKey(label.getKey());
+					dbLabel.setDescription(label.getDescription());
+					dbLabel.setMaxLength(label.getMaxLength());
+					dbLabel.setReference(label.getReference());
+				}
 			}
 		}
+		log.info("Import DCT finish");
 		return dbDict;
 	}
 

@@ -2,7 +2,9 @@ package com.alcatel_lucent.dms.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 public class Dictionary extends BaseEntity {
 	/**
@@ -165,6 +167,16 @@ public class Dictionary extends BaseEntity {
 		if (dictLanguages != null) {
 			for (DictionaryLanguage dl : dictLanguages) {
 				result.add(dl.getLanguage());
+			}
+		}
+		return result;
+	}
+	
+	public Map<Long, String> getLangCodeMap() {
+		Map<Long, String> result = new HashMap<Long, String>();
+		if (dictLanguages != null) {
+			for (DictionaryLanguage dl : dictLanguages) {
+				result.put(dl.getLanguage().getId(), dl.getLanguageCode());
 			}
 		}
 		return result;

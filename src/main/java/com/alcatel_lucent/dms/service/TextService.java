@@ -1,5 +1,6 @@
 package com.alcatel_lucent.dms.service;
 
+import java.util.Collection;
 import java.util.Map;
 
 import com.alcatel_lucent.dms.BusinessException;
@@ -9,6 +10,11 @@ import com.alcatel_lucent.dms.model.Translation;
 
 public interface TextService {
 	
+	/**
+	 * Find context by name.
+	 * @param name context name
+	 * @return persistent Context object
+	 */
 	Context getContextByName(String name);
 	
 	/**
@@ -51,11 +57,20 @@ public interface TextService {
 	Text addTranslations(Long ctxId, String reference, Map<Long, String> translations);
 	
 	/**
-	 * Add translation for text.
+	 * Add translations for text.
 	 * @param textId text id
 	 * @param translations map of translations which takes language id as key,
 	 *        translated text as value
 	 * @return Text object
 	 */
 	Text addTranslations(Long textId, Map<Long, String> translations);
+	
+	/**
+	 * Update text and translation in a context.
+	 * Insert or update text and translation entities in a batch.
+	 * @param ctxId context id
+	 * @param texts texts with their translations to update in the context
+	 * @return map of persistent text objects indexed by reference.
+	 */
+	Map<String, Text> updateTranslations(Long ctxId, Collection<Text> texts);
 }

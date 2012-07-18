@@ -6,7 +6,11 @@
 
 	<class name="Label" table="LABEL">
 		<id column="ID" name="id">
-			<generator class="native" />
+			<generator class="hilo">
+                <param name="table">ID_LABEL</param>
+                <param name="column">next_hi</param>
+                <param name="max_lo">100</param>
+        	</generator>
 		</id>
 
 

@@ -1,5 +1,6 @@
 package com.alcatel_lucent.dms.service;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,7 +36,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 		text.setContext(ctx);
 		text.setReference(reference);
 		text.setStatus(Text.STATUS_NOT_TRANSLATED);
-		return (Text) dao.create(text);
+		return (Text) dao.create(text, false);
 	}
 	
 	public Translation getTranslation(Long ctxId, String reference, Long languageId) {
@@ -73,6 +74,59 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 			}
 		}
 		return text;
+	}
+	
+	public Map<String, Text> updateTranslations(Long ctxId, Collection<Text> texts) {
+		Map<String, Text> result = new HashMap<String, Text>();
+		Map<String, Text> dbTextMap = getTextsAsMap(ctxId);
+		for (Text text : texts) {
+			Text dbText = dbTextMap.get(text.getReference());
+			if (dbText == null) {
+				dbText = addText(ctxId, text.getReference());
+			}
+			for (Translation trans : text.getTranslations()) {
+				Translation dbTrans = dbText.getTranslation(trans.getLanguage().getId());
+				if (dbTrans == null) {
+					dbTrans = addTranslation(dbText, trans.getLanguage().getId(), trans.getTranslation());
+				} else {
+					dbTrans.setTranslation(trans.getTranslation());
+				}
+			}
+			result.put(text.getReference(), dbText);
+		}
+		return result;
+	}
+	
+	/**
+	 * Create a persistent Translation object. 
+	 * @param text persistent Text object
+	 * @param languageId language id
+	 * @param translationText translation text
+	 * @return persistent Translation object
+	 */
+	private Translation addTranslation(Text text, Long languageId, String translationText) {
+		Translation trans = new Translation();
+		trans.setText(text);
+		trans.setLanguage((Language) dao.retrieve(Language.class, languageId));
+		trans.setTranslation(translationText);
+		return (Translation) dao.create(trans, false);
+	}
+	
+	/**
+	 * Get all text objects in a context as map, indexed by reference.
+	 * @param ctxId context id
+	 * @return text map with reference as key
+	 */
+	private Map<String, Text> getTextsAsMap(Long ctxId) {
+		String hql = "from Text where context.id=:ctxId";
+		Map param = new HashMap();
+		param.put("ctxId", ctxId);
+		Collection<Text> texts = dao.retrieve(hql, param);
+		Map<String, Text> result = new HashMap<String, Text>();
+		for (Text text : texts) {
+			result.put(text.getReference(), text);
+		}
+		return result;
 	}
 
 }
