@@ -15,24 +15,19 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import net.sf.json.JSONObject;
 
 import org.apache.commons.collections.map.MultiKeyMap;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -90,7 +85,6 @@ public class DictionaryServiceImplTest {
 		testFilePath = testFilePath.getParentFile().getParentFile();
 		testFilesPathDir = new File(testFilePath, "dct_test_files")
 				.getAbsolutePath() + "/";
-		log.setLevel(Level.DEBUG);
 		log.info("Test file path is: " + testFilesPathDir);
 	}
 
@@ -391,7 +385,7 @@ public class DictionaryServiceImplTest {
 
 	}
 
-	// @Ignore("It will throw dup_label BusinessException")
+//	@Ignore("It will throw dup_label BusinessException")
 	@Test(expected = BusinessException.class, timeout = 10000)
 	public void testAbnormalDCT() throws Exception {
 		Long appId = 1L;
@@ -416,52 +410,11 @@ public class DictionaryServiceImplTest {
 				langCodes, langCharset, warnings);
 	}
 
-	@Ignore("Not ready yet.")
 	@Test
-	public void testActualDctFile() throws Exception {
-		File testFile = new File("../AR.zip");
-
-		assertTrue("File not exists.", testFile.exists());
-
-		ZipFile testZipFile = new ZipFile(testFile);
-
-		Enumeration<ZipEntry> entries = (Enumeration<ZipEntry>) testZipFile
-				.entries();
-
-		ZipEntry entry = null;
-		while (entries.hasMoreElements()) {
-			entry = entries.nextElement();
-			if (entry.isDirectory() || isDCTFile(entry.getName()))
-				continue;
-			log.info("Begin deliver " + entry.getName() + " file in zip file "
-					+ testFile.getName());
-			deliverDCTFile(testZipFile.getInputStream(entry));
-		}
-		testZipFile.close();
-	}
-
-	private boolean isDCTFile(String name) {
-		List<String> dctFileExts = Arrays.asList(".dct", ".dict", ".dic");
-		for (String ext : dctFileExts) {
-			if (name.endsWith(ext)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private void deliverDCTFile(InputStream dctFile) {
-		// TODO: Determine the arguments
-		// ds.deliverDCT(dictionaryName, filename, appId, encoding, langCodes,
-		// langCharset, warnings);
-
-	}
-
-	@Test
-	// @Ignore("Debug...")
+//	@Ignore("Debug...")
 	public void testRealDCTFile() {
 		Long appId = 1L;
-		String encoding = "ISO-8859-1";
+		String encoding = null;
 
 		// langCharset mapping of language code and its source charset name
 		Map<String, String> langCharset = new HashMap<String, String>();
@@ -477,27 +430,31 @@ public class DictionaryServiceImplTest {
 		String[] langCodes = new String[] { "CH1" };
 		langCodes = null;
 
-		testFilesPathDir = "E:/tmp/AR/6.6.000.107.a/web_administration/wadmin/Ihm/CommonAdmin/xml/";
+		testFilesPathDir = "D:/tmp/AR/6.6.000.107.a/web_administration/wadmin/Ihm/CommonAdmin/xml/";
 		String testFile = "appli.labels.dct";
 		String testFilePath = testFilesPathDir + testFile;
 		String dictName = "appli.labels.dct";
 
-		// testFilesPathDir="E:/tmp/AR/6.6.000.107.a/voice_applications/eCC_tui/VoiceApplications/dictionaries/";
-		// testFile="TUI.dct";
+		// testFilesPathDir =
+		// "D:/tmp/AR/6.6.000.107.a/voice_applications/eCC_tui/VoiceApplications/dictionaries/";
+		// testFile = "TUI.dct";
 		// testFilePath = testFilesPathDir + testFile;
 		// dictName = "TUI.dct";
 		//
-		// testFilesPathDir="E:/tmp/AR/6.6.000.107.a/data_access_service/dataaccess/WEB-INF/classes/com/alcatel/dataaccess/global/dico/";
-		// testFile="DtaEccServer.dct";
+		// testFilesPathDir =
+		// "D:/tmp/AR/6.6.000.107.a/data_access_service/dataaccess/WEB-INF/classes/com/alcatel/dataaccess/global/dico/";
+		// testFile = "DtaEccServer.dct";
 		// testFilePath = testFilesPathDir + testFile;
 		// dictName = "DtaEccServer.dct";
-		//
 
 		Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
-		long now=System.currentTimeMillis();
+		
+		long before = System.currentTimeMillis();
 		ds.deliverDCT(dictName, testFilePath, appId, encoding, langCodes,
 				langCharset, warnings);
-		
-		log.info(System.currentTimeMillis()-now + "milliseconds used.");
+		long after = System.currentTimeMillis();
+
+		log.info("**************DeliverDCT take " + (after - before)
+				+ " milliseconds of time.***************");
 	}
 }

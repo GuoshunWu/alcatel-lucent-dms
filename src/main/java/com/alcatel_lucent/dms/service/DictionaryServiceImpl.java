@@ -6,20 +6,23 @@ import static org.apache.commons.lang.StringUtils.join;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import java.io.FileFilter;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import net.sf.json.JSONObject;
 
@@ -37,8 +40,8 @@ import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.Language;
 import com.alcatel_lucent.dms.model.Text;
 import com.alcatel_lucent.dms.model.Translation;
-
 import com.alcatel_lucent.dms.util.DictionaryParser;
+import com.alcatel_lucent.dms.util.Util;
 
 public class DictionaryServiceImpl extends BaseServiceImpl implements
 		DictionaryService {
@@ -66,56 +69,140 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 		return result;
 	}
 
+	public Dictionary deliverDCT(String dictionaryName, String path,
+			InputStream dctInputStream, Long appId, String encoding,
+			String[] langCodes, Map<String, String> langCharset,
+			Collection<BusinessWarning> warnings) throws BusinessException,
+			IOException {
+
+		long before = System.currentTimeMillis();
+		Dictionary dict = previewDCT(dictionaryName, path, dctInputStream,
+				appId, encoding, warnings);
+		long after = System.currentTimeMillis();
+		log.info("**************previewDCT take " + (after - before)
+				+ " milliseconds of time.************");
+
+		log.info("Dictionary " + dict.getName()
+				+ " is about to import to database");
+
+		before = System.currentTimeMillis();
+		dict = importDCT(dict, langCodes, langCharset, warnings);
+		after = System.currentTimeMillis();
+		log.info("************importDCT take " + (after - before)
+				+ " milliseconds of time.**************");
+
+		return dict;
+	}
+
 	public Dictionary deliverDCT(String dictionaryName, String filename,
 			Long appId, String encoding, String[] langCodes,
 			Map<String, String> langCharset,
 			Collection<BusinessWarning> warnings) throws BusinessException {
+		InputStream is;
+		try {
+			is = new FileInputStream(filename);
+			if (null == encoding) {
+				byte[] bom = new byte[Util.UTF8_BOM_LENGTH];
+				is.read(bom);
+				encoding = Util.detectEncoding(bom);
+				is.close();
+				is=new FileInputStream(filename);
+			}
+			return deliverDCT(dictionaryName, filename, is, appId, encoding,
+					langCodes, langCharset, warnings);
+		} catch (IOException e) {
+			throw new SystemError(e.getMessage());
+		}
 
-		Dictionary dict = previewDCT(dictionaryName, filename, appId, encoding,
-				warnings);
-
-		dict = importDCT(dict, langCodes, langCharset, warnings);
-		return dict;
 	}
 
 	/**
 	 * Deliver dct files in a directory
 	 * */
-	public int deliverDCTFiles(File file, int deliveredFileNum, Long appId,
-			String encoding, String[] langCodes,
-			Map<String, String> langCharset,
-			Collection<BusinessWarning> warnings) {
+	public Collection<Dictionary> deliverDCTFiles(File file,
+			int deliveredFileNum, Long appId, String encoding,
+			String[] langCodes, Map<String, String> langCharset,
+			Collection<BusinessWarning> warnings) throws BusinessException {
+
+		if (!file.exists())
+			return null;
+
+		Collection<Dictionary> deliveredDicts = new ArrayList<Dictionary>();
+
 		if (file.isDirectory()) {
 			File[] dctFileOrDirs = file.listFiles(new FileFilter() {
-				private List<String> dctAndZipFileExts = Arrays.asList(".dct",
-						".dict", ".dic", ".zip");
-
+				@Override
 				public boolean accept(File pathname) {
-					for (String ext : dctAndZipFileExts) {
-						if (pathname.getName().endsWith(ext)) {
-							return true;
-						}
-					}
-					return false;
+					return pathname.isDirectory() || Util.isDCTFile(pathname)
+							|| Util.isZipFile(pathname);
 				}
-
 			});
 			for (File dctFile : dctFileOrDirs) {
-				if (dctFile.getName().endsWith(".zip")) {
-					// call the deliverZIPDCTFile
-				} else {
-					deliverDCTFiles(dctFile, deliveredFileNum, appId, encoding,
-							langCodes, langCharset, warnings);
-				}
+				Collection<Dictionary> subDeliveredDicts = deliverDCTFiles(
+						dctFile, deliveredFileNum, appId, encoding, langCodes,
+						langCharset, warnings);
+				deliveredDicts.addAll(subDeliveredDicts);
 			}
-		} else {
-			// deliver a file.
-			// TODO: Need to rethink
-			deliverDCT(file.getName(), file.getAbsolutePath(), appId, encoding,
-					langCodes, langCharset, warnings);
-			deliveredFileNum++;
 		}
-		return 0;
+
+		if (Util.isZipFile(file)) {
+			try {
+				Collection<Dictionary> zipDeliveredDicts = deliverZipDCTFile(
+						new ZipFile(file), appId, encoding, langCodes,
+						langCharset, warnings);
+				deliveredDicts.addAll(zipDeliveredDicts);
+			} catch (IOException e) {
+				throw new SystemError(e.getMessage());
+			}
+		}
+		// normal dct file
+		Dictionary dict = deliverDCT(file.getPath(), file.getAbsolutePath(),
+				appId, encoding, langCodes, langCharset, warnings);
+		dict.setDictLanguages(null);
+		dict.setFormat(null);
+		dict.setLabels(null);
+
+		deliveredDicts.add(dict);
+
+		return deliveredDicts;
+	}
+
+	/**
+	 * Deliver a Zip file into database.
+	 * */
+	private Collection<Dictionary> deliverZipDCTFile(ZipFile file, Long appId,
+			String encoding, String[] langCodes,
+			Map<String, String> langCharset,
+			Collection<BusinessWarning> warnings) throws BusinessException {
+
+		Collection<Dictionary> deliveredDicts = new ArrayList<Dictionary>();
+
+		Enumeration<ZipEntry> entries = (Enumeration<ZipEntry>) file.entries();
+		ZipEntry entry = null;
+		while (entries.hasMoreElements()) {
+			entry = entries.nextElement();
+			if (!Util.isDCTFile(entry.getName())) {
+				continue;
+			}
+			try {
+				InputStream is = file.getInputStream(entry);
+
+				if (null == encoding) {
+					byte[] bom = new byte[Util.UTF8_BOM_LENGTH];
+					is.read(bom);
+					encoding = Util.detectEncoding(bom);
+				}
+				String dictionaryName = entry.getName();
+				String path = file.getName() + dictionaryName;
+				Dictionary dict = deliverDCT(dictionaryName, path, is, appId,
+						encoding, langCodes, langCharset, warnings);
+				deliveredDicts.add(dict);
+			} catch (IOException e) {
+				throw new SystemError(e.getMessage());
+			}
+		}
+
+		return deliveredDicts;
 	}
 
 	public void generateDCT(String filename, Long dctId, String encoding,
@@ -273,6 +360,30 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	public Dictionary previewDCT(String dictionaryName, String filename,
 			Long appId, String encoding, Collection<BusinessWarning> warnings)
 			throws BusinessException {
+		File file = new File(filename);
+		if (!file.exists()) {
+			throw new BusinessException(BusinessException.DCT_FILE_NOT_FOUND,
+					file.getName());
+		}
+		InputStream is;
+		try {
+			is = new FileInputStream(file);
+			if (!file.exists()) {
+				throw new BusinessException(
+						BusinessException.DCT_FILE_NOT_FOUND, file.getName());
+			}
+			return previewDCT(dictionaryName, filename, is, appId, encoding,
+					warnings);
+		} catch (IOException e) {
+			throw new SystemError(e.getMessage());
+		}
+
+	}
+
+	public Dictionary previewDCT(String dictionaryName, String path,
+			InputStream dctInputStream, Long appId, String encoding,
+			Collection<BusinessWarning> warnings) throws BusinessException,
+			IOException {
 		Application app = (Application) getDao().retrieve(Application.class,
 				appId);
 
@@ -282,14 +393,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 		}
 
 		Dictionary dict = null;
-		try {
-			DictionaryParser dictParser = DictionaryParser
-					.getDictionaryParser(this);
-			dict = dictParser.parse(app, dictionaryName, filename, encoding,
-					warnings);
-		} catch (IOException e) {
-			throw new SystemError(e.getMessage());
-		}
+		DictionaryParser dictParser = DictionaryParser
+				.getDictionaryParser(this);
+		dict = dictParser.parse(app, dictionaryName, path, dctInputStream,
+				encoding, warnings);
+
 		return dict;
 	}
 
@@ -312,7 +420,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 						BusinessException.UNKNOWN_LANG_CODE,
 						listLangCodes.get(0));
 			}
-			langCodeList = Arrays.asList(langCodes);		
+			langCodeList = Arrays.asList(langCodes);
 		}
 
 		Dictionary dbDict = (Dictionary) getDao().retrieveOne(
@@ -350,7 +458,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 		for (Label label : dict.getLabels()) {
 			String contextName = label.getContext().getName();
 			Text text = label.getText();
-			
+
 			Collection<Text> texts = textMap.get(contextName);
 			if (texts == null) {
 				texts = new ArrayList<Text>();
@@ -365,25 +473,26 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 			}
 			labels.add(label);
 
-			// filter by langCodes parameter 
+			// filter by langCodes parameter
 			if (langCodeList != null) {
-				for (Iterator<Translation> iterator = text.getTranslations().iterator();iterator.hasNext();) {
+				for (Iterator<Translation> iterator = text.getTranslations()
+						.iterator(); iterator.hasNext();) {
 					Translation trans = iterator.next();
-					String langCode = langCodeMap.get(trans.getLanguage().getId());
+					String langCode = langCodeMap.get(trans.getLanguage()
+							.getId());
 					if (!langCodeList.contains(langCode)) {
 						iterator.remove();
 					}
 				}
 			}
-			
+
 			// convert charset of translation strings
 			for (Translation trans : text.getTranslations()) {
 				String langCode = langCodeMap.get(trans.getLanguage().getId());
 				String charsetName = langCharset.get(langCode);
 				if (null == charsetName) {
 					throw new BusinessException(
-							BusinessException.CHARSET_NOT_DEFINED,
-							langCode);
+							BusinessException.CHARSET_NOT_DEFINED, langCode);
 				}
 				try {
 					String encodedTranslation = new String(trans
@@ -394,14 +503,16 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 					// check charset
 					if (!trans.isValidText()) {
 						warnings.add(new BusinessWarning(
-								BusinessWarning.INVALID_TEXT, 
-								encodedTranslation, charsetName, langCode, label.getKey()));
+								BusinessWarning.INVALID_TEXT,
+								encodedTranslation, charsetName, langCode,
+								label.getKey()));
 					}
-					
+
 					// check length
 					if (!label.checkLength(encodedTranslation)) {
 						warnings.add(new BusinessWarning(
-								BusinessWarning.EXCEED_MAX_LENGTH, langCode, label.getKey()));
+								BusinessWarning.EXCEED_MAX_LENGTH, langCode,
+								label.getKey()));
 					}
 				} catch (UnsupportedEncodingException e) {
 					throw new BusinessException(
@@ -409,7 +520,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 				}
 			}
 		}
-		
+
 		// for each context, insert or update label/text/translation data
 		for (String contextName : textMap.keySet()) {
 			log.info("Importing data into context " + contextName);
@@ -420,7 +531,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 				context = (Context) dao.create(context);
 			}
 			Collection<Text> texts = textMap.get(contextName);
-			Map<String, Text> dbTextMap = textService.updateTranslations(context.getId(), texts);
+			Map<String, Text> dbTextMap = textService.updateTranslations(
+					context.getId(), texts);
 			Collection<Label> labels = labelMap.get(contextName);
 			for (Label label : labels) {
 				// create or update label

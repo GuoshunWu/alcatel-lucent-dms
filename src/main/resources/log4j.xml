@@ -58,19 +58,12 @@
 	</appender>
 
 
-	<logger name="org.hibernate.type">
-		<level value="TRACE" />
-	</logger>
-	<logger name="org.hibernate.SQL">
-		<level value="DEBUG" />
-	</logger>
-	
-	<logger name="com.alcatel_lucent.dms">
-		<level value="DEBUG" />
-	</logger>
+	<!-- <logger name="org.hibernate.type"> <level value="TRACE" /> </logger> 
+		<logger name="org.hibernate.SQL"> <level value="DEBUG" /> </logger> <logger 
+		name="com.alcatel_lucent.dms"> <level value="DEBUG" /> </logger> -->
 
 	<root>
-		<level value="DEBUG" />
+		<level value="INFO" />
 		<appender-ref ref="CONSOLE" />
 		<appender-ref ref="FILE" />
 		<!-- <appender-ref ref="ASYNC" /> -->
