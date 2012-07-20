@@ -10,7 +10,7 @@ public class Language extends BaseEntity {
 	
 	private String name;
 	private Collection <ISOLanguageCode> isoCodes;
-	private Collection<Charset> charsets;
+	private String defaultCharset;
 	
 	
 	public String getName() {
@@ -28,17 +28,16 @@ public class Language extends BaseEntity {
 	public void setIsoCodes(Collection<ISOLanguageCode> isoCodes) {
 		this.isoCodes = isoCodes;
 	}
-	public Collection<Charset> getCharsets() {
-		return charsets;
-	}
-	
-	public void setCharsets(Collection<Charset> charsets) {
-		this.charsets = charsets;
-	}
 	@Override
 	public String toString() {
 		return String.format("Language [name=%s, isoCode=%s]",
 				name, isoCodes);
+	}
+	public void setDefaultCharset(String defaultCharset) {
+		this.defaultCharset = defaultCharset;
+	}
+	public String getDefaultCharset() {
+		return defaultCharset;
 	}
 	
 	
