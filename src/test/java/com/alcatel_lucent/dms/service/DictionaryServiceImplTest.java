@@ -33,7 +33,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,16 +48,9 @@ import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.Text;
 import com.alcatel_lucent.dms.model.Translation;
 
+import static com.alcatel_lucent.dms.service.DictionaryServiceImpl.*;
+
 /**
- * Some test cases are contained by another, so the cases need to be tested by
- * following order. before test, clean the database. 1. testPreviewDCT. 2.
- * testImportDCT. 3. testDeliverDCT. this one need to be tested twice. The first
- * time one dct file will be imported to the database and the second time the
- * same changed file will be imported and check if the the related dictionary in
- * database is updated.
- * 
- * 4. testGenerateDCT. 5. testDeleteDCT.
- * 
  * @author Guoshun.Wu
  * 
  */
@@ -183,7 +175,7 @@ public class DictionaryServiceImplTest {
 
 		tmpLabel = new Label();
 		tmpLabel.setDictionary(dbDict);
-		tmpLabel.setReference("Copyright 2007-2012 by Alcatel-Lucent. All rights reserved.\nAlcatel-Lucent and Alcatel-Lucent Logo are respectively registered\ntrademark and service mark of Alcatel-Lucent.");
+		tmpLabel.setReference("Copyright 2007-2012 by Alcatel-Lucent. All rights reserved./nAlcatel-Lucent and Alcatel-Lucent Logo are respectively registered/ntrademark and service mark of Alcatel-Lucent.");
 		tmpLabel.setKey("COPYRIGHT");
 		tmpLabel.setMaxLength("79,86,97");
 
@@ -214,15 +206,15 @@ public class DictionaryServiceImplTest {
 		translatedStringMap
 				.put("COPYRIGHT",
 						"EN0",
-						"Copyright 2007-2012 by Alcatel-Lucent. All rights reserved.\nAlcatel-Lucent and Alcatel-Lucent Logo are respectively registered\ntrademark and service mark of Alcatel-Lucent.");
+						"Copyright 2007-2012 by Alcatel-Lucent. All rights reserved./nAlcatel-Lucent and Alcatel-Lucent Logo are respectively registered/ntrademark and service mark of Alcatel-Lucent.");
 		translatedStringMap
 				.put("COPYRIGHT",
 						"CH0",
-						"2007-2012年阿尔卡特朗讯版权所有。保留所有权力。\nAlcatel-Lucent与Alcatel-Lucent标识是阿尔卡特朗讯各自的注册商标和服务标记。");
+						"2007-2012年阿尔卡特朗讯版权所有。保留所有权力。/nAlcatel-Lucent与Alcatel-Lucent标识是阿尔卡特朗讯各自的注册商标和服务标记。");
 		translatedStringMap
 				.put("COPYRIGHT",
 						"US0",
-						"Copyright 2007-2012 by Alcatel-Lucent. All rights reserved.\nAlcatel-Lucent and Alcatel-Lucent Logo are respectively registered\ntrademark and service mark of Alcatel-Lucent.");
+						"Copyright 2007-2012 by Alcatel-Lucent. All rights reserved./nAlcatel-Lucent and Alcatel-Lucent Logo are respectively registered/ntrademark and service mark of Alcatel-Lucent.");
 
 		translatedStringMap.put("MPC_VERSION", "EN0",
 				"My Instant Communicator client software version ");
@@ -339,7 +331,7 @@ public class DictionaryServiceImplTest {
 		translatedStringMap
 				.put("COPYRIGHT",
 						"CH0",
-						"用于测试的改变，2007-2012年阿尔卡特朗讯版权所有。保留所有权力\nAlcatel-Lucent与Alcatel-Lucent标识是阿尔卡特朗讯各自的注册商标和服务标记。");
+						"用于测试的改变，2007-2012年阿尔卡特朗讯版权所有。保留所有权力/nAlcatel-Lucent与Alcatel-Lucent标识是阿尔卡特朗讯各自的注册商标和服务标记。");
 
 		dbLabel = dbDict.getLabel("COPYRIGHT");
 		params = new HashMap<String, Object>();
@@ -385,7 +377,7 @@ public class DictionaryServiceImplTest {
 
 	}
 
-//	@Ignore("It will throw dup_label BusinessException")
+	// @Ignore("It will throw dup_label BusinessException")
 	@Test(expected = BusinessException.class, timeout = 10000)
 	public void testAbnormalDCT() throws Exception {
 		Long appId = 1L;
@@ -411,7 +403,7 @@ public class DictionaryServiceImplTest {
 	}
 
 	@Test
-//	@Ignore("Debug...")
+	// @Ignore("Debug...")
 	public void testRealDCTFile() {
 		Long appId = 1L;
 		String encoding = null;
@@ -420,7 +412,7 @@ public class DictionaryServiceImplTest {
 		Map<String, String> langCharset = new HashMap<String, String>();
 		List<String> keys = Arrays
 				.asList("CHK, GAE, FR0, EN0, DE0, IT0, PT0, ES0, US0, PL0, KO0, NO0, NL0, RU0, CH0, FI0, ES1, CS0, HU0, CH1, SV0, AR0, DA0, HE0, en, fr, de, es, pt, it, no, ko, nl, zh_CN, ru, fi, pl, en_US, ca, cs, hu, zh, sv, ar, he, tr, da"
-						.split(",\\s*"));
+						.split(",//s*"));
 		for (String key : keys) {
 			langCharset.put(key.trim(), "GBK");
 		}
@@ -430,25 +422,25 @@ public class DictionaryServiceImplTest {
 		String[] langCodes = new String[] { "CH1" };
 		langCodes = null;
 
-		testFilesPathDir = "D:/tmp/AR/6.6.000.107.a/web_administration/wadmin/Ihm/CommonAdmin/xml/";
+		String tempFilesPathDir = "D:/tmp/AR/6.6.000.107.a/web_administration/wadmin/Ihm/CommonAdmin/xml/";
 		String testFile = "appli.labels.dct";
-		String testFilePath = testFilesPathDir + testFile;
+		String testFilePath = tempFilesPathDir + testFile;
 		String dictName = "appli.labels.dct";
 
-		// testFilesPathDir =
+		// tempFilesPathDir =
 		// "D:/tmp/AR/6.6.000.107.a/voice_applications/eCC_tui/VoiceApplications/dictionaries/";
 		// testFile = "TUI.dct";
 		// testFilePath = testFilesPathDir + testFile;
 		// dictName = "TUI.dct";
 		//
-		// testFilesPathDir =
+		// tempFilesPathDir =
 		// "D:/tmp/AR/6.6.000.107.a/data_access_service/dataaccess/WEB-INF/classes/com/alcatel/dataaccess/global/dico/";
 		// testFile = "DtaEccServer.dct";
 		// testFilePath = testFilesPathDir + testFile;
 		// dictName = "DtaEccServer.dct";
 
 		Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
-		
+
 		long before = System.currentTimeMillis();
 		ds.deliverDCT(dictName, testFilePath, appId, encoding, langCodes,
 				langCharset, warnings);
@@ -456,5 +448,69 @@ public class DictionaryServiceImplTest {
 
 		log.info("**************DeliverDCT take " + (after - before)
 				+ " milliseconds of time.***************");
+	}
+
+	@Test
+	public void testDeliverDCTFiles() {
+		Long appId = 1L;
+		String encoding = null;
+
+		// langCharset mapping of language code and its source charset name
+		Map<String, String> langCharset = new HashMap<String, String>();
+//		List<String> keys = Arrays
+//				.asList("CHK, GAE, FR0, EN0, DE0, IT0, PT0, ES0, US0, PL0, KO0, NO0, NL0, RU0, CH0, FI0, ES1, CS0, HU0, CH1, SV0, AR0, DA0, HE0, en, fr, de, es, pt, it, no, ko, nl, zh_CN, ru, fi, pl, en_US, ca, cs, hu, zh, sv, ar, he, tr, da"
+//						.split(",\\s*"));
+		
+		List<String> keys = Arrays
+				.asList("AR0, ar"
+						.split(",\\s*"));
+		
+		for (String key : keys) {
+			langCharset.put(key.trim(), "windows-1256");
+		}
+
+		// langCodes Alcatel code of languages to import, null if all languages
+		// should be imported
+		String[] langCodes = new String[] { "AR0", "ar" };
+//		langCodes = null;
+
+
+		String rootDir="Z:/AR";
+		String testFilePath = rootDir;
+		
+		
+
+//		encoding in utf8 without BOM
+//		testFilePath = "Z:/AR/6.6.000.107.a/mail_access_service_component/masc/ServerMasc/masc-core/src/main/alarms/MASC.dic";
+//		langCharset.put("AR0", "UTF-8");
+//		langCharset.put("ar", "UTF-8");
+//		
+//		encoding in utf8
+//		testFilePath = "Z:/AR/6.6.000.107.a/call_routing_service/ecccrs/crs.dic";
+//		langCharset.put("AR0", "UTF-8");
+//		langCharset.put("ar", "UTF-8");
+		
+//		encoding in USC-2 Little Endian
+//		testFilePath = "Z:/AR/6.6.000.107.a/authentication_form/ecc_common/authentication_form/FormLogin.dic";
+//		langCharset.put("AR0", "UTF-16");
+//		langCharset.put("ar", "UTF-16");
+		
+//		testFilePath = "Z:/AR/6.6.000.107.a/otuclib/ecc_common/otuclib/dico/otuclib.dic";
+
+		
+		
+		Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
+		
+		logDictDeliverFail.info(String.format("%s, %s, %s", "Name","Path","cause" ));
+		Collection<Dictionary> dicts=ds.deliverDCTFiles(rootDir, new File(testFilePath), appId, encoding, langCodes,
+				langCharset, warnings);
+		
+		String format="%s, %s, %s, %s";
+		logDictDeliverSuccess.info(String.format(format, "ID", "name", "encoding", "path"));
+		for(Dictionary dict:dicts){
+			logDictDeliverSuccess.info(String.format(format, dict.getId(), dict.getName(), dict.getEncoding(), dict.getPath()));
+		}
+		System.out.println();
+		
 	}
 }

@@ -1,5 +1,6 @@
 package com.alcatel_lucent.dms.service;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.Map;
 
@@ -48,8 +49,9 @@ public interface DictionaryService {
 	 * @return transient Dictionary object
 	 * @throws BusinessException
 	 */
-	Dictionary previewDCT(String dictionaryName, String filename, Long appId, String encoding,
-			Collection<BusinessWarning> warnings) throws BusinessException;
+	Dictionary previewDCT(String dictionaryName, String filename, Long appId,
+			String encoding, Collection<BusinessWarning> warnings)
+			throws BusinessException;
 
 	/**
 	 * Import a DCT dictionary
@@ -89,5 +91,24 @@ public interface DictionaryService {
 			String[] langCodes, Map<String, String> langCharset)
 			throws BusinessException;
 
+	/**
+	 * Delete a DCT dictionary
+	 * 
+	 * @param dctName
+	 *            to be deleted dictionary name
+	 * @return the number of the deleted dictionary
+	 * */
 	int deleteDCT(String dctName);
+
+	/**
+	 * Parse and preview DCT dictionaries, if file is a dct file, it will be delivered and
+	 * if it is a zip file or a dictionary, the dct file in which will be delivered recursively. 
+	 * 
+	 * TODO: these parameters need to be rethought.
+	 * @param 
+	 * */
+	Collection<Dictionary> deliverDCTFiles(String rootDir, File file, Long appId,
+			String encoding, String[] langCodes,
+			Map<String, String> langCharset,
+			Collection<BusinessWarning> warnings) throws BusinessException;
 }

@@ -48,6 +48,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
 	private static Logger log = Logger.getLogger(DictionaryServiceImpl.class);
 
+	public static Logger logDictDeliverSuccess = Logger
+			.getLogger("DictDeliverSuccess");
+	public static Logger logDictDeliverFail = Logger
+			.getLogger("DictDeliverFail");
+
 	@Autowired
 	private TextService textService;
 	
@@ -109,7 +114,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 				is.read(bom);
 				encoding = Util.detectEncoding(bom);
 				is.close();
-				is=new FileInputStream(filename);
+				is = new FileInputStream(filename);
 			}
 			return deliverDCT(dictionaryName, filename, is, appId, encoding,
 					langCodes, langCharset, warnings);
@@ -122,9 +127,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	/**
 	 * Deliver dct files in a directory
 	 * */
-	public Collection<Dictionary> deliverDCTFiles(File file,
-			int deliveredFileNum, Long appId, String encoding,
-			String[] langCodes, Map<String, String> langCharset,
+	public Collection<Dictionary> deliverDCTFiles(String rootDir, File file,
+			Long appId, String encoding, String[] langCodes,
+			Map<String, String> langCharset,
 			Collection<BusinessWarning> warnings) throws BusinessException {
 
 		if (!file.exists())
@@ -142,39 +147,52 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 			});
 			for (File dctFile : dctFileOrDirs) {
 				Collection<Dictionary> subDeliveredDicts = deliverDCTFiles(
-						dctFile, deliveredFileNum, appId, encoding, langCodes,
+						rootDir, dctFile, appId, encoding, langCodes,
 						langCharset, warnings);
 				deliveredDicts.addAll(subDeliveredDicts);
 			}
+			return deliveredDicts;
 		}
 
 		if (Util.isZipFile(file)) {
 			try {
 				Collection<Dictionary> zipDeliveredDicts = deliverZipDCTFile(
-						new ZipFile(file), appId, encoding, langCodes,
+						rootDir, new ZipFile(file), appId, encoding, langCodes,
 						langCharset, warnings);
 				deliveredDicts.addAll(zipDeliveredDicts);
 			} catch (IOException e) {
 				throw new SystemError(e.getMessage());
 			}
+			return deliveredDicts;
 		}
+
 		// normal dct file
-		Dictionary dict = deliverDCT(file.getPath(), file.getAbsolutePath(),
-				appId, encoding, langCodes, langCharset, warnings);
-		dict.setDictLanguages(null);
-		dict.setFormat(null);
-		dict.setLabels(null);
-
-		deliveredDicts.add(dict);
-
+		Dictionary dict = null;
+		try {
+			rootDir = rootDir.replace("\\", "/");
+			String dictName = file.getAbsolutePath().replace("\\", "/")
+					.replace(rootDir, "");
+			dict = deliverDCT(dictName, file.getAbsolutePath(), appId,
+					encoding, langCodes, langCharset, warnings);
+		} catch (BusinessException e) {
+			String forCSV = e.toString().replace("\"", "\"\"");
+			logDictDeliverFail.error(String.format("%s, %s, \"%s\"",
+					file.getName(), file.getAbsolutePath(), forCSV));
+			log.error(e);
+		}
+		if (null != dict) {
+			dict.setDictLanguages(null);
+			dict.setLabels(null);
+			deliveredDicts.add(dict);
+		}
 		return deliveredDicts;
 	}
 
 	/**
 	 * Deliver a Zip file into database.
 	 * */
-	private Collection<Dictionary> deliverZipDCTFile(ZipFile file, Long appId,
-			String encoding, String[] langCodes,
+	private Collection<Dictionary> deliverZipDCTFile(String rootDir,
+			ZipFile file, Long appId, String encoding, String[] langCodes,
 			Map<String, String> langCharset,
 			Collection<BusinessWarning> warnings) throws BusinessException {
 
@@ -197,9 +215,16 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 				}
 				String dictionaryName = entry.getName();
 				String path = file.getName() + dictionaryName;
-				Dictionary dict = deliverDCT(dictionaryName, path, is, appId,
-						encoding, langCodes, langCharset, warnings);
-				deliveredDicts.add(dict);
+				Dictionary dict = null;
+				try {
+					dict = deliverDCT(dictionaryName, path, is, appId,
+							encoding, langCodes, langCharset, warnings);
+				} catch (BusinessException e) {
+					log.error(e);
+				}
+				if (null != dict) {
+					deliveredDicts.add(dict);
+				}
 			} catch (IOException e) {
 				throw new SystemError(e.getMessage());
 			}
@@ -418,11 +443,13 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 					dict.getDictLanguages(), "languageCode");
 			List<String> listLangCodes = new ArrayList(Arrays.asList(langCodes));
 			listLangCodes.removeAll(dictLangCodes);
-			if (!listLangCodes.isEmpty()) {
-				throw new BusinessException(
-						BusinessException.UNKNOWN_LANG_CODE,
-						listLangCodes.get(0));
-			}
+			// TODO: restore here after parse 1 work done.
+			// if (!listLangCodes.isEmpty()) {
+			//
+			// throw new BusinessException(
+			// BusinessException.UNKNOWN_LANG_CODE,
+			// listLangCodes.get(0));
+			// }
 			langCodeList = Arrays.asList(langCodes);
 		}
 

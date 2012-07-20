@@ -24,7 +24,6 @@ import org.apache.log4j.Logger;
 
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
-import com.alcatel_lucent.dms.SpringContext;
 import com.alcatel_lucent.dms.model.AlcatelLanguageCode;
 import com.alcatel_lucent.dms.model.Application;
 import com.alcatel_lucent.dms.model.Charset;
@@ -36,7 +35,6 @@ import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.LanguageCode;
 import com.alcatel_lucent.dms.model.Text;
 import com.alcatel_lucent.dms.model.Translation;
-import com.alcatel_lucent.dms.service.BaseServiceImpl;
 import com.alcatel_lucent.dms.service.DictionaryServiceImpl;
 import com.alcatel_lucent.dms.service.LanguageService;
 
@@ -51,8 +49,9 @@ public class DictionaryParser {
 
 	// Language pattern in dct file
 	private static final Pattern patternLanguage = Pattern
-			.compile("^LANGUAGES\\s*\\{((?:[\\w-]{2,5},?\\s*)+)\\}$");
+			.compile("^LANGUAGES\\s*\\{((?:[\\w-]{2,5}\\s*,?\\s*)+)\\}$");
 
+	
 	private LanguageService langService;
 	private static DictionaryParser dictionaryParser;
 
@@ -298,8 +297,9 @@ public class DictionaryParser {
 									BusinessWarning.UNCLOSED_QUOTA, langCode,
 									key));
 						}
-						line = line.replace("\"", "");
+						
 						if (line.endsWith(",") || line.endsWith(";")) {
+							line = line.replace("\"", "");
 							buffer.append(lineSeparator);
 							buffer.append(line.substring(0, line.length() - 1));
 
@@ -307,6 +307,8 @@ public class DictionaryParser {
 								isLabelEnds = true;
 							}
 							break;
+						}else{
+							line = line.replace("\"", "");
 						}
 						buffer.append(lineSeparator);
 						buffer.append(line);
@@ -483,7 +485,7 @@ public class DictionaryParser {
 	}
 
 	private boolean isCommentOrBlankLine(String line) {
-		return line.startsWith("--") || line.isEmpty();
+		return line.startsWith("--") || line.isEmpty() || line.charAt(0)=='\uFEFF';
 	}
 
 }
