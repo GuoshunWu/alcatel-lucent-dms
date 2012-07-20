@@ -85,15 +85,15 @@
 			<artifactId>proxool</artifactId>
 			<version>0.9.1</version>
 		</dependency>
-		
-		
+
+
 		<dependency>
 			<groupId>proxool</groupId>
 			<artifactId>proxool-cglib</artifactId>
 			<version>0.9.1</version>
 		</dependency>
-		
-		
+
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -131,6 +131,14 @@
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<version>1.3.167</version>
+			<scope>runtime</scope>
+		</dependency>
+
+
+		<dependency>
+			<groupId>net.sourceforge.jchardet</groupId>
+			<artifactId>jchardet</artifactId>
+			<version>1.0</version>
 		</dependency>
 
 	</dependencies>
@@ -147,6 +155,8 @@
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
+
+
 		</plugins>
 	</build>
 

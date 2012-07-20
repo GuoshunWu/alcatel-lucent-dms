@@ -12,8 +12,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.log4j.Logger;
+import org.mozilla.intl.chardet.HtmlCharsetDetector;
+import org.mozilla.intl.chardet.nsDetector;
+import org.mozilla.intl.chardet.nsICharsetDetectionObserver;
+import org.mozilla.intl.chardet.nsPSMDetector;
 
 import com.alcatel_lucent.dms.SystemError;
 
@@ -26,9 +32,10 @@ public class Util {
 	public static final int UTF8_BOM_LENGTH = 3;
 	public static final int UTF16_BOM_LENGTH = 2;
 
-	private static List<String> dctFileExts = Arrays.asList(".dct", ".dict",
-			".dic");
-	private static List<String> zipFileExts = Arrays.asList(".zip", ".jar");
+	private static String dctFileExtsPattern = ".di?ct?";
+	private static String zipFileExtsPattern = ".(?:zip)|(?:jar)";
+
+	private static Logger log = Logger.getLogger(Util.class);
 
 	/**
 	 * <p>
@@ -98,6 +105,47 @@ public class Util {
 		return detectEncoding(buf);
 	}
 
+	/**
+	 * Detect the encoding of a File by BOM(byte order mark).
+	 * 
+	 * @author Guoshun.Wu Date: 2012-07-01
+	 * 
+	 * @param file
+	 *            given File
+	 * @return file encoding
+	 * */
+	public static String detectEncoding(InputStream is) throws IOException {
+		final StringBuilder encoding = new StringBuilder();
+
+		nsDetector det = new nsDetector(nsPSMDetector.ALL);
+		det.Init(new nsICharsetDetectionObserver() {
+			public void Notify(String charset) {
+				HtmlCharsetDetector.found = true;
+				log.info("CHARSET = " + charset);
+				encoding.append(charset);
+			}
+		});
+		byte[] buf = new byte[1024];
+		int len;
+		boolean done = false;
+		boolean isAscii = true;
+
+		while ((len = is.read(buf, 0, buf.length)) != -1) {
+
+			// Check if the stream is only ascii.
+			if (isAscii)
+				isAscii = det.isAscii(buf, len);
+			// DoIt if non-ascii and not done yet.
+			if (!isAscii && !done)
+				done = det.DoIt(buf, len, false);
+		}
+		det.DataEnd();
+		if (encoding.toString().isEmpty()) {
+			encoding.append("ISO-8859-1");
+		}
+		return encoding.toString();
+	}
+
 	public static String detectEncoding(byte[] bom) {
 		byte[] utf8BOM = new byte[] { (byte) 0xef, (byte) 0xbb, (byte) 0xbf, };
 		byte[] utf16LEBOM = new byte[] { (byte) 0xff, (byte) 0xfe };
@@ -118,16 +166,16 @@ public class Util {
 	 * Tell if a specific file is a DCT file.
 	 * */
 	public static boolean isDCTFile(String fileName) {
-		return isSpecificFile(fileName, dctFileExts);
+		return isSpecificFile(fileName, dctFileExtsPattern);
 	}
-	
+
 	/**
 	 * Tell if a specific file is a Zip file.
 	 * */
 	public static boolean isZipFile(String fileName) {
-		return isSpecificFile(fileName, zipFileExts);
+		return isSpecificFile(fileName, zipFileExtsPattern);
 	}
-	
+
 	public static boolean isDCTFile(File file) {
 		return isDCTFile(file.getName());
 	}
@@ -136,12 +184,11 @@ public class Util {
 		return isZipFile(file.getName());
 	}
 
-	private static boolean isSpecificFile(String fileName, List<String> fileExts) {
-		for (String ext : fileExts) {
-			if (fileName.endsWith(ext)) {
-				return true;
-			}
-		}
-		return false;
+	private static boolean isSpecificFile(String fileName, String fileExtPattern) {
+		Pattern pattern = Pattern.compile(fileExtPattern,
+				Pattern.CASE_INSENSITIVE);
+		int dotPos = fileName.lastIndexOf('.');
+		String fileExt = fileName.substring(dotPos);
+		return pattern.matcher(fileExt).matches();
 	}
 }
