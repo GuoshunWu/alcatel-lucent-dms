@@ -50,6 +50,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
 	@Autowired
 	private TextService textService;
+	
+	@Autowired
+	private LanguageService langService;
 
 	public DictionaryServiceImpl() {
 		super();
@@ -291,7 +294,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 					// output langCode translation
 					String translationString = label.getReference();
 
-					Language dictLangCodeLanguage = getAlcatelLanguageCodes()
+					Language dictLangCodeLanguage = langService.getAlcatelLanguageCodes()
 							.get(dictLang).getLanguage();
 					for (Translation translation : label.getText()
 							.getTranslations()) {
@@ -394,7 +397,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
 		Dictionary dict = null;
 		DictionaryParser dictParser = DictionaryParser
-				.getDictionaryParser(this);
+				.getDictionaryParser(langService);
 		dict = dictParser.parse(app, dictionaryName, path, dctInputStream,
 				encoding, warnings);
 
@@ -564,13 +567,13 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 			dbDictLang.setDictionary(dbDict);
 			dbDictLang.setLanguage((Language) dao.retrieve(Language.class,
 					languageId));
-			dbDictLang.setCharset(getCharset(charsetName));
+			dbDictLang.setCharset(langService.getCharset(charsetName));
 			dbDictLang.setLanguageCode(languageCode);
 			dbDictLang = (DictionaryLanguage) dao.create(dbDictLang);
 		} else {
 			dbDictLang.setLanguage((Language) dao.retrieve(Language.class,
 					languageId));
-			dbDictLang.setCharset(getCharset(charsetName));
+			dbDictLang.setCharset(langService.getCharset(charsetName));
 			dbDictLang.setLanguageCode(languageCode);
 		}
 		return dbDictLang;

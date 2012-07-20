@@ -24,6 +24,7 @@ import org.apache.log4j.Logger;
 
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
+import com.alcatel_lucent.dms.SpringContext;
 import com.alcatel_lucent.dms.model.AlcatelLanguageCode;
 import com.alcatel_lucent.dms.model.Application;
 import com.alcatel_lucent.dms.model.Charset;
@@ -37,6 +38,7 @@ import com.alcatel_lucent.dms.model.Text;
 import com.alcatel_lucent.dms.model.Translation;
 import com.alcatel_lucent.dms.service.BaseServiceImpl;
 import com.alcatel_lucent.dms.service.DictionaryServiceImpl;
+import com.alcatel_lucent.dms.service.LanguageService;
 
 /**
  * @author guoshunw
@@ -51,21 +53,20 @@ public class DictionaryParser {
 	private static final Pattern patternLanguage = Pattern
 			.compile("^LANGUAGES\\s*\\{((?:[\\w-]{2,5},?\\s*)+)\\}$");
 
-	private BaseServiceImpl baseService;
+	private LanguageService langService;
 	private static DictionaryParser dictionaryParser;
 
 	private Logger log = Logger.getLogger(DictionaryServiceImpl.class);
 
-	public static DictionaryParser getDictionaryParser(
-			BaseServiceImpl baseService) {
+	public static DictionaryParser getDictionaryParser(LanguageService langService) {
 		if (null == dictionaryParser) {
-			dictionaryParser = new DictionaryParser(baseService);
+			dictionaryParser = new DictionaryParser(langService);
 		}
 		return dictionaryParser;
 	}
 
-	public DictionaryParser(BaseServiceImpl baseService) {
-		this.baseService = baseService;
+	public DictionaryParser(LanguageService langService) {
+		this.langService = langService;
 
 	}
 
@@ -393,9 +394,9 @@ public class DictionaryParser {
 	 * 
 	 * */
 	private String isLineStartWithLangCode(String line) {
-		Set<String> allLangCodes = new HashSet<String>(baseService
+		Set<String> allLangCodes = new HashSet<String>(langService
 				.getAlcatelLanguageCodes().keySet());
-		allLangCodes.addAll(baseService.getISOLanguageCodes().keySet());
+		allLangCodes.addAll(langService.getISOLanguageCodes().keySet());
 		allLangCodes.add("CHK");
 
 		for (String langCode : allLangCodes) {
@@ -429,7 +430,7 @@ public class DictionaryParser {
 			dictLanguage.setDictionary(dict);
 
 			Charset charset = null;
-			charset = baseService.getCharsets().get(encoding);
+			charset = langService.getCharsets().get(encoding);
 			if (null == charset) {
 				throw new BusinessException(
 						BusinessException.CHARSET_NOT_FOUND, encoding);
@@ -447,10 +448,10 @@ public class DictionaryParser {
 		// language
 		// query alcatelLanguageCode table to find the related Language
 		ISOLanguageCode isoCode = null;
-		AlcatelLanguageCode alCode = baseService
+		AlcatelLanguageCode alCode = langService
 				.getAlcatelLanguageCode(languageCode);
 		if (null == alCode) {
-			isoCode = baseService.getISOLanguageCode(languageCode.replace('_',
+			isoCode = langService.getISOLanguageCode(languageCode.replace('_',
 					'-'));
 			if (null == isoCode) {
 				throw new BusinessException(

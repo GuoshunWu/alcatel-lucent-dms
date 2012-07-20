@@ -60,6 +60,7 @@
 				<idref bean="daoService" />
 				<idref bean="dictionaryService" />
 				<idref bean="textService" />
+				<idref bean="languageService"/>
 			</list>
 		</property>
 	</bean>
