@@ -10,14 +10,11 @@
 		</id>
 
 		<property name="name" type="string" column="NAME" />
+		<property name="defaultCharset" type="string" column="DEFAULT_CHARSET" />
+		
 		<set name="isoCodes" inverse="true">
 			<key column="LANGUAGE_ID" />
 			<one-to-many class="ISOLanguageCode" />
-		</set>
-
-		<set name="charsets" inverse="true">
-			<key column="LANGUAGE_ID" />
-			<one-to-many class="Charset" />
 		</set>
 
 	</class>
