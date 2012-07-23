@@ -497,12 +497,17 @@ public class DictionaryServiceImplTest {
 		
 //		testFilePath = "Z:/AR/6.6.000.107.a/otuclib/ecc_common/otuclib/dico/otuclib.dic";
 
+//		encoding in utf8
+		testFilePath = "Z:/AR/6.6.000.107.a/framework/apifw/framework/src/com/alcatel/api/common/Fw.dic";
+		langCharset.put("AR0", "UTF-16");
+		langCharset.put("ar", "UTF-16");		
 		
 		
 		Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
 		
 		logDictDeliverFail.info(String.format("%s, %s, %s", "Name","Path","cause" ));
-		Collection<Dictionary> dicts=ds.deliverDCTFiles(rootDir, new File(testFilePath), appId, encoding, langCodes,
+		File testFile=new File(testFilePath);
+		Collection<Dictionary> dicts=ds.deliverDCTFiles(rootDir, testFile, appId, encoding, langCodes,
 				langCharset, warnings);
 		
 		String format="%s, %s, %s, %s";
