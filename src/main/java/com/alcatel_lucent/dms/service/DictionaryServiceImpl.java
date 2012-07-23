@@ -55,7 +55,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
 	@Autowired
 	private TextService textService;
-	
+
 	@Autowired
 	private LanguageService langService;
 
@@ -170,13 +170,13 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 		Dictionary dict = null;
 		try {
 			rootDir = rootDir.replace("\\", "/");
-			String dictName = file.getAbsolutePath().replace("\\", "/")
-					.replace(rootDir, "");
-			dict = deliverDCT(dictName, file.getAbsolutePath(), appId,
-					encoding, langCodes, langCharset, warnings);
+			String dictPath = file.getAbsolutePath().replace("\\", "/");
+			String dictName = dictPath.replace(rootDir, "");
+			dict = deliverDCT(dictName, dictPath, appId, encoding, langCodes,
+					langCharset, warnings);
 		} catch (BusinessException e) {
 			String forCSV = e.toString().replace("\"", "\"\"");
-			logDictDeliverFail.error(String.format("%s, %s, \"%s\"",
+			logDictDeliverFail.error(String.format("%s,%s,\"%s\"",
 					file.getName(), file.getAbsolutePath(), forCSV));
 			log.error(e);
 		}
@@ -319,8 +319,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 					// output langCode translation
 					String translationString = label.getReference();
 
-					Language dictLangCodeLanguage = langService.getAlcatelLanguageCodes()
-							.get(dictLang).getLanguage();
+					Language dictLangCodeLanguage = langService
+							.getAlcatelLanguageCodes().get(dictLang)
+							.getLanguage();
 					for (Translation translation : label.getText()
 							.getTranslations()) {
 						if (translation.getLanguage().getId()
