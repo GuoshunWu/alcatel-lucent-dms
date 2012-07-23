@@ -446,8 +446,8 @@ public class DictionaryParser {
 		AlcatelLanguageCode alCode = languageService
 				.getAlcatelLanguageCode(languageCode);
 		if (null == alCode) {
-			isoCode = languageService.getISOLanguageCode(languageCode.replace('_',
-					'-'));
+			isoCode = languageService.getISOLanguageCode(languageCode.replace(
+					'_', '-'));
 			if (null == isoCode) {
 				throw new BusinessException(
 						BusinessException.UNKNOWN_LANG_CODE, languageCode);
@@ -471,20 +471,21 @@ public class DictionaryParser {
 		int ch = -1;
 		int quotNum = 0;
 		while (-1 != (ch = sr.read())) {
-			if (ch == '"') {
-				quotNum++;
-				sb.append(ch);
-			} else if (ch == '-') {
-				char nextch = (char)sr.read();
+			if (ch == '-') {
+				char nextch = (char) sr.read();
 				if (quotNum % 2 == 0 && nextch == '-') {
 					break;
 				}
-				sb.append(ch);
+				sb.append((char) ch);
 				sb.append(nextch);
-			}else{
-				sb.append((char)ch);
+			} else {
+				if (ch == '"') {
+					quotNum++;
+				}
+				sb.append((char) ch);
 			}
 		}
+		sr.close();
 		return sb.toString().trim();
 	}
 
