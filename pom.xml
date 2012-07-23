@@ -11,7 +11,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<spring.version>3.1.1.RELEASE</spring.version>
 		<hibernate.version>3.2.7.ga</hibernate.version>
-        <gmavenVersion>1.4</gmavenVersion>
+		<gmavenVersion>1.4</gmavenVersion>
 	</properties>
 
 	<dependencies>
@@ -24,7 +24,6 @@
 				<exclusion>
 					<groupId>commons-logging</groupId>
 					<artifactId>commons-logging</artifactId>
-
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -59,7 +58,7 @@
 			<version>${spring.version}</version>
 		</dependency>
 
-    	<dependency>
+		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate</artifactId>
 			<version>${hibernate.version}</version>
@@ -142,11 +141,11 @@
 			<version>1.0</version>
 		</dependency>
 
-        <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
-            <version>2.0.0-rc-4</version>
-        </dependency>
+		<dependency>
+			<groupId>org.codehaus.groovy</groupId>
+			<artifactId>groovy-all</artifactId>
+			<version>2.0.0-rc-4</version>
+		</dependency>
 
 	</dependencies>
 
@@ -169,9 +168,9 @@
 				<artifactId>gmaven-plugin</artifactId>
 				<version>${gmavenVersion}</version>
 				<configuration>
-                    <providerSelection> 1.8</providerSelection>
+					<providerSelection> 1.8</providerSelection>
 					<sourceEncoding>UTF-8</sourceEncoding>
-					 <!-- 用maven编译时需要加encoding：mvn -Dfile.encoding=UTF-8 compile  -->
+					<!-- 用maven编译时需要加encoding：mvn -Dfile.encoding=UTF-8 compile -->
 				</configuration>
 				<executions>
 					<execution>
@@ -184,17 +183,11 @@
 					</execution>
 				</executions>
 
-                <dependencies>
-                    <!-- Used for richer interactive groovysh support
-                    <dependency>
-                        <groupId>jline</groupId>
-                        <artifactId>jline</artifactId>
-                        <version>0.94</version>
-                        <scope>compile</scope>
-                        <optional>true</optional>
-                    </dependency>
-                    -->
-             </dependencies>
+				<dependencies>
+					<!-- Used for richer interactive groovysh support <dependency> <groupId>jline</groupId> 
+						<artifactId>jline</artifactId> <version>0.94</version> <scope>compile</scope> 
+						<optional>true</optional> </dependency> -->
+				</dependencies>
 			</plugin>
 		</plugins>
 
