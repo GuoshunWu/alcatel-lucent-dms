@@ -3,7 +3,9 @@ package com.alcatel_lucent.dms.service;
 import org.apache.log4j.Logger;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.hibernate.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.SessionFactoryUtils;
+import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
 import java.util.*;
@@ -16,8 +18,11 @@ import com.alcatel_lucent.dms.SystemError;
  * Date: 2008-11-13
  */
 
+@Service("daoService")
 public class DaoServiceImpl implements DaoService {
     private static Logger log = Logger.getLogger(DaoServiceImpl.class);
+    
+    @Autowired
     private SessionFactory sessionFactory;
 
 /*
