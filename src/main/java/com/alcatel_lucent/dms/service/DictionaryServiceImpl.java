@@ -28,6 +28,8 @@ import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
@@ -40,9 +42,10 @@ import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.Language;
 import com.alcatel_lucent.dms.model.Text;
 import com.alcatel_lucent.dms.model.Translation;
-import com.alcatel_lucent.dms.util.DictionaryParser;
 import com.alcatel_lucent.dms.util.Util;
 
+@Service("dictionaryService")
+@Scope("singleton")
 public class DictionaryServiceImpl extends BaseServiceImpl implements
 		DictionaryService {
 
@@ -55,6 +58,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
 	@Autowired
 	private TextService textService;
+
+	@Autowired
+	private DictionaryParser dictionaryParser;
 
 	@Autowired
 	private LanguageService langService;
@@ -421,11 +427,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 					BusinessException.APPLICATION_NOT_FOUND, appId);
 		}
 
-		Dictionary dict = null;
-		DictionaryParser dictParser = DictionaryParser
-				.getDictionaryParser(langService);
-		dict = dictParser.parse(app, dictionaryName, path, dctInputStream,
-				encoding, warnings);
+		Dictionary dict = dictionaryParser.parse(app, dictionaryName, path,
+				dctInputStream, encoding, warnings);
 
 		return dict;
 	}

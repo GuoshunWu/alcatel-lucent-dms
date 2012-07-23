@@ -1,15 +1,17 @@
 package com.alcatel_lucent.dms.service;
 
-import org.hibernate.Session;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+
+import org.hibernate.Session;
 
 /**
  * Author: Allan YANG
  * Date: 2008-11-13
  */
+
+
 public interface DaoService {
     Session getSession();
 

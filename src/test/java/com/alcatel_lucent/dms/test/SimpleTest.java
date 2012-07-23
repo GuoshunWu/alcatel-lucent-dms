@@ -10,17 +10,28 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.alcatel_lucent.dms.util.Util;
 
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(locations = { "/spring.xml" })
+@Ignore
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/spring.xml" })
 public class SimpleTest {
 
+	@SuppressWarnings("unused")
 	private static Logger log = Logger.getLogger(SimpleTest.class);
-
+	
+	@SuppressWarnings("unused")
+	@Autowired
+	private ApplicationContext context;
+	
 	@Autowired
 	// private DictionaryService ds;
 	@BeforeClass
@@ -42,16 +53,16 @@ public class SimpleTest {
 	}
 
 	@Test
-	// @Ignore
+	@Ignore
 	public void testMe() throws Exception {
-		
+
 		File file = new File("D:/tmp/TestFile.txt");
 		System.out.println(file.getName());
 		System.out.println(file.getAbsolutePath());
 		System.out.println(file.getCanonicalPath());
 		System.out.println(file.getPath());
 		System.out.println(file.getParent());
-		
+
 		FileInputStream fis = new FileInputStream(file);
 		FileChannel channel = fis.getChannel();
 		// String encoding = "UTF-16";
@@ -87,6 +98,13 @@ public class SimpleTest {
 
 		channel.close();
 		fis.close();
+	}
+
+	@Test
+	public void testGroovy() {
+		// GroovyTest g1 = new GroovyTest();
+		// System.out.println(g1.getName());
+		// System.out.println(g1.getTemp().get("age"));
 	}
 
 }

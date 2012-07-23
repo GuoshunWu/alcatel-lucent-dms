@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.stereotype.Service;
+
 import net.sf.json.JSONObject;
 
 import com.alcatel_lucent.dms.BusinessException;
@@ -12,6 +14,7 @@ import com.alcatel_lucent.dms.model.Language;
 import com.alcatel_lucent.dms.model.Text;
 import com.alcatel_lucent.dms.model.Translation;
 
+@Service("textService")
 public class TextServiceImpl extends BaseServiceImpl implements TextService {
 	
 	public Context getContextByName(String name) {
