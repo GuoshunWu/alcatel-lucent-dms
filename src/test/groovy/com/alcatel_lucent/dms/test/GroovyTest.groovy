@@ -12,9 +12,9 @@ class GroovyTest {
 		println a.name
 
 		def p= new Product()
-		p.name="测试"
+		p.mname="测试"
 
-		print p.name
+		print p.mname
 	}
 
 //	@CompileStatic
