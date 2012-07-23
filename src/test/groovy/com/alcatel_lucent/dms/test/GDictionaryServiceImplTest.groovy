@@ -1,8 +1,8 @@
 package com.alcatel_lucent.dms.test
 
 
-import static com.alcatel_lucent.dms.service.DictionaryServiceImpl.logDictDeliverFail;
-import static com.alcatel_lucent.dms.service.DictionaryServiceImpl.logDictDeliverSuccess;
+import static com.alcatel_lucent.dms.service.DictionaryServiceImpl.logDictDeliverFail
+import static com.alcatel_lucent.dms.service.DictionaryServiceImpl.logDictDeliverSuccess
 import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.is
@@ -13,10 +13,10 @@ import static org.junit.Assert.assertNotNull
 import static org.junit.Assert.assertThat
 import static org.junit.Assert.assertTrue
 
-import java.io.File;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.io.File
+import java.util.Collection
+import java.util.List
+import java.util.Map
 
 import org.apache.commons.collections.keyvalue.MultiKey
 import org.apache.commons.collections.map.MultiKeyMap
@@ -28,7 +28,7 @@ import org.junit.BeforeClass
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.springframework.beans.factory.annotation.Autowire;
+import org.springframework.beans.factory.annotation.Autowire
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationContext
 import org.springframework.test.context.ContextConfiguration
@@ -37,7 +37,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration
 
 import com.alcatel_lucent.dms.BusinessWarning
 import com.alcatel_lucent.dms.model.Context
-import com.alcatel_lucent.dms.model.Dictionary;
+import com.alcatel_lucent.dms.model.Dictionary
 import com.alcatel_lucent.dms.model.Label
 import com.alcatel_lucent.dms.model.Text
 import com.alcatel_lucent.dms.model.Translation
@@ -45,7 +45,8 @@ import com.alcatel_lucent.dms.service.DaoService
 import com.alcatel_lucent.dms.service.DictionaryService
 
 /**
- * @author Administrator
+ * @author Guoshun.Wu
+ * Date: 2012-07-22
  *
  */
 
@@ -56,9 +57,6 @@ import com.alcatel_lucent.dms.service.DictionaryService
 class GDictionaryServiceImplTest {
 
 	private static String testFilesPathDir
-
-	@Autowired
-	private ApplicationContext context
 
 	@Autowired
 	private DictionaryService ds
@@ -78,17 +76,17 @@ class GDictionaryServiceImplTest {
 
 	@AfterClass
 	static void tearDownAfterClass() throws Exception{
-		println "AfterClass"
+
 	}
 
 	@Before
 	void setUp() throws Exception {
-		println "Hello Begin."
+	
 	}
 
 	@After
 	void tearDown() throws Exception {
-		println "Hello End."
+	
 	}
 
 	@Test
@@ -312,7 +310,7 @@ class GDictionaryServiceImplTest {
 		// langCodes = null
 
 		String rootDir = "Z:/AR"
-		rootDir = "D:/tmp/AR"
+//		rootDir = "D:/tmp/AR"
 		
 		String testFilePath = rootDir
 
@@ -322,9 +320,9 @@ class GDictionaryServiceImplTest {
 //		langCharset.ar='UTF-8'
 //
 		// encoding in utf8
-		testFilePath = "$rootDir/6.6.000.107.a/call_routing_service/ecccrs/crs.dic"
-		langCharset.AR0 = "UTF-8"
-		langCharset.ar='UTF-8'
+//		testFilePath = "$rootDir/6.6.000.107.a/call_routing_service/ecccrs/crs.dic"
+//		langCharset.AR0 = "UTF-8"
+//		langCharset.ar='UTF-8'
 
 		// encoding in USC-2 Little Endian
 //		testFilePath ="$rootDir/6.6.000.107.a/authentication_form/ecc_common/authentication_form/FormLogin.dic"
@@ -337,8 +335,12 @@ class GDictionaryServiceImplTest {
 
 		logDictDeliverFail.info String.format("%s, %s, %s", "Name", "Path","cause")
 		def dicts = ds.deliverDCTFiles rootDir, new File(testFilePath), appId, encoding, langCodes, langCharset, warnings
-		
 		assertThat dicts, is(notNullValue())
+//		output all the warnings
+		Logger logWarning=Logger.getLogger("DictDeliverWaning")
+		warnings.each {warning->
+			logWarning.warn(warning)
+		}
 		
 		String format = "%s, %s, %s, %s"
 		logDictDeliverSuccess.info String.format(format, "ID", "name", "encoding", "path")

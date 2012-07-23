@@ -42,6 +42,7 @@ import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.Language;
 import com.alcatel_lucent.dms.model.Text;
 import com.alcatel_lucent.dms.model.Translation;
+import com.alcatel_lucent.dms.util.DictionaryProp;
 import com.alcatel_lucent.dms.util.Util;
 
 @Service("dictionaryService")
@@ -64,6 +65,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
 	@Autowired
 	private LanguageService langService;
+
+	@Autowired
+	private DictionaryProp dictProp;
 
 	public DictionaryServiceImpl() {
 		super();
@@ -132,6 +136,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
 	/**
 	 * Deliver dct files in a directory
+	 * After using dictionary properties, now encoding and langCharset 
+	 * parameter are useless.
+	 * @param rootDir 
+	 * @param file
+	 * 
 	 * */
 	public Collection<Dictionary> deliverDCTFiles(String rootDir, File file,
 			Long appId, String encoding, String[] langCodes,
@@ -178,8 +187,13 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 			rootDir = rootDir.replace("\\", "/");
 			String dictPath = file.getAbsolutePath().replace("\\", "/");
 			String dictName = dictPath.replace(rootDir, "");
+
+			encoding = dictProp.getDictionaryEncoding(dictName);
+			langCharset = dictProp.getDictionaryCharsets(dictName);
+
 			dict = deliverDCT(dictName, dictPath, appId, encoding, langCodes,
 					langCharset, warnings);
+
 		} catch (BusinessException e) {
 			String forCSV = e.toString().replace("\"", "\"\"");
 			logDictDeliverFail.error(String.format("%s,%s,\"%s\"",
