@@ -22,7 +22,6 @@ public class BusinessException extends RuntimeException {
 	static public final int UNDEFINED_LANG_CODE = 203;
 	static public final int NO_REFERENCE_TEXT = 204;
 	static public final int UNKNOWN_LANG_CODE = 205;
-	static public final int DUPLICATE_LABEL_KEY = 206;
 	static public final int DUPLICATE_LANG_CODE = 207;
 	static public final int CHARSET_NOT_DEFINED = 208;
 	static public final int NESTED_DCT_PARSE_ERROR = 209;

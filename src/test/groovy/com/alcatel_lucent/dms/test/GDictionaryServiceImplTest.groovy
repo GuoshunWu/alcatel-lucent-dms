@@ -3,6 +3,8 @@ package com.alcatel_lucent.dms.test
 
 import static com.alcatel_lucent.dms.service.DictionaryServiceImpl.logDictDeliverFail
 import static com.alcatel_lucent.dms.service.DictionaryServiceImpl.logDictDeliverSuccess
+import static com.alcatel_lucent.dms.service.DictionaryServiceImpl.DictDeliverWarning
+
 import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.is
@@ -101,6 +103,7 @@ class GDictionaryServiceImplTest {
 	}
 
 	@Test
+	@Ignore
 	void testSampleAbout_DCT() throws Exception {
 
 		Long appId = 1L
@@ -330,17 +333,25 @@ class GDictionaryServiceImplTest {
 //		langCharset.ar='UTF-8'
 
 //		testFilePath ="$rootDir/6.6.000.107.a/otuclib/ecc_common/otuclib/dico/otuclib.dic"
-
+//		testFilePath="$rootDir/6.6.000.107.a/my_phone/woti/dico/WebSoftphone.dic"
+		
 		Collection<BusinessWarning> warnings = []
-
-		logDictDeliverFail.info String.format("%s, %s, %s", "Name", "Path","cause")
+		
+		String header=String.format("%s, %s, %s, %s", "Name", "encoding","Path","cause")
+		logDictDeliverFail.info header
+		DictDeliverWarning.info header
+		
 		def dicts = ds.deliverDCTFiles rootDir, new File(testFilePath), appId, encoding, langCodes, langCharset, warnings
 		assertThat dicts, is(notNullValue())
 //		output all the warnings
-		Logger logWarning=Logger.getLogger("DictDeliverWaning")
-		warnings.each {warning->
-			logWarning.warn(warning)
-		}
+		
+		
+
+		
+//		warnings.each {warning->
+//			logWarning.warn(warning)
+//		}
+//		warnings.info("Sum of warnning: $warning.size()")
 		
 		String format = "%s, %s, %s, %s"
 		logDictDeliverSuccess.info String.format(format, "ID", "name", "encoding", "path")

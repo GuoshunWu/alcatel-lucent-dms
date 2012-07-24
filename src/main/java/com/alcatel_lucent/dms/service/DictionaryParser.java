@@ -144,10 +144,7 @@ public class DictionaryParser {
 						Label newLabel = readLabel(dctReader, line, dict,
 								context, declaredLangCodes, warnings);
 						if (labelKeys.contains(newLabel.getKey())) {
-							nonBreakExceptions
-									.addNestedException(new BusinessException(
-											BusinessException.DUPLICATE_LABEL_KEY,
-											newLabel.getKey()));
+							warnings.add(new BusinessWarning(BusinessWarning.DUPLICATE_LABEL_KEY,newLabel.getKey()));
 						} else {
 							labelKeys.add(newLabel.getKey());
 							labels.add(newLabel);
@@ -472,12 +469,15 @@ public class DictionaryParser {
 		int quotNum = 0;
 		while (-1 != (ch = sr.read())) {
 			if (ch == '-') {
-				char nextch = (char) sr.read();
-				if (quotNum % 2 == 0 && nextch == '-') {
+				int nextch = (char) sr.read();
+				if (('-' == nextch && 0 == quotNum % 2) || -1 == nextch) {
 					break;
 				}
+				if ('"' == nextch) {
+					quotNum++;
+				}
 				sb.append((char) ch);
-				sb.append(nextch);
+				sb.append((char) nextch);
 			} else {
 				if (ch == '"') {
 					quotNum++;
