@@ -42,7 +42,6 @@ import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.Language;
 import com.alcatel_lucent.dms.model.Text;
 import com.alcatel_lucent.dms.model.Translation;
-import com.alcatel_lucent.dms.util.DictionaryProp;
 import com.alcatel_lucent.dms.util.Util;
 
 @Service("dictionaryService")
@@ -56,6 +55,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 			.getLogger("DictDeliverSuccess");
 	public static Logger logDictDeliverFail = Logger
 			.getLogger("DictDeliverFail");
+
+	public static Logger DictDeliverWarning = Logger
+			.getLogger("DictDeliverWaning");
 
 	@Autowired
 	private TextService textService;
@@ -135,10 +137,10 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	}
 
 	/**
-	 * Deliver dct files in a directory
-	 * After using dictionary properties, now encoding and langCharset 
-	 * parameter are useless.
-	 * @param rootDir 
+	 * Deliver dct files in a directory After using dictionary properties, now
+	 * encoding and langCharset parameter are useless.
+	 * 
+	 * @param rootDir
 	 * @param file
 	 * 
 	 * */
@@ -191,13 +193,20 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 			encoding = dictProp.getDictionaryEncoding(dictName);
 			langCharset = dictProp.getDictionaryCharsets(dictName);
 
+			warnings = new ArrayList<BusinessWarning>();
+
 			dict = deliverDCT(dictName, dictPath, appId, encoding, langCodes,
 					langCharset, warnings);
-
+			if (!warnings.isEmpty()) {
+				String forCSV = warnings.toString().replace("\"", "\"\"");
+				DictDeliverWarning.warn(String.format("%s,%s,%s,\"%s\"",
+						file.getName(), encoding, file.getAbsolutePath(),
+						forCSV));
+			}
 		} catch (BusinessException e) {
 			String forCSV = e.toString().replace("\"", "\"\"");
-			logDictDeliverFail.error(String.format("%s,%s,\"%s\"",
-					file.getName(), file.getAbsolutePath(), forCSV));
+			logDictDeliverFail.error(String.format("%s,%s,%s,\"%s\"",
+					file.getName(), encoding, file.getAbsolutePath(), forCSV));
 			log.error(e);
 		}
 		if (null != dict) {

@@ -11,6 +11,7 @@ public class BusinessWarning {
 	public static final int UNCLOSED_QUOTA = 200;
 	public static final int EXCEED_MAX_LENGTH = 201;
 	public static final int INVALID_TEXT = 202;
+	static public final int DUPLICATE_LABEL_KEY = 206;
 	
 	public BusinessWarning(int code, Object...parameters) {
 		this.warningCode = code;

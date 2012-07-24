@@ -15,5 +15,6 @@
 			<one-to-many class="Dictionary"/>
 		</set>
 	</class>
+	
 
 </hibernate-mapping>
