@@ -304,7 +304,7 @@ class GDictionaryServiceImplTest {
 		String[] langCodes = ["AR0", "ar"]
 		// langCodes = null
 
-		String rootDir = "Z:/AR"
+		String rootDir = "Z:/EN-UK"
 //		rootDir = "D:/tmp/AR"
 		
 		String testFilePath = rootDir
