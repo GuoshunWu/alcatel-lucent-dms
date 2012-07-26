@@ -9,8 +9,11 @@ public class BusinessWarning {
 	private Object[] parameters;
 	
 	public static final int UNCLOSED_QUOTA = 200;
-	public static final int EXCEED_MAX_LENGTH = 201;
-	public static final int INVALID_TEXT = 202;
+    public static final int UNCLOSED_LABEL = 201;
+    public static final int UNCLOSED_LABEL_ENTRY = 202;
+
+    public static final int EXCEED_MAX_LENGTH = 203;
+	public static final int INVALID_TEXT = 204;
 	static public final int DUPLICATE_LABEL_KEY = 206;
 	
 	public BusinessWarning(int code, Object...parameters) {

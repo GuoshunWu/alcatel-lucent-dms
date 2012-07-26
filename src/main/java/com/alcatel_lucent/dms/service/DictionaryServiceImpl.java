@@ -198,13 +198,13 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 			dict = deliverDCT(dictName, dictPath, appId, encoding, langCodes,
 					langCharset, warnings);
 			if (!warnings.isEmpty()) {
-				String forCSV = warnings.toString().replace("\"", "\"\"");
+				String forCSV = join(warnings, '\n').replace("\"", "\"\"");
 				DictDeliverWarning.warn(String.format("%s,%s,%s,\"%s\"",
 						file.getName(), encoding, file.getAbsolutePath(),
 						forCSV));
 			}
 		} catch (BusinessException e) {
-			String forCSV = e.toString().replace("\"", "\"\"");
+			String forCSV = join(e.getNested(), '\n').replace("\"", "\"\"");
 			logDictDeliverFail.error(String.format("%s,%s,%s,\"%s\"",
 					file.getName(), encoding, file.getAbsolutePath(), forCSV));
 			log.error(e);
@@ -449,9 +449,13 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 			throw new BusinessException(
 					BusinessException.APPLICATION_NOT_FOUND, appId);
 		}
+		
+		//TODO: temp test reader, 
+//		Dictionary dict = dictionaryParser.parse(app, dictionaryName, path,
+//				dctInputStream, encoding, warnings,null);
 
 		Dictionary dict = dictionaryParser.parse(app, dictionaryName, path,
-				dctInputStream, encoding, warnings);
+				dctInputStream, encoding, warnings,null);
 
 		return dict;
 	}

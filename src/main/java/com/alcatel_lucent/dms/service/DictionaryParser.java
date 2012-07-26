@@ -10,6 +10,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringReader;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
@@ -60,6 +61,64 @@ public class DictionaryParser {
 	private LanguageService languageService;
 
 	public DictionaryParser() {
+	}
+
+	public Dictionary parse(Dictionary dictionary, Reader dctReader,
+			Collection<BusinessWarning> warnings) throws IOException {
+		DictionaryReader dr = new DictionaryReader(dctReader, dictionary);
+		//TODO: find a way
+		dr.setLanguageService(this.languageService);
+		
+		Dictionary dict = dr.readDictionary();
+		warnings.addAll(dr.getWarnnings());
+
+		if(dr.getNonBreakExceptions().hasNestedException()){
+			throw dr.getNonBreakExceptions();
+		}
+		dr.close();
+		return dict;
+	}
+
+	public Dictionary parse(Application app, String dictionaryName,
+			String path, InputStream dctInputStream, String encoding,
+			Collection<BusinessWarning> warnings, String version)
+			throws IOException {
+
+		// Creates an BufferedReader that uses the encoding charset.
+		if (null == encoding) {
+			throw new NullPointerException("Encoding is null.");
+		}
+
+		Dictionary dictionary = new Dictionary();
+		dictionary.setName(dictionaryName);
+		dictionary.setPath(path);
+		dictionary.setEncoding(encoding);
+		dictionary.setApplication(app);
+		dictionary.setFormat("dct");
+
+		if (dctInputStream instanceof FileInputStream) {
+			FileInputStream fdis = (FileInputStream) dctInputStream;
+			FileChannel channel = fdis.getChannel();
+			long fileSize = channel.size();
+			MappedByteBuffer mbf = channel.map(FileChannel.MapMode.READ_ONLY,
+					0, fileSize);
+			// file size less that 200 MB
+			int MAX_FILE_SIZE = 1024 * 1024 * 200;
+			byte[] buf = null;
+			if (fileSize < MAX_FILE_SIZE) {
+				buf = new byte[(int) fileSize];
+				mbf.get(buf);
+
+				channel.close();
+				dctInputStream.close();
+
+				dctInputStream = new ByteArrayInputStream(buf);
+			}
+		}
+		BufferedReader dctReader = new BufferedReader(new InputStreamReader(
+				dctInputStream, encoding));
+		
+		return parse(dictionary, dctReader, warnings);
 	}
 
 	public Dictionary parse(Application app, String dictionaryName,
@@ -144,7 +203,9 @@ public class DictionaryParser {
 						Label newLabel = readLabel(dctReader, line, dict,
 								context, declaredLangCodes, warnings);
 						if (labelKeys.contains(newLabel.getKey())) {
-							warnings.add(new BusinessWarning(BusinessWarning.DUPLICATE_LABEL_KEY,newLabel.getKey()));
+							warnings.add(new BusinessWarning(
+									BusinessWarning.DUPLICATE_LABEL_KEY,
+									newLabel.getKey()));
 						} else {
 							labelKeys.add(newLabel.getKey());
 							labels.add(newLabel);
