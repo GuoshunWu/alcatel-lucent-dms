@@ -467,6 +467,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 		if (null == dict)
 			return null;
 
+		BusinessException nonBreakExceptions = new BusinessException(
+				BusinessException.NESTED_DCT_PARSE_ERROR, dict.getName());
+		
 		// check langCodes parameter
 		Collection<String> langCodeList = null;
 		if (langCodes != null) {
@@ -506,9 +509,16 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
 		// update dictionary languages
 		for (DictionaryLanguage dictLanguage : dict.getDictLanguages()) {
+			if (langCodeList != null && !langCodeList.contains(dictLanguage.getLanguageCode())) {
+				continue;
+			}
+			String charsetName = langCharset.get(dictLanguage.getLanguageCode());
+			if (null == charsetName) {
+				nonBreakExceptions.addNestedException(new BusinessException(
+						BusinessException.CHARSET_NOT_DEFINED, dictLanguage.getLanguageCode()));
+			}			
 			mergeDictLanguage(dbDict, dictLanguage.getLanguage().getId(),
-					dictLanguage.getLanguageCode(), dictLanguage.getCharset()
-							.getName());
+					dictLanguage.getLanguageCode(), charsetName);
 		}
 
 		// prepare textMap, labelMap by context
@@ -552,8 +562,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 				String langCode = langCodeMap.get(trans.getLanguage().getId());
 				String charsetName = langCharset.get(langCode);
 				if (null == charsetName) {
-					throw new BusinessException(
-							BusinessException.CHARSET_NOT_DEFINED, langCode);
+					nonBreakExceptions.addNestedException(new BusinessException(
+							BusinessException.CHARSET_NOT_DEFINED, langCode));
+					continue;
 				}
 				try {
 					String encodedTranslation = new String(trans
@@ -576,8 +587,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 								label.getKey()));
 					}
 				} catch (UnsupportedEncodingException e) {
-					throw new BusinessException(
-							BusinessException.CHARSET_NOT_FOUND, charsetName);
+					nonBreakExceptions.addNestedException(new BusinessException(
+							BusinessException.CHARSET_NOT_FOUND, charsetName));
 				}
 			}
 		}
@@ -612,6 +623,10 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 					dbLabel.setReference(label.getReference());
 				}
 			}
+		}
+		
+		if (nonBreakExceptions.hasNestedException()) {
+			throw nonBreakExceptions;
 		}
 		log.info("Import DCT finish");
 		return dbDict;

@@ -47,16 +47,20 @@ public class DictionaryProp {
 		for (String code : alCodeMap.keySet()) {
 			if (charsetMode.equals("ANSI")) {
 				result.put(code, alCodeMap.get(code).getLanguage().getDefaultCharset());
+				result.put(code.replace("-", "_"), alCodeMap.get(code).getLanguage().getDefaultCharset());
 			} else {
 				result.put(code, charsetMode);
+				result.put(code.replace("-", "_"), charsetMode);
 			}
 		}
 		Map<String, ISOLanguageCode> isoCodeMap = langService.getISOLanguageCodes();
 		for (String code : isoCodeMap.keySet()) {
 			if (charsetMode.equals("ANSI")) {
 				result.put(code, isoCodeMap.get(code).getLanguage().getDefaultCharset());
+				result.put(code.replace("-", "_"), isoCodeMap.get(code).getLanguage().getDefaultCharset());
 			} else {
 				result.put(code, charsetMode);
+				result.put(code.replace("-", "_"), charsetMode);
 			}
 		}
 		return result;
