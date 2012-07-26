@@ -198,7 +198,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 			dict = deliverDCT(dictName, dictPath, appId, encoding, langCodes,
 					langCharset, warnings);
 			if (!warnings.isEmpty()) {
-				String forCSV = join(warnings, '\n').replace("\"", "\"\"");
+				String forCSV = warnings.toString().replace("\"", "\"\"");
 				DictDeliverWarning.warn(String.format("%s,%s,%s,\"%s\"",
 						file.getName(), encoding, file.getAbsolutePath(),
 						forCSV));
