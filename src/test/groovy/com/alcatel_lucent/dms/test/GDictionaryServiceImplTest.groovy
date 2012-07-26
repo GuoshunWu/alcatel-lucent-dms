@@ -298,14 +298,6 @@ class GDictionaryServiceImplTest {
 	public void testDeliverDCTFiles() {
 		Long appId = 1L
 		String encoding = null
-
-		// langCharset mapping of language code and its source charset name
-		Map<String, String> langCharset = [:]
-		
-		"AR0, ar".split(",\\s*").each{
-			langCharset[it] = "windows-1256"
-		}
-
 	
 		// langCodes Alcatel code of languages to import, null if all languages
 		// should be imported
@@ -316,24 +308,7 @@ class GDictionaryServiceImplTest {
 //		rootDir = "D:/tmp/AR"
 		
 		String testFilePath = rootDir
-
-		// encoding in utf8 without BOM
-//		testFilePath = "$rootDir/6.6.000.107.a/mail_access_service_component/masc/ServerMasc/masc-core/src/main/alarms/MASC.dic"
-//		langCharset.AR0 = "UTF-8"
-//		langCharset.ar='UTF-8'
-//
-		// encoding in utf8
-//		testFilePath = "$rootDir/6.6.000.107.a/call_routing_service/ecccrs/crs.dic"
-//		langCharset.AR0 = "UTF-8"
-//		langCharset.ar='UTF-8'
-
-		// encoding in USC-2 Little Endian
-//		testFilePath ="$rootDir/6.6.000.107.a/authentication_form/ecc_common/authentication_form/FormLogin.dic"
-//		langCharset.AR0 = "UTF-8"
-//		langCharset.ar='UTF-8'
-
-//		testFilePath ="$rootDir/6.6.000.107.a/otuclib/ecc_common/otuclib/dico/otuclib.dic"
-//		testFilePath="$rootDir/6.6.000.107.a/my_phone/woti/dico/WebSoftphone.dic"
+//		testFilePath="$rootDir/6.6.000.107.a/call_routing_service/ecccrs/crs.dic"
 		
 		Collection<BusinessWarning> warnings = []
 		
@@ -341,12 +316,9 @@ class GDictionaryServiceImplTest {
 		logDictDeliverFail.info header
 		DictDeliverWarning.info header
 		
-		def dicts = ds.deliverDCTFiles rootDir, new File(testFilePath), appId, encoding, langCodes, langCharset, warnings
+		def dicts = ds.deliverDCTFiles rootDir, new File(testFilePath), appId, encoding, langCodes, null, warnings
 		assertThat dicts, is(notNullValue())
 //		output all the warnings
-		
-		
-
 		
 //		warnings.each {warning->
 //			logWarning.warn(warning)
