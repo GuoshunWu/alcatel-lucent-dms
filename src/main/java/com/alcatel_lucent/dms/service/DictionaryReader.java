@@ -375,12 +375,11 @@ public class DictionaryReader extends LineNumberReader {
 	/**
 	 * Remove the trailing comments on line
 	 * 
+	 * @author Guoshun.Wu Date: 2012-07-04
 	 * @return processed line
 	 * @throws IOException
-	 * @author Guoshun.Wu Date: 2012-07-04
-	 */
+	 * */
 	private String removeComments(String line) throws IOException {
-
 		line.trim();
 		StringBuilder sb = new StringBuilder();
 		StringReader sr = new StringReader(line);
@@ -389,18 +388,14 @@ public class DictionaryReader extends LineNumberReader {
 		while (-1 != (ch = sr.read())) {
 			if (ch == '-') {
 				int nextch = (char) sr.read();
-				if (nextch == '-') {
-					if (quotNum % 2 == 0) {
-						break;
-					}
-					sb.append((char) ch);
-					sb.append((char) nextch);
-				} else {
-					sb.append((char) ch);
-					if (ch != -1) {
-						sb.append((char) nextch);
-					}
+				if (('-' == nextch && 0 == quotNum % 2) || -1 == nextch) {
+					break;
 				}
+				if ('"' == nextch) {
+					quotNum++;
+				}
+				sb.append((char) ch);
+				sb.append((char) nextch);
 			} else {
 				if (ch == '"') {
 					quotNum++;
