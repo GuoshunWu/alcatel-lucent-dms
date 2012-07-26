@@ -302,14 +302,16 @@ class GDictionaryServiceImplTest {
 		// langCodes Alcatel code of languages to import, null if all languages
 		// should be imported
 		String[] langCodes = ["AR0", "ar"]
-		// langCodes = null
+//		langCodes = null
 
-		String rootDir = "Z:/EN-UK"
+		String rootDir = "Z:/AR"
 //		rootDir = "D:/tmp/AR"
 		
 		String testFilePath = rootDir
-//		testFilePath="$rootDir/6.6.000.107.a/data_access_service/dataaccess/WEB-INF/classes/com/alcatel/dataaccess/global/dico/DtaEccServer.dct"
+		testFilePath="$rootDir/6.6.000.107.a/adaptation_layer/rms/AdaptationLayer/Util/UtAl.dic"
 
+		
+		
 		Collection<BusinessWarning> warnings = []
 		
 		String header=String.format("%s, %s, %s, %s", "Name", "encoding","Path","cause")

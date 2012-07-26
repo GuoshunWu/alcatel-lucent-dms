@@ -91,7 +91,6 @@ public class DictionaryReader extends LineNumberReader {
 			dl.setDictionary(dictionary);
 			dl.setLanguageCode(languageCode);
 			dl.setLanguage(getLanguage(languageCode));
-
 			Charset charset = null;
 			// DictionaryLanguage CharSet is the dictionary encoding
 			charset = languageService.getCharsets().get(
@@ -121,7 +120,8 @@ public class DictionaryReader extends LineNumberReader {
 					'_', '-'));
 			if (null == isoCode) {
 				throw new BusinessException(
-						BusinessException.UNKNOWN_LANG_CODE, languageCode);
+						BusinessException.UNKNOWN_LANG_CODE, languageCode,
+						"Unknow");
 			}
 			return isoCode.getLanguage();
 		}
@@ -237,7 +237,7 @@ public class DictionaryReader extends LineNumberReader {
 						BusinessException.UNDEFINED_LANG_CODE, getLineNumber(),
 						langCode, key));
 			}
-
+			//TODO: the language code will be checked in translation object, is this required?
 			if (!isValidLangCode(langCode)) {
 				exceptions.addNestedException(new BusinessException(
 						BusinessException.LANGUAGE_NOT_FOUND, getLineNumber(),
@@ -314,8 +314,14 @@ public class DictionaryReader extends LineNumberReader {
 
 			trans = new Translation();
 			trans.setText(text);
-
-			Language language = this.getLanguage(entry.getKey());
+			Language language = null;
+			try {
+				language = getLanguage(entry.getKey());
+			} catch (BusinessException e) {
+				exceptions.addNestedException(new BusinessException(
+						BusinessException.UNKNOWN_LANG_CODE, getLineNumber(),
+						entry.getKey(), key));
+			}
 			trans.setLanguage(language);
 			trans.setTranslation(entry.getValue());
 
