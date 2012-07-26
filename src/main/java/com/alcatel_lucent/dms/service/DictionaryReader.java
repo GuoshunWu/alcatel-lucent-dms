@@ -162,6 +162,8 @@ public class DictionaryReader extends LineNumberReader {
 			} catch (BusinessException e) {
 				nonBreakExceptions.addNestedException(e);
 			}
+			if (null == label)
+				break;
 			if (labelKeys.contains(label.getKey())) {
 				warnings.add(new BusinessWarning(
 						BusinessWarning.DUPLICATE_LABEL_KEY, getLineNumber(),
@@ -171,7 +173,7 @@ public class DictionaryReader extends LineNumberReader {
 				labels.add(label);
 			}
 		}
-		
+
 		if (nonBreakExceptions.hasNestedException()) {
 			throw nonBreakExceptions;
 		}
