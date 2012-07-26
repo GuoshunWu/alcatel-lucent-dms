@@ -64,17 +64,14 @@ public class DictionaryParser {
 	}
 
 	public Dictionary parse(Dictionary dictionary, Reader dctReader,
-			Collection<BusinessWarning> warnings) throws IOException {
+			Collection<BusinessWarning> warnings) throws IOException,
+			BusinessException {
 		DictionaryReader dr = new DictionaryReader(dctReader, dictionary);
-		//TODO: find a way
+		// TODO: find a way
 		dr.setLanguageService(this.languageService);
-		
+
 		Dictionary dict = dr.readDictionary();
 		warnings.addAll(dr.getWarnnings());
-
-		if(dr.getNonBreakExceptions().hasNestedException()){
-			throw dr.getNonBreakExceptions();
-		}
 		dr.close();
 		return dict;
 	}
@@ -117,7 +114,7 @@ public class DictionaryParser {
 		}
 		BufferedReader dctReader = new BufferedReader(new InputStreamReader(
 				dctInputStream, encoding));
-		
+
 		return parse(dictionary, dctReader, warnings);
 	}
 
@@ -313,8 +310,9 @@ public class DictionaryParser {
 							BusinessException.UNDEFINED_LANG_CODE, langCode));
 				}
 				if (entriesInLable.containsKey(langCode)) {
-					exceptions.addNestedException(new BusinessException(
-							BusinessException.DUPLICATE_LANG_CODE, langCode));
+					warnings.add(new BusinessWarning(
+							BusinessWarning.DUPLICATE_LANG_CODE, -1, langCode));
+
 				}
 				isLabelEnds = false;
 
