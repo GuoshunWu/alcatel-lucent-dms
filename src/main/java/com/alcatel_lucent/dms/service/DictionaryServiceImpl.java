@@ -204,7 +204,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 						forCSV));
 			}
 		} catch (BusinessException e) {
-			String forCSV = join(e.getNested(), '\n').replace("\"", "\"\"");
+			String forCSV = e.toString().replace("\"", "\"\"");
 			logDictDeliverFail.error(String.format("%s,%s,%s,\"%s\"",
 					file.getName(), encoding, file.getAbsolutePath(), forCSV));
 			log.error(e);

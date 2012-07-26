@@ -308,15 +308,19 @@ class GDictionaryServiceImplTest {
 //		rootDir = "D:/tmp/AR"
 		
 		String testFilePath = rootDir
-//		testFilePath="$rootDir/6.6.000.107.a/call_routing_service/ecccrs/crs.dic"
-		
+//		testFilePath="$rootDir/6.6.000.107.a/data_access_service/dataaccess/WEB-INF/classes/com/alcatel/dataaccess/global/dico/DtaEccServer.dct"
+
 		Collection<BusinessWarning> warnings = []
 		
 		String header=String.format("%s, %s, %s, %s", "Name", "encoding","Path","cause")
 		logDictDeliverFail.info header
 		DictDeliverWarning.info header
 		
+		long before=System.currentTimeMillis() 
 		def dicts = ds.deliverDCTFiles rootDir, new File(testFilePath), appId, encoding, langCodes, null, warnings
+		long after=System.currentTimeMillis() 
+		log.info "Using a total of ${after-before} millisecond to perform delivering."
+		
 		assertThat dicts, is(notNullValue())
 //		output all the warnings
 		

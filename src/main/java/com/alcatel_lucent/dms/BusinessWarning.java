@@ -15,6 +15,7 @@ public class BusinessWarning {
     public static final int EXCEED_MAX_LENGTH = 203;
 	public static final int INVALID_TEXT = 204;
 	static public final int DUPLICATE_LABEL_KEY = 206;
+	static public final int DUPLICATE_LANG_CODE = 207;
 	
 	public BusinessWarning(int code, Object...parameters) {
 		this.warningCode = code;
