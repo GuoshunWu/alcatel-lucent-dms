@@ -56,7 +56,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	public static Logger logDictDeliverFail = Logger
 			.getLogger("DictDeliverFail");
 
-	public static Logger DictDeliverWarning = Logger
+	public static Logger logDictDeliverWarning = Logger
 			.getLogger("DictDeliverWaning");
 
 	@Autowired
@@ -201,9 +201,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 				join(warnings,'\n').replace("\"", "\"\"");
 				String forCSV = warnings.toString().replace("\"", "\"\"");
 				forCSV=join(warnings,'\n').replace("\"", "\"\"");
-				DictDeliverWarning.warn(String.format("%s,%s,%s,\"%s\"",
-						file.getName(), encoding, file.getAbsolutePath(),
-						forCSV));
+                logDictDeliverWarning.warn(String.format("%s,%s,%s,\"%s\"",
+                        file.getName(), encoding, file.getAbsolutePath(),
+                        forCSV));
 			}
 		} catch (BusinessException e) {
 			String forCSV = e.toString().replace("\"", "\"\"");
