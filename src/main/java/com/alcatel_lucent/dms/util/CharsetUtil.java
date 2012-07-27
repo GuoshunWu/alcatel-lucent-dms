@@ -38,14 +38,18 @@ public class CharsetUtil {
 		String ub = getUnicodeBlock(c);
 		if (ub == null) return false;
 		if (ub.equals("BASIC_LATIN") || ub.equals("GENERAL_PUNCTUATION")) return true;
-		if (lang.startsWith("Chinese") || lang.equals("Japanese")) {
+		if (lang.startsWith("Chinese")) {
 			return ub.startsWith("CJK_") || ub.equals("HALFWIDTH_AND_FULLWIDTH_FORMS");
 		} else if (lang.equals("Korean")) {
-			return ub.equals("HANGUL_SYLLABLES") || ub.startsWith("CJK_");
+			return ub.equals("HANGUL_SYLLABLES") || ub.equals("HALFWIDTH_AND_FULLWIDTH_FORMS") || ub.startsWith("CJK_");
+		} else if (lang.equals("Japanese")) {
+			return ub.equals("HIRAGANA") || ub.equals("KATAKANA") || ub.equals("HALFWIDTH_AND_FULLWIDTH_FORMS") || ub.startsWith("CJK_");
 		} else if (lang.equals("Arabic")) {
 			return ub.startsWith("ARABIC");
 		} else if (lang.equals("Russian")) {
 			return ub.equals("CYRILLIC");
+		} else if (lang.equals("Greek")) {
+			return ub.equals("GREEK");
 		} else {
 			return ub.startsWith("LATIN_");
 		}
