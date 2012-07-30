@@ -68,7 +68,7 @@ class GDictionaryServiceImplTest {
     }
 
     @Test
-//	@Ignore
+	@Ignore
     void testSampleAbout_DCT() throws Exception {
 
         Long appId = 1L
@@ -261,44 +261,44 @@ class GDictionaryServiceImplTest {
         String encoding = null
 
         //all language code and package def
-        Map<String,Set<String>> langCodeForPkg = [
-                'AR': ['AR0', 'ar'],
+        HashMap<String,List<String>> langCodeForPkg = [
+//                'AR': ['AR0', 'ar'],
 //                'CA': ['ES1', 'ca-ES', 'ca'],
 //                'CS': ['cs', 'cs-CZ', 'CS0'],
-//                'DA': ['DA0', 'da', 'da-DK'],
-//                'DE': ['de', 'de-DE', 'DE0'],
-//                'DE-AT': ['de-AT', 'DE1'],
-//                'DE-CH': ['DE2', 'de-CH'],
-//                'EL': ['el-GR', 'GR0', 'el'],
-//                'EN-AU': ['AS0', 'en-AU'],
+                'DA': ['DA0', 'da', 'da-DK'],
+                'DE': ['de', 'de-DE', 'DE0'],
+                'DE-AT': ['de-AT', 'DE1'],
+                'DE-CH': ['DE2', 'de-CH'],
+                'EL': ['el-GR', 'GR0', 'el'],
+                'EN-AU': ['AS0', 'en-AU'],
 //                'EN-UK': null,
-//                'EN-US': ['US0', 'en-US'],
-//                'ES': ['ES0', 'es-ES', 'es'],
-//                'ET': ['et-EE', 'et', 'EE0'],
-//                'FI': ['fi', 'FI0', 'fi-FI'],
-//                'FR': ['FR0', 'fr', 'fr-FR'],
-//                'FR-BE': ['fr-BE', 'FR2'],
-//                'FR-CA': ['fr-CA'],
-//                'FR-CH': ['FR1', 'fr-CH'],
-//                'HR': ['hr', 'hr-HR', 'HR0'],
-//                'HU': ['HU0', 'hu', 'hu-HU'],
-//                'IT': ['it', 'IT0', 'it-IT'],
-//                'IT-CH': ['IT1', 'it-CH'],
+                'EN-US': ['US0', 'en-US'],
+                'ES': ['ES0', 'es-ES', 'es'],
+                'ET': ['et-EE', 'et', 'EE0'],
+                'FI': ['fi', 'FI0', 'fi-FI'],
+                'FR': ['FR0', 'fr', 'fr-FR'],
+                'FR-BE': ['fr-BE', 'FR2'],
+                'FR-CA': ['fr-CA'],
+                'FR-CH': ['FR1', 'fr-CH'],
+                'HR': ['hr', 'hr-HR', 'HR0'],
+                'HU': ['HU0', 'hu', 'hu-HU'],
+                'IT': ['it', 'IT0', 'it-IT'],
+                'IT-CH': ['IT1', 'it-CH'],
 //                'KO': ['KO0', 'ko', 'ko-KR'],
-//                'LV': ['lv', 'lv-LV', 'LV0'],
-//                'NL': ['NL0', 'nl-NL', 'nl'],
-//                'NL-BE': ['nl-BE', 'NL1'],
-//                'NO': ['no', 'no-NO', 'NO0'],
-//                'PL': ['PL0', 'pl', 'pl-PL'],
-//                'PT': ['PT0', 'pt', 'pt-PT'],
-//                'PT-BR': ['pt-BR', 'PT1'],
-//                'RO': ['RO0', 'ro', 'ro-RO'],
+                'LV': ['lv', 'lv-LV', 'LV0'],
+                'NL': ['NL0', 'nl-NL', 'nl'],
+                'NL-BE': ['nl-BE', 'NL1'],
+                'NO': ['no', 'no-NO', 'NO0'],
+                'PL': ['PL0', 'pl', 'pl-PL'],
+                'PT': ['PT0', 'pt', 'pt-PT'],
+                'PT-BR': ['pt-BR', 'PT1'],
+                'RO': ['RO0', 'ro', 'ro-RO'],
 //                'RU': ['ru', 'RU0', 'ru-RU'],
-//                'SER': ['sr-YU', 'YU0', 'sr'],
-//                'SK': ['sk', 'sk-SK', 'SK0'],
-//                'SL': ['sl', 'SI0', 'sl-SI'],
-//                'SV': ['sv', 'sv-SE', 'SV0'],
-//                'TR': ['TR0', 'tr-TR', 'tr'],
+                'SER': ['sr-YU', 'YU0', 'sr'],
+                'SK': ['sk', 'sk-SK', 'SK0'],
+                'SL': ['sl', 'SI0', 'sl-SI'],
+                'SV': ['sv', 'sv-SE', 'SV0'],
+                'TR': ['TR0', 'tr-TR', 'tr'],
 //                'ZH-CN': ['zh', 'ZH0', 'CH0', 'zh-CN'],
 //                'ZH-TW': ['zh-TW', 'CH1', 'TW0', 'zh-HK', 'HK0'],
 //                'NULL': null
@@ -306,6 +306,7 @@ class GDictionaryServiceImplTest {
 
         langCodeForPkg.each {subDir, langCodes->
             String rootDir = "Z:/$subDir"
+//			rootDir = "D:/tmp/$subDir"
             String testFilePath = rootDir
             log.info "Begin to import directory: $testFilePath".center(100,'=')
             log.debug "rootDir=$rootDir"
