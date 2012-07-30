@@ -427,11 +427,12 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 		}
 		InputStream is;
 		try {
-			is = new FileInputStream(file);
+			
 			if (!file.exists()) {
 				throw new BusinessException(
 						BusinessException.DCT_FILE_NOT_FOUND, file.getName());
 			}
+			is = new FileInputStream(file);
 			return previewDCT(dictionaryName, filename, is, appId, encoding,
 					warnings);
 		} catch (IOException e) {
