@@ -655,4 +655,10 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 		return dbDictLang;
 	}
 
+	public Dictionary previewMDC(String dictionaryName, InputStream is, Long appId,
+			Collection<BusinessWarning> warnings) throws BusinessException {
+		
+		 
+		return null;
+	}
 }

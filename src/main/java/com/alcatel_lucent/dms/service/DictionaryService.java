@@ -1,6 +1,7 @@
 package com.alcatel_lucent.dms.service;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.Map;
 
@@ -110,5 +111,17 @@ public interface DictionaryService {
 	Collection<Dictionary> deliverDCTFiles(String rootDir, File file, Long appId,
 			String encoding, String[] langCodes,
 			Map<String, String> langCharset,
+			Collection<BusinessWarning> warnings) throws BusinessException;
+	
+	/**
+	 * Parse and preview a Multilingual Dictionary Configuration(MDC) file
+	 * @param dictionaryName dictionary name
+	 * @param is
+	 * @param appId application Id
+	 * @param warnings a collection to hold output warnings
+	 * @return transient Dictionary object
+	 * @throws BusinessException
+	 */
+	Dictionary previewMDC(String dictionaryName, InputStream is, Long appId,
 			Collection<BusinessWarning> warnings) throws BusinessException;
 }
