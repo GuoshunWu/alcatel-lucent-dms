@@ -349,6 +349,12 @@ class GDictionaryServiceImplTest {
         ds.generateDCTFiles("D:/tmp/ALL",dictionaryIds, null)
     }
 
+//    @Test
+    void testGenerateDctFile(){
+        Dictionary dict=dao.retrieve(Dictionary.class, 78L) as Dictionary
+        ds.generateDCT("D:/tmp/mytest.dct",dict.id,dict.encoding,null)
+    }
+
     /**
      * Change the statistics Logger file on the fly
      * **/
