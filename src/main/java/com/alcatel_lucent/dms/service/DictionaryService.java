@@ -84,12 +84,11 @@ public interface DictionaryService {
 	 * @param langCodes
 	 *            Alcatel code of languages to generate, null if all languages
 	 *            should be exported
-	 * @param langCharset
-	 *            mapping of language code and its source charset name
+     *
 	 * @throws BusinessException
 	 */
 	void generateDCT(String filename, Long dctId, String encoding,
-			String[] langCodes, Map<String, String> langCharset)
+			String[] langCodes)
 			throws BusinessException;
 
 	/**
@@ -124,4 +123,11 @@ public interface DictionaryService {
 	 */
 	Dictionary previewMDC(String dictionaryName, InputStream is, Long appId,
 			Collection<BusinessWarning> warnings) throws BusinessException;
+    /**
+     * Generate dct file of specific dictionary in the dicts collections
+     *
+     * @param dir   root directory save dct files
+     * @param dicts the collection of the dictionary to be generated.
+     */
+    void generateDCTFiles(String dir, Collection<Long> dictIds, String[] langCodes);
 }

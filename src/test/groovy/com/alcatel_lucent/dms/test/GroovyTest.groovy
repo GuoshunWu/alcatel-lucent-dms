@@ -6,7 +6,7 @@ class GroovyTest {
 	
 	
 
-	static void main(args){
+	static main(args){
 		println "Hello world"
 	}
 

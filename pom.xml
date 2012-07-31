@@ -176,7 +176,8 @@
 					<providerSelection> 1.8</providerSelection>
 					<sourceEncoding>UTF-8</sourceEncoding>
 					<!-- 用maven编译时需要加encoding：mvn -Dfile.encoding=UTF-8 compile -->
-				</configuration>
+                    <source/>
+                </configuration>
 				<executions>
 					<execution>
 						<goals>
