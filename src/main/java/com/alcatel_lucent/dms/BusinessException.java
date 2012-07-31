@@ -26,7 +26,6 @@ public class BusinessException extends RuntimeException {
 	static public final int NESTED_DCT_PARSE_ERROR = 209;
 	static public final int NESTED_LABEL_ERROR = 210;
 	static public final int CHARSET_NOT_FOUND = 301;
-	static public final int LANGUAGE_NOT_FOUND = 401;
 	static public final int APPLICATION_NOT_FOUND = 501;
 	static public final int DICTIONARY_NOT_FOUND = 502;
 

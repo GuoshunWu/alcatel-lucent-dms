@@ -21,4 +21,11 @@ public interface LanguageService {
 	ISOLanguageCode getISOLanguageCode(String code);
 	
 	Map<Long, Language> getLanguages();
+
+    /**
+     * find Language Object according to its code, return null if such language
+     * not exist.
+     * @param languageCode language code
+     * */
+    Language getLanguage(String languageCode);
 }
