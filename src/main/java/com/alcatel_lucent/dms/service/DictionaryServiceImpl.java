@@ -434,7 +434,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             int fill = maxLen - refers[i].length();
             int base = 0;
             while (fill-- > 0) {
-                sb.append((char) base++ % 10 + '0');
+                sb.append((char)(base++ % 10 + '0'));
             }
             sb.append("\n");
         }
@@ -444,7 +444,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             int fill = maxLen;
             int base = 0;
             while (fill-- > 0) {
-                sb.append((char) base++ % 10 + '0');
+                sb.append((char) (base++ % 10 + '0'));
             }
             sb.append("\n");
         }

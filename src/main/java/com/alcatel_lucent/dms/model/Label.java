@@ -11,7 +11,7 @@ public class Label extends BaseEntity {
 	 */
 	private static final long serialVersionUID = -4086873912554236932L;
 	public static final String CHECK_FIELD_NAME = "CHK";
-	public static final String REFERENCE_FIELD_NAME = "CHK";
+	public static final String REFERENCE_FIELD_NAME = "GAE";
 
 	private Dictionary dictionary;
 	private String key;
