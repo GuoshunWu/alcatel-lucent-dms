@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alcatel_lucent.dms.BusinessException;
 import org.springframework.stereotype.Service;
 
 import com.alcatel_lucent.dms.model.AlcatelLanguageCode;
@@ -82,5 +83,18 @@ public class LanguageServiceImpl extends BaseServiceImpl implements LanguageServ
 		return languages;
 	}
 
-
+    public Language getLanguage(String languageCode) {
+        // query alcatelLanguageCode table to find the related Language
+        ISOLanguageCode isoCode = null;
+        AlcatelLanguageCode alCode = getAlcatelLanguageCode(languageCode);
+        if (null == alCode) {
+            isoCode = getISOLanguageCode(languageCode.replace(
+                    '_', '-'));
+            if (null == isoCode) {
+                return null;
+            }
+            return isoCode.getLanguage();
+        }
+        return alCode.getLanguage();
+    }
 }
