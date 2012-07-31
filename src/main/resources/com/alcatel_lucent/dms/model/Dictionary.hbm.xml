@@ -6,27 +6,22 @@
 		<id column="ID" name="id">
 			<generator class="native" />
 		</id>
-		<property column="NAME" generated="never" lazy="false" name="name"
-			not-null="true" type="string" unique="true" />
-		<property column="FORMAT" generated="never" lazy="false"
-			length="20" name="format" type="string" />
-		<property column="ENCODING" generated="never" lazy="false"
-			length="20" name="encoding" type="string" />
-		<property column="PATH" generated="never" lazy="false" name="path"
-			type="string" />
-		<many-to-one column="APPLICATION_ID" name="application"
-			not-null="true" />
+		<property column="NAME" name="name" not-null="true" type="string" />
+		<property column="FORMAT" length="20" name="format" type="string" />
+		<property column="ENCODING" length="20" name="encoding" type="string" />
+		<property column="PATH" name="path" type="string" />
 		
+		<many-to-one column="APPLICATION_ID" name="application" not-null="true" />
+
 		<set cascade="delete" inverse="true" name="dictLanguages" sort="unsorted">
 			<key column="DICTIONARY_ID" />
 			<one-to-many class="DictionaryLanguage" />
 		</set>
-		
+
 		<set cascade="delete" inverse="true" name="labels" sort="unsorted">
 			<key column="DICTIONARY_ID" />
 			<one-to-many class="Label" />
 		</set>
-		<property column="LOCKED" generated="never" lazy="false"
-			name="locked" type="boolean" />
+		<property column="LOCKED" name="locked" type="boolean" />
 	</class>
 </hibernate-mapping>

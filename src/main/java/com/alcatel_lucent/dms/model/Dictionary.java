@@ -193,7 +193,19 @@ public class Dictionary extends BaseEntity {
 		return null;
 	}
 
-	public Label getLabel(String key) {
+    public DictionaryLanguage getDictLanguage(String languageCode) {
+        if (dictLanguages != null) {
+            for (DictionaryLanguage dl : dictLanguages) {
+                if (dl.getLanguageCode().equals(languageCode)) {
+                    return dl;
+                }
+            }
+        }
+        return null;
+    }
+
+
+    public Label getLabel(String key) {
 		if (labels != null) {
 			for (Label label : labels) {
 				if (label.getKey().equals(key)) {

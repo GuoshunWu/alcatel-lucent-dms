@@ -11,7 +11,7 @@ import com.alcatel_lucent.dms.model.Charset;
 import com.alcatel_lucent.dms.model.ISOLanguageCode;
 import com.alcatel_lucent.dms.model.Language;
 
-@Service("languageService")
+@Service(value = "languageService")
 public class LanguageServiceImpl extends BaseServiceImpl implements LanguageService {
 
 	// base data for dms
