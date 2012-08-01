@@ -37,7 +37,7 @@ public class MDCParser {
 
     private Logger log= Logger.getLogger(MDCParser.class);
     
-    Dictionary parse(Application app, String dictionaryName,
+    public Dictionary parse(Application app, String dictionaryName,
                      String path, InputStream dctInputStream, Collection<BusinessWarning> warnings) throws IOException, DocumentException, ParserConfigurationException, SAXException {
 
 
@@ -64,22 +64,34 @@ public class MDCParser {
         dictionary.setDictLanguages(readLanguages(document, dictionary, nonBreakExceptions));
         List nodes = document.selectNodes("/dictionary/messageString/*");
         Label label=null;
+        Collection<Label> labels=new HashSet<Label>();
+        HashSet<String> labelKeys = new HashSet<String>();
         for(Object node: nodes){
             try{
                 label=readLabel((Element)node, dictionary, context,warnings);
+                labels.add(label);
+
             }catch (BusinessException e){
                 nonBreakExceptions.addNestedException(e);
             }
-            break;
+           if (labelKeys.contains(label.getKey())) {
+               //TODO: warning here.
+                warnings.add(new BusinessWarning(
+                        BusinessWarning.DUPLICATE_LABEL_KEY, -1,
+                        label.getKey()));
+            } else {
+                labelKeys.add(label.getKey());
+                labels.add(label);
+            }
         }
-
+        dictionary.setLabels(labels);
         if(nonBreakExceptions.hasNestedException()){
             throw nonBreakExceptions;
         }
         return dictionary;
     }
 
-    public Label readLabel(Element elem,Dictionary dictionary, Context context, Collection<BusinessWarning> warnings) throws BusinessException{
+    private Label readLabel(Element elem,Dictionary dictionary, Context context, Collection<BusinessWarning> warnings) throws BusinessException{
         Label label=new Label();
         label.setKey(elem.getName());
         label.setDictionary(dictionary);

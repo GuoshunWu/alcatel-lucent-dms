@@ -3,15 +3,7 @@ package com.alcatel_lucent.dms.service;
 import static com.alcatel_lucent.dms.util.Util.generateSpace;
 import static org.apache.commons.lang.StringUtils.join;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -19,7 +11,11 @@ import java.util.zip.ZipFile;
 import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
-import org.dom4j.DocumentException;
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.XMLWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -36,9 +32,7 @@ import com.alcatel_lucent.dms.model.Language;
 import com.alcatel_lucent.dms.model.Text;
 import com.alcatel_lucent.dms.model.Translation;
 import com.alcatel_lucent.dms.util.Util;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.ParserConfigurationException;
 import java.text.DateFormat;
 
 @Service("dictionaryService")
@@ -417,7 +411,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
                     out.print("  " + dictLang + " ");
 
-                    // output langCode translation
+                    // output dictLangCode translation
                     String translationString = label.getReference();
                     DictionaryLanguage dl=dict.getDictLanguage(dictLang);
 
@@ -448,6 +442,100 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 out.close();
             }
         }
+    }
+
+    @Override
+    public void generateMDC(String file, Long dctId, String[] langCodes) throws BusinessException{
+        generateMDC(new File(file), dctId, langCodes);
+    }
+
+
+    public void generateMDC(File file, Long dctId, String[] langCodes) throws BusinessException{
+
+
+        Dictionary dict = (Dictionary) getDao().retrieve(Dictionary.class,
+                dctId);
+        if (null == dict) {
+            log.warn("ID for " + dctId
+                    + " Dictionary is not found in database.");
+            throw new BusinessException(BusinessException.DICTIONARY_NOT_FOUND,
+                    dctId);
+        }
+
+        // all the language code in dictionary
+        HashSet<String> dictLangCodes = dict.getAllLanguageCodes();
+
+        if (langCodes != null) {
+            List<String> listLangCodes = new ArrayList(Arrays.asList(langCodes));
+            listLangCodes.removeAll(dictLangCodes);
+            if (!listLangCodes.isEmpty()) {
+                throw new BusinessException(
+                        BusinessException.UNKNOWN_LANG_CODE,
+                        listLangCodes.get(0));
+            }
+            // used for iteration.
+            dictLangCodes = new HashSet<String>(Arrays.asList(langCodes));
+        }
+        log.info("**************************generate dictionary: " + file.getPath() + "***************************");
+
+        if (!file.exists()) {
+            if (!file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
+            }
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                throw new SystemError(e.getMessage());
+            }
+        }
+
+        Collection<Label> labels=dict.getLabels();
+        Collection<Translation> translations=null;
+
+        //generate xml
+        Document document = DocumentHelper.createDocument();
+
+        document.addComment("Created by DMS at "+dFmt.format(new Date()));
+        Element dictionaryElement = document.addElement("dictionary");
+        Element messageStringElement = dictionaryElement.addElement("messageString");
+
+        for(Label label:labels){
+            Element labelElement=messageStringElement.addElement(label.getKey());
+            translations=label.getText().getTranslations();
+            
+            for(String dictLangCode :dictLangCodes){
+                Element langElement=labelElement.addElement("lang");
+                String translatedString=label.getReference();
+
+                DictionaryLanguage dl=dict.getDictLanguage(dictLangCode);
+
+                Language dictLangCodeLanguage = dl.getLanguage();
+                
+                for(Translation translation:translations){
+                    if(translation.getLanguage().getId().equals(dictLangCodeLanguage.getId())){
+                        translatedString=translation.getTranslation();
+                        break;
+                    }
+                }
+
+                langElement.addAttribute("id", dictLangCode);
+                langElement.setText(translatedString);
+            }
+        }
+
+        OutputFormat format = OutputFormat.createPrettyPrint();
+//      OutputFormat format = OutputFormat.createCompactFormat();
+
+        format.setEncoding("UTF-8");
+       
+        try {
+            XMLWriter output = new XMLWriter(new FileWriter(file), format);
+            output.write(document);
+            output.close();
+        } catch (IOException e) {
+            throw new SystemError(e.getMessage());
+        }
+       
     }
 
     private String generateCHK(String maxLength, String reference) {
