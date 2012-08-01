@@ -255,14 +255,14 @@ class GDictionaryServiceImplTest {
         assertTrue "Some label(s): $labels in $origDict.name dictionary is(are) not deleted.", labels.isEmpty()
     }
 
-    @Test
+//    @Test
     void testDeliverDCTFiles() {
         Long appId = 1L
         String encoding = null
 
         //all language code and package def
         HashMap<String,List<String>> langCodeForPkg = [
-                'AR': ['AR0', 'ar'],
+//                'AR': ['AR0', 'ar'],
 //                'CA': ['ES1', 'ca-ES', 'ca'],
 //                'CS': ['cs', 'cs-CZ', 'CS0'],
 //                'DA': ['DA0', 'da', 'da-DK'],
@@ -284,7 +284,7 @@ class GDictionaryServiceImplTest {
 //                'HU': ['HU0', 'hu', 'hu-HU'],
 //                'IT': ['it', 'IT0', 'it-IT'],
 //                'IT-CH': ['IT1', 'it-CH'],
-//                'KO': ['KO0', 'ko', 'ko-KR'],
+                'KO': ['KO0', 'ko', 'ko-KR'],
 //                'LV': ['lv', 'lv-LV', 'LV0'],
 //                'NL': ['NL0', 'nl-NL', 'nl'],
 //                'NL-BE': ['nl-BE', 'NL1'],
@@ -312,7 +312,8 @@ class GDictionaryServiceImplTest {
             log.debug "rootDir=$rootDir"
             log.debug "langCodes=$langCodes"
 
-//            testFilePath = "$rootDir/6.6.000.107.a/a4980/a4980/client/dico/a4980.dic"
+            testFilePath = "$rootDir/6.6.000.107.a/msaccess/msacces/src/alarm/Msa.dic"
+
 
             changeLoggerFile subDir,"SUCCESS",logDictDeliverSuccess
             changeLoggerFile subDir,"WARNING",logDictDeliverWarning
@@ -343,16 +344,17 @@ class GDictionaryServiceImplTest {
         }
     }
 
-    @Test
+//    @Test
     void testGenerateDctFiles(){
         Collection<Long> dictionaryIds = dao.retrieve('select id from Dictionary') as List<Long>
         ds.generateDCTFiles("D:/tmp/ALL",dictionaryIds, null)
     }
 
-//    @Test
+    @Test
     void testGenerateDctFile(){
-        Dictionary dict=dao.retrieve(Dictionary.class, 78L) as Dictionary
-        ds.generateDCT("D:/tmp/mytest.dct",dict.id,dict.encoding,null)
+        Dictionary dict=dao.retrieve(Dictionary.class, 1L) as Dictionary
+//        ds.generateDCT("D:/tmp/mytest.dct",dict.id,dict.encoding,null)
+        ds.generateMDC "D:/tmp/mytest.xml",dict.id, null
     }
 
     /**
@@ -365,5 +367,51 @@ class GDictionaryServiceImplTest {
         FileAppender appender = logger.getAppender("FILE_DIC_DELIVER_$appenderExtName") as FileAppender
         appender.file = "Z:/DictionaryDeliver${appenderExtName.toLowerCase().capitalize()}_${packageName}.csv"
         appender.activateOptions()
+    }
+
+    @Test
+    void testDeliverMDC(){
+        String rootDir = 'Z:/CA'
+        String dictName='/6.6.000.107.a/smart_prs/prs/smartprs/etc/conf/dictionary.conf'
+        String path = "$rootDir$dictName"
+        InputStream fis=new FileInputStream(path);
+        Collection<BusinessWarning> warnings=new HashSet<BusinessWarning>()
+
+        Dictionary dict = ds.previewMDC dictName, path, fis, 1L, warnings
+       fis.close()
+
+        Map<String,String> langCharset=[
+            'en-GB':'UTF-8',
+            'fr-FR':'UTF-8',
+            'de-DE':'UTF-8',
+            'es-ES':'UTF-8',
+            'it-IT':'UTF-8',
+            'pt-PT':'UTF-8',
+            'no-NO':'UTF-8',
+            'en-US':'UTF-8',
+            'ca-ES':'UTF-8',
+            'nl-NL':'UTF-8',
+            'fi-FI':'UTF-8',
+            'cs-CZ':'UTF-8',
+            'pl-PL':'UTF-8',
+            'ru-RU':'UTF-8',
+            'zh-CN':'UTF-8',
+            'ko-KR':'UTF-8',
+            'hu-HU':'UTF-8',
+            'zh-TW':'UTF-8',
+            'da-DK':'UTF-8',
+            'de-CH':'UTF-8',
+            'et-EE':'UTF-8',
+            'ja-JP':'UTF-8',
+            'lt-LT':'UTF-8',
+            'nl-BE':'UTF-8',
+            'ro-RO':'UTF-8',
+            'sv-SE':'UTF-8',
+        ]
+        String[] langCodes=null
+        ds.importDCT dict, langCodes,langCharset,warnings
+
+        assertNotNull dict
+
     }
 }
