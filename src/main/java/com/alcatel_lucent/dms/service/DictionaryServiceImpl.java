@@ -494,8 +494,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
         //generate xml
         Document document = DocumentHelper.createDocument();
-
         document.addComment("Created by DMS at "+dFmt.format(new Date()));
+
         Element dictionaryElement = document.addElement("dictionary");
         Element messageStringElement = dictionaryElement.addElement("messageString");
 

@@ -34,8 +34,10 @@ public class Util {
 
 	private static String dctFileExtsPattern = ".di?ct?";
 	private static String zipFileExtsPattern = ".(?:zip)|(?:jar)";
+    private static String mdcFileExtsPattern = ".conf";
 
-	private static Logger log = Logger.getLogger(Util.class);
+
+    private static Logger log = Logger.getLogger(Util.class);
 
 	/**
 	 * <p>
@@ -110,8 +112,8 @@ public class Util {
 	 * 
 	 * @author Guoshun.Wu Date: 2012-07-01
 	 * 
-	 * @param file
-	 *            given File
+	 * @param is
+	 *            given InputStream
 	 * @return file encoding
 	 * */
 	public static String detectEncoding(InputStream is) throws IOException {
@@ -168,7 +170,9 @@ public class Util {
 	public static boolean isDCTFile(String fileName) {
 		return isSpecificFile(fileName, dctFileExtsPattern);
 	}
-
+    public static boolean isMDCFile(String fileName) {
+        return isSpecificFile(fileName, mdcFileExtsPattern);
+    }
 	/**
 	 * Tell if a specific file is a Zip file.
 	 * */
@@ -183,6 +187,10 @@ public class Util {
 	public static boolean isZipFile(File file) {
 		return isZipFile(file.getName());
 	}
+
+    public static boolean isMDCFile(File file) {
+        return isZipFile(file.getName());
+    }
 
 	private static boolean isSpecificFile(String fileName, String fileExtPattern) {
 		Pattern pattern = Pattern.compile(fileExtPattern,
