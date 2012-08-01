@@ -32,7 +32,7 @@ public interface DictionaryService {
     /**
      * Parse and preview a DCT dictionary
      *
-     * @param filename DCT filename with full path
+     * @param path DCT file full path
      * @param appId    application id
      * @param encoding encoding of source file, null if auto-detected
      *                 (ANSI/UTF8/UTF16)
@@ -40,7 +40,7 @@ public interface DictionaryService {
      * @return transient Dictionary object
      * @throws BusinessException
      */
-    Dictionary previewDCT(String dictionaryName, String filename, Long appId,
+    Dictionary previewDCT(String dictionaryName, String path, Long appId,
                           String encoding, Collection<BusinessWarning> warnings)
             throws BusinessException;
 
@@ -78,12 +78,13 @@ public interface DictionaryService {
      *
      * @param dictionaryName dictionary name
      * @param is
+     * @param path the file path if input stream from a file
      * @param appId          application Id
      * @param warnings       a collection to hold output warnings
      * @return transient Dictionary object
      * @throws BusinessException
      */
-    Dictionary previewMDC(String dictionaryName, InputStream is, Long appId,
+    Dictionary previewMDC(String dictionaryName, String path, InputStream is, Long appId,
                           Collection<BusinessWarning> warnings) throws BusinessException;
 
     /**

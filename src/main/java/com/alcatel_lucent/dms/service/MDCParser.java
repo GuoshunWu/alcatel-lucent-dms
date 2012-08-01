@@ -4,11 +4,13 @@ import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
+import com.alcatel_lucent.dms.model.Text;
 import org.apache.log4j.Logger;
 import org.dom4j.*;
 import org.dom4j.io.DOMReader;
 import org.dom4j.io.SAXReader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -16,6 +18,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -25,6 +28,8 @@ import java.util.*;
  * Time: 上午11:57
  * To change this template use File | Settings | File Templates.
  */
+
+@Service("mdcParser")
 public class MDCParser {
 
     @Autowired
@@ -32,21 +37,20 @@ public class MDCParser {
 
     private Logger log= Logger.getLogger(MDCParser.class);
     
-    Dictionary parse() throws IOException, DocumentException, ParserConfigurationException, SAXException {
-        String file = "D:\\tmp\\CA\\6.6.000.107.a\\smart_prs\\prs\\smartprs\\etc\\conf\\dictionary.conf";
-        FileInputStream fis = new FileInputStream(file);
+    Dictionary parse(Application app, String dictionaryName,
+                     String path, InputStream dctInputStream, Collection<BusinessWarning> warnings) throws IOException, DocumentException, ParserConfigurationException, SAXException {
+
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
-        org.w3c.dom.Document doc = db.parse(fis);
+        org.w3c.dom.Document doc = db.parse(dctInputStream);
 
         DOMReader domReader = new DOMReader();
         Document document = domReader.read(doc);
-        Application app=new Application();
 
         Dictionary dictionary=new Dictionary();
-        dictionary.setName(file);
-        dictionary.setPath(file);
+        dictionary.setName(dictionaryName);
+        dictionary.setPath(path);
         dictionary.setEncoding("UTF-8");
         dictionary.setFormat("xml");
         dictionary.setApplication(app);
@@ -57,9 +61,7 @@ public class MDCParser {
         BusinessException nonBreakExceptions = new BusinessException(
                 BusinessException.NESTED_DCT_PARSE_ERROR, dictionary.getName());
 
-        HashSet<BusinessWarning> warnings=new HashSet<BusinessWarning>();
-
-//        dictionary.setDictLanguages(readLanguages(document, dictionary, nonBreakExceptions));
+        dictionary.setDictLanguages(readLanguages(document, dictionary, nonBreakExceptions));
         List nodes = document.selectNodes("/dictionary/messageString/*");
         Label label=null;
         for(Object node: nodes){
@@ -71,18 +73,10 @@ public class MDCParser {
             break;
         }
 
-        fis.close();
-
         if(nonBreakExceptions.hasNestedException()){
             throw nonBreakExceptions;
         }
         return dictionary;
-    }
-
-    public static void main(String[] args) throws Exception {
-        MDCParser parser = new MDCParser();
-        Dictionary dict = parser.parse();
-
     }
 
     public Label readLabel(Element elem,Dictionary dictionary, Context context, Collection<BusinessWarning> warnings) throws BusinessException{
@@ -106,16 +100,44 @@ public class MDCParser {
         for(Element subElement: subElements) {
             Attribute attribute= (Attribute) subElement.selectSingleNode("@id");
             String langCode= attribute.getValue().trim();
-
-            if (!dictLangCodes.contains(langCode)) {
-                exceptions.addNestedException(new BusinessException(
-                        BusinessException.UNDEFINED_LANG_CODE, -1,langCode, label.getKey()));
-            }
-
             String translatedString=subElement.getStringValue().toString();
             log.debug(String.format("langCode=%s, translatedString=%s", langCode, translatedString));
             entriesInLabel.put(langCode,translatedString);
        }
+        String gae= entriesInLabel.get("en-GB");
+        if (null == gae) {
+            exceptions.addNestedException(new BusinessException(
+                    BusinessException.NO_REFERENCE_TEXT, label
+                    .getKey()));
+        }
+        label.setReference(gae);
+        Text text = new Text();
+        text.setContext(context);
+        text.setReference(gae);
+        text.setStatus(0);
+
+        Collection<Translation> translations = new HashSet<Translation>();
+        Translation trans = null;
+
+        for (Map.Entry<String, String> entry : entriesInLabel.entrySet()) {
+
+            if (entry.getKey().equals("GAE")) {
+                continue;
+            }
+
+            trans = new Translation();
+            trans.setText(text);
+            DictionaryLanguage dl=dictionary.getDictLanguage(entry.getKey());
+            Language language= null==dl ? null:dl.getLanguage();
+
+            trans.setLanguage(language);
+            trans.setTranslation(entry.getValue());
+            translations.add(trans);
+        }
+        text.setTranslations(translations);
+
+        label.setText(text);
+        label.setMaxLength(null);
 
         if(exceptions.hasNestedException()){
             throw exceptions;
