@@ -17,8 +17,11 @@ public class BusinessException extends RuntimeException {
 
 	static public final int ACCESS_DENIED = 100;
 	static public final int INVALID_DCT_FILE = 200;
-	static public final int DUPLICATE_DCT_NAME = 201;
+    static public final int INVALID_MDC_FILE = 211;
+
+    static public final int DUPLICATE_DCT_NAME = 201;
 	static public final int DCT_FILE_NOT_FOUND = 202;
+
 	static public final int UNDEFINED_LANG_CODE = 203;
 	static public final int NO_REFERENCE_TEXT = 204;
 	static public final int UNKNOWN_LANG_CODE = 205;

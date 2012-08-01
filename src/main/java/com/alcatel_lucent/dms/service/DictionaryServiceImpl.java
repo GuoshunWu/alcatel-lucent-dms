@@ -1,7 +1,6 @@
 package com.alcatel_lucent.dms.service;
 
 import static com.alcatel_lucent.dms.util.Util.generateSpace;
-import static com.alcatel_lucent.dms.util.Util.getObjectProperiesList;
 import static org.apache.commons.lang.StringUtils.join;
 
 import java.io.BufferedOutputStream;
@@ -13,20 +12,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
+import org.dom4j.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -43,6 +36,10 @@ import com.alcatel_lucent.dms.model.Language;
 import com.alcatel_lucent.dms.model.Text;
 import com.alcatel_lucent.dms.model.Translation;
 import com.alcatel_lucent.dms.util.Util;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import java.text.DateFormat;
 
 @Service("dictionaryService")
 @Scope("singleton")
@@ -70,6 +67,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
     @Autowired
     private DictionaryProp dictProp;
+
+    @Autowired MDCParser mdcParser;
+
+
+    private DateFormat dFmt=DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
 
     public DictionaryServiceImpl() {
         super();
@@ -114,21 +116,46 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         return dict;
     }
 
-    public Dictionary deliverDCT(String dictionaryName, String filename,
+
+    public Dictionary deliverMDC(String dictionaryName, String path,
+                                 InputStream dctInputStream, Long appId, String[] langCodes, Map<String, String> langCharset,
+                                 Collection<BusinessWarning> warnings) throws BusinessException,
+            IOException {
+
+        long before = System.currentTimeMillis();
+        Dictionary dict = previewMDC(dictionaryName, path, dctInputStream,
+                appId, warnings);
+        long after = System.currentTimeMillis();
+        log.info("**************previewMDC take " + (after - before)
+                + " milliseconds of time.************");
+
+        log.info("Dictionary " + dict.getName()
+                + " is about to import to database");
+
+        before = System.currentTimeMillis();
+        dict = importDCT(dict, langCodes, langCharset, warnings);
+        after = System.currentTimeMillis();
+        log.info("************importMDC take " + (after - before)
+                + " milliseconds of time.**************");
+
+        return dict;
+    }
+
+    public Dictionary deliverDCT(String dictionaryName, String path,
                                  Long appId, String encoding, String[] langCodes,
                                  Map<String, String> langCharset,
                                  Collection<BusinessWarning> warnings) throws BusinessException {
         InputStream is;
         try {
-            is = new FileInputStream(filename);
+            is = new FileInputStream(path);
             if (null == encoding) {
                 byte[] bom = new byte[Util.UTF8_BOM_LENGTH];
                 is.read(bom);
                 encoding = Util.detectEncoding(bom);
                 is.close();
-                is = new FileInputStream(filename);
+                is = new FileInputStream(path);
             }
-            return deliverDCT(dictionaryName, filename, is, appId, encoding,
+            return deliverDCT(dictionaryName, path, is, appId, encoding,
                     langCodes, langCharset, warnings);
         } catch (IOException e) {
             throw new SystemError(e.getMessage());
@@ -311,7 +338,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                              String[] langCodes)
             throws BusinessException {
         // all the language code in dictionary
-        Collection dictLangCodes = dict.getAllLanguageCodes();
+        HashSet<String> dictLangCodes = dict.getAllLanguageCodes();
 
         if (langCodes != null) {
             List<String> listLangCodes = new ArrayList(Arrays.asList(langCodes));
@@ -322,7 +349,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                         listLangCodes.get(0));
             }
             // used for iteration.
-            dictLangCodes = Arrays.asList(langCodes);
+            dictLangCodes = new HashSet<String>(Arrays.asList(langCodes));
         }
 
         if (null == encoding) {
@@ -337,11 +364,14 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 }
                 file.createNewFile();
             }
+
             log.info("**************************generate dictionary: " + file.getPath() + "***************************");
             out = new PrintStream(new BufferedOutputStream(
                     new FileOutputStream(file)), true, encoding);
             // output support languages
 
+            out.println("--Created by DMS at "+dFmt.format(new Date()));
+            dictLangCodes.add("CHK");
             out.println("LANGUAGES {" + join(dictLangCodes, ", ") + "}");
             out.println();
 
@@ -375,8 +405,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 out.print(referenceFieldLangCodeString
                         + convertContent(indentSize, label.getReference(),
                         "\n", System.getProperty("line.separator")));
-
+                // already done.
+                dictLangCodes.remove("GAE");
+                dictLangCodes.remove("CHK");
                 String dictLang = null;
+
                 for (Object objDictLang : dictLangCodes) {
                     dictLang = (String) objDictLang;
                     // output translation separator
@@ -386,7 +419,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
                     // output langCode translation
                     String translationString = label.getReference();
-
                     DictionaryLanguage dl=dict.getDictLanguage(dictLang);
 
                     Language dictLangCodeLanguage = dl.getLanguage();
@@ -462,6 +494,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 + generateSpace(indentSize));
     }
 
+
+
     public Dictionary previewDCT(String dictionaryName, String filename,
                                  Long appId, String encoding, Collection<BusinessWarning> warnings)
             throws BusinessException {
@@ -498,12 +532,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     BusinessException.APPLICATION_NOT_FOUND, appId);
         }
 
-        //TODO: temp test reader,
-//		Dictionary dict = dictionaryParser.parse(app, dictionaryName, path,
-//				dctInputStream, encoding, warnings,null);
-
         Dictionary dict = dictionaryParser.parse(app, dictionaryName, path,
-                dctInputStream, encoding, warnings, null);
+                dctInputStream, encoding, warnings);
 
         return dict;
     }
@@ -699,10 +729,22 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         return dbDictLang;
     }
 
-	public Dictionary previewMDC(String dictionaryName, InputStream is, Long appId,
+	public Dictionary previewMDC(String dictionaryName, String path, InputStream is, Long appId,
 			Collection<BusinessWarning> warnings) throws BusinessException {
-		
-		 
-		return null;
+
+        Application app = (Application) getDao().retrieve(Application.class,
+                appId);
+
+        if (null == app) {
+            throw new BusinessException(
+                    BusinessException.APPLICATION_NOT_FOUND, appId);
+        }
+        Dictionary dict=null;
+        try {
+            dict=mdcParser.parse(app,dictionaryName,path,is,warnings);
+        } catch (Exception e) {
+            throw new BusinessException(BusinessException.INVALID_MDC_FILE,path);
+        }
+        return dict;
 	}
 }
