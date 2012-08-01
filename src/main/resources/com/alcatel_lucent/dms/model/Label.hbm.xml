@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.alcatel_lucent.dms.model">
+
+	<class name="Label" table="LABEL">
+		<id column="ID" name="id">
+			<generator class="hilo">
+                <param name="table">ID_LABEL</param>
+                <param name="column">next_hi</param>
+                <param name="max_lo">100</param>
+        	</generator>
+		</id>
+
+
+
+		<property name="reference" type="string" column="REFERENCE"
+			length="1024" />
+		<property name="key" type="string" column="LABEL_KEY" />
+		<property name="sortNo" type="integer" column="SORT_NO"/>
+		<property name="description" type="string" column="DESCRIPTION" />
+		<property name="maxLength" type="string" column="MAX_LENGTH" />
+		
+		<many-to-one name="dictionary" class="Dictionary" column="DICTIONARY_ID" />
+		<many-to-one name="context" column="CONTEXT_ID" class="Context"
+			not-null="true" />
+		<many-to-one name="text" column="TEXT_ID" class="Text"
+			not-null="true" />
+
+	</class>
+
+</hibernate-mapping>

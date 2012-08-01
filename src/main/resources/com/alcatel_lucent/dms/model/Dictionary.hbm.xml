@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+                                   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.alcatel_lucent.dms.model">
+	<class name="Dictionary" table="DICTIONARY">
+		<id column="ID" name="id">
+			<generator class="native" />
+		</id>
+		<property column="NAME" name="name" not-null="true" type="string" />
+		<property column="FORMAT" length="20" name="format" type="string" />
+		<property column="ENCODING" length="20" name="encoding" type="string" />
+		<property column="PATH" name="path" type="string" />
+		
+		<many-to-one column="APPLICATION_ID" name="application" not-null="true" />
+
+		<set cascade="delete" inverse="true" name="dictLanguages" sort="unsorted">
+			<key column="DICTIONARY_ID" />
+			<one-to-many class="DictionaryLanguage" />
+		</set>
+
+		<set cascade="delete" inverse="true" name="labels" order-by="SORT_NO">
+			<key column="DICTIONARY_ID" />
+			<one-to-many class="Label" />
+		</set>
+		<property column="LOCKED" name="locked" type="boolean" />
+	</class>
+</hibernate-mapping>
