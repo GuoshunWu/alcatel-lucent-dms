@@ -64,7 +64,7 @@ public class MDCParser {
         dictionary.setDictLanguages(readLanguages(document, dictionary, nonBreakExceptions));
         List nodes = document.selectNodes("/dictionary/messageString/*");
         Label label=null;
-        Collection<Label> labels=new HashSet<Label>();
+        Collection<Label> labels=new ArrayList<Label>();
         HashSet<String> labelKeys = new HashSet<String>();
         for(Object node: nodes){
             try{
