@@ -72,6 +72,18 @@ public interface DictionaryService {
                      String[] langCodes)
             throws BusinessException;
 
+    /**
+     * Generate a DCT dictionary
+     *
+     * @param filename  output file name
+     * @param dctId     Dictionary object id
+     * @param encoding  encoding of output file, null if dictionary settings is used
+     * @param langCodes Alcatel code of languages to generate, null if all languages
+     *                  should be exported
+     * @throws BusinessException
+     */
+    void generateMDC(String filename, Long dctId, String[] langCodes)
+            throws BusinessException;
 
     /**
      * Parse and preview a Multilingual Dictionary Configuration(MDC) file
