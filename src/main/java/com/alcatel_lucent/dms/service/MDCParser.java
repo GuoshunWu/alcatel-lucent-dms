@@ -69,7 +69,6 @@ public class MDCParser {
         for(Object node: nodes){
             try{
                 label=readLabel((Element)node, dictionary, context,warnings);
-                labels.add(label);
 
             }catch (BusinessException e){
                 nonBreakExceptions.addNestedException(e);
