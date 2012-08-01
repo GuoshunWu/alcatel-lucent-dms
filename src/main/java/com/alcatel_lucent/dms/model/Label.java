@@ -15,6 +15,7 @@ public class Label extends BaseEntity {
 
 	private Dictionary dictionary;
 	private String key;
+	private int sortNo;
 	private String reference;
 	private String description;
 	private String maxLength;
@@ -139,6 +140,14 @@ public class Label extends BaseEntity {
 			}
 		}
 		return true;
+	}
+
+	public void setSortNo(int sortNo) {
+		this.sortNo = sortNo;
+	}
+
+	public int getSortNo() {
+		return sortNo;
 	}
 
 }

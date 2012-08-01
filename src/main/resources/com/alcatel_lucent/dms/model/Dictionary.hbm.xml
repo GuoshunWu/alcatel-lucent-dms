@@ -18,7 +18,7 @@
 			<one-to-many class="DictionaryLanguage" />
 		</set>
 
-		<set cascade="delete" inverse="true" name="labels" sort="unsorted">
+		<set cascade="delete" inverse="true" name="labels" order-by="SORT_NO">
 			<key column="DICTIONARY_ID" />
 			<one-to-many class="Label" />
 		</set>

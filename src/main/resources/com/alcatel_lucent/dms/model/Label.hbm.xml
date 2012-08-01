@@ -18,6 +18,7 @@
 		<property name="reference" type="string" column="REFERENCE"
 			length="1024" />
 		<property name="key" type="string" column="LABEL_KEY" />
+		<property name="sortNo" type="integer" column="SORT_NO"/>
 		<property name="description" type="string" column="DESCRIPTION" />
 		<property name="maxLength" type="string" column="MAX_LENGTH" />
 		

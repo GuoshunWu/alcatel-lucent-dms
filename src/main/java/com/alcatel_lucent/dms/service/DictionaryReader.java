@@ -131,7 +131,7 @@ public class DictionaryReader extends LineNumberReader {
 
         // readLabels
         Label label = null;
-        Collection<Label> labels = new HashSet<Label>();
+        Collection<Label> labels = new ArrayList<Label>();
         String labelLine = readLine();
         if (null == labelLine) {
             dictionary.setLabels(labels);
