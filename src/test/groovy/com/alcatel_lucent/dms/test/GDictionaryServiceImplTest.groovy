@@ -262,7 +262,7 @@ class GDictionaryServiceImplTest {
 
         //all language code and package def
         HashMap<String,List<String>> langCodeForPkg = [
-                'AR': ['AR0', 'ar'],
+//                'AR': ['AR0', 'ar'],
 //                'CA': ['ES1', 'ca-ES', 'ca'],
 //                'CS': ['cs', 'cs-CZ', 'CS0'],
 //                'DA': ['DA0', 'da', 'da-DK'],
@@ -271,7 +271,7 @@ class GDictionaryServiceImplTest {
 //                'DE-CH': ['DE2', 'de-CH'],
 //                'EL': ['el-GR', 'GR0', 'el'],
 //                'EN-AU': ['AS0', 'en-AU'],
-//                'EN-UK': null,
+                'EN-UK': null,
 //                'EN-US': ['US0', 'en-US'],
 //                'ES': ['ES0', 'es-ES', 'es'],
 //                'ET': ['et-EE', 'et', 'EE0'],
@@ -329,36 +329,14 @@ class GDictionaryServiceImplTest {
 
             long before = System.currentTimeMillis()
 //            Collection<Dictionary> dictionaries = ds.deliverDCTFiles rootDir, new File(testFilePath), appId, encoding, langCodes as String[], null, warnings
-
-
-            Map<String,String> langCharset=[
-                    'en-GB':'UTF-8',
-                    'fr-FR':'UTF-8',
-                    'de-DE':'UTF-8',
-                    'es-ES':'UTF-8',
-                    'it-IT':'UTF-8',
-                    'pt-PT':'UTF-8',
-                    'no-NO':'UTF-8',
-                    'en-US':'UTF-8',
-                    'ca-ES':'UTF-8',
-                    'nl-NL':'UTF-8',
-                    'fi-FI':'UTF-8',
-                    'cs-CZ':'UTF-8',
-                    'pl-PL':'UTF-8',
-                    'ru-RU':'UTF-8',
-                    'zh-CN':'UTF-8',
-                    'ko-KR':'UTF-8',
-                    'hu-HU':'UTF-8',
-                    'zh-TW':'UTF-8',
-                    'da-DK':'UTF-8',
-                    'de-CH':'UTF-8',
-                    'et-EE':'UTF-8',
-                    'ja-JP':'UTF-8',
-                    'lt-LT':'UTF-8',
-                    'nl-BE':'UTF-8',
-                    'ro-RO':'UTF-8',
-                    'sv-SE':'UTF-8',
-            ]
+            Map<String,String> langCharset=[:]
+            ['ca-ES', 'cs-CZ', 'da-DK', 'de-AT', 'de-CH', 'de-DE', 'el-GR', 'en-AU', 'en-CA', 'en-CN',
+             'en-GB', 'en-GR', 'en-MA', 'en-RU', 'en-TW', 'en-US', 'es-AR', 'es-ES', 'es-MX', 'et-EE',
+             'fi-FI', 'fr-CA', 'fr-CH', 'fr-FR', 'fr-MA', 'hr-HR', 'hu-HU', 'it-CH', 'it-IT', 'ja-JP',
+             'ko-KR', 'lt-LT', 'lv-LV', 'nl-BE', 'nl-NL', 'no-NO', 'pl-PL', 'pt-BR', 'pt-PT', 'ro-RO',
+             'ru-RU', 'sk-SK', 'sl-SI', 'sr-CS', 'sv-SE', 'tr-TR', 'zh-CN', 'zh-TW'].each {code->
+                langCharset.put(code,'UTF-8')
+            }
             Collection<Dictionary> dictionaries = ds.deliverMDCFiles rootDir,new File(testFilePath), appId, langCodes as String[], langCharset, warnings
 
             long after = System.currentTimeMillis()
