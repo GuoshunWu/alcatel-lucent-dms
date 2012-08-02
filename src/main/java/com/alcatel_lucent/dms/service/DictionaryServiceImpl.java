@@ -377,7 +377,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         Collection<Dictionary> dicts = (Collection<Dictionary>) getDao().retrieve(hsql);
 
         for (Dictionary dict : dicts) {
-            generateDCT(new File(dir, dict.getName()), dict, dict.getEncoding(), null);
+            if(dict.getFormat().equals("xml")){
+                generateMDC(new File(dir,dict.getName()),dict.getId(),null);
+            }else{
+                generateDCT(new File(dir, dict.getName()), dict, dict.getEncoding(), null);
+            }
         }
     }
 
