@@ -77,7 +77,6 @@ public interface DictionaryService {
      *
      * @param filename  output file name
      * @param dctId     Dictionary object id
-     * @param encoding  encoding of output file, null if dictionary settings is used
      * @param langCodes Alcatel code of languages to generate, null if all languages
      *                  should be exported
      * @throws BusinessException
@@ -125,6 +124,10 @@ public interface DictionaryService {
      */
     Collection<Dictionary> deliverDCTFiles(String rootDir, File file, Long appId,
                                            String encoding, String[] langCodes,
+                                           Map<String, String> langCharset,
+                                           Collection<BusinessWarning> warnings) throws BusinessException;
+
+    Collection<Dictionary> deliverMDCFiles(String rootDir, File file, Long appId,  String[] langCodes,
                                            Map<String, String> langCharset,
                                            Collection<BusinessWarning> warnings) throws BusinessException;
 }

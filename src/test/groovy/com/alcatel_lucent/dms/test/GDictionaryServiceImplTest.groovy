@@ -255,14 +255,14 @@ class GDictionaryServiceImplTest {
         assertTrue "Some label(s): $labels in $origDict.name dictionary is(are) not deleted.", labels.isEmpty()
     }
 
-//    @Test
+    @Test
     void testDeliverDCTFiles() {
         Long appId = 1L
         String encoding = null
 
         //all language code and package def
         HashMap<String,List<String>> langCodeForPkg = [
-//                'AR': ['AR0', 'ar'],
+                'AR': ['AR0', 'ar'],
 //                'CA': ['ES1', 'ca-ES', 'ca'],
 //                'CS': ['cs', 'cs-CZ', 'CS0'],
 //                'DA': ['DA0', 'da', 'da-DK'],
@@ -284,7 +284,7 @@ class GDictionaryServiceImplTest {
 //                'HU': ['HU0', 'hu', 'hu-HU'],
 //                'IT': ['it', 'IT0', 'it-IT'],
 //                'IT-CH': ['IT1', 'it-CH'],
-                'KO': ['KO0', 'ko', 'ko-KR'],
+//                'KO': ['KO0', 'ko', 'ko-KR'],
 //                'LV': ['lv', 'lv-LV', 'LV0'],
 //                'NL': ['NL0', 'nl-NL', 'nl'],
 //                'NL-BE': ['nl-BE', 'NL1'],
@@ -312,12 +312,12 @@ class GDictionaryServiceImplTest {
             log.debug "rootDir=$rootDir"
             log.debug "langCodes=$langCodes"
 
-            testFilePath = "$rootDir/6.6.000.107.a/msaccess/msacces/src/alarm/Msa.dic"
+//            testFilePath = "$rootDir/6.6.000.107.a/msaccess/msacces/src/alarm/Msa.dic"
 
 
-            changeLoggerFile subDir,"SUCCESS",logDictDeliverSuccess
-            changeLoggerFile subDir,"WARNING",logDictDeliverWarning
-            changeLoggerFile subDir,"FAIL",   logDictDeliverFail
+//            changeLoggerFile subDir,"SUCCESS",logDictDeliverSuccess
+//            changeLoggerFile subDir,"WARNING",logDictDeliverWarning
+//            changeLoggerFile subDir,"FAIL",   logDictDeliverFail
 
             Collection<BusinessWarning> warnings = []
 
@@ -328,7 +328,39 @@ class GDictionaryServiceImplTest {
             logDictDeliverWarning.info header
 
             long before = System.currentTimeMillis()
-            Collection<Dictionary> dictionaries = ds.deliverDCTFiles rootDir, new File(testFilePath), appId, encoding, langCodes as String[], null, warnings
+//            Collection<Dictionary> dictionaries = ds.deliverDCTFiles rootDir, new File(testFilePath), appId, encoding, langCodes as String[], null, warnings
+
+
+            Map<String,String> langCharset=[
+                    'en-GB':'UTF-8',
+                    'fr-FR':'UTF-8',
+                    'de-DE':'UTF-8',
+                    'es-ES':'UTF-8',
+                    'it-IT':'UTF-8',
+                    'pt-PT':'UTF-8',
+                    'no-NO':'UTF-8',
+                    'en-US':'UTF-8',
+                    'ca-ES':'UTF-8',
+                    'nl-NL':'UTF-8',
+                    'fi-FI':'UTF-8',
+                    'cs-CZ':'UTF-8',
+                    'pl-PL':'UTF-8',
+                    'ru-RU':'UTF-8',
+                    'zh-CN':'UTF-8',
+                    'ko-KR':'UTF-8',
+                    'hu-HU':'UTF-8',
+                    'zh-TW':'UTF-8',
+                    'da-DK':'UTF-8',
+                    'de-CH':'UTF-8',
+                    'et-EE':'UTF-8',
+                    'ja-JP':'UTF-8',
+                    'lt-LT':'UTF-8',
+                    'nl-BE':'UTF-8',
+                    'ro-RO':'UTF-8',
+                    'sv-SE':'UTF-8',
+            ]
+            Collection<Dictionary> dictionaries = ds.deliverMDCFiles rootDir,new File(testFilePath), appId, langCodes as String[], langCharset, warnings
+
             long after = System.currentTimeMillis()
             log.info "Using a total of ${after - before} millisecond to perform delivering."
 

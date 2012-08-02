@@ -210,8 +210,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             String dictPath = file.getAbsolutePath().replace("\\", "/");
             String dictName = dictPath.replace(rootDir, "");
 
-            encoding = dictProp.getDictionaryEncoding(dictName);
-            langCharset = dictProp.getDictionaryCharsets(dictName);
+            encoding = encoding==null?dictProp.getDictionaryEncoding(dictName):encoding;
+            langCharset = null==langCharset? dictProp.getDictionaryCharsets(dictName):langCharset;
 
             warnings = new ArrayList<BusinessWarning>();
 
@@ -238,6 +238,86 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         }
         return deliveredDicts;
     }
+
+
+    /**
+     * Deliver dct files in a directory After using dictionary properties, now
+     * encoding and langCharset parameter are useless.
+     *
+     * @param rootDir
+     * @param file
+     */
+    public Collection<Dictionary> deliverMDCFiles(String rootDir, File file, Long appId,  String[] langCodes,
+                                                  Map<String, String> langCharset,
+                                                  Collection<BusinessWarning> warnings) throws BusinessException {
+
+        if (!file.exists())
+            return null;
+
+        Collection<Dictionary> deliveredDicts = new ArrayList<Dictionary>();
+
+        if (file.isDirectory()) {
+            File[] dctFileOrDirs = file.listFiles(new FileFilter() {
+                @Override
+                public boolean accept(File pathname) {
+                    return pathname.isDirectory() || Util.isMDCFile(pathname);
+                }
+            });
+            for (File dctFile : dctFileOrDirs) {
+                Collection<Dictionary> subDeliveredDicts = deliverMDCFiles(
+                        rootDir, dctFile, appId, langCodes,
+                        langCharset, warnings);
+                deliveredDicts.addAll(subDeliveredDicts);
+            }
+            return deliveredDicts;
+        }
+
+        // normal mdc file
+        Dictionary dict = null;
+        String encoding="UTF-8";
+        try {
+            rootDir = rootDir.replace("\\", "/");
+            String dictPath = file.getAbsolutePath().replace("\\", "/");
+            String dictName = dictPath.replace(rootDir, "");
+
+            langCharset = null==langCharset? dictProp.getDictionaryCharsets(dictName):langCharset;
+
+            warnings = new ArrayList<BusinessWarning>();
+
+            dict = deliverMDC(dictName, dictPath, appId, langCodes, langCharset, warnings);
+            if (!warnings.isEmpty()) {
+                join(warnings, '\n').replace("\"", "\"\"");
+                String forCSV = warnings.toString().replace("\"", "\"\"");
+                forCSV = join(warnings, '\n').replace("\"", "\"\"");
+                logDictDeliverWarning.warn(String.format("%s,%s,%s,\"%s\"",
+                        file.getName(), encoding, file.getAbsolutePath(),
+                        forCSV));
+            }
+        } catch (BusinessException e) {
+            String forCSV = e.toString().replace("\"", "\"\"");
+            logDictDeliverFail.error(String.format("%s,%s,%s,\"%s\"", file.getName(), encoding, file.getAbsolutePath(), forCSV));
+            log.error(e);
+        }
+        if (null != dict) {
+            dict.setDictLanguages(null);
+            dict.setLabels(null);
+            deliveredDicts.add(dict);
+        }
+        return deliveredDicts;
+    }
+
+    private Dictionary deliverMDC(String dictName, String dictPath, Long appId, String[] langCodes, Map<String, String> langCharset, Collection<BusinessWarning> warnings) {
+        Dictionary dict= null;
+        try {
+            FileInputStream is=new FileInputStream(dictPath);
+            dict = deliverMDC(dictName,dictPath,is,appId,langCodes,langCharset, warnings);
+            is.close();
+        } catch (IOException e) {
+            throw new SystemError(e.getMessage());
+        }
+        return dict;
+    }
+
 
     /**
      * Deliver a Zip file into database.
@@ -502,7 +582,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         for(Label label:labels){
             Element labelElement=messageStringElement.addElement(label.getKey());
             translations=label.getText().getTranslations();
-            
+
             for(String dictLangCode :dictLangCodes){
                 Element langElement=labelElement.addElement("lang");
                 String translatedString=label.getReference();
@@ -510,7 +590,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 DictionaryLanguage dl=dict.getDictLanguage(dictLangCode);
 
                 Language dictLangCodeLanguage = dl.getLanguage();
-                
+
                 for(Translation translation:translations){
                     if(translation.getLanguage().getId().equals(dictLangCodeLanguage.getId())){
                         translatedString=translation.getTranslation();
@@ -527,7 +607,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 //      OutputFormat format = OutputFormat.createCompactFormat();
 
         format.setEncoding("UTF-8");
-       
+
         try {
             XMLWriter output = new XMLWriter(new FileWriter(file), format);
             output.write(document);
@@ -535,7 +615,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         } catch (IOException e) {
             throw new SystemError(e.getMessage());
         }
-       
+
     }
 
     private String generateCHK(String maxLength, String reference) {
@@ -732,6 +812,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     continue;
                 }
                 try {
+                    //TODO: if dictionary encoding is UTF, then the converting will be useless.
                     String encodedTranslation = new String(trans
                             .getTranslation().getBytes(dict.getEncoding()),
                             charsetName);
@@ -820,8 +901,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         return dbDictLang;
     }
 
-	public Dictionary previewMDC(String dictionaryName, String path, InputStream is, Long appId,
-			Collection<BusinessWarning> warnings) throws BusinessException {
+    public Dictionary previewMDC(String dictionaryName, String path, InputStream is, Long appId,
+                                 Collection<BusinessWarning> warnings) throws BusinessException {
 
         Application app = (Application) getDao().retrieve(Application.class,
                 appId);
@@ -833,9 +914,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         Dictionary dict=null;
         try {
             dict=mdcParser.parse(app,dictionaryName,path,is,warnings);
-        } catch (Exception e) {
+        }catch(BusinessException e){
+            throw e;
+        }catch (Exception e) {
             throw new BusinessException(BusinessException.INVALID_MDC_FILE,path);
         }
         return dict;
-	}
+    }
 }
