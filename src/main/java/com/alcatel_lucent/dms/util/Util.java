@@ -189,7 +189,7 @@ public class Util {
 	}
 
     public static boolean isMDCFile(File file) {
-        return isZipFile(file.getName());
+        return isMDCFile(file.getName());
     }
 
 	private static boolean isSpecificFile(String fileName, String fileExtPattern) {
