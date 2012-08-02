@@ -761,9 +761,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             if (null == charsetName) {
                 nonBreakExceptions.addNestedException(new BusinessException(
                         BusinessException.CHARSET_NOT_DEFINED, dictLanguage.getLanguageCode()));
+            }else{
+                mergeDictLanguage(dbDict, dictLanguage.getLanguage().getId(),dictLanguage.getLanguageCode(), charsetName);
             }
-            mergeDictLanguage(dbDict, dictLanguage.getLanguage().getId(),
-                    dictLanguage.getLanguageCode(), charsetName);
         }
 
         // prepare textMap, labelMap by context
