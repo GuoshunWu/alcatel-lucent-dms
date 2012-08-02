@@ -837,9 +837,12 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 		byte[] source = trans.getTranslation().getBytes(dict.getEncoding());
                 		String encodedTranslation = new String(source, charsetName);
                 		byte[] target = encodedTranslation.getBytes(charsetName);
-	                    trans.setTranslation(encodedTranslation);
 	                    if (!Arrays.equals(source, target)) {
 	                        invalidText = true;
+	                        trans.setTranslation(text.getReference());
+	                        log.warn("Invalid encoding at label " + label.getKey() + " of dict " + dict.getPath());
+	                    } else {
+		                    trans.setTranslation(encodedTranslation);
 	                    }
                 	}
 
