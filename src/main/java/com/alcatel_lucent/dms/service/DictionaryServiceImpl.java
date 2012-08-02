@@ -721,10 +721,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 BusinessException.NESTED_DCT_PARSE_ERROR, dict.getName());
 
         // check langCodes parameter
-        Collection<String> langCodeList = null;
         if (langCodes != null) {
-            Collection dictLangCodes = dict.getAllLanguageCodes();
-            List<String> listLangCodes = new ArrayList(Arrays.asList(langCodes));
+            Collection<String> dictLangCodes = dict.getAllLanguageCodes();
+            List<String> listLangCodes = new ArrayList<String>(Arrays.asList(langCodes));
             listLangCodes.removeAll(dictLangCodes);
             // TODO: restore here after parse 1 work done.
             // if (!listLangCodes.isEmpty()) {
@@ -733,8 +732,23 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             // BusinessException.UNKNOWN_LANG_CODE,
             // listLangCodes.get(0));
             // }
-            langCodeList = Arrays.asList(langCodes);
         }
+        
+        // unified langCodeList
+        Collection<String> langCodeList = null;
+        if (langCodes != null) {
+        	langCodeList = new ArrayList<String>();
+	        for (String langCode : langCodes) {
+	        	langCodeList.add(getUnifiedLangCode(langCode));
+	        }
+        }
+        
+        // unified langCharset
+        Map<String, String> uniLangCharset = new HashMap<String, String>();
+        for (String langCode : langCharset.keySet()) {
+        	uniLangCharset.put(getUnifiedLangCode(langCode), langCharset.get(langCode));
+        }
+        langCharset = uniLangCharset;
 
         Dictionary dbDict = (Dictionary) getDao().retrieveOne(
                 "from Dictionary where name=:name",
@@ -758,10 +772,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
         // update dictionary languages
         for (DictionaryLanguage dictLanguage : dict.getDictLanguages()) {
-            if (langCodeList != null && !langCodeList.contains(dictLanguage.getLanguageCode())) {
+        	String uniLangCode = getUnifiedLangCode(dictLanguage.getLanguageCode());
+            if (langCodeList != null && !langCodeList.contains(uniLangCode)) {
                 continue;
             }
-            String charsetName = langCharset.get(dictLanguage.getLanguageCode());
+            String charsetName = langCharset.get(uniLangCode);
             if (null == charsetName) {
                 nonBreakExceptions.addNestedException(new BusinessException(
                         BusinessException.CHARSET_NOT_DEFINED, dictLanguage.getLanguageCode()));
@@ -800,7 +815,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     Translation trans = iterator.next();
                     String langCode = langCodeMap.get(trans.getLanguage()
                             .getId());
-                    if (!langCodeList.contains(langCode)) {
+                    String uniLangCode = getUnifiedLangCode(langCode);
+                    if (!langCodeList.contains(uniLangCode)) {
                         iterator.remove();
                     }
                 }
@@ -809,7 +825,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             // convert charset of translation strings
             for (Translation trans : text.getTranslations()) {
                 String langCode = langCodeMap.get(trans.getLanguage().getId());
-                String charsetName = langCharset.get(langCode);
+                String charsetName = langCharset.get(getUnifiedLangCode(langCode));
                 if (null == charsetName) {
                     nonBreakExceptions.addNestedException(new BusinessException(
                             BusinessException.CHARSET_NOT_DEFINED, langCode));
@@ -890,7 +906,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         return dbDict;
     }
 
-    private DictionaryLanguage mergeDictLanguage(Dictionary dbDict,
+    private String getUnifiedLangCode(String langCode) {
+		return langCode.toUpperCase().replace("_", "-");
+	}
+
+	private DictionaryLanguage mergeDictLanguage(Dictionary dbDict,
                                                  Long languageId, String languageCode, String charsetName) {
         DictionaryLanguage dbDictLang = dbDict.getDictLanguage(languageId);
         if (dbDictLang == null) {
