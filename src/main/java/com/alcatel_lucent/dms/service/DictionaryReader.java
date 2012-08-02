@@ -51,6 +51,7 @@ public class DictionaryReader extends LineNumberReader {
     private Logger log = Logger.getLogger(DictionaryReader.class);
     private String lastLine = ";";
     private String currentLine;
+    private boolean firstLine = true;
 
     protected DictionaryReader(Reader in, Dictionary dictionary) {
         super(in);
@@ -71,6 +72,11 @@ public class DictionaryReader extends LineNumberReader {
     public Collection<DictionaryLanguage> readLanguages(BusinessException exception) throws IOException {
 
         String line = readLine();
+        if (line == null) {
+            log.error("Parser was broken on line: " + line);
+            throw new BusinessException(BusinessException.INVALID_DCT_FILE,
+                    getLineNumber(), dictionary.getName());
+        }
         Matcher m = patternLanguage.matcher(line);
         if (!m.matches()) {
             log.error("Parser was broken on line: " + line);
@@ -121,11 +127,7 @@ public class DictionaryReader extends LineNumberReader {
                 BusinessException.NESTED_DCT_PARSE_ERROR, dictionary.getName());
 
         // first read Languages
-        try {
-            dictLanguages = readLanguages(nonBreakExceptions);
-        } catch (BusinessException e) {
-            nonBreakExceptions.addNestedException(e);
-        }
+        dictLanguages = readLanguages(nonBreakExceptions);
 
         dictionary.setDictLanguages(dictLanguages);
 
@@ -350,6 +352,15 @@ public class DictionaryReader extends LineNumberReader {
         String line = null;
         // skip comment and blank line
         while (null != (line = super.readLine())) {
+        	// try to remove UTF BOM in case ISO-8859-1 encoding
+            if (firstLine) {
+            	if (line.length() >= 2 && line.charAt(0) == 0xff && line.charAt(1) == 0xfe) {
+            		line = line.substring(2);
+            	} else if (line.length() >= 3 && line.charAt(0) == 0xef && line.charAt(1) == 0xbb && line.charAt(2) == 0xbf) {
+            		line = line.substring(3);
+            	}
+            	firstLine = false;
+            }
             line = line.trim();
             if (isCommentOrBlankLine(line)) {
                 log.debug(String.format(

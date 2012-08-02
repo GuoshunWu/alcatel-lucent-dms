@@ -812,22 +812,27 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     continue;
                 }
                 try {
-                    //TODO: if dictionary encoding is UTF, then the converting will be useless.
-                    String encodedTranslation = new String(trans
-                            .getTranslation().getBytes(dict.getEncoding()),
-                            charsetName);
-                    trans.setTranslation(encodedTranslation);
+                	boolean invalidText = false;
+                	if (!dict.getEncoding().equals(charsetName)) {
+                		byte[] source = trans.getTranslation().getBytes(dict.getEncoding());
+                		String encodedTranslation = new String(source, charsetName);
+                		byte[] target = encodedTranslation.getBytes(charsetName);
+	                    trans.setTranslation(encodedTranslation);
+	                    if (!Arrays.equals(source, target)) {
+	                        invalidText = true;
+	                    }
+                	}
 
                     // check charset
-                    if (!trans.isValidText()) {
+                    if (invalidText || !trans.isValidText()) {
                         warnings.add(new BusinessWarning(
                                 BusinessWarning.INVALID_TEXT,
-                                encodedTranslation, charsetName, langCode,
+                                trans.getTranslation(), charsetName, langCode,
                                 label.getKey()));
                     }
 
                     // check length
-                    if (!label.checkLength(encodedTranslation)) {
+                    if (!label.checkLength(trans.getTranslation())) {
                         warnings.add(new BusinessWarning(
                                 BusinessWarning.EXCEED_MAX_LENGTH, langCode,
                                 label.getKey()));
