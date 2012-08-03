@@ -6,6 +6,9 @@
 	<groupId>com.alcatel_lucent.dms</groupId>
 	<artifactId>dms</artifactId>
 	<version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
+    <name>Dictionary Management System</name>
+    <url>http://localhost:8080/dms</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -173,6 +176,15 @@
 					<verbose>false</verbose>
 				</configuration>
 			</plugin>
+            <plugin>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>maven-jetty-plugin</artifactId>
+                <version>6.1.9</version>
+                <configuration>
+                    <contextPath>/</contextPath>
+                    <webDefaultXml>webdefault.xml</webDefaultXml>
+                </configuration>
+            </plugin>
 
 			<plugin>
 				<groupId>org.codehaus.gmaven</groupId>
