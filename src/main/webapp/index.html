@@ -15,6 +15,33 @@
             font-size: 75%;
         }
     </style>
+	<style type="text/css">
+		#mySplitter {
+			width: 100%;
+			height: 500px;
+			border-top: solid 1px #aaa;
+			border-bottom: solid 1px #aaa;
+		}
+		#mySplitter div {
+/* 			overflow: auto; */
+		}
+		.ui-widget .splitter-bar-vertical, .ui-content .splitter-bar-vertical {
+			width: 5px;
+			background-image: url(images/vgrabber.gif);
+			background-position: center;
+			background-repeat: no-repeat;		
+		}		
+		.ui-widget .splitter-bar-vertical-docked, .ui-content .splitter-bar-vertical-docked {
+			width: 5px;
+			background-image: url(images/vgrabber.gif);
+			background-position: center;
+			background-repeat: no-repeat;		
+			background-color: #fbec88;
+		}		
+		#mySplitter .ui-state-highlight {
+			opacity: 0.7;
+		}
+	</style>
 
     <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
     <script type="text/javascript" src="js/jquery-ui-1.8.22.custom.min.js"></script>
@@ -25,9 +52,24 @@
     <script type="text/javascript" src="js/jquery.jstree.js" ></script>
     <script type="text/javascript" src="js/jquery.cookie.js" ></script>
     <script type="text/javascript" src="js/jquery.hotkeys.js" ></script>
+	<script type="text/javascript" src="js/splitter-152.js"></script>
 
     <script type="text/javascript">
         $(function () {
+        	
+        	// splitter
+        	$("#mySplitter").splitter({
+					type: "v",
+					outline: true,
+					sizeLeft: 200,
+					minLeft: 100,
+					minRight: 100,
+					dock: "left",
+					dockSpeed: 200,
+					dockKey: 'Z',	// Alt-Shift-Z in FF/IE
+					accessKey: 'I'	// Alt-Shift-I in FF/IE
+			});
+        	
             // Tabs
             $('#tabs').tabs();
 
@@ -88,31 +130,36 @@
 <body>
 <H1 align="center">Welcome to Dictionary Management</H1>
 <!-- Tabs -->
-<h2 class="demoHeader">Tabs</h2>
-
-<div id="tabs">
-    <ul>
-        <li><a href="#jqGrid">JQGrid</a></li>
-        <li><a href="#jsTree">JSTree</a></li>
-        <li><a href="#tab3">选项卡W3</a></li>
-    </ul>
-
-    <div id="jqGrid">
-        <table id="list">
-            <tr>
-                <td/>
-            </tr>
-        </table>
-        <div id="pager"></div>
-    </div>
-
-    <div id="jsTree">
+<div id="mySplitter">
+	<div id="LeftPane" style="background-color:white;">
 		<div id="myTree"></div>
 	</div>
 
-    <div id="tab3">
-        选项卡3
-    </div>
+	<div id="tabs">
+		<h2 class="demoHeader">Tabs</h2>
+	    <ul>
+	        <li><a href="#jqGrid">JQGrid</a></li>
+	        <li><a href="#jsTree">JSTree</a></li>
+	        <li><a href="#tab3">选项卡W3</a></li>
+	    </ul>
+	
+	    <div id="jqGrid">
+	        <table id="list">
+	            <tr>
+	                <td/>
+	            </tr>
+	        </table>
+	        <div id="pager"></div>
+	    </div>
+	
+	    <div id="jsTree">
+			
+		</div>
+	
+	    <div id="tab3">
+	        选项卡3
+	    </div>
+	</div>
 </div>
 
 </body>
