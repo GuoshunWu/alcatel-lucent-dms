@@ -12,3 +12,9 @@ target/
 .project
 .classpath
 .settings
+syntax: glob
+.idea
+.gradle
+.myhibernatedata
+*.iml
+build.gradle
