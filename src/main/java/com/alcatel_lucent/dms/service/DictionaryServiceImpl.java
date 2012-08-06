@@ -536,7 +536,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
     public void generateMDC(File file, Long dctId, String[] langCodes) throws BusinessException{
 
-
         Dictionary dict = (Dictionary) getDao().retrieve(Dictionary.class,
                 dctId);
         if (null == dict) {

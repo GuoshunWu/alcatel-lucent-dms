@@ -37,6 +37,12 @@
 			<version>${spring.version}</version>
 		</dependency>
 
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
@@ -257,6 +263,14 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+
+    <repositories>
+        <repository>
+            <id>repos_local</id>
+            <name>myLocalnetRepos</name>
+            <url>http://192.168.1.102:8081/nexus/content/groups/public/</url>
+        </repository>
+    </repositories>
 
 	<distributionManagement>
 		<repository>

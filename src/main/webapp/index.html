@@ -3,10 +3,10 @@
 <html>
 <head>
     <title>Welcome to DMS</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
-    <link type="text/css" href="css/themes/ui-lightness/jquery-ui-1.8.22.custom.css" rel="stylesheet" />
-    <link rel="stylesheet" type="text/css" media="screen" href="css/jqgrid/ui.jqgrid.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="css/themes/ui-lightness/jquery-ui-1.8.22.custom.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="css/jqgrid/ui.jqgrid.css"/>
 
     <style type="text/css">
         html, body {
@@ -20,14 +20,14 @@
     <script type="text/javascript" src="js/jquery-ui-1.8.22.custom.min.js"></script>
 
     <script type="text/javascript" src="js/i18n/grid.locale-en.js"></script>
-    <script type="text/javascript" src="js/jquery.jqGrid.min.js" ></script>
+    <script type="text/javascript" src="js/jquery.jqGrid.min.js"></script>
 
     <script type="text/javascript" src="js/jquery.jstree.js" ></script>
     <script type="text/javascript" src="js/jquery.cookie.js" ></script>
     <script type="text/javascript" src="js/jquery.hotkeys.js" ></script>
 
     <script type="text/javascript">
-        $(function(){
+        $(function () {
             // Tabs
             $('#tabs').tabs();
 
@@ -36,8 +36,8 @@
                 url:'xml/testJQGrid.xml',
                 datatype:'xml',
                 mtype:'Get',
-                colNames:['Inv No','Date', 'Amount','Tax','Total','Notes'],
-                colModel :[
+                colNames:['Inv No', 'Date', 'Amount', 'Tax', 'Total', 'Notes'],
+                colModel:[
                     {name:'invid', index:'invid', width:55},
                     {name:'invdate', index:'invdate', width:90},
                     {name:'amount', index:'amount', width:80, align:'right'},
@@ -47,60 +47,73 @@
                 ],
                 pager:'#pager',
                 rowNum:10,
-                rowList:[10,20,30],
-                sortname: 'invid',
-                sortorder: 'desc',
-                viewrecords: true,
-                gridview: true,
-                caption: 'My first grid'
+                rowList:[10, 20, 30],
+                sortname:'invid',
+                sortorder:'desc',
+                viewrecords:true,
+                gridview:true,
+                caption:'My first grid'
             });
 
             //jsTree
-            $('#myTree').bind('loaded.jstree',function(event, data){
-//                alert('Tree is loaded');
-            }).jstree({
-//                core:{},
-                'json_data':{
-                    'data':[
+            $('#myTree').jstree({
+                "json_data":{
+                    "data": [
                         {
-                            'data':'A node',
-                            'metadata':{id: 23},
-                            'children':['Child1','A Child2']
+                            "data":"Product",
+                            "metadata":{"id": 23},
+                            "children":[
+                                {
+                                    "data": "ProductVersion0.1",
+                                    "children":["app1", "app2"]
+                                },
+                                "ProductVersion0.2"
+                            ]
                         },
                         {
-                            'attr':{'id':'li.node.id1'},
-                            'data':{
-                                'title':'Long format demo',
-                                'attr':{'href':'#'}
+                            "attr":{"id":"li.node.id1"},
+                            "data":{
+                                "title":"Long format demo",
+                                "attr":{"href":"#"}
                             }
                         }
                     ]
                 },
-                plugins : [ "themes", "html_data","json_data"]
+                plugins : [ "themes", "json_data","ui"]
             });
-
         });
+
     </script>
 </head>
 <body>
-    <H1 align="center">Welcome to Dictionary Management</H1>
-    <!-- Tabs -->
-    <h2 class="demoHeader">Tabs</h2>
-    <div id="tabs">
-        <ul>
-            <li><a href="#jqGrid">JQGrid</a></li>
-            <li><a href="#jsTree">JSTree</a></li>
-            <li><a href="#tabs-3">选项卡3</a></li>
-        </ul>
+<H1 align="center">Welcome to Dictionary Management</H1>
+<!-- Tabs -->
+<h2 class="demoHeader">Tabs</h2>
 
-        <div id="jqGrid">
-            <table id="list"><tr><td/></tr></table>
-            <div id="pager"/>
-        </div>
-        <div id="jsTree">
-            <div id="myTree"></div>
-        </div>
-        <div id="tabs-3">这是选项卡3</div>
+<div id="tabs">
+    <ul>
+        <li><a href="#jqGrid">JQGrid</a></li>
+        <li><a href="#jsTree">JSTree</a></li>
+        <li><a href="#tab3">选项卡W3</a></li>
+    </ul>
+
+    <div id="jqGrid">
+        <table id="list">
+            <tr>
+                <td/>
+            </tr>
+        </table>
+        <div id="pager"></div>
     </div>
+
+    <div id="jsTree">
+		<div id="myTree"></div>
+	</div>
+
+    <div id="tab3">
+        选项卡3
+    </div>
+</div>
+
 </body>
 </html>
