@@ -825,6 +825,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 }
             }
 
+            String memo=null;
             // convert charset of translation strings
             for (Translation trans : text.getTranslations()) {
                 String langCode = langCodeMap.get(trans.getLanguage().getId());
@@ -849,12 +850,14 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	                    }
                 	}
 
+                    memo="";
                     // check charset
                     if (invalidText || !trans.isValidText()) {
                         warnings.add(new BusinessWarning(
                                 BusinessWarning.INVALID_TEXT,
                                 trans.getTranslation(), charsetName, langCode,
                                 label.getKey()));
+                        memo+=BusinessWarning.INVALID_TEXT;
                     }
 
                     // check length
@@ -862,12 +865,18 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                         warnings.add(new BusinessWarning(
                                 BusinessWarning.EXCEED_MAX_LENGTH, langCode,
                                 label.getKey()));
-                    }
+                        if(!memo.isEmpty()){
+                            memo+=";";
+                        }
+                        memo+=BusinessWarning.EXCEED_MAX_LENGTH;
+                   }
+                    trans.setMemo(memo);
                 } catch (UnsupportedEncodingException e) {
                     nonBreakExceptions.addNestedException(new BusinessException(
                             BusinessException.CHARSET_NOT_FOUND, charsetName));
                 }
-            }
+
+            } //for
         }
 
         // for each context, insert or update label/text/translation data

@@ -1,32 +1,41 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-	xsi:schemaLocation="
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
 http://www.springframework.org/schema/beans 
 http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
 http://www.springframework.org/schema/context
 http://www.springframework.org/schema/context/spring-context-3.1.xsd
 ">
-	
-	<context:annotation-config />
-	<context:component-scan base-package="com.alcatel_lucent.dms.service" />
-	
 
-	<!-- <bean id="daoService" class="com.alcatel_lucent.dms.service.DaoServiceImpl">
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
+    <!-- for H2 Database Engine -->
+    <!--<bean id="h2DBEngine" class="org.h2.tools.Server"-->
+          <!--factory-method="createTcpServer"-->
+          <!--init-method="start"-->
+          <!--destroy-method="stop" >-->
+        <!--<constructor-arg value="-tcp"/>-->
+    <!--</bean>-->
 
-	<bean id="dictionaryService" class="com.alcatel_lucent.dms.service.DictionaryServiceImpl">
-		<property name="dao"> <ref bean="daoService" /> </property>
-		<qualifier value="dicSvs" />
-	</bean>
+    <context:annotation-config/>
+    <context:component-scan base-package="com.alcatel_lucent.dms.service"/>
 
 
-	<bean id="textService" class="com.alcatel_lucent.dms.service.TextServiceImpl">
-		<property name="dao"> <ref bean="daoService" /> </property>
-	</bean> -->
-	
-	<!-- <bean id="org.h2.tools.Server" class="org.h2.tools.Server"
+    <!-- <bean id="daoService" class="com.alcatel_lucent.dms.service.DaoServiceImpl">
+         <property name="sessionFactory" ref="sessionFactory" />
+     </bean>
+
+     <bean id="dictionaryService" class="com.alcatel_lucent.dms.service.DictionaryServiceImpl">
+         <property name="dao"> <ref bean="daoService" /> </property>
+         <qualifier value="dicSvs" />
+     </bean>
+
+
+     <bean id="textService" class="com.alcatel_lucent.dms.service.TextServiceImpl">
+         <property name="dao"> <ref bean="daoService" /> </property>
+     </bean> -->
+
+    <!-- <bean id="org.h2.tools.Server" class="org.h2.tools.Server"
           factory-method="createTcpServer" init-method="start"
           destroy-method="stop"
           >

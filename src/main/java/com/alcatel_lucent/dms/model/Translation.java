@@ -10,9 +10,18 @@ public class Translation extends BaseEntity {
 	private Text text;
 	private Language language;
 	private String translation;
-	
-	
-	public Text getText() {
+    private String memo;
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
+
+    public Text getText() {
 		return text;
 	}
 	public void setText(Text text) {

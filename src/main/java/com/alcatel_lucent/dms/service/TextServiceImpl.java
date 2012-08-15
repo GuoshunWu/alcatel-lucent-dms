@@ -101,11 +101,12 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 				}
 				Translation dbTrans = dbText.getTranslation(trans.getLanguage().getId());
 				if (dbTrans == null) {
-					dbTrans = addTranslation(dbText, trans.getLanguage().getId(), trans.getTranslation());
+					dbTrans = addTranslation(dbText, trans.getLanguage().getId(), trans.getTranslation(),trans.getMemo());
 				} else {
 					dbTrans.setTranslation(trans.getTranslation());
-				}
-				langSet.add(trans.getLanguage().getId());
+                    dbTrans.setMemo(trans.getMemo());
+                }
+                langSet.add(trans.getLanguage().getId());
 			}
 			result.put(text.getReference(), dbText);
 		}
@@ -117,13 +118,15 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 	 * @param text persistent Text object
 	 * @param languageId language id
 	 * @param translationText translation text
+     * @param memo translation memo
 	 * @return persistent Translation object
 	 */
-	private Translation addTranslation(Text text, Long languageId, String translationText) {
+	private Translation addTranslation(Text text, Long languageId, String translationText,String memo) {
 		Translation trans = new Translation();
 		trans.setText(text);
 		trans.setLanguage((Language) dao.retrieve(Language.class, languageId));
 		trans.setTranslation(translationText);
+        trans.setMemo(memo);
 		return (Translation) dao.create(trans, false);
 	}
 	
