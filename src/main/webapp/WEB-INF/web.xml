@@ -80,24 +80,27 @@
         </listener-class>
     </listener>
 
-    <!--<servlet>-->
-        <!--<servlet-name>GSP</servlet-name>-->
-        <!--<servlet-class>groovy.modules.pages.GroovyPages</servlet-class>-->
-        <!--<init-param>-->
-            <!--<param-name>encoding</param-name>-->
-            <!--<param-value>UTF-8</param-value>-->
-        <!--</init-param>-->
-        <!--<init-param>-->
-            <!--<param-name>debug</param-name>-->
-            <!--<param-value>0</param-value>-->
-        <!--</init-param>-->
-    <!--</servlet>-->
+    <servlet>
+        <servlet-name>JerseyRESTService</servlet-name>
+        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+        <init-param>
+            <param-name>com.sun.jersey.config.property.packages</param-name>
+            <param-value>com.alcatel_lucent.dms.resources</param-value>
+        </init-param>
+        <init-param>
+            <param-name>com.sun.jersey.config.feature.DisableXmlSecurity</param-name>
+            <param-value>true</param-value>
+        </init-param>
 
-    <!--<servlet-mapping>-->
-        <!--<servlet-name>GSP</servlet-name>-->
-        <!--<url-pattern>*.gsp</url-pattern>-->
-    <!--</servlet-mapping>-->
 
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>JerseyRESTService</servlet-name>
+        <url-pattern>/rest/*</url-pattern>
+    </servlet-mapping>
+    
     <servlet>
         <servlet-name>GroovyServlet</servlet-name>
         <servlet-class>groovy.servlet.GroovyServlet</servlet-class>
