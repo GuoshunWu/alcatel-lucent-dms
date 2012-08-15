@@ -520,7 +520,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 }
 
             }
-
+            if (labels.length > 0) {
+            	out.println(";");
+            }
         } catch (IOException e) {
             throw new SystemError(e.getMessage());
         } finally {
