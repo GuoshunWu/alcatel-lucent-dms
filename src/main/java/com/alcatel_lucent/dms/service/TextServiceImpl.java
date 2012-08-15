@@ -2,6 +2,7 @@ package com.alcatel_lucent.dms.service;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
@@ -84,17 +85,27 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 		Map<String, Text> result = new HashMap<String, Text>();
 		Map<String, Text> dbTextMap = getTextsAsMap(ctxId);
 		for (Text text : texts) {
+			if (result.containsKey(text.getReference())) {
+				// ignore same reference
+				continue;
+			}
 			Text dbText = dbTextMap.get(text.getReference());
 			if (dbText == null) {
 				dbText = addText(ctxId, text.getReference());
 			}
+			HashSet<Long> langSet = new HashSet<Long>();
 			for (Translation trans : text.getTranslations()) {
+				if (langSet.contains(trans.getLanguage().getId())) {
+					// ignore translation of same language
+					continue;
+				}
 				Translation dbTrans = dbText.getTranslation(trans.getLanguage().getId());
 				if (dbTrans == null) {
 					dbTrans = addTranslation(dbText, trans.getLanguage().getId(), trans.getTranslation());
 				} else {
 					dbTrans.setTranslation(trans.getTranslation());
 				}
+				langSet.add(trans.getLanguage().getId());
 			}
 			result.put(text.getReference(), dbText);
 		}
