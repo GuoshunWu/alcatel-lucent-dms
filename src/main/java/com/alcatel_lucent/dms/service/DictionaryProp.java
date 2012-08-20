@@ -20,10 +20,10 @@ import com.alcatel_lucent.dms.model.ISOLanguageCode;
 public class DictionaryProp {
 	
 	private static ResourceBundle bundle = ResourceBundle.getBundle("dict");
-	
+
 	@Autowired
 	private LanguageService langService;
-	
+
 	/**
 	 * Get encoding for a dictionary.
 	 * @param dictionary
@@ -33,7 +33,7 @@ public class DictionaryProp {
 		String property = bundle.getString(dictionary);
 		return property.split(",")[0];
 	}
-	
+
 	/**
 	 * Get langCharset parameter for a dictionary.
 	 * @param dictionary

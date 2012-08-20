@@ -68,7 +68,7 @@ class GDictionaryServiceImplTest {
     }
 
     @Test
-	@Ignore
+//    @Ignore
     void testSampleAbout_DCT() throws Exception {
 
         Long appId = 1L
@@ -86,7 +86,7 @@ class GDictionaryServiceImplTest {
         String[] langCodes = null
 
         String dictName = "About.dic"
-
+        String version  = '1.0'
         String testFile = "CH0/About.dic"
         String updatedTestFile = "CH0/About_Changed.dic"
 
@@ -96,14 +96,11 @@ class GDictionaryServiceImplTest {
         Collection<BusinessWarning> warnings = []
 
         /***************************************** Test for deliver DCT ****************************************/
-
-        //		com.alcatel_lucent.dms.model.Dictionary dbDict = ds.deliverDCT(dictName, testFilePath, appId,
-        //				encoding, langCodes, langCharset, warnings)
-        Dictionary dbDict = ds.deliverDCT(dictName, testFilePath, appId,
-                encoding, langCodes, langCharset, warnings)
+        Dictionary dbDict = ds.deliverDCT dictName, version, testFilePath, appId, encoding, langCodes, langCharset, warnings
 
         // dictionary check
-        dbDict = dao.retrieveOne("from Dictionary where name=:name", ['name': dictName], ["labels", "dictLanguages"] as String[]) as Dictionary
+        dbDict = dao.retrieveOne("from Dictionary where version=:version and base.name=:name", ['name': dictName,'version':version], ["labels", "dictLanguages"] as String[]) as Dictionary
+
         assertThat dbDict, is(notNullValue())
 
         // dictionary language check
@@ -118,7 +115,7 @@ class GDictionaryServiceImplTest {
         Context dbCtx = dao.retrieveOne("from Context where name=:name", ['name': dictName]) as Context
         assertNotNull(dbCtx)
 
-        //				 prepare expected result data
+        // prepare expected result data
         List<Label> validateLabels = [
                 new Label(
                         'dictionary': dbDict,
@@ -195,10 +192,10 @@ class GDictionaryServiceImplTest {
         // re deliver the updated DCT file
         langCharset.CH1 = 'Big5'
 
-        dbDict = ds.deliverDCT dictName, testFilePath, appId, encoding, langCodes, langCharset, warnings
+        dbDict = ds.deliverDCT dictName, version, testFilePath, appId, encoding, langCodes, langCharset, warnings
         // check result
 
-        dbDict = dao.retrieveOne("from Dictionary where name=:name", ['name': dictName], ["labels", "dictLanguages"] as String[]) as Dictionary
+        dbDict = dao.retrieveOne("from Dictionary where version=:version and base.name=:name", ['name': dictName,'version':version], ["labels", "dictLanguages"] as String[]) as Dictionary
 
         // check added dictionary language
         assertThat dbDict.allLanguageCodes, hasItem("CH1")
@@ -238,21 +235,23 @@ class GDictionaryServiceImplTest {
 
         /*************************** Test generate dct file from dictionary in database *************************/
         String targetFileName = "target/${dictName}_generated.dct"
-        ds.generateDCT targetFileName, dbDict.getId(), encoding, langCodes, langCharset
+        ds.generateDCT targetFileName, dbDict.getId(), encoding, langCodes
         def generatedFile = new File(targetFileName)
         assertTrue "Dictionary $generatedFile.name is not generated.", generatedFile.exists()
 
         /*************************** Test deletel dictionary in database *************************/
-        ds.deleteDCT dictName
-        def origDict = dbDict
-        dbDict = dao.retrieveOne("from Dictionary where name=:name", ['name': dictName], ["labels", "dictLanguages"] as String[]) as Dictionary
+//        dao.delete 'delete from Dictionary where version=:version and base.name=:name', ['version':version, 'name':dictName] as Map<String,String>
+        dbDict = dao.retrieveOne("from Dictionary where version=:version and base.name=:name", ['name': dictName,'version':version], ['base'] as String[]) as Dictionary
+        dao.delete(dbDict)
+        Dictionary origDict = dbDict
+        dbDict = dao.retrieveOne("from Dictionary where version=:version and base.name=:name", ['name': dictName,'version':version] ) as Dictionary
 
         // check dictionary
         assertThat dbDict, is(nullValue())
 
         // check labels
         List<Label> labels = dao.retrieve "from Label where dictionary.id=:dictId", ['dictId': origDict.id]
-        assertTrue "Some label(s): $labels in $origDict.name dictionary is(are) not deleted.", labels.isEmpty()
+        assertTrue "Some label(s): $labels in $origDict.name dictionary was(were) not deleted.", labels.isEmpty()
     }
 
     @Test
@@ -261,8 +260,10 @@ class GDictionaryServiceImplTest {
         String encoding = null
 
         //all language code and package def
-        HashMap<String,List<String>> langCodeForPkg = [
-//                'AR': ['AR0', 'ar'],
+        HashMap<String, List<String>> langCodeForPkg = [
+//                'ZH-CN': ['zh', 'ZH0', 'CH0', 'zh-CN'],
+//                'ZH-TW': ['zh-TW', 'CH1', 'TW0', 'zh-HK', 'HK0'],
+                'AR': ['AR0', 'ar'],
 //                'CA': ['ES1', 'ca-ES', 'ca'],
 //                'CS': ['cs', 'cs-CZ', 'CS0'],
 //                'DA': ['DA0', 'da', 'da-DK'],
@@ -271,7 +272,7 @@ class GDictionaryServiceImplTest {
 //                'DE-CH': ['DE2', 'de-CH'],
 //                'EL': ['el-GR', 'GR0', 'el'],
 //                'EN-AU': ['AS0', 'en-AU'],
-                'EN-UK': null,
+//                'EN-UK': null,
 //                'EN-US': ['US0', 'en-US'],
 //                'ES': ['ES0', 'es-ES', 'es'],
 //                'ET': ['et-EE', 'et', 'EE0'],
@@ -299,21 +300,17 @@ class GDictionaryServiceImplTest {
 //                'SL': ['sl', 'SI0', 'sl-SI'],
 //                'SV': ['sv', 'sv-SE', 'SV0'],
 //                'TR': ['TR0', 'tr-TR', 'tr'],
-//                'ZH-CN': ['zh', 'ZH0', 'CH0', 'zh-CN'],
-//                'ZH-TW': ['zh-TW', 'CH1', 'TW0', 'zh-HK', 'HK0'],
-//                'NULL': null
         ]
 
-        langCodeForPkg.each {subDir, langCodes->
+        langCodeForPkg.each {subDir, langCodes ->
             String rootDir = "Z:/$subDir"
 //			rootDir = "D:/tmp/$subDir"
             String testFilePath = rootDir
-            log.info "Begin to import directory: $testFilePath".center(100,'=')
+            log.info "Begin to import directory: $testFilePath".center(100, '=')
             log.debug "rootDir=$rootDir"
             log.debug "langCodes=$langCodes"
 
-//            testFilePath = "$rootDir/6.6.000.107.a/msaccess/msacces/src/alarm/Msa.dic"
-
+            testFilePath = "$rootDir/6.6.000.107.a/msaccess/msacces/src/alarm/Msa.dic"
 
 //            changeLoggerFile subDir,"SUCCESS",logDictDeliverSuccess
 //            changeLoggerFile subDir,"WARNING",logDictDeliverWarning
@@ -328,16 +325,16 @@ class GDictionaryServiceImplTest {
             logDictDeliverWarning.info header
 
             long before = System.currentTimeMillis()
-//            Collection<Dictionary> dictionaries = ds.deliverDCTFiles rootDir, new File(testFilePath), appId, encoding, langCodes as String[], null, warnings
-            Map<String,String> langCharset=[:]
+            Collection<Dictionary> dictionaries = ds.deliverDCTFiles rootDir, new File(testFilePath), appId, encoding, langCodes as String[], null, warnings
+            Map<String, String> langCharset = [:]
             ['ca-ES', 'cs-CZ', 'da-DK', 'de-AT', 'de-CH', 'de-DE', 'el-GR', 'en-AU', 'en-CA', 'en-CN',
-             'en-GB', 'en-GR', 'en-MA', 'en-RU', 'en-TW', 'en-US', 'es-AR', 'es-ES', 'es-MX', 'et-EE',
-             'fi-FI', 'fr-CA', 'fr-CH', 'fr-FR', 'fr-MA', 'hr-HR', 'hu-HU', 'it-CH', 'it-IT', 'ja-JP',
-             'ko-KR', 'lt-LT', 'lv-LV', 'nl-BE', 'nl-NL', 'no-NO', 'pl-PL', 'pt-BR', 'pt-PT', 'ro-RO',
-             'ru-RU', 'sk-SK', 'sl-SI', 'sr-CS', 'sv-SE', 'tr-TR', 'zh-CN', 'zh-TW'].each {code->
-                langCharset.put(code,'UTF-8')
+                    'en-GB', 'en-GR', 'en-MA', 'en-RU', 'en-TW', 'en-US', 'es-AR', 'es-ES', 'es-MX', 'et-EE',
+                    'fi-FI', 'fr-CA', 'fr-CH', 'fr-FR', 'fr-MA', 'hr-HR', 'hu-HU', 'it-CH', 'it-IT', 'ja-JP',
+                    'ko-KR', 'lt-LT', 'lv-LV', 'nl-BE', 'nl-NL', 'no-NO', 'pl-PL', 'pt-BR', 'pt-PT', 'ro-RO',
+                    'ru-RU', 'sk-SK', 'sl-SI', 'sr-CS', 'sv-SE', 'tr-TR', 'zh-CN', 'zh-TW'].each {code ->
+                langCharset.put(code, 'UTF-8')
             }
-            Collection<Dictionary> dictionaries = ds.deliverMDCFiles rootDir,new File(testFilePath), appId, langCodes as String[], langCharset, warnings
+//            Collection<Dictionary> dictionaries = ds.deliverMDCFiles rootDir,new File(testFilePath), appId, langCodes as String[], langCharset, warnings
 
             long after = System.currentTimeMillis()
             log.info "Using a total of ${after - before} millisecond to perform delivering."
@@ -355,22 +352,22 @@ class GDictionaryServiceImplTest {
     }
 
 //    @Test
-    void testGenerateDctFiles(){
+    void testGenerateDctFiles() {
         Collection<Long> dictionaryIds = dao.retrieve('select id from Dictionary') as List<Long>
-        ds.generateDCTFiles("D:/tmp/ALL",dictionaryIds, null)
+        ds.generateDCTFiles("D:/tmp/ALL", dictionaryIds, null)
     }
 
     @Test
-    void testGenerateDctFile(){
-        Dictionary dict=dao.retrieve(Dictionary.class, 1L) as Dictionary
+    void testGenerateDctFile() {
+        Dictionary dict = dao.retrieve(Dictionary.class, 1L) as Dictionary
 //        ds.generateDCT("D:/tmp/mytest.dct",dict.id,dict.encoding,null)
-        ds.generateMDC "D:/tmp/mytest.xml",dict.id, null
+        ds.generateMDC "D:/tmp/mytest.xml", dict.id, null
     }
 
     /**
      * Change the statistics Logger file on the fly
      * **/
-    private void changeLoggerFile(String packageName, String appenderExtName,Logger logger) {
+    private void changeLoggerFile(String packageName, String appenderExtName, Logger logger) {
         /**
          * Set logger appender file names
          * */
@@ -380,46 +377,46 @@ class GDictionaryServiceImplTest {
     }
 
     @Test
-    void testDeliverMDC(){
+    void testDeliverMDC() {
         String rootDir = 'Z:/CA'
-        String dictName='/6.6.000.107.a/smart_prs/prs/smartprs/etc/conf/dictionary.conf'
+        String dictName = '/6.6.000.107.a/smart_prs/prs/smartprs/etc/conf/dictionary.conf'
         String path = "$rootDir$dictName"
-        InputStream fis=new FileInputStream(path);
-        Collection<BusinessWarning> warnings=new HashSet<BusinessWarning>()
+        InputStream fis = new FileInputStream(path);
+        Collection<BusinessWarning> warnings = new HashSet<BusinessWarning>()
 
         Dictionary dict = ds.previewMDC dictName, path, fis, 1L, warnings
-       fis.close()
+        fis.close()
 
-        Map<String,String> langCharset=[
-            'en-GB':'UTF-8',
-            'fr-FR':'UTF-8',
-            'de-DE':'UTF-8',
-            'es-ES':'UTF-8',
-            'it-IT':'UTF-8',
-            'pt-PT':'UTF-8',
-            'no-NO':'UTF-8',
-            'en-US':'UTF-8',
-            'ca-ES':'UTF-8',
-            'nl-NL':'UTF-8',
-            'fi-FI':'UTF-8',
-            'cs-CZ':'UTF-8',
-            'pl-PL':'UTF-8',
-            'ru-RU':'UTF-8',
-            'zh-CN':'UTF-8',
-            'ko-KR':'UTF-8',
-            'hu-HU':'UTF-8',
-            'zh-TW':'UTF-8',
-            'da-DK':'UTF-8',
-            'de-CH':'UTF-8',
-            'et-EE':'UTF-8',
-            'ja-JP':'UTF-8',
-            'lt-LT':'UTF-8',
-            'nl-BE':'UTF-8',
-            'ro-RO':'UTF-8',
-            'sv-SE':'UTF-8',
+        Map<String, String> langCharset = [
+                'en-GB': 'UTF-8',
+                'fr-FR': 'UTF-8',
+                'de-DE': 'UTF-8',
+                'es-ES': 'UTF-8',
+                'it-IT': 'UTF-8',
+                'pt-PT': 'UTF-8',
+                'no-NO': 'UTF-8',
+                'en-US': 'UTF-8',
+                'ca-ES': 'UTF-8',
+                'nl-NL': 'UTF-8',
+                'fi-FI': 'UTF-8',
+                'cs-CZ': 'UTF-8',
+                'pl-PL': 'UTF-8',
+                'ru-RU': 'UTF-8',
+                'zh-CN': 'UTF-8',
+                'ko-KR': 'UTF-8',
+                'hu-HU': 'UTF-8',
+                'zh-TW': 'UTF-8',
+                'da-DK': 'UTF-8',
+                'de-CH': 'UTF-8',
+                'et-EE': 'UTF-8',
+                'ja-JP': 'UTF-8',
+                'lt-LT': 'UTF-8',
+                'nl-BE': 'UTF-8',
+                'ro-RO': 'UTF-8',
+                'sv-SE': 'UTF-8',
         ]
-        String[] langCodes=null
-        ds.importDCT dict, langCodes,langCharset,warnings
+        String[] langCodes = null
+        ds.importDCT dict, langCodes, langCharset, warnings
 
         assertNotNull dict
 

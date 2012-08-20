@@ -22,23 +22,13 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.alcatel_lucent.dms.model.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
-import com.alcatel_lucent.dms.model.AlcatelLanguageCode;
-import com.alcatel_lucent.dms.model.Application;
-import com.alcatel_lucent.dms.model.Charset;
-import com.alcatel_lucent.dms.model.Context;
-import com.alcatel_lucent.dms.model.Dictionary;
-import com.alcatel_lucent.dms.model.DictionaryLanguage;
-import com.alcatel_lucent.dms.model.ISOLanguageCode;
-import com.alcatel_lucent.dms.model.Label;
-import com.alcatel_lucent.dms.model.LanguageCode;
-import com.alcatel_lucent.dms.model.Text;
-import com.alcatel_lucent.dms.model.Translation;
 import com.alcatel_lucent.dms.util.Util;
 
 /**
@@ -85,12 +75,16 @@ public class DictionaryParser {
 			throw new NullPointerException("Encoding is null.");
 		}
 
+        DictionaryBase dictBase=new DictionaryBase();
+        dictBase.setName(dictionaryName);
+        dictBase.setPath(path);
+        dictBase.setEncoding(encoding);
+        dictBase.setApplicationBase(app.getBase());
+        dictBase.setFormat("dct");
+        
 		Dictionary dictionary = new Dictionary();
-		dictionary.setName(dictionaryName);
-		dictionary.setPath(path);
-		dictionary.setEncoding(encoding);
 		dictionary.setApplication(app);
-		dictionary.setFormat("dct");
+		dictionary.setBase(dictBase);
 
 		if (dctInputStream instanceof FileInputStream) {
 			FileInputStream fdis = (FileInputStream) dctInputStream;

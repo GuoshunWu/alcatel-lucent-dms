@@ -105,6 +105,7 @@
     <!--<logger name="org.hibernate.SQL">-->
         <!--<level value="DEBUG"/>-->
     <!--</logger>-->
+
     <!--<logger name="com.alcatel_lucent.dms">-->
         <!--<level value="DEBUG"/>-->
     <!--</logger>-->

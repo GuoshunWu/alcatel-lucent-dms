@@ -7,13 +7,17 @@
 		<id column="ID" name="id">
 			<generator class="native" />
 		</id>
-		
-		<property name="name" type="string" column="NAME"/>
-		<many-to-one name="productVersion" column="PRODUCT_VERSION_ID" not-null="true"/>
-		<set name="dictionaries" cascade="delete" inverse="true" >
-			<key column="APPLICATION_ID"/>
-			<one-to-many class="Dictionary"/>
-		</set>
+
+        <property name="version" type="string" column="VERSION" not-null="true" />
+
+        <many-to-one name="base" column="APPLICATION_BASE_ID"/>
+		<many-to-one name="product" column="PRODUCT_ID" />
+
+        <set name="dictionaries" inverse="true">
+            <key column="APPLICATION_ID" not-null="true" on-delete="cascade"/>
+            <one-to-many class="Dictionary"/>
+        </set>
+
 	</class>
 	
 </hibernate-mapping>

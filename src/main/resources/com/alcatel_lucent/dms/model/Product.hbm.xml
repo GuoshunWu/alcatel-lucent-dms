@@ -2,15 +2,19 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
                                    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="com.alcatel_lucent.dms.model">
-	<class name="Product" table="PRODUCT">
-		<id name="id" column="ID">
+	<class name="com.alcatel_lucent.dms.model.Product" table="PRODUCT">
+		<id column="ID" name="id">
 			<generator class="native" />
 		</id>
-		<property name="name" type="string" column="NAME" not-null="true" />
 
-		<set name="versions" cascade="delete" inverse="true">
-			<key column="PRODUCT_ID" />
-			<one-to-many class="ProductVersion" />
+        <property name="version" type="string" column="VERSION" />
+
+		<many-to-one name="base" column="PRODUCT_BASE_ID"/>
+
+		<set name="applications" inverse="true">
+			<key column="PRODUCT_ID" on-delete="cascade" not-null="true" />
+			<one-to-many class="Application" />
 		</set>
+
 	</class>
 </hibernate-mapping>
