@@ -1,13 +1,13 @@
 package com.alcatel_lucent.dms.service;
 
+import com.alcatel_lucent.dms.BusinessException;
+import com.alcatel_lucent.dms.BusinessWarning;
+import com.alcatel_lucent.dms.model.Dictionary;
+
 import java.io.File;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Map;
-
-import com.alcatel_lucent.dms.BusinessException;
-import com.alcatel_lucent.dms.BusinessWarning;
-import com.alcatel_lucent.dms.model.Dictionary;
 
 public interface DictionaryService {
     /**
@@ -22,9 +22,9 @@ public interface DictionaryService {
      * @param langCharset mapping of language code and its source charset name
      * @param warnings    a collection to hold output warnings
      * @return persistent Dictionary object created
-     * @throws BusinessException
+     * @throws com.alcatel_lucent.dms.BusinessException
      */
-    Dictionary deliverDCT(String dictionaryName, String filename, Long appId,
+    Dictionary deliverDCT(String dictionaryName,String version, String filename, Long appId,
                           String encoding, String[] langCodes,
                           Map<String, String> langCharset,
                           Collection<BusinessWarning> warnings) throws BusinessException;
@@ -38,7 +38,7 @@ public interface DictionaryService {
      *                 (ANSI/UTF8/UTF16)
      * @param warnings a collection to hold output warnings
      * @return transient Dictionary object
-     * @throws BusinessException
+     * @throws com.alcatel_lucent.dms.BusinessException
      */
     Dictionary previewDCT(String dictionaryName, String path, Long appId,
                           String encoding, Collection<BusinessWarning> warnings)
@@ -54,7 +54,7 @@ public interface DictionaryService {
      * @param warnings    a collection to hold output warnings
      * @return persistent Dictionary object created
      */
-    Dictionary importDCT(Dictionary dict, String[] langCodes,
+    Dictionary importDCT(Dictionary dict, String version,String[] langCodes,
                          Map<String, String> langCharset,
                          Collection<BusinessWarning> warnings);
 
@@ -66,7 +66,7 @@ public interface DictionaryService {
      * @param encoding  encoding of output file, null if dictionary settings is used
      * @param langCodes Alcatel code of languages to generate, null if all languages
      *                  should be exported
-     * @throws BusinessException
+     * @throws com.alcatel_lucent.dms.BusinessException
      */
     void generateDCT(String filename, Long dctId, String encoding,
                      String[] langCodes)
@@ -79,7 +79,7 @@ public interface DictionaryService {
      * @param dctId     Dictionary object id
      * @param langCodes Alcatel code of languages to generate, null if all languages
      *                  should be exported
-     * @throws BusinessException
+     * @throws com.alcatel_lucent.dms.BusinessException
      */
     void generateMDC(String filename, Long dctId, String[] langCodes)
             throws BusinessException;
@@ -93,7 +93,7 @@ public interface DictionaryService {
      * @param appId          application Id
      * @param warnings       a collection to hold output warnings
      * @return transient Dictionary object
-     * @throws BusinessException
+     * @throws com.alcatel_lucent.dms.BusinessException
      */
     Dictionary previewMDC(String dictionaryName, String path, InputStream is, Long appId,
                           Collection<BusinessWarning> warnings) throws BusinessException;
@@ -106,13 +106,6 @@ public interface DictionaryService {
      */
     void generateDCTFiles(String dir, Collection<Long> dictIds, String[] langCodes);
 
-    /**
-     * Delete a DCT dictionary
-     *
-     * @param dctName to be deleted dictionary name
-     * @return the number of the deleted dictionary
-     */
-    int deleteDCT(String dctName);
 
     /**
      * Parse and preview DCT dictionaries, if file is a dct file, it will be delivered and
@@ -127,7 +120,7 @@ public interface DictionaryService {
                                            Map<String, String> langCharset,
                                            Collection<BusinessWarning> warnings) throws BusinessException;
 
-    Collection<Dictionary> deliverMDCFiles(String rootDir, File file, Long appId,  String[] langCodes,
+    Collection<Dictionary> deliverMDCFiles(String rootDir, File file, Long appId, String[] langCodes,
                                            Map<String, String> langCharset,
                                            Collection<BusinessWarning> warnings) throws BusinessException;
 }

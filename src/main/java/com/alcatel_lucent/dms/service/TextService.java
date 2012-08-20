@@ -31,7 +31,7 @@ public interface TextService {
 	 * @param ctxId context id
 	 * @param reference reference text
 	 * @return persistent Text object
-	 * @throws BusinessException
+	 * @throws com.alcatel_lucent.dms.BusinessException
 	 */
 	Text addText(Long ctxId, String reference);
 	

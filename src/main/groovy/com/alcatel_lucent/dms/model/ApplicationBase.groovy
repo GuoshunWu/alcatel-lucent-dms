@@ -4,11 +4,12 @@ package com.alcatel_lucent.dms.model
  * Created by IntelliJ IDEA.
  * User: guoshunw
  * Date: 12-8-16
- * Time: 下午2:42
+ * Time: 下午2:43
  * To change this template use File | Settings | File Templates.
  */
-class Product extends BaseEntity{
-    ProductBase base
-    String version
+class ApplicationBase extends BaseEntity{
+    String name
+    ProductBase productBase
     Collection<Application> applications
+    Collection<DictionaryBase> dictionaryBases
 }

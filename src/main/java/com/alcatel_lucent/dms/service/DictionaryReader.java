@@ -302,6 +302,7 @@ public class DictionaryReader extends LineNumberReader {
 
             trans = new Translation();
             trans.setText(text);
+
             DictionaryLanguage dl=dictionary.getDictLanguage(entry.getKey());
             Language language= null==dl ? null:dl.getLanguage();
 
@@ -382,7 +383,7 @@ public class DictionaryReader extends LineNumberReader {
      * Remove the trailing comments on line
      *
      * @return processed line
-     * @throws IOException
+     * @throws java.io.IOException
      * @author Guoshun.Wu Date: 2012-07-04
      */
     private String removeComments(String line) throws IOException {

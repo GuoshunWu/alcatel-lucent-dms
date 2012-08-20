@@ -6,22 +6,21 @@
 		<id column="ID" name="id">
 			<generator class="native" />
 		</id>
-		<property column="NAME" name="name" not-null="true" type="string" />
-		<property column="FORMAT" length="20" name="format" type="string" />
-		<property column="ENCODING" length="20" name="encoding" type="string" />
-		<property column="PATH" name="path" type="string" />
-		
-		<many-to-one column="APPLICATION_ID" name="application" not-null="true" />
+		<property column="VERSION" name="version" not-null="true" type="string" />
 
-		<set cascade="delete" inverse="true" name="dictLanguages" sort="unsorted">
-			<key column="DICTIONARY_ID" />
+        <many-to-one column="APPLICATION_ID" name="application" />
+        <many-to-one name="base" column="DICTIONARY_BASE_ID" />
+
+		<set inverse="true" name="dictLanguages">
+			<key column="DICTIONARY_ID" on-delete="cascade" not-null="true" />
 			<one-to-many class="DictionaryLanguage" />
 		</set>
 
-		<set cascade="delete" inverse="true" name="labels" order-by="SORT_NO">
-			<key column="DICTIONARY_ID" />
+		<set inverse="true" name="labels" order-by="SORT_NO">
+			<key column="DICTIONARY_ID" on-delete="cascade" not-null="true" />
 			<one-to-many class="Label" />
 		</set>
-		<property column="LOCKED" name="locked" type="boolean" />
+
+        <property column="LOCKED" name="locked" type="boolean" />
 	</class>
 </hibernate-mapping>
