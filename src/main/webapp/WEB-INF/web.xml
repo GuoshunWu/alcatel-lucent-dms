@@ -83,9 +83,10 @@
     <servlet>
         <servlet-name>JerseyRESTService</servlet-name>
         <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+        <!--<servlet-class>com.sun.jersey.spi.spring.container.servlet.SpringServlet</servlet-class>-->
         <init-param>
             <param-name>com.sun.jersey.config.property.packages</param-name>
-            <param-value>com.alcatel_lucent.dms.resources</param-value>
+            <param-value>com.alcatel_lucent.dms.resources,com.alcatel_lucent.dms.rest</param-value>
         </init-param>
         <init-param>
             <param-name>com.sun.jersey.config.feature.DisableXmlSecurity</param-name>
