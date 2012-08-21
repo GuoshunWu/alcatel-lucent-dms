@@ -28,7 +28,7 @@ import static org.junit.Assert.*
  *
  */
 
-//@org.junit.Ignore
+@org.junit.Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = ["/spring.xml"])
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
@@ -195,15 +195,16 @@ class GDictionaryServiceImplTest {
         dbDict = ds.deliverDCT dictName, version, testFilePath, appId, encoding, langCodes, langCharset, warnings
         // check result
 
-        dbDict = dao.retrieveOne("from Dictionary where version=:version and base.name=:name", ['name': dictName,'version':version], ["labels", "dictLanguages"] as String[]) as Dictionary
+        dbDict = dao.retrieveOne("from Dictionary where version=:version and base.name=:name", ['name': dictName,'version':version], ["labels", "dictLanguages",] as String[]) as Dictionary
 
         // check added dictionary language
         assertThat dbDict.allLanguageCodes, hasItem("CH1")
 
         // check added new label TESTLABEL
         Label dbLabel = dbDict.getLabel("TESTLABEL")
-        assertThat dbLabel, is(notNullValue())
-
+        dbLabel = dao.retrieveOne('from Label where id=:id',['id':dbLabel.id],['context'] as String[])
+        
+        
         Text dbText = dao.retrieveOne("from Text where reference=:reference and context.id=:contextid",
                 ["reference": dbLabel.reference, "contextid": dbLabel.context.id], ["translations"] as String[]) as Text
         // check translations
@@ -226,6 +227,8 @@ class GDictionaryServiceImplTest {
         translatedStringMap[new MultiKey("COPYRIGHT", "CH0")] = "用于测试的改变，2007-2012年阿尔卡特朗讯版权所有。保留所有权力\nAlcatel-Lucent与Alcatel-Lucent标识是阿尔卡特朗讯各自的注册商标和服务标记。"
 
         dbLabel = dbDict.getLabel("COPYRIGHT")
+        dbLabel = dao.retrieveOne('from Label where id=:id',['id':dbLabel.id],['context'] as String[])
+
         dbText = dao.retrieveOne("from Text where reference=:reference and context.id=:contextid",
                 ["reference": dbLabel.reference, "contextid": dbLabel.context.id], ["translations"] as String[]) as Text
 

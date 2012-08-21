@@ -57,7 +57,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     private DictionaryProp dictProp;
 
     @Autowired
-    MDCParser mdcParser;
+    private MDCParser mdcParser;
 
 
     private DateFormat dFmt = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
