@@ -8,13 +8,18 @@ syntax:glob
 *.class
 target/
 
+# idea files
+.idea/
+
+#gradle files
+.gradle
+build.gradle
+
+
 # Eclipse config files
 .project
 .classpath
 .settings
 syntax: glob
-.idea
-.gradle
 .myhibernatedata
 *.iml
-build.gradle
