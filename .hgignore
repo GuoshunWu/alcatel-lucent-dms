@@ -7,13 +7,18 @@ syntax:glob
 # Java
 *.class
 target/
-
+*.bak
+Main.java
+SimpleTest.java
+resources/
 # idea files
 .idea/
 
 #gradle files
 .gradle
 build.gradle
+gradle-app.*
+
 
 
 # Eclipse config files
@@ -23,3 +28,12 @@ build.gradle
 syntax: glob
 .myhibernatedata
 *.iml
+
+#groovy files
+DumbTest.groovy
+GroovyTest.groovy
+
+#other files
+log4j.dtd
+dms.uml
+temp.sql
