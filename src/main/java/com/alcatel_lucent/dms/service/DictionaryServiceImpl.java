@@ -460,7 +460,13 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     out.println(";");
                     out.println();
                 }
+                if (label.getAnnotation1() != null) {
+                	out.print(label.getAnnotation1());
+                }
                 out.println(label.getKey() + ":");
+                if (label.getAnnotation2() != null) {
+                	out.print(label.getAnnotation2());
+                }
                 String chk = generateCHK(label.getMaxLength(),
                         label.getReference());
                 if (null != chk) {
@@ -918,6 +924,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     dbLabel.setDescription(label.getDescription());
                     dbLabel.setMaxLength(label.getMaxLength());
                     dbLabel.setReference(label.getReference());
+                    dbLabel.setAnnotation1(label.getAnnotation1());
+                    dbLabel.setAnnotation2(label.getAnnotation2());
                     dbLabel.setSortNo(sortNo++);
                 }
             }

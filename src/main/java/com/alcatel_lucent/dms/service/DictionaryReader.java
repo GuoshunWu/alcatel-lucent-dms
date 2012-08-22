@@ -52,6 +52,7 @@ public class DictionaryReader extends LineNumberReader {
     private String lastLine = ";";
     private String currentLine;
     private boolean firstLine = true;
+    private StringBuffer commentLines = new StringBuffer();
 
     protected DictionaryReader(Reader in, Dictionary dictionary) {
         super(in);
@@ -145,7 +146,7 @@ public class DictionaryReader extends LineNumberReader {
 
         while (!labKeyLine.toString().equals("null")) {
             try {
-                label = readLabel(labKeyLine);
+                label = readLabel(labKeyLine, getCommentLines());
             } catch (BusinessException e) {
                 nonBreakExceptions.addNestedException(e);
             }
@@ -168,7 +169,7 @@ public class DictionaryReader extends LineNumberReader {
         return dictionary;
     }
 
-    public Label readLabel(StringBuilder labelKey) throws IOException,
+    public Label readLabel(StringBuilder labelKey, String commentBeforeLabel) throws IOException,
             BusinessException {
         if (!lastLine.endsWith(";") && !lastLine.endsWith("}")) {
             warnings.add(new BusinessWarning(BusinessWarning.UNCLOSED_LABEL,
@@ -186,6 +187,7 @@ public class DictionaryReader extends LineNumberReader {
 
         Label label = new Label();
         label.setKey(key);
+        label.setAnnotation1(commentBeforeLabel);
         label.setDictionary(dictionary);
         label.setContext(context);
         label.setDescription(null);
@@ -201,10 +203,14 @@ public class DictionaryReader extends LineNumberReader {
         String line = null;
         String langCode = null;
         // read until file end or next label start
+        boolean firstLine = true;
         while ((null != line || null != (line = readLine()))
                 && !isLabelKeyLine(line)) {
             // get an entry, current line should be an entry start
-
+        	if (firstLine) {	// get comments after label
+        		label.setAnnotation2(getCommentLines());
+        		firstLine = false;
+        	}
             langCode = isLabelEntryStart(line);
 
             if (!lastLine.endsWith(",") && !lastLine.endsWith(":")) {
@@ -352,8 +358,11 @@ public class DictionaryReader extends LineNumberReader {
     public String readLine() throws IOException {
         String line = null;
         // skip comment and blank line
+        // but record the comment and blank lines which may be useful
+        clearCommentLines();
         while (null != (line = super.readLine())) {
         	// try to remove UTF BOM in case ISO-8859-1 encoding
+        	String rawLine = line;
             if (firstLine) {
             	if (line.length() >= 2 && line.charAt(0) == 0xff && line.charAt(1) == 0xfe) {
             		line = line.substring(2);
@@ -367,6 +376,7 @@ public class DictionaryReader extends LineNumberReader {
                 log.debug(String.format(
                         "[line: %d]In file %s is comment or blank line, skip.",
                         getLineNumber(), dictionary.getPath()));
+                addCommentLine(rawLine);
                 continue;
             }
             break;
@@ -379,7 +389,25 @@ public class DictionaryReader extends LineNumberReader {
         return line;
     }
 
+    private void clearCommentLines() {
+		commentLines = new StringBuffer();
+	}
+    
+    private void addCommentLine(String line) {
+    	if (commentLines.length() != 0 || !line.trim().isEmpty()) {
+    		commentLines.append(line).append("\n");
+    	}
+    }
+    
     /**
+     * Return comment lines during the latest readLine()
+     * @return
+     */
+    private String getCommentLines() {
+    	return commentLines.length() == 0 ? null : commentLines.toString();
+    }
+
+	/**
      * Remove the trailing comments on line
      *
      * @return processed line
