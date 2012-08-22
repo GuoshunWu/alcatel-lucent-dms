@@ -19,6 +19,8 @@ class Label  extends BaseEntity{
     String reference
     String description
     String maxLength
+	String annotation1
+	String annotation2
     Context context
     Text text
 
