@@ -53,6 +53,7 @@ public class ProductServiceImpl implements ProductService{
         Collection<ProductBase> pBases=null;
         if(null!=dao){
             pBases = (Collection<ProductBase> )dao.retrieve("from ProductBase",new String[]{"applicationBases"});
+
         }
         ProductBase pb=new ProductBase();
         pb.setName("TestProductBase");
