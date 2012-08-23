@@ -5,4 +5,8 @@
     
 <struts>
 <!-- 	<constant name="struts.action.excludePattern" value="/rest/.*"/> -->
+	<constant name="struts.devMode" value="true" />
+	
+	<package name="default" extends="struts-default">
+    </package>
 </struts>
