@@ -6,7 +6,8 @@ import javax.ws.rs.Produces
 import javax.ws.rs.core.MediaType
 import com.alcatel_lucent.dms.model.ProductBase
 import com.alcatel_lucent.dms.service.ProductService
-import org.springframework.beans.factory.annotation.Autowired
+
+import com.alcatel_lucent.dms.SpringContext
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,13 +20,11 @@ import org.springframework.beans.factory.annotation.Autowired
 @Path("products")
 class ProductRest {
 
-    @Autowired
-    private ProductService productService
+    private ProductService productService=SpringContext.context.getBean('productService')
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     Collection<ProductBase> retrieveAll(){
-        println '='*100
-        println "service=$productService"
+        productService.retrieveAll()
     }
 }
