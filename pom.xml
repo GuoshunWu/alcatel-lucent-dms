@@ -33,6 +33,18 @@
             </exclusions>
         </dependency>
 
+        <!--<dependency>-->
+        <!--<groupId>org.springframework</groupId>-->
+        <!--<artifactId>spring-core</artifactId>-->
+        <!--<version>${spring.version}</version>-->
+        <!--</dependency>-->
+
+        <!--<dependency>-->
+        <!--<groupId>org.springframework</groupId>-->
+        <!--<artifactId>spring-beans</artifactId>-->
+        <!--<version>${spring.version}</version>-->
+        <!--</dependency>-->
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
@@ -200,33 +212,45 @@
             <version>${jerseyVersion}</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-servlet</artifactId>
-            <version>${jerseyVersion}</version>
-        </dependency>
-
         <!--<dependency>-->
-            <!--<groupId>com.sun.jersey.contribs</groupId>-->
-            <!--<artifactId>jersey-spring</artifactId>-->
+            <!--<groupId>com.sun.jersey</groupId>-->
+            <!--<artifactId>jersey-servlet</artifactId>-->
             <!--<version>${jerseyVersion}</version>-->
-            <!--<exclusions>-->
-                <!--<exclusion>-->
-                    <!--<groupId>org.springframework</groupId>-->
-                    <!--<artifactId>spring-context</artifactId>-->
-                <!--</exclusion>-->
-
-                <!--<exclusion>-->
-                    <!--<groupId>org.springframework</groupId>-->
-                    <!--<artifactId>spring-web</artifactId>-->
-                <!--</exclusion>-->
-
-                <!--<exclusion>-->
-                    <!--<groupId>org.springframework</groupId>-->
-                    <!--<artifactId>spring-aop</artifactId>-->
-                <!--</exclusion>-->
-            <!--</exclusions>-->
         <!--</dependency>-->
+
+        <dependency>
+            <groupId>com.sun.jersey.contribs</groupId>
+            <artifactId>jersey-spring</artifactId>
+            <version>${jerseyVersion}</version>
+            <exclusions>
+
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-core</artifactId>
+                </exclusion>
+
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-context</artifactId>
+                </exclusion>
+
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-web</artifactId>
+                </exclusion>
+
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-aop</artifactId>
+                </exclusion>
+
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-beans</artifactId>
+                </exclusion>
+
+            </exclusions>
+        </dependency>
 
         <dependency>
             <groupId>com.sun.jersey</groupId>
@@ -234,6 +258,17 @@
             <version>${jerseyVersion}</version>
         </dependency>
 
+        <!--<dependency>-->
+        <!--<groupId>com.sun.jersey</groupId>-->
+        <!--<artifactId>jersey-json</artifactId>-->
+        <!--<version>1.9</version>-->
+        <!--</dependency>-->
+
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-bundle</artifactId>
+            <version>1.9</version>
+        </dependency>
 
         <dependency>
             <groupId>javax.ws.rs</groupId>
@@ -253,11 +288,6 @@
         <!--<version>1.0</version>-->
         <!--</dependency>-->
 
-        <!--<dependency>-->
-        <!--<groupId>com.sun.jersey</groupId>-->
-        <!--<artifactId>jersey-json</artifactId>-->
-        <!--<version>1.9.1</version>-->
-        <!--</dependency>-->
 
         <!--<dependency>-->
         <!--<groupId>org.codehaus.woodstox</groupId>-->
@@ -278,6 +308,11 @@
             <version>1.2</version>
         </dependency>
 
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+        </dependency>
 
     </dependencies>
 
@@ -302,7 +337,45 @@
                 <configuration>
                     <contextPath>/</contextPath>
                     <webDefaultXml>webdefault.xml</webDefaultXml>
+                    <!-- 指定额外需要监控变化的文件或文件夹，主要用于热部署中的识别文件更新 -->
+                    <!--<scanTargetPatterns>-->
+                        <!--<scanTargetPattern>-->
+                            <!--<directory>src</directory>-->
+                            <!--<includes>-->
+                                <!--<include>**/*.java</include>-->
+                                <!--<include>**/*.groovy</include>-->
+                                <!--<include>**/*.properties</include>-->
+                            <!--</includes>-->
+                            <!--&lt;!&ndash;<excludes>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<exclude>**/*.xml</exclude>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<exclude>**/myspecial.properties</exclude>&ndash;&gt;-->
+                            <!--&lt;!&ndash;</excludes>&ndash;&gt;-->
+                        <!--</scanTargetPattern>-->
+                    <!--</scanTargetPatterns>-->
+                    <!-- 指定监控的扫描时间间隔，0为关闭jetty自身的热部署，主要是为了使用jrebel -->
+                    <scanIntervalSeconds>0</scanIntervalSeconds>
+                    <!-- 指定web页面的文件夹 -->
+                    <!--<webAppSourceDirectory>${basedir}/src/main/webapp</webAppSourceDirectory>-->
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.zeroturnaround</groupId>
+                <artifactId>jrebel-maven-plugin</artifactId>
+                <version>1.1.3</version>
+                <executions>
+                    <execution>
+                        <id>generate-rebel-xml</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <!--<configuration>-->
+                    <!--&lt;!&ndash; 指定生成的jrebel.xml放在哪里，要求放在web应用的 classpath下 &ndash;&gt;-->
+                    <!--<rebelXmlDirectory>${basedir}/src/main/webapp/WEB-INF/classes</rebelXmlDirectory>-->
+                <!--</configuration>-->
             </plugin>
 
             <plugin>
@@ -333,6 +406,10 @@
                 </dependencies>
             </plugin>
         </plugins>
+        <!--&lt;!&ndash; 指定编译后文件的存放路径，因为jetty默认src/main/webapp为web应用的根目录而 maven compile目标后的默认classpath 在target文件夹下，-->
+            <!--就造成jrebel.xml无法兼顾 jetty-->
+            <!--默认的是webapp中的classes为 web 应用的根目录，而maven 默认是target 目录所以需要修改该maven的默认classes目录。 &ndash;&gt;-->
+        <outputDirectory>${basedir}/src/main/webapp/WEB-INF/classes</outputDirectory>
 
         <pluginManagement>
             <plugins>
@@ -385,6 +462,7 @@
     <!--</repository>-->
     <!--</repositories>-->
 
+	<!--
     <distributionManagement>
         <repository>
             <id>releases</id>
@@ -397,5 +475,6 @@
             <url>http://localhost:8081/nexus/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
+	-->
 
 </project>

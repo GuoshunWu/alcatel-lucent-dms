@@ -87,6 +87,7 @@
                 <idref bean="dictionaryService"/>
                 <idref bean="textService"/>
                 <idref bean="languageService"/>
+                <idref bean="productService"/>
             </list>
         </property>
     </bean>

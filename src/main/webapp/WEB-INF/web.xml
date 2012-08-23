@@ -82,31 +82,55 @@
 
     <servlet>
         <servlet-name>JerseyRESTService</servlet-name>
-        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
-        <!--<servlet-class>com.sun.jersey.spi.spring.container.servlet.SpringServlet</servlet-class>-->
+        <!--<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>-->
+        <servlet-class>com.sun.jersey.spi.spring.container.servlet.SpringServlet</servlet-class>
         <init-param>
+            <!--<param-name>contextConfigLocation</param-name>-->
+            <!--<param-value>classpath:spring.xml</param-value>-->
+
             <param-name>com.sun.jersey.config.property.packages</param-name>
-            <param-value>com.alcatel_lucent.dms.resources,com.alcatel_lucent.dms.rest</param-value>
-        </init-param>
-        <init-param>
-            <param-name>com.sun.jersey.config.feature.DisableXmlSecurity</param-name>
-            <param-value>true</param-value>
+            <param-value>com.alcatel_lucent.dms.resources,
+                com.alcatel_lucent.dms.rest,
+                com.alcatel_lucent.dms.service
+            </param-value>
         </init-param>
 
+        <!--<init-param>-->
+        <!--<param-name>com.sun.jersey.config.feature.DisableXmlSecurity</param-name>-->
+        <!--<param-value>true</param-value>-->
+        <!--</init-param>-->
 
-        <load-on-startup>1</load-on-startup>
+        <!--<init-param>-->
+        <!--<param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>-->
+        <!--<param-value>true</param-value>-->
+        <!--</init-param>-->
+
+
+        <load-on-startup>2</load-on-startup>
     </servlet>
 
     <servlet-mapping>
         <servlet-name>JerseyRESTService</servlet-name>
         <url-pattern>/rest/*</url-pattern>
     </servlet-mapping>
-    
+
     <servlet>
         <servlet-name>GroovyServlet</servlet-name>
         <servlet-class>groovy.servlet.GroovyServlet</servlet-class>
     </servlet>
+
+    <servlet>
+        <description>This ia a test</description>
+        <display-name>MyTestServlet</display-name>
+        <servlet-name>MyServlet</servlet-name>
+        <servlet-class>com.alcatel_lucent.dms.servlet.TestServlet</servlet-class>
+    </servlet>
     
+    <servlet-mapping>
+        <servlet-name>MyServlet</servlet-name>
+        <url-pattern>/testParam</url-pattern>
+    </servlet-mapping>
+
     <servlet-mapping>
         <servlet-name>GroovyServlet</servlet-name>
         <url-pattern>*.groovy</url-pattern>

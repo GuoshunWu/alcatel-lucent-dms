@@ -37,3 +37,7 @@ GroovyTest.groovy
 log4j.dtd
 dms.uml
 temp.sql
+
+
+#webapp
+WEB-INF/classes/

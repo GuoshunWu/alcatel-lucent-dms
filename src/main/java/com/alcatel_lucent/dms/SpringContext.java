@@ -1,59 +1,34 @@
 package com.alcatel_lucent.dms;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.ListableBeanFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
-
-import java.util.Map;
 
 /**
- * Author: Allan YANG
- * Date: 2008-11-13
+ * Created by IntelliJ IDEA.
+ * User: guoshunw
+ * Date: 12-8-22
+ * Time: 上午10:54
+ * To change this template use File | Settings | File Templates.
  */
-public class SpringContext {
+
+/**
+ * This class provides an application-wide access to the
+ * Spring ApplicationContext! The ApplicationContext is
+ * injected in a static method of the class "AppContext".
+ * Use AppContext.getApplicationContext() to get access
+ * to all Spring Beans.
+ */
+public class SpringContext implements ApplicationContextAware {
+
+    private static ApplicationContext context;
+    @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        instance = applicationContext;
+        SpringContext.context=applicationContext;
     }
 
-    private static ListableBeanFactory instance;
-//    private static Log log = LogFactory.getLog(SpringContext.class);
-
-    public static ListableBeanFactory getBeanFactory() {
-        if (instance == null) {
-            instance = new ClassPathXmlApplicationContext("classpath*:spring.xml");
-        }
-        return instance;
-    }
-
-    /**
-     * Create domain bean.
-     * @param type
-     * @return
-     */
-    public static Object getBeanOfType(Class type) {
-        Map map = getBeanFactory().getBeansOfType(type);
-        if (map == null || map.size() == 0) {
-            throw new SystemError("Cann't find definition of type [" + type.getName() + "] in spring configuration");
-        } else if (map.size() == 1) {
-            return map.values().toArray()[0];
-        } else {
-            String message = "Finding type [" + type.getName() + "] in spring configuration, expected single bean but found " + map.size() + ":";
-            Object[] names = map.keySet().toArray();
-            for (int i = 0; i < names.length; i++) {
-                message += (" \n   [" + names[i] + "] ");
-            }
-            throw new SystemError(message);
-        }
-    }
-
-    /**
-     * Get service.
-     * @param type
-     * @return
-     */
-    public static Object getService(Class type) {
-        return getBeanOfType(type);
+    public static ApplicationContext getContext() {
+        return context;
     }
 }
