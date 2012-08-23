@@ -22,6 +22,8 @@ public class Label extends BaseEntity {
 	private Context context;
 	private Text text;
     private String annotation1;
+    private String annotation2;
+
 
     public String getAnnotation2() {
         return annotation2;
@@ -30,8 +32,6 @@ public class Label extends BaseEntity {
     public void setAnnotation2(String annotation2) {
         this.annotation2 = annotation2;
     }
-
-    private String annotation2;
 
     public String getAnnotation1() {
         return annotation1;
