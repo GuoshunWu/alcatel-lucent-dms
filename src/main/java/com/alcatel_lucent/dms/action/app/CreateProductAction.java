@@ -1,23 +1,25 @@
 package com.alcatel_lucent.dms.action.app;
 
-import com.alcatel_lucent.dms.action.BaseAction;
+import com.alcatel_lucent.dms.action.JSONAction;
 
-public class CreateProductAction extends BaseAction {
+/**
+ * Action of creating a product
+ * @author allany
+ *
+ */
+public class CreateProductAction extends JSONAction {
 	
+	// input parameters
 	private String name;
 	
 	public String execute() {
-		log.info("###Product name1: " + name);
-		return null;
+		log.info("Create product: " + name);
+		//TODO create product
+		setStatus(0);
+		setMessage("ok");
+		return SUCCESS;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getName() {
-		return name;
-	}
 	
 	
 

@@ -86,6 +86,8 @@
                 <idref bean="textService"/>
                 <idref bean="languageService"/>
                 <idref bean="productService"/>
+                <idref bean="jsonService"/>
+                <idref bean="productREST"/>
             </list>
         </property>
     </bean>

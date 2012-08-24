@@ -4,9 +4,17 @@
     "http://struts.apache.org/dtds/struts-2.0.dtd">
     
 <struts>
-<!-- 	<constant name="struts.action.excludePattern" value="/rest/.*"/> -->
+	<constant name="struts.action.excludePattern" value="/rest/.*"/>
 	<constant name="struts.devMode" value="true" />
 	
-	<package name="default" extends="struts-default">
-    </package>
-</struts>
+<!-- 	<package name="app" extends="json-default" namespace="/app">
+		<global-results>
+		    <result name="success" type="json"></result>
+		</global-results>    
+		<action name="CreateProduct" class="com.alcatel_lucent.dms.action.app.CreateProductAction">
+			<result type="json"></result>
+		</action>
+	</package>
+ -->
+ 
+ </struts>

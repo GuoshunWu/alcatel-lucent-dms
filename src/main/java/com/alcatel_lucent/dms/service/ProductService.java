@@ -17,5 +17,4 @@ public interface ProductService {
     Product create();
     void delete(Long id);
     Product retrieve(Long id);
-    JSONArray retrieveAll();
 }
