@@ -1,6 +1,14 @@
 package com.alcatel_lucent.dms.rest;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.alcatel_lucent.dms.SpringContext;
+import com.alcatel_lucent.dms.model.ProductBase;
+import com.alcatel_lucent.dms.service.DaoService;
+import com.alcatel_lucent.dms.service.JSONService;
 import com.alcatel_lucent.dms.service.ProductService;
 import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,23 +29,27 @@ import javax.ws.rs.core.MediaType;
  * To change this template use File | Settings | File Templates.
  */
 @Path("products")
-@Component
+@Component("productREST")
 public class ProductREST {
 
 //    private ProductService productService =(ProductService)SpringContext.getContext().getBean("productService");
 
     @Autowired
-    private ProductService productService;
+    private DaoService dao;
+    
+    @Autowired
+    private JSONService jsonService;
 
 
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     public String retrieveAll() {
 
-        JSONArray uriArray = productService.retrieveAll();
-//        Collection<ProductBase> result;
-//        return jsonservice.fromObject(result, config);
-        System.out.println(uriArray);
-        return uriArray.toString();
+        Collection<ProductBase> result = dao.retrieve("FROM ProductBase");
+        Map<String, Collection<String>> propFilter = new HashMap<String, Collection<String>>();
+        propFilter.put("ProductBase", Arrays.asList("name", "applicationBases"));
+        propFilter.put("ApplicationBase", Arrays.asList("name"));
+        return jsonService.toJSONString(result, propFilter);
+        
     }
 }
