@@ -33,7 +33,10 @@ public class ProductREST {
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     public String retrieveAll() {
+
         JSONArray uriArray = productService.retrieveAll();
+//        Collection<ProductBase> result;
+//        return jsonservice.fromObject(result, config);
         System.out.println(uriArray);
         return uriArray.toString();
     }
