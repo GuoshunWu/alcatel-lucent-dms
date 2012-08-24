@@ -82,21 +82,12 @@
             //appTree
             $('#appTree').jstree({
                 "json_data":{
-                    "data":[
-                        {
-                            "data":"ISC",
-                            "children":[
-                                {
-                                    "data":"R6.5",
-                                    "children":["app1", "app2"]
-                                },
-                                "R6.6"
-                            ]
-                        },
-                        {
-                            "data":"New product..."
+                    "ajax":{
+                        "url":"http://localhost:8080/xml/tree.json",
+                        "data":function (n) {
+                            return { id:n.attr ? n.attr("id") : 0 };
                         }
-                    ]
+                    }
                 },
                 plugins:[ "themes", "json_data", "ui"]
             });
@@ -152,12 +143,12 @@
                             <table align='center' border="0" width="100%">
                                 <fieldset>
                                     <tr>
-                                        <td width='30%'>Product name </td>
+                                        <td width='30%'>Product name</td>
                                         <td><input type="text" name="productName" SIZE="40"></td>
                                     </tr>
                                     <tr>
-                                        <td width='30%'>Version </td>
-                                        <td><input type="text" name="productVersion" SIZE="40" ></td>
+                                        <td width='30%'>Version</td>
+                                        <td><input type="text" name="productVersion" SIZE="40"></td>
                                     </tr>
                                 </fieldset>
                             </table>

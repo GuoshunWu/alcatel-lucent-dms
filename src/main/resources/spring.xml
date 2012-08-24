@@ -13,10 +13,8 @@ http://www.springframework.org/schema/context/spring-context-3.1.xsd
 		XML-based Spring configuration -->
 
     <bean id="contextApplicationContextProvider" class="com.alcatel_lucent.dms.SpringContext"/>
-
-	<context:annotation-config /> 
-	
-	<!-- Core -->
+    <context:component-scan base-package="com.alcatel_lucent.dms"/>
+    <!-- Core -->
 	<import resource="spring-core.xml" />
 	<import resource="spring-service.xml" />
 

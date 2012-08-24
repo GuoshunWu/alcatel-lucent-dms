@@ -1,14 +1,17 @@
 package com.alcatel_lucent.dms.rest;
 
 import com.alcatel_lucent.dms.SpringContext;
-import com.alcatel_lucent.dms.model.ProductBase;
 import com.alcatel_lucent.dms.service.ProductService;
+import net.sf.json.JSONArray;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.util.Collection;
+
+//import com.alcatel_lucent.dms.service.ProductService;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,11 +21,20 @@ import java.util.Collection;
  * To change this template use File | Settings | File Templates.
  */
 @Path("products")
+@Component
 public class ProductREST {
-    private ProductService productService= (ProductService) SpringContext.getContext().getBean("productService");
+
+//    private ProductService productService =(ProductService)SpringContext.getContext().getBean("productService");
+
+    @Autowired
+    private ProductService productService;
+
+
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Collection<ProductBase> retrieveAll(){
-        return productService.retrieveAll();
+    @Produces({MediaType.APPLICATION_JSON})
+    public String retrieveAll() {
+        JSONArray uriArray = productService.retrieveAll();
+        System.out.println(uriArray);
+        return uriArray.toString();
     }
 }

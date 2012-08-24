@@ -8,20 +8,20 @@ import java.util.Collection;
 @XmlRootElement
 public class ProductBase extends BaseEntity {
 
-	private String name;
+    private String name = "Unknown";
 
     @XmlTransient
-	private Collection<Product> products;
+    private Collection<Product> products;
 
-	private Collection<ApplicationBase> applicationBases;
+    private Collection<ApplicationBase> applicationBases;
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public Collection<Product> getProducts() {
         return products;
@@ -32,10 +32,10 @@ public class ProductBase extends BaseEntity {
     }
 
     public Collection<ApplicationBase> getApplicationBases() {
-		return applicationBases;
-	}
+        return applicationBases;
+    }
 
-	public void setApplicationBases(Collection<ApplicationBase> applicationBases) {
-		this.applicationBases = applicationBases;
-	}
+    public void setApplicationBases(Collection<ApplicationBase> applicationBases) {
+        this.applicationBases = applicationBases;
+    }
 }

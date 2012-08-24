@@ -5,7 +5,7 @@
 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 <!-- The intent of this descriptor is to include jetty specific or common  -->
 <!-- configuration for all webapps.   If a context has a webdefault.xml    -->
-<!-- descriptor, it is applied before the contexts own web.xml file        -->
+<!-- descriptor, it is applied before the contexts own web.xml.ok.bak file        -->
 <!--                                                                       -->
 <!-- A context may be assigned a default descriptor by:                    -->
 <!--  + Calling WebApplicationContext.setDefaultsDescriptor                -->
@@ -286,7 +286,7 @@
     <!-- ==================================================================== -->
     <!-- Dynamic Servlet Invoker.                                             -->
     <!-- This servlet invokes anonymous servlets that have not been defined   -->
-    <!-- in the web.xml or by other means. The first element of the pathInfo  -->
+    <!-- in the web.xml.ok.bak or by other means. The first element of the pathInfo  -->
     <!-- of a request passed to the envoker is treated as a servlet name for  -->
     <!-- an existing servlet, or as a class name of a new servlet.            -->
     <!-- This servlet is normally mapped to /servlet/*                        -->

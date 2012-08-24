@@ -24,7 +24,7 @@
                     },
                     success:function (data, textStatus) {
                         //$('#result').innerText=data.response;
-                        alert(data.productBase.name);
+                        alert(data);
                         if(console && console.log) {
                             console.log(data);
                         }
@@ -41,7 +41,7 @@
     </script>
 </head>
 <body>
-    URL:<input id="url" value="rest/contacts"  />
+    URL:<input id="url" value="rest/products"  />
     <select id="dType" size="">
         <option value="json">JSON</option>
         <option value="xml" >XML</option>

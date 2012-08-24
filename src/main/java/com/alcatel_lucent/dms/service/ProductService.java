@@ -2,6 +2,7 @@ package com.alcatel_lucent.dms.service;
 
 import com.alcatel_lucent.dms.model.Product;
 import com.alcatel_lucent.dms.model.ProductBase;
+import net.sf.json.JSONArray;
 
 import java.util.Collection;
 
@@ -16,5 +17,5 @@ public interface ProductService {
     Product create();
     void delete(Long id);
     Product retrieve(Long id);
-    Collection<ProductBase> retrieveAll();
+    JSONArray retrieveAll();
 }
