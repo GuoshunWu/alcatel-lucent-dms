@@ -25,6 +25,7 @@ import java.util.List;
  */
 
 @Service("productService")
+
 public class ProductServiceImpl implements ProductService {
 
     @Autowired
