@@ -1,0 +1,2478 @@
+--?000 #CHECKSUM=3560587#
+
+--? ?000 #CHECKSUM=2175796#
+
+-- ? ---------------------------------------------------------------------
+-- Dictionnaire de l'application Instant Commmunicator pour le menu
+-- ------------------------------------------------------------------------
+-- Creation date : 13/02/2007
+-- Last Modification Date :
+
+-- Supported languages
+
+LANGUAGES {CHK, GAE, FR0, EN0, DE0, IT0, PT0, ES0, US0, PL0, KO0, NO0, NL0, RU0, CH0, FI0, ES1, CS0, HU0, CH1, SV0, AR0, DA0, HE0}
+
+-- Structure of the dictionary:
+
+-- First, you can see commentary lines, precedeed by two minus signs "--". these comments are not
+-- interpreted by the dictionary tool.
+
+-- For each translation needed, you will find:
+-- An entry key string in upper case, followed by a colon ":".
+-- This key is used by the software to associate a text field in the application with a set of
+-- translations
+-- Each translation associated with this key enholds:
+-- - a language code (FR0 for French for instance)
+-- - a text between brackets for the translation
+-- - a comma to delimit the end of the translation for this language
+-- the comma is replaced by a semicolon ";" to end the list of translations for a specific key
+
+-- NOTA 1: The CHK (Czech) language is used for indicating the maximum width of a text field.
+-- This indication stands only if you visualize the present dictionary with the proper
+-- font (as used in the application). Then, whichever characters you are using
+-- (W can be wider than i) the translations in the different languages  must not exeed the text width
+-- (undependantly to the characters amount) indicated in the CHK field
+-- Texts that are to be displayed in a popup window (OK popup, yes-no popup...) can consist
+-- of more than one line:
+-- "This text will be displayed""on two lines"
+-- Each line must not exceed the width indicated in the CHK field
+-- Texts that are to be displayed in a temporised popup (also called timed popup) can consist of :
+-- One (long) line (with automatic wrap of text on the following 3 lines),
+-- Or several lines ("First line"Second line"...up to "Forth line")
+-- In any case, you are limited to 256 caracters.
+
+-- General syntax:
+-- WC_xxxx : Window caption (title of the window)
+-- ME_xxxx : element of a menu
+-- BU_xxxx : name of a button
+-- CB_xxxx : element of a combo-box
+-- TQ_xxxx : text of a question
+-- TI_xxxx : text of an information, a warning, a problem
+-- ST_xxxx : static text before a variable field or others....
+-- EN_xxxx : for enumered types
+-- TT_xxxx : tool tips
+
+-- General rules:
+-- the "%s" inserted in a string will be replaced by a text at execution;
+-- the "%d" inserted in a string will be replaced by a number;
+-- all the translation for a string including a %s or a %d must keep those key characters, or an error occurs.
+-- The translations being presented in two string ("like" "this") will be displayed on two lines;
+-- you are not allowed to translate on two lines a text which is in one line in the English translation.
+
+-- Text displayed if the translation is not found
+-- nota: Sometimes the default text is included in English in the source code, beginning with "?"
+
+-- --------------------------------------
+-- General
+-- --------------------------------------
+
+APPLICATION_NAME:
+  CHK "My Instant Communicator0123456",
+  GAE "My Instant Communicator",
+
+  EN0 "My Instant Communicator",
+
+
+
+
+  US0 "My Instant Communicator",
+
+
+
+
+
+
+
+
+
+
+  CH1 "我的即時通訊員",
+
+
+
+  HE0 "My Instant Communicator"; --???
+
+SYSTRAY_ICON_LOGOFF:
+  CHK "Not signed in0123456789",
+  GAE "Not signed in",
+
+  EN0 "Not signed in",
+
+
+
+
+  US0 "Not signed in", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "未登入",
+
+
+
+  HE0 "Not signed in"; --???
+
+SYSTRAY_ICON_LOGIN:
+  CHK "Signed in - Online0123456789",
+  GAE "Signed in - Online",
+
+  EN0 "Signed in - Online",
+
+
+
+
+  US0 "Signed in - online", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "已登入 - 線上",
+
+
+
+  HE0 "Signed in - Online"; --???
+
+-- crms00151537 +
+
+SYSTRAY_ICON_LOGIN_DONOTDISTURB:
+  CHK "Signed in - Do not disturb 0123456789",
+  GAE "Signed in - Do not disturb",
+
+  EN0 "Signed in - Do not disturb",
+
+
+
+
+  US0 "Signed in - Do not disturb",
+
+
+
+
+
+
+
+
+
+
+  CH1 "已登入 - 勿干擾",
+
+
+
+  HE0 "Signed in - Do not disturb"; --???
+
+SYSTRAY_ICON_LOGIN_INAMEETING:
+  CHK "Signed in - In a meeting 0123456789",
+  GAE "Signed in - In a meeting",
+
+  EN0 "Signed in - In a meeting",
+
+
+
+
+  US0 "Signed in - In a meeting",
+
+
+
+
+
+
+
+
+
+
+  CH1 "已登入 - 開會中",
+
+
+
+  HE0 "Signed in - In a meeting"; --???
+
+-- crms00151537 -
+
+SYSTRAY_ICON_LOGIN_AWAY:
+  CHK "Signed in - Away 0123456789",
+  GAE "Signed in - Away",
+
+  EN0 "Signed in - Away",
+
+
+
+
+  US0 "Signed in - Away", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "已登入 - 離開",
+
+
+
+  HE0 "Signed in - Away"; --???
+
+SYSTRAY_ICON_LOGIN_BE_RIGHT_BACK:
+  CHK "Signed in - Be right back 0123456789",
+  GAE "Signed in - Be right back",
+
+  EN0 "Signed in - Be right back",
+  DE0 "Angemeldet - Bin gleich zur�ck", -- DLM crms00219347 08/09/2010
+
+
+
+  US0 "Signed in - Away", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "已登入 - 馬上回來",
+
+
+
+  HE0 "Signed in - Be right back"; --???
+
+SYSTRAY_ICON_LOGIN_OUT_TO_LUNCH:
+  CHK "Signed in - Out to lunch 0123456789",
+  GAE "Signed in - Out to lunch",
+
+  EN0 "Signed in - Out to lunch",
+
+
+
+
+  US0 "Signed in - Away", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "已登入 - 外出用餐 ",
+
+
+
+  HE0 "Signed in - Out to lunch"; --???
+
+SYSTRAY_ICON_LOGIN_BUSY:
+  CHK "Signed in - Busy 0123456789 0123456789 0123456789 0123456789",
+  GAE "Signed in - Busy",
+
+  EN0 "Signed in - Busy",
+  DE0 "Angemeldet - Belegt", -- DLM crms00219347 08/09/2010
+
+
+
+  US0 "Signed in - Busy", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "已登入 - 忙碌",
+
+
+
+  HE0 "Signed in - Busy"; --???
+
+SYSTRAY_ICON_LOGIN_ON_THE_PHONE:
+  CHK "Signed in - On the phone 0123456789",
+  GAE "Signed in - On the phone",
+
+  EN0 "Signed in - On the phone",
+
+
+
+
+  US0 "Signed in - Busy", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "已登入 - 電話中",
+
+
+
+  HE0 "Signed in - On the phone"; --???
+
+SYSTRAY_ICON_LOGIN_NO_PRESENCE:
+  CHK "Signed in - No presence 01234567890123456789",
+  GAE "Signed in - No presence",
+
+  EN0 "Signed in - No presence",
+
+
+
+
+  US0 "Signed in - Not present", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "已登入 - 無線上狀態",
+
+
+
+  HE0 "Signed in - No presence"; --???
+
+SYSTRAY_ICON_LOGIN_OFFLINE:
+  CHK "Signed in - Offline 0123456789",
+  GAE "Signed in - Offline",
+
+  EN0 "Signed in - Offline",
+
+
+
+
+  US0 "Signed in - Offline", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "已登入 - 離線",
+
+
+
+  HE0 "Signed in - Offline"; --???
+
+SYSTRAY_ICON_LOGIN_INCOMING_COMM:
+  CHK "Signed in - Incoming communication 0123456789",
+  GAE "Signed in - Incoming communication",
+
+  EN0 "Signed in - Incoming communication",
+
+
+
+
+  US0 "Signed in - Incoming communication", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "已登入 - 新的通訊進入",
+
+
+
+  HE0 "Signed in - Incoming communication"; --???
+
+SYSTRAY_ICON_LOGIN_INCOMING_EVENT:
+  CHK "Signed in - Incoming event 0123456789",
+  GAE "Signed in - Incoming event",
+
+  EN0 "Signed in - Incoming event",
+
+
+
+
+  US0 "Signed in - Incoming event", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "已登入 - 新的事件傳入",
+
+
+
+  HE0 "Signed in - Incoming event"; --???
+
+-- xtscf06245 +
+
+SYSTRAY_ICON_NOSERVER:
+  CHK "Loss of the network connection0123456789",
+  GAE "Loss of the network connection",
+
+  EN0 "Loss of the network connection",
+
+
+
+
+  US0 "Loss of the network connection",
+
+
+
+
+
+
+
+
+
+
+  CH1 "無網路連線",
+
+
+
+  HE0 "Loss of the network connection"; --???
+
+-- xtscf06245 -
+
+HELP:
+  CHK "Aide01",
+  GAE "Help",
+
+  EN0 "Help",
+
+
+
+
+  US0 "Help",
+
+
+
+
+
+
+
+
+
+
+  CH1 "說明",
+
+
+
+  HE0 "Help"; --???
+
+ABOUT:
+  CHK "A propos de... 0123456789",
+  GAE "About...",
+
+  EN0 "About...",
+
+
+
+
+  US0 "About...",
+
+
+
+
+
+
+
+
+
+
+  CH1 "關於",
+
+
+
+  HE0 "About..."; --???
+
+OPTIONS:
+  CHK "Options...0123456789",
+  GAE "Options...",
+
+  EN0 "Options...",
+
+
+
+
+  US0 "Options...", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "選項",
+
+
+
+  HE0 "Options..."; --???
+
+FAVORITES:
+  CHK "Favorites...0123456789",
+  GAE "Favorites...",
+
+  EN0 "Favorites...",
+
+
+
+
+  US0 "Favorites", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "我的最愛",
+
+
+
+  HE0 "Favorites..."; --???
+
+OPEN_EMAIL:
+  CHK "Open My Messages...0123456789",
+  GAE "Open My Messages...",
+
+  EN0 "Open My Messages...",
+
+
+
+
+  US0 "Open My Email", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "開啟我的訊息...",
+
+
+
+  HE0 "Open My Messages..."; --???
+
+OPEN_MY_SOFTPHONE:
+  CHK "Open My Softphone...01234567890123456789012",
+  GAE "Open My Softphone...",
+
+  EN0 "Open My Softphone...",
+
+
+
+
+  US0 "Open My Softphone", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "開啟我的軟體電話…",
+
+
+
+  HE0 "Open My Softphone..."; --???
+
+OPEN_MY_CONFERENCES:
+  CHK "Open My Conferences...0123456789",
+  GAE "Open My Conferences...",
+
+  EN0 "Open My Conferences...",
+
+
+
+
+  US0 "Open My Conferences", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "開啟我的會議...",
+
+
+
+  HE0 "Open My Conferences..."; --???
+
+OPEN_MY_CONTACTS:
+  CHK "Open My Contacts...0123456789",
+  GAE "Open My Contacts...",
+
+  EN0 "Open My Contacts...",
+
+
+
+
+  US0 "Open My Contacts", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "開啟我的聯絡人…",
+
+
+
+  HE0 "Open My Contacts..."; --???
+
+-- crms00096179 +  
+
+HIDE_COMM_AREA:
+  CHK "Hide Search/Call box01234567890123456789012345678",
+  GAE "Hide Search/Call box",
+
+  EN0 "Hide Search/Call box",
+
+
+
+
+  US0 "Hide Search/Call box", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "隱藏搜尋／通話方塊",
+
+
+
+  HE0 "Hide Search/Call box"; --???
+
+SHOW_COMM_AREA:
+  CHK "Show Search/Call box01234567890123456789012345678",
+  GAE "Show Search/Call box",
+
+  EN0 "Show Search/Call box",
+
+
+
+
+  US0 "Show Search/Call box", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "顯示搜尋／通話方塊",
+
+
+
+  HE0 "Show Search/Call box"; --???
+
+-- crms00096179 -
+
+FLOATING_GUI_SEARCH:
+  CHK "Search/Call box as floating bar01234567890123456789012345678",
+  GAE "Search/Call box as floating bar",
+
+  EN0 "Search/Call box as floating bar",
+
+
+
+
+  US0 "Search/Call box as floating bar", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "搜尋/呼叫框作為浮動條",
+
+
+
+  HE0 "Search/Call box as floating bar"; --???
+
+EXPLORER_BAND_GUI_SEARCH:
+  CHK "Search/Call box in taskbar00000000000000000000000000000",
+  GAE "Search/Call box in taskbar",
+
+  EN0 "Search/Call box in taskbar",
+
+
+
+
+  US0 "Search/Call box in taskbar", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "任務欄中的搜尋/呼叫框", 
+
+
+
+  HE0 "Search/Call box in taskbar"; --???
+
+OPEN_DASHBOARD:
+  CHK "Open Events Dashboard...0123456789012345678",
+  GAE "Open Events Dashboard...",
+
+  EN0 "Open Events Dashboard...",
+
+
+
+
+  US0 "Open Events Dashboard", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "開啟事件儀表板…",
+
+
+
+  HE0 "Open Events Dashboard..."; --???
+
+SET_MY_STATUS:
+  CHK "My Status01234567890123456789",
+  GAE "My Status",
+
+  EN0 "My Status",
+
+
+
+
+  US0 "My Status", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "我的狀態",
+
+
+
+  HE0 "My Status"; --???
+
+DO_NOT_DISTURB_INACTIVE:
+  CHK "Do Not Disturb0123456789",
+  GAE "Do Not Disturb",
+
+  EN0 "Do Not Disturb",
+
+
+
+
+  US0 "Do Not Disturb",
+
+
+
+
+
+
+
+
+
+
+  CH1 "勿干擾",
+
+
+
+  HE0 "Do Not Disturb"; --???
+
+DO_NOT_DISTURB_ACTIVE:
+  CHK "Cancel Do Not Disturb0123456789",
+  GAE "Cancel Do Not Disturb",
+
+  EN0 "Cancel Do Not Disturb",
+
+
+
+
+  US0 "Cancel Do Not Disturb", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "取消勿干擾",
+
+
+
+  HE0 "Cancel Do Not Disturb"; --???
+
+OVERFLOW_INACTIVE:
+-- beware!! In our case, you talk about associated and NOT about colleague. This is not the same
+  CHK "Call Overflow on my Associate01234567890123456789",
+  GAE "Call Overflow on my Associate",
+
+  EN0 "Call Overflow on my Associate",
+
+
+
+
+
+  US0 "Call Overflow to my Associate", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "釋放工作電話", 
+
+
+  HE0 "Call Overflow on my Associate"; --???
+
+OVERFLOW_ACTIVE:
+-- beware!! In our case, you talk about associated and NOT about colleague. This is not the same
+  CHK "Cancel Call Overflow on my Associate01233333333",
+  GAE "Cancel Call Overflow on my Associate",
+
+  EN0 "Cancel Call Overflow on my Associate",
+
+
+
+
+
+  US0 "Cancel Call Overflow to my Associate", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "關聯上的呼叫溢出已啟動：", 
+
+
+  HE0 "Cancel Call Overflow on my Associate"; --???
+
+SET_CONF_PHONE:
+  CHK "My Conference Phone01234567890123456789",
+  GAE "My Conference Phone",
+
+  EN0 "My Conference Phone",
+
+
+
+
+  US0 "My Conference Phone", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "我的會議電話",
+
+
+
+  HE0 "My Conference Phone"; --???
+
+SET_CURRENT_PHONE:
+  CHK "My Current Phone0123456789",
+  GAE "My Current Phone",
+
+  EN0 "My Current Phone",
+
+
+
+
+  US0 "My Current Phone", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "我的目前電話",
+
+
+
+  HE0 "My Current Phone"; --???
+
+SET_BUSINESS_PHONE:
+  CHK "Business Phone0123456789",
+  GAE "Business Phone",
+
+  EN0 "Business Phone",
+
+
+
+
+  US0 "Business Phone", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "公司號碼",
+
+
+
+  HE0 "Business Phone"; --???
+
+RELEASE_BUSINESS_PHONE:
+  CHK "Release Business Phone0123456789", --!!! 
+  GAE "Release Business Phone", --!!! 
+
+  EN0 "Release Business Phone",
+
+
+
+
+  US0 "Release Business Phone", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "呼叫路由已啟動", 
+
+
+
+  HE0 "Release Business Phone"; --???
+
+SET_PRO_MOBILE:
+  CHK "Professional Mobile0123456789",
+  GAE "professional mobile",
+
+  EN0 "Professional Mobile",
+
+
+
+
+  US0 "Professional Mobile", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "公司手機",
+
+
+
+  HE0 "Professional Mobile"; --???
+
+SET_PERSO_MOBILE:
+  CHK "Personal Mobile0123456789",
+  GAE "Personal Mobile",
+
+  EN0 "Personal Mobile",
+
+
+
+
+  US0 "Personal Mobile", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "個人手機",
+
+
+
+  HE0 "Personal Mobile"; --???
+
+SET_HOME_PHONE:
+  CHK "Home Phone0123456789",
+  GAE "Home Phone",
+
+  EN0 "Home Phone",
+
+
+
+
+  US0 "Home Phone", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "住家電話",
+
+
+
+  HE0 "Home Phone"; --???
+
+SET_CORDLESS_PHONE:
+  CHK "Wireless Phone0123456789",
+  GAE "Wireless Phone",
+
+  EN0 "Wireless Phone",
+
+
+
+
+  US0 "Wireless Phone", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "無線電話",
+
+
+
+  HE0 "Wireless Phone"; --???
+
+SET_COLLEAGUE_PHONE:
+  CHK "Colleague Phone0123456789",
+  GAE "Colleague Phone",
+
+  EN0 "Colleague Phone",
+
+
+
+
+  US0 "Colleague Phone", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "同事電話",
+
+
+
+  HE0 "Colleague Phone"; --???
+
+SET_VOIP_PHONE:
+  CHK "Personal Computer0123456789",
+  GAE "Personal Computer",
+
+  EN0 "Personal Computer",
+
+
+
+
+  US0 "Personal Computer", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "個人電腦",
+
+
+
+  HE0 "Personal Computer"; --???
+
+SET_FREE_NUMBER:
+  CHK "Other phone...0123456789",
+  GAE "Other phone...",
+
+  EN0 "Other phone...",
+
+
+
+
+  US0 "Other Number", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "其他電話",
+
+
+
+  HE0 "Other phone..."; --???
+
+PHONE_SET_MANAGEMENT:
+  CHK "My Call Forwarding0123569",
+  GAE "My Call Forwarding",
+
+  EN0 "My Call Forwarding",
+
+
+
+
+
+  US0 "My Call Forwarding", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "登入 - 電話停止運行", 
+
+
+  HE0 "My Call Forwarding"; --???
+
+FORWARD_CALL:
+  CHK "Forward Calls to01235699555",
+  GAE "Forward Calls to",
+
+  EN0 "Forward Calls to",
+
+
+
+
+
+  US0 "Forward Calls to", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "停止運行", 
+
+
+  HE0 "Forward Calls to"; --???
+
+FORWARD_PRO_MOBILE:
+  CHK "Professional Mobile0123456789",
+  GAE "professional mobile",
+
+  EN0 "Professional Mobile",
+
+
+
+
+  US0 "Professional Mobile", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "公司手機",
+
+
+
+  HE0 "Professional Mobile"; --???
+
+FORWARD_PERSO_MOBILE:
+  CHK "Personal Mobile0123456789",
+  GAE "Personal Mobile",
+
+  EN0 "Personal Mobile",
+
+
+
+
+  US0 "Personal Mobile", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "個人手機",
+
+
+
+  HE0 "Personal Mobile"; --???
+
+FORWARD_HOME_PHONE:
+  CHK "Home Phone0123456789",
+  GAE "Home Phone",
+
+  EN0 "Home Phone",
+
+
+
+
+  US0 "Home Phone", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "住家電話",
+
+
+
+  HE0 "Home Phone"; --???
+
+FORWARD_CORDLESS_PHONE:
+  CHK "Wireless Phone0123456789",
+  GAE "Wireless Phone",
+
+  EN0 "Wireless Phone",
+
+
+
+
+  US0 "Wireless Phone", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "無線電話",
+
+
+
+  HE0 "Wireless Phone"; --???
+
+FORWARD_COLLEAGUE_PHONE:
+  CHK "Colleague Phone0123456789",
+  GAE "Colleague Phone",
+
+  EN0 "Colleague Phone",
+
+
+
+
+  US0 "Colleague Phone", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "同事電話",
+
+
+
+  HE0 "Colleague Phone"; --???
+
+FORWARD_VOICE_MAIL:
+  CHK "Voicemail00000000000",
+  GAE "Voicemail",
+
+  EN0 "Voicemail",
+
+
+
+
+
+  US0 "Voicemail", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "語音郵件", 
+
+
+  HE0 "Voicemail"; --???
+
+FORWARD_FREE_NUMBER:
+  CHK "Other phone...0123456789",
+  GAE "Other phone...",
+
+  EN0 "Other phone...",
+
+
+
+
+  US0 "Other Number", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "其他電話",
+
+
+
+  HE0 "Other phone..."; --???
+
+CANCEL_FORWARD:
+  CHK "Cancel Call Forwarding000000000",
+  GAE "Cancel Call Forwarding",
+
+  EN0 "Cancel Call Forwarding",
+
+
+
+
+
+  US0 "Cancel Call Forwarding", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "取消呼叫轉移", 
+
+
+  HE0 "Cancel Call Forwarding"; --???
+
+FORWARD_SETTINGS:
+  CHK "Settings...00000000",
+  GAE "Settings...",
+
+  EN0 "Settings...",
+
+
+
+
+
+  US0 "Settings...", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "設置...", 
+
+
+  HE0 "Settings..."; --???
+
+SIGN_OUT:
+  CHK "Sign Out0123456789",
+  GAE "Sign Out",
+
+  EN0 "Sign Out",
+
+
+
+
+  US0 "Sign Out", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "登出",
+
+
+
+  HE0 "Sign Out"; --???
+
+EXIT:
+  CHK "Exit0123456789",
+  GAE "Exit",
+
+  EN0 "Exit",
+
+
+
+
+  US0 "Exit", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "離開",
+
+
+
+  HE0 "Exit"; --???
+
+SIGN_IN:
+  CHK "Sign In...0123456789",
+  GAE "Sign In...",
+
+  EN0 "Sign In...",
+
+
+
+
+  US0 "Sign In", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "登入…",
+
+
+
+  HE0 "Sign In..."; --???
+
+OPEN_MY_ASSISTANT:
+  CHK "Open My Routing Number...0123456789",
+  GAE "Open My Routing Number..",
+
+  EN0 "Open My Routing Number..",
+
+
+
+
+  US0 "Open My Routing Number...", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "開啟我的路由號碼…",
+
+
+
+  HE0 "Open My Routing Number.."; --???
+
+-- XTScf02551 +
+
+NO_SERVER:
+  CHK "Loss of connection with the server0123456789",
+  GAE "Loss of connection with the server",
+
+  EN0 "Loss of connection with the server",
+
+
+
+
+  US0 "Lost server connection", --!!! 
+
+
+
+
+
+
+
+  ES1 "Connexi?perduda amb el servidor", -- XTScf02551 -
+
+
+  CH1 "失去與伺服器的連線",
+
+
+
+  HE0 "Loss of connection with the server"; --???
+
+-- crms00096026
+
+SYSTRAY_ICON_DO_NOT_DISTURB:
+  CHK "Do Not Disturb0123456789",
+  GAE "Do Not Disturb",
+
+  EN0 "Do Not Disturb",
+
+
+
+
+  US0 "Do Not Disturb",
+
+
+
+
+
+
+
+
+
+
+  CH1 "勿干擾",
+
+
+
+  HE0 "Do Not Disturb"; --???
+
+SYSTRAY_ICON_SET_CURRENT_PHONE:
+  CHK "My Current Phone : 123456789",
+  GAE "My Current Phone : ",
+
+  EN0 "My Current Phone : ",
+
+
+
+
+  US0 "My Current Phone : ", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "我的目前電話 ",
+
+
+
+  HE0 "My Current Phone : "; --???
+
+SYSTRAY_ICON_FORWARD_CALL:
+  CHK "Calls forwarded to 012345699",
+  GAE "Calls forwarded to ",
+
+  EN0 "Calls forwarded to ",
+
+
+
+
+
+  US0 "Calls forwarded to ", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "呼叫轉移到 ", 
+
+
+  HE0 "Calls forwarded to "; --???
+
+SYSTRAY_ICON_FORWARD_CALL_FREE_NUMBER:
+  CHK "Calls forwarded to Other Phone: 01235599",
+  GAE "Calls forwarded to another phone: ",
+
+  EN0 "Calls forwarded to another phone: ",
+
+
+
+
+
+  US0 "Calls forwarded to another phone: ", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "呼叫轉移至其他電話: ",
+
+
+  HE0 "Calls forwarded to another phone: "; --???
+
+SYSTRAY_ICON_OVERFLOW:
+-- beware!! In our case, you talk about associated and NOT about colleague. This is not the same
+  CHK "Call overflow on associate activated01235699 01235699 01235699 01235699",
+  GAE "Call overflow on associate activated: ",
+
+  EN0 "Call overflow on associate activated: ",
+
+
+
+
+
+  US0 "Call overflow to associate activated: ", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "關聯上的呼叫溢出已啟動：", 
+
+
+  HE0 "Call overflow on associate activated: "; --???
+
+SYSTRAY_ICON_SET_CONF_PHONE:
+  CHK "My Conference Phone : 01234567890123456",
+  GAE "My Conference Phone : ",
+
+  EN0 "My Conference Phone : ",
+
+
+
+
+  US0 "My Conference Phone : ", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "我的會議電話 ",
+
+
+
+  HE0 "My Conference Phone : "; --???
+
+EDIT_NUMBERS:
+  CHK "Edit numbers... : 01234567890123456",
+  GAE "Edit numbers...",
+
+  EN0 "Edit numbers...",
+
+
+
+
+  US0 "Edit numbers...", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "編輯號碼",
+
+
+
+  HE0 "Edit numbers..."; --???
+
+-- CTA 08/04/2009 : CR crms00168200
+
+SYSTRAY_ICON_ROUTING:
+  CHK "Call routing activated01234567890123456",
+  GAE "Call routing activated",
+
+  EN0 "Call routing activated",
+
+
+
+
+  US0 "Call routing activated", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "呼叫路由已啟動", 
+
+
+
+  HE0 "Call routing activated"; --???
+
+SYSTRAY_ICON_PHONE_OFF:
+  CHK "Signed in - Phone out of service 0123456789",
+  GAE "Signed in - Phone out of service",
+
+  EN0 "Signed in - Phone out of service",
+
+
+
+
+  US0 "Signed in - Phone out of service", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "登入 - 電話停止運行", 
+
+
+
+  HE0 "Signed in - Phone out of service"; --???
+
+SET_UNDEFINED_PHONE:
+--SIZECHAR 200;
+  GAE "Not defined/Out of service",
+
+  EN0 "Not defined/0ut of service",
+
+
+
+
+  US0 "Out of service", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "停止運行", 
+
+
+
+  HE0 "Not defined/0ut of service"; --???
+
+SYSTRAY_ICON_FORWARD_CALL_IMMEDIATE:
+-- copy from  SYSTRAY_ICON_FORWARD_CALL
+  CHK "Calls forwarded to 012345699",
+  GAE "Calls forwarded to ",
+
+  EN0 "Calls forwarded to ",
+
+
+
+
+
+  US0 "Calls forwarded to ", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "呼叫轉移至 ", 
+
+
+  HE0 "Calls forwarded to "; --???
+
+SYSTRAY_ICON_FORWARD_CALL_ON_BUSY:
+-- copy from  SYSTRAY_ICON_FORWARD_CALL
+  CHK "Calls forwarded to 012345699",
+  GAE "Calls forwarded to ",
+
+  EN0 "Calls forwarded to ",
+
+
+
+
+
+  US0 "Calls forwarded to ", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "呼叫轉移至 ",
+
+
+  HE0 "Calls forwarded to "; --???
+
+SYSTRAY_ICON_FORWARD_CALL_ON_NO_ANSWER:
+-- copy from  SYSTRAY_ICON_FORWARD_CALL
+  CHK "Calls forwarded to 012345699",
+  GAE "Calls forwarded to ",
+
+  EN0 "Calls forwarded to ",
+
+
+
+
+
+  US0 "Calls forwarded to ", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "呼叫轉移至 ", 
+
+
+  HE0 "Calls forwarded to "; --???
+
+SYSTRAY_ICON_FORWARD_CALL_ON_BUSY_OR_NO_ANSWER:
+-- copy from  SYSTRAY_ICON_FORWARD_CALL
+  CHK "Calls forwarded to 012345699",
+  GAE "Calls forwarded to ",
+
+  EN0 "Calls forwarded to ",
+
+
+
+
+
+  US0 "Calls forwarded to ", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "呼叫轉移至 ", 
+
+
+  HE0 "Calls forwarded to "; --???
+
+SYSTRAY_ICON_FORWARD_CALL_IMMEDIATE_FREE_NUMBER:
+-- copy from   SYSTRAY_ICON_FORWARD_CALL_FREE_NUMBER
+  CHK "Calls forwarded to Other Phone: 01235599",
+  GAE "Calls forwarded to another phone: ",
+
+  EN0 "Calls forwarded to another phone: ",
+
+
+
+
+
+  US0 "Calls forwarded to another phone: ", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "呼叫轉移至其他電話 ", 
+
+
+  HE0 "Calls forwarded to another phone: "; --???
+
+SYSTRAY_ICON_FORWARD_CALL_ON_BUSY_FREE_NUMBER:
+-- copy from   SYSTRAY_ICON_FORWARD_CALL_FREE_NUMBER
+  CHK "Calls forwarded to Other Phone: 01235599",
+  GAE "Calls forwarded to another phone: ",
+
+  EN0 "Calls forwarded to another phone: ",
+
+
+
+
+
+  US0 "Calls forwarded to another phone: ", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "呼叫轉移至其他電話 ", 
+
+
+  HE0 "Calls forwarded to another phone: "; --???
+
+SYSTRAY_ICON_FORWARD_CALL_ON_NO_ANSWER_FREE_NUMBER:
+-- copy from   SYSTRAY_ICON_FORWARD_CALL_FREE_NUMBER
+  CHK "Calls forwarded to Other Phone: 01235599",
+  GAE "Calls forwarded to another phone: ",
+
+  EN0 "Calls forwarded to another phone: ",
+
+
+
+
+
+  US0 "Calls forwarded to another phone: ", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "C呼叫轉移至其他電話 ", 
+
+
+  HE0 "Calls forwarded to another phone: "; --???
+
+SYSTRAY_ICON_FORWARD_CALL_ON_BUSY_OR_NO_ANSWER_FREE_NUMBER:
+-- copy from   SYSTRAY_ICON_FORWARD_CALL_FREE_NUMBER
+  CHK "Calls forwarded to Other Phone: 01235599",
+  GAE "Calls forwarded to another phone: ",
+
+  EN0 "Calls forwarded to another phone: ",
+
+
+
+
+
+  US0 "Calls forwarded to another phone: ", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "呼叫轉移至其他電話 ", 
+
+
+  HE0 "Calls forwarded to another phone: "; --???
+
+MAKE_CALL:
+  CHK "Call0123456789",
+  GAE "Call",
+
+  EN0 "Call", -- 
+
+
+
+
+  US0 "Call", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "通話",
+
+
+
+  HE0 "Call"; --???
+
+CURRENT_PHONE_MENU:
+  CHK "Extension used for making phone calls012345678901234567890123456789",
+  GAE "Extension used for making phone calls",
+
+  EN0 "Extension used for making phone calls",
+
+
+
+
+  US0 "Extension used for making phone calls", --???
+
+
+
+
+
+
+
+
+
+
+  CH1 "進行電話呼叫的分機", 
+
+
+
+  HE0 "Extension used for making phone calls"; --???
+
+FORWARD_PHONE_MENU:
+  CHK "Extension where calls are routed to01234567890123456789",
+  GAE "Extension where calls are routed to",
+
+  EN0 "Extension where calls are routed to",
+
+
+
+
+  US0 "Extension where calls are routed to", --???
+
+
+
+
+
+
+
+
+
+
+  CH1 "路由呼叫至的分機", 
+
+
+
+  HE0 "Extension where calls are routed to"; --???
+
+MAKE_CALL_CHOICE:
+  CHK "Select to dial01234567890123456789",
+  GAE "Select to dial",
+
+  EN0 "Select to dial",
+
+
+
+
+  US0 "Select to dial", --???
+
+
+
+
+
+
+
+
+
+
+  CH1 "選擇撥號", 
+
+
+
+  HE0 "Select to dial"; --???
+
+BUTTON_CANCEL:
+  CHK "Annuler 012",
+  GAE "Cancel",
+
+  EN0 "Cancel",
+
+
+
+
+  US0 "Cancel",
+
+
+
+
+
+
+
+
+
+
+  CH1 "取消",
+
+
+  DA0 "Afbryd";
+
+CALL_MEVO:
+  CHK "Send voicemail0123",
+  GAE "Send voicemail",
+
+  EN0 "Send voicemail",
+
+
+
+
+  US0 "Send voicemail",
+
+
+
+
+
+
+
+
+
+
+  CH1 "傳送語音留言",
+
+
+  DA0 "Send talebesked";
+
+CALL_OTHER_NUMBER:
+  CHK "Call other number012",
+  GAE "Call other number",
+
+  EN0 "Call other number",
+
+
+
+
+
+  US0 "Call another number", --!!! 
+
+
+
+
+
+
+
+
+
+  CH1 "撥給其他號碼",
+
+
+  DA0 "Kald et andet nummer";
+
+CALL_BUSINESS_PHONE:
+  CHK "Business Phone0123456789",
+  GAE "Business Phone",
+
+  EN0 "Business Phone",
+
+
+
+
+  US0 "Business phone", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "公司號碼",
+
+
+  DA0 "Firmatelefon";
+
+CALL_PRO_MOBILE:
+  CHK "Professional Mobile0123456789",
+  GAE "professional mobile",
+
+  EN0 "Professional Mobile",
+
+
+
+
+  US0 "Business cell phone", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "公司手機",
+
+
+  DA0 "Firma mobiltelefon";
+
+CALL_COLLEAGUE_PHONE:
+  CHK "Colleague phone0123456789",
+  GAE "Colleague phone",
+
+  EN0 "Colleague phone",
+
+
+
+
+  US0 "Colleague phone", --!!! 
+
+
+
+
+
+
+
+
+
+
+
+
+  DA0 "Kollega telefon";
+
+CALL_PERSO_MOBILE:
+  CHK "Personal Mobile0123456789",
+  GAE "Personal Mobile",
+
+  EN0 "Personal Mobile",
+
+
+
+
+  US0 "Personal cell phone", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "個人手機",
+
+
+  DA0 "Privat mobiltelefon";
+
+CALL_HOME_PHONE:
+  CHK "Home Phone0123456789",
+  GAE "Home Phone",
+
+  EN0 "Home Phone",
+
+
+
+
+  US0 "Home phone", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "住家電話",
+
+
+  DA0 "Hjemmetelefon";
+
+CALL_CORDLESS_PHONE:
+  CHK "Wireless Phone0123456789",
+  GAE "Wireless Phone",
+
+  EN0 "Wireless Phone",
+
+
+
+
+  US0 "Wireless phone", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "無線電話",
+
+
+  DA0 "Tr嶟l鷭 telefon";
+
+SEND_NUMBER:
+  CHK "Enter a number 01234567891",
+  GAE "Enter a number",
+
+  EN0 "Enter a number",
+
+
+
+
+  US0 "Enter a number",
+
+
+
+
+
+
+
+
+
+
+  CH1 "輸入號碼", 
+
+
+  DA0 "Enter a number"; --???
+

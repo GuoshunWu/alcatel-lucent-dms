@@ -1,0 +1,56 @@
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>JSON test</title>
+    <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+    <!--
+     <link type="text/css" rel="stylesheet" href="syntax/!style.css"/>
+     <link type="text/css" rel="stylesheet" href="!style.css"/>
+     <script type="text/javascript" src="syntax/!script.js"></script>
+     -->
+    <script type="text/javascript">
+        $(function () {
+         $('#test').click(function(){
+                var ajaxRequest=$.ajax({
+                    url:$('#url').val(),
+                    type: 'GET',
+                    data:{},
+                    dataType:$('#dType').val(),
+                    beforeSend:function(request){
+//                        alert('BeforeSend'+request);
+                    },
+                    success:function (data, textStatus) {
+                        //$('#result').innerText=data.response;
+                        alert(data);
+                        if(console && console.log) {
+                            console.log(data);
+                        }
+                    },error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert(errorThrown);
+                    }
+                });
+            });
+
+            $('#dType').change(function(value){
+//                alert($(this).val());
+            });
+        });
+    </script>
+</head>
+<body>
+    URL:<input id="url" value="rest/products"  />
+    <select id="dType" size="">
+        <option value="json">JSON</option>
+        <option value="xml" >XML</option>
+    </select>
+    <input type="button" id="test" value="测试" />
+
+    <div id="result">
+        Display Area..
+    </div>
+
+</body>
+</html>
