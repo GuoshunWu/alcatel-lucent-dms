@@ -11,7 +11,7 @@ import org.apache.struts2.convention.annotation.Result;
  * @author allany
  *
  */
-@ParentPackage("json-default")   
+@ParentPackage("json-default")
 @Result(type="json", params={"ignoreHierarchy","false","includeProperties","status,message"})
 public class JSONAction extends BaseAction {
 	private int status;

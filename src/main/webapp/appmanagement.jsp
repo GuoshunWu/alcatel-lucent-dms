@@ -111,14 +111,18 @@
 
             $('#newProductDialog').dialog({
                 autoOpen:false,
-                height:180,
+                height:150,
                 width:400,
                 buttons:{
                     'OK':function () {
-                        $.ajax({
-                            url:'rest/product'
-
+                        url='app/create-product';
+                        var productName={'name':$('#productName').val()}
+                        alert(productName.name);
+                        $.post(url,productName,function(data, textStatus, jqXHR){
+                            alert(data.message);
                         });
+
+                        $(this).dialog("close");
                     },
                     'Cancel':function () {
                         $(this).dialog("close");
@@ -161,11 +165,7 @@
                                 <fieldset>
                                     <tr>
                                         <td width='30%'>Product name</td>
-                                        <td><input type="text" name="productName" SIZE="40"></td>
-                                    </tr>
-                                    <tr>
-                                        <td width='30%'>Version</td>
-                                        <td><input type="text" name="productVersion" SIZE="40"></td>
+                                        <td><input id="productName" value="" type="text" SIZE="40"></td>
                                     </tr>
                                 </fieldset>
                             </table>
