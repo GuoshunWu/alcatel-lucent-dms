@@ -3,7 +3,6 @@ package com.alcatel_lucent.dms.service;
 import java.util.Collection;
 import java.util.Map;
 
-import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Text;
 import com.alcatel_lucent.dms.model.Translation;

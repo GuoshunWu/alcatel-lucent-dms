@@ -1,25 +1,39 @@
 package com.alcatel_lucent.dms.service;
 
-import com.alcatel_lucent.dms.BusinessException;
-import com.alcatel_lucent.dms.BusinessWarning;
-import com.alcatel_lucent.dms.model.*;
-import com.alcatel_lucent.dms.model.Dictionary;
-import com.alcatel_lucent.dms.model.Text;
-import org.apache.log4j.Logger;
-import org.dom4j.*;
-import org.dom4j.io.DOMReader;
-import org.dom4j.io.SAXReader;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.xml.sax.SAXException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
+
+import org.apache.log4j.Logger;
+import org.dom4j.Attribute;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.io.DOMReader;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.xml.sax.SAXException;
+
+import com.alcatel_lucent.dms.BusinessException;
+import com.alcatel_lucent.dms.BusinessWarning;
+import com.alcatel_lucent.dms.model.Application;
+import com.alcatel_lucent.dms.model.Charset;
+import com.alcatel_lucent.dms.model.Context;
+import com.alcatel_lucent.dms.model.Dictionary;
+import com.alcatel_lucent.dms.model.DictionaryLanguage;
+import com.alcatel_lucent.dms.model.Label;
+import com.alcatel_lucent.dms.model.Language;
+import com.alcatel_lucent.dms.model.Text;
+import com.alcatel_lucent.dms.model.Translation;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,6 +44,7 @@ import java.util.*;
  */
 
 @Service("mdcParser")
+@SuppressWarnings("unchecked")
 public class MDCParser {
 
     @Autowired
@@ -100,7 +115,7 @@ public class MDCParser {
 
         //en-GB is reference
 
-        Set<String> dictLangCodes = dictionary.getAllLanguageCodes();
+//        Set<String> dictLangCodes = dictionary.getAllLanguageCodes();
 
         BusinessException exceptions = new BusinessException(
                 BusinessException.NESTED_LABEL_ERROR, label.getKey());

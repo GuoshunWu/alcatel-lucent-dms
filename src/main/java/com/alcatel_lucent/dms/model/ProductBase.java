@@ -1,9 +1,9 @@
 package com.alcatel_lucent.dms.model;
 
-import javax.xml.bind.annotation.XmlElement;
+import java.util.Collection;
+
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-import java.util.Collection;
 
 @XmlRootElement
 public class ProductBase extends BaseEntity {

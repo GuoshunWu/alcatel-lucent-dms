@@ -1,20 +1,22 @@
 package com.alcatel_lucent.dms.service;
 
-import com.alcatel_lucent.dms.model.Product;
-import com.alcatel_lucent.dms.model.ProductBase;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-import net.sf.json.JsonConfig;
-import net.sf.json.util.PropertyFilter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JsonConfig;
+import net.sf.json.util.PropertyFilter;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.alcatel_lucent.dms.model.Product;
+import com.alcatel_lucent.dms.model.ProductBase;
 
 /**
  * Created by IntelliJ IDEA.
@@ -25,7 +27,7 @@ import java.util.List;
  */
 
 @Service("productService")
-
+@SuppressWarnings("unchecked")
 public class ProductServiceImpl implements ProductService {
 
     @Autowired
@@ -62,7 +64,6 @@ public class ProductServiceImpl implements ProductService {
         });
 
         Collection<ProductBase> pBases = (Collection<ProductBase>) dao.retrieve("from ProductBase", new String[]{"applicationBases"});
-        ProductBase pb = pBases.toArray(new ProductBase[0])[0];
         return JSONArray.fromObject(pBases,config);
     }
 

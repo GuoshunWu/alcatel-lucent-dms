@@ -79,17 +79,34 @@
                 resizeToWidth:true
             });
 
-            //appTree
-            $('#appTree').jstree({
-                "json_data":{
-                    "ajax":{
-                        "url":"http://localhost:8080/xml/tree.json",
-                        "data":function (n) {
-                            return { id:n.attr ? n.attr("id") : 0 };
-                        }
-                    }
-                },
-                plugins:[ "themes", "json_data", "ui"]
+            //load init treeData from this url
+            var url= 'rest/products';
+//            var url= 'json/tree.json';
+
+            $.getJSON(url, {}, function (data, textStatus, jqXHR) {
+                //data is the tree initialize data from server
+                //appTree
+                var productsTree=$('#appTree').jstree({
+                    json_data:{
+                        data:data
+//                    ajax:{
+//                        url:"get about to open node data url",
+////                        data:function(node){
+////                            return { id:node.attr ? node.attr("id") : 0 };
+////                        },
+//                        error:function(XMLHttpRequest, textStatus, errorThrown){
+//                            alert("error: "+errorThrown);
+//                        },
+//                        success:function(data, textStatus){
+//                            alert("success" + data.toString());
+//                        }
+//                    }
+                    },
+                    plugins:[ "themes", "json_data", "ui"]
+                });
+                productsTree.bind("select_node.jstree", function (event, data) {
+                            alert(data.rslt.obj.attr("id"));
+                        });
             });
 
             $('#newProductDialog').dialog({

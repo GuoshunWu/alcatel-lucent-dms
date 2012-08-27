@@ -52,6 +52,7 @@ public class Util {
 	 *            the property name need to be added in.
 	 * @return the property name collection
 	 * */
+	@SuppressWarnings("unchecked")
 	public static List getObjectProperiesList(Collection collection,
 			String propertyName) {
 		List propertiesList = new ArrayList<Object>();

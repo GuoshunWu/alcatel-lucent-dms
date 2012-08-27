@@ -50,6 +50,7 @@
         <property name="transactionAttribute">
             <value>PROPAGATION_REQUIRED</value>
         </property>
+        
     </bean>
 
     <bean id="matchAllTxInterceptor"
@@ -88,6 +89,7 @@
                 <idref bean="productService"/>
                 <idref bean="jsonService"/>
                 <idref bean="productREST"/>
+                <!--<idref bean="myTest"/>-->
             </list>
         </property>
     </bean>

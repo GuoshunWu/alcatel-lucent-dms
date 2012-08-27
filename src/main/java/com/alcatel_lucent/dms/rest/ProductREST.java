@@ -5,19 +5,20 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.alcatel_lucent.dms.SpringContext;
-import com.alcatel_lucent.dms.model.ProductBase;
-import com.alcatel_lucent.dms.service.DaoService;
-import com.alcatel_lucent.dms.service.JSONService;
-import com.alcatel_lucent.dms.service.ProductService;
-import net.sf.json.JSONArray;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+
+import net.sf.json.JSONObject;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.alcatel_lucent.dms.model.ApplicationBase;
+import com.alcatel_lucent.dms.model.ProductBase;
+import com.alcatel_lucent.dms.service.DaoService;
+import com.alcatel_lucent.dms.service.JSONService;
 
 //import com.alcatel_lucent.dms.service.ProductService;
 
@@ -36,20 +37,30 @@ public class ProductREST {
 
     @Autowired
     private DaoService dao;
-    
+
     @Autowired
     private JSONService jsonService;
 
 
-    @GET
+    @SuppressWarnings("unchecked")
+	@GET
     @Produces({MediaType.APPLICATION_JSON})
     public String retrieveAll() {
 
         Collection<ProductBase> result = dao.retrieve("FROM ProductBase");
         Map<String, Collection<String>> propFilter = new HashMap<String, Collection<String>>();
-        propFilter.put("ProductBase", Arrays.asList("name", "applicationBases"));
-        propFilter.put("ApplicationBase", Arrays.asList("name"));
-        return jsonService.toJSONString(result, propFilter);
-        
+        propFilter.put("ApplicationBase", Arrays.asList("name", "id"));
+        propFilter.put("ProductBase", Arrays.asList("name", "id","applicationBases"));
+
+
+        Map<Class, Map<String, String>> propRename = new HashMap<Class, Map<String, String>>();
+        propRename.put(ApplicationBase.class, JSONObject.fromObject("{'name':'data', 'id':'attr'}"));
+        propRename.put(ProductBase.class, JSONObject.fromObject("{'name':'data', 'id':'attr','applicationBases':'children'}"));
+
+        String jsonString = jsonService.toJSONString(result, propFilter, propRename);
+        jsonString = jsonString.replaceAll("(\"attr\":)(\\d?)", "$1{\"id\":$2}");
+
+//        System.out.println("DEBUG, jsonString=" + jsonString);
+        return jsonString;
     }
 }

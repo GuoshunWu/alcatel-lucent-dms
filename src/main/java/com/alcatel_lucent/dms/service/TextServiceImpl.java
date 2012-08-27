@@ -16,6 +16,7 @@ import com.alcatel_lucent.dms.model.Text;
 import com.alcatel_lucent.dms.model.Translation;
 
 @Service("textService")
+@SuppressWarnings("unchecked")
 public class TextServiceImpl extends BaseServiceImpl implements TextService {
 	
 	public Context getContextByName(String name) {
@@ -24,6 +25,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 				JSONObject.fromObject(String.format("{'name':'%s'}",
 						name)));
 	}
+	
 	
 	public Text getText(Long ctxId, String reference) {
 		Map params = new HashMap();
