@@ -13,14 +13,11 @@ public class CreateProductAction extends JSONAction {
 	private String name;
 	
 	public String execute() {
-		log.info("Create product: " + name);
+		log.info("Create product  2: " + name);
 		//TODO create product
 		setStatus(0);
 		setMessage("OK");
 		return SUCCESS;
 	}
-
-	
-	
 
 }
