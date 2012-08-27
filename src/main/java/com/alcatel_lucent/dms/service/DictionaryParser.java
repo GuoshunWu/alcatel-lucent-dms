@@ -11,24 +11,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.StringReader;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import com.alcatel_lucent.dms.model.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
+import com.alcatel_lucent.dms.model.Application;
+import com.alcatel_lucent.dms.model.Dictionary;
+import com.alcatel_lucent.dms.model.DictionaryBase;
 import com.alcatel_lucent.dms.util.Util;
 
 /**
@@ -42,9 +37,6 @@ public class DictionaryParser {
 	public static final String lineSeparator = "\n";
 	// System.getProperty("line.separator");
 
-	// Language pattern in dct file
-	private static final Pattern patternLanguage = Pattern
-			.compile("^LANGUAGES\\s*\\{((?:[\\w-]{2,5}\\s*,?\\s*)+)\\}$");
 	private Logger log = Logger.getLogger(DictionaryServiceImpl.class);
 
 	@Autowired

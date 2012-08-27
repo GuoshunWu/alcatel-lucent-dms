@@ -16,7 +16,7 @@ public class CreateProductAction extends JSONAction {
 		log.info("Create product: " + name);
 		//TODO create product
 		setStatus(0);
-		setMessage("ok");
+		setMessage("OK");
 		return SUCCESS;
 	}
 

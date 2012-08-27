@@ -20,12 +20,10 @@ import org.apache.log4j.Logger;
 
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
-import com.alcatel_lucent.dms.model.AlcatelLanguageCode;
 import com.alcatel_lucent.dms.model.Charset;
 import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryLanguage;
-import com.alcatel_lucent.dms.model.ISOLanguageCode;
 import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.Language;
 import com.alcatel_lucent.dms.model.Text;
@@ -453,14 +451,14 @@ public class DictionaryReader extends LineNumberReader {
      * @param langCode
      * @author Guoshun.Wu
      */
-    private boolean isValidLangCode(String langCode) {
-        Set<String> allLangCodes = new HashSet<String>(languageService
-                .getAlcatelLanguageCodes().keySet());
-        allLangCodes.addAll(languageService.getISOLanguageCodes().keySet());
-        allLangCodes.add("CHK");
-        langCode = langCode.replace('_', '-');
-        return allLangCodes.contains(langCode);
-    }
+//    private boolean isValidLangCode(String langCode) {
+//        Set<String> allLangCodes = new HashSet<String>(languageService
+//                .getAlcatelLanguageCodes().keySet());
+//        allLangCodes.addAll(languageService.getISOLanguageCodes().keySet());
+//        allLangCodes.add("CHK");
+//        langCode = langCode.replace('_', '-');
+//        return allLangCodes.contains(langCode);
+//    }
 
     /**
      * Test if a line is a entry start line in an label the language code will

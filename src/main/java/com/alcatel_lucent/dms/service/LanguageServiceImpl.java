@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.alcatel_lucent.dms.BusinessException;
 import org.springframework.stereotype.Service;
 
 import com.alcatel_lucent.dms.model.AlcatelLanguageCode;
@@ -13,6 +12,7 @@ import com.alcatel_lucent.dms.model.ISOLanguageCode;
 import com.alcatel_lucent.dms.model.Language;
 
 @Service(value = "languageService")
+@SuppressWarnings("unchecked")
 public class LanguageServiceImpl extends BaseServiceImpl implements LanguageService {
 
 	// base data for dms

@@ -11,12 +11,13 @@ http://www.springframework.org/schema/context/spring-context-3.1.xsd
 	<!-- As always, you can register them as individual bean definitions, but 
 		they can also be implicitly registere by including the following tag in an 
 		XML-based Spring configuration -->
-
     <bean id="contextApplicationContextProvider" class="com.alcatel_lucent.dms.SpringContext"/>
+    
     <context:component-scan base-package="com.alcatel_lucent.dms"/>
     <!-- Core -->
 	<import resource="spring-core.xml" />
 	<import resource="spring-service.xml" />
+	
 
 	<!-- Struts -->
 </beans>

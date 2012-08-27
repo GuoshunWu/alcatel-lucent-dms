@@ -307,7 +307,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     /**
      * Deliver a Zip file into database.
      */
-    private Collection<Dictionary> deliverZipDCTFile(String rootDir,
+    @SuppressWarnings("unchecked")
+	private Collection<Dictionary> deliverZipDCTFile(String rootDir,
                                                      ZipFile file, Long appId, String encoding, String[] langCodes,
                                                      Map<String, String> langCharset,
                                                      Collection<BusinessWarning> warnings) throws BusinessException {
@@ -357,7 +358,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
      * @param dir   root directory save dct files
      * @param dtIds the collection of the id for dictionary to be generated.
      */
-    public void generateDCTFiles(String dir, Collection<Long> dtIds, String[] langCodes) {
+    @SuppressWarnings("unchecked")
+	public void generateDCTFiles(String dir, Collection<Long> dtIds, String[] langCodes) {
         if (dtIds.isEmpty()) return;
         String idList = dtIds.toString().replace("[", "(").replace("]", ")");
         String hsql = "from Dictionary where id in " + idList;
@@ -406,7 +408,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         HashSet<String> dictLangCodes = dict.getAllLanguageCodes();
 
         if (langCodes != null) {
-            List<String> listLangCodes = new ArrayList(Arrays.asList(langCodes));
+            List<String> listLangCodes = new ArrayList<String>(Arrays.asList(langCodes));
             listLangCodes.removeAll(dictLangCodes);
             if (!listLangCodes.isEmpty()) {
                 throw new BusinessException(
@@ -546,7 +548,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         HashSet<String> dictLangCodes = dict.getAllLanguageCodes();
 
         if (langCodes != null) {
-            List<String> listLangCodes = new ArrayList(Arrays.asList(langCodes));
+            List<String> listLangCodes = new ArrayList<String>(Arrays.asList(langCodes));
             listLangCodes.removeAll(dictLangCodes);
             if (!listLangCodes.isEmpty()) {
                 throw new BusinessException(
