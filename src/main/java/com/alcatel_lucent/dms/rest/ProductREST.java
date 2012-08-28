@@ -1,24 +1,22 @@
 package com.alcatel_lucent.dms.rest;
 
-import java.util.*;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.CacheControl;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
-import com.alcatel_lucent.dms.util.Util;
-import net.sf.json.JSONObject;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.alcatel_lucent.dms.model.ApplicationBase;
 import com.alcatel_lucent.dms.model.ProductBase;
 import com.alcatel_lucent.dms.service.DaoService;
 import com.alcatel_lucent.dms.service.JSONService;
+import com.alcatel_lucent.dms.util.Util;
+import net.sf.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 //import com.alcatel_lucent.dms.service.ProductService;
 
@@ -47,7 +45,7 @@ public class ProductREST {
     @Produces({MediaType.APPLICATION_JSON + ";CHARSET=UTF-8", MediaType.TEXT_HTML + ";CHARSET=UTF-8"})
     public String retrieveAll() {
 
-        Collection<ProductBase> result = dao.retrieve("FROM ProductBase");
+        Collection<ProductBase> result = dao.retrieve("from ProductBase");
         Map<String, Collection<String>> propFilter = new HashMap<String, Collection<String>>();
         propFilter.put("ApplicationBase", Arrays.asList("name", "id"));
         propFilter.put("ProductBase", Arrays.asList("name", "id", "applicationBases"));

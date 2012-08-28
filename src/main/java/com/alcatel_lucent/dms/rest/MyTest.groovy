@@ -1,18 +1,15 @@
 package com.alcatel_lucent.dms.rest
 
-import javax.ws.rs.Path
-import javax.ws.rs.GET
-import javax.ws.rs.Produces
-import javax.ws.rs.core.MediaType
+import com.alcatel_lucent.dms.model.ApplicationBase
 import com.alcatel_lucent.dms.model.ProductBase
-import com.alcatel_lucent.dms.service.ProductService
-
-import com.alcatel_lucent.dms.SpringContext
-import org.springframework.stereotype.Component
-import org.springframework.beans.factory.annotation.Autowired
 import com.alcatel_lucent.dms.service.DaoService
 import com.alcatel_lucent.dms.service.JSONService
-import com.alcatel_lucent.dms.model.ApplicationBase
+import javax.ws.rs.GET
+import javax.ws.rs.Path
+import javax.ws.rs.Produces
+import javax.ws.rs.core.MediaType
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
 
 /**
  * Created by IntelliJ IDEA.
