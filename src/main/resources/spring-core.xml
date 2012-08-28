@@ -57,29 +57,29 @@
             <props>
                 <prop key="hibernate.proxool.properties">${proxool.properties}</prop>
 
-                <prop key="hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+                <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
 
                 <prop key="hibernate.proxool.pool_alias">${proxool.alias}</prop>
-                <prop key="dialect">${hibernate.dialect}</prop>
+                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
 
                 <prop key="hibernate.proxool.existing_pool">false</prop>
                 <prop key="hibernate.connection.provider_class">org.hibernate.connection.ProxoolConnectionProvider
                 </prop>
                 <!-- connection.pool_size is used to configure the number of connections in Hibernate's built-in connection pool. -->
-                <prop key="connection.pool_size">10</prop>
+                <prop key="hibernate.connection.pool_size">10</prop>
                 <!-- Enable Hibernate's automatic session context management -->
-                <prop key="current_session_context_class">thread</prop>
+                <prop key="hibernate.current_session_context_class">thread</prop>
 
-                <prop key="jdbc.batch_size">100</prop>
+                <prop key="hibernate.jdbc.batch_size">100</prop>
                 <!--<prop key="jdbc.fetch_size">100</prop>-->
-                <prop key="jdbc.batch_size">100</prop>
+                <prop key="hibernate.jdbc.fetch_size">100</prop>
                 <!-- Disable the second-level cache -->
-                <prop key="cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
+                <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
                 <!-- Echo all executed SQL to stdout -->
-                <prop key="show_sql">false</prop>
-                <prop key="format_sql">true</prop>
-                <prop key="use_sql_comments">true</prop>
-                <prop key="default_schema">dms</prop>
+                <prop key="hibernate.show_sql">false</prop>
+                <prop key="hibernate.format_sql">true</prop>
+                <prop key="hibernate.use_sql_comments">true</prop>
+                <prop key="hibernate.default_schema">dms</prop>
 
                 <prop key="hibernate.connection.release_mode">auto</prop>
                 <prop key="hibernate.bytecode.use_reflection_optimizer">true</prop>
