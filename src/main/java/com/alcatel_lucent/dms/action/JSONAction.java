@@ -3,6 +3,9 @@ package com.alcatel_lucent.dms.action;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Base class of JSON-style actions.
  * By default it products json string containing status and message as action result.
@@ -12,10 +15,11 @@ import org.apache.struts2.convention.annotation.Result;
  *
  */
 @ParentPackage("json-default")
-@Result(type="json", params={"ignoreHierarchy","false","includeProperties","status,message"})
+@Result(type="json", params={"noCache","true","ignoreHierarchy","false","includeProperties","status,message"})
 public class JSONAction extends BaseAction {
 	private int status;
 	private String message;
+
 	public void setStatus(int status) {
 		this.status = status;
 	}

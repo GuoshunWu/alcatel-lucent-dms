@@ -14,6 +14,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.log4j.Logger;
 import org.mozilla.intl.chardet.HtmlCharsetDetector;
@@ -200,4 +204,12 @@ public class Util {
 		String fileExt = fileName.substring(dotPos);
 		return pattern.matcher(fileExt).matches();
 	}
+    
+    public static String jsonFormat(String uglyJSONString){
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        JsonParser jp = new JsonParser();
+        JsonElement je = jp.parse(uglyJSONString);
+        String prettyJsonString = gson.toJson(je);
+        return prettyJsonString;
+    }
 }

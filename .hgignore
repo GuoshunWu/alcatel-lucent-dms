@@ -37,6 +37,7 @@ GroovyTest.groovy
 log4j.dtd
 dms.uml
 temp.sql
+jettyStart.cmd
 
 
 #webapp

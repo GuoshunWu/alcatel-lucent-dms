@@ -243,7 +243,7 @@ class GDictionaryServiceImplTest {
         assertTrue "Dictionary $generatedFile.name is not generated.", generatedFile.exists()
 
         /*************************** Test deletel dictionary in database *************************/
-//        dao.delete 'delete from Dictionary where version=:version and base.name=:name', ['version':version, 'name':dictName] as Map<String,String>
+//        daoService.delete 'delete from Dictionary where version=:version and base.name=:name', ['version':version, 'name':dictName] as Map<String,String>
         dbDict = dao.retrieveOne("from Dictionary where version=:version and base.name=:name", ['name': dictName,'version':version], ['base'] as String[]) as Dictionary
         dao.delete(dbDict)
         Dictionary origDict = dbDict

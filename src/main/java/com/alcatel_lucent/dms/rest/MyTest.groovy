@@ -36,19 +36,19 @@ class MyTest {
     @Produces(MediaType.APPLICATION_JSON)
     String getProducts() {
         Collection<ProductBase> result = dao.retrieve('FROM ProductBase');
-        Map<String, Collection<String>> propFilter = []
+        Map<String, Collection<String>> propFilter = [:]
         propFilter.ApplicationBase= ['name', 'id']
         propFilter.ProductBase=['applicationBases']+propFilter.ApplicationBase
 
-        Map<Class, Map<String, String>> propRename = []
+        Map<Class, Map<String, String>> propRename = [:]
 
         propRename[ApplicationBase.class]=['name':'data','id':'attr']
-        propRename[ProductBase.class]=['applicationBases':'children']+propRename[ApplicationBase.class]
+        propRename[ProductBase.class]=['applicationBases':'children']<<propRename[ApplicationBase.class]
 
         String jsonString = jsonService.toJSONString(result, propFilter, propRename);
         println jsonString
         
-//        jsonString=jsonString.replaceAll('(\'attr\':)(\\d?)','$1{\'id\':$2}');
+        jsonString=jsonString.replaceAll('(\'attr\':)(\\d?)','$1{\'id\':$2}');
         return jsonString;
     }
 }
