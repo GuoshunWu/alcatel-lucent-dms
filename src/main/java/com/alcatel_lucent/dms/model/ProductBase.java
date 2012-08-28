@@ -10,6 +10,7 @@ public class ProductBase extends BaseEntity {
 
     private String name = "Unknown";
 
+
     @XmlTransient
     private Collection<Product> products;
 

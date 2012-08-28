@@ -12,8 +12,10 @@ http://www.springframework.org/schema/context/spring-context-3.1.xsd
 		they can also be implicitly registere by including the following tag in an 
 		XML-based Spring configuration -->
     <bean id="contextApplicationContextProvider" class="com.alcatel_lucent.dms.SpringContext"/>
-    
+    <context:property-placeholder location="classpath:config.properties"  file-encoding="UTF8"/>
+
     <context:component-scan base-package="com.alcatel_lucent.dms"/>
+
     <!-- Core -->
 	<import resource="spring-core.xml" />
 	<import resource="spring-service.xml" />
