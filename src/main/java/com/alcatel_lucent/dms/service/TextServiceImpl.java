@@ -166,7 +166,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                 }
                 updateRow(rowContainer,languageId);
                 rowCount++;
-                println(Util.jsonFormat(rowContainer.toString()));
+//                println(Util.jsonFormat(rowContainer.toString()));
             }
             inp.close();
         } catch (FileNotFoundException e) {
