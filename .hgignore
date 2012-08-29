@@ -11,6 +11,7 @@ target/
 Main.java
 SimpleTest.java
 # idea files
+src/main/java/com/alcatel_lucent/dms/resources
 .idea/
 
 #gradle files
