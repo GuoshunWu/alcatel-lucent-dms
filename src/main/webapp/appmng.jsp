@@ -78,63 +78,66 @@
                 accessKey:'I', // Alt-Shift-I in FF/IE
                 resizeToWidth:true
             });
-
-            //load init treeData from this url
-//            var url= 'json/tree.json';
-
-            var url = 'rest/products';
-            url += '?nocache=' + new Date().getTime();
-
-            $.getJSON(url, {}, function (data, textStatus, jqXHR) {
-                //data is the tree initialize data from server
-                //appTree
-                $('#appTree').jstree({
-                    json_data:{
-                        data:data
-                    },
-                    plugins:[ "themes", "json_data", "ui", "core"]
-                })
-                    // select node fires
-                        .bind("select_node.jstree", function (event, data) {
-                            var text = $.jstree._reference("#appTree").get_text(data.rslt.obj);
-                            var id = data.rslt.obj.attr("id");
-                            alert("{'" + text + "':" + id + "}");
-                        });
-            });
-
-            $('#newProductDialog').dialog({
-                autoOpen:false,
-                height:150,
-                width:400,
-                buttons:{
-                    'OK':function () {
-                        url = 'app/create-product';
-                        var productName = {'name':$('#productName').val()}
-                        $.post(url, productName, function (data, textStatus, jqXHR) {
-                            if (data.status != 0) {
-                                alert(data.message);
-                                return;
-                            }
-                            //create success.
-                            // $("#appTree").jstree("create_node", -1, "last", {data: productName.name,attr:{id:data.id}});
-                            $.jstree._reference("#appTree").create_node(-1, "last", {data:productName.name, attr:{id:data.id}});
-                        });
-
-                        $(this).dialog("close");
-                    },
-                    'Cancel':function () {
-                        $(this).dialog("close");
-                    }
-                },
-                close:function () {
-                    //alert('Are you sure?');
-                }
-            });
-
-            $("#createProduct").button()
-                    .click(function () {
-                        $("#newProductDialog").dialog("open");
-                    });
+//
+//            //load init treeData from this url
+////            var url= 'json/tree.json';
+//
+//            var url = 'rest/products';
+//            url+='?nocache='+new Date().getTime();
+//
+//            $.getJSON(url, {}, function (data, textStatus, jqXHR) {
+//                //data is the tree initialize data from server
+//                //appTree
+//                $('#appTree').jstree({
+//                    json_data:{
+//                        data:data
+//                    },
+//                    plugins:[ "themes", "json_data", "ui", "core"]
+//                })
+//                        .bind("loaded.jstree", function (event, data) {
+////                            alert("tree loaded.");
+//                        })
+//                    // select node fires
+//                        .bind("select_node.jstree", function (event, data) {
+//                            var text=$.jstree._reference("#appTree").get_text(data.rslt.obj);
+//                            var id=data.rslt.obj.attr("id");
+//                            alert("{'"+text+"':"+id+"}");
+//                        });
+//            });
+//
+//            $('#newProductDialog').dialog({
+//                autoOpen:false,
+//                height:150,
+//                width:400,
+//                buttons:{
+//                    'OK':function () {
+//                        url = 'app/create-product';
+//                        var productName = {'name':$('#productName').val()}
+//                        $.post(url, productName, function (data, textStatus, jqXHR) {
+//                            if(data.status!=0){
+//                                alert(data.message);
+//                                return;
+//                            }
+//                            //create success.
+//                           // $("#appTree").jstree("create_node", -1, "last", {data: productName.name,attr:{id:data.id}});
+//                            $.jstree._reference("#appTree").create_node(-1,"last",{data:productName.name,attr:{id:data.id}});
+//                        });
+//
+//                        $(this).dialog("close");
+//                    },
+//                    'Cancel':function () {
+//                        $(this).dialog("close");
+//                    }
+//                },
+//                close:function () {
+//                    //alert('Are you sure?');
+//                }
+//            });
+//
+//            $("#createProduct").button()
+//                    .click(function () {
+//                        $("#newProductDialog").dialog("open");
+//                    });
         });
     </script>
 </head>
@@ -144,7 +147,7 @@
 </div>
 
 <div id="splitterContainer">
-    <div id="leftPane" style="padding-top: 15px">
+    <div id="leftPane" style="padding-top: 15px;">
         <table align="center" border="0">
             <tr>
                 <td>
@@ -156,18 +159,18 @@
             </tr>
             <tr>
                 <td>
-                    <div id="newProductDialog" title="New product">
-                        <form>
-                            <table align='center' border="0" width="100%">
-                                <fieldset>
-                                    <tr>
-                                        <td width='30%'>Product name</td>
-                                        <td><input id="productName" value="" type="text" SIZE="40"></td>
-                                    </tr>
-                                </fieldset>
-                            </table>
-                        </form>
-                    </div>
+                    <%--<div id="newProductDialog" title="New product">--%>
+                        <%--<form>--%>
+                            <%--<table align='center' border="0" width="100%">--%>
+                                <%--<fieldset>--%>
+                                    <%--<tr>--%>
+                                        <%--<td width='30%'>Product name</td>--%>
+                                        <%--<td><input id="productName" value="" type="text" SIZE="40"></td>--%>
+                                    <%--</tr>--%>
+                                <%--</fieldset>--%>
+                            <%--</table>--%>
+                        <%--</form>--%>
+                    <%--</div>--%>
 
                     <button id="createProduct">New Product...</button>
                 </td>
@@ -175,7 +178,7 @@
         </table>
     </div>
     <!-- #leftPane -->
-    <div id="rightPane" style="padding-top: 15px">
+    <div id="rightPane" style="padding-top: 15px;">
         <table align="center">
             <tr>
                 <td align="center">

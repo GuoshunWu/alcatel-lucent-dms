@@ -18,6 +18,7 @@ public class BusinessException extends RuntimeException {
 	static public final int ACCESS_DENIED = 100;
 	static public final int INVALID_DCT_FILE = 200;
     static public final int INVALID_MDC_FILE = 211;
+    static public final int INVALID_EXCEL_FILE = 212;
 
     static public final int DUPLICATE_DCT_NAME = 201;
 	static public final int DCT_FILE_NOT_FOUND = 202;
@@ -31,8 +32,12 @@ public class BusinessException extends RuntimeException {
 	static public final int CHARSET_NOT_FOUND = 301;
 	static public final int APPLICATION_NOT_FOUND = 501;
 	static public final int DICTIONARY_NOT_FOUND = 502;
+    static public final int CONTEXT_NOT_FOUND = 503;
+    static public final int FILE_NOT_FOUND = 504;
+    public static final int TEXT_NOT_FOUND =505;
 
-	public BusinessException(int errorCode, Object... params) {
+
+    public BusinessException(int errorCode, Object... params) {
 		this.errorCode = errorCode;
 		this.parameters = params;
 	}
