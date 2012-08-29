@@ -72,4 +72,13 @@ public interface TextService {
 	 * @return map of persistent text objects indexed by reference.
 	 */
 	Map<String, Text> updateTranslations(Long ctxId, Collection<Text> texts);
+
+    /**
+     *  Receive the completed translation in a excel file.
+     *  Insert or update translation for a given  languageId in excel file,
+     *  which name is dictionary name.
+     *  @param fileName the file name to be updated
+     *  @param languageId language ID for insert or update Translation
+     */
+    int receiveTranslation(String fileName, Long languageId);
 }

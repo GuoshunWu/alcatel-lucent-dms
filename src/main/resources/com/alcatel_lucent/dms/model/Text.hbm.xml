@@ -17,6 +17,7 @@
 			length="1024" />
 		<property name="status" type="integer" column="STATUS" />
 		<many-to-one name="context" not-null="true" />
+        <!--<many-to-one name="context" column="CONTEXT_ID" not-null="true" />-->
 
 		<set name="translations" cascade="delete" inverse="true">
 			<key column="TEXT_ID" />
