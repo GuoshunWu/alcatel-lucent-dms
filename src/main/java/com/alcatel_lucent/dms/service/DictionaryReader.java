@@ -25,9 +25,8 @@ import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryLanguage;
 import com.alcatel_lucent.dms.model.Label;
+import com.alcatel_lucent.dms.model.LabelTranslation;
 import com.alcatel_lucent.dms.model.Language;
-import com.alcatel_lucent.dms.model.Text;
-import com.alcatel_lucent.dms.model.Translation;
 
 /**
  * @author Guoshun.Wu
@@ -290,13 +289,9 @@ public class DictionaryReader extends LineNumberReader {
                     .getKey()));
         }
         label.setReference(gae);
-        Text text = new Text();
-        text.setContext(context);
-        text.setReference(gae);
-        text.setStatus(0);
 
-        Collection<Translation> translations = new HashSet<Translation>();
-        Translation trans = null;
+        Collection<LabelTranslation> translations = new HashSet<LabelTranslation>();
+        LabelTranslation trans = null;
 
         for (Map.Entry<String, String> entry : entriesInLabel.entrySet()) {
 
@@ -304,8 +299,8 @@ public class DictionaryReader extends LineNumberReader {
                 continue;
             }
 
-            trans = new Translation();
-            trans.setText(text);
+            trans = new LabelTranslation();
+            trans.setLabel(label);
 
             DictionaryLanguage dl=dictionary.getDictLanguage(entry.getKey());
             Language language= null==dl ? null:dl.getLanguage();
@@ -319,13 +314,11 @@ public class DictionaryReader extends LineNumberReader {
 //            }
 
             trans.setLanguage(language);
-            trans.setTranslation(entry.getValue());
+            trans.setOrigTranslation(entry.getValue());
 
             translations.add(trans);
         }
-        text.setTranslations(translations);
-
-        label.setText(text);
+        label.setOrigTranslations(translations);
 
         String maxLenStr = entriesInLabel.get("CHK");
         if (null != maxLenStr) {

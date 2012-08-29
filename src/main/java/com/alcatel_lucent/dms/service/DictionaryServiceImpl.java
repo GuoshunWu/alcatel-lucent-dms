@@ -10,6 +10,7 @@ import java.util.zip.ZipFile;
 
 import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
+
 import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
+import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.util.Util;
 
@@ -66,8 +68,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         super();
     }
 
-    public Dictionary deliverDCT(String dictionaryName, String version, String path,
-                                 InputStream dctInputStream, Long appId, String encoding,
+    public Dictionary deliverDCT(String dictionaryName, String version, String path,  
+                                 InputStream dctInputStream, Long appId, int mode, String encoding,
                                  String[] langCodes, Map<String, String> langCharset,
                                  Collection<BusinessWarning> warnings) throws BusinessException,
             IOException {
@@ -83,7 +85,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 + " is about to import to database");
 
         before = System.currentTimeMillis();
-        dict = importDCT(dict, version,langCodes, langCharset, warnings);
+        dict = importDCT(dict, version, mode, langCodes, langCharset, warnings);
         after = System.currentTimeMillis();
         log.info("************importDCT take " + (after - before)
                 + " milliseconds of time.**************");
@@ -93,7 +95,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
 
     public Dictionary deliverMDC(String dictionaryName, String version, String path,
-                                 InputStream dctInputStream, Long appId, String[] langCodes, Map<String, String> langCharset,
+                                 InputStream dctInputStream, Long appId, int mode, String[] langCodes, Map<String, String> langCharset,
                                  Collection<BusinessWarning> warnings) throws BusinessException,
             IOException {
 
@@ -108,7 +110,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 + " is about to import to database");
 
         before = System.currentTimeMillis();
-        dict = importDCT(dict, version,  langCodes, langCharset, warnings);
+        dict = importDCT(dict, version, mode, langCodes, langCharset, warnings);
         after = System.currentTimeMillis();
         log.info("************importMDC take " + (after - before)
                 + " milliseconds of time.**************");
@@ -117,8 +119,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     }
 
     @Override
-    public Dictionary deliverDCT(String dictionaryName, String version,String path,
-                                 Long appId, String encoding, String[] langCodes,
+    public Dictionary deliverDCT(String dictionaryName, String version, String path,
+                                 Long appId, int mode, String encoding, String[] langCodes,
                                  Map<String, String> langCharset,
                                  Collection<BusinessWarning> warnings) throws BusinessException {
         InputStream is;
@@ -131,7 +133,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 is.close();
                 is = new FileInputStream(path);
             }
-            return deliverDCT(dictionaryName, version, path, is, appId, encoding,
+            return deliverDCT(dictionaryName, version, path, is, appId, mode, encoding,
                     langCodes, langCharset, warnings);
         } catch (IOException e) {
             throw new SystemError(e.getMessage());
@@ -147,7 +149,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
      * @param file
      */
     public Collection<Dictionary> deliverDCTFiles(String rootDir, File file,
-                                                  Long appId, String encoding, String[] langCodes,
+                                                  Long appId, int mode, String encoding, String[] langCodes,
                                                   Map<String, String> langCharset,
                                                   Collection<BusinessWarning> warnings) throws BusinessException {
 
@@ -166,7 +168,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             });
             for (File dctFile : dctFileOrDirs) {
                 Collection<Dictionary> subDeliveredDicts = deliverDCTFiles(
-                        rootDir, dctFile, appId, encoding, langCodes,
+                        rootDir, dctFile, appId, mode, encoding, langCodes,
                         langCharset, warnings);
                 deliveredDicts.addAll(subDeliveredDicts);
             }
@@ -176,7 +178,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         if (Util.isZipFile(file)) {
             try {
                 Collection<Dictionary> zipDeliveredDicts = deliverZipDCTFile(
-                        rootDir, new ZipFile(file), appId, encoding, langCodes,
+                        rootDir, new ZipFile(file), appId, mode, encoding, langCodes,
                         langCharset, warnings);
                 deliveredDicts.addAll(zipDeliveredDicts);
             } catch (IOException e) {
@@ -199,7 +201,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
             //TODO: version info need to be reconfigure in the future
             String version="1.0";
-            dict = deliverDCT(dictName,version, dictPath, appId, encoding, langCodes,
+            dict = deliverDCT(dictName,version, dictPath, appId, mode, encoding, langCodes,
                     langCharset, warnings);
             if (!warnings.isEmpty()) {
                 join(warnings, '\n').replace("\"", "\"\"");
@@ -231,7 +233,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
      * @param rootDir
      * @param file
      */
-    public Collection<Dictionary> deliverMDCFiles(String rootDir, File file, Long appId, String[] langCodes,
+    public Collection<Dictionary> deliverMDCFiles(String rootDir, File file, Long appId, int mode, String[] langCodes,
                                                   Map<String, String> langCharset,
                                                   Collection<BusinessWarning> warnings) throws BusinessException {
 
@@ -249,7 +251,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             });
             for (File dctFile : dctFileOrDirs) {
                 Collection<Dictionary> subDeliveredDicts = deliverMDCFiles(
-                        rootDir, dctFile, appId, langCodes,
+                        rootDir, dctFile, appId, mode, langCodes,
                         langCharset, warnings);
                 deliveredDicts.addAll(subDeliveredDicts);
             }
@@ -269,7 +271,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             warnings = new ArrayList<BusinessWarning>();
             // TODO: the version info need to be reconfigure 
             String version="1.0";
-            dict = deliverMDC(dictName, version,dictPath, appId, langCodes, langCharset, warnings);
+            dict = deliverMDC(dictName, version,dictPath, appId, mode, langCodes, langCharset, warnings);
             if (!warnings.isEmpty()) {
                 join(warnings, '\n').replace("\"", "\"\"");
                 String forCSV = warnings.toString().replace("\"", "\"\"");
@@ -291,11 +293,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         return deliveredDicts;
     }
 
-    private Dictionary deliverMDC(String dictName,String version, String dictPath, Long appId, String[] langCodes, Map<String, String> langCharset, Collection<BusinessWarning> warnings) {
+    private Dictionary deliverMDC(String dictName,String version, String dictPath, Long appId, int mode, String[] langCodes, Map<String, String> langCharset, Collection<BusinessWarning> warnings) {
         Dictionary dict = null;
         try {
             FileInputStream is = new FileInputStream(dictPath);
-            dict = deliverMDC(dictName, version, dictPath, is, appId, langCodes, langCharset, warnings);
+            dict = deliverMDC(dictName, version, dictPath, is, appId, mode, langCodes, langCharset, warnings);
             is.close();
         } catch (IOException e) {
             throw new SystemError(e.getMessage());
@@ -309,7 +311,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
      */
     @SuppressWarnings("unchecked")
 	private Collection<Dictionary> deliverZipDCTFile(String rootDir,
-                                                     ZipFile file, Long appId, String encoding, String[] langCodes,
+                                                     ZipFile file, Long appId, int mode, String encoding, String[] langCodes,
                                                      Map<String, String> langCharset,
                                                      Collection<BusinessWarning> warnings) throws BusinessException {
 
@@ -337,7 +339,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     //TODO: version info need to be reconfigured
                     String version="1.0";
                     dict = deliverDCT(dictionaryName,version, path, is, appId,
-                            encoding, langCodes, langCharset, warnings);
+                            mode, encoding, langCodes, langCharset, warnings);
                 } catch (BusinessException e) {
                     log.error(e);
                 }
@@ -708,7 +710,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     }
 
     @Override
-    public Dictionary importDCT(Dictionary dict, String version, String[] langCodes,
+    public Dictionary importDCT(Dictionary dict, String version, int mode, String[] langCodes,
                                 Map<String, String> langCharset,
                                 Collection<BusinessWarning> warnings) {
         log.info("Start importing DCT");
@@ -747,12 +749,16 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             uniLangCharset.put(getUnifiedLangCode(langCode), langCharset.get(langCode));
         }
         langCharset = uniLangCharset;
+        Dictionary lastDict = null;
 
 
 
         // Associate base Dictionary
         DictionaryBase baseDBDict = (DictionaryBase) getDao().retrieveOne("from DictionaryBase where name=:name", JSONObject.fromObject("{'name':'" + dict.getName() + "'}"));
         if(null==baseDBDict){
+        	if (mode == Constants.TRANSLATION_MODE) {
+        		throw new BusinessException(BusinessException.DICTIONARY_NOT_FOUND, dict.getName());
+        	}
             baseDBDict = new DictionaryBase();
             baseDBDict.setName(dict.getName());
             baseDBDict.setFormat(dict.getFormat());
@@ -761,10 +767,12 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             baseDBDict.setApplicationBase(dict.getBase().getApplicationBase());
             baseDBDict=(DictionaryBase)getDao().create(baseDBDict);
         } else{
-            baseDBDict.setName(dict.getName());
-            baseDBDict.setFormat(dict.getFormat());
-            baseDBDict.setEncoding(dict.getEncoding());
-            baseDBDict.setPath(dict.getPath());
+            if (mode == Constants.DELIVERY_MODE) {
+                baseDBDict.setName(dict.getName());
+                baseDBDict.setFormat(dict.getFormat());
+                baseDBDict.setEncoding(dict.getEncoding());
+                baseDBDict.setPath(dict.getPath());
+            }
         }
 
 
@@ -775,6 +783,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                         version,dict.getName())));
         // create dictionary if not exists
         if (null == dbDict) {
+        	if (mode == Constants.TRANSLATION_MODE) {
+        		throw new BusinessException(BusinessException.DICTIONARY_NOT_FOUND, dict.getName() + " " + version);
+        	}
             // create dictionary
             log.info("Dictionary " + dict.getName()
                     + " not exist in database, create new one in database...");
@@ -785,6 +796,10 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     dict.getApplication().getId()));
             dbDict.setLocked(false);
             dbDict = (Dictionary) getDao().create(dbDict);
+        }
+        
+        if (mode == Constants.DELIVERY_MODE) {
+        	lastDict = getLatestDictionary(baseDBDict.getId(), dbDict.getId());
         }
 
         // update dictionary languages
@@ -802,7 +817,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             }
         }
 
-        // prepare textMap, labelMap by context
+        // prepare data for creation: textMap, labelMap indexed by context
         log.info("Prepare data to import");
         Map<String, Collection<Text>> textMap = new HashMap<String, Collection<Text>>();
         Map<String, Collection<Label>> labelMap = new HashMap<String, Collection<Label>>();
@@ -813,7 +828,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 //        }
         for (Label label : dict.getLabels()) {
             String contextName = label.getContext().getName();
-            Text text = label.getText();
+            Text text = new Text();
+            text.setReference(label.getReference());
 
             Collection<Text> texts = textMap.get(contextName);
             if (texts == null) {
@@ -831,9 +847,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
             // filter by langCodes parameter
             if (langCodeList != null) {
-                for (Iterator<Translation> iterator = text.getTranslations()
+                for (Iterator<LabelTranslation> iterator = label.getOrigTranslations()
                         .iterator(); iterator.hasNext(); ) {
-                    Translation trans = iterator.next();
+                    LabelTranslation trans = iterator.next();
                     String langCode = langCodeMap.get(trans.getLanguage()
                             .getId());
                     String uniLangCode = getUnifiedLangCode(langCode);
@@ -842,10 +858,16 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     }
                 }
             }
-
-            String memo = null;
+            
+            Label lastLabel = null;
+            if (lastDict != null) {
+            	lastLabel = lastDict.getLabel(label.getKey());
+            }
+            String labelWarnings = null;
+            // for each translation
             // convert charset of translation strings
-            for (Translation trans : text.getTranslations()) {
+            // determine translation behaviors
+            for (LabelTranslation trans : label.getOrigTranslations()) {
                 String langCode = langCodeMap.get(trans.getLanguage().getId());
                 String charsetName = langCharset.get(getUnifiedLangCode(langCode));
                 if (null == charsetName) {
@@ -856,46 +878,70 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 try {
                     boolean invalidText = false;
                     if (!dict.getEncoding().equals(charsetName)) {
-                        byte[] source = trans.getTranslation().getBytes(dict.getEncoding());
+                        byte[] source = trans.getOrigTranslation().getBytes(dict.getEncoding());
                         String encodedTranslation = new String(source, charsetName);
                         byte[] target = encodedTranslation.getBytes(charsetName);
                         if (!Arrays.equals(source, target)) {
                             invalidText = true;
-                            trans.setTranslation(text.getReference());
+                            trans.setOrigTranslation(text.getReference());
                             log.warn("Invalid encoding at label " + label.getKey() + " of dict " + dict.getPath());
                         } else {
-                            trans.setTranslation(encodedTranslation);
+                            trans.setOrigTranslation(encodedTranslation);
                         }
                     }
 
-                    memo = "";
+                    labelWarnings = "";
                     // check charset
                     if (invalidText || !trans.isValidText()) {
                         warnings.add(new BusinessWarning(
                                 BusinessWarning.INVALID_TEXT,
-                                trans.getTranslation(), charsetName, langCode,
+                                trans.getOrigTranslation(), charsetName, langCode,
                                 label.getKey()));
-                        memo += BusinessWarning.INVALID_TEXT;
+                        labelWarnings += BusinessWarning.INVALID_TEXT;
                     }
 
                     // check length
-                    if (!label.checkLength(trans.getTranslation())) {
+                    if (!label.checkLength(trans.getOrigTranslation())) {
                         warnings.add(new BusinessWarning(
                                 BusinessWarning.EXCEED_MAX_LENGTH, langCode,
                                 label.getKey()));
-                        if (!memo.isEmpty()) {
-                            memo += ";";
+                        if (!labelWarnings.isEmpty()) {
+                        	labelWarnings += ";";
                         }
-                        memo += BusinessWarning.EXCEED_MAX_LENGTH;
+                        labelWarnings += BusinessWarning.EXCEED_MAX_LENGTH;
                     }
-                    trans.setMemo(memo);
+                    trans.setWarnings(labelWarnings);
                 } catch (UnsupportedEncodingException e) {
                     nonBreakExceptions.addNestedException(new BusinessException(
                             BusinessException.CHARSET_NOT_FOUND, charsetName));
                 }
+                
+                // determine if the translation should take value from context dictionary
+                trans.setNeedTranslation(true);
+                if (lastLabel != null) {
+                	// get the original translation in latest version
+                	LabelTranslation lastTranslation = lastLabel.getOrigTranslation(trans.getLanguage().getId());
+                	if (lastTranslation != null && 
+                			!lastTranslation.getOrigTranslation().equals(trans.getOrigTranslation()) &&
+                			!trans.getOrigTranslation().equals(label.getReference())) {
+                		// translation changed means the label was translated on developer side
+                		trans.setNeedTranslation(false);
+                	}
+                }
+                
+                Translation t = new Translation();
+                t.setText(text);
+                t.setTranslation(trans.getOrigTranslation());
+                t.setLanguage(trans.getLanguage());
+                if (label.getReference().equals(trans.getOrigTranslation())) {
+                	t.setStatus(Translation.STATUS_UNTRANSLATED);
+                } else {
+                	t.setStatus(Translation.STATUS_TRANSLATED);
+                }
+                text.addTranslation(t);
             } //for
         }
-
+        
         // for each context, insert or update label/text/translation data
         for (String contextName : textMap.keySet()) {
             log.info("Importing data into context " + contextName);
@@ -906,13 +952,19 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 context = (Context) dao.create(context);
             }
             Collection<Text> texts = textMap.get(contextName);
+            Collection<Label> labels = labelMap.get(contextName);
             Map<String, Text> dbTextMap = textService.updateTranslations(
                     context.getId(), texts);
-            Collection<Label> labels = labelMap.get(contextName);
+            
+            // in TRANSLATION_MODE, no change to label
+            if (mode == Constants.TRANSLATION_MODE) {
+            	continue;
+            }
             int sortNo = 1;
             for (Label label : labels) {
                 // create or update label
                 Label dbLabel = dbDict.getLabel(label.getKey());
+                boolean newLabel = true;
                 if (dbLabel == null) {
                     label.setDictionary(dbDict);
                     label.setContext(context);
@@ -920,6 +972,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     label.setSortNo(sortNo++);
                     dbLabel = (Label) dao.create(label, false);
                 } else {
+                    newLabel = false;
                     dbLabel.setContext(context);
                     dbLabel.setText(dbTextMap.get(label.getReference()));
                     dbLabel.setKey(label.getKey());
@@ -929,6 +982,23 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     dbLabel.setAnnotation1(label.getAnnotation1());
                     dbLabel.setAnnotation2(label.getAnnotation2());
                     dbLabel.setSortNo(sortNo++);
+                }
+                
+                // create or update LabelTranslation
+                for (LabelTranslation trans : label.getOrigTranslations()) {
+                	LabelTranslation dbLabelTrans = null;
+                	if (!newLabel) {
+                		dbLabelTrans = dbLabel.getOrigTranslation(trans.getLanguage().getId());
+                	}
+                	if (dbLabelTrans == null) {
+                		trans.setLabel(dbLabel);
+                		trans.setLanguage((Language) dao.retrieve(Language.class, trans.getLanguage().getId()));
+                		dbLabelTrans = (LabelTranslation) dao.create(trans, false);
+                	} else {
+                		dbLabelTrans.setOrigTranslation(trans.getOrigTranslation());
+                		dbLabelTrans.setWarnings(trans.getWarnings());
+                		dbLabelTrans.setNeedTranslation(trans.isNeedTranslation());
+                	}
                 }
             }
         }
@@ -983,5 +1053,17 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             throw new BusinessException(BusinessException.INVALID_MDC_FILE, path);
         }
         return dict;
+    }
+    
+    public Dictionary getLatestDictionary(Long dictionaryBaseId, Long beforeDictionaryId) {
+    	String hql = "from Dictionary where base.id=:baseId";
+    	Map param = new HashMap();
+    	param.put("baseId", dictionaryBaseId);
+    	if (beforeDictionaryId != null) {
+    		hql += " and id<:beforeId";
+    		param.put("beforeId", beforeDictionaryId);
+    	}
+    	hql += " order by id desc";
+    	return (Dictionary) dao.retrieveOne(hql, param);
     }
 }

@@ -1,5 +1,6 @@
 package com.alcatel_lucent.dms.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class Text extends BaseEntity {
@@ -65,6 +66,13 @@ public class Text extends BaseEntity {
 			}
 		}
 		return null;
+	}
+
+	public void addTranslation(Translation trans) {
+		if (translations == null) {
+			translations = new ArrayList<Translation>();
+		}
+		translations.add(trans);
 	}
 
 }

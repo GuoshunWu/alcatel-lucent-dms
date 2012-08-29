@@ -1,6 +1,7 @@
 package com.alcatel_lucent.dms.model;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Collection;
 
 import com.alcatel_lucent.dms.SystemError;
 
@@ -23,6 +24,7 @@ public class Label extends BaseEntity {
 	private Text text;
     private String annotation1;
     private String annotation2;
+    private Collection<LabelTranslation> origTranslations;
 
 
     public String getAnnotation2() {
@@ -168,4 +170,22 @@ public class Label extends BaseEntity {
 		return sortNo;
 	}
 
+	public void setOrigTranslations(Collection<LabelTranslation> origTranslations) {
+		this.origTranslations = origTranslations;
+	}
+
+	public Collection<LabelTranslation> getOrigTranslations() {
+		return origTranslations;
+	}
+
+	public LabelTranslation getOrigTranslation(Long languageId) {
+		if (origTranslations != null) {
+			for (LabelTranslation trans : origTranslations) {
+				if (trans.getLanguage().getId().equals(languageId)) {
+					return trans;
+				}
+			}
+		}
+		return null;
+	}
 }

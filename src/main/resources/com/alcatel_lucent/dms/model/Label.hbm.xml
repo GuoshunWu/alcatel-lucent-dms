@@ -27,6 +27,10 @@
 			not-null="true" />
 		<many-to-one name="text" column="TEXT_ID" class="Text"
 			not-null="true" />
+		<set name="origTranslations" cascade="delete" inverse="true">
+			<key column="LABEL_ID" />
+			<one-to-many class="LabelTranslation" />
+		</set>
 
 	</class>
 

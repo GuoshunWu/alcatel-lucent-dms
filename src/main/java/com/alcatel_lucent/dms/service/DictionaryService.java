@@ -13,8 +13,11 @@ public interface DictionaryService {
     /**
      * Deliver a DCT dictionary
      *
-     * @param filename    DCT filename with full path
+     * @param dictionaryName    dictionary name
+     * @param version     dictionary version
+     * @param filename	  DCT filename with full path
      * @param appId       application id
+     * @param mode		  importing mode
      * @param encoding    encoding of source file, null if auto-detected
      *                    (ANSI/UTF8/UTF16)
      * @param langCodes   Alcatel code of languages to import, null if all languages
@@ -25,7 +28,7 @@ public interface DictionaryService {
      * @throws com.alcatel_lucent.dms.BusinessException
      */
     Dictionary deliverDCT(String dictionaryName,String version, String filename, Long appId,
-                          String encoding, String[] langCodes,
+    					  int mode, String encoding, String[] langCodes,
                           Map<String, String> langCharset,
                           Collection<BusinessWarning> warnings) throws BusinessException;
 
@@ -48,13 +51,32 @@ public interface DictionaryService {
      * Import a DCT dictionary
      *
      * @param dict        transient Dictionary object
+     * @param version	  dictionary version
+     * @param mode		  importing mode
+     * DELIVERY_MODE: in case application owner delivers a dictionary file
+     *   overwrite label attributes
+     *   for new labels or changed reference texts:
+     *       the translation will use context dictionary
+     *       set translation status to UNTRANSLATED if reference text = translation
+     *       or TRANSLATED if reference text <> translation 
+     *   for existing reference texts:
+     *       if translation is not changed since last version,
+     *           copy translation from last version
+     *   	 if translation has been changed since last version,
+     *           keep the translation in delivered file, the label will not use context dictionary
+     *      
+     * TRANSLATION_MODE: in case translation manager imports a translated dictionary
+     *   only update translations in context dictionary
+     *   no update to existing label attributes
+     *   set translation status to UNTRANSLATED if reference text = translation
+     *   or TRANSLATED if reference text <> translation
      * @param langCodes   Alcatel code of languages to import, null if all languages
      *                    should be imported
      * @param langCharset mapping of language code and its source charset name
      * @param warnings    a collection to hold output warnings
      * @return persistent Dictionary object created
      */
-    Dictionary importDCT(Dictionary dict, String version,String[] langCodes,
+    Dictionary importDCT(Dictionary dict, String version, int mode, String[] langCodes,
                          Map<String, String> langCharset,
                          Collection<BusinessWarning> warnings);
 
@@ -115,12 +137,20 @@ public interface DictionaryService {
      *
      * @param
      */
-    Collection<Dictionary> deliverDCTFiles(String rootDir, File file, Long appId,
+    Collection<Dictionary> deliverDCTFiles(String rootDir, File file, Long appId, int mode,
                                            String encoding, String[] langCodes,
                                            Map<String, String> langCharset,
                                            Collection<BusinessWarning> warnings) throws BusinessException;
 
-    Collection<Dictionary> deliverMDCFiles(String rootDir, File file, Long appId, String[] langCodes,
+    Collection<Dictionary> deliverMDCFiles(String rootDir, File file, Long appId, int mode, String[] langCodes,
                                            Map<String, String> langCharset,
                                            Collection<BusinessWarning> warnings) throws BusinessException;
+    
+    /**
+     * Get the latest version of a dictionary
+     * @param dictionaryBaseId dictionaryBase id
+     * @param beforeDictionaryId returns latest version before specified dictionary if specified
+     * @return Dictionary object
+     */
+    Dictionary getLatestDictionary(Long dictionaryBaseId, Long beforeDictionaryId);
 }

@@ -10,7 +10,6 @@ target/
 *.bak
 Main.java
 SimpleTest.java
-resources/
 # idea files
 .idea/
 

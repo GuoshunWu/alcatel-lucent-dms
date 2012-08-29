@@ -98,6 +98,7 @@
 
                 <value>com/alcatel_lucent/dms/model/DictionaryLanguage.hbm.xml</value>
                 <value>com/alcatel_lucent/dms/model/Label.hbm.xml</value>
+                <value>com/alcatel_lucent/dms/model/LabelTranslation.hbm.xml</value>
                 <value>com/alcatel_lucent/dms/model/Text.hbm.xml</value>
                 <value>com/alcatel_lucent/dms/model/Context.hbm.xml</value>
                 <value>com/alcatel_lucent/dms/model/Charset.hbm.xml</value>

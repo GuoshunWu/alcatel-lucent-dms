@@ -28,7 +28,7 @@ import static org.junit.Assert.*
  *
  */
 
-@org.junit.Ignore
+//@org.junit.Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = ["/spring.xml"])
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
@@ -96,7 +96,7 @@ class GDictionaryServiceImplTest {
         Collection<BusinessWarning> warnings = []
 
         /***************************************** Test for deliver DCT ****************************************/
-        Dictionary dbDict = ds.deliverDCT dictName, version, testFilePath, appId, encoding, langCodes, langCharset, warnings
+        Dictionary dbDict = ds.deliverDCT dictName, version, testFilePath, appId, Constants.DELIVERY_MODE, encoding, langCodes, langCharset, warnings
 
         // dictionary check
         dbDict = dao.retrieveOne("from Dictionary where version=:version and base.name=:name", ['name': dictName,'version':version], ["labels", "dictLanguages"] as String[]) as Dictionary
@@ -192,7 +192,7 @@ class GDictionaryServiceImplTest {
         // re deliver the updated DCT file
         langCharset.CH1 = 'Big5'
 
-        dbDict = ds.deliverDCT dictName, version, testFilePath, appId, encoding, langCodes, langCharset, warnings
+        dbDict = ds.deliverDCT dictName, version, testFilePath, appId, Constants.DELIVERY_MODE, encoding, langCodes, langCharset, warnings
         // check result
 
         dbDict = dao.retrieveOne("from Dictionary where version=:version and base.name=:name", ['name': dictName,'version':version], ["labels", "dictLanguages",] as String[]) as Dictionary
@@ -262,11 +262,13 @@ class GDictionaryServiceImplTest {
         Long appId = 1L
         String encoding = null
 
+		int mode = Constants.DELIVERY_MODE
         //all language code and package def
-        HashMap<String, List<String>> langCodeForPkg = [
+        HashMap<String,List<String>> langCodeForPkg = [
+            	'EN-UK': null,
 //                'ZH-CN': ['zh', 'ZH0', 'CH0', 'zh-CN'],
 //                'ZH-TW': ['zh-TW', 'CH1', 'TW0', 'zh-HK', 'HK0'],
-                'AR': ['AR0', 'ar'],
+//                'AR': ['AR0', 'ar'],
 //                'CA': ['ES1', 'ca-ES', 'ca'],
 //                'CS': ['cs', 'cs-CZ', 'CS0'],
 //                'DA': ['DA0', 'da', 'da-DK'],
@@ -275,7 +277,6 @@ class GDictionaryServiceImplTest {
 //                'DE-CH': ['DE2', 'de-CH'],
 //                'EL': ['el-GR', 'GR0', 'el'],
 //                'EN-AU': ['AS0', 'en-AU'],
-//                'EN-UK': null,
 //                'EN-US': ['US0', 'en-US'],
 //                'ES': ['ES0', 'es-ES', 'es'],
 //                'ET': ['et-EE', 'et', 'EE0'],
@@ -313,11 +314,12 @@ class GDictionaryServiceImplTest {
             log.debug "rootDir=$rootDir"
             log.debug "langCodes=$langCodes"
 
-            testFilePath = "$rootDir/6.6.000.107.a/msaccess/msacces/src/alarm/Msa.dic"
+            testFilePath = "$rootDir/6.6.000.107.a/data_access_service/dataaccess/WEB-INF/classes/com/alcatel/dataaccess/global/dico/DtaXmlSchema.dct"
 
-//            changeLoggerFile subDir,"SUCCESS",logDictDeliverSuccess
-//            changeLoggerFile subDir,"WARNING",logDictDeliverWarning
-//            changeLoggerFile subDir,"FAIL",   logDictDeliverFail
+
+            changeLoggerFile subDir,"SUCCESS",logDictDeliverSuccess
+            changeLoggerFile subDir,"WARNING",logDictDeliverWarning
+            changeLoggerFile subDir,"FAIL",   logDictDeliverFail
 
             Collection<BusinessWarning> warnings = []
 
@@ -328,7 +330,7 @@ class GDictionaryServiceImplTest {
             logDictDeliverWarning.info header
 
             long before = System.currentTimeMillis()
-            Collection<Dictionary> dictionaries = ds.deliverDCTFiles rootDir, new File(testFilePath), appId, encoding, langCodes as String[], null, warnings
+            Collection<Dictionary> dictionaries = ds.deliverDCTFiles rootDir, new File(testFilePath), appId, mode, encoding, langCodes as String[], null, warnings
             Map<String, String> langCharset = [:]
             ['ca-ES', 'cs-CZ', 'da-DK', 'de-AT', 'de-CH', 'de-DE', 'el-GR', 'en-AU', 'en-CA', 'en-CN',
                     'en-GB', 'en-GR', 'en-MA', 'en-RU', 'en-TW', 'en-US', 'es-AR', 'es-ES', 'es-MX', 'et-EE',
@@ -337,7 +339,7 @@ class GDictionaryServiceImplTest {
                     'ru-RU', 'sk-SK', 'sl-SI', 'sr-CS', 'sv-SE', 'tr-TR', 'zh-CN', 'zh-TW'].each {code ->
                 langCharset.put(code, 'UTF-8')
             }
-//            Collection<Dictionary> dictionaries = ds.deliverMDCFiles rootDir,new File(testFilePath), appId, langCodes as String[], langCharset, warnings
+//            Collection<Dictionary> dictionaries = ds.deliverMDCFiles rootDir,new File(testFilePath), appId, mode, langCodes as String[], langCharset, warnings
 
             long after = System.currentTimeMillis()
             log.info "Using a total of ${after - before} millisecond to perform delivering."
@@ -354,10 +356,10 @@ class GDictionaryServiceImplTest {
         }
     }
 
-//    @Test
-    void testGenerateDctFiles() {
+    @Test
+    void testGenerateDctFiles(){
         Collection<Long> dictionaryIds = dao.retrieve('select id from Dictionary') as List<Long>
-        ds.generateDCTFiles("D:/tmp/ALL", dictionaryIds, null)
+        ds.generateDCTFiles("D:/temp/ICSR6.6_merge2",dictionaryIds, null)
     }
 
     @Test

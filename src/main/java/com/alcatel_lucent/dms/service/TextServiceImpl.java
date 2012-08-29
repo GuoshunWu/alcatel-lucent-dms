@@ -120,10 +120,10 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                 }
                 Translation dbTrans = dbText.getTranslation(trans.getLanguage().getId());
                 if (dbTrans == null) {
-                    dbTrans = addTranslation(dbText, trans.getLanguage().getId(), trans.getTranslation(), trans.getMemo());
+					dbTrans = addTranslation(dbText, trans);
                 } else {
                     dbTrans.setTranslation(trans.getTranslation());
-                    dbTrans.setMemo(trans.getMemo());
+					dbTrans.setStatus(trans.getStatus());
                 }
                 langSet.add(trans.getLanguage().getId());
             }
@@ -223,21 +223,21 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                 maxLengths[i]=Integer.parseInt(maxLensString[i]);
             }
         }
-        String memo="";
+        String warnings="";
         if(!trans.isValidText()){
-            memo += BusinessWarning.INVALID_TEXT;
+        	warnings += BusinessWarning.INVALID_TEXT;
         }
         String[] transStrings=transString.split("\n");
         for(int i=0;i<transStrings.length; ++i){
             if(transStrings[i].length()>maxLengths[i]){
-                if(!memo.isEmpty()){
-                    memo+=";";
+                if(!warnings.isEmpty()){
+                	warnings+=";";
                 }
-                memo+=BusinessWarning.EXCEED_MAX_LENGTH;
+                warnings+=BusinessWarning.EXCEED_MAX_LENGTH;
             }
         }
 
-        trans.setMemo(memo);
+        trans.setWarnings(warnings);
         
     }
 
@@ -247,15 +247,12 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
      * @param text            persistent Text object
      * @param languageId      language id
      * @param translationText translation text
-     * @param memo            translation memo
+     * @param memo translation memo
      * @return persistent Translation object
      */
-    private Translation addTranslation(Text text, Long languageId, String translationText, String memo) {
-        Translation trans = new Translation();
+	private Translation addTranslation(Text text, Translation trans) {
         trans.setText(text);
-        trans.setLanguage((Language) dao.retrieve(Language.class, languageId));
-        trans.setTranslation(translationText);
-        trans.setMemo(memo);
+		trans.setLanguage((Language) dao.retrieve(Language.class, trans.getLanguage().getId()));
         return (Translation) dao.create(trans, false);
     }
 
