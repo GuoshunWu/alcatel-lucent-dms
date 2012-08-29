@@ -1,0 +1,43 @@
+# Remove some patch or backup files from SCM
+syntax:glob
+*~
+*.orig
+*.rej
+
+# Java
+*.class
+target/
+*.bak
+Main.java
+SimpleTest.java
+# idea files
+.idea/
+
+#gradle files
+.gradle
+build.gradle
+gradle-app.*
+
+
+
+# Eclipse config files
+.project
+.classpath
+.settings
+syntax: glob
+.myhibernatedata
+*.iml
+
+#groovy files
+DumbTest.groovy
+GroovyTest.groovy
+
+#other files
+log4j.dtd
+dms.uml
+temp.sql
+jettyStart.cmd
+
+
+#webapp
+WEB-INF/classes/
