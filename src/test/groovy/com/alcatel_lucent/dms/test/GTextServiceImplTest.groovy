@@ -43,9 +43,9 @@ class GTextServiceImplTest {
     @Test
     void testReceiveTranslation() {
         String dir = 'Z:/ICSR6.6_incorrect_character'
-//        dir='dct_test_files'
-        [  //'AR', 'CA', 'CZ', 'DA', 'DE', 'ES', 'FI', 'HU','KO' ,  'NO', 'RU', 'ZH-CN', 'ZH-TW'
-           //     'PL',
+        dir='dct_test_files'
+        [  //'AR', 'CA', 'CZ', 'DA', 'DE', 'ES', 'FI', 'HU','PL', , 'NO', 'RU', 'ZH-CN', 'ZH-TW',
+                'KO'
         ].each { langCode ->
 
             String fileName = new File(dir, "${langCode}.xls").absolutePath;
