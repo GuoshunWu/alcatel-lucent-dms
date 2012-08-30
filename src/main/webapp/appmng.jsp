@@ -63,21 +63,22 @@
 
 
         $(function () {
+            var pageStatus={};
+
             var dmsPanels = $('#ui_center').find("div[id^='DMS']");
             dmsPanels.addClass("ui-layout-content ui-corner-bottom"); //ui-widget-content
             dmsPanels.css({paddingBottom:'1em', borderTop:0});
-            showCenterPanel('DMS_welcomePanel');
+            pageStatus.selectedPanel=showCenterPanel('DMS_welcomePanel');
 
             function showCenterPanel(panelId) {
-                var selectedPanel;
                 dmsPanels.each(function (index, element) {
                     if ($(this).attr('id') == panelId) {
-                        selectedPanel = $(this).show();
+                        pageStatus.selectedPanel = $(this).show();
                     } else {
                         $(this).hide();
                     }
                 });
-                return selectedPanel;
+                return pageStatus.selectedPanel;
             }
 
             $(".header-footer").hover(
@@ -116,17 +117,23 @@
                             var parent = appTree._get_parent(data.rslt.obj);
 
                             var id = data.rslt.obj.attr("id");
-                            var selectedPanel;
+                            pageStatus.selectedProductBase={id:id, name:text};
                             if (-1 == parent) { //it is a Product
-                                selectedPanel = showCenterPanel('DMS_productPanel');
-                                $('#dispProductName', selectedPanel).text(text);
+                                pageStatus.selectedPanel = showCenterPanel('DMS_productPanel');
+                                $('#dispProductName', pageStatus.selectedPanel).text(text);
                                 // query product version base on Product and its Id
-                                // $("#selVersion" );
-                                var productVersions={};
-                                $("#selVersion" ).get(0).options.add(new Option('Text','value'));
+                                $.getJSON('rest/products/'+id,{},function(data, textStatus, jqXHR){
+                                    var productVersions=$("#selVersion" ).get(0).options;
+                                    productVersions.length=0;
+                                    $(data).each(function(index, product){
+                                        productVersions.add(new Option(product.version, product.id));
+                                    });
+                                    pageStatus.selectedProduct={id:productVersions[0].value, version:productVersions[0].text};
+                                    //TODO: Initialize Application grid accord to pageStatus
+                                });
                             } else { //it is a Application
-                                selectedPanel = showCenterPanel('DMS_applicationPanel');
-
+                                pageStatus.selectedPanel = showCenterPanel('DMS_applicationPanel');
+                                //TODO: Initialize Application panel elements
                             }
 
 
@@ -207,13 +214,20 @@
                 alert("to be implemented.");
             });
 
+            $("#selVersion").change(function(event){
+//                $(this).find("option:selected").each(function () {});
+                pageStatus.selectedProduct={version:$(this).find("option:selected").text(),id:$(this).val()};
+                log(pageStatus);
+                //TODO: update Application Grid according to pageStatus
+            });
+
             $("#newVersion").button( {
                 text: false,
                 icons: {
                     primary: "ui-icon-squared"
                 }
             }).click(function() {
-                alert( "Could display a menu to select an action" );
+                alert( "to be implement.." );
             });
         });
     </script>
@@ -242,7 +256,7 @@
         </div>
         <div id="DMS_productPanel">
             Product: <span id="dispProductName"></span> <br/> <br/>
-            Version: <select id="selVersion"></select><button id="newVersion"></button>
+            Version: <select id="selVersion" ></select><button id="newVersion"></button>
             <br/><br/>
 
             <table border="0">

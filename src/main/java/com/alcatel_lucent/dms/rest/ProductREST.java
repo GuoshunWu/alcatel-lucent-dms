@@ -14,7 +14,10 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.UriInfo;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,9 +33,17 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 @Path("products")
+@Produces({MediaType.APPLICATION_JSON + ";CHARSET=UTF-8", MediaType.TEXT_HTML + ";CHARSET=UTF-8"})
 @Component("productREST")
 @SuppressWarnings("unchecked")
 public class ProductREST {
+
+    @Context
+    UriInfo uriInfo;
+    @Context
+    Request request;
+
+
 
     @Autowired
     private DaoService dao;
@@ -43,7 +54,6 @@ public class ProductREST {
 
 
     @GET
-    @Produces({MediaType.APPLICATION_JSON + ";CHARSET=UTF-8", MediaType.TEXT_HTML + ";CHARSET=UTF-8"})
     public String retrieveAllProductBase() {
 
         Collection<ProductBase> result = dao.retrieve("from ProductBase");
@@ -57,24 +67,28 @@ public class ProductREST {
         propRename.put(ProductBase.class, JSONObject.fromObject("{'name':'data', 'id':'attr','applicationBases':'children'}"));
 
         String jsonString = jsonService.toJSONString(result, propFilter, propRename);
+
         jsonString = jsonString.replaceAll("(\"attr\":)(\\d?)", "$1{\"id\":$2}");
+        System.out.println(jsonString);
 
         return Util.jsonFormat(jsonString);
     }
 
-    @Produces({MediaType.APPLICATION_JSON + ";CHARSET=UTF-8", MediaType.TEXT_HTML + ";CHARSET=UTF-8"})
+    @GET
     @Path("{productBaseId}")
     public String retrieveAllProductByProductBaseId(@PathParam("productBaseId") Long id){
 
         Map<String, Long>  params= new HashMap<String,Long>();
         params.put("baseId",id);
-        Collection<Product> result = dao.retrieve("from Product where base.id = :baseId",params);
+        Collection<Product> result = dao.retrieve("from Product where base.id = :baseId order by version",params);
 
         Map<String, Collection<String>> propFilter = new HashMap<String, Collection<String>>();
+        propFilter.put("Product", Arrays.asList("id","version"));
         Map<Class, Map<String, String>> propRename = new HashMap<Class, Map<String, String>>();
 
         String jsonString = jsonService.toJSONString(result, propFilter, propRename );
         System.out.println(jsonString);
+
         return jsonString;
     }
 }
