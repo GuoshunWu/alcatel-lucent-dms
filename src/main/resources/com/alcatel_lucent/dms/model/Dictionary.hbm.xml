@@ -11,7 +11,7 @@
         <many-to-one column="APPLICATION_ID" name="application" />
         <many-to-one name="base" column="DICTIONARY_BASE_ID" />
 
-		<set inverse="true" name="dictLanguages">
+		<set inverse="true" name="dictLanguages" order-by="SORT_NO">
 			<key column="DICTIONARY_ID" on-delete="cascade" not-null="true" />
 			<one-to-many class="DictionaryLanguage" />
 		</set>

@@ -86,6 +86,7 @@ public class DictionaryReader extends LineNumberReader {
         Collection<DictionaryLanguage> dictLangs = new ArrayList<DictionaryLanguage>();
         DictionaryLanguage dl = null;
 
+        int sortNo = 1;
         for (String languageCode : languageCodes) {
             if ("CHK".equals(languageCode))
                 continue;
@@ -109,6 +110,7 @@ public class DictionaryReader extends LineNumberReader {
                         dictionary.getEncoding()));
             }
             dl.setCharset(charset);
+            dl.setSortNo(sortNo++);
 
             dictLangs.add(dl);
         }
@@ -190,6 +192,7 @@ public class DictionaryReader extends LineNumberReader {
         label.setDescription(null);
 
         Map<String, String> entriesInLabel = new HashMap<String, String>();
+        ArrayList<String> orderedLangCodes = new ArrayList<String>();
 
         BusinessException exceptions = new BusinessException(
                 BusinessException.NESTED_LABEL_ERROR, key);
@@ -279,6 +282,7 @@ public class DictionaryReader extends LineNumberReader {
                 }
             }
             entriesInLabel.put(langCode, buffer.toString());
+            orderedLangCodes.add(langCode);
         }
 
         // analysis entries for reference, maxLength, text
@@ -292,17 +296,17 @@ public class DictionaryReader extends LineNumberReader {
 
         Collection<LabelTranslation> translations = new HashSet<LabelTranslation>();
         LabelTranslation trans = null;
+        int labelSortNo = 1;
+        for (String oLangCode : orderedLangCodes) {
 
-        for (Map.Entry<String, String> entry : entriesInLabel.entrySet()) {
-
-            if (entry.getKey().equals("CHK") || entry.getKey().equals("GAE")) {
+            if (oLangCode.equals("CHK") || oLangCode.equals("GAE")) {
                 continue;
             }
 
             trans = new LabelTranslation();
             trans.setLabel(label);
 
-            DictionaryLanguage dl=dictionary.getDictLanguage(entry.getKey());
+            DictionaryLanguage dl=dictionary.getDictLanguage(oLangCode);
             Language language= null==dl ? null:dl.getLanguage();
 
 //            Language language =languageService.getLanguage(entry.getKey());
@@ -314,7 +318,9 @@ public class DictionaryReader extends LineNumberReader {
 //            }
 
             trans.setLanguage(language);
-            trans.setOrigTranslation(entry.getValue());
+            trans.setLanguageCode(oLangCode);
+            trans.setOrigTranslation(entriesInLabel.get(oLangCode));
+            trans.setSortNo(labelSortNo++);
 
             translations.add(trans);
         }

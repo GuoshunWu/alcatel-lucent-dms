@@ -9,6 +9,7 @@
         </id>
 
         <property name="languageCode" type="string" column="LANGUAGE_CODE"/>
+		<property name="sortNo" type="integer" column="SORT_NO"/>
 
         <many-to-one name="dictionary">
             <column name="DICTIONARY_ID"/>

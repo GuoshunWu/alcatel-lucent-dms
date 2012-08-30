@@ -11,6 +11,8 @@ public class LabelTranslation extends BaseEntity {
 	private String origTranslation;
 	private boolean needTranslation;
 	private String warnings;
+	private String languageCode;
+	private int sortNo;
 	
 	public void setLabel(Label label) {
 		this.label = label;
@@ -48,6 +50,18 @@ public class LabelTranslation extends BaseEntity {
 			return CharsetUtil.isValid(origTranslation, language.getName());
 		}
 		return true;
+	}
+	public void setSortNo(int sortNo) {
+		this.sortNo = sortNo;
+	}
+	public int getSortNo() {
+		return sortNo;
+	}
+	public void setLanguageCode(String languageCode) {
+		this.languageCode = languageCode;
+	}
+	public String getLanguageCode() {
+		return languageCode;
 	}
 
 }
