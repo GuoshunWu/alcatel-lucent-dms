@@ -30,6 +30,7 @@ public class LanguageServiceImpl extends BaseServiceImpl implements LanguageServ
 				.retrieve("from ISOLanguageCode");
 		for (ISOLanguageCode isoLangCode : isoLangCodes) {
 			isoLanguageCodes.put(isoLangCode.getCode(), isoLangCode);
+			isoLangCode.getLanguage().getDefaultCharset();
 		}
 		return isoLanguageCodes;
 	}
@@ -43,6 +44,7 @@ public class LanguageServiceImpl extends BaseServiceImpl implements LanguageServ
 				.retrieve("from AlcatelLanguageCode");
 		for (AlcatelLanguageCode alLangCode : alLangCodes) {
 			alcatelLanguageCodes.put(alLangCode.getCode(), alLangCode);
+			alLangCode.getLanguage().getDefaultCharset();
 		}
 		return alcatelLanguageCodes;
 	}
