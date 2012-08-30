@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.*;
 
 import com.alcatel_lucent.dms.BusinessWarning;
+import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.util.Util;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -100,7 +101,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
         return text;
     }
 
-    public Map<String, Text> updateTranslations(Long ctxId, Collection<Text> texts) {
+    public Map<String, Text> updateTranslations(Long ctxId, Collection<Text> texts, int mode) {
         Map<String, Text> result = new HashMap<String, Text>();
         Map<String, Text> dbTextMap = getTextsAsMap(ctxId);
         for (Text text : texts) {
@@ -113,19 +114,21 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                 dbText = addText(ctxId, text.getReference());
             }
             HashSet<Long> langSet = new HashSet<Long>();
-            for (Translation trans : text.getTranslations()) {
-                if (langSet.contains(trans.getLanguage().getId())) {
-                    // ignore translation of same language
-                    continue;
-                }
-                Translation dbTrans = dbText.getTranslation(trans.getLanguage().getId());
-                if (dbTrans == null) {
-					dbTrans = addTranslation(dbText, trans);
-                } else {
-                    dbTrans.setTranslation(trans.getTranslation());
-					dbTrans.setStatus(trans.getStatus());
-                }
-                langSet.add(trans.getLanguage().getId());
+            if (text.getTranslations() != null) {
+	            for (Translation trans : text.getTranslations()) {
+	                if (langSet.contains(trans.getLanguage().getId())) {
+	                    // ignore translation of same language
+	                    continue;
+	                }
+	                Translation dbTrans = dbText.getTranslation(trans.getLanguage().getId());
+	                if (dbTrans == null) {
+						dbTrans = addTranslation(dbText, trans);
+	                } else if (mode == Constants.TRANSLATION_MODE) { // update translations only in TRANSLATION_MODE
+	                    dbTrans.setTranslation(trans.getTranslation());
+						dbTrans.setStatus(trans.getStatus());
+	                }
+	                langSet.add(trans.getLanguage().getId());
+	            }
             }
             result.put(text.getReference(), dbText);
         }

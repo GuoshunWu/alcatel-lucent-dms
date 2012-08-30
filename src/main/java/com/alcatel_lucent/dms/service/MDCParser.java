@@ -31,6 +31,7 @@ import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryLanguage;
 import com.alcatel_lucent.dms.model.Label;
+import com.alcatel_lucent.dms.model.LabelTranslation;
 import com.alcatel_lucent.dms.model.Language;
 import com.alcatel_lucent.dms.model.Text;
 import com.alcatel_lucent.dms.model.Translation;
@@ -121,6 +122,7 @@ public class MDCParser {
                 BusinessException.NESTED_LABEL_ERROR, label.getKey());
 
         Map<String, String> entriesInLabel = new HashMap<String, String>();
+        ArrayList<String> orderedLangCodes = new ArrayList<String>();
 
         List<Element>  subElements=elem.elements();
         for(Element subElement: subElements) {
@@ -129,6 +131,7 @@ public class MDCParser {
             String translatedString=subElement.getStringValue().toString();
             log.debug(String.format("langCode=%s, translatedString=%s", langCode, translatedString));
             entriesInLabel.put(langCode,translatedString);
+            orderedLangCodes.add(langCode);
        }
         String gae= entriesInLabel.get("en-GB");
         if (null == gae) {
@@ -137,32 +140,29 @@ public class MDCParser {
                     .getKey()));
         }
         label.setReference(gae);
-        Text text = new Text();
-        text.setContext(context);
-        text.setReference(gae);
-        text.setStatus(0);
 
-        Collection<Translation> translations = new HashSet<Translation>();
-        Translation trans = null;
+        Collection<LabelTranslation> translations = new HashSet<LabelTranslation>();
+        int labelSortNo = 1;
+        for (String oLangCode : orderedLangCodes) {
 
-        for (Map.Entry<String, String> entry : entriesInLabel.entrySet()) {
-
-            if (entry.getKey().equals("GAE")) {
+            if (oLangCode.equals("GAE")) {
                 continue;
             }
 
-            trans = new Translation();
-            trans.setText(text);
-            DictionaryLanguage dl=dictionary.getDictLanguage(entry.getKey());
+            LabelTranslation trans = new LabelTranslation();
+            trans.setLabel(label);
+            DictionaryLanguage dl=dictionary.getDictLanguage(oLangCode);
             Language language= null==dl ? null:dl.getLanguage();
 
             trans.setLanguage(language);
-            trans.setTranslation(entry.getValue());
+            trans.setLanguageCode(oLangCode);
+            trans.setOrigTranslation(entriesInLabel.get(oLangCode));
+            trans.setSortNo(labelSortNo++);
+
             translations.add(trans);
         }
-        text.setTranslations(translations);
+        label.setOrigTranslations(translations);
 
-        label.setText(text);
         label.setMaxLength(null);
 
         if(exceptions.hasNestedException()){
@@ -182,6 +182,7 @@ public class MDCParser {
         }
         HashSet<DictionaryLanguage> dls = new HashSet<DictionaryLanguage>();
         DictionaryLanguage dl = null;
+        int sortNo = 1;
         for (String langCode : languageSet) {
             dl = new DictionaryLanguage();
             dl.setLanguageCode(langCode);
@@ -199,6 +200,7 @@ public class MDCParser {
                 exception.addNestedException(new BusinessException(BusinessException.CHARSET_NOT_FOUND, dictionary.getEncoding()));
             }
             dl.setCharset(charset);
+            dl.setSortNo(sortNo++);
             dls.add(dl);
         }
         return dls;

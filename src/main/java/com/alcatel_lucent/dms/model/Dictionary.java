@@ -129,6 +129,17 @@ public class Dictionary extends BaseEntity {
         }
         return result;
     }
+    
+    public ArrayList<String> getAllLanguageCodesOrdered() {
+    	 ArrayList<String> result = new ArrayList<String>();
+        if (dictLanguages != null) {
+            for (DictionaryLanguage dl : dictLanguages) {
+                result.add(dl.getLanguageCode());
+            }
+        }
+        return result;
+    }
+
 
     public ArrayList<Language> getAllLanguages() {
         ArrayList<Language> result = new ArrayList<Language>();
