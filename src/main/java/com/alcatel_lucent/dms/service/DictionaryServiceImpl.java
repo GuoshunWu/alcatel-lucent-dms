@@ -499,13 +499,21 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     DictionaryLanguage dl = dict.getDictLanguage(dictLang);
 
                     Language dictLangCodeLanguage = dl.getLanguage();
-                    for (Translation translation : label.getText()
-                            .getTranslations()) {
-                        if (translation.getLanguage().getId()
-                                .equals(dictLangCodeLanguage.getId())) {
-                            translationString = translation.getTranslation();
-                            break;
-                        }
+                    
+                    // if need translation, get translation from context dictionary
+                    // otherwise, get translation from original translation
+                    LabelTranslation origTranslation = label.getOrigTranslation(dictLangCodeLanguage.getId());
+                    if (origTranslation != null && !origTranslation.isNeedTranslation()) {
+                    	translationString = origTranslation.getOrigTranslation();
+                    } else {
+	                    for (Translation translation : label.getText()
+	                            .getTranslations()) {
+	                        if (translation.getLanguage().getId()
+	                                .equals(dictLangCodeLanguage.getId())) {
+	                            translationString = translation.getTranslation();
+	                            break;
+	                        }
+	                    }
                     }
 
                     String converedString = convertContent(indentSize,
@@ -713,7 +721,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     public Dictionary importDCT(Dictionary dict, String version, int mode, String[] langCodes,
                                 Map<String, String> langCharset,
                                 Collection<BusinessWarning> warnings) {
-        log.info("Start importing DCT");
+        log.info("Start importing DCT in " + (mode == Constants.DELIVERY_MODE ? "DELIVERY" : "TRANSLATION") + " mode");
         if (null == dict)
             return null;
 
@@ -796,11 +804,15 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     dict.getApplication().getId()));
             dbDict.setLocked(false);
             dbDict = (Dictionary) getDao().create(dbDict);
+            if (mode == Constants.DELIVERY_MODE) {	// in case new dictionary version, compare with latest version
+            	lastDict = getLatestDictionary(baseDBDict.getId(), dbDict.getId());
+            }
+        } else {
+            if (mode == Constants.DELIVERY_MODE) {	// in case existing dictionary version, compare with the same version
+            	lastDict = dbDict;
+            }
         }
         
-        if (mode == Constants.DELIVERY_MODE) {
-        	lastDict = getLatestDictionary(baseDBDict.getId(), dbDict.getId());
-        }
 
         // update dictionary languages
         for (DictionaryLanguage dictLanguage : dict.getDictLanguages()) {
@@ -954,12 +966,14 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             Collection<Text> texts = textMap.get(contextName);
             Collection<Label> labels = labelMap.get(contextName);
             Map<String, Text> dbTextMap = textService.updateTranslations(
-                    context.getId(), texts);
+                    context.getId(), texts, mode);
             
             // in TRANSLATION_MODE, no change to label
             if (mode == Constants.TRANSLATION_MODE) {
             	continue;
             }
+            
+            // NOTE: following code is only executed in DELIVERY_MODE
             int sortNo = 1;
             for (Label label : labels) {
                 // create or update label

@@ -55,6 +55,7 @@ public interface DictionaryService {
      * @param mode		  importing mode
      * DELIVERY_MODE: in case application owner delivers a dictionary file
      *   overwrite label attributes
+     *   insert new context translations only, not overwriting existing context translation
      *   for new labels or changed reference texts:
      *       the translation will use context dictionary
      *       set translation status to UNTRANSLATED if reference text = translation
@@ -66,7 +67,7 @@ public interface DictionaryService {
      *           keep the translation in delivered file, the label will not use context dictionary
      *      
      * TRANSLATION_MODE: in case translation manager imports a translated dictionary
-     *   only update translations in context dictionary
+     *   update translations in context dictionary only
      *   no update to existing label attributes
      *   set translation status to UNTRANSLATED if reference text = translation
      *   or TRANSLATED if reference text <> translation
