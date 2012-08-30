@@ -18,6 +18,7 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.test.context.transaction.TransactionConfiguration
 import com.alcatel_lucent.dms.model.*
+import com.alcatel_lucent.dms.Constants
 import static org.hamcrest.Matchers.*
 import org.junit.*
 import static org.junit.Assert.*
@@ -262,7 +263,6 @@ class GDictionaryServiceImplTest {
         Long appId = 1L
         String encoding = null
 
-		int mode = Constants.DELIVERY_MODE
         //all language code and package def
         HashMap<String,List<String>> langCodeForPkg = [
             	'EN-UK': null,
@@ -307,6 +307,7 @@ class GDictionaryServiceImplTest {
         ]
 
         langCodeForPkg.each {subDir, langCodes ->
+			int mode = subDir.equals('EN-UK') ? Constants.DELIVERY_MODE : Constants.TRANSLATION_MODE
             String rootDir = "Z:/$subDir"
 //			rootDir = "D:/tmp/$subDir"
             String testFilePath = rootDir

@@ -178,14 +178,15 @@ public class Label extends BaseEntity {
 		return origTranslations;
 	}
 
-	public LabelTranslation getOrigTranslation(Long languageId) {
+	public LabelTranslation getOrigTranslation(String languageCode) {
 		if (origTranslations != null) {
 			for (LabelTranslation trans : origTranslations) {
-				if (trans.getLanguage().getId().equals(languageId)) {
+				if (trans.getLanguageCode().equals(languageCode)) {
 					return trans;
 				}
 			}
 		}
 		return null;
 	}
+	
 }

@@ -9,6 +9,7 @@ public class DictionaryLanguage extends BaseEntity {
 	private Language language;
 	private String languageCode;
 	private Charset charset;
+	private int sortNo;
 	
 	public Dictionary getDictionary() {
 		return dictionary;
@@ -62,6 +63,12 @@ public class DictionaryLanguage extends BaseEntity {
 		} else if (!languageCode.equals(other.languageCode))
 			return false;
 		return true;
+	}
+	public void setSortNo(int sortNo) {
+		this.sortNo = sortNo;
+	}
+	public int getSortNo() {
+		return sortNo;
 	}
 
 }
