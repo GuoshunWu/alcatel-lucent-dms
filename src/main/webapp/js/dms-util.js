@@ -40,3 +40,12 @@ function formatJson(val) {
     }
     return retval;
 }
+
+/**
+ * Log a info to console if console is supported
+ * */
+function log(info){
+    if(console && console.log){
+        console.log(info);
+    }
+}

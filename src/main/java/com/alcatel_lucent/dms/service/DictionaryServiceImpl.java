@@ -33,6 +33,7 @@ import java.text.DateFormat;
 
 @Service("dictionaryService")
 @Scope("singleton")
+@SuppressWarnings("unchecked")
 public class DictionaryServiceImpl extends BaseServiceImpl implements
         DictionaryService {
 

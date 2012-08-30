@@ -1,6 +1,7 @@
 package com.alcatel_lucent.dms.rest;
 
 import com.alcatel_lucent.dms.model.ApplicationBase;
+import com.alcatel_lucent.dms.model.Product;
 import com.alcatel_lucent.dms.model.ProductBase;
 import com.alcatel_lucent.dms.service.DaoService;
 import com.alcatel_lucent.dms.service.JSONService;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.Arrays;
@@ -29,9 +31,8 @@ import java.util.Map;
  */
 @Path("products")
 @Component("productREST")
+@SuppressWarnings("unchecked")
 public class ProductREST {
-
-//    private ProductService productService =(ProductService)SpringContext.getContext().getBean("productService");
 
     @Autowired
     private DaoService dao;
@@ -40,10 +41,10 @@ public class ProductREST {
     private JSONService jsonService;
 
 
-    @SuppressWarnings("unchecked")
+
     @GET
     @Produces({MediaType.APPLICATION_JSON + ";CHARSET=UTF-8", MediaType.TEXT_HTML + ";CHARSET=UTF-8"})
-    public String retrieveAll() {
+    public String retrieveAllProductBase() {
 
         Collection<ProductBase> result = dao.retrieve("from ProductBase");
         Map<String, Collection<String>> propFilter = new HashMap<String, Collection<String>>();
@@ -58,17 +59,23 @@ public class ProductREST {
         String jsonString = jsonService.toJSONString(result, propFilter, propRename);
         jsonString = jsonString.replaceAll("(\"attr\":)(\\d?)", "$1{\"id\":$2}");
 
-//        Response.ResponseBuilder builder = Response.ok(jsonString);
-//        builder.header("","");
-//        builder.language(Locale.SIMPLIFIED_CHINESE);
-//        CacheControl cc=new CacheControl();
-//        cc.setNoCache(true);
-//
-//        Response response=  builder.cacheControl(cc).build();
-//        return response;
-
-//        System.out.println("DEBUG, jsonString=" + jsonString);
         return Util.jsonFormat(jsonString);
+    }
+
+    @Produces({MediaType.APPLICATION_JSON + ";CHARSET=UTF-8", MediaType.TEXT_HTML + ";CHARSET=UTF-8"})
+    @Path("{productBaseId}")
+    public String retrieveAllProductByProductBaseId(@PathParam("productBaseId") Long id){
+
+        Map<String, Long>  params= new HashMap<String,Long>();
+        params.put("baseId",id);
+        Collection<Product> result = dao.retrieve("from Product where base.id = :baseId",params);
+
+        Map<String, Collection<String>> propFilter = new HashMap<String, Collection<String>>();
+        Map<Class, Map<String, String>> propRename = new HashMap<Class, Map<String, String>>();
+
+        String jsonString = jsonService.toJSONString(result, propFilter, propRename );
+        System.out.println(jsonString);
+        return jsonString;
     }
 }
 
