@@ -69,9 +69,10 @@ public interface TextService {
 	 * Insert or update text and translation entities in a batch.
 	 * @param ctxId context id
 	 * @param texts texts with their translations to update in the context
+	 * @param mode importing mode, see DictionaryService.importDictionary()
 	 * @return map of persistent text objects indexed by reference.
 	 */
-	Map<String, Text> updateTranslations(Long ctxId, Collection<Text> texts);
+	Map<String, Text> updateTranslations(Long ctxId, Collection<Text> texts, int mode);
 
     /**
      *  Receive the completed translation in a excel file.
