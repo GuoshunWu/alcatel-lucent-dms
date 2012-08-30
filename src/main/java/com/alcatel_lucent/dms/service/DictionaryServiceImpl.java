@@ -1027,6 +1027,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             throw nonBreakExceptions;
         }
         log.info("Import DCT finish");
+        dbDict.getName();	// initialize
         return dbDict;
     }
 
