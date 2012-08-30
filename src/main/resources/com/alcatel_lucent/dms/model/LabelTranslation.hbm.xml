@@ -17,6 +17,8 @@
                   length="1024"/>
         <property name="needTranslation" type="boolean" column="NEED_TRANSLATION"/>
         <property name="warnings" type="string" column="WARNINGS" length="255"/>
+        <property name="languageCode" type="string" column="LANGUAGE_CODE"/>
+		<property name="sortNo" type="integer" column="SORT_NO"/>
         <many-to-one name="label" column="LABEL_ID" not-null="true"/>
         <many-to-one lazy="false" name="language" column="LANGUAGE_ID"
                      not-null="true"/>
