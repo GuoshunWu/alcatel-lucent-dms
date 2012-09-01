@@ -7,6 +7,7 @@ import com.alcatel_lucent.dms.service.DaoService;
 import com.alcatel_lucent.dms.service.JSONService;
 import com.alcatel_lucent.dms.util.Util;
 import net.sf.json.JSONObject;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -38,12 +39,11 @@ import java.util.Map;
 @SuppressWarnings("unchecked")
 public class ProductREST {
 
+    private static Logger log= Logger.getLogger(ProductREST.class);
     @Context
     UriInfo uriInfo;
     @Context
     Request request;
-
-
 
     @Autowired
     private DaoService dao;
@@ -66,17 +66,16 @@ public class ProductREST {
         propRename.put(ApplicationBase.class, JSONObject.fromObject("{'name':'data', 'id':'attr'}"));
         propRename.put(ProductBase.class, JSONObject.fromObject("{'name':'data', 'id':'attr','applicationBases':'children'}"));
 
-        String jsonString = jsonService.toJSONString(result, propFilter, propRename);
+        String jsonString = jsonService.toTreeJSON(result, propFilter, propRename).toString();
 
-        jsonString = jsonString.replaceAll("(\"attr\":)(\\d?)", "$1{\"id\":$2}");
-        System.out.println(jsonString);
+        log.debug("In rest: "+jsonString);
 
         return Util.jsonFormat(jsonString);
     }
 
     @GET
-    @Path("{productBaseId}")
-    public String retrieveAllProductByProductBaseId(@PathParam("productBaseId") Long id){
+    @Path("{productBase.id}")
+    public String retrieveAllProductByProductBaseId(@PathParam("productBase.id") Long id){
 
         Map<String, Long>  params= new HashMap<String,Long>();
         params.put("baseId",id);
@@ -84,11 +83,9 @@ public class ProductREST {
 
         Map<String, Collection<String>> propFilter = new HashMap<String, Collection<String>>();
         propFilter.put("Product", Arrays.asList("id","version"));
-        Map<Class, Map<String, String>> propRename = new HashMap<Class, Map<String, String>>();
 
-        String jsonString = jsonService.toJSONString(result, propFilter, propRename );
-        System.out.println(jsonString);
-
+        String jsonString = jsonService.toSelectJSON(result, propFilter).toString();
+        log.debug(jsonString);
         return jsonString;
     }
 }

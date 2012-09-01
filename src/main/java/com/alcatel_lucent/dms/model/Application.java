@@ -1,5 +1,6 @@
 package com.alcatel_lucent.dms.model;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 public class Application extends BaseEntity {
@@ -15,6 +16,17 @@ public class Application extends BaseEntity {
 
     public ApplicationBase getBase() {
         return base;
+    }
+    public String getName(){
+        return base.getName();
+    }
+    
+    public Integer getDictNum(){
+        return dictionaries.size();
+    }
+    
+    public Collection getCell(){
+        return Arrays.asList(getId(),getName(),version, getDictNum());
     }
 
     public void setBase(ApplicationBase base) {
