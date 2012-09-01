@@ -43,6 +43,8 @@ public interface DaoService {
 
     Object create(Object entity);
 
+    List retrieveOnePage(String hsql, int offset, int pageSize);
+
     /**
      * Create an entity.
      * @param entity transient object to be created

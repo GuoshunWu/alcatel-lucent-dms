@@ -3,6 +3,7 @@ package com.alcatel_lucent.dms.service;
 import org.apache.log4j.Logger;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.hibernate.*;
+import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.SessionFactoryUtils;
 import org.springframework.stereotype.Service;
@@ -303,4 +304,15 @@ public class DaoServiceImpl implements DaoService {
         return result;
     }
 
+    public List retrieveOnePage(String hsql, int offset, int pageSize){
+        List lst=null;
+        Query query = getSession().createQuery(hsql);
+        if(offset!=0 && pageSize!=0){
+            query.setFirstResult((offset-1)*pageSize);
+            query.setMaxResults(pageSize);
+        }
+
+        lst=query.list();
+        return lst;
+    }
 }
