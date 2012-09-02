@@ -1,24 +1,18 @@
 package com.alcatel_lucent.dms.rest;
 
 import com.alcatel_lucent.dms.model.Application;
-import com.alcatel_lucent.dms.model.ApplicationBase;
-import com.alcatel_lucent.dms.model.ProductBase;
 import com.alcatel_lucent.dms.service.DaoService;
 import com.alcatel_lucent.dms.service.JSONService;
-import com.alcatel_lucent.dms.util.Util;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.UriInfo;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 //import com.alcatel_lucent.dms.service.ProductService;
 
@@ -35,14 +29,14 @@ import java.util.*;
 @SuppressWarnings("unchecked")
 public class ApplicationREST {
 
-    private static Logger log= Logger.getLogger(ApplicationREST.class);
-    @Context
-    UriInfo uriInfo;
+    private static Logger log = Logger.getLogger(ApplicationREST.class);
+//    @Context
+//    UriInfo uriInfo;
 //    @Context
 //    Request request;
 
-    @Context
-    HttpServletRequest request;
+//    @Context
+//    HttpServletRequest request;
 
 
     @Autowired
@@ -61,49 +55,31 @@ public class ApplicationREST {
      *  @param sord the direction
      * */
     public String retrieveAllApplicationsByProductId(@PathParam("product.version.id") Long id,
-                                                     @QueryParam("rows") Long rows,
-                                                     @QueryParam("page") Long page,
+                                                     @QueryParam("rows") int rows,
+                                                     @QueryParam("page") int page,
                                                      @QueryParam("sidx") String sidx,
                                                      @QueryParam("sord") String sord) {
         Map<String, Long> params = new HashMap<String, Long>();
         params.put("productId", id);
 
         String hSQL = "from Application where product.id=:productId";
-        String countHSQL = "select new map(count(*) as records) " + hSQL;
-        Map<String, Long> result = (Map<String, Long>) dao.retrieveOne(countHSQL, params);
+        String countHSQL = "select count(*) as records " + hSQL;
+        Long records = (Long) dao.retrieveOne(countHSQL, params);
 
-        Long records = result.get("records");
-
-
-        Long totalPages = Long.valueOf(0);
-        if (records > 0) {
-            totalPages = (Double.valueOf(Math.ceil(records.doubleValue() / rows)).longValue());
-        }
-        if (page > totalPages) page = totalPages;
-        log.debug("page=" + page + ",rows=" + rows + ", records=" + records + ", totalPages=" + totalPages + ", sidx='" + sidx + "', sord=" + sord);
+        log.debug("page=" + page + ",rows=" + rows + ", records=" + records + ", sidx=" + sidx + ", sord=" + sord);
 
         hSQL = "from Application where product.id=:productId";
-        if(Arrays.asList("name","dictNum").contains(sidx)){
-            if(sidx.equals("name")){
-                sidx = "base.name";
-            }else if(sidx.equals("dictNum")){
-                sidx = "dictionaries.size";
-            }
+        if (Arrays.asList("name", "dictNum").contains(sidx)) {
+            sidx = sidx.equals("name") ? "base.name" : "dictionaries.size";
         }
-        hSQL+=" order by "+sidx + " "+sord;
+        hSQL += " order by " + sidx + " " + sord;
 
         Collection<Application> resultSet = dao.retrieve(hSQL, params);
-
-        Map<String, Object> pageData = new HashMap<String, Object>();
-        pageData.put("page", page);
-        pageData.put("total", totalPages);
-        pageData.put("records", records);
 
         Map<String, Collection<String>> propFilter = new HashMap<String, Collection<String>>();
         propFilter.put("Application", Arrays.asList("id", "cell"));
 
-
-        String jsonString = jsonService.toGridJSON(resultSet, pageData, propFilter).toString();
+        String jsonString = jsonService.toGridJSON(resultSet, rows, page, records.intValue(), propFilter).toString();
 
         return jsonString;
     }
