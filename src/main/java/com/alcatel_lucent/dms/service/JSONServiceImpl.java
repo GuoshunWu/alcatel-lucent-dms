@@ -2,6 +2,7 @@ package com.alcatel_lucent.dms.service;
 
 import java.util.*;
 
+import com.alcatel_lucent.dms.util.Util;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
@@ -11,11 +12,13 @@ import net.sf.json.util.PropertyFilter;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
+import static java.lang.Math.ceil;
+
 @Service("jsonService")
 @SuppressWarnings("unchecked")
 public class JSONServiceImpl implements JSONService {
 
-    private static Logger log= Logger.getLogger(JSONServiceImpl.class);
+    private static Logger log = Logger.getLogger(JSONServiceImpl.class);
 
     public String toJSONString(Object entity, Map<String, Collection<String>> propFilter, Map<Class, Map<String, String>>... vpropRename) {
         JsonConfig config = getJsonConfig(propFilter, vpropRename);
@@ -25,19 +28,29 @@ public class JSONServiceImpl implements JSONService {
         return JSONObject.fromObject(entity, config).toString();
     }
 
-    public JSONObject toGridJSON(Object entity,Map<String,Object> pageData, Map<String, Collection<String>> propFilter,Map<Class, Map<String, String>>... vpropRename) {
+    public JSONObject toGridJSON(Object entity, int rows, int page, int records, Map<String, Collection<String>> propFilter, Map<Class, Map<String, String>>... vpropRename) {
         JsonConfig config = getJsonConfig(propFilter, vpropRename);
 
         JSONArray jsonArrayGrid = JSONArray.fromObject(entity, config);
         JSONObject jsonGrid = new JSONObject();
-        jsonGrid.putAll(pageData);
+
+        int totalPages = records > 0 ? (int) ceil(records / (float) rows) : 0;
+        if (page > totalPages) page = totalPages;
+
+        jsonGrid.put("page", page);
+        jsonGrid.put("total", totalPages);
+        jsonGrid.put("records", records);
+                
         jsonGrid.put("rows", jsonArrayGrid);
 
-        log.debug(jsonGrid);
+//        Map<String, Object> userData=new HashMap<String, Object>();
+//        jsonGrid.put("userData",userData);
+        
+        log.info(Util.jsonFormat(jsonGrid.toString()));
         return jsonGrid;
     }
 
-    public JSONArray toTreeJSON(Object entity, Map<String, Collection<String>> propFilter,Map<Class, Map<String, String>>... vpropRename) {
+    public JSONArray toTreeJSON(Object entity, Map<String, Collection<String>> propFilter, Map<Class, Map<String, String>>... vpropRename) {
 
         JsonConfig config = getJsonConfig(propFilter, vpropRename);
         JSONArray jsonTree = JSONArray.fromObject(entity, config);
@@ -48,7 +61,7 @@ public class JSONServiceImpl implements JSONService {
         return jsonTree;
     }
 
-    public JSONArray toSelectJSON(Object entity,Map<String, Collection<String>> propFilter, Map<Class, Map<String, String>>... vpropRename) {
+    public JSONArray toSelectJSON(Object entity, Map<String, Collection<String>> propFilter, Map<Class, Map<String, String>>... vpropRename) {
         JsonConfig config = getJsonConfig(propFilter, vpropRename);
 
         JSONArray jsonTree = JSONArray.fromObject(entity, config);
