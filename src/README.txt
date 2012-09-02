@@ -1,1 +1,1 @@
-Project's readme
+Alcatel lucent dictionary management system.
