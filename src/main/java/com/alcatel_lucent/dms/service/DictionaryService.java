@@ -71,13 +71,14 @@ public interface DictionaryService {
      *   no update to existing label attributes
      *   set translation status to UNTRANSLATED if reference text = translation
      *   or TRANSLATED if reference text <> translation
+     * @param appId application id
      * @param langCodes   Alcatel code of languages to import, null if all languages
      *                    should be imported
      * @param langCharset mapping of language code and its source charset name
      * @param warnings    a collection to hold output warnings
      * @return persistent Dictionary object created
      */
-    Dictionary importDCT(Dictionary dict, String version, int mode, String[] langCodes,
+    Dictionary importDCT(Long appId, Dictionary dict, String version, int mode, String[] langCodes,
                          Map<String, String> langCharset,
                          Collection<BusinessWarning> warnings);
 

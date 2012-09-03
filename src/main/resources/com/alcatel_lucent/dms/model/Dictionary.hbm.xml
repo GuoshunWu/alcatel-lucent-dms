@@ -8,7 +8,6 @@
 		</id>
 		<property column="VERSION" name="version" not-null="true" type="string" />
 
-        <many-to-one column="APPLICATION_ID" name="application" />
         <many-to-one name="base" column="DICTIONARY_BASE_ID" />
 
 		<set inverse="true" name="dictLanguages" order-by="SORT_NO">
