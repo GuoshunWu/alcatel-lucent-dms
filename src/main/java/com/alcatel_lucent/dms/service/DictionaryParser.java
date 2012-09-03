@@ -75,7 +75,6 @@ public class DictionaryParser {
         dictBase.setFormat("dct");
         
 		Dictionary dictionary = new Dictionary();
-		dictionary.setApplication(app);
 		dictionary.setBase(dictBase);
 
 		if (dctInputStream instanceof FileInputStream) {

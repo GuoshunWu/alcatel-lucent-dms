@@ -69,8 +69,7 @@ public class MDCParser {
         dictionary.setPath(path);
         dictionary.setEncoding("UTF-8");
         dictionary.setFormat("xml");
-        dictionary.setApplication(app);
-        
+
         Context context=new Context(dictionary.getName());
 
 

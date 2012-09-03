@@ -11,12 +11,13 @@ public class Application extends BaseEntity {
 
     private ApplicationBase base;
     private String version;
-	private Product product;
+
 	private Collection<Dictionary> dictionaries;
 
     public ApplicationBase getBase() {
         return base;
     }
+
     public String getName(){
         return base.getName();
     }
@@ -41,13 +42,6 @@ public class Application extends BaseEntity {
         this.version = version;
     }
 
-    public Product getProduct() {
-		return product;
-	}
-
-	public void setProduct(Product product) {
-		this.product = product;
-	}
 
 	public Collection<Dictionary> getDictionaries() {
 		return dictionaries;

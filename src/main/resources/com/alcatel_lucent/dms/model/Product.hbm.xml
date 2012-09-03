@@ -9,11 +9,11 @@
 
         <property name="version" type="string" column="VERSION" />
 
-		<many-to-one name="base" column="PRODUCT_BASE_ID"/>
+		<many-to-one name="base" column="PRODUCT_BASE_ID" not-null="true"/>
 
-		<set name="applications" inverse="true">
-			<key column="PRODUCT_ID" on-delete="cascade" not-null="true" />
-			<one-to-many class="Application" />
+		<set name="applications" table="PRODUCT_APPLICATION">
+			<key column="PRODUCT_ID" />
+			<many-to-many column="APPLICATION_ID" class="Application" />
 		</set>
 
 	</class>

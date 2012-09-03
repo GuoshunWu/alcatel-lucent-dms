@@ -86,7 +86,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 + " is about to import to database");
 
         before = System.currentTimeMillis();
-        dict = importDCT(dict, version, mode, langCodes, langCharset, warnings);
+        dict = importDCT(appId,dict, version, mode, langCodes, langCharset, warnings);
         after = System.currentTimeMillis();
         log.info("************importDCT take " + (after - before)
                 + " milliseconds of time.**************");
@@ -111,7 +111,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 + " is about to import to database");
 
         before = System.currentTimeMillis();
-        dict = importDCT(dict, version, mode, langCodes, langCharset, warnings);
+        dict = importDCT(appId, dict, version, mode, langCodes, langCharset, warnings);
         after = System.currentTimeMillis();
         log.info("************importMDC take " + (after - before)
                 + " milliseconds of time.**************");
@@ -720,7 +720,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     }
 
     @Override
-    public Dictionary importDCT(Dictionary dict, String version, int mode, String[] langCodes,
+    public Dictionary importDCT(Long appId,Dictionary dict, String version, int mode, String[] langCodes,
                                 Map<String, String> langCharset,
                                 Collection<BusinessWarning> warnings) {
         log.info("Start importing DCT in " + (mode == Constants.DELIVERY_MODE ? "DELIVERY" : "TRANSLATION") + " mode");
@@ -802,8 +802,17 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             dbDict = new Dictionary();
             dbDict.setBase(baseDBDict);
             dbDict.setVersion(version);
-            dbDict.setApplication((Application) dao.retrieve(Application.class,
-                    dict.getApplication().getId()));
+
+            Application app = (Application) getDao().retrieve(Application.class,
+                    appId);
+
+            Collection<Dictionary> dictionaries= app.getDictionaries();
+            if(null==dictionaries){
+                dictionaries=new HashSet<Dictionary>();
+            }
+            dictionaries.add(dbDict);
+            app.setDictionaries(dictionaries);
+
             dbDict.setLocked(false);
             dbDict = (Dictionary) getDao().create(dbDict);
             if (mode == Constants.DELIVERY_MODE) {	// in case new dictionary version, compare with latest version

@@ -6,7 +6,6 @@ public class Dictionary extends BaseEntity {
 
     private static final long serialVersionUID = 4926531636839152201L;
 
-    private Application application;
     private Collection<DictionaryLanguage> dictLanguages;
     private Collection<Label> labels;
     private boolean locked;
@@ -65,14 +64,6 @@ public class Dictionary extends BaseEntity {
         super();
     }
 
-
-    public Application getApplication() {
-        return application;
-    }
-
-    public void setApplication(Application application) {
-        this.application = application;
-    }
 
     public Collection<DictionaryLanguage> getDictLanguages() {
         return dictLanguages;

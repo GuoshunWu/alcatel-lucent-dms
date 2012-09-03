@@ -304,15 +304,4 @@ public class DaoServiceImpl implements DaoService {
         return result;
     }
 
-    public List retrieveOnePage(String hsql, int offset, int pageSize){
-        List lst=null;
-        Query query = getSession().createQuery(hsql);
-        if(offset!=0 && pageSize!=0){
-            query.setFirstResult((offset-1)*pageSize);
-            query.setMaxResults(pageSize);
-        }
-
-        lst=query.list();
-        return lst;
-    }
 }

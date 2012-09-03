@@ -60,21 +60,22 @@ public class ApplicationREST {
                                                      @QueryParam("sidx") String sidx,
                                                      @QueryParam("sord") String sord) {
         Map<String, Long> params = new HashMap<String, Long>();
-        params.put("productId", id);
+        params.put("id", id);
 
-        String hSQL = "from Application where product.id=:productId";
-        String countHSQL = "select count(*) as records " + hSQL;
-        Long records = (Long) dao.retrieveOne(countHSQL, params);
+
+        String countHSQL = "select p.applications.size from Product p where p.id=:id";
+
+        Integer records = (Integer) dao.retrieveOne(countHSQL, params);
 
         log.debug("page=" + page + ",rows=" + rows + ", records=" + records + ", sidx=" + sidx + ", sord=" + sord);
 
-        hSQL = "from Application where product.id=:productId";
+        String hSQL = "select app from Product p join p.applications app where p.id=:id";
         if (Arrays.asList("name", "dictNum").contains(sidx)) {
             sidx = sidx.equals("name") ? "base.name" : "dictionaries.size";
         }
-        hSQL += " order by " + sidx + " " + sord;
+        hSQL += " order by app." + sidx + " " + sord;
 
-        Collection<Application> resultSet = dao.retrieve(hSQL, params);
+        Collection<Application> resultSet = dao.retrieve(hSQL, params,(page-1)*rows, rows);
 
         Map<String, Collection<String>> propFilter = new HashMap<String, Collection<String>>();
         propFilter.put("Application", Arrays.asList("id", "cell"));

@@ -9,13 +9,11 @@
 		</id>
 
         <property name="version" type="string" column="VERSION" not-null="true" />
-
         <many-to-one name="base" column="APPLICATION_BASE_ID"/>
-		<many-to-one name="product" column="PRODUCT_ID" />
 
-        <set name="dictionaries" inverse="true">
-            <key column="APPLICATION_ID" not-null="true" on-delete="cascade"/>
-            <one-to-many class="Dictionary"/>
+        <set name="dictionaries" table="APPLICATION_DICTIONARY">
+            <key column="APPLICATION_ID" />
+            <many-to-many column="DICTIONARY_ID" class="Dictionary"/>
         </set>
 
 	</class>

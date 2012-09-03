@@ -46,7 +46,7 @@ public class JSONServiceImpl implements JSONService {
 //        Map<String, Object> userData=new HashMap<String, Object>();
 //        jsonGrid.put("userData",userData);
         
-        log.info(Util.jsonFormat(jsonGrid.toString()));
+        log.debug(Util.jsonFormat(jsonGrid.toString()));
         return jsonGrid;
     }
 
