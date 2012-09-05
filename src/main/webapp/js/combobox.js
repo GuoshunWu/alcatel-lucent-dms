@@ -10,18 +10,23 @@
     $.widget("ui.combobox", {
         options:{
             change:null,
-            selected:null,
-            value:null
+            selected:null
+        },
+        _init:function(){
+            var self=this;
         },
         _create:function () {
             var self = this;
             var select = this.element.hide();
+            self.valid = false;
             var selected = select.children(":selected");
             var value = selected.val() ? selected.text() : "";
-            this.options.value =  {value:selected.val(), text: selected.text()};
             var wrapper = this.wrapper = $("<span>").addClass("ui-combobox").insertAfter(select);
 
-            var input = $("<input>").appendTo(wrapper).val(value).addClass("ui-state-default ui-combobox-input")
+
+            var input = self.input= $("<input id='cboInput'>")
+                .appendTo(wrapper)
+                .val(value).addClass("ui-state-default ui-combobox-input")
                 .autocomplete({
                     delay:0,
                     minLength:0,
@@ -43,8 +48,8 @@
                         }));
                     },
                     select:function (event, ui) {
-                        self.options.value = {value:ui.item.option.value, text:ui.item.option.text};
-                        self._trigger("selected",event,self.options.value);
+                        self._trigger("selected",event, {value:ui.item.option.value, text:ui.item.option.text});
+                        self.valid=true;
                     },
                     change:function (event, ui) {
 
@@ -53,27 +58,25 @@
                             var valid = false;
                             select.children("option").each(function () {
                                 if ($(this).text().match(matcher)) {
-                                    this.selected = valid = true;
+                                    this.selected = valid = self.valid=true;
                                     return false;
                                 }
                             });
-                            self.options.value = {value:null, text:$(this).val()};
-                            self._trigger("change", event, self.options.value);
+                            self._trigger("change",{value:null, text:$(this).val()});
 
                             if (!valid) {
                                 // remove invalid value, as it didn't match anything
 //                                                $(this).val("");
 //                                                select.val("");
 //                                                input.data("autocomplete").term = "";
+                                self.valid=false;
                                 return false;
                             }
                         }
-                        self.options.value = {value:ui.item.option.value, text:ui.item.option.text};
-                        self._trigger("change", event, self.options.value);
+                        self._trigger("change", event, {value:ui.item.option.value, text:ui.item.option.text});
                    }
                 })
                 .addClass("ui-widget ui-widget-content ui-corner-left");
-
             input.data("autocomplete")._renderItem = function (ul, item) {
                 return $("<li></li>")
                     .data("item.autocomplete", item)
@@ -109,8 +112,18 @@
                 });
         },
 
-        val:function () {
-            return this.options.value;
+        val:function (value) {
+            if(value){
+                this.input.val(value);
+            }
+            var select=this.element;
+            var selected = select.children(":selected");
+
+
+            if(this.valid){
+                return {value:selected.val(), text: selected.text()}
+            }
+            return {value:null,text: this.input.val()}
         },
         destroy:function () {
             this.wrapper.remove();
