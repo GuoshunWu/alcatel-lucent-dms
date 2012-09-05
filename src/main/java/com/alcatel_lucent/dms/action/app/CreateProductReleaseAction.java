@@ -65,7 +65,6 @@ public class CreateProductReleaseAction extends JSONAction {
     }
 
     public String performAction() throws Exception {
-        log.setLevel(Level.DEBUG);
         log.debug("Create product release version: " + version + ", product base id=" + id + ", dup version id=" + dupVersionId);
 
         ProductBase pb= (ProductBase) daoService.retrieve(ProductBase.class,id);
