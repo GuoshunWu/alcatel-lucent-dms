@@ -20,7 +20,7 @@ import java.util.*;
 @Result(type = "json", params = {"noCache", "true", "ignoreHierarchy", "false", "includeProperties", "id,message,status"})
 
 @SuppressWarnings("unchecked")
-public class NewProductReleaseAction extends JSONAction {
+public class CreateProductReleaseAction extends JSONAction {
 
     public void setDaoService(DaoService daoService) {
         this.daoService = daoService;
@@ -64,8 +64,7 @@ public class NewProductReleaseAction extends JSONAction {
         return id;
     }
 
-    public String execute() {
-        log.setLevel(Level.DEBUG);
+    public String performAction() throws Exception {
         log.debug("Create product release version: " + version + ", product base id=" + id + ", dup version id=" + dupVersionId);
 
         ProductBase pb= (ProductBase) daoService.retrieve(ProductBase.class,id);

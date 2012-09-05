@@ -7,6 +7,9 @@
  */
 
 // formatJson() :: formats and indents JSON string
+function jsonToString(jsonObj){
+    return formatJson(JSON.stringify(jsonObj));
+}
 
 function formatJson(val) {
     var retval = '';

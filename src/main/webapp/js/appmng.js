@@ -4,7 +4,6 @@
  * Date: 12-9-3
  * Time: 上午10:11
  */
-
 var pageLayout;
 
 
@@ -18,7 +17,7 @@ $(function () {
 
     var pageStatus = {};
 
-    var dmsPanels = $('#ui_center').find("div[id^='DMS']");
+    var dmsPanels = $('#ui_center').children("div[id^='DMS']");
     dmsPanels.addClass("ui-layout-content ui-corner-bottom"); //ui-widget-content
     dmsPanels.css({paddingBottom:'1em', borderTop:0});
     pageStatus.selectedPanel = showCenterPanel('DMS_welcomePanel');
@@ -67,6 +66,7 @@ $(function () {
                 if (-1 == parent) { //it is a Product
                     pageStatus.selectedPanel = showCenterPanel('DMS_productPanel');
                     $('#dispProductName', pageStatus.selectedPanel).text(text);
+
                     // query product version base on Product and its Id
                     $.getJSON('rest/products/' + id, {}, function (data, textStatus, jqXHR) {
                         var productVersions = $("#selVersion").get(0).options;
@@ -80,6 +80,7 @@ $(function () {
 
                         var newCaption = 'Applications for Product ' + pageStatus.selectedProductBase.name + ' version ' + pageStatus.selectedProduct.version
                         jQuery("#applicationGridList").jqGrid('setCaption', newCaption);
+
                     });
                 } else { //it is a Application
                     pageStatus.selectedPanel = showCenterPanel('DMS_applicationPanel');
@@ -92,16 +93,17 @@ $(function () {
     $('#applicationGridList').jqGrid({
         url:'json/appgrid.json',
         datatype:'json',
-        width:600,
+        width:700,
         height:350,
         colNames:['ID', 'Application', 'Version', 'Dict. Num.'],
         colModel:[
             {name:'id', index:'id', width:55, align:'center', hidden:true},
-            {name:'name', index:'name', width:100, align:'center'},
-            {name:'version', index:'version', width:90, align:'center'},
+            {name:'name', index:'name', width:100, editable:true, align:'center'},
+            {name:'version', index:'version', width:90, editable:true, align:'center'},
             {name:'dictNum', index:'dictNum', width:80, align:'center'}
         ],
         pager:'#pager',
+        editurl:"app/create-or-add-application",
         rowNum:10,
         rowList:[10, 20, 30],
         sortname:'name',
@@ -109,9 +111,142 @@ $(function () {
         viewrecords:true,
         gridview:true,
         caption:'Applications for Product'
-//                ,loadonce: true
     });
-    jQuery("#applicationGridList").jqGrid('navGrid', '#pager', {edit:true, add:true, del:true});
+    jQuery("#applicationGridList").jqGrid('navGrid', '#pager', {edit:false, add:false, del:false, search:false, view:false})
+        .navButtonAdd('#pager', {
+            caption:"Del",
+            buttonicon:"ui-icon-trash",
+            onClickButton:function () {
+                alert("Deleting Row");
+            },
+            position:"first"
+        }).navButtonAdd('#pager', {
+            caption:"View",
+            buttonicon:"ui-icon-document",
+            onClickButton:function () {
+                alert("View");
+            },
+            position:"first"
+        }).navButtonAdd('#pager', {
+            caption:"Edit",
+            buttonicon:"ui-icon-pencil",
+            onClickButton:function () {
+                alert("Edit Row");
+            },
+            position:"first"
+        }).navButtonAdd("#pager", {
+
+            caption:"Add",
+            buttonicon:"ui-icon-plus",
+            onClickButton:function () {
+                var width = jQuery("#applicationGridList").jqGrid('getGridParam', "width");
+                var height = jQuery("#applicationGridList").jqGrid('getGridParam', "height");
+
+                $("#newOrAddApplicationDialog").dialog("open");
+//                jQuery("#applicationGridList").jqGrid('editGridRow',"new",{height:280,reloadAfterSubmit:false});
+            },
+            position:"first"
+        }
+    );
+
+    $('#newOrAddApplicationDialog').dialog({
+        autoOpen:false,
+        height:200,
+        width:400,
+        modal:true,
+        position:"center",
+        show:{ effect:'drop', direction:"up" },
+        create:function (event, ui) {
+            var input = $('<input>').insertAfter($('#applicationName')).hide();
+            $('#applicationName').data('myinput', input);
+            input = $('<input>').insertAfter($("#version")).hide();
+            $('#version').data('myinput', input);
+
+            $("select", this).css('width', "80px");
+
+            $("#applicationName").change(function (e) {
+
+                var versionOptions = $("#version").get(0).options;
+                versionOptions.length=0;
+                versionOptions.add(new Option('new', -1));
+
+                var appBaseId = $(this).val();
+                if (-1 == appBaseId) {
+                    $(this).data('myinput').show();
+                    $("#version").trigger("change");
+                    return;
+                }
+                $(this).data('myinput').hide();
+
+                url = 'rest/applications/apps/' + appBaseId;
+                $.getJSON(url, {}, function (data, textStatus, jqXHR) {
+                    $(data).each(function (index, application) {
+                        versionOptions.add(new Option(application.version, application.id));
+                    });
+                    $("#version").trigger("change");
+                });
+            });
+
+            $("#version").change(function (e) {
+                var appId = $(this).val();
+                if (-1 == appId) {
+                    $(this).data('myinput').show();
+                    return;
+                }
+                $(this).data('myinput').hide();
+            });
+        },
+        open:function (event, ui) {
+            //update applicationBases in new ApplicationDialog Application Select according to the product id
+
+            var productId = $("#selVersion").val();
+            url = 'rest/applications/base/' + productId;
+            $.getJSON(url, {}, function (data, textStatus, jqXHR) {
+                var appBasesOptions = $("#newOrAddApplicationDialog").find("#applicationName").get(0).options;
+                appBasesOptions.length = 0;
+                appBasesOptions.add(new Option('new', -1));
+
+                $(data).each(function (index, applicationBase) {
+                    appBasesOptions.add(new Option(applicationBase.name, applicationBase.id));
+                });
+
+                $('#applicationName').trigger('change');
+
+            });
+
+
+        },
+        buttons:{
+            'OK':function () {
+                var url = 'app/create-or-add-application';
+                var data = {
+                    productId: $("#selVersion").val(),
+                    appBaseId: $('#applicationName').val(),
+                    appId: $('#version').val(),
+                    appBaseName:$('#applicationName').data('myinput').val(),
+                    appVersion:$('#version').data('myinput').val()
+                };
+
+                $.post(url, data, function (data, textStatus, jqXHR) {
+                    if (data.status != 0) {
+                        alert(data.message);
+                        return;
+                    }
+                    //create success.
+                    //trigger table.
+                    $("#applicationGridList").trigger("reloadGrid");
+                });
+                $(this).dialog("close");
+
+            },
+            'Cancel':function () {
+                $(this).dialog("close");
+            }
+        },
+        close:function () {
+            //alert('Are you sure?');
+        }
+    });
 
 //      create all the dialogs
     $('#newProductDialog').dialog({
@@ -152,18 +287,20 @@ $(function () {
         buttons:{
             'OK':function () {
                 //根据选定的Version复制操作
-                url = 'app/new-product-release';
+                url = 'app/create-product-release';
                 var versionName = $('#versionName').val();
                 var dupVersionId = $("#dupVersion").val();
 
-                $.post(url, {version:versionName, dupVersionId:dupVersionId, id: pageStatus.selectedProductBase.id}, function (data, textStatus, jqXHR) {
+                $.post(url, {version:versionName, dupVersionId:dupVersionId, id:pageStatus.selectedProductBase.id}, function (data, textStatus, jqXHR) {
                     if (data.status != 0) {
                         alert(data.message);
                         return;
                     }
-                    var newOption= new Option(versionName, data.id);
-                    newOption.selected=true;
+                    var newOption = new Option(versionName, data.id);
+                    newOption.selected = true;
                     $("#selVersion")[0].options.add(newOption);
+                    pageStatus.selectedProduct = {version:newOption.text, id:newOption.value};
+                    $("#selVersion").trigger("change");
                 });
 
                 $(this).dialog("close");
@@ -171,9 +308,6 @@ $(function () {
             'Cancel':function () {
                 $(this).dialog("close");
             }
-        },
-        close:function () {
-            //alert('Are you sure?');
         }
     });
 
@@ -183,13 +317,11 @@ $(function () {
     });
 
     $("#newApp").button().click(function () {
+        $("<input>").insertAfter($(this));
         alert("to be implemented.");
     });
     $("#addApp").button().click(function () {
-        alert("to be implemented.");
-    });
-    $("#newApp").button().click(function () {
-        alert("to be implemented.");
+        alert("test trigger");
     });
     $("#removeApp").button().click(function () {
         alert("to be implemented.");
@@ -202,11 +334,10 @@ $(function () {
 
     $("#selVersion").change(function (event) {
         pageStatus.selectedProduct = {version:$(this).find("option:selected").text(), id:$(this).val()};
-        log(pageStatus);
+//        log(pageStatus);
         jQuery("#applicationGridList").jqGrid('setGridParam', {url:"rest/applications/" + pageStatus.selectedProduct.id, datatype:"json"}).trigger("reloadGrid");
         var newCaption = 'Applications for Product ' + pageStatus.selectedProductBase.name + ' version ' + pageStatus.selectedProduct.version
         jQuery("#applicationGridList").jqGrid('setCaption', newCaption);
-
     });
 
     $("#newVersion").button({
@@ -215,7 +346,6 @@ $(function () {
             primary:"ui-icon-plus"
         }
     }).click(function () {
-            //todo: implement new product release.
             $("#newProductReleaseDialog").dialog("open");
             var productVersions = $("#selVersion")[0].options;
 //            log("productVersions length="+productVersions.length+", productVersion="+productVersions);
@@ -232,7 +362,29 @@ $(function () {
                 }
                 newVersions.add(newOpt);
             }
-
         });
 
+//    $("#applicationName").combobox({
+//        selected:function (e, data) {
+//            var appBaseId = data.value;
+//            url = 'rest/applications/apps/' + appBaseId;
+//            $.getJSON(url, {}, function (data, textStatus, jqXHR) {
+//                var version = $("#newOrAddApplicationDialog").find("#version");
+//                var appBasesOptions = version.get(0).options;
+//                appBasesOptions.length = 0;
+//                $(data).each(function (index, application) {
+//                    var opt = new Option(application.version, application.id);
+//                    appBasesOptions.add(opt);
+//                });
+//            });
+//        }
+//    });
+//    $("#version").combobox({
+//        selected:function (e, data) {
+////            alert('Hi, I am selected: '+JSON.stringify(data));
+//        }
+//    });
+
+
 });
+
