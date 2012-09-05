@@ -9,7 +9,10 @@ import org.apache.log4j.Level;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Action of creating a product
@@ -20,7 +23,7 @@ import java.util.*;
 @Result(type = "json", params = {"noCache", "true", "ignoreHierarchy", "false", "includeProperties", "id,message,status"})
 
 @SuppressWarnings("unchecked")
-public class NewProductReleaseAction extends JSONAction {
+public class CreateOrAddApplication extends JSONAction {
 
     public void setDaoService(DaoService daoService) {
         this.daoService = daoService;
@@ -64,30 +67,30 @@ public class NewProductReleaseAction extends JSONAction {
         return id;
     }
 
-    public String execute() {
+    public String performAction() throws Exception {
         log.setLevel(Level.DEBUG);
         log.debug("Create product release version: " + version + ", product base id=" + id + ", dup version id=" + dupVersionId);
 
-        ProductBase pb= (ProductBase) daoService.retrieve(ProductBase.class,id);
-        Product product = new Product();
-        product.setVersion(version);
-        product.setBase(pb);
-        if (-1 != dupVersionId) {
-            String hsql="select app from Product p join p.applications as app where p.id=:id";
-            Map<String, Long> params = new HashMap<String, Long>();
-            params.put("id", dupVersionId);
-            List<Application> apps= daoService.retrieve(hsql, params);
-            product.setApplications(new HashSet<Application>(apps));
-        }
-        product = (Product) daoService.create(product);
-
-        if (null == product) {
-            setStatus(-1);
-            setMessage("Create product " + version + " fail.");
-            return SUCCESS;
-        }
-
-        id = product.getId();
+//        ProductBase pb= (ProductBase) daoService.retrieve(ProductBase.class,id);
+//        Product product = new Product();
+//        product.setVersion(version);
+//        product.setBase(pb);
+//        if (-1 != dupVersionId) {
+//            String hsql="select app from Product p join p.applications as app where p.id=:id";
+//            Map<String, Long> params = new HashMap<String, Long>();
+//            params.put("id", dupVersionId);
+//            List<Application> apps= daoService.retrieve(hsql, params);
+//            product.setApplications(new HashSet<Application>(apps));
+//        }
+//        product = (Product) daoService.create(product);
+//
+//        if (null == product) {
+//            setStatus(-1);
+//            setMessage("Create product " + version + " fail.");
+//            return SUCCESS;
+//        }
+//
+//        id = product.getId();
         setStatus(0);
         setMessage("Create product release version " + version + " success!");
         return SUCCESS;

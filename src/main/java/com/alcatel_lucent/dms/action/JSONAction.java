@@ -16,7 +16,7 @@ import java.util.Map;
  */
 @ParentPackage("json-default")
 @Result(type="json", params={"noCache","true","ignoreHierarchy","false","includeProperties","status,message"})
-public class JSONAction extends BaseAction {
+abstract public class JSONAction extends BaseAction {
 	private int status;
 	private String message;
 
@@ -32,5 +32,18 @@ public class JSONAction extends BaseAction {
 	public String getMessage() {
 		return message;
 	}
+    
+    abstract protected String performAction() throws Exception;
+    
+    public String execute() {
+        try {
+            return performAction();
+        } catch (Exception e) {
+            e.printStackTrace();
+            setStatus(-1);
+            setMessage(e.getMessage());
+            return SUCCESS;
+        }
+    }
 
 }
