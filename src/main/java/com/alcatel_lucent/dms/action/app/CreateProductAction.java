@@ -44,7 +44,7 @@ public class CreateProductAction extends JSONAction {
         return id;
     }
 
-    public String execute() {
+    protected String performAction() throws Exception {
         log.info("Create product: " + name);
         //TODO create product
         ProductBase pb=new ProductBase();
