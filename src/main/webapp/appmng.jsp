@@ -10,64 +10,88 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<c:set scope="page" var="pageTitle">Application Management</c:set>
+    <c:set scope="page" var="pageTitle">Application Management</c:set>
 
-<title>DMS->${pageTitle}</title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-<meta http-equiv="Pragma" content="no-cache">
+    <title>DMS->${pageTitle}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="Pragma" content="no-cache">
 
-<link rel="stylesheet" type="text/css" href="css/themes/base/jquery.ui.base.css">
-<link rel="stylesheet" type="text/css" href="css/themes/base/jquery.ui.all.css">
+    <link rel="stylesheet" type="text/css" href="css/themes/base/jquery.ui.base.css">
+    <link rel="stylesheet" type="text/css" href="css/themes/base/jquery.ui.all.css">
 
-<link rel="stylesheet" type="text/css" href="css/layout-default-latest.css">
-<link rel="stylesheet" type="text/css" media="screen" href="css/jqgrid/ui.jqgrid.css"/>
+    <link rel="stylesheet" type="text/css" href="css/layout-default-latest.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="css/jqgrid/ui.jqgrid.css"/>
 
-<style type="text/css">
-        /* Using an 'optional-container' instead of 'body', so need body to have a 'height' */
-    html, body {
-        width: 100%;
-        height: 100%;
-        min-height: 100%;
-        padding: 0 0 20px;
-        margin: 0;
+    <style type="text/css">
+            /* Using an 'optional-container' instead of 'body', so need body to have a 'height' */
+        html, body {
+            width: 100%;
+            height: 100%;
+            min-height: 100%;
+            padding: 0 0 20px;
+            margin: 0;
 
-        /*font-family: "Lucida Grande", "Arial", "Helvetica", "Verdana", "sans-serif";*/
-        font-family: "Arial", "Helvetica", "Verdana", "sans-serif";
-        font-size: 10px;
+            /*font-family: "Lucida Grande", "Arial", "Helvetica", "Verdana", "sans-serif";*/
+            font-family: "Arial", "Helvetica", "Verdana", "sans-serif";
+            font-size: 10px;
 
-        overflow: hidden !important;
-    }
+            overflow: hidden !important;
+        }
 
-    #optional-container {
-        /*margin-top: 2%;*/
-        /*margin-left: 2%;*/
-        width: 100%;
-        height: 100%;
+        #optional-container {
+            /*margin-top: 2%;*/
+            /*margin-left: 2%;*/
+            width: 100%;
+            height: 100%;
 
-    }
+        }
 
-    .ui-layout-center {
-        overflow: hidden;
-    }
-</style>
+        .ui-layout-center {
+            overflow: hidden;
+        }
 
-<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
-<script type="text/javascript" src="js/jquery-ui-1.8.22.custom.min.js"></script>
-<%--<script type="text/javascript" src="js/themeswitchertool.js"></script>--%>
+        <%-- for ui widget--%>
+        .ui-combobox {
+            position: relative;
+            display: inline-block;
+        }
+
+        .ui-combobox-toggle {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            margin-left: -1px;
+            padding: 0;
+            /* adjust styles for IE 6/7 */
+            *height: 1.7em;
+            *top: 0.1em;
+        }
+
+        .ui-combobox-input {
+            margin: 0;
+            padding: 0.3em;
+        }
+
+    </style>
+
+    <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="js/jquery-ui-1.8.22.custom.min.js"></script>
+    <%--<script type="text/javascript" src="js/themeswitchertool.js"></script>--%>
 
 
-<script type="text/javascript" src="js/i18n/grid.locale-en.js"></script>
-<script type="text/javascript" src="js/jquery.jqGrid.min.js"></script>
+    <script type="text/javascript" src="js/i18n/grid.locale-en.js"></script>
+    <script type="text/javascript" src="js/jquery.jqGrid.min.js"></script>
 
-<script type="text/javascript" src="js/jquery.jstree.js"></script>
-<script type="text/javascript" src="js/jquery.cookie.js"></script>
-<script type="text/javascript" src="js/jquery.hotkeys.js"></script>
+    <script type="text/javascript" src="js/jquery.jstree.js"></script>
+    <script type="text/javascript" src="js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="js/jquery.hotkeys.js"></script>
 
-<script type="text/javascript" src="js/jquery.layout-latest.js"></script>
+    <script type="text/javascript" src="js/jquery.layout-latest.js"></script>
 
-<script type="text/javascript" src="js/dms-util.js"></script>
+    <script type="text/javascript" src="js/dms-util.js"></script>
 
-<script type="text/javascript" src="js/appmng.js"></script>
+    <script type="text/javascript" src="js/combobox.js"></script>
+    <script type="text/javascript" src="js/appmng.js"></script>
 </head>
 <body>
 
@@ -90,7 +114,26 @@
         </tr>
         <tr>
             <td>Duplicate all applications from a previous version</td>
-            <td> <select id="dupVersion"></select></td>
+            <td><select id="dupVersion"></select></td>
+        </tr>
+    </table>
+</div>
+
+<div id="newOrAddApplicationDialog" title="New or add application">
+    <table>
+        <tr>
+            <td><label>Application name</label></td>
+            <td>
+                <div class="ui-widget">
+                    <select id="applicationName" class="ui-widget"></select>
+                </div>
+        </tr>
+        <tr>
+            <td><label>Version</label></td>
+            <td>
+                <select id="version" class="ui-widget"></select>
+            </td>
+            </td>
         </tr>
     </table>
 </div>
