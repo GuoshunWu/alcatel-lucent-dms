@@ -1,6 +1,7 @@
 package com.alcatel_lucent.dms.rest;
 
 import com.alcatel_lucent.dms.model.Application;
+import com.alcatel_lucent.dms.model.ApplicationBase;
 import com.alcatel_lucent.dms.service.DaoService;
 import com.alcatel_lucent.dms.service.JSONService;
 import org.apache.log4j.Logger;
@@ -75,7 +76,7 @@ public class ApplicationREST {
         }
         hSQL += " order by app." + sidx + " " + sord;
 
-        Collection<Application> resultSet = dao.retrieve(hSQL, params,(page-1)*rows, rows);
+        Collection<Application> resultSet = dao.retrieve(hSQL, params, (page - 1) * rows, rows);
 
         Map<String, Collection<String>> propFilter = new HashMap<String, Collection<String>>();
         propFilter.put("Application", Arrays.asList("id", "cell"));
@@ -86,9 +87,42 @@ public class ApplicationREST {
     }
 
     /**
-     * @param info
+     * @param id product base id
      */
-    public void test(String info) {
+
+    @GET
+    @Path("base/{product.id}")
+    public String retrieveAllApplicationsBaseNotExistsProductByProductId(@PathParam("product.id") Long id) {
+        Map<String, Long> params = new HashMap<String, Long>();
+        params.put("id", id);
+        //TODO: optimize the hql statement
+        String hql = "select appBase from Product p ,ApplicationBase appBase where p.id =:id and appBase.productBase= p.base and not exists (from Product product join product.applications app where app.base=appBase and product.id =:id)";
+        Collection<ApplicationBase> appBases = dao.retrieve(hql, params);
+
+        Map<String, Collection<String>> propFilter = new HashMap<String, Collection<String>>();
+        propFilter.put("ApplicationBase", Arrays.asList("id", "name"));
+
+        return jsonService.toSelectJSON(appBases, propFilter).toString();
+
+    }
+
+    /**
+     * @param id product base id
+     */
+
+    @GET
+    @Path("apps/{applicationBase.id}")
+    public String retrieveAllApplicationsByApplicationBaseId(@PathParam("applicationBase.id") Long id) {
+        Map<String, Long> params = new HashMap<String, Long>();
+        params.put("id", id);
+        //TODO: optimize the hql statement
+        String hql = "from Application where base.id=:id";
+        Collection<Application> appBases = dao.retrieve(hql, params);
+
+        Map<String, Collection<String>> propFilter = new HashMap<String, Collection<String>>();
+        propFilter.put("Application", Arrays.asList("id", "version"));
+
+        return jsonService.toSelectJSON(appBases, propFilter).toString();
 
     }
 }
