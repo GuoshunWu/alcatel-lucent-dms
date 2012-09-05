@@ -1,6 +1,7 @@
 package com.alcatel_lucent.dms.model;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import com.alcatel_lucent.dms.SystemError;
@@ -187,6 +188,13 @@ public class Label extends BaseEntity {
 			}
 		}
 		return null;
+	}
+
+	public void addOrigTranslation(LabelTranslation trans) {
+		if (origTranslations == null) {
+			origTranslations = new ArrayList<LabelTranslation>();
+		}
+		origTranslations.add(trans);
 	}
 	
 }

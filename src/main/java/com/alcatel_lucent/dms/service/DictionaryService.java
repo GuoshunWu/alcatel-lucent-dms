@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Properties;
 
 public interface DictionaryService {
     /**
@@ -32,6 +33,8 @@ public interface DictionaryService {
                           Map<String, String> langCharset,
                           Collection<BusinessWarning> warnings) throws BusinessException;
 
+    public Collection<Dictionary> previewDictionaries(String rootDir, File file, Collection<BusinessWarning> warnings) throws BusinessException;
+    
     /**
      * Parse and preview a DCT dictionary
      *
@@ -78,7 +81,7 @@ public interface DictionaryService {
      * @param warnings    a collection to hold output warnings
      * @return persistent Dictionary object created
      */
-    Dictionary importDCT(Long appId, Dictionary dict, String version, int mode, String[] langCodes,
+    Dictionary importDictionary(Long appId, Dictionary dict, String version, int mode, String[] langCodes,
                          Map<String, String> langCharset,
                          Collection<BusinessWarning> warnings);
 
@@ -155,4 +158,6 @@ public interface DictionaryService {
      * @return Dictionary object
      */
     Dictionary getLatestDictionary(Long dictionaryBaseId, Long beforeDictionaryId);
+    
+    //Dictionary previewProp(String dictionaryName, Map<String, Collection<Properties>> propMap, Collection<BusinessWarning> warnings) throws BusinessException;
 }

@@ -4,8 +4,11 @@ import static com.alcatel_lucent.dms.service.DictionaryServiceImpl.logDictDelive
 import static com.alcatel_lucent.dms.service.DictionaryServiceImpl.logDictDeliverFail
 import static com.alcatel_lucent.dms.service.DictionaryServiceImpl.logDictDeliverSuccess
 
+import java.io.File;
+
 import com.alcatel_lucent.dms.BusinessWarning
 import com.alcatel_lucent.dms.service.DaoService
+import com.alcatel_lucent.dms.service.DictionaryProp;
 import com.alcatel_lucent.dms.service.DictionaryService
 import org.apache.commons.collections.keyvalue.MultiKey
 import org.apache.commons.collections.map.MultiKeyMap
@@ -19,6 +22,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.test.context.transaction.TransactionConfiguration
 import com.alcatel_lucent.dms.model.*
 import com.alcatel_lucent.dms.Constants
+
+import static org.apache.commons.lang.StringUtils.join;
 import static org.hamcrest.Matchers.*
 import org.junit.*
 import static org.junit.Assert.*
@@ -43,6 +48,9 @@ class GDictionaryServiceImplTest {
     @Autowired
     private DaoService dao
 
+    @Autowired
+    private DictionaryProp dictProp;
+	
     private static Logger log = Logger.getLogger(GDictionaryServiceImplTest.class)
 
     @BeforeClass
@@ -260,12 +268,9 @@ class GDictionaryServiceImplTest {
 
     @Test
     void testDeliverDCTFiles() {
-        Long appId = 1L
-        String encoding = null
-
         //all language code and package def
         HashMap<String,List<String>> langCodeForPkg = [
-            	'EN-UK': null,
+//            	'EN-UK': null,
 //                'ZH-CN': ['zh', 'ZH0', 'CH0', 'zh-CN'],
 //                'ZH-TW': ['zh-TW', 'CH1', 'TW0', 'zh-HK', 'HK0'],
 //                'AR': ['AR0', 'ar'],
@@ -297,25 +302,36 @@ class GDictionaryServiceImplTest {
 //                'PL': ['PL0', 'pl', 'pl-PL'],
 //                'PT': ['PT0', 'pt', 'pt-PT'],
 //                'PT-BR': ['pt-BR', 'PT1'],
-//                'RO': ['RO0', 'ro', 'ro-RO'],
-//                'RU': ['ru', 'RU0', 'ru-RU'],
-//                'SER': ['sr-YU', 'YU0', 'sr'],
-//                'SK': ['sk', 'sk-SK', 'SK0'],
-//                'SL': ['sl', 'SI0', 'sl-SI'],
-//                'SV': ['sv', 'sv-SE', 'SV0'],
-//                'TR': ['TR0', 'tr-TR', 'tr'],
+                'RO': ['RO0', 'ro', 'ro-RO'],
+                'RU': ['ru', 'RU0', 'ru-RU'],
+                'SER': ['sr-YU', 'YU0', 'sr'],
+                'SK': ['sk', 'sk-SK', 'SK0'],
+                'SL': ['sl', 'SI0', 'sl-SI'],
+                'SV': ['sv', 'sv-SE', 'SV0'],
+                'TR': ['TR0', 'tr-TR', 'tr'],
         ]
 
+        Map<String, String> mdcLangCharset = [:]
+        ['ca-ES', 'cs-CZ', 'da-DK', 'de-AT', 'de-CH', 'de-DE', 'el-GR', 'en-AU', 'en-CA', 'en-CN',
+                'en-GB', 'en-GR', 'en-MA', 'en-RU', 'en-TW', 'en-US', 'es-AR', 'es-ES', 'es-MX', 'et-EE',
+                'fi-FI', 'fr-CA', 'fr-CH', 'fr-FR', 'fr-MA', 'hr-HR', 'hu-HU', 'it-CH', 'it-IT', 'ja-JP',
+                'ko-KR', 'lt-LT', 'lv-LV', 'nl-BE', 'nl-NL', 'no-NO', 'pl-PL', 'pt-BR', 'pt-PT', 'ro-RO',
+                'ru-RU', 'sk-SK', 'sl-SI', 'sr-CS', 'sv-SE', 'tr-TR', 'zh-CN', 'zh-TW'].each {code ->
+            mdcLangCharset.put(code, 'UTF-8')
+        }
+					
         langCodeForPkg.each {subDir, langCodes ->
 			int mode = subDir.equals('EN-UK') ? Constants.DELIVERY_MODE : Constants.TRANSLATION_MODE
             String rootDir = "Z:/$subDir"
-//			rootDir = "D:/tmp/$subDir"
             String testFilePath = rootDir
             log.info "Begin to import directory: $testFilePath".center(100, '=')
             log.debug "rootDir=$rootDir"
             log.debug "langCodes=$langCodes"
 
-            testFilePath = "$rootDir/6.6.000.107.a/data_access_service/dataaccess/WEB-INF/classes/com/alcatel/dataaccess/global/dico/DtaXmlSchema.dct"
+//            testFilePath = "$rootDir/6.6.000.107.a/data_access_service/dataaccess/WEB-INF/classes/com/alcatel/dataaccess/global/dico/DtaXmlSchema.dct"
+
+//			rootDir = "D:/projects/translation/6.7.1"
+//			testFilePath = "$rootDir/6.6.000.107.a/voice_applications/eCC_tui/VoiceApplications/dictionaries/TUI.dct"
 
 
             changeLoggerFile subDir,"SUCCESS",logDictDeliverSuccess
@@ -331,15 +347,29 @@ class GDictionaryServiceImplTest {
             logDictDeliverWarning.info header
 
             long before = System.currentTimeMillis()
-            Collection<Dictionary> dictionaries = ds.deliverDCTFiles rootDir, new File(testFilePath), appId, mode, encoding, langCodes as String[], null, warnings
-            Map<String, String> langCharset = [:]
-            ['ca-ES', 'cs-CZ', 'da-DK', 'de-AT', 'de-CH', 'de-DE', 'el-GR', 'en-AU', 'en-CA', 'en-CN',
-                    'en-GB', 'en-GR', 'en-MA', 'en-RU', 'en-TW', 'en-US', 'es-AR', 'es-ES', 'es-MX', 'et-EE',
-                    'fi-FI', 'fr-CA', 'fr-CH', 'fr-FR', 'fr-MA', 'hr-HR', 'hu-HU', 'it-CH', 'it-IT', 'ja-JP',
-                    'ko-KR', 'lt-LT', 'lv-LV', 'nl-BE', 'nl-NL', 'no-NO', 'pl-PL', 'pt-BR', 'pt-PT', 'ro-RO',
-                    'ru-RU', 'sk-SK', 'sl-SI', 'sr-CS', 'sv-SE', 'tr-TR', 'zh-CN', 'zh-TW'].each {code ->
-                langCharset.put(code, 'UTF-8')
-            }
+			//Collection<Dictionary> dictionaries = ds.deliverDCTFiles rootDir, new File(testFilePath), appId, mode, encoding, langCodes as String[], null, warnings
+			Collection<Dictionary> dictionaries = ds.previewDictionaries rootDir, new File(testFilePath), warnings
+			dictionaries.each {dict ->
+				Map<String, String>langCharset
+				if (dict.getFormat().equals("dct")) {
+					langCharset = dictProp.getDictionaryCharsets(dict.getName())
+				} else if (dict.getFormat().equals("mdc")) {
+					langCharset = mdcLangCharset
+				}
+				Long appId = 1
+				String dictVersion = "1.0"
+				ds.importDictionary appId, dict, dictVersion, mode, langCodes as String[], langCharset, warnings 
+				if (!warnings.isEmpty()) {
+					join(warnings, '\n').replace("\"", "\"\"");
+					String forCSV = warnings.toString().replace("\"", "\"\"");
+					forCSV = join(warnings, '\n').replace("\"", "\"\"");
+					logDictDeliverWarning.warn(String.format("%s,%s,%s,\"%s\"",
+							dict.getName(), dict.getEncoding(), dict.getPath(),
+							forCSV));
+					warnings.clear()
+				}
+			}
+
 //            Collection<Dictionary> dictionaries = ds.deliverMDCFiles rootDir,new File(testFilePath), appId, mode, langCodes as String[], langCharset, warnings
 
             long after = System.currentTimeMillis()
@@ -360,7 +390,7 @@ class GDictionaryServiceImplTest {
     @Test
     void testGenerateDctFiles(){
         Collection<Long> dictionaryIds = dao.retrieve('select id from Dictionary') as List<Long>
-        ds.generateDCTFiles("D:/temp/ICSR6.6_merge2",dictionaryIds, null)
+        ds.generateDCTFiles("D:/temp/ICSR6.6_merge3",dictionaryIds, null)
     }
 
     @Test
@@ -422,7 +452,7 @@ class GDictionaryServiceImplTest {
                 'sv-SE': 'UTF-8',
         ]
         String[] langCodes = null
-        ds.importDCT dict, langCodes, langCharset, warnings
+        ds.importDictionary dict, langCodes, langCharset, warnings
 
         assertNotNull dict
 

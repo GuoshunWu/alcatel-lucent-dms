@@ -152,7 +152,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
              * */
             Map<String, Integer> cellIndexMap = new HashMap<String, Integer>();
             for (int i = 0; i < columnCount; ++i) {
-                String value = header.getCell(i).getStringCellValue().trim();
+                String value = header.getCell(i).getStringCellValue();
                 cellIndexMap.put(value, i);
             }
             JSONObject rowContainer = null;
@@ -163,7 +163,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                 for (String headerTitle : headerTitles) {
                     Cell cell = row.getCell(cellIndexMap.get(headerTitle));
                     if (null != cell) {
-                        Object cellValue = cell.getCellType() == Cell.CELL_TYPE_NUMERIC ? (int)(cell.getNumericCellValue()) : cell.getStringCellValue().trim();
+                        Object cellValue = cell.getCellType() == Cell.CELL_TYPE_NUMERIC ? (int)(cell.getNumericCellValue()) : cell.getStringCellValue();
                         rowContainer.put(headerTitle, cellValue);
                     }
                 }
@@ -199,7 +199,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
             throw new BusinessException(BusinessException.TEXT_NOT_FOUND, params.get("reference"),ctx.getName());
         }
         Translation trans=text.getTranslation(languageId);
-        String transString=rowContainer.get(headerMap.get(ExcelFileHeader.TRANSLATION)).toString();
+        String transString=rowContainer.get(headerMap.get(ExcelFileHeader.TRANSLATION)).toString().trim();
         if(null==trans){
             trans = new Translation();
             trans.setText(text);

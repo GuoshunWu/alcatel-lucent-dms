@@ -18,6 +18,7 @@ public class LanguageServiceImpl extends BaseServiceImpl implements LanguageServ
 	// base data for dms
 	private static Map<String, AlcatelLanguageCode> alcatelLanguageCodes = null;
 	private static Map<String, ISOLanguageCode> isoLanguageCodes = null;
+	private static Map<String, ISOLanguageCode> isoLanguageCodesUpperCase = null;
 	private static Map<String, Charset> charsets = null;
 	private static Map<Long, Language> languages = null;
 
@@ -26,10 +27,12 @@ public class LanguageServiceImpl extends BaseServiceImpl implements LanguageServ
 			return isoLanguageCodes;
 
 		isoLanguageCodes = new HashMap<String, ISOLanguageCode>();
+		isoLanguageCodesUpperCase = new HashMap<String, ISOLanguageCode>();
 		List<ISOLanguageCode> isoLangCodes = dao
 				.retrieve("from ISOLanguageCode");
 		for (ISOLanguageCode isoLangCode : isoLangCodes) {
 			isoLanguageCodes.put(isoLangCode.getCode(), isoLangCode);
+			isoLanguageCodesUpperCase.put(isoLangCode.getCode().toUpperCase(), isoLangCode);
 			isoLangCode.getLanguage().getDefaultCharset();
 		}
 		return isoLanguageCodes;
@@ -70,7 +73,14 @@ public class LanguageServiceImpl extends BaseServiceImpl implements LanguageServ
 	}
 
 	public ISOLanguageCode getISOLanguageCode(String code) {
-		return getISOLanguageCodes().get(code);
+		getISOLanguageCodes();
+		return isoLanguageCodesUpperCase.get(code.replace(
+                '_', '-').toUpperCase());
+	}
+
+	private Map<String, AlcatelLanguageCode> getISOLanguageCodesUpperCase() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	public Map<Long, Language> getLanguages() {
@@ -90,8 +100,7 @@ public class LanguageServiceImpl extends BaseServiceImpl implements LanguageServ
         ISOLanguageCode isoCode = null;
         AlcatelLanguageCode alCode = getAlcatelLanguageCode(languageCode);
         if (null == alCode) {
-            isoCode = getISOLanguageCode(languageCode.replace(
-                    '_', '-'));
+            isoCode = getISOLanguageCode(languageCode);
             if (null == isoCode) {
                 return null;
             }

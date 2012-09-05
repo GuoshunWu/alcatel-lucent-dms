@@ -196,6 +196,10 @@ public class Util {
     public static boolean isMDCFile(File file) {
         return isMDCFile(file.getName());
     }
+    
+    public static boolean isPropFile(File file) {
+    	return isSpecificFile(file.getName(), ".properties");
+    }
 
 	private static boolean isSpecificFile(String fileName, String fileExtPattern) {
 		Pattern pattern = Pattern.compile(fileExtPattern,
