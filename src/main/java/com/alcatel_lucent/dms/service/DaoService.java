@@ -93,6 +93,11 @@ public interface DaoService {
      * @param id        the id of the class type
      */
     void delete(String className, Serializable id);
+    
+    /**
+     * Removes the object from the database with with specified class
+     */
+    void delete(Class c, Serializable id);
 
     /**
      * Batch delete (in testing).

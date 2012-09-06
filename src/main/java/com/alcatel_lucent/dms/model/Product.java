@@ -1,6 +1,7 @@
 package com.alcatel_lucent.dms.model;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 public class Product extends BaseEntity {
 
@@ -31,5 +32,17 @@ public class Product extends BaseEntity {
 	public void setApplications(Collection<Application> applications) {
 		this.applications = applications;
 	}
+	
+	public void removeApplication(Long appId) {
+		if (applications != null && appId != null) {
+			for (Iterator<Application> iterator = applications.iterator(); iterator.hasNext(); ) {
+				Application app = iterator.next();
+				if (app.getId().equals(appId)) {
+					iterator.remove();
+				}
+			}
+		}
+	}
+
 
 }
