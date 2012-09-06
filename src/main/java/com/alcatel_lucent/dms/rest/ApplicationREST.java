@@ -107,7 +107,7 @@ public class ApplicationREST {
     }
 
     /**
-     * @param id product base id
+     * @param id applicationBase id
      */
 
     @GET
@@ -115,7 +115,6 @@ public class ApplicationREST {
     public String retrieveAllApplicationsByApplicationBaseId(@PathParam("applicationBase.id") Long id) {
         Map<String, Long> params = new HashMap<String, Long>();
         params.put("id", id);
-        //TODO: optimize the hql statement
         String hql = "from Application where base.id=:id";
         Collection<Application> appBases = dao.retrieve(hql, params);
 
@@ -125,5 +124,21 @@ public class ApplicationREST {
         return jsonService.toSelectJSON(appBases, propFilter).toString();
 
     }
+
+//    @GET
+//    @Path("apps/{applicationBase.id}")
+//    public String retrieveAllApplicationsByApplicationBaseId(@PathParam("applicationBase.id") Long id) {
+//        Map<String, Long> params = new HashMap<String, Long>();
+//        params.put("id", id);
+//        //TODO: optimize the hql statement
+//        String hql = "from Application where base.id=:id";
+//        Collection<Application> appBases = dao.retrieve(hql, params);
+//
+//        Map<String, Collection<String>> propFilter = new HashMap<String, Collection<String>>();
+//        propFilter.put("Application", Arrays.asList("id", "version"));
+//
+//        return jsonService.toSelectJSON(appBases, propFilter).toString();
+//
+//    }
 }
 

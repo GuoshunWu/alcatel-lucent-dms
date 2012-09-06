@@ -76,7 +76,6 @@
 
     <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
     <script type="text/javascript" src="js/jquery-ui-1.8.22.custom.min.js"></script>
-    <%--<script type="text/javascript" src="js/themeswitchertool.js"></script>--%>
 
 
     <script type="text/javascript" src="js/i18n/grid.locale-en.js"></script>
@@ -92,6 +91,17 @@
 
     <script type="text/javascript" src="js/combobox.js"></script>
     <script type="text/javascript" src="js/appmng.js"></script>
+
+    <%--<script type="text/javascript" src="js/themeswitchertool.js"></script>--%>
+
+    <%--<script type="text/javascript"--%>
+            <%--src="http://jqueryui.com/themeroller/themeswitchertool/">--%>
+    <%--</script>--%>
+    <%--<script type="text/javascript" >--%>
+        <%--$(document).ready(function(){--%>
+            <%--$('#switcher').themeswitcher();--%>
+        <%--});--%>
+    <%--</script>--%>
 </head>
 <body>
 
@@ -140,8 +150,9 @@
 
 
 <div id="optional-container">
-    <div class="ui-layout-north" style="text-align: left">
+    <div class="ui-layout-north" style="text-align: left; bottom:0px">
         <span style="font-family:fantasy; font-size:14pt; font-style:normal; ">${pageTitle}</span>
+        <span><div id="switcher"></div></span>
     </div>
 
     <div id="ui_center" class="ui-layout-center">
@@ -158,14 +169,31 @@
             </table>
         </div>
         <div id="DMS_productPanel">
-            Product: <span id="dispProductName"></span> <br/> <br/>
-            Version: <select id="selVersion"></select>
-            <button id="newVersion"></button>
-            <br/><br/>
 
             <table border="0">
                 <tr>
-                    <td valign="top" rowspan="8">
+                    <td style="width:30px;">Product:</td>
+                    <td><span id="dispProductName"></span></td>
+
+                </tr>
+                <tr>
+                    <td>Version:</td>
+                    <td><select id="selVersion"></select>
+                        <button id="newVersion"></button>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>TestBtn:</td>
+                    <td>
+                        <button id="newApp">New App</button>
+                        <button id="addApp">Add App</button>
+                        <button id="removeApp">Remove App</button>
+                        <button id="download">Download</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top" colspan="2">
                         <div id="applicationGrid">
                             <table id="applicationGridList">
                                 <tr>
@@ -175,43 +203,47 @@
                             <div id="pager"></div>
                         </div>
                     </td>
-                    <td>
-                        <button id="newApp">New App</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>&nbsp;</td>
-                </tr>
-                <tr>
-                    <td>
-                        <button id="addApp">Add App</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>&nbsp;</td>
-                </tr>
-                <tr>
-                    <td>
-                        <button id="removeApp">Remove App</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>&nbsp;</td>
-                </tr>
-                <tr>
-                    <td>&nbsp;</td>
-                </tr>
-                <tr>
-                    <td>
-                        <button id="download">Download</button>
-                    </td>
                 </tr>
             </table>
 
         </div>
 
         <div id="DMS_applicationPanel">
-            Application
+
+            <table border="0">
+                <tr>
+                    <td style="width:30px;">Product:</td>
+                    <td colspan="2"><span id="appDispProductName"></span></td>
+                </tr>
+                <tr>
+                    <td>Application:</td>
+                    <td><span id="appDispAppName"></span></td>
+                    <td align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        Version:<select id="selAppVersion"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">Deliver app dictionary</td>
+                    <td><input type="file" name="dctFileChooser" value="Chose file: ">
+                        <button id="dictUpload">Upload...</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <div id="dictionaryGrid">
+                            <table id="dictionaryGridList">
+                                <tr>
+                                    <td/>
+                                </tr>
+                            </table>
+                            <div id="dictPager"></div>
+                        </div>
+                    </td>
+                </tr>
+
+            </table>
+
+
         </div>
 
     </div>

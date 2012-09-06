@@ -55,19 +55,22 @@ $(function () {
             json_data:{
                 data:data
             },
+            ui:{
+                select_limit: 1
+            },
             plugins:[ "themes", "json_data", "ui", "core"]
         }).bind("select_node.jstree", function (event, data) {
                 var appTree = $.jstree._reference("#appTree");
                 var text = appTree.get_text(data.rslt.obj);
                 var parent = appTree._get_parent(data.rslt.obj);
-
                 var id = data.rslt.obj.attr("id");
-                pageStatus.selectedProductBase = {id:id, name:text};
+
                 if (-1 == parent) { //it is a Product
                     pageStatus.selectedPanel = showCenterPanel('DMS_productPanel');
+                    pageStatus.selectedProductBase = {id:id, name:text};
                     $('#dispProductName', pageStatus.selectedPanel).text(text);
 
-                    // query product version base on Product and its Id
+                    // query product version
                     $.getJSON('rest/products/' + id, {}, function (data, textStatus, jqXHR) {
                         var productVersions = $("#selVersion").get(0).options;
                         productVersions.length = 0;
@@ -84,7 +87,26 @@ $(function () {
                     });
                 } else { //it is a Application
                     pageStatus.selectedPanel = showCenterPanel('DMS_applicationPanel');
+                    pageStatus.selectedProductBase = {id:parent.attr("id"), name:appTree.get_text(parent)};
                     //TODO: Initialize Application panel elements
+                    $('#appDispProductName', pageStatus.selectedPanel).text(pageStatus.selectedProductBase.name);
+                    $('#appDispAppName', pageStatus.selectedPanel).text(text);
+
+                    // query application version
+                    var url='rest/applications/apps/'+id;
+                    $.getJSON(url, {}, function (data, textStatus, jqXHR) {
+                        var productVersions = $("#selAppVersion").get(0).options;
+                        productVersions.length = 0;
+                        $(data).each(function (index, product) {
+                            productVersions.add(new Option(product.version, product.id));
+                        });
+                        // update dictGridList
+//                        jQuery("#applicationGridList").jqGrid('setGridParam', {url:"rest/applications/" + pageStatus.selectedProduct.id, datatype:"json"}).trigger("reloadGrid");
+//
+//                        var newCaption = 'Applications for Product ' + pageStatus.selectedProductBase.name + ' version ' + pageStatus.selectedProduct.version
+//                        jQuery("#applicationGridList").jqGrid('setCaption', newCaption);
+
+                    });
                 }
             });
     });
@@ -111,8 +133,7 @@ $(function () {
         viewrecords:true,
         gridview:true,
         caption:'Applications for Product'
-    });
-    jQuery("#applicationGridList").jqGrid('navGrid', '#pager', {edit:false, add:false, del:false, search:false, view:false})
+    }).jqGrid('navGrid', '#pager', {edit:false, add:false, del:false, search:false, view:false})
         .navButtonAdd('#pager', {
             caption:"Del",
             buttonicon:"ui-icon-trash",
@@ -148,6 +169,32 @@ $(function () {
             position:"first"
         }
     );
+    // dictionary grid.
+    $('#dictionaryGridList').jqGrid({
+        url:'',
+        datatype:'json',
+        width:700,
+        height:350,
+        colNames:['ID', 'Dictionary', 'Version', 'Format','Encoding','Labels','Action'],
+        colModel:[
+            {name:'id', index:'id', width:55, align:'center', hidden:true},
+            {name:'name', index:'name', width:100, editable:true, align:'center'},
+            {name:'version', index:'version', width:90, editable:true, align:'center'},
+            {name:'format', index:'format', width:90, editable:true, align:'center'},
+            {name:'encoding', index:'encoding', width:90, editable:true, align:'center'},
+            {name:'labelNum', index:'labelNum', width:80, align:'center'},
+            {name:'action', index:'action', width:90, editable:true, align:'center'}
+        ],
+        pager:'#dictPager',
+        editurl:"app/create-or-add-application",
+        rowNum:10,
+        rowList:[10, 20, 30],
+        sortname:'name',
+        sortorder:'asc',
+        viewrecords:true,
+        gridview:true,
+        caption:'Applications for Product'
+    }).jqGrid('navGrid', '#dictPager',{edit:true, add:true, del:true, search:true});
 
     $('#newOrAddApplicationDialog').dialog({
         autoOpen:false,
@@ -167,7 +214,7 @@ $(function () {
             $("#applicationName").change(function (e) {
 
                 var versionOptions = $("#version").get(0).options;
-                versionOptions.length=0;
+                versionOptions.length = 0;
                 versionOptions.add(new Option('new', -1));
 
                 var appBaseId = $(this).val();
@@ -219,20 +266,26 @@ $(function () {
         buttons:{
             'OK':function () {
                 var url = 'app/create-or-add-application';
-                var data = {
-                    productId: $("#selVersion").val(),
-                    appBaseId: $('#applicationName').val(),
-                    appId: $('#version').val(),
+                var params = {
+                    productId:$("#selVersion").val(),
+                    appBaseId:$('#applicationName').val(),
+                    appId:$('#version').val(),
                     appBaseName:$('#applicationName').data('myinput').val(),
                     appVersion:$('#version').data('myinput').val()
                 };
 
-                $.post(url, data, function (data, textStatus, jqXHR) {
+                $.post(url, params, function (data, textStatus, jqXHR) {
                     if (data.status != 0) {
                         alert(data.message);
                         return;
                     }
-                    //create success.
+                    //create success
+
+                    if(-1==params.appBaseId){
+                        // create new applicationBase, the appTree need to be updated
+                        var selectedNode=$('#appTree').jstree("get_selected");
+                        $("#appTree").jstree("create_node", selectedNode, "last", {data: params.appBaseName,attr:{id:data.appBaseId}});
+                    }
                     //trigger table.
                     $("#applicationGridList").trigger("reloadGrid");
                 });
@@ -264,7 +317,6 @@ $(function () {
                         return;
                     }
                     //create success.
-                    // $("#appTree").jstree("create_node", -1, "last", {data: productName.name,attr:{id:data.id}});
                     $.jstree._reference("#appTree").create_node(-1, "last", {data:productName.name, attr:{id:data.id}});
                 });
 
@@ -316,6 +368,9 @@ $(function () {
         $("#newProductDialog").dialog("open");
     });
 
+    $("#dictUpload").button().click(function(e){
+        alert("to be implemented.");
+    });
     $("#newApp").button().click(function () {
         $("<input>").insertAfter($(this));
         alert("to be implemented.");
@@ -363,28 +418,5 @@ $(function () {
                 newVersions.add(newOpt);
             }
         });
-
-//    $("#applicationName").combobox({
-//        selected:function (e, data) {
-//            var appBaseId = data.value;
-//            url = 'rest/applications/apps/' + appBaseId;
-//            $.getJSON(url, {}, function (data, textStatus, jqXHR) {
-//                var version = $("#newOrAddApplicationDialog").find("#version");
-//                var appBasesOptions = version.get(0).options;
-//                appBasesOptions.length = 0;
-//                $(data).each(function (index, application) {
-//                    var opt = new Option(application.version, application.id);
-//                    appBasesOptions.add(opt);
-//                });
-//            });
-//        }
-//    });
-//    $("#version").combobox({
-//        selected:function (e, data) {
-////            alert('Hi, I am selected: '+JSON.stringify(data));
-//        }
-//    });
-
-
 });
 

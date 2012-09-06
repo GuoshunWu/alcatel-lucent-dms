@@ -56,7 +56,7 @@ public class ProductREST {
     @GET
     public String retrieveAllProductBase() {
 
-        Collection<ProductBase> result = dao.retrieve("from ProductBase");
+        Collection<ProductBase> result = dao.retrieve("from ProductBase order by name");
         Map<String, Collection<String>> propFilter = new HashMap<String, Collection<String>>();
         propFilter.put("ApplicationBase", Arrays.asList("name", "id"));
         propFilter.put("ProductBase", Arrays.asList("name", "id", "applicationBases"));

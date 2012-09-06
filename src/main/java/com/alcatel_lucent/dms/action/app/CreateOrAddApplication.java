@@ -18,7 +18,7 @@ import java.util.*;
  * @author allany
  */
 @ParentPackage("json-default")
-@Result(type = "json", params = {"noCache", "true", "ignoreHierarchy", "false", "includeProperties", "message,status"})
+@Result(type = "json", params = {"noCache", "true", "ignoreHierarchy", "false", "includeProperties", "appBaseId,message,status"})
 
 @SuppressWarnings("unchecked")
 public class CreateOrAddApplication extends JSONAction {
@@ -101,6 +101,7 @@ public class CreateOrAddApplication extends JSONAction {
         } else {
             app = (Application) daoService.retrieve(Application.class, appId);
         }
+        appBaseId = app.getId();
 
         //todo: persistence
         product.getApplications().add(app);

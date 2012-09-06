@@ -15,7 +15,7 @@
             <one-to-many class="com.alcatel_lucent.dms.model.Product" />
         </set>
 
-        <set name="applicationBases" inverse="true">
+        <set name="applicationBases" inverse="true" order-by="name">
             <key column="PRODUCT_BASE_ID" on-delete="cascade" not-null="true" />
             <one-to-many class="com.alcatel_lucent.dms.model.ApplicationBase" />
         </set>
