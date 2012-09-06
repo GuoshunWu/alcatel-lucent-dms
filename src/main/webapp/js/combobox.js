@@ -12,8 +12,8 @@
             change:null,
             selected:null
         },
-        _init:function(){
-            var self=this;
+        _init:function () {
+            var self = this;
         },
         _create:function () {
             var self = this;
@@ -24,7 +24,7 @@
             var wrapper = this.wrapper = $("<span>").addClass("ui-combobox").insertAfter(select);
 
 
-            var input = self.input= $("<input id='cboInput'>")
+            var input = self.input = $("<input id='cboInput'>")
                 .appendTo(wrapper)
                 .val(value).addClass("ui-state-default ui-combobox-input")
                 .autocomplete({
@@ -48,8 +48,8 @@
                         }));
                     },
                     select:function (event, ui) {
-                        self._trigger("selected",event, {value:ui.item.option.value, text:ui.item.option.text});
-                        self.valid=true;
+                        self._trigger("selected", event, {value:ui.item.option.value, text:ui.item.option.text});
+                        self.valid = true;
                     },
                     change:function (event, ui) {
 
@@ -58,28 +58,27 @@
                             var valid = false;
                             select.children("option").each(function () {
                                 if ($(this).text().match(matcher)) {
-                                    this.selected = valid = self.valid=true;
+                                    this.selected = valid = self.valid = true;
                                     return false;
                                 }
                             });
-                            self._trigger("change",{value:null, text:$(this).val()});
+                            self._trigger("change", {value:null, text:$(this).val()});
 
                             if (!valid) {
                                 // remove invalid value, as it didn't match anything
 //                                                $(this).val("");
 //                                                select.val("");
 //                                                input.data("autocomplete").term = "";
-                                self.valid=false;
+                                self.valid = false;
                                 return false;
                             }
                         }
                         self._trigger("change", event, {value:ui.item.option.value, text:ui.item.option.text});
-                   }
+                    }
                 })
                 .addClass("ui-widget ui-widget-content ui-corner-left");
             input.data("autocomplete")._renderItem = function (ul, item) {
-                return $("<li></li>")
-                    .data("item.autocomplete", item)
+                return $("<li></li>").data("item.autocomplete", item)
                     .append("<a>" + item.label + "</a>")
                     .appendTo(ul);
             };
@@ -113,17 +112,17 @@
         },
 
         val:function (value) {
-            if(value){
+            if (value) {
                 this.input.val(value);
             }
-            var select=this.element;
+            var select = this.element;
             var selected = select.children(":selected");
 
 
-            if(this.valid){
-                return {value:selected.val(), text: selected.text()}
+            if (this.valid) {
+                return {value:selected.val(), text:selected.text()}
             }
-            return {value:null,text: this.input.val()}
+            return {value:null, text:this.input.val()}
         },
         destroy:function () {
             this.wrapper.remove();
