@@ -52,3 +52,19 @@ function log(info){
         console.log(info);
     }
 }
+
+/**
+ * init a select by json data from url
+ * the original options in select will be removed.
+ * */
+function initSelect(select, url){
+    select.length=0;
+    $.get(url,{},function(json){
+        if(typeof(json)=="string") {
+            json=eval(json);
+        }
+        for(var i=0; i<json.length; ++i){
+            select.options.add(new Option(json[i].text, json[i].value));
+        }
+    });
+}
