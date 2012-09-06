@@ -24,6 +24,33 @@
                 log(myCombo.combobox("val"));
             });
 
+            $("#autoTest").autocomplete({
+                source:['a','b','ccc'],
+                select:function(e, ui){
+                    alert(ui.item);
+                    return false;
+                },
+                change:function(e,ui){
+//                    alert("change");
+//                    alert(ui.item);
+
+                }
+            });
+
+            $("<input>").insertAfter("#autoTest").autocomplete({
+                source:[ { label: "choice1", value: "value1" }],
+                select:function(e, ui){
+//                    alert(ui.item);
+//                    return false;
+                },
+                change:function(e,ui){
+                   $("<Option value=111>aaaa</Option>").appendTo($("#ccc"));
+//                    alert(ui.item);
+
+                }
+            });
+
+            initSelect($("#ccc")[0],"json/select.json");
         });
     </script>
 
@@ -39,6 +66,11 @@
     <option value="4">444</option>
 </select>
 
+<input id="autoTest">
+
+<select id="ccc">
+
+</select>
 </body>
 
 </html>
