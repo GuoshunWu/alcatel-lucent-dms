@@ -61,6 +61,8 @@ public class DCTParser extends DictionaryParser {
                 deliveredDicts.addAll(parse(rootDir, dctFile, warnings));
             }
             return deliveredDicts;
+        } else if (!Util.isDCTFile(file)) {
+        	return deliveredDicts;
         }
 
         if (Util.isZipFile(file)) {
@@ -121,7 +123,13 @@ public class DCTParser extends DictionaryParser {
 	}
 	
 	private Dictionary parseDCT(String dictName, String path, InputStream in, Collection<BusinessWarning> warnings) throws BusinessException {
-        String encoding = dictProp.getDictionaryEncoding(dictName);
+        String encoding = null;
+        try {
+        	encoding = dictProp.getDictionaryEncoding(dictName);
+        } catch (Exception e) {
+        	log.warn("Encoding is not specified for '" + dictName + "', using ISO8859-1.");
+        	encoding = "ISO-8859-1";
+        }
         
         DictionaryBase dictBase=new DictionaryBase();
         dictBase.setName(dictName);
