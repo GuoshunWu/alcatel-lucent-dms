@@ -139,7 +139,6 @@ $(function () {
             caption:"Add",
             buttonicon:"ui-icon-plus",
             onClickButton:function () {
-                //todo: add new application
                 var width = jQuery("#applicationGridList").jqGrid('getGridParam', "width");
                 var height = jQuery("#applicationGridList").jqGrid('getGridParam', "height");
 
@@ -157,37 +156,88 @@ $(function () {
         modal:true,
         position:"center",
         show:{ effect:'drop', direction:"up" },
+        create:function (event, ui) {
+            var input = $('<input>').insertAfter($('#applicationName')).hide();
+            $('#applicationName').data('myinput', input);
+            input = $('<input>').insertAfter($("#version")).hide();
+            $('#version').data('myinput', input);
+
+            $("select", this).css('width', "80px");
+
+            $("#applicationName").change(function (e) {
+
+                var versionOptions = $("#version").get(0).options;
+                versionOptions.length=0;
+                versionOptions.add(new Option('new', -1));
+
+                var appBaseId = $(this).val();
+                if (-1 == appBaseId) {
+                    $(this).data('myinput').show();
+                    $("#version").trigger("change");
+                    return;
+                }
+                $(this).data('myinput').hide();
+
+                url = 'rest/applications/apps/' + appBaseId;
+                $.getJSON(url, {}, function (data, textStatus, jqXHR) {
+                    $(data).each(function (index, application) {
+                        versionOptions.add(new Option(application.version, application.id));
+                    });
+                    $("#version").trigger("change");
+                });
+            });
+
+            $("#version").change(function (e) {
+                var appId = $(this).val();
+                if (-1 == appId) {
+                    $(this).data('myinput').show();
+                    return;
+                }
+                $(this).data('myinput').hide();
+            });
+        },
         open:function (event, ui) {
             //update applicationBases in new ApplicationDialog Application Select according to the product id
-//            var productBaseId=$("#appTree").jstree("get_selected","#appTree").attr("id");
+
             var productId = $("#selVersion").val();
             url = 'rest/applications/base/' + productId;
             $.getJSON(url, {}, function (data, textStatus, jqXHR) {
                 var appBasesOptions = $("#newOrAddApplicationDialog").find("#applicationName").get(0).options;
                 appBasesOptions.length = 0;
+                appBasesOptions.add(new Option('new', -1));
+
                 $(data).each(function (index, applicationBase) {
                     appBasesOptions.add(new Option(applicationBase.name, applicationBase.id));
                 });
+
+                $('#applicationName').trigger('change');
+
             });
+
 
         },
         buttons:{
             'OK':function () {
-                //todo: implement add new application dialog
-                alert($("#applicationName").combobox("val"));
-//                url = 'app/create-product';
-//                var productName = {'name':$('#productName').val()};
-//                $.post(url, productName, function (data, textStatus, jqXHR) {
-//                    if (data.status != 0) {
-//                        alert(data.message);
-//                        return;
-//                    }
-//                    //create success.
-//                    // $("#appTree").jstree("create_node", -1, "last", {data: productName.name,attr:{id:data.id}});
-//                    $.jstree._reference("#appTree").create_node(-1, "last", {data:productName.name, attr:{id:data.id}});
-//                });
+                var url = 'app/create-or-add-application';
+                var data = {
+                    productId: $("#selVersion").val(),
+                    appBaseId: $('#applicationName').val(),
+                    appId: $('#version').val(),
+                    appBaseName:$('#applicationName').data('myinput').val(),
+                    appVersion:$('#version').data('myinput').val()
+                };
 
+                $.post(url, data, function (data, textStatus, jqXHR) {
+                    if (data.status != 0) {
+                        alert(data.message);
+                        return;
+                    }
+                    //create success.
+                    //trigger table.
+                    $("#applicationGridList").trigger("reloadGrid");
+                });
                 $(this).dialog("close");
+
             },
             'Cancel':function () {
                 $(this).dialog("close");
@@ -271,10 +321,7 @@ $(function () {
         alert("to be implemented.");
     });
     $("#addApp").button().click(function () {
-        alert("to be implemented.");
-    });
-    $("#newApp").button().click(function () {
-        alert("to be implemented.");
+        alert("test trigger");
     });
     $("#removeApp").button().click(function () {
         alert("to be implemented.");
@@ -287,11 +334,10 @@ $(function () {
 
     $("#selVersion").change(function (event) {
         pageStatus.selectedProduct = {version:$(this).find("option:selected").text(), id:$(this).val()};
-        log(pageStatus);
+//        log(pageStatus);
         jQuery("#applicationGridList").jqGrid('setGridParam', {url:"rest/applications/" + pageStatus.selectedProduct.id, datatype:"json"}).trigger("reloadGrid");
         var newCaption = 'Applications for Product ' + pageStatus.selectedProductBase.name + ' version ' + pageStatus.selectedProduct.version
         jQuery("#applicationGridList").jqGrid('setCaption', newCaption);
-
     });
 
     $("#newVersion").button({
@@ -318,24 +364,26 @@ $(function () {
             }
         });
 
-    $("#applicationName").combobox({
-        selected:function (e, data) {
-//            log(JSON.stringify(data));
-            var appBaseId = data.value;
-            log('appBase id: ' + appBaseId);
-            url = 'rest/applications/apps/' + appBaseId;
-            $.getJSON(url, {}, function (data, textStatus, jqXHR) {
-                var appBasesOptions = $("#newOrAddApplicationDialog").find("#version").get(0).options;
-                appBasesOptions.length = 0;
-                $(data).each(function (index, application) {
-                    var opt= new Option(application.version, application.id);
-                    appBasesOptions.add(opt);
-                });
-                appBasesOptions[0].selected =true;
-            });
-        }
-    });
-    $("#version").combobox();
+//    $("#applicationName").combobox({
+//        selected:function (e, data) {
+//            var appBaseId = data.value;
+//            url = 'rest/applications/apps/' + appBaseId;
+//            $.getJSON(url, {}, function (data, textStatus, jqXHR) {
+//                var version = $("#newOrAddApplicationDialog").find("#version");
+//                var appBasesOptions = version.get(0).options;
+//                appBasesOptions.length = 0;
+//                $(data).each(function (index, application) {
+//                    var opt = new Option(application.version, application.id);
+//                    appBasesOptions.add(opt);
+//                });
+//            });
+//        }
+//    });
+//    $("#version").combobox({
+//        selected:function (e, data) {
+////            alert('Hi, I am selected: '+JSON.stringify(data));
+//        }
+//    });
 
 
 });
