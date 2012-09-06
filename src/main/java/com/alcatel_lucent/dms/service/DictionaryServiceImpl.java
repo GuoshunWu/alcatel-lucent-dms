@@ -75,12 +75,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     public Collection<Dictionary> previewDictionaries(String rootDir, File file, Collection<BusinessWarning> warnings) throws BusinessException {
     	Collection<Dictionary> result = new ArrayList<Dictionary>();
     	rootDir = rootDir.replace("\\", "/");
-    	for (com.alcatel_lucent.dms.service.parser.DictionaryParser parser : parsers) {
-    		result.addAll(parser.parse(rootDir, file, warnings));
-    	}
-    	return result;
-    }
-    
         long before = System.currentTimeMillis();
     	for (com.alcatel_lucent.dms.service.parser.DictionaryParser parser : parsers) {
     		result.addAll(parser.parse(rootDir, file, warnings));
