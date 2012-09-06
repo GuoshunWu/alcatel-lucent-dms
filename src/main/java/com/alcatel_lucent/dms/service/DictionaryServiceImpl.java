@@ -81,292 +81,16 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     	return result;
     }
     
-    public Dictionary deliverDCT(String dictionaryName, String version, String path,  
-                                 InputStream dctInputStream, Long appId, int mode, String encoding,
-                                 String[] langCodes, Map<String, String> langCharset,
-                                 Collection<BusinessWarning> warnings) throws BusinessException,
-            IOException {
-
         long before = System.currentTimeMillis();
-        Dictionary dict = previewDCT(dictionaryName, path, dctInputStream,
-                appId, encoding, warnings);
+    	for (com.alcatel_lucent.dms.service.parser.DictionaryParser parser : parsers) {
+    		result.addAll(parser.parse(rootDir, file, warnings));
+    	}
         long after = System.currentTimeMillis();
-        log.info("**************previewDCT take " + (after - before)
+        log.info("**************preview directory '" + file.getAbsolutePath() + "' take " + (after - before)
                 + " milliseconds of time.************");
-
-        log.info("Dictionary " + dict.getName()
-                + " is about to import to database");
-
-        before = System.currentTimeMillis();
-        dict = importDictionary(appId,dict, version, mode, langCodes, langCharset, warnings);
-        after = System.currentTimeMillis();
-        log.info("************importDCT take " + (after - before)
-                + " milliseconds of time.**************");
-
-        return dict;
+    	return result;
     }
-
-
-    public Dictionary deliverMDC(String dictionaryName, String version, String path,
-                                 InputStream dctInputStream, Long appId, int mode, String[] langCodes, Map<String, String> langCharset,
-                                 Collection<BusinessWarning> warnings) throws BusinessException,
-            IOException {
-
-        long before = System.currentTimeMillis();
-        Dictionary dict = previewMDC(dictionaryName, path, dctInputStream,
-                appId, warnings);
-        long after = System.currentTimeMillis();
-        log.info("**************previewMDC take " + (after - before)
-                + " milliseconds of time.************");
-
-        log.info("Dictionary " + dict.getName()
-                + " is about to import to database");
-
-        before = System.currentTimeMillis();
-        dict = importDictionary(appId, dict, version, mode, langCodes, langCharset, warnings);
-        after = System.currentTimeMillis();
-        log.info("************importMDC take " + (after - before)
-                + " milliseconds of time.**************");
-
-        return dict;
-    }
-
-    @Override
-    public Dictionary deliverDCT(String dictionaryName, String version, String path,
-                                 Long appId, int mode, String encoding, String[] langCodes,
-                                 Map<String, String> langCharset,
-                                 Collection<BusinessWarning> warnings) throws BusinessException {
-        InputStream is;
-        try {
-            is = new FileInputStream(path);
-            if (null == encoding) {
-                byte[] bom = new byte[Util.UTF8_BOM_LENGTH];
-                is.read(bom);
-                encoding = Util.detectEncoding(bom);
-                is.close();
-                is = new FileInputStream(path);
-            }
-            return deliverDCT(dictionaryName, version, path, is, appId, mode, encoding,
-                    langCodes, langCharset, warnings);
-        } catch (IOException e) {
-            throw new SystemError(e.getMessage());
-        }
-
-    }
-
-    /**
-     * Deliver dct files in a directory After using dictionary properties, now
-     * encoding and langCharset parameter are useless.
-     *
-     * @param rootDir
-     * @param file
-     */
-    public Collection<Dictionary> deliverDCTFiles(String rootDir, File file,
-                                                  Long appId, int mode, String encoding, String[] langCodes,
-                                                  Map<String, String> langCharset,
-                                                  Collection<BusinessWarning> warnings) throws BusinessException {
-
-        if (!file.exists())
-            return null;
-
-        Collection<Dictionary> deliveredDicts = new ArrayList<Dictionary>();
-
-        if (file.isDirectory()) {
-            File[] dctFileOrDirs = file.listFiles(new FileFilter() {
-                @Override
-                public boolean accept(File pathname) {
-                    return pathname.isDirectory() || Util.isDCTFile(pathname)
-                            || Util.isZipFile(pathname);
-                }
-            });
-            for (File dctFile : dctFileOrDirs) {
-                Collection<Dictionary> subDeliveredDicts = deliverDCTFiles(
-                        rootDir, dctFile, appId, mode, encoding, langCodes,
-                        langCharset, warnings);
-                deliveredDicts.addAll(subDeliveredDicts);
-            }
-            return deliveredDicts;
-        }
-
-        if (Util.isZipFile(file)) {
-            try {
-                Collection<Dictionary> zipDeliveredDicts = deliverZipDCTFile(
-                        rootDir, new ZipFile(file), appId, mode, encoding, langCodes,
-                        langCharset, warnings);
-                deliveredDicts.addAll(zipDeliveredDicts);
-            } catch (IOException e) {
-                throw new SystemError(e.getMessage());
-            }
-            return deliveredDicts;
-        }
-
-        // normal dct file
-        Dictionary dict = null;
-        try {
-            rootDir = rootDir.replace("\\", "/");
-            String dictPath = file.getAbsolutePath().replace("\\", "/");
-            String dictName = dictPath.replace(rootDir, "");
-
-            encoding = encoding == null ? dictProp.getDictionaryEncoding(dictName) : encoding;
-            langCharset = null == langCharset ? dictProp.getDictionaryCharsets(dictName) : langCharset;
-
-            warnings = new ArrayList<BusinessWarning>();
-
-            //TODO: version info need to be reconfigure in the future
-            String version="2.0";
-            dict = deliverDCT(dictName,version, dictPath, appId, mode, encoding, langCodes,
-                    langCharset, warnings);
-            if (!warnings.isEmpty()) {
-                join(warnings, '\n').replace("\"", "\"\"");
-                String forCSV = warnings.toString().replace("\"", "\"\"");
-                forCSV = join(warnings, '\n').replace("\"", "\"\"");
-                logDictDeliverWarning.warn(String.format("%s,%s,%s,\"%s\"",
-                        file.getName(), encoding, file.getAbsolutePath(),
-                        forCSV));
-            }
-        } catch (BusinessException e) {
-            String forCSV = e.toString().replace("\"", "\"\"");
-            logDictDeliverFail.error(String.format("%s,%s,%s,\"%s\"",
-                    file.getName(), encoding, file.getAbsolutePath(), forCSV));
-            log.error(e);
-        }
-        if (null != dict) {
-            dict.setDictLanguages(null);
-            dict.setLabels(null);
-            deliveredDicts.add(dict);
-        }
-        return deliveredDicts;
-    }
-
-
-    /**
-     * Deliver dct files in a directory After using dictionary properties, now
-     * encoding and langCharset parameter are useless.
-     *
-     * @param rootDir
-     * @param file
-     */
-    public Collection<Dictionary> deliverMDCFiles(String rootDir, File file, Long appId, int mode, String[] langCodes,
-                                                  Map<String, String> langCharset,
-                                                  Collection<BusinessWarning> warnings) throws BusinessException {
-
-        if (!file.exists())
-            return null;
-
-        Collection<Dictionary> deliveredDicts = new ArrayList<Dictionary>();
-
-        if (file.isDirectory()) {
-            File[] dctFileOrDirs = file.listFiles(new FileFilter() {
-                @Override
-                public boolean accept(File pathname) {
-                    return pathname.isDirectory() || Util.isMDCFile(pathname);
-                }
-            });
-            for (File dctFile : dctFileOrDirs) {
-                Collection<Dictionary> subDeliveredDicts = deliverMDCFiles(
-                        rootDir, dctFile, appId, mode, langCodes,
-                        langCharset, warnings);
-                deliveredDicts.addAll(subDeliveredDicts);
-            }
-            return deliveredDicts;
-        }
-
-        // normal mdc file
-        Dictionary dict = null;
-        String encoding = "UTF-8";
-        try {
-            rootDir = rootDir.replace("\\", "/");
-            String dictPath = file.getAbsolutePath().replace("\\", "/");
-            String dictName = dictPath.replace(rootDir, "");
-
-            langCharset = null == langCharset ? dictProp.getDictionaryCharsets(dictName) : langCharset;
-
-            warnings = new ArrayList<BusinessWarning>();
-            // TODO: the version info need to be reconfigure 
-            String version="1.0";
-            dict = deliverMDC(dictName, version,dictPath, appId, mode, langCodes, langCharset, warnings);
-            if (!warnings.isEmpty()) {
-                join(warnings, '\n').replace("\"", "\"\"");
-                String forCSV = warnings.toString().replace("\"", "\"\"");
-                forCSV = join(warnings, '\n').replace("\"", "\"\"");
-                logDictDeliverWarning.warn(String.format("%s,%s,%s,\"%s\"",
-                        file.getName(), encoding, file.getAbsolutePath(),
-                        forCSV));
-            }
-        } catch (BusinessException e) {
-            String forCSV = e.toString().replace("\"", "\"\"");
-            logDictDeliverFail.error(String.format("%s,%s,%s,\"%s\"", file.getName(), encoding, file.getAbsolutePath(), forCSV));
-            log.error(e);
-        }
-        if (null != dict) {
-            dict.setDictLanguages(null);
-            dict.setLabels(null);
-            deliveredDicts.add(dict);
-        }
-        return deliveredDicts;
-    }
-
-    private Dictionary deliverMDC(String dictName,String version, String dictPath, Long appId, int mode, String[] langCodes, Map<String, String> langCharset, Collection<BusinessWarning> warnings) {
-        Dictionary dict = null;
-        try {
-            FileInputStream is = new FileInputStream(dictPath);
-            dict = deliverMDC(dictName, version, dictPath, is, appId, mode, langCodes, langCharset, warnings);
-            is.close();
-        } catch (IOException e) {
-            throw new SystemError(e.getMessage());
-        }
-        return dict;
-    }
-
-
-    /**
-     * Deliver a Zip file into database.
-     */
-    @SuppressWarnings("unchecked")
-	private Collection<Dictionary> deliverZipDCTFile(String rootDir,
-                                                     ZipFile file, Long appId, int mode, String encoding, String[] langCodes,
-                                                     Map<String, String> langCharset,
-                                                     Collection<BusinessWarning> warnings) throws BusinessException {
-
-        Collection<Dictionary> deliveredDicts = new ArrayList<Dictionary>();
-
-        Enumeration<ZipEntry> entries = (Enumeration<ZipEntry>) file.entries();
-        ZipEntry entry = null;
-        while (entries.hasMoreElements()) {
-            entry = entries.nextElement();
-            if (!Util.isDCTFile(entry.getName())) {
-                continue;
-            }
-            try {
-                InputStream is = file.getInputStream(entry);
-
-                if (null == encoding) {
-                    byte[] bom = new byte[Util.UTF8_BOM_LENGTH];
-                    is.read(bom);
-                    encoding = Util.detectEncoding(bom);
-                }
-                String dictionaryName = entry.getName();
-                String path = file.getName() + dictionaryName;
-                Dictionary dict = null;
-                try {
-                    //TODO: version info need to be reconfigured
-                    String version="1.0";
-                    dict = deliverDCT(dictionaryName,version, path, is, appId,
-                            mode, encoding, langCodes, langCharset, warnings);
-                } catch (BusinessException e) {
-                    log.error(e);
-                }
-                if (null != dict) {
-                    deliveredDicts.add(dict);
-                }
-            } catch (IOException e) {
-                throw new SystemError(e.getMessage());
-            }
-        }
-
-        return deliveredDicts;
-    }
-
+    
     /**
      * Generate dct file of specific dictionary in the dicts collections
      *
@@ -688,48 +412,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 + generateSpace(indentSize));
     }
 
-
-    public Dictionary previewDCT(String dictionaryName, String filename,
-                                 Long appId, String encoding, Collection<BusinessWarning> warnings)
-            throws BusinessException {
-        File file = new File(filename);
-        if (!file.exists()) {
-            throw new BusinessException(BusinessException.DCT_FILE_NOT_FOUND,
-                    file.getName());
-        }
-        InputStream is;
-        try {
-
-            if (!file.exists()) {
-                throw new BusinessException(
-                        BusinessException.DCT_FILE_NOT_FOUND, file.getName());
-            }
-            is = new FileInputStream(file);
-            return previewDCT(dictionaryName, filename, is, appId, encoding,
-                    warnings);
-        } catch (IOException e) {
-            throw new SystemError(e.getMessage());
-        }
-
-    }
-
-    public Dictionary previewDCT(String dictionaryName, String path,
-                                 InputStream dctInputStream, Long appId, String encoding,
-                                 Collection<BusinessWarning> warnings) throws BusinessException,
-            IOException {
-        Application app = (Application) getDao().retrieve(Application.class,
-                appId);
-
-        if (null == app) {
-            throw new BusinessException(
-                    BusinessException.APPLICATION_NOT_FOUND, appId);
-        }
-
-        Dictionary dict = dictionaryParser.parse(app, dictionaryName, path,
-                dctInputStream, encoding, warnings);
-
-        return dict;
-    }
 
     @Override
     public Dictionary importDictionary(Long appId, Dictionary dict, String version, int mode, String[] langCodes,
@@ -1078,27 +760,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         return dbDictLang;
     }
 
-    public Dictionary previewMDC(String dictionaryName, String path, InputStream is, Long appId,
-                                 Collection<BusinessWarning> warnings) throws BusinessException {
-
-        Application app = (Application) getDao().retrieve(Application.class,
-                appId);
-
-        if (null == app) {
-            throw new BusinessException(
-                    BusinessException.APPLICATION_NOT_FOUND, appId);
-        }
-        Dictionary dict = null;
-        try {
-            dict = mdcParser.parse(app, dictionaryName, path, is, warnings);
-        } catch (BusinessException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new BusinessException(BusinessException.INVALID_MDC_FILE, path);
-        }
-        return dict;
-    }
-    
     public Dictionary getLatestDictionary(Long dictionaryBaseId, Long beforeDictionaryId) {
     	String hql = "from Dictionary where base.id=:baseId";
     	Map param = new HashMap();
@@ -1109,6 +770,30 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     	}
     	hql += " order by id desc";
     	return (Dictionary) dao.retrieveOne(hql, param);
+    }
+    
+    public void removeDictionaryFromApplication(Long appId, Long dictId) {
+    	Application app = (Application) dao.retrieve(Application.class, appId);
+    	app.removeDictionary(dictId);
+    }
+    
+    public void deleteDictionary(Long id) {
+    	String hql = "select distinct a from Application a join a.dictionaries as d where d.id=:id";
+    	Map param = new HashMap();
+    	param.put("id", id);
+    	Collection<Application> apps = dao.retrieve(hql, param);
+    	for (Application app : apps) {
+    		app.removeDictionary(id);
+    	}
+    	Dictionary dictionary = (Dictionary) dao.retrieve(Dictionary.class, id);
+    	DictionaryBase dictBase = dictionary.getBase();
+    	dao.delete(Dictionary.class, id);
+    	
+    	// delete dictBase if it doesn't contain other dictionary
+    	if (dictBase.getDictionaries() == null || dictBase.getDictionaries().size() == 0 ||
+    			dictBase.getDictionaries().size() == 1 && dictBase.getDictionaries().iterator().next().getId().equals(id)) {
+    		dao.delete(dictBase);
+    	}
     }
     
 }

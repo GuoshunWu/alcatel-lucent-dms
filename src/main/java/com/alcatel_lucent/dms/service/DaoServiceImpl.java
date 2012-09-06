@@ -276,6 +276,11 @@ public class DaoServiceImpl implements DaoService {
             throw new SystemError(ex.getMessage(), ex);
         }
     }
+    
+    public void delete(Class c, Serializable id) {
+        Object obj = retrieve(c, id);
+        delete(obj);
+    }
 
     public int delete(String deleteStr, Map paramMap) {
         if (log.isDebugEnabled()) {

@@ -12,47 +12,20 @@ import java.util.Properties;
 
 public interface DictionaryService {
     /**
-     * Deliver a DCT dictionary
-     *
-     * @param dictionaryName    dictionary name
-     * @param version     dictionary version
-     * @param filename	  DCT filename with full path
-     * @param appId       application id
-     * @param mode		  importing mode
-     * @param encoding    encoding of source file, null if auto-detected
-     *                    (ANSI/UTF8/UTF16)
-     * @param langCodes   Alcatel code of languages to import, null if all languages
-     *                    should be imported
-     * @param langCharset mapping of language code and its source charset name
-     * @param warnings    a collection to hold output warnings
-     * @return persistent Dictionary object created
-     * @throws com.alcatel_lucent.dms.BusinessException
+     * Parse and preview application dictionaries in a folder
+     * @param rootDir the part of absolute part to be removed from dictionary name
+     * @param file A directory or a dictionary file
+    public Collection<Dictionary> previewDictionaries(String rootDir, File file, Collection<BusinessWarning> warnings) throws BusinessException;
+    
+     * @param warnings a collection to hold output warnings
+     * @return transient Dictionary object 
+     * @throws BusinessException
      */
-    Dictionary deliverDCT(String dictionaryName,String version, String filename, Long appId,
-    					  int mode, String encoding, String[] langCodes,
-                          Map<String, String> langCharset,
-                          Collection<BusinessWarning> warnings) throws BusinessException;
-
     public Collection<Dictionary> previewDictionaries(String rootDir, File file, Collection<BusinessWarning> warnings) throws BusinessException;
     
     /**
-     * Parse and preview a DCT dictionary
-     *
-     * @param path DCT file full path
-     * @param appId    application id
-     * @param encoding encoding of source file, null if auto-detected
-     *                 (ANSI/UTF8/UTF16)
-     * @param warnings a collection to hold output warnings
-     * @return transient Dictionary object
-     * @throws com.alcatel_lucent.dms.BusinessException
-     */
-    Dictionary previewDCT(String dictionaryName, String path, Long appId,
-                          String encoding, Collection<BusinessWarning> warnings)
-            throws BusinessException;
-
-    /**
-     * Import a DCT dictionary
-     *
+     * Import an application dictionary
+     * @param appId application id
      * @param dict        transient Dictionary object
      * @param version	  dictionary version
      * @param mode		  importing mode
@@ -74,7 +47,6 @@ public interface DictionaryService {
      *   no update to existing label attributes
      *   set translation status to UNTRANSLATED if reference text = translation
      *   or TRANSLATED if reference text <> translation
-     * @param appId application id
      * @param langCodes   Alcatel code of languages to import, null if all languages
      *                    should be imported
      * @param langCharset mapping of language code and its source charset name
@@ -112,20 +84,6 @@ public interface DictionaryService {
             throws BusinessException;
 
     /**
-     * Parse and preview a Multilingual Dictionary Configuration(MDC) file
-     *
-     * @param dictionaryName dictionary name
-     * @param is
-     * @param path the file path if input stream from a file
-     * @param appId          application Id
-     * @param warnings       a collection to hold output warnings
-     * @return transient Dictionary object
-     * @throws com.alcatel_lucent.dms.BusinessException
-     */
-    Dictionary previewMDC(String dictionaryName, String path, InputStream is, Long appId,
-                          Collection<BusinessWarning> warnings) throws BusinessException;
-
-    /**
      * Generate dct file of specific dictionary in the dicts collections
      *
      * @param dir     root directory save dct files
@@ -134,23 +92,7 @@ public interface DictionaryService {
     void generateDCTFiles(String dir, Collection<Long> dictIds, String[] langCodes);
 
 
-    /**
-     * Parse and preview DCT dictionaries, if file is a dct file, it will be delivered and
-     * if it is a zip file or a dictionary, the dct file in which will be delivered recursively.
-     * <p/>
-     * TODO: these parameters need to be rethought.
-     *
-     * @param
-     */
-    Collection<Dictionary> deliverDCTFiles(String rootDir, File file, Long appId, int mode,
-                                           String encoding, String[] langCodes,
-                                           Map<String, String> langCharset,
-                                           Collection<BusinessWarning> warnings) throws BusinessException;
-
-    Collection<Dictionary> deliverMDCFiles(String rootDir, File file, Long appId, int mode, String[] langCodes,
-                                           Map<String, String> langCharset,
-                                           Collection<BusinessWarning> warnings) throws BusinessException;
-    
+  
     /**
      * Get the latest version of a dictionary
      * @param dictionaryBaseId dictionaryBase id
@@ -158,6 +100,19 @@ public interface DictionaryService {
      * @return Dictionary object
      */
     Dictionary getLatestDictionary(Long dictionaryBaseId, Long beforeDictionaryId);
+    
+    /**
+     * Remove a dictionary from an application, without deleting it.
+     * @param appId application id
+     * @param dictId dictionary id
+     */
+    void removeDictionaryFromApplication(Long appId, Long dictId);
+    
+    /**
+     * Remove a dictionary from all applications, and delete it.
+     * @param id dictionary id
+     */
+    void deleteDictionary(Long id);
     
     //Dictionary previewProp(String dictionaryName, Map<String, Collection<Properties>> propMap, Collection<BusinessWarning> warnings) throws BusinessException;
 }
