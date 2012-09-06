@@ -164,7 +164,7 @@ public class Util {
 		if (Arrays.equals(utf16LEBOM, Arrays.copyOf(bom, UTF16_BOM_LENGTH))
 				|| Arrays.equals(utf16BEBOM,
 						Arrays.copyOf(bom, UTF16_BOM_LENGTH))) {
-			return "UTF-16";
+			return "UTF-16LE";
 		}
 		return "ISO-8859-1";
 	}
@@ -195,6 +195,10 @@ public class Util {
 
     public static boolean isMDCFile(File file) {
         return isMDCFile(file.getName());
+    }
+    
+    public static boolean isPropFile(File file) {
+    	return isSpecificFile(file.getName(), ".properties");
     }
 
 	private static boolean isSpecificFile(String fileName, String fileExtPattern) {

@@ -5,6 +5,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.transaction.TransactionConfiguration
 import com.alcatel_lucent.dms.service.TextService
+import com.alcatel_lucent.dms.service.LanguageService
+import com.alcatel_lucent.dms.model.Language
 import org.springframework.beans.factory.annotation.Autowired
 import org.junit.Test
 import org.junit.BeforeClass
@@ -37,15 +39,17 @@ class GTextServiceImplTest {
 
     @Autowired
     private TextService textService;
+	
+	@Autowired
+	private LanguageService langService;
 
 
 
     @Test
     void testReceiveTranslation() {
         String dir = 'Z:/ICSR6.6_incorrect_character'
-        dir='dct_test_files'
-        [  //'AR', 'CA', 'CZ', 'DA', 'DE', 'ES', 'FI', 'HU','PL', , 'NO', 'RU', 'ZH-CN', 'ZH-TW',
-                'KO'
+        //dir='dct_test_files'
+        [  'AR', 'CA', 'CZ', 'DA', 'DE', 'ES', 'FI', 'HU','PL', 'KO' , 'NO', 'RU', 'ZH-CN', 'ZH-TW'
         ].each { langCode ->
 
             String fileName = new File(dir, "${langCode}.xls").absolutePath;
@@ -54,11 +58,11 @@ class GTextServiceImplTest {
             Long languageId = dao.retrieveOne('''select distinct language.id from ISOLanguageCode where
             code like :lowerCode or code like :upperCode''',
                     ['lowerCode': "%${langCode.toLowerCase()}%".toString(), 'upperCode': "%${langCode.toUpperCase()}%".toString()]) as Long
-
-            assertNotNull "code for $langCode Language Id not found", languageId
+			Language language = langService.getLanguage(langCode == 'CZ' ? 'CS' : langCode);
+            assertNotNull "code for $langCode Language Id not found", language
             int count = -1;
             try {
-                count = textService.receiveTranslation(fileName, languageId)
+                count = textService.receiveTranslation(fileName, language.getId())
             } catch (BusinessException e) {
                 e.printStackTrace()
             }
