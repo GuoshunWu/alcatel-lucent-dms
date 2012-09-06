@@ -61,6 +61,8 @@ public class MDCParser extends DictionaryParser {
             	deliveredDicts.addAll(parse(rootDir, dctFile, warnings));
             }
             return deliveredDicts;
+        } else if (!Util.isMDCFile(file)) {
+        	return deliveredDicts;
         }
         
         String dictPath = file.getAbsolutePath().replace("\\", "/");

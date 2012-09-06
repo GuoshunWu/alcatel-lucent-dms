@@ -2,6 +2,7 @@ package com.alcatel_lucent.dms.model;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 
 public class Application extends BaseEntity {
 	/**
@@ -49,5 +50,16 @@ public class Application extends BaseEntity {
 
 	public void setDictionaries(Collection<Dictionary> dictionaries) {
 		this.dictionaries = dictionaries;
+	}
+
+	public void removeDictionary(Long dictId) {
+		if (dictionaries != null && dictId != null) {
+			for (Iterator<Dictionary> iterator = dictionaries.iterator(); iterator.hasNext(); ) {
+				Dictionary dict = iterator.next();
+				if (dict.getId().equals(dictId)) {
+					iterator.remove();
+				}
+			}
+		}
 	}
 }

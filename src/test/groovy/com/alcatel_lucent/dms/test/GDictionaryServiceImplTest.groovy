@@ -94,7 +94,7 @@ class GDictionaryServiceImplTest {
         // should be imported
         String[] langCodes = null
 
-        String dictName = "About.dic"
+        String dictName = "CH0/About.dic"
         String version  = '1.0'
         String testFile = "CH0/About.dic"
         String updatedTestFile = "CH0/About_Changed.dic"
@@ -105,7 +105,9 @@ class GDictionaryServiceImplTest {
         Collection<BusinessWarning> warnings = []
 
         /***************************************** Test for deliver DCT ****************************************/
-        Dictionary dbDict = ds.deliverDCT dictName, version, testFilePath, appId, Constants.DELIVERY_MODE, encoding, langCodes, langCharset, warnings
+        Collection<Dictionary> dicts = ds.previewDictionaries testFilesPathDir, new File(testFilePath), warnings
+		Dictionary dbDict = ds.importDictionary appId, dicts[0], version, Constants.DELIVERY_MODE, langCodes, langCharset, warnings
+		//Dictionary dbDict = ds.deliverDCT dictName, version, testFilePath, appId, Constants.DELIVERY_MODE, encoding, langCodes, langCharset, warnings
 
         // dictionary check
         dbDict = dao.retrieveOne("from Dictionary where version=:version and base.name=:name", ['name': dictName,'version':version], ["labels", "dictLanguages"] as String[]) as Dictionary
@@ -201,7 +203,13 @@ class GDictionaryServiceImplTest {
         // re deliver the updated DCT file
         langCharset.CH1 = 'Big5'
 
-        dbDict = ds.deliverDCT dictName, version, testFilePath, appId, Constants.DELIVERY_MODE, encoding, langCodes, langCharset, warnings
+        dicts = ds.previewDictionaries testFilesPathDir, new File(testFilePath), warnings
+		dicts[0].setName dictName
+		dicts[0].labels.each {
+			it.context.name = dictName
+		}
+		dbDict = ds.importDictionary appId, dicts[0], version, Constants.DELIVERY_MODE, langCodes, langCharset, warnings
+//        dbDict = ds.deliverDCT dictName, version, testFilePath, appId, Constants.DELIVERY_MODE, encoding, langCodes, langCharset, warnings
         // check result
 
         dbDict = dao.retrieveOne("from Dictionary where version=:version and base.name=:name", ['name': dictName,'version':version], ["labels", "dictLanguages",] as String[]) as Dictionary
@@ -232,11 +240,17 @@ class GDictionaryServiceImplTest {
         }
 
         // updated translation
-
+        dicts = ds.previewDictionaries testFilesPathDir, new File(testFilePath), warnings
+		dicts[0].setName dictName
+		dicts[0].labels.each {
+			it.context.name = dictName
+		}
+		dbDict = ds.importDictionary appId, dicts[0], version, Constants.TRANSLATION_MODE, langCodes, langCharset, warnings
+		
         translatedStringMap[new MultiKey("COPYRIGHT", "CH0")] = "用于测试的改变，2007-2012年阿尔卡特朗讯版权所有。保留所有权力\nAlcatel-Lucent与Alcatel-Lucent标识是阿尔卡特朗讯各自的注册商标和服务标记。"
 
-        dbLabel = dbDict.getLabel("COPYRIGHT")
-        dbLabel = dao.retrieveOne('from Label where id=:id',['id':dbLabel.id],['context'] as String[])
+//        dbLabel = dbDict.getLabel("COPYRIGHT")
+        dbLabel = dao.retrieveOne('from Label where dictionary.id=:dictId and key=:key',['dictId':dbDict.id, "key":"COPYRIGHT"],['context'] as String[])
 
         dbText = dao.retrieveOne("from Text where reference=:reference and context.id=:contextid",
                 ["reference": dbLabel.reference, "contextid": dbLabel.context.id], ["translations"] as String[]) as Text
@@ -254,7 +268,7 @@ class GDictionaryServiceImplTest {
         /*************************** Test deletel dictionary in database *************************/
 //        daoService.delete 'delete from Dictionary where version=:version and base.name=:name', ['version':version, 'name':dictName] as Map<String,String>
         dbDict = dao.retrieveOne("from Dictionary where version=:version and base.name=:name", ['name': dictName,'version':version], ['base'] as String[]) as Dictionary
-        dao.delete(dbDict)
+        ds.deleteDictionary dbDict.id
         Dictionary origDict = dbDict
         dbDict = dao.retrieveOne("from Dictionary where version=:version and base.name=:name", ['name': dictName,'version':version] ) as Dictionary
 
