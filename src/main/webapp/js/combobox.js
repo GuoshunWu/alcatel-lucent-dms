@@ -30,9 +30,21 @@
                 .autocomplete({
                     delay:0,
                     minLength:0,
+                    /**
+                     *  request object, with a single property called "term", which refers to the value currently in the
+                     *  text input. For example, when the user entered "new yo" in a city field, the Autocomplete term
+                     *  will equal "new yo".
+                     *
+                     *  A response callback, which expects a single argument to contain the data to suggest to the user.
+                     *  This data should be filtered based on the provided term, and can be in any of the formats described
+                     *  above for simple local data (String-Array or Object-Array with label/value/both properties).
+                     *  It's important when providing a custom source callback to handle errors during the request.
+                     *  You must always call the response callback even if you encounter an error. This ensures that
+                     *  the widget always has the correct state.
+                     * */
                     source:function (request, response) {
                         var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), "i");
-                        response(select.children("option").map(function () {
+                        var collected_source = select.children("option").map(function () {
                             var text = $(this).text();
                             if (this.value && ( !request.term || matcher.test(text) ))
                                 return {
@@ -45,35 +57,44 @@
                                     value:text,
                                     option:this
                                 };
-                        }));
+                        });
+                        response(collected_source);
                     },
                     select:function (event, ui) {
+//                        log('in inner select: this.val=' + $(this).val());
+                        $(select).children('option[value='+ui.item.option.value+']').attr("selected",true);
                         self._trigger("selected", event, {value:ui.item.option.value, text:ui.item.option.text});
+//
                         self.valid = true;
                     },
                     change:function (event, ui) {
+                        if (ui.item) {
+                            self._trigger("change", event, {value:ui.item.option.value, text:ui.item.option.text});
+                            return true;
+                        }
 
-                        if (!ui.item) {
-                            var matcher = new RegExp("^" + $.ui.autocomplete.escapeRegex($(this).val()) + "$", "i");
-                            var valid = false;
-                            select.children("option").each(function () {
-                                if ($(this).text().match(matcher)) {
-                                    this.selected = valid = self.valid = true;
-                                    return false;
-                                }
-                            });
-                            self._trigger("change", {value:null, text:$(this).val()});
+                        var matcher = new RegExp("^" + $.ui.autocomplete.escapeRegex($(this).val()) + "$", "i");
+                        //valid means whether the input value from select
+                        var valid = false;
+                        select.children("option").each(function () {
+                            if ($(this).text().match(matcher)) {
+                                this.selected = valid = self.valid = true;
+                                //return false indicate that stop iteration
+                                return false;
+                            }
+                        });
+//                        log('valid=' + valid + ', in inner change: this.val=' + $(this).val());
+                        self._trigger("change",event, {value:null, text:$(this).val()});
 
-                            if (!valid) {
-                                // remove invalid value, as it didn't match anything
+                        if (!valid) {
+                            // remove invalid value, as it didn't match anything
 //                                                $(this).val("");
 //                                                select.val("");
 //                                                input.data("autocomplete").term = "";
-                                self.valid = false;
-                                return false;
-                            }
+                            self.valid = false;
+                            // this false will prevent original behaviour
+                            return false;
                         }
-                        self._trigger("change", event, {value:ui.item.option.value, text:ui.item.option.text});
                     }
                 })
                 .addClass("ui-widget ui-widget-content ui-corner-left");
@@ -112,11 +133,15 @@
         },
 
         val:function (value) {
-            if (value) {
-                this.input.val(value);
-            }
             var select = this.element;
             var selected = select.children(":selected");
+
+            if (value) {
+                this.input.val(value);
+                select.find('option[text='+value+']').attr("selected",true);
+                return;
+            }
+
 
 
             if (this.valid) {
