@@ -1,0 +1,1 @@
+Alcatel lucent dictionary management system.

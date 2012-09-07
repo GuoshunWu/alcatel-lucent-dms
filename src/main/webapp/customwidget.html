@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Custom widget demo</h1></title>
+
+    <link rel="stylesheet" type="text/css" href="css/themes/base/jquery.ui.base.css">
+    <link rel="stylesheet" type="text/css" href="css/themes/base/jquery.ui.all.css">
+
+    <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="js/jquery-ui-1.8.22.custom.min.js"></script>
+    <script type="text/javascript" src="js/dms-util.js"></script>
+    <script type="text/javascript" src="js/combobox.js"></script>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+             var myCombo = $("#mytest").combobox({change:function (e, elem) {
+                alert(JSON.stringify(elem));
+            }});
+
+            $("<button>").insertAfter(myCombo).text("Test").click(function (e, data) {
+//                log(e.target);
+                log(myCombo.combobox("val"));
+            });
+
+        });
+    </script>
+
+</head>
+
+<body>
+<h1> Hi, custom widget demo</h1>
+<label for="mytest">Combox:</label>
+<select id="mytest">
+    <option value="1">111</option>
+    <option value="2">222</option>
+    <option value="3">333</option>
+    <option value="4">444</option>
+</select>
+
+</body>
+
+</html>
