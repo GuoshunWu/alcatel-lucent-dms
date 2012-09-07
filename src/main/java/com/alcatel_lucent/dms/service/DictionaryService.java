@@ -5,18 +5,14 @@ import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.model.Dictionary;
 
 import java.io.File;
-import java.io.InputStream;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Properties;
 
 public interface DictionaryService {
     /**
      * Parse and preview application dictionaries in a folder
      * @param rootDir the part of absolute part to be removed from dictionary name
      * @param file A directory or a dictionary file
-    public Collection<Dictionary> previewDictionaries(String rootDir, File file, Collection<BusinessWarning> warnings) throws BusinessException;
-    
      * @param warnings a collection to hold output warnings
      * @return transient Dictionary object 
      * @throws BusinessException
@@ -50,6 +46,7 @@ public interface DictionaryService {
      * @param langCodes   Alcatel code of languages to import, null if all languages
      *                    should be imported
      * @param langCharset mapping of language code and its source charset name
+     * 					  There might be a 'DEFAULT' language code indicating default charset name
      * @param warnings    a collection to hold output warnings
      * @return persistent Dictionary object created
      */

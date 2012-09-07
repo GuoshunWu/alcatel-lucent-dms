@@ -90,6 +90,7 @@ public class MDCParser extends DictionaryParser {
 	public Dictionary parseMDC(String dictionaryName, String path,
 			InputStream dctInputStream, Collection<BusinessWarning> warnings)
 			throws BusinessException {
+        log.info("Parsing Multilingual Dictionary configuration file '" + dictionaryName + "'");
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder db;
 		org.w3c.dom.Document doc;

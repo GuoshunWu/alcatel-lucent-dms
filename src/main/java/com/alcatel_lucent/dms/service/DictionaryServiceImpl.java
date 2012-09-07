@@ -5,8 +5,6 @@ import static org.apache.commons.lang.StringUtils.join;
 
 import java.io.*;
 import java.util.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
@@ -27,7 +25,6 @@ import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.SystemError;
-import com.alcatel_lucent.dms.util.Util;
 
 import java.text.DateFormat;
 
@@ -51,17 +48,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     private TextService textService;
 
     @Autowired
-    private DictionaryParser dictionaryParser;
-
-    @Autowired
     private LanguageService langService;
 
-    @Autowired
-    private DictionaryProp dictProp;
-
-    @Autowired
-    private MDCParser mdcParser;
-    
     @Autowired
     private com.alcatel_lucent.dms.service.parser.DictionaryParser[] parsers;
     
@@ -411,7 +399,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     public Dictionary importDictionary(Long appId, Dictionary dict, String version, int mode, String[] langCodes,
                                 Map<String, String> langCharset,
                                 Collection<BusinessWarning> warnings) {
-        log.info("Start importing DCT in " + (mode == Constants.DELIVERY_MODE ? "DELIVERY" : "TRANSLATION") + " mode");
+        log.info("Start importing dictionary in " + (mode == Constants.DELIVERY_MODE ? "DELIVERY" : "TRANSLATION") + " mode");
         if (null == dict)
             return null;
 
@@ -521,6 +509,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	                continue;
 	            }
 	            String charsetName = langCharset.get(uniLangCode);
+	            if (charsetName == null) {
+	            	charsetName = langCharset.get("DEFAULT");
+	            }
 	            if (null == charsetName) {
 	                nonBreakExceptions.addNestedException(new BusinessException(
 	                        BusinessException.CHARSET_NOT_DEFINED, dictLanguage.getLanguageCode()));
@@ -584,6 +575,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             for (LabelTranslation trans : label.getOrigTranslations()) {
                 String langCode = langCodeMap.get(trans.getLanguage().getId());
                 String charsetName = langCharset.get(getUnifiedLangCode(langCode));
+                if (charsetName == null) {
+                	charsetName = langCharset.get("DEFAULT");
+                }
                 if (null == charsetName) {
                     nonBreakExceptions.addNestedException(new BusinessException(
                             BusinessException.CHARSET_NOT_DEFINED, langCode));
@@ -724,7 +718,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         if (nonBreakExceptions.hasNestedException()) {
             throw nonBreakExceptions;
         }
-        log.info("Import DCT finish");
+        log.info("Import dictionary finish");
         return dbDict;
     }
 
