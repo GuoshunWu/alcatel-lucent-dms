@@ -4,11 +4,9 @@
  * Date: 12-9-3
  * Time: 上午10:11
  */
-var pageLayout;
-
 
 $(function () {
-    pageLayout = $('#optional-container').layout({
+    var pageLayout = $('#optional-container').layout({
         resizable:true, closable:true
 //           ,spacing_open: 0
 //           ,north__paneSelector:	"#page_header"	// page header
