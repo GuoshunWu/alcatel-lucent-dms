@@ -4,7 +4,6 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Custom widget demo</h1></title>
 
-    <link rel="stylesheet" type="text/css" href="css/themes/base/jquery.ui.base.css">
     <link rel="stylesheet" type="text/css" href="css/themes/base/jquery.ui.all.css">
 
     <style type="text/css">
@@ -109,6 +108,18 @@
             $("#ccc").append($(selectJson).map(function () {return this.value>2?new Option(this.text, this.value):null;}));
             var t = $("#ccc").children("option").map(function(){return {value:$(this).val(), text:$(this).text()};}).get();
             log(t);
+
+            var module1=(function(){
+                alert('Hi');
+                return {
+                    hello:'world'
+                }
+            })();
+
+            alert(module1.hello);
+            alert(module1.hello);
+
+
         });
     </script>
 
