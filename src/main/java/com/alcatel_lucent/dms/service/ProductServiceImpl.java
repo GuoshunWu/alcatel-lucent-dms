@@ -78,8 +78,25 @@ public class ProductServiceImpl implements ProductService {
     	Product product = (Product) dao.retrieve(Product.class, productId);
     	product.removeApplication(appId);
     }
-    
-    public void  deleteApplication(Long appId) {
+
+    @Override
+    public Long addApplicationToProduct(Long productId, Long appId) {
+        Application app= (Application) dao.retrieve(Application.class, appId);
+        if(null==app){
+            return null;
+        }
+        Product product = (Product) dao.retrieve(Product.class, productId);
+        product.getApplications().add(app);
+        return app.getId();
+    }
+
+    @Override
+    public void changeApplicationInProduct(Long productId, Long oldAppId, Long newAppId) {
+        removeApplicationFromProduct(productId,oldAppId);
+        addApplicationToProduct(productId,newAppId);
+    }
+
+    public Long  deleteApplication(Long appId) {
     	// remove links to products
     	String hql = "select distinct p from Product p join p.applications as a where a.id=:id";
     	Map param = new HashMap();
@@ -101,7 +118,9 @@ public class ProductServiceImpl implements ProductService {
     	if (appBase.getApplications() == null || appBase.getApplications().size() == 0 ||
     			appBase.getApplications().size() == 1 && appBase.getApplications().iterator().next().getId().equals(appId)) {
     		dao.delete(appBase);
+            return appBase.getId();
     	}
+        return null;
     }
 
 }

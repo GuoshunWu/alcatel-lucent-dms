@@ -438,9 +438,9 @@
                                             <goal>testCompile</goal>
                                         </goals>
                                     </pluginExecutionFilter>
-                                    <action>
+                                    <oper>
                                         <ignore></ignore>
-                                    </action>
+                                    </oper>
                                 </pluginExecution>
                                 <pluginExecution>
                                 	<pluginExecutionFilter>
@@ -457,9 +457,9 @@
                                 			<goal>generate</goal>
                                 		</goals>
                                 	</pluginExecutionFilter>
-                                	<action>
+                                	<oper>
                                 		<ignore></ignore>
-                                	</action>
+                                	</oper>
                                 </pluginExecution>
                             </pluginExecutions>
                         </lifecycleMappingMetadata>

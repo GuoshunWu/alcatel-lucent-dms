@@ -6,6 +6,7 @@ import com.alcatel_lucent.dms.model.ApplicationBase;
 import com.alcatel_lucent.dms.model.Product;
 import com.alcatel_lucent.dms.model.ProductBase;
 import com.alcatel_lucent.dms.service.DaoService;
+import com.alcatel_lucent.dms.service.ProductService;
 import org.apache.log4j.Level;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
@@ -21,7 +22,7 @@ import java.util.*;
 @Result(type = "json", params = {"noCache", "true", "ignoreHierarchy", "false", "includeProperties", "appBaseId,message,status"})
 
 @SuppressWarnings("unchecked")
-public class CreateOrAddApplication extends JSONAction {
+public class CreateOrAddApplicationAction extends JSONAction {
 
     public void setDaoService(DaoService daoService) {
         this.daoService = daoService;
@@ -29,12 +30,20 @@ public class CreateOrAddApplication extends JSONAction {
 
     private DaoService daoService;
 
+
+    public void setProductService(ProductService productService) {
+        this.productService = productService;
+    }
+
+    private ProductService productService;
+
     //request parameter
     private Long productId;
     private Long appBaseId;
     private String appBaseName;
     private Long appId;
     private String appVersion;
+
 
     public Long getProductId() {
         return productId;
@@ -81,7 +90,7 @@ public class CreateOrAddApplication extends JSONAction {
 
         Map<String, Long> param = new HashMap<String, Long>();
         param.put("id", productId);
-        Product product = (Product) daoService.retrieveOne("from Product where id=:id", param, Arrays.asList("applications","base").toArray(new String[0]));
+        Product product = (Product) daoService.retrieveOne("from Product where id=:id", param, Arrays.asList("base").toArray(new String[0]));
         ApplicationBase appBase = null;
         if (-1 == appBaseId) { //we need create new applicationBase
             appBase = new ApplicationBase();
@@ -103,17 +112,15 @@ public class CreateOrAddApplication extends JSONAction {
         }
         appBaseId = app.getId();
 
-        //todo: persistence
-        product.getApplications().add(app);
-        daoService.update(product);
-        if (null == product) {
+        appId=productService.addApplicationToProduct(productId,app.getId());
+        if (null == appId) {
             setStatus(-1);
-            setMessage("Add new version " + appVersion + " to product fail.");
+            setMessage(appBaseName + " already have a version in "+product.getBase().getName() + " version " + product.getVersion());
             return SUCCESS;
         }
 
         setStatus(0);
-        setMessage("Add new version " + app.getVersion() + " to product " + product.getBase().getName() + " version " + product.getVersion() + " success.");
+        setMessage("Add new version " + app.getVersion() + " to " + product.getBase().getName() + " version " + product.getVersion() + " success.");
         return SUCCESS;
     }
 }

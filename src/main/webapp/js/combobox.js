@@ -138,7 +138,12 @@
 
             if (value) {
                 this.input.val(value);
-                select.find('option[text='+value+']').attr("selected",true);
+//                select.find('option[text='+value+']').attr("selected",true);
+                select.children('option').each(function(index, option){
+                    if(option.text==value){
+                        option.selected=true;
+                    }
+                });
                 return;
             }
 

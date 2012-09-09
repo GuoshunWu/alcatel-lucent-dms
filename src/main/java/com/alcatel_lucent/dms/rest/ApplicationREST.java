@@ -125,20 +125,22 @@ public class ApplicationREST {
 
     }
 
-//    @GET
-//    @Path("apps/{applicationBase.id}")
-//    public String retrieveAllApplicationsByApplicationBaseId(@PathParam("applicationBase.id") Long id) {
-//        Map<String, Long> params = new HashMap<String, Long>();
-//        params.put("id", id);
-//        //TODO: optimize the hql statement
-//        String hql = "from Application where base.id=:id";
-//        Collection<Application> appBases = dao.retrieve(hql, params);
-//
-//        Map<String, Collection<String>> propFilter = new HashMap<String, Collection<String>>();
-//        propFilter.put("Application", Arrays.asList("id", "version"));
-//
-//        return jsonService.toSelectJSON(appBases, propFilter).toString();
-//
-//    }
+    @GET
+    @Path("appssamebase/{application.id}")
+    public String retrieveAllApplicationsWithSameAppBaseByAppId(@PathParam("application.id") Long id) {
+        Map<String, Long> params = new HashMap<String, Long>();
+        params.put("id", id);
+
+        String hql = "from Application where base.id=(select app.base.id from Application as app where app.id=:id)";
+        Collection<Application> appBases = dao.retrieve(hql, params);
+
+        Map<String, Collection<String>> propFilter = new HashMap<String, Collection<String>>();
+        propFilter.put("Application", Arrays.asList("id", "version"));
+
+        return jsonService.toSelectJSON(appBases, propFilter).toString();
+
+    }
+
+
 }
 

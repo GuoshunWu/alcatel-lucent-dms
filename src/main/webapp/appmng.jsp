@@ -16,67 +16,12 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta http-equiv="Pragma" content="no-cache">
 
-    <link rel="stylesheet" type="text/css" href="css/themes/base/jquery.ui.base.css">
-    <link rel="stylesheet" type="text/css" href="css/themes/base/jquery.ui.all.css">
-
-    <link rel="stylesheet" type="text/css" href="css/layout-default-latest.css">
-    <link rel="stylesheet" type="text/css" media="screen" href="css/jqgrid/ui.jqgrid.css"/>
-
-    <style type="text/css">
-            /* Using an 'optional-container' instead of 'body', so need body to have a 'height' */
-        html, body {
-            width: 100%;
-            height: 100%;
-            min-height: 100%;
-            padding: 0 0 20px;
-            margin: 0;
-
-            /*font-family: "Lucida Grande", "Arial", "Helvetica", "Verdana", "sans-serif";*/
-            font-family: "Arial", "Helvetica", "Verdana", "sans-serif";
-            font-size: 10px;
-
-            overflow: hidden !important;
-        }
-
-        #optional-container {
-            /*margin-top: 2%;*/
-            /*margin-left: 2%;*/
-            width: 100%;
-            height: 100%;
-
-        }
-
-        .ui-layout-center {
-            overflow: hidden;
-        }
-
-        <%-- for ui widget--%>
-        .ui-combobox {
-            position: relative;
-            display: inline-block;
-        }
-
-        .ui-combobox-toggle {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            margin-left: -1px;
-            padding: 0;
-            /* adjust styles for IE 6/7 */
-            *height: 1.7em;
-            *top: 0.1em;
-        }
-
-        .ui-combobox-input {
-            margin: 0;
-            padding: 0.3em;
-        }
-
-    </style>
+    <link rel="stylesheet" type="text/css" href="css/appmanagement.css">
 
     <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
     <script type="text/javascript" src="js/jquery-ui-1.8.22.custom.min.js"></script>
 
+    <script type="text/javascript" src="js/dms-util.js"></script>
 
     <script type="text/javascript" src="js/i18n/grid.locale-en.js"></script>
     <script type="text/javascript" src="js/jquery.jqGrid.min.js"></script>
@@ -87,7 +32,8 @@
 
     <script type="text/javascript" src="js/jquery.layout-latest.js"></script>
 
-    <script type="text/javascript" src="js/dms-util.js"></script>
+    <script type="text/javascript" src="js/jquery.easy-confirm-dialog.js"></script>
+    <script type="text/javascript" src="js/jquery.msgBox.v1.js"></script>
 
     <script type="text/javascript" src="js/combobox.js"></script>
     <script type="text/javascript" src="js/appmng.js"></script>
@@ -224,7 +170,7 @@
                 </tr>
                 <tr>
                     <td colspan="2">Deliver app dictionary</td>
-                    <td><input type="file" name="dctFileChooser" value="Chose file: ">
+                    <td><input type="file" name="dctFileChooser" title="Chose file: "/>
                         <button id="dictUpload">Upload...</button>
                     </td>
                 </tr>

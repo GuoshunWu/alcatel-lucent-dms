@@ -20,11 +20,28 @@ public interface ProductService {
      * @param appId
      */
     void removeApplicationFromProduct(Long productId, Long appId);
-    
+
+    /**
+     * Add an application to a product
+     * @param productId
+     * @param appId
+     * @return new added Application ID or null if adding failed
+     *
+     */
+    Long addApplicationToProduct(Long productId, Long appId);
+
+    /**
+     * Add an application to a product
+     * @param productId
+     * @param oldAppId original application id
+     * @param newAppId new application id
+     */
+    void changeApplicationInProduct(Long productId, Long oldAppId, Long newAppId);
     /**
      * Remove an application from all products, and delete it.
      * AppBase is also removed if no other application.
      * @param appId
+     * @return ApplicationBase id of this application that was deleted or null if base ApplicationBase was not be deleted.
      */
-    void deleteApplication(Long appId);
+    Long deleteApplication(Long appId);
 }

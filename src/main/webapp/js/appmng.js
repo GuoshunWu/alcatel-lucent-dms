@@ -8,7 +8,6 @@ var pageLayout;
 
 
 $(function () {
-
     pageLayout = $('#optional-container').layout({
         resizable:true, closable:true
 //           ,spacing_open: 0
@@ -51,12 +50,21 @@ $(function () {
     $.getJSON(url, {}, function (data, textStatus, jqXHR) {
         //data is the tree initialize data from server
         //appTree
+        $.jstree._themes = "css/jstree/themes/";
         $('#appTree').jstree({
             json_data:{
                 data:data
             },
+            core:{
+//                animation:500
+            },
             ui:{
-                select_limit: 1
+                select_limit:1
+            },
+            themes:{
+//                theme:'default-rtl'
+//                theme:'apple'
+//                theme:'classic'
             },
             plugins:[ "themes", "json_data", "ui", "core"]
         }).bind("select_node.jstree", function (event, data) {
@@ -93,7 +101,7 @@ $(function () {
                     $('#appDispAppName', pageStatus.selectedPanel).text(text);
 
                     // query application version
-                    var url='rest/applications/apps/'+id;
+                    var url = 'rest/applications/apps/' + id;
                     $.getJSON(url, {}, function (data, textStatus, jqXHR) {
                         var productVersions = $("#selAppVersion").get(0).options;
                         productVersions.length = 0;
@@ -109,7 +117,9 @@ $(function () {
                     });
                 }
             });
+
     });
+
 
     // jqGrid
     $('#applicationGridList').jqGrid({
@@ -119,52 +129,113 @@ $(function () {
         height:350,
         colNames:['ID', 'Application', 'Version', 'Dict. Num.'],
         colModel:[
-            {name:'id', index:'id', width:55, align:'center', hidden:true},
-            {name:'name', index:'name', width:100, editable:true, align:'center'},
-            {name:'version', index:'version', width:90, editable:true, align:'center'},
-            {name:'dictNum', index:'dictNum', width:80, align:'center'}
+            {name:'id', index:'id', width:55, align:'center', editable:false, hidden:true},
+            {name:'name', index:'name', width:100, editable:false, align:'center'},
+            {name:'version', index:'version', width:90, editable:true, align:'center', edittype:'select', editoptions:{value:{}}},
+            {name:'dictNum', index:'dictNum', width:80, editable:false, align:'center'}
         ],
         pager:'#pager',
         editurl:"app/create-or-add-application",
+        cellsubmit:'remote',
+        cellurl:'app/change-application-version',
         rowNum:10,
+        afterEditCell:function (id, name, val, iRow, iCol) {
+            if (name = 'version') {
+//                $("#" + iRow + "_version", "#applicationGridList").datepicker({dateFormat:"yy-mm-dd"});
+                var select = $("#" + iRow + "_version", "#applicationGridList").empty();
+                $.getJSON('rest/applications/appssamebase/' + id, {}, function (json) {
+                    $(json).map(
+                        function () {
+                            var opt = new Option(this.version, this.id);
+                            opt.selected = (this.version == val);
+                            return opt;
+                        }).appendTo(select);
+                });
+            }
+        },
+        beforeSubmitCell:function (rowid, cellname, value, iRow, iCol) {
+            var select = $("#" + iRow + "_version", "#applicationGridList");
+//            log("value="+value+",select value="+value);
+//            log(select.children(":selected"));
+            return {productId:$("#selVersion").val(), newAppId:select.val()};
+        },
+        afterSubmitCell:function (serverresponse, rowid, cellname, value, iRow, iCol) {
+            var jsonFromServer = eval('(' + serverresponse.responseText + ')');
+//            log(jsonFromServer);
+            return [0 == jsonFromServer.status, jsonFromServer.message];
+        },
+        viewrecords:true,
+        cellEdit:true,
         rowList:[10, 20, 30],
         sortname:'name',
         sortorder:'asc',
         viewrecords:true,
         gridview:true,
+        altRows:true,
+        ajaxSelectOptions:'json/selecttest.json',
         caption:'Applications for Product'
     }).jqGrid('navGrid', '#pager', {edit:false, add:false, del:false, search:false, view:false})
         .navButtonAdd('#pager', {
-            caption:"Del",
+            caption:"",
             buttonicon:"ui-icon-trash",
             onClickButton:function () {
-                alert("Deleting Row");
-            },
-            position:"first"
-        }).navButtonAdd('#pager', {
-            caption:"View",
-            buttonicon:"ui-icon-document",
-            onClickButton:function () {
-                alert("View");
-            },
-            position:"first"
-        }).navButtonAdd('#pager', {
-            caption:"Edit",
-            buttonicon:"ui-icon-pencil",
-            onClickButton:function () {
-                alert("Edit Row");
+                //todo: add delete application business logic
+                var gr = jQuery("#applicationGridList").jqGrid('getGridParam', 'selrow');
+                if (null == gr) {
+                    $.msgBox("Please Select Row to delete!", null, {
+                        title:'Select Row',
+                        width:300,
+                        height:'auto'
+                    });
+                    return false;
+                }
+
+
+                jQuery("#applicationGridList").jqGrid('delGridRow', gr, {
+                    url:'app/remove-application',
+                    mtype:'post',
+                    editData:[],
+                    recreateForm:false,
+                    topinfo:"Test for top info",
+                    bottominfo:'Test for bottom info',
+                    modal:true,
+                    jqModal:true,
+                    reloadAfterSubmit:false,
+                    beforeShowForm:function (form) {
+                        var permanent = $('#permanentDeleteSignId', form);
+                        if (0 == permanent.length) {
+                            $("<tr><td>Delete permanently</td><td><input align='left' type='checkbox' id='permanentDeleteSignId'></td></tr>").appendTo($("tbody", form));
+                        } else {
+                            permanent.removeAttr("checked");
+                        }
+                    },
+                    onclickSubmit:(function (params, posdata) {
+                        return {productId:$("#selVersion").val(), permanent:Boolean(($('#permanentDeleteSignId').attr("checked")))};
+                    }),
+                    afterSubmit:function (response, postdata) {
+                        var jsonFromServer = eval('(' + response.responseText + ')');
+                        if (jsonFromServer.id) {//appbase is deleted
+                            //remove appbase node from apptree.
+                            var appTree = $.jstree._reference("#appTree");
+                            appTree._get_children(appTree.get_selected()).each(function (index, app) {
+                                if (app.id == jsonFromServer.id) {
+                                    appTree.delete_node(app);
+                                }
+                            });
+
+
+                        }
+                        log(jsonFromServer);
+                        return [0 == jsonFromServer.status, jsonFromServer.message];
+                    }
+                });
             },
             position:"first"
         }).navButtonAdd("#pager", {
-
-            caption:"Add",
+            caption:"",
             buttonicon:"ui-icon-plus",
             onClickButton:function () {
-                var width = jQuery("#applicationGridList").jqGrid('getGridParam', "width");
-                var height = jQuery("#applicationGridList").jqGrid('getGridParam', "height");
-
                 $("#newOrAddApplicationDialog").dialog("open");
-//                jQuery("#applicationGridList").jqGrid('editGridRow',"new",{height:280,reloadAfterSubmit:false});
             },
             position:"first"
         }
@@ -175,7 +246,7 @@ $(function () {
         datatype:'json',
         width:700,
         height:350,
-        colNames:['ID', 'Dictionary', 'Version', 'Format','Encoding','Labels','Action'],
+        colNames:['ID', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels', 'Action'],
         colModel:[
             {name:'id', index:'id', width:55, align:'center', hidden:true},
             {name:'name', index:'name', width:100, editable:true, align:'center'},
@@ -194,7 +265,7 @@ $(function () {
         viewrecords:true,
         gridview:true,
         caption:'Applications for Product'
-    }).jqGrid('navGrid', '#dictPager',{edit:true, add:true, del:true, search:true});
+    }).jqGrid('navGrid', '#dictPager', {edit:true, add:true, del:true, search:true});
 
     $('#newOrAddApplicationDialog').dialog({
         autoOpen:false,
@@ -212,10 +283,8 @@ $(function () {
             $("select", this).css('width', "80px");
 
             $("#applicationName").change(function (e) {
-
-                var versionOptions = $("#version").get(0).options;
-                versionOptions.length = 0;
-                versionOptions.add(new Option('new', -1));
+                $("#version").empty();
+                $("#version").append(new Option('new', -1));
 
                 var appBaseId = $(this).val();
                 if (-1 == appBaseId) {
@@ -227,9 +296,10 @@ $(function () {
 
                 url = 'rest/applications/apps/' + appBaseId;
                 $.getJSON(url, {}, function (data, textStatus, jqXHR) {
-                    $(data).each(function (index, application) {
-                        versionOptions.add(new Option(application.version, application.id));
-                    });
+                    $(data).map(
+                        function () {
+                            return  new Option(this.version, this.id);
+                        }).appendTo($("#version"));
                     $("#version").trigger("change");
                 });
             });
@@ -248,14 +318,13 @@ $(function () {
 
             var productId = $("#selVersion").val();
             url = 'rest/applications/base/' + productId;
-            $.getJSON(url, {}, function (data, textStatus, jqXHR) {
-                var appBasesOptions = $("#newOrAddApplicationDialog").find("#applicationName").get(0).options;
-                appBasesOptions.length = 0;
-                appBasesOptions.add(new Option('new', -1));
+            $.getJSON(url, {}, function (data) {
+                var appBasesOptions = $("#newOrAddApplicationDialog").find("#applicationName").empty().append(new Option('new', -1));
 
-                $(data).each(function (index, applicationBase) {
-                    appBasesOptions.add(new Option(applicationBase.name, applicationBase.id));
-                });
+                $(data).map(
+                    function () {
+                        return new Option(this.name, this.id);
+                    }).appendTo(appBasesOptions);
 
                 $('#applicationName').trigger('change');
 
@@ -276,15 +345,18 @@ $(function () {
 
                 $.post(url, params, function (data, textStatus, jqXHR) {
                     if (data.status != 0) {
-                        alert(data.message);
-                        return;
+                        $.msgBox(data.message, null, {
+                            width:'auto',
+                            height:'auto'
+                        });
+                        return false;
                     }
                     //create success
 
-                    if(-1==params.appBaseId){
+                    if (-1 == params.appBaseId) {
                         // create new applicationBase, the appTree need to be updated
-                        var selectedNode=$('#appTree').jstree("get_selected");
-                        $("#appTree").jstree("create_node", selectedNode, "last", {data: params.appBaseName,attr:{id:data.appBaseId}});
+                        var selectedNode = $('#appTree').jstree("get_selected");
+                        $("#appTree").jstree("create_node", selectedNode, "last", {data:params.appBaseName, attr:{id:data.appBaseId}});
                     }
                     //trigger table.
                     $("#applicationGridList").trigger("reloadGrid");
@@ -317,7 +389,9 @@ $(function () {
                         return;
                     }
                     //create success.
-                    $.jstree._reference("#appTree").create_node(-1, "last", {data:productName.name, attr:{id:data.id}});
+                    //todo mytest:
+//                    $("#appTree").jstree("create_node",-1, "last", {data:productName.name, attr:{id:data.id}});
+                    $("#appTree").jstree("refresh", -1);
                 });
 
                 $(this).dialog("close");
@@ -368,7 +442,7 @@ $(function () {
         $("#newProductDialog").dialog("open");
     });
 
-    $("#dictUpload").button().click(function(e){
+    $("#dictUpload").button().click(function (e) {
         alert("to be implemented.");
     });
     $("#newApp").button().click(function () {
