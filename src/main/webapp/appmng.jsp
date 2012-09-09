@@ -38,11 +38,8 @@
     <script type="text/javascript" src="js/combobox.js"></script>
     <script type="text/javascript" src="js/appmng.js"></script>
 
-    <%--<script type="text/javascript" src="js/themeswitchertool.js"></script>--%>
+    <script type="text/javascript" src="js/themeswitchertool.js"></script>
 
-    <script type="text/javascript"
-            src="http://jqueryui.com/themeroller/themeswitchertool/">
-    </script>
     <script type="text/javascript">
         $(document).ready(function () {
             $('#switcher').themeswitcher();
@@ -64,8 +61,15 @@
 
 <div id="optional-container">
     <div class="ui-layout-north" style="text-align: left; bottom:0px">
-        <span style="font-family:fantasy; font-size:14pt; font-style:normal; ">${pageTitle}</span>
-        <span><div id="switcher"></div></span>
+        <table width="99%">
+            <tr>
+                <td><span style="font-family:fantasy; font-size:14pt; font-style:normal; ">${pageTitle}</span></td>
+                <td align="right">
+                    <div id="switcher"></div>
+                </td>
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            </tr>
+        </table>
     </div>
 
     <div id="ui_center" class="ui-layout-center">
