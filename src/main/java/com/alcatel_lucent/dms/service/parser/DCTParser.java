@@ -37,8 +37,6 @@ public class DCTParser extends DictionaryParser {
 	public static final String lineSeparator = "\n";
 	// System.getProperty("line.separator");
 
-	private Logger log = Logger.getLogger(DictionaryServiceImpl.class);
-
 	@Autowired
 	private LanguageService languageService;
 	
@@ -75,7 +73,10 @@ public class DCTParser extends DictionaryParser {
         }
         
         String dictPath = file.getAbsolutePath().replace("\\", "/");
-        String dictName = rootDir == null ? dictPath : dictPath.replace(rootDir, "");
+		String dictName = dictPath;
+		if (rootDir != null && dictName.startsWith(rootDir)) {
+			dictName = dictName.substring(rootDir.length());
+		}
         FileInputStream in = null;
         try {
         	in = new FileInputStream(file);
@@ -123,7 +124,8 @@ public class DCTParser extends DictionaryParser {
 	}
 	
 	private Dictionary parseDCT(String dictName, String path, InputStream in, Collection<BusinessWarning> warnings) throws BusinessException {
-        String encoding = null;
+        log.info("Parsing DCT file '" + dictName + "'");
+		String encoding = null;
         try {
         	encoding = dictProp.getDictionaryEncoding(dictName);
         } catch (Exception e) {

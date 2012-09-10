@@ -284,7 +284,7 @@ class GDictionaryServiceImplTest {
     void testDeliverDCTFiles() {
         //all language code and package def
         HashMap<String,List<String>> langCodeForPkg = [
-//            	'EN-UK': null,
+            	'EN-UK': null,
 //                'ZH-CN': ['zh', 'ZH0', 'CH0', 'zh-CN'],
 //                'ZH-TW': ['zh-TW', 'CH1', 'TW0', 'zh-HK', 'HK0'],
 //                'AR': ['AR0', 'ar'],
@@ -316,24 +316,24 @@ class GDictionaryServiceImplTest {
 //                'PL': ['PL0', 'pl', 'pl-PL'],
 //                'PT': ['PT0', 'pt', 'pt-PT'],
 //                'PT-BR': ['pt-BR', 'PT1'],
-                'RO': ['RO0', 'ro', 'ro-RO'],
-                'RU': ['ru', 'RU0', 'ru-RU'],
-                'SER': ['sr-YU', 'YU0', 'sr'],
-                'SK': ['sk', 'sk-SK', 'SK0'],
-                'SL': ['sl', 'SI0', 'sl-SI'],
-                'SV': ['sv', 'sv-SE', 'SV0'],
-                'TR': ['TR0', 'tr-TR', 'tr'],
+//                'RO': ['RO0', 'ro', 'ro-RO'],
+//                'RU': ['ru', 'RU0', 'ru-RU'],
+//                'SER': ['sr-YU', 'YU0', 'sr'],
+//                'SK': ['sk', 'sk-SK', 'SK0'],
+//                'SL': ['sl', 'SI0', 'sl-SI'],
+//                'SV': ['sv', 'sv-SE', 'SV0'],
+//                'TR': ['TR0', 'tr-TR', 'tr'],
         ]
 
-        Map<String, String> mdcLangCharset = [:]
-        ['ca-ES', 'cs-CZ', 'da-DK', 'de-AT', 'de-CH', 'de-DE', 'el-GR', 'en-AU', 'en-CA', 'en-CN',
-                'en-GB', 'en-GR', 'en-MA', 'en-RU', 'en-TW', 'en-US', 'es-AR', 'es-ES', 'es-MX', 'et-EE',
-                'fi-FI', 'fr-CA', 'fr-CH', 'fr-FR', 'fr-MA', 'hr-HR', 'hu-HU', 'it-CH', 'it-IT', 'ja-JP',
-                'ko-KR', 'lt-LT', 'lv-LV', 'nl-BE', 'nl-NL', 'no-NO', 'pl-PL', 'pt-BR', 'pt-PT', 'ro-RO',
-                'ru-RU', 'sk-SK', 'sl-SI', 'sr-CS', 'sv-SE', 'tr-TR', 'zh-CN', 'zh-TW'].each {code ->
-            mdcLangCharset.put(code, 'UTF-8')
-        }
-					
+//        Map<String, String> mdcLangCharset = [:]
+//        ['ca-ES', 'cs-CZ', 'da-DK', 'de-AT', 'de-CH', 'de-DE', 'el-GR', 'en-AU', 'en-CA', 'en-CN',
+//                'en-GB', 'en-GR', 'en-MA', 'en-RU', 'en-TW', 'en-US', 'es-AR', 'es-ES', 'es-MX', 'et-EE',
+//                'fi-FI', 'fr-CA', 'fr-CH', 'fr-FR', 'fr-MA', 'hr-HR', 'hu-HU', 'it-CH', 'it-IT', 'ja-JP',
+//                'ko-KR', 'lt-LT', 'lv-LV', 'nl-BE', 'nl-NL', 'no-NO', 'pl-PL', 'pt-BR', 'pt-PT', 'ro-RO',
+//                'ru-RU', 'sk-SK', 'sl-SI', 'sr-CS', 'sv-SE', 'tr-TR', 'zh-CN', 'zh-TW'].each {code ->
+//            mdcLangCharset.put(code, 'UTF-8')
+//        }
+				
         langCodeForPkg.each {subDir, langCodes ->
 			int mode = subDir.equals('EN-UK') ? Constants.DELIVERY_MODE : Constants.TRANSLATION_MODE
             String rootDir = "Z:/$subDir"
@@ -368,7 +368,9 @@ class GDictionaryServiceImplTest {
 				if (dict.getFormat().equals("dct")) {
 					langCharset = dictProp.getDictionaryCharsets(dict.getName())
 				} else if (dict.getFormat().equals("mdc")) {
-					langCharset = mdcLangCharset
+					langCharset = [default: 'UTF-8']
+				} else {
+					langCharset = [default: 'ISO-8859-1']
 				}
 				Long appId = 1
 				String dictVersion = "1.0"
