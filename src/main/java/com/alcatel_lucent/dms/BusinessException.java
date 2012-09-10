@@ -33,6 +33,7 @@ public class BusinessException extends RuntimeException {
 	static public final int FILE_TOO_LARGE = 213;
 	static public final int NESTED_PROP_ERROR = 214;
 	static public final int NESTED_PROP_FILE_ERROR = 215;
+	static public final int INVALID_PROP_LINE = 216;
 	static public final int CHARSET_NOT_FOUND = 301;
 	static public final int APPLICATION_NOT_FOUND = 501;
 	static public final int DICTIONARY_NOT_FOUND = 502;
