@@ -7,16 +7,16 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="s" uri="/struts-tags" %>
+
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <c:set scope="page" var="pageTitle">Application Management</c:set>
 
-    <title>DMS->${pageTitle}</title>
+    <title><s:text name="taskmng.title"/></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta http-equiv="Pragma" content="no-cache">
 
-    <link rel="stylesheet" type="text/css" href="css/appmanagement.css">
+    <link rel="stylesheet" type="text/css" href="css/taskmanagement.css">
 
     <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
     <script type="text/javascript" src="js/jquery-ui-1.8.22.custom.min.js"></script>
@@ -36,10 +36,11 @@
     <script type="text/javascript" src="js/jquery.msgBox.v1.js"></script>
 
     <script type="text/javascript" src="js/combobox.js"></script>
-    <%--<script type="text/javascript" src="js/appmng.js"></script>--%>
-    <script type="text/javascript" src="js/appmng/global.js"></script>
+
+    <script type="text/javascript" src="js/taskmng/global.js"></script>
     <script type="text/javascript" src="js/coffee-script.js"></script>
-    <script type="text/javascript" src="js/themeswitchertool.js"></script>
+    <script type="text/coffeescript" src="js/appmng/layout.coffee"></script>
+
 
 </head>
 <body>
@@ -58,9 +59,8 @@
     </div>
 
     <div id="ui_center" class="ui-layout-center">
-    Center
+        <%@include file="taskmanagement/summarypanel.jsp"%>
     </div>
-
     <%--<div class="ui-layout-west"></div>--%>
     <%--<div class="ui-layout-south"> South</div>--%>
 
