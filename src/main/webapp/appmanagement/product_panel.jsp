@@ -1,14 +1,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<%@ taglib prefix="s" uri="/struts-tags" %>
+
 <div id="DMS_productPanel">
 
     <table border="0">
         <tr>
-            <td style="width:30px;">Product:</td>
+            <td style="width:30px;"><s:text name="product"/>:</td>
             <td><span id="dispProductName"></span></td>
 
         </tr>
         <tr>
-            <td>Version:</td>
+            <td><s:text name="version"/>:</td>
             <td><select id="selVersion"></select>
                 <button id="newVersion"></button>
             </td>

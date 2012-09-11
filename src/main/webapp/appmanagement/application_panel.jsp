@@ -1,13 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<%@ taglib prefix="s" uri="/struts-tags" %>
 <div id="DMS_applicationPanel">
 
     <table border="0">
         <tr>
-            <td style="width:30px;">Product:</td>
+            <td style="width:30px;"><s:text name="text"/>:</td>
             <td colspan="2"><span id="appDispProductName"></span></td>
         </tr>
         <tr>
-            <td>Application:</td>
+            <td><s:text name="application"/>:</td>
             <td><span id="appDispAppName"></span></td>
             <td align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 Version:<select id="selAppVersion"></select>
