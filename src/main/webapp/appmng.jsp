@@ -36,15 +36,25 @@
     <script type="text/javascript" src="js/jquery.msgBox.v1.js"></script>
 
     <script type="text/javascript" src="js/combobox.js"></script>
-    <script type="text/javascript" src="js/appmng.js"></script>
+    <%--<script type="text/javascript" src="js/appmng.js"></script>--%>
+    <script type="text/javascript" src="js/appmng/global.js"></script>
+    <script type="text/javascript" src="js/coffee-script.js"></script>
+    <script type="text/coffeescript" src="js/appmng/application_grid.coffee"></script>
+    <script type="text/coffeescript" src="js/appmng/dictionary_grid.coffee"></script>
+    <script type="text/coffeescript" src="js/appmng/application_panel.coffee"></script>
+    <script type="text/coffeescript" src="js/appmng/product_panel.coffee"></script>
+    <script type="text/coffeescript" src="js/appmng/layout.coffee"></script>
+    <script type="text/coffeescript" src="js/appmng/dialogs.coffee"></script>
+    <script type="text/coffeescript" src="js/appmng/app_tree.coffee"></script>
 
-    <script type="text/javascript" src="js/themeswitchertool.js"></script>
 
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('#switcher').themeswitcher();
-        });
-    </script>
+
+    <%--<script type="text/javascript" src="js/themeswitchertool.js"></script>--%>
+    <%--<script type="text/javascript">--%>
+    <%--$(document).ready(function () {--%>
+    <%--$('#switcher').themeswitcher();--%>
+    <%--});--%>
+    <%--</script>--%>
 </head>
 <body>
 
@@ -56,7 +66,7 @@
 <div id="ie7" class="ie"><![endif]-->
 
 <%-- All the dialogs here --%>
-<%@include file="appmanagement/dialogs.html" %>
+<%@include file="appmanagement/dialogs.jsp" %>
 
 
 <div id="optional-container">
@@ -73,9 +83,9 @@
     </div>
 
     <div id="ui_center" class="ui-layout-center">
-        <%@include file="appmanagement/welcome_panel.html" %>
-        <%@include file="appmanagement/product_panel.html" %>
-        <%@include file="appmanagement/application_panel.html" %>
+        <%@include file="appmanagement/welcome_panel.jsp" %>
+        <%@include file="appmanagement/product_panel.jsp" %>
+        <%@include file="appmanagement/application_panel.jsp" %>
     </div>
 
     <div class="ui-layout-west">
