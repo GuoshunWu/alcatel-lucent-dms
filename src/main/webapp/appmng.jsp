@@ -8,15 +8,17 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="s" uri="/struts-tags" %>
+
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <c:set scope="page" var="pageTitle">Application Management</c:set>
+    <c:set scope="page" var="pageTitle"><s:text name="appmng.title"/></c:set>
 
-    <title>DMS->${pageTitle}</title>
+    <title><s:text name="appmng.title"/></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Pragma" content="no-cache"/>
 
-    <link rel="stylesheet" type="text/css" href="css/appmanagement.css">
+    <link rel="stylesheet" type="text/css" href="css/appmanagement.css"/>
 
     <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
     <script type="text/javascript" src="js/jquery-ui-1.8.22.custom.min.js"></script>
@@ -36,16 +38,16 @@
     <script type="text/javascript" src="js/jquery.msgBox.v1.js"></script>
 
     <script type="text/javascript" src="js/combobox.js"></script>
-    <%--<script type="text/javascript" src="js/appmng.js"></script>--%>
-    <script type="text/javascript" src="js/appmng/global.js"></script>
-    <script type="text/javascript" src="js/coffee-script.js"></script>
-    <script type="text/coffeescript" src="js/appmng/application_grid.coffee"></script>
-    <script type="text/coffeescript" src="js/appmng/dictionary_grid.coffee"></script>
-    <script type="text/coffeescript" src="js/appmng/application_panel.coffee"></script>
-    <script type="text/coffeescript" src="js/appmng/product_panel.coffee"></script>
-    <script type="text/coffeescript" src="js/appmng/layout.coffee"></script>
-    <script type="text/coffeescript" src="js/appmng/dialogs.coffee"></script>
-    <script type="text/coffeescript" src="js/appmng/app_tree.coffee"></script>
+    <script type="text/javascript" src="js/appmng.js"></script>
+<!--     <script type="text/javascript" src="js/appmng/global.js"></script> -->
+<!--     <script type="text/javascript" src="js/coffee-script.js"></script> -->
+<!--     <script type="text/coffeescript" src="js/appmng/application_grid.coffee"></script> -->
+<!--     <script type="text/coffeescript" src="js/appmng/dictionary_grid.coffee"></script> -->
+<!--     <script type="text/coffeescript" src="js/appmng/application_panel.coffee"></script> -->
+<!--     <script type="text/coffeescript" src="js/appmng/product_panel.coffee"></script> -->
+<!--     <script type="text/coffeescript" src="js/appmng/layout.coffee"></script> -->
+<!--     <script type="text/coffeescript" src="js/appmng/dialogs.coffee"></script> -->
+<!--     <script type="text/coffeescript" src="js/appmng/app_tree.coffee"></script> -->
 
 
 
