@@ -56,11 +56,11 @@ $ ()->
       {productId: productSelect.val(), permanent: Boolean($('#permanentDeleteSignId').attr("checked"))}
     afterSubmit: (response, postdata)->
       jsonFromServer = eval "(#{response.responseText})"
-      log jsonFromServer
+      #      log jsonFromServer
       if jsonFromServer.id #appbase is deleted
       #remove appbase node from apptree.
         appTree = $.jstree._reference("#appTree")
-        appTree._get_children (appTree.get_selected()).each (index, app)-> appTree.delete_node(app) if app.id == jsonFromServer.id
+        (appTree._get_children appTree.get_selected()).each (index, app)->appTree.delete_node(app) if app.id == "#{jsonFromServer.id}"
       [0 == jsonFromServer.status, jsonFromServer.message]
     }
   }
