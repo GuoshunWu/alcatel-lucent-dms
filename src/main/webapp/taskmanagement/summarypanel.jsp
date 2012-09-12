@@ -11,21 +11,22 @@
     <%--</tr>--%>
     <tr>
         <td>&nbsp;&nbsp;</td>
-        <td>
-            Language Filter
-            <select id="selLanguageFilter" multiple="multiple" title="Select filter Language">
-                <option value="Australia" selected="selected" disabled="disabled">Australia</option>
-                <option value="China" disabled="disabled">China</option>
-                <option value="Denmark" disabled="disabled">Denmark</option>
-                <option value="Germany">Germany</option>
-                <option value="Hungary">Hungary</option>
-                <option value="Krakozhia">Krakozhia</option>
-                <option value="Mexico" selected="selected" disabled="disabled">Mexico</option>
-                <option value="Norway">Norway</option>
-                <option value="Poland" selected="selected" disabled="disabled">Poland</option>
-                <option value="Switzerland">Switzerland</option>
-                <option value="United States">United States</option>
-            </select>
+        <td style="min-width: 300px" >
+            <div style="position: absolute;z-index: 10">
+                <select id="selLanguageFilter" multiple="multiple" title="Select filter Language">
+                    <option value="Australia">Australia</option>
+                    <option value="China">China</option>
+                    <option value="Denmark">Denmark</option>
+                    <option value="Germany">Germany</option>
+                    <option value="Hungary">Hungary</option>
+                    <option value="Krakozhia">Krakozhia</option>
+                    <option value="Mexico">Mexico</option>
+                    <option value="Norway">Norway</option>
+                    <option value="Poland">Poland</option>
+                    <option value="Switzerland">Switzerland</option>
+                    <option value="United States">United States</option>
+                </select>
+            </div>
         </td>
         <td>&nbsp;</td>
         <td>View Option<select/></td>
@@ -37,9 +38,9 @@
         <td><a href="">PDF</a></td>
         <td>&nbsp;&nbsp;</td>
     </tr>
-    <%--<tr>--%>
-        <%--<td colspan="11">&nbsp;</td>--%>
-    <%--</tr>--%>
+    <tr>
+    <td colspan="11">&nbsp;</td>
+    </tr>
     <tr>
         <td>&nbsp;</td>
         <td align="center" colspan="9" style="width: 100%">
@@ -64,3 +65,4 @@
     </tr>
 
 </table>
+

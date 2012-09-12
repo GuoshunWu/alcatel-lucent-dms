@@ -2,10 +2,10 @@ taskGrid = $("#taskGridList").jqGrid ({
 url: 'json/taskgrid.json'
 editurl: ""
 datatype: 'json'
-width: 1000
-#autowidth: true
+#width: 1000
+autowidth: true
 #height: 'auto'
-height: 320
+height: 300
 shrinkToFit: false
 rownumbers: true
 loadonce: false # for reload the colModel
@@ -47,9 +47,9 @@ afterCreate: (grid)->
     grid[0].clearToolbar()
   }
 
-  grid.navButtonAdd "#taskPager", {caption: "Toggle", title: "Toggle Search Toolbar", buttonicon: 'ui-icon-pin-s', position: 'first', onClickButton: ()->
-    grid[0].toggleToolbar()
-  }
+#  grid.navButtonAdd "#taskPager", {caption: "Toggle", title: "Toggle Search Toolbar", buttonicon: 'ui-icon-pin-s', position: 'first', onClickButton: ()->
+#    grid[0].toggleToolbar()
+#  }
 
   grid.setGroupHeaders {useColSpanStyle: true ,groupHeaders:grid.getGridParam 'groupHeaders' }
   grid.filterToolbar {stringResult: true, searchOnEnter: false}
@@ -59,7 +59,8 @@ taskGrid.getGridParam('afterCreate') taskGrid
 
 # test for UI
 $("#create").button().click ()->
-  taskGrid.addTaskLanguage 'Japanese','json/taskgrid1.json'
+#  taskGrid.addTaskLanguage 'Japanese','json/taskgrid1.json'
+  taskGrid.updateTaskLanguage(['Japanese','Chinese','Indian'],'json/taskgrid1.json')
 #  taskGrid.addColumns 'Test', {name: "Test", index: "test", width: 20, editable: false, align: 'center'}, 'json/taskgrid1.json'
 
 
