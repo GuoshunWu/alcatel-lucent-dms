@@ -20,25 +20,25 @@
 
     <link rel="stylesheet" type="text/css" href="css/appmanagement.css"/>
 
-    <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
-    <script type="text/javascript" src="js/jquery-ui-1.8.22.custom.min.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-ui-1.8.22.custom.min.js"></script>
 
-    <script type="text/javascript" src="js/dms-util.js"></script>
+    <script type="text/javascript" src="js/lib/dms-util.js"></script>
 
     <script type="text/javascript" src="js/i18n/grid.locale-en.js"></script>
-    <script type="text/javascript" src="js/jquery.jqGrid.min.js"></script>
+    <script type="text/javascript" src="js/lib/jquery.jqGrid.min.js"></script>
 
-    <script type="text/javascript" src="js/jquery.jstree.js"></script>
-    <script type="text/javascript" src="js/jquery.cookie.js"></script>
-    <script type="text/javascript" src="js/jquery.hotkeys.js"></script>
+    <script type="text/javascript" src="js/lib/jquery.jstree.js"></script>
+    <script type="text/javascript" src="js/lib/jquery.cookie.js"></script>
+    <script type="text/javascript" src="js/lib/jquery.hotkeys.js"></script>
 
-    <script type="text/javascript" src="js/jquery.layout-latest.js"></script>
+    <script type="text/javascript" src="js/lib/jquery.layout-latest.js"></script>
 
-    <script type="text/javascript" src="js/jquery.easy-confirm-dialog.js"></script>
-    <script type="text/javascript" src="js/jquery.msgBox.v1.js"></script>
+    <script type="text/javascript" src="js/lib/jquery.easy-confirm-dialog.js"></script>
+    <script type="text/javascript" src="js/lib/jquery.msgBox.v1.js"></script>
 
-    <script type="text/javascript" src="js/combobox.js"></script>
-    <script type="text/javascript" src="js/appmng.js"></script>
+    <script type="text/javascript" src="js/lib/combobox.js"></script>
+    <script type="text/javascript" src="js/appmng/appmng.js"></script>
 <!--     <script type="text/javascript" src="js/appmng/global.js"></script> -->
 <!--     <script type="text/javascript" src="js/coffee-script.js"></script> -->
 <!--     <script type="text/coffeescript" src="js/appmng/application_grid.coffee"></script> -->
