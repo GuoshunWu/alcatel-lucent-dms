@@ -11,7 +11,22 @@
     <%--</tr>--%>
     <tr>
         <td>&nbsp;&nbsp;</td>
-        <td>Language Filter<select/></td>
+        <td>
+            Language Filter
+            <select id="selLanguageFilter" multiple="multiple" title="Select filter Language">
+                <option value="Australia" selected="selected" disabled="disabled">Australia</option>
+                <option value="China" disabled="disabled">China</option>
+                <option value="Denmark" disabled="disabled">Denmark</option>
+                <option value="Germany">Germany</option>
+                <option value="Hungary">Hungary</option>
+                <option value="Krakozhia">Krakozhia</option>
+                <option value="Mexico" selected="selected" disabled="disabled">Mexico</option>
+                <option value="Norway">Norway</option>
+                <option value="Poland" selected="selected" disabled="disabled">Poland</option>
+                <option value="Switzerland">Switzerland</option>
+                <option value="United States">United States</option>
+            </select>
+        </td>
         <td>&nbsp;</td>
         <td>View Option<select/></td>
         <td>&nbsp;</td>
