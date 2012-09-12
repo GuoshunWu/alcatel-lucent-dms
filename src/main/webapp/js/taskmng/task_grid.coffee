@@ -1,12 +1,14 @@
-#$ ()->
-
 taskGrid = $("#taskGridList").jqGrid ({
-url: ''
+url: 'json/taskgrid.json'
 editurl: ""
 datatype: 'json'
-#width: 1000
-autowidth: true
+width: 1000
+#autowidth: true
+#height: 'auto'
 height: 320
+shrinkToFit: false
+rownumbers: true
+loadonce: false # for reload the colModel
 pager: '#taskPager'
 rowNum: 10
 rowList: [10, 20, 30]
@@ -17,12 +19,12 @@ gridview: true
 caption: 'Translation Task List'
 colNames: ['ID', 'Application', 'Dictionary', 'Encoding', 'Format', 'Num of String', 'T', 'N', 'I', 'T', 'N', 'I', 'T', 'N', 'I']
 colModel: [
-  {name: 'id', index: 'id', width: 55, align: 'center', hidden: true}
-  {name: 'application', index: 'application', width: 100, editable: true, align: 'center'}
-  {name: 'dictionary', index: 'dictionary', width: 90, editable: true, align: 'center'}
-  {name: 'encoding', index: 'encoding', width: 90, editable: true, align: 'center'}
-  {name: 'format', index: 'format', width: 90, editable: true, align: 'center'}
-  {name: 'numOfString', index: 'NumOfString', width: 80, align: 'center'}
+  {name: 'id', index: 'id', width: 55, align: 'center', hidden: true, frozen: true}
+  {name: 'application', index: 'application', width: 100, editable: true, stype: 'select', edittype: 'select', align: 'center', editoptions: {value: "All:All;0.00:0.00;12:12.00"}, frozen: true}
+  {name: 'dictionary', index: 'dictionary', width: 90, editable: true, align: 'center', frozen: true}
+  {name: 'encoding', index: 'encoding', width: 90, editable: true, align: 'center', frozen: true}
+  {name: 'format', index: 'format', width: 90, editable: true, align: 'center', frozen: true}
+  {name: 'numOfString', index: 'NumOfString', width: 80, align: 'center', frozen: true}
   {name: 'Arabic.T', index: 'T', width: 20, align: 'center'}
   {name: 'Arabic.N', index: 'N', width: 20, editable: true, align: 'center'}
   {name: 'Arabic.I', index: 'I', width: 20, editable: true, align: 'center'}
@@ -32,16 +34,34 @@ colModel: [
   {name: 'Chinese.T', index: 'T', width: 20, align: 'center'}
   {name: 'Chinese.N', index: 'N', width: 20, editable: true, align: 'center'}
   {name: 'Chinese.I', index: 'I', width: 20, editable: true, align: 'center'}
-
 ]
-})
-taskGrid.jqGrid('navGrid', '#taskPager', {edit: false, add: true, del: false, search: false, view: false})
-taskGrid.jqGrid 'setGroupHeaders', {useColSpanStyle: true
 groupHeaders: [
   {startColumnName: 'Arabic.T', numberOfColumns: 3, titleText: '<bold>Arabic</bold>'}
   {startColumnName: 'Czech.T', numberOfColumns: 3, titleText: '<bold>Czech</bold>'}
   {startColumnName: 'Chinese.T', numberOfColumns: 3, titleText: '<bold>Chinese</bold>'}
-]}
-taskGrid.jqGrid 'filterToolbar',{stringResult: true,searchOnEnter : false}
+]
+afterCreate: (grid)->
+  grid.navGrid '#taskPager', {edit: true, add: true, del: false, search: false, view: false}
+
+  grid.navButtonAdd "#taskPager", {caption: "Clear", title: "Clear Search", buttonicon: 'ui-icon-refresh', position: 'first', onClickButton: ()->
+    grid[0].clearToolbar()
+  }
+
+  grid.navButtonAdd "#taskPager", {caption: "Toggle", title: "Toggle Search Toolbar", buttonicon: 'ui-icon-pin-s', position: 'first', onClickButton: ()->
+    grid[0].toggleToolbar()
+  }
+
+  grid.setGroupHeaders {useColSpanStyle: true ,groupHeaders:grid.getGridParam 'groupHeaders' }
+  grid.filterToolbar {stringResult: true, searchOnEnter: false}
+  grid.setFrozenColumns()
+})
+taskGrid.getGridParam('afterCreate') taskGrid
+
+# test for UI
+$("#create").button().click ()->
+  taskGrid.addTaskLanguage 'Japanese','json/taskgrid1.json'
+#  taskGrid.addColumns 'Test', {name: "Test", index: "test", width: 20, editable: false, align: 'center'}, 'json/taskgrid1.json'
+
+
 
 

@@ -1,4 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<script charset="utf8" type="text/coffeescript" src="js/taskmng/grid.colmodel.coffee"></script>
 <script charset="utf8" type="text/coffeescript" src="js/taskmng/task_grid.coffee"></script>
 
 <table width="100%" border="0">
@@ -40,7 +41,7 @@
     <tr>
         <td>&nbsp;</td>
         <td colspan="9">
-            <button>Create translation task...</button>
+            <button id="create">Create translation task...</button>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             Make all label as<select/>
         </td>
