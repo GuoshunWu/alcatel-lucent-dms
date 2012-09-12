@@ -27,8 +27,11 @@ html, body {
     height: 100%;
 
 }
-
+.ui-layout-north{
+    padding: 0;
+}
 .ui-layout-center {
+    padding: 0;
     overflow: hidden;
 }
 

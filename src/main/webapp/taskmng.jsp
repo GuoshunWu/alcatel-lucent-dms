@@ -34,6 +34,7 @@
 
     <script type="text/javascript" src="js/jquery.easy-confirm-dialog.js"></script>
     <script type="text/javascript" src="js/jquery.msgBox.v1.js"></script>
+    <script type="text/javascript" src="js/jquery.selectlist.pack.js"></script>
 
     <script type="text/javascript" src="js/combobox.js"></script>
 
