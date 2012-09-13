@@ -29,6 +29,7 @@ addTaskLanguage: (language, url)->
 
 updateTaskLanguage: (languages, url)->
 #  get all the columns which are not Languages
+  return false if $.isEmptyObject languages
   cols = ['T', 'N', 'I']
   gridParam = this.getGridParam()
   gridParam.colNames = $.grep gridParam.colNames, (val, key)-> val not in cols
