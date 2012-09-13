@@ -3,7 +3,8 @@ pageLayout = $("##{ids.container.page}").layout {resizable: true, closable: true
 ###################################### Elements in north panel ######################################
 # populate option for product base
 $.getJSON 'rest/products/trans/productbases', {}, (json)->
-  $('#productBase').append new Option('Please select product', -1)
+#  $('#productBase').append new Option('Please select product', -1)
+  $('#productBase').append new Option("#{Text.transmng_select_product_tip}", -1)
   $('#productBase').append $(json).map ()->new Option this.name, this.id
 
 
@@ -28,13 +29,13 @@ languageFilterDialogId = 'languageFilterDialog'
 languageFilterTable = $("<table id='#{languageFilterTableId}' align='center' border='0'></table>")
 languageFilterDialog = $("<div title='Choose the languages you want to show' id='#{languageFilterDialogId}'>").dialog {
 autoOpen: false
-position: [18, 120]
+position: [23, 126]
 width: 950
 show: { effect: 'slide', direction: "up" }
-create:()->
-  checkedAll=$("<input type='checkbox' checked='checked' id='checkedAll'><label for='checkedAll'>Checked all</label>")
+create: ()->
+  checkedAll = $("<input type='checkbox' checked='checked' id='checkedAll'><label for='checkedAll'>Checked all</label>")
   checkedAll.change ()->
-    $("input[name='languages']", languageFilterTable).attr('checked',this.checked)
+    $("input[name='languages']", languageFilterTable).attr('checked', this.checked)
   checkedAll.appendTo($('div.ui-dialog-buttonpane'))
 buttons:
   {
@@ -49,7 +50,9 @@ buttons:
 languageFilterDialog.append languageFilterTable
 
 $.getJSON 'rest/languages', {}, (json)->
-  languages = $(json).map ()->$("<td><input type='checkbox' checked='checked' value='#{this.name}' name='languages' id='#{this.id}' /><label for='#{this.name}'>#{this.name}</label></td>").css('width', '180px')
+#  languages = $(json).map ()->$("<td><input type='checkbox' checked='checked' value='#{this.name}' name='languages' id='#{this.id}' /><label for='#{this.id}'>#{this.name}</label></td>").css('width', '180px')
+  languages = $(json).map ()->
+      $("<td><input type='checkbox' checked value=#{this.name} name='languages' id=#{this.id} /><label for=#{this.id}>#{this.name}</label></td>").css('width', '180px')
   languages.each (index)->
     $("<tr/>").appendTo languageFilterTable if 0 == index % 5
     this.appendTo $("tr:eq(#{Math.floor(index / 5)})", languageFilterTable)
