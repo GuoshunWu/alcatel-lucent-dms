@@ -54,6 +54,9 @@ public class ProductREST {
 
 
     @GET
+    /**
+     * Populate all the product base and related application base json data for navigate tree in application management module.
+     * */
     public String retrieveAllProductBase() {
 
         Collection<ProductBase> result = dao.retrieve("from ProductBase order by name");
@@ -70,11 +73,14 @@ public class ProductREST {
 
         log.debug("In rest: "+jsonString);
 
-        return Util.jsonFormat(jsonString);
+        return jsonString;
     }
 
     @GET
     @Path("{productBase.id}")
+    /**
+     * Populate product version in a specific product json data base for product select in application management module.
+     * */
     public String retrieveAllProductByProductBaseId(@PathParam("productBase.id") Long id){
 
         Map<String, Long>  params= new HashMap<String,Long>();
@@ -86,6 +92,20 @@ public class ProductREST {
 
         String jsonString = jsonService.toSelectJSON(result, propFilter).toString();
         log.debug(jsonString);
+        return jsonString;
+    }
+    
+    @GET
+    @Path("trans/productbases")
+    /**
+     * Populate all the product base json data for product select in translation management module.
+     * */
+    public String retrieveAllProductBaseForTrans(){
+        Collection<ProductBase> result = dao.retrieve("from ProductBase order by name");
+        Map<String, Collection<String>> propFilter = new HashMap<String, Collection<String>>();
+        propFilter.put("ProductBase", Arrays.asList("name", "id"));
+
+        String jsonString = jsonService.toTreeJSON(result, propFilter).toString();
         return jsonString;
     }
 }

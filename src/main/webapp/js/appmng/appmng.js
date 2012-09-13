@@ -239,8 +239,8 @@ $(function () {
                     }
                     //create success.
                     //todo mytest:
-//                    $("#appTree").jstree("create_node",-1, "last", {data:productName.name, attr:{id:data.id}});
-                    $("#appTree").jstree("refresh", -1);
+                    $("#appTree").jstree("create_node", -1, "last", {data:productName.name, attr:{id:data.id}});
+//                    $("#appTree").jstree("refresh", -1);
                 });
 
                 $(this).dialog("close");

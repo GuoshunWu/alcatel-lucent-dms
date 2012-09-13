@@ -139,6 +139,7 @@ public class ApplicationREST {
 
         return jsonService.toSelectJSON(appBases, propFilter).toString();
 
+
     }
 
 

@@ -25,7 +25,7 @@
 
     <script type="text/javascript" src="js/lib/dms-util.js"></script>
 
-    <script type="text/javascript" src="js/i18n/grid.locale-en.js"></script>
+    <script type="text/javascript" src="js/lib/i18n/grid.locale-en.js"></script>
     <script type="text/javascript" src="js/lib/jquery.jqGrid.min.js"></script>
 
     <script type="text/javascript" src="js/lib/jquery.jstree.js"></script>
