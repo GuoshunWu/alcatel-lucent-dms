@@ -31,23 +31,20 @@ autoOpen: false
 position: [18, 120]
 width: 950
 show: { effect: 'slide', direction: "up" }
-buttons: [
+create:()->
+  checkedAll=$("<input type='checkbox' checked='checked' id='checkedAll'><label for='checkedAll'>Checked all</label>")
+  checkedAll.change ()->
+    $("input[name='languages']", languageFilterTable).attr('checked',this.checked)
+  checkedAll.appendTo($('div.ui-dialog-buttonpane'))
+buttons:
   {
-  text: 'OK'
-  click: ()->
+  'OK': ()->
     selectedLanguages = $("input[name='languages']", languageFilterTable).map () -> {id: this.id, checked: this.checked, name: this.value} if this.checked
     $("#taskGridList").updateTaskLanguage (selectedLanguages.map ()->this.name).get(), 'json/taskgrid1.json'
     $(this).dialog "close"
+  'Cancel': ()->$(this).dialog "close"
   }
-  {
-  text: 'Cancel'
-  click: ()->$(this).dialog "close"
-  }
-  {
-    text: 'Checked all'
-    click: ()->
-  }
-]
+
 }
 languageFilterDialog.append languageFilterTable
 

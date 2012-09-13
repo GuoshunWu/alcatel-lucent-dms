@@ -16,15 +16,15 @@
             </td>
 
         </tr>
-        <tr>
-            <td>TestBtn:</td>
-            <td>
-                <button id="newApp">New App</button>
-                <button id="addApp">Add App</button>
-                <button id="removeApp">Remove App</button>
-                <button id="download">Download</button>
-            </td>
-        </tr>
+        <%--<tr>--%>
+            <%--<td>TestBtn:</td>--%>
+            <%--<td>--%>
+                <%--<button id="newApp">New App</button>--%>
+                <%--<button id="addApp">Add App</button>--%>
+                <%--<button id="removeApp">Remove App</button>--%>
+                <%--<button id="download">Download</button>--%>
+            <%--</td>--%>
+        <%--</tr>--%>
         <tr>
             <td valign="top" colspan="2">
                 <div id="applicationGrid">
