@@ -38,6 +38,7 @@
     <script type="text/javascript" src="js/lib/jquery.msgBox.v1.js"></script>
 
     <script type="text/javascript" src="js/lib/combobox.js"></script>
+    <script type="text/javascript" src="js/js-text"></script>
     <script type="text/javascript" src="js/appmng/appmng.js"></script>
 <!--     <script type="text/javascript" src="js/appmng/global.js"></script> -->
 <!--     <script type="text/javascript" src="js/coffee-script.js"></script> -->
