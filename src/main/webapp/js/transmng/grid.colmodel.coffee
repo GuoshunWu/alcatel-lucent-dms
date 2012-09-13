@@ -45,4 +45,3 @@ updateTaskLanguage: (languages, url)->
 
 }
 
-$('#selLanguageFilter').selectList()
