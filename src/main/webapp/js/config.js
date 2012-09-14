@@ -58,9 +58,11 @@ requirejs.config({
             exports:'jQuery'
         }
     },
-    config:{
-        i18n:{
-            locale: 'fr-fr'
+    config: {
+        //Set the config for the i18n
+        //module ID
+        i18n: {
+//            locale: 'fr-fr'
         }
     }
 //    waitSeconds:5

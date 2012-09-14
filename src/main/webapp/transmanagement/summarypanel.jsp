@@ -15,9 +15,16 @@
                     <button id="languageFilter"><s:text name="transmng.summarypanel.languagefilter"/></button>
                 </td>
                 <td>&nbsp;</td>
-                <td>View Option<select/></td>
+                <td>
+                    <input type="radio" id="applicationView" name="viewOption"><label for="applicationView"><s:text
+                        name="transmng.summarypanel.viewoption.applicationlevel"/></label>
+                    <input type="radio" id="productView" checked name="viewOption"><label for="productView"><s:text
+                        name="transmng.summarypanel.viewoption.dictionarylevel"/></label>
+
+
+                </td>
                 <td>&nbsp;</td>
-                <td>Search text<input/></td>
+                <td><s:text name="transmng.summarypanel.searchtext"/><input/></td>
                 <td>&nbsp;</td>
                 <td><a href="">Excel</a></td>
                 <td>&nbsp;</td>

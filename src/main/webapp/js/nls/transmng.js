@@ -14,6 +14,6 @@ define({
                 title:'Choose the languages you want to show'
             }
         }
-    }
-//    "zh-cn":true
+    },
+    "zh-cn":true
 });

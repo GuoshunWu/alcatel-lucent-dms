@@ -40,7 +40,7 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng','jqueryui'], ($, jq, i18n,jqui
     width: 950
     show: { effect: 'slide', direction: "up" }
     create: ()->
-      checkedAll = $("<input type='checkbox' checked='checked' id='checkedAll'><label for='checkedAll'>Checked all</label>")
+      checkedAll = $("<input type='checkbox' checked='checked' id='checkedAll'><label for='checkedAll'>All</label>")
       checkedAll.change ()->
         $("input[name='languages']", languageFilterTable).attr('checked', this.checked)
       checkedAll.appendTo($('div.ui-dialog-buttonpane'))
@@ -67,6 +67,8 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng','jqueryui'], ($, jq, i18n,jqui
 
   # initialize page
   initPage()
+#  test
+  console.log i18n.select.producttip
   #    public variables and methods
   name: 'layout'
 
