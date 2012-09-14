@@ -20,45 +20,8 @@
 
     <link rel="stylesheet" type="text/css" href="css/appmanagement.css"/>
 
-    <script type="text/javascript" src="js/lib/jquery-1.7.2.min.js"></script>
-    <script type="text/javascript" src="js/lib/jquery-ui-1.8.22.custom.min.js"></script>
+    <script type="text/javascript" data-main="js/appmng/appmng" src="js/require.js"></script>
 
-    <script type="text/javascript" src="js/lib/dms-util.js"></script>
-
-    <script type="text/javascript" src="js/lib/i18n/grid.locale-en.js"></script>
-    <script type="text/javascript" src="js/lib/jquery.jqGrid.min.js"></script>
-
-    <script type="text/javascript" src="js/lib/jquery.jstree.js"></script>
-    <script type="text/javascript" src="js/lib/jquery.cookie.js"></script>
-    <script type="text/javascript" src="js/lib/jquery.hotkeys.js"></script>
-
-    <script type="text/javascript" src="js/lib/jquery.layout-latest.js"></script>
-
-    <script type="text/javascript" src="js/lib/jquery.easy-confirm-dialog.js"></script>
-
-    <script type="text/javascript" src="js/lib/jquery.msgBox.v1.js"></script>
-
-    <script type="text/javascript" src="js/lib/combobox.js"></script>
-    <script type="text/javascript" src="js/js-text"></script>
-    <script type="text/javascript" src="js/appmng/appmng.js"></script>
-<!--     <script type="text/javascript" src="js/appmng/global.js"></script> -->
-<!--     <script type="text/javascript" src="js/coffee-script.js"></script> -->
-<!--     <script type="text/coffeescript" src="js/appmng/application_grid.coffee"></script> -->
-<!--     <script type="text/coffeescript" src="js/appmng/dictionary_grid.coffee"></script> -->
-<!--     <script type="text/coffeescript" src="js/appmng/application_panel.coffee"></script> -->
-<!--     <script type="text/coffeescript" src="js/appmng/product_panel.coffee"></script> -->
-<!--     <script type="text/coffeescript" src="js/appmng/layout.coffee"></script> -->
-<!--     <script type="text/coffeescript" src="js/appmng/dialogs.coffee"></script> -->
-<!--     <script type="text/coffeescript" src="js/appmng/app_tree.coffee"></script> -->
-
-
-
-    <%--<script type="text/javascript" src="js/themeswitchertool.js"></script>--%>
-    <%--<script type="text/javascript">--%>
-    <%--$(document).ready(function () {--%>
-    <%--$('#switcher').themeswitcher();--%>
-    <%--});--%>
-    <%--</script>--%>
 </head>
 <body>
 

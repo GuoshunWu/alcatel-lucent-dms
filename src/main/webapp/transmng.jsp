@@ -18,34 +18,7 @@
 
     <link rel="stylesheet" type="text/css" href="css/transmanagement.css">
 
-    <script type="text/javascript" src="js/lib/jquery-1.7.2.min.js"></script>
-    <script type="text/javascript" src="js/lib/jquery-ui-1.8.22.custom.min.js"></script>
-
-    <script type="text/javascript" src="js/lib/dms-util.js"></script>
-
-    <script type="text/javascript" src="js/lib/i18n/grid.locale-en.js"></script>
-    <script type="text/javascript" src="js/lib/jquery.jqGrid.min.js"></script>
-
-    <script type="text/javascript" src="js/lib/jquery.jstree.js"></script>
-    <script type="text/javascript" src="js/lib/jquery.cookie.js"></script>
-    <script type="text/javascript" src="js/lib/jquery.hotkeys.js"></script>
-
-    <script type="text/javascript" src="js/lib/jquery.layout-latest.js"></script>
-
-    <script type="text/javascript" src="js/lib/jquery.easy-confirm-dialog.js"></script>
-    <script type="text/javascript" src="js/lib/jquery.msgBox.v1.js"></script>
-    <script type="text/javascript" src="js/js-text"></script>
-    <%--<script type="text/javascript" src="js/lib/jquery.selectlist.pack.js"></script>--%>
-
-    <script type="text/javascript" src="js/lib/combobox.js"></script>
-
-    <script type="text/javascript">
-
-    </script>
-
-    <script type="text/javascript" src="js/transmng/global.js"></script>
-    <script type="text/javascript" src="js/coffee-script.js"></script>
-    <script type="text/coffeescript" src="js/transmng/layout.coffee"></script>
+    <script type="text/javascript" data-main="js/transmng/transmng" src="js/require.js"></script>
 
 
 </head>
@@ -72,6 +45,5 @@
 
 </div>
 <!--[if lte IE 7]></div><![endif]-->
-
 </body>
 </html>
