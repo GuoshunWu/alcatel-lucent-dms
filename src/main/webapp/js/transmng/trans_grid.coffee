@@ -1,4 +1,4 @@
-define ['jqlayout'], ($)->
+define ['jqgrid'], ($)->
   taskGrid = $("#taskGridList").jqGrid ({
   url: 'json/taskgrid.json'
   editurl: ""

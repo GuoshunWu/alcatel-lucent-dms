@@ -502,8 +502,14 @@
         </locale-encoding-mapping>
         <locale-encoding-mapping>
             <locale>zh</locale>
-            <encoding>GB2312</encoding>
+            <encoding>UTF-8</encoding>
         </locale-encoding-mapping>
+
+        <!--<locale-encoding-mapping>-->
+            <!--<locale>zh_CN</locale>-->
+            <!--<encoding>GB2312</encoding>-->
+        <!--</locale-encoding-mapping>-->
+
         <locale-encoding-mapping>
             <locale>zh_TW</locale>
             <encoding>Big5</encoding>

@@ -67,8 +67,6 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng','jqueryui'], ($, jq, i18n,jqui
 
   # initialize page
   initPage()
-#  test
-  console.log i18n.select.producttip
   #    public variables and methods
   name: 'layout'
 
