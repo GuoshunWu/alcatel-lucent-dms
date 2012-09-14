@@ -15,7 +15,7 @@ define ['jqgrid'], ($)->
   reloadAll: (url)->
     return if !url
     gridParam = this.getGridParam()
-    log 'recreate grid...'
+    console.log 'recreate grid...'
     this.GridUnload this.getId()
     gridParam.url = url
     newGrid = $(this.getId()).jqGrid gridParam

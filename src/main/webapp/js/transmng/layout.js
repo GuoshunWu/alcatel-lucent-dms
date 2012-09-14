@@ -47,7 +47,7 @@
         },
         create: function() {
           var checkedAll;
-          checkedAll = $("<input type='checkbox' checked='checked' id='checkedAll'><label for='checkedAll'>Checked all</label>");
+          checkedAll = $("<input type='checkbox' checked='checked' id='checkedAll'><label for='checkedAll'>All</label>");
           checkedAll.change(function() {
             return $("input[name='languages']", languageFilterTable).attr('checked', this.checked);
           });
@@ -92,8 +92,8 @@
         return $("#" + languageFilterDialogId).dialog("open");
       });
     };
-
-      initPage();
+    initPage();
+    console.log(i18n.select.producttip);
     return {
       name: 'layout'
     };
