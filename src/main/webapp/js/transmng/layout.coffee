@@ -7,12 +7,11 @@ $.getJSON 'rest/products/trans/productbases', {}, (json)->
   $('#productBase').append new Option("#{Text.transmng_select_product_tip}", -1)
   $('#productBase').append $(json).map ()->new Option this.name, this.id
 
-
-$('#productBase').change ()->
 #  load product in product base
+$('#productBase').change ()->
   $('#productRelease').empty()
   return false if parseInt($('#productBase').val()) == -1
-  log "populate version."
+
   $.getJSON "rest/products/#{$('#productBase').val()}", {}, (json)->
     $('#productRelease').append $(json).map ()->new Option this.version, this.id
 
