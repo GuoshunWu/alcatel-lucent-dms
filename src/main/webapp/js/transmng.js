@@ -47,7 +47,7 @@ requirejs.config({
         //Set the config for the i18n
         //module ID
         i18n:{
-//            locale:'zh-cn'
+            locale:'zh-cn'
         }
     }
 
