@@ -95,39 +95,39 @@
         </dependency>
 
         <!--<dependency>-->
-            <!--<groupId>org.hibernate</groupId>-->
-            <!--<artifactId>ejb3-persistence</artifactId>-->
-            <!--<version>3.3.2.Beta1</version>-->
+        <!--<groupId>org.hibernate</groupId>-->
+        <!--<artifactId>ejb3-persistence</artifactId>-->
+        <!--<version>3.3.2.Beta1</version>-->
         <!--</dependency>-->
 
         <!--<dependency>-->
-            <!--<groupId>org.hibernate</groupId>-->
-            <!--<artifactId>hibernate-annotations</artifactId>-->
-            <!--<version>3.5.6-Final</version>-->
+        <!--<groupId>org.hibernate</groupId>-->
+        <!--<artifactId>hibernate-annotations</artifactId>-->
+        <!--<version>3.5.6-Final</version>-->
         <!--</dependency>-->
 
         <!--<dependency>-->
-            <!--<groupId>org.slf4j</groupId>-->
-            <!--<artifactId>slf4j-log4j12</artifactId>-->
-            <!--<version>1.5.8</version>-->
+        <!--<groupId>org.slf4j</groupId>-->
+        <!--<artifactId>slf4j-log4j12</artifactId>-->
+        <!--<version>1.5.8</version>-->
         <!--</dependency>-->
 
         <!--<dependency>-->
-            <!--<groupId>org.hibernate</groupId>-->
-            <!--<artifactId>hibernate-commons-annotations</artifactId>-->
-            <!--<version>3.3.0.ga</version>-->
+        <!--<groupId>org.hibernate</groupId>-->
+        <!--<artifactId>hibernate-commons-annotations</artifactId>-->
+        <!--<version>3.3.0.ga</version>-->
         <!--</dependency>-->
 
         <!--<dependency>-->
-            <!--<groupId>org.hibernate</groupId>-->
-            <!--<artifactId>hibernate-validator</artifactId>-->
-            <!--<version>4.3.0.Final</version>-->
+        <!--<groupId>org.hibernate</groupId>-->
+        <!--<artifactId>hibernate-validator</artifactId>-->
+        <!--<version>4.3.0.Final</version>-->
         <!--</dependency>-->
 
         <!--<dependency>-->
-            <!--<groupId>hibernate</groupId>-->
-            <!--<artifactId>hibernate-entitymanager</artifactId>-->
-            <!--<version>3.4.0.GA</version>-->
+        <!--<groupId>hibernate</groupId>-->
+        <!--<artifactId>hibernate-entitymanager</artifactId>-->
+        <!--<version>3.4.0.GA</version>-->
         <!--</dependency>-->
 
         <dependency>
@@ -298,21 +298,21 @@
             <artifactId>servlet-api</artifactId>
             <version>2.5</version>
         </dependency>
-	<dependency>
-			<groupId>org.apache.struts</groupId>
-			<artifactId>struts2-core</artifactId>
-			<version>2.3.4.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.struts</groupId>
-			<artifactId>struts2-convention-plugin</artifactId>
-			<version>2.3.4.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.struts</groupId>
-			<artifactId>struts2-json-plugin</artifactId>
-			<version>2.3.4.1</version>
-		</dependency>
+        <dependency>
+            <groupId>org.apache.struts</groupId>
+            <artifactId>struts2-core</artifactId>
+            <version>2.3.4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.struts</groupId>
+            <artifactId>struts2-convention-plugin</artifactId>
+            <version>2.3.4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.struts</groupId>
+            <artifactId>struts2-json-plugin</artifactId>
+            <version>2.3.4.1</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.struts</groupId>
             <artifactId>struts2-spring-plugin</artifactId>
@@ -346,12 +346,25 @@
                 <artifactId>maven-jetty-plugin</artifactId>
                 <version>6.1.24</version>
                 <configuration>
+                    <scanIntervalSeconds>0</scanIntervalSeconds>
+
+                    <!--<webAppSourceDirectory>${basedir}/src/main/webapp</webAppSourceDirectory>-->
                     <contextPath>/</contextPath>
                     <webDefaultXml>webdefault.xml</webDefaultXml>
-                    <!-- 指定监控的扫描时间间隔，0为关闭jetty自身的热部署，主要是为了使用jrebel -->
-                    <scanIntervalSeconds>0</scanIntervalSeconds>
-                    <!-- 指定web页面的文件夹 -->
-                    <!--<webAppSourceDirectory>${basedir}/src/main/webapp</webAppSourceDirectory>-->
+                    <systemProperties>
+                        <systemProperty>
+                            <name>org.eclipse.jetty.server.Request.queryEncoding</name>
+                            <value>utf-8</value>
+                        </systemProperty>
+                    </systemProperties>
+
+                    <!--<jettyConfig></jettyConfig>-->
+                    <connectors>
+                        <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+                            <port>80</port>
+                            <maxIdleTime>60000</maxIdleTime>
+                        </connector>
+                    </connectors>
                 </configuration>
             </plugin>
 
@@ -375,7 +388,6 @@
             </plugin>
 
 
-
             <plugin>
                 <groupId>org.codehaus.gmaven</groupId>
                 <artifactId>gmaven-plugin</artifactId>
@@ -386,6 +398,7 @@
                     <!-- 用maven编译时需要加encoding：mvn -Dfile.encoding=UTF-8 compile -->
                     <source/>
                 </configuration>
+
                 <executions>
                     <execution>
                         <goals>
@@ -443,23 +456,23 @@
                                     </oper>
                                 </pluginExecution>
                                 <pluginExecution>
-                                	<pluginExecutionFilter>
-                                		<groupId>
-                                			org.zeroturnaround
-                                		</groupId>
-                                		<artifactId>
-                                			jrebel-maven-plugin
-                                		</artifactId>
-                                		<versionRange>
-                                			[1.1.3,)
-                                		</versionRange>
-                                		<goals>
-                                			<goal>generate</goal>
-                                		</goals>
-                                	</pluginExecutionFilter>
-                                	<oper>
-                                		<ignore></ignore>
-                                	</oper>
+                                    <pluginExecutionFilter>
+                                        <groupId>
+                                            org.zeroturnaround
+                                        </groupId>
+                                        <artifactId>
+                                            jrebel-maven-plugin
+                                        </artifactId>
+                                        <versionRange>
+                                            [1.1.3,)
+                                        </versionRange>
+                                        <goals>
+                                            <goal>generate</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <oper>
+                                        <ignore></ignore>
+                                    </oper>
                                 </pluginExecution>
                             </pluginExecutions>
                         </lifecycleMappingMetadata>

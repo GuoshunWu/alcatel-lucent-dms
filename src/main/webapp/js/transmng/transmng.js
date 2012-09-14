@@ -7,7 +7,7 @@
  */
 
 require(['../config', '../lib/util'], function (config,util) {
+//    console.log(config);
     var dependencies=util.getDependencies('transmng',['layout','grid.colmodel','trans_grid']);
-//    console.log(dependencies);
     require(dependencies);
 });

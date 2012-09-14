@@ -93,7 +93,6 @@
       });
     };
     initPage();
-    console.log(i18n.select.producttip);
     return {
       name: 'layout'
     };
