@@ -1,18 +1,24 @@
 package com.alcatel_lucent.dms.service;
 
-import org.apache.log4j.Logger;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.beanutils.PropertyUtils;
-import org.hibernate.*;
-import org.hibernate.criterion.Criterion;
+import org.apache.log4j.Logger;
+import org.hibernate.Hibernate;
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.SessionFactoryUtils;
 import org.springframework.stereotype.Service;
 
-import java.io.Serializable;
-import java.util.*;
-
-import com.alcatel_lucent.dms.model.BaseEntity;
 import com.alcatel_lucent.dms.SystemError;
+import com.alcatel_lucent.dms.model.BaseEntity;
 
 /**
  * Author: Allan YANG

@@ -3,19 +3,26 @@ package com.alcatel_lucent.dms.service;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.*;
-
-import com.alcatel_lucent.dms.BusinessWarning;
-import com.alcatel_lucent.dms.Constants;
-import com.alcatel_lucent.dms.SystemError;
-import com.alcatel_lucent.dms.util.Util;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.*;
-import org.springframework.stereotype.Service;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import net.sf.json.JSONObject;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.springframework.stereotype.Service;
+
 import com.alcatel_lucent.dms.BusinessException;
+import com.alcatel_lucent.dms.BusinessWarning;
+import com.alcatel_lucent.dms.Constants;
+import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Language;
 import com.alcatel_lucent.dms.model.Text;
@@ -275,10 +282,6 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
             result.put(text.getReference(), text);
         }
         return result;
-    }
-
-    private void println(Object obj) {
-        System.out.println(obj);
     }
 
 }

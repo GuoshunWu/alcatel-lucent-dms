@@ -14,7 +14,6 @@ import org.apache.struts2.convention.annotation.Result;
 @ParentPackage("json-default")
 @Result(type = "json", params = {"noCache", "true", "ignoreHierarchy", "false", "includeProperties", "id,permanent,message,status"})
 
-@SuppressWarnings("unchecked")
 public class RemoveApplicationAction extends JSONAction {
 
     public void setProductService(ProductService productService) {

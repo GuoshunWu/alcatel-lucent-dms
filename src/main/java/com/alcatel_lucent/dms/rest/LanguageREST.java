@@ -1,29 +1,22 @@
 package com.alcatel_lucent.dms.rest;
 
-import com.alcatel_lucent.dms.model.ApplicationBase;
-import com.alcatel_lucent.dms.model.Language;
-import com.alcatel_lucent.dms.model.Product;
-import com.alcatel_lucent.dms.model.ProductBase;
-import com.alcatel_lucent.dms.service.DaoService;
-import com.alcatel_lucent.dms.service.JSONService;
-import com.alcatel_lucent.dms.util.Util;
-import net.sf.json.JSONObject;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.UriInfo;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.alcatel_lucent.dms.model.Language;
+import com.alcatel_lucent.dms.service.DaoService;
+import com.alcatel_lucent.dms.service.JSONService;
 
 //import com.alcatel_lucent.dms.service.ProductService;
 
@@ -40,7 +33,8 @@ import java.util.Map;
 @SuppressWarnings("unchecked")
 public class LanguageREST {
 
-    private static Logger log = Logger.getLogger(LanguageREST.class);
+    @SuppressWarnings("unused")
+	private static Logger log = Logger.getLogger(LanguageREST.class);
 
     @Autowired
     private DaoService dao;

@@ -1,15 +1,9 @@
 package com.alcatel_lucent.dms.rest;
 
-import com.alcatel_lucent.dms.model.ApplicationBase;
-import com.alcatel_lucent.dms.model.Product;
-import com.alcatel_lucent.dms.model.ProductBase;
-import com.alcatel_lucent.dms.service.DaoService;
-import com.alcatel_lucent.dms.service.JSONService;
-import com.alcatel_lucent.dms.util.Util;
-import net.sf.json.JSONObject;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -19,10 +13,18 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+
+import net.sf.json.JSONObject;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.alcatel_lucent.dms.model.ApplicationBase;
+import com.alcatel_lucent.dms.model.Product;
+import com.alcatel_lucent.dms.model.ProductBase;
+import com.alcatel_lucent.dms.service.DaoService;
+import com.alcatel_lucent.dms.service.JSONService;
 
 //import com.alcatel_lucent.dms.service.ProductService;
 

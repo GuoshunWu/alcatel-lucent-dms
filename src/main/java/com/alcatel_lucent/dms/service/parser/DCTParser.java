@@ -1,23 +1,18 @@
 package com.alcatel_lucent.dms.service.parser;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +22,6 @@ import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryBase;
 import com.alcatel_lucent.dms.service.DictionaryProp;
-import com.alcatel_lucent.dms.service.DictionaryServiceImpl;
 import com.alcatel_lucent.dms.service.LanguageService;
 import com.alcatel_lucent.dms.util.Util;
 
@@ -97,6 +91,7 @@ public class DCTParser extends DictionaryParser {
         }
 	}
 
+	@SuppressWarnings("unchecked")
 	private Collection<Dictionary> parseZip(ZipFile file, Collection<BusinessWarning> warnings) throws BusinessException {
         Collection<Dictionary> deliveredDicts = new ArrayList<Dictionary>();
 

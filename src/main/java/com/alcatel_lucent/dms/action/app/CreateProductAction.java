@@ -1,12 +1,11 @@
 package com.alcatel_lucent.dms.action.app;
 
-import com.alcatel_lucent.dms.action.JSONAction;
-import com.alcatel_lucent.dms.model.ProductBase;
-import com.alcatel_lucent.dms.service.DaoService;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 
-import static java.lang.System.out;
+import com.alcatel_lucent.dms.action.JSONAction;
+import com.alcatel_lucent.dms.model.ProductBase;
+import com.alcatel_lucent.dms.service.DaoService;
 /**
  * Action of creating a product
  *
