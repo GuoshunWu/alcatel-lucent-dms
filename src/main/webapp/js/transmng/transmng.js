@@ -62,16 +62,18 @@ requirejs.config({
         //Set the config for the i18n
         //module ID
         i18n: {
-//            locale: 'fr-fr'
+            locale: 'en-us'
         }
     },
     waitSeconds:5
 });
 
 
-require(['require','util'], function (require) {
+require(['../config','require','util'], function (c, require) {
     var util=require('util');
 //    console.log(require.toUrl("util")+", "+require.toUrl("require")+", "+require.toUrl("jquery"));
     var dependencies=util.getDependencies('transmng',['layout','grid.colmodel','trans_grid']);
     require(dependencies);
+},function(err){
+    console.log("load module err: "+err);
 });

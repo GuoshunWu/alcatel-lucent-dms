@@ -6,14 +6,14 @@
   Time: 上午11:00
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page contentType="text/html;charset=utf-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 
     <title><s:text name="appmng.title"/></title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta http-equiv="Pragma" content="no-cache"/>
 
     <link rel="stylesheet" type="text/css" href="css/appmanagement.css"/>

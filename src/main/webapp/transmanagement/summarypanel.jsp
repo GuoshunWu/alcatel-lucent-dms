@@ -16,12 +16,12 @@
                 </td>
                 <td>&nbsp;</td>
                 <td>
+                    <div style="border: thin solid;width: 280px;text-align: center">
                     <input type="radio" id="applicationView" name="viewOption"><label for="applicationView"><s:text
-                        name="transmng.summarypanel.viewoption.applicationlevel"/></label>
+                        name="transmng.summarypanel.viewoption.applicationlevel"/></label>&nbsp;&nbsp;&nbsp;&nbsp;
                     <input type="radio" id="productView" checked name="viewOption"><label for="productView"><s:text
                         name="transmng.summarypanel.viewoption.dictionarylevel"/></label>
-
-
+                    </div>
                 </td>
                 <td>&nbsp;</td>
                 <td><s:text name="transmng.summarypanel.searchtext"/><input/></td>

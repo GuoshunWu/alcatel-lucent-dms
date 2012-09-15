@@ -1,10 +1,11 @@
 package com.alcatel_lucent.dms.action.app;
 
-import com.alcatel_lucent.dms.action.JSONAction;
-import com.alcatel_lucent.dms.service.ProductService;
 import org.apache.log4j.Level;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
+
+import com.alcatel_lucent.dms.action.JSONAction;
+import com.alcatel_lucent.dms.service.ProductService;
 
 /**
  * Action of creating a product
@@ -68,6 +69,7 @@ public class RemoveApplicationAction extends JSONAction {
         } else {
             productService.removeApplicationFromProduct(productId,id);
         }
+
         setStatus(0);
         setMessage("Change success.");
 

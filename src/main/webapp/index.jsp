@@ -3,7 +3,7 @@
 <html  xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Welcome to DMS</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
     <style type="text/css">
         html, body {
@@ -17,7 +17,7 @@
 </head>
 <body>
 <h1 align="center"><s:text name="index.welcome"/></h1>
-    <s:a href="transmng.jsp">Translation Management</s:a>
+    <s:a href="transmng.jsp">Translation Management</s:a><br>
     <s:a href="appmng.jsp">Application Management</s:a>
 </body>
 </html>
