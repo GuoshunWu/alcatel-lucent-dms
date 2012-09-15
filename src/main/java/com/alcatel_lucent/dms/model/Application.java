@@ -27,7 +27,8 @@ public class Application extends BaseEntity {
         return dictionaries.size();
     }
     
-    public Collection getCell(){
+    @SuppressWarnings("unchecked")
+	public Collection getCell(){
         return Arrays.asList(getId(),getName(),version, getDictNum());
     }
 

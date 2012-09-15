@@ -37,9 +37,6 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private DaoService dao;
     
-    @Autowired
-    private DictionaryService dictionaryService;
-
     JsonConfig config = new JsonConfig();
 
 

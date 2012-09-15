@@ -7,12 +7,10 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <c:set scope="page" var="pageTitle"><s:text name="appmng.title"/></c:set>
 
     <title><s:text name="appmng.title"/></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -40,7 +38,7 @@
     <div class="ui-layout-north" style="text-align: left; bottom:0px">
         <table width="99%">
             <tr>
-                <td><span style="font-family:fantasy; font-size:14pt; font-style:normal; ">${pageTitle}</span></td>
+                <td><span style="font-family:fantasy,verdana, '黑体'; font-size:14pt; font-style:normal; "><s:text name="appmng.title"/></span></td>
                 <td align="right">
                     <div id="switcher"></div>
                 </td>

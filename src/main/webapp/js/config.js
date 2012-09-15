@@ -64,6 +64,6 @@ requirejs.config({
         i18n: {
 //            locale: 'fr-fr'
         }
-    }
-//    waitSeconds:5
+    },
+    waitSeconds:5
 });

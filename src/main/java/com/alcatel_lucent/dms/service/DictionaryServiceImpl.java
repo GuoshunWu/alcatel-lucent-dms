@@ -3,11 +3,21 @@ package com.alcatel_lucent.dms.service;
 import static com.alcatel_lucent.dms.util.Util.generateSpace;
 import static org.apache.commons.lang.StringUtils.join;
 
-import java.io.*;
-import java.util.*;
-
-import com.alcatel_lucent.dms.model.*;
-import com.alcatel_lucent.dms.model.Dictionary;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import net.sf.json.JSONObject;
 
@@ -25,8 +35,16 @@ import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.SystemError;
-
-import java.text.DateFormat;
+import com.alcatel_lucent.dms.model.Application;
+import com.alcatel_lucent.dms.model.Context;
+import com.alcatel_lucent.dms.model.Dictionary;
+import com.alcatel_lucent.dms.model.DictionaryBase;
+import com.alcatel_lucent.dms.model.DictionaryLanguage;
+import com.alcatel_lucent.dms.model.Label;
+import com.alcatel_lucent.dms.model.LabelTranslation;
+import com.alcatel_lucent.dms.model.Language;
+import com.alcatel_lucent.dms.model.Text;
+import com.alcatel_lucent.dms.model.Translation;
 
 @Service("dictionaryService")
 @Scope("singleton")
@@ -54,8 +72,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     private com.alcatel_lucent.dms.service.parser.DictionaryParser[] parsers;
     
 
-    private DateFormat dFmt = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
-
     public DictionaryServiceImpl() {
         super();
     }
@@ -79,8 +95,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
      * @param dir   root directory save dct files
      * @param dtIds the collection of the id for dictionary to be generated.
      */
-    @SuppressWarnings("unchecked")
-	public void generateDCTFiles(String dir, Collection<Long> dtIds, String[] langCodes) {
+    public void generateDCTFiles(String dir, Collection<Long> dtIds, String[] langCodes) {
         if (dtIds.isEmpty()) return;
         String idList = dtIds.toString().replace("[", "(").replace("]", ")");
         String hsql = "from Dictionary where id in " + idList;

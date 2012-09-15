@@ -148,6 +148,7 @@ public class MDCParser extends DictionaryParser {
 		return dictionary;
 	}
 
+	@SuppressWarnings("unchecked")
 	private Label readLabel(Element elem, Dictionary dictionary,
 			Context context, Collection<BusinessWarning> warnings)
 			throws BusinessException {

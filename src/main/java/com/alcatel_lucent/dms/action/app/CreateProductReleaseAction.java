@@ -1,15 +1,18 @@
 package com.alcatel_lucent.dms.action.app;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.struts2.convention.annotation.ParentPackage;
+import org.apache.struts2.convention.annotation.Result;
+
 import com.alcatel_lucent.dms.action.JSONAction;
 import com.alcatel_lucent.dms.model.Application;
 import com.alcatel_lucent.dms.model.Product;
 import com.alcatel_lucent.dms.model.ProductBase;
 import com.alcatel_lucent.dms.service.DaoService;
-import org.apache.log4j.Level;
-import org.apache.struts2.convention.annotation.ParentPackage;
-import org.apache.struts2.convention.annotation.Result;
-
-import java.util.*;
 
 /**
  * Action of creating a product

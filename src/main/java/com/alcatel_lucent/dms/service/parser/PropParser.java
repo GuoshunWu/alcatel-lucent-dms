@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -335,7 +334,6 @@ public class PropParser extends DictionaryParser {
 		int dotPos = filename.lastIndexOf(".");
 		if (dotPos != -1) {
 			filename = filename.substring(0, dotPos);
-			int pos = filename.lastIndexOf(".");
 			int length = filename.length();
 			String baseName = null, sep = null, langCode = null;
 			if (length >= 3 && filename.charAt(length - 3) == '.') {

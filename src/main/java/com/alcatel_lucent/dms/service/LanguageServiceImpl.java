@@ -78,11 +78,6 @@ public class LanguageServiceImpl extends BaseServiceImpl implements LanguageServ
                 '_', '-').toUpperCase());
 	}
 
-	private Map<String, AlcatelLanguageCode> getISOLanguageCodesUpperCase() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public Map<Long, Language> getLanguages() {
 		if (null != languages)
 			return languages;

@@ -3,9 +3,6 @@ package com.alcatel_lucent.dms.action;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Base class of JSON-style actions.
  * By default it products json string containing status and message as action result.
