@@ -62,7 +62,7 @@ requirejs.config({
         //Set the config for the i18n
         //module ID
         i18n: {
-//            locale: 'fr-fr'
+            locale: 'en-us'
         }
     },
     waitSeconds:5

@@ -1,4 +1,5 @@
-define ['jqlayout', 'jquery', 'i18n!nls/transmng','jqueryui'], ($, jq, i18n,jqui)->
+define ['jqlayout', 'jquery', 'i18n!nls/transmng','jqueryui','module'], ($, jq, i18n,jqui,module)->
+#  console.log module
 #  private variables
   ids = {
   container:

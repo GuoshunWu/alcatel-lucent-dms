@@ -82,15 +82,26 @@
         }
     }
 
-    define(['module'], function (module) {
+    define(['jquery', 'module'], function ($, module) {
         var masterConfig = module.config();
 
+        $.ajax({url:'app/get-locale', type:'json', async:false, success:function (json) {
+            var locale = json.message;
+            //todo: set js locale configuration here.
+            console.log("Change js config locale: "+masterConfig.locale +" to struts locale: "+locale);
+            locale=locale.replace('_','-').toLowerCase();
+            console.log('convert struts locale to ' + locale);
+            masterConfig.locale=locale;
+        }, error:function (XMLHttpRequest, textStatus, errorThrown) {
+            console.log('get struts locale error: ' + textStatus + ", use default; " + locale);
+        }});
+
         return {
-            version: '2.0.1',
+            version:'2.0.1',
             /**
              * Called when a dependency needs to be loaded.
              */
-            load: function (name, req, onLoad, config) {
+            load:function (name, req, onLoad, config) {
                 config = config || {};
 
                 if (config.locale) {
@@ -122,8 +133,8 @@
                     if (!locale) {
                         locale = masterConfig.locale =
                             typeof navigator === "undefined" ? "root" :
-                            (navigator.language ||
-                             navigator.userLanguage || "root").toLowerCase();
+                                (navigator.language ||
+                                    navigator.userLanguage || "root").toLowerCase();
                     }
                     parts = locale.split("-");
                 }

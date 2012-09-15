@@ -44,14 +44,32 @@ define(['jquery'], function ($) {
         return retval;
     }
 
+    function getLocaleCallback(json) {
+        return json.message;
+    }
+
     return {
         json2string:function (jsonObj) {
             return formatJonString(JSON.stringify(jsonObj));
         },
         getDependencies:function getDependencies(moduleName, dependenciesArray) {
-            return $(dependenciesArray).map(function () {
-               return  moduleName + '/' + this;
-            }).get();
+            return $(dependenciesArray).map(
+                function () {
+                    return  moduleName + '/' + this;
+                }).get();
+        },
+        getLocale:function () {
+            var locale = 'en-us';
+            $.ajax({url:'app/get-locale', type:'json',
+                async:false,
+                success:function (json) {
+                    locale = json.message;
+                    //todo: we can set js locale configuration here.
+//                    console.log('get struts locale successful, locale: ' + locale);
+                }, error:function (XMLHttpRequest, textStatus, errorThrown) {
+                    console.log('get struts locale error: ' + textStatus + ", use default; " + locale);
+                }});
+            return locale;
         }
     }
 });

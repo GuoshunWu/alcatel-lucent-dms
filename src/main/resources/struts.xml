@@ -5,8 +5,11 @@
     
 <struts>
 	<constant name="struts.action.excludePattern" value="/rest/.*"/>
+
+    <!-- integrate with spring here -->
     <constant name="struts.objectFactory" value="spring" />
     <constant name="struts.objectFactory.spring.autoWire" value="name"   />
+    <constant name="struts.i18n.encoding" value="UTF-8"/>
 	
 <!-- 	<package name="app" extends="json-default" namespace="/app">
 		<global-results>
