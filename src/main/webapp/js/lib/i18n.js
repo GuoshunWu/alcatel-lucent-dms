@@ -82,19 +82,19 @@
         }
     }
 
-    define(['jquery', 'module'], function ($, module) {
+    define(['module'], function (module) {
         var masterConfig = module.config();
+//        console.log(masterConfig.locale);
 
-        $.ajax({url:'app/get-locale', type:'json', async:false, success:function (json) {
-            var locale = json.message;
-            //todo: set js locale configuration here.
-            console.log("Change js config locale: "+masterConfig.locale +" to struts locale: "+locale);
-            locale=locale.replace('_','-').toLowerCase();
-            console.log('convert struts locale to ' + locale);
-            masterConfig.locale=locale;
-        }, error:function (XMLHttpRequest, textStatus, errorThrown) {
-            console.log('get struts locale error: ' + textStatus + ", use default; " + locale);
-        }});
+//        $.ajax({url:'app/get-locale', type:'json', async:false, success:function (json) {
+//            var locale = json.message;
+//            console.log("Change js config locale: "+masterConfig.locale +" to struts locale: "+locale);
+//            locale=locale.replace('_','-').toLowerCase();
+//            console.log('convert struts locale to ' + locale);
+//            masterConfig.locale=locale;
+//        }, error:function (XMLHttpRequest, textStatus, errorThrown) {
+//            console.log('get struts locale error: ' + textStatus + ", use default; " + locale);
+//        }});
 
         return {
             version:'2.0.1',
