@@ -117,7 +117,7 @@ require.config({
         jquery:'jquery-1.7.2.min',
         jqueryui:'jquery-ui-1.8.22.custom.min',
         jqgrid:'jquery.jqGrid.min',
-        jstree:'jquery.jstree',
+        jqtree:'jquery.jstree',
         jqlayout:'jquery.layout-latest',
         jqmsgbox:'jquery.msgBox.v1',
 //        modules
@@ -141,7 +141,7 @@ require.config({
             deps:['jqueryui', param.i18ngridfile],
             exports:'jQuery'
         },
-        'jstree':{
+        'jqtree':{
             deps:['jquery'],
             exports:'jQuery'
         },

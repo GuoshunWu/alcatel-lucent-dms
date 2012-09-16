@@ -1,8 +1,7 @@
+define ['jquery', 'cs!appmng/dictionary_grid'], ($, grid)->
+  console.log "application panel"
 
 
-# refresh application element on the panel
-refresh=(param)->
-
-
-exports.application_panel.refresh=refresh
+  refresh: (info)->
+    console.log "application refresh."
 

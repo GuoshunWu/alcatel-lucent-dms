@@ -1,7 +1,13 @@
-localIds = {
-app_grid: '#applicationGridList'
-}
-$ ()->
+define ['jqgrid','require'], ($,require)->
+  URL = {
+  # get application in product by product id
+  get_application_by_product_id: 'rest/applications/'
+  }
+
+  localIds = {
+  app_grid: '#applicationGridList'
+  }
+
   appGrid = $(localIds.app_grid).jqGrid ({
   datatype: 'json'
   url: 'json/appgrid.json'
@@ -68,5 +74,11 @@ $ ()->
   onClickButton: ()->
     $("##{ids.dialog.new_or_add_application}").dialog "open"
   }
+  id: localIds
+  productChanged: (product)->
+    url = URL.get_application_by_product_id + product.id
+    appGrid.setGridParam({url: url, datatype: "json"}).trigger("reloadGrid")
+    apptree=require('cs!appmng/apptree');
+    productBase=apptree.getSelected();
 
-exports.application_grid.application_grid_id = localIds.app_grid
+    appGrid.setCaption "Applications for Product #{productBase.text} version #{product.version}"
