@@ -1,3 +1,3 @@
 define [], ()->
   sayHello: (name) ->
-    "您好吗？ #{name}"
+    "这是一个测试, #{name}"

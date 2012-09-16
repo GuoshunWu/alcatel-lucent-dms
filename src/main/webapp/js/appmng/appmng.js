@@ -6,6 +6,6 @@
  * To change this template use File | Settings | File Templates.
  */
 
-require(['../config', '../lib/util'], function (config, util) {
-    require(util.getDependencies('appmng', ['largemodule']));
+require(['../config'], function (c) {
+    require(convertDependencies('appmng', ['largemodule']));
 });

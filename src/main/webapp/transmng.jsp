@@ -17,7 +17,6 @@
     <meta http-equiv="Pragma" content="no-cache">
 
     <link rel="stylesheet" type="text/css" href="css/transmanagement.css">
-
     <script type="text/javascript" data-main="js/transmng/transmng" src="js/require.js"></script>
 
 

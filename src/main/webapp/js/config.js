@@ -6,8 +6,110 @@
  * To change this template use File | Settings | File Templates.
  */
 
+// a ajax tool to request struts locale info
 
-requirejs.config({
+var HTTP = {};
+HTTP._factories = [
+    function () {
+        return new XMLHttpRequest();
+    },
+    function () {
+        return new ActiveXObject("Msxml2.XMLHTTP");
+    },
+    function () {
+        return new ActiveXObject("Microsoft.XMLHTTP");
+    }
+];
+
+//Wehn we find a factory that works store it here
+HTTP._factory = null;
+HTTP.newRequest = function () {
+    if (HTTP._factory) return HTTP._factory();
+    for (var i = 0; i < HTTP._factories.length; ++i) {
+        try {
+            var factory = HTTP._factories[i];
+            var request = factory();
+            if (request != null) {
+                HTTP._factory = factory;
+                return request;
+            }
+        } catch (e) {
+            continue;
+        }
+    }
+
+    HTTP._factory = function () {
+        throw new Error("XMLHttpRequest not supportted");
+    }
+    HTTP._factory();
+};
+HTTP._getResponse = function (request) {
+    var contentType = request.getResponseHeader("Content-Type");
+
+    if (contentType.indexOf("json") != -1 || contentType.indexOf("javascript") != -1) {
+        return eval("(" + request.responseText + ")");
+    }
+    return request.responseText;
+
+};
+HTTP.get = function (url, callback, errorHandler) {
+    var request = HTTP.newRequest();
+    request.onreadystatechange = function () {
+        if (request.readyState == 4) {
+            if (request.status = 200) {
+                callback(HTTP._getResponse(request));
+            }
+            else {
+                if (errorHandler)errorHandler(request.status, request.statusText);
+            }
+        }
+    };
+    // false is synchronous method, will blocked
+    request.open("GET", url, false);
+    request.send(null);
+};
+
+gridI18NMap = {
+    ar:'ar', bg:'bg', bg1251:'bg1251', cat:'cat', 'zh-cn':'cn',
+    cs:'cs', da:'da', de:'de', dk:'dk', el:'el',
+    'en-us':'en', es:'es', fa:'fa', fi:'fi',
+    fr:'fr', gl:'gl', he:'he', hr:'hr', hr1250:'hr1250',
+    hu:'hu', is:'is', it:'it', ja:'ja', lt:'lt',
+    mne:'mne', nl:'nl', no:'no', pl:'pl', pt:'pt',
+    'pt-br':'pt-br', ro:'ro', ru:'ru', sk:'sk',
+    sr:'sr', 'sr-latin':'sr-latin', sv:'sv',
+    th:'th', tr:'tr', ua:'ua'
+};
+var param = {};
+HTTP.get('app/get-locale', function (json) {
+    var locale = json.message.replace('_', '-').toLocaleLowerCase();
+    param.locale = locale;
+    param.i18ngridfile = 'i18n/grid.locale-' +
+        (gridI18NMap[param.locale] ? gridI18NMap[param.locale] : param.locale);
+//    console.log(param);
+}, function (errStatus, errText) {
+    console.log("Error:" + errText + "(" + errStatus + ")");
+});
+
+/**
+ * Convert module dependencies to its correct name
+ * */
+function convertDependencies(moduleName, array) {
+    if (typeof array == "string") return moduleName + "/" + array;
+    var newArray = [];
+    for (var i = 0; i < array.length; ++i) {
+        var dependency=moduleName + "/"+array[i];
+        if (array[i].indexOf('!') != -1) {
+            var splitParts=array[i].split('!');
+            dependency=splitParts[0]+"!"+moduleName+"/"+splitParts[1];
+        }
+        newArray.push(dependency);
+    }
+    return newArray;
+}
+
+
+require.config({
     //By default load any module IDs from js/lib
     baseUrl:'js/lib',
 //    enforceDefine: true,
@@ -21,8 +123,6 @@ requirejs.config({
 //        modules
         appmng:'../appmng',
         transmng:'../transmng',
-//        for i18n
-//        i18n:'../i18n',
         nls:'../nls',
 //      for coffee script
         cs:'../cs',
@@ -38,7 +138,7 @@ requirejs.config({
             exports:'jQuery'
         },
         'jqgrid':{
-            deps:['jqueryui', 'i18n/grid.locale-en' ],
+            deps:['jqueryui', param.i18ngridfile],
             exports:'jQuery'
         },
         'jstree':{
@@ -58,11 +158,11 @@ requirejs.config({
             exports:'jQuery'
         }
     },
-    config: {
+    config:{
         //Set the config for the i18n
         //module ID
-        i18n: {
-            locale: 'en-us'
+        i18n:{
+            locale:param.locale
         }
     },
     waitSeconds:5

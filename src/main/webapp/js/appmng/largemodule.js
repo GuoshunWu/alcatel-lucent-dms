@@ -7,12 +7,11 @@
  */
 
 define(['jqgrid', 'jqlayout', 'jstree', 'jqmsgbox',
-    'appmng/mycoffee','themeswitchertool','i18n!nls/colors'],
-    function ($, layout, jstree, mb, mc,th,ctest,util) {
+    'cs!appmng/mycoffee','themeswitchertool'],
+    function ($, layout, jstree, mb, mc,th) {
 
         console.log(mc.sayHello('WGS'));
-        console.log(ctest.red);
-        $('#switcher').themeswitcher();
+//        $('#switcher').themeswitcher();
 
 
         var pageLayout = $('#optional-container').layout({
