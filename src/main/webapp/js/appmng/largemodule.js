@@ -168,7 +168,6 @@ define(['jqgrid', 'jqlayout', 'jstree', 'jqmsgbox',
 //            log(jsonFromServer);
                 return [0 == jsonFromServer.status, jsonFromServer.message];
             },
-            viewrecords:true,
             cellEdit:true,
             rowList:[10, 20, 30],
             sortname:'name',
