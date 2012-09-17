@@ -17,9 +17,9 @@
                 <td>&nbsp;</td>
                 <td>
                     <div style="border: thin solid;width: 280px;text-align: center">
-                    <input type="radio" id="applicationView" name="viewOption"><label for="applicationView"><s:text
+                    <input type="radio" id="applicationView" name="viewOption" value="app"><label for="applicationView"><s:text
                         name="transmng.summarypanel.viewoption.applicationlevel"/></label>&nbsp;&nbsp;&nbsp;&nbsp;
-                    <input type="radio" id="productView" checked name="viewOption"><label for="productView"><s:text
+                    <input type="radio" id="dictionaryView" checked name="viewOption" value="dictionary"><label for="dictionaryView"><s:text
                         name="transmng.summarypanel.viewoption.dictionarylevel"/></label>
                     </div>
                 </td>
@@ -42,7 +42,7 @@
                 <tr>
                     <td align="center" colspan="9" style="width: 98%">
 
-                        <table id="taskGridList">
+                        <table id="transGridList">
                             <tr>
                                 <td/>
                             </tr>

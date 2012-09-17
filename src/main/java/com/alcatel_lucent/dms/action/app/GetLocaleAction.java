@@ -1,9 +1,9 @@
 package com.alcatel_lucent.dms.action.app;
 
-import com.alcatel_lucent.dms.action.JSONAction;
-import com.alcatel_lucent.dms.service.ProductService;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
+
+import com.alcatel_lucent.dms.action.JSONAction;
 
 /**
  * Action of creating a product
