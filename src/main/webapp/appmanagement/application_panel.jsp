@@ -4,7 +4,7 @@
 
     <table border="0">
         <tr>
-            <td style="width:30px;"><s:text name="text"/>:</td>
+            <td style="width:30px;"><s:text name="product"/>:</td>
             <td colspan="2"><span id="appDispProductName"></span></td>
         </tr>
         <tr>
@@ -34,6 +34,4 @@
         </tr>
 
     </table>
-
-
 </div>
