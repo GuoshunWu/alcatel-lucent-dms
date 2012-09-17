@@ -21,6 +21,8 @@ import java.util.Map;
 
 import net.sf.json.JSONObject;
 
+import org.apache.commons.collections.keyvalue.MultiKey;
+import org.apache.commons.collections.map.MultiKeyMap;
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -799,4 +801,77 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     	}
     }
     
+/*    
+    public Map<Long, int[]> getDictTranslationSummary(Long dictId) {
+    	Map<Long, int[]> result = new HashMap<Long, int[]>();
+    	Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
+    	String hql = "select ot.language.id" +
+    			",sum(case when ot.needTranslation=0 or t.status=" + Translation.STATUS_TRANSLATED + " then 1 else 0 end) " +
+    			",sum(case when ot.needTranslation=1 and t.status=" + Translation.STATUS_UNTRANSLATED + " then 1 else 0 end) " +
+    			",sum(case when ot.needTranslation=1 and t.status=" + Translation.STATUS_IN_PROGRESS + " then 1 else 0 end) " +
+    			" from Dictionary d join d.labels l join l.origTranslations ot join l.text.translations t" +
+    			" where d.id=:dictId and ot.language=t.language" +
+    			" group by ot.language.id";
+    	Map param = new HashMap();
+    	param.put("dictId", dictId);
+    	Collection<Object[]> qr = dao.retrieve(hql, param);
+    	for (Object[] row : qr) {
+    		result.put((Long) row[0], new int[] {((Number)row[1]).intValue(), ((Number)row[2]).intValue(), ((Number)row[3]).intValue()});
+    	}
+    	return result;
+    }
+*/
+    
+    public Map<Long, Map<Long, int[]>> getDictTranslationSummary(Long prodId) {
+    	Map<Long, Map<Long, int[]>> result = new HashMap<Long, Map<Long, int[]>>();
+    	String hql = "select d.id,ot.language.id" +
+    			",sum(case when ot.needTranslation=0 or t.status=" + Translation.STATUS_TRANSLATED + " then 1 else 0 end) " +
+    			",sum(case when ot.needTranslation=1 and t.status=" + Translation.STATUS_UNTRANSLATED + " then 1 else 0 end) " +
+    			",sum(case when ot.needTranslation=1 and t.status=" + Translation.STATUS_IN_PROGRESS + " then 1 else 0 end) " +
+    			" from Product p join p.applications a join a.dictionaries d" +
+    			" join d.labels l join l.origTranslations ot join l.text.translations t" +
+    			" where p.id=:prodId and ot.language=t.language" +
+    			" group by d.id,ot.language.id";
+    	Map param = new HashMap();
+    	param.put("prodId", prodId);
+    	Collection<Object[]> qr = dao.retrieve(hql, param);
+    	for (Object[] row : qr) {
+    		Long dictId = (Long) row[0];
+    		Long langId = (Long) row[1];
+    		Map<Long, int[]> langMap = result.get(dictId);
+    		if (langMap == null) {
+    			langMap = new HashMap<Long, int[]>();
+    			result.put(dictId, langMap);
+    		}
+    		langMap.put(langId, new int[] {((Number)row[2]).intValue(), ((Number)row[3]).intValue(), ((Number)row[4]).intValue()});
+    	}
+    	return result;
+    }
+
+    public Map<Long, Map<Long, int[]>> getAppTranslationSummary(Long prodId) {
+    	Map<Long, Map<Long, int[]>> result = new HashMap<Long, Map<Long, int[]>>();
+    	String hql = "select a.id,ot.language.id" +
+    			",sum(case when ot.needTranslation=0 or t.status=" + Translation.STATUS_TRANSLATED + " then 1 else 0 end) " +
+    			",sum(case when ot.needTranslation=1 and t.status=" + Translation.STATUS_UNTRANSLATED + " then 1 else 0 end) " +
+    			",sum(case when ot.needTranslation=1 and t.status=" + Translation.STATUS_IN_PROGRESS + " then 1 else 0 end) " +
+    			" from Product p join p.applications a join a.dictionaries d" +
+    			" join d.labels l join l.origTranslations ot join l.text.translations t" +
+    			" where p.id=:prodId and ot.language=t.language" +
+    			" group by a.id,ot.language.id";
+    	Map param = new HashMap();
+    	param.put("prodId", prodId);
+    	Collection<Object[]> qr = dao.retrieve(hql, param);
+    	for (Object[] row : qr) {
+    		Long dictId = (Long) row[0];
+    		Long langId = (Long) row[1];
+    		Map<Long, int[]> langMap = result.get(dictId);
+    		if (langMap == null) {
+    			langMap = new HashMap<Long, int[]>();
+    			result.put(dictId, langMap);
+    		}
+    		langMap.put(langId, new int[] {((Number)row[2]).intValue(), ((Number)row[3]).intValue(), ((Number)row[4]).intValue()});
+    	}
+    	return result;
+    }
+
 }

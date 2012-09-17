@@ -2,7 +2,9 @@ package com.alcatel_lucent.dms.model;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 public class Application extends BaseEntity {
 	/**
@@ -63,4 +65,21 @@ public class Application extends BaseEntity {
 			}
 		}
 	}
+    private Map<String, int[]> summaryCache;
+    
+    /**
+     * Get translation status summary by language, used by front
+     * @return
+     */
+    public Map<String, int[]> getS() {
+    	return summaryCache;
+    }
+    
+    public void setS(Map<Long, int[]> summary) {
+		this.summaryCache = new HashMap<String, int[]>();
+		if (summary == null) return;
+		for (Long langId : summary.keySet()) {
+			summaryCache.put(langId.toString(), summary.get(langId));
+		}
+    }
 }

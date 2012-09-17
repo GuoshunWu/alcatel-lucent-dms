@@ -1,7 +1,7 @@
 define ['jqgrid','require'], ($,require)->
   URL = {
   # get application in product by product id
-  get_application_by_product_id: 'rest/applications/'
+  get_application_by_product_id: 'rest/applications'
   }
 
   localIds = {
@@ -76,7 +76,7 @@ define ['jqgrid','require'], ($,require)->
   }
   id: localIds
   productChanged: (product)->
-    url = URL.get_application_by_product_id + product.id
+    url = URL.get_application_by_product_id + "?prod=" + product.id + "&format=grid&prop=id,name,version,dictNum"
     appGrid.setGridParam({url: url, datatype: "json"}).trigger("reloadGrid")
     apptree=require('cs!appmng/apptree');
     productBase=apptree.getSelected();

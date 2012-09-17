@@ -3,6 +3,7 @@ package com.alcatel_lucent.dms;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 
 
 /**
@@ -20,6 +21,7 @@ import org.springframework.context.ApplicationContextAware;
  * Use AppContext.getApplicationContext() to get access
  * to all Spring Beans.
  */
+@Component("springContext")
 public class SpringContext implements ApplicationContextAware {
 
     private static ApplicationContext context;
@@ -28,7 +30,8 @@ public class SpringContext implements ApplicationContextAware {
         SpringContext.context=applicationContext;
     }
 
-    public static ApplicationContext getContext() {
-        return context;
+    public static Object getBean(String name) {
+        return context.getBean(name);
     }
+    
 }

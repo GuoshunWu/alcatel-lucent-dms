@@ -1,14 +1,18 @@
 package com.alcatel_lucent.dms.service;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 import com.alcatel_lucent.dms.util.Util;
+
+import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 import net.sf.json.processors.PropertyNameProcessor;
 import net.sf.json.util.PropertyFilter;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -20,19 +24,89 @@ public class JSONServiceImpl implements JSONService {
 
     private static Logger log = Logger.getLogger(JSONServiceImpl.class);
 
-    public String toJSONString(Object entity, Map<String, Collection<String>> propFilter, Map<Class, Map<String, String>>... vpropRename) {
-        JsonConfig config = getJsonConfig(propFilter, vpropRename);
-        if (entity instanceof Collection) {
-            return JSONArray.fromObject(entity, config).toString();
-        }
-        return JSONObject.fromObject(entity, config).toString();
+    public String toJSONString(Object entity, String propExp) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    	return Util.jsonFormat(toJSON(entity, propExp).toString());
     }
+    
+    public JSON toJSON(Object entity, String propExp) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    	if (entity instanceof Collection) {
+    		JSONArray jsonArray = new JSONArray();
+    		for (Object obj : (Collection<Object>) entity) {
+    			jsonArray.add(toJSON(obj, propExp));
+    		}
+    		return jsonArray;
+    	}
+    	JSONObject json = new JSONObject();
+    	String[] props = extractFirstLevelProperties(propExp);
+    	for (String prop : props) {
+    		try {
+	    		int pos = prop.indexOf("{");
+	    		if (pos == -1) {
+	    			json.put(prop, PropertyUtils.getProperty(entity, prop));
+	    		} else {
+	    			String refProp = prop.substring(0, pos).trim();
+	    			Object refObject = PropertyUtils.getProperty(entity, refProp);
+	    			json.put(refProp, toJSON(refObject, prop.substring(pos)));
+	    		}
+    		} catch (Exception e) {
+    			log.error(e);
+    		}
+    	}
+    	return json;
+    }
+    
+    private String[] extractFirstLevelProperties(String propExp) {
+		propExp = propExp.trim();
+		if (propExp.startsWith("{") && propExp.endsWith("}")) {
+			propExp = propExp.substring(1, propExp.length() - 1).trim();
+		}
+		ArrayList<String> result = new ArrayList<String>();
+		StringBuffer item = new StringBuffer();
+		int deep = 0;
+		for (int i = 0; i < propExp.length(); i++) {
+			if (propExp.charAt(i) == '{') {
+				deep++;
+				item.append(propExp.charAt(i));
+			} else if (propExp.charAt(i) == '}') {
+				deep--;
+				item.append(propExp.charAt(i));
+			} else if (propExp.charAt(i) == ',' && deep == 0) {
+				result.add(item.toString().trim());
+				item = new StringBuffer();
+			} else {
+				item.append(propExp.charAt(i));
+			}
+		}
+		if (!item.toString().isEmpty()) {
+			result.add(item.toString().trim());
+		}
+		return result.toArray(new String[0]);
+	}
 
-    public JSONObject toGridJSON(Object entity, int rows, int page, int records, Map<String, Collection<String>> propFilter, Map<Class, Map<String, String>>... vpropRename) {
-        JsonConfig config = getJsonConfig(propFilter, vpropRename);
+	public JSONObject toGridJSON(Collection<?> entities, int rows, int page, int records, String idProp, String cellProps) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
-        JSONArray jsonArrayGrid = JSONArray.fromObject(entity, config);
+        JSONArray jsonArrayGrid = new JSONArray();
         JSONObject jsonGrid = new JSONObject();
+        
+        for (Object entity : entities) {
+        	JSONObject jsonRow = new JSONObject();
+        	if (idProp != null) {
+        		jsonRow.put("id", PropertyUtils.getProperty(entity, idProp));
+        	}
+        	JSONArray jsonCell = new JSONArray();
+        	String[] propArray = cellProps.split(",");
+        	for (String prop : propArray) {
+        		Object value = null;
+        		try {
+        			value = PropertyUtils.getProperty(entity, prop);
+        		} catch (Exception e) {
+        			log.error(e);
+        		}
+        		jsonCell.add(value);
+        	}
+        	jsonRow.put("cell", jsonCell);
+        	jsonArrayGrid.add(jsonRow);
+        }
 
         int totalPages = records > 0 ? (int) ceil(records / (float) rows) : 0;
         if (page > totalPages) page = totalPages;
