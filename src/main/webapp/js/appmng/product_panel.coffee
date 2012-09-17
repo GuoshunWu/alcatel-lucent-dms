@@ -12,8 +12,6 @@ define ['jquery', 'cs!appmng/application_grid'], ($, grid)->
   $(localIds.new_product_version).button({ text: false, icons: {primary: "ui-icon-plus"}}).click ()->
   #  todo: update the element in product before open
     $("##{ids.dialog.new_product_release}").dialog "open"
-
-
   # initial product version select
 
   $(localIds.select_product_version).change ()->

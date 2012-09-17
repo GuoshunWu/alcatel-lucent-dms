@@ -9,5 +9,5 @@
 require(['../config'], function (c) {
 //    require(convertDependencies('appmng', ['largemodule']));
     require(convertDependencies('appmng', ['cs!layout', 'cs!dialogs', 'cs!apptree'
-        , 'cs!product_panel', 'cs!application_grid']));
+        , 'cs!product_panel']));
 });

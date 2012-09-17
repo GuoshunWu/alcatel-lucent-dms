@@ -1,5 +1,5 @@
 # Implement the navigation tree on the east
-define ['jqtree', 'cs!appmng/dialogs', 'cs!appmng/layout', 'cs!appmng/product_panel','cs!appmng/application_panel'], ($, dialogs, layout, productpnl,apppnl)->
+define ['jqtree', 'cs!appmng/dialogs', 'cs!appmng/layout', 'cs!appmng/product_panel', 'cs!appmng/application_panel'], ($, dialogs, layout, productpnl, apppnl)->
   ids = {
   navigateTree: 'appTree'
   }
@@ -17,7 +17,8 @@ define ['jqtree', 'cs!appmng/dialogs', 'cs!appmng/layout', 'cs!appmng/product_pa
     plugins: [ "themes", "json_data", "ui", "core"]
     }).bind "select_node.jstree", (event, node) =>
       appTree = $.jstree._reference "##{ids.navigateTree}"
-      nodeInfo = {text: appTree.get_text(node.rslt.obj), parent: appTree._get_parent(node.rslt.obj), id: node.rslt.obj.attr("id")}
+      parent = appTree._get_parent(node.rslt.obj)
+      nodeInfo = {text: appTree.get_text(node.rslt.obj), parent , id: node.rslt.obj.attr("id")}
 
       if (-1 == nodeInfo.parent)
       # refresh before show
@@ -25,6 +26,7 @@ define ['jqtree', 'cs!appmng/dialogs', 'cs!appmng/layout', 'cs!appmng/product_pa
         layout.showProductPanel()
       else
       # refresh before show
+        nodeInfo.parent = {id: parent.attr('id'), text: appTree.get_text(parent)}
         apppnl.refresh nodeInfo
         layout.showApplicationPanel()
 
@@ -40,7 +42,5 @@ define ['jqtree', 'cs!appmng/dialogs', 'cs!appmng/layout', 'cs!appmng/product_pa
     if -1 == parent
       info.parent = null
       return info
-
-    info.parent.id = parent.attr "id"
-    info.parent.text = appTree.get_text(parent)
+    info.parent = {id: parent.attr('id'), text: appTree.get_text(parent)}
     info
