@@ -24,7 +24,7 @@ public class Application extends BaseEntity {
     }
     
     public Integer getDictNum(){
-        return dictionaries.size();
+        return dictionaries==null?0:dictionaries.size();
     }
     
     @SuppressWarnings("unchecked")
