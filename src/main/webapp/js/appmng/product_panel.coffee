@@ -1,4 +1,4 @@
-define ['jquery', 'cs!appmng/application_grid'], ($, grid)->
+define ['jquery', 'appmng/application_grid'], ($, grid)->
   URL = {
   # get product by it id url, append product id to this url
   get_product_by_base_id: 'rest/products/'

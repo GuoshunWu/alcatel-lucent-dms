@@ -2,7 +2,10 @@
 <table width="100%" border="0">
     <tr>
         <td colspan="2"><span style="font-family:fantasy; font-size:14pt; font-style:normal; "><s:text name="transmng.title"/></span></td>
-        <td align="right" colspan="3"><div id="switcher"></div></td>
+        <td align="right" colspan="3">locale=<s:property value="#request.WW_TRANS_I18N_LOCALE"/>
+            <div id="switcher">
+
+            </div></td>
     </tr>
     <tr>
         <td align="right" ><s:text name="transmng.northpanel.product"/></td>

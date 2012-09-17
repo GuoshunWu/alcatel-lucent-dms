@@ -1,5 +1,5 @@
 # Implement the navigation tree on the east
-define ['jqtree', 'cs!appmng/dialogs', 'cs!appmng/layout', 'cs!appmng/product_panel', 'cs!appmng/application_panel'], ($, dialogs, layout, productpnl, apppnl)->
+define ['jqtree', 'appmng/dialogs', 'appmng/layout', 'appmng/product_panel', 'appmng/application_panel'], ($, dialogs, layout, productpnl, apppnl)->
   ids = {
   navigateTree: 'appTree'
   }
