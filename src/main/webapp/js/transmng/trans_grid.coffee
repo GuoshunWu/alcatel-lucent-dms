@@ -21,12 +21,13 @@ define ['jqgrid', 'require'], ($, require)->
   viewrecords: true
   gridview: true
   caption: 'Translation Task List'
+  gridType: 'dictionary'
   colNames: ['ID', 'Application', 'Version', 'Dictionary', 'Version', 'Encoding', 'Format', 'Num of String'
     , 'T', 'N', 'I', 'T', 'N', 'I', 'T', 'N', 'I'
 
   ]
   colModel: [
-    {name: 'id', index: 'id', width: 55, align: 'center', hidden: true, frozen: false}
+    {name: 'id', index: 'id', width: 55, align: 'center', hidden: true, frozen: true}
     {name: 'application', index: 'application', width: 100, editable: true, stype: 'select',
     edittype: 'select', align: 'center', editoptions: {value: "All:All;0.00:0.00;12:12.00"}, frozen: true}
     {name: 'appVersion', index: 'appVersion', width: 90, editable: true, align: 'center', frozen: true}
@@ -64,7 +65,7 @@ define ['jqgrid', 'require'], ($, require)->
     }
     #    grid.filterToolbar {stringResult: true, searchOnEnter: false}
     grid.navGrid '#taskPager', {edit: true, add: true, del: false, search: false, view: false}
-    grid.setFrozenColumns()
+  #    grid.setFrozenColumns()
   })
 
 
@@ -79,23 +80,33 @@ define ['jqgrid', 'require'], ($, require)->
   productReleaseChanged: (param) ->
     console.log "productReleaseChanged"
     prop += ($(param.languages).map ->_this = this;($([0, 1, 2]).map ->"s(#{_this.id})[#{this}]").get().join(',')).get().join(',')
+    gridParam = transGrid.getGridParam()
+
     #    todo: tobe complete for translation grid
     if param.level == "app"
       console.log "Application level"
-      gridParam = transGrid.getGridParam()
-
-      index= (gridParam.colNames.indexOf 'Dictionary')+1
-      gridParam.colNames = gridParam.colNames.slice(0,index).concat(gridParam.colNames.slice(index+1,gridParam.colNames.length))
-
-      #     remove column name from grid
-      gridParam.colNames = $.grep gridParam.colNames, (val, key)->  val not in ['Dictionary', 'Encoding', 'Format']
-      #     remove colModel from grid.
-      gridParam.colModel = $.grep gridParam.colModel, (val, key)-> val.name not in ['dictionary','dictVersion', 'encoding', 'format']
-      transGrid.updateTaskLanguage ($(param.languages).map ->this.name).get() ,'json/taskgrid.json'
-#      transGrid.updateTaskLanguage ($(param.languages).map ->this.name).get(), "rest/app", {prod: param.release.id, prop: prop}
+      if gridParam.gridType == "dictionary"
+        index = (gridParam.colNames.indexOf 'Dictionary') + 1
+        gridParam.colNames = gridParam.colNames.slice(0, index).concat(gridParam.colNames.slice(index + 1, gridParam.colNames.length))
+        #     remove column name from grid
+        gridParam.colNames = $.grep gridParam.colNames, (val, key)->  val not in ['Dictionary', 'Encoding', 'Format']
+        #     remove colModel from grid.
+        gridParam.colModel = $.grep gridParam.colModel, (val, key)-> val.name not in ['dictionary', 'dictVersion', 'encoding', 'format']
+        gridParam.gridType = "application"
+      transGrid.updateTaskLanguage ($(param.languages).map ->this.name).get(), 'json/taskgrid.json'
+    #      transGrid.updateTaskLanguage ($(param.languages).map ->this.name).get(), "rest/app", {prod: param.release.id, prop: prop}
     else
       prop = "id,app.base.name,base.name,encoding,format,labelNum," + prop
       console.log "Dictionary level"
+      if gridParam.gridType == "application"
+        gridParam.colNames = ['ID', 'Application', 'Version', 'Dictionary', 'Version', 'Encoding', 'Format', 'Num of String']
+        $.merge gridParam.colModel, [
+          {name: 'dictionary', index: 'dictionary', width: 90, editable: true, align: 'center', frozen: true}
+          {name: 'dictVersion', index: 'dictVersion', width: 90, editable: true, align: 'center', frozen: true}
+          {name: 'encoding', index: 'encoding', width: 90, editable: true, align: 'center', frozen: true}
+          {name: 'format', index: 'format', width: 90, editable: true, align: 'center', frozen: true}
+        ]
+        gridParam.gridType = "dictionary"
 
-      transGrid.updateTaskLanguage ($(param.languages).map ->this.name).get() ,'json/taskgrid.json'
+      transGrid.updateTaskLanguage ($(param.languages).map ->this.name).get(), 'json/taskgrid.json'
 #      transGrid.updateTaskLanguage ($(param.languages).map ->this.name).get(), "rest/dict", {prod: param.release.id, format: 'grid', prop: prop}

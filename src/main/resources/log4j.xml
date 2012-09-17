@@ -106,9 +106,9 @@
         <!--<level value="DEBUG"/>-->
     <!--</logger>-->
 
-    <!--<logger name="com.alcatel_lucent.dms">-->
-        <!--<level value="DEBUG"/>-->
-    <!--</logger>-->
+    <logger name="com.alcatel_lucent.dms">
+        <level value="DEBUG"/>
+    </logger>
 
     <logger name="DictDeliverSuccess">
         <appender-ref ref="FILE_DIC_DELIVER_SUCCESS"/>
