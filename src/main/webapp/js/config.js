@@ -84,6 +84,8 @@ var param = {};
 HTTP.get('app/get-locale', function (json) {
     var locale = json.message.replace('_', '-').toLocaleLowerCase();
     param.locale = locale;
+//    param.locale = 'zh-cn'
+
     param.i18ngridfile = 'i18n/grid.locale-' +
         (gridI18NMap[param.locale] ? gridI18NMap[param.locale] : param.locale);
 //    console.log(param);
