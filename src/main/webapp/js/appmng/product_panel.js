@@ -36,6 +36,12 @@
           }));
           return $(localIds.select_product_version).trigger('change');
         });
+      },
+      getSelectedProduct: function() {
+        return {
+          version: $(localIds.select_product_version).find("option:selected").text(),
+          id: $(localIds.select_product_version).val()
+        };
       }
     };
   });

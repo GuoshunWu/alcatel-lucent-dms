@@ -2,7 +2,7 @@
 <%@ page contentType="text/html;charset=utf-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
-<div id="newProductDialog" title="New product">
+<div id="newProductDialog" title="<s:text name="appmng.newproductbase"/> ">
     <span><s:text name="product.name"/><input id="productName" value="" type="text"/></span>
 </div>
 

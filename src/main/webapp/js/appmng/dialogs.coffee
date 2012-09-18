@@ -1,4 +1,4 @@
-define ['jqueryui', 'jqmsgbox'], ($, msgbox)->
+define ['jqueryui', 'jqmsgbox', 'i18n!nls/common'], ($, msgbox, c18n)->
   ids = {
   button:
     {
@@ -15,25 +15,24 @@ define ['jqueryui', 'jqmsgbox'], ($, msgbox)->
   }
 
 
-
   # Create new product dialog
+  console.log c18n.cancel
   newProduct = $("##{ids.dialog.new_product}").dialog {
   autoOpen: false, height: 200, width: 400, modal: true,
-  buttons:
-    {
-    'OK': ()->
-    # TODO: validate the product name...
-      $.post URL.create_product, {name: $(module_ids.productName).val()}, (json)=>
+  buttons: [
+    {text: c18n.ok, click: ->
+      # TODO: validate the product name...
+      $.post 'app/create-product', {name: $(ids.productName).val()}, (json)->
         if (json.status != 0)
           $.msgBox json.message, null, {title: 'Error', width: 300, height: 'auto'}
-          return
-        $("##{ids.navigateTree}").jstree("create_node", -1, "last", {data: $(module_ids.productName).val(), attr: {id: json.id}})
-      $(this).dialog "close"
-    'Cancel': ()->
+          return false
+        (require 'appmng/apptree' ).addNewProductBase {name: $(ids.productName).val(), id: json.id}
       $(this).dialog "close"
     }
+    {text: c18n.cancel, click: -> $(this).dialog "close"}
+  ]
   }
-
+# TODO: implement the rest of the dialogs
   # create new product button below the tree
   $("##{ids.button.new_product}").button().click (e) =>
     newProduct.dialog("open")

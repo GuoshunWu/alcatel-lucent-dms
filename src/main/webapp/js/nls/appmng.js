@@ -11,6 +11,10 @@ define({
             product:'Select product',
             application:'Select application',
             version:'Select version'
+        },
+        grid:{
+            delappmsg: 'Please select row to delete!',
+            permanenttext: 'Delete permanently'
         }
     },
     "zh-cn":true

@@ -45,7 +45,6 @@ public class CreateProductAction extends JSONAction {
 
     protected String performAction() throws Exception {
         log.info("Create product: " + name);
-        //TODO create product
         ProductBase pb=new ProductBase();
         pb.setName(name);
         pb= (ProductBase) daoService.create(pb);

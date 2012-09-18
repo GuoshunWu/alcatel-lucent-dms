@@ -2,7 +2,6 @@ define ['jquery', 'appmng/dictionary_grid'], ($, grid)->
   console.log "application panel initlized"
   $("#selAppVersion").change ->
     console.log "dictionary update"
-#    grid.
 
   refresh: (info)->
     console.log info

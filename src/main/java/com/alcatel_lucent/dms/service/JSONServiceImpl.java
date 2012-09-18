@@ -83,7 +83,9 @@ public class JSONServiceImpl implements JSONService {
 		return result.toArray(new String[0]);
 	}
 
-	public JSONObject toGridJSON(Collection<?> entities, int rows, int page, int records, String idProp, String cellProps) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+
+    @Override
+	public JSONObject toGridJSON(Collection<?> entities, Integer rows, Integer page, Integer records, String idProp, String cellProps) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
         JSONArray jsonArrayGrid = new JSONArray();
         JSONObject jsonGrid = new JSONObject();
@@ -134,6 +136,8 @@ public class JSONServiceImpl implements JSONService {
         }
         return jsonTree;
     }
+
+
 
     public JSONArray toSelectJSON(Object entity, Map<String, Collection<String>> propFilter, Map<Class, Map<String, String>>... vpropRename) {
         JsonConfig config = getJsonConfig(propFilter, vpropRename);

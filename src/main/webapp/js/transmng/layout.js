@@ -15,7 +15,7 @@
         closable: true
       });
       $.getJSON('rest/products/trans/productbases', {}, function(json) {
-        $('#productBase').append(new Option("" + i18n.select.producttip, -1));
+        $('#productBase').append(new Option(i18n.select.product.tip, -1));
         $('#productBase').append($(json).map(function() {
           return new Option(this.name, this.id);
         }));
@@ -25,6 +25,7 @@
             return false;
           }
           return $.getJSON("rest/products/" + ($('#productBase').val()), {}, function(json) {
+            $('#productRelease').append(new Option(i18n.select.release.tip, -1));
             $('#productRelease').append($(json).map(function() {
               return new Option(this.version, this.id);
             }));
@@ -50,6 +51,12 @@
           })).get(),
           level: $(":radio[name='viewOption'][checked]").val()
         };
+        if (!$('#productBase').val() || parseInt($('#productBase').val()) === -1) {
+          return false;
+        }
+        if (!param.release.id || parseInt(param.release.id) === -1) {
+          return false;
+        }
         return grid.productReleaseChanged(param);
       });
       languageFilterTableId = 'languageFilterTable';
@@ -85,7 +92,7 @@
       $.getJSON('rest/languages', {}, function(json) {
         var languages;
         languages = $(json).map(function() {
-          return $("<td><input type='checkbox' checked value=" + this.name + " name='languages' id=" + this.id + " /><label for=" + this.id + ">" + this.name + "</label></td>").css('width', '180px');
+          return $("<td><input type='checkbox' checked value=\"" + this.name + "\" name='languages' id=" + this.id + " /><label for=" + this.id + ">" + this.name + "</label></td>").css('width', '180px');
         });
         return languages.each(function(index) {
           if (0 === index % 5) {
@@ -94,8 +101,19 @@
           return this.appendTo($("tr:eq(" + (Math.floor(index / 5)) + ")", languageFilterTable));
         });
       });
-      return $('#languageFilter').button().click(function() {
+      $('#languageFilter').button().click(function() {
         return $("#" + languageFilterDialogId).dialog("open");
+      });
+      $("#applicationView").change(function() {
+        return $('#productRelease').trigger("change");
+      });
+      $("#dictionaryView").change(function() {
+        return $('#productRelease').trigger("change");
+      });
+      return $("#createTranslationTaskDialog").dialog({
+        autoOpen: false,
+        width: 420,
+        height: 'auto'
       });
     };
     initPage();

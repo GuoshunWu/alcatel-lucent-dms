@@ -77,7 +77,7 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'transmng/trans_grid', 'modul
 
     $.getJSON 'rest/languages', {}, (json)->
       languages = $(json).map ()->
-          $("<td><input type='checkbox' checked value=\"#{this.name}\" name='languages' id=#{this.id} /><label for=#{this.id}>#{this.name}</label></td>").css('width', '180px')
+        $("<td><input type='checkbox' checked value=\"#{this.name}\" name='languages' id=#{this.id} /><label for=#{this.id}>#{this.name}</label></td>").css('width', '180px')
       languages.each (index)->
         $("<tr/>").appendTo languageFilterTable if 0 == index % 5
         this.appendTo $("tr:eq(#{Math.floor(index / 5)})", languageFilterTable)
@@ -88,12 +88,9 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'transmng/trans_grid', 'modul
     $("#applicationView").change -> $('#productRelease').trigger "change"
     $("#dictionaryView").change -> $('#productRelease').trigger "change"
 
-#   create dialogs
-  $("#createTranslationTaskDialog").dialog {
-    autoOpen:false
-    width: 420
-    height:'auto'
-  }
+
+    #   create dialogs
+    $("#createTranslationTaskDialog").dialog {autoOpen: false, width: 420, height: 'auto' }
 
   # initialize page
   initPage()
