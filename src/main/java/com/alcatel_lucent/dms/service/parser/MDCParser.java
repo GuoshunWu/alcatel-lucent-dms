@@ -133,7 +133,6 @@ public class MDCParser extends DictionaryParser {
 				nonBreakExceptions.addNestedException(e);
 			}
 			if (labelKeys.contains(label.getKey())) {
-				// TODO: warning here.
 				warnings.add(new BusinessWarning(
 						BusinessWarning.DUPLICATE_LABEL_KEY, -1, label.getKey()));
 			} else {

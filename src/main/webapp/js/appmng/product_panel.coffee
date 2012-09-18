@@ -25,3 +25,5 @@ define ['jquery', 'appmng/application_grid'], ($, grid)->
     # update product version select
       $(localIds.select_product_version).empty().append ($(json).map ()-> new Option this.version, this.id)
       $(localIds.select_product_version).trigger 'change'
+
+  getSelectedProduct: -> {version: $(localIds.select_product_version).find("option:selected").text(), id: $(localIds.select_product_version).val()}

@@ -1,4 +1,4 @@
-define ['jqgrid','require'], ($,require)->
+define ['jqgrid', 'require','i18n!nls/appmng'], ($, require,i18n)->
   URL = {
   # get application in product by product id
   get_application_by_product_id: 'rest/applications'
@@ -7,6 +7,9 @@ define ['jqgrid','require'], ($,require)->
   localIds = {
   app_grid: '#applicationGridList'
   }
+
+
+  dialogs = require 'appmng/dialogs'
 
   appGrid = $(localIds.app_grid).jqGrid ({
   datatype: 'json'
@@ -31,12 +34,14 @@ define ['jqgrid','require'], ($,require)->
     if name == 'version'
       select = $("##{iRow}_version", localIds.app_grid)
       url = "rest/applications/appssamebase/#{id}"
-      $.getJSON url, {}, (json)->
-        select.append $(json).map ()-> opt = new Option(this.version, this.id);opt.selected = (this.version == val);opt
+      $.getJSON url, {}, (json)->select.append $(json).map ()-> opt = new Option(this.version, this.id);opt.selected = (this.version == val);opt
+
   beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
-    productSelect = $ "#{exports.product_panel.select_product_version_id}"
+    productpnl=require 'appmng/product_panel'
+    product=productpnl.getSelectedProduct()
     changeSelect = $("##{iRow}_version", localIds.app_grid)
-    {productId: productSelect.val(), newAppId: changeSelect.val()}
+#    add the product id and the application id changed to.
+    {productId: product.id, newAppId: changeSelect.val()}
   afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
     jsonFromServer = eval('(' + serverresponse.responseText + ')')
     [0 == jsonFromServer.status, jsonFromServer.message]
@@ -44,41 +49,36 @@ define ['jqgrid','require'], ($,require)->
   appGrid.jqGrid('navGrid', '#pager', {edit: false, add: false, del: false, search: false, view: false})
   appGrid.navButtonAdd '#pager', { caption: "", buttonicon: "ui-icon-trash", position: "first"
   onClickButton: ()->
-    appGrid = $(localIds.app_grid)
     gr = appGrid.jqGrid('getGridParam', 'selrow')
     if (null == gr)
-      $.msgBox "Please Select Row to delete!", null, {title: 'Select Row', width: 300, height: 'auto' }
+      console.log i18n
+      $.msgBox i18n.grid.delappmsg, null, {title: 'Select Row', width: 300, height: 'auto' }
       false
     appGrid.jqGrid 'delGridRow', gr, { mtype: 'post', editData: [], recreateForm: false, modal: true, jqModal: true, reloadAfterSubmit: false
     url: 'app/remove-application'
     beforeShowForm: (form)->
       permanent = $('#permanentDeleteSignId', form)
       if (0 == permanent.length)
-        $("<tr><td>Delete permanently</td><td><input align='left' type='checkbox' id='permanentDeleteSignId'></td></tr>").appendTo $("tbody", form)
+        $("<tr><td>#{i18n.grid.permanenttext}</td><td><input align='left' type='checkbox' id='permanentDeleteSignId'></td></tr>").appendTo $("tbody", form)
       else
         permanent.removeAttr "checked"
     onclickSubmit: (params, posdata)->
-      productSelect = $ "#{exports.product_panel.select_product_version_id}"
-      {productId: productSelect.val(), permanent: Boolean($('#permanentDeleteSignId').attr("checked"))}
+      product=(require "appmng/product_panel").getSelectedProduct()
+      {productId: product.id, permanent: Boolean($('#permanentDeleteSignId').attr("checked"))}
     afterSubmit: (response, postdata)->
       jsonFromServer = eval "(#{response.responseText})"
-      #      log jsonFromServer
-      if jsonFromServer.id #appbase is deleted
       #remove appbase node from apptree.
-        appTree = $.jstree._reference("#appTree")
-        (appTree._get_children appTree.get_selected()).each (index, app)->appTree.delete_node(app) if app.id == "#{jsonFromServer.id}"
+      (require 'appmng/apptree').delApplictionBaseFromProductBase jsonFromServer.id if jsonFromServer.id #appbase is deleted
       [0 == jsonFromServer.status, jsonFromServer.message]
     }
   }
   appGrid.navButtonAdd '#pager', { caption: "", buttonicon: "ui-icon-plus", position: "first"
   onClickButton: ()->
-    $("##{ids.dialog.new_or_add_application}").dialog "open"
+    dialogs.newOrAddApplication.dialog "open"
   }
   id: localIds
   productChanged: (product)->
-    url = URL.get_application_by_product_id + "?prod=" + product.id + "&format=grid&prop=id,name,version,dictNum"
+    url = "#{URL.get_application_by_product_id}?prod=#{product.id}&format=grid&prop=id,name,version,dictNum"
     appGrid.setGridParam({url: url, datatype: "json"}).trigger("reloadGrid")
-    apptree=require('cs!appmng/apptree');
-    productBase=apptree.getSelected();
-
+    productBase = require('appmng/apptree').getSelected()
     appGrid.setCaption "Applications for Product #{productBase.text} version #{product.version}"

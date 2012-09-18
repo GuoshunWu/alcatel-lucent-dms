@@ -1,25 +1,23 @@
 # Implement the navigation tree on the east
-define ['jqtree', 'appmng/dialogs', 'appmng/layout', 'appmng/product_panel', 'appmng/application_panel'], ($, dialogs, layout, productpnl, apppnl)->
+define ['jqtree', 'appmng/dialogs', 'appmng/layout', 'appmng/product_panel', 'appmng/application_panel'], ($, dialogs, layout, productpnl, apppnl, module)->
   ids = {
   navigateTree: 'appTree'
   }
   URL = {
   navigateTree: 'rest/products?nocache=' + new Date().getTime()
   }
+
   $.getJSON URL.navigateTree, {}, (treeInfo) ->
     $.jstree._themes = "css/jstree/themes/"
 
     ($("##{ids.navigateTree}").jstree {
     json_data: {data: treeInfo}
-    ui: {select_limit: 1}
-    themes: {}
-    core: {}
+    ui: {select_limit: 1}, themes: {}, core: {}
     plugins: [ "themes", "json_data", "ui", "core"]
-    }).bind "select_node.jstree", (event, node) =>
+    }).bind "select_node.jstree", (event, node) ->
       appTree = $.jstree._reference "##{ids.navigateTree}"
       parent = appTree._get_parent(node.rslt.obj)
-      nodeInfo = {text: appTree.get_text(node.rslt.obj), parent , id: node.rslt.obj.attr("id")}
-
+      nodeInfo = {text: appTree.get_text(node.rslt.obj), parent, id: node.rslt.obj.attr("id")}
       if (-1 == nodeInfo.parent)
       # refresh before show
         productpnl.refresh nodeInfo
@@ -30,17 +28,19 @@ define ['jqtree', 'appmng/dialogs', 'appmng/layout', 'appmng/product_panel', 'ap
         apppnl.refresh nodeInfo
         layout.showApplicationPanel()
 
+
   getSelected: ->
-    info = {}
     appTree = $.jstree._reference "##{ids.navigateTree}"
     selectedNode = appTree.get_selected()
-
-    info.id = selectedNode.attr "id"
-    info.text = appTree.get_text(selectedNode)
-
     parent = appTree._get_parent(selectedNode)
-    if -1 == parent
-      info.parent = null
-      return info
-    info.parent = {id: parent.attr('id'), text: appTree.get_text(parent)}
-    info
+    {
+    id: selectedNode.attr "id"
+    text: appTree.get_text(selectedNode)
+    parent: if -1 == parent then parent else {id: parent.attr('id'), text: appTree.get_text(parent)}
+    }
+  delApplictionBaseFromProductBase: (appBaseId)->
+    appTree = $.jstree._reference "##{ids.navigateTree}"
+    (appTree._get_children appTree.get_selected()).each (index, app)->appTree.delete_node(app) if parseInt(app.id) == appBaseId
+  addNewProductBase:(product)->
+    ($.jstree._reference "##{ids.navigateTree}").create_node  -1, "last", {data: product.name, attr: {id: product.id}}
+
