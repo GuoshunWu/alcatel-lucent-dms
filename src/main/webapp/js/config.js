@@ -139,6 +139,10 @@ require.config({
             deps:['jquery'],
             exports:'jQuery'
         },
+        'ui.multiselect':{
+            deps:['jquery'],
+            exports:'jQuery'
+        },
         'jqgrid':{
             deps:['jqueryui', param.i18ngridfile],
             exports:'jQuery'

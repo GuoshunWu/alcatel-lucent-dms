@@ -1,4 +1,4 @@
-define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'cs!transmng/trans_grid', 'module'], ($, jq, i18n, grid, module)->
+define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'cs!transmng/trans_grid', 'jqmsgbox', 'require', 'util'], ($, jq, i18n, grid, require)->
 #  console.log module
 #  private variables
   ids = {
@@ -14,7 +14,7 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'cs!transmng/trans_grid', 'mo
     ###################################### Initialize elements in north panel ######################################
     # populate option for product base
     $.getJSON 'rest/products/trans/productbases', {}, (json)->
-      $('#productBase').append new Option("#{i18n.select.producttip}", -1)
+      $('#productBase').append new Option(i18n.select.product.tip, -1)
       $('#productBase').append $(json).map ()->new Option this.name, this.id
 
 
@@ -25,7 +25,9 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'cs!transmng/trans_grid', 'mo
 
 
         $.getJSON "rest/products/#{$('#productBase').val()}", {}, (json)->
+          $('#productRelease').append new Option(i18n.select.release.tip, -1)
           $('#productRelease').append $(json).map ()->new Option this.version, this.id
+
           $('#productRelease').trigger "change"
 
 
@@ -35,6 +37,14 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'cs!transmng/trans_grid', 'mo
       languages: ($(":checkbox[name='languages']", languageFilterTable).map () -> {id: this.id, checked: this.checked, name: this.value} if this.checked).get()
       level: $(":radio[name='viewOption'][checked]").val()
       }
+      if !$('#productBase').val() || parseInt($('#productBase').val()) == -1
+      #        $.msgBox i18n.select.product.msg, null,title: i18n.select.product.msgtitle, width: 300, height: "auto"
+        return false
+
+      if !param.release.id || parseInt(param.release.id) == -1
+      #        $.msgBox i18n.select.release.msg, null, title: i18n.select.release.msgtitle, width: 300 , height: "auto"
+        return false
+
       grid.productReleaseChanged param
 
 
@@ -67,12 +77,23 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'cs!transmng/trans_grid', 'mo
 
     $.getJSON 'rest/languages', {}, (json)->
       languages = $(json).map ()->
-        $("<td><input type='checkbox' checked value=\"#{this.name}\" name='languages' id=#{this.id} /><label for=#{this.id}>#{this.name}</label></td>").css('width', '180px')
+          $("<td><input type='checkbox' checked value=\"#{this.name}\" name='languages' id=#{this.id} /><label for=#{this.id}>#{this.name}</label></td>").css('width', '180px')
       languages.each (index)->
         $("<tr/>").appendTo languageFilterTable if 0 == index % 5
         this.appendTo $("tr:eq(#{Math.floor(index / 5)})", languageFilterTable)
 
     $('#languageFilter').button().click ()->$("##{languageFilterDialogId}").dialog "open"
+
+
+    $("#applicationView").change -> $('#productRelease').trigger "change"
+    $("#dictionaryView").change -> $('#productRelease').trigger "change"
+
+#   create dialogs
+  $("#createTranslationTaskDialog").dialog {
+    autoOpen:false
+    width: 420
+    height:'auto'
+  }
 
   # initialize page
   initPage()
@@ -81,10 +102,4 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'cs!transmng/trans_grid', 'mo
   #    public variables and methods
   name: 'layout'
   getSelectedLanguages: -> $(":checkbox[name='languages']", languageFilterTable).map () -> {id: this.id, checked: this.checked, name: this.value} if this.checked
-
-
-
-
-
-
 

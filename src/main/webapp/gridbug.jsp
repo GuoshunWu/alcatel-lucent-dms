@@ -15,9 +15,9 @@
     <link rel="stylesheet" type="text/css" href="css/jqgrid/ui.jqgrid.css"/>
 
     <script type="text/javascript" src="js/lib/jquery-1.7.2.min.js"></script>
-    <script type="text/javascript" src="js/lib/jquery-ui-1.8.22.custom.min.js"></script>
     <script type="text/javascript" src="js/lib/i18n/grid.locale-en.js"></script>
     <script type="text/javascript" src="js/lib/jquery.jqGrid.min.js"></script>
+    <%--<script type="text/javascript" src="js/lib/ui.multiselect.js"></script>--%>
 
     <script type="text/javascript">
 
@@ -40,15 +40,19 @@
                 sortorder:'asc',
                 viewrecords:true,
                 gridview:true,
+                multiselect: true,
+                multikey: "ctrlKey",
                 caption:'Translation Task List',
                 colNames:[
-                    'A',
-                    'B1', 'B2'
+                    'A', 'A1',
+                    'B1', 'B2','B3'
                 ],
                 colModel:[
-                    {name:'a', index:'a', width:80, align:'center', frozen:true} ,
+                    {name:'a', index:'a', width:80, hidden:true, align:'center',frozen:true} ,
+                    {name:'a1', index:'a', width:80,hidden:false, align:'center',frozen:true} ,
                     {name:'b1', index:'b1', width:30, align:'center'},
                     {name:'b2', index:'b2', width:30, editable:true, align:'center'},
+                    {name:'b3', index:'b2', width:30, editable:true, align:'center'}
                 ]
             });
 
@@ -61,12 +65,12 @@
                     return transGrid[0].clearToolbar();
                 }
             });
-            transGrid.setGroupHeaders({
-                useColSpanStyle:true,
-                groupHeaders:[
-                    {startColumnName:'b1', numberOfColumns:2, titleText:'<bold>B</bold>'}
-                ]
-            });
+//            transGrid.setGroupHeaders({
+//                useColSpanStyle:true,
+//                groupHeaders:[
+//                    {startColumnName:'b1', numberOfColumns:3, titleText:'<bold>B</bold>'}
+//                ]
+//            });
             transGrid.navGrid('#taskPager', {edit:true, add:true, del:false, search:false, view:false});
             transGrid.setFrozenColumns();
         });

@@ -7,10 +7,10 @@
         <td align="right" colspan="3"><div id="switcher"></div></td>
     </tr>
     <tr>
-        <td align="right" ><s:text name="transmng.northpanel.product"/></td>
+        <td align="right" ><s:text name="product"/></td>
         <td style="width:160px"><select id="productBase" style="width:99%;"/></td>
-        <td align="right" style="width: 100px" ><s:text name="transmng.northpanel.release"/></td>
-        <td style="width:100px"><select id="productRelease" style="width:99%;"/></td>
+        <td align="right" style="width: 100px" ><s:text name="version"/></td>
+        <td style="width:200px"><select id="productRelease" style="width:99%;"/></td>
         <td style="width:50px"></td>
     </tr>
 </table>

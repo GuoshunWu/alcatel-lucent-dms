@@ -49,7 +49,7 @@ public class LanguageREST {
      * */
     public String retrieveAllLanguages() {
 
-        Collection<Language> result = dao.retrieve("from Language order by name");
+        Collection<Language> result = dao.retrieve("from Language where name not like '%-%' order by name");
         Map<String, Collection<String>> propFilter = new HashMap<String, Collection<String>>();
         propFilter.put("Language", Arrays.asList("name", "id"));
         return jsonService.toTreeJSON(result, propFilter).toString();
