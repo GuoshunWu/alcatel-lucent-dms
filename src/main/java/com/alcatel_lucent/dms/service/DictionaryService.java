@@ -8,6 +8,8 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Map;
 
+import org.apache.commons.collections.map.MultiKeyMap;
+
 public interface DictionaryService {
     /**
      * Parse and preview application dictionaries in a folder
@@ -110,6 +112,9 @@ public interface DictionaryService {
      * @param id dictionary id
      */
     void deleteDictionary(Long id);
+    
+    Map<Long, Map<Long, int[]>> getDictTranslationSummary(Long prodId);
+    Map<Long, Map<Long, int[]>> getAppTranslationSummary(Long prodId);
     
     //Dictionary previewProp(String dictionaryName, Map<String, Collection<Properties>> propMap, Collection<BusinessWarning> warnings) throws BusinessException;
 }

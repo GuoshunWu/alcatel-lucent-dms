@@ -189,5 +189,23 @@ public class Dictionary extends BaseEntity {
         }
         return null;
     }
+    
+    private Map<String, int[]> summaryCache;
+    
+    /**
+     * Get translation status summary by language, used by front
+     * @return
+     */
+    public Map<String, int[]> getS() {
+    	return summaryCache;
+    }
+    
+    public void setS(Map<Long, int[]> summary) {
+		this.summaryCache = new HashMap<String, int[]>();
+		if (summary == null) return;
+		for (Long langId : summary.keySet()) {
+			summaryCache.put(langId.toString(), summary.get(langId));
+		}
+    }
 
 }

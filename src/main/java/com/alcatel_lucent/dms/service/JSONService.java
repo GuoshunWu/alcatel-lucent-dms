@@ -3,6 +3,7 @@ package com.alcatel_lucent.dms.service;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Map;
 
@@ -16,11 +17,10 @@ public interface JSONService {
      * Convert the entity to json string.
      *
      * @param entity      Will be transformed entity
-     * @param propFilter  Filed filter map
-     * @param vpropRename Optional field rename map
+     * @param propExp  A presentation of properties, e.g.: {id,code,name,parent(id,name),children{name}}
      * @return json string represent the entity
      */
-    String toJSONString(Object entity, Map<String, Collection<String>> propFilter, Map<Class, Map<String, String>>... vpropRename);
+    String toJSONString(Object entity, String propExp) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException;
 
 
     /**
@@ -44,18 +44,20 @@ public interface JSONService {
 
     JSONArray toTreeJSON(Object entity, Map<String, Collection<String>> propFilter, Map<Class, Map<String, String>>... vpropRename);
 
+    
     /**
-     * Convert the entity to JGrid json data.
-     *
-     * @param entity      Will be transformed entity
-     * @param records     Total records in the entity
-     * @param rows        How many rows we want to have into the grid
-     * @param page        The requested page
-     * @param propFilter  Filed filter map
-     * @param vpropRename Optional field rename map
-     * @return JSONObject represent the entity
+     * Convert entities to jqGrid JSON format.
+     * @param entities collection of entity beans
+     * @param rows	number of rows in each page
+     * @param page	current page
+     * @param records	total number of records
+     * @param idProp	property name for "id" field
+     * @param cellProps	property names for "cell" field, split by comma. Sample: id,code,name,parent.name,children[0].code
+     * @return JSON object
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException
      */
-
-    JSONObject toGridJSON(Object entity, int rows, int page, int records, Map<String, Collection<String>> propFilter, Map<Class, Map<String, String>>... vpropRename);
+    JSONObject toGridJSON(Collection<?> entities, int rows, int page, int records, String idProp, String cellProps) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException;
 
 }

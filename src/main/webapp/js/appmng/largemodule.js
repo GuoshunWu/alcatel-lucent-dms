@@ -91,7 +91,7 @@ define(['jqgrid', 'jqlayout', 'jstree', 'jqmsgbox',
                             });
                             pageStatus.selectedProduct = {id:productVersions[0].value, version:productVersions[0].text};
 
-                            jQuery("#applicationGridList").jqGrid('setGridParam', {url:"rest/applications/" + pageStatus.selectedProduct.id, datatype:"json"}).trigger("reloadGrid");
+                            jQuery("#applicationGridList").jqGrid('setGridParam', {url:"rest/applications?prod=" + pageStatus.selectedProduct.id + "&format=grid&prop=id,name,version,dictNum", datatype:"json"}).trigger("reloadGrid");
 
                             var newCaption = 'Applications for Product ' + pageStatus.selectedProductBase.name + ' version ' + pageStatus.selectedProduct.version
                             jQuery("#applicationGridList").jqGrid('setCaption', newCaption);
@@ -468,7 +468,7 @@ define(['jqgrid', 'jqlayout', 'jstree', 'jqmsgbox',
         $("#selVersion").change(function (event) {
             pageStatus.selectedProduct = {version:$(this).find("option:selected").text(), id:$(this).val()};
 //        log(pageStatus);
-            jQuery("#applicationGridList").jqGrid('setGridParam', {url:"rest/applications/" + pageStatus.selectedProduct.id, datatype:"json"}).trigger("reloadGrid");
+            jQuery("#applicationGridList").jqGrid('setGridParam', {url:"rest/applications?prod=" + pageStatus.selectedProduct.id + "&format=grid&prop=id,name,version,dictNum", datatype:"json"}).trigger("reloadGrid");
             var newCaption = 'Applications for Product ' + pageStatus.selectedProductBase.name + ' version ' + pageStatus.selectedProduct.version
             jQuery("#applicationGridList").jqGrid('setCaption', newCaption);
         });

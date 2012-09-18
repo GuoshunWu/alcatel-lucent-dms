@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page contentType="application/x-javascript;charset=UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
 var Text = {

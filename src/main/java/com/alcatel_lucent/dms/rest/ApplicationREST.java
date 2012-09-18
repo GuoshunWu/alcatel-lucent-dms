@@ -1,8 +1,11 @@
 package com.alcatel_lucent.dms.rest;
 
+import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.model.Application;
 import com.alcatel_lucent.dms.model.ApplicationBase;
+import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.service.DaoService;
+import com.alcatel_lucent.dms.service.DictionaryService;
 import com.alcatel_lucent.dms.service.JSONService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,9 +48,10 @@ public class ApplicationREST {
 
     @Autowired
     private JSONService jsonService;
+    
+    @Autowired
+    private DictionaryService dictionaryService;
 
-    @GET
-    @Path("{product.version.id}")
     /**
      *  @param id Product id.
      *  @param rows how many rows we want to have into the grid
@@ -55,35 +59,81 @@ public class ApplicationREST {
      *  @param sidx index row - i.e. user click to sort
      *  @param sord the direction
      * */
-    public String retrieveAllApplicationsByProductId(@PathParam("product.version.id") Long id,
-                                                     @QueryParam("rows") int rows,
-                                                     @QueryParam("page") int page,
+    @GET
+    public String retrieveAllApplicationsByProductId(@QueryParam("prod") Long prodId,
+    												 @QueryParam("prop") String prop,
+                                                     @QueryParam("rows") Integer rows,
+                                                     @QueryParam("page") Integer page,
                                                      @QueryParam("sidx") String sidx,
-                                                     @QueryParam("sord") String sord) {
+                                                     @QueryParam("sord") String sord,
+                                                     @QueryParam("format") String format) {
+    	return retrieveAllApplicationsByProductIdPOST(prodId, prop, rows, page, sidx, sord, format);
+    }
+    
+    @POST
+    public String retrieveAllApplicationsByProductIdPOST(@QueryParam("prod") Long prodId,
+    												 @QueryParam("prop") String prop,
+                                                     @QueryParam("rows") Integer rows,
+                                                     @QueryParam("page") Integer page,
+                                                     @QueryParam("sidx") String sidx,
+                                                     @QueryParam("sord") String sord,
+                                                     @QueryParam("format") String format) {
         Map<String, Long> params = new HashMap<String, Long>();
-        params.put("id", id);
-
-
-        String countHSQL = "select p.applications.size from Product p where p.id=:id";
-
-        Integer records = (Integer) dao.retrieveOne(countHSQL, params);
-
-        log.debug("page=" + page + ",rows=" + rows + ", records=" + records + ", sidx=" + sidx + ", sord=" + sord);
+        params.put("id", prodId);
 
         String hSQL = "select app from Product p join p.applications app where p.id=:id";
         if (Arrays.asList("name", "dictNum").contains(sidx)) {
             sidx = sidx.equals("name") ? "base.name" : "dictionaries.size";
         }
+    	if (sidx == null || sidx.trim().isEmpty()) {
+    		sidx = "base.name";
+    	}
+    	if (sord == null) {
+    		sord = "ASC";
+    	}
         hSQL += " order by app." + sidx + " " + sord;
 
-        Collection<Application> resultSet = dao.retrieve(hSQL, params, (page - 1) * rows, rows);
+        Collection<Application> resultSet;
+    	if (rows == null) {	// all in one page
+    		resultSet = dao.retrieve(hSQL, params);
+    	} else {	// paged
+    		int first = (page == null ? 0 : (page.intValue() - 1) * rows.intValue());
+    		resultSet = dao.retrieve(hSQL, params, first, rows.intValue());
+    	}
+        
+		// additional properties
+		if (prop.indexOf(",s(") != -1) {	// has summary
+			Map<Long, Map<Long, int[]>> summary = dictionaryService.getAppTranslationSummary(prodId);
+			for(Application app : resultSet) {
+				app.setS(summary.get(app.getId()));
+			}
+		}
 
-        Map<String, Collection<String>> propFilter = new HashMap<String, Collection<String>>();
-        propFilter.put("Application", Arrays.asList("id", "cell"));
 
-        String jsonString = jsonService.toGridJSON(resultSet, rows, page, records.intValue(), propFilter).toString();
-
-        return jsonString;
+        try {
+        	if (format == null) {
+        		return jsonService.toJSONString(resultSet, prop);
+        	} else if (format.equals("grid")) {
+        		int records;
+	    		if (rows == null) {
+	    			rows = records = resultSet.size();
+	    			page = 1;
+	    		} else {
+	                String countHSQL = "select p.applications.size from Product p where p.id=:id";
+	                records = (Integer) dao.retrieveOne(countHSQL, params);
+	                log.debug("page=" + page + ",rows=" + rows + ", records=" + records + ", sidx=" + sidx + ", sord=" + sord);
+	    			if (page == null) {
+	    				page = 1;
+	    			}
+	    		}
+        		return jsonService.toGridJSON(resultSet, rows, page, records, "id", prop).toString();
+        	}
+        	return null;
+        } catch (Exception e) {
+        	e.printStackTrace();
+        	log.error(e);
+        	throw new BusinessException(e.toString());
+        }
     }
 
     /**
