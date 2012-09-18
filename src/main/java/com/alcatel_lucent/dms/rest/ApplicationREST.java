@@ -21,19 +21,34 @@ import java.util.Map;
 //import com.alcatel_lucent.dms.service.ProductService;
 
 /**
- * Created by IntelliJ IDEA.
- * User: guoshunw
- * Date: 12-8-23
- * Time: 下午1:37
- * To change this template use File | Settings | File Templates.
+ * Application REST service.
+ * URL: /rest/applications
+ * Filter parameters:
+ *   prod		(required) product id, in which product all dictionaries will be retrieved
+ *   
+ * Sort parameters:
+ *   sidx		(optional) sort by, default is "base.name"
+ *   sord		(optional) order, default is "ASC"
+ *   
+ * Format parameters:
+ *   format		(required) format of result string, possible values: "grid|select|tree|json"
+ *   prop		(required) properties to be retrieved
+ *   			for grid: prop=<property_name_for_column1>,<property_name_for_column2>,...
+ *   			for select: prop=<property_name_for_value>,<property_name_for_name>
+ *   			for tree: prop=<property_name_for_id>,<property_name_for_name>
+ *   			for json: prop={<prop1>,<prop2>,...} where each <prop> can be nested, 
+ *   					e.g. <prop2>=<prop_name>{<sub_prop1>,<sub_prop2>}
+ *   rows		(optional) number of records to be retrieved, only be used when format is grid
+ *   page		(optional) current page, only be used when format is grid
+ *   		
+ * @author allany
+ *
  */
 @Path("applications")
-@Produces({MediaType.APPLICATION_JSON + ";CHARSET=UTF-8", MediaType.TEXT_HTML + ";CHARSET=UTF-8"})
 @Component("applicationREST")
 @SuppressWarnings("unchecked")
-public class ApplicationREST {
+public class ApplicationREST extends BaseREST {
 
-    private static Logger log = Logger.getLogger(ApplicationREST.class);
 //    @Context
 //    UriInfo uriInfo;
 //    @Context
@@ -52,32 +67,11 @@ public class ApplicationREST {
     @Autowired
     private DictionaryService dictionaryService;
 
-    /**
-     *  @param id Product id.
-     *  @param rows how many rows we want to have into the grid
-     *  @param page the requested page
-     *  @param sidx index row - i.e. user click to sort
-     *  @param sord the direction
-     * */
-    @GET
-    public String retrieveAllApplicationsByProductId(@QueryParam("prod") Long prodId,
-    												 @QueryParam("prop") String prop,
-                                                     @QueryParam("rows") Integer rows,
-                                                     @QueryParam("page") Integer page,
-                                                     @QueryParam("sidx") String sidx,
-                                                     @QueryParam("sord") String sord,
-                                                     @QueryParam("format") String format) {
-    	return retrieveAllApplicationsByProductIdPOST(prodId, prop, rows, page, sidx, sord, format);
-    }
-    
-    @POST
-    public String retrieveAllApplicationsByProductIdPOST(@QueryParam("prod") Long prodId,
-    												 @QueryParam("prop") String prop,
-                                                     @QueryParam("rows") Integer rows,
-                                                     @QueryParam("page") Integer page,
-                                                     @QueryParam("sidx") String sidx,
-                                                     @QueryParam("sord") String sord,
-                                                     @QueryParam("format") String format) {
+    @Override
+    protected String doGetOrPost(Map<String, String> requestMap) throws Exception {
+    	Long prodId = Long.valueOf(requestMap.get("prod"));
+    	String sidx = requestMap.get("sidx");
+    	String sord = requestMap.get("sord");
         Map<String, Long> params = new HashMap<String, Long>();
         params.put("id", prodId);
 
@@ -93,15 +87,22 @@ public class ApplicationREST {
     	}
         hSQL += " order by app." + sidx + " " + sord;
 
+    	String rows = requestMap.get("rows");
+    	String page = requestMap.get("page");
         Collection<Application> resultSet;
-    	if (rows == null) {	// all in one page
+    	if (rows == null) {	// not paged
     		resultSet = dao.retrieve(hSQL, params);
     	} else {	// paged
-    		int first = (page == null ? 0 : (page.intValue() - 1) * rows.intValue());
-    		resultSet = dao.retrieve(hSQL, params, first, rows.intValue());
+    		int first = (page == null ? 0 : (Integer.parseInt(page) - 1) * Integer.parseInt(rows));
+    		resultSet = dao.retrieve(hSQL, params, first, Integer.parseInt(rows));
+    		// get total records
+            String countHSQL = "select p.applications.size from Product p where p.id=:id";
+            Integer records = (Integer) dao.retrieveOne(countHSQL, params);
+            requestMap.put("records", "" + records);
     	}
         
 		// additional properties
+    	String prop = requestMap.get("prop");
 		if (prop.indexOf(",s(") != -1) {	// has summary
 			Map<Long, Map<Long, int[]>> summary = dictionaryService.getAppTranslationSummary(prodId);
 			for(Application app : resultSet) {
@@ -109,31 +110,7 @@ public class ApplicationREST {
 			}
 		}
 
-
-        try {
-        	if (format == null) {
-        		return jsonService.toJSONString(resultSet, prop);
-        	} else if (format.equals("grid")) {
-        		int records;
-	    		if (rows == null) {
-	    			rows = records = resultSet.size();
-	    			page = 1;
-	    		} else {
-	                String countHSQL = "select p.applications.size from Product p where p.id=:id";
-	                records = (Integer) dao.retrieveOne(countHSQL, params);
-	                log.debug("page=" + page + ",rows=" + rows + ", records=" + records + ", sidx=" + sidx + ", sord=" + sord);
-	    			if (page == null) {
-	    				page = 1;
-	    			}
-	    		}
-        		return jsonService.toGridJSON(resultSet, rows, page, records, "id", prop).toString();
-        	}
-        	return null;
-        } catch (Exception e) {
-        	e.printStackTrace();
-        	log.error(e);
-        	throw new BusinessException(e.toString());
-        }
+        return toJSON(resultSet, requestMap);
     }
 
     /**
