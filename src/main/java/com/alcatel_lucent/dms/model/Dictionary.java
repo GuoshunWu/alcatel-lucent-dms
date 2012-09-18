@@ -48,6 +48,10 @@ public class Dictionary extends BaseEntity {
         return base;
     }
 
+    public int getLabelNum(){
+        return labels==null?0:labels.size();
+    }
+
     public void setBase(DictionaryBase base) {
         this.base = base;
     }

@@ -1,9 +1,12 @@
-define ['jqgrid'], ($)->
-  taskGrid = $("#taskGridList").jqGrid ({
-  url: 'json/taskgrid.json'
+define ['jqgrid', 'require'], ($, require)->
+  transGrid = $("#transGridList").jqGrid ({
+  #  url: 'json/taskgrid.json'
+  url: ''
+  mtype: 'POST'
+  postData: {}
   editurl: ""
   datatype: 'json'
-  width: $(window).width() *0.95
+  width: $(window).width() * 0.95
   #autowidth: true
   #height:'auto'
   height: 300
@@ -18,36 +21,37 @@ define ['jqgrid'], ($)->
   viewrecords: true
   gridview: true
   caption: 'Translation Task List'
-  colNames: ['ID', 'Application', 'Dictionary', 'Encoding', 'Format', 'Num of String'
+  colNames: ['ID', 'Application', 'Version', 'Dictionary', 'Version', 'Encoding', 'Format', 'Num of String'
     , 'T', 'N', 'I', 'T', 'N', 'I', 'T', 'N', 'I'
 
   ]
   colModel: [
-    {name: 'id', index: 'id', width: 55, align: 'center', hidden: true, frozen: true}
-    {name: 'application', index: 'application', width: 100, editable: true, stype: 'select', edittype: 'select', align: 'center', editoptions: {value: "All:All;0.00:0.00;12:12.00"}, frozen: true}
+    {name: 'id', index: 'id', width: 55, align: 'center', hidden: true, frozen: false}
+    {name: 'application', index: 'application', width: 100, editable: true, stype: 'select',
+    edittype: 'select', align: 'center', editoptions: {value: "All:All;0.00:0.00;12:12.00"}, frozen: true}
+    {name: 'appVersion', index: 'appVersion', width: 90, editable: true, align: 'center', frozen: true}
     {name: 'dictionary', index: 'dictionary', width: 90, editable: true, align: 'center', frozen: true}
+    {name: 'dictVersion', index: 'dictVersion', width: 90, editable: true, align: 'center', frozen: true}
     {name: 'encoding', index: 'encoding', width: 90, editable: true, align: 'center', frozen: true}
     {name: 'format', index: 'format', width: 90, editable: true, align: 'center', frozen: true}
     {name: 'numOfString', index: 'NumOfString', width: 80, align: 'center', frozen: true}
 
-    {name: 'Arabic.T', index: 'T', width: 20, align: 'center'}
-    {name: 'Arabic.N', index: 'N', width: 20, editable: true, align: 'center'}
-    {name: 'Arabic.I', index: 'I', width: 20, editable: true, align: 'center'}
-    {name: 'Czech.T', index: 'T', width: 20, align: 'center'}
-    {name: 'Czech.N', index: 'N', width: 20, editable: true, align: 'center'}
-    {name: 'Czech.I', index: 'I', width: 20, editable: true, align: 'center'}
-    {name: 'Chinese.T', index: 'T', width: 20, align: 'center'}
-    {name: 'Chinese.N', index: 'N', width: 20, editable: true, align: 'center'}
-    {name: 'Chinese.I', index: 'I', width: 20, editable: true, align: 'center'}
+    {name: 'Arabic.T', index: 'Arabic.T', width: 20, align: 'center'}
+    {name: 'Arabic.N', index: 'Arabic.N', width: 20, editable: true, align: 'center'}
+    {name: 'Arabic.I', index: 'Arabic.I', width: 20, editable: true, align: 'center'}
+    {name: 'Czech.T', index: 'Czech.T', width: 20, align: 'center'}
+    {name: 'Czech.N', index: 'Czech.N', width: 20, editable: true, align: 'center'}
+    {name: 'Czech.I', index: 'Czech.I', width: 20, editable: true, align: 'center'}
+    {name: 'Chinese.T', index: 'Chinese.T', width: 20, align: 'center'}
+    {name: 'Chinese.N', index: 'Chinese.N', width: 20, editable: true, align: 'center'}
+    {name: 'Chinese.I', index: 'Chinese.I', width: 20, editable: true, align: 'center'}
   ]
   groupHeaders: [
-      {startColumnName: 'Arabic.T', numberOfColumns: 3, titleText: '<bold>Arabic</bold>'}
-      {startColumnName: 'Czech.T', numberOfColumns: 3, titleText: '<bold>Czech</bold>'}
-      {startColumnName: 'Chinese.T', numberOfColumns: 3, titleText: '<bold>Chinese</bold>'}
+    {startColumnName: 'Arabic.T', numberOfColumns: 3, titleText: '<bold>Arabic</bold>'}
+    {startColumnName: 'Czech.T', numberOfColumns: 3, titleText: '<bold>Czech</bold>'}
+    {startColumnName: 'Chinese.T', numberOfColumns: 3, titleText: '<bold>Chinese</bold>'}
   ]
   afterCreate: (grid)->
-    grid.navGrid '#taskPager', {edit: true, add: true, del: false, search: false, view: false}
-
     grid.navButtonAdd "#taskPager", {caption: "Clear", title: "Clear Search", buttonicon: 'ui-icon-refresh', position: 'first', onClickButton: ()->
       grid[0].clearToolbar()
     }
@@ -55,16 +59,43 @@ define ['jqgrid'], ($)->
     #  grid.navButtonAdd "#taskPager", {caption: "Toggle", title: "Toggle Search Toolbar", buttonicon: 'ui-icon-pin-s', position: 'first', onClickButton: ()->
     #    grid[0].toggleToolbar()
     #  }
-
-    grid.setGroupHeaders {useColSpanStyle: true, groupHeaders: grid.getGridParam 'groupHeaders' }
-    grid.filterToolbar {stringResult: true, searchOnEnter: false}
+    grid.setGroupHeaders {useColSpanStyle: true,
+    groupHeaders: grid.getGridParam 'groupHeaders'
+    }
+    #    grid.filterToolbar {stringResult: true, searchOnEnter: false}
+    grid.navGrid '#taskPager', {edit: true, add: true, del: false, search: false, view: false}
     grid.setFrozenColumns()
   })
-  $("#languageFilterTable input[name='languages']").map () -> {id: this.id, checked: this.checked, name: this.value} if this.checked
 
-  taskGrid.getGridParam('afterCreate') taskGrid
+
+  transGrid.getGridParam('afterCreate') transGrid
 
   # test for UI
-  $("#create").button().click ()->
+  $("#create").button().click ->
+    transGrid.updateTaskLanguage(['Japanese', 'Chinese', 'Indian'], 'json/taskgrid1.json')
   #  taskGrid.addTaskLanguage 'Japanese','json/taskgrid1.json'
-    taskGrid.updateTaskLanguage(['Japanese', 'Chinese', 'Indian'], 'json/taskgrid1.json')
+
+
+  productReleaseChanged: (param) ->
+    console.log "productReleaseChanged"
+    prop += ($(param.languages).map ->_this = this;($([0, 1, 2]).map ->"s(#{_this.id})[#{this}]").get().join(',')).get().join(',')
+    #    todo: tobe complete for translation grid
+    if param.level == "app"
+      console.log "Application level"
+      gridParam = transGrid.getGridParam()
+
+      index= (gridParam.colNames.indexOf 'Dictionary')+1
+      gridParam.colNames = gridParam.colNames.slice(0,index).concat(gridParam.colNames.slice(index+1,gridParam.colNames.length))
+
+      #     remove column name from grid
+      gridParam.colNames = $.grep gridParam.colNames, (val, key)->  val not in ['Dictionary', 'Encoding', 'Format']
+      #     remove colModel from grid.
+      gridParam.colModel = $.grep gridParam.colModel, (val, key)-> val.name not in ['dictionary','dictVersion', 'encoding', 'format']
+      transGrid.updateTaskLanguage ($(param.languages).map ->this.name).get() ,'json/taskgrid.json'
+#      transGrid.updateTaskLanguage ($(param.languages).map ->this.name).get(), "rest/app", {prod: param.release.id, prop: prop}
+    else
+      prop = "id,app.base.name,base.name,encoding,format,labelNum," + prop
+      console.log "Dictionary level"
+
+      transGrid.updateTaskLanguage ($(param.languages).map ->this.name).get() ,'json/taskgrid.json'
+#      transGrid.updateTaskLanguage ($(param.languages).map ->this.name).get(), "rest/dict", {prod: param.release.id, format: 'grid', prop: prop}

@@ -1,4 +1,4 @@
-define ['jqlayout', 'jquery', 'i18n!nls/transmng','jqueryui','module'], ($, jq, i18n,jqui,module)->
+define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'cs!transmng/trans_grid', 'module'], ($, jq, i18n, grid, module)->
 #  console.log module
 #  private variables
   ids = {
@@ -17,17 +17,26 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng','jqueryui','module'], ($, jq, 
       $('#productBase').append new Option("#{i18n.select.producttip}", -1)
       $('#productBase').append $(json).map ()->new Option this.name, this.id
 
+
       #  load product in product base
       $('#productBase').change ()->
         $('#productRelease').empty()
         return false if parseInt($('#productBase').val()) == -1
 
+
         $.getJSON "rest/products/#{$('#productBase').val()}", {}, (json)->
           $('#productRelease').append $(json).map ()->new Option this.version, this.id
+          $('#productRelease').trigger "change"
 
 
-    $('#productRelease').change ()->
-      alert 'To be or not to be, this ia a question.'
+    $('#productRelease').change ->
+      param = {
+      release: {id: $(this).val(), version: $(this).find("option:selected").text()}
+      languages: ($(":checkbox[name='languages']", languageFilterTable).map () -> {id: this.id, checked: this.checked, name: this.value} if this.checked).get()
+      level: $(":radio[name='viewOption'][checked]").val()
+      }
+      grid.productReleaseChanged param
+
 
     ###################################### Elements in summary panel ######################################
     #generate language filter dialog
@@ -43,13 +52,12 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng','jqueryui','module'], ($, jq, 
     create: ()->
       checkedAll = $("<input type='checkbox' checked='checked' id='checkedAll'><label for='checkedAll'>All</label>")
       checkedAll.change ()->
-        $("input[name='languages']", languageFilterTable).attr('checked', this.checked)
+        $(":checkbox[name='languages']", languageFilterTable).attr('checked', this.checked)
       checkedAll.appendTo($('div.ui-dialog-buttonpane'))
     buttons:
       {
       'OK': ()->
-        selectedLanguages = $("input[name='languages']", languageFilterTable).map () -> {id: this.id, checked: this.checked, name: this.value} if this.checked
-        $("#taskGridList").updateTaskLanguage (selectedLanguages.map ()->this.name).get(), 'json/taskgrid1.json'
+        $('#productRelease').trigger "change"
         $(this).dialog "close"
       'Cancel': ()->$(this).dialog "close"
       }
@@ -68,8 +76,11 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng','jqueryui','module'], ($, jq, 
 
   # initialize page
   initPage()
+
+
   #    public variables and methods
   name: 'layout'
+  getSelectedLanguages: -> $(":checkbox[name='languages']", languageFilterTable).map () -> {id: this.id, checked: this.checked, name: this.value} if this.checked
 
 
 
