@@ -58,6 +58,6 @@ public interface JSONService {
      * @throws InvocationTargetException
      * @throws NoSuchMethodException
      */
-    JSONObject toGridJSON(Collection<?> entities, int rows, int page, int records, String idProp, String cellProps) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException;
+    JSONObject toGridJSON(Collection<?> entities, Integer rows, Integer page, Integer records, String idProp, String cellProps) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException;
 
 }
