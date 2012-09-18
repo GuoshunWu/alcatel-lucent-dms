@@ -1,4 +1,4 @@
-define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'cs!transmng/trans_grid', 'jqmsgbox', 'require', 'util'], ($, jq, i18n, grid, require)->
+define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'transmng/trans_grid', 'module'], ($, jq, i18n, grid, module)->
 #  console.log module
 #  private variables
   ids = {
