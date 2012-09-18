@@ -1,4 +1,4 @@
-define ['jquery', 'cs!appmng/dictionary_grid'], ($, grid)->
+define ['jquery', 'appmng/dictionary_grid'], ($, grid)->
   console.log "application panel initlized"
   $("#selAppVersion").change ->
     console.log "dictionary update"

@@ -52,7 +52,7 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
     #    grid.navButtonAdd "#taskPager", {caption: "Toggle", title: "Toggle Search Toolbar", buttonicon: 'ui-icon-pin-s', position: 'first', onClickButton: ()->
     #      grid[0].toggleToolbar()
     #    }
-    grid.setFrozenColumns()
+  #    grid.setFrozenColumns()
 
   })
   transGrid.getGridParam('afterCreate') transGrid
@@ -65,11 +65,12 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
   productReleaseChanged: (param) ->
     prop = ($(param.languages).map ->_this = this;($([0, 1, 2]).map ->"s(#{_this.id})[#{this}]").get().join(',')).get().join(',')
     gridParam = transGrid.getGridParam()
+
+    gridParam = transGrid.getGridParam()
     langugaeNames = ($(param.languages).map ->this.name).get()
     if param.level == "app"
       if gridParam.gridType == 'dictionary'
         gridParam.colNames = ['Dummy', 'ID', 'Application', 'Version', 'Num of String']
-
         gridParam.colModel = [
           {name: 'dummy', index: 'dummy', width: 55, align: 'center', hidden: true, frozen: true}
           {name: 'id', index: 'id', width: 55, align: 'center', hidden: true, frozen: true}

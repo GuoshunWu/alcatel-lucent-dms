@@ -8,6 +8,6 @@
 
 require(['../config'], function (c) {
 //    require(convertDependencies('appmng', ['largemodule']));
-    require(convertDependencies('appmng', ['cs!layout', 'cs!dialogs', 'cs!apptree'
-        , 'cs!product_panel']));
+    require(convertDependencies('appmng', ['layout', 'dialogs', 'apptree' , 'product_panel']));
+
 });
