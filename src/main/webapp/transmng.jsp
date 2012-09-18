@@ -29,7 +29,7 @@
 <div id="ie6" class="ie"><![endif]-->
 <!--[if IE 7]>
 <div id="ie7" class="ie"><![endif]-->
-
+<%@include file="transmanagement/dialogs.jsp"%>
 
 <div id="optional-container">
     <div class="ui-layout-north" style="text-align: left; bottom:0px">
