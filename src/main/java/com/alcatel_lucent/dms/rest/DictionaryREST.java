@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import com.alcatel_lucent.dms.model.Application;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.service.DictionaryService;
+import com.alcatel_lucent.dms.service.LanguageService;
 
 /**
  * Dictionary REST service.
@@ -44,7 +45,7 @@ public class DictionaryREST extends BaseREST {
 
     @Autowired
     private DictionaryService dictionaryService;
-
+    
     @Override
     protected String doGetOrPost(Map<String, String> requestMap) throws Exception {
     	Long prodId = Long.valueOf(requestMap.get("prod"));
@@ -74,11 +75,25 @@ public class DictionaryREST extends BaseREST {
     	String prop = requestMap.get("prop");
 		if (prop.indexOf(",s(") != -1) {	// has summary
 			Map<Long, Map<Long, int[]>> summary = dictionaryService.getDictTranslationSummary(prodId);
+			Collection<Long> allLanguageId = dao.retrieve("select id from Language");
 			for(Dictionary dict : dictionaries) {
-				dict.setS(summary.get(dict.getId()));
+				Map<Long, int[]> dictSummary = summary.get(dict.getId());
+				if (dictSummary == null) {
+					dictSummary = new HashMap<Long, int[]>();
+				}
+				fillZero(allLanguageId, dictSummary);
+				dict.setS(dictSummary);
 			}
 		}
 		
     	return toJSON(dictionaries, requestMap);
     }
+
+	private void fillZero(Collection<Long> langIds, Map<Long, int[]> map) {
+		for (Long langId : langIds) {
+			if (!map.containsKey(langId)) {
+				map.put(langId, new int[] {0, 0, 0});
+			}
+		}
+	}
 }

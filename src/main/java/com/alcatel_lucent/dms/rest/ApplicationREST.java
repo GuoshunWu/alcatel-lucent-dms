@@ -2,6 +2,7 @@ package com.alcatel_lucent.dms.rest;
 
 import com.alcatel_lucent.dms.model.Application;
 import com.alcatel_lucent.dms.model.ApplicationBase;
+import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.service.DictionaryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -83,8 +84,14 @@ public class ApplicationREST extends BaseREST {
     	String prop = requestMap.get("prop");
 		if (prop.indexOf(",s(") != -1) {	// has summary
 			Map<Long, Map<Long, int[]>> summary = dictionaryService.getAppTranslationSummary(prodId);
+			Collection<Long> allLanguageId = dao.retrieve("select id from Language");
 			for(Application app : resultSet) {
-				app.setS(summary.get(app.getId()));
+				Map<Long, int[]> appSummary = summary.get(app.getId());
+				if (appSummary == null) {
+					appSummary = new HashMap<Long, int[]>();
+				}
+				fillZero(allLanguageId, appSummary);
+				app.setS(appSummary);
 			}
 		}
 
@@ -147,6 +154,13 @@ public class ApplicationREST extends BaseREST {
 
     }
 
+	private void fillZero(Collection<Long> langIds, Map<Long, int[]> map) {
+		for (Long langId : langIds) {
+			if (!map.containsKey(langId)) {
+				map.put(langId, new int[] {0, 0, 0});
+			}
+		}
+	}
 
 }
 
