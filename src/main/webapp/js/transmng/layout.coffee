@@ -1,4 +1,4 @@
-define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'i18n!nls/common', 'transmng/trans_grid', 'module'], ($, jq, i18n, c18n, grid, module)->
+define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'i18n!nls/common', 'transmng/trans_grid', 'require'], ($, jq, i18n, c18n, grid, require)->
 #  console.log module
 #  private variables
   ids = {
@@ -84,17 +84,23 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'i18n!nls/common', 'transmng/
 
     $('#languageFilter').button().click ()->$("##{languageFilterDialogId}").dialog "open"
 
-
     $("#applicationView").change -> $('#productRelease').trigger "change"
     $("#dictionaryView").change -> $('#productRelease').trigger "change"
 
 
     #   create dialogs
     taskDialog = $("#createTranslationTaskDialog").dialog {autoOpen: false, width: 420, height: 'auto'
+    open: ->
+      grid=require 'transmng/trans_grid'
+      sdict = grid.getTotalSelectedDictInfo()
+      grid.getTableType()
+      $("#dictSelected").html "<b>#{sdict.dictSelectedNum}</b>"
+      $("#totalLabels").html "<b>#{sdict.totalLabels}</b>"
     buttons: [
-      {text: i18n.create
+      {text: c18n.create
       click: ->
         alert "OK"
+        $(this).dialog "close"
       }
       {text: c18n.cancel, click: -> $(this).dialog "close"}
     ]

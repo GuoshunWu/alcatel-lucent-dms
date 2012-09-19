@@ -11,19 +11,16 @@ define({
         select:{
             product:{
                 tip:'Please select product',
-                msg: 'Please select product!',
-                msgtitle: 'Select product'
+                msg:'Please select product!',
+                msgtitle:'Select product'
             },
             release:{
                 tip:'Please select product release',
-                msg: 'Please select product release!',
-                msgtitle: 'Select product release'
+                msg:'Please select product release!',
+                msgtitle:'Select product release'
             },
             languagefilter:{
                 title:'Choose the languages you want to show'
-            },
-            button:{
-                create: 'Create'
             }
         }
     },

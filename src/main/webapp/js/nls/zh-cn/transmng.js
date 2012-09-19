@@ -21,9 +21,6 @@ define({
         },
         languagefilter:{
             title:'请选择要显示的语言'
-        },
-        button:{
-            create: '创建'
         }
     }
 });
