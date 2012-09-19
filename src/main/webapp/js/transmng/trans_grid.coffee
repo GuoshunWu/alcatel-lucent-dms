@@ -27,12 +27,13 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
     }
   }
   transGrid = $("#transGridList").jqGrid {
-  url: 'json/taskgrid.json' #  url: ''
+  url: '' # url: 'json/taskgrid.json'
   mtype: 'POST', postData: {}, editurl: "", datatype: 'json'
   width: $(window).width() * 0.95, height: 300, shrinkToFit: false
   rownumbers: true, loadonce: false # for reload the colModel
-  pager: '#taskPager', rowNum: 10, rowList: [10, 20, 30]
-  sortname: 'base.name', sortorder: 'asc', viewrecords: true, gridview: true, multiselect: true, multikey: "ctrlKey"
+  pager: '#taskPager', rowNum: 60, rowList: [10, 20, 30,60,120]
+  sortname: 'base.name', sortorder: 'asc', viewrecords: true, gridview: true, multiselect: true
+#  , multikey: "ctrlKey"
   caption: 'Translation Task List'
   colNames: grid.dictionary.colNames, colModel: grid.dictionary.colModel
   groupHeaders: []
@@ -62,3 +63,15 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
     postData = {prod: param.release.id, format: 'grid', prop: prop}
     url = if isApp then 'rest/applications' else 'rest/dict'
     transGrid.updateTaskLanguage langugaeNames, url ,postData
+  getTotalSelectedDictInfo:->
+    transGrid = $("#transGridList")
+    selectedRow = transGrid.getGridParam 'selarrrow'
+    count=0
+    $(selectedRow).each ->
+      row=$("#transGridList").getRowData this
+      count+=parseInt row.numOfString
+    {dictSelectedNum:selectedRow.length, totalLabels: count}
+  getTableType:->
+    transGrid = $("#transGridList")
+    console.log (transGrid.getCol 'dummy',false,'sum' )
+
