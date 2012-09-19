@@ -2,7 +2,6 @@
 (function() {
 
   define(['jquery', 'appmng/dictionary_grid'], function($, grid) {
-    console.log("application panel initlized");
     $("#selAppVersion").change(function() {
       return console.log("dictionary update");
     });

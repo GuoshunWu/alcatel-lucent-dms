@@ -7,5 +7,6 @@
  */
 define({
     ok:'确定',
-    cancel:'取消'
+    cancel:'取消',
+    error:'错误'
 });

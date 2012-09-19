@@ -11,14 +11,6 @@
       new_product_version: '#newVersion',
       disp_product_name: '#dispProductName'
     };
-    $(localIds.new_product_version).button({
-      text: false,
-      icons: {
-        primary: "ui-icon-plus"
-      }
-    }).click(function() {
-      return $("#" + ids.dialog.new_product_release).dialog("open");
-    });
     $(localIds.select_product_version).change(function() {
       var product;
       product = {
@@ -42,6 +34,15 @@
           version: $(localIds.select_product_version).find("option:selected").text(),
           id: $(localIds.select_product_version).val()
         };
+      },
+      getProductSelectOptions: function() {
+        return $(localIds.select_product_version).children('option').clone(true);
+      },
+      addNewProduct: function(product) {
+        var newOption;
+        newOption = new Option(product.version, product.id);
+        newOption.selected = true;
+        return $(localIds.select_product_version).append(newOption).trigger('change');
       }
     };
   });

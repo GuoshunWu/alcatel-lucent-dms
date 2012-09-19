@@ -8,7 +8,8 @@
 define({
     root:{
         ok:'OK',
-        cancel: 'Cancel'
+        cancel: 'Cancel',
+        error:'Error'
     },
     "zh-cn":true
 });
