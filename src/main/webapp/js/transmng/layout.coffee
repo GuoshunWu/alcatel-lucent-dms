@@ -75,7 +75,7 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'transmng/trans_grid', 'modul
     }
     languageFilterDialog.append languageFilterTable
 
-    $.getJSON 'rest/languages', {}, (json)->
+    $.getJSON 'rest/languages?prop=id,name', {}, (json)->
       languages = $(json).map ()->
         $("<td><input type='checkbox' checked value=\"#{this.name}\" name='languages' id=#{this.id} /><label for=#{this.id}>#{this.name}</label></td>").css('width', '180px')
       languages.each (index)->
