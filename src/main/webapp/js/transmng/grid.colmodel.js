@@ -31,8 +31,6 @@
         if (postData) {
           gridParam.postData = postData;
         }
-        console.log("recreate grid, gridpostData=");
-        console.log(gridParam.postData);
         newGrid = $(this.getId()).jqGrid(gridParam);
         return this.getGridParam('afterCreate')(newGrid);
       },
@@ -71,6 +69,10 @@
         });
         if (!$.isArray(languages)) {
           this.addTaskLanguage(languages, url, postData);
+          return;
+        }
+        if (0 === languages.length) {
+          this.reloadAll(url, postData);
           return;
         }
         $(languages).each(function(index, language) {

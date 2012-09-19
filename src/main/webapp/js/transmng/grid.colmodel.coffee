@@ -18,8 +18,8 @@ define ['jqgrid'], ($)->
     this.GridUnload this.getId()
     gridParam.url = url
     gridParam.postData=postData if postData
-    console.log "recreate grid, gridpostData="
-    console.log  gridParam.postData
+#    console.log "recreate grid, gridpostData="
+#    console.log  gridParam.postData
     newGrid = $(this.getId()).jqGrid gridParam
     this.getGridParam('afterCreate') newGrid
 
@@ -40,6 +40,9 @@ define ['jqgrid'], ($)->
 
     if not $.isArray languages
       this.addTaskLanguage languages, url, postData
+      return
+    if 0==languages.length
+      this.reloadAll url,postData
       return
 
     $(languages).each (index, language)=>
