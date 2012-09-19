@@ -89,7 +89,7 @@
         }
       });
       languageFilterDialog.append(languageFilterTable);
-      $.getJSON('rest/languages', {}, function(json) {
+      $.getJSON('rest/languages?prop=id,name', {}, function(json) {
         var languages;
         languages = $(json).map(function() {
           return $("<td><input type='checkbox' checked value=\"" + this.name + "\" name='languages' id=" + this.id + " /><label for=" + this.id + ">" + this.name + "</label></td>").css('width', '180px');

@@ -1,5 +1,6 @@
 package com.alcatel_lucent.dms.rest;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -75,7 +76,7 @@ public abstract class BaseREST {
     		Integer rows = requestMap.get("rows") == null ? null : Integer.valueOf(requestMap.get("rows"));
     		Integer page = requestMap.get("page") == null ? null : Integer.valueOf(requestMap.get("page"));
     		Integer records = requestMap.get("records") == null ? null : Integer.valueOf(requestMap.get("records"));
-			JSONObject json = jsonService.toGridJSON((Collection) data, rows, page, records, "id", prop);
+			JSONObject json = jsonService.toGridJSON((Collection<?>) data, rows, page, records, "id", prop);
 			return json.toString();
     	} else if (format.trim().equals("select")) {
     		// TODO: select json
@@ -84,6 +85,35 @@ public abstract class BaseREST {
     		throw new RESTException("Unknown format '" + format + "'");
     	}
     }
+    
+    protected Collection retrieve(String hql, Map<?,?> param, String countHql, Map<?,?> countParam, Map<String, String> requestMap) {
+    	String rows = requestMap.get("rows");
+    	String page = requestMap.get("page");
+    	Collection<?> result;
+    	if (rows == null) {	// not paged
+    		result = dao.retrieve(hql, param);
+    	} else {	// paged
+    		int first = (page == null ? 0 : (Integer.parseInt(page) - 1) * Integer.parseInt(rows));
+    		result = dao.retrieve(hql, param, first, Integer.parseInt(rows));
+    		
+    		// count total records
+    		if (countHql != null) {
+				Integer records = (Integer) dao.retrieveOne(countHql, countParam);
+				requestMap.put("records", "" + records);
+    		}
+    	}
+    	return result;
+    }
+    
+    protected Collection<Long> toIdList(String idStr) {
+    	String[] ids = idStr.split(",");
+    	Collection<Long> result = new ArrayList<Long>();
+    	for (String id : ids) {
+    		result.add(Long.valueOf(id));
+    	}
+    	return result;
+    }
+
     
     abstract String doGetOrPost(Map<String, String> requestMap) throws Exception;
 

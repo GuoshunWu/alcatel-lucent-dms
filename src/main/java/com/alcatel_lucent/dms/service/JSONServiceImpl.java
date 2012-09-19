@@ -110,14 +110,16 @@ public class JSONServiceImpl implements JSONService {
         	jsonArrayGrid.add(jsonRow);
         }
 
-        int totalPages = records > 0 ? (int) ceil(records / (float) rows) : 0;
-        if (page > totalPages) page = totalPages;
-
-        jsonGrid.put("page", page);
-        jsonGrid.put("total", totalPages);
-        jsonGrid.put("records", records);
-                
-        jsonGrid.put("rows", jsonArrayGrid);
+        if (rows != null && page != null) {
+	        int totalPages = records > 0 ? (int) ceil(records / (float) rows) : 0;
+	        if (page > totalPages) page = totalPages;
+	
+	        jsonGrid.put("page", page);
+	        jsonGrid.put("total", totalPages);
+	        jsonGrid.put("records", records);
+	                
+	        jsonGrid.put("rows", jsonArrayGrid);
+        }
 
 //        Map<String, Object> userData=new HashMap<String, Object>();
 //        jsonGrid.put("userData",userData);

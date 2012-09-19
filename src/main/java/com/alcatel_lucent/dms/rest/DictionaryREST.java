@@ -22,13 +22,12 @@ import com.alcatel_lucent.dms.service.DictionaryService;
  *   sord		(optional) order, default is "ASC"
  *   
  * Format parameters:
- *   format		(required) format of result string, possible values: "grid|select|tree|json"
+ *   format		(optional) format of result string, possible values: "json|grid|tree", default is "json"
  *   prop		(required) properties to be retrieved
- *   			for grid: prop=<property_name_for_column1>,<property_name_for_column2>,...
- *   			for select: prop=<property_name_for_value>,<property_name_for_name>
- *   			for tree: prop=<property_name_for_id>,<property_name_for_name>
  *   			for json: prop={<prop1>,<prop2>,...} where each <prop> can be nested, 
  *   					e.g. <prop2>=<prop_name>{<sub_prop1>,<sub_prop2>}
+ *   			for grid: prop=<property_name_for_column1>,<property_name_for_column2>,...
+ *   			for tree: prop=<property_name_for_id>,<property_name_for_name>
  *   rows		(optional) number of records to be retrieved, only be used when format is grid
  *   page		(optional) current page, only be used when format is grid
  *   		
@@ -57,20 +56,8 @@ public class DictionaryREST extends BaseREST {
     		sord = "ASC";
     	}
     	hql += " order by d." + sidx + " " + sord;
-    	
-    	String rows = requestMap.get("rows");
-    	String page = requestMap.get("page");
-    	Collection<Dictionary> dictionaries;
-    	if (rows == null) {	// not paged
-    		dictionaries = dao.retrieve(hql, param);
-    	} else {	// paged
-    		int first = (page == null ? 0 : (Integer.parseInt(page) - 1) * Integer.parseInt(rows));
-    		dictionaries = dao.retrieve(hql, param, first, Integer.parseInt(rows));
-    		// count total records
-    		hql = "select a.dictionaries.size from Product p join p.applications a where p.id=:prodId";
-			Integer records = (Integer) dao.retrieveOne(hql, param);
-			requestMap.put("records", "" + records);
-    	}
+    	String countHql = "select a.dictionaries.size from Product p join p.applications a where p.id=:prodId";
+    	Collection<Dictionary> dictionaries = retrieve(hql, param, countHql, param, requestMap);
     	
 		// additional properties
     	String prop = requestMap.get("prop");
