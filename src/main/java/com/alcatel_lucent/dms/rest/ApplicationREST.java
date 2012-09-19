@@ -1,18 +1,12 @@
 package com.alcatel_lucent.dms.rest;
 
-import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.model.Application;
 import com.alcatel_lucent.dms.model.ApplicationBase;
-import com.alcatel_lucent.dms.model.Dictionary;
-import com.alcatel_lucent.dms.service.DaoService;
 import com.alcatel_lucent.dms.service.DictionaryService;
-import com.alcatel_lucent.dms.service.JSONService;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -31,13 +25,12 @@ import java.util.Map;
  *   sord		(optional) order, default is "ASC"
  *   
  * Format parameters:
- *   format		(required) format of result string, possible values: "grid|select|tree|json"
+ *   format		(optional) format of result string, possible values: "json|grid|tree", default is "json"
  *   prop		(required) properties to be retrieved
- *   			for grid: prop=<property_name_for_column1>,<property_name_for_column2>,...
- *   			for select: prop=<property_name_for_value>,<property_name_for_name>
- *   			for tree: prop=<property_name_for_id>,<property_name_for_name>
  *   			for json: prop={<prop1>,<prop2>,...} where each <prop> can be nested, 
  *   					e.g. <prop2>=<prop_name>{<sub_prop1>,<sub_prop2>}
+ *   			for grid: prop=<property_name_for_column1>,<property_name_for_column2>,...
+ *   			for tree: prop=<property_name_for_id>,<property_name_for_name>
  *   rows		(optional) number of records to be retrieved, only be used when format is grid
  *   page		(optional) current page, only be used when format is grid
  *   		
@@ -49,21 +42,6 @@ import java.util.Map;
 @SuppressWarnings("unchecked")
 public class ApplicationREST extends BaseREST {
 
-//    @Context
-//    UriInfo uriInfo;
-//    @Context
-//    Request request;
-
-//    @Context
-//    HttpServletRequest request;
-
-
-    @Autowired
-    private DaoService dao;
-
-    @Autowired
-    private JSONService jsonService;
-    
     @Autowired
     private DictionaryService dictionaryService;
 
