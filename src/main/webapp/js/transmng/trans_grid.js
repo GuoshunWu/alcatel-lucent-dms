@@ -117,7 +117,7 @@
       }
     };
     transGrid = $("#transGridList").jqGrid({
-      url: 'json/taskgrid.json',
+      url: '',
       mtype: 'POST',
       postData: {},
       editurl: "",
@@ -128,14 +128,13 @@
       rownumbers: true,
       loadonce: false,
       pager: '#taskPager',
-      rowNum: 10,
-      rowList: [10, 20, 30],
+      rowNum: 60,
+      rowList: [10, 20, 30, 60, 120],
       sortname: 'base.name',
       sortorder: 'asc',
       viewrecords: true,
       gridview: true,
       multiselect: true,
-      multikey: "ctrlKey",
       caption: 'Translation Task List',
       colNames: grid.dictionary.colNames,
       colModel: grid.dictionary.colModel,
@@ -198,6 +197,25 @@
         };
         url = isApp ? 'rest/applications' : 'rest/dict';
         return transGrid.updateTaskLanguage(langugaeNames, url, postData);
+      },
+      getTotalSelectedDictInfo: function() {
+        var count, selectedRow;
+        transGrid = $("#transGridList");
+        selectedRow = transGrid.getGridParam('selarrrow');
+        count = 0;
+        $(selectedRow).each(function() {
+          var row;
+          row = $("#transGridList").getRowData(this);
+          return count += parseInt(row.numOfString);
+        });
+        return {
+          dictSelectedNum: selectedRow.length,
+          totalLabels: count
+        };
+      },
+      getTableType: function() {
+        transGrid = $("#transGridList");
+        return console.log(transGrid.getCol('dummy', false, 'sum'));
       }
     };
   });

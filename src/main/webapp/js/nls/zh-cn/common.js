@@ -8,5 +8,6 @@
 define({
     ok:'确定',
     cancel:'取消',
-    error:'错误'
+    error:'错误',
+    create:'创建'
 });

@@ -47,9 +47,6 @@
         <tr>
             <td>&nbsp;</td>
         </tr>
-        <tr>
-            <td><button id="createTransTask"><s:text name="button.create"/></button><button id="cancelTransTask"><s:text name="button.cancel"/></button></td>
-        </tr>
     </table>
 </div>
 
