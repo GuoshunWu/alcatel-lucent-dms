@@ -9,9 +9,7 @@ define ['jquery', 'appmng/application_grid'], ($, grid)->
   disp_product_name: '#dispProductName'
   }
   # init buttons on product panel
-  $(localIds.new_product_version).button({ text: false, icons: {primary: "ui-icon-plus"}}).click ()->
-  #  todo: update the element in product before open
-    $("##{ids.dialog.new_product_release}").dialog "open"
+
   # initial product version select
 
   $(localIds.select_product_version).change ()->
@@ -27,3 +25,10 @@ define ['jquery', 'appmng/application_grid'], ($, grid)->
       $(localIds.select_product_version).trigger 'change'
 
   getSelectedProduct: -> {version: $(localIds.select_product_version).find("option:selected").text(), id: $(localIds.select_product_version).val()}
+  getProductSelectOptions: ->$(localIds.select_product_version).children('option').clone(true)
+  addNewProduct:(product)->
+    newOption = new Option product.version, product.id
+    newOption.selected = true
+    $(localIds.select_product_version).append(newOption).trigger 'change'
+
+

@@ -59,10 +59,9 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
     gridParam.colModel = if isApp then grid.application.colModel else  grid.dictionary.colModel
 
     eprop = "id,app.base.name,app.version,#{if isApp then '' else 'base.name,version, encoding,format,'}labelNum,"
-    console.log eprop
     prop = eprop + summary
     postData = {prod: param.release.id, format: 'grid', prop: prop}
-    url = if isApp then '' else 'rest/dict'
+    url = if isApp then 'rest/applications' else 'rest/dict'
     console.log postData
     transGrid.updateTaskLanguage langugaeNames, 'json/taskgrid.json'
 #    transGrid.updateTaskLanguage langugaeNames, url ,postData
