@@ -60,7 +60,11 @@ public class DictionaryREST extends BaseREST {
     	if (sord == null) {
     		sord = "ASC";
     	}
-    	hql += " order by " + (sidx.startsWith("app.") ? sidx : "obj." + sidx) + " " + sord;
+    	String orderBy = sidx.startsWith("app.") ? sidx : "obj." + sidx;
+    	if (sidx.equals("labelNum")) {
+    		orderBy = "obj.labels.size";
+    	}
+    	hql += " order by " + orderBy + " " + sord;
     	String countHql = "select a.dictionaries.size from Product p join p.applications a where p.id=:prodId";
     	Collection<Object[]> result = retrieve(hql, param, countHql, param, requestMap);
     	

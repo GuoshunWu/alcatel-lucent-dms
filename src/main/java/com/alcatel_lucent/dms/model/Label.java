@@ -197,4 +197,24 @@ public class Label extends BaseEntity {
 		origTranslations.add(trans);
 	}
 	
+	// transient variable for REST service
+	private LabelTranslation ot;
+	private Translation ct;
+	public LabelTranslation getOt() {
+		return ot;
+	}
+
+	public void setOt(LabelTranslation ot) {
+		this.ot = ot;
+	}
+
+	public Translation getCt() {
+		return ct;
+	}
+
+	public void setCt(Translation ct) {
+		this.ct = ct;
+	}
+
+
 }

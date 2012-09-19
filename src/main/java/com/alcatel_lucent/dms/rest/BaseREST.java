@@ -78,8 +78,8 @@ public abstract class BaseREST {
     		Integer records = requestMap.get("records") == null ? null : Integer.valueOf(requestMap.get("records"));
 			JSONObject json = jsonService.toGridJSON((Collection<?>) data, rows, page, records, "id", prop);
 			return json.toString();
-    	} else if (format.trim().equals("select")) {
-    		// TODO: select json
+    	} else if (format.trim().equals("tree")) {
+    		// TODO: select tree
     		return null;
     	} else {
     		throw new RESTException("Unknown format '" + format + "'");

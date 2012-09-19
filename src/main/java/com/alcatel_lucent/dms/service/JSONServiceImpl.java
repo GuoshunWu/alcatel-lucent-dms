@@ -42,7 +42,7 @@ public class JSONServiceImpl implements JSONService {
     		try {
 	    		int pos = prop.indexOf("{");
 	    		if (pos == -1) {
-	    			json.put(prop, PropertyUtils.getProperty(entity, prop));
+	    			json.put(prop, PropertyUtils.getProperty(entity, prop.trim()));
 	    		} else {
 	    			String refProp = prop.substring(0, pos).trim();
 	    			Object refObject = PropertyUtils.getProperty(entity, refProp);
@@ -93,14 +93,14 @@ public class JSONServiceImpl implements JSONService {
         for (Object entity : entities) {
         	JSONObject jsonRow = new JSONObject();
         	if (idProp != null) {
-        		jsonRow.put("id", PropertyUtils.getProperty(entity, idProp));
+        		jsonRow.put("id", PropertyUtils.getProperty(entity, idProp.trim()));
         	}
         	JSONArray jsonCell = new JSONArray();
         	String[] propArray = cellProps.split(",");
         	for (String prop : propArray) {
         		Object value = null;
         		try {
-        			value = PropertyUtils.getProperty(entity, prop);
+        			value = PropertyUtils.getProperty(entity, prop.trim());
         		} catch (Exception e) {
         			log.error(e);
         		}
@@ -118,8 +118,8 @@ public class JSONServiceImpl implements JSONService {
 	        jsonGrid.put("total", totalPages);
 	        jsonGrid.put("records", records);
 	                
-	        jsonGrid.put("rows", jsonArrayGrid);
         }
+        jsonGrid.put("rows", jsonArrayGrid);
 
 //        Map<String, Object> userData=new HashMap<String, Object>();
 //        jsonGrid.put("userData",userData);

@@ -208,7 +208,7 @@ public class Dictionary extends BaseEntity {
 		}
     }
     
-    private Application app;	// temporary variable for REST service
+    private Application app;	// transient variable for REST service
     public void setApp(Application app) {
     	this.app = app;
     }
