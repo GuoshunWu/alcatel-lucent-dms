@@ -63,15 +63,15 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
     postData = {prod: param.release.id, format: 'grid', prop: prop}
     url = if isApp then 'rest/applications' else 'rest/dict'
     transGrid.updateTaskLanguage langugaeNames, url ,postData
-  getTotalSelectedDictInfo:->
+  getTotalSelectedRowInfo:->
     transGrid = $("#transGridList")
-    selectedRow = transGrid.getGridParam 'selarrrow'
+    selectedRowIds = transGrid.getGridParam 'selarrrow'
     count=0
-    $(selectedRow).each ->
+    $(selectedRowIds).each ->
       row=$("#transGridList").getRowData this
       count+=parseInt row.numOfString
-    {dictSelectedNum:selectedRow.length, totalLabels: count}
+
+    {rowIds:selectedRowIds, selectedNum:selectedRowIds.length, totalLabels: count}
   getTableType:->
-    transGrid = $("#transGridList")
-    console.log (transGrid.getCol 'dummy',false,'sum' )
+    if -1==($.inArray 'Dummy',$("#transGridList").getGridParam('colNames')) then  'dictionary'else 'application'
 

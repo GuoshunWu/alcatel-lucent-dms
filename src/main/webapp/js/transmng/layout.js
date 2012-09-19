@@ -120,12 +120,17 @@
         width: 420,
         height: 'auto',
         open: function() {
-          var sdict;
+          var info, nums, tableType;
           grid = require('transmng/trans_grid');
-          sdict = grid.getTotalSelectedDictInfo();
-          grid.getTableType();
-          $("#dictSelected").html("<b>" + sdict.dictSelectedNum + "</b>");
-          return $("#totalLabels").html("<b>" + sdict.totalLabels + "</b>");
+          info = grid.getTotalSelectedRowInfo();
+          tableType = grid.getTableType();
+          nums = info.selectedNum;
+          if ('application' === tableType) {
+            nums = -1;
+          }
+          console.log("table type=" + tableType + ", nums = " + nums);
+          $("#dictSelected").html("<b>" + nums + "</b>");
+          return $("#totalLabels").html("<b>" + info.totalLabels + "</b>");
         },
         buttons: [
           {

@@ -91,11 +91,19 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'i18n!nls/common', 'transmng/
     #   create dialogs
     taskDialog = $("#createTranslationTaskDialog").dialog {autoOpen: false, width: 420, height: 'auto'
     open: ->
-      grid=require 'transmng/trans_grid'
-      sdict = grid.getTotalSelectedDictInfo()
-      grid.getTableType()
-      $("#dictSelected").html "<b>#{sdict.dictSelectedNum}</b>"
-      $("#totalLabels").html "<b>#{sdict.totalLabels}</b>"
+      grid = (require 'transmng/trans_grid')
+      info = grid.getTotalSelectedRowInfo()
+      tableType = grid.getTableType()
+      nums = info.selectedNum
+      nums = -1 if 'application' == tableType
+
+      console.log "table type=#{tableType}, nums = #{nums}"
+
+      $("#dictSelected").html "<b>#{nums}</b>"
+#      TODO: application num of string
+      $("#totalLabels").html "<b>#{info.totalLabels}</b>"
+    # update target languages from rest
+
     buttons: [
       {text: c18n.create
       click: ->

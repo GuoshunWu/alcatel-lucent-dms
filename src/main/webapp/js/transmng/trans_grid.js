@@ -198,24 +198,28 @@
         url = isApp ? 'rest/applications' : 'rest/dict';
         return transGrid.updateTaskLanguage(langugaeNames, url, postData);
       },
-      getTotalSelectedDictInfo: function() {
-        var count, selectedRow;
+      getTotalSelectedRowInfo: function() {
+        var count, selectedRowIds;
         transGrid = $("#transGridList");
-        selectedRow = transGrid.getGridParam('selarrrow');
+        selectedRowIds = transGrid.getGridParam('selarrrow');
         count = 0;
-        $(selectedRow).each(function() {
+        $(selectedRowIds).each(function() {
           var row;
           row = $("#transGridList").getRowData(this);
           return count += parseInt(row.numOfString);
         });
         return {
-          dictSelectedNum: selectedRow.length,
+          rowIds: selectedRowIds,
+          selectedNum: selectedRowIds.length,
           totalLabels: count
         };
       },
       getTableType: function() {
-        transGrid = $("#transGridList");
-        return console.log(transGrid.getCol('dummy', false, 'sum'));
+        if (-1 === ($.inArray('Dummy', $("#transGridList").getGridParam('colNames')))) {
+          return 'dictionary';
+        } else {
+          return 'application';
+        }
       }
     };
   });
