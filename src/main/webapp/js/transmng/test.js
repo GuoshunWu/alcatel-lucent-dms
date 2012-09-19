@@ -2,12 +2,6 @@
 (function() {
   var a;
 
-    $.getJSON(url, {}, function(json) {
-        return $("#version").append($(json).map(function() {
-            return new Option(this.version, this.id);
-        })).trigger("change");
-    });
-
   Object.prototype.isArray = function() {
     return Object.prototype.toString.call(this) === "[object Array]";
   };

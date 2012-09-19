@@ -16,7 +16,7 @@
             frozen: true
           }, {
             name: 'application',
-            index: 'application',
+            index: 'app.base.name',
             width: 100,
             editable: true,
             stype: 'select',
@@ -28,21 +28,21 @@
             frozen: true
           }, {
             name: 'appVersion',
-            index: 'appVersion',
+            index: 'app.version',
             width: 90,
             editable: true,
             align: 'center',
             frozen: true
           }, {
             name: 'dictionary',
-            index: 'dictionary',
+            index: 'base.name',
             width: 90,
             editable: true,
             align: 'center',
             frozen: true
           }, {
             name: 'dictVersion',
-            index: 'dictVersion',
+            index: 'version',
             width: 90,
             editable: true,
             align: 'center',
@@ -63,7 +63,7 @@
             frozen: true
           }, {
             name: 'numOfString',
-            index: 'NumOfString',
+            index: 'labelNum',
             width: 80,
             align: 'center',
             frozen: true
@@ -89,7 +89,7 @@
             frozen: true
           }, {
             name: 'application',
-            index: 'application',
+            index: 'base.name',
             width: 100,
             editable: true,
             stype: 'select',
@@ -101,14 +101,14 @@
             frozen: true
           }, {
             name: 'appVersion',
-            index: 'appVersion',
+            index: 'version',
             width: 90,
             editable: true,
             align: 'center',
             frozen: true
           }, {
             name: 'numOfString',
-            index: 'NumOfString',
+            index: 'labelNum',
             width: 80,
             align: 'center',
             frozen: true
@@ -130,7 +130,7 @@
       pager: '#taskPager',
       rowNum: 10,
       rowList: [10, 20, 30],
-      sortname: 'name',
+      sortname: 'base.name',
       sortorder: 'asc',
       viewrecords: true,
       gridview: true,
@@ -169,9 +169,6 @@
       }
     });
     transGrid.getGridParam('afterCreate')(transGrid);
-    $("#create").button().click(function() {
-      return alert("not implemented.");
-    });
     return {
       productReleaseChanged: function(param) {
         var eprop, gridParam, isApp, langugaeNames, postData, prop, summary, url;
@@ -189,17 +186,18 @@
         isApp = param.level === "app";
         gridParam.colNames = isApp ? grid.application.colNames : grid.dictionary.colNames;
         gridParam.colModel = isApp ? grid.application.colModel : grid.dictionary.colModel;
-        eprop = "id,app.base.name,app.version," + (isApp ? '' : 'base.name,version, encoding,format,') + "labelNum,";
-        console.log(eprop);
+        eprop = "id,app.base.name,app.version,base.name,version,base.encoding,base.format,labelNum,";
+        if (isApp) {
+          eprop = 'id,id,base.name,version,labelNum,';
+        }
         prop = eprop + summary;
         postData = {
           prod: param.release.id,
           format: 'grid',
           prop: prop
         };
-        url = isApp ? '' : 'rest/dict';
-        console.log(postData);
-        return transGrid.updateTaskLanguage(langugaeNames, 'json/taskgrid.json');
+        url = isApp ? 'rest/applications' : 'rest/dict';
+        return transGrid.updateTaskLanguage(langugaeNames, url, postData);
       }
     };
   });

@@ -15,10 +15,11 @@ define ['jqgrid'], ($)->
   reloadAll: (url,postData)->
     return if !url
     gridParam = this.getGridParam()
-    console.log 'recreate grid...'
     this.GridUnload this.getId()
     gridParam.url = url
     gridParam.postData=postData if postData
+    console.log "recreate grid, gridpostData="
+    console.log  gridParam.postData
     newGrid = $(this.getId()).jqGrid gridParam
     this.getGridParam('afterCreate') newGrid
 
