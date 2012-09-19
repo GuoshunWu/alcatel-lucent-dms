@@ -1,0 +1,168 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Custom widget demo</h1></title>
+
+    <link rel="stylesheet" type="text/css" href="css/themes/base/jquery.ui.all.css">
+
+    <style type="text/css">
+        html, body {
+            width: 100%;
+            height: 100%;
+            min-height: 100%;
+            padding: 0 0 20px;
+            margin: 0;
+
+            /*font-family: "Lucida Grande", "Arial", "Helvetica", "Verdana", "sans-serif";*/
+            font-family: "Arial", "Helvetica", "Verdana", "sans-serif";
+            font-size: 10px;
+
+            overflow: hidden !important;
+        }
+
+        .ui-combobox {
+            position: relative;
+            display: inline-block;
+        }
+
+        .ui-combobox-toggle {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            margin-left: -1px;
+            padding: 0;
+            /* adjust styles for IE 6/7 */
+            *height: 1.7em;
+            *top: 0.1em;
+        }
+
+        .ui-combobox-input {
+            margin: 0;
+            padding: 0.3em;
+        }
+
+    </style>
+
+    <script type="text/javascript" src="js/lib/jquery-1.8.1.min.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-ui-1.8.22.custom.min.js"></script>
+    <script type="text/javascript" src="js/lib/util.js"></script>
+    <script type="text/javascript" src="js/lib/combobox.js"></script>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $("#mytest").combobox({change:function (e, elem) {
+//                log(elem);
+                alert(JSON.stringify(elem));
+            }});
+
+            $("#getMyTestValue").button().click(function(e){
+                var val=$("#mytest").combobox("val");
+                alert("current combobox value="+jsonToString(val));
+            });
+
+            $("#SetComboboxValue").button().click(function(e){
+                $("#mytest").combobox("val",$("#comboboxValue").val());
+            });
+
+            $("#autoTest").autocomplete({
+                source:['a', 'b', 'ccc'],
+                select:function (e, ui) {
+                    alert(ui.item);
+                    return false;
+                },
+                change:function (e, ui) {
+//                    alert("change");
+//                    alert(ui.item);
+                }
+            });
+
+
+            var effects = ['blind', 'bounce', 'clip', 'drop', 'explode', 'fade', 'fold', 'highlight', 'pulsate', 'puff', 'slide', 'scale', 'size', 'shake', 'transfer'];
+            var index = 0;
+
+            $("<div>").attr("id", "dialogDemo").dialog({
+                width:400,
+                height:300,
+                autoOpen:false
+            }).append($("<b>Welcome JQuery World! </b>"));
+
+            $("#openDialogDemo").button().click(function (e) {
+                $('#dialogDemo').dialog("option", "show", effects[index]);
+                $('#dialogDemo').dialog("open");
+                $('#dialogDemo').html("<h1 align='center'>Effect: " + effects[index] + "</h1>");
+
+                ++index;
+                index %= effects.length;
+            });
+
+            var selectJson = [
+                {text:'R1.0', value:1 },
+                {text:'R2.0', value:2 },
+                {text:3.0, value:3 },
+                {text:5.0, value:4 }
+            ];
+
+            $("#ccc").append($(selectJson).map(function () {return this.value>2?new Option(this.text, this.value):null;}));
+            var t = $("#ccc").children("option").map(function(){return {value:$(this).val(), text:$(this).text()};}).get();
+            log(t);
+
+            var module1=(function(){
+                alert('Hi');
+                return {
+                    hello:'world'
+                }
+            })();
+
+            alert(module1.hello);
+            alert(module1.hello);
+
+
+        });
+    </script>
+
+</head>
+
+<body>
+<h1> Hi, custom widget demo</h1>
+<table>
+    <tr>
+        <td><label for="mytest">Combobox:</label></td>
+        <td>
+            <select id="mytest">
+                <option value="1">111</option>
+                <option value="2">222</option>
+                <option value="3">333</option>
+                <option value="4">444</option>
+            </select>
+        </td>
+        <td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button id="getMyTestValue">GetComboboxValue</button></td>
+    </tr>
+    <tr>
+        <td>set combobox value:</td>
+        <td><input id="comboboxValue"></td>
+        <td><button id="SetComboboxValue">SetComboboxValue</button></td>
+    </tr>
+    <tr>
+        <td>AutoCompleterTest:</td>
+        <td><input id="autoTest"></td>
+        <td></td>
+    </tr>
+    
+    <tr>
+        <td>
+            Select:
+        </td>
+        <td><select id="ccc"></select></td>
+    </tr>
+    <tr>
+        <td align="center" colspan="2">
+            <button id="openDialogDemo">OpenDialog</button>
+        </td>
+        <td></td>
+    </tr>
+</table>
+</body>
+</html>
