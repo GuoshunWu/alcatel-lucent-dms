@@ -5,13 +5,13 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
     colNames: ['ID', 'Application', 'Version', 'Dictionary', 'Version', 'Encoding', 'Format', 'Num of String']
     colModel: [
       {name: 'id', index: 'id', width: 55, align: 'center', hidden: true, frozen: true}
-      {name: 'application', index: 'application', width: 100, editable: true, stype: 'select', edittype: 'select', align: 'center', editoptions: {value: "All:All;0.00:0.00;12:12.00"}, frozen: true}
-      {name: 'appVersion', index: 'appVersion', width: 90, editable: true, align: 'center', frozen: true}
-      {name: 'dictionary', index: 'dictionary', width: 90, editable: true, align: 'center', frozen: true}
-      {name: 'dictVersion', index: 'dictVersion', width: 90, editable: true, align: 'center', frozen: true}
+      {name: 'application', index: 'app.base.name', width: 100, editable: true, stype: 'select', edittype: 'select', align: 'center', editoptions: {value: "All:All;0.00:0.00;12:12.00"}, frozen: true}
+      {name: 'appVersion', index: 'app.version', width: 90, editable: true, align: 'center', frozen: true}
+      {name: 'dictionary', index: 'base.name', width: 90, editable: true, align: 'center', frozen: true}
+      {name: 'dictVersion', index: 'version', width: 90, editable: true, align: 'center', frozen: true}
       {name: 'encoding', index: 'encoding', width: 90, editable: true, align: 'center', frozen: true}
       {name: 'format', index: 'format', width: 90, editable: true, align: 'center', frozen: true}
-      {name: 'numOfString', index: 'NumOfString', width: 80, align: 'center', frozen: true}
+      {name: 'numOfString', index: 'labelNum', width: 80, align: 'center', frozen: true}
     ]
     }
   application:
@@ -20,9 +20,9 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
     colModel: [
       {name: 'dummy', index: 'dummy', width: 55, align: 'center', hidden: true, frozen: true}
       {name: 'id', index: 'id', width: 55, align: 'center', hidden: true, frozen: true}
-      {name: 'application', index: 'application', width: 100, editable: true, stype: 'select', edittype: 'select', align: 'center', editoptions: {value: "All:All;0.00:0.00;12:12.00"}, frozen: true}
-      {name: 'appVersion', index: 'appVersion', width: 90, editable: true, align: 'center', frozen: true}
-      {name: 'numOfString', index: 'NumOfString', width: 80, align: 'center', frozen: true}
+      {name: 'application', index: 'base.name', width: 100, editable: true, stype: 'select', edittype: 'select', align: 'center', editoptions: {value: "All:All;0.00:0.00;12:12.00"}, frozen: true}
+      {name: 'appVersion', index: 'version', width: 90, editable: true, align: 'center', frozen: true}
+      {name: 'numOfString', index: 'labelNum', width: 80, align: 'center', frozen: true}
     ]
     }
   }
@@ -32,7 +32,7 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
   width: $(window).width() * 0.95, height: 300, shrinkToFit: false
   rownumbers: true, loadonce: false # for reload the colModel
   pager: '#taskPager', rowNum: 10, rowList: [10, 20, 30]
-  sortname: 'name', sortorder: 'asc', viewrecords: true, gridview: true, multiselect: true, multikey: "ctrlKey"
+  sortname: 'base.name', sortorder: 'asc', viewrecords: true, gridview: true, multiselect: true, multikey: "ctrlKey"
   caption: 'Translation Task List'
   colNames: grid.dictionary.colNames, colModel: grid.dictionary.colModel
   groupHeaders: []
@@ -45,9 +45,6 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
   }
   transGrid.getGridParam('afterCreate') transGrid
 
-  $("#create").button().click ->
-    alert "not implemented."
-
 
   productReleaseChanged: (param) ->
     summary = ($(param.languages).map ->_this = this;($([0, 1, 2]).map ->"s(#{_this.id})[#{this}]").get().join(',')).get().join(',')
@@ -58,10 +55,10 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
     gridParam.colNames = if isApp then grid.application.colNames else grid.dictionary.colNames
     gridParam.colModel = if isApp then grid.application.colModel else  grid.dictionary.colModel
 
-    eprop = "id,app.base.name,app.version,#{if isApp then '' else 'base.name,version, encoding,format,'}labelNum,"
+    eprop = "id,app.base.name,app.version,base.name,version,base.encoding,base.format,labelNum,"
+    eprop = 'id,id,base.name,version,labelNum,' if isApp
+
     prop = eprop + summary
     postData = {prod: param.release.id, format: 'grid', prop: prop}
     url = if isApp then 'rest/applications' else 'rest/dict'
-    console.log postData
-    transGrid.updateTaskLanguage langugaeNames, 'json/taskgrid.json'
-#    transGrid.updateTaskLanguage langugaeNames, url ,postData
+    transGrid.updateTaskLanguage langugaeNames, url ,postData

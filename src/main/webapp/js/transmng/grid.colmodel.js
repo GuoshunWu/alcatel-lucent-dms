@@ -26,12 +26,13 @@
           return;
         }
         gridParam = this.getGridParam();
-        console.log('recreate grid...');
         this.GridUnload(this.getId());
         gridParam.url = url;
         if (postData) {
           gridParam.postData = postData;
         }
+        console.log("recreate grid, gridpostData=");
+        console.log(gridParam.postData);
         newGrid = $(this.getId()).jqGrid(gridParam);
         return this.getGridParam('afterCreate')(newGrid);
       },

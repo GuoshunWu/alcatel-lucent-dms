@@ -1,4 +1,4 @@
-define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'transmng/trans_grid', 'module'], ($, jq, i18n, grid, module)->
+define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'i18n!nls/common', 'transmng/trans_grid', 'module'], ($, jq, i18n, c18n, grid, module)->
 #  console.log module
 #  private variables
   ids = {
@@ -64,13 +64,13 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'transmng/trans_grid', 'modul
       checkedAll.change ()->
         $(":checkbox[name='languages']", languageFilterTable).attr('checked', this.checked)
       checkedAll.appendTo($('div.ui-dialog-buttonpane'))
-    buttons:
-      {
-      'OK': ()->
+    buttons: [
+      { text: c18n.ok, click: ()->
         $('#productRelease').trigger "change"
         $(this).dialog "close"
-      'Cancel': ()->$(this).dialog "close"
       }
+      {text: c18n.cancel, click: ()->$(this).dialog "close"}
+    ]
 
     }
     languageFilterDialog.append languageFilterTable
@@ -90,8 +90,18 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'transmng/trans_grid', 'modul
 
 
     #   create dialogs
-    $("#createTranslationTaskDialog").dialog {autoOpen: false, width: 420, height: 'auto' }
+    taskDialog = $("#createTranslationTaskDialog").dialog {autoOpen: false, width: 420, height: 'auto'
+    buttons: [
+      {text: i18n.create
+      click: ->
+        alert "OK"
+      }
+      {text: c18n.cancel, click: -> $(this).dialog "close"}
+    ]
+    }
 
+    $("#create").button().click ->
+      taskDialog.dialog "open"
   # initialize page
   initPage()
 

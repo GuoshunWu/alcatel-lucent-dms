@@ -21,6 +21,9 @@ define({
             },
             languagefilter:{
                 title:'Choose the languages you want to show'
+            },
+            button:{
+                create: 'Create'
             }
         }
     },
