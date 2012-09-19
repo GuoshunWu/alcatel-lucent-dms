@@ -207,5 +207,14 @@ public class Dictionary extends BaseEntity {
 			summaryCache.put(langId.toString(), summary.get(langId));
 		}
     }
+    
+    private Application app;	// temporary variable for REST service
+    public void setApp(Application app) {
+    	this.app = app;
+    }
+    
+    public Application getApp() {
+    	return app;
+    }
 
 }
