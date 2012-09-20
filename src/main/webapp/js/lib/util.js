@@ -22,7 +22,6 @@ define(['jquery'], function ($) {
         return Object.prototype.toString.call(obj) === "[object Array]";
     }
 
-    ;
 
     /**
      * insert elem at pos in array.
@@ -44,7 +43,7 @@ define(['jquery'], function ($) {
             elem = newarray[_j];
             this.push(elem);
         }
-        return elem;
+        return this;
     };
 
 
