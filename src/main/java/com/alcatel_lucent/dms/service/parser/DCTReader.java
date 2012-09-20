@@ -51,6 +51,7 @@ public class DCTReader extends LineNumberReader {
     private String currentLine;
     private boolean firstLine = true;
     private StringBuffer commentLines = new StringBuffer();
+    private StringBuffer suffixComment;
 
     protected DCTReader(Reader in, Dictionary dictionary) {
         super(in);
@@ -193,6 +194,7 @@ public class DCTReader extends LineNumberReader {
         label.setDescription(null);
 
         Map<String, String> entriesInLabel = new HashMap<String, String>();
+        HashSet<String> langCodesRequestTranslation = new HashSet<String>();
         ArrayList<String> orderedLangCodes = new ArrayList<String>();
 
         BusinessException exceptions = new BusinessException(
@@ -260,6 +262,9 @@ public class DCTReader extends LineNumberReader {
                 line = line.substring(0, line.length() - 1);
             }
             buffer.append(line);
+            if (suffixComment != null && suffixComment.toString().startsWith("--???")) {
+            	langCodesRequestTranslation.add(langCode);
+            }
 
             // read until file end or next label start or next entry start
             while (null != (line = readLine())
@@ -280,6 +285,9 @@ public class DCTReader extends LineNumberReader {
                     line = line.replace("\"", "");
                     buffer.append("\n");
                     buffer.append(line);
+                }
+                if (suffixComment != null && suffixComment.toString().startsWith("--???")) {
+                	langCodesRequestTranslation.add(langCode);
                 }
             }
             entriesInLabel.put(langCode, buffer.toString());
@@ -322,6 +330,7 @@ public class DCTReader extends LineNumberReader {
             trans.setLanguageCode(oLangCode);
             trans.setOrigTranslation(entriesInLabel.get(oLangCode));
             trans.setSortNo(labelSortNo++);
+            trans.setRequestTranslation(langCodesRequestTranslation.contains(oLangCode));
 
             translations.add(trans);
         }
@@ -413,6 +422,7 @@ public class DCTReader extends LineNumberReader {
      * @author Guoshun.Wu Date: 2012-07-04
      */
     private String removeComments(String line) throws IOException {
+    	suffixComment = null;
         line.trim();
         StringBuilder sb = new StringBuilder();
         StringReader sr = new StringReader(line);
@@ -422,6 +432,11 @@ public class DCTReader extends LineNumberReader {
             if (ch == '-') {
                 int nextch = (char) sr.read();
                 if (('-' == nextch && 0 == quotNum % 2) || -1 == nextch) {
+                	// save comment info
+                	suffixComment = new StringBuffer("--");
+                	while (-1 != (ch = sr.read())) {
+                		suffixComment.append((char) ch);
+                	}
                     break;
                 }
                 if ('"' == nextch) {

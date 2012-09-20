@@ -457,7 +457,12 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
 
         // Associate base Dictionary
-        DictionaryBase baseDBDict = (DictionaryBase) getDao().retrieveOne("from DictionaryBase where name=:name", JSONObject.fromObject("{'name':'" + dict.getName() + "'}"));
+        Application app = (Application) getDao().retrieve(Application.class, appId);
+        Map param = new HashMap();
+        param.put("name", dict.getName());
+        param.put("appBaseId", app.getBase().getId());
+        DictionaryBase baseDBDict = (DictionaryBase) getDao().retrieveOne(
+        		"from DictionaryBase where name=:name and applicationBase.id=:appBaseId", param);
         if(null==baseDBDict){
         	if (mode == Constants.TRANSLATION_MODE) {
         		throw new BusinessException(BusinessException.DICTIONARY_NOT_FOUND, dict.getName());
@@ -467,7 +472,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             baseDBDict.setFormat(dict.getFormat());
             baseDBDict.setEncoding(dict.getEncoding());
             baseDBDict.setPath(dict.getPath());
-            baseDBDict.setApplicationBase(dict.getBase().getApplicationBase());
+            baseDBDict.setApplicationBase(app.getBase());
             baseDBDict=(DictionaryBase)getDao().create(baseDBDict);
         } else{
             if (mode == Constants.DELIVERY_MODE) {
@@ -479,11 +484,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         }
 
 
-
+        param = new HashMap();
+        param.put("version", version);
+        param.put("baseId", baseDBDict.getId());
         Dictionary dbDict = (Dictionary) getDao().retrieveOne(
-                "from Dictionary where version=:version and base.name=:name",
-                JSONObject.fromObject(String.format("{'version':'%s','name':'%s'}",
-                        version,dict.getName())));
+                "from Dictionary where version=:version and base.id=:baseId", param);
         // create dictionary if not exists
         if (null == dbDict) {
         	if (mode == Constants.TRANSLATION_MODE) {
@@ -496,15 +501,21 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             dbDict.setBase(baseDBDict);
             dbDict.setVersion(version);
 
-            Application app = (Application) getDao().retrieve(Application.class,
-                    appId);
 
             Collection<Dictionary> dictionaries= app.getDictionaries();
             if(null==dictionaries){
                 dictionaries=new HashSet<Dictionary>();
+                app.setDictionaries(dictionaries);
+            }
+            Iterator<Dictionary> iter = dictionaries.iterator();
+            // remove previous dictionary version in the app
+            while (iter.hasNext()) {
+            	Dictionary appDict = iter.next();
+            	if (appDict.getBase().getId().equals(baseDBDict.getId())) {
+            		iter.remove();
+            	}
             }
             dictionaries.add(dbDict);
-            app.setDictionaries(dictionaries);
 
             dbDict.setLocked(false);
             dbDict = (Dictionary) getDao().create(dbDict);
@@ -658,7 +669,14 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 t.setText(text);
                 t.setTranslation(trans.getOrigTranslation());
                 t.setLanguage(trans.getLanguage());
-                if (label.getReference().equals(trans.getOrigTranslation())) {
+                
+                // determine translation status
+                if (trans.getRequestTranslation() != null) {
+                	t.setStatus(trans.getRequestTranslation().booleanValue() ? 
+                			Translation.STATUS_UNTRANSLATED : Translation.STATUS_TRANSLATED);
+                } else if (!trans.isNeedTranslation()) {
+                	t.setStatus(Translation.STATUS_TRANSLATED);
+                } else if (label.getReference().equals(trans.getOrigTranslation())) {
                 	t.setStatus(Translation.STATUS_UNTRANSLATED);
                 } else {
                 	t.setStatus(Translation.STATUS_TRANSLATED);

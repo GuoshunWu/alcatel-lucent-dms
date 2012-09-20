@@ -9,11 +9,24 @@ public class LabelTranslation extends BaseEntity {
 	private Label label;
 	private Language language;
 	private String origTranslation;
-	private boolean needTranslation;
+	
 	private String warnings;
 	private String languageCode;
 	private int sortNo;
-	
+
+	/**
+	 * Specify if translation is requested.
+	 * Some dictionary can explicitly specify if translation is request
+	 * If this flag is set, translation status would be forcibly set to "Not translated" or "Translated".
+	 */
+	private Boolean requestTranslation;
+
+	/**
+	 * Specify if the translation of this label should be retrieved from context dictionary.
+	 * In some case, translation should not come from context dictionary.
+	 */
+	private boolean needTranslation;
+
 	public void setLabel(Label label) {
 		this.label = label;
 	}
@@ -62,6 +75,12 @@ public class LabelTranslation extends BaseEntity {
 	}
 	public String getLanguageCode() {
 		return languageCode;
+	}
+	public Boolean getRequestTranslation() {
+		return requestTranslation;
+	}
+	public void setRequestTranslation(Boolean requestTranslation) {
+		this.requestTranslation = requestTranslation;
 	}
 
 }
