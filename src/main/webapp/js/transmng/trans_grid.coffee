@@ -1,45 +1,30 @@
 define ['jqgrid', 'util', 'require'], ($, util, require)->
-  common:
+  common =
     {
     colNames: ['ID', 'Application', 'Version', 'Num of String']
     colModel: [
       {name: 'id', index: 'id', width: 55, align: 'center', hidden: true, frozen: true}
-      {name: 'application', index: 'base.name', width: 100, editable: true, stype: 'select', edittype: 'select', align: 'center', frozen: true,
-      searchoptions: {dataInit: (elem)-> alert elem}
-      editoptions: {value: "All:All;0.00:0.00;12:12.00", defaultValue: 'All:All'}
-      }
-      {name: 'numOfString', index: 'labelNum', width: 80, align: 'center', frozen: true}
+      {name: 'application', index: 'base.name', width: 100, editable: false, stype: 'select', align: 'center', frozen: true}
+      {name: 'appVersion', index: 'version', width: 90, editable: true, align: 'center', frozen: true, search: false}
+      {name: 'numOfString', index: 'labelNum', width: 80, align: 'center', frozen: true, search: false}
     ]
     }
 
   grid = {
   dictionary:
     {
-    colNames:common.colNames ['Dictionary', 'Version', 'Encoding', 'Format']
-    colModel: [
-      {name: 'id', index: 'id', width: 55, align: 'center', hidden: true, frozen: true}
-      {name: 'application', index: 'app.base.name', width: 100, editable: true, stype: 'select', edittype: 'select', align: 'center', editoptions: {value: "All:All;0.00:0.00;12:12.00"}, frozen: true}
-      {name: 'appVersion', index: 'app.version', width: 90, editable: true, align: 'center', frozen: true}
-      {name: 'dictionary', index: 'base.name', width: 90, editable: true, align: 'center', frozen: true}
-      {name: 'dictVersion', index: 'version', width: 90, editable: true, align: 'center', frozen: true}
-      {name: 'encoding', index: 'encoding', width: 90, editable: true, align: 'center', frozen: true}
-      {name: 'format', index: 'format', width: 90, editable: true, align: 'center', frozen: true}
-      {name: 'numOfString', index: 'labelNum', width: 80, align: 'center', frozen: true}
+    colNames: common.colNames.slice(0).insert 3, ['Dictionary', 'Version', 'Encoding', 'Format']
+    colModel: common.colModel.slice(0).insert 3, [
+      {name: 'dictionary', index: 'base.name', width: 90, editable: true, align: 'center', frozen: true, search: false}
+      {name: 'dictVersion', index: 'version', width: 90, editable: true, align: 'center', frozen: true, search: false}
+      {name: 'encoding', index: 'encoding', width: 90, editable: true, align: 'center', frozen: true, search: false}
+      {name: 'format', index: 'format', width: 90, editable: true, align: 'center', frozen: true, search: false}
     ]
     }
   application:
     {
-    colNames: ['Dummy', 'ID', 'Application', 'Version', 'Num of String']
-    colModel: [
-      {name: 'dummy', index: 'dummy', width: 55, align: 'center', hidden: true, frozen: true}
-      {name: 'id', index: 'id', width: 55, align: 'center', hidden: true, frozen: true}
-      {name: 'application', index: 'base.name', width: 100, editable: true, stype: 'select', edittype: 'select', align: 'center', frozen: true,
-      searchoptions: {dataInit: (elem)-> alert elem}
-      editoptions: {value: "All:All;0.00:0.00;12:12.00", defaultValue: 'All:All'}
-      }
-      {name: 'appVersion', index: 'version', width: 90, editable: true, align: 'center', frozen: true}
-      {name: 'numOfString', index: 'labelNum', width: 80, align: 'center', frozen: true}
-    ]
+    colNames: common.colNames.slice(0).insert 0, 'Dummy'
+    colModel: common.colModel.slice(0).insert 0, {name: 'dummy', index: 'dummy', width: 55, align: 'center', hidden: true, frozen: true}
     }
   }
   transGrid = $("#transGridList").jqGrid {
@@ -78,6 +63,13 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
     prop = eprop + summary
     postData = {prod: param.release.id, format: 'grid', prop: prop}
     url = if isApp then 'rest/applications' else 'rest/dict'
+    $.ajax {url: "rest/applications?prod=#{param.release.id}&prop=id,name",
+    async: false, dataType: 'json', success: (json)->
+      app = {}
+      $(json).each -> $(app).attr this.id, this.name
+      transGrid.setColProp 'application', {searchoptions: {value: app}}
+    }
+
     transGrid.updateTaskLanguage langugaeNames, url, postData
   #
   getTotalSelectedRowInfo: ->
