@@ -3,9 +3,48 @@
 
   define(['jqgrid', 'util', 'require'], function($, util, require) {
     var grid, transGrid;
+    ({
+      common: {
+        colNames: ['ID', 'Application', 'Version', 'Num of String'],
+        colModel: [
+          {
+            name: 'id',
+            index: 'id',
+            width: 55,
+            align: 'center',
+            hidden: true,
+            frozen: true
+          }, {
+            name: 'application',
+            index: 'base.name',
+            width: 100,
+            editable: true,
+            stype: 'select',
+            edittype: 'select',
+            align: 'center',
+            frozen: true,
+            searchoptions: {
+              dataInit: function(elem) {
+                return alert(elem);
+              }
+            },
+            editoptions: {
+              value: "All:All;0.00:0.00;12:12.00",
+              defaultValue: 'All:All'
+            }
+          }, {
+            name: 'numOfString',
+            index: 'labelNum',
+            width: 80,
+            align: 'center',
+            frozen: true
+          }
+        ]
+      }
+    });
     grid = {
       dictionary: {
-        colNames: ['ID', 'Application', 'Version', 'Dictionary', 'Version', 'Encoding', 'Format', 'Num of String'],
+        colNames: common.colNames(['Dictionary', 'Version', 'Encoding', 'Format']),
         colModel: [
           {
             name: 'id',
@@ -95,10 +134,16 @@
             stype: 'select',
             edittype: 'select',
             align: 'center',
-            editoptions: {
-              value: "All:All;0.00:0.00;12:12.00"
+            frozen: true,
+            searchoptions: {
+              dataInit: function(elem) {
+                return alert(elem);
+              }
             },
-            frozen: true
+            editoptions: {
+              value: "All:All;0.00:0.00;12:12.00",
+              defaultValue: 'All:All'
+            }
           }, {
             name: 'appVersion',
             index: 'version',
@@ -182,7 +227,7 @@
         langugaeNames = ($(param.languages).map(function() {
           return this.name;
         })).get();
-        isApp = param.level === "app";
+        isApp = param.level === "application";
         gridParam.colNames = isApp ? grid.application.colNames : grid.dictionary.colNames;
         gridParam.colModel = isApp ? grid.application.colModel : grid.dictionary.colModel;
         eprop = "id,app.base.name,app.version,base.name,version,base.encoding,base.format,labelNum,";
@@ -216,9 +261,9 @@
       },
       getTableType: function() {
         if (-1 === ($.inArray('Dummy', $("#transGridList").getGridParam('colNames')))) {
-          return 'dictionary';
+          return 'dict';
         } else {
-          return 'application';
+          return 'app';
         }
       }
     };

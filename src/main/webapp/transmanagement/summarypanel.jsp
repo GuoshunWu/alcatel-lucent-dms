@@ -16,7 +16,7 @@
                 <td>&nbsp;</td>
                 <td>
                     <div style="border: thin solid;width: 280px;text-align: center">
-                    <input type="radio" id="applicationView" name="viewOption" value="app"><label for="applicationView"><s:text
+                    <input type="radio" id="applicationView" name="viewOption" value="application"><label for="applicationView"><s:text
                         name="transmng.summarypanel.viewoption.applicationlevel"/></label>&nbsp;&nbsp;&nbsp;&nbsp;
                     <input type="radio" id="dictionaryView" checked name="viewOption" value="dictionary"><label for="dictionaryView"><s:text
                         name="transmng.summarypanel.viewoption.dictionarylevel"/></label>
@@ -59,9 +59,9 @@
                 <tr>
                     <td style="width: 15px"/>
                     <td>
-                        <button id="create">Create translation task...</button>
+                        <button id="create"><s:text name="button.translationtask" /></button>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        Make all label as<select/>
+                        <s:text name="transmng.summarypanel.makelabelas"/><select/>
                     </td>
                     <td style="width: 15px"/>
                 </tr>

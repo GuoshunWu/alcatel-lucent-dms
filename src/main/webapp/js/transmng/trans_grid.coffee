@@ -1,8 +1,21 @@
 define ['jqgrid', 'util', 'require'], ($, util, require)->
+  common:
+    {
+    colNames: ['ID', 'Application', 'Version', 'Num of String']
+    colModel: [
+      {name: 'id', index: 'id', width: 55, align: 'center', hidden: true, frozen: true}
+      {name: 'application', index: 'base.name', width: 100, editable: true, stype: 'select', edittype: 'select', align: 'center', frozen: true,
+      searchoptions: {dataInit: (elem)-> alert elem}
+      editoptions: {value: "All:All;0.00:0.00;12:12.00", defaultValue: 'All:All'}
+      }
+      {name: 'numOfString', index: 'labelNum', width: 80, align: 'center', frozen: true}
+    ]
+    }
+
   grid = {
   dictionary:
     {
-    colNames: ['ID', 'Application', 'Version', 'Dictionary', 'Version', 'Encoding', 'Format', 'Num of String']
+    colNames:common.colNames ['Dictionary', 'Version', 'Encoding', 'Format']
     colModel: [
       {name: 'id', index: 'id', width: 55, align: 'center', hidden: true, frozen: true}
       {name: 'application', index: 'app.base.name', width: 100, editable: true, stype: 'select', edittype: 'select', align: 'center', editoptions: {value: "All:All;0.00:0.00;12:12.00"}, frozen: true}
@@ -20,7 +33,10 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
     colModel: [
       {name: 'dummy', index: 'dummy', width: 55, align: 'center', hidden: true, frozen: true}
       {name: 'id', index: 'id', width: 55, align: 'center', hidden: true, frozen: true}
-      {name: 'application', index: 'base.name', width: 100, editable: true, stype: 'select', edittype: 'select', align: 'center', editoptions: {value: "All:All;0.00:0.00;12:12.00"}, frozen: true}
+      {name: 'application', index: 'base.name', width: 100, editable: true, stype: 'select', edittype: 'select', align: 'center', frozen: true,
+      searchoptions: {dataInit: (elem)-> alert elem}
+      editoptions: {value: "All:All;0.00:0.00;12:12.00", defaultValue: 'All:All'}
+      }
       {name: 'appVersion', index: 'version', width: 90, editable: true, align: 'center', frozen: true}
       {name: 'numOfString', index: 'labelNum', width: 80, align: 'center', frozen: true}
     ]
@@ -31,9 +47,9 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
   mtype: 'POST', postData: {}, editurl: "", datatype: 'json'
   width: $(window).width() * 0.95, height: 300, shrinkToFit: false
   rownumbers: true, loadonce: false # for reload the colModel
-  pager: '#taskPager', rowNum: 60, rowList: [10, 20, 30,60,120]
+  pager: '#taskPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
   sortname: 'base.name', sortorder: 'asc', viewrecords: true, gridview: true, multiselect: true
-#  , multikey: "ctrlKey"
+  #  , multikey: "ctrlKey"
   caption: 'Translation Task List'
   colNames: grid.dictionary.colNames, colModel: grid.dictionary.colModel
   groupHeaders: []
@@ -52,7 +68,7 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
     gridParam = transGrid.getGridParam()
 
     langugaeNames = ($(param.languages).map ->this.name).get()
-    isApp = (param.level == "app")
+    isApp = (param.level == "application")
     gridParam.colNames = if isApp then grid.application.colNames else grid.dictionary.colNames
     gridParam.colModel = if isApp then grid.application.colModel else  grid.dictionary.colModel
 
@@ -62,16 +78,17 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
     prop = eprop + summary
     postData = {prod: param.release.id, format: 'grid', prop: prop}
     url = if isApp then 'rest/applications' else 'rest/dict'
-    transGrid.updateTaskLanguage langugaeNames, url ,postData
-  getTotalSelectedRowInfo:->
+    transGrid.updateTaskLanguage langugaeNames, url, postData
+  #
+  getTotalSelectedRowInfo: ->
     transGrid = $("#transGridList")
     selectedRowIds = transGrid.getGridParam 'selarrrow'
-    count=0
+    count = 0
     $(selectedRowIds).each ->
-      row=$("#transGridList").getRowData this
-      count+=parseInt row.numOfString
+      row = $("#transGridList").getRowData this
+      count += parseInt row.numOfString
 
-    {rowIds:selectedRowIds, selectedNum:selectedRowIds.length, totalLabels: count}
-  getTableType:->
-    if -1==($.inArray 'Dummy',$("#transGridList").getGridParam('colNames')) then  'dictionary'else 'application'
+    {rowIds: selectedRowIds, selectedNum: selectedRowIds.length, totalLabels: count}
+  getTableType: ->
+    if -1 == ($.inArray 'Dummy', $("#transGridList").getGridParam('colNames')) then  'dict' else 'app'
 
