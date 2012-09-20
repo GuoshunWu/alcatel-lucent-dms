@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.alcatel_lucent.dms.SpringContext;
+import com.alcatel_lucent.dms.service.DictionaryService;
+
 public class Application extends BaseEntity {
 	/**
 	 * 
@@ -65,6 +68,12 @@ public class Application extends BaseEntity {
 			}
 		}
 	}
+	
+	public int getLabelNum() {
+		DictionaryService dictService = (DictionaryService) SpringContext.getBean("dictionaryService");
+		return dictService.getLabelNumByApp(getId());
+	}
+	
     private Map<String, int[]> summaryCache;
     
     /**
@@ -82,4 +91,5 @@ public class Application extends BaseEntity {
 			summaryCache.put(langId.toString(), summary.get(langId));
 		}
     }
+    
 }
