@@ -43,6 +43,7 @@
             index: "" + language + "." + this,
             width: 20,
             editable: false,
+            search: false,
             align: 'center'
           };
         })).get();

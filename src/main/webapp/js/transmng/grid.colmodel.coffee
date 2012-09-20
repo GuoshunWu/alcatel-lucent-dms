@@ -25,7 +25,7 @@ define ['jqgrid'], ($)->
 
   addTaskLanguage: (language, url, postData)->
     cols = ['T', 'N', 'I']
-    colModels = ($(cols).map ()-> {name: "#{language}.#{this}", index: "#{language}.#{this}", width: 20, editable: false, align: 'center'}).get()
+    colModels = ($(cols).map ()-> {name: "#{language}.#{this}", index: "#{language}.#{this}", width: 20, editable: false,search:false, align: 'center'}).get()
 
     this.getGridParam('groupHeaders').push {startColumnName: "#{language}.T", numberOfColumns: 3, titleText: "<bold>#{language}</bold>"}
     this.addColumns cols, colModels, url, postData

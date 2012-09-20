@@ -43,7 +43,7 @@ define(['jquery'], function ($) {
             elem = newarray[_j];
             this.push(elem);
         }
-        return this;
+        return newarray;
     };
 
 
