@@ -34,7 +34,7 @@ define ['jqgrid', 'require','i18n!nls/appmng'], ($, require,i18n)->
     if name == 'version'
       select = $("##{iRow}_version", localIds.app_grid)
       url = "rest/applications/appssamebase/#{id}"
-      $.getJSON url, {}, (json)->select.append $(json).map ()-> opt = new Option(this.version, this.id);opt.selected = (this.version == val);opt
+      $.getJSON url, {}, (json)->select.append $(json).map ()-> opt = new Option(@version, @id);opt.selected = (@version == val);opt
 
   beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
     productpnl=require 'appmng/product_panel'

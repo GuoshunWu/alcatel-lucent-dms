@@ -22,6 +22,12 @@ define({
             languagefilter:{
                 title:'Choose the languages you want to show'
             }
+        },
+        msgbox:{
+            createtranstask:{
+                title:'Select {0}',
+                msg:'Please select {0} first!'
+            }
         }
     },
     "zh-cn":true

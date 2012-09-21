@@ -9,129 +9,155 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'i18n!nls/common', 'transmng/
     page: 'optional-container'
     }
   }
-
-  generateLanguageTable = (languages, tableId, colNum)->
+  generateLanguageTable = (container, languages, tableId, colNum)->
     tableId = ids.languageFilterTableId if !tableId
     colNum = 5 if !colNum
+    rowCount = Math.ceil(languages.length / colNum)
+    $(container).dialog 'option', 'width', colNum * 195  if container
 
-    languageFilterTable = $("<table id='#{tableId}' align='center' border='0'></table>")
-    languages = $(languages).map ()->$("<td><input type='checkbox' checked value=\"#{this.name}\" name='languages' id=#{this.id} /><label for=#{this.id}>#{this.name}</label></td>").css('width', '180px')
-    languages.each (index)->
-      $("<tr/>").appendTo languageFilterTable if 0 == index % colNum
-      this.appendTo $("tr:eq(#{Math.floor(index / colNum)})", languageFilterTable)
+    languageFilterTable = $("<table id='#{tableId}' align='center' border='0'><tr valign='top' /></table>")
+    outerTableFirstRow = $("tr:eq(0)", languageFilterTable)
 
-    checkedAll = $("<input type='checkbox'id='all_#{tableId}' checked><label for='all_#{tableId}'>All</label>")
-    checkedAll.change ()->$(":checkbox[name='languages']", languageFilterTable).attr('checked', this.checked)
+    languageCells = $(languages).map ()->$("<td><input type='checkbox' checked value=\"#{@name}\" name='languages' id=#{@id} /><label for=#{@id}>#{@name}</label></td>").css('width', '180px')
+
+    innerColTable = null
+    languageCells.each (index)->
+      if 0 == index % rowCount
+        innerColTable = $("<table border='0'/>")
+        outerTableFirstRow.append $("<td/>").append innerColTable
+      innerColTable.append $("<tr/>").append @
+
+    checkedAll = $("<input type='checkbox'id='all_#{tableId}' checked><label for='all_#{tableId}'>All</label>").change ()->
+      $(":checkbox[name='languages']", languageFilterTable).attr('checked', @checked)
+    #    hr line
     languageFilterTable.append $('<tr/>').append $("<td colspan='#{colNum}'/>").append $("<hr width='100%'>")
+    #    check all line
     languageFilterTable.append $('<tr/>').append $("<td colspan='#{colNum}'></td>").append checkedAll
 
-  #  private method
-  initPage = ->
-    pageLayout = $("##{ids.container.page}").layout {resizable: true, closable: true}
-
-    ###################################### Initialize elements in north panel ######################################
-    # populate option for product base
-    $.getJSON 'rest/products/trans/productbases', {}, (json)->
-      $('#productBase').append new Option(i18n.select.product.tip, -1)
-      $('#productBase').append $(json).map ()->new Option this.name, this.id
-
-      #  load product in product base
-      $('#productBase').change ()->
-        $('#productRelease').empty()
-        return false if parseInt($('#productBase').val()) == -1
-
-        $.getJSON "rest/products/#{$('#productBase').val()}", {}, (json)->
-          $('#productRelease').append new Option(i18n.select.release.tip, -1)
-          $('#productRelease').append $(json).map ()->new Option this.version, this.id
-          $('#productRelease').trigger "change"
-
-    $('#productRelease').change ->
-      param = {
-      release: {id: $(this).val(), version: $(this).find("option:selected").text()}
-      languages: ($(":checkbox[name='languages']", $("#" + ids.languageFilterDialogId)).map () -> {id: this.id, name: this.value} if this.checked).get()
-      level: $(":radio[name='viewOption'][checked]").val()
-      }
-      if !$('#productBase').val() || parseInt($('#productBase').val()) == -1
-      #        $.msgBox i18n.select.product.msg, null,title: i18n.select.product.msgtitle, width: 300, height: "auto"
-        return false
-
-      if !param.release.id || parseInt(param.release.id) == -1
-      #        $.msgBox i18n.select.release.msg, null, title: i18n.select.release.msgtitle, width: 300 , height: "auto"
-        return false
-
-      grid.productReleaseChanged param
-
-
-    ###################################### Elements in summary panel ######################################
-    #generate language filter dialog
+  createDialogs = ->
+  #dialog
     languageFilterDialog = $("<div title='#{i18n.select.languagefilter.title}' id='#{ids.languageFilterDialogId}'>").dialog {
-    autoOpen: false, position: [23, 126], width: 950
+    autoOpen: false, position: [23, 126]
     show: { effect: 'slide', direction: "up" }
-    create: ->$.getJSON 'rest/languages?prop=id,name', {}, (languages)=>$(this).append(generateLanguageTable languages)
+    create: ->$.getJSON 'rest/languages?prop=id,name', {}, (languages)=>$(@).append(generateLanguageTable @, languages)
     buttons: [
       { text: c18n.ok, click: ()->
         $('#productRelease').trigger "change"
-        $(this).dialog "close"
+        $(@).dialog "close"
       }
-      {text: c18n.cancel, click: ()->$(this).dialog "close"}
+      {text: c18n.cancel, click: ()->$(@).dialog "close"}
     ]
     }
-
-    $('#languageFilter').button().click ()->$("##{ids.languageFilterDialogId}").dialog "open"
-
-    #    for view level
-    $(':radio[name=viewOption]').change -> $('#productRelease').trigger "change"
-
-
-    #   create dialogs
     taskDialog = $("#createTranslationTaskDialog").dialog {
-    autoOpen: false, width: 950, height: 'auto', position: [25, 100], show: { effect: 'slide', direction: "down" }
+    autoOpen: false, width: 1000, height: 'auto', position: [25, 100], show: { effect: 'slide', direction: "down" }
     open: ->
       info = grid.getTotalSelectedRowInfo()
       #      tableType is app or dict
       tableType = grid.getTableType()
       nums = info.selectedNum
-      console.log "table type=#{tableType}, nums = #{nums}"
 
       $("#dictSelected").html "<b>#{nums}</b>"
 
       if 'app' == tableType
         nums = -1
-#        get dictionary number of selected application from rest
+      #        get dictionary number of selected application from rest
 
       $("#totalLabels").html "<b>#{info.totalLabels}</b>"
       # update target languages from rest
 
-      langFilterTableId="languageFilter_#{$(this).attr('id')}"
+      langFilterTableId = "languageFilter_#{$(@).attr('id')}"
       $("##{langFilterTableId}").remove()
-      postData = ($({prop: 'id,name'}).attr tableType, info.rowIds.join(',')).get(0)
-      $.getJSON 'rest/languages', postData, (languages)=>$(this).append  generateLanguageTable languages,langFilterTableId
+      postData = {prop: 'id,name'}
+      postData[tableType] = info.rowIds.join(',')
+      #      postData = ($({prop: 'id,name'}).attr tableType, info.rowIds.join(',')).get(0)
+
+      $.getJSON 'rest/languages', postData, (languages)=>$(@).append generateLanguageTable @, languages, langFilterTableId if languages.length > 0
 
     buttons: [
       {text: c18n.create
       click: ->
-        languages=($(":checkbox[name='languages']",$(this)).map -> {id: this.id, name: this.value} if this.checked).get()
-#        check languages.length=0
+        languages = ($(":checkbox[name='languages']", $(@)).map -> {id: @id, name: @value} if @checked).get()
+        if(languages.length == 0)
+          $.msgBox (i18n.msgbox.createtranstask.msg.format c18n.language), null,
+            title: (i18n.msgbox.createtranstask.title.format c18n.language),
+            width: 300, height: "auto"
 
-        $(this).dialog "close"
+        return
+        #        check languages.length=0
+
+        $(@).dialog "close"
       }
-      {text: c18n.cancel, click: -> $(this).dialog "close"}
+      {text: c18n.cancel, click: -> $(@).dialog "close"}
     ]
     }
+    {taskDialog: taskDialog, languageFilterDialog: languageFilterDialog}
 
+  createSelects = ->
+  # selects on summary panel
+  $.getJSON 'rest/products/trans/productbases', {}, (json)->
+    $('#productBase').append new Option(i18n.select.product.tip, -1)
+    $('#productBase').append $(json).map ()->new Option @name, @id
+
+    #  load product in product base
+    $('#productBase').change ()->
+      $('#productRelease').empty()
+      return false if parseInt($('#productBase').val()) == -1
+
+      $.getJSON "rest/products/#{$('#productBase').val()}", {}, (json)->
+        $('#productRelease').append new Option(i18n.select.release.tip, -1)
+        $('#productRelease').append $(json).map ()->new Option @version, @id
+        $('#productRelease').trigger "change"
+
+  $('#productRelease').change ->
+    param = {
+    release: {id: $(@).val(), version: $(@).find("option:selected").text()}
+    languages: ($(":checkbox[name='languages']", $("#" + ids.languageFilterDialogId)).map () -> {id: @id, name: @value} if @checked).get()
+    level: $(":radio[name='viewOption'][checked]").val()
+    }
+    if !$('#productBase').val() || parseInt($('#productBase').val()) == -1
+    #        $.msgBox i18n.select.product.msg, null,title: i18n.select.product.msgtitle, width: 300, height: "auto"
+      return false
+
+    if !param.release.id || parseInt(param.release.id) == -1
+    #        $.msgBox i18n.select.release.msg, null, title: i18n.select.release.msgtitle, width: 300 , height: "auto"
+      return false
+
+    grid.productReleaseChanged param
+  createButtons = (taskDialog, languageFilterDialog) ->
+  #   buttons summary panel
     $("#create").button().click ->
       require('jqmsgbox')
       info = grid.getTotalSelectedRowInfo()
       type = $(':radio[name=viewOption][checked]').val()
-
       if !info.selectedNum
-        $.msgBox "Please select #{type} first!", null, title: "Select #{type}", width: 300, height: "auto"
+        $.msgBox (i18n.msgbox.createtranstask.msg.format c18n[grid.getTableType()]), null,
+          title: (i18n.msgbox.createtranstask.title.format c18n[grid.getTableType()]),
+          width: 300, height: "auto"
         return
-
       taskDialog.dialog "open"
+
+    $('#languageFilter').button().click ()->languageFilterDialog.dialog "open"
+
+    #    for view level
+    $(':radio[name=viewOption]').change -> $('#productRelease').trigger "change"
+
+
+    (($("#translated").button().click ->
+      alert "All"
+    ).next().button().click ->
+      alert "N"
+    ).parent().buttonset()
+    ;
+  #  private method
+  initPage = ->
+    pageLayout = $("##{ids.container.page}").layout {resizable: true, closable: true}
+    ###################################### Elements in summary panel ######################################
+    createSelects()
+    ###################################### Initialize elements in north panel ######################################
+    dialogs = createDialogs()
+    createButtons(dialogs.taskDialog, dialogs.languageFilterDialog)
   # initialize page
   initPage()
-
 
   #    public variables and methods
   name: 'layout'

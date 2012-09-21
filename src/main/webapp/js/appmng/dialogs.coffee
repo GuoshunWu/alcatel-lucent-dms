@@ -26,9 +26,9 @@ define ['jqueryui', 'jqmsgbox', 'i18n!nls/common'], ($, msgbox, c18n)->
           $.msgBox json.message, null, {title: c18n.error, width: 300, height: 'auto'}
           return false
         (require 'appmng/apptree' ).addNewProductBase {name: $(ids.productName).val(), id: json.id}
-      $(this).dialog "close"
+      $(@).dialog "close"
     }
-    {text: c18n.cancel, click: -> $(this).dialog "close"}
+    {text: c18n.cancel, click: -> $(@).dialog "close"}
   ]
   }
   # TODO: implement the rest of the dialogs
@@ -52,9 +52,9 @@ define ['jqueryui', 'jqmsgbox', 'i18n!nls/common'], ($, msgbox, c18n)->
           $.msgBox json.message, null, {title: c18n.error, width: 300, height: 'auto'}
           return
         (require 'appmng/product_panel').addNewProduct {version: versionName, id: json.id}
-      $(this).dialog "close"
+      $(@).dialog "close"
     }
-    {text: c18n.cancel, click: -> $(this).dialog "close"}
+    {text: c18n.cancel, click: -> $(@).dialog "close"}
   ]
   open: (event, ui)->
     $(ids.product_duplication).append new Option '', -1
@@ -75,32 +75,32 @@ define ['jqueryui', 'jqmsgbox', 'i18n!nls/common'], ($, msgbox, c18n)->
     input = $('<input>').insertAfter($("#version")).hide()
     $('#version').data('myinput', input)
 
-    $("select", this).css('width', "80px")
+    $("select", @).css('width', "80px")
 
     $("#applicationName").change ->
       $("#version").empty().append(new Option('new', -1))
-      appBaseId = $(this).val()
+      appBaseId = $(@).val()
       if (-1 == parseInt(appBaseId))
-        $(this).data('myinput').val("").show()
+        $(@).data('myinput').val("").show()
         $("#version").trigger("change")
         return
-      $(this).data('myinput').hide()
+      $(@).data('myinput').hide()
 
       url = "rest/applications/apps/#{appBaseId}"
-      $.getJSON url, {}, (json)->$("#version").append($(json).map ->new Option(this.version, this.id)).trigger "change"
+      $.getJSON url, {}, (json)->$("#version").append($(json).map ->new Option(@version, @id)).trigger "change"
 
     $("#version").change ->
-      appId = $(this).val()
+      appId = $(@).val()
       if -1 == parseInt(appId)
-        $(this).data('myinput').val("").show()
+        $(@).data('myinput').val("").show()
         return
-      $(this).data('myinput').hide()
+      $(@).data('myinput').hide()
   open: (event, ui)->
     productId = $("#selVersion").val()
     url = "rest/applications/base/#{productId}"
     $.getJSON url, {}, (json)->
       appBasesOptions = $("#newOrAddApplicationDialog").find("#applicationName").empty().append(new Option('new', -1))
-      appBasesOptions.append($(json).map ->new Option(this.name, this.id)).trigger 'change'
+      appBasesOptions.append($(json).map ->new Option(@name, @id)).trigger 'change'
   buttons: [
     {text: c18n.ok, click: ->
       url = 'app/create-or-add-application'
@@ -120,9 +120,9 @@ define ['jqueryui', 'jqmsgbox', 'i18n!nls/common'], ($, msgbox, c18n)->
           (require 'appmng/apptree').getSelected()
         $("#applicationGridList").trigger("reloadGrid")
 
-      $(this).dialog("close")
+      $(@).dialog("close")
     }
-    {text: c18n.cancel, click: -> $(this).dialog "close"}
+    {text: c18n.cancel, click: -> $(@).dialog "close"}
   ]
   }
 
