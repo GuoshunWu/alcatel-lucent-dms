@@ -4,7 +4,7 @@
 
 
 
-<div id="createTranslationTaskDialog" title="<s:text name="transmng.dialogs.title"/>">
+<div id="createTranslationTaskDialog" title="<s:text name="transmng.dialogs.transtask.title"/>">
     <table width="100%" border="0">
         <%--<tr>--%>
             <%--<td>&nbsp;</td>--%>
@@ -13,8 +13,8 @@
             <td>
                 <table border="0" width="100%">
                     <tr>
-                        <td><s:text name="transmng.dialogs.taskname"/></td>
-                        <td><input size="45" value="2nd translation task for ISC R6.6" id="taskName" > </td>
+                        <td><s:text name="transmng.dialogs.transtask.taskname"/></td>
+                        <td><input size="45" id="taskName" > </td>
                     </tr>
                 </table>
             </td>
@@ -26,8 +26,8 @@
             <td>
                 <table border="0" width="100%">
                     <tr >
-                        <td><s:text name="transmng.dialogs.dictionaryselected"/><span id="dictSelected"></span></td>
-                        <td><s:text name="transmng.dialogs.totallabels"/><span id="totalLabels"></span> </td>
+                        <td><s:text name="transmng.dialogs.transtask.dictionaryselected"/><span id="dictSelected"></span></td>
+                        <td><s:text name="transmng.dialogs.transtask.totallabels"/><span id="totalLabels"></span> </td>
                     </tr>
                 </table>
             </td>
@@ -39,7 +39,7 @@
             <td>
                 <table id="targetLanguages" border="0" width="100%">
                     <tr>
-                        <td><s:text name="transmng.dialogs.targetlanguages"/></td>
+                        <td><s:text name="transmng.dialogs.transtask.targetlanguages"/></td>
                    </tr>
                 </table>
             </td>
@@ -50,3 +50,6 @@
     </table>
 </div>
 
+<div id="translationDetailDialog" title="<s:text name="transmng.dialogs.transdetail.title"/>">
+
+</div>

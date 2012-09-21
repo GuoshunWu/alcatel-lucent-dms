@@ -1,3 +1,4 @@
+<%@ taglib prefix="s" uri="/struts-tags" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@ page contentType="text/html;charset=utf-8" %>
 
@@ -61,13 +62,12 @@
                     <td>
                         <button id="create"><s:text name="button.translationtask" /></button>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <s:text name="transmng.summarypanel.makelabelas"/><select/>
+                        <s:text name="transmng.summarypanel.makelabelas"/>&nbsp;&nbsp;<button id='translated'>T</button><button id='notTranslated'>N</button>
                     </td>
                     <td style="width: 15px"/>
                 </tr>
             </table>
         </td>
     </tr>
-
 </table>
 

@@ -9,5 +9,8 @@ define({
     ok:'确定',
     cancel:'取消',
     error:'错误',
-    create:'创建'
+    create:'创建',
+    app:'应用',
+    dict:'字典',
+    language:'语言'
 });

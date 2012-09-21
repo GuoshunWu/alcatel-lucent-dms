@@ -6,7 +6,7 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
       {name: 'id', index: 'id', width: 55, align: 'center', hidden: true, frozen: true}
       {name: 'application', index: 'base.name', width: 100, editable: false, stype: 'select', align: 'center', frozen: true}
       {name: 'appVersion', index: 'version', width: 90, editable: true, align: 'center', frozen: true, search: false}
-      {name: 'numOfString', index: 'labelNum', width: 80, align: 'center', frozen: true, search: false}
+      {name: 'numOfString', index: 'labelNum', width: 80, align: 'left', frozen: true, search: false}
     ]
     }
 
@@ -15,7 +15,7 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
     {
     colNames: common.colNames.slice(0).insert 3, ['Dictionary', 'Version', 'Encoding', 'Format']
     colModel: common.colModel.slice(0).insert 3, [
-      {name: 'dictionary', index: 'base.name', width: 90, editable: true, align: 'center', frozen: true, search: false}
+      {name: 'dictionary', index: 'base.name', width: 90, editable: true, align: 'left', frozen: true, search: false}
       {name: 'dictVersion', index: 'version', width: 90, editable: true, align: 'center', frozen: true, search: false}
       {name: 'encoding', index: 'encoding', width: 90, editable: true, align: 'center', frozen: true, search: false}
       {name: 'format', index: 'format', width: 90, editable: true, align: 'center', frozen: true, search: false}
@@ -35,7 +35,11 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
   pager: '#taskPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
   sortname: 'base.name', sortorder: 'asc', viewrecords: true, gridview: true, multiselect: true
   #  , multikey: "ctrlKey"
-  caption: 'Translation Task List'
+  caption: ''
+
+#  cellEdit:false, onCellSelect:(rowid,iCol,cellcontent,e)->alert "rowid:#{rowid}, iCol:#{iCol}, cellcontent: #{cellcontent}, e,#{e}"
+#    onRightClickRow:(rowid,iRow,iCol,e)-> alert "right click"
+  ondblClickRow:(rowid,iRow,iCol,e)-> alert "rowid:#{rowid}, iCol:#{iCol}, iRow: #{iRow}, e,#{e}"
   colNames: grid.dictionary.colNames, colModel: grid.dictionary.colModel
   groupHeaders: []
   afterCreate: (grid)->
@@ -49,10 +53,10 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
 
 
   productReleaseChanged: (param) ->
-    summary = ($(param.languages).map ->_this = this;($([0, 1, 2]).map ->"s(#{_this.id})[#{this}]").get().join(',')).get().join(',')
+    summary = ($(param.languages).map ->_this = @;($([0, 1, 2]).map ->"s(#{_this.id})[#{@}]").get().join(',')).get().join(',')
     gridParam = transGrid.getGridParam()
 
-    langugaeNames = ($(param.languages).map ->this.name).get()
+    langugaeNames = ($(param.languages).map ->@name).get()
     isApp = (param.level == "application")
     gridParam.colNames = if isApp then grid.application.colNames else grid.dictionary.colNames
     gridParam.colModel = if isApp then grid.application.colModel else  grid.dictionary.colModel
@@ -63,10 +67,11 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
     prop = eprop + summary
     postData = {prod: param.release.id, format: 'grid', prop: prop}
     url = if isApp then 'rest/applications' else 'rest/dict'
+
     $.ajax {url: "rest/applications?prod=#{param.release.id}&prop=id,name",
     async: false, dataType: 'json', success: (json)->
-      app = {}
-      $(json).each -> $(app).attr this.id, this.name
+      app = ":All"
+      $(json).each ->app += ";#{@name}:#{@name}"
       transGrid.setColProp 'application', {searchoptions: {value: app}}
     }
 
@@ -77,7 +82,7 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
     selectedRowIds = transGrid.getGridParam 'selarrrow'
     count = 0
     $(selectedRowIds).each ->
-      row = $("#transGridList").getRowData this
+      row = $("#transGridList").getRowData @
       count += parseInt row.numOfString
 
     {rowIds: selectedRowIds, selectedNum: selectedRowIds.length, totalLabels: count}

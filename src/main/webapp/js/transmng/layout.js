@@ -2,7 +2,7 @@
 (function() {
 
   define(['jqlayout', 'jquery', 'i18n!nls/transmng', 'i18n!nls/common', 'transmng/trans_grid', 'require', 'jqmsgbox'], function($, jq, i18n, c18n, grid, require) {
-    var generateLanguageTable, ids, initPage;
+    var createButtons, createDialogs, createSelects, generateLanguageTable, ids, initPage;
     ids = {
       languageFilterTableId: 'languageFilterTable',
       languageFilterDialogId: 'languageFilterDialog',
@@ -10,85 +10,42 @@
         page: 'optional-container'
       }
     };
-    generateLanguageTable = function(languages, tableId, colNum) {
-      var checkedAll, languageFilterTable;
+    generateLanguageTable = function(container, languages, tableId, colNum) {
+      var checkedAll, innerColTable, languageCells, languageFilterTable, outerTableFirstRow, rowCount;
       if (!tableId) {
         tableId = ids.languageFilterTableId;
       }
       if (!colNum) {
         colNum = 5;
       }
-      languageFilterTable = $("<table id='" + tableId + "' align='center' border='0'></table>");
-      languages = $(languages).map(function() {
+      rowCount = Math.ceil(languages.length / colNum);
+      if (container) {
+        $(container).dialog('option', 'width', colNum * 195);
+      }
+      languageFilterTable = $("<table id='" + tableId + "' align='center' border='0'><tr valign='top' /></table>");
+      outerTableFirstRow = $("tr:eq(0)", languageFilterTable);
+      languageCells = $(languages).map(function() {
         return $("<td><input type='checkbox' checked value=\"" + this.name + "\" name='languages' id=" + this.id + " /><label for=" + this.id + ">" + this.name + "</label></td>").css('width', '180px');
       });
-      languages.each(function(index) {
-        if (0 === index % colNum) {
-          $("<tr/>").appendTo(languageFilterTable);
+      innerColTable = null;
+      languageCells.each(function(index) {
+        if (0 === index % rowCount) {
+          innerColTable = $("<table border='0'/>");
+          outerTableFirstRow.append($("<td/>").append(innerColTable));
         }
-        return this.appendTo($("tr:eq(" + (Math.floor(index / colNum)) + ")", languageFilterTable));
+        return innerColTable.append($("<tr/>").append(this));
       });
-      checkedAll = $("<input type='checkbox'id='all_" + tableId + "' checked><label for='all_" + tableId + "'>All</label>");
-      checkedAll.change(function() {
+      checkedAll = $("<input type='checkbox'id='all_" + tableId + "' checked><label for='all_" + tableId + "'>All</label>").change(function() {
         return $(":checkbox[name='languages']", languageFilterTable).attr('checked', this.checked);
       });
       languageFilterTable.append($('<tr/>').append($("<td colspan='" + colNum + "'/>").append($("<hr width='100%'>"))));
       return languageFilterTable.append($('<tr/>').append($("<td colspan='" + colNum + "'></td>").append(checkedAll)));
     };
-    initPage = function() {
-      var languageFilterDialog, pageLayout, taskDialog;
-      pageLayout = $("#" + ids.container.page).layout({
-        resizable: true,
-        closable: true
-      });
-      $.getJSON('rest/products/trans/productbases', {}, function(json) {
-        $('#productBase').append(new Option(i18n.select.product.tip, -1));
-        $('#productBase').append($(json).map(function() {
-          return new Option(this.name, this.id);
-        }));
-        return $('#productBase').change(function() {
-          $('#productRelease').empty();
-          if (parseInt($('#productBase').val()) === -1) {
-            return false;
-          }
-          return $.getJSON("rest/products/" + ($('#productBase').val()), {}, function(json) {
-            $('#productRelease').append(new Option(i18n.select.release.tip, -1));
-            $('#productRelease').append($(json).map(function() {
-              return new Option(this.version, this.id);
-            }));
-            return $('#productRelease').trigger("change");
-          });
-        });
-      });
-      $('#productRelease').change(function() {
-        var param;
-        param = {
-          release: {
-            id: $(this).val(),
-            version: $(this).find("option:selected").text()
-          },
-          languages: ($(":checkbox[name='languages']", $("#" + ids.languageFilterDialogId)).map(function() {
-            if (this.checked) {
-              return {
-                id: this.id,
-                name: this.value
-              };
-            }
-          })).get(),
-          level: $(":radio[name='viewOption'][checked]").val()
-        };
-        if (!$('#productBase').val() || parseInt($('#productBase').val()) === -1) {
-          return false;
-        }
-        if (!param.release.id || parseInt(param.release.id) === -1) {
-          return false;
-        }
-        return grid.productReleaseChanged(param);
-      });
+    createDialogs = function() {
+      var languageFilterDialog, taskDialog;
       languageFilterDialog = $("<div title='" + i18n.select.languagefilter.title + "' id='" + ids.languageFilterDialogId + "'>").dialog({
         autoOpen: false,
         position: [23, 126],
-        width: 950,
         show: {
           effect: 'slide',
           direction: "up"
@@ -96,7 +53,7 @@
         create: function() {
           var _this = this;
           return $.getJSON('rest/languages?prop=id,name', {}, function(languages) {
-            return $(_this).append(generateLanguageTable(languages));
+            return $(_this).append(generateLanguageTable(_this, languages));
           });
         },
         buttons: [
@@ -114,15 +71,9 @@
           }
         ]
       });
-      $('#languageFilter').button().click(function() {
-        return $("#" + ids.languageFilterDialogId).dialog("open");
-      });
-      $(':radio[name=viewOption]').change(function() {
-        return $('#productRelease').trigger("change");
-      });
       taskDialog = $("#createTranslationTaskDialog").dialog({
         autoOpen: false,
-        width: 950,
+        width: 1000,
         height: 'auto',
         position: [25, 100],
         show: {
@@ -135,7 +86,6 @@
           info = grid.getTotalSelectedRowInfo();
           tableType = grid.getTableType();
           nums = info.selectedNum;
-          console.log("table type=" + tableType + ", nums = " + nums);
           $("#dictSelected").html("<b>" + nums + "</b>");
           if ('app' === tableType) {
             nums = -1;
@@ -143,11 +93,14 @@
           $("#totalLabels").html("<b>" + info.totalLabels + "</b>");
           langFilterTableId = "languageFilter_" + ($(this).attr('id'));
           $("#" + langFilterTableId).remove();
-          postData = ($({
+          postData = {
             prop: 'id,name'
-          }).attr(tableType, info.rowIds.join(','))).get(0);
+          };
+          postData[tableType] = info.rowIds.join(',');
           return $.getJSON('rest/languages', postData, function(languages) {
-            return $(_this).append(generateLanguageTable(languages, langFilterTableId));
+            if (languages.length > 0) {
+              return $(_this).append(generateLanguageTable(_this, languages, langFilterTableId));
+            }
           });
         },
         buttons: [
@@ -163,6 +116,14 @@
                   };
                 }
               })).get();
+              if (languages.length === 0) {
+                $.msgBox(i18n.msgbox.createtranstask.msg.format(c18n.language), null, {
+                  title: i18n.msgbox.createtranstask.title.format(c18n.language),
+                  width: 300,
+                  height: "auto"
+                });
+              }
+              return;
               return $(this).dialog("close");
             }
           }, {
@@ -173,14 +134,65 @@
           }
         ]
       });
-      return $("#create").button().click(function() {
+      return {
+        taskDialog: taskDialog,
+        languageFilterDialog: languageFilterDialog
+      };
+    };
+    createSelects = function() {};
+    $.getJSON('rest/products/trans/productbases', {}, function(json) {
+      $('#productBase').append(new Option(i18n.select.product.tip, -1));
+      $('#productBase').append($(json).map(function() {
+        return new Option(this.name, this.id);
+      }));
+      return $('#productBase').change(function() {
+        $('#productRelease').empty();
+        if (parseInt($('#productBase').val()) === -1) {
+          return false;
+        }
+        return $.getJSON("rest/products/" + ($('#productBase').val()), {}, function(json) {
+          $('#productRelease').append(new Option(i18n.select.release.tip, -1));
+          $('#productRelease').append($(json).map(function() {
+            return new Option(this.version, this.id);
+          }));
+          return $('#productRelease').trigger("change");
+        });
+      });
+    });
+    $('#productRelease').change(function() {
+      var param;
+      param = {
+        release: {
+          id: $(this).val(),
+          version: $(this).find("option:selected").text()
+        },
+        languages: ($(":checkbox[name='languages']", $("#" + ids.languageFilterDialogId)).map(function() {
+          if (this.checked) {
+            return {
+              id: this.id,
+              name: this.value
+            };
+          }
+        })).get(),
+        level: $(":radio[name='viewOption'][checked]").val()
+      };
+      if (!$('#productBase').val() || parseInt($('#productBase').val()) === -1) {
+        return false;
+      }
+      if (!param.release.id || parseInt(param.release.id) === -1) {
+        return false;
+      }
+      return grid.productReleaseChanged(param);
+    });
+    createButtons = function(taskDialog, languageFilterDialog) {
+      $("#create").button().click(function() {
         var info, type;
         require('jqmsgbox');
         info = grid.getTotalSelectedRowInfo();
         type = $(':radio[name=viewOption][checked]').val();
         if (!info.selectedNum) {
-          $.msgBox("Please select " + type + " first!", null, {
-            title: "Select " + type,
+          $.msgBox(i18n.msgbox.createtranstask.msg.format(c18n[grid.getTableType()]), null, {
+            title: i18n.msgbox.createtranstask.title.format(c18n[grid.getTableType()]),
             width: 300,
             height: "auto"
           });
@@ -188,6 +200,27 @@
         }
         return taskDialog.dialog("open");
       });
+      $('#languageFilter').button().click(function() {
+        return languageFilterDialog.dialog("open");
+      });
+      $(':radio[name=viewOption]').change(function() {
+        return $('#productRelease').trigger("change");
+      });
+      return (($("#translated").button().click(function() {
+        return alert("All");
+      })).next().button().click(function() {
+        return alert("N");
+      })).parent().buttonset();
+    };
+    initPage = function() {
+      var dialogs, pageLayout;
+      pageLayout = $("#" + ids.container.page).layout({
+        resizable: true,
+        closable: true
+      });
+      createSelects();
+      dialogs = createDialogs();
+      return createButtons(dialogs.taskDialog, dialogs.languageFilterDialog);
     };
     initPage();
     return {

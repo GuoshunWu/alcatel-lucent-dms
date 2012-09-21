@@ -8,5 +8,5 @@ define ['jquery', 'appmng/dictionary_grid'], ($, grid)->
     $('#appDispAppName').html info.text
 
     $.getJSON "rest/applications/apps/#{info.id}", {}, (json)->
-      $("#selAppVersion").empty().append ($(json).map ()-> new Option this.version, this.id)
+      $("#selAppVersion").empty().append ($(json).map ()-> new Option @version, @id)
       $("#selAppVersion").trigger "change"

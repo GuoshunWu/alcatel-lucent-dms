@@ -23,7 +23,7 @@ define ['jqlayout', 'module'], ($, module)->
   # ui-widget-content
   dmsPanels.css {paddingBottom: '1em', borderTop: 0}
 
-  $(".header-footer").hover (->$(this).addClass "ui-state-hover"), -> $(this).removeClass "ui-state-hover"
+  $(".header-footer").hover (->$(@).addClass "ui-state-hover"), -> $(@).removeClass "ui-state-hover"
 
   showCenterPanel = (panelId) -> dmsPanels.each (index, panel)->
     if panel.id == panelId

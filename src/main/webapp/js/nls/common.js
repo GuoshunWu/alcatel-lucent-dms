@@ -10,7 +10,10 @@ define({
         ok:'OK',
         cancel: 'Cancel',
         error:'Error',
-        create:'Create'
+        create:'Create',
+        app:'application',
+        dict:'dictionary',
+        language:'language'
     },
     "zh-cn":true
 });

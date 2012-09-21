@@ -33,7 +33,7 @@
           name: 'numOfString',
           index: 'labelNum',
           width: 80,
-          align: 'center',
+          align: 'left',
           frozen: true,
           search: false
         }
@@ -48,7 +48,7 @@
             index: 'base.name',
             width: 90,
             editable: true,
-            align: 'center',
+            align: 'left',
             frozen: true,
             search: false
           }, {
@@ -109,7 +109,10 @@
       viewrecords: true,
       gridview: true,
       multiselect: true,
-      caption: 'Translation Task List',
+      caption: '',
+      ondblClickRow: function(rowid, iRow, iCol, e) {
+        return alert("rowid:" + rowid + ", iCol:" + iCol + ", iRow: " + iRow + ", e," + e);
+      },
       colNames: grid.dictionary.colNames,
       colModel: grid.dictionary.colModel,
       groupHeaders: [],
@@ -176,9 +179,9 @@
           dataType: 'json',
           success: function(json) {
             var app;
-            app = {};
+            app = ":All";
             $(json).each(function() {
-              return $(app).attr(this.id, this.name);
+              return app += ";" + this.name + ":" + this.name;
             });
             return transGrid.setColProp('application', {
               searchoptions: {

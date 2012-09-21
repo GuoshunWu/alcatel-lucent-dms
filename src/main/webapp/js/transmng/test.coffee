@@ -1,26 +1,35 @@
-Object.prototype.isArray = -> Object.prototype.toString.call(this) == "[object Array]"
+Object:: isArray = -> Object.prototype.toString.call(@) == "[object Array]"
 
-Array.prototype.insert= (pos, elem) ->
-  newarray=this.slice(0,pos)
+String:: format = -> args = arguments; @replace /\{(\d+)\}/g, (m, i) ->args[i]
+
+String:: endWith = (str) ->
+  return false  if !str or str.length > @length
+  @substring(@length - str.length) is str
+
+String:: startWith = (str) ->
+  return false  if !str or str.length > @length
+  @substr(0, str.length) is str
+
+Array:: insert = (pos, elem) ->
+  newarray = @slice(0, pos)
   if(elem.isArray())
-    newarray.push e for e in elem
+    newarray = newarray.concat elem.slice 0
   else
     newarray.push(elem)
-  newarray = newarray.concat(this.slice(pos,this.length))
-  this.length=0
-  this.push(elem) for elem in newarray
-  newarray
-Array.prototype.remove= (pos) ->
-  newarray=this.slice(0,pos)
-  newarray=newarray.concat(this.slice(pos+1, this.length))
-  delElem=this[pos]
-  this.length=0
-  this.push(elem) for elem in newarray
-  return delElem
+  newarray = newarray.concat(@slice(pos, @length))
+  @length = 0
+  @push(elem) for elem in newarray
 
-#
-colNames= ['ID', 'Application', 'Version', 'Num of String']
-b=colNames.slice(0).insert 0,'Dummy'
-console.log b
-console.log colNames
+Array:: remove = (start, len) ->
+  len = 1 if !len
+  newarray = @slice(0, start)
+  newarray = newarray.concat(@slice(start + len, @length))
+  delElem = if len > 1 then @slice start, start + len else @[start]
+  @length = 0
+  @push(elem) for elem in newarray
+  delElem
+
+a = [1, 2, 3, 4, 5]
+console.log a.remove 2
+console.log a
 
