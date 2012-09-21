@@ -46,9 +46,14 @@ public class JSONServiceImpl implements JSONService {
 	    		} else {
 	    			String refProp = prop.substring(0, pos).trim();
 	    			Object refObject = PropertyUtils.getProperty(entity, refProp);
-	    			json.put(refProp, toJSON(refObject, prop.substring(pos)));
+	    			if (refObject == null) {
+	    				json.put(refProp, null);
+	    			} else {
+	    				json.put(refProp, toJSON(refObject, prop.substring(pos)));
+	    			}
 	    		}
     		} catch (Exception e) {
+    			e.printStackTrace();
     			log.error(e);
     		}
     	}
