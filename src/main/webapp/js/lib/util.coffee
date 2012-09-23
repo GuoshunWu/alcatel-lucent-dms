@@ -8,7 +8,6 @@ To change this template use File | Settings | File Templates.
 define ["jquery"], ($) ->
 
 #    prototype enhancement
-
   String:: format = -> args = arguments; @replace /\{(\d+)\}/g, (m, i) ->args[i]
 
   String:: endWith = (str) ->
@@ -49,33 +48,30 @@ define ["jquery"], ($) ->
   format json string to pretty.
   ###
   formatJonString = (jsonString) ->
-    retval = ""
     str = jsonString
-    pos = 0
-    strLen = str.length
-    indentStr = "    "
+    pos = i = 0
+    indentStr = "  "
     newLine = "\n"
-    char = ""
-    i = 0
+    retval = ''
 
-    while i < strLen
+    while i < str.length
       char = str.substring(i, i + 1)
       if char is "}" or char is "]"
-        retval = retval + newLine
-        pos = pos - 1
+        retval += newLine
+        --pos
         j = 0
 
         while j < pos
-          retval = retval + indentStr
+          retval += indentStr
           j++
-      retval = retval + char
-      if char is "{" or char is "[" or char is ","
-        retval = retval + newLine
-        pos = pos + 1  if char is "{" or char is "["
-        k = 0
+      retval += char
 
+      if char is "{" or char is "[" or char is ","
+        retval += newLine
+        ++pos if char is "{" or char is "["
+        k = 0
         while k < pos
-          retval = retval + indentStr
+          retval += indentStr
           k++
       i++
     retval
@@ -83,7 +79,7 @@ define ["jquery"], ($) ->
   ###
   Test here.
   ###
-#  a=[1,2,3]
-#  console.log a.insert 1,["a",'b']
+  #  a=[1,2,3]
+  #  console.log a.insert 1,["a",'b']
   json2string: (jsonObj) ->formatJonString JSON.stringify(jsonObj)
 

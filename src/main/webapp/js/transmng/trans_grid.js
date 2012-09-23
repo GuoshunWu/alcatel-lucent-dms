@@ -79,15 +79,17 @@
         ])
       },
       application: {
-        colNames: common.colNames.slice(0).insert(0, 'Dummy'),
-        colModel: common.colModel.slice(0).insert(0, {
-          name: 'dummy',
-          index: 'dummy',
-          width: 55,
-          align: 'center',
-          hidden: true,
-          frozen: true
-        })
+        colNames: ['Dummy'].concat(common.colNames),
+        colModel: [
+          {
+            name: 'dummy',
+            index: 'dummy',
+            width: 55,
+            align: 'center',
+            hidden: true,
+            frozen: true
+          }
+        ].concat(common.colModel)
       }
     };
     transGrid = $("#transGridList").jqGrid({
@@ -111,7 +113,26 @@
       multiselect: true,
       caption: '',
       ondblClickRow: function(rowid, iRow, iCol, e) {
-        return alert("rowid:" + rowid + ", iCol:" + iCol + ", iRow: " + iRow + ", e," + e);
+        var dictName, language,
+          _this = this;
+        language = {
+          name: $(this).getGridParam('colModel')[iCol].name.split('.')[0],
+          id: parseInt(/s\((\d+)\)\[\d+\]/ig.exec($(this).getGridParam('colModel')[iCol].index)[1])
+        };
+        dictName = $(this).getCell(rowid, $(this).getGridParam('colNames').indexOf('Dictionary'));
+        return $.getJSON('rest/languages', {
+          prop: 'id,name',
+          dict: rowid
+        }, function(languages) {
+          return require('transmng/layout').showTransDetailDialog({
+            dict: {
+              id: rowid,
+              name: dictName
+            },
+            language: language,
+            languages: languages
+          });
+        });
       },
       colNames: grid.dictionary.colNames,
       colModel: grid.dictionary.colModel,
@@ -147,7 +168,7 @@
     transGrid.getGridParam('afterCreate')(transGrid);
     return {
       productReleaseChanged: function(param) {
-        var eprop, gridParam, isApp, langugaeNames, postData, prop, summary, url;
+        var eprop, gridParam, isApp, postData, prop, summary, url;
         summary = ($(param.languages).map(function() {
           var _this;
           _this = this;
@@ -156,9 +177,6 @@
           })).get().join(',');
         })).get().join(',');
         gridParam = transGrid.getGridParam();
-        langugaeNames = ($(param.languages).map(function() {
-          return this.name;
-        })).get();
         isApp = param.level === "application";
         gridParam.colNames = isApp ? grid.application.colNames : grid.dictionary.colNames;
         gridParam.colModel = isApp ? grid.application.colModel : grid.dictionary.colModel;
@@ -190,7 +208,7 @@
             });
           }
         });
-        return transGrid.updateTaskLanguage(langugaeNames, url, postData);
+        return transGrid.updateTaskLanguage(param.languages, url, postData);
       },
       getTotalSelectedRowInfo: function() {
         var count, selectedRowIds;
