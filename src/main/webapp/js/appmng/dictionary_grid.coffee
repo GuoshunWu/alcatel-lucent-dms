@@ -5,7 +5,7 @@ define ['jqgrid', 'require'], ($, require)->
   dicGrid = $(localIds.dic_grid).jqGrid ({
   url: ''
   datatype: 'json'
-  width: 700
+  width: 1000
   height: 350
   pager: '#dictPager'
   editurl: "app/create-or-add-application"
@@ -28,3 +28,10 @@ define ['jqgrid', 'require'], ($, require)->
   ]
   })
   dicGrid.jqGrid('navGrid', '#dictPager', {edit: false, add: true, del: false, search: false, view: false})
+
+  appChanged:(app)->
+#    TODO: update dictionary rest
+    url = "rest/dict?app=#{app.id}&format=grid&prop=id,base.name,version,base.format,base.encoding,labelNum,action"
+#    dicGrid.setGridParam({url: url, datatype: "json"}).trigger("reloadGrid")
+    appBase = require('appmng/apptree').getSelected()
+    dicGrid.setCaption "Dictionary for Application #{appBase.text} version #{app.version}"

@@ -1,4 +1,4 @@
-define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'i18n!nls/common', 'transmng/trans_grid', 'require', 'jqmsgbox'], ($, jq, i18n, c18n, grid, require)->
+define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'i18n!nls/common', 'transmng/trans_grid', 'require', 'jqmsgbox', 'transmng/transdetail_grid'], ($, jq, i18n, c18n, grid, require, msgbox, detailgrid)->
 #  console.log module
 #  private variables
   ids = {
@@ -9,11 +9,11 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'i18n!nls/common', 'transmng/
     page: 'optional-container'
     }
   }
-  generateLanguageTable = (container, languages, tableId, colNum)->
+  dialogs = null
+  generateLanguageTable = (languages, tableId, colNum)->
     tableId = ids.languageFilterTableId if !tableId
     colNum = 5 if !colNum
     rowCount = Math.ceil(languages.length / colNum)
-    $(container).dialog 'option', 'width', colNum * 195  if container
 
     languageFilterTable = $("<table id='#{tableId}' align='center' border='0'><tr valign='top' /></table>")
     outerTableFirstRow = $("tr:eq(0)", languageFilterTable)
@@ -37,9 +37,9 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'i18n!nls/common', 'transmng/
   createDialogs = ->
   #dialog
     languageFilterDialog = $("<div title='#{i18n.select.languagefilter.title}' id='#{ids.languageFilterDialogId}'>").dialog {
-    autoOpen: false, position: [23, 126]
+    autoOpen: false, position: [23, 126], height: 'auto', width: 'auto'
     show: { effect: 'slide', direction: "up" }
-    create: ->$.getJSON 'rest/languages?prop=id,name', {}, (languages)=>$(@).append(generateLanguageTable @, languages)
+    create: ->$.getJSON 'rest/languages?prop=id,name', {}, (languages)=>$(@).append(generateLanguageTable languages)
     buttons: [
       { text: c18n.ok, click: ()->
         $('#productRelease').trigger "change"
@@ -49,7 +49,7 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'i18n!nls/common', 'transmng/
     ]
     }
     taskDialog = $("#createTranslationTaskDialog").dialog {
-    autoOpen: false, width: 1000, height: 'auto', position: [25, 100], show: { effect: 'slide', direction: "down" }
+    autoOpen: false, width: 'auto', height: 'auto', position: [25, 100], show: { effect: 'slide', direction: "down" }
     open: ->
       info = grid.getTotalSelectedRowInfo()
       #      tableType is app or dict
@@ -71,7 +71,7 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'i18n!nls/common', 'transmng/
       postData[tableType] = info.rowIds.join(',')
       #      postData = ($({prop: 'id,name'}).attr tableType, info.rowIds.join(',')).get(0)
 
-      $.getJSON 'rest/languages', postData, (languages)=>$(@).append generateLanguageTable @, languages, langFilterTableId if languages.length > 0
+      $.getJSON 'rest/languages', postData, (languages)=>$(@).append generateLanguageTable languages, langFilterTableId if languages.length > 0
 
     buttons: [
       {text: c18n.create
@@ -81,22 +81,22 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'i18n!nls/common', 'transmng/
           $.msgBox (i18n.msgbox.createtranstask.msg.format c18n.language), null,
             title: (i18n.msgbox.createtranstask.title.format c18n.language),
             width: 300, height: "auto"
-
         return
-        #        check languages.length=0
-
         $(@).dialog "close"
       }
       {text: c18n.cancel, click: -> $(@).dialog "close"}
     ]
     }
-    {taskDialog: taskDialog, languageFilterDialog: languageFilterDialog}
+    transDetailDialog = $('#translationDetailDialog').dialog {
+    autoOpen: false, width: 'auto', height: 400
+    }
+    {taskDialog: taskDialog, languageFilterDialog: languageFilterDialog, transDetailDialog: transDetailDialog}
 
   createSelects = ->
   # selects on summary panel
-  $.getJSON 'rest/products/trans/productbases', {}, (json)->
-    $('#productBase').append new Option(i18n.select.product.tip, -1)
-    $('#productBase').append $(json).map ()->new Option @name, @id
+    $.getJSON 'rest/products/trans/productbases', {}, (json)->
+      $('#productBase').append new Option(i18n.select.product.tip, -1)
+      $('#productBase').append $(json).map ()->new Option @name, @id
 
     #  load product in product base
     $('#productBase').change ()->
@@ -108,21 +108,21 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'i18n!nls/common', 'transmng/
         $('#productRelease').append $(json).map ()->new Option @version, @id
         $('#productRelease').trigger "change"
 
-  $('#productRelease').change ->
-    param = {
-    release: {id: $(@).val(), version: $(@).find("option:selected").text()}
-    languages: ($(":checkbox[name='languages']", $("#" + ids.languageFilterDialogId)).map () -> {id: @id, name: @value} if @checked).get()
-    level: $(":radio[name='viewOption'][checked]").val()
-    }
-    if !$('#productBase').val() || parseInt($('#productBase').val()) == -1
-    #        $.msgBox i18n.select.product.msg, null,title: i18n.select.product.msgtitle, width: 300, height: "auto"
-      return false
+    $('#productRelease').change ->
+      param = {
+      release: {id: $(@).val(), version: $(@).find("option:selected").text()}
+      languages: ($(":checkbox[name='languages']", $("#" + ids.languageFilterDialogId)).map () -> {id: @id, name: @value} if @checked).get()
+      level: $(":radio[name='viewOption'][checked]").val()
+      }
+      if !$('#productBase').val() || parseInt($('#productBase').val()) == -1
+      #        $.msgBox i18n.select.product.msg, null,title: i18n.select.product.msgtitle, width: 300, height: "auto"
+        return false
 
-    if !param.release.id || parseInt(param.release.id) == -1
-    #        $.msgBox i18n.select.release.msg, null, title: i18n.select.release.msgtitle, width: 300 , height: "auto"
-      return false
+      if !param.release.id || parseInt(param.release.id) == -1
+      #        $.msgBox i18n.select.release.msg, null, title: i18n.select.release.msgtitle, width: 300 , height: "auto"
+        return false
+      grid.productReleaseChanged param
 
-    grid.productReleaseChanged param
   createButtons = (taskDialog, languageFilterDialog) ->
   #   buttons summary panel
     $("#create").button().click ->
@@ -147,7 +147,6 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'i18n!nls/common', 'transmng/
     ).next().button().click ->
       alert "N"
     ).parent().buttonset()
-    ;
   #  private method
   initPage = ->
     pageLayout = $("##{ids.container.page}").layout {resizable: true, closable: true}
@@ -155,10 +154,25 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'i18n!nls/common', 'transmng/
     createSelects()
     ###################################### Initialize elements in north panel ######################################
     dialogs = createDialogs()
-    createButtons(dialogs.taskDialog, dialogs.languageFilterDialog)
+    createButtons(dialogs.taskDialog, dialogs.languageFilterDialog, dialogs.transDetailDialog)
   # initialize page
   initPage()
 
   #    public variables and methods
   name: 'layout'
+
+  showTransDetailDialog: (param)->
+  #    refresh dialog
+    console.log param
+    $('#dictionaryName', dialogs.transDetailDialog).html param.dict.name
+    $('#detailLanguageSwitcher', dialogs.transDetailDialog).append (param.languages.map (index) ->
+      opt = new Option(this.id, this.name)
+      opt.selected = true if this.name == param.language
+      opt
+    )
+#    todo: update transdetail grid
+
+
+    dialogs.transDetailDialog.dialog "open"
+
 
