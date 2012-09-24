@@ -20,6 +20,13 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
       {name: 'encoding', index: 'encoding', width: 90, editable: true, align: 'center', frozen: true, search: false}
       {name: 'format', index: 'format', width: 90, editable: true, align: 'center', frozen: true, search: false}
     ]
+    #  cellEdit:false, onCellSelect:(rowid,iCol,cellcontent,e)->alert "rowid:#{rowid}, iCol:#{iCol}, cellcontent: #{cellcontent}, e,#{e}"
+    #    onRightClickRow:(rowid,iRow,iCol,e)-> alert "right click"
+    ondblClickRow: (rowid, iRow, iCol, e)->
+      language = {name: $(@).getGridParam('colModel')[iCol].name.split('.')[0], id: parseInt(/s\((\d+)\)\[\d+\]/ig.exec($(@).getGridParam('colModel')[iCol].index)[1])}
+      dictName = $(@).getCell rowid, $(@).getGridParam('colNames').indexOf 'Dictionary'
+      $.getJSON 'rest/languages', {prop: 'id,name', dict: rowid}, (languages)=>
+        require('transmng/layout').showTransDetailDialog {dict: {id: rowid, name: dictName}, language: language, languages: languages}
     }
   application:
     {
@@ -37,16 +44,6 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
   pager: '#taskPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
   sortname: 'base.name', sortorder: 'asc', viewrecords: true, gridview: true, multiselect: true
   caption: ''
-
-  #  cellEdit:false, onCellSelect:(rowid,iCol,cellcontent,e)->alert "rowid:#{rowid}, iCol:#{iCol}, cellcontent: #{cellcontent}, e,#{e}"
-  #    onRightClickRow:(rowid,iRow,iCol,e)-> alert "right click"
-  ondblClickRow: (rowid, iRow, iCol, e)->
-#    TODO: there is a bug in langage columns, so these codes are not reliable.
-    language = {name:$(@).getGridParam('colModel')[iCol].name.split('.')[0], id: parseInt(/s\((\d+)\)\[\d+\]/ig.exec($(@).getGridParam('colModel')[iCol].index)[1])}
-    dictName = $(@).getCell rowid, $(@).getGridParam('colNames').indexOf 'Dictionary'
-    $.getJSON 'rest/languages', {prop: 'id,name', dict: rowid}, (languages)=>
-      require('transmng/layout').showTransDetailDialog {dict: {id:rowid, name:dictName}, language: language, languages: languages}
-
   colNames: grid.dictionary.colNames, colModel: grid.dictionary.colModel
   groupHeaders: []
   afterCreate: (grid)->
@@ -66,6 +63,7 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
     isApp = (param.level == "application")
     gridParam.colNames = if isApp then grid.application.colNames else grid.dictionary.colNames
     gridParam.colModel = if isApp then grid.application.colModel else  grid.dictionary.colModel
+    gridParam.ondblClickRow = if isApp then (()->) else grid.dictionary.ondblClickRow
 
     eprop = "id,app.base.name,app.version,base.name,version,base.encoding,base.format,labelNum,"
     eprop = 'id,id,base.name,version,labelNum,' if isApp

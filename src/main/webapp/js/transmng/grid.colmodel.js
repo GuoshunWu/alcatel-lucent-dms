@@ -40,6 +40,7 @@
         colModels = ($(cols).map(function(index) {
           return {
             name: "" + language.name + "." + this,
+            sortable: false,
             index: "s(" + language.id + ")[" + index + "]",
             width: 20,
             editable: false,

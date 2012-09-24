@@ -2,8 +2,27 @@
 (function() {
 
   define(['jqgrid', 'util', 'require'], function($, util, require) {
-    var common, grid, transGrid;
-    common = {
+    var transDetailGrid;
+    transDetailGrid = $("#transDetailGridList").jqGrid({
+      url: 'json/transdetailgrid.json',
+      mtype: 'POST',
+      postData: {},
+      editurl: "",
+      datatype: 'json',
+      width: 'auto',
+      height: 200,
+      shrinkToFit: false,
+      rownumbers: true,
+      loadonce: false,
+      pager: '#transDetailsPager',
+      rowNum: 60,
+      rowList: [10, 20, 30, 60, 120],
+      sortname: 'key',
+      sortorder: 'asc',
+      viewrecords: true,
+      gridview: true,
+      multiselect: true,
+      cellEdit: true,
       colNames: ['ID', 'Label', 'Max Length', 'Context', 'Reference language', 'Translation', 'Status'],
       colModel: [
         {
@@ -14,8 +33,8 @@
           hidden: true,
           frozen: true
         }, {
-          name: 'label',
-          index: 'label',
+          name: 'key',
+          index: 'key',
           width: 100,
           editable: false,
           stype: 'select',
@@ -57,43 +76,11 @@
           editable: true,
           edittype: 'select',
           editoptions: {
-            value: "1:Translated;2:Not translated;3:In progress"
-          }
+            value: "0:Not translated;1:In progress;2:Translated"
+          },
+          formatter: 'select'
         }
-      ]
-    };
-    grid = {
-      dictionary: {
-        colNames: common.colNames.slice(0),
-        colModel: common.colModel.slice(0)
-      },
-      application: {
-        colNames: common.colNames,
-        colModel: common.colModel
-      }
-    };
-    transGrid = $("#transDetailGridList").jqGrid({
-      url: 'json/transdetailgrid.json',
-      mtype: 'POST',
-      postData: {},
-      editurl: "",
-      datatype: 'json',
-      width: 'auto',
-      height: 200,
-      shrinkToFit: false,
-      rownumbers: true,
-      loadonce: false,
-      pager: '#transDetailsPager',
-      rowNum: 60,
-      rowList: [10, 20, 30, 60, 120],
-      sortname: 'base.name',
-      sortorder: 'asc',
-      viewrecords: true,
-      gridview: true,
-      multiselect: true,
-      cellEdit: true,
-      colNames: grid.dictionary.colNames,
-      colModel: grid.dictionary.colModel,
+      ],
       afterCreate: function(grid) {
         return grid.navGrid('#transDetailsPager', {
           edit: false,
@@ -104,7 +91,25 @@
         });
       }
     });
-    return transGrid.getGridParam('afterCreate')(transGrid);
+    transDetailGrid.getGridParam('afterCreate')(transDetailGrid);
+    return {
+      languageChanged: function(param) {
+        var prop, url;
+        transDetailGrid = $("#transDetailGridList");
+        url = "/rest/labels";
+        prop = "key,maxLength,context,reference,ct.translation,ct.status";
+        return transDetailGrid.setGridParam({
+          url: url,
+          datatype: "json",
+          postData: {
+            dict: param.dict.id,
+            language: param.language.id,
+            format: 'grid',
+            prop: prop
+          }
+        }).trigger("reloadGrid");
+      }
+    };
   });
 
 }).call(this);

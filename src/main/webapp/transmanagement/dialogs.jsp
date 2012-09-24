@@ -71,20 +71,6 @@
                             </select>
                         </td>
                         <td>&nbsp;</td>
-                        <td>
-                            <div style="border: thin solid;width: 280px;text-align: center">
-                                <input type="radio" id="detailApplicationView" name="detailViewOption" value="application">
-                                <label for="detailApplicationView">
-                                    <s:text name="transmng.summarypanel.viewoption.applicationlevel"/>
-                                </label>&nbsp;&nbsp;&nbsp;&nbsp;
-                                <input type="radio" id="detailDictionaryView" checked='checked' name="detailViewOption"
-                                       value="dictionary">
-                                <label for="detailDictionaryView">
-                                    <s:text name="transmng.summarypanel.viewoption.dictionarylevel"/>
-                                </label>
-                            </div>
-                        </td>
-                        <td>&nbsp;</td>
                         <td><s:text name="transmng.summarypanel.searchtext"/><input/></td>
                         <td>&nbsp;</td>
 

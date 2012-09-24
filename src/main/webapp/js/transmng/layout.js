@@ -137,7 +137,21 @@
       transDetailDialog = $('#translationDetailDialog').dialog({
         autoOpen: false,
         width: 'auto',
-        height: 400
+        height: 400,
+        create: function() {
+          return $('#detailLanguageSwitcher').change(function() {
+            var dict, language;
+            dict = $('#translationDetailDialog').data("dict");
+            language = {
+              id: $(this).val(),
+              name: $(this).find("option:selected").text()
+            };
+            return detailgrid.languageChanged({
+              language: language,
+              dict: dict
+            });
+          });
+        }
       });
       return {
         taskDialog: taskDialog,
@@ -233,16 +247,15 @@
     return {
       name: 'layout',
       showTransDetailDialog: function(param) {
-        console.log(param);
         $('#dictionaryName', dialogs.transDetailDialog).html(param.dict.name);
-        $('#detailLanguageSwitcher', dialogs.transDetailDialog).append(param.languages.map(function(index) {
+        $('#detailLanguageSwitcher', dialogs.transDetailDialog).append($(param.languages).map(function(index) {
           var opt;
-          opt = new Option(this.id, this.name);
-          if (this.name === param.language) {
-            opt.selected = true;
-          }
+          opt = new Option(this.name, this.id);
+          opt.selected = this.name === param.language.name;
           return opt;
         }));
+        $('#translationDetailDialog').data('dict', param.dict);
+        $('#detailLanguageSwitcher').trigger("change");
         return dialogs.transDetailDialog.dialog("open");
       }
     };

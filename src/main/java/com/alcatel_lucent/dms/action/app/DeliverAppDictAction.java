@@ -37,7 +37,9 @@ public class DeliverAppDictAction extends JSONAction {
         System.out.println("file="+upload);
         System.out.println("contentType="+contentType);
         System.out.println("uploadFileName="+filename);
+
         File destFile=new File("tmp",filename);
+
         System.out.println("copy file to "+destFile.getAbsolutePath());
 //        or we can do import here.
         FileUtils.copyFile(upload,destFile);
