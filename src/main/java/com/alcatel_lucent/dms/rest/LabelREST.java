@@ -71,19 +71,21 @@ public class LabelREST extends BaseREST {
     	String hql;
     	String countHql = "select labels.size from Dictionary where id=:dictId";
     	Map param = new HashMap();
+    	Map countParam = new HashMap();
     	param.put("dictId", dictId);
+    	countParam.put("dictId", dictId);
     	Collection<Label> labels;
     	if (langId == null) {
     		hql = "select obj from Label obj where obj.dictionary.id=:dictId";
     		hql += " order by " + sidx + " " + sord;
-    		labels = retrieve(hql, param, countHql, param, requestMap);
+    		labels = retrieve(hql, param, countHql, countParam, requestMap);
     	} else {
     		hql = "select obj,ot,ct" +
     				" from Label obj join obj.origTranslations ot left join obj.text.translations ct" +
     				" where obj.dictionary.id=:dictId and ot.language.id=:langId and ct.language.id=:langId";
     		hql += " order by " + sidx + " " + sord;
     		param.put("langId", langId);
-    		Collection<Object[]> result = retrieve(hql, param, countHql, param, requestMap);
+    		Collection<Object[]> result = retrieve(hql, param, countHql, countParam, requestMap);
     		labels = new ArrayList<Label>();
     		for (Object[] row : result) {
     			Label label = (Label) row[0];
