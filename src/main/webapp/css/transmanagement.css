@@ -3,6 +3,7 @@
 @import "jqueryLayout/layout-default-latest.css";
 @import "jqgrid/ui.jqgrid.css";
 @import "jqgrid/ui.multiselect.css";
+
 /*@import "jqselectlist/selectlist.css";*/
 
 /* Using an 'optional-container' instead of 'body', so need body to have a 'height' */
@@ -57,3 +58,4 @@ html, body {
     margin: 0;
     padding: 0.3em;
 }
+

@@ -20,11 +20,20 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
       {name: 'encoding', index: 'encoding', width: 90, editable: true, align: 'center', frozen: true, search: false}
       {name: 'format', index: 'format', width: 90, editable: true, align: 'center', frozen: true, search: false}
     ]
+    #  cellEdit:false, onCellSelect:(rowid,iCol,cellcontent,e)->alert "rowid:#{rowid}, iCol:#{iCol}, cellcontent: #{cellcontent}, e,#{e}"
+    #    onRightClickRow:(rowid,iRow,iCol,e)-> alert "right click"
+    ondblClickRow: (rowid, iRow, iCol, e)->
+      language = {name: $(@).getGridParam('colModel')[iCol].name.split('.')[0], id: parseInt(/s\((\d+)\)\[\d+\]/ig.exec($(@).getGridParam('colModel')[iCol].index)[1])}
+      dictName = $(@).getCell rowid, $(@).getGridParam('colNames').indexOf 'Dictionary'
+      $.getJSON 'rest/languages', {prop: 'id,name', dict: rowid}, (languages)=>
+        require('transmng/layout').showTransDetailDialog {dict: {id: rowid, name: dictName}, language: language, languages: languages}
     }
   application:
     {
-    colNames: common.colNames.slice(0).insert 0, 'Dummy'
-    colModel: common.colModel.slice(0).insert 0, {name: 'dummy', index: 'dummy', width: 55, align: 'center', hidden: true, frozen: true}
+    colNames: ['Dummy'].concat common.colNames
+    colModel: [
+      {name: 'dummy', index: 'dummy', width: 55, align: 'center', hidden: true, frozen: true}
+    ].concat common.colModel
     }
   }
   transGrid = $("#transGridList").jqGrid {
@@ -34,12 +43,7 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
   rownumbers: true, loadonce: false # for reload the colModel
   pager: '#taskPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
   sortname: 'base.name', sortorder: 'asc', viewrecords: true, gridview: true, multiselect: true
-  #  , multikey: "ctrlKey"
   caption: ''
-
-#  cellEdit:false, onCellSelect:(rowid,iCol,cellcontent,e)->alert "rowid:#{rowid}, iCol:#{iCol}, cellcontent: #{cellcontent}, e,#{e}"
-#    onRightClickRow:(rowid,iRow,iCol,e)-> alert "right click"
-  ondblClickRow:(rowid,iRow,iCol,e)-> alert "rowid:#{rowid}, iCol:#{iCol}, iRow: #{iRow}, e,#{e}"
   colNames: grid.dictionary.colNames, colModel: grid.dictionary.colModel
   groupHeaders: []
   afterCreate: (grid)->
@@ -56,10 +60,10 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
     summary = ($(param.languages).map ->_this = @;($([0, 1, 2]).map ->"s(#{_this.id})[#{@}]").get().join(',')).get().join(',')
     gridParam = transGrid.getGridParam()
 
-    langugaeNames = ($(param.languages).map ->@name).get()
     isApp = (param.level == "application")
     gridParam.colNames = if isApp then grid.application.colNames else grid.dictionary.colNames
     gridParam.colModel = if isApp then grid.application.colModel else  grid.dictionary.colModel
+    gridParam.ondblClickRow = if isApp then (()->) else grid.dictionary.ondblClickRow
 
     eprop = "id,app.base.name,app.version,base.name,version,base.encoding,base.format,labelNum,"
     eprop = 'id,id,base.name,version,labelNum,' if isApp
@@ -75,7 +79,7 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
       transGrid.setColProp 'application', {searchoptions: {value: app}}
     }
 
-    transGrid.updateTaskLanguage langugaeNames, url, postData
+    transGrid.updateTaskLanguage param.languages, url, postData
   #
   getTotalSelectedRowInfo: ->
     transGrid = $("#transGridList")

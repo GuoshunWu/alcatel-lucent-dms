@@ -9,7 +9,7 @@
     dicGrid = $(localIds.dic_grid).jqGrid({
       url: '',
       datatype: 'json',
-      width: 700,
+      width: 1000,
       height: 350,
       pager: '#dictPager',
       editurl: "app/create-or-add-application",
@@ -66,13 +66,21 @@
         }
       ]
     });
-    return dicGrid.jqGrid('navGrid', '#dictPager', {
+    dicGrid.jqGrid('navGrid', '#dictPager', {
       edit: false,
       add: true,
       del: false,
       search: false,
       view: false
     });
+    return {
+      appChanged: function(app) {
+        var appBase, url;
+        url = "rest/dict?app=" + app.id + "&format=grid&prop=id,base.name,version,base.format,base.encoding,labelNum,action";
+        appBase = require('appmng/apptree').getSelected();
+        return dicGrid.setCaption("Dictionary for Application " + appBase.text + " version " + app.version);
+      }
+    };
   });
 
 }).call(this);

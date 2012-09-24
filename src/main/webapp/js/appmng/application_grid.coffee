@@ -1,4 +1,4 @@
-define ['jqgrid', 'require','i18n!nls/appmng'], ($, require,i18n)->
+define ['jqgrid', 'require', 'i18n!nls/appmng'], ($, require, i18n)->
   URL = {
   # get application in product by product id
   get_application_by_product_id: 'rest/applications'
@@ -27,21 +27,22 @@ define ['jqgrid', 'require','i18n!nls/appmng'], ($, require,i18n)->
   colModel: [
     {name: 'id', index: 'id', width: 55, align: 'center', editable: false, hidden: true}
     {name: 'name', index: 'name', width: 100, editable: false, align: 'center'}
-    {name: 'version', index: 'version', width: 90, editable: true, align: 'center', edittype: 'select', editoptions: {value: {}}}
+    {name: 'version', index: 'version', width: 90, editable: true, align: 'center', edittype: 'select',
+    editoptions: {value: ""}}
     {name: 'dictNum', index: 'dictNum', width: 80, editable: false, align: 'center'}
   ],
   afterEditCell: (id, name, val, iRow, iCol)->
     if name == 'version'
       select = $("##{iRow}_version", localIds.app_grid)
       url = "rest/applications/appssamebase/#{id}"
-      $.getJSON url, {}, (json)->select.append $(json).map ()-> opt = new Option(@version, @id);opt.selected = (@version == val);opt
-
+      $.getJSON url, {}, (json)->select.append $(json).map ()->new Option(@version, @id)
   beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
-    productpnl=require 'appmng/product_panel'
-    product=productpnl.getSelectedProduct()
+    productpnl = require 'appmng/product_panel'
+    product = productpnl.getSelectedProduct()
     changeSelect = $("##{iRow}_version", localIds.app_grid)
-#    add the product id and the application id changed to.
+    #    add the product id and the application id changed to.
     {productId: product.id, newAppId: changeSelect.val()}
+
   afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
     jsonFromServer = eval('(' + serverresponse.responseText + ')')
     [0 == jsonFromServer.status, jsonFromServer.message]
@@ -63,12 +64,13 @@ define ['jqgrid', 'require','i18n!nls/appmng'], ($, require,i18n)->
       else
         permanent.removeAttr "checked"
     onclickSubmit: (params, posdata)->
-      product=(require "appmng/product_panel").getSelectedProduct()
+      product = (require "appmng/product_panel").getSelectedProduct()
       {productId: product.id, permanent: Boolean($('#permanentDeleteSignId').attr("checked"))}
     afterSubmit: (response, postdata)->
       jsonFromServer = eval "(#{response.responseText})"
       #remove appbase node from apptree.
-      (require 'appmng/apptree').delApplictionBaseFromProductBase jsonFromServer.id if jsonFromServer.id #appbase is deleted
+      (require 'appmng/apptree').delApplictionBaseFromProductBase jsonFromServer.id if jsonFromServer.id
+      #appbase is deleted
       [0 == jsonFromServer.status, jsonFromServer.message]
     }
   }

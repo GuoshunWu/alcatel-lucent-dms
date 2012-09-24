@@ -25,9 +25,8 @@ define ['jqgrid'], ($)->
 
   addTaskLanguage: (language, url, postData)->
     cols = ['T', 'N', 'I']
-    colModels = ($(cols).map ()-> {name: "#{language}.#{@}", index: "#{language}.#{@}",width: 20,editable: false,search:false, align: 'center'}).get()
-
-    @getGridParam('groupHeaders').push {startColumnName: "#{language}.T", numberOfColumns: 3, titleText: "<bold>#{language}</bold>"}
+    colModels = ($(cols).map (index)-> {name: "#{language.name}.#{@}", sortable:false,index: "s(#{language.id})[#{index}]",width: 20,editable: false,search:false, align: 'center'}).get()
+    @getGridParam('groupHeaders').push {startColumnName: "#{language.name}.T", numberOfColumns: 3, titleText: "<bold>#{language.name}</bold>"}
     @addColumns cols, colModels, url, postData
 
   updateTaskLanguage: (languages, url,postData)->
@@ -39,15 +38,16 @@ define ['jqgrid'], ($)->
     gridParam.colModel = $.grep gridParam.colModel, (val, key)-> not /.+\.[TIN]/g.test val.name
 
     if not $.isArray languages
-      @addTaskLanguage languages, url, postData
+      @addTaskLanguage languages, url, postData,0
       return
     if 0==languages.length
       @reloadAll url,postData
       return
 
     $(languages).each (index, language)=>
-      return false if index == languages.length - 1
-      @addTaskLanguage(language)
-    @addTaskLanguage(languages[languages.length-1], url, postData)
+      if index < languages.length - 1
+        @addTaskLanguage(language)
+      else
+        @addTaskLanguage(language, url, postData)
   }
 
