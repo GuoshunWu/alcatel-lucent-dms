@@ -20,6 +20,8 @@ import com.alcatel_lucent.dms.service.LanguageService;
  * Filter parameters:
  *   prod		(optional) product id, in which product all dictionaries will be retrieved
  *   app		(optional) application id, in which application all dictionaries will be retrieved
+ *   filters	(optional) jqGrid-style filter string, in json format, e.g.
+ *   	{"groupOp":"AND","rules":[{"field":"base.name","op":"eq","data":"2"},{"field":"format","op":"eq","data":"dct"}]}
  * One and only of the "prod" and "app" must be specified.  
  *   
  * Sort parameters:
@@ -57,10 +59,17 @@ public class DictionaryREST extends BaseREST {
     	} else {
     		prodId = Long.valueOf(requestMap.get("prod"));
     	}
-    	String sidx = requestMap.get("sidx");
-    	String sord = requestMap.get("sord");
-    	String hql, countHql;
     	Map param = new HashMap();
+    	Map<String, String> filters = getGridFilters(requestMap);
+    	String hqlWhere = "";
+    	if (filters != null) {
+    		int i = 0;
+    		for (String field : filters.keySet()) {
+    			hqlWhere += " and " + toFieldName(field) + "=:p" + i;
+    			param.put("p" + i, filters.get(field));
+    		}
+    	}
+    	String hql, countHql;
     	if (appId != null) {
     		hql = "select obj,app from Application app join app.dictionaries obj where app.id=:appId";
     		countHql = "select a.dictionaries.size from Application a where a.id=:appId";
@@ -70,13 +79,17 @@ public class DictionaryREST extends BaseREST {
     		countHql = "select a.dictionaries.size from Product p join p.applications a where p.id=:prodId";
     		param.put("prodId", prodId);
     	}
+    	hql += hqlWhere;
+
+    	String sidx = requestMap.get("sidx");
+    	String sord = requestMap.get("sord");
     	if (sidx == null || sidx.trim().isEmpty()) {
     		sidx = "base.name";
     	}
     	if (sord == null) {
     		sord = "ASC";
     	}
-    	String orderBy = sidx.startsWith("app.") ? sidx : "obj." + sidx;
+    	String orderBy = toFieldName(sidx);
     	if (sidx.equals("labelNum")) {
     		orderBy = "obj.labels.size";
     	}
@@ -114,5 +127,9 @@ public class DictionaryREST extends BaseREST {
 				map.put(langId, new int[] {0, 0, 0});
 			}
 		}
+	}
+	
+	private String toFieldName(String name) {
+		return name.startsWith("app.") ? name : "obj." + name; 
 	}
 }
