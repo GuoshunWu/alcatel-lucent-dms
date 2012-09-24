@@ -14,9 +14,7 @@
       height: '100'
     });
     $("#progressbar").progressbar();
-    $("#dctFileUpload").css('visibility', 'hidden');
     $('#uploadBrower').button().click(function() {
-      $("#dctFileUpload").trigger("click");
       return false;
     });
     $("#dctFileUpload").fileupload({
@@ -27,22 +25,23 @@
           return $('#uploadStatus').html("Uploading file: " + file.name);
         });
         data.submit();
-        return $("#progressDialog").dialog("open");
+        if (!$.browser.msie) {
+          return $("#progressDialog").dialog("open");
+        }
       },
       done: function(e, data) {
-        $("#progressDialog").dialog("close");
-        return $.each(data.files, function(index, file) {
+        $.each(data.files, function(index, file) {
           return $('#uploadStatus').html("" + file.name + " upload finished.");
         });
+        if (!$.browser.msie) {
+          return $("#progressDialog").dialog("close");
+        }
       },
       progressall: function(e, data) {
         var progress;
         progress = data.loaded / data.total * 100;
         $('#progressbar').progressbar("value", progress);
-        return $("#progressbar").children('.ui-progressbar-value').html(progress.toPrecision(3) + '%').css({
-          "display": "block",
-          "textAlign": "left"
-        });
+        return console.log("in progress...." + progress);
       }
     });
     return {

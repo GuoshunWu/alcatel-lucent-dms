@@ -5,12 +5,9 @@
 
     <table border="0">
         <tr>
-            <td style="max-height: 10px" >
-                <form method="post" enctype="multipart/form-data" action="app/deliver-app-dict">
-                    <s:text name="product"/>&nbsp;
-                    <span id="appDispProductName"></span>
-                    <input id="dctFileUpload" type="file" name="upload"/>
-                </form>
+            <td style="max-height: 10px">
+                <s:text name="product"/>&nbsp;
+                <span id="appDispProductName"></span>
             </td>
         </tr>
         <tr>
@@ -32,9 +29,21 @@
                             <label for="dctFileUpload"><s:text name="appmng.deliverapp"/></label>
                         </td>
                         <td style="width: 100px;">
-                            <button id="uploadBrower">Brower...</button>
+                            <style>
+                                #dctFileUpload{
+                                    position: absolute;margin-left: -10px;margin-top: -6px; font-size:60px;z-index: 1000;opacity: 0;
+                                }
+                                #uploadContainer{
+                                    overflow: hidden;position: absolute;margin-top: -15px;
+                                }
+                            </style>
+                            <span id="uploadContainer">
+                                <input title="Choose File..." id="dctFileUpload" type="file" name="upload" hidefocus/>
+                                <button id="uploadBrower">Brower...</button>
+                                 <%--<button onclick="dctFileUpload.click();">MyTest</button>--%>
+                            </span>
                         </td>
-                        <td >
+                        <td>
                             <span id="uploadStatus">status</span>
                         </td>
                     </tr>
