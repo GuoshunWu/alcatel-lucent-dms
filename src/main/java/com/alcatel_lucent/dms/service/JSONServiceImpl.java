@@ -13,6 +13,7 @@ import net.sf.json.processors.PropertyNameProcessor;
 import net.sf.json.util.PropertyFilter;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -108,6 +109,9 @@ public class JSONServiceImpl implements JSONService {
         			value = PropertyUtils.getProperty(entity, prop.trim());
         		} catch (Exception e) {
         			log.error(e);
+        		}
+        		if (value != null) {	// escape html tags in grid result
+        			value = StringEscapeUtils.escapeHtml(value.toString());
         		}
         		jsonCell.add(value);
         	}
