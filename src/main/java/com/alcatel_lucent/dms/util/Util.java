@@ -201,6 +201,10 @@ public class Util {
     	return isSpecificFile(file.getName(), ".properties");
     }
 
+    public static boolean isXmlFile(File file) {
+    	return isSpecificFile(file.getName(), ".xml");
+    }
+
 	private static boolean isSpecificFile(String fileName, String fileExtPattern) {
 		Pattern pattern = Pattern.compile(fileExtPattern,
 				Pattern.CASE_INSENSITIVE);
