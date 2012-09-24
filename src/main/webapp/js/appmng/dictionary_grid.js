@@ -15,7 +15,7 @@
       editurl: "app/create-or-add-application",
       rowNum: 10,
       rowList: [10, 20, 30],
-      sortname: 'name',
+      sortname: 'base.name',
       sortorder: 'asc',
       viewrecords: true,
       gridview: true,
@@ -30,32 +30,32 @@
           hidden: true
         }, {
           name: 'name',
-          index: 'name',
-          width: 100,
+          index: 'base.name',
+          width: 200,
           editable: true,
-          align: 'center'
+          align: 'left'
         }, {
           name: 'version',
           index: 'version',
-          width: 90,
+          width: 25,
           editable: true,
           align: 'center'
         }, {
           name: 'format',
-          index: 'format',
-          width: 90,
+          index: 'base.format',
+          width: 20,
           editable: true,
           align: 'center'
         }, {
           name: 'encoding',
-          index: 'encoding',
-          width: 90,
+          index: 'base.encoding',
+          width: 40,
           editable: true,
           align: 'center'
         }, {
           name: 'labelNum',
           index: 'labelNum',
-          width: 80,
+          width: 20,
           align: 'center'
         }, {
           name: 'action',
@@ -76,7 +76,11 @@
     return {
       appChanged: function(app) {
         var appBase, url;
-        url = "rest/dict?app=" + app.id + "&format=grid&prop=id,base.name,version,base.format,base.encoding,labelNum,action";
+        url = "rest/dict?app=" + app.id + "&format=grid&prop=id,base.name,version,base.format,base.encoding,labelNum";
+        dicGrid.setGridParam({
+          url: url,
+          datatype: "json"
+        }).trigger("reloadGrid");
         appBase = require('appmng/apptree').getSelected();
         return dicGrid.setCaption("Dictionary for Application " + appBase.text + " version " + app.version);
       }

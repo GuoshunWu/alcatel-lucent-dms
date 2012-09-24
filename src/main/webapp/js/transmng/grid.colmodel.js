@@ -42,7 +42,7 @@
             name: "" + language.name + "." + this,
             sortable: false,
             index: "s(" + language.id + ")[" + index + "]",
-            width: 20,
+            width: 40,
             editable: false,
             search: false,
             align: 'center'

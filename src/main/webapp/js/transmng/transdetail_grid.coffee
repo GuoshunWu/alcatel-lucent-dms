@@ -26,7 +26,7 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
   languageChanged:(param)->
     transDetailGrid = $("#transDetailGridList")
     url="/rest/labels"
-    prop="key,maxLength,context,reference,ct.translation,ct.status"
+    prop="id,key,maxLength,context.name,reference,ct.translation,ct.status"
     transDetailGrid.setGridParam({url: url, datatype: "json", postData:{dict:param.dict.id,language:param.language.id,format:'grid',prop:prop}}).trigger("reloadGrid")
 
 

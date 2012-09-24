@@ -11,7 +11,7 @@ define ['jqgrid', 'require'], ($, require)->
   editurl: "app/create-or-add-application"
   rowNum: 10
   rowList: [10, 20, 30]
-  sortname: 'name'
+  sortname: 'base.name'
   sortorder: 'asc'
   viewrecords: true
   gridview: true
@@ -19,19 +19,18 @@ define ['jqgrid', 'require'], ($, require)->
   colNames: ['ID', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels', 'Action']
   colModel: [
     {name: 'id', index: 'id', width: 55, align: 'center', hidden: true}
-    {name: 'name', index: 'name', width: 100, editable: true, align: 'center'}
-    {name: 'version', index: 'version', width: 90, editable: true, align: 'center'}
-    {name: 'format', index: 'format', width: 90, editable: true, align: 'center'}
-    {name: 'encoding', index: 'encoding', width: 90, editable: true, align: 'center'}
-    {name: 'labelNum', index: 'labelNum', width: 80, align: 'center'}
+    {name: 'name', index: 'base.name', width: 200, editable: true, align: 'left'}
+    {name: 'version', index: 'version', width: 25, editable: true, align: 'center'}
+    {name: 'format', index: 'base.format', width: 20, editable: true, align: 'center'}
+    {name: 'encoding', index: 'base.encoding', width: 40, editable: true, align: 'center'}
+    {name: 'labelNum', index: 'labelNum', width: 20, align: 'center'}
     {name: 'action', index: 'action', width: 90, editable: true, align: 'center'}
   ]
   })
   dicGrid.jqGrid('navGrid', '#dictPager', {edit: false, add: true, del: false, search: false, view: false})
 
   appChanged:(app)->
-#    TODO: update dictionary rest
-    url = "rest/dict?app=#{app.id}&format=grid&prop=id,base.name,version,base.format,base.encoding,labelNum,action"
-#    dicGrid.setGridParam({url: url, datatype: "json"}).trigger("reloadGrid")
+    url = "rest/dict?app=#{app.id}&format=grid&prop=id,base.name,version,base.format,base.encoding,labelNum"
+    dicGrid.setGridParam({url: url, datatype: "json"}).trigger("reloadGrid")
     appBase = require('appmng/apptree').getSelected()
     dicGrid.setCaption "Dictionary for Application #{appBase.text} version #{app.version}"

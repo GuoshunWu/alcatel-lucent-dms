@@ -37,3 +37,11 @@
         </tr>
     </table>
 </div>
+
+<div id="progressDialog" title="Progress">
+    <table border="0" width="100%">
+        <tr><td><div id="progressbar"></div></td></tr>
+    </table>
+
+
+</div>

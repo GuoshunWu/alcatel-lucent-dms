@@ -28,14 +28,14 @@ define ['jqgrid', 'require', 'i18n!nls/appmng'], ($, require, i18n)->
     {name: 'id', index: 'id', width: 55, align: 'center', editable: false, hidden: true}
     {name: 'name', index: 'name', width: 100, editable: false, align: 'center'}
     {name: 'version', index: 'version', width: 90, editable: true, align: 'center', edittype: 'select',
-    editoptions: {value: ""}}
+    editoptions: {value: {}}}
     {name: 'dictNum', index: 'dictNum', width: 80, editable: false, align: 'center'}
   ],
   afterEditCell: (id, name, val, iRow, iCol)->
     if name == 'version'
-      select = $("##{iRow}_version", localIds.app_grid)
-      url = "rest/applications/appssamebase/#{id}"
-      $.getJSON url, {}, (json)->select.append $(json).map ()->new Option(@version, @id)
+      $.ajax {url: "rest/applications/appssamebase/#{id}", async: false, dataType: 'json', success: (json)->
+        $("##{iRow}_version", localIds.app_grid).append $(json).map ()->opt = new Option(@version, @id);opt.selected = @version == val; opt
+      }
   beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
     productpnl = require 'appmng/product_panel'
     product = productpnl.getSelectedProduct()

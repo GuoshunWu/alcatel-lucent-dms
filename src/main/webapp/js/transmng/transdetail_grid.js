@@ -97,7 +97,7 @@
         var prop, url;
         transDetailGrid = $("#transDetailGridList");
         url = "/rest/labels";
-        prop = "key,maxLength,context,reference,ct.translation,ct.status";
+        prop = "id,key,maxLength,context.name,reference,ct.translation,ct.status";
         return transDetailGrid.setGridParam({
           url: url,
           datatype: "json",

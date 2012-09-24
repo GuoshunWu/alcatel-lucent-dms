@@ -63,17 +63,19 @@
         }
       ],
       afterEditCell: function(id, name, val, iRow, iCol) {
-        var select, url;
         if (name === 'version') {
-          select = $("#" + iRow + "_version", localIds.app_grid);
-          url = "rest/applications/appssamebase/" + id;
-          return $.getJSON(url, {}, function(json) {
-            return select.append($(json).map(function() {
-              var opt;
-              opt = new Option(this.version, this.id);
-              opt.selected = this.version === val;
-              return opt;
-            }));
+          return $.ajax({
+            url: "rest/applications/appssamebase/" + id,
+            async: false,
+            dataType: 'json',
+            success: function(json) {
+              return $("#" + iRow + "_version", localIds.app_grid).append($(json).map(function() {
+                var opt;
+                opt = new Option(this.version, this.id);
+                opt.selected = this.version === val;
+                return opt;
+              }));
+            }
           });
         }
       },

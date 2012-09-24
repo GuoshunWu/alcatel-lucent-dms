@@ -31,7 +31,6 @@ define ['jqueryui', 'jqmsgbox', 'i18n!nls/common'], ($, msgbox, c18n)->
     {text: c18n.cancel, click: -> $(@).dialog "close"}
   ]
   }
-  # TODO: implement the rest of the dialogs
   # create new product button below the tree
   $("##{ids.button.new_product}").button().click (e) =>
     newProduct.dialog("open")
