@@ -12,6 +12,7 @@
     <constant name="struts.i18n.encoding" value="UTF-8"/>
 
     <constant name="struts.multipart.maxSize" value="1073741824" />
+    <constant name="struts.multipart.saveDir" value="tmp" />
 
 <!-- 	<package name="app" extends="json-default" namespace="/app">
 		<global-results>
