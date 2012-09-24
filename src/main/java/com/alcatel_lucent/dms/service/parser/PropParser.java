@@ -330,34 +330,4 @@ public class PropParser extends DictionaryParser {
 		return line.isEmpty() || line.charAt(0) == '#' || line.charAt(0) == '!';
 	}
 
-	private String[] splitFileName(String filename) {
-		int dotPos = filename.lastIndexOf(".");
-		if (dotPos != -1) {
-			filename = filename.substring(0, dotPos);
-			int length = filename.length();
-			String baseName = null, sep = null, langCode = null;
-			if (length >= 3 && filename.charAt(length - 3) == '.') {
-				baseName = filename.substring(0, length - 3);
-				sep = ".";
-				langCode = filename.substring(length - 2);
-			} else if (length >= 6 && filename.charAt(length - 6) == '.') {
-				baseName = filename.substring(0, length - 6);
-				sep = ".";
-				langCode = filename.substring(length - 5);
-			} else if (length >= 6 && filename.charAt(length - 6) == '_') {
-				baseName = filename.substring(0, length - 6);
-				sep = "_";
-				langCode = filename.substring(length - 5);
-			} else if (length >= 3 && filename.charAt(length - 3) == '_') {
-				baseName =filename.substring(0, length - 3);
-				sep = "_";
-				langCode = filename.substring(length - 2);
-			}
-			if (baseName != null) {
-				return new String[] {baseName, sep, langCode};
-			}
-		}
-		return null;
-	}
-
 }
