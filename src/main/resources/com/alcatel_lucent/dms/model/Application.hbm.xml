@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.alcatel_lucent.dms.model"   >
+	<class name="Application" table="APPLICATION" >
+		<id column="ID" name="id">
+			<generator class="native" />
+		</id>
+
+        <property name="version" type="string" column="VERSION" not-null="true" />
+        <many-to-one name="base" column="APPLICATION_BASE_ID"/>
+
+        <set name="dictionaries" table="APPLICATION_DICTIONARY">
+            <key column="APPLICATION_ID" />
+            <many-to-many column="DICTIONARY_ID" class="Dictionary"/>
+        </set>
+
+	</class>
+	
+</hibernate-mapping>

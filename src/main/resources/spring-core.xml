@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
+">
+
+    <!--<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">-->
+    <!--<property name="configLocation">-->
+    <!--<value>classpath:hibernate.cfg.xml</value>-->
+    <!--</property>-->
+    <!--</bean>-->
+
+    <bean id="transactionManager" scope="singleton"
+          class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        <property name="sessionFactory">
+            <ref local="sessionFactory"/>
+        </property>
+    </bean>
+
+
+    <!-- the transactional advice (what 'happens'; see the <aop:advisor/> bean below) -->
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <!-- the transactional semantics... -->
+        <tx:attributes>
+            <!-- all methods starting with 'get' are read-only -->
+            <tx:method name="retrieve*" read-only="true"/>
+            <!-- other methods use the default transaction settings (see below) -->
+            <tx:method name="*" isolation="DEFAULT" propagation="REQUIRED" timeout="-1"
+                       rollback-for="com.alcatel_lucent.dms.BusinessException"/>
+        </tx:attributes>
+    </tx:advice>
+    <!-- ensure that the above transactional advice runs for any execution
+    of an operation defined by the FooService interface -->
+    <aop:config>
+        <aop:pointcut id="serviceOperation"
+                      expression="execution(* com.alcatel_lucent.dms.service.*Service.*(..)) ||within(com.alcatel_lucent.dms.rest.*)"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceOperation"/>
+    </aop:config>
+
+
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.logicalcobwebs.proxool.ProxoolDriver"/>
+        <property name="url" value="proxool.H2_Pool"/>
+    </bean>
+
+    <bean id="sessionFactory"
+          class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+        <!--<property name="configLocation">-->
+        <!--<value>classpath:hibernate.cfg.xml</value>-->
+        <!--</property>-->
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.proxool.properties">${proxool.properties}</prop>
+
+                <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+
+                <prop key="hibernate.proxool.pool_alias">${proxool.alias}</prop>
+                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+
+                <prop key="hibernate.proxool.existing_pool">false</prop>
+                <prop key="hibernate.connection.provider_class">org.hibernate.connection.ProxoolConnectionProvider
+                </prop>
+                <!-- connection.pool_size is used to configure the number of connections in Hibernate's built-in connection pool. -->
+                <prop key="hibernate.connection.pool_size">10</prop>
+                <!-- Enable Hibernate's automatic session context management -->
+                <prop key="hibernate.current_session_context_class">thread</prop>
+
+                <prop key="hibernate.jdbc.batch_size">100</prop>
+                <!--<prop key="jdbc.fetch_size">100</prop>-->
+                <prop key="hibernate.jdbc.fetch_size">100</prop>
+                <!-- Disable the second-level cache -->
+                <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
+                <!-- Echo all executed SQL to stdout -->
+                <prop key="hibernate.show_sql">false</prop>
+                <prop key="hibernate.format_sql">true</prop>
+                <prop key="hibernate.use_sql_comments">true</prop>
+                <prop key="hibernate.default_schema">dms</prop>
+
+                <prop key="hibernate.connection.release_mode">auto</prop>
+                <prop key="hibernate.bytecode.use_reflection_optimizer">true</prop>
+            </props>
+        </property>
+
+        <property name="mappingResources">
+            <list>
+                <value>com/alcatel_lucent/dms/model/ProductBase.hbm.xml</value>
+                <value>com/alcatel_lucent/dms/model/Product.hbm.xml</value>
+                <value>com/alcatel_lucent/dms/model/Application.hbm.xml</value>
+                <value>com/alcatel_lucent/dms/model/ApplicationBase.hbm.xml</value>
+
+                <value>com/alcatel_lucent/dms/model/Dictionary.hbm.xml</value>
+                <value>com/alcatel_lucent/dms/model/DictionaryBase.hbm.xml</value>
+
+                <value>com/alcatel_lucent/dms/model/DictionaryLanguage.hbm.xml</value>
+                <value>com/alcatel_lucent/dms/model/Label.hbm.xml</value>
+                <value>com/alcatel_lucent/dms/model/LabelTranslation.hbm.xml</value>
+                <value>com/alcatel_lucent/dms/model/Text.hbm.xml</value>
+                <value>com/alcatel_lucent/dms/model/Context.hbm.xml</value>
+                <value>com/alcatel_lucent/dms/model/Charset.hbm.xml</value>
+                <value>com/alcatel_lucent/dms/model/Language.hbm.xml</value>
+                <value>com/alcatel_lucent/dms/model/AlcatelLanguageCode.hbm.xml</value>
+                <value>com/alcatel_lucent/dms/model/ISOLanguageCode.hbm.xml</value>
+                <value>com/alcatel_lucent/dms/model/Translation.hbm.xml</value>
+            </list>
+        </property>
+    </bean>
+
+</beans>
