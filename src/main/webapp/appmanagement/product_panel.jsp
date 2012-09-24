@@ -6,12 +6,12 @@
 
     <table border="0">
         <tr>
-            <td style="width:30px;"><s:text name="product"/>:</td>
+            <td style="width:30px;"><s:text name="product"/></td>
             <td><span id="dispProductName"></span></td>
 
         </tr>
         <tr>
-            <td><s:text name="version"/>:</td>
+            <td><s:text name="version"/></td>
             <td><select id="selVersion"></select>
                 <button id="newVersion"></button>
             </td>

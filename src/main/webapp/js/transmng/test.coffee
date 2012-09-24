@@ -29,7 +29,36 @@ Array:: remove = (start, len) ->
   @push(elem) for elem in newarray
   delElem
 
-a = [1, 2, 3, 4, 5]
-console.log a.remove 2
-console.log a
+formatJonString = (jsonString) ->
+  str = jsonString
+  pos = i = 0
+  indentStr = "  "
+  newLine = "\n"
+  retval=''
+
+  while i < str.length
+    char = str.substring(i, i + 1)
+    if char is "}" or char is "]"
+      retval += newLine
+      --pos
+      j = 0
+
+      while j < pos
+        retval += indentStr
+        j++
+    retval += char
+
+    if char is "{" or char is "[" or char is ","
+      retval += newLine
+      ++pos if char is "{" or char is "["
+      k = 0
+      while k < pos
+        retval +=indentStr
+        k++
+    i++
+  retval
+
+a = {a:111,b:222}
+console.log formatJonString JSON.stringify(a)
+
 

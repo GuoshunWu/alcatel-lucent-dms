@@ -37,10 +37,11 @@
       addTaskLanguage: function(language, url, postData) {
         var colModels, cols;
         cols = ['T', 'N', 'I'];
-        colModels = ($(cols).map(function() {
+        colModels = ($(cols).map(function(index) {
           return {
-            name: "" + language + "." + this,
-            index: "" + language + "." + this,
+            name: "" + language.name + "." + this,
+            sortable: false,
+            index: "s(" + language.id + ")[" + index + "]",
             width: 20,
             editable: false,
             search: false,
@@ -48,9 +49,9 @@
           };
         })).get();
         this.getGridParam('groupHeaders').push({
-          startColumnName: "" + language + ".T",
+          startColumnName: "" + language.name + ".T",
           numberOfColumns: 3,
-          titleText: "<bold>" + language + "</bold>"
+          titleText: "<bold>" + language.name + "</bold>"
         });
         return this.addColumns(cols, colModels, url, postData);
       },
@@ -69,20 +70,20 @@
           return !/.+\.[TIN]/g.test(val.name);
         });
         if (!$.isArray(languages)) {
-          this.addTaskLanguage(languages, url, postData);
+          this.addTaskLanguage(languages, url, postData, 0);
           return;
         }
         if (0 === languages.length) {
           this.reloadAll(url, postData);
           return;
         }
-        $(languages).each(function(index, language) {
-          if (index === languages.length - 1) {
-            return false;
+        return $(languages).each(function(index, language) {
+          if (index < languages.length - 1) {
+            return _this.addTaskLanguage(language);
+          } else {
+            return _this.addTaskLanguage(language, url, postData);
           }
-          return _this.addTaskLanguage(language);
         });
-        return this.addTaskLanguage(languages[languages.length - 1], url, postData);
       }
     });
   });
