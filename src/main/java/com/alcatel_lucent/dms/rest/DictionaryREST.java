@@ -18,7 +18,9 @@ import com.alcatel_lucent.dms.service.LanguageService;
  * Dictionary REST service.
  * URL: /rest/dict
  * Filter parameters:
- *   prod		(required) product id, in which product all dictionaries will be retrieved
+ *   prod		(optional) product id, in which product all dictionaries will be retrieved
+ *   app		(optional) application id, in which application all dictionaries will be retrieved
+ * One and only of the "prod" and "app" must be specified.  
  *   
  * Sort parameters:
  *   sidx		(optional) sort by, default is "base.name"
@@ -48,12 +50,26 @@ public class DictionaryREST extends BaseREST {
     
     @Override
     protected String doGetOrPost(Map<String, String> requestMap) throws Exception {
-    	Long prodId = Long.valueOf(requestMap.get("prod"));
+    	Long appId = null;
+    	Long prodId = null;
+    	if (requestMap.get("app") != null) {
+    		appId = Long.valueOf(requestMap.get("app"));
+    	} else {
+    		prodId = Long.valueOf(requestMap.get("prod"));
+    	}
     	String sidx = requestMap.get("sidx");
     	String sord = requestMap.get("sord");
+    	String hql, countHql;
     	Map param = new HashMap();
-    	param.put("prodId", prodId);
-    	String hql = "select obj,app from Product p join p.applications app join app.dictionaries obj where p.id=:prodId";
+    	if (appId != null) {
+    		hql = "select obj,app from Application app join app.dictionaries obj where app.id=:appId";
+    		countHql = "select a.dictionaries.size from Application a where a.id=:appId";
+    		param.put("appId", appId);
+    	} else {
+    		hql = "select obj,app from Product p join p.applications app join app.dictionaries obj where p.id=:prodId";
+    		countHql = "select a.dictionaries.size from Product p join p.applications a where p.id=:prodId";
+    		param.put("prodId", prodId);
+    	}
     	if (sidx == null || sidx.trim().isEmpty()) {
     		sidx = "base.name";
     	}
@@ -65,7 +81,6 @@ public class DictionaryREST extends BaseREST {
     		orderBy = "obj.labels.size";
     	}
     	hql += " order by " + orderBy + " " + sord;
-    	String countHql = "select a.dictionaries.size from Product p join p.applications a where p.id=:prodId";
     	Collection<Object[]> result = retrieve(hql, param, countHql, param, requestMap);
     	
     	Collection<Dictionary> dictionaries = new ArrayList<Dictionary>();

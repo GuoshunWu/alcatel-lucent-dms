@@ -123,6 +123,8 @@ public class JSONServiceImpl implements JSONService {
 	        jsonGrid.put("total", totalPages);
 	        jsonGrid.put("records", records);
 	                
+        } else {
+        	jsonGrid.put("records", entities.size());
         }
         jsonGrid.put("rows", jsonArrayGrid);
 
