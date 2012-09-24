@@ -13,7 +13,7 @@
                 "Dictionary",
                 "User Name :",
                 "Nom d'utilisateur :",
-                "Translated"
+                2
             ]
         },
         {
@@ -25,7 +25,7 @@
                 "Dictionary",
                 "Password :",
                 "Mot de passe :",
-                "Translated"
+                2
             ]
         },
         {
@@ -37,7 +37,7 @@
                 "Dictionary",
                 "Remember password",
                 "Retenir le mot de passe",
-                "Translated"
+                2
             ]
         },
         {
@@ -49,7 +49,7 @@
                 "Dictionary",
                 "Sign In",
                 "Sign In",
-                "Translated"
+                2
             ]
         },
         {
@@ -61,7 +61,7 @@
                 "Dictionary",
                 "Cancel",
                 "Annuler",
-                "Translated"
+                1
             ]
         } ,
         {
@@ -73,7 +73,7 @@
                 "Dictionary",
                 "Welcome to My Instant Communicator. Please enter your user name and password :",
                 "Bienvenue dans My Instant Communicator. Veuillez entrer votre nom d'utilisateur et mot de passe :",
-                "Translated"
+                1
             ]
         },
         {
@@ -85,7 +85,7 @@
                 "Dictionary",
                 "Copyright 2007-2011 by Alcatel-Lucent. All rights reserved.",
                 " ",
-                "Not translated"
+                0
             ]
         },
         {
@@ -97,7 +97,7 @@
                 "Dictionary",
                 "Check this box to remember your password.",
                 " ",
-                "Not translated"
+                0
             ]
         }
     ],

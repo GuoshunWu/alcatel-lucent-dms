@@ -89,7 +89,13 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'i18n!nls/common', 'transmng/
     }
     transDetailDialog = $('#translationDetailDialog').dialog {
     autoOpen: false, width: 'auto', height: 400
+    create:()->
+      $('#detailLanguageSwitcher').change ->
+        dict=$('#translationDetailDialog').data "dict"
+        language={id:$(@).val(), name:$(@).find("option:selected").text()}
+        detailgrid.languageChanged {language:language,dict:dict}
     }
+
     {taskDialog: taskDialog, languageFilterDialog: languageFilterDialog, transDetailDialog: transDetailDialog}
 
   createSelects = ->
@@ -141,7 +147,6 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'i18n!nls/common', 'transmng/
     #    for view level
     $(':radio[name=viewOption]').change -> $('#productRelease').trigger "change"
 
-
     (($("#translated").button().click ->
       alert "All"
     ).next().button().click ->
@@ -163,15 +168,14 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'i18n!nls/common', 'transmng/
 
   showTransDetailDialog: (param)->
   #    refresh dialog
-    console.log param
     $('#dictionaryName', dialogs.transDetailDialog).html param.dict.name
-    $('#detailLanguageSwitcher', dialogs.transDetailDialog).append (param.languages.map (index) ->
-      opt = new Option(this.id, this.name)
-      opt.selected = true if this.name == param.language
+    $('#detailLanguageSwitcher', dialogs.transDetailDialog).append ($(param.languages).map (index) ->
+      opt = new Option  @name,@id
+      opt.selected = @name == param.language.name
       opt
     )
-#    todo: update transdetail grid
-
+    $('#translationDetailDialog').data 'dict',param.dict
+    $('#detailLanguageSwitcher').trigger "change"
 
     dialogs.transDetailDialog.dialog "open"
 

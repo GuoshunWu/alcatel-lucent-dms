@@ -32,13 +32,13 @@
 
                                 /*#file{ position:static; z-index:100; margin-left:-180px; font-size:60px;opacity:0;filter:alpha(opacity=100); margin-top:-5px;}*/
                             #dctFileUpload {
-                                position: absolute;
+                                position: static;
                                 z-index: 100;
-                                font-size: 60px;
-                                margin-left: -10px;
-                                margin-top: -5px;
-                                opacity: 0;
-                                filter: alpha(opacity = 0);
+                                /*font-size: 60px;*/
+                                /*margin-left: -10px;*/
+                                /*margin-top: -5px;*/
+                                /*opacity: 0;*/
+                                /*filter: alpha(opacity = 0);*/
                             }
 
                         </style>

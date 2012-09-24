@@ -76,7 +76,29 @@
             frozen: true,
             search: false
           }
-        ])
+        ]),
+        ondblClickRow: function(rowid, iRow, iCol, e) {
+          var dictName, language,
+            _this = this;
+          language = {
+            name: $(this).getGridParam('colModel')[iCol].name.split('.')[0],
+            id: parseInt(/s\((\d+)\)\[\d+\]/ig.exec($(this).getGridParam('colModel')[iCol].index)[1])
+          };
+          dictName = $(this).getCell(rowid, $(this).getGridParam('colNames').indexOf('Dictionary'));
+          return $.getJSON('rest/languages', {
+            prop: 'id,name',
+            dict: rowid
+          }, function(languages) {
+            return require('transmng/layout').showTransDetailDialog({
+              dict: {
+                id: rowid,
+                name: dictName
+              },
+              language: language,
+              languages: languages
+            });
+          });
+        }
       },
       application: {
         colNames: ['Dummy'].concat(common.colNames),
@@ -112,28 +134,6 @@
       gridview: true,
       multiselect: true,
       caption: '',
-      ondblClickRow: function(rowid, iRow, iCol, e) {
-        var dictName, language,
-          _this = this;
-        language = {
-          name: $(this).getGridParam('colModel')[iCol].name.split('.')[0],
-          id: parseInt(/s\((\d+)\)\[\d+\]/ig.exec($(this).getGridParam('colModel')[iCol].index)[1])
-        };
-        dictName = $(this).getCell(rowid, $(this).getGridParam('colNames').indexOf('Dictionary'));
-        return $.getJSON('rest/languages', {
-          prop: 'id,name',
-          dict: rowid
-        }, function(languages) {
-          return require('transmng/layout').showTransDetailDialog({
-            dict: {
-              id: rowid,
-              name: dictName
-            },
-            language: language,
-            languages: languages
-          });
-        });
-      },
       colNames: grid.dictionary.colNames,
       colModel: grid.dictionary.colModel,
       groupHeaders: [],
@@ -180,6 +180,7 @@
         isApp = param.level === "application";
         gridParam.colNames = isApp ? grid.application.colNames : grid.dictionary.colNames;
         gridParam.colModel = isApp ? grid.application.colModel : grid.dictionary.colModel;
+        gridParam.ondblClickRow = isApp ? (function() {}) : grid.dictionary.ondblClickRow;
         eprop = "id,app.base.name,app.version,base.name,version,base.encoding,base.format,labelNum,";
         if (isApp) {
           eprop = 'id,id,base.name,version,labelNum,';
