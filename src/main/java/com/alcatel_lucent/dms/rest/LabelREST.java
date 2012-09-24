@@ -69,7 +69,7 @@ public class LabelREST extends BaseREST {
     	
     	Long langId = requestMap.get("language") == null ? null : Long.valueOf(requestMap.get("language"));
     	String hql;
-    	String countHql = "select labels.size() from Dictionary where id=:dictId";
+    	String countHql = "select labels.size from Dictionary where id=:dictId";
     	Map param = new HashMap();
     	param.put("dictId", dictId);
     	Collection<Label> labels;
