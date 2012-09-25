@@ -1,17 +1,22 @@
-define ['jqueryui', 'appmng/dictionary_grid', 'appmng/langsetting_grid', 'jsfileuploader/jquery.iframe-transport', 'jsfileuploader/jquery.fileupload'], ($, grid, langGrid)->
+define ['jqueryui', 'appmng/dictionary_grid', 'appmng/langsetting_grid', 'i18n!nls/appmng', 'jsfileuploader/jquery.iframe-transport', 'jsfileuploader/jquery.fileupload'], ($, grid, langGrid, i18n)->
   $("#selAppVersion").change ->
     grid.appChanged {version: $(@).find("option:selected").text(), id: $(@).val()}
 
-  ($("#progressbar").draggable({grid: [50, 20], opacity: 0.35}).css({'z-index': 1000, width: 600, textAlign: 'center'
+  ($("#progressbar").draggable({grid: [50, 20], opacity: 0.35}).css({
+  'z-index': 100, width: 600, textAlign: 'center'
   'position': 'absolute', 'top': '45%', 'left': '30%'}).progressbar {
   change: (e, ui)->
     value = ($(@).progressbar "value").toPrecision(4) + '%'
-    #    $("#progressbar .ui-progressbar-value").html(value).css({"display": "block", "textAlign": "right"})
     $('#barvalue', @).html(value).css {"display": "block", "textAlign": "center"}
   }).hide()
 
-  #  $("#dctFileUpload").css 'visibility', 'hidden'
-  $('#uploadBrower').button().click ()-> #$("#dctFileUpload").trigger "click"; false
+  #  create upload filebutton
+  $('#uploadBrower').button({label: i18n.browse}).css({overflow: 'hidden'}).append $(
+    "<input type='file' id='dctFileUpload' name='upload' title='#{i18n.choosefile}' multiple/>").css {
+  position: 'absolute', top: 0, right: 0, margin: 0,
+  border: '1px transparent', borderWidth: '0 0 40px 0px',
+  opacity: 0, filter: 'alpha(opacity=0)', cursor: 'pointer'}
+
 
   $("#dctFileUpload").fileupload {
   type: 'POST'
