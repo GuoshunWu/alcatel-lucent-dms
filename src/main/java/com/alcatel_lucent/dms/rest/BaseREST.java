@@ -72,13 +72,14 @@ public abstract class BaseREST {
     protected String toJSON(Object data, Map<String, String> requestMap) throws Exception {
     	String format = requestMap.get("format");
     	String prop = requestMap.get("prop");
+    	String idprop = requestMap.get("idprop");
     	if (format == null) {
     		return jsonService.toJSONString(data, prop);
     	} else if (format.trim().equals("grid")) {
     		Integer rows = requestMap.get("rows") == null ? null : Integer.valueOf(requestMap.get("rows"));
     		Integer page = requestMap.get("page") == null ? null : Integer.valueOf(requestMap.get("page"));
     		Integer records = requestMap.get("records") == null ? null : Integer.valueOf(requestMap.get("records"));
-			JSONObject json = jsonService.toGridJSON((Collection<?>) data, rows, page, records, "id", prop);
+			JSONObject json = jsonService.toGridJSON((Collection<?>) data, rows, page, records, idprop == null ? "id" : idprop, prop);
 			return json.toString();
     	} else if (format.trim().equals("tree")) {
     		// TODO: select tree
