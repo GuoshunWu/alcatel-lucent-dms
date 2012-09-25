@@ -38,9 +38,8 @@
                                 }
                             </style>
                             <span id="uploadContainer">
-                                <input title="Choose File..." id="dctFileUpload" type="file" name="upload" hidefocus/>
-                                <button id="uploadBrower">Brower...</button>
-                                 <%--<button onclick="dctFileUpload.click();">MyTest</button>--%>
+                                <input title="<s:text name="appmng.choosefile"/>" id="dctFileUpload" type="file" name="upload" hidefocus/>
+                                <button id="uploadBrower"><s:text name="appmng.browse"/></button>
                             </span>
                         </td>
                         <td>

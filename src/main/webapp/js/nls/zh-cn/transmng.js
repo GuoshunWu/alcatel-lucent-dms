@@ -27,5 +27,10 @@ define({
             title:'选择{0}',
             msg:'请先选择{0}！'
         }
+    },
+    trans:{
+        nottranslated:'未翻译',
+        inprogress:'翻译中',
+        translated:'已翻译'
     }
 });

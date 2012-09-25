@@ -148,10 +148,20 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'i18n!nls/common', 'transmng/
     $(':radio[name=viewOption]').change -> $('#productRelease').trigger "change"
 
     (($("#translated").button().click ->
-      alert "All"
+      selectedRowIds = $("#transGridList").getGridParam('selarrrow');
+      console.log selectedRowIds
     ).next().button().click ->
+      selectedRowIds = $("#transGridList").getGridParam('selarrrow');
+      console.log selectedRowIds
       alert "N"
     ).parent().buttonset()
+
+    (($("#detailTranslated").button().click ->
+      selectedRowIds = $("#transDetailGridList").getGridParam('selarrrow');
+    ).next().button().click ->
+      selectedRowIds = $("#transDetailGridList").getGridParam('selarrrow');
+    ).parent().buttonset()
+
   #  private method
   initPage = ->
     pageLayout = $("##{ids.container.page}").layout {resizable: true, closable: true}

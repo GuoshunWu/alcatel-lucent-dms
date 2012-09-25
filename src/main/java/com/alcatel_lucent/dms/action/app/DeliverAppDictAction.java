@@ -38,13 +38,11 @@ public class DeliverAppDictAction extends JSONAction {
         System.out.println("uploadFileName="+filename);
 
 
-        File destFile=new File("upload",filename);
+        File destFile=new File("tmp",filename);
 
         System.out.println("Move file to "+destFile.getAbsolutePath());
 //        or we can do import here.
         upload.renameTo(destFile);
-
-
 
         setStatus(0);
         setMessage("Success");

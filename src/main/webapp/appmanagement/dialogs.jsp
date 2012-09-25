@@ -38,10 +38,31 @@
     </table>
 </div>
 
-<div id="progressDialog" title="Progress">
-    <table border="0" width="100%">
-        <tr><td><div id="progressbar"></div></td></tr>
-    </table>
+<div id="progressbar" class="ui-widget-content">
+    <div id="barvalue" style="z-index: 1000;position: absolute;left:45%;"></div>
+</div>
 
-
+<div id="languageSettingDialog" title="<s:text name="appmng.dialogs.languagesetting.title"/>"/>
+<table border="1" width="100%">
+    <tr>
+        <td>
+            <table>
+                <tr>
+                    <td><label for="refCode"><s:text name="appmng.dialogs.languagesetting.refcode"/></label></td>
+                    <td><input id="refCode" readonly="readonly"/></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <table id="languageSettingGrid">
+                <tr>
+                    <td/>
+                </tr>
+            </table>
+            <div id="langSettingPager"></div>
+        </td>
+    </tr>
+</table>
 </div>

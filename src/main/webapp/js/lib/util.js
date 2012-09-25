@@ -76,35 +76,32 @@ To change this template use File | Settings | File Templates.
     */
 
     formatJonString = function(jsonString) {
-      var char, i, indentStr, j, k, newLine, pos, retval, str, strLen;
-      retval = "";
+      var char, i, indentStr, j, k, newLine, pos, retval, str;
       str = jsonString;
-      pos = 0;
-      strLen = str.length;
-      indentStr = "    ";
+      pos = i = 0;
+      indentStr = "  ";
       newLine = "\n";
-      char = "";
-      i = 0;
-      while (i < strLen) {
+      retval = '';
+      while (i < str.length) {
         char = str.substring(i, i + 1);
         if (char === "}" || char === "]") {
-          retval = retval + newLine;
-          pos = pos - 1;
+          retval += newLine;
+          --pos;
           j = 0;
           while (j < pos) {
-            retval = retval + indentStr;
+            retval += indentStr;
             j++;
           }
         }
-        retval = retval + char;
+        retval += char;
         if (char === "{" || char === "[" || char === ",") {
-          retval = retval + newLine;
+          retval += newLine;
           if (char === "{" || char === "[") {
-            pos = pos + 1;
+            ++pos;
           }
           k = 0;
           while (k < pos) {
-            retval = retval + indentStr;
+            retval += indentStr;
             k++;
           }
         }
@@ -119,6 +116,15 @@ To change this template use File | Settings | File Templates.
 
       json2string: function(jsonObj) {
         return formatJonString(JSON.stringify(jsonObj));
+      },
+      getDictLanguagesByDictId: function(id, callback) {
+        var _this = this;
+        return $.getJSON('rest/languages', {
+          prop: 'id,name',
+          dict: id
+        }, function(languages) {
+          return callback(languages);
+        });
       }
     };
   });
