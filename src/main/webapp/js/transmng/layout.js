@@ -227,10 +227,22 @@
       $(':radio[name=viewOption]').change(function() {
         return $('#productRelease').trigger("change");
       });
-      return (($("#translated").button().click(function() {
-        return alert("All");
+      (($("#translated").button().click(function() {
+        var selectedRowIds;
+        selectedRowIds = $("#transGridList").getGridParam('selarrrow');
+        return console.log(selectedRowIds);
       })).next().button().click(function() {
+        var selectedRowIds;
+        selectedRowIds = $("#transGridList").getGridParam('selarrrow');
+        console.log(selectedRowIds);
         return alert("N");
+      })).parent().buttonset();
+      return (($("#detailTranslated").button().click(function() {
+        var selectedRowIds;
+        return selectedRowIds = $("#transDetailGridList").getGridParam('selarrrow');
+      })).next().button().click(function() {
+        var selectedRowIds;
+        return selectedRowIds = $("#transDetailGridList").getGridParam('selarrrow');
       })).parent().buttonset();
     };
     initPage = function() {

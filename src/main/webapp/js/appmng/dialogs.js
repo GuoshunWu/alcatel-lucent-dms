@@ -2,7 +2,7 @@
 (function() {
 
   define(['jqueryui', 'jqmsgbox', 'i18n!nls/common'], function($, msgbox, c18n) {
-    var ids, newOrAddApplication, newProduct, newProductRelease,
+    var ids, langSetting, newOrAddApplication, newProduct, newProductRelease,
       _this = this;
     ids = {
       button: {
@@ -202,10 +202,28 @@
         }
       ]
     });
+    langSetting = $('#languageSettingDialog').dialog({
+      autoOpen: false,
+      width: 500,
+      height: 'auto',
+      open: function(e, ui) {
+        var param;
+        param = $(this).data("param");
+        $('#refCode').val(param.refCode);
+        return $('#languageSettingGrid').setGridParam({
+          url: 'rest/languages',
+          postData: {
+            dict: param.dictId,
+            prop: 'language.name,languageCode,charset.name'
+          }
+        }).trigger("reloadGrid");
+      }
+    });
     return {
       newProduct: newProduct,
       newProductRelease: newProductRelease,
-      newOrAddApplication: newOrAddApplication
+      newOrAddApplication: newOrAddApplication,
+      langSetting: langSetting
     };
   });
 

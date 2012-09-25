@@ -115,7 +115,7 @@ define ['jqueryui', 'jqmsgbox', 'i18n!nls/common'], ($, msgbox, c18n)->
           $.msgBox json.message, null, {title: c18n.error, width: 300, height: 'auto'}
           return
         if -1 == params.appBaseId
-#          TODO: create node on tree
+        #          TODO: create node on tree
           (require 'appmng/apptree').getSelected()
         $("#applicationGridList").trigger("reloadGrid")
 
@@ -125,6 +125,18 @@ define ['jqueryui', 'jqmsgbox', 'i18n!nls/common'], ($, msgbox, c18n)->
   ]
   }
 
+  langSetting = $('#languageSettingDialog').dialog {
+  autoOpen: false
+  width: 500
+  height: 'auto'
+  open: (e, ui)->
+  # param must be attached to the dialog before the dialog open
+    param = $(@).data "param"
+    $('#refCode').val param.refCode
+    $('#languageSettingGrid').setGridParam({url: 'rest/languages', postData: {dict: param.dictId, prop: 'language.name,languageCode,charset.name'}}).trigger "reloadGrid"
+  }
+
   newProduct: newProduct
   newProductRelease: newProductRelease
   newOrAddApplication: newOrAddApplication
+  langSetting: langSetting

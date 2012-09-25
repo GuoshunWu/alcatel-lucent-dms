@@ -25,7 +25,7 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
     ondblClickRow: (rowid, iRow, iCol, e)->
       language = {name: $(@).getGridParam('colModel')[iCol].name.split('.')[0], id: parseInt(/s\((\d+)\)\[\d+\]/ig.exec($(@).getGridParam('colModel')[iCol].index)[1])}
       dictName = $(@).getCell rowid, $(@).getGridParam('colNames').indexOf 'Dictionary'
-      $.getJSON 'rest/languages', {prop: 'id,name', dict: rowid}, (languages)=>
+      util.getDictLanguagesByDictId rowid, (languages)=>
         require('transmng/layout').showTransDetailDialog {dict: {id: rowid, name: dictName}, language: language, languages: languages}
     }
   application:

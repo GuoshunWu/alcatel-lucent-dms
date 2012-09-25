@@ -28,7 +28,13 @@ define({
                 title:'Select {0}',
                 msg:'Please select {0} first!'
             }
+        },
+        trans:{
+            nottranslated:'Not translated',
+            inprogress:'In progress',
+            translated:'Translated'
         }
+
     },
     "zh-cn":true
 });

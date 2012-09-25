@@ -1,5 +1,7 @@
 package com.alcatel_lucent.dms.model;
 
+import net.sf.json.JSONObject;
+
 import java.util.*;
 
 public class Dictionary extends BaseEntity {
@@ -12,35 +14,42 @@ public class Dictionary extends BaseEntity {
     private DictionaryBase base;
     private String version;
 
+    private static Map<String, String> refCodes = JSONObject.fromObject("{'dct':'GAE','mdc':'EN-UK','prop':'en','LabelXML':'en'}");
 
-    public String getName(){
+    public String getName() {
         return base.getName();
     }
 
-    public void setName(String name){
+    public String getLanguageReferenceCode() {
+        String ref = refCodes.get(getFormat());
+        return null == ref ? "en" : ref;
+    }
+
+    public void setName(String name) {
         base.setName(name);
     }
-    public String getFormat(){
+
+    public String getFormat() {
         return base.getFormat();
     }
 
-    public void setFormat(String format){
+    public void setFormat(String format) {
         base.setFormat(format);
     }
 
-    public String getEncoding(){
+    public String getEncoding() {
         return base.getEncoding();
     }
 
-    public void setEncoding(String encoding){
+    public void setEncoding(String encoding) {
         base.setEncoding(encoding);
     }
 
-    public String getPath(){
+    public String getPath() {
         return base.getPath();
     }
 
-    public void setPath(String path){
+    public void setPath(String path) {
         base.setPath(path);
     }
 
@@ -48,8 +57,8 @@ public class Dictionary extends BaseEntity {
         return base;
     }
 
-    public int getLabelNum(){
-        return labels==null?0:labels.size();
+    public int getLabelNum() {
+        return labels == null ? 0 : labels.size();
     }
 
     public void setBase(DictionaryBase base) {
@@ -124,9 +133,9 @@ public class Dictionary extends BaseEntity {
         }
         return result;
     }
-    
+
     public ArrayList<String> getAllLanguageCodesOrdered() {
-    	 ArrayList<String> result = new ArrayList<String>();
+        ArrayList<String> result = new ArrayList<String>();
         if (dictLanguages != null) {
             for (DictionaryLanguage dl : dictLanguages) {
                 result.add(dl.getLanguageCode());
@@ -189,32 +198,34 @@ public class Dictionary extends BaseEntity {
         }
         return null;
     }
-    
+
     private Map<String, int[]> summaryCache;
-    
+
     /**
      * Get translation status summary by language, used by front
+     *
      * @return
      */
     public Map<String, int[]> getS() {
-    	return summaryCache;
+        return summaryCache;
     }
-    
+
     public void setS(Map<Long, int[]> summary) {
-		this.summaryCache = new HashMap<String, int[]>();
-		if (summary == null) return;
-		for (Long langId : summary.keySet()) {
-			summaryCache.put(langId.toString(), summary.get(langId));
-		}
+        this.summaryCache = new HashMap<String, int[]>();
+        if (summary == null) return;
+        for (Long langId : summary.keySet()) {
+            summaryCache.put(langId.toString(), summary.get(langId));
+        }
     }
-    
-    private Application app;	// transient variable for REST service
+
+    private Application app;    // transient variable for REST service
+
     public void setApp(Application app) {
-    	this.app = app;
+        this.app = app;
     }
-    
+
     public Application getApp() {
-    	return app;
+        return app;
     }
 
 }

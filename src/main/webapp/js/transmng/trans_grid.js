@@ -85,10 +85,7 @@
             id: parseInt(/s\((\d+)\)\[\d+\]/ig.exec($(this).getGridParam('colModel')[iCol].index)[1])
           };
           dictName = $(this).getCell(rowid, $(this).getGridParam('colNames').indexOf('Dictionary'));
-          return $.getJSON('rest/languages', {
-            prop: 'id,name',
-            dict: rowid
-          }, function(languages) {
+          return util.getDictLanguagesByDictId(rowid, function(languages) {
             return require('transmng/layout').showTransDetailDialog({
               dict: {
                 id: rowid,

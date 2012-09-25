@@ -81,5 +81,7 @@ define ["jquery"], ($) ->
   ###
   #  a=[1,2,3]
   #  console.log a.insert 1,["a",'b']
-  json2string: (jsonObj) ->formatJonString JSON.stringify(jsonObj)
 
+
+  json2string: (jsonObj) ->formatJonString JSON.stringify(jsonObj)
+  getDictLanguagesByDictId: (id,callback)->$.getJSON 'rest/languages', {prop: 'id,name', dict: id}, (languages)=>callback languages

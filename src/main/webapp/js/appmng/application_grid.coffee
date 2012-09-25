@@ -11,7 +11,7 @@ define ['jqgrid', 'require', 'i18n!nls/appmng'], ($, require, i18n)->
 
   dialogs = require 'appmng/dialogs'
 
-  appGrid = $(localIds.app_grid).jqGrid ({
+  appGrid = $(localIds.app_grid).jqGrid {
   datatype: 'json'
   url: 'json/appgrid.json'
   editurl: "app/create-or-add-application"
@@ -46,7 +46,7 @@ define ['jqgrid', 'require', 'i18n!nls/appmng'], ($, require, i18n)->
   afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
     jsonFromServer = eval('(' + serverresponse.responseText + ')')
     [0 == jsonFromServer.status, jsonFromServer.message]
-  })
+  }
   appGrid.jqGrid('navGrid', '#pager', {edit: false, add: false, del: false, search: false, view: false})
   appGrid.navButtonAdd '#pager', { caption: "", buttonicon: "ui-icon-trash", position: "first"
   onClickButton: ()->
