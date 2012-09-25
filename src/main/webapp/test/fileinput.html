@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>FileInput Test</title>
+
+    <link rel="stylesheet" href="../css/jqueryUI/themes/base/jquery.ui.all.css">
+
+    <script src="../js/lib/jquery-1.7.2.min.js"></script>
+    <script src="../js/lib/jquery-ui-1.8.22.custom.min.js"></script>
+    <style>
+
+    </style>
+    <script>
+        $(function () {
+            $('<input type="file" id="myBtn" name="files" multiple/>').css({
+                position:'absolute', top:0, right:0, margin:0,
+                border:'1px solid', borderWidth:'0 0 40px 0px',
+                opacity:0, filter:'alpha(opacity=0)',
+                cursor:'pointer'
+            }).appendTo(
+                    $('#fileBtn').button({label:'Browse'})
+                            .css({overflow:'hidden'})
+            );
+        });
+    </script>
+</head>
+<body>
+
+
+<table style="width: 70%; left: 100px" border="1">
+    <tr>
+        <td style="width: 400px">Up left</td>
+        <td>Up center</td>
+        <td>Up right</td>
+    </tr>
+    <tr>
+        <td>Middle left</td>
+        <td>
+            <div id="fileBtn"></div>
+        </td>
+        <td>Middle Right</td>
+    </tr>
+    <tr>
+        <td>Down left</td>
+        <td>
+            Down center
+        </td>
+        <td>Down right</td>
+    </tr>
+</table>
+</body>
+</html>

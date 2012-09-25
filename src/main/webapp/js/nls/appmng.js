@@ -15,7 +15,10 @@ define({
         grid:{
             delappmsg: 'Please select row to delete!',
             permanenttext: 'Delete permanently'
-        }
+        },
+        browse:'Browse...',
+        choosefile:'Choose file'
+
     },
     "zh-cn":true
 });

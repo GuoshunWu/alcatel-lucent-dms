@@ -29,18 +29,7 @@
                             <label for="dctFileUpload"><s:text name="appmng.deliverapp"/></label>
                         </td>
                         <td style="width: 100px;">
-                            <style>
-                                #dctFileUpload{
-                                    position: absolute;margin-left: -10px;margin-top: -6px; font-size:60px;z-index: 1000;opacity: 0;
-                                }
-                                #uploadContainer{
-                                    overflow: hidden;position: absolute;margin-top: -15px;
-                                }
-                            </style>
-                            <span id="uploadContainer">
-                                <input title="<s:text name="appmng.choosefile"/>" id="dctFileUpload" type="file" name="upload" hidefocus/>
-                                <button id="uploadBrower"><s:text name="appmng.browse"/></button>
-                            </span>
+                            <div id="uploadBrower"></div>
                         </td>
                         <td>
                             <span id="uploadStatus">status</span>
