@@ -1,4 +1,4 @@
-define ['jqueryui', 'jqmsgbox', 'i18n!nls/common'], ($, msgbox, c18n)->
+define ['jqueryui', 'jqmsgbox', 'i18n!nls/common','i18n!nls/appmng'], ($, msgbox, c18n,i18n)->
   ids = {
   button:
     {
@@ -125,18 +125,31 @@ define ['jqueryui', 'jqmsgbox', 'i18n!nls/common'], ($, msgbox, c18n)->
   ]
   }
 
-  langSetting = $('#languageSettingDialog').dialog {
+  langSettings = $('#languageSettingsDialog').dialog {
   autoOpen: false
   width: 500
   height: 'auto'
+  title:i18n.dialog.languagesettings.title
   open: (e, ui)->
   # param must be attached to the dialog before the dialog open
     param = $(@).data "param"
     $('#refCode').val param.refCode
-    $('#languageSettingGrid').setGridParam({url: 'rest/languages', postData: {dict: param.dictId, prop: 'language.name,languageCode,charset.name'}}).trigger "reloadGrid"
+#    $('#languageSettingGrid').setGridParam({url: 'rest/languages', postData: {dict: param.dictId, prop: 'language.name,languageCode,charset.name'}}).trigger "reloadGrid"
   }
 
+  stringSettings = $('#stringSettingsDialog').dialog {
+  autoOpen: false
+  width: 500
+  height: 'auto'
+  title:i18n.dialog.stringsettings.title
+  open: (e, ui)->
+  # param must be attached to the dialog before the dialog open
+    param = $(@).data "param"
+
+  }
+
+  stringSettings:stringSettings
   newProduct: newProduct
   newProductRelease: newProductRelease
   newOrAddApplication: newOrAddApplication
-  langSetting: langSetting
+  langSettings: langSettings

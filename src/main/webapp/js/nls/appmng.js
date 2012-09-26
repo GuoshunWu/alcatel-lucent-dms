@@ -16,8 +16,22 @@ define({
             delappmsg: 'Please select row to delete!',
             permanenttext: 'Delete permanently'
         },
+        dialog:{
+            stringsettings:{
+                title:'String settings'
+            },
+            languagesettings:{
+                title:'Language settings'
+            },
+            delete:{
+                title:'Delete'
+            }
+        },
         browse:'Browse...',
-        choosefile:'Choose file'
+        choosefile:'Choose file',
+        uploadingfile:'Uploading: ',
+        uploadfinished:'upload finished.'
+
 
     },
     "zh-cn":true

@@ -14,7 +14,7 @@ public class Dictionary extends BaseEntity {
     private DictionaryBase base;
     private String version;
 
-    private static Map<String, String> refCodes = JSONObject.fromObject("{'dct':'GAE','mdc':'EN-UK','prop':'en','LabelXML':'en'}");
+    private static Map<String, String> refCodes = JSONObject.fromObject("{'DCT':'GAE','Dictionary conf':'EN-UK','Text properties':'en','XML labels':'en'}");
 
     public String getName() {
         return base.getName();

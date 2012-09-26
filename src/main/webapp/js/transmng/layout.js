@@ -239,7 +239,8 @@
       })).parent().buttonset();
       return (($("#detailTranslated").button().click(function() {
         var selectedRowIds;
-        return selectedRowIds = $("#transDetailGridList").getGridParam('selarrrow');
+        selectedRowIds = $("#transDetailGridList").getGridParam('selarrrow');
+        return console.log(selectedRowIds);
       })).next().button().click(function() {
         var selectedRowIds;
         return selectedRowIds = $("#transDetailGridList").getGridParam('selarrrow');

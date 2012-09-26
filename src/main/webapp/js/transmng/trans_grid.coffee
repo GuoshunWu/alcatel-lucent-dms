@@ -17,11 +17,9 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
     colModel: common.colModel.slice(0).insert 3, [
       {name: 'dictionary', index: 'base.name', width: 90, editable: true, align: 'left', frozen: true, search: false}
       {name: 'dictVersion', index: 'version', width: 90, editable: true, align: 'center', frozen: true, search: false}
-      {name: 'encoding', index: 'encoding', width: 90, editable: true, align: 'center', frozen: true, search: false}
-      {name: 'format', index: 'format', width: 90, editable: true, align: 'center', frozen: true, search: false}
+      {name: 'encoding', index: 'base.encoding', width: 90, editable: true, stype: 'select', searchoptions: {value: ':All;ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE'}, align: 'center', frozen: true}
+      {name: 'format', index: 'base.format', width: 90, editable: true, stype: 'select', searchoptions: {value: ":All;DCT:DCT;Dictionary conf:Dictionary conf;Text properties:Text properties;XML labels:XML labels"}, align: 'center', frozen: true}
     ]
-    #  cellEdit:false, onCellSelect:(rowid,iCol,cellcontent,e)->alert "rowid:#{rowid}, iCol:#{iCol}, cellcontent: #{cellcontent}, e,#{e}"
-    #    onRightClickRow:(rowid,iRow,iCol,e)-> alert "right click"
     ondblClickRow: (rowid, iRow, iCol, e)->
       language = {name: $(@).getGridParam('colModel')[iCol].name.split('.')[0], id: parseInt(/s\((\d+)\)\[\d+\]/ig.exec($(@).getGridParam('colModel')[iCol].index)[1])}
       dictName = $(@).getCell rowid, $(@).getGridParam('colNames').indexOf 'Dictionary'
@@ -36,6 +34,9 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
     ].concat common.colModel
     }
   }
+
+  getTableType=->if -1 == ($.inArray 'Dummy', $("#transGridList").getGridParam('colNames')) then  'dict' else 'app'
+
   transGrid = $("#transGridList").jqGrid {
   url: '' # url: 'json/taskgrid.json'
   mtype: 'POST', postData: {}, editurl: "", datatype: 'json'
@@ -48,7 +49,8 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
   groupHeaders: []
   afterCreate: (grid)->
     grid.setGroupHeaders {useColSpanStyle: true, groupHeaders: grid.getGridParam 'groupHeaders'}
-    grid.filterToolbar {stringResult: true, searchOnEnter: false}
+    grid.filterToolbar {stringResult: true, searchOnEnter: false} if getTableType() == 'dict'
+
     grid.navGrid '#taskPager', {edit: false, add: false, del: false, search: false, view: false}
     grid.navButtonAdd "#taskPager", {caption: "Clear", title: "Clear Search", buttonicon: 'ui-icon-refresh', position: 'first', onClickButton: ()->grid[0].clearToolbar()}
     grid.setFrozenColumns()
@@ -61,24 +63,28 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
     gridParam = transGrid.getGridParam()
 
     isApp = (param.level == "application")
-    gridParam.colNames = if isApp then grid.application.colNames else grid.dictionary.colNames
-    gridParam.colModel = if isApp then grid.application.colModel else  grid.dictionary.colModel
-    gridParam.ondblClickRow = if isApp then (()->) else grid.dictionary.ondblClickRow
+    if isApp
+      gridParam.colNames = grid.application.colNames
+      gridParam.colModel = grid.application.colModel
+      gridParam.ondblClickRow = (()->)
+      url = 'rest/applications'
+      prop = "id,id,base.name,version,labelNum,#{summary}"
+      transGrid.setColProp 'application', {search: false, index: 'base.name'}
+    else
+      gridParam.colNames = grid.dictionary.colNames
+      gridParam.colModel = grid.dictionary.colModel
+      gridParam.ondblClickRow = grid.dictionary.ondblClickRow
+      url = 'rest/dict'
+      prop = "id,app.base.name,app.version,base.name,version,base.encoding,base.format,labelNum,#{summary}"
 
-    eprop = "id,app.base.name,app.version,base.name,version,base.encoding,base.format,labelNum,"
-    eprop = 'id,id,base.name,version,labelNum,' if isApp
+      $.ajax {url: "rest/applications?prod=#{param.release.id}&prop=id,name",
+      async: false, dataType: 'json', success: (json)->
+        app = ":All"
+        $(json).each ->app += ";#{@name}:#{@name}"
+        transGrid.setColProp 'application', {search: true, searchoptions: {value: app}, index: 'app.base.name'}
+      }
 
-    prop = eprop + summary
     postData = {prod: param.release.id, format: 'grid', prop: prop}
-    url = if isApp then 'rest/applications' else 'rest/dict'
-
-    $.ajax {url: "rest/applications?prod=#{param.release.id}&prop=id,name",
-    async: false, dataType: 'json', success: (json)->
-      app = ":All"
-      $(json).each ->app += ";#{@name}:#{@name}"
-      transGrid.setColProp 'application', {searchoptions: {value: app}}
-    }
-
     transGrid.updateTaskLanguage param.languages, url, postData
   #
   getTotalSelectedRowInfo: ->
@@ -90,6 +96,5 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
       count += parseInt row.numOfString
 
     {rowIds: selectedRowIds, selectedNum: selectedRowIds.length, totalLabels: count}
-  getTableType: ->
-    if -1 == ($.inArray 'Dummy', $("#transGridList").getGridParam('colNames')) then  'dict' else 'app'
+  getTableType:getTableType
 

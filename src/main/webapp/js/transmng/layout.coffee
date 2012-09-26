@@ -157,9 +157,10 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'i18n!nls/common', 'transmng/
     ).parent().buttonset()
 
     (($("#detailTranslated").button().click ->
-      selectedRowIds = $("#transDetailGridList").getGridParam('selarrrow');
+      selectedRowIds = $("#transDetailGridList").getGridParam('selarrrow')
+      console.log selectedRowIds
     ).next().button().click ->
-      selectedRowIds = $("#transDetailGridList").getGridParam('selarrrow');
+      selectedRowIds = $("#transDetailGridList").getGridParam('selarrrow')
     ).parent().buttonset()
 
   #  private method

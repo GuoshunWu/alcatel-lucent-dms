@@ -140,7 +140,10 @@ public class ApplicationREST extends BaseREST {
 
     @GET
     @Path("appssamebase/{application.id}")
-    public String retrieveAllApplicationsWithSameAppBaseByAppId(@PathParam("application.id") Long id) {
+    /**
+     * Sibling Application have same base with current application
+     * */
+    public String retrieveSiblingApplications(@PathParam("application.id") Long id) {
         Map<String, Long> params = new HashMap<String, Long>();
         params.put("id", id);
 

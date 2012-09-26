@@ -2,7 +2,7 @@
 (function() {
 
   define(['jqgrid', 'util', 'require'], function($, util, require) {
-    var common, grid, transGrid;
+    var common, getTableType, grid, transGrid;
     common = {
       colNames: ['ID', 'Application', 'Version', 'Num of String'],
       colModel: [
@@ -61,20 +61,26 @@
             search: false
           }, {
             name: 'encoding',
-            index: 'encoding',
+            index: 'base.encoding',
             width: 90,
             editable: true,
+            stype: 'select',
+            searchoptions: {
+              value: ':All;ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE'
+            },
             align: 'center',
-            frozen: true,
-            search: false
+            frozen: true
           }, {
             name: 'format',
-            index: 'format',
+            index: 'base.format',
             width: 90,
             editable: true,
+            stype: 'select',
+            searchoptions: {
+              value: ":All;DCT:DCT;Dictionary conf:Dictionary conf;Text properties:Text properties;XML labels:XML labels"
+            },
             align: 'center',
-            frozen: true,
-            search: false
+            frozen: true
           }
         ]),
         ondblClickRow: function(rowid, iRow, iCol, e) {
@@ -111,6 +117,13 @@
         ].concat(common.colModel)
       }
     };
+    getTableType = function() {
+      if (-1 === ($.inArray('Dummy', $("#transGridList").getGridParam('colNames')))) {
+        return 'dict';
+      } else {
+        return 'app';
+      }
+    };
     transGrid = $("#transGridList").jqGrid({
       url: '',
       mtype: 'POST',
@@ -139,10 +152,12 @@
           useColSpanStyle: true,
           groupHeaders: grid.getGridParam('groupHeaders')
         });
-        grid.filterToolbar({
-          stringResult: true,
-          searchOnEnter: false
-        });
+        if (getTableType() === 'dict') {
+          grid.filterToolbar({
+            stringResult: true,
+            searchOnEnter: false
+          });
+        }
         grid.navGrid('#taskPager', {
           edit: false,
           add: false,
@@ -165,7 +180,7 @@
     transGrid.getGridParam('afterCreate')(transGrid);
     return {
       productReleaseChanged: function(param) {
-        var eprop, gridParam, isApp, postData, prop, summary, url;
+        var gridParam, isApp, postData, prop, summary, url;
         summary = ($(param.languages).map(function() {
           var _this;
           _this = this;
@@ -175,37 +190,47 @@
         })).get().join(',');
         gridParam = transGrid.getGridParam();
         isApp = param.level === "application";
-        gridParam.colNames = isApp ? grid.application.colNames : grid.dictionary.colNames;
-        gridParam.colModel = isApp ? grid.application.colModel : grid.dictionary.colModel;
-        gridParam.ondblClickRow = isApp ? (function() {}) : grid.dictionary.ondblClickRow;
-        eprop = "id,app.base.name,app.version,base.name,version,base.encoding,base.format,labelNum,";
         if (isApp) {
-          eprop = 'id,id,base.name,version,labelNum,';
+          gridParam.colNames = grid.application.colNames;
+          gridParam.colModel = grid.application.colModel;
+          gridParam.ondblClickRow = (function() {});
+          url = 'rest/applications';
+          prop = "id,id,base.name,version,labelNum," + summary;
+          transGrid.setColProp('application', {
+            search: false,
+            index: 'base.name'
+          });
+        } else {
+          gridParam.colNames = grid.dictionary.colNames;
+          gridParam.colModel = grid.dictionary.colModel;
+          gridParam.ondblClickRow = grid.dictionary.ondblClickRow;
+          url = 'rest/dict';
+          prop = "id,app.base.name,app.version,base.name,version,base.encoding,base.format,labelNum," + summary;
+          $.ajax({
+            url: "rest/applications?prod=" + param.release.id + "&prop=id,name",
+            async: false,
+            dataType: 'json',
+            success: function(json) {
+              var app;
+              app = ":All";
+              $(json).each(function() {
+                return app += ";" + this.name + ":" + this.name;
+              });
+              return transGrid.setColProp('application', {
+                search: true,
+                searchoptions: {
+                  value: app
+                },
+                index: 'app.base.name'
+              });
+            }
+          });
         }
-        prop = eprop + summary;
         postData = {
           prod: param.release.id,
           format: 'grid',
           prop: prop
         };
-        url = isApp ? 'rest/applications' : 'rest/dict';
-        $.ajax({
-          url: "rest/applications?prod=" + param.release.id + "&prop=id,name",
-          async: false,
-          dataType: 'json',
-          success: function(json) {
-            var app;
-            app = ":All";
-            $(json).each(function() {
-              return app += ";" + this.name + ":" + this.name;
-            });
-            return transGrid.setColProp('application', {
-              searchoptions: {
-                value: app
-              }
-            });
-          }
-        });
         return transGrid.updateTaskLanguage(param.languages, url, postData);
       },
       getTotalSelectedRowInfo: function() {
@@ -224,13 +249,7 @@
           totalLabels: count
         };
       },
-      getTableType: function() {
-        if (-1 === ($.inArray('Dummy', $("#transGridList").getGridParam('colNames')))) {
-          return 'dict';
-        } else {
-          return 'app';
-        }
-      }
+      getTableType: getTableType
     };
   });
 
