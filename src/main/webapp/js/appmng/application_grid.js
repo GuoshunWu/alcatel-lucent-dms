@@ -91,7 +91,7 @@
       },
       afterSubmitCell: function(serverresponse, rowid, cellname, value, iRow, iCol) {
         var jsonFromServer;
-        jsonFromServer = eval('(' + serverresponse.responseText + ')');
+        jsonFromServer = eval("('" + serverresponse.responseText + "')");
         return [0 === jsonFromServer.status, jsonFromServer.message];
       }
     });
