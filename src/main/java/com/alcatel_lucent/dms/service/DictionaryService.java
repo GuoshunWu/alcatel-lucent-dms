@@ -152,6 +152,14 @@ public interface DictionaryService {
 	 */
 	void updateDictionaryEncoding(Long id, String encoding) throws BusinessException;
 	
+	/**
+	 * Change dictionary version in application
+	 * @param appId application id
+	 * @param oldDictId old dictionary version, must exist in the app
+	 * @param newDictId new dictionary version, must have same base with the old one
+	 */
+	void changeDictionaryInApp(Long appId, Long oldDictId, Long newDictId) throws BusinessException;
+	
     
     //Dictionary previewProp(String dictionaryName, Map<String, Collection<Properties>> propMap, Collection<BusinessWarning> warnings) throws BusinessException;
 }

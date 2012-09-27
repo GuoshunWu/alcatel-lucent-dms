@@ -38,7 +38,7 @@ abstract public class JSONAction extends BaseAction {
         } catch (Exception e) {
             e.printStackTrace();
             setStatus(-1);
-            setMessage(e.getMessage());
+            setMessage(e.toString());
             return SUCCESS;
         }
     }
