@@ -42,6 +42,8 @@ public class BusinessException extends RuntimeException {
 	static public final int CHARSET_NOT_FOUND = 301;
 	static public final int INVALID_DICT_ENCODING = 302;
 	static public final int INVALID_DICT_FORMAT = 303;
+	static public final int DICTIONARIES_NOT_SAME_BASE = 304;
+	static public final int DICTIONARY_NOT_IN_APP = 305;
 	
 	static public final int APPLICATION_NOT_FOUND = 501;
 	static public final int DICTIONARY_NOT_FOUND = 502;

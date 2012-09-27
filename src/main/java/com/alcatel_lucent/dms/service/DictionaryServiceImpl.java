@@ -921,4 +921,31 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     	}
     	Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, id);
     }
+    
+    public void changeDictionaryInApp(Long appId, Long oldDictId, Long newDictId) throws BusinessException {
+    	Application app = (Application) dao.retrieve(Application.class, appId);
+    	Dictionary oldDict = (Dictionary) dao.retrieve(Dictionary.class, oldDictId);
+    	Dictionary newDict = (Dictionary) dao.retrieve(Dictionary.class, newDictId);
+    	if (!oldDict.getBase().getId().equals(newDict.getBase().getId())) {
+    		throw new BusinessException(BusinessException.DICTIONARIES_NOT_SAME_BASE);
+    	}
+    	Collection<Dictionary> dictionaries = app.getDictionaries();
+    	boolean found = false;
+    	if (dictionaries != null) {
+    		Iterator<Dictionary> iterator = dictionaries.iterator();
+    		while (iterator.hasNext()) {
+    			Dictionary dict = iterator.next();
+    			if (dict.getId().equals(oldDictId)) {
+    				iterator.remove();
+    				found = true;
+    				break;
+    			}
+    		}
+    	}
+    	if (found) {
+    		dictionaries.add(newDict);
+    	} else {
+    		throw new BusinessException(BusinessException.DICTIONARY_NOT_IN_APP);
+    	}
+    }
 }
