@@ -34,6 +34,11 @@ import com.alcatel_lucent.dms.model.Context;
 public class ContextREST extends BaseREST {
 	
 	@Override
+    @SuppressWarnings("rawtypes")
+    public Class getEntityClass() {
+    	return Context.class;
+    }
+	@Override
 	protected String doGetOrPost(Map<String, String> requestMap) throws Exception {
 		String hql =  "from Context";
 		String countHql = "select count(*) from Context";

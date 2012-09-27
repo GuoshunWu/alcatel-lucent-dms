@@ -37,6 +37,12 @@ import com.alcatel_lucent.dms.model.DictionaryLanguage;
 @Component("dictionaryLanguageREST")
 public class DictionaryLanguageREST extends BaseREST {
 	
+	@Override
+    @SuppressWarnings("rawtypes")
+    public Class getEntityClass() {
+		return DictionaryLanguage.class;
+	}
+	
     @Override
     protected String doGetOrPost(Map<String, String> requestMap) throws Exception {
     	Long dictId = Long.valueOf(requestMap.get("dict"));

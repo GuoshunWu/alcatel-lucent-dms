@@ -54,6 +54,12 @@ public class LabelREST extends BaseREST {
     private DictionaryService dictionaryService;
     
     @Override
+    @SuppressWarnings("rawtypes")
+    public Class getEntityClass() {
+    	return Label.class;
+    }
+    
+    @Override
     protected String doGetOrPost(Map<String, String> requestMap) throws Exception {
     	Long dictId = Long.valueOf(requestMap.get("dict"));
     	String sidx = requestMap.get("sidx");

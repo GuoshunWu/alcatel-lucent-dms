@@ -9,6 +9,8 @@ import java.util.Map;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -67,6 +69,29 @@ public abstract class BaseREST {
     		log.error(e);
     		throw new RESTException(e);
     	}
+    }
+    
+    /**
+     * General REST url for retrieving entity by id.
+     * Required parameter: prop={<prop1>,<prop2>,...} where each <prop> can be nested, 
+     *   					e.g. prop={id,base{id,name},version}
+     *   				or prop=prop1,prop2,prop3,...
+     * @param ui
+     * @param id
+     * @return
+     */
+    @GET
+    @Path("/{id}")
+    public String getEntityById(@Context UriInfo ui, @PathParam("id") Long id) {
+    	String prop = ui.getQueryParameters().getFirst("prop");
+    	try {
+        	Object entity = dao.retrieve(getEntityClass(), id);
+			return jsonService.toJSONString(entity, prop);
+		} catch (Exception e) {
+			e.printStackTrace();
+    		log.error(e);
+    		throw new RESTException(e);
+		}
     }
     
     protected String toJSON(Object data, Map<String, String> requestMap) throws Exception {
@@ -133,5 +158,6 @@ public abstract class BaseREST {
 
     
     abstract String doGetOrPost(Map<String, String> requestMap) throws Exception;
+    abstract Class getEntityClass();
 
 }
