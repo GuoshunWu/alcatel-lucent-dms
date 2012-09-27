@@ -125,6 +125,9 @@ require.config({
 //        modules
         appmng:'../appmng',
         transmng:'../transmng',
+        taskmng:'../taskmng',
+
+        domReady:'../domReady',
         nls:'../nls',
 //      for coffee script
         cs:'../cs',
@@ -171,5 +174,5 @@ require.config({
             locale:param.locale
         }
     },
-    waitSeconds:5
+    urlArgs: "bust=" +  (new Date()).getTime()
 });

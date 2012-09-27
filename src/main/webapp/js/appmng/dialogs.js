@@ -210,7 +210,15 @@
       open: function(e, ui) {
         var param;
         param = $(this).data("param");
-        return $('#refCode').val(param.refCode);
+        $('#refCode').val(param.refCode);
+        return $('#languageSettingGrid').setGridParam({
+          url: '/rest/dictLanguages',
+          postData: {
+            dict: param.dictId,
+            format: 'grid',
+            prop: 'language.name,languageCode,charset.name'
+          }
+        }).trigger("reloadGrid");
       }
     });
     stringSettings = $('#stringSettingsDialog').dialog({

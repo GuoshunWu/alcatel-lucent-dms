@@ -36,13 +36,19 @@
 
 <div id="optional-container">
     <div class="ui-layout-north" style="text-align: left; bottom:0px">
-        <table width="99%">
+        <table width="99%" border="0">
             <tr>
-                <td><span style="font-family:fantasy,verdana, '黑体'; font-size:14pt; font-style:normal; "><s:text name="appmng.title"/></span></td>
+                <td>
+                    <span style="font-family:fantasy,verdana, '黑体'; font-size:14pt; font-style:normal; ">
+                        <s:text name="appmng.title"/>
+                    </span>
+                </td>
                 <td align="right">
                     <div id="switcher"></div>
                 </td>
-                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td align="right">
+                    <%@include file="common/pagenavigator.jsp"%>
+                </td>
             </tr>
         </table>
     </div>

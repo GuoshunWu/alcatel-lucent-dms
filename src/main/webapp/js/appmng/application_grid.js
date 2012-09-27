@@ -80,19 +80,15 @@
         }
       },
       beforeSubmitCell: function(rowid, cellname, value, iRow, iCol) {
-        var changeSelect, product, productpnl;
-        productpnl = require('appmng/product_panel');
-        product = productpnl.getSelectedProduct();
-        changeSelect = $("#" + iRow + "_version", localIds.app_grid);
         return {
-          productId: product.id,
-          newAppId: changeSelect.val()
+          productId: (require('appmng/product_panel')).getSelectedProduct().id,
+          newAppId: value
         };
       },
       afterSubmitCell: function(serverresponse, rowid, cellname, value, iRow, iCol) {
         var jsonFromServer;
-        jsonFromServer = eval("('" + serverresponse.responseText + "')");
-        return [0 === jsonFromServer.status, jsonFromServer.message];
+        jsonFromServer = eval("(" + serverresponse.responseText + ")");
+        return [jsonFromServer.status === 0, jsonFromServer.message];
       }
     });
     appGrid.jqGrid('navGrid', '#pager', {

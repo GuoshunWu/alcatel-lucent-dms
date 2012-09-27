@@ -26,7 +26,8 @@
                 <table border="0" width="100%">
                     <tr>
                         <td style="width: 120px;">
-                            <label for="dctFileUpload"><s:text name="appmng.deliverapp"/></label>
+                            <%--@declare id="dctfileupload"--%><label for="dctFileUpload"><s:text
+                                name="appmng.deliverapp"/></label>
                         </td>
                         <td style="width: 100px;">
                             <div id="uploadBrower"></div>
@@ -50,6 +51,14 @@
                 </div>
             </td>
         </tr>
-
+        <tr>
+            <td>
+                <table>
+                    <tr>
+                        <td><button>Generate dictionary</button><button>Add language</button><button id="batchDelete">Delete</button></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
     </table>
 </div>

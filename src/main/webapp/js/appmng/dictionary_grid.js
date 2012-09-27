@@ -2,9 +2,38 @@
 (function() {
 
   define(['jqgrid', 'require', 'util', 'appmng/dialogs', 'i18n!nls/appmng'], function($, require, util, dialogs, i18n) {
-    var deleteRow, dicGrid, languageSetting, localIds, stringSetting;
+    var deleteRow, deleteRowsOptions, dicGrid, languageSetting, localIds, stringSetting;
     localIds = {
       dic_grid: '#dictionaryGridList'
+    };
+    deleteRowsOptions = {
+      mtype: 'post',
+      editData: [],
+      recreateForm: false,
+      modal: true,
+      jqModal: true,
+      reloadAfterSubmit: false,
+      url: 'http://127.0.0.1:2000',
+      beforeShowForm: function(form) {
+        var permanent;
+        permanent = $('#permanentDeleteSignId', form);
+        if (0 === permanent.length) {
+          return $("<tr><td>" + i18n.grid.permanenttext + "</td><td><input align='left' type='checkbox' id='permanentDeleteSignId'></td></tr>").appendTo($("tbody", form));
+        } else {
+          return permanent.removeAttr("checked");
+        }
+      },
+      onclickSubmit: function(params, posdata) {
+        return {
+          appId: $("#selAppVersion").val(),
+          permanent: Boolean($('#permanentDeleteSignId').attr("checked"))
+        };
+      },
+      afterSubmit: function(response, postdata) {
+        var jsonFromServer;
+        jsonFromServer = eval("(" + response.responseText + ")");
+        return [0 === jsonFromServer.status, jsonFromServer.message];
+      }
     };
     languageSetting = function(rowData) {
       dialogs.langSettings.data("param", {
@@ -17,37 +46,7 @@
       return dialogs.stringSettings.dialog('open');
     };
     deleteRow = function(rowid) {
-      var dicGrid;
-      dicGrid = $(localIds.dic_grid);
-      return dicGrid.jqGrid('delGridRow', rowid, {
-        mtype: 'post',
-        editData: [],
-        recreateForm: false,
-        modal: true,
-        jqModal: true,
-        reloadAfterSubmit: false,
-        url: 'http://127.0.0.1:2000',
-        beforeShowForm: function(form) {
-          var permanent;
-          permanent = $('#permanentDeleteSignId', form);
-          if (0 === permanent.length) {
-            return $("<tr><td>" + i18n.grid.permanenttext + "</td><td><input align='left' type='checkbox' id='permanentDeleteSignId'></td></tr>").appendTo($("tbody", form));
-          } else {
-            return permanent.removeAttr("checked");
-          }
-        },
-        onclickSubmit: function(params, posdata) {
-          return {
-            appId: $("#selAppVersion").val(),
-            permanent: Boolean($('#permanentDeleteSignId').attr("checked"))
-          };
-        },
-        afterSubmit: function(response, postdata) {
-          var jsonFromServer;
-          jsonFromServer = eval("(" + response.responseText + ")");
-          return [0 === jsonFromServer.status, jsonFromServer.message];
-        }
-      });
+      return $(localIds.dic_grid).jqGrid('delGridRow', rowid, deleteRowsOptions);
     };
     dicGrid = $(localIds.dic_grid).jqGrid({
       url: '',
@@ -62,8 +61,9 @@
       sortorder: 'asc',
       viewrecords: true,
       cellEdit: true,
-      cellurl: 'http://127.0.0.1:2000',
+      cellurl: '/app/update-dict',
       gridview: true,
+      multiselect: true,
       caption: 'Dictionary for Application',
       colNames: ['LangRefCode', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels', 'Action'],
       colModel: [
@@ -117,7 +117,7 @@
         }, {
           name: 'action',
           index: 'action',
-          width: 43,
+          width: 45,
           editable: false,
           align: 'center'
         }
@@ -125,6 +125,9 @@
       beforeProcessing: function(data, status, xhr) {
         var actIndex;
         actIndex = $(this).getGridParam('colNames').indexOf('Action');
+        if ($(this).getGridParam('multiselect')) {
+          --actIndex;
+        }
         return $(data.rows).each(function(index) {
           var rowData;
           rowData = this;
@@ -133,11 +136,34 @@
           })).get().join('');
         });
       },
-      afterEditCell: function(id, name, val, iRow, iCol) {},
-      beforeSubmitCell: function(rowid, cellname, value, iRow, iCol) {},
+      afterEditCell: function(id, name, val, iRow, iCol) {
+        var grid;
+        grid = this;
+        if (name === 'version') {
+          return $.ajax({
+            url: "/rest/dict?slibing=" + id + "&prop=id,version",
+            async: false,
+            dataType: 'json',
+            success: function(json) {
+              return $("#" + iRow + "_version", grid).append($(json).map(function() {
+                var opt;
+                opt = new Option(this.version, this.id);
+                opt.selected = this.version === val;
+                return opt;
+              }));
+            }
+          });
+        }
+      },
+      beforeSubmitCell: function(rowid, cellname, value, iRow, iCol) {
+        return {
+          appId: $("#selAppVersion").val(),
+          newDictId: value
+        };
+      },
       afterSubmitCell: function(serverresponse, rowid, cellname, value, iRow, iCol) {
         var jsonFromServer;
-        jsonFromServer = eval("('" + serverresponse.responseText + "')");
+        jsonFromServer = eval("(" + serverresponse.responseText + ")");
         return [0 === jsonFromServer.status, jsonFromServer.message];
       },
       gridComplete: function() {
@@ -171,13 +197,12 @@
         });
       }
     });
-    dicGrid.jqGrid('navGrid', '#dictPager', {
-      edit: false,
-      add: true,
-      del: false,
-      search: false,
-      view: false
+    dicGrid.jqGrid('navGrid', '#dictPager', {});
+    ($('#batchDelete').button({})).click(function() {
+      return $(localIds.dic_grid).delGridRow([], deleteRowsOptions);
     });
+    $;
+
     return {
       appChanged: function(app) {
         var appBase, url;
