@@ -3,15 +3,16 @@ package com.alcatel_lucent.dms.action.app;
 import com.alcatel_lucent.dms.action.JSONAction;
 import com.alcatel_lucent.dms.service.DictionaryService;
 
+@SuppressWarnings("serial")
 public class ChangeDictVersionAction extends JSONAction {
 	
 	private DictionaryService dictionaryService;
 	private Long appId;
-	private Long oldDictId;
+	private Long id;	// old dict id
 	private Long newDictId;
 	
 	protected String performAction() throws Exception {
-		dictionaryService.changeDictionaryInApp(appId, oldDictId, newDictId);
+		dictionaryService.changeDictionaryInApp(appId, id, newDictId);
 		return SUCCESS;
 	}
 
@@ -31,12 +32,12 @@ public class ChangeDictVersionAction extends JSONAction {
 		this.appId = appId;
 	}
 
-	public Long getOldDictId() {
-		return oldDictId;
+	public Long getId() {
+		return id;
 	}
 
-	public void setOldDictId(Long oldDictId) {
-		this.oldDictId = oldDictId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public Long getNewDictId() {
