@@ -118,7 +118,7 @@
       }
     };
     getTableType = function() {
-      if (-1 === ($.inArray('Dummy', $("#transGridList").getGridParam('colNames')))) {
+      if (-1 === ($.inArray('Dummy', $("#transGrid").getGridParam('colNames')))) {
         return 'dict';
       } else {
         return 'app';
@@ -152,6 +152,7 @@
           useColSpanStyle: true,
           groupHeaders: grid.getGridParam('groupHeaders')
         });
+        console.log(getTableType());
         if (getTableType() === 'dict') {
           grid.filterToolbar({
             stringResult: true,

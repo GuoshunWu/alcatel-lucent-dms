@@ -3,7 +3,7 @@
 
   define(['jqueryui', 'appmng/dictionary_grid', 'appmng/langsetting_grid', 'i18n!nls/appmng', 'appmng/stringsettings_grid', 'jsfileuploader/jquery.iframe-transport', 'jsfileuploader/jquery.fileupload'], function($, grid, langGrid, i18n) {
     var dctFileUpload;
-    $("#selAppVersion").change(function() {
+    $("#selAppVersion").change(function(e) {
       return grid.appChanged({
         version: $("option:selected", this).text(),
         id: this.value
@@ -36,11 +36,10 @@
       overflow: 'hidden'
     }).append($("<input type='file' id='" + dctFileUpload + "' name='upload' title='" + i18n.choosefile + "' multiple/>").css({
       position: 'absolute',
-      top: 0,
-      right: 0,
-      margin: 0,
-      border: '1px transparent',
-      borderWidth: '0 0 40px 0px',
+      top: -3,
+      right: -3,
+      border: '1px solid',
+      borderWidth: '1px 1px 10px 0px',
       opacity: 0,
       filter: 'alpha(opacity=0)',
       cursor: 'pointer'

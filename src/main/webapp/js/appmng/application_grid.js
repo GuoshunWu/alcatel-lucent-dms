@@ -94,60 +94,35 @@
     appGrid.jqGrid('navGrid', '#pager', {
       edit: false,
       add: false,
-      del: false,
+      del: true,
       search: false,
       view: false
-    });
-    appGrid.navButtonAdd('#pager', {
-      caption: "",
-      buttonicon: "ui-icon-trash",
-      position: "first",
-      onClickButton: function() {
-        var gr;
-        gr = appGrid.jqGrid('getGridParam', 'selrow');
-        if (null === gr) {
-          console.log(i18n);
-          $.msgBox(i18n.grid.delappmsg, null, {
-            title: 'Select Row',
-            width: 300,
-            height: 'auto'
-          });
-          false;
+    }, {}, {}, {
+      reloadAfterSubmit: false,
+      url: 'app/remove-application',
+      beforeShowForm: function(form) {
+        var permanent;
+        permanent = $('#permanentDeleteSignId', form);
+        if (permanent.length === 0) {
+          $("<tr><td>" + i18n.grid.permanenttext + "<td><input align='left' type='checkbox' id='permanentDeleteSignId'>").appendTo($("tbody", form));
         }
-        return appGrid.jqGrid('delGridRow', gr, {
-          mtype: 'post',
-          editData: [],
-          recreateForm: false,
-          modal: true,
-          jqModal: true,
-          reloadAfterSubmit: false,
-          url: 'app/remove-application',
-          beforeShowForm: function(form) {
-            var permanent;
-            permanent = $('#permanentDeleteSignId', form);
-            if (0 === permanent.length) {
-              return $("<tr><td>" + i18n.grid.permanenttext + "</td><td><input align='left' type='checkbox' id='permanentDeleteSignId'></td></tr>").appendTo($("tbody", form));
-            } else {
-              return permanent.removeAttr("checked");
-            }
-          },
-          onclickSubmit: function(params, posdata) {
-            var product;
-            product = (require("appmng/product_panel")).getSelectedProduct();
-            return {
-              productId: product.id,
-              permanent: Boolean($('#permanentDeleteSignId').attr("checked"))
-            };
-          },
-          afterSubmit: function(response, postdata) {
-            var jsonFromServer;
-            jsonFromServer = eval("(" + response.responseText + ")");
-            if (jsonFromServer.id) {
-              (require('appmng/apptree')).delApplictionBaseFromProductBase(jsonFromServer.id);
-            }
-            return [0 === jsonFromServer.status, jsonFromServer.message];
-          }
-        });
+        return permanent != null ? permanent.removeAttr('checked') : void 0;
+      },
+      onclickSubmit: function(params, posdata) {
+        var product;
+        product = (require("appmng/product_panel")).getSelectedProduct();
+        return {
+          productId: product.id,
+          permanent: Boolean($('#permanentDeleteSignId').attr("checked"))
+        };
+      },
+      afterSubmit: function(response, postdata) {
+        var jsonFromServer;
+        jsonFromServer = eval("(" + response.responseText + ")");
+        if (jsonFromServer.id) {
+          (require('appmng/apptree')).delApplictionBaseFromProductBase(jsonFromServer.id);
+        }
+        return [0 === jsonFromServer.status, jsonFromServer.message];
       }
     });
     appGrid.navButtonAdd('#pager', {

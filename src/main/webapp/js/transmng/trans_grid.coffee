@@ -35,7 +35,7 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
     }
   }
 
-  getTableType=->if -1 == ($.inArray 'Dummy', $("#transGridList").getGridParam('colNames')) then  'dict' else 'app'
+  getTableType=->if -1 == ($.inArray 'Dummy', $("#transGrid").getGridParam('colNames')) then  'dict' else 'app'
 
   transGrid = $("#transGrid").jqGrid {
   url: '' # url: 'json/taskgrid.json'
@@ -49,6 +49,7 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
   groupHeaders: []
   afterCreate: (grid)->
     grid.setGroupHeaders {useColSpanStyle: true, groupHeaders: grid.getGridParam 'groupHeaders'}
+    console.log getTableType()
     grid.filterToolbar {stringResult: true, searchOnEnter: false} if getTableType() == 'dict'
 
     grid.navGrid '#transPager', {edit: false, add: false, del: false, search: false, view: false}

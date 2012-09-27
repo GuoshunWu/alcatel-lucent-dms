@@ -2,26 +2,20 @@
 (function() {
 
   define(['jqgrid', 'require', 'util', 'appmng/dialogs', 'i18n!nls/appmng'], function($, require, util, dialogs, i18n) {
-    var deleteRow, deleteRowsOptions, dicGrid, languageSetting, localIds, stringSetting;
+    var deleteOptions, deleteRow, dicGrid, languageSetting, localIds, stringSetting;
     localIds = {
       dic_grid: '#dictionaryGridList'
     };
-    deleteRowsOptions = {
-      mtype: 'post',
-      editData: [],
-      recreateForm: false,
-      modal: true,
-      jqModal: true,
+    deleteOptions = {
       reloadAfterSubmit: false,
       url: 'http://127.0.0.1:2000',
       beforeShowForm: function(form) {
         var permanent;
         permanent = $('#permanentDeleteSignId', form);
-        if (0 === permanent.length) {
-          return $("<tr><td>" + i18n.grid.permanenttext + "</td><td><input align='left' type='checkbox' id='permanentDeleteSignId'></td></tr>").appendTo($("tbody", form));
-        } else {
-          return permanent.removeAttr("checked");
+        if (permanent.length === 0) {
+          $("<tr><td>" + i18n.grid.permanenttext + "<td><input align='left' type='checkbox' id='permanentDeleteSignId'>").appendTo($("tbody", form));
         }
+        return permanent != null ? permanent.removeAttr('checked') : void 0;
       },
       onclickSubmit: function(params, posdata) {
         return {
@@ -46,7 +40,8 @@
       return dialogs.stringSettings.dialog('open');
     };
     deleteRow = function(rowid) {
-      return $(localIds.dic_grid).jqGrid('delGridRow', rowid, deleteRowsOptions);
+      console.log($.jgrid.del);
+      return $(localIds.dic_grid).jqGrid('delGridRow', rowid, deleteOptions);
     };
     dicGrid = $(localIds.dic_grid).jqGrid({
       url: '',
@@ -197,12 +192,10 @@
         });
       }
     });
-    dicGrid.jqGrid('navGrid', '#dictPager', {});
+    dicGrid.jqGrid('navGrid', '#dictPager', {}, {}, {}, deleteOptions);
     ($('#batchDelete').button({})).click(function() {
-      return $(localIds.dic_grid).delGridRow([], deleteRowsOptions);
+      return alert("Useless");
     });
-    $;
-
     return {
       appChanged: function(app) {
         var appBase, url;

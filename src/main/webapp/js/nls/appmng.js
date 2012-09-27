@@ -13,8 +13,8 @@ define({
             version:'Select version'
         },
         grid:{
-            delappmsg: 'Please select row to delete!',
-            permanenttext: 'Delete permanently'
+            delappmsg:'Please select row to delete!',
+            permanenttext:'Delete permanently'
         },
         dialog:{
             stringsettings:{
@@ -36,3 +36,4 @@ define({
     },
     "zh-cn":true
 });
+

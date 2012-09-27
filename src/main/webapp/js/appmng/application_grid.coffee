@@ -7,8 +7,6 @@ define ['jqgrid', 'require', 'i18n!nls/appmng'], ($, require, i18n)->
   localIds = {
   app_grid: '#applicationGridList'
   }
-
-
   dialogs = require 'appmng/dialogs'
 
   appGrid = $(localIds.app_grid).jqGrid {
@@ -43,32 +41,23 @@ define ['jqgrid', 'require', 'i18n!nls/appmng'], ($, require, i18n)->
     jsonFromServer = eval "(#{serverresponse.responseText})"
     [jsonFromServer.status == 0, jsonFromServer.message]
   }
-  appGrid.jqGrid('navGrid', '#pager', {edit: false, add: false, del: false, search: false, view: false})
-  appGrid.navButtonAdd '#pager', { caption: "", buttonicon: "ui-icon-trash", position: "first"
-  onClickButton: ()->
-    gr = appGrid.jqGrid('getGridParam', 'selrow')
-    if (null == gr)
-      console.log i18n
-      $.msgBox i18n.grid.delappmsg, null, {title: 'Select Row', width: 300, height: 'auto' }
-      false
-    appGrid.jqGrid 'delGridRow', gr, { mtype: 'post', editData: [], recreateForm: false, modal: true, jqModal: true, reloadAfterSubmit: false
-    url: 'app/remove-application'
-    beforeShowForm: (form)->
-      permanent = $('#permanentDeleteSignId', form)
-      if (0 == permanent.length)
-        $("<tr><td>#{i18n.grid.permanenttext}</td><td><input align='left' type='checkbox' id='permanentDeleteSignId'></td></tr>").appendTo $("tbody", form)
-      else
-        permanent.removeAttr "checked"
-    onclickSubmit: (params, posdata)->
-      product = (require "appmng/product_panel").getSelectedProduct()
-      {productId: product.id, permanent: Boolean($('#permanentDeleteSignId').attr("checked"))}
-    afterSubmit: (response, postdata)->
-      jsonFromServer = eval "(#{response.responseText})"
-      #remove appbase node from apptree.
-      (require 'appmng/apptree').delApplictionBaseFromProductBase jsonFromServer.id if jsonFromServer.id
-      #appbase is deleted
-      [0 == jsonFromServer.status, jsonFromServer.message]
-    }
+  appGrid.jqGrid 'navGrid', '#pager', {edit: false, add: false, del: true, search: false, view: false}, {}, {}, {
+#  delete form properties
+  reloadAfterSubmit: false, url: 'app/remove-application'
+  beforeShowForm: (form)->
+    permanent = $('#permanentDeleteSignId', form)
+    $("<tr><td>#{i18n.grid.permanenttext}<td><input align='left' type='checkbox' id='permanentDeleteSignId'>")
+    .appendTo $("tbody", form) if permanent.length == 0
+    permanent?.removeAttr 'checked'
+  onclickSubmit: (params, posdata)->
+    product = (require "appmng/product_panel").getSelectedProduct()
+    {productId: product.id, permanent: Boolean($('#permanentDeleteSignId').attr("checked"))}
+  afterSubmit: (response, postdata)->
+    jsonFromServer = eval "(#{response.responseText})"
+    #remove appbase node from apptree.
+    (require 'appmng/apptree').delApplictionBaseFromProductBase jsonFromServer.id if jsonFromServer.id
+    #appbase is deleted
+    [0 == jsonFromServer.status, jsonFromServer.message]
   }
   appGrid.navButtonAdd '#pager', { caption: "", buttonicon: "ui-icon-plus", position: "first"
   onClickButton: ()->

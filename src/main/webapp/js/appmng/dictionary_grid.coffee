@@ -2,24 +2,21 @@ define ['jqgrid', 'require', 'util', 'appmng/dialogs', 'i18n!nls/appmng'], ($, r
   localIds = {
   dic_grid: '#dictionaryGridList'
   }
-  deleteRowsOptions = {
-  mtype: 'post', editData: [], recreateForm: false, modal: true, jqModal: true, reloadAfterSubmit: false
-  url: 'http://127.0.0.1:2000'
+  deleteOptions = {
+  reloadAfterSubmit: false, url: 'http://127.0.0.1:2000'
   beforeShowForm: (form)->
     permanent = $('#permanentDeleteSignId', form)
-    if (0 == permanent.length)
-      $("<tr><td>#{i18n.grid.permanenttext}</td><td><input align='left' type='checkbox' id='permanentDeleteSignId'></td></tr>").appendTo $("tbody", form)
-    else
-      permanent.removeAttr "checked"
+    $("<tr><td>#{i18n.grid.permanenttext}<td><input align='left' type='checkbox' id='permanentDeleteSignId'>")
+    .appendTo $("tbody", form) if permanent.length == 0
+    permanent?.removeAttr 'checked'
   onclickSubmit: (params, posdata)->
     {appId: $("#selAppVersion").val(), permanent: Boolean($('#permanentDeleteSignId').attr("checked"))}
   afterSubmit: (response, postdata)->
     jsonFromServer = eval "(#{response.responseText})"
-    #appbase is deleted
+    #dictBase is deleted
     #remove dictionary base.
     [0 == jsonFromServer.status, jsonFromServer.message]
   }
-
   languageSetting = (rowData)->
     dialogs.langSettings.data "param", {dictId: rowData.id, refCode: rowData.langrefcode}
     dialogs.langSettings.dialog 'open'
@@ -27,8 +24,9 @@ define ['jqgrid', 'require', 'util', 'appmng/dialogs', 'i18n!nls/appmng'], ($, r
   #    dialogs.stringsettings.data "param", {dictId: rowData.id, refCode: rowData.langrefcode}
     dialogs.stringSettings.dialog 'open'
 
-  deleteRow = (rowid)->$(localIds.dic_grid).jqGrid 'delGridRow', rowid, deleteRowsOptions
-
+  deleteRow = (rowid)->
+    console.log $.jgrid.del
+    $(localIds.dic_grid).jqGrid 'delGridRow', rowid, deleteOptions
 
   dicGrid = $(localIds.dic_grid).jqGrid {
   url: ''
@@ -71,7 +69,7 @@ define ['jqgrid', 'require', 'util', 'appmng/dialogs', 'i18n!nls/appmng'], ($, r
         $("##{iRow}_version", grid).append $(json).map ()->opt = new Option(@version, @id);opt.selected = @version == val; opt
       }
   beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
-    {appId: $("#selAppVersion").val(),newDictId:value}
+    {appId: $("#selAppVersion").val(), newDictId: value}
 
   afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
     jsonFromServer = eval "(#{serverresponse.responseText})"
@@ -100,11 +98,9 @@ define ['jqgrid', 'require', 'util', 'appmng/dialogs', 'i18n!nls/appmng'], ($, r
             console.log 'Invalid action'
     }
   }
-  dicGrid.jqGrid('navGrid', '#dictPager', {})
-  # batch actions.
-  ($('#batchDelete').button {}).click ->
-    $(localIds.dic_grid).delGridRow [], deleteRowsOptions
-  $
+  dicGrid.jqGrid 'navGrid', '#dictPager', {}, {}, {}, deleteOptions
+
+  ($('#batchDelete').button {}).click ->alert "Useless"
 
   appChanged: (app)->
     url = "rest/dict?app=#{app.id}&format=grid&prop=languageReferenceCode,base.name,version,base.format,base.encoding,labelNum"
