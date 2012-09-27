@@ -68,19 +68,21 @@ public class DictionaryREST extends BaseREST {
     		for (String field : filters.keySet()) {
     			hqlWhere += " and " + toFieldName(field) + "=:p" + i;
     			param.put("p" + i, filters.get(field));
+    			i++;
     		}
     	}
     	String hql, countHql;
     	if (appId != null) {
     		hql = "select obj,app from Application app join app.dictionaries obj where app.id=:appId";
-    		countHql = "select a.dictionaries.size from Application a where a.id=:appId";
+    		countHql = "select count(*) from Application app join app.dictionaries obj where app.id=:appId";
     		param.put("appId", appId);
     	} else {
     		hql = "select obj,app from Product p join p.applications app join app.dictionaries obj where p.id=:prodId";
-    		countHql = "select a.dictionaries.size from Product p join p.applications a where p.id=:prodId";
+    		countHql = "select count(*) from Product p join p.applications app join app.dictionaries obj where p.id=:prodId";
     		param.put("prodId", prodId);
     	}
     	hql += hqlWhere;
+    	countHql += hqlWhere;
 
     	String sidx = requestMap.get("sidx");
     	String sord = requestMap.get("sord");
