@@ -600,89 +600,91 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             // for each translation
             // convert charset of translation strings
             // determine translation behaviors
-            for (LabelTranslation trans : label.getOrigTranslations()) {
-                String langCode = langCodeMap.get(trans.getLanguage().getId());
-                String charsetName = langCharset.get(getUnifiedLangCode(langCode));
-                if (charsetName == null) {
-                	charsetName = langCharset.get("DEFAULT");
-                }
-                if (null == charsetName) {
-                    nonBreakExceptions.addNestedException(new BusinessException(
-                            BusinessException.CHARSET_NOT_DEFINED, langCode));
-                    continue;
-                }
-                try {
-                    boolean invalidText = false;
-                    if (!dict.getEncoding().equals(charsetName)) {
-                        byte[] source = trans.getOrigTranslation().getBytes(dict.getEncoding());
-                        String encodedTranslation = new String(source, charsetName);
-                        byte[] target = encodedTranslation.getBytes(charsetName);
-                        if (!Arrays.equals(source, target)) {
-                            invalidText = true;
-                            trans.setOrigTranslation(text.getReference());
-                            log.warn("Invalid encoding at label " + label.getKey() + " of dict " + dict.getPath());
-                        } else {
-                            trans.setOrigTranslation(encodedTranslation);
-                        }
-                    }
-
-                    labelWarnings = "";
-                    // check charset
-                    if (invalidText || !trans.isValidText()) {
-                        warnings.add(new BusinessWarning(
-                                BusinessWarning.INVALID_TEXT,
-                                trans.getOrigTranslation(), charsetName, langCode,
-                                label.getKey()));
-                        labelWarnings += BusinessWarning.INVALID_TEXT;
-                    }
-
-                    // check length
-                    if (!label.checkLength(trans.getOrigTranslation())) {
-                        warnings.add(new BusinessWarning(
-                                BusinessWarning.EXCEED_MAX_LENGTH, langCode,
-                                label.getKey()));
-                        if (!labelWarnings.isEmpty()) {
-                        	labelWarnings += ";";
-                        }
-                        labelWarnings += BusinessWarning.EXCEED_MAX_LENGTH;
-                    }
-                    trans.setWarnings(labelWarnings);
-                } catch (UnsupportedEncodingException e) {
-                    nonBreakExceptions.addNestedException(new BusinessException(
-                            BusinessException.CHARSET_NOT_FOUND, charsetName));
-                }
-                
-                // determine if the translation should take value from context dictionary
-                trans.setNeedTranslation(true);
-                if (lastLabel != null) {
-                	// get the original translation in latest version
-                	LabelTranslation lastTranslation = lastLabel.getOrigTranslation(trans.getLanguageCode());
-                	if (lastTranslation != null && 
-                			!lastTranslation.getOrigTranslation().equals(trans.getOrigTranslation()) &&
-                			!trans.getOrigTranslation().equals(label.getReference())) {
-                		// translation changed means the label was translated on developer side
-                		trans.setNeedTranslation(false);
-                	}
-                }
-                
-                Translation t = new Translation();
-                t.setText(text);
-                t.setTranslation(trans.getOrigTranslation());
-                t.setLanguage(trans.getLanguage());
-                
-                // determine translation status
-                if (trans.getRequestTranslation() != null) {
-                	t.setStatus(trans.getRequestTranslation().booleanValue() ? 
-                			Translation.STATUS_UNTRANSLATED : Translation.STATUS_TRANSLATED);
-                } else if (!trans.isNeedTranslation()) {
-                	t.setStatus(Translation.STATUS_TRANSLATED);
-                } else if (label.getReference().equals(trans.getOrigTranslation())) {
-                	t.setStatus(Translation.STATUS_UNTRANSLATED);
-                } else {
-                	t.setStatus(Translation.STATUS_TRANSLATED);
-                }
-                text.addTranslation(t);
-            } //for
+            if (label.getOrigTranslations() != null) {
+	            for (LabelTranslation trans : label.getOrigTranslations()) {
+	                String langCode = langCodeMap.get(trans.getLanguage().getId());
+	                String charsetName = langCharset.get(getUnifiedLangCode(langCode));
+	                if (charsetName == null) {
+	                	charsetName = langCharset.get("DEFAULT");
+	                }
+	                if (null == charsetName) {
+	                    nonBreakExceptions.addNestedException(new BusinessException(
+	                            BusinessException.CHARSET_NOT_DEFINED, langCode));
+	                    continue;
+	                }
+	                try {
+	                    boolean invalidText = false;
+	                    if (!dict.getEncoding().equals(charsetName)) {
+	                        byte[] source = trans.getOrigTranslation().getBytes(dict.getEncoding());
+	                        String encodedTranslation = new String(source, charsetName);
+	                        byte[] target = encodedTranslation.getBytes(charsetName);
+	                        if (!Arrays.equals(source, target)) {
+	                            invalidText = true;
+	                            trans.setOrigTranslation(text.getReference());
+	                            log.warn("Invalid encoding at label " + label.getKey() + " of dict " + dict.getPath());
+	                        } else {
+	                            trans.setOrigTranslation(encodedTranslation);
+	                        }
+	                    }
+	
+	                    labelWarnings = "";
+	                    // check charset
+	                    if (invalidText || !trans.isValidText()) {
+	                        warnings.add(new BusinessWarning(
+	                                BusinessWarning.INVALID_TEXT,
+	                                trans.getOrigTranslation(), charsetName, langCode,
+	                                label.getKey()));
+	                        labelWarnings += BusinessWarning.INVALID_TEXT;
+	                    }
+	
+	                    // check length
+	                    if (!label.checkLength(trans.getOrigTranslation())) {
+	                        warnings.add(new BusinessWarning(
+	                                BusinessWarning.EXCEED_MAX_LENGTH, langCode,
+	                                label.getKey()));
+	                        if (!labelWarnings.isEmpty()) {
+	                        	labelWarnings += ";";
+	                        }
+	                        labelWarnings += BusinessWarning.EXCEED_MAX_LENGTH;
+	                    }
+	                    trans.setWarnings(labelWarnings);
+	                } catch (UnsupportedEncodingException e) {
+	                    nonBreakExceptions.addNestedException(new BusinessException(
+	                            BusinessException.CHARSET_NOT_FOUND, charsetName));
+	                }
+	                
+	                // determine if the translation should take value from context dictionary
+	                trans.setNeedTranslation(true);
+	                if (lastLabel != null) {
+	                	// get the original translation in latest version
+	                	LabelTranslation lastTranslation = lastLabel.getOrigTranslation(trans.getLanguageCode());
+	                	if (lastTranslation != null && 
+	                			!lastTranslation.getOrigTranslation().equals(trans.getOrigTranslation()) &&
+	                			!trans.getOrigTranslation().equals(label.getReference())) {
+	                		// translation changed means the label was translated on developer side
+	                		trans.setNeedTranslation(false);
+	                	}
+	                }
+	                
+	                Translation t = new Translation();
+	                t.setText(text);
+	                t.setTranslation(trans.getOrigTranslation());
+	                t.setLanguage(trans.getLanguage());
+	                
+	                // determine translation status
+	                if (trans.getRequestTranslation() != null) {
+	                	t.setStatus(trans.getRequestTranslation().booleanValue() ? 
+	                			Translation.STATUS_UNTRANSLATED : Translation.STATUS_TRANSLATED);
+	                } else if (!trans.isNeedTranslation()) {
+	                	t.setStatus(Translation.STATUS_TRANSLATED);
+	                } else if (label.getReference().equals(trans.getOrigTranslation())) {
+	                	t.setStatus(Translation.STATUS_UNTRANSLATED);
+	                } else {
+	                	t.setStatus(Translation.STATUS_TRANSLATED);
+	                }
+	                text.addTranslation(t);
+	            } //for
+            }
         }
         
         // for each context, insert or update label/text/translation data
@@ -730,22 +732,24 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 }
                 
                 // create or update LabelTranslation
-                for (LabelTranslation trans : label.getOrigTranslations()) {
-                	LabelTranslation dbLabelTrans = null;
-                	if (!newLabel) {
-                		dbLabelTrans = dbLabel.getOrigTranslation(trans.getLanguageCode());
-                	}
-                	if (dbLabelTrans == null) {
-                		trans.setLabel(dbLabel);
-                		trans.setLanguage((Language) dao.retrieve(Language.class, trans.getLanguage().getId()));
-                		dbLabelTrans = (LabelTranslation) dao.create(trans, false);
-                	} else {
-                		dbLabelTrans.setOrigTranslation(trans.getOrigTranslation());
-                		dbLabelTrans.setWarnings(trans.getWarnings());
-                		dbLabelTrans.setNeedTranslation(trans.isNeedTranslation());
-                		dbLabelTrans.setLanguageCode(trans.getLanguageCode());
-                		dbLabelTrans.setSortNo(trans.getSortNo());
-                	}
+                if (label.getOrigTranslations() != null) {
+	                for (LabelTranslation trans : label.getOrigTranslations()) {
+	                	LabelTranslation dbLabelTrans = null;
+	                	if (!newLabel) {
+	                		dbLabelTrans = dbLabel.getOrigTranslation(trans.getLanguageCode());
+	                	}
+	                	if (dbLabelTrans == null) {
+	                		trans.setLabel(dbLabel);
+	                		trans.setLanguage((Language) dao.retrieve(Language.class, trans.getLanguage().getId()));
+	                		dbLabelTrans = (LabelTranslation) dao.create(trans, false);
+	                	} else {
+	                		dbLabelTrans.setOrigTranslation(trans.getOrigTranslation());
+	                		dbLabelTrans.setWarnings(trans.getWarnings());
+	                		dbLabelTrans.setNeedTranslation(trans.isNeedTranslation());
+	                		dbLabelTrans.setLanguageCode(trans.getLanguageCode());
+	                		dbLabelTrans.setSortNo(trans.getSortNo());
+	                	}
+	                }
                 }
             }
         }

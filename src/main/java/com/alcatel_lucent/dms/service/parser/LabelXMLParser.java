@@ -36,6 +36,22 @@ public class LabelXMLParser extends DictionaryParser {
 	
 	@Autowired
 	private LanguageService languageService;
+	
+	protected String getRootName() {
+		return "LABELS";
+	}
+	
+	protected String getFormat() {
+		return "XML labels";
+	}
+	
+	protected String getXPath() {
+		return "/LABELS/LABEL";
+	}
+	
+	protected String getKeyAttributeName() {
+		return "label_id";
+	}
 
 	@Override
 	public ArrayList<Dictionary> parse(String rootDir, File file,
@@ -106,7 +122,7 @@ public class LabelXMLParser extends DictionaryParser {
         dictBase.setName(dictName);
         dictBase.setPath(refFile.getAbsolutePath());
         dictBase.setEncoding("UTF-8");
-        dictBase.setFormat("LabelXML");
+        dictBase.setFormat(getFormat());
         
         Context context = new Context();
         context.setName(dictName);
@@ -119,7 +135,7 @@ public class LabelXMLParser extends DictionaryParser {
 		int sortNo = 1;
 		Collection<DictionaryLanguage> dictLanguages = new ArrayList<DictionaryLanguage>();
 		dictionary.setDictLanguages(dictLanguages);
-		dictionary.setLabels(readLabels(refFile, warnings, dictExceptions));
+		dictionary.setLabels(readLabels(refFile, warnings, refFileExceptions));
 		for (Label label : dictionary.getLabels()) {
 			label.setContext(context);
 		}
@@ -134,6 +150,9 @@ public class LabelXMLParser extends DictionaryParser {
 			dictLanguage.setLanguageCode(langCode);
 			dictLanguage.setSortNo(sortNo);
 			Language language = languageService.getLanguage(langCode);
+			if (language == null) {
+				throw new BusinessException(BusinessException.UNKNOWN_XML_LANG_CODE, langCode);
+			}
 			dictLanguage.setLanguage(language);
 			dictLanguages.add(dictLanguage);
 			if (!langCode.equals(refLangCode)) {
@@ -173,14 +192,18 @@ public class LabelXMLParser extends DictionaryParser {
 			doc = db.parse(file);
 			DOMReader domReader = new DOMReader();
 			Document document = domReader.read(doc);
-			List<Element> nodes = document.selectNodes("/LABELS/LABEL");
+			Element root = document.getRootElement();
+			if (!root.getName().equals(getRootName())) {
+				throw new BusinessException(BusinessException.INVALID_XML_FILE, file.getName());
+			}
+			List<Element> nodes = document.selectNodes(getXPath());
 			int sortNo = 1;
 			for (Element node : nodes) {
 				List<Attribute> attributes = node.attributes();
 				String key = null;
 				StringBuffer annotation = new StringBuffer();
 				for (Attribute attr : attributes) {
-					if (attr.getName().equals("label_id")) {
+					if (attr.getName().equals(getKeyAttributeName())) {
 						key = attr.getValue();
 					} else {
 						annotation.append(attr.getName()).append("=").append(attr.getValue()).append(";");
@@ -196,7 +219,7 @@ public class LabelXMLParser extends DictionaryParser {
 				result.add(label);
 			}
 		} catch (Exception e1) {
-			log.warn(e1);
+			throw new BusinessException(BusinessException.INVALID_XML_FILE, file.getName());
 		}
 		return result;
 	}

@@ -336,7 +336,10 @@ class GDictionaryServiceImplTest {
 				
         langCodeForPkg.each {subDir, langCodes ->
 			int mode = subDir.equals('EN-UK') ? Constants.DELIVERY_MODE : Constants.TRANSLATION_MODE
-            String rootDir = "Z:/$subDir"
+//            String rootDir = "Z:/$subDir"
+			String rootDir = "D:/Translation/ICS_unified_management_framework/6.6"
+//			String rootDir = "D:/projects/translation/ICS6.7.1_oamp_dcts/6.6_merge_result"
+//			mode = Constants.TRANSLATION_MODE
             String testFilePath = rootDir
             log.info "Begin to import directory: $testFilePath".center(100, '=')
             log.debug "rootDir=$rootDir"
@@ -365,15 +368,23 @@ class GDictionaryServiceImplTest {
 			Collection<Dictionary> dictionaries = ds.previewDictionaries rootDir, new File(testFilePath), warnings
 			dictionaries.each {dict ->
 				Map<String, String>langCharset
-				if (dict.getFormat().equals("dct")) {
-					langCharset = dictProp.getDictionaryCharsets(dict.getName())
-				} else if (dict.getFormat().equals("mdc")) {
+				if (dict.getFormat().equals("DCT")) {
+					try {
+						langCharset = dictProp.getDictionaryCharsets(dict.getName())
+					} catch (Exception e) {
+						langCharset = [default: 'UTF-8']
+					}
+				} else if (dict.getFormat().equals("Dictionary conf")) {
+					langCharset = [default: 'UTF-8']
+				} else if (dict.getFormat().equals("XML labels")) {
+					langCharset = [default: 'UTF-8']
+				} else if (dict.getFormat().equals("XML properties")) {
 					langCharset = [default: 'UTF-8']
 				} else {
 					langCharset = [default: 'ISO-8859-1']
 				}
-				Long appId = 1
-				String dictVersion = "1.0"
+				Long appId = 15
+				String dictVersion = "6.6"
 				ds.importDictionary appId, dict, dictVersion, mode, langCodes as String[], langCharset, warnings 
 				if (!warnings.isEmpty()) {
 					join(warnings, '\n').replace("\"", "\"\"");

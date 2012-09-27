@@ -98,7 +98,7 @@ public class PropParser extends DictionaryParser {
         dictBase.setName(dictName);
         dictBase.setPath(refFile.getAbsolutePath());
         dictBase.setEncoding("ISO-8859-1");
-        dictBase.setFormat("prop");
+        dictBase.setFormat("Text properties");
         
         Context context = new Context();
         context.setName(dictName);

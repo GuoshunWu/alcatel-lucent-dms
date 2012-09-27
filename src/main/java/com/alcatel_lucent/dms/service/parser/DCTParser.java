@@ -132,7 +132,7 @@ public class DCTParser extends DictionaryParser {
         dictBase.setName(dictName);
         dictBase.setPath(path);
         dictBase.setEncoding(encoding);
-        dictBase.setFormat("dct");
+        dictBase.setFormat("DCT");
         
 		Dictionary dictionary = new Dictionary();
 		dictionary.setBase(dictBase);
