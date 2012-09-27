@@ -37,12 +37,12 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
 
   getTableType=->if -1 == ($.inArray 'Dummy', $("#transGridList").getGridParam('colNames')) then  'dict' else 'app'
 
-  transGrid = $("#transGridList").jqGrid {
+  transGrid = $("#transGrid").jqGrid {
   url: '' # url: 'json/taskgrid.json'
   mtype: 'POST', postData: {}, editurl: "", datatype: 'json'
   width: $(window).width() * 0.95, height: 300, shrinkToFit: false
   rownumbers: true, loadonce: false # for reload the colModel
-  pager: '#taskPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
+  pager: '#transPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
   sortname: 'base.name', sortorder: 'asc', viewrecords: true, gridview: true, multiselect: true
   caption: ''
   colNames: grid.dictionary.colNames, colModel: grid.dictionary.colModel
@@ -51,7 +51,7 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
     grid.setGroupHeaders {useColSpanStyle: true, groupHeaders: grid.getGridParam 'groupHeaders'}
     grid.filterToolbar {stringResult: true, searchOnEnter: false} if getTableType() == 'dict'
 
-    grid.navGrid '#taskPager', {edit: false, add: false, del: false, search: false, view: false}
+    grid.navGrid '#transPager', {edit: false, add: false, del: false, search: false, view: false}
     grid.navButtonAdd "#taskPager", {caption: "Clear", title: "Clear Search", buttonicon: 'ui-icon-refresh', position: 'first', onClickButton: ()->grid[0].clearToolbar()}
     grid.setFrozenColumns()
   }

@@ -45,15 +45,13 @@
             <table width="100%" border="0" style="border-color: yellow">
                 <tr>
                     <td align="center" colspan="9" style="width: 100%">
-
-                        <table id="transGridList">
+                        <table id="transGrid">
                             <tr>
                                 <td/>
                             </tr>
                         </table>
                         <div id="taskPager"/>
-
-                    </td>
+                   </td>
                 </tr>
             </table>
         </td>

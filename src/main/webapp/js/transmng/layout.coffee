@@ -9,6 +9,12 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'i18n!nls/common', 'transmng/
     page: 'optional-container'
     }
   }
+
+  $('#pageNavigator').val(window.location.pathname)
+  pageLayout = $("##{ids.container.page}").layout {resizable: true, closable: true}
+
+  $(".header-footer").hover (->$(@).addClass "ui-state-hover"), -> $(@).removeClass "ui-state-hover"
+
   dialogs = null
   generateLanguageTable = (languages, tableId, colNum)->
     tableId = ids.languageFilterTableId if !tableId
@@ -165,7 +171,6 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'i18n!nls/common', 'transmng/
 
   #  private method
   initPage = ->
-    pageLayout = $("##{ids.container.page}").layout {resizable: true, closable: true}
     ###################################### Elements in summary panel ######################################
     createSelects()
     ###################################### Initialize elements in north panel ######################################

@@ -124,7 +124,7 @@
         return 'app';
       }
     };
-    transGrid = $("#transGridList").jqGrid({
+    transGrid = $("#transGrid").jqGrid({
       url: '',
       mtype: 'POST',
       postData: {},
@@ -135,7 +135,7 @@
       shrinkToFit: false,
       rownumbers: true,
       loadonce: false,
-      pager: '#taskPager',
+      pager: '#transPager',
       rowNum: 60,
       rowList: [10, 20, 30, 60, 120],
       sortname: 'base.name',
@@ -158,7 +158,7 @@
             searchOnEnter: false
           });
         }
-        grid.navGrid('#taskPager', {
+        grid.navGrid('#transPager', {
           edit: false,
           add: false,
           del: false,

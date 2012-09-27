@@ -134,7 +134,7 @@ define ['jqueryui', 'jqmsgbox', 'i18n!nls/common','i18n!nls/appmng'], ($, msgbox
   # param must be attached to the dialog before the dialog open
     param = $(@).data "param"
     $('#refCode').val param.refCode
-#    $('#languageSettingGrid').setGridParam({url: 'rest/languages', postData: {dict: param.dictId, prop: 'language.name,languageCode,charset.name'}}).trigger "reloadGrid"
+    $('#languageSettingGrid').setGridParam({url: '/rest/dictLanguages', postData: {dict: param.dictId,format:'grid', prop: 'language.name,languageCode,charset.name'}}).trigger "reloadGrid"
   }
 
   stringSettings = $('#stringSettingsDialog').dialog {

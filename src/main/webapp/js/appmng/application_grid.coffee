@@ -24,10 +24,11 @@ define ['jqgrid', 'require', 'i18n!nls/appmng'], ($, require, i18n)->
   viewrecords: true, gridview: true, altRows: true
   caption: 'Applications for Product'
   colNames: ['ID', 'Application', 'Version', 'Dict. Num.']
+
   colModel: [
     {name: 'id', index: 'id', width: 55, align: 'center', editable: false, hidden: true}
     {name: 'name', index: 'name', width: 100, editable: false, align: 'center'}
-    {name: 'version', index: 'version', width: 90, editable: true, align: 'center', edittype: 'select',editoptions: {value: {}}}
+    {name: 'version', index: 'version', width: 90, editable: true, align: 'center', edittype: 'select', editoptions: {value: {}}}
     {name: 'dictNum', index: 'dictNum', width: 80, editable: false, align: 'center'}
   ],
   afterEditCell: (id, name, val, iRow, iCol)->
@@ -36,15 +37,11 @@ define ['jqgrid', 'require', 'i18n!nls/appmng'], ($, require, i18n)->
         $("##{iRow}_version", localIds.app_grid).append $(json).map ()->opt = new Option(@version, @id);opt.selected = @version == val; opt
       }
   beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
-    productpnl = require 'appmng/product_panel'
-    product = productpnl.getSelectedProduct()
-    changeSelect = $("##{iRow}_version", localIds.app_grid)
-    #    add the product id and the application id changed to.
-    {productId: product.id, newAppId: changeSelect.val()}
+    {productId: (require 'appmng/product_panel').getSelectedProduct().id, newAppId: value}
 
   afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
-    jsonFromServer = eval "('#{serverresponse.responseText}')"
-    [0 == jsonFromServer.status, jsonFromServer.message]
+    jsonFromServer = eval "(#{serverresponse.responseText})"
+    [jsonFromServer.status == 0, jsonFromServer.message]
   }
   appGrid.jqGrid('navGrid', '#pager', {edit: false, add: false, del: false, search: false, view: false})
   appGrid.navButtonAdd '#pager', { caption: "", buttonicon: "ui-icon-trash", position: "first"

@@ -13,7 +13,7 @@
       editurl: "",
       rowNum: 10,
       rowList: [10, 20, 30],
-      sortname: 'name',
+      sortname: 'language.name',
       sortorder: 'asc',
       viewrecords: true,
       gridview: true,
@@ -21,19 +21,19 @@
       colModel: [
         {
           name: 'name',
-          index: 'name',
+          index: 'language.name',
           width: 50,
           editable: true,
           align: 'left'
         }, {
           name: 'code',
-          index: 'code',
+          index: 'languageCode',
           width: 40,
           editable: true,
           align: 'center'
         }, {
           name: 'charset',
-          index: 'charset',
+          index: 'charset.name',
           width: 40,
           editable: true,
           align: 'center'

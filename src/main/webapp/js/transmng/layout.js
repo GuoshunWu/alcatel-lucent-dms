@@ -2,7 +2,7 @@
 (function() {
 
   define(['jqlayout', 'jquery', 'i18n!nls/transmng', 'i18n!nls/common', 'transmng/trans_grid', 'require', 'jqmsgbox', 'transmng/transdetail_grid'], function($, jq, i18n, c18n, grid, require, msgbox, detailgrid) {
-    var createButtons, createDialogs, createSelects, dialogs, generateLanguageTable, ids, initPage;
+    var createButtons, createDialogs, createSelects, dialogs, generateLanguageTable, ids, initPage, pageLayout;
     ids = {
       languageFilterTableId: 'languageFilterTable',
       languageFilterDialogId: 'languageFilterDialog',
@@ -10,6 +10,16 @@
         page: 'optional-container'
       }
     };
+    $('#pageNavigator').val(window.location.pathname);
+    pageLayout = $("#" + ids.container.page).layout({
+      resizable: true,
+      closable: true
+    });
+    $(".header-footer").hover((function() {
+      return $(this).addClass("ui-state-hover");
+    }), function() {
+      return $(this).removeClass("ui-state-hover");
+    });
     dialogs = null;
     generateLanguageTable = function(languages, tableId, colNum) {
       var checkedAll, innerColTable, languageCells, languageFilterTable, outerTableFirstRow, rowCount;
@@ -247,11 +257,6 @@
       })).parent().buttonset();
     };
     initPage = function() {
-      var pageLayout;
-      pageLayout = $("#" + ids.container.page).layout({
-        resizable: true,
-        closable: true
-      });
       createSelects();
       dialogs = createDialogs();
       return createButtons(dialogs.taskDialog, dialogs.languageFilterDialog, dialogs.transDetailDialog);

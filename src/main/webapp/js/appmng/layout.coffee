@@ -1,4 +1,4 @@
-define ['jqlayout', 'module'], ($, module)->
+define ['domReady!','jqlayout', 'module'], (doc,$, module)->
   PANEL_PREFIX = 'DMS'
   ids = {
   container:
@@ -13,6 +13,8 @@ define ['jqlayout', 'module'], ($, module)->
     application: PANEL_PREFIX + "_applicationPanel"
     }
   }
+
+  $('#pageNavigator').val(window.location.pathname)
 
 #  console.log module
   pageLayout = $("##{ids.container.page}").layout {resizable: true, closable: true}
