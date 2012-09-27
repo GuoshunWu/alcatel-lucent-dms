@@ -40,7 +40,13 @@ import com.alcatel_lucent.dms.model.Language;
 @Component("languageREST")
 @SuppressWarnings("unchecked")
 public class LanguageREST extends BaseREST {
-
+	
+	@Override
+    @SuppressWarnings("rawtypes")
+    public Class getEntityClass() {
+		return Language.class;
+	}
+	
     @Override
 	protected String doGetOrPost(Map<String, String> requestMap) throws Exception {
     	String hql;

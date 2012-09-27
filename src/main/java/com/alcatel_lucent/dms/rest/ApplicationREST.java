@@ -46,6 +46,12 @@ public class ApplicationREST extends BaseREST {
 
     @Autowired
     private DictionaryService dictionaryService;
+    
+	@Override
+    @SuppressWarnings("rawtypes")
+    public Class getEntityClass() {
+    	return Application.class;
+    }
 
     @Override
     protected String doGetOrPost(Map<String, String> requestMap) throws Exception {
