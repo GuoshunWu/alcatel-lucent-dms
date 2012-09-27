@@ -904,4 +904,21 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     	return count == null ? 0 : count.intValue();
     }
 
+    public void updateDictionaryFormat(Long id, String format) throws BusinessException {
+    	Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, id);
+    	// TODO: update valid format list
+    	String[] validFormats = {"DCT", "Dictionary conf", "XML labels", "XML properties", "Text properties"};
+    	if (!Arrays.asList(validFormats).contains(format)) {
+    		throw new BusinessException(BusinessException.INVALID_DICT_FORMAT, format);
+    	}
+    	dict.setFormat(format);
+    }
+    
+    public void updateDictionaryEncoding(Long id, String encoding) throws BusinessException {
+    	encoding = encoding.trim();
+    	if (!encoding.equals("ISO-8859-1") && !encoding.equals("UTF-8") && !encoding.equals("UTF-16LE")) {
+    		throw new BusinessException(BusinessException.INVALID_DICT_ENCODING, encoding);
+    	}
+    	Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, id);
+    }
 }

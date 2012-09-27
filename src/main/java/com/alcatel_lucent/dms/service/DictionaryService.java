@@ -136,6 +136,22 @@ public interface DictionaryService {
      */
 	public int getLabelNumByApp(Long appId);
 	
+	/**
+	 * Change format of dictionary
+	 * @param id dictionary id
+	 * @param format format
+	 * @throws BusinessException when format is invalid
+	 */
+	void updateDictionaryFormat(Long id, String format) throws BusinessException;
+	
+	/**
+	 * Change encoding of dictionary
+	 * @param id dictionary id
+	 * @param encoding encoding (valid encodings: ISO-8859-1, UTF-8, UTF-16LE)
+	 * @throws BusinessException when encoding is invalid
+	 */
+	void updateDictionaryEncoding(Long id, String encoding) throws BusinessException;
+	
     
     //Dictionary previewProp(String dictionaryName, Map<String, Collection<Properties>> propMap, Collection<BusinessWarning> warnings) throws BusinessException;
 }
