@@ -20,9 +20,10 @@ import com.alcatel_lucent.dms.service.LanguageService;
  * Filter parameters:
  *   prod		(optional) product id, in which product all dictionaries will be retrieved
  *   app		(optional) application id, in which application all dictionaries will be retrieved
+ *   slibing	(optional) dictionary id, if specified, it will return all dictionaries under same base
  *   filters	(optional) jqGrid-style filter string, in json format, e.g.
  *   	{"groupOp":"AND","rules":[{"field":"base.name","op":"eq","data":"2"},{"field":"format","op":"eq","data":"dct"}]}
- * One and only of the "prod" and "app" must be specified.  
+ * One of the "prod", "app" or "slibing" filter must be specified.
  *   
  * Sort parameters:
  *   sidx		(optional) sort by, default is "base.name"
@@ -55,10 +56,13 @@ public class DictionaryREST extends BaseREST {
     protected String doGetOrPost(Map<String, String> requestMap) throws Exception {
     	Long appId = null;
     	Long prodId = null;
+    	Long slibingId = null;
     	if (requestMap.get("app") != null) {
     		appId = Long.valueOf(requestMap.get("app"));
-    	} else {
+    	} else if (requestMap.get("prod") != null) {
     		prodId = Long.valueOf(requestMap.get("prod"));
+    	} else if (requestMap.get("slibing") != null) {
+    		slibingId = Long.valueOf(requestMap.get("slibing"));
     	}
     	Map param = new HashMap();
     	Map<String, String> filters = getGridFilters(requestMap);
@@ -76,10 +80,14 @@ public class DictionaryREST extends BaseREST {
     		hql = "select obj,app from Application app join app.dictionaries obj where app.id=:appId";
     		countHql = "select count(*) from Application app join app.dictionaries obj where app.id=:appId";
     		param.put("appId", appId);
-    	} else {
+    	} else if (prodId != null) {
     		hql = "select obj,app from Product p join p.applications app join app.dictionaries obj where p.id=:prodId";
     		countHql = "select count(*) from Product p join p.applications app join app.dictionaries obj where p.id=:prodId";
     		param.put("prodId", prodId);
+    	} else {
+    		hql = "select obj from Dictionary obj where obj.base=(select d.base from Dictionary d where d.id=:slibingId)";
+    		countHql = "select count(*) from Dictionary where base=(select d.base from Dictionary d where d.id=:slibingId)";
+    		param.put("slibingId", slibingId);
     	}
     	hql += hqlWhere;
     	countHql += hqlWhere;
@@ -97,13 +105,17 @@ public class DictionaryREST extends BaseREST {
     		orderBy = "obj.labels.size";
     	}
     	hql += " order by " + orderBy + " " + sord;
-    	Collection<Object[]> result = retrieve(hql, param, countHql, param, requestMap);
+    	Collection result = retrieve(hql, param, countHql, param, requestMap);
     	
     	Collection<Dictionary> dictionaries = new ArrayList<Dictionary>();
-    	for (Object[] row : result) {
-    		Dictionary dict = (Dictionary) row[0];
-    		dictionaries.add(dict);
-    		dict.setApp((Application) row[1]);
+    	if (slibingId != null) {
+    		dictionaries.addAll(result);
+    	} else {	// if filtered by prod and app, add app information
+	    	for (Object[] row : (Collection<Object[]>) result) {
+	    		Dictionary dict = (Dictionary) row[0];
+	    		dictionaries.add(dict);
+	    		dict.setApp((Application) row[1]);
+	    	}
     	}
     	
 		// additional properties
@@ -123,7 +135,7 @@ public class DictionaryREST extends BaseREST {
 		
     	return toJSON(dictionaries, requestMap);
     }
-
+    
 	private void fillZero(Collection<Long> langIds, Map<Long, int[]> map) {
 		for (Long langId : langIds) {
 			if (!map.containsKey(langId)) {
