@@ -188,8 +188,47 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
         }
         return rowCount;
     }
+    
+    public void updateTranslationStatus(Long transId, int transStatus) {
+    	Translation trans = (Translation) dao.retrieve(Translation.class, transId);
+    	trans.setStatus(transStatus);
+    }
+    
+    public void updateTranslationStatusByDict(Collection<Long> dictIds, int transStatus) {
+    	for (Long dictId : dictIds) {
+    		Collection<Translation> qr = findAllTranslationsByDict(dictId);
+    		for (Translation trans : qr) {
+    			trans.setStatus(transStatus);
+    		}
+    	}
+    }
+    
+    public void updateTranslationStatusByApp(Collection<Long> appIds, int status) {
+    	for (Long appId: appIds) {
+    		Collection<Translation> qr = findAllTranslationsByApp(appId);
+    		for (Translation trans : qr) {
+    			trans.setStatus(status);
+    		}
+    	}
+    }
+    
 
-    private void updateRow(JSONObject rowContainer, Long languageId) {
+    private Collection<Translation> findAllTranslationsByDict(Long dictId) {
+		String hql = "select t.translations from Label l join l.text t where l.dictionary.id=:dictId";
+		Map param = new HashMap();
+		param.put("dictId", dictId);
+		return dao.retrieve(hql, param);
+	}
+    
+    private Collection<Translation> findAllTranslationsByApp(Long appId) {
+		String hql = "select t.translations from Application a join a.dictionaries d join d.labels l join l.text t where a.id=:appId";
+		Map param = new HashMap();
+		param.put("appId", appId);
+		return dao.retrieve(hql, param);
+	}
+
+
+	private void updateRow(JSONObject rowContainer, Long languageId) {
 
         Context ctx= (Context) dao.retrieveOne("from Context where name = :name",
                 JSONObject.fromObject("{'name':'" + rowContainer.get(headerMap.get(ExcelFileHeader.DICTIONARY)) + "'}"));
