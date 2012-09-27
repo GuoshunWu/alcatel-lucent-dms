@@ -17,8 +17,6 @@ public class BusinessException extends RuntimeException {
 
 	static public final int ACCESS_DENIED = 100;
 	static public final int INVALID_DCT_FILE = 200;
-    static public final int INVALID_MDC_FILE = 211;
-    static public final int INVALID_EXCEL_FILE = 212;
 
     static public final int DUPLICATE_DCT_NAME = 201;
 	static public final int DCT_FILE_NOT_FOUND = 202;
@@ -29,14 +27,20 @@ public class BusinessException extends RuntimeException {
 	static public final int CHARSET_NOT_DEFINED = 208;
 	static public final int NESTED_DCT_PARSE_ERROR = 209;
 	static public final int NESTED_LABEL_ERROR = 210;
-	static public final int NO_REFERENCE_LANGUAGE = 212;
+    static public final int INVALID_MDC_FILE = 211;
+    static public final int INVALID_EXCEL_FILE = 212;
 	static public final int FILE_TOO_LARGE = 213;
 	static public final int NESTED_PROP_ERROR = 214;
 	static public final int NESTED_PROP_FILE_ERROR = 215;
 	static public final int INVALID_PROP_LINE = 216;
+	static public final int NO_REFERENCE_LANGUAGE = 217;
 	static public final int NESTED_LABEL_XML_ERROR = 219;
 	static public final int NESTED_LABEL_XML_FILE_ERROR = 220;
+	static public final int INVALID_XML_FILE = 221;
+	static public final int UNKNOWN_XML_LANG_CODE = 222;
+	
 	static public final int CHARSET_NOT_FOUND = 301;
+	
 	static public final int APPLICATION_NOT_FOUND = 501;
 	static public final int DICTIONARY_NOT_FOUND = 502;
     static public final int CONTEXT_NOT_FOUND = 503;
