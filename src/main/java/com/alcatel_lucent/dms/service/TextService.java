@@ -82,4 +82,25 @@ public interface TextService {
      *  @param languageId language ID for insert or update Translation
      */
     int receiveTranslation(String fileName, Long languageId);
+    
+    /**
+     * Update translation status
+     * @param transId Translation object id
+     * @param transStatus new translation status
+     */
+    void updateTranslationStatus(Long transId, int transStatus);
+    
+    /**
+     * Update translation status by dictionaries
+     * @param dictIds dictionary id list
+     * @param transStatus new translation status
+     */
+    void updateTranslationStatusByDict(Collection<Long> dictIds, int transStatus);
+    
+    /**
+     * Update translation status by applications
+     * @param appIds application id list
+     * @param transStatus new translation status
+     */
+    void updateTranslationStatusByApp(Collection<Long> appIds, int transStatus);
 }
