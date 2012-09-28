@@ -920,6 +920,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     		throw new BusinessException(BusinessException.INVALID_DICT_ENCODING, encoding);
     	}
     	Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, id);
+    	dict.setEncoding(encoding);
     }
     
     public void changeDictionaryInApp(Long appId, Long oldDictId, Long newDictId) throws BusinessException {
