@@ -17,8 +17,7 @@ public class UpdateStatusAction extends JSONAction {
 	protected String performAction() throws Exception {
 		log.info("UpdateStatusAction: id=" + id + ", status=" + transStatus + ", type=" + type);
 		if (type.equals("trans")) {
-			Long transId = Long.valueOf(id);
-			textService.updateTranslationStatus(transId, transStatus);
+			textService.updateTranslationStatus(toIdList(id), transStatus);
 		} else if (type.equals("dict")) {
 			textService.updateTranslationStatusByDict(toIdList(id), transStatus);
 		} else if (type.equals("app")) {

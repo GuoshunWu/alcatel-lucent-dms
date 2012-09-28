@@ -85,10 +85,10 @@ public interface TextService {
     
     /**
      * Update translation status
-     * @param transId Translation object id
+     * @param tarnsIds Translation object id list
      * @param transStatus new translation status
      */
-    void updateTranslationStatus(Long transId, int transStatus);
+    void updateTranslationStatus(Collection<Long> transIds, int transStatus);
     
     /**
      * Update translation status by dictionaries
