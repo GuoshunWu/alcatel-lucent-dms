@@ -96,6 +96,22 @@
       }
     });
     transDetailGrid.getGridParam('afterCreate')(transDetailGrid);
+    ($("#translationDetailDialog [id^=detailTrans]").button().click(function() {
+      var detailGrid, selectedRowIds;
+      detailGrid = $("#transDetailGridList");
+      selectedRowIds = detailGrid.getGridParam('selarrrow').join(',');
+      return $.post('/trans/update-status', {
+        type: 'trans',
+        transStatus: this.value,
+        id: selectedRowIds
+      }, function(json) {
+        if (json.status !== 0) {
+          alert(json.message);
+          return;
+        }
+        return detailGrid.trigger('reloadGrid');
+      });
+    })).parent().buttonset();
     return {
       languageChanged: function(param) {
         var prop, url;

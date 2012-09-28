@@ -31,6 +31,7 @@
         if (postData) {
           gridParam.postData = postData;
         }
+        delete gridParam.selarrrow;
         newGrid = $(this.getId()).jqGrid(gridParam);
         return this.getGridParam('afterCreate')(newGrid);
       },

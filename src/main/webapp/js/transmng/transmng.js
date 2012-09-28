@@ -7,7 +7,7 @@
  */
 //require({},['http://localhost/scripts/configjs.groovy','require','../lib/util'], function (c, require,util) {
 require({}, ['../config'], function (c) {
-    var dependencies = convertDependencies('transmng', ['layout', 'grid.colmodel', 'trans_grid']);
+    var dependencies = convertDependencies('transmng', ['layout']);
 //    console.log(dependencies);
     require(dependencies);
 }, function (err) {

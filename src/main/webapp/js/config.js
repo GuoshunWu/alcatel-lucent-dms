@@ -122,6 +122,7 @@ require.config({
         jqtree:'jquery.jstree',
         jqlayout:'jquery.layout-latest',
         jqmsgbox:'jquery.msgBox.v1',
+        blockui:'jquery.blockUI',
 //        modules
         appmng:'../appmng',
         transmng:'../transmng',
@@ -159,6 +160,10 @@ require.config({
             exports:'jQuery'
         },
         'jqmsgbox':{
+            deps:['jquery'],
+            exports:'jQuery'
+        },
+        'blockui':{
             deps:['jquery'],
             exports:'jQuery'
         },

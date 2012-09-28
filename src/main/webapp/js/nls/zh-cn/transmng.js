@@ -26,6 +26,12 @@ define({
         createtranstask:{
             title:'选择{0}',
             msg:'请先选择{0}！'
+        },
+        rowsel:{
+            msg:'请先选择行！'
+        },
+        transstatus:{
+            msg:'成功修改翻译状态。'
         }
     },
     trans:{

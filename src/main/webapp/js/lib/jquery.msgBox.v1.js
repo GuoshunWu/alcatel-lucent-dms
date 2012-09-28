@@ -64,8 +64,8 @@
     $.fn.msgBox.defaults =
     {
 
-        height: 200,
-        width: 400,
+        height: 'auto',
+        width: 300,
         title: "Message",
         modal: true,
         resizable: true,

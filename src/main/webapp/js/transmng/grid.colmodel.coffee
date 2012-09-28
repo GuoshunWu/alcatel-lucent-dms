@@ -20,8 +20,11 @@ define ['jqgrid'], ($)->
     gridParam.postData=postData if postData
 #    console.log "recreate grid, gridpostData="
 #    console.log  gridParam.postData
+    delete gridParam.selarrrow
+#    delete gridParam.selrow
     newGrid = $(@getId()).jqGrid gridParam
     @getGridParam('afterCreate') newGrid
+
 
   addTaskLanguage: (language, url, postData)->
     cols = ['T', 'N', 'I']

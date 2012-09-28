@@ -1,4 +1,4 @@
-define ['jqgrid', 'util', 'require'], ($, util, require)->
+define ['jqgrid', 'util', 'require', 'jqmsgbox','i18n!nls/transmng','i18n!nls/common'], ($, util, require,msgbox,i18n,c18n)->
   common =
     {
     colNames: ['ID', 'Application', 'Version', 'Num of String']
@@ -35,7 +35,7 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
     }
   }
 
-  getTableType=->if -1 == ($.inArray 'Dummy', $("#transGrid").getGridParam('colNames')) then  'dict' else 'app'
+  getTableType = ->if -1 == ($.inArray 'Dummy', $("#transGrid").getGridParam('colNames')) then  'dict' else 'app'
 
   transGrid = $("#transGrid").jqGrid {
   url: '' # url: 'json/taskgrid.json'
@@ -49,7 +49,6 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
   groupHeaders: []
   afterCreate: (grid)->
     grid.setGroupHeaders {useColSpanStyle: true, groupHeaders: grid.getGridParam 'groupHeaders'}
-    console.log getTableType()
     grid.filterToolbar {stringResult: true, searchOnEnter: false} if getTableType() == 'dict'
 
     grid.navGrid '#transPager', {edit: false, add: false, del: false, search: false, view: false}
@@ -58,6 +57,19 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
   }
   transGrid.getGridParam('afterCreate') transGrid
 
+  ($("[id^=makeLabel]").button().click ()->
+    transGrid = $("#transGrid")
+    selectedRowIds = transGrid.getGridParam('selarrrow').join(',')
+    if !selectedRowIds
+      $.msgBox i18n.msgbox.rowsel.msg, null, title: c18n.warning
+      return
+    #    console.log "selected: #{selectedRowIds}, type: #{getTableType()}, value: #{@value}"
+
+    $.post '/trans/update-status', {type: getTableType(), transStatus: @value, id: selectedRowIds}, (json)->
+      (alert json.message; return) if json.status != 0
+      $.msgBox i18n.msgbox.transstatus.msg, null, title: c18n.message
+      transGrid.trigger 'reloadGrid'
+  ).parent().buttonset()
 
   productReleaseChanged: (param) ->
     summary = ($(param.languages).map ->_this = @;($([0, 1, 2]).map ->"s(#{_this.id})[#{@}]").get().join(',')).get().join(',')
@@ -87,15 +99,16 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
 
     postData = {prod: param.release.id, format: 'grid', prop: prop}
     transGrid.updateTaskLanguage param.languages, url, postData
-  #
+
+
   getTotalSelectedRowInfo: ->
-    transGrid = $("#transGridList")
+    transGrid = $("#transGrid")
     selectedRowIds = transGrid.getGridParam 'selarrrow'
     count = 0
     $(selectedRowIds).each ->
-      row = $("#transGridList").getRowData @
+      row = transGrid.getRowData @
       count += parseInt row.numOfString
 
     {rowIds: selectedRowIds, selectedNum: selectedRowIds.length, totalLabels: count}
-  getTableType:getTableType
+  getTableType: getTableType
 

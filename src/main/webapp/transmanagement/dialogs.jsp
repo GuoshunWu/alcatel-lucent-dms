@@ -100,8 +100,8 @@
         <tr>
             <td>
                 <s:text name="transmng.summarypanel.makelabelas"/>&nbsp;&nbsp;
-                <button id='detailTranslated'>T</button>
-                <button id='detailNotTranslated'>N</button>
+                <button id='detailTransTranslated' value="2">T</button>
+                <button id='detailTransNotTranslated' value="0">N</button>
             </td>
         </tr>
     </table>
