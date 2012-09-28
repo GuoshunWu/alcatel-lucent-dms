@@ -1,6 +1,11 @@
 # Implement the navigation tree on the east
-define ['jqtree','require','appmng/product_panel', 'appmng/application_panel'], ($,require,productpnl,apppnl)->
-  layout = require('appmng/layout')
+define (require)->
+  $ = require 'jqtree'
+  layout = require 'appmng/layout'
+  productpnl = require 'appmng/product_panel'
+  apppnl = require 'appmng/application_panel'
+  dialogs = require 'appmng/dialogs'
+
   console.log layout
 
   ids = {

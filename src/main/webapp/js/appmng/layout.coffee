@@ -1,4 +1,6 @@
-define ['jqlayout', 'module'], ($, module)->
+define (require)->
+  $=require('jqlayout')
+
   PANEL_PREFIX = 'DMS'
   ids = {
   container:

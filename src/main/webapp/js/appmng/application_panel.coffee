@@ -1,4 +1,14 @@
-define ['jqueryui', 'appmng/dictionary_grid', 'appmng/langsetting_grid', 'i18n!nls/appmng', 'appmng/stringsettings_grid', 'jsfileuploader/jquery.iframe-transport', 'jsfileuploader/jquery.fileupload'], ($, grid, langGrid, i18n)->
+define (require)->
+  $ = require 'jqueryui'
+  require 'appmng/langsetting_grid'
+  require 'appmng/stringsettings_grid'
+  require 'jqupload'
+  require 'iframetransport'
+
+  grid = require 'appmng/dictionary_grid'
+  i18n = require 'i18n!nls/appmng'
+
+
   $("#selAppVersion").change (e)->
     grid.appChanged {version: $("option:selected", @).text(), id: @value}
 

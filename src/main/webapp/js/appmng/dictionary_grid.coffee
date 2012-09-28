@@ -1,4 +1,9 @@
-define ['jqgrid', 'require', 'util', 'appmng/dialogs', 'i18n!nls/appmng'], ($, require, util, dialogs, i18n)->
+define (require, util, dialogs, i18n)->
+  $ = require 'jqgrid'
+  util = require 'util'
+  dialogs = require 'appmng/dialogs'
+  i18n = require 'i18n!nls/appmng'
+
   localIds = {
   dic_grid: '#dictionaryGridList'
   }
@@ -70,7 +75,7 @@ define ['jqgrid', 'require', 'util', 'appmng/dialogs', 'i18n!nls/appmng'], ($, r
       }
   beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
     isVersion = cellname == 'version'
-    $(@).setGridParam cellurl:if isVersion then '/app/change-dict-version' else '/app/update-dict'
+    $(@).setGridParam cellurl: if isVersion then '/app/change-dict-version' else '/app/update-dict'
     if isVersion then {appId: $("#selAppVersion").val(), newDictId: value} else {}
 
   afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
