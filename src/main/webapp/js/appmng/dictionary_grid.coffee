@@ -69,7 +69,9 @@ define ['jqgrid', 'require', 'util', 'appmng/dialogs', 'i18n!nls/appmng'], ($, r
         $("##{iRow}_version", grid).append $(json).map ()->opt = new Option(@version, @id);opt.selected = @version == val; opt
       }
   beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
-    {appId: $("#selAppVersion").val(), newDictId: value}
+    isVersion = cellname == 'version'
+    $(@).setGridParam cellurl:if isVersion then '/app/change-dict-version' else '/app/update-dict'
+    if isVersion then {appId: $("#selAppVersion").val(), newDictId: value} else {}
 
   afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
     jsonFromServer = eval "(#{serverresponse.responseText})"

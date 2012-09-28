@@ -23,7 +23,7 @@
       gridview: true,
       multiselect: true,
       cellEdit: true,
-      cellurl: 'http://127.0.0.1:2000',
+      cellurl: '/trans/update-status',
       colNames: ['Label', 'Max Length', 'Context', 'Reference language', 'Translation', 'Status'],
       colModel: [
         {
@@ -36,7 +36,7 @@
           frozen: true
         }, {
           name: 'maxlen',
-          index: 'maxlen',
+          index: 'maxLength',
           width: 90,
           editable: true,
           align: 'right',
@@ -44,27 +44,27 @@
           search: false
         }, {
           name: 'context',
-          index: 'context',
+          index: 'context.name',
           width: 80,
           align: 'left',
           frozen: true,
           search: false
         }, {
           name: 'reflang',
-          index: 'reflang',
+          index: 'reference',
           width: 150,
           align: 'left',
           frozen: true,
           search: false
         }, {
           name: 'trans',
-          index: 'trans',
+          index: 'ct.translation',
           width: 150,
           align: 'left',
           search: false
         }, {
-          name: 'status',
-          index: 'status',
+          name: 'transStatus',
+          index: 'ct.status',
           width: 150,
           align: 'left',
           editable: true,
@@ -75,7 +75,11 @@
           formatter: 'select'
         }
       ],
-      beforeSubmitCell: function(rowid, cellname, value, iRow, iCol) {},
+      beforeSubmitCell: function(rowid, cellname, value, iRow, iCol) {
+        return {
+          type: 'trans'
+        };
+      },
       afterSubmitCell: function(serverresponse, rowid, cellname, value, iRow, iCol) {
         var jsonFromServer;
         jsonFromServer = eval('(' + serverresponse.responseText + ')');

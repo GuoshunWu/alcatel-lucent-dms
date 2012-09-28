@@ -151,10 +151,19 @@
         }
       },
       beforeSubmitCell: function(rowid, cellname, value, iRow, iCol) {
-        return {
-          appId: $("#selAppVersion").val(),
-          newDictId: value
-        };
+        var isVersion;
+        isVersion = cellname === 'version';
+        $(this).setGridParam({
+          cellurl: isVersion ? '/app/change-dict-version' : '/app/update-dict'
+        });
+        if (isVersion) {
+          return {
+            appId: $("#selAppVersion").val(),
+            newDictId: value
+          };
+        } else {
+          return {};
+        }
       },
       afterSubmitCell: function(serverresponse, rowid, cellname, value, iRow, iCol) {
         var jsonFromServer;

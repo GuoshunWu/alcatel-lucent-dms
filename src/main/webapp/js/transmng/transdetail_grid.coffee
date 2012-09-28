@@ -6,24 +6,21 @@ define ['jqgrid', 'util', 'require', 'i18n!nls/transmng'], ($, util, require, i1
   rownumbers: true, loadonce: false # for reload the colModel
   pager: '#transDetailsPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
   sortname: 'key', sortorder: 'asc', viewrecords: true, gridview: true, multiselect: true,
-  cellEdit: true, cellurl: 'http://127.0.0.1:2000'
+  cellEdit: true, cellurl: '/trans/update-status'
   colNames: ['Label', 'Max Length', 'Context', 'Reference language', 'Translation', 'Status']
   colModel: [
     #    {name: 'id', index: 'ct.id', width: 55, align: 'center', hidden: true, frozen: true}
     {name: 'key', index: 'key', width: 100, editable: false, stype: 'select', align: 'left', frozen: true}
-    {name: 'maxlen', index: 'maxlen', width: 90, editable: true, align: 'right', frozen: true, search: false}
-    {name: 'context', index: 'context', width: 80, align: 'left', frozen: true, search: false}
-    {name: 'reflang', index: 'reflang', width: 150, align: 'left', frozen: true, search: false}
-    {name: 'trans', index: 'trans', width: 150, align: 'left', search: false}
-    {name: 'status', index: 'status', width: 150, align: 'left', editable: true, edittype: 'select',
+    {name: 'maxlen', index: 'maxLength', width: 90, editable: true, align: 'right', frozen: true, search: false}
+    {name: 'context', index: 'context.name', width: 80, align: 'left', frozen: true, search: false}
+    {name: 'reflang', index: 'reference', width: 150, align: 'left', frozen: true, search: false}
+    {name: 'trans', index: 'ct.translation', width: 150, align: 'left', search: false}
+    {name: 'transStatus', index: 'ct.status', width: 150, align: 'left', editable: true, edittype: 'select',
     editoptions: {value: "0:#{i18n.trans.nottranslated};1:#{i18n.trans.inprogress};2:#{i18n.trans.translated}"}, formatter: 'select'
     }
     #    {name: 'transid', index: 'transid', width: 55, align: 'center', hidden: true}
   ]
-  beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
-  #    dict=$('#translationDetailDialog').data "dict"
-  #    language={id:$('#detailLanguageSwitcher').val(), name:$('#detailLanguageSwitcher').find("option:selected").text()}
-  #    temp={transId: @getCell rowid, iCol+1}
+  beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->{type:'trans'}
   afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
     jsonFromServer = eval('(' + serverresponse.responseText + ')')
     [0 == jsonFromServer.status, jsonFromServer.message]
