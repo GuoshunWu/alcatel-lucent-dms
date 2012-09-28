@@ -189,9 +189,11 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
         return rowCount;
     }
     
-    public void updateTranslationStatus(Long transId, int transStatus) {
-    	Translation trans = (Translation) dao.retrieve(Translation.class, transId);
-    	trans.setStatus(transStatus);
+    public void updateTranslationStatus(Collection<Long> transIds, int transStatus) {
+    	for (Long id : transIds) {
+    		Translation trans = (Translation) dao.retrieve(Translation.class, id);
+    		trans.setStatus(transStatus);
+    	}
     }
     
     public void updateTranslationStatusByDict(Collection<Long> dictIds, int transStatus) {
