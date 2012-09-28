@@ -2,7 +2,7 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
   transDetailGrid = $("#taskGrid").jqGrid {
   url: 'json/transdetailgrid.json'
   mtype: 'POST', postData: {}, editurl: "", datatype: 'json'
-  width: 'auto', height: 200, shrinkToFit: false
+  width: $(window).width() * 0.95, height: 300, shrinkToFit: false
   rownumbers: true, loadonce: false # for reload the colModel
   pager: '#taskPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
   sortname: 'key', sortorder: 'asc', viewrecords: true, gridview: true, multiselect: true,
