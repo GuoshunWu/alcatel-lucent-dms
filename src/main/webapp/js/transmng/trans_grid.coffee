@@ -1,4 +1,6 @@
-define ['jqgrid', 'util', 'require', 'jqmsgbox','i18n!nls/transmng','i18n!nls/common'], ($, util, require,msgbox,i18n,c18n)->
+define ['jqgrid','util', 'require', 'jqmsgbox','transmng/grid.colmodel','blockui'], ($, util, require,msgbox)->
+  i18n=require('i18n!nls/transmng')
+  c18n=require('i18n!nls/common')
   common =
     {
     colNames: ['ID', 'Application', 'Version', 'Num of String']
@@ -65,8 +67,10 @@ define ['jqgrid', 'util', 'require', 'jqmsgbox','i18n!nls/transmng','i18n!nls/co
       return
     #    console.log "selected: #{selectedRowIds}, type: #{getTableType()}, value: #{@value}"
 
+    $.blockUI css:{backgroundColor:'#fff'},overlayCSS:{opacity:0.2}
     $.post '/trans/update-status', {type: getTableType(), transStatus: @value, id: selectedRowIds}, (json)->
       (alert json.message; return) if json.status != 0
+      $.unblockUI();
       $.msgBox i18n.msgbox.transstatus.msg, null, title: c18n.message
       transGrid.trigger 'reloadGrid'
   ).parent().buttonset()
