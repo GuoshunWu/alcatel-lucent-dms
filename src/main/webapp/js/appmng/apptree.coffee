@@ -1,5 +1,8 @@
 # Implement the navigation tree on the east
-define ['jqtree', 'appmng/dialogs', 'appmng/layout', 'appmng/product_panel', 'appmng/application_panel'], ($, dialogs, layout, productpnl, apppnl, module)->
+define ['jqtree','require','appmng/product_panel', 'appmng/application_panel'], ($,require,productpnl,apppnl)->
+  layout = require('appmng/layout')
+  console.log layout
+
   ids = {
   navigateTree: 'appTree'
   }
@@ -28,6 +31,7 @@ define ['jqtree', 'appmng/dialogs', 'appmng/layout', 'appmng/product_panel', 'ap
         apppnl.refresh nodeInfo
         layout.showApplicationPanel()
 
+  $('#loading-container').remove()
 
   getSelected: ->
     appTree = $.jstree._reference "##{ids.navigateTree}"
@@ -41,6 +45,6 @@ define ['jqtree', 'appmng/dialogs', 'appmng/layout', 'appmng/product_panel', 'ap
   delApplictionBaseFromProductBase: (appBaseId)->
     appTree = $.jstree._reference "##{ids.navigateTree}"
     (appTree._get_children appTree.get_selected()).each (index, app)->appTree.delete_node(app) if parseInt(app.id) == appBaseId
-  addNewProductBase:(product)->
-    ($.jstree._reference "##{ids.navigateTree}").create_node  -1, "last", {data: product.name, attr: {id: product.id}}
+  addNewProductBase: (product)->
+    ($.jstree._reference "##{ids.navigateTree}").create_node -1, "last", {data: product.name, attr: {id: product.id}}
 

@@ -25,8 +25,13 @@ define({
         },
         msgbox:{
             createtranstask:{
-                title:'Select {0}',
                 msg:'Please select {0} first!'
+            },
+            rowsel:{
+                msg:'Please select row first!'
+            },
+            transstatus:{
+                msg:'Change translation status successful.'
             }
         },
         trans:{

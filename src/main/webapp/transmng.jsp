@@ -17,8 +17,8 @@
     <meta http-equiv="Pragma" content="no-cache">
 
     <link rel="stylesheet" type="text/css" href="css/transmanagement.css">
-    <script type="text/javascript" data-main="js/transmng/transmng" src="js/require.js"></script>
 
+    <script type="text/javascript" data-main="js/transmng/transmng" src="js/require.js"></script>
 
 </head>
 <body>
@@ -29,7 +29,10 @@
 <div id="ie6" class="ie"><![endif]-->
 <!--[if IE 7]>
 <div id="ie7" class="ie"><![endif]-->
-<%@include file="transmanagement/dialogs.jsp"%>
+
+<div id="loading-container">
+    Loading...
+</div>
 
 <div id="optional-container">
     <div class="ui-layout-north" style="text-align: left; bottom:0px">
@@ -41,8 +44,9 @@
     </div>
     <%--<div class="ui-layout-west"></div>--%>
     <%--<div class="ui-layout-south"> South</div>--%>
-
+    <%@include file="transmanagement/dialogs.jsp"%>
 </div>
 <!--[if lte IE 7]></div><![endif]-->
+
 </body>
 </html>

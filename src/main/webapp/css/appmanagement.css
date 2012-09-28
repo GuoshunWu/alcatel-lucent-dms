@@ -23,7 +23,13 @@ html, body {
     /*margin-left: 2%;*/
     width: 100%;
     height: 100%;
+}
 
+#loading-container {
+    /*margin-top: 2%;*/
+    /*margin-left: 2%;*/
+    width: 100%;
+    height: 100%;
 }
 
 .ui-layout-center {

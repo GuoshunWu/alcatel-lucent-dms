@@ -1,4 +1,4 @@
-define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'i18n!nls/common', 'transmng/trans_grid', 'require', 'jqmsgbox', 'transmng/transdetail_grid'], ($, jq, i18n, c18n, grid, require, msgbox, detailgrid)->
+define ['jqlayout', 'require','blockui', 'jqmsgbox','i18n!nls/common','i18n!nls/transmng','transmng/trans_grid','transmng/transdetail_grid'],($, require, blockui, msgbox, c18n,i18n, grid,detailgrid)->
 #  console.log module
 #  private variables
   ids = {
@@ -9,9 +9,10 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'i18n!nls/common', 'transmng/
     page: 'optional-container'
     }
   }
+#  $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
 
   $('#pageNavigator').val(window.location.pathname)
-  pageLayout = $("##{ids.container.page}").layout {resizable: true, closable: true}
+#  pageLayout = $("##{ids.container.page}").layout {resizable: true, closable: true}
 
   $(".header-footer").hover (->$(@).addClass "ui-state-hover"), -> $(@).removeClass "ui-state-hover"
 
@@ -84,10 +85,8 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'i18n!nls/common', 'transmng/
       click: ->
         languages = ($(":checkbox[name='languages']", $(@)).map -> {id: @id, name: @value} if @checked).get()
         if(languages.length == 0)
-          $.msgBox (i18n.msgbox.createtranstask.msg.format c18n.language), null,
-            title: (i18n.msgbox.createtranstask.title.format c18n.language),
-            width: 300, height: "auto"
-        return
+          $.msgBox (i18n.msgbox.createtranstask.msg.format c18n.language), null,title: (c18n.warning)
+          return
         $(@).dialog "close"
       }
       {text: c18n.cancel, click: -> $(@).dialog "close"}
@@ -127,11 +126,11 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'i18n!nls/common', 'transmng/
       level: $(":radio[name='viewOption'][checked]").val()
       }
       if !$('#productBase').val() || parseInt($('#productBase').val()) == -1
-      #        $.msgBox i18n.select.product.msg, null,title: i18n.select.product.msgtitle, width: 300, height: "auto"
+      #        $.msgBox i18n.select.product.msg, null,title: i18n.select.product.msgtitle
         return false
 
       if !param.release.id || parseInt(param.release.id) == -1
-      #        $.msgBox i18n.select.release.msg, null, title: i18n.select.release.msgtitle, width: 300 , height: "auto"
+      #        $.msgBox i18n.select.release.msg, null, title: i18n.select.release.msgtitle
         return false
       grid.productReleaseChanged param
 
@@ -142,32 +141,14 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'i18n!nls/common', 'transmng/
       info = grid.getTotalSelectedRowInfo()
       type = $(':radio[name=viewOption][checked]').val()
       if !info.selectedNum
-        $.msgBox (i18n.msgbox.createtranstask.msg.format c18n[grid.getTableType()]), null,
-          title: (i18n.msgbox.createtranstask.title.format c18n[grid.getTableType()]),
-          width: 300, height: "auto"
+        $.msgBox (i18n.msgbox.createtranstask.msg.format c18n[grid.getTableType()]), null, title: c18n.warning
         return
       taskDialog.dialog "open"
 
     $('#languageFilter').button().click ()->languageFilterDialog.dialog "open"
-
     #    for view level
     $(':radio[name=viewOption]').change -> $('#productRelease').trigger "change"
 
-    (($("#translated").button().click ->
-      selectedRowIds = $("#transGridList").getGridParam('selarrrow');
-      console.log selectedRowIds
-    ).next().button().click ->
-      selectedRowIds = $("#transGridList").getGridParam('selarrrow');
-      console.log selectedRowIds
-      alert "N"
-    ).parent().buttonset()
-
-    (($("#detailTranslated").button().click ->
-      selectedRowIds = $("#transDetailGridList").getGridParam('selarrrow')
-      console.log selectedRowIds
-    ).next().button().click ->
-      selectedRowIds = $("#transDetailGridList").getGridParam('selarrrow')
-    ).parent().buttonset()
 
   #  private method
   initPage = ->
@@ -176,8 +157,13 @@ define ['jqlayout', 'jquery', 'i18n!nls/transmng', 'i18n!nls/common', 'transmng/
     ###################################### Initialize elements in north panel ######################################
     dialogs = createDialogs()
     createButtons(dialogs.taskDialog, dialogs.languageFilterDialog, dialogs.transDetailDialog)
+#   show main page.
+    $('#optional-container').show();
+    $('#loading-container').remove();
+
   # initialize page
   initPage()
+
 
   #    public variables and methods
   name: 'layout'

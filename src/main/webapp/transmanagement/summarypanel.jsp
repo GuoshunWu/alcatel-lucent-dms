@@ -65,8 +65,8 @@
                         <button id="create"><s:text name="button.translationtask"/></button>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <s:text name="transmng.summarypanel.makelabelas"/>&nbsp;&nbsp;
-                        <button id='translated'>T</button>
-                        <button id='notTranslated'>N</button>
+                        <button id='makeLabelTranslated' value="2">T</button>
+                        <button id="makeLabelNotTranslated" value="0" >N</button>
                     </td>
                     <td style="width: 15px"/>
                 </tr>

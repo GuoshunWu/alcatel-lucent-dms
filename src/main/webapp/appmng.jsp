@@ -30,9 +30,9 @@
 <!--[if IE 7]>
 <div id="ie7" class="ie"><![endif]-->
 
-<%-- All the dialogs here --%>
-<%@include file="appmanagement/dialogs.jsp" %>
-
+<div id="loading-container">
+    Loading...
+</div>
 
 <div id="optional-container">
     <div class="ui-layout-north" style="text-align: left; bottom:0px">
@@ -69,7 +69,8 @@
     </div>
 
     <%--<div class="ui-layout-south"> South</div>--%>
-
+    <%-- All the dialogs here --%>
+    <%@include file="appmanagement/dialogs.jsp" %>
 </div>
 <!--[if lte IE 7]></div><![endif]-->
 

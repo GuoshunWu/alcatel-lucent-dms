@@ -1,4 +1,4 @@
-define ['domReady!','jqlayout', 'module'], (doc,$, module)->
+define ['jqlayout', 'module'], ($, module)->
   PANEL_PREFIX = 'DMS'
   ids = {
   container:
@@ -34,6 +34,7 @@ define ['domReady!','jqlayout', 'module'], (doc,$, module)->
       $(panel).hide()
 
   showCenterPanel ids.panel.welcome
+
 
   #export the method for other module use
   showProductPanel: ->showCenterPanel ids.panel.product

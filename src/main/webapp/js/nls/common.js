@@ -10,6 +10,8 @@ define({
         ok:'OK',
         cancel: 'Cancel',
         error:'Error',
+        warning: 'Warning',
+        message:'Message',
         create:'Create',
         app:'application',
         dict:'dictionary',
