@@ -3,7 +3,7 @@
 <%@ page contentType="text/html;charset=utf-8" %>
 
 <%--dialogs--%>
-<table width="100%" border="1" style="border-color: black">
+<table width="100%" border="0" style="border-color: black">
     <tr>
         <td>
             <table width="100%" border="0" style="border-color: yellow">
