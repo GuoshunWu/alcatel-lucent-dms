@@ -123,6 +123,8 @@ require.config({
         jqlayout:'jquery.layout-latest',
         jqmsgbox:'jquery.msgBox.v1',
         blockui:'jquery.blockUI',
+        jqupload: 'jsfileuploader/jquery.fileupload',
+        iframetransport: 'jsfileuploader/jquery.iframe-transport',
 //        modules
         appmng:'../appmng',
         transmng:'../transmng',

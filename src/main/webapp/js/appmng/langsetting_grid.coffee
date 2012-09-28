@@ -1,4 +1,5 @@
-define ['jqgrid', 'require'], ($, require)->
+define (require)->
+  $= require 'jqgrid'
   dicGrid = $('#languageSettingGrid').jqGrid {
   url: '',mtype:'post', datatype: 'json'
   width: 300, height: 'auto'
