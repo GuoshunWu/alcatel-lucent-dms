@@ -227,5 +227,18 @@ public class Dictionary extends BaseEntity {
     public Application getApp() {
         return app;
     }
+    
+    public int getMaxSortNo() {
+    	if (dictLanguages == null) {
+    		return 0;
+    	}
+    	int max = 0;
+    	for (DictionaryLanguage dl : dictLanguages) {
+    		if (dl.getSortNo() > max) {
+    			max = dl.getSortNo();
+    		}
+    	}
+    	return max;
+    }
 
 }

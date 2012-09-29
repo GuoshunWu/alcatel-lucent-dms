@@ -1,5 +1,8 @@
 package com.alcatel_lucent.dms.action;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 
@@ -42,5 +45,18 @@ abstract public class JSONAction extends BaseAction {
             return SUCCESS;
         }
     }
+    
+	protected Collection<Long> toIdList(String idStr) {
+		String[] ids = idStr.split(",");
+		Collection<Long> result = new ArrayList<Long>();
+		for (String id : ids) {
+			if (!id.trim().isEmpty()) {
+				result.add(Long.valueOf(id));
+			}
+		}
+		return result;
+	}
+
+
 
 }

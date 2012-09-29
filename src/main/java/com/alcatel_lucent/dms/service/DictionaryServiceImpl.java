@@ -38,6 +38,7 @@ import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.model.Application;
+import com.alcatel_lucent.dms.model.Charset;
 import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryBase;
@@ -950,5 +951,19 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     	} else {
     		throw new BusinessException(BusinessException.DICTIONARY_NOT_IN_APP);
     	}
+    }
+    
+    public DictionaryLanguage addLanguage(Long dictId, String code, Long languageId, Long charsetId) throws BusinessException {
+    	Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
+    	if (dict.getDictLanguage(code) != null) {
+    		throw new BusinessException(BusinessException.DUPLICATE_LANG_CODE, dict.getName(), code);
+    	}
+    	DictionaryLanguage dl = new DictionaryLanguage();
+    	dl.setDictionary(dict);
+    	dl.setLanguageCode(code);
+    	dl.setLanguage((Language) dao.retrieve(Language.class, languageId));
+    	dl.setCharset((Charset) dao.retrieve(Charset.class, charsetId));
+    	dl.setSortNo(dict.getMaxSortNo());
+    	return (DictionaryLanguage) dao.create(dl);
     }
 }
