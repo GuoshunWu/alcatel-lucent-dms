@@ -5,6 +5,7 @@ import org.apache.struts2.convention.annotation.Result;
 import com.alcatel_lucent.dms.action.JSONAction;
 import com.alcatel_lucent.dms.service.DictionaryService;
 
+@SuppressWarnings("serial")
 @Result(type = "json", params = {"noCache", "true", "ignoreHierarchy", "false", "includeProperties", "id,permanent,message,status"})
 public class RemoveDictAction extends JSONAction {
 	
