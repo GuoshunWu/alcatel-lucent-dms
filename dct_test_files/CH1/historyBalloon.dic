@@ -1,0 +1,327 @@
+--?000 #CHECKSUM=284627#
+
+--? ?000 #CHECKSUM=170822#
+
+-- ? ---------------------------------------------------------------------
+-- Dictionnaire de l'application Instant Commmunicator pour le menu
+-- ------------------------------------------------------------------------
+-- Creation date : 29/03/2007
+-- Last Modification Date :
+
+-- Supported languages
+
+LANGUAGES {CHK, GAE, FR0, EN0, DE0, IT0, PT0, ES0, US0, PL0, KO0, NO0, NL0, RU0, CH0, FI0, ES1, CS0, HU0, CH1, SV0, AR0, DA0, HE0}
+
+-- Structure of the dictionary:
+
+-- First, you can see commentary lines, precedeed by two minus signs "--". these comments are not
+-- interpreted by the dictionary tool.
+
+-- For each translation needed, you will find:
+-- An entry key string in upper case, followed by a colon ":".
+-- This key is used by the software to associate a text field in the application with a set of
+-- translations
+-- Each translation associated with this key enholds:
+-- - a language code (FR0 for French for instance)
+-- - a text between brackets for the translation
+-- - a comma to delimit the end of the translation for this language
+-- the comma is replaced by a semicolon ";" to end the list of translations for a specific key
+
+-- NOTA 1: The CHK (Czech) language is used for indicating the maximum width of a text field.
+-- This indication stands only if you visualize the present dictionary with the proper
+-- font (as used in the application). Then, whichever characters you are using
+-- (W can be wider than i) the translations in the different languages  must not exeed the text width
+-- (undependantly to the characters amount) indicated in the CHK field
+-- Texts that are to be displayed in a popup window (OK popup, yes-no popup...) can consist
+-- of more than one line:
+-- "This text will be displayed""on two lines"
+-- Each line must not exceed the width indicated in the CHK field
+-- Texts that are to be displayed in a temporised popup (also called timed popup) can consist of :
+-- One (long) line (with automatic wrap of text on the following 3 lines),
+-- Or several lines ("First line"Second line"...up to "Forth line")
+-- In any case, you are limited to 256 caracters.
+
+-- General syntax:
+-- WC_xxxx : Window caption (title of the window)
+-- ME_xxxx : element of a menu
+-- BU_xxxx : name of a button
+-- CB_xxxx : element of a combo-box
+-- TQ_xxxx : text of a question
+-- TI_xxxx : text of an information, a warning, a problem
+-- ST_xxxx : static text before a variable field or others....
+-- EN_xxxx : for enumered types
+-- TT_xxxx : tool tips
+
+-- General rules:
+-- the "%s" inserted in a string will be replaced by a text at execution;
+-- the "%d" inserted in a string will be replaced by a number;
+-- all the translation for a string including a %s or a %d must keep those key characters, or an error occurs.
+-- The translations being presented in two string ("like" "this") will be displayed on two lines;
+-- you are not allowed to translate on two lines a text which is in one line in the English translation.
+
+-- Text displayed if the translation is not found
+-- nota: Sometimes the default text is included in English in the source code, beginning with "?"
+
+-- --------------------------------------
+-- General
+-- --------------------------------------
+
+YESTERDAY:
+  CHK "Yesterday 01234",
+  GAE "Yesterday",
+
+  EN0 "Yesterday",
+
+
+
+
+  US0 "Yesterday",
+
+
+
+
+
+
+
+
+
+
+  CH1 "Yesterday",
+
+
+
+  HE0 "Yesterday"; --???
+
+PAST_WEEK:
+  CHK "Previous days01234",
+  GAE "Previous days",
+
+  EN0 "Previous days",
+
+
+
+
+  US0 "Previous days",
+
+
+
+
+
+
+
+
+
+  CH1 "Previous days",
+
+
+
+  HE0 "Previous days"; --???
+
+MAKE_CALL:
+  CHK "Le rappeler 0123456789",
+  GAE "Call back ",
+
+  EN0 "Call back ",
+
+
+
+
+  US0 "Callback",
+
+
+
+
+
+
+
+
+
+
+  CH1 "回撥 ",
+
+
+
+  HE0 "Call back "; --???
+
+DELETE_HISTORY_ITEM:
+  CHK "Delete01234",
+  GAE "Delete",
+
+  EN0 "Delete",
+
+
+
+
+  US0 "Delete",
+
+
+
+
+
+
+
+
+
+
+  CH1 "Delete",
+
+
+
+  HE0 "Delete"; --???
+
+ADVANCED_SEARCH:
+  CHK "Additional services 012345678",
+  GAE "Additional services",
+
+  EN0 "Additional services",
+
+
+
+
+  US0 "Additional services",
+
+
+
+
+
+
+
+
+
+
+  CH1 "附加服務",
+
+
+
+  HE0 "Additional services"; --???
+
+DURATION:
+  CHK "Duration0123456789",
+  GAE "Duration",
+
+  EN0 "Duration",
+
+
+
+
+  US0 "Duration",
+
+
+
+
+
+
+
+
+
+
+  CH1 "Duration",
+
+
+
+  HE0 "Duration"; --???
+
+PLAY_VOICEMAIL:
+  CHK "Play the voicemail9012345678901234567890123456789",
+  GAE "Play the voicemail",
+
+  EN0 "Play the voicemail",
+
+
+
+
+  US0 "Play the voicemail", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "播放語音郵件", 
+
+
+
+  HE0 "Play the voicemail"; --???
+
+NO_ITEMS:
+  CHK "No items01234567890123456789",
+  GAE "No items",
+
+  EN0 "No items",
+
+
+
+
+  US0 "No items", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "無項目", 
+
+
+
+  HE0 "No items"; --???
+
+ITEMS_POPULATING:
+  CHK "Populating items01234567890123456789",
+  GAE "Populating items",
+
+  EN0 "Populating items",
+
+
+
+
+  US0 "Populating items", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "填充專案", 
+
+
+
+  HE0 "Populating items"; --???
+
+DETAILSVIEW_VOICEMAIL:
+  CHK "Message details view9012345678901234567890123456789",
+  GAE "Message details view",
+
+  EN0 "Message details view",
+
+
+
+
+  US0 "Message details view", --???
+
+
+
+
+
+
+
+
+
+
+  CH1 "訊息詳情查看", 
+
+
+
+  HE0 "Message details view"; --???
+
