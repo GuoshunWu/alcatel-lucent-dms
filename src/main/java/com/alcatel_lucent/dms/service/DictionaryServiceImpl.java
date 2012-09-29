@@ -980,4 +980,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     	}
     	return dl;
     }
+    
+    public void removeDictionaryLanguage(Collection<Long> ids) {
+    	for (Long id : ids) {
+        	DictionaryLanguage dl = (DictionaryLanguage) dao.retrieve(DictionaryLanguage.class, id);
+        	dao.delete(dl);
+    	}
+    }
 }

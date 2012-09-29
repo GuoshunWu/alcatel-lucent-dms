@@ -182,6 +182,12 @@ public interface DictionaryService {
 	 * @return DictionaryLanguage object
 	 */
 	DictionaryLanguage updateDictionaryLanguage(Long id, String code, Long languageId, Long charsetId);
+
+	/**
+	 * Remove language from a dictionary
+	 * @param ids list of id to be removed
+	 */
+	void removeDictionaryLanguage(Collection<Long> ids);
 	
     
     //Dictionary previewProp(String dictionaryName, Map<String, Collection<Properties>> propMap, Collection<BusinessWarning> warnings) throws BusinessException;
