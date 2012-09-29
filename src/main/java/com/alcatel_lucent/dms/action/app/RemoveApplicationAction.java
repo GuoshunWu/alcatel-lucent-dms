@@ -71,7 +71,7 @@ public class RemoveApplicationAction extends JSONAction {
         }
 
         setStatus(0);
-        setMessage("Change success.");
+        setMessage(getText("message.success"));
 
         return SUCCESS;
     }

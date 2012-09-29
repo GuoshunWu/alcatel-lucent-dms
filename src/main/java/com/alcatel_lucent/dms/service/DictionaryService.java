@@ -3,6 +3,7 @@ package com.alcatel_lucent.dms.service;
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.model.Dictionary;
+import com.alcatel_lucent.dms.model.DictionaryLanguage;
 
 import java.io.File;
 import java.util.Collection;
@@ -110,8 +111,9 @@ public interface DictionaryService {
     /**
      * Remove a dictionary from all applications, and delete it.
      * @param id dictionary id
+     * @return DictionaryBase id if the dictionary base was deleted or null if the dictionary base was not deleted. 
      */
-    void deleteDictionary(Long id);
+    Long deleteDictionary(Long id);
     
     /**
      * Calculate translation summary in dictionary level
@@ -159,6 +161,43 @@ public interface DictionaryService {
 	 * @param newDictId new dictionary version, must have same base with the old one
 	 */
 	void changeDictionaryInApp(Long appId, Long oldDictId, Long newDictId) throws BusinessException;
+
+	/**
+	 * Add language to a dictionary
+	 * @param dictId dictionary id
+	 * @param code language code
+	 * @param languageId language id
+	 * @param charsetId charset id
+	 * @return DictionaryLanguage object
+	 * @throws BusinessException in case duplicate language code
+	 */
+	DictionaryLanguage addLanguage(Long dictId, String code, Long languageId, Long charsetId) throws BusinessException;
+
+	/**
+	 * Update dictionary language attributes
+	 * @param id DictionaryLanguage object id
+	 * @param code language code, null if no change required
+	 * @param languageId language id, null if no change required
+	 * @param charsetId charset id, null if no change required
+	 * @return DictionaryLanguage object
+	 */
+	DictionaryLanguage updateDictionaryLanguage(Long id, String code, Long languageId, Long charsetId);
+
+	/**
+	 * Remove language from a dictionary
+	 * @param ids list of id to be removed
+	 */
+	void removeDictionaryLanguage(Collection<Long> ids);
+
+	/**
+	 * Update labels
+	 * @param idList list of label id
+	 * @param maxLength new max length, null if no change required
+	 * @param description new description, null if no change required
+	 * @param context new context, null if no change required
+	 */
+	void updateLabels(Collection<Long> idList, String maxLength,
+			String description, String context);
 	
     
     //Dictionary previewProp(String dictionaryName, Map<String, Collection<Properties>> propMap, Collection<BusinessWarning> warnings) throws BusinessException;
