@@ -7,6 +7,5 @@
  */
 
 require(['../config'], function (c) {
-//    require(convertDependencies('appmng', ['layout', 'dialogs', 'apptree']));
-    require(convertDependencies('appmng', ['apptree']));
+    require(['appmng/apptree']);
 });
