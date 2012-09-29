@@ -174,6 +174,9 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                         rowContainer.put(headerTitle, cellValue);
                     }
                 }
+                if (rowContainer.get(headerMap.get(ExcelFileHeader.DICTIONARY)) == null) {
+                	break;
+                }
                 updateRow(rowContainer,languageId);
                 rowCount++;
 //                println(Util.jsonFormat(rowContainer.toString()));
@@ -254,8 +257,11 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
             Language language= (Language) dao.retrieve(Language.class, languageId);
             trans.setLanguage(language);
             trans.setTranslation(transString);
+            trans.setStatus(Translation.STATUS_TRANSLATED);
+            dao.create(trans);
         }else{
             trans.setTranslation(transString);
+            trans.setStatus(Translation.STATUS_TRANSLATED);
         }
 
         //set memo
