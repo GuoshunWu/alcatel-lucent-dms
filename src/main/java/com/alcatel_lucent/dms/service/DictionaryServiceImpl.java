@@ -966,4 +966,18 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     	dl.setSortNo(dict.getMaxSortNo());
     	return (DictionaryLanguage) dao.create(dl);
     }
+    
+    public DictionaryLanguage updateDictionaryLanguage(Long id, String code, Long languageId, Long charsetId) {
+    	DictionaryLanguage dl = (DictionaryLanguage) dao.retrieve(DictionaryLanguage.class, id);
+    	if (code != null) {
+    		dl.setLanguageCode(code);
+    	}
+    	if (languageId != null) {
+        	dl.setLanguage((Language) dao.retrieve(Language.class, languageId));
+    	}
+    	if (charsetId != null) {
+        	dl.setCharset((Charset) dao.retrieve(Charset.class, charsetId));
+    	}
+    	return dl;
+    }
 }

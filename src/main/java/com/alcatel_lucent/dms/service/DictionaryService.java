@@ -172,6 +172,16 @@ public interface DictionaryService {
 	 * @throws BusinessException in case duplicate language code
 	 */
 	DictionaryLanguage addLanguage(Long dictId, String code, Long languageId, Long charsetId) throws BusinessException;
+
+	/**
+	 * Update dictionary language attributes
+	 * @param id DictionaryLanguage object id
+	 * @param code language code, null if no change required
+	 * @param languageId language id, null if no change required
+	 * @param charsetId charset id, null if no change required
+	 * @return DictionaryLanguage object
+	 */
+	DictionaryLanguage updateDictionaryLanguage(Long id, String code, Long languageId, Long charsetId);
 	
     
     //Dictionary previewProp(String dictionaryName, Map<String, Collection<Properties>> propMap, Collection<BusinessWarning> warnings) throws BusinessException;
