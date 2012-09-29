@@ -38,6 +38,7 @@ import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.model.Application;
+import com.alcatel_lucent.dms.model.Charset;
 import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryBase;
@@ -104,9 +105,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         Collection<Dictionary> dicts = (Collection<Dictionary>) getDao().retrieve(hsql);
 
         for (Dictionary dict : dicts) {
-            if (dict.getFormat().equals("mdc")) {
+            if (dict.getFormat().equals("Dictionary conf")) {
                 generateMDC(new File(dir, dict.getName()), dict.getId(), null);
-            } else if (dict.getFormat().equals("dct")){
+            } else if (dict.getFormat().equals("DCT")){
                 generateDCT(new File(dir, dict.getName()), dict, dict.getEncoding(), null);
             }
         }
@@ -804,7 +805,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     	app.removeDictionary(dictId);
     }
     
-    public void deleteDictionary(Long id) {
+    public Long deleteDictionary(Long id) {
     	String hql = "select distinct a from Application a join a.dictionaries as d where d.id=:id";
     	Map param = new HashMap();
     	param.put("id", id);
@@ -820,7 +821,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     	if (dictBase.getDictionaries() == null || dictBase.getDictionaries().size() == 0 ||
     			dictBase.getDictionaries().size() == 1 && dictBase.getDictionaries().iterator().next().getId().equals(id)) {
     		dao.delete(dictBase);
+    		return dictBase.getId();
     	}
+    	return null;
     }
     
 /*    
@@ -947,6 +950,68 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     		dictionaries.add(newDict);
     	} else {
     		throw new BusinessException(BusinessException.DICTIONARY_NOT_IN_APP);
+    	}
+    }
+    
+    public DictionaryLanguage addLanguage(Long dictId, String code, Long languageId, Long charsetId) throws BusinessException {
+    	Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
+    	if (dict.getDictLanguage(code) != null) {
+    		throw new BusinessException(BusinessException.DUPLICATE_LANG_CODE, dict.getName(), code);
+    	}
+    	DictionaryLanguage dl = new DictionaryLanguage();
+    	dl.setDictionary(dict);
+    	dl.setLanguageCode(code);
+    	dl.setLanguage((Language) dao.retrieve(Language.class, languageId));
+    	dl.setCharset((Charset) dao.retrieve(Charset.class, charsetId));
+    	dl.setSortNo(dict.getMaxSortNo());
+    	return (DictionaryLanguage) dao.create(dl);
+    }
+    
+    public DictionaryLanguage updateDictionaryLanguage(Long id, String code, Long languageId, Long charsetId) {
+    	DictionaryLanguage dl = (DictionaryLanguage) dao.retrieve(DictionaryLanguage.class, id);
+    	if (code != null) {
+    		dl.setLanguageCode(code);
+    	}
+    	if (languageId != null) {
+        	dl.setLanguage((Language) dao.retrieve(Language.class, languageId));
+    	}
+    	if (charsetId != null) {
+        	dl.setCharset((Charset) dao.retrieve(Charset.class, charsetId));
+    	}
+    	return dl;
+    }
+    
+    public void removeDictionaryLanguage(Collection<Long> ids) {
+    	for (Long id : ids) {
+        	DictionaryLanguage dl = (DictionaryLanguage) dao.retrieve(DictionaryLanguage.class, id);
+        	dao.delete(dl);
+    	}
+    }
+    
+    public void updateLabels(Collection<Long> idList, String maxLength,
+			String description, String context) {
+    	Map<String, Context> newContextMap = new HashMap<String, Context>();
+    	for (Long id : idList) {
+    		Label label = (Label) dao.retrieve(Label.class, id);
+    		if (maxLength != null) {
+    			label.setMaxLength(maxLength);
+    		}
+    		if (description != null) {
+    			label.setDescription(description);
+    		}
+    		if (context != null) {
+    			Context ctx = newContextMap.get(context);
+    			if (ctx == null) {
+	    			ctx = textService.getContextByName(context);
+	    			if (ctx == null) {
+	    				ctx = new Context();
+	    				ctx.getName();
+	    				ctx = (Context) dao.create(ctx);
+	    				newContextMap.put(context, ctx);
+	    			}
+    			}
+    			label.setContext(ctx);
+    		}
     	}
     }
 }
