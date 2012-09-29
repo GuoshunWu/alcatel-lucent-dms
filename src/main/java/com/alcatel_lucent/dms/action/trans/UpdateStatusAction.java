@@ -30,17 +30,6 @@ public class UpdateStatusAction extends JSONAction {
 		return SUCCESS;
 	}
 	
-	private Collection<Long> toIdList(String idStr) {
-		String[] ids = idStr.split(",");
-		Collection<Long> result = new ArrayList<Long>();
-		for (String id : ids) {
-			if (!id.trim().isEmpty()) {
-				result.add(Long.valueOf(id));
-			}
-		}
-		return result;
-	}
-
 	public TextService getTextService() {
 		return textService;
 	}

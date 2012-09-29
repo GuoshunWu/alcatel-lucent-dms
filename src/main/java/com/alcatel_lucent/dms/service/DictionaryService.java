@@ -3,6 +3,7 @@ package com.alcatel_lucent.dms.service;
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.model.Dictionary;
+import com.alcatel_lucent.dms.model.DictionaryLanguage;
 
 import java.io.File;
 import java.util.Collection;
@@ -160,6 +161,17 @@ public interface DictionaryService {
 	 * @param newDictId new dictionary version, must have same base with the old one
 	 */
 	void changeDictionaryInApp(Long appId, Long oldDictId, Long newDictId) throws BusinessException;
+
+	/**
+	 * Add language to a dictionary
+	 * @param dictId dictionary id
+	 * @param code language code
+	 * @param languageId language id
+	 * @param charsetId charset id
+	 * @return DictionaryLanguage object
+	 * @throws BusinessException in case duplicate language code
+	 */
+	DictionaryLanguage addLanguage(Long dictId, String code, Long languageId, Long charsetId) throws BusinessException;
 	
     
     //Dictionary previewProp(String dictionaryName, Map<String, Collection<Properties>> propMap, Collection<BusinessWarning> warnings) throws BusinessException;
