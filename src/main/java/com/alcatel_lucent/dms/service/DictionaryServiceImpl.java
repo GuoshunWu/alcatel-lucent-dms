@@ -987,4 +987,31 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         	dao.delete(dl);
     	}
     }
+    
+    public void updateLabels(Collection<Long> idList, String maxLength,
+			String description, String context) {
+    	Map<String, Context> newContextMap = new HashMap<String, Context>();
+    	for (Long id : idList) {
+    		Label label = (Label) dao.retrieve(Label.class, id);
+    		if (maxLength != null) {
+    			label.setMaxLength(maxLength);
+    		}
+    		if (description != null) {
+    			label.setDescription(description);
+    		}
+    		if (context != null) {
+    			Context ctx = newContextMap.get(context);
+    			if (ctx == null) {
+	    			ctx = textService.getContextByName(context);
+	    			if (ctx == null) {
+	    				ctx = new Context();
+	    				ctx.getName();
+	    				ctx = (Context) dao.create(ctx);
+	    				newContextMap.put(context, ctx);
+	    			}
+    			}
+    			label.setContext(ctx);
+    		}
+    	}
+    }
 }

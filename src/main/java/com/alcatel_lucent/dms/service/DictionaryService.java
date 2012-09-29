@@ -188,6 +188,16 @@ public interface DictionaryService {
 	 * @param ids list of id to be removed
 	 */
 	void removeDictionaryLanguage(Collection<Long> ids);
+
+	/**
+	 * Update labels
+	 * @param idList list of label id
+	 * @param maxLength new max length, null if no change required
+	 * @param description new description, null if no change required
+	 * @param context new context, null if no change required
+	 */
+	void updateLabels(Collection<Long> idList, String maxLength,
+			String description, String context);
 	
     
     //Dictionary previewProp(String dictionaryName, Map<String, Collection<Properties>> propMap, Collection<BusinessWarning> warnings) throws BusinessException;
