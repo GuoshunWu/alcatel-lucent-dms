@@ -1,0 +1,60 @@
+
+@import "jqueryUI/themes/base/jquery.ui.all.css";
+@import "jqueryLayout/layout-default-latest.css";
+@import "jqgrid/ui.jqgrid.css";
+
+/* Using an 'optional-container' instead of 'body', so need body to have a 'height' */
+html, body {
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+    padding: 0 0 20px;
+    margin: 0;
+
+    /*font-family: "Lucida Grande", "Arial", "Helvetica", "Verdana", "sans-serif";*/
+    font-family: "Arial", "Helvetica", "Verdana", "sans-serif";
+    font-size: 10px;
+
+    overflow: hidden !important;
+}
+
+#optional-container {
+    /*margin-top: 2%;*/
+    /*margin-left: 2%;*/
+    width: 100%;
+    height: 100%;
+}
+
+#loading-container {
+    /*margin-top: 2%;*/
+    /*margin-left: 2%;*/
+    width: 100%;
+    height: 100%;
+}
+
+.ui-layout-center {
+    overflow: hidden;
+}
+
+/* for combobox*/
+.ui-combobox {
+    position: relative;
+    display: inline-block;
+}
+
+.ui-combobox-toggle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin-left: -1px;
+    padding: 0;
+    /* adjust styles for IE 6/7 */
+    *height: 1.7em;
+    *top: 0.1em;
+}
+
+.ui-combobox-input {
+    margin: 0;
+    padding: 0.3em;
+}
+
