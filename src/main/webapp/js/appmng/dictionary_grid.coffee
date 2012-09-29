@@ -26,7 +26,7 @@ define (require, util, dialogs, i18n)->
     dialogs.langSettings.data "param", {dictId: rowData.id, refCode: rowData.langrefcode}
     dialogs.langSettings.dialog 'open'
   stringSetting = (rowData)->
-  #    dialogs.stringsettings.data "param", {dictId: rowData.id, refCode: rowData.langrefcode}
+    dialogs.stringSettings.data "param", rowData
     dialogs.stringSettings.dialog 'open'
 
   deleteRow = (rowid)->

@@ -41,6 +41,7 @@
       return dialogs.langSettings.dialog('open');
     };
     stringSetting = function(rowData) {
+      dialogs.stringSettings.data("param", rowData);
       return dialogs.stringSettings.dialog('open');
     };
     deleteRow = function(rowid) {

@@ -4,9 +4,6 @@ define (require)->
   layout = require 'appmng/layout'
   productpnl = require 'appmng/product_panel'
   apppnl = require 'appmng/application_panel'
-  dialogs = require 'appmng/dialogs'
-
-  console.log layout
 
   ids = {
   navigateTree: 'appTree'
@@ -52,4 +49,9 @@ define (require)->
     (appTree._get_children appTree.get_selected()).each (index, app)->appTree.delete_node(app) if parseInt(app.id) == appBaseId
   addNewProductBase: (product)->
     ($.jstree._reference "##{ids.navigateTree}").create_node -1, "last", {data: product.name, attr: {id: product.id}}
+  addNewApplicationBase:(params)->
+    appTree = $.jstree._reference "##{ids.navigateTree}"
+    selectedNode = appTree.get_selected()
+    $("#appTree").jstree("create_node", selectedNode, "last", {data:params.appBaseName, attr:{id:params.appBaseId}});
+
 

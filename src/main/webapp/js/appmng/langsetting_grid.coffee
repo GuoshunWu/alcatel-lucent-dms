@@ -2,7 +2,7 @@ define (require)->
   $= require 'jqgrid'
   dicGrid = $('#languageSettingGrid').jqGrid {
   url: '',mtype:'post', datatype: 'json'
-  width: 300, height: 'auto'
+  width: 500, height: 230
   pager: '#langSettingPager'
   editurl: ""
   rowNum: 10

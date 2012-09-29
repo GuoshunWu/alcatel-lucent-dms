@@ -1,4 +1,4 @@
-define ['jqueryui', 'jqmsgbox', 'i18n!nls/common','i18n!nls/appmng'], ($, msgbox, c18n,i18n)->
+define ['jqueryui','jqmsgbox','i18n!nls/common','i18n!nls/appmng','require'], ($,jqmsgbox,c18n,i18n,require)->
   ids = {
   button:
     {
@@ -25,7 +25,7 @@ define ['jqueryui', 'jqmsgbox', 'i18n!nls/common','i18n!nls/appmng'], ($, msgbox
         if (json.status != 0)
           $.msgBox json.message, null, {title: c18n.error, width: 300, height: 'auto'}
           return false
-        (require 'appmng/apptree' ).addNewProductBase {name: $(ids.productName).val(), id: json.id}
+        appptree.addNewProductBase {name: $(ids.productName).val(), id: json.id}
       $(@).dialog "close"
     }
     {text: c18n.cancel, click: -> $(@).dialog "close"}
@@ -111,14 +111,9 @@ define ['jqueryui', 'jqmsgbox', 'i18n!nls/common','i18n!nls/appmng'], ($, msgbox
       appVersion: $('#version').data('myinput').val()
       }
       $.post url, params, (json)->
-        if json.status != 0
-          $.msgBox json.message, null, {title: c18n.error, width: 300, height: 'auto'}
-          return
-        if -1 == params.appBaseId
-        #          TODO: create node on tree
-          (require 'appmng/apptree').getSelected()
+        ($.msgBox json.message, null, {title: c18n.error}; return) if json.status != 0
+        (require 'appmng/apptree').addNewApplicationBase(params) if -1 == params.appBaseId
         $("#applicationGridList").trigger("reloadGrid")
-
       $(@).dialog("close")
     }
     {text: c18n.cancel, click: -> $(@).dialog "close"}
@@ -127,28 +122,38 @@ define ['jqueryui', 'jqmsgbox', 'i18n!nls/common','i18n!nls/appmng'], ($, msgbox
 
   langSettings = $('#languageSettingsDialog').dialog {
   autoOpen: false
-  width: 500
+  width: 'auto'
   height: 'auto'
-  title:i18n.dialog.languagesettings.title
+  title: i18n.dialog.languagesettings.title
   open: (e, ui)->
   # param must be attached to the dialog before the dialog open
     param = $(@).data "param"
     $('#refCode').val param.refCode
-    $('#languageSettingGrid').setGridParam({url: '/rest/dictLanguages', postData: {dict: param.dictId,format:'grid', prop: 'language.name,languageCode,charset.name'}}).trigger "reloadGrid"
+    $('#languageSettingGrid').setGridParam({url: '/rest/dictLanguages', postData: {dict: param.dictId, format: 'grid', prop: 'language.name,languageCode,charset.name'}}).trigger "reloadGrid"
   }
 
   stringSettings = $('#stringSettingsDialog').dialog {
   autoOpen: false
-  width: 500
+  width: 'auto'
   height: 'auto'
-  title:i18n.dialog.stringsettings.title
+  title: i18n.dialog.stringsettings.title
   open: (e, ui)->
   # param must be attached to the dialog before the dialog open
-    param = $(@).data "param"
+    dict = $(@).data "param"
+    return if !dict
+    console.log dict
 
+    $('#dictName').val(dict.name)
+    $('#dictVersion').val(dict.version)
+    $('#dictFormat').val(dict.format)
+    $('#dictEncoding').val(dict.encoding)
+
+    prop = "key,reference,maxLength,context.name,description"
+
+    $('#stringSettingsGrid').setGridParam({url: '/rest/labels', postData: {dict: dict.id, format: 'grid', prop: prop}}).trigger "reloadGrid"
   }
 
-  stringSettings:stringSettings
+  stringSettings: stringSettings
   newProduct: newProduct
   newProductRelease: newProductRelease
   newOrAddApplication: newOrAddApplication

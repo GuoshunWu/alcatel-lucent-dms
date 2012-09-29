@@ -7,54 +7,48 @@
       url: '',
       mtype: 'post',
       datatype: 'json',
-      width: 300,
-      height: 'auto',
+      width: 700,
+      height: 300,
       pager: '#stringSettingsPager',
       editurl: "",
       rowNum: 10,
       rowList: [10, 20, 30],
-      sortname: 'name',
+      sortname: 'key',
       sortorder: 'asc',
       viewrecords: true,
       gridview: true,
-      colNames: ['Label', 'Reference Language', 'Max Length', 'Context', 'Description', 'Status'],
+      colNames: ['Label', 'Reference Language', 'Max Length', 'Context', 'Description'],
       colModel: [
         {
           name: 'key',
           index: 'key',
-          width: 50,
+          width: 100,
           editable: true,
           align: 'left'
         }, {
           name: 'reference',
           index: 'reference',
-          width: 40,
+          width: 100,
           editable: true,
-          align: 'center'
+          align: 'left'
         }, {
           name: 'maxLength',
           index: 'maxLength',
           width: 40,
           editable: true,
-          align: 'center'
+          align: 'left'
         }, {
           name: 'context',
           index: 'context.name',
-          width: 50,
+          width: 80,
           editable: true,
           align: 'left'
         }, {
           name: 'description',
           index: 'description',
-          width: 40,
+          width: 60,
           editable: true,
-          align: 'center'
-        }, {
-          name: 'status',
-          index: 'status',
-          width: 40,
-          editable: true,
-          align: 'center'
+          align: 'left'
         }
       ]
     });

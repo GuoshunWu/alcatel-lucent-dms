@@ -2,13 +2,11 @@
 (function() {
 
   define(function(require) {
-    var $, URL, apppnl, dialogs, ids, layout, productpnl;
+    var $, URL, apppnl, ids, layout, productpnl;
     $ = require('jqtree');
     layout = require('appmng/layout');
     productpnl = require('appmng/product_panel');
     apppnl = require('appmng/application_panel');
-    dialogs = require('appmng/dialogs');
-    console.log(layout);
     ids = {
       navigateTree: 'appTree'
     };
@@ -79,6 +77,17 @@
           data: product.name,
           attr: {
             id: product.id
+          }
+        });
+      },
+      addNewApplicationBase: function(params) {
+        var appTree, selectedNode;
+        appTree = $.jstree._reference("#" + ids.navigateTree);
+        selectedNode = appTree.get_selected();
+        return $("#appTree").jstree("create_node", selectedNode, "last", {
+          data: params.appBaseName,
+          attr: {
+            id: params.appBaseId
           }
         });
       }

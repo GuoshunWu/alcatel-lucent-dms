@@ -17,7 +17,7 @@
     <meta http-equiv="Pragma" content="no-cache"/>
 
     <link rel="stylesheet" type="text/css" href="css/appmanagement.css"/>
-
+    <%@include file="common/env.jsp"%>
     <script type="text/javascript" data-main="js/appmng/appmng" src="js/require.js"></script>
 
 </head>
@@ -29,11 +29,7 @@
 <div id="ie6" class="ie"><![endif]-->
 <!--[if IE 7]>
 <div id="ie7" class="ie"><![endif]-->
-
-<div id="loading-container">
-    Loading...
-</div>
-
+<%@include file="common/maskdiv.jsp"%>
 <div id="optional-container">
     <div class="ui-layout-north" style="text-align: left; bottom:0px">
         <table width="99%" border="0">

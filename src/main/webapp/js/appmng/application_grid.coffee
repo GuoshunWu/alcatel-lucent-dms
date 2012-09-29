@@ -1,7 +1,4 @@
-define ['require', 'appmng/apptree', 'appmng/product_panel'], (require, apptree, prodpnl)->
-  $ = require 'jqgrid'
-  i18n = require 'i18n!nls/appmng'
-  dialogs = require 'appmng/dialogs'
+define ['jqgrid','i18n!nls/appmng', 'appmng/dialogs','require'], ($, i18n,dialogs,require)->
 
   URL = {
   # get application in product by product id
@@ -38,6 +35,7 @@ define ['require', 'appmng/apptree', 'appmng/product_panel'], (require, apptree,
         $("##{iRow}_version", localIds.app_grid).append $(json).map ()->opt = new Option(@version, @id);opt.selected = @version == val; opt
       }
   beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
+    prodpnl= require 'appmng/product_panel'
     {productId: prodpnl.getSelectedProduct().id, newAppId: value}
 
   afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
@@ -53,11 +51,13 @@ define ['require', 'appmng/apptree', 'appmng/product_panel'], (require, apptree,
     .appendTo $("tbody", form) if permanent.length == 0
     permanent?.removeAttr 'checked'
   onclickSubmit: (params, posdata)->
+    prodpnl= require 'appmng/product_panel'
     product = prodpnl.getSelectedProduct()
     {productId: product.id, permanent: Boolean($('#permanentDeleteSignId').attr("checked"))}
   afterSubmit: (response, postdata)->
     jsonFromServer = eval "(#{response.responseText})"
     #remove appbase node from apptree.
+    apptree = require 'appmng/apptree'
     apptree.delApplictionBaseFromProductBase jsonFromServer.id if jsonFromServer.id
     #appbase is deleted
     [0 == jsonFromServer.status, jsonFromServer.message]
@@ -68,7 +68,9 @@ define ['require', 'appmng/apptree', 'appmng/product_panel'], (require, apptree,
   }
   id: localIds
   productChanged: (product)->
+    apptree = require 'appmng/apptree'
+
     url = "#{URL.get_application_by_product_id}?prod=#{product.id}&format=grid&prop=id,name,version,dictNum"
     appGrid.setGridParam({url: url, datatype: "json"}).trigger("reloadGrid")
-    productBase = require('appmng/apptree').getSelected()
+    productBase =apptree.getSelected()
     appGrid.setCaption "Applications for Product #{productBase.text} version #{product.version}"

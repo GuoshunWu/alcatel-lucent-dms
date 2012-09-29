@@ -17,8 +17,8 @@
     <meta http-equiv="Pragma" content="no-cache">
 
     <link rel="stylesheet" type="text/css" href="css/taskmanagement.css">
+    <%@include file="common/env.jsp"%>
     <script type="text/javascript" data-main="js/taskmng/taskmng" src="js/require.js"></script>
-
 
 </head>
 <body>
@@ -30,6 +30,7 @@
 <!--[if IE 7]>
 <div id="ie7" class="ie"><![endif]-->
 
+<%--<%@include file="common/maskdiv.jsp"%>--%>
 
 <div id="optional-container">
     <div class="ui-layout-north" style="text-align: left; bottom:0px">
