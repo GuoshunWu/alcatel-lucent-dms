@@ -58,7 +58,11 @@ formatJonString = (jsonString) ->
     i++
   retval
 
-a = {a:111,b:222}
-console.log formatJonString JSON.stringify(a)
+a = {
+  init:((me)->
+    return {a:'123,',b:'456'}
+  )(@)
+  name:this.a.init.b,
+}
 
 

@@ -98,10 +98,13 @@
   };
 
   a = {
-    a: 111,
-    b: 222
+    init: (function(me) {
+      return {
+        a: '123,',
+        b: '456'
+      };
+    })(this),
+    name: this.a.init.b
   };
-
-  console.log(formatJonString(JSON.stringify(a)));
 
 }).call(this);
