@@ -110,8 +110,9 @@ public interface DictionaryService {
     /**
      * Remove a dictionary from all applications, and delete it.
      * @param id dictionary id
+     * @return DictionaryBase id if the dictionary base was deleted or null if the dictionary base was not deleted. 
      */
-    void deleteDictionary(Long id);
+    Long deleteDictionary(Long id);
     
     /**
      * Calculate translation summary in dictionary level

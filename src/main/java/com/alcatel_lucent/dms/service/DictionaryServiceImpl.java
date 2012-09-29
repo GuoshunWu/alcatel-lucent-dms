@@ -104,9 +104,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         Collection<Dictionary> dicts = (Collection<Dictionary>) getDao().retrieve(hsql);
 
         for (Dictionary dict : dicts) {
-            if (dict.getFormat().equals("mdc")) {
+            if (dict.getFormat().equals("Dictionary conf")) {
                 generateMDC(new File(dir, dict.getName()), dict.getId(), null);
-            } else if (dict.getFormat().equals("dct")){
+            } else if (dict.getFormat().equals("DCT")){
                 generateDCT(new File(dir, dict.getName()), dict, dict.getEncoding(), null);
             }
         }
@@ -804,7 +804,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     	app.removeDictionary(dictId);
     }
     
-    public void deleteDictionary(Long id) {
+    public Long deleteDictionary(Long id) {
     	String hql = "select distinct a from Application a join a.dictionaries as d where d.id=:id";
     	Map param = new HashMap();
     	param.put("id", id);
@@ -820,7 +820,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     	if (dictBase.getDictionaries() == null || dictBase.getDictionaries().size() == 0 ||
     			dictBase.getDictionaries().size() == 1 && dictBase.getDictionaries().iterator().next().getId().equals(id)) {
     		dao.delete(dictBase);
+    		return dictBase.getId();
     	}
+    	return null;
     }
     
 /*    
