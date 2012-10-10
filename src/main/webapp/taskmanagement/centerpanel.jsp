@@ -6,6 +6,19 @@
 <table width="100%" border="0" style="border-color: black">
     <tr>
         <td>
+            <table border="0" width="100%">
+                <tr>
+                    <td align="right" style="width:80px"><s:text name="product"/></td>
+                    <td style="width:160px"><select id="productBase" style="width:99%;"/></td>
+                    <td align="right" style="width: 100px"><s:text name="version"/></td>
+                    <td style="width:200px"><select id="productRelease" style="width:99%;"/></td>
+                    <td>&nbsp;</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>
             <table width="100%" border="0" style="border-color: yellow">
                 <tr>
                     <td align="center" colspan="9" style="width: 100%">
@@ -16,7 +29,6 @@
                             </tr>
                         </table>
                         <div id="taskPager"/>
-
                     </td>
                 </tr>
             </table>

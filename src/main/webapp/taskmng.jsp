@@ -34,7 +34,21 @@
 
 <div id="optional-container">
     <div class="ui-layout-north" style="text-align: left; bottom:0px">
-        <%@include file="taskmanagement/northpanel.jsp"%>
+        <table width="100%" border="0">
+            <tr>
+                <td>
+            <span style="font-family:fantasy; font-size:14pt; font-style:normal; ">
+                <s:text name="taskmng.title"/>
+            </span>
+                </td>
+                <td>
+                    <div id="switcher"></div>
+                </td>
+                <td  align="right">
+                    <%@include file="/common/pagenavigator.jsp" %>
+                </td>
+            </tr>
+        </table>
     </div>
 
     <div id="ui_center" class="ui-layout-center">

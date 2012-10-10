@@ -11,12 +11,15 @@
         <td>
             <table border="0" width="100%" style="border-color: red">
                 <tr>
-                    <td style="width: 15px"/>
-                    <td>
+                    <td style="width:18px;"></td>
+                    <td style="width: 130px">
                         <button id="languageFilter"><s:text name="transmng.summarypanel.languagefilter"/></button>
                     </td>
-                    <td>&nbsp;</td>
-                    <td>
+                    <td style="width: 60px" align="right"><s:text name="product"/></td>
+                    <td style="width:160px"><select id="productBase" style="width:99%;"/></td>
+                    <td align="right" style="width: 50px"><s:text name="version"/></td>
+                    <td style="width:200px"><select id="productRelease" style="width:99%;"/></td>
+                    <td style="width: 250px">
                         <div style="border: thin solid;width: 280px;text-align: center">
                             <input type="radio" id="applicationView" name="viewOption" value="application"><label
                                 for="applicationView"><s:text
@@ -26,13 +29,10 @@
                                 name="transmng.summarypanel.viewoption.dictionarylevel"/></label>
                         </div>
                     </td>
-                    <td>&nbsp;</td>
-                    <td><s:text name="transmng.summarypanel.searchtext"/><input/></td>
-                    <td>&nbsp;</td>
+                    <td style="width: 240px"><s:text name="transmng.summarypanel.searchtext"/><input/></td>
                     <td><a href="">Excel</a></td>
-                    <td>&nbsp;</td>
                     <td><a href="">PDF</a></td>
-                    <td style="width: 15px"/>
+                    <td style="width:18px;"></td>
                 </tr>
             </table>
         </td>

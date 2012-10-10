@@ -133,7 +133,7 @@
       editurl: "",
       datatype: 'json',
       width: $(window).width() * 0.95,
-      height: 300,
+      height: 380,
       shrinkToFit: false,
       rownumbers: true,
       loadonce: false,

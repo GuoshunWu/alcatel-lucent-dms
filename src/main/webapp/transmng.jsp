@@ -17,32 +17,43 @@
     <meta http-equiv="Pragma" content="no-cache">
 
     <link rel="stylesheet" type="text/css" href="css/transmanagement.css">
-    <%@include file="common/env.jsp"%>
+    <%@include file="common/env.jsp" %>
     <script type="text/javascript" data-main="js/transmng/transmng" src="js/require.js"></script>
 
 </head>
 <body>
 
-<!--[if IE 5]>
-<div id="ie5" class="ie"><![endif]-->
-<!--[if IE 6]>
-<div id="ie6" class="ie"><![endif]-->
-<!--[if IE 7]>
-<div id="ie7" class="ie"><![endif]-->
+<!--[if IE 5]><div id="ie5" class="ie"><![endif]-->
+<!--[if IE 6]><div id="ie6" class="ie"><![endif]-->
+<!--[if IE 7]><div id="ie7" class="ie"><![endif]-->
 
-<%@include file="common/maskdiv.jsp"%>
+<%@include file="common/maskdiv.jsp" %>
 
 <div id="optional-container">
     <div class="ui-layout-north" style="text-align: left; bottom:0px">
-        <%@include file="transmanagement/northpanel.jsp"%>
+        <table width="99%" border="0">
+            <tr>
+                <td colspan="2">
+                    <span style="font-family:fantasy,verdana, '黑体'; font-size:14pt; font-style:normal; ">
+                        <s:text name="transmng.title"/>
+                    </span>
+                </td>
+                <td align="right" colspan="2">
+                    <div id="switcher"></div>
+                </td>
+                <td align="right">
+                    <%@include file="/common/pagenavigator.jsp" %>
+                </td>
+            </tr>
+        </table>
     </div>
 
     <div id="ui_center" class="ui-layout-center">
-        <%@include file="transmanagement/summarypanel.jsp"%>
+        <%@include file="transmanagement/summarypanel.jsp" %>
     </div>
     <%--<div class="ui-layout-west"></div>--%>
     <%--<div class="ui-layout-south"> South</div>--%>
-    <%@include file="transmanagement/dialogs.jsp"%>
+    <%@include file="transmanagement/dialogs.jsp" %>
 </div>
 <!--[if lte IE 7]></div><![endif]-->
 

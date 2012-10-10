@@ -9,10 +9,9 @@ define ['jqlayout', 'require','blockui', 'jqmsgbox','i18n!nls/common','i18n!nls/
     page: 'optional-container'
     }
   }
-#  $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
 
   $('#pageNavigator').val(window.location.pathname)
-#  pageLayout = $("##{ids.container.page}").layout {resizable: true, closable: true}
+  pageLayout = $("##{ids.container.page}").layout {resizable: true, closable: true}
 
   $(".header-footer").hover (->$(@).addClass "ui-state-hover"), -> $(@).removeClass "ui-state-hover"
 

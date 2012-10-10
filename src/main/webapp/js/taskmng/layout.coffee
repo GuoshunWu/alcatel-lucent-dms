@@ -1,6 +1,8 @@
 define ['jqlayout','taskmng/task_grid'], ($)->
   $('#pageNavigator').val(window.location.pathname)
+  $("#optional-container").layout {resizable: true, closable: true}
 
+# file uploader
   ($("#progressbar").draggable({grid: [50, 20], opacity: 0.35}).css({
   'z-index': 100, width: 600, textAlign: 'center'
   'position': 'absolute', 'top': '45%', 'left': '30%'}).progressbar {

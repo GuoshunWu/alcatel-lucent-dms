@@ -2,7 +2,7 @@
 (function() {
 
   define(['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng', 'transmng/trans_grid', 'transmng/transdetail_grid'], function($, require, blockui, msgbox, c18n, i18n, grid, detailgrid) {
-    var createButtons, createDialogs, createSelects, dialogs, generateLanguageTable, ids, initPage;
+    var createButtons, createDialogs, createSelects, dialogs, generateLanguageTable, ids, initPage, pageLayout;
     ids = {
       languageFilterTableId: 'languageFilterTable',
       languageFilterDialogId: 'languageFilterDialog',
@@ -11,6 +11,10 @@
       }
     };
     $('#pageNavigator').val(window.location.pathname);
+    pageLayout = $("#" + ids.container.page).layout({
+      resizable: true,
+      closable: true
+    });
     $(".header-footer").hover((function() {
       return $(this).addClass("ui-state-hover");
     }), function() {

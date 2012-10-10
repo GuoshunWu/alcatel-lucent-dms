@@ -12,7 +12,7 @@ html, body {
     margin: 0;
 
     /*font-family: "Lucida Grande", "Arial", "Helvetica", "Verdana", "sans-serif";*/
-    font-family: "Arial", "Helvetica", "Verdana", "sans-serif";
+    font-family: "Arial", '宋体';
     font-size: 10px;
 
     overflow: hidden !important;
@@ -34,27 +34,5 @@ html, body {
 
 .ui-layout-center {
     overflow: hidden;
-}
-
-/* for combobox*/
-.ui-combobox {
-    position: relative;
-    display: inline-block;
-}
-
-.ui-combobox-toggle {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    margin-left: -1px;
-    padding: 0;
-    /* adjust styles for IE 6/7 */
-    *height: 1.7em;
-    *top: 0.1em;
-}
-
-.ui-combobox-input {
-    margin: 0;
-    padding: 0.3em;
 }
 
