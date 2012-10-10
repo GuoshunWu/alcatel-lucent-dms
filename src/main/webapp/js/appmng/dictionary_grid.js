@@ -12,7 +12,7 @@
     };
     deleteOptions = {
       reloadAfterSubmit: false,
-      url: 'http://127.0.0.1:2000',
+      url: '/app/remove-dict',
       beforeShowForm: function(form) {
         var permanent;
         permanent = $('#permanentDeleteSignId', form);
@@ -206,7 +206,11 @@
         });
       }
     });
-    dicGrid.jqGrid('navGrid', '#dictPager', {}, {}, {}, deleteOptions);
+    dicGrid.jqGrid('navGrid', '#dictPager', {
+      add: false,
+      edit: false,
+      search: false
+    }, {}, {}, deleteOptions);
     ($('#batchDelete').button({})).click(function() {
       return alert("Useless");
     });
