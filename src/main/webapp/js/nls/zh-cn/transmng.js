@@ -8,16 +8,6 @@
 
 define({
     select:{
-        product:{
-            tip:'请选择产品',
-            msg:'请选择产品！',
-            msgtitle:'选择产品'
-        },
-        release:{
-            tip:'请选择产品发布版本',
-            msg:'请选择产品发布版本！',
-            msgtitle:'选择产品发布'
-        },
         languagefilter:{
             title:'请选择要显示的语言'
         }

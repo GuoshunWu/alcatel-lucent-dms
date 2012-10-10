@@ -105,7 +105,7 @@ define ['jqlayout', 'require','blockui', 'jqmsgbox','i18n!nls/common','i18n!nls/
   createSelects = ->
   # selects on summary panel
     $.getJSON 'rest/products/trans/productbases', {}, (json)->
-      $('#productBase').append new Option(i18n.select.product.tip, -1)
+      $('#productBase').append new Option(c18n.select.product.tip, -1)
       $('#productBase').append $(json).map ()->new Option @name, @id
 
     #  load product in product base
@@ -114,7 +114,7 @@ define ['jqlayout', 'require','blockui', 'jqmsgbox','i18n!nls/common','i18n!nls/
       return false if parseInt($('#productBase').val()) == -1
 
       $.getJSON "rest/products/#{$('#productBase').val()}", {}, (json)->
-        $('#productRelease').append new Option(i18n.select.release.tip, -1)
+        $('#productRelease').append new Option(c18n.select.release.tip, -1)
         $('#productRelease').append $(json).map ()->new Option @version, @id
         $('#productRelease').trigger "change"
 
