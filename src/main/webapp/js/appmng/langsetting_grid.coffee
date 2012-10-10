@@ -1,7 +1,7 @@
 define (require)->
-  $= require 'jqgrid'
-  dicGrid = $('#languageSettingGrid').jqGrid {
-  url: '',mtype:'post', datatype: 'json'
+  $ = require 'jqgrid'
+  langSettingGrid = $('#languageSettingGrid').jqGrid {
+  url: '', mtype: 'post', datatype: 'json'
   width: 500, height: 230
   pager: '#langSettingPager'
   editurl: ""
@@ -10,14 +10,21 @@ define (require)->
   sortname: 'language.name'
   sortorder: 'asc'
   viewrecords: true
-  gridview: true
-  colNames: ['Language', 'Code', 'Charset']
+  gridview: true,multiselect: true, cellEdit: true, cellurl: '/app/update-dict-language'
+  colNames: [ 'Code', 'Language', 'Charset']
   colModel: [
-    {name: 'name', index: 'language.name', width: 50, editable: true, align: 'left'}
-    {name: 'code', index: 'languageCode', width: 40, editable: true, align: 'center'}
-    {name: 'charset', index: 'charset.name', width: 40, editable: true, align: 'center'}
+    {name: 'code', index: 'languageCode', width: 40, editable: false, align: 'center'}
+    {name: 'name', index: 'language.name', width: 50, editable: true, edittype: 'select', align: 'left'}
+    {name: 'charset', index: 'charset.name', width: 40, editable: true, edittype: 'select', align: 'center'}
   ]
+  gridComplete: ()->
+#    query all the languages
+    $.getJSON 'rest/languages', {prop:'id,name'}, (languages)=>
+      $(@).setColProp 'name', editoptions: {value: ($(languages).map ()->"#{@id}:#{@name}").get().join(';')}
+#    query all the charset
   }
-  dicGrid.jqGrid('navGrid', '#langSettingPager', {edit: false, add: true, del: false, search: false, view: false})
+  langSettingGrid.jqGrid 'navGrid', '#langSettingPager', {edit: false, add: true, del: true, search: false},{},{},{
+    url:'/app/remove-dict-language'
+  }
 
 

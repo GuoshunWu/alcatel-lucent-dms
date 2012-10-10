@@ -17,19 +17,22 @@
       sortorder: 'asc',
       viewrecords: true,
       gridview: true,
+      multiselect: true,
+      cellEdit: true,
+      cellurl: '/app/update-label',
       colNames: ['Label', 'Reference Language', 'Max Length', 'Context', 'Description'],
       colModel: [
         {
           name: 'key',
           index: 'key',
           width: 100,
-          editable: true,
+          editable: false,
           align: 'left'
         }, {
           name: 'reference',
           index: 'reference',
           width: 100,
-          editable: true,
+          editable: false,
           align: 'left'
         }, {
           name: 'maxLength',
@@ -54,11 +57,11 @@
     });
     return dicGrid.jqGrid('navGrid', '#stringSettingsPager', {
       edit: false,
-      add: true,
+      add: false,
       del: false,
       search: false,
       view: false
-    });
+    }, {}, {}, {});
   });
 
 }).call(this);
