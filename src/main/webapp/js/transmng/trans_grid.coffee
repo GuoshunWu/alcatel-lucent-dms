@@ -42,7 +42,7 @@ define ['jqgrid','util', 'require', 'jqmsgbox','transmng/grid.colmodel','blockui
   transGrid = $("#transGrid").jqGrid {
   url: '' # url: 'json/taskgrid.json'
   mtype: 'POST', postData: {}, editurl: "", datatype: 'json'
-  width: $(window).width() * 0.95, height: 380, shrinkToFit: false
+  width: $(window).width() * 0.95, height: 350, shrinkToFit: false
   rownumbers: true, loadonce: false # for reload the colModel
   pager: '#transPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
   sortname: 'base.name', sortorder: 'asc', viewrecords: true, gridview: true, multiselect: true

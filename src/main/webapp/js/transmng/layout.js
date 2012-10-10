@@ -169,7 +169,7 @@
     };
     createSelects = function() {
       $.getJSON('rest/products/trans/productbases', {}, function(json) {
-        $('#productBase').append(new Option(i18n.select.product.tip, -1));
+        $('#productBase').append(new Option(c18n.select.product.tip, -1));
         return $('#productBase').append($(json).map(function() {
           return new Option(this.name, this.id);
         }));
@@ -180,7 +180,7 @@
           return false;
         }
         return $.getJSON("rest/products/" + ($('#productBase').val()), {}, function(json) {
-          $('#productRelease').append(new Option(i18n.select.release.tip, -1));
+          $('#productRelease').append(new Option(c18n.select.release.tip, -1));
           $('#productRelease').append($(json).map(function() {
             return new Option(this.version, this.id);
           }));
