@@ -4,6 +4,10 @@
   define(['jqlayout', 'taskmng/task_grid'], function($) {
     var taskFileUpload;
     $('#pageNavigator').val(window.location.pathname);
+    $("#optional-container").layout({
+      resizable: true,
+      closable: true
+    });
     ($("#progressbar").draggable({
       grid: [50, 20],
       opacity: 0.35
