@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
+import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryBase;
@@ -98,7 +100,7 @@ public class PropParser extends DictionaryParser {
         dictBase.setName(dictName);
         dictBase.setPath(refFile.getAbsolutePath());
         dictBase.setEncoding("ISO-8859-1");
-        dictBase.setFormat("Text properties");
+        dictBase.setFormat(Constants.DICT_FORMAT_TEXT_PROP);
         
         Context context = new Context();
         context.setName(dictName);
@@ -165,6 +167,7 @@ public class PropParser extends DictionaryParser {
 			int sortNo = 1;
 			int lineNo = 0;
 			StringBuffer logicalLine = new StringBuffer();
+			HashSet<String> keys = new HashSet<String>();
 			while ((line = br.readLine()) != null) {
 				lineNo++;
 				if (lineNo == 1) {	// remove BOM if any
@@ -183,12 +186,19 @@ public class PropParser extends DictionaryParser {
 					logicalLine.append(line.trim());
 					if (isLogicalLineEnd(line)) {
 						String[] keyElement = parseKeyElement(logicalLine.toString());
-						Label label = new Label();
-						label.setAnnotation1(comments.toString());
-						label.setKey(keyElement[0]);
-						label.setReference(keyElement[1]);
-						label.setSortNo(sortNo++);
-						result.add(label);
+						if (keys.contains(keyElement[0])) {
+							warnings.add(new BusinessWarning(
+			                        BusinessWarning.DUPLICATE_LABEL_KEY, lineNo,
+			                        keyElement[0]));
+						} else {
+							keys.add(keyElement[0]);
+							Label label = new Label();
+							label.setAnnotation1(comments.toString());
+							label.setKey(keyElement[0]);
+							label.setReference(keyElement[1]);
+							label.setSortNo(sortNo++);
+							result.add(label);
+						}
 						comments = new StringBuffer();
 						logicalLine = new StringBuffer();
 					} else {

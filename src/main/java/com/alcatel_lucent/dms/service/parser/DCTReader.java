@@ -132,6 +132,7 @@ public class DCTReader extends LineNumberReader {
         dictLanguages = readLanguages(nonBreakExceptions);
 
         dictionary.setDictLanguages(dictLanguages);
+        dictionary.setAnnotation1(getCommentLines());
 
         // readLabels
         Label label = null;

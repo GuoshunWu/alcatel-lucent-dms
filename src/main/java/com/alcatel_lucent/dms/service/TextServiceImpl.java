@@ -286,7 +286,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
         }
         String[] transStrings=transString.split("\n");
         for(int i=0;i<transStrings.length; ++i){
-            if(transStrings[i].length()>maxLengths[i]){
+            if(maxLengths.length > i && transStrings[i].length()>maxLengths[i]){
                 if(!warnings.isEmpty()){
                 	warnings+=";";
                 }

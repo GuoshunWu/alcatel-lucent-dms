@@ -38,6 +38,8 @@ public class BusinessException extends RuntimeException {
 	static public final int NESTED_LABEL_XML_FILE_ERROR = 220;
 	static public final int INVALID_XML_FILE = 221;
 	static public final int UNKNOWN_XML_LANG_CODE = 222;
+	static public final int TARGET_IS_NOT_DIRECTORY = 223;
+	static public final int FAILED_TO_MKDIRS = 224;
 	
 	static public final int CHARSET_NOT_FOUND = 301;
 	static public final int INVALID_DICT_ENCODING = 302;

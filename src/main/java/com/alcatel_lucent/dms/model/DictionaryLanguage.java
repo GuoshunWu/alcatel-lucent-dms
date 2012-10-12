@@ -10,6 +10,10 @@ public class DictionaryLanguage extends BaseEntity {
 	private String languageCode;
 	private Charset charset;
 	private int sortNo;
+	private String annotation1;
+	private String annotation2;
+	private String annotation3;
+	private String annotation4;
 	
 	public Dictionary getDictionary() {
 		return dictionary;
@@ -69,6 +73,30 @@ public class DictionaryLanguage extends BaseEntity {
 	}
 	public int getSortNo() {
 		return sortNo;
+	}
+	public String getAnnotation1() {
+		return annotation1;
+	}
+	public void setAnnotation1(String annotation1) {
+		this.annotation1 = annotation1;
+	}
+	public String getAnnotation2() {
+		return annotation2;
+	}
+	public void setAnnotation2(String annotation2) {
+		this.annotation2 = annotation2;
+	}
+	public String getAnnotation3() {
+		return annotation3;
+	}
+	public void setAnnotation3(String annotation3) {
+		this.annotation3 = annotation3;
+	}
+	public String getAnnotation4() {
+		return annotation4;
+	}
+	public void setAnnotation4(String annotation4) {
+		this.annotation4 = annotation4;
 	}
 
 }

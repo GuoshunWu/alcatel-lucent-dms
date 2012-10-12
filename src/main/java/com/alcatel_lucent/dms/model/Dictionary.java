@@ -13,6 +13,10 @@ public class Dictionary extends BaseEntity {
     private boolean locked;
     private DictionaryBase base;
     private String version;
+    private String annotation1;
+    private String annotation2;
+    private String annotation3;
+    private String annotation4;
 
     private static Map<String, String> refCodes = JSONObject.fromObject("{'DCT':'GAE','Dictionary conf':'EN-UK','Text properties':'en','XML labels':'en'}");
 
@@ -240,5 +244,37 @@ public class Dictionary extends BaseEntity {
     	}
     	return max;
     }
+
+	public String getAnnotation1() {
+		return annotation1;
+	}
+
+	public void setAnnotation1(String annotation1) {
+		this.annotation1 = annotation1;
+	}
+
+	public String getAnnotation2() {
+		return annotation2;
+	}
+
+	public void setAnnotation2(String annotation2) {
+		this.annotation2 = annotation2;
+	}
+
+	public String getAnnotation3() {
+		return annotation3;
+	}
+
+	public void setAnnotation3(String annotation3) {
+		this.annotation3 = annotation3;
+	}
+
+	public String getAnnotation4() {
+		return annotation4;
+	}
+
+	public void setAnnotation4(String annotation4) {
+		this.annotation4 = annotation4;
+	}
 
 }

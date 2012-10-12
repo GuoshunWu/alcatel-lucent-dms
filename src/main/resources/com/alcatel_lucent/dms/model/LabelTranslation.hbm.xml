@@ -16,6 +16,8 @@
         <property name="origTranslation" type="string" column="ORIG_TRANSLATION"
                   length="1024"/>
         <property name="needTranslation" type="boolean" column="NEED_TRANSLATION"/>
+        <property name="annotation1" type="text" column="ANNOTATION1"/>
+        <property name="annotation2" type="text" column="ANNOTATION2"/>
         <property name="warnings" type="string" column="WARNINGS" length="255"/>
         <property name="languageCode" type="string" column="LANGUAGE_CODE"/>
 		<property name="sortNo" type="integer" column="SORT_NO"/>

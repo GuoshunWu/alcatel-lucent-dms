@@ -10,6 +10,10 @@
 
         <property name="languageCode" type="string" column="LANGUAGE_CODE"/>
 		<property name="sortNo" type="integer" column="SORT_NO"/>
+        <property name="annotation1" type="text" column="ANNOTATION1"/>
+        <property name="annotation2" type="text" column="ANNOTATION2"/>
+        <property name="annotation3" type="text" column="ANNOTATION3"/>
+        <property name="annotation4" type="text" column="ANNOTATION4"/>
 
         <many-to-one name="dictionary">
             <column name="DICTIONARY_ID"/>

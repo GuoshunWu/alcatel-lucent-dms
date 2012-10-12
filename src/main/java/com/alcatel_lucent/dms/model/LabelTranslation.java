@@ -9,6 +9,8 @@ public class LabelTranslation extends BaseEntity {
 	private Label label;
 	private Language language;
 	private String origTranslation;
+	private String annotation1;
+	private String annotation2;
 	
 	private String warnings;
 	private String languageCode;
@@ -81,6 +83,18 @@ public class LabelTranslation extends BaseEntity {
 	}
 	public void setRequestTranslation(Boolean requestTranslation) {
 		this.requestTranslation = requestTranslation;
+	}
+	public String getAnnotation1() {
+		return annotation1;
+	}
+	public void setAnnotation1(String annotation1) {
+		this.annotation1 = annotation1;
+	}
+	public String getAnnotation2() {
+		return annotation2;
+	}
+	public void setAnnotation2(String annotation2) {
+		this.annotation2 = annotation2;
 	}
 
 }

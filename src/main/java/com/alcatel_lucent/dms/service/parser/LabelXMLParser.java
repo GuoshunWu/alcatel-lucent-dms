@@ -5,6 +5,8 @@ import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -14,13 +16,16 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.dom4j.Namespace;
 import org.dom4j.Node;
+import org.dom4j.ProcessingInstruction;
 import org.dom4j.io.DOMReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
+import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryBase;
@@ -41,8 +46,12 @@ public class LabelXMLParser extends DictionaryParser {
 		return "LABELS";
 	}
 	
+	protected String getSecondNodeName() {
+		return "LABEL";
+	}
+	
 	protected String getFormat() {
-		return "XML labels";
+		return Constants.DICT_FORMAT_XML_LABEL;
 	}
 	
 	protected String getXPath() {
@@ -103,7 +112,7 @@ public class LabelXMLParser extends DictionaryParser {
 		for (File file : files) {
 			String[] nameParts = splitFileName(file.getName());
 			String langCode = nameParts[2];
-			// reference file must end with "en.properties"
+			// reference file must end with "en.xml"
 			if (langCode.equalsIgnoreCase("EN")) {
 				refLangCode = langCode;
 				refFile = file;
@@ -135,7 +144,7 @@ public class LabelXMLParser extends DictionaryParser {
 		int sortNo = 1;
 		Collection<DictionaryLanguage> dictLanguages = new ArrayList<DictionaryLanguage>();
 		dictionary.setDictLanguages(dictLanguages);
-		dictionary.setLabels(readLabels(refFile, warnings, refFileExceptions));
+		dictionary.setLabels(readLabels(refFile, dictionary, warnings, refFileExceptions));
 		for (Label label : dictionary.getLabels()) {
 			label.setContext(context);
 		}
@@ -146,6 +155,9 @@ public class LabelXMLParser extends DictionaryParser {
 			String[] nameParts = splitFileName(file.getName());
 			String langCode = nameParts[2];
 			BusinessException fileExceptions = new BusinessException(BusinessException.NESTED_LABEL_XML_FILE_ERROR, file.getName());
+			if (langCode.equalsIgnoreCase("EN")) {	// skip reference language
+				continue;
+			}
 			DictionaryLanguage dictLanguage = new DictionaryLanguage();
 			dictLanguage.setLanguageCode(langCode);
 			dictLanguage.setSortNo(sortNo);
@@ -156,7 +168,12 @@ public class LabelXMLParser extends DictionaryParser {
 			dictLanguage.setLanguage(language);
 			dictLanguages.add(dictLanguage);
 			if (!langCode.equals(refLangCode)) {
-				Collection<Label> labels = readLabels(file, warnings, fileExceptions);
+				Dictionary tempDict = new Dictionary();	// to get file-level annotations
+				Collection<Label> labels = readLabels(file, tempDict, warnings, fileExceptions);
+				dictLanguage.setAnnotation1(tempDict.getAnnotation1());		// attributes of root element
+				dictLanguage.setAnnotation2(tempDict.getAnnotation2());		// comment of the file
+				dictLanguage.setAnnotation3(tempDict.getAnnotation3());		// namespaces of root element
+				dictLanguage.setAnnotation4(tempDict.getAnnotation4());		// processing instructions
 				for (Label label : labels) {
 					Label refLabel = dictionary.getLabel(label.getKey());
 					if (refLabel == null) {
@@ -166,6 +183,8 @@ public class LabelXMLParser extends DictionaryParser {
 						trans.setLanguageCode(langCode);
 						trans.setLanguage(language);
 						trans.setOrigTranslation(label.getReference());
+						trans.setAnnotation1(label.getAnnotation1());
+						trans.setAnnotation2(label.getAnnotation2());
 						trans.setSortNo(sortNo);
 						refLabel.addOrigTranslation(trans);
 					}						
@@ -182,7 +201,7 @@ public class LabelXMLParser extends DictionaryParser {
         return dictionary;
 	}
 	
-	private Collection<Label> readLabels(File file, Collection<BusinessWarning> warnings, BusinessException exceptions) {
+	private Collection<Label> readLabels(File file, Dictionary dict, Collection<BusinessWarning> warnings, BusinessException exceptions) {
 		Collection<Label> result = new ArrayList<Label>();
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder db;
@@ -196,24 +215,97 @@ public class LabelXMLParser extends DictionaryParser {
 			if (!root.getName().equals(getRootName())) {
 				throw new BusinessException(BusinessException.INVALID_XML_FILE, file.getName());
 			}
-			List<Element> nodes = document.selectNodes(getXPath());
+			
+			// read root comments
+			StringBuffer rootComments = new StringBuffer();
+			Iterator<Node> nodeIter = document.nodeIterator();
+			while (nodeIter.hasNext()) {
+				Node node = nodeIter.next();
+				if (node.getNodeType() == Node.COMMENT_NODE) {
+					String text = node.getStringValue();
+					if (!text.startsWith("# Generated by DMS")) {
+						String escapedComment = node.getStringValue().replace("\\", "\\\\");
+						escapedComment = escapedComment.replace("\n", "\\n");
+						rootComments.append(escapedComment).append("\n");
+					}
+				}
+			}
+			if (rootComments.length() > 0) {
+				dict.setAnnotation2(rootComments.substring(0, rootComments.length() - 1));
+			}
+			
+			// read attributes of root element
+			List<Attribute> rootAttributes = root.attributes();
+			StringBuffer rootAttrStr = new StringBuffer();
+			for (Attribute attr : rootAttributes) {
+				rootAttrStr.append(attr.getName()).append("=").append(attr.getValue()).append("\n");
+			}
+			if (rootAttrStr.length() > 0) {
+				dict.setAnnotation1(rootAttrStr.substring(0, rootAttrStr.length() - 1));
+			}
+			
+			// read namespaces of root element
+			List<Namespace> nsList = root.declaredNamespaces();
+			StringBuffer nsStr = new StringBuffer();
+			for (Namespace ns : nsList) {
+				nsStr.append(ns.getPrefix()).append("=").append(ns.getURI()).append("\n");
+			}
+			if (nsStr.length() > 0) {
+				dict.setAnnotation3(nsStr.substring(0, nsStr.length() - 1));
+			}
+			
+			// read processing instructions
+			List<ProcessingInstruction> piList = document.processingInstructions();
+			StringBuffer piStr = new StringBuffer();
+			for (ProcessingInstruction pi : piList) {
+				piStr.append(pi.getTarget()).append("=").append(pi.getText());
+			}
+			if (piStr.length() > 0) {
+				dict.setAnnotation4(piStr.substring(0, piStr.length() - 1));
+			}
+			
+			List<Element> nodes = root.elements();
 			int sortNo = 1;
-			for (Element node : nodes) {
-				List<Attribute> attributes = node.attributes();
+			StringBuffer comments = new StringBuffer();
+			Iterator<Node> iter = root.nodeIterator();
+//			List<Element> nodes = document.selectNodes(getXPath());
+//			for (Element node : nodes) {
+			HashSet<String> keys = new HashSet<String>();
+			while (iter.hasNext()) {
+				Node node = iter.next();
+				if (node.getNodeType() == Node.COMMENT_NODE) {
+					comments.append(node.getStringValue()).append("\n");
+					continue;
+				}
+				if (node.getNodeType() != Node.ELEMENT_NODE || !node.getName().equals(getSecondNodeName())) {
+					continue;
+				}
+				if (!(node instanceof Element)) continue;
+				List<Attribute> attributes = ((Element)node).attributes();
 				String key = null;
 				StringBuffer annotation = new StringBuffer();
 				for (Attribute attr : attributes) {
 					if (attr.getName().equals(getKeyAttributeName())) {
 						key = attr.getValue();
 					} else {
-						annotation.append(attr.getName()).append("=").append(attr.getValue()).append(";");
+						annotation.append(attr.getName()).append("=").append(attr.getValue()).append("\n");
 					}
+				}
+				if (keys.contains(key)) {
+					warnings.add(new BusinessWarning(BusinessWarning.DUPLICATE_LABEL_KEY, 0, key));
+					continue;
+				} else {
+					keys.add(key);
 				}
 				Label label = new Label();
 				label.setKey(key);
 				label.setReference(node.getStringValue().trim());
 				if (annotation.length() > 0) {
 					label.setAnnotation1(annotation.substring(0, annotation.length() - 1));
+				}
+				if (comments.length() > 0) {
+					label.setAnnotation2(comments.substring(0, comments.length() - 1));
+					comments = new StringBuffer();
 				}
 				label.setSortNo(sortNo++);
 				result.add(label);

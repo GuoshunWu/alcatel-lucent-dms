@@ -13,6 +13,15 @@ import com.alcatel_lucent.dms.model.Dictionary;
 abstract public class DictionaryParser {
 	
 	protected Logger log = Logger.getLogger(this.getClass());
+	
+	/**
+	 * Parse dictionaries into object.
+	 * @param rootDir part of path to be trimmed in dictionary name
+	 * @param file directory or file to be parsed, if file is a dictionary, files under the dictionary will be parsed recursively.
+	 * @param warnings holder of warnings
+	 * @return list of Dictionary objects
+	 * @throws BusinessException
+	 */
 	abstract public ArrayList<Dictionary> parse(String rootDir, File file, Collection<BusinessWarning> warnings) throws BusinessException;
 	
 	protected String[] splitFileName(String filename) {
