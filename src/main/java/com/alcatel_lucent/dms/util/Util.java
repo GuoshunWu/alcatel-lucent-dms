@@ -8,17 +8,18 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.mozilla.intl.chardet.HtmlCharsetDetector;
 import org.mozilla.intl.chardet.nsDetector;
@@ -219,5 +220,32 @@ public class Util {
         JsonElement je = jp.parse(uglyJSONString);
         String prettyJsonString = gson.toJson(je);
         return prettyJsonString;
+    }
+
+    public static void unzip(File zip,String unzipFilePath)throws Exception{
+        if(!zip.exists())return;
+        ZipFile zipFile=new ZipFile(zip);
+
+        Enumeration<? extends ZipEntry> enumZip=zipFile.entries();
+        File rpath=new File(unzipFilePath);
+        if(!rpath.exists() || !rpath.isDirectory()){
+            rpath.mkdirs();
+        }
+        while(enumZip.hasMoreElements()){
+            ZipEntry entry=enumZip.nextElement();
+            String name=entry.getName();
+            File dFile= new File(unzipFilePath,name);
+            if(entry.isDirectory()){
+                dFile.mkdirs();
+            }else{
+                InputStream is=zipFile.getInputStream(entry);
+                FileUtils.writeByteArrayToFile(dFile,IOUtils.toByteArray(is));
+            }
+        }
+    }
+    public static void unzip(String zipFilePath,String unzipFilePath)throws Exception{
+        File zip=new File(zipFilePath);
+        if(!zip.exists())return;
+        unzip(zip,unzipFilePath);
     }
 }
