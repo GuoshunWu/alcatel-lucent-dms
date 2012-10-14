@@ -90,6 +90,8 @@ public interface DictionaryService {
      * @param dictIds the collection of the ids for the dictionary to be generated.
      */
     void generateDCTFiles(String dir, Collection<Long> dictIds, String[] langCodes);
+    
+    void generateLabelXML(String targetDir, Long dictId, String[] langCodes) throws BusinessException;
 
 
   
@@ -109,11 +111,25 @@ public interface DictionaryService {
     void removeDictionaryFromApplication(Long appId, Long dictId);
     
     /**
+     * Remove dictionaries from an application, without deleting them.
+     * @param appId application id
+     * @param idList list of dictionary id
+     */
+    void removeDictionaryFromApplication(Long appId, Collection<Long> idList);
+    
+    /**
      * Remove a dictionary from all applications, and delete it.
      * @param id dictionary id
      * @return DictionaryBase id if the dictionary base was deleted or null if the dictionary base was not deleted. 
      */
     Long deleteDictionary(Long id);
+    
+    /**
+     * Remove dictionaries from all applications, and delete them.
+     * @param idList list of dictionary id
+     * @return
+     */
+    void deleteDictionary(Collection<Long> idList);
     
     /**
      * Calculate translation summary in dictionary level

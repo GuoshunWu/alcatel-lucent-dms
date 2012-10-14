@@ -14,5 +14,17 @@ define({
     create:'创建',
     app:'应用',
     dict:'字典',
-    language:'语言'
+    language:'语言',
+    select:{
+        product:{
+            tip:'请选择产品',
+            msg:'请选择产品！',
+            msgtitle:'选择产品'
+        },
+        release:{
+            tip:'请选择产品发布版本',
+            msg:'请选择产品发布版本！',
+            msgtitle:'选择产品发布'
+        }
+    }
 });
