@@ -19,8 +19,8 @@ require.config({
         jqlayout:'jquery.layout-latest',
         jqmsgbox:'jquery.msgBox.v1',
         blockui:'jquery.blockUI',
-        jqupload: 'jsfileuploader/jquery.fileupload',
-        iframetransport: 'jsfileuploader/jquery.iframe-transport',
+        jqupload:'jsfileuploader/jquery.fileupload',
+        iframetransport:'jsfileuploader/jquery.iframe-transport',
 //        modules
         appmng:'../appmng',
         transmng:'../transmng',
@@ -46,8 +46,7 @@ require.config({
             exports:'jQuery'
         },
         'jqgrid':{
-            deps:['jqueryui', param.i18ngridfile],
-//            deps:['jqueryui', 'i18n/grid.locale-en'],
+            deps:['jqueryui', typeof param !== "undefined" && param !== null ? param.i18ngridfile : 'i18n/grid.locale-en'],
             exports:'jQuery'
         },
         'jqtree':{
@@ -75,9 +74,8 @@ require.config({
         //Set the config for the i18n
         //module ID
         i18n:{
-            locale:param.locale
-//            locale:'en-us'
+            locale:typeof param !== "undefined" && param !== null ? param.locale : 'en_us'
         }
     },
-    urlArgs: "bust=" +  (new Date()).getTime()
+    urlArgs:"bust=" + (new Date()).getTime()
 });

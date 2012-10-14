@@ -9,6 +9,8 @@
     <!-- integrate with spring here -->
     <constant name="struts.objectFactory" value="spring" />
     <constant name="struts.objectFactory.spring.autoWire" value="name"   />
+
+
     <constant name="struts.i18n.encoding" value="UTF-8"/>
 
     <constant name="struts.multipart.maxSize" value="1073741824" />
