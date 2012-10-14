@@ -10,7 +10,7 @@
       editurl: "",
       datatype: 'json',
       width: $(window).width() * 0.95,
-      height: 300,
+      height: 400,
       shrinkToFit: false,
       rownumbers: true,
       loadonce: false,

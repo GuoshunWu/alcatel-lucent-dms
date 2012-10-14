@@ -12,15 +12,15 @@ public class RemoveDictAction extends JSONAction {
 	private DictionaryService dictionaryService;
 	
     private boolean permanent;
-    private Long id;
+    private String id;
     private Long appId;
 
     public String performAction() throws Exception {
     	log.info("RemoveDictAction: id=" + id + ", appId=" + appId + ", permanent=" + permanent);
     	if (permanent) {
-    		id = dictionaryService.deleteDictionary(id);
+    		dictionaryService.deleteDictionary(toIdList(id));
     	} else {
-    		dictionaryService.removeDictionaryFromApplication(appId, id);
+    		dictionaryService.removeDictionaryFromApplication(appId, toIdList(id));
     	}
     	setStatus(0);
     	setMessage(getText("message.success"));
@@ -43,11 +43,11 @@ public class RemoveDictAction extends JSONAction {
 		this.appId = appId;
 	}
 
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

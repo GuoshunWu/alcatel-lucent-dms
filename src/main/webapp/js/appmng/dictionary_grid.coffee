@@ -8,7 +8,7 @@ define (require, util, dialogs, i18n)->
   dic_grid: '#dictionaryGridList'
   }
   deleteOptions = {
-  reloadAfterSubmit: false, url: 'http://127.0.0.1:2000'
+  reloadAfterSubmit: false, url: '/app/remove-dict'
   beforeShowForm: (form)->
     permanent = $('#permanentDeleteSignId', form)
     $("<tr><td>#{i18n.grid.permanenttext}<td><input align='left' type='checkbox' id='permanentDeleteSignId'>")
@@ -105,7 +105,7 @@ define (require, util, dialogs, i18n)->
             console.log 'Invalid action'
     }
   }
-  dicGrid.jqGrid 'navGrid', '#dictPager', {}, {}, {}, deleteOptions
+  dicGrid.jqGrid 'navGrid', '#dictPager', {add:false,edit:false,search:false}, {}, {}, deleteOptions
 
   ($('#batchDelete').button {}).click ->alert "Useless"
 

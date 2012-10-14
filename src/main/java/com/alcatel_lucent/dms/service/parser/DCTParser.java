@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
+import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryBase;
@@ -132,7 +133,7 @@ public class DCTParser extends DictionaryParser {
         dictBase.setName(dictName);
         dictBase.setPath(path);
         dictBase.setEncoding(encoding);
-        dictBase.setFormat("DCT");
+        dictBase.setFormat(Constants.DICT_FORMAT_DCT);
         
 		Dictionary dictionary = new Dictionary();
 		dictionary.setBase(dictBase);

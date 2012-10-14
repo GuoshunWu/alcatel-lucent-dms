@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
+import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.model.Charset;
 import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Dictionary;
@@ -109,7 +110,7 @@ public class MDCParser extends DictionaryParser {
         dictBase.setName(dictionaryName);
         dictBase.setPath(path);
         dictBase.setEncoding("UTF-8");
-        dictBase.setFormat("Dictionary conf");
+        dictBase.setFormat(Constants.DICT_FORMAT_MDC);
         
 		Dictionary dictionary = new Dictionary();
 		dictionary.setBase(dictBase);

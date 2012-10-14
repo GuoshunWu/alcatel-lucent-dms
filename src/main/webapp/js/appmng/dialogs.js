@@ -214,7 +214,7 @@
           postData: {
             dict: param.dictId,
             format: 'grid',
-            prop: 'language.name,languageCode,charset.name'
+            prop: 'languageCode,language.name,charset.name'
           }
         }).trigger("reloadGrid");
       }

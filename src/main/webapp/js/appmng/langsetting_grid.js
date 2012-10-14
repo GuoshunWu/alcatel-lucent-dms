@@ -2,9 +2,9 @@
 (function() {
 
   define(function(require) {
-    var $, dicGrid;
+    var $, langSettingGrid;
     $ = require('jqgrid');
-    dicGrid = $('#languageSettingGrid').jqGrid({
+    langSettingGrid = $('#languageSettingGrid').jqGrid({
       url: '',
       mtype: 'post',
       datatype: 'json',
@@ -18,35 +18,55 @@
       sortorder: 'asc',
       viewrecords: true,
       gridview: true,
-      colNames: ['Language', 'Code', 'Charset'],
+      multiselect: true,
+      cellEdit: true,
+      cellurl: '/app/update-dict-language',
+      colNames: ['Code', 'Language', 'Charset'],
       colModel: [
         {
+          name: 'code',
+          index: 'languageCode',
+          width: 40,
+          editable: false,
+          align: 'center'
+        }, {
           name: 'name',
           index: 'language.name',
           width: 50,
           editable: true,
+          edittype: 'select',
           align: 'left'
-        }, {
-          name: 'code',
-          index: 'languageCode',
-          width: 40,
-          editable: true,
-          align: 'center'
         }, {
           name: 'charset',
           index: 'charset.name',
           width: 40,
           editable: true,
+          edittype: 'select',
           align: 'center'
         }
-      ]
+      ],
+      gridComplete: function() {
+        var _this = this;
+        return $.getJSON('rest/languages', {
+          prop: 'id,name'
+        }, function(languages) {
+          return $(_this).setColProp('name', {
+            editoptions: {
+              value: ($(languages).map(function() {
+                return "" + this.id + ":" + this.name;
+              })).get().join(';')
+            }
+          });
+        });
+      }
     });
-    return dicGrid.jqGrid('navGrid', '#langSettingPager', {
+    return langSettingGrid.jqGrid('navGrid', '#langSettingPager', {
       edit: false,
       add: true,
-      del: false,
-      search: false,
-      view: false
+      del: true,
+      search: false
+    }, {}, {}, {
+      url: '/app/remove-dict-language'
     });
   });
 
