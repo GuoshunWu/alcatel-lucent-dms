@@ -2,6 +2,9 @@ define (require)->
   $ = require 'jqueryui'
   require 'appmng/langsetting_grid'
   require 'appmng/stringsettings_grid'
+  require 'appmng/dictlistpreview_grid'
+  require 'appmng/dictpreview_grid'
+
   require 'jqupload'
   require 'iframetransport'
 
@@ -38,15 +41,14 @@ define (require)->
       $('#uploadStatus').html "#{i18n.uploadingfile}#{file.name}"
     data.submit()
     $("#progressbar").show() if !$.browser.msie
-
-
-  done: (e, data)->
-    $.each data.files, (index, file) ->$('#uploadStatus').html "#{file.name} #{i18n.uploadfinished}"
-    $("#progressbar").hide() if !$.browser.msie
-
   progressall: (e, data) ->
     progress = data.loaded / data.total * 100
     $('#progressbar').progressbar "value", progress
+  done: (e, data)->
+    $.each data.files, (index, file) ->$('#uploadStatus').html "#{file.name} #{i18n.uploadfinished}"
+    $("#progressbar").hide() if !$.browser.msie
+#    request handler
+    $('#dictListPreviewDialog').dialog 'open'
   }
 
   refresh: (info)->

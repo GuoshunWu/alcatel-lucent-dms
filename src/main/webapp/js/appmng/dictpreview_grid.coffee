@@ -1,8 +1,8 @@
 define ['jqgrid', 'require'], ($, require)->
-  dicGrid = $('#stringSettingsGrid').jqGrid {
+  dicGrid = $('#dictPreviewGrid').jqGrid {
   url: '',mtype:'post', datatype: 'json'
   width: 300, height: 'auto'
-  pager: '#stringSettingsPager'
+  pager: '#dictPreviewPager'
   editurl: ""
   rowNum: 10
   rowList: [10, 20, 30]
@@ -20,6 +20,6 @@ define ['jqgrid', 'require'], ($, require)->
     {name: 'status', index: 'status', width: 40, editable: true, align: 'center'}
   ]
   }
-  dicGrid.jqGrid('navGrid', '#stringSettingsPager', {edit: false, add: true, del: false, search: false, view: false})
+  dicGrid.jqGrid('navGrid', '#dictPreviewPager', {edit: false, add: true, del: false, search: false, view: false})
 
 

@@ -2,7 +2,7 @@
 (function() {
 
   define(['jqueryui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/appmng', 'require'], function($, jqmsgbox, c18n, i18n, require) {
-    var ids, langSettings, newOrAddApplication, newProduct, newProductRelease, stringSettings,
+    var dictListPreview, dictPreview, ids, langSettings, newOrAddApplication, newProduct, newProductRelease, stringSettings,
       _this = this;
     ids = {
       button: {
@@ -230,7 +230,6 @@
         if (!dict) {
           return;
         }
-        console.log(dict);
         $('#dictName').val(dict.name);
         $('#dictVersion').val(dict.version);
         $('#dictFormat').val(dict.format);
@@ -246,7 +245,23 @@
         }).trigger("reloadGrid");
       }
     });
+    dictListPreview = $('#dictListPreviewDialog').dialog({
+      autoOpen: false,
+      width: 'auto',
+      height: 'auto',
+      title: 'To be Changed',
+      open: function() {}
+    });
+    dictPreview = $('#dictPreviewDialog').dialog({
+      autoOpen: false,
+      width: 'auto',
+      height: 'auto',
+      title: 'To be Changed',
+      open: function() {}
+    });
     return {
+      dictPreview: dictPreview,
+      dictListPreview: dictListPreview,
       stringSettings: stringSettings,
       newProduct: newProduct,
       newProductRelease: newProductRelease,

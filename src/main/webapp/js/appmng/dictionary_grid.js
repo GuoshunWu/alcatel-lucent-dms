@@ -2,11 +2,13 @@
 (function() {
 
   define(function(require, util, dialogs, i18n) {
-    var $, deleteOptions, deleteRow, dicGrid, languageSetting, localIds, stringSetting;
+    var $, c18n, deleteOptions, deleteRow, dicGrid, languageSetting, localIds, stringSetting;
     $ = require('jqgrid');
     util = require('util');
     dialogs = require('appmng/dialogs');
     i18n = require('i18n!nls/appmng');
+    require('jqmsgbox');
+    c18n = require('i18n!nls/common');
     localIds = {
       dic_grid: '#dictionaryGridList'
     };
@@ -213,6 +215,58 @@
     }, {}, {}, deleteOptions);
     ($('#batchDelete').button({})).click(function() {
       return alert("Useless");
+    });
+    ($('#generateDict').button({})).click(function() {
+      var dicts, downloadForm, filename, formatDate, now;
+      dicts = dicGrid.getGridParam('selarrrow');
+      if (!dicts || dicts.length === 0) {
+        $.msgBox(c18n.selrow, null, {
+          title: c18n.warning
+        });
+        returun;
+
+      }
+      now = new Date();
+      formatDate = "" + (now.getFullYear()) + (now.getMonth() + 1) + (now.getDate()) + "_" + (now.getHours()) + (now.getMinutes()) + (now.getSeconds());
+      filename = "" + ($('#appDispAppName').text()) + "_" + ($('#selAppVersion option:selected').text()) + "_" + formatDate + ".zip";
+      downloadForm = $('#downloadDict');
+      $('#downloadDictIds', downloadForm).val(dicts);
+      $('#downloadFilename', downloadForm).val(filename);
+      return downloadForm.submit();
+    });
+    ($('#batchAddLanguage').button({})).click(function() {
+      var dicts;
+      dicts = dicGrid.getGridParam('selarrrow');
+      if (!dicts || dicts.length === 0) {
+        $.msgBox(c18n.selrow, null, {
+          title: c18n.warning
+        });
+        returun;
+
+      }
+      return $('#languageSettingGrid').editGridRow("new", {
+        url: '/app/add-dict-language',
+        onclickSubmit: function(params, posdata) {
+          return {
+            dicts: dicts.join(',')
+          };
+        },
+        beforeInitData: function() {
+          return $('#languageSettingGrid').setColProp('code', {
+            editable: true
+          });
+        },
+        onClose: function() {
+          return $('#languageSettingGrid').setColProp('code', {
+            editable: false
+          });
+        },
+        afterSubmit: function(response, postdata) {
+          var jsonfromServer;
+          jsonfromServer = eval("(" + response.responseText + ")");
+          return [jsonfromServer.status === 0, jsonfromServer.message, -1];
+        }
+      });
     });
     return {
       appChanged: function(app) {

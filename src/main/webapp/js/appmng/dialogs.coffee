@@ -1,4 +1,4 @@
-define ['jqueryui','jqmsgbox','i18n!nls/common','i18n!nls/appmng','require'], ($,jqmsgbox,c18n,i18n,require)->
+define ['jqueryui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/appmng', 'require'], ($, jqmsgbox, c18n, i18n, require)->
   ids = {
   button:
     {
@@ -135,14 +135,11 @@ define ['jqueryui','jqmsgbox','i18n!nls/common','i18n!nls/appmng','require'], ($
 
   stringSettings = $('#stringSettingsDialog').dialog {
   autoOpen: false
-  width: 'auto'
-  height: 'auto'
-  title: i18n.dialog.stringsettings.title
+  width: 'auto', height: 'auto', title: i18n.dialog.stringsettings.title
   open: (e, ui)->
   # param must be attached to the dialog before the dialog open
     dict = $(@).data "param"
     return if !dict
-    console.log dict
 
     $('#dictName').val(dict.name)
     $('#dictVersion').val(dict.version)
@@ -154,6 +151,22 @@ define ['jqueryui','jqmsgbox','i18n!nls/common','i18n!nls/appmng','require'], ($
     $('#stringSettingsGrid').setGridParam({url: '/rest/labels', postData: {dict: dict.id, format: 'grid', prop: prop}}).trigger "reloadGrid"
   }
 
+  dictListPreview = $('#dictListPreviewDialog').dialog {
+  autoOpen:false
+  width: 'auto', height: 'auto', title: 'To be Changed'
+  open:->
+
+  }
+
+  dictPreview = $('#dictPreviewDialog').dialog {
+  autoOpen:false
+  width: 'auto', height: 'auto', title: 'To be Changed'
+  open:->
+
+  }
+
+  dictPreview:dictPreview
+  dictListPreview: dictListPreview
   stringSettings: stringSettings
   newProduct: newProduct
   newProductRelease: newProductRelease

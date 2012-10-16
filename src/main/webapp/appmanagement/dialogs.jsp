@@ -42,59 +42,100 @@
     <div id="barvalue" style="z-index: 1000;position: absolute;left:45%;"></div>
 </div>
 
-<div id="languageSettingsDialog"/>
-<table border="0" width="100%">
-    <tr>
-        <td>
-            <table>
-                <tr>
-                    <td><label for="refCode"><s:text name="appmng.dialogs.languagesettings.refcode"/></label></td>
-                    <td><input id="refCode" readonly="readonly"/></td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <table id="languageSettingGrid">
-                <tr>
-                    <td/>
-                </tr>
-            </table>
-            <div id="langSettingPager"></div>
-        </td>
-    </tr>
-</table>
+<div id="languageSettingsDialog">
+    <table border="0" width="100%">
+        <tr>
+            <td>
+                <table>
+                    <tr>
+                        <td><label for="refCode"><s:text name="appmng.dialogs.languagesettings.refcode"/></label></td>
+                        <td><input id="refCode" readonly="readonly"/></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table id="languageSettingGrid">
+                    <tr>
+                        <td></td>
+                    </tr>
+                </table>
+                <div id="langSettingPager"></div>
+            </td>
+        </tr>
+    </table>
 </div>
 
-<div id="stringSettingsDialog"/>
-<table border="0" width="100%">
-    <tr>
-        <td>
-            <table border="0" width="100%">
-                <tr>
-                    <td style="width:40px;"><label for="dictName"><s:text name="dictionary"/></label></td>
-                    <td style="width:350px;"><input id="dictName" size="48" readonly="readonly"/></td>
-                    <td><label for="dictVersion" style="width: 200px"><s:text name="version"/></label></td>
-                    <td><input id="dictVersion" readonly="readonly"/></td>
-                <tr>
-                    <td style="width:35px;"><label for="dictFormat"><s:text name="dictionary.format"/></label></td>
-                    <td><input id="dictFormat" size="48" readonly="readonly"/></td>
-                    <td><label for="dictEncoding"><s:text name="dictionary.encoding"/></label></td>
-                    <td><input id="dictEncoding" readonly="readonly"/></td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <table id="stringSettingsGrid">
-                <tr>
-                    <td/>
-                </tr>
-            </table>
-            <div id="stringSettingsPager"></div>
-        </td>
-    </tr>
-</table>
+<div id="stringSettingsDialog">
+    <table border="0" width="100%">
+        <tr>
+            <td>
+                <table border="0" width="100%">
+                    <tr>
+                        <td style="width:40px;"><label for="dictName"><s:text name="dictionary"/></label></td>
+                        <td style="width:350px;"><input id="dictName" size="48" readonly="readonly"/></td>
+                        <td><label for="dictVersion" style="width: 200px"><s:text name="version"/></label></td>
+                        <td><input id="dictVersion" readonly="readonly"/></td>
+                    <tr>
+                        <td style="width:35px;"><label for="dictFormat"><s:text name="dictionary.format"/></label></td>
+                        <td><input id="dictFormat" size="48" readonly="readonly"/></td>
+                        <td><label for="dictEncoding"><s:text name="dictionary.encoding"/></label></td>
+                        <td><input id="dictEncoding" readonly="readonly"/></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table id="stringSettingsGrid">
+                    <tr>
+                        <td/>
+                    </tr>
+                </table>
+                <div id="stringSettingsPager"></div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="dictListPreviewDialog">
+    <table border="1" width="100%">
+        <%--<tr>--%>
+        <%--<td>--%>
+        <%--<table border="1" width="100%">--%>
+        <%--<tr>--%>
+
+        <%--<tr>--%>
+
+        <%--</tr>--%>
+        <%--</table>--%>
+        <%--</td>--%>
+        <%--</tr>--%>
+        <tr>
+            <td>
+                <table id="dictListPreviewGrid">
+                    <tr>
+                        <td/>
+                    </tr>
+                </table>
+                <div id="dictListPreviewPager"></div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="dictPreviewDialog">
+    <table border="1" width="100%">
+        <tr>
+            <td>
+                <table id="dictPreviewGrid">
+                    <tr>
+                        <td/>
+                    </tr>
+                </table>
+                <div id="dictPreviewPager"></div>
+            </td>
+        </tr>
+    </table>
 </div>

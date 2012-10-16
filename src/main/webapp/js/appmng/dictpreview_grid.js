@@ -3,13 +3,13 @@
 
   define(['jqgrid', 'require'], function($, require) {
     var dicGrid;
-    dicGrid = $('#stringSettingsGrid').jqGrid({
+    dicGrid = $('#dictPreviewGrid').jqGrid({
       url: '',
       mtype: 'post',
       datatype: 'json',
       width: 300,
       height: 'auto',
-      pager: '#stringSettingsPager',
+      pager: '#dictPreviewPager',
       editurl: "",
       rowNum: 10,
       rowList: [10, 20, 30],
@@ -58,7 +58,7 @@
         }
       ]
     });
-    return dicGrid.jqGrid('navGrid', '#stringSettingsPager', {
+    return dicGrid.jqGrid('navGrid', '#dictPreviewPager', {
       edit: false,
       add: true,
       del: false,
