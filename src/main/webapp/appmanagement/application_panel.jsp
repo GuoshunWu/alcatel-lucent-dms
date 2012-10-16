@@ -55,7 +55,14 @@
             <td>
                 <table>
                     <tr>
-                        <td><button>Generate dictionary</button><button>Add language</button><button id="batchDelete">Delete</button></td>
+                        <td>
+                            <form id="downloadDict" action="/app/download-app-dict" method="post">
+                                <input type="hidden" id="downloadDictIds" name="dicts"/>
+                                <input type="hidden" id="downloadFilename" name="filename"/>
+                            </form>
+                            <button id="generateDict">Generate dictionary</button>
+
+                            <button id="batchAddLanguage">Add language</button><button id="batchDelete">Delete</button></td>
                     </tr>
                 </table>
             </td>

@@ -16,6 +16,7 @@ define({
         app:'application',
         dict:'dictionary',
         language:'language',
+        selrow:'Please select row',
         select:{
             product:{
                 tip:'Please select product',

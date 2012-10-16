@@ -3,6 +3,8 @@ define (require, util, dialogs, i18n)->
   util = require 'util'
   dialogs = require 'appmng/dialogs'
   i18n = require 'i18n!nls/appmng'
+  require('jqmsgbox')
+  c18n = require 'i18n!nls/common'
 
   localIds = {
   dic_grid: '#dictionaryGridList'
@@ -105,10 +107,38 @@ define (require, util, dialogs, i18n)->
             console.log 'Invalid action'
     }
   }
-  dicGrid.jqGrid 'navGrid', '#dictPager', {add:false,edit:false,search:false}, {}, {}, deleteOptions
+  dicGrid.jqGrid 'navGrid', '#dictPager', {add: false, edit: false, search: false}, {}, {}, deleteOptions
 
   ($('#batchDelete').button {}).click ->alert "Useless"
+  ($('#generateDict').button {}).click ->
+    dicts = dicGrid.getGridParam('selarrrow')
+    if !dicts || dicts.length == 0
+      $.msgBox c18n.selrow, null, {title: c18n.warning}
+      returun
 
+    now = new Date()
+    formatDate = "#{now.getFullYear()}#{now.getMonth() + 1}#{now.getDate()}_#{now.getHours()}#{now.getMinutes()}#{now.getSeconds()}"
+    filename = "#{$('#appDispAppName').text()}_#{$('#selAppVersion option:selected').text()}_#{formatDate}.zip"
+    downloadForm = $('#downloadDict')
+    $('#downloadDictIds', downloadForm).val dicts
+    $('#downloadFilename', downloadForm).val filename
+    downloadForm.submit()
+
+
+  ($('#batchAddLanguage').button {}).click ->
+    dicts = dicGrid.getGridParam('selarrrow')
+    if !dicts || dicts.length == 0
+      $.msgBox c18n.selrow, null, {title: c18n.warning}
+      returun
+    $('#languageSettingGrid').editGridRow "new", {
+    url: '/app/add-dict-language'
+    onclickSubmit: (params, posdata)->{dicts: dicts.join(',')}
+    beforeInitData: ->$('#languageSettingGrid').setColProp 'code', editable: true
+    onClose: ->$('#languageSettingGrid').setColProp 'code', editable: false
+    afterSubmit: (response, postdata)->
+      jsonfromServer = eval "(#{response.responseText})"
+      [jsonfromServer.status == 0 , jsonfromServer.message, -1]
+    }
   appChanged: (app)->
     url = "rest/dict?app=#{app.id}&format=grid&prop=languageReferenceCode,base.name,version,base.format,base.encoding,labelNum"
     dicGrid.setGridParam({url: url, datatype: "json"}).trigger("reloadGrid")

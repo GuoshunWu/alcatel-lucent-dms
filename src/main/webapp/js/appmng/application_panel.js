@@ -6,6 +6,8 @@
     $ = require('jqueryui');
     require('appmng/langsetting_grid');
     require('appmng/stringsettings_grid');
+    require('appmng/dictlistpreview_grid');
+    require('appmng/dictpreview_grid');
     require('jqupload');
     require('iframetransport');
     grid = require('appmng/dictionary_grid');
@@ -63,18 +65,19 @@
           return $("#progressbar").show();
         }
       },
+      progressall: function(e, data) {
+        var progress;
+        progress = data.loaded / data.total * 100;
+        return $('#progressbar').progressbar("value", progress);
+      },
       done: function(e, data) {
         $.each(data.files, function(index, file) {
           return $('#uploadStatus').html("" + file.name + " " + i18n.uploadfinished);
         });
         if (!$.browser.msie) {
-          return $("#progressbar").hide();
+          $("#progressbar").hide();
         }
-      },
-      progressall: function(e, data) {
-        var progress;
-        progress = data.loaded / data.total * 100;
-        return $('#progressbar').progressbar("value", progress);
+        return $('#dictListPreviewDialog').dialog('open');
       }
     });
     return {
