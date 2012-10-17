@@ -24,7 +24,6 @@ public class PreviewDictREST extends BaseREST {
 	
 	@Override
 	String doGetOrPost(Map<String, String> requestMap) throws Exception {
-		pool.addHandler("NOE_6.7.2");
 		String handler = requestMap.get("handler");
 		return toJSON(pool.getDictionaries(handler), requestMap);
 	}

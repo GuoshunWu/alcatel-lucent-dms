@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import net.sf.json.JSONObject;
 
@@ -789,6 +790,22 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         }
         log.info("Import dictionary finish");
         return dbDict;
+    }
+    
+    public Map<String, Collection<BusinessWarning>> importDictionaries(Long appId, Collection<Dictionary> dictList, int mode) throws BusinessException {
+    	Map<String, Collection<BusinessWarning>> warningMap = new TreeMap<String, Collection<BusinessWarning>>();
+    	for (Dictionary dict : dictList) {
+    		Map<String, String> langCharset = new HashMap<String, String>();
+    		if (dict.getDictLanguages() != null) {
+    			for (DictionaryLanguage dl : dict.getDictLanguages()) {
+    				langCharset.put(dl.getLanguageCode(), dl.getCharset().getName());
+    			}
+    		}
+    		Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
+    		importDictionary(appId, dict, dict.getVersion(), mode, null, langCharset, warnings);
+    		warningMap.put(dict.getName(), warnings);
+    	}
+    	return warningMap;
     }
 
     private String getUnifiedLangCode(String langCode) {
