@@ -76,7 +76,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     @Autowired
     private com.alcatel_lucent.dms.service.parser.DictionaryParser[] parsers;
     
-
     public DictionaryServiceImpl() {
         super();
     }
@@ -552,6 +551,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
         // update dictionary languages in delivery mode
         if (mode == Constants.DELIVERY_MODE) {
+        	if (dbDict.getDictLanguages() != null) {	//remove all existing dict languages
+        		for (DictionaryLanguage dl : dbDict.getDictLanguages()) {
+        			dao.delete(dl);
+        		}
+        	}
 	        for (DictionaryLanguage dictLanguage : dict.getDictLanguages()) {
 	            String uniLangCode = getUnifiedLangCode(dictLanguage.getLanguageCode());
 	            if (langCodeList != null && !langCodeList.contains(uniLangCode)) {
@@ -565,10 +569,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	                nonBreakExceptions.addNestedException(new BusinessException(
 	                        BusinessException.CHARSET_NOT_DEFINED, dictLanguage.getLanguageCode()));
 	            } else {
-	                mergeDictLanguage(dbDict, dictLanguage.getLanguage().getId(), 
-	                		dictLanguage.getLanguageCode(), charsetName, dictLanguage.getSortNo(), 
-	                		dictLanguage.getAnnotation1(), dictLanguage.getAnnotation2(), 
-	                		dictLanguage.getAnnotation3(), dictLanguage.getAnnotation4());
+	            	dictLanguage.setDictionary(dbDict);
+	            	dictLanguage.setLanguage((Language) dao.retrieve(Language.class,
+	                        dictLanguage.getLanguage().getId()));
+	            	dictLanguage.setCharset(langService.getCharset(charsetName));
+	                dao.create(dictLanguage);
 	            }
 	        }
         }
@@ -695,9 +700,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	                t.setLanguage(trans.getLanguage());
 	                
 	                // determine translation status
-	                if (trans.getRequestTranslation() != null) {
-	                	t.setStatus(trans.getRequestTranslation().booleanValue() ? 
-	                			Translation.STATUS_UNTRANSLATED : Translation.STATUS_TRANSLATED);
+	                if (trans.getRequestTranslation() != null && trans.getRequestTranslation().booleanValue()) {
+	                	t.setStatus(Translation.STATUS_UNTRANSLATED);
 	                } else if (!trans.isNeedTranslation()) {
 	                	t.setStatus(Translation.STATUS_TRANSLATED);
 	                } else if (label.getReference().equals(trans.getOrigTranslation())) {
@@ -771,6 +775,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	                		dbLabelTrans.setAnnotation2(trans.getAnnotation2());
 	                		dbLabelTrans.setWarnings(trans.getWarnings());
 	                		dbLabelTrans.setNeedTranslation(trans.isNeedTranslation());
+	                		dbLabelTrans.setRequestTranslation(trans.getRequestTranslation());
 	                		dbLabelTrans.setLanguageCode(trans.getLanguageCode());
 	                		dbLabelTrans.setSortNo(trans.getSortNo());
 	                	}
@@ -788,38 +793,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
     private String getUnifiedLangCode(String langCode) {
         return langCode.toUpperCase().replace("_", "-");
-    }
-
-    private DictionaryLanguage mergeDictLanguage(Dictionary dbDict,
-                                                 Long languageId, String languageCode, String charsetName, 
-                                                 int sortNo, String annotation1, String annotation2, 
-                                                 String annotation3, String annotation4) {
-        DictionaryLanguage dbDictLang = dbDict.getDictLanguage(languageCode);
-        if (dbDictLang == null) {
-            dbDictLang = new DictionaryLanguage();
-            dbDictLang.setDictionary(dbDict);
-            dbDictLang.setLanguage((Language) dao.retrieve(Language.class,
-                    languageId));
-            dbDictLang.setCharset(langService.getCharset(charsetName));
-            dbDictLang.setLanguageCode(languageCode);
-            dbDictLang.setSortNo(sortNo);
-            dbDictLang.setAnnotation1(annotation1);
-            dbDictLang.setAnnotation2(annotation2);
-            dbDictLang.setAnnotation3(annotation3);
-            dbDictLang.setAnnotation4(annotation4);
-            dbDictLang = (DictionaryLanguage) dao.create(dbDictLang);
-        } else {
-            dbDictLang.setLanguage((Language) dao.retrieve(Language.class,
-                    languageId));
-            dbDictLang.setCharset(langService.getCharset(charsetName));
-            dbDictLang.setLanguageCode(languageCode);
-            dbDictLang.setSortNo(sortNo);
-            dbDictLang.setAnnotation1(annotation1);
-            dbDictLang.setAnnotation2(annotation2);
-            dbDictLang.setAnnotation3(annotation3);
-            dbDictLang.setAnnotation4(annotation4);
-        }
-        return dbDictLang;
     }
 
     public Dictionary getLatestDictionary(Long dictionaryBaseId, Long beforeDictionaryId) {

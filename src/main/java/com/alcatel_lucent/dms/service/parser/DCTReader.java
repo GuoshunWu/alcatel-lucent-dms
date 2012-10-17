@@ -369,10 +369,12 @@ public class DCTReader extends LineNumberReader {
         // but record the comment and blank lines which may be useful
         clearCommentLines();
         while (null != (line = super.readLine())) {
-        	// try to remove UTF BOM in case ISO-8859-1 encoding
+        	// try to remove BOM
         	String rawLine = line;
             if (firstLine) {
-            	if (line.length() >= 2 && line.charAt(0) == 0xff && line.charAt(1) == 0xfe) {
+            	if (line.length() >= 1 && line.charAt(0) == 0xfffe) {
+            		line = line.substring(1);
+            	} else if (line.length() >= 2 && line.charAt(0) == 0xff && line.charAt(1) == 0xfe) {
             		line = line.substring(2);
             	} else if (line.length() >= 3 && line.charAt(0) == 0xef && line.charAt(1) == 0xbb && line.charAt(2) == 0xbf) {
             		line = line.substring(3);

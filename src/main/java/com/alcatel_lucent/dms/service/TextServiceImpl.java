@@ -130,9 +130,15 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 	                Translation dbTrans = dbText.getTranslation(trans.getLanguage().getId());
 	                if (dbTrans == null) {
 						dbTrans = addTranslation(dbText, trans);
-	                } else if (mode == Constants.TRANSLATION_MODE) { // update translations only in TRANSLATION_MODE
+	                } else if (mode == Constants.TRANSLATION_MODE) { // update translations in TRANSLATION_MODE
 	                    dbTrans.setTranslation(trans.getTranslation());
 						dbTrans.setStatus(trans.getStatus());
+	                } else {	// in DELIVERY_MODE, set status to UNTRANSLATED if translation is explicitly requested 
+	                	if (dbTrans.getTranslation().equals(trans.getTranslation()) && 
+	                			!dbTrans.getTranslation().equals(text.getReference()) && 
+	                			trans.getStatus() == Translation.STATUS_UNTRANSLATED) {
+	                		dbTrans.setStatus(Translation.STATUS_UNTRANSLATED);
+	                	}
 	                }
 	                langSet.add(trans.getLanguage().getId());
 	            }
@@ -162,11 +168,11 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                 String value = header.getCell(i).getStringCellValue();
                 cellIndexMap.put(value, i);
             }
-            JSONObject rowContainer = null;
+            HashMap<String, Object> rowContainer = null;
             Row row;
             Set<String> headerTitles = cellIndexMap.keySet();
             for (int dataIndex = sheet.getFirstRowNum() + 1; (null != (row = sheet.getRow(dataIndex))); ++dataIndex) {
-                rowContainer = new JSONObject();
+                rowContainer = new HashMap<String, Object>();
                 for (String headerTitle : headerTitles) {
                     Cell cell = row.getCell(cellIndexMap.get(headerTitle));
                     if (null != cell) {
@@ -233,7 +239,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 	}
 
 
-	private void updateRow(JSONObject rowContainer, Long languageId) {
+	private void updateRow(HashMap<String, Object> rowContainer, Long languageId) {
 
         Context ctx= (Context) dao.retrieveOne("from Context where name = :name",
                 JSONObject.fromObject("{'name':'" + rowContainer.get(headerMap.get(ExcelFileHeader.DICTIONARY)) + "'}"));
