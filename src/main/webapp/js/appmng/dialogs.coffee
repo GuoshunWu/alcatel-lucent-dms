@@ -1,4 +1,5 @@
-define ['jqueryui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/appmng', 'require'], ($, jqmsgbox, c18n, i18n, require)->
+define ['jqueryui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/appmng','appmng/dictlistpreview_grid', 'require'], ($, jqmsgbox, c18n, i18n,grid, require)->
+
   ids = {
   button:
     {
@@ -152,20 +153,23 @@ define ['jqueryui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/appmng', 'require']
   }
 
   dictListPreview = $('#dictListPreviewDialog').dialog {
-  autoOpen:false
+  autoOpen: false
   width: 'auto', height: 'auto', title: 'To be Changed'
-  open:->
+  open: ->
+  #    param need to be initilize before the dialog open
+    param = $(@).data 'param'
+    grid.previewUpdate param
 
   }
 
   dictPreview = $('#dictPreviewDialog').dialog {
-  autoOpen:false
+  autoOpen: false
   width: 'auto', height: 'auto', title: 'To be Changed'
-  open:->
+  open: ->
 
   }
 
-  dictPreview:dictPreview
+  dictPreview: dictPreview
   dictListPreview: dictListPreview
   stringSettings: stringSettings
   newProduct: newProduct

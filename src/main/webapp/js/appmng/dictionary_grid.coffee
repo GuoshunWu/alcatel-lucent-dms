@@ -5,6 +5,8 @@ define (require, util, dialogs, i18n)->
   i18n = require 'i18n!nls/appmng'
   require('jqmsgbox')
   c18n = require 'i18n!nls/common'
+  blockui = require 'blockui'
+
 
   localIds = {
   dic_grid: '#dictionaryGridList'
@@ -39,11 +41,10 @@ define (require, util, dialogs, i18n)->
   url: ''
   datatype: 'json'
   width: 1000
-  height: 350
+  height: 330
   pager: '#dictPager'
   editurl: "app/create-or-add-application"
-  rowNum: 10
-  rowList: [10, 20, 30]
+  rowNum: 10, rowList: [10, 20, 30]
   sortname: 'base.name'
   sortorder: 'asc'
   viewrecords: true, cellEdit: true, cellurl: '/app/update-dict'
@@ -111,18 +112,25 @@ define (require, util, dialogs, i18n)->
 
   ($('#batchDelete').button {}).click ->alert "Useless"
   ($('#generateDict').button {}).click ->
+#    Test
     dicts = dicGrid.getGridParam('selarrrow')
     if !dicts || dicts.length == 0
       $.msgBox c18n.selrow, null, {title: c18n.warning}
       returun
 
-    now = new Date()
-    formatDate = "#{now.getFullYear()}#{now.getMonth() + 1}#{now.getDate()}_#{now.getHours()}#{now.getMinutes()}#{now.getSeconds()}"
-    filename = "#{$('#appDispAppName').text()}_#{$('#selAppVersion option:selected').text()}_#{formatDate}.zip"
-    downloadForm = $('#downloadDict')
-    $('#downloadDictIds', downloadForm).val dicts
-    $('#downloadFilename', downloadForm).val filename
-    downloadForm.submit()
+    filename = "#{$('#appDispAppName').text()}_#{$('#selAppVersion option:selected').text()}_#{new Date().format 'yyyyMMdd_hhmmss'}.zip"
+
+    $.blockUI css:{backgroundColor:'#fff'},overlayCSS:{opacity:0.2}
+    $.post '/app/generate-dict',{dicts:dicts.join(','), filename:filename},(json)->
+      $.unblockUI();
+
+      if(json.status !=0)
+        $.msgBox json.message, null, {title: c18n.error}
+        return
+
+      downloadForm = $('#downloadDict')
+      $('#fileLoc', downloadForm).val json.fileLoc
+      downloadForm.submit()
 
 
   ($('#batchAddLanguage').button {}).click ->

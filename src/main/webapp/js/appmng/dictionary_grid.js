@@ -2,13 +2,14 @@
 (function() {
 
   define(function(require, util, dialogs, i18n) {
-    var $, c18n, deleteOptions, deleteRow, dicGrid, languageSetting, localIds, stringSetting;
+    var $, blockui, c18n, deleteOptions, deleteRow, dicGrid, languageSetting, localIds, stringSetting;
     $ = require('jqgrid');
     util = require('util');
     dialogs = require('appmng/dialogs');
     i18n = require('i18n!nls/appmng');
     require('jqmsgbox');
     c18n = require('i18n!nls/common');
+    blockui = require('blockui');
     localIds = {
       dic_grid: '#dictionaryGridList'
     };
@@ -54,7 +55,7 @@
       url: '',
       datatype: 'json',
       width: 1000,
-      height: 350,
+      height: 330,
       pager: '#dictPager',
       editurl: "app/create-or-add-application",
       rowNum: 10,
@@ -217,7 +218,7 @@
       return alert("Useless");
     });
     ($('#generateDict').button({})).click(function() {
-      var dicts, downloadForm, filename, formatDate, now;
+      var dicts, filename;
       dicts = dicGrid.getGridParam('selarrrow');
       if (!dicts || dicts.length === 0) {
         $.msgBox(c18n.selrow, null, {
@@ -226,13 +227,31 @@
         returun;
 
       }
-      now = new Date();
-      formatDate = "" + (now.getFullYear()) + (now.getMonth() + 1) + (now.getDate()) + "_" + (now.getHours()) + (now.getMinutes()) + (now.getSeconds());
-      filename = "" + ($('#appDispAppName').text()) + "_" + ($('#selAppVersion option:selected').text()) + "_" + formatDate + ".zip";
-      downloadForm = $('#downloadDict');
-      $('#downloadDictIds', downloadForm).val(dicts);
-      $('#downloadFilename', downloadForm).val(filename);
-      return downloadForm.submit();
+      filename = "" + ($('#appDispAppName').text()) + "_" + ($('#selAppVersion option:selected').text()) + "_" + (new Date().format('yyyyMMdd_hhmmss')) + ".zip";
+      $.blockUI({
+        css: {
+          backgroundColor: '#fff'
+        },
+        overlayCSS: {
+          opacity: 0.2
+        }
+      });
+      return $.post('/app/generate-dict', {
+        dicts: dicts.join(','),
+        filename: filename
+      }, function(json) {
+        var downloadForm;
+        $.unblockUI();
+        if (json.status !== 0) {
+          $.msgBox(json.message, null, {
+            title: c18n.error
+          });
+          return;
+        }
+        downloadForm = $('#downloadDict');
+        $('#fileLoc', downloadForm).val(json.fileLoc);
+        return downloadForm.submit();
+      });
     });
     ($('#batchAddLanguage').button({})).click(function() {
       var dicts;
