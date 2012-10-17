@@ -95,6 +95,9 @@ public abstract class BaseREST {
     }
     
     protected String toJSON(Object data, Map<String, String> requestMap) throws Exception {
+    	if (data == null) {
+    		return "";
+    	}
     	String format = requestMap.get("format");
     	String prop = requestMap.get("prop");
     	String idprop = requestMap.get("idprop");
