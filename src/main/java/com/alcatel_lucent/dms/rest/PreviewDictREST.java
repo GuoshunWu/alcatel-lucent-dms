@@ -1,5 +1,6 @@
 package com.alcatel_lucent.dms.rest;
 
+import java.util.Collection;
 import java.util.Map;
 
 import javax.ws.rs.Path;
@@ -25,7 +26,9 @@ public class PreviewDictREST extends BaseREST {
 	@Override
 	String doGetOrPost(Map<String, String> requestMap) throws Exception {
 		String handler = requestMap.get("handler");
-		return toJSON(pool.getDictionaries(handler), requestMap);
+		Collection<Dictionary> dictList = pool.getDictionaries(handler);
+		requestMap.put("records", "" + dictList.size());
+		return toJSON(dictList, requestMap);
 	}
 
 }
