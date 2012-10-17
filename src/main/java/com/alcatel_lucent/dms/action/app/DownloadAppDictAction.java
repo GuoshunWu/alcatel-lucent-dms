@@ -63,7 +63,7 @@ public class DownloadAppDictAction extends JSONAction {
     }
 
     public String performAction() throws Exception {
-        dictionaryService.generateDCTFiles(tmpDir,toIdList(dicts),null);
+        dictionaryService.generateDictFiles(tmpDir,toIdList(dicts));
         File zipFile=new File(tmpDir,filename);
         Util.createZip(new File(tmpDir),zipFile);
         inStream = new FileInputStream(zipFile);

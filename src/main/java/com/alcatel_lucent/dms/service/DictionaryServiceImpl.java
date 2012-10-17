@@ -51,6 +51,11 @@ import com.alcatel_lucent.dms.model.LabelTranslation;
 import com.alcatel_lucent.dms.model.Language;
 import com.alcatel_lucent.dms.model.Text;
 import com.alcatel_lucent.dms.model.Translation;
+import com.alcatel_lucent.dms.service.generator.DCTGenerator;
+import com.alcatel_lucent.dms.service.generator.DictionaryGenerator;
+import com.alcatel_lucent.dms.service.generator.LabelXMLGenerator;
+import com.alcatel_lucent.dms.service.generator.MDCGenerator;
+import com.alcatel_lucent.dms.service.generator.PropXMLGenerator;
 
 @Service("dictionaryService")
 @Scope("singleton")
@@ -77,6 +82,18 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     @Autowired
     private com.alcatel_lucent.dms.service.parser.DictionaryParser[] parsers;
     
+    @Autowired
+    private DCTGenerator dctGenerator;
+    
+    @Autowired
+    private MDCGenerator mdcGenerator;
+    
+    @Autowired
+    private LabelXMLGenerator labelXMLGenerator;
+    
+    @Autowired
+    private PropXMLGenerator propXMLGenerator;
+    
     public DictionaryServiceImpl() {
         super();
     }
@@ -100,332 +117,34 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
      * @param dir   root directory save dct files
      * @param dtIds the collection of the id for dictionary to be generated.
      */
-    public void generateDCTFiles(String dir, Collection<Long> dtIds, String[] langCodes) {
+    public void generateDictFiles(String dir, Collection<Long> dtIds) {
         if (dtIds.isEmpty()) return;
         String idList = dtIds.toString().replace("[", "(").replace("]", ")");
         String hsql = "from Dictionary where id in " + idList;
         Collection<Dictionary> dicts = (Collection<Dictionary>) getDao().retrieve(hsql);
 
         for (Dictionary dict : dicts) {
-            log.info("**************************generate dictionary: " + dict.getName() + "***************************");
-            if (dict.getFormat().equals(Constants.DICT_FORMAT_MDC)) {
-                generateMDC(new File(dir, dict.getName()), dict.getId(), null);
-            } else if (dict.getFormat().equals(Constants.DICT_FORMAT_DCT)){
-                generateDCT(new File(dir, dict.getName()), dict, dict.getEncoding(), null);
-            } else if (dict.getFormat().equals(Constants.DICT_FORMAT_XML_LABEL)) {
-            	generateLabelXML(dir, dict.getId(), null);
-            } else if (dict.getFormat().equals(Constants.DICT_FORMAT_XML_PROP)) {
-            	generatePropXML(dir, dict.getId(), null);
-            } else {
-            	log.error("Unsupported dict format: " + dict.getFormat());
-            }
+            log.info("Generate dictionary: " + dict.getName());
+        	DictionaryGenerator generator = getGenerator(dict.getFormat());
+        	generator.generateDict(new File(dir), dict.getId());
         }
     }
+    
+    private DictionaryGenerator getGenerator(String format) {
+    	if (format.equals(Constants.DICT_FORMAT_MDC)) {
+	        return mdcGenerator;
+	    } else if (format.equals(Constants.DICT_FORMAT_DCT)){
+	        return dctGenerator;
+	    } else if (format.equals(Constants.DICT_FORMAT_XML_LABEL)) {
+	    	return labelXMLGenerator;
+	    } else if (format.equals(Constants.DICT_FORMAT_XML_PROP)) {
+	    	return propXMLGenerator;
+	    } else {
+	    	throw new SystemError("Unsupported dict format: " + format);
+	    }
+	}
 
-    /**
-     * Generate a dct file for a specific dictionary.
-     *
-     * @param filename  the file name for dct file
-     * @param dctId     dictionary id for the dictionary to be generated.
-     * @param encoding  the encoding for the file to write.
-     * @param langCodes the language codes for which languages to be generated.
-     */
-
-    public void generateDCT(String filename, Long dctId, String encoding,
-                            String[] langCodes) {
-        generateDCT(new File(filename), dctId, encoding, langCodes);
-    }
-
-    public void generateDCT(File file, Long dctId, String encoding,
-                            String[] langCodes) {
-        Dictionary dict = (Dictionary) getDao().retrieve(Dictionary.class,
-                dctId);
-        if (null == dict) {
-            log.warn("ID for " + dctId
-                    + " Dictionary is not found in database.");
-            throw new BusinessException(BusinessException.DICTIONARY_NOT_FOUND,
-                    dctId);
-        }
-        generateDCT(file, dict, encoding, langCodes);
-    }
-
-    private void generateDCT(File file, Dictionary dict, String encoding,
-                             String[] langCodes)
-            throws BusinessException {
-        // all the language code in dictionary
-        ArrayList<String> dictLangCodes = dict.getAllLanguageCodesOrdered();
-
-        if (langCodes != null) {
-            List<String> listLangCodes = new ArrayList<String>(Arrays.asList(langCodes));
-            listLangCodes.removeAll(dictLangCodes);
-            if (!listLangCodes.isEmpty()) {
-                throw new BusinessException(
-                        BusinessException.UNKNOWN_LANG_CODE,
-                        listLangCodes.get(0));
-            }
-            // used for iteration.
-            dictLangCodes.removeAll(Arrays.asList(langCodes));
-        }
-
-        if (null == encoding) {
-            encoding = dict.getEncoding();
-        }
-
-        PrintStream out = null;
-        try {
-            if (!file.exists()) {
-                if (!file.getParentFile().exists()) {
-                    file.getParentFile().mkdirs();
-                }
-                file.createNewFile();
-            }
-
-            out = new PrintStream(new BufferedOutputStream(
-                    new FileOutputStream(file)), true, encoding);
-            // output support languages
-            if (encoding.equals("UTF-16LE")) {
-                out.write(new byte[]{(byte) 0xff, (byte) 0xfe});
-            }
-            out.println("-- Generated by DMS\n");
-            if (dict.getAnnotation1() != null) {
-            	out.print(dict.getAnnotation1());
-            }
-            boolean hasCHK = false;
-            for (Label label : dict.getLabels()) {
-            	if (label.getMaxLength() != null) {
-            		hasCHK = true;
-            		break;
-            	}
-            }
-            if (hasCHK) {
-            	dictLangCodes.add(0, "CHK");
-            }
-            out.println("LANGUAGES {" + join(dictLangCodes, ", ") + "}");
-            out.println();
-            dictLangCodes.remove("CHK");
-            dictLangCodes.remove("GAE");
-
-            // output labels
-
-            Label label = null;
-            String checkFieldLangCodeString = String.format("  %s ",
-                    Label.CHECK_FIELD_NAME);
-            String referenceFieldLangCodeString = String.format("  %s ",
-                    Label.REFERENCE_FIELD_NAME);
-            int indentSize = checkFieldLangCodeString.length();
-
-            Label[] labels = dict.getLabels().toArray(new Label[0]);
-            for (int i = 0; i < labels.length; ++i) {
-                label = labels[i];
-
-                if (i > 0) {
-                    // output label separator
-                    out.println(";");
-                    out.println();
-                }
-                if (label.getAnnotation1() != null) {
-                	out.print(label.getAnnotation1());
-                }
-                out.println(label.getKey() + ":");
-                if (label.getAnnotation2() != null) {
-                	out.print(label.getAnnotation2());
-                }
-                String chk = generateCHK(label.getMaxLength(),
-                        label.getReference());
-                if (null != chk) {
-                    out.print(checkFieldLangCodeString + convertContent(indentSize, chk, "\n", System.getProperty("line.separator")));
-                    // output translation separator
-                    out.println(",");
-                }
-                out.print(referenceFieldLangCodeString
-                        + convertContent(indentSize, label.getReference(),
-                        "\n", System.getProperty("line.separator")));
-                for (String langCode : dictLangCodes) {
-//                for (LabelTranslation trans :  label.getOrigTranslations()) {
-                	LabelTranslation trans = label.getOrigTranslation(langCode);
-                    // output translation separator
-                    out.println(",");
-                    
-                    out.print("  " + langCode + " ");
-
-                    // output dictLangCode translation
-                    String translationString = label.getReference();
-                    
-                    // if need translation, get translation from context dictionary
-                    // otherwise, get translation from original translation
-                    DictionaryLanguage dl = dict.getDictLanguage(langCode);
-                    if (trans != null && !trans.isNeedTranslation()) {
-                    	translationString = trans.getOrigTranslation();
-                    } else {
-	                    for (Translation translation : label.getText()
-	                            .getTranslations()) {
-	                        if (translation.getLanguage().getId()
-	                                .equals(dl.getLanguage().getId())) {
-	                            translationString = translation.getTranslation();
-	                            break;
-	                        }
-	                    }
-                    }
-
-                    String converedString = convertContent(indentSize,
-                            translationString, "\n",
-                            System.getProperty("line.separator"));
-
-                    String charsetName = dl.getCharset().getName();
-                    out.write(converedString.getBytes(charsetName));
-                }
-            }
-            if (labels.length > 0) {
-                out.println(";");
-            }
-        } catch (IOException e) {
-            throw new SystemError(e.getMessage());
-        } finally {
-            if (null != out) {
-                out.close();
-            }
-        }
-    }
-
-    @Override
-    public void generateMDC(String file, Long dctId, String[] langCodes) throws BusinessException {
-        generateMDC(new File(file), dctId, langCodes);
-    }
-
-
-    public void generateMDC(File file, Long dctId, String[] langCodes) throws BusinessException {
-
-        Dictionary dict = (Dictionary) getDao().retrieve(Dictionary.class,
-                dctId);
-        if (null == dict) {
-            log.warn("ID for " + dctId
-                    + " Dictionary is not found in database.");
-            throw new BusinessException(BusinessException.DICTIONARY_NOT_FOUND,
-                    dctId);
-        }
-
-        // all the language code in dictionary
-        HashSet<String> dictLangCodes = dict.getAllLanguageCodes();
-
-        if (langCodes != null) {
-            List<String> listLangCodes = new ArrayList<String>(Arrays.asList(langCodes));
-            listLangCodes.removeAll(dictLangCodes);
-            if (!listLangCodes.isEmpty()) {
-                throw new BusinessException(
-                        BusinessException.UNKNOWN_LANG_CODE,
-                        listLangCodes.get(0));
-            }
-            // used for iteration.
-            dictLangCodes = new HashSet<String>(Arrays.asList(langCodes));
-        }
-        log.info("**************************generate dictionary: " + file.getPath() + "***************************");
-
-        if (!file.exists()) {
-            if (!file.getParentFile().exists()) {
-                file.getParentFile().mkdirs();
-            }
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                throw new SystemError(e.getMessage());
-            }
-        }
-
-        Collection<Label> labels = dict.getLabels();
-        Collection<Translation> translations = null;
-
-        //generate xml
-        Document document = DocumentHelper.createDocument();
-        document.addComment("Created by DMS");
-
-        Element dictionaryElement = document.addElement("dictionary");
-        Element messageStringElement = dictionaryElement.addElement("messageString");
-
-        for (Label label : labels) {
-            Element labelElement = messageStringElement.addElement(label.getKey());
-            translations = label.getText().getTranslations();
-
-            for (String dictLangCode : dictLangCodes) {
-                Element langElement = labelElement.addElement("lang");
-                String translatedString = label.getReference();
-
-                DictionaryLanguage dl = dict.getDictLanguage(dictLangCode);
-
-                Language dictLangCodeLanguage = dl.getLanguage();
-
-                for (Translation translation : translations) {
-                    if (translation.getLanguage().getId().equals(dictLangCodeLanguage.getId())) {
-                        translatedString = translation.getTranslation();
-                        break;
-                    }
-                }
-
-                langElement.addAttribute("id", dictLangCode);
-                langElement.setText(translatedString);
-            }
-        }
-
-        OutputFormat format = OutputFormat.createPrettyPrint();
-//      OutputFormat format = OutputFormat.createCompactFormat();
-
-        format.setEncoding("UTF-8");
-
-        try {
-            XMLWriter output = new XMLWriter(new FileWriter(file), format);
-            output.write(document);
-            output.close();
-        } catch (IOException e) {
-            throw new SystemError(e.getMessage());
-        }
-
-    }
-
-    private String generateCHK(String maxLength, String reference) {
-        if (null == maxLength) return null;
-        log.debug("maxLength=" + maxLength + ", reference=" + reference);
-        StringBuilder sb = new StringBuilder();
-        //Trailing empty strings should not be discarded
-        String[] sLineLens = maxLength.split(",", -1);
-        String[] refers = reference.split("\n", -1);
-        int maxLen = -1;
-
-        int min = Math.min(sLineLens.length, refers.length);
-        for (int i = 0; i < min; ++i) {
-            maxLen = Integer.parseInt(sLineLens[i].trim());
-            sb.append(refers[i].trim());
-            int fill = maxLen - refers[i].length();
-            int base = 0;
-            while (fill-- > 0) {
-                sb.append((char) (base++ % 10 + '0'));
-            }
-            sb.append("\n");
-        }
-
-        for (int i = min; i < sLineLens.length; ++i) {
-            maxLen = Integer.parseInt(sLineLens[i].trim());
-            int fill = maxLen;
-            int base = 0;
-            while (fill-- > 0) {
-                sb.append((char) (base++ % 10 + '0'));
-            }
-            sb.append("\n");
-        }
-
-        return sb.toString();
-    }
-
-    private String convertContent(int indentSize, String content,
-                                  String contentLineSeparator, String joinedStringLineSeparator) {
-        String[] contents = content.split(contentLineSeparator);
-        for (int i = 0; i < contents.length; ++i) {
-            contents[i] = "\"" + contents[i] + "\"";
-        }
-        return join(contents, joinedStringLineSeparator
-                + generateSpace(indentSize));
-    }
-
-
-    @Override
+	@Override
     public Dictionary importDictionary(Long appId, Dictionary dict, String version, int mode, String[] langCodes,
                                 Map<String, String> langCharset,
                                 Collection<BusinessWarning> warnings) {
@@ -1051,298 +770,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     	}
     }
     
-    public void generateLabelXML(String targetDir, Long dictId, String[] langCodes) throws BusinessException {
-    	File target = new File(targetDir);
-    	if (target.exists()) {
-    		if (target.isFile()) {
-    			throw new BusinessException(BusinessException.TARGET_IS_NOT_DIRECTORY, targetDir);
-    		}
-    	} else {
-    		if (!target.mkdirs()) {
-    			throw new BusinessException(BusinessException.FAILED_TO_MKDIRS, targetDir);
-    		}
-    	}
-    	Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
-    	
-    	// create reference language file
-    	generateLabelXML(targetDir, dict, null);
-    	
-    	// generate for each language
-    	HashSet<String> langCodeSet = null;
-    	if (langCodes != null) {
-    		langCodeSet = new HashSet<String>();
-    		langCodeSet.addAll(Arrays.asList(langCodes));
-    	}
-    	if (dict.getDictLanguages() != null) {
-    		for (DictionaryLanguage dl : dict.getDictLanguages()) {
-    			String langCode = dl.getLanguageCode();
-    			if (langCodeSet != null && !langCodeSet.contains(langCode)) {
-    				continue;
-    			}
-    			generateLabelXML(targetDir, dict, dl);
-    		}
-    	}
-    }
 
-	private void generateLabelXML(String targetDir, Dictionary dict, DictionaryLanguage dl) {
-    	Document doc = DocumentHelper.createDocument();
-    	doc.addComment("\n# Generated by DMS using language " + (dl == null ? "en" : dl.getLanguageCode()) + ".\n# Labels: " + dict.getLabelNum() + "\n");
-    	String dictAttributes = (dl == null ? dict.getAnnotation1() : dl.getAnnotation1());
-    	String dictComments = (dl == null ? dict.getAnnotation2() : dl.getAnnotation2());
-    	String dictNamespaces = (dl == null ? dict.getAnnotation3() : dl.getAnnotation3());
-    	String processingInstructions = (dl == null ? dict.getAnnotation4() : dl.getAnnotation4());
-    	if (dictComments != null) {
-    		String[] comments = dictComments.split("\n");
-			for (String comment : comments) {
-				comment = comment.replace("\\n", "\n");
-				comment = comment.replace("\\\\", "\\");
-				doc.addComment(comment);
-			}
-    	}
-    	Element eleLabels = doc.addElement("LABELS");
-    	if (dictNamespaces != null) {
-    		String[] nsList = dictNamespaces.split("\n");
-    		for (String ns : nsList) {
-    			String[] keyValue = ns.split("=", 2);
-    			if (keyValue.length == 2) {
-    				eleLabels.addNamespace(keyValue[0], keyValue[1]);
-    			}
-    		}
-    	}
-    	if (dictAttributes != null) {
-    		String[] attributes = dictAttributes.split("\n");
-			for (String entry : attributes) {
-				String[] keyValue = entry.split("=", 2);
-				if (keyValue.length == 2) {
-					eleLabels.addAttribute(keyValue[0], keyValue[1]);
-				}
-			}
-    	}
-    	if (dict.getLabels() != null) {
-	    	for (Label label : dict.getLabels()) {
-	    		String text = label.getReference();
-	    		String annotation1 = label.getAnnotation1();	// attributes
-	    		String annotation2 = label.getAnnotation2();	// leading comments
-	    		if (dl != null) {
-	    			LabelTranslation lt = label.getOrigTranslation(dl.getLanguageCode());
-	    			if (lt != null) {
-	    				annotation1 = lt.getAnnotation1();
-	    				annotation2 = lt.getAnnotation2();
-	    			}
-	    			if (lt != null && !lt.isNeedTranslation()) {	// no translation needed
-	    				text = lt.getOrigTranslation();
-	    			} else {	// get translation from context dictionary
-	    				Translation trans = label.getText().getTranslation(dl.getLanguage().getId());
-	    				text = (trans == null ? label.getReference() : trans.getTranslation());
-	    			}
-	    		}
-	    		// add leading comments
-	    		if (annotation2 != null) {
-	    			String[] comments = annotation2.split("\n");
-	    			for (String comment : comments) {
-	    				eleLabels.addComment(comment);
-	    			}
-	    		}
-	    		// create label
-	    		Element eleLabel = eleLabels.addElement("LABEL");
-	    		eleLabel.addAttribute("label_id", label.getKey());
-	    		if (annotation1 != null) {
-	    			String[] attributes = annotation1.split("\n");
-	    			for (String entry : attributes) {
-	    				String[] keyValue = entry.split("=", 2);
-	    				if (keyValue.length == 2) {
-	    					eleLabel.addAttribute(keyValue[0], keyValue[1]);
-	    				}
-	    			}
-	    		}
-	    		eleLabel.addText(text);
-	    		if (text.indexOf('\n') != -1) { // preserve line breaks among the text
-		    		eleLabel.addAttribute(QName.get("space", Namespace.XML_NAMESPACE), "preserve");
-	    		}
-	    	}
-    	}
-    	
-    	// output
-    	String filename = dict.getName();
-    	if (dl != null) {
-    		int pos = filename.lastIndexOf("en.xml");
-    		if (pos != -1) {
-    			filename = filename.substring(0, pos) + dl.getLanguageCode() + ".xml";
-    		} else {
-    			filename += dl.getLanguageCode() + ".xml";
-    		}
-    	}
-    	OutputFormat format = OutputFormat.createPrettyPrint();
-    	XMLWriter output = null;
-    	try {
-    		File targetFile = new File(targetDir, filename);
-    		if (!targetFile.getParentFile().exists()) {
-    			targetFile.getParentFile().mkdirs();
-    		}
-    		output = new XMLWriter(new FileWriter(targetFile), format);
-    		if (processingInstructions != null) {
-    			String[] piList = processingInstructions.split("\n");
-    			for (String pi : piList) {
-    				String[] keyValue = pi.split("=", 2);
-    				if (keyValue.length == 2) {
-    					output.processingInstruction(keyValue[0], keyValue[1]);
-    				}
-    			}
-    		}
-    		output.write(doc);
-    	} catch (Exception e) {
-    		e.printStackTrace();
-    		throw new SystemError(e);
-    	} finally {
-    		if (output != null) try {output.close();} catch (Exception e) {}
-    	}
-	}
 	
-    public void generatePropXML(String targetDir, Long dictId, String[] langCodes) throws BusinessException {
-    	File target = new File(targetDir);
-    	if (target.exists()) {
-    		if (target.isFile()) {
-    			throw new BusinessException(BusinessException.TARGET_IS_NOT_DIRECTORY, targetDir);
-    		}
-    	} else {
-    		if (!target.mkdirs()) {
-    			throw new BusinessException(BusinessException.FAILED_TO_MKDIRS, targetDir);
-    		}
-    	}
-    	Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
-    	
-    	// create reference language file
-    	generatePropXML(targetDir, dict, null);
-    	
-    	// generate for each language
-    	HashSet<String> langCodeSet = null;
-    	if (langCodes != null) {
-    		langCodeSet = new HashSet<String>();
-    		langCodeSet.addAll(Arrays.asList(langCodes));
-    	}
-    	if (dict.getDictLanguages() != null) {
-    		for (DictionaryLanguage dl : dict.getDictLanguages()) {
-    			String langCode = dl.getLanguageCode();
-    			if (langCodeSet != null && !langCodeSet.contains(langCode)) {
-    				continue;
-    			}
-    			generatePropXML(targetDir, dict, dl);
-    		}
-    	}
-    }
 
-    private void generatePropXML(String targetDir, Dictionary dict, DictionaryLanguage dl) {
-    	Document doc = DocumentHelper.createDocument();
-    	doc.addComment("\n# Generated by DMS using language " + (dl == null ? "en" : dl.getLanguageCode()) + ".\n# Labels: " + dict.getLabelNum() + "\n");
-    	String dictAttributes = (dl == null ? dict.getAnnotation1() : dl.getAnnotation1());
-    	String dictComments = (dl == null ? dict.getAnnotation2() : dl.getAnnotation2());
-    	String dictNamespaces = (dl == null ? dict.getAnnotation3() : dl.getAnnotation3());
-    	String processingInstructions = (dl == null ? dict.getAnnotation4() : dl.getAnnotation4());
-    	if (dictComments != null) {
-    		String[] comments = dictComments.split("\n");
-			for (String comment : comments) {
-				comment = comment.replace("\\n", "\n");
-				comment = comment.replace("\\\\", "\\");
-				doc.addComment(comment);
-			}
-    	}
-    	Element eleLabels = doc.addElement("properties");
-    	if (dictNamespaces != null) {
-    		String[] nsList = dictNamespaces.split("\n");
-    		for (String ns : nsList) {
-    			String[] keyValue = ns.split("=", 2);
-    			if (keyValue.length == 2) {
-    				eleLabels.addNamespace(keyValue[0], keyValue[1]);
-    			}
-    		}
-    	}
-    	if (dictAttributes != null) {
-    		String[] attributes = dictAttributes.split("\n");
-			for (String entry : attributes) {
-				String[] keyValue = entry.split("=", 2);
-				if (keyValue.length == 2) {
-					eleLabels.addAttribute(keyValue[0], keyValue[1]);
-				}
-			}
-    	}
-    	if (dict.getLabels() != null) {
-	    	for (Label label : dict.getLabels()) {
-	    		String text = label.getReference();
-	    		String annotation1 = label.getAnnotation1();	// attributes
-	    		String annotation2 = label.getAnnotation2();	// leading comments
-	    		if (dl != null) {
-	    			LabelTranslation lt = label.getOrigTranslation(dl.getLanguageCode());
-	    			if (lt != null) {
-	    				annotation1 = lt.getAnnotation1();
-	    				annotation2 = lt.getAnnotation2();
-	    			}
-	    			if (lt != null && !lt.isNeedTranslation()) {	// no translation needed
-	    				text = lt.getOrigTranslation();
-	    			} else {	// get translation from context dictionary
-	    				Translation trans = label.getText().getTranslation(dl.getLanguage().getId());
-	    				text = (trans == null ? label.getReference() : trans.getTranslation());
-	    			}
-	    		}
-	    		// add leading comments
-	    		if (annotation2 != null) {
-	    			String[] comments = annotation2.split("\n");
-	    			for (String comment : comments) {
-	    				eleLabels.addComment(comment);
-	    			}
-	    		}
-	    		// create label
-	    		Element eleLabel = eleLabels.addElement("entry");
-	    		eleLabel.addAttribute("key", label.getKey());
-	    		if (annotation1 != null) {
-	    			String[] attributes = annotation1.split("\n");
-	    			for (String entry : attributes) {
-	    				String[] keyValue = entry.split("=", 2);
-	    				if (keyValue.length == 2) {
-	    					eleLabel.addAttribute(keyValue[0], keyValue[1]);
-	    				}
-	    			}
-	    		}
-	    		eleLabel.addText(text);
-	    		if (text.indexOf('\n') != -1) {	// preserve line breaks among the text
-		    		eleLabel.addAttribute(QName.get("space", Namespace.XML_NAMESPACE), "preserve");
-	    		}
-	    	}
-    	}
-    	
-    	// output
-    	String filename = dict.getName();
-    	if (dl != null) {
-    		int pos = filename.lastIndexOf("en.xml");
-    		if (pos != -1) {
-    			filename = filename.substring(0, pos) + dl.getLanguageCode() + ".xml";
-    		} else {
-    			filename += dl.getLanguageCode() + ".xml";
-    		}
-    	}
-    	OutputFormat format = OutputFormat.createPrettyPrint();
-    	XMLWriter output = null;
-    	try {
-    		File targetFile = new File(targetDir, filename);
-    		if (!targetFile.getParentFile().exists()) {
-    			targetFile.getParentFile().mkdirs();
-    		}
-    		output = new XMLWriter(new FileWriter(targetFile), format);
-    		if (processingInstructions != null) {
-    			String[] piList = processingInstructions.split("\n");
-    			for (String pi : piList) {
-    				String[] keyValue = pi.split("=", 2);
-    				if (keyValue.length == 2) {
-    					output.processingInstruction(keyValue[0], keyValue[1]);
-    				}
-    			}
-    		}
-    		output.write(doc);
-    	} catch (Exception e) {
-    		e.printStackTrace();
-    		throw new SystemError(e);
-    	} finally {
-    		if (output != null) try {output.close();} catch (Exception e) {}
-    	}
-	}
 	
 }

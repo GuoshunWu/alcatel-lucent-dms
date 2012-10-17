@@ -68,43 +68,12 @@ public interface DictionaryService {
     Map<String, Collection<BusinessWarning>> importDictionaries(Long appId, Collection<Dictionary> dictList, int mode) throws BusinessException;
 
     /**
-     * Generate a DCT dictionary
-     *
-     * @param filename  output file name
-     * @param dctId     Dictionary object id
-     * @param encoding  encoding of output file, null if dictionary settings is used
-     * @param langCodes Alcatel code of languages to generate, null if all languages
-     *                  should be exported
-     * @throws com.alcatel_lucent.dms.BusinessException
-     */
-    void generateDCT(String filename, Long dctId, String encoding,
-                     String[] langCodes)
-            throws BusinessException;
-
-    /**
-     * Generate a DCT dictionary
-     *
-     * @param filename  output file name
-     * @param dctId     Dictionary object id
-     * @param langCodes Alcatel code of languages to generate, null if all languages
-     *                  should be exported
-     * @throws com.alcatel_lucent.dms.BusinessException
-     */
-    void generateMDC(String filename, Long dctId, String[] langCodes)
-            throws BusinessException;
-
-    /**
-     * Generate dct file of specific dictionary in the dicts collections
-     *
-     * @param dir     root directory save dct files
+     * Generate dictionary files.
+     * @param dir     root directory save dictionary files
      * @param dictIds the collection of the ids for the dictionary to be generated.
      */
-    void generateDCTFiles(String dir, Collection<Long> dictIds, String[] langCodes);
+    void generateDictFiles(String dir, Collection<Long> dictIds);
     
-    void generateLabelXML(String targetDir, Long dictId, String[] langCodes) throws BusinessException;
-
-
-  
     /**
      * Get the latest version of a dictionary
      * @param dictionaryBaseId dictionaryBase id
