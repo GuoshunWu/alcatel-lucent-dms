@@ -56,6 +56,16 @@ public interface DictionaryService {
     Dictionary importDictionary(Long appId, Dictionary dict, String version, int mode, String[] langCodes,
                          Map<String, String> langCharset,
                          Collection<BusinessWarning> warnings);
+    
+    /**
+     * Import a batch dictionaries
+     * @param appId application id
+     * @param dictList collection of transient dictionaries which should contain all necessary information
+     * @param mode importing mode
+     * @return warnings in a map, key is dictionary name
+     * @throws BusinessException
+     */
+    Map<String, Collection<BusinessWarning>> importDictionaries(Long appId, Collection<Dictionary> dictList, int mode) throws BusinessException;
 
     /**
      * Generate a DCT dictionary
