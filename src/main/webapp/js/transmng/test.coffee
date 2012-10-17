@@ -1,4 +1,4 @@
-Object:: isArray = -> Object.prototype.toString.call(@) == "[object Array]"
+#Object:: isArray = -> Object.prototype.toString.call(@) == "[object Array]"
 
 String:: format = -> args = arguments; @replace /\{(\d+)\}/g, (m, i) ->args[i]
 
@@ -34,7 +34,7 @@ formatJonString = (jsonString) ->
   pos = i = 0
   indentStr = "  "
   newLine = "\n"
-  retval=''
+  retval = ''
 
   while i < str.length
     char = str.substring(i, i + 1)
@@ -53,16 +53,29 @@ formatJonString = (jsonString) ->
       ++pos if char is "{" or char is "["
       k = 0
       while k < pos
-        retval +=indentStr
+        retval += indentStr
         k++
     i++
   retval
 
-a = {
-  init:((me)->
-    return {a:'123,',b:'456'}
-  )(@)
-  name:this.a.init.b,
-}
+Date:: format = (format)->
+  o =
+    'M+': @getMonth() + 1, #month
+    "d+": @getDate(), #day
+    "h+": @getHours(), #hour
+    "m+": @getMinutes(), #minute
+    "s+": @getSeconds(), #second
+    "q+": Math.floor((@getMonth() + 3) / 3), #quarter
+    "S": @getMilliseconds()
+  #millisecond
+  format = format.replace(RegExp.$1, @getFullYear()).substr(4 - RegExp.$1.length) if /(y+)/.test format
+  for k,v of o
+    format = format.replace(RegExp.$1, if RegExp.$1.length == 1 then v else "00#{v}".substr("#{v}".length)) if new RegExp("(#{k})").test(format)
+  format
+
+console.log new Date().format('yyyy-MM-dd')
+
+
+
 
 

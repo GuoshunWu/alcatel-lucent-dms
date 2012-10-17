@@ -2,16 +2,16 @@
 (function() {
 
   define(function(require) {
-    var $, dctFileUpload, grid, i18n;
+    var $, c18n, dctFileUpload, grid, i18n;
     $ = require('jqueryui');
     require('appmng/langsetting_grid');
     require('appmng/stringsettings_grid');
-    require('appmng/dictlistpreview_grid');
     require('appmng/dictpreview_grid');
     require('jqupload');
     require('iframetransport');
     grid = require('appmng/dictionary_grid');
     i18n = require('i18n!nls/appmng');
+    c18n = require('i18n!nls/appmng');
     $("#selAppVersion").change(function(e) {
       return grid.appChanged({
         version: $("option:selected", this).text(),
@@ -43,7 +43,7 @@
       label: i18n.browse
     }).css({
       overflow: 'hidden'
-    }).append($("<input type='file' id='" + dctFileUpload + "' name='upload' title='" + i18n.choosefile + "' multiple/>").css({
+    }).append($("<input type='file' id='" + dctFileUpload + "' name='upload' title='" + i18n.choosefile + "' accept='application/zip' multiple/>").css({
       position: 'absolute',
       top: -3,
       right: -3,
@@ -71,12 +71,23 @@
         return $('#progressbar').progressbar("value", progress);
       },
       done: function(e, data) {
+        var jsonFromServer;
         $.each(data.files, function(index, file) {
           return $('#uploadStatus').html("" + file.name + " " + i18n.uploadfinished);
         });
         if (!$.browser.msie) {
           $("#progressbar").hide();
         }
+        jsonFromServer = eval("(" + data.result + ")");
+        if (0 !== jsonFromServer.status) {
+          $.msgBox(jsonFromServer.message, null, {
+            title: c18n.error
+          });
+          return;
+        }
+        $('#dictListPreviewDialog').data('param', {
+          handler: jsonFromServer.filename
+        });
         return $('#dictListPreviewDialog').dialog('open');
       }
     });

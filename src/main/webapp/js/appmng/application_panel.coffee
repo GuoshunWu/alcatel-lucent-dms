@@ -2,7 +2,6 @@ define (require)->
   $ = require 'jqueryui'
   require 'appmng/langsetting_grid'
   require 'appmng/stringsettings_grid'
-  require 'appmng/dictlistpreview_grid'
   require 'appmng/dictpreview_grid'
 
   require 'jqupload'
@@ -10,6 +9,7 @@ define (require)->
 
   grid = require 'appmng/dictionary_grid'
   i18n = require 'i18n!nls/appmng'
+  c18n = require 'i18n!nls/appmng'
 
 
   $("#selAppVersion").change (e)->
@@ -26,7 +26,7 @@ define (require)->
   dctFileUpload = 'dctFileUpload'
   #  create upload filebutton
   $('#uploadBrower').button({label: i18n.browse}).css({overflow: 'hidden'}).append $(
-    "<input type='file' id='#{dctFileUpload}' name='upload' title='#{i18n.choosefile}' multiple/>").css {
+    "<input type='file' id='#{dctFileUpload}' name='upload' title='#{i18n.choosefile}' accept='application/zip' multiple/>").css {
   position: 'absolute', top: -3, right: -3, border: '1px solid', borderWidth: '1px 1px 10px 0px',
   opacity: 0, filter: 'alpha(opacity=0)', cursor: 'pointer'}
 
@@ -48,6 +48,12 @@ define (require)->
     $.each data.files, (index, file) ->$('#uploadStatus').html "#{file.name} #{i18n.uploadfinished}"
     $("#progressbar").hide() if !$.browser.msie
 #    request handler
+    jsonFromServer=eval "(#{data.result})"
+
+    if(0!=jsonFromServer.status)
+      $.msgBox jsonFromServer.message, null, {title: c18n.error}
+      return
+    $('#dictListPreviewDialog').data 'param',{handler: jsonFromServer.filename}
     $('#dictListPreviewDialog').dialog 'open'
   }
 

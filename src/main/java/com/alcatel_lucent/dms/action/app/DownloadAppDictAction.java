@@ -4,14 +4,14 @@ import com.alcatel_lucent.dms.action.JSONAction;
 import com.alcatel_lucent.dms.service.DictionaryService;
 import com.alcatel_lucent.dms.util.Util;
 import com.opensymphony.xwork2.ActionSupport;
+import com.opensymphony.xwork2.inject.Inject;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Result;
 
 import javax.servlet.ServletContext;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Action of download dictionaries
@@ -24,49 +24,38 @@ public class DownloadAppDictAction extends JSONAction {
     private InputStream inStream;
     private String mimeType;
     private String filename;
-    
-    private String dicts;
+
+    private String fileLoc;
 
     private ServletContext context = ServletActionContext.getServletContext();
-    private DictionaryService dictionaryService;
-    private String tmpDir="downloadtmp";
 
-    public void setDictionaryService(DictionaryService dictionaryService) {
-        this.dictionaryService = dictionaryService;
-    }
 
-    public String getDicts() {
-        return dicts;
-    }
-
-    public void setDicts(String dicts) {
-        this.dicts = dicts;
-    }
-
-    public InputStream getInStream() {
+    public InputStream getInStream() throws FileNotFoundException {
+        inStream = new FileInputStream(fileLoc);
         return inStream;
     }
 
-    public void setFilename(String filename) {
-        this.filename = filename;
-    }
 
     public String getMimeType() {
-        if (null == filename) filename = "Unknown.zip";
-        mimeType = context.getMimeType(filename);
+        mimeType = context.getMimeType(getFilename());
         if (null == mimeType) mimeType = "application/zip";
         return mimeType;
     }
 
     public String getFilename() {
+        if (null == filename) filename = new File(fileLoc).getName();
         return filename;
     }
 
+    public String getFileLoc() {
+        return fileLoc;
+    }
+
+    public void setFileLoc(String fileLoc) {
+        this.fileLoc = fileLoc;
+    }
+
     public String performAction() throws Exception {
-        dictionaryService.generateDictFiles(tmpDir,toIdList(dicts));
-        File zipFile=new File(tmpDir,filename);
-        Util.createZip(new File(tmpDir),zipFile);
-        inStream = new FileInputStream(zipFile);
         return SUCCESS;
     }
 }

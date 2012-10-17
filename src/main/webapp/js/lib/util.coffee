@@ -17,6 +17,23 @@ define ["jquery"], ($) ->
   String:: startWith = (str) ->
     return false  if !str or str.length > @length
     @substr(0, str.length) is str
+  ###
+    Dateformat
+  ###
+  Date:: format = (format)->
+    o =
+      'M+': @getMonth() + 1, #month
+      "d+": @getDate(), #day
+      "h+": @getHours(), #hour
+      "m+": @getMinutes(), #minute
+      "s+": @getSeconds(), #second
+      "q+": Math.floor((@getMonth() + 3) / 3), #quarter
+      "S": @getMilliseconds()
+    #millisecond
+    format = format.replace(RegExp.$1, @getFullYear()).substr(4 - RegExp.$1.length) if /(y+)/.test format
+    for k,v of o
+      format = format.replace(RegExp.$1, if RegExp.$1.length == 1 then v else "00#{v}".substr("#{v}".length)) if new RegExp("(#{k})").test(format)
+    format
 
   ###
   insert elem at pos in array.

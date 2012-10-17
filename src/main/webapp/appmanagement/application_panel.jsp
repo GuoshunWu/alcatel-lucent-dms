@@ -57,8 +57,7 @@
                     <tr>
                         <td>
                             <form id="downloadDict" action="/app/download-app-dict" method="post">
-                                <input type="hidden" id="downloadDictIds" name="dicts"/>
-                                <input type="hidden" id="downloadFilename" name="filename"/>
+                                <input type="hidden" id="fileLoc" name="fileLoc"/>
                             </form>
                             <button id="generateDict">Generate dictionary</button>
 

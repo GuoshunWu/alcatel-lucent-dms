@@ -9,7 +9,9 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.alcatel_lucent.dms.BusinessException;
@@ -17,7 +19,7 @@ import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryLanguage;
 import com.alcatel_lucent.dms.model.Label;
-
+@Service("deliveringDictPool")
 public class DeliveringDictPool {
 	
 	private static Logger log = Logger.getLogger(DeliveringDictPool.class);
@@ -25,7 +27,8 @@ public class DeliveringDictPool {
 	
 	@Autowired
 	private DictionaryService dictionaryService;
-	
+
+    @Value("${dms.deliver.dir}")
 	private String baseDir;
 	
 	private Map<String, Date> lifeMap = new HashMap<String, Date>();

@@ -33,6 +33,32 @@ To change this template use File | Settings | File Templates.
       return this.substr(0, str.length) === str;
     };
     /*
+        Dateformat
+    */
+
+    Date.prototype.format = function(format) {
+      var k, o, v;
+      o = {
+        'M+': this.getMonth() + 1,
+        "d+": this.getDate(),
+        "h+": this.getHours(),
+        "m+": this.getMinutes(),
+        "s+": this.getSeconds(),
+        "q+": Math.floor((this.getMonth() + 3) / 3),
+        "S": this.getMilliseconds()
+      };
+      if (/(y+)/.test(format)) {
+        format = format.replace(RegExp.$1, this.getFullYear()).substr(4 - RegExp.$1.length);
+      }
+      for (k in o) {
+        v = o[k];
+        if (new RegExp("(" + k + ")").test(format)) {
+          format = format.replace(RegExp.$1, RegExp.$1.length === 1 ? v : ("00" + v).substr(("" + v).length));
+        }
+      }
+      return format;
+    };
+    /*
       insert elem at pos in array.
     */
 

@@ -2,10 +2,13 @@ package com.alcatel_lucent.dms.action.app;
 
 import com.alcatel_lucent.dms.SpringContext;
 import com.alcatel_lucent.dms.action.JSONAction;
+import com.alcatel_lucent.dms.service.DeliveringDictPool;
 import com.alcatel_lucent.dms.util.Util;
 import com.opensymphony.xwork2.inject.Inject;
+import org.apache.log4j.Logger;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.ApplicationContext;
 
@@ -19,18 +22,27 @@ import java.util.Date;
  * @author allany
  */
 @ParentPackage("json-default")
-@Result(type = "json", params = {"noCache", "true", "contentType", "text/html", "ignoreHierarchy", "false", "includeProperties", "message,status"})
+@Result(type = "json", params = {"noCache", "true", "contentType", "text/html", "ignoreHierarchy", "false",
+        "includeProperties", "message,status,filename"})
 
 public class DeliverAppDictAction extends JSONAction {
 
+    private static Logger log= Logger.getLogger(DeliverAppDictAction.class);
+    
     private File upload;
     private String contentType;
     private String filename;
 
-    private SimpleDateFormat dFmt=new SimpleDateFormat("yyyyMMdd_HHmmss_S");
+    private SimpleDateFormat dFmt=new SimpleDateFormat("yyyyMMdd_HHmmss");
 
-//    @Inject("struts.multipart.saveDir")
-//    private String uploadRepository;
+    @Value("${dms.deliver.dir}")
+    private String deliverDir;
+
+    private DeliveringDictPool deliveringDictPool;
+
+    public void setDeliveringDictPool(DeliveringDictPool deliveringDictPool) {
+        this.deliveringDictPool = deliveringDictPool;
+    }
 
     public void setUpload(File upload) {
         this.upload = upload;
@@ -44,21 +56,37 @@ public class DeliverAppDictAction extends JSONAction {
         this.filename = filename;
     }
 
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
     public String performAction() throws Exception {
+        log.info("deliverDir="+deliverDir);
+        File dir =  new File(deliverDir, "USER_"+dFmt.format(new Date()));
+        if(!dir.exists()) dir.mkdirs();
 
-        System.out.println("file=" + upload);
-        System.out.println("contentType=" + contentType);
-        System.out.println("uploadFileName=" + filename);
+        boolean fileCreateSuccess=true;
+        if(Util.isZipFile(filename)){
+            log.info("decompress file " + upload + " to " + dir.getAbsolutePath());
+            Util.unzip(upload, dir.getAbsolutePath());
 
-        if(!Util.isZipFile(filename)){
-            setMessage(getText(""));
-            return SUCCESS;
+        }else{
+            log.info("deliver normal(not zip) file.");
+            fileCreateSuccess=upload.renameTo(new File(dir,filename));
+            if(!fileCreateSuccess){
+                log.warn("move file fail.");
+                fileCreateSuccess=false;
+            }
         }
-//        System.out.println("Repos: "+uploadRepository);
-        File dir =  new File(upload.getParent(), "USER_"+dFmt.format(new Date()));
-        System.out.println("decompress file " + upload +" to "+dir.getAbsolutePath());
+        if(fileCreateSuccess){
+            deliveringDictPool.addHandler(dir.getName());
+        }
 
-        Util.unzip(upload, dir.getAbsolutePath());
+        filename = dir.getName();
 
         setStatus(0);
         setMessage("Success");

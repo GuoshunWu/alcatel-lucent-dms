@@ -234,6 +234,7 @@ public class Util {
                 FileUtils.writeByteArrayToFile(dFile, IOUtils.toByteArray(is));
             }
         }
+        zipFile.close();
     }
 
     public static void unzip(String zipFilePath, String unzipFilePath) throws Exception {
