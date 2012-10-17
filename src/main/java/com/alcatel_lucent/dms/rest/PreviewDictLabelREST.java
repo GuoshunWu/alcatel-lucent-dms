@@ -1,5 +1,6 @@
 package com.alcatel_lucent.dms.rest;
 
+import java.util.Collection;
 import java.util.Map;
 
 import javax.ws.rs.Path;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryLanguage;
+import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.service.DeliveringDictPool;
 
 @Path("/delivery/labels")
@@ -28,7 +30,11 @@ public class PreviewDictLabelREST extends BaseREST {
 		String handler = requestMap.get("handler");
 		Long dictId = Long.valueOf(requestMap.get("dict"));
 		Dictionary dict = pool.getDictionary(handler, dictId);
-		return toJSON(dict.getLabels(), requestMap);
+		Collection<Label> labels = dict.getLabels();
+		if (labels != null) {
+			requestMap.put("records", "" + labels.size());
+		}
+		return toJSON(labels, requestMap);
 	}
 
 }

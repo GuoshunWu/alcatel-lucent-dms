@@ -1,5 +1,6 @@
 package com.alcatel_lucent.dms.rest;
 
+import java.util.Collection;
 import java.util.Map;
 
 import javax.ws.rs.Path;
@@ -28,7 +29,11 @@ public class PreviewDictLanguageREST extends BaseREST {
 		String handler = requestMap.get("handler");
 		Long dictId = Long.valueOf(requestMap.get("dict"));
 		Dictionary dict = pool.getDictionary(handler, dictId);
-		return toJSON(dict.getDictLanguages(), requestMap);
+		Collection<DictionaryLanguage> dlList = dict.getDictLanguages();
+		if (dlList != null) {
+			requestMap.put("records", "" + dlList.size());
+		}
+		return toJSON(dlList, requestMap);
 	}
 
 }
