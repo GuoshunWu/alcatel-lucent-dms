@@ -1,5 +1,6 @@
 package com.alcatel_lucent.dms.rest;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
@@ -30,10 +31,10 @@ public class PreviewDictLabelREST extends BaseREST {
 		String handler = requestMap.get("handler");
 		Long dictId = Long.valueOf(requestMap.get("dict"));
 		Dictionary dict = pool.getDictionary(handler, dictId);
-		Collection<Label> labels = dict.getLabels();
-		if (labels != null) {
-			requestMap.put("records", "" + labels.size());
+		if (dict.getLabels() == null) {
+			return "";
 		}
+		Collection<Label> labels = pageFilter(dict.getLabels(), requestMap);
 		return toJSON(labels, requestMap);
 	}
 

@@ -54,7 +54,7 @@ public abstract class BaseREST {
     
     @POST
     @Consumes("application/x-www-form-urlencoded")
-    public String retrieveLabels(MultivaluedMap<String, String> formParams, @Context UriInfo ui) {
+    public String doPost(MultivaluedMap<String, String> formParams, @Context UriInfo ui) {
     	Map<String, String> map = new HashMap<String, String>();
     	for (String key : formParams.keySet()) {
     		map.put(key, formParams.getFirst(key));
@@ -133,6 +133,31 @@ public abstract class BaseREST {
 				requestMap.put("records", "" + records);
     		}
     	}
+    	return result;
+    }
+    
+    /**
+     * Pager filter by "rows" and "page" parameter.
+     * @param data collection data
+     * @param requestMap request map
+     * @return paged collection
+     */
+    protected Collection pageFilter(Collection data, Map<String, String> requestMap) {
+    	if (data == null) return null;
+    	Collection result;
+    	String rows = requestMap.get("rows");
+    	String page = requestMap.get("page");
+    	ArrayList allData = new ArrayList(data);
+    	if (rows == null) {
+    		result = data;
+    	} else {
+    		int first = (page == null ? 0 : (Integer.parseInt(page) - 1) * Integer.parseInt(rows));
+    		result = new ArrayList();
+    		for (int i = first; i < allData.size() && i < first + Integer.parseInt(rows); i++) {
+    			result.add(allData.get(i));
+    		}
+    	}
+    	requestMap.put("records", "" + data.size());
     	return result;
     }
     
