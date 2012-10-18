@@ -3,33 +3,35 @@
 
   define(['jqgrid', 'require'], function($, require) {
     var dicGrid;
-    dicGrid = $('#dictPreviewGrid').jqGrid({
+    dicGrid = $('#dictPreviewStringSettingsGrid').jqGrid({
       url: '',
       mtype: 'post',
       datatype: 'json',
-      width: 300,
-      height: 'auto',
-      pager: '#dictPreviewPager',
+      width: 700,
+      height: 300,
+      pager: '#dictPreviewStringSettingsPager',
       editurl: "",
+      cellurl: '/app/deliver-update-label',
+      cellEdit: true,
       rowNum: 10,
       rowList: [10, 20, 30],
       sortname: 'name',
       sortorder: 'asc',
       viewrecords: true,
       gridview: true,
-      colNames: ['Label', 'Reference Language', 'Max Length', 'Context', 'Description', 'Status'],
+      colNames: ['Label', 'Reference Language', 'Max Length', 'Context', 'Description'],
       colModel: [
         {
           name: 'key',
           index: 'key',
           width: 50,
-          editable: true,
+          editable: false,
           align: 'left'
         }, {
           name: 'reference',
           index: 'reference',
           width: 40,
-          editable: true,
+          editable: false,
           align: 'center'
         }, {
           name: 'maxLength',
@@ -49,18 +51,25 @@
           width: 40,
           editable: true,
           align: 'center'
-        }, {
-          name: 'status',
-          index: 'status',
-          width: 40,
-          editable: true,
-          align: 'center'
         }
-      ]
+      ],
+      beforeSubmitCell: function(rowid, cellname, value, iRow, iCol) {
+        var postData;
+        postData = $(this).getGridParam('postData');
+        return {
+          handler: postData.handler,
+          dict: postData.dict
+        };
+      },
+      afterSubmitCell: function(serverresponse, rowid, cellname, value, iRow, iCol) {
+        var jsonFromServer;
+        jsonFromServer = eval("(" + serverresponse.responseText + ")");
+        return [0 === jsonFromServer.status, jsonFromServer.message];
+      }
     });
-    return dicGrid.jqGrid('navGrid', '#dictPreviewPager', {
+    return dicGrid.jqGrid('navGrid', '#dictPreviewStringSettingsPager', {
       edit: false,
-      add: true,
+      add: false,
       del: false,
       search: false,
       view: false

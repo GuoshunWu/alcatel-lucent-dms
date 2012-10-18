@@ -101,17 +101,6 @@
 
 <div id="dictListPreviewDialog">
     <table border="0" width="100%">
-        <%--<tr>--%>
-        <%--<td>--%>
-        <%--<table border="1" width="100%">--%>
-        <%--<tr>--%>
-
-        <%--<tr>--%>
-
-        <%--</tr>--%>
-        <%--</table>--%>
-        <%--</td>--%>
-        <%--</tr>--%>
         <tr>
             <td>
                 <table id="dictListPreviewGrid">
@@ -125,17 +114,62 @@
     </table>
 </div>
 
-<div id="dictPreviewDialog">
-    <table border="1" width="100%">
+<div id="dictPreviewStringSettingsDialog">
+    <table border="0" width="100%">
         <tr>
             <td>
-                <table id="dictPreviewGrid">
+                <table border="0" width="100%">
+                    <tr>
+                        <td style="width:40px;"><label for="previewDictName"><s:text name="dictionary"/></label></td>
+                        <td style="width:350px;"><input id="previewDictName" size="48" readonly="readonly"/></td>
+                        <td><label for="previewDictVersion" style="width: 200px"><s:text name="version"/></label></td>
+                        <td><input id="previewDictVersion" readonly="readonly"/></td>
+                    <tr>
+                        <td style="width:35px;"><label for="previewDictFormat"><s:text name="dictionary.format"/></label></td>
+                        <td><input id="previewDictFormat" size="48" readonly="readonly"/></td>
+                        <td><label for="previewDictEncoding"><s:text name="dictionary.encoding"/></label></td>
+                        <td><input id="previewDictEncoding" readonly="readonly"/></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table id="dictPreviewStringSettingsGrid">
                     <tr>
                         <td/>
                     </tr>
                 </table>
-                <div id="dictPreviewPager"></div>
+                <div id="dictPreviewStringSettingsPager"></div>
             </td>
         </tr>
     </table>
 </div>
+
+
+<div id="dictPreviewLanguageSettingsDialog">
+    <table border="0" width="100%">
+        <tr>
+            <td>
+                <table>
+                    <tr>
+                        <td><label for="previewRefCode"><s:text name="appmng.dialogs.languagesettings.refcode"/></label></td>
+                        <td><input id="previewRefCode" readonly="readonly"/></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table id="previewLanguageSettingGrid">
+                    <tr>
+                        <td></td>
+                    </tr>
+                </table>
+                <div id="previewLangSettingPager"></div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+
