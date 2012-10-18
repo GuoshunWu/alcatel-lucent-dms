@@ -17,23 +17,29 @@ public class DeliverUpdateDictLanguageAction extends JSONAction {
 	
 	private String handler;
 	private Long dict;
-	private String code;
+	private Long id;
 	private Long languageId;
 	private Long charsetId;
 	
 	@Override
 	protected String performAction() throws Exception {
-		log.info("DeliverUpdateDictLanguageAction: handler=" + handler + ", dict=" + dict + ", code=" + code + 
+		log.info("DeliverUpdateDictLanguageAction: handler=" + handler + ", dict=" + dict + ", id=" + id + 
 				", languageId=" + languageId + ", charsetId=" + charsetId);
 		try {
 			Dictionary dictionary = deliveringDictPool.getDictionary(handler, dict);
-			DictionaryLanguage dl = dictionary.getDictLanguage(code);
-			if (languageId != null) {
-	        	dl.setLanguage((Language) daoService.retrieve(Language.class, languageId));
-	    	}
-	    	if (charsetId != null) {
-	        	dl.setCharset((Charset) daoService.retrieve(Charset.class, charsetId));
-	    	}		
+			if (dictionary.getAllLanguages() != null) {
+				for (DictionaryLanguage dl : dictionary.getDictLanguages()) {
+					if (dl.getId().equals(id)) {
+						if (languageId != null) {
+				        	dl.setLanguage((Language) daoService.retrieve(Language.class, languageId));
+				    	}
+				    	if (charsetId != null) {
+				        	dl.setCharset((Charset) daoService.retrieve(Charset.class, charsetId));
+				    	}		
+						break;
+					}
+				}
+			}
 	    } catch (BusinessException e) {
 			setMessage(e.toString());
 			setStatus(-1);
@@ -55,14 +61,6 @@ public class DeliverUpdateDictLanguageAction extends JSONAction {
 
 	public void setDeliveringDictPool(DeliveringDictPool deliveringDictPool) {
 		this.deliveringDictPool = deliveringDictPool;
-	}
-
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
 	}
 
 	public Long getLanguageId() {
@@ -95,5 +93,13 @@ public class DeliverUpdateDictLanguageAction extends JSONAction {
 
 	public void setDaoService(DaoService daoService) {
 		this.daoService = daoService;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 }
