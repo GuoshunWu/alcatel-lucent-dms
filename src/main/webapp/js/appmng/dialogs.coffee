@@ -170,6 +170,9 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
     $('#dictListPreviewGrid').setGridParam(url: '/rest/delivery/dict', postData: postData).trigger 'reloadGrid'
   }
 
+  $('#import',dictListPreview).button({}).click()->
+    alert 'Hi'
+
   dictPreviewStringSettings = $('#dictPreviewStringSettingsDialog').dialog {
   autoOpen: false
   width: 'auto', height: 'auto', title: i18n.dialog.dictpreviewstringsettings.title
