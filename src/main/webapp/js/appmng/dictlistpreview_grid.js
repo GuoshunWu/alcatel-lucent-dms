@@ -2,12 +2,24 @@
 (function() {
 
   define(function(require, util, i18n) {
-    var $, c18n, dicGrid;
+    var $, c18n, dicGrid, languageSetting, stringSetting;
     $ = require('jqgrid');
     util = require('util');
     i18n = require('i18n!nls/appmng');
     require('jqmsgbox');
     c18n = require('i18n!nls/common');
+    languageSetting = function(rowData) {
+      var dialogs;
+      dialogs = require('appmng/dialogs');
+      dialogs.dictPreviewLangSettings.data("param", rowData);
+      return dialogs.dictPreviewLangSettings.dialog('open');
+    };
+    stringSetting = function(rowData) {
+      var dialogs;
+      dialogs = require('appmng/dialogs');
+      dialogs.dictPreviewStringSettings.data("param", rowData);
+      return dialogs.dictPreviewStringSettings.dialog('open');
+    };
     dicGrid = $('#dictListPreviewGrid').jqGrid({
       url: '',
       datatype: 'json',
@@ -16,16 +28,15 @@
       minHeight: 200,
       height: 240,
       pager: '#dictListPreviewPager',
-      rowNum: 30,
-      rowList: [10, 20, 30],
+      rowNum: 100,
       sortname: 'base.name',
       sortorder: 'asc',
       viewrecords: true,
       cellEdit: true,
-      cellurl: '/app/update-dict',
+      cellurl: '/app/deliver-update-dict',
       gridview: true,
       multiselect: true,
-      caption: 'Dictionary for Application',
+      caption: i18n.grid.dictlistpreview.caption,
       colNames: ['LangRefCode', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels', 'Action'],
       colModel: [
         {
@@ -38,16 +49,13 @@
           name: 'name',
           index: 'base.name',
           width: 200,
-          editable: false,
+          editable: true,
           align: 'left'
         }, {
           name: 'version',
           index: 'version',
           width: 25,
           editable: true,
-          editoptions: {
-            value: {}
-          },
           align: 'center'
         }, {
           name: 'format',
@@ -81,22 +89,68 @@
           editable: false,
           align: 'center'
         }
-      ]
-    });
-    return {
-      previewUpdate: function(param) {
-        dicGrid = $('#dictListPreviewGrid');
-        dicGrid.setGridParam({
-          url: '/rest/delivery/dict',
-          postData: {
-            format: 'grid',
-            handler: param.handler,
-            prop: 'languageReferenceCode,base.name,version,base.format,base.encoding,labelNum'
+      ],
+      beforeProcessing: function(data, status, xhr) {
+        var actIndex;
+        actIndex = $(this).getGridParam('colNames').indexOf('Action');
+        if ($(this).getGridParam('multiselect')) {
+          --actIndex;
+        }
+        return $(data.rows).each(function(index) {
+          var rowData;
+          rowData = this;
+          return this.cell[actIndex] = ($(['S', 'L']).map(function() {
+            return "<A id='action_" + this + "_" + rowData.id + "_" + actIndex + "' href=# >" + this + "</A>";
+          })).get().join('');
+        });
+      },
+      beforeSubmitCell: function(rowid, cellname, value, iRow, iCol) {
+        return {
+          handler: ($(this).getGridParam('postData')).handler
+        };
+      },
+      afterSubmitCell: function(serverresponse, rowid, cellname, value, iRow, iCol) {
+        var jsonFromServer;
+        jsonFromServer = eval("(" + serverresponse.responseText + ")");
+        return [0 === jsonFromServer.status, jsonFromServer.message];
+      },
+      gridComplete: function() {
+        var grid;
+        grid = $(this);
+        return $('a[id^=action_]', this).button({
+          create: function(e, ui) {
+            var a, action, col, rowid, titles, _ref;
+            _ref = this.id.split('_'), a = _ref[0], action = _ref[1], rowid = _ref[2], col = _ref[3];
+            titles = {
+              S: i18n.dialog.stringsettings.title,
+              L: i18n.dialog.languagesettings.title
+            };
+            this.title = titles[action];
+            return this.onclick = function(e) {
+              var rowData;
+              rowData = grid.getRowData(rowid);
+              delete rowData.action;
+              rowData.id = rowid;
+              rowData.handler = grid.getGridParam('postData').handler;
+              switch (action) {
+                case 'S':
+                  return stringSetting(rowData);
+                case 'L':
+                  return languageSetting(rowData);
+                default:
+                  return console.log('Invalid action');
+              }
+            };
           }
         });
-        return dicGrid.trigger('reloadGrid');
       }
-    };
+    });
+    return dicGrid.jqGrid('navGrid', '#dictListPreviewPager', {
+      add: false,
+      edit: false,
+      search: false,
+      del: false
+    }, {}, {}, {});
   });
 
 }).call(this);

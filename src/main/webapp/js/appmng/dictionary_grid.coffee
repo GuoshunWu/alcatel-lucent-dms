@@ -27,14 +27,14 @@ define (require, util, dialogs, i18n)->
     [0 == jsonFromServer.status, jsonFromServer.message]
   }
   languageSetting = (rowData)->
-    dialogs.langSettings.data "param", {dictId: rowData.id, refCode: rowData.langrefcode}
+#    {dictId: rowData.id, refCode: rowData.langrefcode}
+    dialogs.langSettings.data "param", rowData
     dialogs.langSettings.dialog 'open'
   stringSetting = (rowData)->
     dialogs.stringSettings.data "param", rowData
     dialogs.stringSettings.dialog 'open'
 
   deleteRow = (rowid)->
-    console.log $.jgrid.del
     $(localIds.dic_grid).jqGrid 'delGridRow', rowid, deleteOptions
 
   dicGrid = $(localIds.dic_grid).jqGrid {
@@ -85,6 +85,7 @@ define (require, util, dialogs, i18n)->
     jsonFromServer = eval "(#{serverresponse.responseText})"
     [0 == jsonFromServer.status, jsonFromServer.message]
   gridComplete: ->
+    grid=$(@)
     $('a[id^=action_]', @).button {
     create: (e, ui)->
       [a, action, rowid, col]=@id.split('_')
@@ -94,7 +95,7 @@ define (require, util, dialogs, i18n)->
         X: i18n.dialog.delete.title
       @title = titles[action]
       @onclick = (e)->
-        rowData = $('#dictionaryGridList').getRowData(rowid)
+        rowData = grid.getRowData(rowid)
         delete rowData.action
         rowData.id = rowid
         switch action
@@ -137,7 +138,7 @@ define (require, util, dialogs, i18n)->
     dicts = dicGrid.getGridParam('selarrrow')
     if !dicts || dicts.length == 0
       $.msgBox c18n.selrow, null, {title: c18n.warning}
-      returun
+      return
     $('#languageSettingGrid').editGridRow "new", {
     url: '/app/add-dict-language'
     onclickSubmit: (params, posdata)->{dicts: dicts.join(',')}

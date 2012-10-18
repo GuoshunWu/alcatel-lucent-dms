@@ -4,8 +4,7 @@ define ['jqgrid', 'require'], ($, require)->
   width: 700, height: 300
   pager: '#stringSettingsPager'
   editurl: ""
-  rowNum: 10
-  rowList: [10, 20, 30]
+  rowNum: 10, rowList: [10, 20, 30]
   sortname: 'key'
   sortorder: 'asc'
   viewrecords: true

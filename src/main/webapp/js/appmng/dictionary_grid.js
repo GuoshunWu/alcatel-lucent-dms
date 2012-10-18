@@ -37,10 +37,7 @@
       }
     };
     languageSetting = function(rowData) {
-      dialogs.langSettings.data("param", {
-        dictId: rowData.id,
-        refCode: rowData.langrefcode
-      });
+      dialogs.langSettings.data("param", rowData);
       return dialogs.langSettings.dialog('open');
     };
     stringSetting = function(rowData) {
@@ -48,7 +45,6 @@
       return dialogs.stringSettings.dialog('open');
     };
     deleteRow = function(rowid) {
-      console.log($.jgrid.del);
       return $(localIds.dic_grid).jqGrid('delGridRow', rowid, deleteOptions);
     };
     dicGrid = $(localIds.dic_grid).jqGrid({
@@ -179,6 +175,8 @@
         return [0 === jsonFromServer.status, jsonFromServer.message];
       },
       gridComplete: function() {
+        var grid;
+        grid = $(this);
         return $('a[id^=action_]', this).button({
           create: function(e, ui) {
             var a, action, col, rowid, titles, _ref;
@@ -191,7 +189,7 @@
             this.title = titles[action];
             return this.onclick = function(e) {
               var rowData;
-              rowData = $('#dictionaryGridList').getRowData(rowid);
+              rowData = grid.getRowData(rowid);
               delete rowData.action;
               rowData.id = rowid;
               switch (action) {
@@ -260,8 +258,7 @@
         $.msgBox(c18n.selrow, null, {
           title: c18n.warning
         });
-        returun;
-
+        return;
       }
       return $('#languageSettingGrid').editGridRow("new", {
         url: '/app/add-dict-language',

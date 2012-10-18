@@ -14,7 +14,10 @@ define({
         },
         grid:{
             delappmsg:'Please select row to delete!',
-            permanenttext:'Delete permanently'
+            permanenttext:'Delete permanently',
+            dictlistpreview:{
+                caption:'Dictionaries in zip'
+            }
         },
         dialog:{
             stringsettings:{
@@ -25,6 +28,12 @@ define({
             },
             delete:{
                 title:'Delete'
+            },
+            dictlistpreview:{
+                title: 'Dictionaries Preview'
+            },
+            dictpreviewstringsettings:{
+                title: 'Labels in Dictionary Preview'
             }
         },
         browse:'Browse...',

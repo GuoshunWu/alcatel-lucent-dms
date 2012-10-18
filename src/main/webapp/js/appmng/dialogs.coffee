@@ -1,4 +1,10 @@
-define ['jqueryui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/appmng','appmng/dictlistpreview_grid', 'require'], ($, jqmsgbox, c18n, i18n,grid, require)->
+define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsettings_grid', 'appmng/previewlangsetting_grid'], (require, grid, sgrid, lgrid)->
+  $ = require 'jqueryui'
+  c18n = require 'i18n!nls/common'
+  i18n = require 'i18n!nls/appmng'
+  require 'jqmsgbox'
+  #  sgrid = require 'appmng/dictpreviewstringsettings_grid'
+  #  lgrid  = require  'appmng/previewlangsetting_grid'
 
   ids = {
   button:
@@ -123,15 +129,14 @@ define ['jqueryui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/appmng','appmng/dic
 
   langSettings = $('#languageSettingsDialog').dialog {
   autoOpen: false
-  width: 'auto'
-  height: 'auto'
-  title: i18n.dialog.languagesettings.title
+  width: 'auto', height: 'auto', title: i18n.dialog.languagesettings.title
 
   open: (e, ui)->
   # param must be attached to the dialog before the dialog open
     param = $(@).data "param"
-    $('#refCode').val param.refCode
-    $('#languageSettingGrid').setGridParam({url: '/rest/dictLanguages', postData: {dict: param.dictId, format: 'grid', prop: 'languageCode,language.name,charset.name'}}).trigger "reloadGrid"
+    $('#refCode').val param.langrefcode
+    postData = dict: param.id, format: 'grid', prop: 'languageCode,language.name,charset.name'
+    $('#languageSettingGrid').setGridParam(url: '/rest/dictLanguages', postData: postData).trigger "reloadGrid"
   }
 
   stringSettings = $('#stringSettingsDialog').dialog {
@@ -139,37 +144,66 @@ define ['jqueryui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/appmng','appmng/dic
   width: 'auto', height: 'auto', title: i18n.dialog.stringsettings.title
   open: (e, ui)->
   # param must be attached to the dialog before the dialog open
-    dict = $(@).data "param"
-    return if !dict
+    param = $(@).data "param"
+    return if !param
 
-    $('#dictName').val(dict.name)
-    $('#dictVersion').val(dict.version)
-    $('#dictFormat').val(dict.format)
-    $('#dictEncoding').val(dict.encoding)
+    $('#dictName', @).val(param.name)
+    $('#dictVersion', @).val(param.version)
+    $('#dictFormat', @).val(param.format)
+    $('#dictEncoding', @).val(param.encoding)
 
-    prop = "key,reference,maxLength,context.name,description"
-
-    $('#stringSettingsGrid').setGridParam({url: '/rest/labels', postData: {dict: dict.id, format: 'grid', prop: prop}}).trigger "reloadGrid"
+    postData = dict: param.id, format: 'grid', prop: "key,reference,maxLength,context.name,description"
+    $('#stringSettingsGrid').setGridParam(url: '/rest/labels', postData: postData).trigger "reloadGrid"
   }
 
   dictListPreview = $('#dictListPreviewDialog').dialog {
   autoOpen: false
-  width: 'auto', height: 'auto', title: 'To be Changed'
+  width: 'auto', height: 'auto', title: i18n.dialog.dictlistpreview.title
   open: ->
   #    param need to be initilize before the dialog open
     param = $(@).data 'param'
-    grid.previewUpdate param
-
+    return if !param
+    postData =
+      format: 'grid',
+      handler: param.handler
+      prop: 'languageReferenceCode,base.name,version,base.format,base.encoding,labelNum'
+    $('#dictListPreviewGrid').setGridParam(url: '/rest/delivery/dict', postData: postData).trigger 'reloadGrid'
   }
 
-  dictPreview = $('#dictPreviewDialog').dialog {
+  dictPreviewStringSettings = $('#dictPreviewStringSettingsDialog').dialog {
   autoOpen: false
-  width: 'auto', height: 'auto', title: 'To be Changed'
+  width: 'auto', height: 'auto', title: i18n.dialog.dictpreviewstringsettings.title
   open: ->
+    param = $(@).data 'param'
+    return if !param
 
+    $('#previewDictName', @).val(param.name)
+    $('#previewDictVersion', @).val(param.version)
+    $('#previewDictFormat', @).val(param.format)
+    $('#previewDictEncoding', @).val(param.encoding)
+
+    postData =
+      handler: param.handler,
+      dict: param.id
+      format: 'grid', prop: "key,reference,maxLength,context.name,description"
+
+    $('#dictPreviewStringSettingsGrid').setGridParam(url: '/rest/delivery/labels', postData: postData).trigger "reloadGrid"
   }
 
-  dictPreview: dictPreview
+  dictPreviewLangSettings = $('#dictPreviewLanguageSettingsDialog').dialog {
+  autoOpen: false
+  width: 'auto', height: 'auto', title: i18n.dialog.languagesettings.title
+  open: ->
+    param = $(@).data 'param'
+    return if !param
+
+    $('#previewRefCode').val param.langrefcode
+    postData = handler: param.handler, dict: param.id, format: 'grid', prop: 'languageCode,language.name,charset.name'
+    $('#previewLanguageSettingGrid').setGridParam(url: '/rest/delivery/dictLanguages', postData: postData).trigger "reloadGrid"
+  }
+
+  dictPreviewLangSettings: dictPreviewLangSettings
+  dictPreviewStringSettings: dictPreviewStringSettings
   dictListPreview: dictListPreview
   stringSettings: stringSettings
   newProduct: newProduct
