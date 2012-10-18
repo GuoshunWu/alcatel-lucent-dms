@@ -36,7 +36,7 @@ public class GenerateDictAction extends JSONAction {
     private SimpleDateFormat dFmt = new SimpleDateFormat("yyyyMMdd_HHmmss");
 
     
-    @Value("dms.generate.dir")
+    @Value("${dms.generate.dir}")
     private String tmpDownload;
 
 

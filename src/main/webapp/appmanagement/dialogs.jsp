@@ -111,6 +111,9 @@
                 <div id="dictListPreviewPager"></div>
             </td>
         </tr>
+        <tr>
+            <td><button id="import"/><s:text name="button.import"/></td>
+        </tr>
     </table>
 </div>
 
