@@ -2,6 +2,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   $ = require 'jqueryui'
   c18n = require 'i18n!nls/common'
   i18n = require 'i18n!nls/appmng'
+  require 'blockui'
   require 'jqmsgbox'
   #  sgrid = require 'appmng/dictpreviewstringsettings_grid'
   #  lgrid  = require  'appmng/previewlangsetting_grid'
@@ -170,8 +171,22 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
     $('#dictListPreviewGrid').setGridParam(url: '/rest/delivery/dict', postData: postData).trigger 'reloadGrid'
   }
 
-  $('#import',dictListPreview).button({}).click()->
-    alert 'Hi'
+  $('#import', dictListPreview).button({}).click ()->
+    param = dictListPreview.data "param"
+    postData = handler: param.handler, app: $('#selAppVersion').val()
+
+    $.blockUI css: {backgroundColor: '#fff'}, overlayCSS: {opacity: 0.2}
+
+    $.post '/app/deliver-dict', postData, (json)->
+      $.unblockUI()
+      console.log json
+      if(json.status != 0)
+        $.msgBox json.message, null, {title: c18n.error}
+        return
+#      $.msgBox json.message, null, {title: c18n.error}
+      alert 'Import successful.'
+
+
 
   dictPreviewStringSettings = $('#dictPreviewStringSettingsDialog').dialog {
   autoOpen: false

@@ -117,7 +117,7 @@ define (require, util, dialogs, i18n)->
     dicts = dicGrid.getGridParam('selarrrow')
     if !dicts || dicts.length == 0
       $.msgBox c18n.selrow, null, {title: c18n.warning}
-      returun
+      return
 
     filename = "#{$('#appDispAppName').text()}_#{$('#selAppVersion option:selected').text()}_#{new Date().format 'yyyyMMdd_hhmmss'}.zip"
 
