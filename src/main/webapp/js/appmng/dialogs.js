@@ -280,6 +280,7 @@
         handler: param.handler,
         app: $('#selAppVersion').val()
       };
+      dictListPreview.dialog('close');
       $.blockUI({
         css: {
           backgroundColor: '#fff'
