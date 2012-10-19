@@ -7,6 +7,7 @@
     $ = require('jqueryui');
     c18n = require('i18n!nls/common');
     i18n = require('i18n!nls/appmng');
+    require('blockui');
     require('jqmsgbox');
     ids = {
       button: {
@@ -271,6 +272,33 @@
           postData: postData
         }).trigger('reloadGrid');
       }
+    });
+    $('#import', dictListPreview).button({}).click(function() {
+      var param, postData;
+      param = dictListPreview.data("param");
+      postData = {
+        handler: param.handler,
+        app: $('#selAppVersion').val()
+      };
+      $.blockUI({
+        css: {
+          backgroundColor: '#fff'
+        },
+        overlayCSS: {
+          opacity: 0.2
+        }
+      });
+      return $.post('/app/deliver-dict', postData, function(json) {
+        $.unblockUI();
+        console.log(json);
+        if (json.status !== 0) {
+          $.msgBox(json.message, null, {
+            title: c18n.error
+          });
+          return;
+        }
+        return alert('Import successful.');
+      });
     });
     dictPreviewStringSettings = $('#dictPreviewStringSettingsDialog').dialog({
       autoOpen: false,
