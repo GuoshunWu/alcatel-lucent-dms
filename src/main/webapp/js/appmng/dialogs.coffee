@@ -175,8 +175,10 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
     param = dictListPreview.data "param"
     postData = handler: param.handler, app: $('#selAppVersion').val()
 
-    $.blockUI css: {backgroundColor: '#fff'}, overlayCSS: {opacity: 0.2}
+#    TODO: refine here.
+    dictListPreview.dialog 'close'
 
+    $.blockUI css: {backgroundColor: '#fff'}, overlayCSS: {opacity: 0.2}
     $.post '/app/deliver-dict', postData, (json)->
       $.unblockUI()
       console.log json
