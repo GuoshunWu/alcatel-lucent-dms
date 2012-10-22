@@ -2,7 +2,7 @@
 (function() {
 
   define(function(require, util, dialogs, i18n) {
-    var $, blockui, c18n, deleteOptions, deleteRow, dicGrid, languageSetting, localIds, stringSetting;
+    var $, blockui, c18n, deleteOptions, dicGrid, handlers, localIds;
     $ = require('jqgrid');
     util = require('util');
     dialogs = require('appmng/dialogs');
@@ -36,16 +36,27 @@
         return [0 === jsonFromServer.status, jsonFromServer.message];
       }
     };
-    languageSetting = function(rowData) {
-      dialogs.langSettings.data("param", rowData);
-      return dialogs.langSettings.dialog('open');
-    };
-    stringSetting = function(rowData) {
-      dialogs.stringSettings.data("param", rowData);
-      return dialogs.stringSettings.dialog('open');
-    };
-    deleteRow = function(rowid) {
-      return $(localIds.dic_grid).jqGrid('delGridRow', rowid, deleteOptions);
+    handlers = {
+      'Sting': {
+        title: i18n.dialog.stringsettings.title,
+        handler: function(rowData) {
+          dialogs.stringSettings.data("param", rowData);
+          return dialogs.stringSettings.dialog('open');
+        }
+      },
+      'Language': {
+        title: i18n.dialog.languagesettings.title,
+        handler: function(rowData) {
+          dialogs.langSettings.data("param", rowData);
+          return dialogs.langSettings.dialog('open');
+        }
+      },
+      'X': {
+        title: i18n.dialog["delete"].title,
+        handler: function(rowData) {
+          return $(localIds.dic_grid).jqGrid('delGridRow', rowData.id, deleteOptions);
+        }
+      }
     };
     dicGrid = $(localIds.dic_grid).jqGrid({
       url: '',
@@ -116,23 +127,28 @@
         }, {
           name: 'action',
           index: 'action',
-          width: 45,
+          width: 80,
           editable: false,
           align: 'center'
         }
       ],
       beforeProcessing: function(data, status, xhr) {
-        var actIndex;
+        var actIndex, actions, k, v;
         actIndex = $(this).getGridParam('colNames').indexOf('Action');
         if ($(this).getGridParam('multiselect')) {
           --actIndex;
         }
+        actions = [];
+        for (k in handlers) {
+          v = handlers[k];
+          actions.push(k);
+        }
         return $(data.rows).each(function(index) {
           var rowData;
           rowData = this;
-          return this.cell[actIndex] = ($(['S', 'L', 'X']).map(function() {
-            return "<A id='action_" + this + "_" + rowData.id + "_" + actIndex + "' href=# >" + this + "</A>";
-          })).get().join('');
+          return this.cell[actIndex] = $(actions).map(function() {
+            return "<A id='action_" + this + "_" + rowData.id + "_" + actIndex + "'style='color:blue' title='" + handlers[this].title + "' href=# >" + this + "</A>";
+          }).get().join('&nbsp;&nbsp;&nbsp;&nbsp;');
         });
       },
       afterEditCell: function(id, name, val, iRow, iCol) {
@@ -177,33 +193,13 @@
       gridComplete: function() {
         var grid;
         grid = $(this);
-        return $('a[id^=action_]', this).button({
-          create: function(e, ui) {
-            var a, action, col, rowid, titles, _ref;
-            _ref = this.id.split('_'), a = _ref[0], action = _ref[1], rowid = _ref[2], col = _ref[3];
-            titles = {
-              S: i18n.dialog.stringsettings.title,
-              L: i18n.dialog.languagesettings.title,
-              X: i18n.dialog["delete"].title
-            };
-            this.title = titles[action];
-            return this.onclick = function(e) {
-              var rowData;
-              rowData = grid.getRowData(rowid);
-              delete rowData.action;
-              rowData.id = rowid;
-              switch (action) {
-                case 'S':
-                  return stringSetting(rowData);
-                case 'L':
-                  return languageSetting(rowData);
-                case 'X':
-                  return deleteRow(rowid);
-                default:
-                  return console.log('Invalid action');
-              }
-            };
-          }
+        return $('a[id^=action_]', this).click(function() {
+          var a, action, col, rowData, rowid, _ref;
+          _ref = this.id.split('_'), a = _ref[0], action = _ref[1], rowid = _ref[2], col = _ref[3];
+          rowData = grid.getRowData(rowid);
+          delete rowData.action;
+          rowData.id = rowid;
+          return handlers[action].handler(rowData);
         });
       }
     });

@@ -140,6 +140,34 @@ To change this template use File | Settings | File Templates.
         Test here.
       */
 
+      generateLanguageTable: function(languages, tableId, colNum) {
+        var checkedAll, innerColTable, languageCells, languageFilterTable, outerTableFirstRow, rowCount;
+        if (!tableId) {
+          tableId = 'languageFilterTable';
+        }
+        if (!colNum) {
+          colNum = 5;
+        }
+        rowCount = Math.ceil(languages.length / colNum);
+        languageFilterTable = $("<table id='" + tableId + "' align='center' border='0'><tr valign='top' /></table>");
+        outerTableFirstRow = $("tr:eq(0)", languageFilterTable);
+        languageCells = $(languages).map(function() {
+          return $("<td><input type='checkbox' checked value=\"" + this.name + "\" name='languages' id=" + this.id + " /><label for=" + this.id + ">" + this.name + "</label></td>").css('width', '180px');
+        });
+        innerColTable = null;
+        languageCells.each(function(index) {
+          if (0 === index % rowCount) {
+            innerColTable = $("<table border='0'/>");
+            outerTableFirstRow.append($("<td/>").append(innerColTable));
+          }
+          return innerColTable.append($("<tr/>").append(this));
+        });
+        checkedAll = $("<input type='checkbox'id='all_" + tableId + "' checked><label for='all_" + tableId + "'>All</label>").change(function() {
+          return $(":checkbox[name='languages']", languageFilterTable).attr('checked', this.checked);
+        });
+        languageFilterTable.append($('<tr/>').append($("<td colspan='" + colNum + "'/>").append($("<hr width='100%'>"))));
+        return languageFilterTable.append($('<tr/>').append($("<td colspan='" + colNum + "'></td>").append(checkedAll)));
+      },
       json2string: function(jsonObj) {
         return formatJonString(JSON.stringify(jsonObj));
       },

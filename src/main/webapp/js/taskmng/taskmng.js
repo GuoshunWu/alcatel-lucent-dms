@@ -7,9 +7,7 @@
  */
 //require({},['http://localhost/scripts/configjs.groovy','require','../lib/util'], function (c, require,util) {
 require({}, ['../config'], function (c) {
-    var dependencies = convertDependencies('taskmng', ['layout','i18n!nls/transmng','i18n!nls/common']);
-    console.log(dependencies);
-    require(dependencies);
+    require(['taskmng/layout']);
 }, function (err) {
     console.log("load module err: " + err);
 });

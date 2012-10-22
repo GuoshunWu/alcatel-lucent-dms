@@ -51,7 +51,7 @@
         })).get();
         this.getGridParam('groupHeaders').push({
           startColumnName: "" + language.name + ".T",
-          numberOfColumns: 3,
+          numberOfColumns: cols.length,
           titleText: "<bold>" + language.name + "</bold>"
         });
         return this.addColumns(cols, colModels, url, postData);

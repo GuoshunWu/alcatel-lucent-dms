@@ -29,7 +29,7 @@ define ['jqgrid'], ($)->
   addTaskLanguage: (language, url, postData)->
     cols = ['T', 'N', 'I']
     colModels = ($(cols).map (index)-> {name: "#{language.name}.#{@}", sortable:false,index: "s(#{language.id})[#{index}]",width:40,editable: false,search:false, align: 'center'}).get()
-    @getGridParam('groupHeaders').push {startColumnName: "#{language.name}.T", numberOfColumns: 3, titleText: "<bold>#{language.name}</bold>"}
+    @getGridParam('groupHeaders').push {startColumnName: "#{language.name}.T", numberOfColumns: cols.length, titleText: "<bold>#{language.name}</bold>"}
     @addColumns cols, colModels, url, postData
 
   updateTaskLanguage: (languages, url,postData)->

@@ -1,4 +1,5 @@
-define ['jqlayout', 'taskmng/task_grid', 'i18n!nls/common'], ($, grid, c18n)->
+define ['jqlayout', 'taskmng/task_grid','require','i18n!nls/common', 'taskmng/dialogs'], ($, grid, require,c18n,dialogs)->
+
   $('#pageNavigator').val(window.location.pathname)
   $("#optional-container").layout {resizable: true, closable: true}
 
@@ -43,7 +44,7 @@ define ['jqlayout', 'taskmng/task_grid', 'i18n!nls/common'], ($, grid, c18n)->
 
   taskFileUpload = 'taskFileUpload'
   #  create upload filebutton
-  $('#uploadTask').button({label: 'Browser'}).css({overflow: 'hidden'}).append $(
+  $('#uploadTask').button({label: 'Upload'}).css({overflow: 'hidden'}).append $(
     "<input type='file' id='#{taskFileUpload}' name='upload' title='Choose file' multiple/>").css {
   position: 'absolute', top: 0, right: 0, margin: 0,
   border: '1px transparent', borderWidth: '0 0 40px 0px',

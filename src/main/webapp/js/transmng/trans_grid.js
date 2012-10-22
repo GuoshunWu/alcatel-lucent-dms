@@ -145,7 +145,6 @@
       viewrecords: true,
       gridview: true,
       multiselect: true,
-      caption: '',
       colNames: grid.dictionary.colNames,
       colModel: grid.dictionary.colModel,
       groupHeaders: [],
@@ -167,7 +166,7 @@
           search: false,
           view: false
         });
-        grid.navButtonAdd("#taskPager", {
+        grid.navButtonAdd("#transPager", {
           caption: "Clear",
           title: "Clear Search",
           buttonicon: 'ui-icon-refresh',

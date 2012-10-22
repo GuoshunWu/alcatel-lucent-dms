@@ -41,12 +41,41 @@
                     <td style="width:30px"></td>
                     <td>
                         <select id="actions">
-                            <option value="actions"><button>Study</button></option>
-                            <option value="actions"><button>Two</button></option>
+                            <option value="actions">
+                                <button>Study</button>
+                            </option>
+                            <option value="actions">
+                                <button>Two</button>
+                            </option>
                         </select>
                     </td>
+                    <td>
+                        <button id='transReport'>TransReoprt</button>
+                        <style type="text/css">
+                            <!--
+                            .a1:link {
+                                color: #FF0000;
+                            }
+
+                            .a1:visited {
+                                color: #0000FF;
+                            }
+
+                            .a1:hover {
+                                color: #990000;
+                            }
+
+                            .a1:active {
+                                color: #993399;
+                            }
+
+                        </style>
+                        <a href="#" class="a1">test</a>
+                        <button id='viewDetail'>viewDetail</button>
+                    </td>
                     <td style="width: 120px;">
-                        <%--@declare id="taskfileupload"--%><label for="taskFileUpload"><s:text name="appmng.deliverapp"/></label>
+                        <%--@declare id="taskfileupload"--%><label for="taskFileUpload"><s:text
+                            name="appmng.deliverapp"/></label>
                     </td>
                     <td style="width: 100px;">
                         <div id="uploadTask"></div>

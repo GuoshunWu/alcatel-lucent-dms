@@ -191,6 +191,7 @@
                 return;
               }
               if (-1 === params.appBaseId) {
+                params.appBaseId = json.appBaseId;
                 (require('appmng/apptree')).addNewApplicationBase(params);
               }
               return $("#applicationGridList").trigger("reloadGrid");
