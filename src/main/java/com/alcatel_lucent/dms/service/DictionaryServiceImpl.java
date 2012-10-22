@@ -1,14 +1,6 @@
 package com.alcatel_lucent.dms.service;
 
-import static com.alcatel_lucent.dms.util.Util.generateSpace;
-import static org.apache.commons.lang.StringUtils.join;
-
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,18 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import net.sf.json.JSONObject;
-
-import org.apache.commons.collections.keyvalue.MultiKey;
-import org.apache.commons.collections.map.MultiKeyMap;
 import org.apache.log4j.Logger;
-import org.dom4j.Document;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
-import org.dom4j.Namespace;
-import org.dom4j.QName;
-import org.dom4j.io.OutputFormat;
-import org.dom4j.io.XMLWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -55,6 +36,7 @@ import com.alcatel_lucent.dms.service.generator.DCTGenerator;
 import com.alcatel_lucent.dms.service.generator.DictionaryGenerator;
 import com.alcatel_lucent.dms.service.generator.LabelXMLGenerator;
 import com.alcatel_lucent.dms.service.generator.MDCGenerator;
+import com.alcatel_lucent.dms.service.generator.PropGenerator;
 import com.alcatel_lucent.dms.service.generator.PropXMLGenerator;
 
 @Service("dictionaryService")
@@ -94,6 +76,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     @Autowired
     private PropXMLGenerator propXMLGenerator;
     
+    @Autowired
+    private PropGenerator propGenerator;
+    
     public DictionaryServiceImpl() {
         super();
     }
@@ -119,6 +104,16 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
      */
     public void generateDictFiles(String dir, Collection<Long> dtIds) {
         if (dtIds.isEmpty()) return;
+        File target = new File(dir);
+    	if (target.exists()) {
+    		if (target.isFile()) {
+    			throw new BusinessException(BusinessException.TARGET_IS_NOT_DIRECTORY, dir);
+    		}
+    	} else {
+    		if (!target.mkdirs()) {
+    			throw new BusinessException(BusinessException.FAILED_TO_MKDIRS, dir);
+    		}
+    	}
         String idList = dtIds.toString().replace("[", "(").replace("]", ")");
         String hsql = "from Dictionary where id in " + idList;
         Collection<Dictionary> dicts = (Collection<Dictionary>) getDao().retrieve(hsql);
@@ -126,7 +121,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         for (Dictionary dict : dicts) {
             log.info("Generate dictionary: " + dict.getName());
         	DictionaryGenerator generator = getGenerator(dict.getFormat());
-        	generator.generateDict(new File(dir), dict.getId());
+        	
+        	generator.generateDict(target, dict.getId());
         }
     }
     
@@ -139,6 +135,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	    	return labelXMLGenerator;
 	    } else if (format.equals(Constants.DICT_FORMAT_XML_PROP)) {
 	    	return propXMLGenerator;
+	    } else if (format.equals(Constants.DICT_FORMAT_TEXT_PROP)) {
+	    	return propGenerator;
 	    } else {
 	    	throw new SystemError("Unsupported dict format: " + format);
 	    }
@@ -281,20 +279,27 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	            if (langCodeList != null && !langCodeList.contains(uniLangCode)) {
 	                continue;
 	            }
-	            String charsetName = langCharset.get(uniLangCode);
+	            String charsetName = null;
+	            if (dictLanguage.getCharset() != null) {
+	            	charsetName = dictLanguage.getCharset().getName();
+	            }
 	            if (charsetName == null) {
-	            	charsetName = langCharset.get("DEFAULT");
+		            charsetName = langCharset.get(uniLangCode);
+		            if (charsetName == null) {
+		            	charsetName = langCharset.get("DEFAULT");
+		            }
 	            }
 	            if (null == charsetName) {
 	                nonBreakExceptions.addNestedException(new BusinessException(
 	                        BusinessException.CHARSET_NOT_DEFINED, dictLanguage.getLanguageCode()));
 	            } else {
-	            	dictLanguage.setDictionary(dbDict);
-	            	dictLanguage.setLanguage((Language) dao.retrieve(Language.class,
-	                        dictLanguage.getLanguage().getId()));
 	            	dictLanguage.setCharset(langService.getCharset(charsetName));
-	                dao.create(dictLanguage);
 	            }
+		            
+            	dictLanguage.setDictionary(dbDict);
+            	dictLanguage.setLanguage((Language) dao.retrieve(Language.class,
+                        dictLanguage.getLanguage().getId()));
+                dao.create(dictLanguage);
 	        }
         }
 
@@ -350,16 +355,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             // determine translation behaviors
             if (label.getOrigTranslations() != null) {
 	            for (LabelTranslation trans : label.getOrigTranslations()) {
+	            	// determine charset, first take value from DictionaryLanguage
+	            	// if not specified in DictionaryLanguage, then take value from langCharset parameter
 	                String langCode = langCodeMap.get(trans.getLanguage().getId());
-	                String charsetName = langCharset.get(getUnifiedLangCode(langCode));
-	                if (charsetName == null) {
-	                	charsetName = langCharset.get("DEFAULT");
-	                }
-	                if (null == charsetName) {
-	                    nonBreakExceptions.addNestedException(new BusinessException(
-	                            BusinessException.CHARSET_NOT_DEFINED, langCode));
-	                    continue;
-	                }
+	                DictionaryLanguage dl = dict.getDictLanguage(langCode);
+	                String charsetName = dl.getCharset().getName();
 	                try {
 	                    boolean invalidText = false;
 	                    if (!dict.getEncoding().equals(charsetName)) {

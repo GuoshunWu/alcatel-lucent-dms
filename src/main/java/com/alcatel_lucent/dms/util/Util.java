@@ -5,6 +5,10 @@ package com.alcatel_lucent.dms.util;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CodingErrorAction;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -278,5 +282,61 @@ public class Util {
         File srcFile = new File(srcPath);
         if (!srcFile.exists()) return;
         createZip(srcFile, new File(zipPath));
+    }
+    
+    public static boolean validateFileCharset(File file, String charsetName) {
+    	boolean result = true;
+		char[] buf = new char[65536];
+		Charset charset = Charset.forName(charsetName);
+		CharsetDecoder decoder = charset.newDecoder();
+		decoder.onMalformedInput(CodingErrorAction.REPORT);
+		decoder.onUnmappableCharacter(CodingErrorAction.REPORT);
+
+		InputStreamReader reader = null;
+		try {
+			reader = new InputStreamReader(new FileInputStream(file), decoder);
+			int chars;
+			while ((chars = reader.read(buf)) >= 0);
+		} catch (CharacterCodingException ex) {
+			ex.printStackTrace();
+			result = false;
+		} catch (IOException ex) {
+			result = false;
+		} finally {
+			if (reader != null)
+				try {
+					reader.close();
+				} catch (IOException ex) {
+					// dummy
+				}
+		}
+		return result;
+
+    }
+    
+    public static boolean isASCII(File file) {
+		InputStreamReader reader = null;
+		try {
+			reader = new InputStreamReader(new FileInputStream(file), "ISO-8859-1");
+			int chars;
+			char[] buf = new char[65536];
+			while ((chars = reader.read(buf)) >= 0) {
+				for (int i = 0; i < chars; i++) {
+					if (buf[i] < 0x20 || buf[i] > 0x7e)
+						return false;
+				}
+			}
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new SystemError(e);
+		} finally {
+			if (reader != null)
+				try {
+					reader.close();
+				} catch (IOException ex) {
+					// dummy
+				}
+		}
     }
 }
