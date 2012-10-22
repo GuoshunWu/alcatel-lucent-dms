@@ -24,7 +24,7 @@ public interface JSONService {
 
 
     /**
-     * Convert the entity to JSTree json data.
+     * Convert the entity to selection json data.
      *
      * @param entity      Will be transformed entity
      * @param propFilter  Filed filter map
@@ -34,6 +34,17 @@ public interface JSONService {
     JSONArray toSelectJSON(Object entity, Map<String, Collection<String>> propFilter, Map<Class, Map<String, String>>... vpropRename);
 
     /**
+     * Convert the entity to JSTree json data
+     * @param root
+     * @param idProp
+     * @param typeProp
+     * @param dataProp
+     * @param childrenProp
+     * @return
+     */
+    public JSONObject toTreeJSON(Object root, String[] idProp, String[] typeProp, String[] dataProp, String[] childrenProp);
+    
+    /**
      * Convert the entity to JSTree json data.
      *
      * @param entity      Will be transformed entity
@@ -42,7 +53,7 @@ public interface JSONService {
      * @return JSONArray represent the entity
      */
 
-    JSONArray toTreeJSON(Object entity, Map<String, Collection<String>> propFilter, Map<Class, Map<String, String>>... vpropRename);
+    JSONArray toTreeJSON2(Object entity, Map<String, Collection<String>> propFilter, Map<Class, Map<String, String>>... vpropRename);
 
     
     /**

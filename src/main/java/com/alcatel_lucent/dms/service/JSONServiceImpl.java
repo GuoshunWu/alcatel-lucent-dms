@@ -139,7 +139,7 @@ public class JSONServiceImpl implements JSONService {
         return jsonGrid;
     }
 
-    public JSONArray toTreeJSON(Object entity, Map<String, Collection<String>> propFilter, Map<Class, Map<String, String>>... vpropRename) {
+    public JSONArray toTreeJSON2(Object entity, Map<String, Collection<String>> propFilter, Map<Class, Map<String, String>>... vpropRename) {
 
         JsonConfig config = getJsonConfig(propFilter, vpropRename);
         JSONArray jsonTree = JSONArray.fromObject(entity, config);
@@ -149,7 +149,40 @@ public class JSONServiceImpl implements JSONService {
         }
         return jsonTree;
     }
+    
+    public JSONObject toTreeJSON(Object root, String[] idProp, String[] types, String[] dataProp, String[] childrenProp) {
+    	JSONObject result = new JSONObject();
+		try {
+			Object id = PropertyUtils.getProperty(root, idProp[0]);
+			Object data = PropertyUtils.getProperty(root, dataProp[0]);
+			Object children = PropertyUtils.getProperty(root, childrenProp[0]);
+			JSONObject jsonAttr = new JSONObject();
+			jsonAttr.put("id", id);
+			jsonAttr.put("type", types[0]);
+			result.put("attr", jsonAttr);
+			result.put("data", data);
+			if (idProp.length > 1 && types.length > 1 && dataProp.length > 1 && childrenProp.length > 1 && 
+					children != null && children instanceof Collection) {
+				JSONArray jsonChildren = new JSONArray();
+				for (Object obj : (Collection<?>) children) {
+					jsonChildren.add(toTreeJSON(obj, next(idProp), next(types), next(dataProp), next(childrenProp)));
+				}
+				result.put("children", jsonChildren);
+			}
+			return result;
+		} catch (Exception e) {
+			log.error("Failed to populate tree json of object " + root, e);
+			return result; 
+		}
+    }
 
+    private String[] next(String[] arr) {
+    	String[] result = new String[arr.length - 1];
+    	for (int i = 0; i < result.length; i++) {
+    		result[i] = arr[i + 1];
+    	}
+    	return result;
+    }
 
 
     public JSONArray toSelectJSON(Object entity, Map<String, Collection<String>> propFilter, Map<Class, Map<String, String>>... vpropRename) {
