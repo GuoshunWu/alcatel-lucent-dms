@@ -110,8 +110,12 @@ public abstract class BaseREST {
 			JSONObject json = jsonService.toGridJSON((Collection<?>) data, rows, page, records, idprop == null ? "id" : idprop, prop);
 			return json.toString();
     	} else if (format.trim().equals("tree")) {
-    		// TODO: select tree
-    		return null;
+    		String idProps = requestMap.get("idProps");
+    		String types = requestMap.get("types");
+    		String dataProps = requestMap.get("dataProps");
+    		String childrenProps = requestMap.get("childrenProps");
+    		JSONObject json = jsonService.toTreeJSON(data, idProps.split(","), types.split(","), dataProps.split(","), childrenProps.split(","));
+    		return json.toString();
     	} else {
     		throw new RESTException("Unknown format '" + format + "'");
     	}
