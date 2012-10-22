@@ -34,28 +34,14 @@ public class LabelXMLGenerator implements DictionaryGenerator {
 
 	@Override
 	public void generateDict(File target, Long dictId) throws BusinessException {
-    	if (target.exists()) {
-    		if (target.isFile()) {
-    			throw new BusinessException(BusinessException.TARGET_IS_NOT_DIRECTORY, target.getAbsolutePath());
-    		}
-    	} else {
-    		if (!target.mkdirs()) {
-    			throw new BusinessException(BusinessException.FAILED_TO_MKDIRS,  target.getAbsolutePath());
-    		}
-    	}
     	Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
     	
     	// create reference language file
     	generateLabelXML(target, dict, null);
     	
     	// generate for each language
-    	HashSet<String> langCodeSet = null;
     	if (dict.getDictLanguages() != null) {
     		for (DictionaryLanguage dl : dict.getDictLanguages()) {
-    			String langCode = dl.getLanguageCode();
-    			if (langCodeSet != null && !langCodeSet.contains(langCode)) {
-    				continue;
-    			}
     			generateLabelXML(target, dict, dl);
     		}
     	}
