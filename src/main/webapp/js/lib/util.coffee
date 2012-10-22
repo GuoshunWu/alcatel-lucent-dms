@@ -99,6 +99,32 @@ define ["jquery"], ($) ->
   #  a=[1,2,3]
   #  console.log a.insert 1,["a",'b']
 
+  generateLanguageTable:(languages, tableId, colNum)->
+    tableId = 'languageFilterTable' if !tableId
+    colNum = 5 if !colNum
+    rowCount = Math.ceil(languages.length / colNum)
+
+    languageFilterTable = $("<table id='#{tableId}' align='center' border='0'><tr valign='top' /></table>")
+    outerTableFirstRow = $("tr:eq(0)", languageFilterTable)
+
+    languageCells = $(languages).map ()->$("<td><input type='checkbox' checked value=\"#{@name}\" name='languages' id=#{@id} /><label for=#{@id}>#{@name}</label></td>").css('width', '180px')
+
+    innerColTable = null
+    languageCells.each (index)->
+      if 0 == index % rowCount
+        innerColTable = $("<table border='0'/>")
+        outerTableFirstRow.append $("<td/>").append innerColTable
+      innerColTable.append $("<tr/>").append @
+
+    checkedAll = $("<input type='checkbox'id='all_#{tableId}' checked><label for='all_#{tableId}'>All</label>").change ()->
+      $(":checkbox[name='languages']", languageFilterTable).attr('checked', @checked)
+    #    hr line
+    languageFilterTable.append $('<tr/>').append $("<td colspan='#{colNum}'/>").append $("<hr width='100%'>")
+    #    check all line
+    languageFilterTable.append $('<tr/>').append $("<td colspan='#{colNum}'></td>").append checkedAll
+
+
+
 
   json2string: (jsonObj) ->formatJonString JSON.stringify(jsonObj)
   getDictLanguagesByDictId: (id,callback)->$.getJSON 'rest/languages', {prop: 'id,name', dict: id}, (languages)=>callback languages

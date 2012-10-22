@@ -7,97 +7,21 @@
         {
             "id":"1",
             "cell":[
-                "1",
-                "LOGIN",
+                "CANCEL",
                 "20",
                 "Dictionary",
-                "User Name :",
-                "Nom d'utilisateur :",
-                2
+                "Cancel",
+                "取消"
             ]
         },
         {
             "id":"2",
             "cell":[
-                "2",
-                "PASSWORD",
-                "20",
-                "Dictionary",
-                "Password :",
-                "Mot de passe :",
-                2
-            ]
-        },
-        {
-            "id":"3",
-            "cell":[
-                "3",
-                "REMEMBER_PWD",
-                "40",
-                "Dictionary",
-                "Remember password",
-                "Retenir le mot de passe",
-                2
-            ]
-        },
-        {
-            "id":"4",
-            "cell":[
-                "4",
-                "OK",
-                "20",
-                "Dictionary",
-                "Sign In",
-                "Sign In",
-                2
-            ]
-        },
-        {
-            "id":"5",
-            "cell":[
-                "5",
-                "CANCEL",
-                "20",
-                "Dictionary",
-                "Cancel",
-                "Annuler",
-                1
-            ]
-        } ,
-        {
-            "id":"6",
-            "cell":[
-                "6",
-                "WELCOME_ICS",
-                "120",
-                "Dictionary",
-                "Welcome to My Instant Communicator. Please enter your user name and password :",
-                "Bienvenue dans My Instant Communicator. Veuillez entrer votre nom d'utilisateur et mot de passe :",
-                1
-            ]
-        },
-        {
-            "id":"7",
-            "cell":[
-                "7",
                 "COPYRIGHT",
                 "120;200",
                 "Dictionary",
-                "Copyright 2007-2011 by Alcatel-Lucent. All rights reserved.",
-                " ",
-                0
-            ]
-        },
-        {
-            "id":"8",
-            "cell":[
-                "8",
-                "TOOLTIP_TEXT",
-                "120",
-                "Dictionary",
-                "Check this box to remember your password.",
-                " ",
-                0
+                "Copyright 2007-2011 by Alcatel-Lucent",
+                "Alcatel-Lucent 版权所有 2007-2011."
             ]
         }
     ],

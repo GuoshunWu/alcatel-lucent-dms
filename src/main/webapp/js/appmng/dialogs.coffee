@@ -120,8 +120,12 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
       }
       $.post url, params, (json)->
         ($.msgBox json.message, null, {title: c18n.error}; return) if json.status != 0
-        (require 'appmng/apptree').addNewApplicationBase(params) if -1 == params.appBaseId
+#        todo:Bug here, appBaseId should be -1, it is used in addNewApplicationBase
+        if -1 == params.appBaseId
+          params.appBaseId=json.appBaseId
+          (require 'appmng/apptree').addNewApplicationBase(params)
         $("#applicationGridList").trigger("reloadGrid")
+
       $(@).dialog("close")
     }
     {text: c18n.cancel, click: -> $(@).dialog "close"}

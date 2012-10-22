@@ -1,6 +1,7 @@
-define ['jqlayout', 'require','blockui', 'jqmsgbox','i18n!nls/common','i18n!nls/transmng','transmng/trans_grid','transmng/transdetail_grid'],($, require, blockui, msgbox, c18n,i18n, grid,detailgrid)->
+define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng', 'transmng/trans_grid', 'transmng/transdetail_grid'], ($, require, blockui, msgbox, c18n, i18n, grid, detailgrid)->
 #  console.log module
 #  private variables
+  util = require 'util'
   ids = {
   languageFilterTableId: 'languageFilterTable'
   languageFilterDialogId: 'languageFilterDialog'
@@ -16,36 +17,13 @@ define ['jqlayout', 'require','blockui', 'jqmsgbox','i18n!nls/common','i18n!nls/
   $(".header-footer").hover (->$(@).addClass "ui-state-hover"), -> $(@).removeClass "ui-state-hover"
 
   dialogs = null
-  generateLanguageTable = (languages, tableId, colNum)->
-    tableId = ids.languageFilterTableId if !tableId
-    colNum = 5 if !colNum
-    rowCount = Math.ceil(languages.length / colNum)
-
-    languageFilterTable = $("<table id='#{tableId}' align='center' border='0'><tr valign='top' /></table>")
-    outerTableFirstRow = $("tr:eq(0)", languageFilterTable)
-
-    languageCells = $(languages).map ()->$("<td><input type='checkbox' checked value=\"#{@name}\" name='languages' id=#{@id} /><label for=#{@id}>#{@name}</label></td>").css('width', '180px')
-
-    innerColTable = null
-    languageCells.each (index)->
-      if 0 == index % rowCount
-        innerColTable = $("<table border='0'/>")
-        outerTableFirstRow.append $("<td/>").append innerColTable
-      innerColTable.append $("<tr/>").append @
-
-    checkedAll = $("<input type='checkbox'id='all_#{tableId}' checked><label for='all_#{tableId}'>All</label>").change ()->
-      $(":checkbox[name='languages']", languageFilterTable).attr('checked', @checked)
-    #    hr line
-    languageFilterTable.append $('<tr/>').append $("<td colspan='#{colNum}'/>").append $("<hr width='100%'>")
-    #    check all line
-    languageFilterTable.append $('<tr/>').append $("<td colspan='#{colNum}'></td>").append checkedAll
 
   createDialogs = ->
   #dialog
     languageFilterDialog = $("<div title='#{i18n.select.languagefilter.title}' id='#{ids.languageFilterDialogId}'>").dialog {
     autoOpen: false, position: [23, 126], height: 'auto', width: 'auto'
     show: { effect: 'slide', direction: "up" }
-    create: ->$.getJSON 'rest/languages?prop=id,name', {}, (languages)=>$(@).append(generateLanguageTable languages)
+    create: ->$.getJSON 'rest/languages?prop=id,name', {}, (languages)=>$(@).append(util.generateLanguageTable languages)
     buttons: [
       { text: c18n.ok, click: ()->
         $('#productRelease').trigger "change"
@@ -75,17 +53,18 @@ define ['jqlayout', 'require','blockui', 'jqmsgbox','i18n!nls/common','i18n!nls/
       $("##{langFilterTableId}").remove()
       postData = {prop: 'id,name'}
       postData[tableType] = info.rowIds.join(',')
-      #      postData = ($({prop: 'id,name'}).attr tableType, info.rowIds.join(',')).get(0)
 
-      $.getJSON 'rest/languages', postData, (languages)=>$(@).append generateLanguageTable languages, langFilterTableId if languages.length > 0
+      $.getJSON 'rest/languages', postData, (languages)=>$(@).append util.generateLanguageTable languages, langFilterTableId if languages.length > 0
 
     buttons: [
       {text: c18n.create
       click: ->
-        languages = ($(":checkbox[name='languages']", $(@)).map -> {id: @id, name: @value} if @checked).get()
+        languages = ($(":checkbox[name='languages']",@).map -> {id: @id, name: @value} if @checked).get()
         if(languages.length == 0)
-          $.msgBox (i18n.msgbox.createtranstask.msg.format c18n.language), null,title: (c18n.warning)
+          $.msgBox (i18n.msgbox.createtranstask.msg.format c18n.language), null, title: (c18n.warning)
           return
+#          todo: create task
+
         $(@).dialog "close"
       }
       {text: c18n.cancel, click: -> $(@).dialog "close"}
@@ -93,11 +72,11 @@ define ['jqlayout', 'require','blockui', 'jqmsgbox','i18n!nls/common','i18n!nls/
     }
     transDetailDialog = $('#translationDetailDialog').dialog {
     autoOpen: false, width: 'auto', height: 400
-    create:()->
+    create: ()->
       $('#detailLanguageSwitcher').change ->
-        dict=$('#translationDetailDialog').data "dict"
-        language={id:$(@).val(), name:$(@).find("option:selected").text()}
-        detailgrid.languageChanged {language:language,dict:dict}
+        dict = $('#translationDetailDialog').data "dict"
+        language = {id: $(@).val(), name: $(@).find("option:selected").text()}
+        detailgrid.languageChanged {language: language, dict: dict}
     }
 
     {taskDialog: taskDialog, languageFilterDialog: languageFilterDialog, transDetailDialog: transDetailDialog}
@@ -151,14 +130,16 @@ define ['jqlayout', 'require','blockui', 'jqmsgbox','i18n!nls/common','i18n!nls/
 
   #  private method
   initPage = ->
-    ###################################### Elements in summary panel ######################################
+  ###################################### Elements in summary panel ######################################
     createSelects()
     ###################################### Initialize elements in north panel ######################################
     dialogs = createDialogs()
     createButtons(dialogs.taskDialog, dialogs.languageFilterDialog, dialogs.transDetailDialog)
-#   show main page.
-    $('#optional-container').show();
-    $('#loading-container').remove();
+    #   show main page.
+    $('#optional-container').show()
+    ;
+    $('#loading-container').remove()
+    ;
 
   # initialize page
   initPage()
@@ -171,11 +152,11 @@ define ['jqlayout', 'require','blockui', 'jqmsgbox','i18n!nls/common','i18n!nls/
   #    refresh dialog
     $('#dictionaryName', dialogs.transDetailDialog).html param.dict.name
     $('#detailLanguageSwitcher', dialogs.transDetailDialog).append ($(param.languages).map (index) ->
-      opt = new Option  @name,@id
+      opt = new Option @name, @id
       opt.selected = @name == param.language.name
       opt
     )
-    $('#translationDetailDialog').data 'dict',param.dict
+    $('#translationDetailDialog').data 'dict', param.dict
     $('#detailLanguageSwitcher').trigger "change"
 
     dialogs.transDetailDialog.dialog "open"

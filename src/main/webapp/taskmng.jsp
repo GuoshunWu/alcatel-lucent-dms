@@ -56,7 +56,7 @@
     </div>
     <%--<div class="ui-layout-west"></div>--%>
     <%--<div class="ui-layout-south"> South</div>--%>
-
+    <%@include file="taskmanagement/dialogs.jsp"%>
 </div>
 <!--[if lte IE 7]></div><![endif]-->
 </body>

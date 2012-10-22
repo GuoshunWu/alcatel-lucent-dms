@@ -26,16 +26,18 @@ define (require, util, dialogs, i18n)->
     #remove dictionary base.
     [0 == jsonFromServer.status, jsonFromServer.message]
   }
-  languageSetting = (rowData)->
-#    {dictId: rowData.id, refCode: rowData.langrefcode}
-    dialogs.langSettings.data "param", rowData
-    dialogs.langSettings.dialog 'open'
-  stringSetting = (rowData)->
-    dialogs.stringSettings.data "param", rowData
-    dialogs.stringSettings.dialog 'open'
 
-  deleteRow = (rowid)->
-    $(localIds.dic_grid).jqGrid 'delGridRow', rowid, deleteOptions
+  handlers =
+    'Sting':
+      title: i18n.dialog.stringsettings.title, handler: (rowData)->
+        dialogs.stringSettings.data "param", rowData
+        dialogs.stringSettings.dialog 'open'
+    'Language':
+      title: i18n.dialog.languagesettings.title, handler: (rowData)->
+      #    {dictId: rowData.id, refCode: rowData.langrefcode}
+        dialogs.langSettings.data "param", rowData
+        dialogs.langSettings.dialog 'open'
+    'X': title: i18n.dialog.delete.title, handler: (rowData)->$(localIds.dic_grid).jqGrid 'delGridRow', rowData.id, deleteOptions
 
   dicGrid = $(localIds.dic_grid).jqGrid {
   url: ''
@@ -61,14 +63,20 @@ define (require, util, dialogs, i18n)->
     {name: 'encoding', index: 'base.encoding', width: 40, editable: true, edittype: 'select',
     editoptions: {value: 'ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE'}, align: 'center'}
     {name: 'labelNum', index: 'labelNum', width: 20, align: 'center'}
-    {name: 'action', index: 'action', width: 45, editable: false, align: 'center'}
+    {name: 'action', index: 'action', width: 80, editable: false, align: 'center'}
   ]
   beforeProcessing: (data, status, xhr)->
     actIndex = $(@).getGridParam('colNames').indexOf('Action')
     --actIndex if $(@).getGridParam('multiselect')
+    actions = []
+    actions.push k for k,v of handlers
+
     $(data.rows).each (index)->
       rowData = @
-      @cell[actIndex] = ($(['S', 'L', 'X']).map ->"<A id='action_#{@}_#{rowData.id}_#{actIndex}' href=# >#{@}</A>").get().join('')
+      @cell[actIndex] = $(actions).map(
+        ()->
+          "<A id='action_#{@}_#{rowData.id}_#{actIndex}'style='color:blue' title='#{handlers[@].title}' href=# >#{@}</A>"
+      ).get().join('&nbsp;&nbsp;&nbsp;&nbsp;')
   afterEditCell: (id, name, val, iRow, iCol)->
     grid = @
     if name == 'version'
@@ -85,35 +93,20 @@ define (require, util, dialogs, i18n)->
     jsonFromServer = eval "(#{serverresponse.responseText})"
     [0 == jsonFromServer.status, jsonFromServer.message]
   gridComplete: ->
-    grid=$(@)
-    $('a[id^=action_]', @).button {
-    create: (e, ui)->
+    grid = $(@)
+
+    $('a[id^=action_]', @).click ()->
       [a, action, rowid, col]=@id.split('_')
-      titles =
-        S: i18n.dialog.stringsettings.title
-        L: i18n.dialog.languagesettings.title
-        X: i18n.dialog.delete.title
-      @title = titles[action]
-      @onclick = (e)->
-        rowData = grid.getRowData(rowid)
-        delete rowData.action
-        rowData.id = rowid
-        switch action
-          when 'S'
-            stringSetting rowData
-          when 'L'
-            languageSetting rowData
-          when 'X'
-            deleteRow rowid
-          else
-            console.log 'Invalid action'
-    }
+      rowData = grid.getRowData(rowid)
+      delete rowData.action
+      rowData.id = rowid
+      handlers[action].handler rowData
   }
   dicGrid.jqGrid 'navGrid', '#dictPager', {add: false, edit: false, search: false}, {}, {}, deleteOptions
 
   ($('#batchDelete').button {}).click ->alert "Useless"
   ($('#generateDict').button {}).click ->
-#    Test
+  #    Test
     dicts = dicGrid.getGridParam('selarrrow')
     if !dicts || dicts.length == 0
       $.msgBox c18n.selrow, null, {title: c18n.warning}
@@ -121,11 +114,10 @@ define (require, util, dialogs, i18n)->
 
     filename = "#{$('#appDispAppName').text()}_#{$('#selAppVersion option:selected').text()}_#{new Date().format 'yyyyMMdd_hhmmss'}.zip"
 
-    $.blockUI css:{backgroundColor:'#fff'},overlayCSS:{opacity:0.2}
-    $.post '/app/generate-dict',{dicts:dicts.join(','), filename:filename},(json)->
-      $.unblockUI();
-
-      if(json.status !=0)
+    $.blockUI css: {backgroundColor: '#fff'}, overlayCSS: {opacity: 0.2}
+    $.post '/app/generate-dict', {dicts: dicts.join(','), filename: filename}, (json)->
+      $.unblockUI()
+      if(json.status != 0)
         $.msgBox json.message, null, {title: c18n.error}
         return
 

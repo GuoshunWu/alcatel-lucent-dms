@@ -50,7 +50,7 @@
                                 <td/>
                             </tr>
                         </table>
-                        <div id="taskPager"/>
+                        <div id="transPager"/>
                    </td>
                 </tr>
             </table>

@@ -73,7 +73,17 @@ Date:: format = (format)->
     format = format.replace(RegExp.$1, if RegExp.$1.length == 1 then v else "00#{v}".substr("#{v}".length)) if new RegExp("(#{k})").test(format)
   format
 
-console.log new Date().format('yyyy-MM-dd')
+#console.log new Date().format('yyyy-MM-dd')
+
+handlers =
+  'Download': (param)->alert 'download'
+  'History…': (param)->alert 'History…'
+  'End': (param)->alert 'End'
+  'X': (param)->alert 'X'
+action=[]
+for k,v of handlers
+  action.push k
+console.log action
 
 
 

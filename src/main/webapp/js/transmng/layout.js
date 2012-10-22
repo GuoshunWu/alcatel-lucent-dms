@@ -2,7 +2,8 @@
 (function() {
 
   define(['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng', 'transmng/trans_grid', 'transmng/transdetail_grid'], function($, require, blockui, msgbox, c18n, i18n, grid, detailgrid) {
-    var createButtons, createDialogs, createSelects, dialogs, generateLanguageTable, ids, initPage, pageLayout;
+    var createButtons, createDialogs, createSelects, dialogs, ids, initPage, pageLayout, util;
+    util = require('util');
     ids = {
       languageFilterTableId: 'languageFilterTable',
       languageFilterDialogId: 'languageFilterDialog',
@@ -21,34 +22,6 @@
       return $(this).removeClass("ui-state-hover");
     });
     dialogs = null;
-    generateLanguageTable = function(languages, tableId, colNum) {
-      var checkedAll, innerColTable, languageCells, languageFilterTable, outerTableFirstRow, rowCount;
-      if (!tableId) {
-        tableId = ids.languageFilterTableId;
-      }
-      if (!colNum) {
-        colNum = 5;
-      }
-      rowCount = Math.ceil(languages.length / colNum);
-      languageFilterTable = $("<table id='" + tableId + "' align='center' border='0'><tr valign='top' /></table>");
-      outerTableFirstRow = $("tr:eq(0)", languageFilterTable);
-      languageCells = $(languages).map(function() {
-        return $("<td><input type='checkbox' checked value=\"" + this.name + "\" name='languages' id=" + this.id + " /><label for=" + this.id + ">" + this.name + "</label></td>").css('width', '180px');
-      });
-      innerColTable = null;
-      languageCells.each(function(index) {
-        if (0 === index % rowCount) {
-          innerColTable = $("<table border='0'/>");
-          outerTableFirstRow.append($("<td/>").append(innerColTable));
-        }
-        return innerColTable.append($("<tr/>").append(this));
-      });
-      checkedAll = $("<input type='checkbox'id='all_" + tableId + "' checked><label for='all_" + tableId + "'>All</label>").change(function() {
-        return $(":checkbox[name='languages']", languageFilterTable).attr('checked', this.checked);
-      });
-      languageFilterTable.append($('<tr/>').append($("<td colspan='" + colNum + "'/>").append($("<hr width='100%'>"))));
-      return languageFilterTable.append($('<tr/>').append($("<td colspan='" + colNum + "'></td>").append(checkedAll)));
-    };
     createDialogs = function() {
       var languageFilterDialog, taskDialog, transDetailDialog;
       languageFilterDialog = $("<div title='" + i18n.select.languagefilter.title + "' id='" + ids.languageFilterDialogId + "'>").dialog({
@@ -63,7 +36,7 @@
         create: function() {
           var _this = this;
           return $.getJSON('rest/languages?prop=id,name', {}, function(languages) {
-            return $(_this).append(generateLanguageTable(languages));
+            return $(_this).append(util.generateLanguageTable(languages));
           });
         },
         buttons: [
@@ -109,7 +82,7 @@
           postData[tableType] = info.rowIds.join(',');
           return $.getJSON('rest/languages', postData, function(languages) {
             if (languages.length > 0) {
-              return $(_this).append(generateLanguageTable(languages, langFilterTableId));
+              return $(_this).append(util.generateLanguageTable(languages, langFilterTableId));
             }
           });
         },
@@ -118,7 +91,7 @@
             text: c18n.create,
             click: function() {
               var languages;
-              languages = ($(":checkbox[name='languages']", $(this)).map(function() {
+              languages = ($(":checkbox[name='languages']", this).map(function() {
                 if (this.checked) {
                   return {
                     id: this.id,

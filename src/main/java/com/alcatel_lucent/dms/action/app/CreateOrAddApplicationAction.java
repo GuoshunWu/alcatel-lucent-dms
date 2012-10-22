@@ -20,10 +20,10 @@ import com.alcatel_lucent.dms.service.ProductService;
  * @author allany
  */
 @ParentPackage("json-default")
-@Result(type = "json", params = {"noCache", "true", "ignoreHierarchy", "false", "includeProperties", "appBaseId,message,status"})
+@Result(type = "json", params = {"noCache", "true", "ignoreHierarchy", "false", "includeProperties", "appId,appBaseId,message,status"})
 
 public class CreateOrAddApplicationAction extends JSONAction {
-
+// todo: need to be refined.
     public void setDaoService(DaoService daoService) {
         this.daoService = daoService;
     }
@@ -110,7 +110,6 @@ public class CreateOrAddApplicationAction extends JSONAction {
         } else {
             app = (Application) daoService.retrieve(Application.class, appId);
         }
-        appBaseId = app.getId();
 
         appId=productService.addApplicationToProduct(productId,app.getId());
         if (null == appId) {
@@ -118,6 +117,7 @@ public class CreateOrAddApplicationAction extends JSONAction {
             setMessage(appBaseName + " already have a version in "+product.getBase().getName() + " version " + product.getVersion());
             return SUCCESS;
         }
+
 
         setStatus(0);
         setMessage("Add new version " + app.getVersion() + " to " + product.getBase().getName() + " version " + product.getVersion() + " success.");

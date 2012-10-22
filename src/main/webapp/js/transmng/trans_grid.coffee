@@ -46,7 +46,6 @@ define ['jqgrid','util', 'require', 'jqmsgbox','transmng/grid.colmodel','blockui
   rownumbers: true, loadonce: false # for reload the colModel
   pager: '#transPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
   sortname: 'base.name', sortorder: 'asc', viewrecords: true, gridview: true, multiselect: true
-  caption: ''
   colNames: grid.dictionary.colNames, colModel: grid.dictionary.colModel
   groupHeaders: []
   afterCreate: (grid)->
@@ -54,7 +53,7 @@ define ['jqgrid','util', 'require', 'jqmsgbox','transmng/grid.colmodel','blockui
     grid.filterToolbar {stringResult: true, searchOnEnter: false} if getTableType() == 'dict'
 
     grid.navGrid '#transPager', {edit: false, add: false, del: false, search: false, view: false}
-    grid.navButtonAdd "#taskPager", {caption: "Clear", title: "Clear Search", buttonicon: 'ui-icon-refresh', position: 'first', onClickButton: ()->grid[0].clearToolbar()}
+    grid.navButtonAdd "#transPager", {caption: "Clear", title: "Clear Search", buttonicon: 'ui-icon-refresh', position: 'first', onClickButton: ()->grid[0].clearToolbar()}
     grid.setFrozenColumns()
   }
   transGrid.getGridParam('afterCreate') transGrid
