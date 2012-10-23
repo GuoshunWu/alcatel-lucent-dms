@@ -41,4 +41,5 @@ define (require)->
   #export the method for other module use
   showProductPanel: ->showCenterPanel ids.panel.product
   showApplicationPanel:->showCenterPanel ids.panel.application
+  showWelcomePanel:->showCenterPanel ids.panel.welcome
 

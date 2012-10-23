@@ -140,8 +140,7 @@ define (require, util, dialogs, i18n)->
       jsonfromServer = eval "(#{response.responseText})"
       [jsonfromServer.status == 0 , jsonfromServer.message, -1]
     }
-  appChanged: (app)->
-    url = "rest/dict?app=#{app.id}&format=grid&prop=languageReferenceCode,base.name,version,base.format,base.encoding,labelNum"
+  appChanged: (param)->
+    url = "rest/dict?app=#{param.app.id}&format=grid&prop=languageReferenceCode,base.name,version,base.format,base.encoding,labelNum"
     dicGrid.setGridParam({url: url, datatype: "json"}).trigger("reloadGrid")
-    appBase = require('appmng/apptree').getSelected()
-    dicGrid.setCaption "Dictionary for Application #{appBase.text} version #{app.version}"
+    dicGrid.setCaption "Dictionary for Application #{param.base.text} version #{param.app.version}"

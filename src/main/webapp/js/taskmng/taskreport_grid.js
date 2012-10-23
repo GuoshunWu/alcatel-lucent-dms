@@ -91,6 +91,7 @@
       colNames: colNames,
       colModel: colModel
     });
+    console.log(transReportGrid.getGridParam('colModel'));
     transReportGrid.setGroupHeaders({
       useColSpanStyle: true,
       groupHeaders: groupHeaders
@@ -102,7 +103,7 @@
       search: false,
       view: false
     });
-    return transReportGrid.jqGrid('setFrozenColumns');
+    return transReportGrid.setFrozenColumns();
   });
 
 }).call(this);

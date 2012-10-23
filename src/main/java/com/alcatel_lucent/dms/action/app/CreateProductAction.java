@@ -56,8 +56,6 @@ public class CreateProductAction extends JSONAction {
         }
         id=pb.getId();
         setStatus(0);
-        //know how the locale is.
-        System.out.println(getLocale());
         setMessage("Create product "+name+" success!");
         return SUCCESS;
     }

@@ -34,10 +34,11 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
   colNames: colNames, colModel: colModel
   }
 
+  console.log transReportGrid.getGridParam('colModel')
 
   transReportGrid.setGroupHeaders {useColSpanStyle: true, groupHeaders: groupHeaders}
   transReportGrid.navGrid '#reportPager', {edit: false, add: false, del: false, search: false, view: false}
-  transReportGrid.jqGrid 'setFrozenColumns'
+  transReportGrid.setFrozenColumns()
 
 
 

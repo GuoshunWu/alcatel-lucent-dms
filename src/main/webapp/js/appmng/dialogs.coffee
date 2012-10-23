@@ -23,25 +23,26 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   product_duplication: '#dupVersion'
   }
 
-  # Create new product dialog
-  newProduct = $("##{ids.dialog.new_product}").dialog {
-  autoOpen: false, height: 200, width: 400, modal: true,
-  buttons: [
-    {text: c18n.ok, click: ->
-    # TODO: validate the product name...
-      $.post 'app/create-product', {name: $(ids.productName).val()}, (json)->
-        if (json.status != 0)
-          $.msgBox json.message, null, {title: c18n.error, width: 300, height: 'auto'}
-          return false
-        appptree.addNewProductBase {name: $(ids.productName).val(), id: json.id}
-      $(@).dialog "close"
-    }
-    {text: c18n.cancel, click: -> $(@).dialog "close"}
-  ]
-  }
+  # Create new product dialog, new implement in apptree.coffee line 84
+#  newProduct = $("##{ids.dialog.new_product}").dialog {
+#  autoOpen: false, height: 200, width: 400, modal: true,
+#  buttons: [
+#    {text: c18n.ok, click: ->
+#    # TODO: validate the product name...
+#      $.post 'app/create-product', {name: $(ids.productName).val()}, (json)->
+#        if (json.status != 0)
+#          $.msgBox json.message, null, {title: c18n.error, width: 300, height: 'auto'}
+#          return false
+#        apptree.addNewProductBase {name: $(ids.productName).val(), id: json.id}
+#      $(@).dialog "close"
+#    }
+#    {text: c18n.cancel, click: -> $(@).dialog "close"}
+#  ]
+#  }
   # create new product button below the tree
-  $("##{ids.button.new_product}").button().click (e) =>
-    newProduct.dialog("open")
+#  $("##{ids.button.new_product}").button().click (e) =>
+#    newProduct.dialog("open")
+
   #  Create new product release dialog
   newProductRelease = $("##{ids.dialog.new_product_release}").dialog {
   autoOpen: false

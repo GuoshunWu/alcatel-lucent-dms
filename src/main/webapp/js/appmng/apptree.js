@@ -2,20 +2,96 @@
 (function() {
 
   define(function(require) {
-    var $, URL, apppnl, ids, layout, productpnl;
+    var $, URL, appTree, apppnl, c18n, getNodeInfo, ids, layout, nodeCtxMenu, productpnl;
     $ = require('jqtree');
     layout = require('appmng/layout');
     productpnl = require('appmng/product_panel');
     apppnl = require('appmng/application_panel');
+    require('jqmsgbox');
+    c18n = require('i18n!nls/common');
     ids = {
       navigateTree: 'appTree'
     };
     URL = {
-      navigateTree: 'rest/products?nocache=' + new Date().getTime()
+      navigateTree: '/rest/products?format=tree&nocache=' + new Date().getTime(),
+      product: {
+        create: '/app/create-product',
+        del: '/app/remove-product-base'
+      },
+      app: {
+        create: '',
+        del: '/app/remove-application-base'
+      }
     };
+    appTree = null;
+    getNodeInfo = function(node) {
+      var info, parent, selectedNode;
+      if (!appTree) {
+        console.log("Error, appTree is null.");
+        return null;
+      }
+      selectedNode = node ? node : appTree.get_selected();
+      info = {
+        id: selectedNode.attr('id'),
+        text: appTree.get_text(selectedNode),
+        type: selectedNode.attr('type')
+      };
+      parent = appTree._get_parent(selectedNode);
+      if (parent === -1) {
+        return info;
+      }
+      info.parent = getNodeInfo(parent);
+      return info;
+    };
+    nodeCtxMenu = {
+      products: {
+        createproduct: {
+          label: 'New product',
+          action: function(node) {
+            return appTree != null ? appTree.create(node, 'last', {
+              data: 'NewProduct',
+              attr: {
+                type: 'product',
+                id: null
+              }
+            }, (function() {}), false) : void 0;
+          },
+          separator_before: true
+        }
+      },
+      product: {
+        createapp: {
+          label: 'New application',
+          action: function(node) {
+            return appTree != null ? appTree.create(node, 'last', {
+              data: 'NewApp',
+              attr: {
+                type: 'app',
+                id: null
+              }
+            }, (function() {}), false) : void 0;
+          }
+        },
+        del: {
+          label: 'Delete product',
+          action: function(node) {
+            return appTree != null ? appTree.remove(node) : void 0;
+          },
+          separator_before: true
+        }
+      },
+      app: {
+        del: {
+          label: 'Delete application',
+          action: function(node) {
+            return appTree != null ? appTree.remove(node) : void 0;
+          }
+        }
+      }
+    };
+    $.jstree._themes = "css/jstree/themes/";
     $.getJSON(URL.navigateTree, {}, function(treeInfo) {
-      $.jstree._themes = "css/jstree/themes/";
-      return ($("#" + ids.navigateTree).jstree({
+      $("#" + ids.navigateTree).jstree({
         json_data: {
           data: treeInfo
         },
@@ -24,47 +100,79 @@
         },
         themes: {},
         core: {},
-        plugins: ["themes", "json_data", "ui", "core"]
-      })).bind("select_node.jstree", function(event, node) {
-        var appTree, nodeInfo, parent;
-        appTree = $.jstree._reference("#" + ids.navigateTree);
-        parent = appTree._get_parent(node.rslt.obj);
-        nodeInfo = {
-          text: appTree.get_text(node.rslt.obj),
-          parent: parent,
-          id: node.rslt.obj.attr("id")
-        };
-        if (-1 === nodeInfo.parent) {
-          productpnl.refresh(nodeInfo);
-          return layout.showProductPanel();
-        } else {
-          nodeInfo.parent = {
-            id: parent.attr('id'),
-            text: appTree.get_text(parent)
-          };
-          apppnl.refresh(nodeInfo);
-          return layout.showApplicationPanel();
-        }
-      });
-    });
-    $('#loading-container').remove();
-    return {
-      getSelected: function() {
-        var appTree, parent, selectedNode;
-        appTree = $.jstree._reference("#" + ids.navigateTree);
-        selectedNode = appTree.get_selected();
-        parent = appTree._get_parent(selectedNode);
-        return {
-          id: selectedNode.attr("id"),
-          text: appTree.get_text(selectedNode),
-          parent: -1 === parent ? parent : {
-            id: parent.attr('id'),
-            text: appTree.get_text(parent)
+        contextmenu: {
+          items: function(node) {
+            return nodeCtxMenu[node.attr('type')];
           }
-        };
-      },
+        },
+        plugins: ["themes", "json_data", "ui", "core", "crrm", "contextmenu"]
+      }).bind("select_node.jstree", function(event, data) {
+        var node, nodeInfo;
+        appTree = data.inst;
+        node = data.rslt.obj;
+        nodeInfo = getNodeInfo(node);
+        switch (node.attr('type')) {
+          case 'products':
+            return layout.showWelcomePanel();
+          case 'product':
+            productpnl.refresh(nodeInfo);
+            return layout.showProductPanel();
+          case 'app':
+            apppnl.refresh(nodeInfo);
+            return layout.showApplicationPanel();
+        }
+      }).bind('create.jstree', function(event, data) {
+        var name, node, validatename;
+        appTree = data.inst;
+        node = data.rslt.obj;
+        name = data.rslt.name;
+        validatename = false;
+        if (validatename) {
+          console.log('name is blank, rollback.');
+          $.jstree.rollback(data.rlbk);
+          return;
+        }
+        return $.post(URL[node.attr('type')].create, {
+          name: name
+        }, function(json) {
+          if (json.status !== 0) {
+            $.msgBox(json.message, null, {
+              title: c18n.error,
+              width: 300,
+              height: 'auto'
+            });
+            $.jstree.rollback(data.rlbk);
+            return false;
+          }
+          return data.rslt.obj.attr({
+            id: json.id
+          });
+        });
+      }).bind('remove.jstree', function(event, data) {
+        var node;
+        appTree = data.inst;
+        node = data.rslt.obj;
+        return $.post(URL[node.attr('type')].del, {
+          id: node.attr('id')
+        }, function(json) {
+          if (json.status !== 0) {
+            $.msgBox(json.message, null, {
+              title: c18n.error,
+              width: 300,
+              height: 'auto'
+            });
+            $.jstree.rollback(data.rlbk);
+            return false;
+          }
+          return console.log('remove node ' + appTree.get_text(node));
+        });
+      });
+      appTree = $.jstree._reference("#" + ids.navigateTree);
+      return $('#loading-container').remove();
+    });
+    return {
+      getNodeInfo: getNodeInfo,
       delApplictionBaseFromProductBase: function(appBaseId) {
-        var appTree;
         appTree = $.jstree._reference("#" + ids.navigateTree);
         return (appTree._get_children(appTree.get_selected())).each(function(index, app) {
           if (parseInt(app.id) === appBaseId) {
@@ -81,7 +189,7 @@
         });
       },
       addNewApplicationBase: function(params) {
-        var appTree, selectedNode;
+        var selectedNode;
         appTree = $.jstree._reference("#" + ids.navigateTree);
         selectedNode = appTree.get_selected();
         return $("#appTree").jstree("create_node", selectedNode, "last", {

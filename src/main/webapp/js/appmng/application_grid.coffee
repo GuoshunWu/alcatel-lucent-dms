@@ -1,5 +1,4 @@
-define ['jqgrid','i18n!nls/appmng', 'appmng/dialogs','require'], ($, i18n,dialogs,require)->
-
+define ['jqgrid', 'i18n!nls/appmng', 'appmng/dialogs', 'require'], ($, i18n, dialogs, require)->
   URL = {
   # get application in product by product id
   get_application_by_product_id: 'rest/applications'
@@ -35,7 +34,7 @@ define ['jqgrid','i18n!nls/appmng', 'appmng/dialogs','require'], ($, i18n,dialog
         $("##{iRow}_version", localIds.app_grid).append $(json).map ()->opt = new Option(@version, @id);opt.selected = @version == val; opt
       }
   beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
-    prodpnl= require 'appmng/product_panel'
+    prodpnl = require 'appmng/product_panel'
     {productId: prodpnl.getSelectedProduct().id, newAppId: value}
 
   afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
@@ -51,7 +50,7 @@ define ['jqgrid','i18n!nls/appmng', 'appmng/dialogs','require'], ($, i18n,dialog
     .appendTo $("tbody", form) if permanent.length == 0
     permanent?.removeAttr 'checked'
   onclickSubmit: (params, posdata)->
-    prodpnl= require 'appmng/product_panel'
+    prodpnl = require 'appmng/product_panel'
     product = prodpnl.getSelectedProduct()
     {productId: product.id, permanent: Boolean($('#permanentDeleteSignId').attr("checked"))}
   afterSubmit: (response, postdata)->
@@ -67,10 +66,9 @@ define ['jqgrid','i18n!nls/appmng', 'appmng/dialogs','require'], ($, i18n,dialog
     dialogs.newOrAddApplication.dialog "open"
   }
   id: localIds
-  productChanged: (product)->
-    apptree = require 'appmng/apptree'
+  productChanged: (param)->
+    appGrid.setCaption "Applications for Product #{param.base.text} version #{param.product.version}"
+    appGrid.setGridParam(url: URL.get_application_by_product_id, postData: {prod: param.product.id, format: 'grid', prop: 'id,name,version,dictNum'}
+    ).trigger("reloadGrid")
 
-    url = "#{URL.get_application_by_product_id}?prod=#{product.id}&format=grid&prop=id,name,version,dictNum"
-    appGrid.setGridParam({url: url, datatype: "json"}).trigger("reloadGrid")
-    productBase =apptree.getSelected()
-    appGrid.setCaption "Applications for Product #{productBase.text} version #{product.version}"
+

@@ -48,6 +48,9 @@
       },
       showApplicationPanel: function() {
         return showCenterPanel(ids.panel.application);
+      },
+      showWelcomePanel: function() {
+        return showCenterPanel(ids.panel.welcome);
       }
     };
   });
