@@ -22,9 +22,9 @@ import java.util.Date;
  *
  * @author Guoshun Wu
  */
+@SuppressWarnings("serial")
 @ParentPackage("json-default")
 @Result(type="json", params={"noCache","true","ignoreHierarchy","false","includeProperties","fileLoc,message,status"})
-
 public class GenerateDictAction extends JSONAction {
 
     private String filename;
@@ -73,16 +73,16 @@ public class GenerateDictAction extends JSONAction {
     public String performAction() throws Exception {
         String downTmpPath = tmpDownload + File.separator + "USER_" + dFmt.format(new Date());
         dictionaryService.generateDictFiles(downTmpPath, toIdList(dicts));
-
+/*
         File[] tobeCompressed = new File(downTmpPath).listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
                 return pathname.isDirectory();
             }
         });
-
-        File zipFile = new File(downTmpPath, filename);
-        Util.createZip(tobeCompressed[0], zipFile);
+*/
+        File zipFile = new File(tmpDownload, filename);
+        Util.createZip(new File(downTmpPath), zipFile);
 
         setFileLoc(zipFile.getAbsolutePath());
         setStatus(0);
