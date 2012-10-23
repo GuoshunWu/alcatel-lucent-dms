@@ -1,5 +1,6 @@
 package com.alcatel_lucent.dms.service;
 
+import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.model.Product;
 
 /**
@@ -44,4 +45,20 @@ public interface ProductService {
      * @return ApplicationBase id of this application that was deleted or null if base ApplicationBase was not be deleted.
      */
     Long deleteApplication(Long appId);
+    
+    /**
+     * Delete an application base.
+     * The application base must be empty which contains no versions or dictionaries
+     * @param appBaseId
+     * @throws BusinessException
+     */
+    void deleteApplicationBase(Long appBaseId) throws BusinessException;
+    
+    /**
+     * Delete a product base.
+     * The product base must be empty which contains no versions or applications
+     * @param prodBaseId
+     * @throws BusinessException
+     */
+    void deleteProductBase(Long prodBaseId) throws BusinessException;
 }

@@ -567,11 +567,13 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     	dao.delete(Dictionary.class, id);
     	
     	// delete dictBase if it doesn't contain other dictionary
+/*
     	if (dictBase.getDictionaries() == null || dictBase.getDictionaries().size() == 0 ||
     			dictBase.getDictionaries().size() == 1 && dictBase.getDictionaries().iterator().next().getId().equals(id)) {
     		dao.delete(dictBase);
     		return dictBase.getId();
     	}
+*/
     	return null;
     }
     

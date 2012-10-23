@@ -17,6 +17,7 @@ import net.sf.json.util.PropertyFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.model.Application;
 import com.alcatel_lucent.dms.model.ApplicationBase;
 import com.alcatel_lucent.dms.model.Product;
@@ -93,7 +94,7 @@ public class ProductServiceImpl implements ProductService {
         addApplicationToProduct(productId,newAppId);
     }
 
-    public Long  deleteApplication(Long appId) {
+    public Long deleteApplication(Long appId) {
     	// remove links to products
     	String hql = "select distinct p from Product p join p.applications as a where a.id=:id";
     	Map param = new HashMap();
@@ -112,12 +113,32 @@ public class ProductServiceImpl implements ProductService {
     	dao.delete(app);
     	
     	// delete appBase if it doesn't contain other application
+/*
     	if (appBase.getApplications() == null || appBase.getApplications().size() == 0 ||
     			appBase.getApplications().size() == 1 && appBase.getApplications().iterator().next().getId().equals(appId)) {
     		dao.delete(appBase);
             return appBase.getId();
     	}
+*/
         return null;
+    }
+    
+    public void deleteApplicationBase(Long appBaseId) throws BusinessException {
+    	ApplicationBase appBase = (ApplicationBase) dao.retrieve(ApplicationBase.class, appBaseId);
+    	if (appBase.getApplications() != null && appBase.getApplications().size() > 0 ||
+    			appBase.getDictionaryBases() != null && appBase.getDictionaryBases().size() > 0) {
+    		throw new BusinessException(BusinessException.APPLICATION_BASE_NOT_EMPTY);
+    	}
+    	dao.delete(appBase);
+    }
+    
+    public void deleteProductBase(Long prodBaseId) throws BusinessException {
+    	ProductBase prodBase = (ProductBase) dao.retrieve(ProductBase.class, prodBaseId);
+    	if (prodBase.getProducts() != null && prodBase.getProducts().size() > 0 ||
+    			prodBase.getApplicationBases() != null && prodBase.getApplicationBases().size() > 0) {
+    		throw new BusinessException(BusinessException.PRODUCT_BASE_NOT_EMPTY);
+    	}
+    	dao.delete(prodBase);
     }
 
 }
