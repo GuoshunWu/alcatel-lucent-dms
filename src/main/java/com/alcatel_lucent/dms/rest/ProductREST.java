@@ -7,7 +7,7 @@ import javax.ws.rs.Path;
 
 import org.springframework.stereotype.Component;
 
-import com.alcatel_lucent.dms.model.Product;
+import com.alcatel_lucent.dms.model.ProductBase;
 
 @Path("products")
 @Component("productREST")
@@ -15,7 +15,7 @@ public class ProductREST extends BaseREST {
 
 	@Override
 	Class getEntityClass() {
-		return Product.class;
+		return ProductBase.class;
 	}
 	
 	@Override
@@ -31,7 +31,7 @@ public class ProductREST extends BaseREST {
     		sord = "ASC";
     	}
         hql += " order by " + sidx + " " + sord;
-        Collection<Product> products = retrieve(hql, null, countHql, null, requestMap);
+        Collection<ProductBase> products = retrieve(hql, null, countHql, null, requestMap);
         
         String format = requestMap.get("format");
         if (format != null && format.equals("tree")) { // construct tree parameters
