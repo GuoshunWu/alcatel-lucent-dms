@@ -73,19 +73,8 @@ public class ApplicationREST extends BaseREST {
     	}
         hSQL += " order by app." + sidx + " " + sord;
 
-    	String rows = requestMap.get("rows");
-    	String page = requestMap.get("page");
-        Collection<Application> resultSet;
-    	if (rows == null) {	// not paged
-    		resultSet = dao.retrieve(hSQL, params);
-    	} else {	// paged
-    		int first = (page == null ? 0 : (Integer.parseInt(page) - 1) * Integer.parseInt(rows));
-    		resultSet = dao.retrieve(hSQL, params, first, Integer.parseInt(rows));
-    		// get total records
-            String countHSQL = "select p.applications.size from Product p where p.id=:id";
-            Integer records = (Integer) dao.retrieveOne(countHSQL, params);
-            requestMap.put("records", "" + records);
-    	}
+    	String countHSQL = "select p.applications.size from Product p where p.id=:id";
+        Collection<Application> resultSet = retrieve(hSQL, params, countHSQL, params, requestMap);
         
 		// additional properties
     	String prop = requestMap.get("prop");

@@ -134,7 +134,7 @@ public abstract class BaseREST {
     		// count total records
     		if (countHql != null) {
 				Number records = (Number) dao.retrieveOne(countHql, countParam);
-				requestMap.put("records", "" + records);
+				requestMap.put("records", "" + (records == null ? "0" : records));
     		}
     	}
     	return result;
