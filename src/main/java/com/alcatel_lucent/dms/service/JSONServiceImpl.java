@@ -155,19 +155,20 @@ public class JSONServiceImpl implements JSONService {
 		try {
 			Object id = PropertyUtils.getProperty(root, idProp[0]);
 			Object data = PropertyUtils.getProperty(root, dataProp[0]);
-			Object children = PropertyUtils.getProperty(root, childrenProp[0]);
 			JSONObject jsonAttr = new JSONObject();
 			jsonAttr.put("id", id);
 			jsonAttr.put("type", types[0]);
 			result.put("attr", jsonAttr);
 			result.put("data", data);
-			if (idProp.length > 1 && types.length > 1 && dataProp.length > 1 && childrenProp.length > 1 && 
-					children != null && children instanceof Collection) {
-				JSONArray jsonChildren = new JSONArray();
-				for (Object obj : (Collection<?>) children) {
-					jsonChildren.add(toTreeJSON(obj, next(idProp), next(types), next(dataProp), next(childrenProp)));
+			if (idProp.length > 1 && types.length > 1 && dataProp.length > 1 && childrenProp.length > 0) {
+				Object children = PropertyUtils.getProperty(root, childrenProp[0]);
+				if (children != null && children instanceof Collection) {
+					JSONArray jsonChildren = new JSONArray();
+					for (Object obj : (Collection<?>) children) {
+						jsonChildren.add(toTreeJSON(obj, next(idProp), next(types), next(dataProp), next(childrenProp)));
+					}
+					result.put("children", jsonChildren);
 				}
-				result.put("children", jsonChildren);
 			}
 			return result;
 		} catch (Exception e) {
