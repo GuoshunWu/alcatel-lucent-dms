@@ -2,14 +2,14 @@ package com.alcatel_lucent.dms.rest;
 
 import java.util.Collection;
 
-import com.alcatel_lucent.dms.model.Product;
+import com.alcatel_lucent.dms.model.ProductBase;
 
 public class Products {
 	private Long id;
 	private String data;
-	private Collection<Product> products;
+	private Collection<ProductBase> products;
 	
-	public Products(Collection<Product> products) {
+	public Products(Collection<ProductBase> products) {
 		this.products = products;
 	}
 	
@@ -17,7 +17,7 @@ public class Products {
 		return -1l;
 	}
 	
-	public Collection<Product> getProducts() {
+	public Collection<ProductBase> getProducts() {
 		return products;
 	}
 	
