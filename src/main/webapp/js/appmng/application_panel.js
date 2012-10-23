@@ -2,7 +2,7 @@
 (function() {
 
   define(function(require) {
-    var $, c18n, dctFileUpload, grid, i18n;
+    var $, appInfo, c18n, dctFileUpload, grid, i18n;
     $ = require('jqueryui');
     require('appmng/langsetting_grid');
     require('appmng/stringsettings_grid');
@@ -11,11 +11,13 @@
     grid = require('appmng/dictionary_grid');
     i18n = require('i18n!nls/appmng');
     c18n = require('i18n!nls/appmng');
+    appInfo = {};
     $("#selAppVersion").change(function(e) {
-      return grid.appChanged({
+      appInfo.app = {
         version: $("option:selected", this).text(),
-        id: this.value
-      });
+        id: this.value ? this.value : -1
+      };
+      return grid.appChanged(appInfo);
     });
     ($("#progressbar").draggable({
       grid: [50, 20],
@@ -94,6 +96,10 @@
       refresh: function(info) {
         $('#appDispProductName').html(info.parent.text);
         $('#appDispAppName').html(info.text);
+        appInfo.base = {
+          text: info.text,
+          id: info.id
+        };
         return $.getJSON("rest/applications/apps/" + info.id, {}, function(json) {
           $("#selAppVersion").empty().append($(json).map(function() {
             return new Option(this.version, this.id);

@@ -138,16 +138,16 @@
     });
     return {
       id: localIds,
-      productChanged: function(product) {
-        var apptree, productBase, url;
-        apptree = require('appmng/apptree');
-        url = "" + URL.get_application_by_product_id + "?prod=" + product.id + "&format=grid&prop=id,name,version,dictNum";
-        appGrid.setGridParam({
-          url: url,
-          datatype: "json"
+      productChanged: function(param) {
+        appGrid.setCaption("Applications for Product " + param.base.text + " version " + param.product.version);
+        return appGrid.setGridParam({
+          url: URL.get_application_by_product_id,
+          postData: {
+            prod: param.product.id,
+            format: 'grid',
+            prop: 'id,name,version,dictNum'
+          }
         }).trigger("reloadGrid");
-        productBase = apptree.getSelected();
-        return appGrid.setCaption("Applications for Product " + productBase.text + " version " + product.version);
       }
     };
   });

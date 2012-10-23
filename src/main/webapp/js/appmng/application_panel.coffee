@@ -10,9 +10,11 @@ define (require)->
   i18n = require 'i18n!nls/appmng'
   c18n = require 'i18n!nls/appmng'
 
+  appInfo = {}
 
   $("#selAppVersion").change (e)->
-    grid.appChanged {version: $("option:selected", @).text(), id: @value}
+    appInfo.app={version: $("option:selected", @).text(), id:if @value then @value else -1}
+    grid.appChanged appInfo
 
   ($("#progressbar").draggable({grid: [50, 20], opacity: 0.35}).css({
   'z-index': 100, width: 600, textAlign: 'center'
@@ -46,19 +48,21 @@ define (require)->
   done: (e, data)->
     $.each data.files, (index, file) ->$('#uploadStatus').html "#{file.name} #{i18n.uploadfinished}"
     $("#progressbar").hide() if !$.browser.msie
-#    request handler
-    jsonFromServer=eval "(#{data.result})"
+    #    request handler
+    jsonFromServer = eval "(#{data.result})"
 
-    if(0!=jsonFromServer.status)
+    if(0 != jsonFromServer.status)
       $.msgBox jsonFromServer.message, null, {title: c18n.error}
       return
-    $('#dictListPreviewDialog').data 'param',{handler: jsonFromServer.filename}
+    $('#dictListPreviewDialog').data 'param', {handler: jsonFromServer.filename}
     $('#dictListPreviewDialog').dialog 'open'
   }
 
   refresh: (info)->
     $('#appDispProductName').html info.parent.text
     $('#appDispAppName').html info.text
+
+    appInfo.base={text:info.text, id:info.id}
 
     $.getJSON "rest/applications/apps/#{info.id}", {}, (json)->
       $("#selAppVersion").empty().append ($(json).map ()-> new Option @version, @id)

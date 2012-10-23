@@ -2,7 +2,7 @@
 (function() {
 
   define(['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsettings_grid', 'appmng/previewlangsetting_grid'], function(require, grid, sgrid, lgrid) {
-    var $, c18n, dictListPreview, dictPreviewLangSettings, dictPreviewStringSettings, i18n, ids, langSettings, newOrAddApplication, newProduct, newProductRelease, stringSettings,
+    var $, c18n, dictListPreview, dictPreviewLangSettings, dictPreviewStringSettings, i18n, ids, langSettings, newOrAddApplication, newProductRelease, stringSettings,
       _this = this;
     $ = require('jqueryui');
     c18n = require('i18n!nls/common');
@@ -22,44 +22,6 @@
       productName: '#productName',
       product_duplication: '#dupVersion'
     };
-    newProduct = $("#" + ids.dialog.new_product).dialog({
-      autoOpen: false,
-      height: 200,
-      width: 400,
-      modal: true,
-      buttons: [
-        {
-          text: c18n.ok,
-          click: function() {
-            $.post('app/create-product', {
-              name: $(ids.productName).val()
-            }, function(json) {
-              if (json.status !== 0) {
-                $.msgBox(json.message, null, {
-                  title: c18n.error,
-                  width: 300,
-                  height: 'auto'
-                });
-                return false;
-              }
-              return appptree.addNewProductBase({
-                name: $(ids.productName).val(),
-                id: json.id
-              });
-            });
-            return $(this).dialog("close");
-          }
-        }, {
-          text: c18n.cancel,
-          click: function() {
-            return $(this).dialog("close");
-          }
-        }
-      ]
-    });
-    $("#" + ids.button.new_product).button().click(function(e) {
-      return newProduct.dialog("open");
-    });
     newProductRelease = $("#" + ids.dialog.new_product_release).dialog({
       autoOpen: false,
       height: 200,

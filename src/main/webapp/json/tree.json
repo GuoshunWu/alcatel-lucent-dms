@@ -2,15 +2,26 @@
     {
         "children":[
             {
+                "children":[
+                    {
+                        "attr":{
+                            "id": 1,
+                            "type":"app"
+                        },
+                        "data":"test"
+                    }
+                ],
                 "attr":{
-                    "id":1
+                    "id":1,
+                    "type":"product"
                 },
-                "data":"testapp"
+                "data":"ISC"
             }
         ],
         "attr":{
-            "id":1
+            "id":-1,
+            "type":"products"
         },
-        "data":"ISC"
+        "data":"products"
     }
 ]

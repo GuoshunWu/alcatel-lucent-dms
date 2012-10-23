@@ -2,6 +2,7 @@
 <%@ page contentType="text/html;charset=utf-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
+
 <div id="translationReportDialog" title="<s:text name="taskmng.dialogs.transreport.title"/>">
     <table border="0" width="100%">
         <tr><td>&nbsp;</td></tr>

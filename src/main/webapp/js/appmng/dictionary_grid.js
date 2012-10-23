@@ -280,15 +280,14 @@
       });
     });
     return {
-      appChanged: function(app) {
-        var appBase, url;
-        url = "rest/dict?app=" + app.id + "&format=grid&prop=languageReferenceCode,base.name,version,base.format,base.encoding,labelNum";
+      appChanged: function(param) {
+        var url;
+        url = "rest/dict?app=" + param.app.id + "&format=grid&prop=languageReferenceCode,base.name,version,base.format,base.encoding,labelNum";
         dicGrid.setGridParam({
           url: url,
           datatype: "json"
         }).trigger("reloadGrid");
-        appBase = require('appmng/apptree').getSelected();
-        return dicGrid.setCaption("Dictionary for Application " + appBase.text + " version " + app.version);
+        return dicGrid.setCaption("Dictionary for Application " + param.base.text + " version " + param.app.version);
       }
     };
   });
