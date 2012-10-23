@@ -48,6 +48,8 @@ public class BusinessException extends RuntimeException {
 	static public final int DICTIONARY_NOT_IN_APP = 305;
 	static public final int DUPLICATE_LANG_CODE = 306;
 	static public final int DELIVERY_TIMEOUT = 307;
+	static public final int APPLICATION_BASE_NOT_EMPTY = 308;
+	static public final int PRODUCT_BASE_NOT_EMPTY = 309;
 	
 	static public final int APPLICATION_NOT_FOUND = 501;
 	static public final int DICTIONARY_NOT_FOUND = 502;
