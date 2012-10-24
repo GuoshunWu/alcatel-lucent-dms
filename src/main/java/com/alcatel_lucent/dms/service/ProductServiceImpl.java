@@ -1,18 +1,8 @@
 package com.alcatel_lucent.dms.service;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JsonConfig;
-import net.sf.json.util.PropertyFilter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,40 +27,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private DaoService dao;
-    
-    JsonConfig config = new JsonConfig();
-
-
-    public Product create() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public void delete(Long id) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-
-    public Product retrieve(Long id) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-
-    @GET
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public JSONArray retrieveAll() {
-
-        config.setJsonPropertyFilter(new PropertyFilter() {
-            List<String> excludesFields = Arrays.asList("products", "dictionaryBases", "productBase", "applications");
-
-            @Override
-            public boolean apply(Object source, String name, Object value) {
-                return excludesFields.contains(name);
-            }
-        });
-
-        Collection<ProductBase> pBases = (Collection<ProductBase>) dao.retrieve("from ProductBase", new String[]{"applicationBases"});
-        return JSONArray.fromObject(pBases,config);
-    }
     
     public void removeApplicationFromProduct(Long productId, Long appId) {
     	Product product = (Product) dao.retrieve(Product.class, productId);
@@ -140,5 +96,48 @@ public class ProductServiceImpl implements ProductService {
     	}
     	dao.delete(prodBase);
     }
+    
+    public Long createProductBase(String name) throws BusinessException {
+    	ProductBase pb = findProductBaseByName(name);
+    	if (pb != null) {
+    		throw new BusinessException(BusinessException.PRODUCT_BASE_ALREADY_EXISTS, name);
+    	} else {
+    		pb = new ProductBase();
+    		pb.setName(name);
+    		pb = (ProductBase) dao.create(pb);
+    		return pb.getId();
+    	}
+    }
+    
+    private ProductBase findProductBaseByName(String name) {
+		String hql = "from ProductBase where name=:name";
+		Map param = new HashMap();
+		param.put("name", name);
+		return (ProductBase) dao.retrieveOne(hql, param);
+	}
+
+	public Long createApplicationBase(Long productBaseId, String name) throws BusinessException {
+		ApplicationBase ab = findApplicationBaseByName(productBaseId, name);
+		if (ab != null) {
+			throw new BusinessException(BusinessException.APPLICATION_BASE_ALREADY_EXISTS, name);
+		} else {
+			ab = new ApplicationBase();
+			ab.setName(name);
+			ab.setProductBase((ProductBase) dao.retrieve(ProductBase.class, productBaseId));
+			ab = (ApplicationBase) dao.create(ab);
+			return ab.getId();
+		}
+		
+	}
+
+	private ApplicationBase findApplicationBaseByName(Long productBaseId,
+			String name) {
+		String hql = "from ApplicationBase where productBase.id=:pbId and name=:name";
+		Map param = new HashMap();
+		param.put("pbId", productBaseId);
+		param.put("name", name);
+		return (ApplicationBase) dao.retrieveOne(hql, param);
+	}
+
 
 }
