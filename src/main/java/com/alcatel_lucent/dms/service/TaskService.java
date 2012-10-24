@@ -18,9 +18,9 @@ public interface TaskService {
 	Task createTask(Long productId, String name, Collection<Long> dictIds, Collection<Long> languageIds);
 	
 	/**
-	 * Cancel a task.
+	 * Close a task, all "In progress" translation will be replaced by "Not translated"
 	 * @param taskId task id
 	 */
-	void cancelTask(Long taskId) throws BusinessException;
+	void closeTask(Long taskId) throws BusinessException;
 
 }

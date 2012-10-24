@@ -84,12 +84,12 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 	}
 
 	@Override
-	public void cancelTask(Long taskId) throws BusinessException {
+	public void closeTask(Long taskId) throws BusinessException {
 		Task task = (Task) dao.retrieve(Task.class, taskId);
-		if (task.getStatus() != Task.STATUS_OPEN) {
+		if (task.getStatus() != Task.STATUS_CLOSED) {
 			throw new BusinessException(BusinessException.INVALID_TASK_STATUS);
 		}
-		task.setStatus(Task.STATUS_CANCELED);
+		task.setStatus(Task.STATUS_CLOSED);
 		String hql = "select ct from Translation ct,Task t join t.details td " +
 				"where td.text=ct.text and td.language=ct.language " +
 				"and t.id=:taskId";
@@ -97,7 +97,9 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 		param.put("taskId", taskId);
 		Collection<Translation> transList = dao.retrieve(hql, param);
 		for (Translation trans : transList) {
-			trans.setStatus(Translation.STATUS_UNTRANSLATED);
+			if (trans.getStatus() == Translation.STATUS_IN_PROGRESS) {
+				trans.setStatus(Translation.STATUS_UNTRANSLATED);
+			}
 		}
 	}
 }
