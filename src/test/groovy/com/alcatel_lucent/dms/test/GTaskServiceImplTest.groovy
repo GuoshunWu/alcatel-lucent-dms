@@ -42,7 +42,7 @@ class GTaskServiceImplTest {
 	
 	@Test
 	void testCancelTask() {
-		taskService.cancelTask(3);
+		taskService.closeTask(3);
 	}
 
 }

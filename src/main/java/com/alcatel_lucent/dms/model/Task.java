@@ -8,7 +8,6 @@ public class Task extends BaseEntity {
 	
 	public static final int STATUS_OPEN = 0;
 	public static final int STATUS_CLOSED = 1;
-	public static final int STATUS_CANCELED = 2;
 	
 	private String name;
 	private Product product;
