@@ -1,9 +1,12 @@
 package com.alcatel_lucent.dms.action.app;
 
+import org.apache.struts2.convention.annotation.Result;
+
 import com.alcatel_lucent.dms.action.JSONAction;
 import com.alcatel_lucent.dms.service.ProductService;
 
 @SuppressWarnings("serial")
+@Result(type="json", params={"noCache","true","ignoreHierarchy","false","includeProperties","status,message,id"})
 public class CreateApplicationBaseAction extends JSONAction {
 	
 	private ProductService productService;
