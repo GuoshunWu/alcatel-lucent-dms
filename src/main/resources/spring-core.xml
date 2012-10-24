@@ -106,6 +106,8 @@
                 <value>com/alcatel_lucent/dms/model/AlcatelLanguageCode.hbm.xml</value>
                 <value>com/alcatel_lucent/dms/model/ISOLanguageCode.hbm.xml</value>
                 <value>com/alcatel_lucent/dms/model/Translation.hbm.xml</value>
+                <value>com/alcatel_lucent/dms/model/Task.hbm.xml</value>
+                <value>com/alcatel_lucent/dms/model/TaskDetail.hbm.xml</value>
             </list>
         </property>
     </bean>

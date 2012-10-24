@@ -1,0 +1,41 @@
+package com.alcatel_lucent.dms.model;
+
+@SuppressWarnings("serial")
+public class TaskDetail extends BaseEntity {
+	private Task task;
+	private Text text;
+	private Language language;
+	private String origTranslation;
+	private String newTranslation;
+	
+	public Task getTask() {
+		return task;
+	}
+	public void setTask(Task task) {
+		this.task = task;
+	}
+	public Text getText() {
+		return text;
+	}
+	public void setText(Text text) {
+		this.text = text;
+	}
+	public Language getLanguage() {
+		return language;
+	}
+	public void setLanguage(Language language) {
+		this.language = language;
+	}
+	public String getOrigTranslation() {
+		return origTranslation;
+	}
+	public void setOrigTranslation(String origTranslation) {
+		this.origTranslation = origTranslation;
+	}
+	public String getNewTranslation() {
+		return newTranslation;
+	}
+	public void setNewTranslation(String newTranslation) {
+		this.newTranslation = newTranslation;
+	}
+}
