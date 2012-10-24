@@ -6,20 +6,18 @@ import org.apache.struts2.convention.annotation.Result;
 import com.alcatel_lucent.dms.action.JSONAction;
 import com.alcatel_lucent.dms.model.ProductBase;
 import com.alcatel_lucent.dms.service.DaoService;
+import com.alcatel_lucent.dms.service.ProductService;
 /**
  * Action of creating a product
  *
  * @author allany
  */
+@SuppressWarnings("serial")
 @ParentPackage("json-default")
 @Result(type="json", params={"noCache","true","ignoreHierarchy","false","includeProperties","id,message,status"})
 public class CreateProductAction extends JSONAction {
 
-    public void setDaoService(DaoService daoService) {
-        this.daoService = daoService;
-    }
-
-    private DaoService daoService;
+    private ProductService productService;
 
     public String getName() {
         return name;
@@ -45,20 +43,18 @@ public class CreateProductAction extends JSONAction {
 
     protected String performAction() throws Exception {
         log.info("Create product: " + name);
-        ProductBase pb=new ProductBase();
-        pb.setName(name);
-        pb= (ProductBase) daoService.create(pb);
-
-        if(null==pb){
-            setStatus(-1);
-            setMessage("Create product "+name+" fail.");
-            return SUCCESS;
-        }
-        id=pb.getId();
-        setStatus(0);
-        setMessage("Create product "+name+" success!");
+        id = productService.createProductBase(name);
+        setMessage(getText("message.success"));
         return SUCCESS;
     }
+
+	public ProductService getProductService() {
+		return productService;
+	}
+
+	public void setProductService(ProductService productService) {
+		this.productService = productService;
+	}
 
 
 

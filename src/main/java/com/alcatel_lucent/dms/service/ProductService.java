@@ -1,19 +1,32 @@
 package com.alcatel_lucent.dms.service;
 
 import com.alcatel_lucent.dms.BusinessException;
-import com.alcatel_lucent.dms.model.Product;
 
 /**
  * Created by IntelliJ IDEA.
  * User: guoshunw
  * Date: 12-8-23
- * Time: 上午11:26
+ * Time: 11:26AM
  * To change this template use File | Settings | File Templates.
  */
 public interface ProductService {
-    Product create();
-    void delete(Long id);
-    Product retrieve(Long id);
+    
+	/**
+	 * Create product base.
+	 * @param name product name, must be unique
+	 * @return product base id
+	 * @throws BusinessException
+	 */
+    Long createProductBase(String name) throws BusinessException;
+    
+    /**
+     * Create application base
+     * @param productBaseId id of product base the application belongs to
+     * @param name application name, must be unique inside product
+     * @return application base id
+     * @throws BusinessException
+     */
+    Long createApplicationBase(Long productBaseId, String name) throws BusinessException;
     
     /**
      * Remove an application from a product, without deleting it.
