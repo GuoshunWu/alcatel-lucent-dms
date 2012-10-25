@@ -3,28 +3,19 @@ package com.alcatel_lucent.dms.action.app;
 import com.alcatel_lucent.dms.action.JSONAction;
 import com.alcatel_lucent.dms.service.ProductService;
 
-
 @SuppressWarnings("serial")
-public class RemoveProductBaseAction extends JSONAction {
-
+public class RemoveProductAction extends JSONAction {
+	
 	private ProductService productService;
 	
-	private Long id;
-	
+	private Long id;	// product id
+
 	@Override
 	protected String performAction() throws Exception {
-		log.info("RemoveProductBase: id=" + id);
-		productService.deleteProductBase(id);
+		log.info("RemoveProductAction: id=" + id);
+		productService.deleteProduct(id);
 		setMessage(getText("message.success"));
 		return SUCCESS;
-	}
-
-	public ProductService getProductService() {
-		return productService;
-	}
-
-	public void setProductService(ProductService productService) {
-		this.productService = productService;
 	}
 
 	public Long getId() {

@@ -16,7 +16,7 @@ import com.alcatel_lucent.dms.service.ProductService;
 
 /**
  * Action of creating a product
- *
+ * @deprecated
  * @author allany
  */
 @ParentPackage("json-default")

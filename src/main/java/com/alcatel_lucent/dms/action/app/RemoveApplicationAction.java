@@ -8,7 +8,7 @@ import com.alcatel_lucent.dms.action.JSONAction;
 import com.alcatel_lucent.dms.service.ProductService;
 
 /**
- * Action of creating a product
+ * Delete an application or remove application from a product
  *
  * @author allany
  */

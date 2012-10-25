@@ -42,7 +42,7 @@ public class CreateProductAction extends JSONAction {
     }
 
     protected String performAction() throws Exception {
-        log.info("Create product: " + name);
+        log.info("Create product base: " + name);
         id = productService.createProductBase(name);
         setMessage(getText("message.success"));
         return SUCCESS;

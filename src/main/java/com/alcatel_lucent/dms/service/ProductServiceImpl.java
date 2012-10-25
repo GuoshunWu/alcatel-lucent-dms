@@ -1,5 +1,6 @@
 package com.alcatel_lucent.dms.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.model.Application;
 import com.alcatel_lucent.dms.model.ApplicationBase;
+import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.Product;
 import com.alcatel_lucent.dms.model.ProductBase;
 
@@ -34,7 +36,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Long addApplicationToProduct(Long productId, Long appId) {
+    public Long addApplicationToProduct(Long productId, Long appId) throws BusinessException {
         Application app= (Application) dao.retrieve(Application.class, appId);
         if(null==app){
             return null;
@@ -97,6 +99,14 @@ public class ProductServiceImpl implements ProductService {
     	dao.delete(prodBase);
     }
     
+    public void deleteProduct(Long productId) throws BusinessException {
+    	Product product = (Product) dao.retrieve(Product.class, productId);
+    	if (product.getApplications() != null && product.getApplications().size() > 0) {
+    		throw new BusinessException(BusinessException.PRODUCT_NOT_EMPTY);
+    	}
+    	dao.delete(product);
+    }
+    
     public Long createProductBase(String name) throws BusinessException {
     	ProductBase pb = findProductBaseByName(name);
     	if (pb != null) {
@@ -129,6 +139,34 @@ public class ProductServiceImpl implements ProductService {
 		}
 		
 	}
+	
+	public Long createApplication(Long appBaseId, String version, Long inheritAppId) throws BusinessException {
+		version = version.trim();
+		ApplicationBase appBase = (ApplicationBase) dao.retrieve(ApplicationBase.class, appBaseId);
+		Application app = findApplication(appBaseId, version);
+		if (app != null) {
+			throw new BusinessException(BusinessException.APPLICATION_ALREADY_EXIST, version);
+		} 
+		app = new Application();
+		app.setBase(appBase);
+		app.setVersion(version);
+		app = (Application) dao.create(app);
+		if (inheritAppId != null) {
+			Application inheritApp = (Application) dao.retrieve(Application.class, inheritAppId);
+			if (inheritApp.getDictionaries() != null) {
+				app.setDictionaries(new ArrayList<Dictionary>(inheritApp.getDictionaries()));
+			}
+		}
+		return app.getId();
+	}
+
+	private Application findApplication(Long appBaseId, String version) {
+		String hql = "from Application where base.id=:appBaseId and version=:version";
+		Map param = new HashMap();
+		param.put("appBaseId", appBaseId);
+		param.put("version", version);
+		return (Application) dao.retrieveOne(hql, param);
+	}
 
 	private ApplicationBase findApplicationBaseByName(Long productBaseId,
 			String name) {
@@ -137,6 +175,36 @@ public class ProductServiceImpl implements ProductService {
 		param.put("pbId", productBaseId);
 		param.put("name", name);
 		return (ApplicationBase) dao.retrieveOne(hql, param);
+	}
+
+	@Override
+	public Long createProduct(Long productBaseId, String version, Long inheritProdId)
+			throws BusinessException {
+		version = version.trim();
+		ProductBase prodBase = (ProductBase) dao.retrieve(ProductBase.class, productBaseId);
+		Product prod = findProduct(productBaseId, version);
+		if (prod != null) {
+			throw new BusinessException(BusinessException.PRODUCT_ALREADY_EXISTS, version);
+		}
+		prod = new Product();
+		prod.setBase(prodBase);
+		prod.setVersion(version);
+		prod = (Product) dao.create(prod);
+		if (inheritProdId != null) {
+			Product inheritProd = (Product) dao.retrieve(Product.class, inheritProdId);
+			if (inheritProd.getApplications() != null) {
+				prod.setApplications(new ArrayList<Application>(inheritProd.getApplications()));
+			}
+		}
+		return prod.getId();
+	}
+
+	private Product findProduct(Long productBaseId, String version) {
+		String hql = "from Product where base.id=:productBaseId and version=:version";
+		Map param = new HashMap();
+		param.put("productBaseId", productBaseId);
+		param.put("version", version);
+		return (Product) dao.retrieveOne(hql, param);
 	}
 
 
