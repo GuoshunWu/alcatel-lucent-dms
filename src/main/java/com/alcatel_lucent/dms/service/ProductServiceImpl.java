@@ -38,10 +38,15 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Long addApplicationToProduct(Long productId, Long appId) throws BusinessException {
         Application app= (Application) dao.retrieve(Application.class, appId);
-        if(null==app){
-            return null;
-        }
+        Long appBaseId = app.getBase().getId();
         Product product = (Product) dao.retrieve(Product.class, productId);
+        if (product.getApplications() != null) {
+        	for (Application existApp : product.getApplications()) {
+        		if (existApp.getBase().getId() == appBaseId) {
+        			throw new BusinessException(BusinessException.APPLICATION_ALREADY_IN_PRODUCT);
+        		}
+        	}
+        }
         product.getApplications().add(app);
         return app.getId();
     }
