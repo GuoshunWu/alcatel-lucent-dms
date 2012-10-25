@@ -17,6 +17,9 @@
 			length="1024" />
 		<property name="newTranslation" type="string" column="NEW_TRANSLATION"
 			length="1024" />
+		<property name="labelKey" type="string" column="LABEL_KEY" />
+		<property name="maxLength" type="string" column="MAX_LENGTH" />
+		<property name="description" type="string" column="DESCRIPTION" />
 			
 		<many-to-one name="task" column="TASK_ID" not-null="true" />
 		<many-to-one name="text" column="TEXT_ID" not-null="true" />

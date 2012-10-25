@@ -7,6 +7,9 @@ public class TaskDetail extends BaseEntity {
 	private Language language;
 	private String origTranslation;
 	private String newTranslation;
+	private String labelKey;
+	private String maxLength;
+	private String description;
 	
 	public Task getTask() {
 		return task;
@@ -37,5 +40,23 @@ public class TaskDetail extends BaseEntity {
 	}
 	public void setNewTranslation(String newTranslation) {
 		this.newTranslation = newTranslation;
+	}
+	public String getLabelKey() {
+		return labelKey;
+	}
+	public void setLabelKey(String labelKey) {
+		this.labelKey = labelKey;
+	}
+	public String getMaxLength() {
+		return maxLength;
+	}
+	public void setMaxLength(String maxLength) {
+		this.maxLength = maxLength;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
 	}
 }

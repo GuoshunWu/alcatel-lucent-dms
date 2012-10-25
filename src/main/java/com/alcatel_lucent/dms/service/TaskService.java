@@ -1,5 +1,6 @@
 package com.alcatel_lucent.dms.service;
 
+import java.io.File;
 import java.util.Collection;
 
 import com.alcatel_lucent.dms.BusinessException;
@@ -22,5 +23,12 @@ public interface TaskService {
 	 * @param taskId task id
 	 */
 	void closeTask(Long taskId) throws BusinessException;
+	
+	/**
+	 * Generate translation task files in target directory.
+	 * @param targetDir target directory
+	 * @param taskId task id
+	 */
+	void generateTaskFiles(String targetDir, Long taskId);
 
 }
