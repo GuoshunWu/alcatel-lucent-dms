@@ -13,23 +13,19 @@ import com.alcatel_lucent.dms.model.Application;
 import com.alcatel_lucent.dms.model.Product;
 import com.alcatel_lucent.dms.model.ProductBase;
 import com.alcatel_lucent.dms.service.DaoService;
+import com.alcatel_lucent.dms.service.ProductService;
 
 /**
  * Action of creating a product
  *
  * @author allany
  */
+@SuppressWarnings("serial")
 @ParentPackage("json-default")
 @Result(type = "json", params = {"noCache", "true", "ignoreHierarchy", "false", "includeProperties", "id,message,status"})
-
-@SuppressWarnings("unchecked")
 public class CreateProductReleaseAction extends JSONAction {
 
-    public void setDaoService(DaoService daoService) {
-        this.daoService = daoService;
-    }
-
-    private DaoService daoService;
+    private ProductService productService;
 
     // input parameters
     private String version;
@@ -56,9 +52,6 @@ public class CreateProductReleaseAction extends JSONAction {
         this.dupVersionId = dupVersionId;
     }
 
-
-
-
     public void setId(Long id) {
         this.id = id;
     }
@@ -69,29 +62,19 @@ public class CreateProductReleaseAction extends JSONAction {
 
     public String performAction() throws Exception {
         log.debug("Create product release version: " + version + ", product base id=" + id + ", dup version id=" + dupVersionId);
-
-        ProductBase pb= (ProductBase) daoService.retrieve(ProductBase.class,id);
-        Product product = new Product();
-        product.setVersion(version);
-        product.setBase(pb);
-        if (-1 != dupVersionId) {
-            String hsql="select app from Product p join p.applications as app where p.id=:id";
-            Map<String, Long> params = new HashMap<String, Long>();
-            params.put("id", dupVersionId);
-            List<Application> apps= daoService.retrieve(hsql, params);
-            product.setApplications(new HashSet<Application>(apps));
+        if (dupVersionId != null && dupVersionId == -1) {
+        	dupVersionId = null;
         }
-        product = (Product) daoService.create(product);
-
-        if (null == product) {
-            setStatus(-1);
-            setMessage("Create product " + version + " fail.");
-            return SUCCESS;
-        }
-
-        id = product.getId();
-        setStatus(0);
-        setMessage("Create product release version " + version + " success!");
+        id = productService.createProduct(id, version, dupVersionId);
+        setMessage(getText("message.success"));
         return SUCCESS;
     }
+
+	public ProductService getProductService() {
+		return productService;
+	}
+
+	public void setProductService(ProductService productService) {
+		this.productService = productService;
+	}
 }
