@@ -339,4 +339,9 @@ public class Util {
 				}
 		}
     }
+
+	public static int countWords(String text) {
+		// TODO count words
+		return 0;
+	}
 }

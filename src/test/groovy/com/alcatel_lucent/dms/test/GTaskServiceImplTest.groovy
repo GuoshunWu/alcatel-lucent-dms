@@ -41,8 +41,14 @@ class GTaskServiceImplTest {
 	}
 	
 	@Test
-	void testCancelTask() {
-		taskService.closeTask(3);
+	void testCloseTask() {
+		taskService.closeTask(4);
+	}
+	
+	@Test
+	void testGenerateTaskFiles() {
+		String dir = "d:/temp/task_test"
+		taskService.generateTaskFiles(dir, 2);
 	}
 
 }
