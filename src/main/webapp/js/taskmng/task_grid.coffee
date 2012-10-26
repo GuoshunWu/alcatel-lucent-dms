@@ -1,8 +1,22 @@
 define ['jqgrid', 'util', 'require', 'taskmng/dialogs', 'i18n!nls/taskmng', 'i18n!nls/common', 'blockui', 'jqmsgbox'], ($, util, require, dialogs, i18n, c18n)->
   handlers =
     'Download': (param)->
-      alert 'download'
       console.log param
+      filename = "#{$('#appDispAppName').text()}_#{$('#selAppVersion option:selected').text()}_#{new Date().format 'yyyyMMdd_hhmmss'}.zip"
+      console.log filename
+      param.name
+      param.id
+#      $.blockUI css: {backgroundColor: '#fff'}, overlayCSS: {opacity: 0.2}
+#      $.post '/task/generate-task-files', {dicts: dicts.join(','), filename: filename}, (json)->
+#        $.unblockUI()
+#        ($.msgBox json.message, null, {title: c18n.error};return) if json.status != 0
+
+
+    #      downloadForm = $('#downloadDict')
+    #      $('#fileLoc', downloadForm).val json.fileLoc
+    #      downloadForm.submit()
+
+
     'History…': (param)->
       alert 'History…'
       console.log param
