@@ -16,6 +16,7 @@ import com.alcatel_lucent.dms.model.Language;
  *   prod		(optional) list of product id, all languages used in the product(s) will be retrieved
  *   app		(optional) list of application id, all languages used in the application(s) will be retrieved
  *   dict		(optional) list of dictionary id, all languages used in the dictionary(s) will be retrieved
+ *   task		(optional) list of task id, all languagesin the task(s) will be retrieved
  *   Only one of the above filter parameter can be provided, 
  *   if no filter parameter is provided, all languages will be retrieved
  *   
@@ -71,8 +72,14 @@ public class LanguageREST extends BaseREST {
 		    				" from Product p join p.applications a join a.dictionaries d join d.dictLanguages dl join dl.language obj" +
 		    				" where p.id in (:prodId)";
 		    		param.put("prodId", toIdList(prodStr));
-	    		} else {	// query all
-	    			hql = "from Language obj where name not like '%-%'";
+	    		} else {
+	    			String taskStr = requestMap.get("task");
+	    			if (taskStr != null && !taskStr.trim().isEmpty()) {	// query by tasks
+	    				hql = "select distinct obj from TaskDetail td join td.language obj where td.task.id in (:taskId)";
+	    				param.put("taskId", toIdList(taskStr));
+	    			} else {	// query all
+	    				hql = "from Language obj where name not like '%-%'";
+	    			}
 	    		}
 	    	}
     	}

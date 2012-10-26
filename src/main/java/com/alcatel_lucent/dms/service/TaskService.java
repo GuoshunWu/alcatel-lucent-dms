@@ -2,8 +2,10 @@ package com.alcatel_lucent.dms.service;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Map;
 
 import com.alcatel_lucent.dms.BusinessException;
+import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Task;
 
 public interface TaskService {
@@ -48,5 +50,12 @@ public interface TaskService {
 	 * @throws BusinessException
 	 */
 	Task applyTask(Long taskId) throws BusinessException;
+	
+	/**
+	 * Calculate task summary
+	 * @param taskId task id
+	 * @return first level key is context id, second level key is language id, value is [translated, not translated]
+	 */
+	Map<Long, Map<Long, int[]>> getTaskSummary(Long taskId);
 
 }

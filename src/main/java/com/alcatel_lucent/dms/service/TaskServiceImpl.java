@@ -465,4 +465,32 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 		}
 		return count;
 	}
+
+	@Override
+	public Map<Long, Map<Long, int[]>> getTaskSummary(Long taskId) {
+		String hql = "select td.text.context.id,td.language.id," +
+				"sum(case when td.newTranslation<>td.text.reference then 1 else 0 end)," +
+				"sum(case when td.newTranslation is null or td.newTranslation='' or td.newTranslation=td.text.reference then 1 else 0 end) " +
+				"from TaskDetail td " +
+				"where td.task.id=:taskId " +
+				"group by td.text.context.id,td.language.id";
+		Map param = new HashMap();
+		param.put("taskId", taskId);
+		Collection<Object[]> resultSet = dao.retrieve(hql, param);
+		Map<Long, Map<Long, int[]>> result = new HashMap<Long, Map<Long, int[]>>();
+		for (Object[] row : resultSet) {
+			Long contextId = ((Number) row[0]).longValue();
+			Long languageId = ((Number) row[1]).longValue();
+			int[] value = new int[2];
+			value[0] = ((Number) row[2]).intValue();
+			value[1] = ((Number) row[3]).intValue();
+			Map<Long, int[]> langMap = result.get(contextId);
+			if (langMap == null) {
+				langMap = new HashMap<Long, int[]>();
+				result.put(contextId, langMap);
+			}
+			langMap.put(languageId, value);
+		}
+		return result;
+	}
 }

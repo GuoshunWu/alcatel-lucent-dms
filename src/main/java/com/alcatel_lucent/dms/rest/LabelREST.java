@@ -39,7 +39,8 @@ import com.alcatel_lucent.dms.service.DictionaryService;
  *   			for grid: prop=<property_name_for_column1>,<property_name_for_column2>,...
  *   			for tree: prop=<property_name_for_id>,<property_name_for_name>
  *   idprop		(optional) property name for id, for grid only
- *   The result is not paged, that means "rows" and "page" parameter will not be supported.
+ *   rows		(optional) number of records to be retrieved, only be used when format is grid
+ *   page		(optional) current page, only be used when format is grid
  *   		
  * @author allany
  *
