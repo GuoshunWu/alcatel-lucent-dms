@@ -5,8 +5,12 @@
     var handlers, taskGrid;
     handlers = {
       'Download': function(param) {
-        alert('download');
-        return console.log(param);
+        var filename;
+        console.log(param);
+        filename = "" + ($('#appDispAppName').text()) + "_" + ($('#selAppVersion option:selected').text()) + "_" + (new Date().format('yyyyMMdd_hhmmss')) + ".zip";
+        console.log(filename);
+        param.name;
+        return param.id;
       },
       'History…': function(param) {
         alert('History…');
