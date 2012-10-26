@@ -60,8 +60,6 @@
 
         <div id="appTree" style="background-color: transparent;"></div>
         <p>&nbsp;</p>
-        <button id="newProduct"><s:text name="appmng.newproductbase"/></button>
-
     </div>
 
     <%--<div class="ui-layout-south"> South</div>--%>

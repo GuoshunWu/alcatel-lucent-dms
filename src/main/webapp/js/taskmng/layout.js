@@ -8,7 +8,9 @@
       resizable: true,
       closable: true
     });
-    $.getJSON('rest/products/trans/productbases', {}, function(json) {
+    $.getJSON('rest/products', {
+      prop: 'id,name'
+    }, function(json) {
       $('#productBase').append(new Option(c18n.select.product.tip, -1));
       return $('#productBase').append($(json).map(function() {
         return new Option(this.name, this.id);
@@ -19,7 +21,10 @@
       if (parseInt($('#productBase').val()) === -1) {
         return false;
       }
-      return $.getJSON("rest/products/" + ($('#productBase').val()), {}, function(json) {
+      return $.getJSON("/rest/products/version", {
+        base: $(this).val(),
+        prop: 'id,version'
+      }, function(json) {
         $('#productRelease').append(new Option(c18n.select.release.tip, -1));
         $('#productRelease').append($(json).map(function() {
           return new Option(this.version, this.id);
@@ -41,7 +46,7 @@
       if (!param.release.id || parseInt(param.release.id) === -1) {
         return false;
       }
-      return alert('Refresh grid.');
+      return grid.productVersionChanged(param);
     });
     ($("#progressbar").draggable({
       grid: [50, 20],

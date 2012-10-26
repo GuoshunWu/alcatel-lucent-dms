@@ -16,7 +16,7 @@ define ['jqgrid', 'i18n!nls/appmng', 'appmng/dialogs', 'require'], ($, i18n, dia
   cellsubmit: 'remote', cellEdit: true
   ajaxSelectOptions: 'json/selecttest.json'
   width: 700, height: 350
-  pager: '#pager', rowNum: 10, rowList: [10, 20, 30]
+  pager: '#pager', rowNum: 10, rowList: [10, 20, 30], multiselect: true
   sortname: 'name', sortorder: 'asc'
   viewrecords: true, gridview: true, altRows: true
   caption: 'Applications for Product'
@@ -45,25 +45,23 @@ define ['jqgrid', 'i18n!nls/appmng', 'appmng/dialogs', 'require'], ($, i18n, dia
   #  delete form properties
   reloadAfterSubmit: false, url: 'app/remove-application'
   beforeShowForm: (form)->
-    permanent = $('#permanentDeleteSignId', form)
-    $("<tr><td>#{i18n.grid.permanenttext}<td><input align='left' type='checkbox' id='permanentDeleteSignId'>")
-    .appendTo $("tbody", form) if permanent.length == 0
-    permanent?.removeAttr 'checked'
+  #    permanent = $('#permanentDeleteSignId', form)
+  #    $("<tr><td>#{i18n.grid.permanenttext}<td><input align='left' type='checkbox' id='permanentDeleteSignId'>")
+  #    .appendTo $("tbody", form) if permanent.length == 0
+  #    permanent?.removeAttr 'checked'
   onclickSubmit: (params, posdata)->
     prodpnl = require 'appmng/product_panel'
     product = prodpnl.getSelectedProduct()
-    {productId: product.id, permanent: Boolean($('#permanentDeleteSignId').attr("checked"))}
+#    permanent = Boolean $('#permanentDeleteSignId').attr "checked"
+    {productId: product.id}
   afterSubmit: (response, postdata)->
     jsonFromServer = eval "(#{response.responseText})"
     #remove appbase node from apptree.
-    apptree = require 'appmng/apptree'
-    apptree.delApplictionBaseFromProductBase jsonFromServer.id if jsonFromServer.id
-    #appbase is deleted
     [0 == jsonFromServer.status, jsonFromServer.message]
   }
   appGrid.navButtonAdd '#pager', { caption: "", buttonicon: "ui-icon-plus", position: "first"
   onClickButton: ()->
-    dialogs.newOrAddApplication.dialog "open"
+    dialogs.addApplication.dialog "open"
   }
   id: localIds
   productChanged: (param)->

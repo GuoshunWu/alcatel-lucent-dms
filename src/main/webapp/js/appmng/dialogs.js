@@ -2,8 +2,7 @@
 (function() {
 
   define(['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsettings_grid', 'appmng/previewlangsetting_grid'], function(require, grid, sgrid, lgrid) {
-    var $, c18n, dictListPreview, dictPreviewLangSettings, dictPreviewStringSettings, i18n, ids, langSettings, newOrAddApplication, newProductRelease, stringSettings,
-      _this = this;
+    var $, addApplication, c18n, dictListPreview, dictPreviewLangSettings, dictPreviewStringSettings, i18n, ids, langSettings, newAppVersion, newProductVersion, stringSettings;
     $ = require('jqueryui');
     c18n = require('i18n!nls/common');
     i18n = require('i18n!nls/appmng');
@@ -11,18 +10,17 @@
     require('jqmsgbox');
     ids = {
       button: {
-        new_product: 'newProduct',
-        new_release: 'newVersion'
+        new_product: 'newProduct'
       },
       dialog: {
         new_product: 'newProductDialog',
         new_product_release: 'newProductReleaseDialog',
-        new_or_add_application: 'newOrAddApplicationDialog'
+        new_or_add_application: 'addApplicationDialog'
       },
       productName: '#productName',
       product_duplication: '#dupVersion'
     };
-    newProductRelease = $("#" + ids.dialog.new_product_release).dialog({
+    newProductVersion = $("#" + ids.dialog.new_product_release).dialog({
       autoOpen: false,
       height: 200,
       width: 500,
@@ -31,11 +29,12 @@
         {
           text: c18n.ok,
           click: function() {
-            var dupVersionId, productBaseId, url, versionName;
+            var dupVersionId, productBaseId, tree, url, versionName;
             url = 'app/create-product-release';
             versionName = $('#versionName').val();
             dupVersionId = $("#dupVersion").val();
-            productBaseId = (require('appmng/apptree')).getSelected().id;
+            tree = require('appmng/navigatetree');
+            productBaseId = tree.getNodeInfo().id;
             $.post(url, {
               version: versionName,
               dupVersionId: dupVersionId,
@@ -64,22 +63,59 @@
         }
       ],
       open: function(event, ui) {
-        $(ids.product_duplication).append(new Option('', -1));
+        $(ids.product_duplication).empty().append(new Option('', -1));
         return (require('appmng/product_panel')).getProductSelectOptions().appendTo($(ids.product_duplication));
       }
     });
-    $("#" + ids.button.new_release).button({
-      text: false,
-      icons: {
-        primary: "ui-icon-plus"
-      }
-    }).click(function(e) {
-      return newProductRelease.dialog("open");
-    });
-    newOrAddApplication = $("#" + ids.dialog.new_or_add_application).dialog({
+    newAppVersion = $("#newApplicationVersionDialog").dialog({
       autoOpen: false,
       height: 200,
-      width: 400,
+      width: 500,
+      modal: true,
+      buttons: [
+        {
+          text: c18n.ok,
+          click: function() {
+            var appBaseId, dupVersionId, url, versionName;
+            url = '/app/create-application';
+            versionName = $('#appVersionName').val();
+            dupVersionId = $("#dupDictsVersion").val();
+            appBaseId = (require('appmng/navigatetree')).getNodeInfo().id;
+            $.post(url, {
+              version: versionName,
+              dupVersionId: dupVersionId,
+              id: appBaseId
+            }, function(json) {
+              if (json.status !== 0) {
+                $.msgBox(json.message, null, {
+                  title: c18n.error,
+                  width: 300,
+                  height: 'auto'
+                });
+                return;
+              }
+              return (require('appmng/application_panel')).addNewApplication({
+                version: versionName,
+                id: json.id
+              });
+            });
+            return $(this).dialog("close");
+          }
+        }, {
+          text: c18n.cancel,
+          click: function() {
+            return $(this).dialog("close");
+          }
+        }
+      ],
+      open: function(event, ui) {
+        return $("#dupDictsVersion").empty().append(new Option('', -1)).append((require('appmng/application_panel')).getApplicationSelectOptions());
+      }
+    });
+    addApplication = $("#" + ids.dialog.new_or_add_application).dialog({
+      autoOpen: false,
+      height: 'auto',
+      width: 'auto',
       modal: true,
       position: "center",
       show: {
@@ -87,22 +123,14 @@
         direction: "up"
       },
       create: function(event, ui) {
-        var input;
-        input = $('<input>').insertAfter($('#applicationName')).hide();
-        $('#applicationName').data('myinput', input);
-        input = $('<input>').insertAfter($("#version")).hide();
-        $('#version').data('myinput', input);
         $("select", this).css('width', "80px");
-        $("#applicationName").change(function() {
+        return $("#applicationName").change(function() {
           var appBaseId, url;
-          $("#version").empty().append(new Option('new', -1));
+          $("#version").empty();
           appBaseId = $(this).val();
           if (-1 === parseInt(appBaseId)) {
-            $(this).data('myinput').val("").show();
-            $("#version").trigger("change");
             return;
           }
-          $(this).data('myinput').hide();
           url = "rest/applications/apps/" + appBaseId;
           return $.getJSON(url, {}, function(json) {
             return $("#version").append($(json).map(function() {
@@ -110,24 +138,15 @@
             })).trigger("change");
           });
         });
-        return $("#version").change(function() {
-          var appId;
-          appId = $(this).val();
-          if (-1 === parseInt(appId)) {
-            $(this).data('myinput').val("").show();
-            return;
-          }
-          return $(this).data('myinput').hide();
-        });
       },
       open: function(event, ui) {
-        var productId, url;
+        var productId, url,
+          _this = this;
         productId = $("#selVersion").val();
+        console.log(productId);
         url = "rest/applications/base/" + productId;
         return $.getJSON(url, {}, function(json) {
-          var appBasesOptions;
-          appBasesOptions = $("#newOrAddApplicationDialog").find("#applicationName").empty().append(new Option('new', -1));
-          return appBasesOptions.append($(json).map(function() {
+          return $('#applicationName', _this).empty().append($(json).map(function() {
             return new Option(this.name, this.id);
           })).trigger('change');
         });
@@ -137,13 +156,10 @@
           text: c18n.ok,
           click: function() {
             var params, url;
-            url = 'app/create-or-add-application';
+            url = 'app/add-application';
             params = {
               productId: parseInt($("#selVersion").val()),
-              appBaseId: parseInt($('#applicationName').val()),
-              appId: parseInt($('#version').val()),
-              appBaseName: $('#applicationName').data('myinput').val(),
-              appVersion: $('#version').data('myinput').val()
+              appId: parseInt($('#version').val())
             };
             $.post(url, params, function(json) {
               if (json.status !== 0) {
@@ -320,9 +336,9 @@
       dictPreviewStringSettings: dictPreviewStringSettings,
       dictListPreview: dictListPreview,
       stringSettings: stringSettings,
-      newProduct: newProduct,
-      newProductRelease: newProductRelease,
-      newOrAddApplication: newOrAddApplication,
+      newProductVersion: newProductVersion,
+      newAppVersion: newAppVersion,
+      addApplication: addApplication,
       langSettings: langSettings
     };
   });

@@ -8,24 +8,15 @@
         <tr>
             <td style="width:30px;"><s:text name="product"/></td>
             <td><span id="dispProductName"></span></td>
-
         </tr>
         <tr>
             <td><s:text name="version"/></td>
             <td><select id="selVersion"></select>
-                <button id="newVersion"></button>
+                <button id="newVersion" title="<s:text name="appmng.newproduct"/> "></button>
+                &nbsp;&nbsp;
+                <button id="removeVersion" title="<s:text name="appmng.removeproduct"/>"></button>
             </td>
-
         </tr>
-        <%--<tr>--%>
-            <%--<td>TestBtn:</td>--%>
-            <%--<td>--%>
-                <%--<button id="newApp">New App</button>--%>
-                <%--<button id="addApp">Add App</button>--%>
-                <%--<button id="removeApp">Remove App</button>--%>
-                <%--<button id="download">Download</button>--%>
-            <%--</td>--%>
-        <%--</tr>--%>
         <tr>
             <td valign="top" colspan="2">
                 <div id="applicationGrid">

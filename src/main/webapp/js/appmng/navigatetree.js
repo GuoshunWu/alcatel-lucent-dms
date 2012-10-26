@@ -2,7 +2,7 @@
 (function() {
 
   define(function(require) {
-    var $, URL, appTree, apppnl, c18n, getNodeInfo, ids, layout, nodeCtxMenu, productpnl;
+    var $, URL, appTree, apppnl, c18n, getNodeInfo, ids, layout, nodeCtxMenu, productpnl, removeNode;
     $ = require('jqtree');
     layout = require('appmng/layout');
     productpnl = require('appmng/product_panel');
@@ -19,7 +19,7 @@
         del: '/app/remove-product-base'
       },
       app: {
-        create: '',
+        create: '/app/create-application-base',
         del: '/app/remove-application-base'
       }
     };
@@ -42,6 +42,21 @@
       }
       info.parent = getNodeInfo(parent);
       return info;
+    };
+    removeNode = function(node) {
+      return $.post(URL[node.attr('type')].del, {
+        id: node.attr('id')
+      }, function(json) {
+        if (json.status !== 0) {
+          $.msgBox(json.message, null, {
+            title: c18n.error,
+            width: 300,
+            height: 'auto'
+          });
+          return false;
+        }
+        return appTree != null ? appTree.remove(node) : void 0;
+      });
     };
     nodeCtxMenu = {
       products: {
@@ -74,18 +89,14 @@
         },
         del: {
           label: 'Delete product',
-          action: function(node) {
-            return appTree != null ? appTree.remove(node) : void 0;
-          },
+          action: removeNode,
           separator_before: true
         }
       },
       app: {
         del: {
           label: 'Delete application',
-          action: function(node) {
-            return appTree != null ? appTree.remove(node) : void 0;
-          }
+          action: removeNode
         }
       }
     };
@@ -99,7 +110,9 @@
           select_limit: 1
         },
         themes: {},
-        core: {},
+        core: {
+          initially_open: ["-1"]
+        },
         contextmenu: {
           items: function(node) {
             return nodeCtxMenu[node.attr('type')];
@@ -122,18 +135,20 @@
             return layout.showApplicationPanel();
         }
       }).bind('create.jstree', function(event, data) {
-        var name, node, validatename;
+        var name, node, pbId;
         appTree = data.inst;
         node = data.rslt.obj;
         name = data.rslt.name;
-        validatename = false;
-        if (validatename) {
-          console.log('name is blank, rollback.');
+        if ('' === name) {
           $.jstree.rollback(data.rlbk);
           return;
         }
+        if ('app' === node.attr('type')) {
+          pbId = appTree._get_parent(node).attr('id');
+        }
         return $.post(URL[node.attr('type')].create, {
-          name: name
+          name: name,
+          prod: pbId
         }, function(json) {
           if (json.status !== 0) {
             $.msgBox(json.message, null, {
@@ -148,57 +163,12 @@
             id: json.id
           });
         });
-      }).bind('remove.jstree', function(event, data) {
-        var node;
-        appTree = data.inst;
-        node = data.rslt.obj;
-        return $.post(URL[node.attr('type')].del, {
-          id: node.attr('id')
-        }, function(json) {
-          if (json.status !== 0) {
-            $.msgBox(json.message, null, {
-              title: c18n.error,
-              width: 300,
-              height: 'auto'
-            });
-            $.jstree.rollback(data.rlbk);
-            return false;
-          }
-          return console.log('remove node ' + appTree.get_text(node));
-        });
       });
       appTree = $.jstree._reference("#" + ids.navigateTree);
       return $('#loading-container').remove();
     });
     return {
-      getNodeInfo: getNodeInfo,
-      delApplictionBaseFromProductBase: function(appBaseId) {
-        appTree = $.jstree._reference("#" + ids.navigateTree);
-        return (appTree._get_children(appTree.get_selected())).each(function(index, app) {
-          if (parseInt(app.id) === appBaseId) {
-            return appTree.delete_node(app);
-          }
-        });
-      },
-      addNewProductBase: function(product) {
-        return ($.jstree._reference("#" + ids.navigateTree)).create_node(-1, "last", {
-          data: product.name,
-          attr: {
-            id: product.id
-          }
-        });
-      },
-      addNewApplicationBase: function(params) {
-        var selectedNode;
-        appTree = $.jstree._reference("#" + ids.navigateTree);
-        selectedNode = appTree.get_selected();
-        return $("#appTree").jstree("create_node", selectedNode, "last", {
-          data: params.appBaseName,
-          attr: {
-            id: params.appBaseId
-          }
-        });
-      }
+      getNodeInfo: getNodeInfo
     };
   });
 

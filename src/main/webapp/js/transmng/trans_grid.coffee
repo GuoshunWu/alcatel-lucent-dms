@@ -112,6 +112,6 @@ define ['jqgrid','util', 'require', 'jqmsgbox','transmng/grid.colmodel','blockui
       row = transGrid.getRowData @
       count += parseInt row.numOfString
 
-    {rowIds: selectedRowIds, selectedNum: selectedRowIds.length, totalLabels: count}
+    {rowIds: selectedRowIds, totalLabels: count}
   getTableType: getTableType
 

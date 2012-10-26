@@ -91,7 +91,6 @@
       colNames: colNames,
       colModel: colModel
     });
-    console.log(transReportGrid.getGridParam('colModel'));
     transReportGrid.setGroupHeaders({
       useColSpanStyle: true,
       groupHeaders: groupHeaders
