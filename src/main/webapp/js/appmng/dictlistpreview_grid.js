@@ -2,23 +2,27 @@
 (function() {
 
   define(function(require, util, i18n) {
-    var $, c18n, dicGrid, languageSetting, stringSetting;
+    var $, c18n, dicGrid, handlers;
     $ = require('jqgrid');
     util = require('util');
     i18n = require('i18n!nls/appmng');
     require('jqmsgbox');
     c18n = require('i18n!nls/common');
-    languageSetting = function(rowData) {
-      var dialogs;
-      dialogs = require('appmng/dialogs');
-      dialogs.dictPreviewLangSettings.data("param", rowData);
-      return dialogs.dictPreviewLangSettings.dialog('open');
-    };
-    stringSetting = function(rowData) {
-      var dialogs;
-      dialogs = require('appmng/dialogs');
-      dialogs.dictPreviewStringSettings.data("param", rowData);
-      return dialogs.dictPreviewStringSettings.dialog('open');
+    handlers = {
+      'String': {
+        title: i18n.dialog.stringsettings.title,
+        handler: function(rowData, dialogs) {
+          dialogs.dictPreviewStringSettings.data("param", rowData);
+          return dialogs.dictPreviewStringSettings.dialog('open');
+        }
+      },
+      'Language': {
+        title: i18n.dialog.languagesettings.title,
+        handler: function(rowData, dialogs) {
+          dialogs.dictPreviewLangSettings.data("param", rowData);
+          return dialogs.dictPreviewLangSettings.dialog('open');
+        }
+      }
     };
     dicGrid = $('#dictListPreviewGrid').jqGrid({
       url: '',
@@ -85,23 +89,28 @@
         }, {
           name: 'action',
           index: 'action',
-          width: 45,
+          width: 70,
           editable: false,
           align: 'center'
         }
       ],
       beforeProcessing: function(data, status, xhr) {
-        var actIndex;
+        var actIndex, actions, k, v;
         actIndex = $(this).getGridParam('colNames').indexOf('Action');
         if ($(this).getGridParam('multiselect')) {
           --actIndex;
         }
+        actions = [];
+        for (k in handlers) {
+          v = handlers[k];
+          actions.push(k);
+        }
         return $(data.rows).each(function(index) {
           var rowData;
           rowData = this;
-          return this.cell[actIndex] = ($(['S', 'L']).map(function() {
-            return "<A id='action_" + this + "_" + rowData.id + "_" + actIndex + "' href=# >" + this + "</A>";
-          })).get().join('');
+          return this.cell[actIndex] = $(actions).map(function() {
+            return "<A id='action_" + this + "_" + rowData.id + "_" + actIndex + "'style='color:blue' title='" + handlers[this].title + "' href=# >" + this + "</A>";
+          }).get().join('&nbsp;&nbsp;&nbsp;&nbsp;');
         });
       },
       beforeSubmitCell: function(rowid, cellname, value, iRow, iCol) {
@@ -117,31 +126,14 @@
       gridComplete: function() {
         var grid;
         grid = $(this);
-        return $('a[id^=action_]', this).button({
-          create: function(e, ui) {
-            var a, action, col, rowid, titles, _ref;
-            _ref = this.id.split('_'), a = _ref[0], action = _ref[1], rowid = _ref[2], col = _ref[3];
-            titles = {
-              S: i18n.dialog.stringsettings.title,
-              L: i18n.dialog.languagesettings.title
-            };
-            this.title = titles[action];
-            return this.onclick = function(e) {
-              var rowData;
-              rowData = grid.getRowData(rowid);
-              delete rowData.action;
-              rowData.id = rowid;
-              rowData.handler = grid.getGridParam('postData').handler;
-              switch (action) {
-                case 'S':
-                  return stringSetting(rowData);
-                case 'L':
-                  return languageSetting(rowData);
-                default:
-                  return console.log('Invalid action');
-              }
-            };
-          }
+        return $('a[id^=action_]', this).click(function() {
+          var a, action, col, rowData, rowid, _ref;
+          _ref = this.id.split('_'), a = _ref[0], action = _ref[1], rowid = _ref[2], col = _ref[3];
+          rowData = grid.getRowData(rowid);
+          delete rowData.action;
+          rowData.id = rowid;
+          rowData.handler = grid.getGridParam('postData').handler;
+          return handlers[action].handler(rowData, require('appmng/dialogs'));
         });
       }
     });

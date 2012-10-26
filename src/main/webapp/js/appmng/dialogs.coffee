@@ -11,40 +11,19 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   button:
     {
     new_product: 'newProduct'
-    new_release: 'newVersion'
     }
   dialog:
     {
     new_product: 'newProductDialog',
     new_product_release: 'newProductReleaseDialog',
-    new_or_add_application: 'newOrAddApplicationDialog'
+    new_or_add_application: 'addApplicationDialog'
     }
   productName: '#productName'
   product_duplication: '#dupVersion'
   }
 
-  # Create new product dialog, new implement in apptree.coffee line 84
-#  newProduct = $("##{ids.dialog.new_product}").dialog {
-#  autoOpen: false, height: 200, width: 400, modal: true,
-#  buttons: [
-#    {text: c18n.ok, click: ->
-#    # TODO: validate the product name...
-#      $.post 'app/create-product', {name: $(ids.productName).val()}, (json)->
-#        if (json.status != 0)
-#          $.msgBox json.message, null, {title: c18n.error, width: 300, height: 'auto'}
-#          return false
-#        apptree.addNewProductBase {name: $(ids.productName).val(), id: json.id}
-#      $(@).dialog "close"
-#    }
-#    {text: c18n.cancel, click: -> $(@).dialog "close"}
-#  ]
-#  }
-  # create new product button below the tree
-#  $("##{ids.button.new_product}").button().click (e) =>
-#    newProduct.dialog("open")
-
   #  Create new product release dialog
-  newProductRelease = $("##{ids.dialog.new_product_release}").dialog {
+  newProductVersion = $("##{ids.dialog.new_product_release}").dialog {
   autoOpen: false
   height: 200
   width: 500
@@ -54,7 +33,8 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
       url = 'app/create-product-release'
       versionName = $('#versionName').val()
       dupVersionId = $("#dupVersion").val()
-      productBaseId = (require 'appmng/apptree').getSelected().id
+      tree = require 'appmng/navigatetree'
+      productBaseId = tree.getNodeInfo().id
       $.post url, {version: versionName, dupVersionId: dupVersionId, id: productBaseId}, (json)->
         if (json.status != 0)
           $.msgBox json.message, null, {title: c18n.error, width: 300, height: 'auto'}
@@ -65,65 +45,71 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
     {text: c18n.cancel, click: -> $(@).dialog "close"}
   ]
   open: (event, ui)->
-    $(ids.product_duplication).append new Option '', -1
+    $(ids.product_duplication).empty().append new Option '', -1
     (require 'appmng/product_panel').getProductSelectOptions().appendTo $ ids.product_duplication
   }
 
-  $("##{ids.button.new_release}").button({text: false, icons: {primary: "ui-icon-plus"}}).click (e) =>
-    newProductRelease.dialog("open")
+  #  Create new application release dialog
+  newAppVersion = $("#newApplicationVersionDialog").dialog {
+  autoOpen: false
+  height: 200
+  width: 500
+  modal: true
+  buttons: [
+    {text: c18n.ok, click: ->
+      url = '/app/create-application'
+      versionName = $('#appVersionName').val()
+      dupVersionId = $("#dupDictsVersion").val()
+      appBaseId = (require 'appmng/navigatetree').getNodeInfo().id
+      $.post url, {version: versionName, dupVersionId: dupVersionId, id: appBaseId}, (json)->
+        if (json.status != 0)
+          $.msgBox json.message, null, {title: c18n.error, width: 300, height: 'auto'}
+          return
+        (require 'appmng/application_panel').addNewApplication {version: versionName, id: json.id}
+      $(@).dialog "close"
+    }
+    {text: c18n.cancel, click: -> $(@).dialog "close"}
+  ]
+  open: (event, ui)->
+    $("#dupDictsVersion").empty().append(new Option '', -1).append (require 'appmng/application_panel').getApplicationSelectOptions()
+  }
 
-  # Create new application or add application to product dialog
-  newOrAddApplication = $("##{ids.dialog.new_or_add_application}").dialog {
-  autoOpen: false, height: 200, width: 400, modal: true, position: "center",
+  # Add application to product dialog
+  addApplication = $("##{ids.dialog.new_or_add_application}").dialog {
+  autoOpen: false, height: 'auto', width: 'auto', modal: true, position: "center",
   show: { effect: 'drop', direction: "up" }
   create: (event, ui)->
-    input = $('<input>').insertAfter($('#applicationName')).hide()
-    $('#applicationName').data('myinput', input)
-
-    input = $('<input>').insertAfter($("#version")).hide()
-    $('#version').data('myinput', input)
-
     $("select", @).css('width', "80px")
 
     $("#applicationName").change ->
-      $("#version").empty().append(new Option('new', -1))
+      $("#version").empty()
       appBaseId = $(@).val()
-      if (-1 == parseInt(appBaseId))
-        $(@).data('myinput').val("").show()
-        $("#version").trigger("change")
-        return
-      $(@).data('myinput').hide()
+      return if (-1 == parseInt(appBaseId))
 
       url = "rest/applications/apps/#{appBaseId}"
       $.getJSON url, {}, (json)->$("#version").append($(json).map ->new Option(@version, @id)).trigger "change"
 
-    $("#version").change ->
-      appId = $(@).val()
-      if -1 == parseInt(appId)
-        $(@).data('myinput').val("").show()
-        return
-      $(@).data('myinput').hide()
+
   open: (event, ui)->
     productId = $("#selVersion").val()
+    console.log productId
     url = "rest/applications/base/#{productId}"
-    $.getJSON url, {}, (json)->
-      appBasesOptions = $("#newOrAddApplicationDialog").find("#applicationName").empty().append(new Option('new', -1))
-      appBasesOptions.append($(json).map ->new Option(@name, @id)).trigger 'change'
+    $.getJSON url, {}, (json)=>$('#applicationName', @).empty().append($(json).map ->new Option @name, @id).trigger 'change'
   buttons: [
     {text: c18n.ok, click: ->
-      url = 'app/create-or-add-application'
+      url = 'app/add-application'
       params = {
       productId: parseInt($("#selVersion").val())
-      appBaseId: parseInt($('#applicationName').val())
+      #      appBaseId: parseInt($('#applicationName').val())
       appId: parseInt($('#version').val())
-      appBaseName: $('#applicationName').data('myinput').val()
-      appVersion: $('#version').data('myinput').val()
+      #      appBaseName: $('#applicationName').data('myinput').val()
+      #      appVersion: $('#version').data('myinput').val()
       }
       $.post url, params, (json)->
         ($.msgBox json.message, null, {title: c18n.error}; return) if json.status != 0
-#        todo:Bug here, appBaseId should be -1, it is used in addNewApplicationBase
+        #        todo:Bug here, appBaseId should be -1, it is used in addNewApplicationBase
         if -1 == params.appBaseId
-          params.appBaseId=json.appBaseId
+          params.appBaseId = json.appBaseId
           (require 'appmng/apptree').addNewApplicationBase(params)
         $("#applicationGridList").trigger("reloadGrid")
 
@@ -180,7 +166,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
     param = dictListPreview.data "param"
     postData = handler: param.handler, app: $('#selAppVersion').val()
 
-#    TODO: refine here.
+    #    TODO: refine here.
     dictListPreview.dialog 'close'
 
     $.blockUI css: {backgroundColor: '#fff'}, overlayCSS: {opacity: 0.2}
@@ -190,9 +176,8 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
       if(json.status != 0)
         $.msgBox json.message, null, {title: c18n.error}
         return
-#      $.msgBox json.message, null, {title: c18n.error}
+      #      $.msgBox json.message, null, {title: c18n.error}
       alert 'Import successful.'
-
 
 
   dictPreviewStringSettings = $('#dictPreviewStringSettingsDialog').dialog {
@@ -231,7 +216,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   dictPreviewStringSettings: dictPreviewStringSettings
   dictListPreview: dictListPreview
   stringSettings: stringSettings
-  newProduct: newProduct
-  newProductRelease: newProductRelease
-  newOrAddApplication: newOrAddApplication
+  newProductVersion: newProductVersion
+  newAppVersion: newAppVersion
+  addApplication: addApplication
   langSettings: langSettings

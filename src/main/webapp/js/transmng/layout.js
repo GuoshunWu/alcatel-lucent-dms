@@ -68,7 +68,7 @@
             _this = this;
           info = grid.getTotalSelectedRowInfo();
           tableType = grid.getTableType();
-          nums = info.selectedNum;
+          nums = info.rowIds.length;
           $("#dictSelected").html("<b>" + nums + "</b>");
           if ('app' === tableType) {
             nums = -1;
@@ -90,7 +90,7 @@
           {
             text: c18n.create,
             click: function() {
-              var languages;
+              var dicts, langids, languages, name;
               languages = ($(":checkbox[name='languages']", this).map(function() {
                 if (this.checked) {
                   return {
@@ -105,7 +105,29 @@
                 });
                 return;
               }
-              return $(this).dialog("close");
+              name = $('#taskName').val();
+              if ('' === name) {
+                return;
+              }
+              langids = $(languages).map(function() {
+                return this.id;
+              }).get().join(',');
+              dicts = $(grid.getTotalSelectedRowInfo().rowIds).map(function() {
+                return this;
+              }).get().join(',');
+              return $.post('/task/create-task', {
+                prod: $('#productRelease').val(),
+                language: langids,
+                dict: dicts,
+                name: name
+              }, function(json) {
+                var title;
+                title = json.status !== 0 ? c18n.error : c18n.info;
+                $.msgBox(json.message, null, {
+                  title: title
+                });
+                return $(this).dialog("close");
+              });
             }
           }, {
             text: c18n.cancel,
@@ -141,7 +163,9 @@
       };
     };
     createSelects = function() {
-      $.getJSON('rest/products/trans/productbases', {}, function(json) {
+      $.getJSON('rest/products', {
+        prop: 'id,name'
+      }, function(json) {
         $('#productBase').append(new Option(c18n.select.product.tip, -1));
         return $('#productBase').append($(json).map(function() {
           return new Option(this.name, this.id);
@@ -152,7 +176,10 @@
         if (parseInt($('#productBase').val()) === -1) {
           return false;
         }
-        return $.getJSON("rest/products/" + ($('#productBase').val()), {}, function(json) {
+        return $.getJSON("/rest/products/version", {
+          base: $(this).val(),
+          prop: 'id,version'
+        }, function(json) {
           $('#productRelease').append(new Option(c18n.select.release.tip, -1));
           $('#productRelease').append($(json).map(function() {
             return new Option(this.version, this.id);
@@ -192,7 +219,7 @@
         require('jqmsgbox');
         info = grid.getTotalSelectedRowInfo();
         type = $(':radio[name=viewOption][checked]').val();
-        if (!info.selectedNum) {
+        if (!info.rowIds.length) {
           $.msgBox(i18n.msgbox.createtranstask.msg.format(c18n[grid.getTableType()]), null, {
             title: c18n.warning
           });

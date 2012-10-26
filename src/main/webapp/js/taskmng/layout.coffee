@@ -4,7 +4,7 @@ define ['jqlayout', 'taskmng/task_grid','require','i18n!nls/common', 'taskmng/di
   $("#optional-container").layout {resizable: true, closable: true}
 
   # selects on summary panel
-  $.getJSON 'rest/products/trans/productbases', {}, (json)->
+  $.getJSON 'rest/products', {prop:'id,name'}, (json)->
     $('#productBase').append new Option(c18n.select.product.tip, -1)
     $('#productBase').append $(json).map ()->new Option @name, @id
 
@@ -13,7 +13,7 @@ define ['jqlayout', 'taskmng/task_grid','require','i18n!nls/common', 'taskmng/di
     $('#productRelease').empty()
     return false if parseInt($('#productBase').val()) == -1
 
-    $.getJSON "rest/products/#{$('#productBase').val()}", {}, (json)->
+    $.getJSON "/rest/products/version", {base:$(@).val(),prop:'id,version'}, (json)->
       $('#productRelease').append new Option(c18n.select.release.tip, -1)
       $('#productRelease').append $(json).map ()->new Option @version, @id
       $('#productRelease').trigger "change"
@@ -30,8 +30,7 @@ define ['jqlayout', 'taskmng/task_grid','require','i18n!nls/common', 'taskmng/di
     if !param.release.id || parseInt(param.release.id) == -1
     #        $.msgBox i18n.select.release.msg, null, title: i18n.select.release.msgtitle
       return false
-    alert 'Refresh grid.'
-#    grid.productReleaseChanged param
+    grid.productVersionChanged param
 
   # file uploader
   ($("#progressbar").draggable({grid: [50, 20], opacity: 0.35}).css({

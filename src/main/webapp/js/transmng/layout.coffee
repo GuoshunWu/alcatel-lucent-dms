@@ -38,7 +38,7 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
       info = grid.getTotalSelectedRowInfo()
       #      tableType is app or dict
       tableType = grid.getTableType()
-      nums = info.selectedNum
+      nums = info.rowIds.length
 
       $("#dictSelected").html "<b>#{nums}</b>"
 
@@ -59,13 +59,19 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
     buttons: [
       {text: c18n.create
       click: ->
-        languages = ($(":checkbox[name='languages']",@).map -> {id: @id, name: @value} if @checked).get()
+        languages = ($(":checkbox[name='languages']", @).map -> {id: @id, name: @value} if @checked).get()
         if(languages.length == 0)
           $.msgBox (i18n.msgbox.createtranstask.msg.format c18n.language), null, title: (c18n.warning)
           return
-#          todo: create task
-
-        $(@).dialog "close"
+        name = $('#taskName').val()
+        return if '' == name
+        langids = $(languages).map(
+          ()->@id).get().join ','
+        dicts = $(grid.getTotalSelectedRowInfo().rowIds).map(()->@).get().join(',')
+        $.post '/task/create-task', {prod: $('#productRelease').val(), language: langids, dict: dicts, name: name }, (json)->
+          title = if(json.status != 0) then c18n.error else c18n.info
+          $.msgBox json.message, null, {title: title}
+          $(@).dialog "close"
       }
       {text: c18n.cancel, click: -> $(@).dialog "close"}
     ]
@@ -83,7 +89,7 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
 
   createSelects = ->
   # selects on summary panel
-    $.getJSON 'rest/products/trans/productbases', {}, (json)->
+    $.getJSON 'rest/products', {prop: 'id,name'}, (json)->
       $('#productBase').append new Option(c18n.select.product.tip, -1)
       $('#productBase').append $(json).map ()->new Option @name, @id
 
@@ -92,7 +98,7 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
       $('#productRelease').empty()
       return false if parseInt($('#productBase').val()) == -1
 
-      $.getJSON "rest/products/#{$('#productBase').val()}", {}, (json)->
+      $.getJSON "/rest/products/version", {base: $(@).val(), prop: 'id,version'}, (json)->
         $('#productRelease').append new Option(c18n.select.release.tip, -1)
         $('#productRelease').append $(json).map ()->new Option @version, @id
         $('#productRelease').trigger "change"
@@ -118,7 +124,7 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
       require('jqmsgbox')
       info = grid.getTotalSelectedRowInfo()
       type = $(':radio[name=viewOption][checked]').val()
-      if !info.selectedNum
+      if !info.rowIds.length
         $.msgBox (i18n.msgbox.createtranstask.msg.format c18n[grid.getTableType()]), null, title: c18n.warning
         return
       taskDialog.dialog "open"

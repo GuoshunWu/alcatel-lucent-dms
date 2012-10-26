@@ -280,7 +280,6 @@
         });
         return {
           rowIds: selectedRowIds,
-          selectedNum: selectedRowIds.length,
           totalLabels: count
         };
       },

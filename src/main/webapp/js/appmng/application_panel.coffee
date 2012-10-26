@@ -5,6 +5,7 @@ define (require)->
 
   require 'jqupload'
   require 'iframetransport'
+  dialogs = require 'appmng/dialogs'
 
   grid = require 'appmng/dictionary_grid'
   i18n = require 'i18n!nls/appmng'
@@ -12,8 +13,20 @@ define (require)->
 
   appInfo = {}
 
+  $("#newAppVersion").button({text: false, label: '&nbsp;', icons: {primary: "ui-icon-plus"}}).click (e) =>
+    dialogs.newAppVersion.dialog("open")
+
+  $("#removeAppVersion").button({text: false, label: '&nbsp;', icons: {primary: "ui-icon-minus"}}).click (e) =>
+    id = $("#selAppVersion").val()
+    return if !id
+    $.post '/app/remove-application', {id: id, permanent: 'true'}, (json)->
+      if json.status != 0
+        $.msgBox json.message, null, {title: c18n.error}
+        return
+      $("#selAppVersion option:selected").remove().trigger 'change'
+
   $("#selAppVersion").change (e)->
-    appInfo.app={version: $("option:selected", @).text(), id:if @value then @value else -1}
+    appInfo.app = {version: $("option:selected", @).text(), id: if @value then @value else -1}
     grid.appChanged appInfo
 
   ($("#progressbar").draggable({grid: [50, 20], opacity: 0.35}).css({
@@ -58,11 +71,16 @@ define (require)->
     $('#dictListPreviewDialog').dialog 'open'
   }
 
+  getApplicationSelectOptions: ()->$('#selAppVersion').children('option').clone(true)
+  addNewApplication: (app) ->
+    newOption = new Option app.version, app.id
+    newOption.selected = true
+    $('#selAppVersion').append(newOption).trigger 'change'
   refresh: (info)->
     $('#appDispProductName').html info.parent.text
     $('#appDispAppName').html info.text
 
-    appInfo.base={text:info.text, id:info.id}
+    appInfo.base = {text: info.text, id: info.id}
 
     $.getJSON "rest/applications/apps/#{info.id}", {}, (json)->
       $("#selAppVersion").empty().append ($(json).map ()-> new Option @version, @id)
