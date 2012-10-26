@@ -30,5 +30,23 @@ public interface TaskService {
 	 * @param taskId task id
 	 */
 	void generateTaskFiles(String targetDir, Long taskId);
+	
+	/**
+	 * Receive translation result from an extracted file folder
+	 * @param taskId task id
+	 * @param taskDir translation task files folder
+	 * @return Task object
+	 * @throws BusinessException
+	 */
+	Task receiveTaskFiles(Long taskId, String taskDir) throws BusinessException;
+	
+	/**
+	 * Apply translation results in the task to context dictionaries.
+	 * Only translations which are different than their orginal values will be applied.
+	 * @param taskId task id
+	 * @return Task object
+	 * @throws BusinessException
+	 */
+	Task applyTask(Long taskId) throws BusinessException;
 
 }

@@ -58,6 +58,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     public Long deleteApplication(Long appId) {
+    	Application app = (Application) dao.retrieve(Application.class, appId);
+    	if (app.getDictionaries() != null && app.getDictionaries().size() > 0) {
+    		throw new BusinessException(BusinessException.APPLICATION_NOT_EMPTY);
+    	}
     	// remove links to products
     	String hql = "select distinct p from Product p join p.applications as a where a.id=:id";
     	Map param = new HashMap();
@@ -66,23 +70,8 @@ public class ProductServiceImpl implements ProductService {
     	for (Product prod : products) {
     		prod.removeApplication(appId);
     	}
-    	Application app = (Application) dao.retrieve(Application.class, appId);
-    	ApplicationBase appBase = app.getBase();
-    	
-    	// remove links to dictionaries
-    	app.setDictionaries(null);
-    	
     	// delete application
     	dao.delete(app);
-    	
-    	// delete appBase if it doesn't contain other application
-/*
-    	if (appBase.getApplications() == null || appBase.getApplications().size() == 0 ||
-    			appBase.getApplications().size() == 1 && appBase.getApplications().iterator().next().getId().equals(appId)) {
-    		dao.delete(appBase);
-            return appBase.getId();
-    	}
-*/
         return null;
     }
     

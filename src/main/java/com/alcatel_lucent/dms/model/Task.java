@@ -13,6 +13,7 @@ public class Task extends BaseEntity {
 	private Product product;
 	private Date createTime;
 	private Date lastUpdateTime;
+	private Date lastApplyTime;
 	private int status;
 	private Collection<TaskDetail> details;
 	
@@ -51,5 +52,11 @@ public class Task extends BaseEntity {
 	}
 	public void setDetails(Collection<TaskDetail> details) {
 		this.details = details;
+	}
+	public Date getLastApplyTime() {
+		return lastApplyTime;
+	}
+	public void setLastApplyTime(Date lastApplyTime) {
+		this.lastApplyTime = lastApplyTime;
 	}
 }

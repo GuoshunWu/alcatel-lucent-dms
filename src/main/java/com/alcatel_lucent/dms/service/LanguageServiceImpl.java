@@ -103,4 +103,12 @@ public class LanguageServiceImpl extends BaseServiceImpl implements LanguageServ
         }
         return alCode.getLanguage();
     }
+
+	@Override
+	public Language findLanguageByName(String name) {
+		String hql = "from Language where name=:name";
+		Map param = new HashMap();
+		param.put("name", name);
+		return (Language) dao.retrieveOne(hql, param);
+	}
 }

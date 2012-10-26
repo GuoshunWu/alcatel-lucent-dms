@@ -187,13 +187,14 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                 rowCount++;
 //                println(Util.jsonFormat(rowContainer.toString()));
             }
-            inp.close();
         } catch (FileNotFoundException e) {
             throw new BusinessException(BusinessException.FILE_NOT_FOUND, fileName);
         } catch (IOException e) {
             throw new SystemError(e.getMessage());
         } catch (InvalidFormatException e) {
             throw new BusinessException(BusinessException.INVALID_EXCEL_FILE, fileName);
+        }  finally {
+        	if (inp != null) try {inp.close();} catch (Exception e) {}
         }
         return rowCount;
     }

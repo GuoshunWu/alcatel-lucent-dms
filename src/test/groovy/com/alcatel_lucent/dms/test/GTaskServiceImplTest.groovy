@@ -50,5 +50,16 @@ class GTaskServiceImplTest {
 		String dir = "d:/temp/task_test"
 		taskService.generateTaskFiles(dir, 2);
 	}
+	
+	@Test
+	void testReceiveTaskFiles() {
+		String dir = "d:/temp/task_test"
+		taskService.receiveTaskFiles(2, dir);
+	}
+	
+	@Test
+	void testApplyTask() {
+		taskService.applyTask(2);
+	}
 
 }
