@@ -9,6 +9,7 @@
 		<property name="name" type="string" column="NAME" />
 		<property name="createTime" type="java.util.Date" column="CREATE_TIME" />
 		<property name="lastUpdateTime" type="java.util.Date" column="LAST_UPDATE_TIME" />
+		<property name="lastApplyTime" type="java.util.Date" column="LAST_APPLY_TIME" />
 		<property name="status" type="int" column="STATUS" />
 
         <many-to-one name="product" class="Product" column="PRODUCT_ID" />

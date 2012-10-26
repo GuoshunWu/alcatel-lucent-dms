@@ -72,7 +72,8 @@ public interface ProductService {
     Long createApplication(Long appBaseId, String version, Long inheritAppId) throws BusinessException;
     
     /**
-     * Remove an application from all products, and delete it.
+     * Delete an application and remove it from products
+     * The application must not contain any dictionary.
      * AppBase is also removed if no other application.
      * @param appId
      * @return ApplicationBase id of this application that was deleted or null if base ApplicationBase was not be deleted.

@@ -1,13 +1,16 @@
 package com.alcatel_lucent.dms.service;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
@@ -18,17 +21,21 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alcatel_lucent.dms.BusinessException;
+import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.SystemError;
+import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Language;
 import com.alcatel_lucent.dms.model.Product;
 import com.alcatel_lucent.dms.model.Task;
 import com.alcatel_lucent.dms.model.TaskDetail;
 import com.alcatel_lucent.dms.model.Text;
 import com.alcatel_lucent.dms.model.Translation;
+import com.alcatel_lucent.dms.service.TextServiceImpl.ExcelFileHeader;
 import com.alcatel_lucent.dms.util.Util;
 
 @Service("taskService")
@@ -40,7 +47,25 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 
 	@Autowired
 	private LanguageService langService;
-	 
+	
+	@Autowired
+	private TextService textService;
+	
+	enum ExcelFileHeader{
+        LABEL, CONTEXT, MAX_LEN, DESCRIPTION, REFERENCE,TRANSLATION, REMARKS
+    }
+	private static final Map<ExcelFileHeader,String> headerMap=new HashMap<ExcelFileHeader, String>();
+    static{
+    	
+        headerMap.put(ExcelFileHeader.LABEL, "Label");
+        headerMap.put(ExcelFileHeader.CONTEXT, "Context");
+        headerMap.put(ExcelFileHeader.MAX_LEN, "Max length");
+        headerMap.put(ExcelFileHeader.DESCRIPTION, "Description");
+        headerMap.put(ExcelFileHeader.REFERENCE, "Reference text");
+        headerMap.put(ExcelFileHeader.TRANSLATION, "Translation");
+        headerMap.put(ExcelFileHeader.REMARKS, "Remarks");
+    }
+    
 	@Override
 	public Task createTask(Long productId, String name,
 			Collection<Long> dictIds, Collection<Long> languageIds) {
@@ -164,7 +189,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 		
 		// TODO create statistics file
 	}
-
+	
 	private void generateTaskFile(String targetDir, String languageName,
 			String contextName, ArrayList<TaskDetail> taskDetails, ArrayList<String> existingFilenames) {
 		File dir = new File(targetDir, languageName);
@@ -199,13 +224,13 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 		Sheet sheet = wb.createSheet(languageName);
 		sheet.createFreezePane( 0, 1, 0, 1 );
 		Row row = sheet.createRow(0);
-		createCell(row, 0, "Label", styleHead);
-		createCell(row, 1, "Context", styleHead);
-		createCell(row, 2, "Max length", styleHead);
-		createCell(row, 3, "Description", styleHead);
-		createCell(row, 4, "Reference text", styleHead);
-		createCell(row, 5, "Translation", styleHead);
-		createCell(row, 6, "Remarks", styleHead);
+		createCell(row, 0, headerMap.get(ExcelFileHeader.LABEL), styleHead);
+		createCell(row, 1, headerMap.get(ExcelFileHeader.CONTEXT), styleHead);
+		createCell(row, 2, headerMap.get(ExcelFileHeader.MAX_LEN), styleHead);
+		createCell(row, 3, headerMap.get(ExcelFileHeader.DESCRIPTION), styleHead);
+		createCell(row, 4, headerMap.get(ExcelFileHeader.REFERENCE), styleHead);
+		createCell(row, 5, headerMap.get(ExcelFileHeader.TRANSLATION), styleHead);
+		createCell(row, 6, headerMap.get(ExcelFileHeader.REMARKS), styleHead);
 		sheet.setColumnWidth(4, 40 * 256);
 		sheet.setColumnWidth(5, 40 * 256);
 		sheet.setColumnWidth(6, 20 * 256);
@@ -269,5 +294,175 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 		contextName = contextName.replace('>', '_');
 		contextName = contextName.replace('|', '_');
 		return contextName;
+	}
+	
+	public Task receiveTaskFiles(Long taskId, String taskDir) throws BusinessException {
+		log.info("Receive task files from " + taskDir + " ...");
+		Task task = (Task) dao.retrieve(Task.class, taskId);
+		if (task.getStatus() == Task.STATUS_CLOSED) {
+			throw new BusinessException(BusinessException.INVALID_TASK_STATUS);
+		}
+		File rootDir = new File(taskDir);
+		if (!rootDir.exists() || !rootDir.isDirectory()) {
+			throw new SystemError("Failed to open task folder '" + taskDir + "'.");
+		}
+		File[] subDirs = rootDir.listFiles();
+		for (File dir : subDirs) {
+			if (dir.isDirectory()) {
+				Language language = langService.findLanguageByName(dir.getName());
+				if (language == null) {
+					throw new BusinessException(BusinessException.UNKNOWN_LANG_NAME, dir.getName());
+				}
+				for (File taskFile : dir.listFiles()) {
+					if (taskFile.isFile() && taskFile.getName().toLowerCase().endsWith(".xls")) {
+						Map<String, Map<String, String>> transResult = receiveTaskFile(task, language, taskFile);
+						for (String contextName : transResult.keySet()) {
+							updateTaskDetails(task, language, contextName, transResult.get(contextName));
+						}
+					}
+				}
+			}
+		}
+		task.setLastUpdateTime(new Date());
+		return task;
+	}
+	
+	/**
+	 * Update task details.
+	 * @param task task
+	 * @param language language
+	 * @param contextName context name
+	 * @param translationMap map of reference-translation pairs
+	 */
+	private void updateTaskDetails(Task task, Language language, String contextName,
+			Map<String, String> translationMap) {
+		String hql = "from TaskDetail where task.id=:taskId" +
+				" and language.id=:languageId and text.context.name=:contextName";
+		Map param = new HashMap();
+		param.put("taskId", task.getId());
+		param.put("languageId", language.getId());
+		param.put("contextName", contextName);
+		Collection<TaskDetail> details = dao.retrieve(hql, param);
+		for (TaskDetail td : details) {
+			td.setNewTranslation(translationMap.get(td.getText().getReference()));
+		}
+	}
+
+	/**
+	 * Read a task file.
+	 * @param task task
+	 * @param language language
+	 * @param taskFile task file
+	 * @return first level key is context name, second level key is reference text, value is translation
+	 */
+	private Map<String, Map<String, String>> receiveTaskFile(Task task, Language language, File taskFile) {
+		log.info("Receiving task file " + taskFile + " ...");
+        //file is excel file
+        FileInputStream inp = null;
+        Map<String, Map<String, String>> result = new HashMap<String, Map<String, String>>();
+        try {
+            inp = new FileInputStream(taskFile);
+            Workbook wb = WorkbookFactory.create(inp);
+            Sheet sheet = wb.getSheetAt(0);
+            Row header = sheet.getRow(sheet.getFirstRowNum());
+            int columnCount = header.getLastCellNum();
+            /**
+             * the header in excel file need to be put into the  headerMap which is a member of this class.
+             * */
+            Map<String, Integer> cellIndexMap = new HashMap<String, Integer>();
+            for (int i = 0; i < columnCount; ++i) {
+                String value = header.getCell(i).getStringCellValue();
+                cellIndexMap.put(value, i);
+            }
+            if (!cellIndexMap.containsKey(headerMap.get(ExcelFileHeader.CONTEXT)) ||
+            		!cellIndexMap.containsKey(headerMap.get(ExcelFileHeader.REFERENCE)) ||
+            		!cellIndexMap.containsKey(headerMap.get(ExcelFileHeader.TRANSLATION))) {
+            	throw new BusinessException(BusinessException.INVALID_TASK_FILE, language.getName() + "/" + taskFile.getName());
+            }
+            Row row;
+            for (int dataIndex = sheet.getFirstRowNum() + 1; (null != (row = sheet.getRow(dataIndex))); ++dataIndex) {
+                String context = row.getCell(cellIndexMap.get(headerMap.get(ExcelFileHeader.CONTEXT))).getStringCellValue();
+                String reference = row.getCell(cellIndexMap.get(headerMap.get(ExcelFileHeader.REFERENCE))).getStringCellValue();
+                String translation = row.getCell(cellIndexMap.get(headerMap.get(ExcelFileHeader.TRANSLATION))).getStringCellValue();
+                if (context == null || context.isEmpty() || reference == null) {
+                	throw new BusinessException(BusinessException.INVALID_TASK_FILE, language.getName() + "/" + taskFile.getName());
+                }
+                Map<String, String> transMap = result.get(context);
+                if (transMap == null) {
+                	transMap = new HashMap<String, String>();
+                	result.put(context, transMap);
+                }
+                transMap.put(reference, translation);
+            }
+            return result;
+        } catch (Exception e) {
+        	e.printStackTrace();
+        	log.error(e);
+        	throw new SystemError(e);
+        } finally {
+        	if (inp != null) try {inp.close();} catch (Exception e) {}
+        }
+	}
+
+	@Override
+	public Task applyTask(Long taskId) throws BusinessException {
+		log.info("Applying task: " + taskId);
+		Task task = (Task) dao.retrieve(Task.class,taskId);
+		if (task.getStatus() == Task.STATUS_CLOSED || task.getLastUpdateTime() == null) {
+			throw new BusinessException(BusinessException.INVALID_TASK_STATUS);
+		}
+		Collection<Context> contexts = getTaskContexts(taskId);
+		int count = 0;
+		for (Context context : contexts) {
+			count += applyTask(task, context);
+		}
+		task.setLastApplyTime(new Date());
+		log.info("" + count + " translation results were applied.");
+		return task;
+	}
+
+	private Collection<Context> getTaskContexts(Long taskId) {
+		String hql = "select distinct obj.text.context from TaskDetail obj where obj.task.id=:taskId";
+		Map param = new HashMap();
+		param.put("taskId", taskId);
+		return dao.retrieve(hql, param);
+	}
+
+	/**
+	 * Apply translation task result by context.
+	 * @param task task
+	 * @param context context
+	 * @return number of translations applied
+	 */
+	private int applyTask(Task task, Context context) {
+		String hql = "from TaskDetail where task.id=:taskId and text.context.id=:contextId" +
+				" and origTranslation<>newTranslation";
+		Map param = new HashMap();
+		param.put("taskId", task.getId());
+		param.put("contextId", context.getId());
+		Collection<TaskDetail> details = dao.retrieve(hql, param);
+		Map<String, Text> textMap = new HashMap<String, Text>();
+		int count = 0;
+		for (TaskDetail td : details) {
+			if (td.getNewTranslation() == null || td.getNewTranslation().trim().isEmpty()) {
+				continue;
+			}
+			Text text = textMap.get(td.getText().getReference());
+			if (text == null) {
+				text = new Text();
+				text.setReference(td.getText().getReference());
+				textMap.put(td.getText().getReference(), text);
+			}
+			Translation trans = new Translation();
+			trans.setTranslation(td.getNewTranslation());
+			trans.setLanguage(td.getLanguage());
+			trans.setStatus(Translation.STATUS_TRANSLATED);
+			text.addTranslation(trans);
+			count++;
+		}
+		if (count > 0) {
+			textService.updateTranslations(context.getId(), textMap.values(), Constants.TRANSLATION_MODE);
+		}
+		return count;
 	}
 }

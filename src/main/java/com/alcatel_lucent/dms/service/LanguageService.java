@@ -28,4 +28,6 @@ public interface LanguageService {
      * @param languageCode language code
      * */
     Language getLanguage(String languageCode);
+
+	Language findLanguageByName(String name);
 }
