@@ -28,7 +28,7 @@ define (require, util, dialogs, i18n)->
   }
 
   handlers =
-    'Sting':
+    'String':
       title: i18n.dialog.stringsettings.title, handler: (rowData)->
         dialogs.stringSettings.data "param", rowData
         dialogs.stringSettings.dialog 'open'
@@ -141,6 +141,6 @@ define (require, util, dialogs, i18n)->
       [jsonfromServer.status == 0 , jsonfromServer.message, -1]
     }
   appChanged: (param)->
-    url = "rest/dict?app=#{param.app.id}&format=grid&prop=languageReferenceCode,base.name,version,base.format,base.encoding,labelNum"
-    dicGrid.setGridParam({url: url, datatype: "json"}).trigger("reloadGrid")
+    prop = "languageReferenceCode,base.name,version,base.format,base.encoding,labelNum"
+    dicGrid.setGridParam(url: 'rest/dict', postData: {app: param.app.id, format: 'grid', prop: prop}).trigger "reloadGrid"
     dicGrid.setCaption "Dictionary for Application #{param.base.text} version #{param.app.version}"

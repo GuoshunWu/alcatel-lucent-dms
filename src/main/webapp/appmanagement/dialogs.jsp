@@ -2,10 +2,6 @@
 <%@ page contentType="text/html;charset=utf-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
-<div id="newProductDialog" title="<s:text name="appmng.newproductbase"/> ">
-    <span><s:text name="product.name"/><input id="productName" value="" type="text"/></span>
-</div>
-
 <div id="newProductReleaseDialog" title="<s:text name="appmng.newproduct"/>">
     <table>
         <tr>
@@ -19,7 +15,20 @@
     </table>
 </div>
 
-<div id="newOrAddApplicationDialog" title="<s:text name="appmng.addapp"/>">
+<div id="newApplicationVersionDialog" title="<s:text name="appmng.newapp"/>">
+    <table>
+        <tr>
+            <td><s:text name="application.version"/></td>
+            <td><input id="appVersionName" value="" type="text"/></td>
+        </tr>
+        <tr>
+            <td><s:text name="appmng.newapp.duplicate"/></td>
+            <td><select id="dupDictsVersion"></select></td>
+        </tr>
+    </table>
+</div>
+
+<div id="addApplicationDialog" title="<s:text name="appmng.addapp"/>">
     <table>
         <tr>
             <td><label><s:text name="application.name"/></label></td>
