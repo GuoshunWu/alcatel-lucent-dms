@@ -19,6 +19,7 @@ public class UtilTest {
 
     @Test
     public void testCreateZip() throws Exception {
-        Util.createZip(new File("D:/tmp/AR"),new File("D:/test/myTest.zip"));
+        Util.createZip(new File("D:/tmp/MyTest").listFiles(),new File("D:/test/myTest.zip"));
     }
+
 }

@@ -271,6 +271,14 @@ public class Util {
         }
     }
 
+    public static void createZip(File[] srcFiles, File zipFile) throws IOException{
+        ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFile));
+        for(File src: srcFiles){
+            writeZip(src, "", zos);
+        }
+        zos.close();
+    }
+    
     public static void createZip(File src, File zipFile) throws IOException {
         if (!zipFile.exists()) zipFile.createNewFile();
         ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFile));

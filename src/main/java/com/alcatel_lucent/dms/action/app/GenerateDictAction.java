@@ -73,16 +73,9 @@ public class GenerateDictAction extends JSONAction {
     public String performAction() throws Exception {
         String downTmpPath = tmpDownload + File.separator + "USER_" + dFmt.format(new Date());
         dictionaryService.generateDictFiles(downTmpPath, toIdList(dicts));
-/*
-        File[] tobeCompressed = new File(downTmpPath).listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                return pathname.isDirectory();
-            }
-        });
-*/
+
         File zipFile = new File(tmpDownload, filename);
-        Util.createZip(new File(downTmpPath), zipFile);
+        Util.createZip(new File(downTmpPath).listFiles(), zipFile);
 
         setFileLoc(zipFile.getAbsolutePath());
         setStatus(0);
