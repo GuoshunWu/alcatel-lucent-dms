@@ -2,16 +2,52 @@
 (function() {
 
   define(function(require) {
-    var $, appInfo, c18n, dctFileUpload, grid, i18n;
+    var $, appInfo, c18n, dctFileUpload, dialogs, grid, i18n,
+      _this = this;
     $ = require('jqueryui');
     require('appmng/langsetting_grid');
     require('appmng/stringsettings_grid');
     require('jqupload');
     require('iframetransport');
+    dialogs = require('appmng/dialogs');
     grid = require('appmng/dictionary_grid');
     i18n = require('i18n!nls/appmng');
     c18n = require('i18n!nls/appmng');
     appInfo = {};
+    $("#newAppVersion").button({
+      text: false,
+      label: '&nbsp;',
+      icons: {
+        primary: "ui-icon-plus"
+      }
+    }).click(function(e) {
+      return dialogs.newAppVersion.dialog("open");
+    });
+    $("#removeAppVersion").button({
+      text: false,
+      label: '&nbsp;',
+      icons: {
+        primary: "ui-icon-minus"
+      }
+    }).click(function(e) {
+      var id;
+      id = $("#selAppVersion").val();
+      if (!id) {
+        return;
+      }
+      return $.post('/app/remove-application', {
+        id: id,
+        permanent: 'true'
+      }, function(json) {
+        if (json.status !== 0) {
+          $.msgBox(json.message, null, {
+            title: c18n.error
+          });
+          return;
+        }
+        return $("#selAppVersion option:selected").remove().trigger('change');
+      });
+    });
     $("#selAppVersion").change(function(e) {
       appInfo.app = {
         version: $("option:selected", this).text(),
@@ -93,6 +129,15 @@
       }
     });
     return {
+      getApplicationSelectOptions: function() {
+        return $('#selAppVersion').children('option').clone(true);
+      },
+      addNewApplication: function(app) {
+        var newOption;
+        newOption = new Option(app.version, app.id);
+        newOption.selected = true;
+        return $('#selAppVersion').append(newOption).trigger('change');
+      },
       refresh: function(info) {
         $('#appDispProductName').html(info.parent.text);
         $('#appDispAppName').html(info.text);

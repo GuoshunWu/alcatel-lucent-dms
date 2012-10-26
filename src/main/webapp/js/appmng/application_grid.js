@@ -22,6 +22,7 @@
       pager: '#pager',
       rowNum: 10,
       rowList: [10, 20, 30],
+      multiselect: true,
       sortname: 'name',
       sortorder: 'asc',
       viewrecords: true,
@@ -101,30 +102,18 @@
     }, {}, {}, {
       reloadAfterSubmit: false,
       url: 'app/remove-application',
-      beforeShowForm: function(form) {
-        var permanent;
-        permanent = $('#permanentDeleteSignId', form);
-        if (permanent.length === 0) {
-          $("<tr><td>" + i18n.grid.permanenttext + "<td><input align='left' type='checkbox' id='permanentDeleteSignId'>").appendTo($("tbody", form));
-        }
-        return permanent != null ? permanent.removeAttr('checked') : void 0;
-      },
+      beforeShowForm: function(form) {},
       onclickSubmit: function(params, posdata) {
         var prodpnl, product;
         prodpnl = require('appmng/product_panel');
         product = prodpnl.getSelectedProduct();
         return {
-          productId: product.id,
-          permanent: Boolean($('#permanentDeleteSignId').attr("checked"))
+          productId: product.id
         };
       },
       afterSubmit: function(response, postdata) {
-        var apptree, jsonFromServer;
+        var jsonFromServer;
         jsonFromServer = eval("(" + response.responseText + ")");
-        apptree = require('appmng/apptree');
-        if (jsonFromServer.id) {
-          apptree.delApplictionBaseFromProductBase(jsonFromServer.id);
-        }
         return [0 === jsonFromServer.status, jsonFromServer.message];
       }
     });
@@ -133,7 +122,7 @@
       buttonicon: "ui-icon-plus",
       position: "first",
       onClickButton: function() {
-        return dialogs.newOrAddApplication.dialog("open");
+        return dialogs.addApplication.dialog("open");
       }
     });
     return {

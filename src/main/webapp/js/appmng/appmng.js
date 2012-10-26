@@ -7,5 +7,5 @@
  */
 
 require(['../config'], function (c) {
-    require(['appmng/apptree']);
+    require(['appmng/navigatetree']);
 });

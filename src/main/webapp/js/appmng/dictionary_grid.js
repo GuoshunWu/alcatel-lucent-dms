@@ -37,7 +37,7 @@
       }
     };
     handlers = {
-      'Sting': {
+      'String': {
         title: i18n.dialog.stringsettings.title,
         handler: function(rowData) {
           dialogs.stringSettings.data("param", rowData);
@@ -281,11 +281,15 @@
     });
     return {
       appChanged: function(param) {
-        var url;
-        url = "rest/dict?app=" + param.app.id + "&format=grid&prop=languageReferenceCode,base.name,version,base.format,base.encoding,labelNum";
+        var prop;
+        prop = "languageReferenceCode,base.name,version,base.format,base.encoding,labelNum";
         dicGrid.setGridParam({
-          url: url,
-          datatype: "json"
+          url: 'rest/dict',
+          postData: {
+            app: param.app.id,
+            format: 'grid',
+            prop: prop
+          }
         }).trigger("reloadGrid");
         return dicGrid.setCaption("Dictionary for Application " + param.base.text + " version " + param.app.version);
       }

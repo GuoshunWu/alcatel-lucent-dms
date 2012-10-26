@@ -1,6 +1,9 @@
 define (require)->
   $ = require 'jquery'
   grid = require 'appmng/application_grid'
+  dialogs = require 'appmng/dialogs'
+  require 'jqmsgbox'
+  c18n = require 'i18n!nls/common'
 
   URL = {
   # get product by it id url, append product id to this url
@@ -9,8 +12,22 @@ define (require)->
   localIds = {
   select_product_version: '#selVersion'
   new_product_version: '#newVersion'
+  remove_product_version: '#removeVersion'
   disp_product_name: '#dispProductName'
   }
+
+  $("#{localIds.new_product_version}").button({text: false, label: '&nbsp;', icons: {primary: "ui-icon-plus"}}).click () =>
+    dialogs.newProductVersion.dialog("open")
+
+  $("#{localIds.remove_product_version}").button({text: false, label: '&nbsp;', icons: {primary: "ui-icon-minus"}}).click () =>
+    id = $("#{localIds.select_product_version}").val()
+    return if !id
+    $.post '/app/remove-product', {id: id}, (json)->
+      if json.status != 0
+        $.msgBox json.message, null, {title: c18n.error}
+        return
+      $("#{localIds.select_product_version} option:selected").remove().trigger 'change'
+
 
   productInfo = {}
   # initial product version select
@@ -31,6 +48,11 @@ define (require)->
 
   getSelectedProduct: -> {version: $(localIds.select_product_version).find("option:selected").text(), id: $(localIds.select_product_version).val()}
   getProductSelectOptions: ->$(localIds.select_product_version).children('option').clone(true)
-
+  addNewProduct: (product)->
+    newOption = new Option product.version, product.id
+    newOption.selected = true
+    $(localIds.select_product_version).append(newOption).trigger 'change'
+  removeProduct: (product)->
+  #    $(localIds.select_product_version)
 
 

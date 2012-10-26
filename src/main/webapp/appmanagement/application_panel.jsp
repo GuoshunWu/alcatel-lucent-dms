@@ -16,7 +16,11 @@
                     <tr>
                         <td style="width: 70px"><s:text name="application"/></td>
                         <td style="width: 70px"><span id="appDispAppName"></span></td>
-                        <td><s:text name="version"/><select id="selAppVersion"></select></td>
+                        <td><s:text name="version"/><select id="selAppVersion"></select>
+                            <button id="newAppVersion" title="<s:text name="appmng.newapp"/> "></button>
+                            &nbsp;&nbsp;
+                            <button id="removeAppVersion" title="<s:text name="appmng.removeapp"/>"></button>
+                        </td>
                     </tr>
                 </table>
             </td>

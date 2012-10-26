@@ -2,17 +2,55 @@
 (function() {
 
   define(function(require) {
-    var $, URL, grid, localIds, productInfo;
+    var $, URL, c18n, dialogs, grid, localIds, productInfo,
+      _this = this;
     $ = require('jquery');
     grid = require('appmng/application_grid');
+    dialogs = require('appmng/dialogs');
+    require('jqmsgbox');
+    c18n = require('i18n!nls/common');
     URL = {
       get_product_by_base_id: '/rest/products/version'
     };
     localIds = {
       select_product_version: '#selVersion',
       new_product_version: '#newVersion',
+      remove_product_version: '#removeVersion',
       disp_product_name: '#dispProductName'
     };
+    $("" + localIds.new_product_version).button({
+      text: false,
+      label: '&nbsp;',
+      icons: {
+        primary: "ui-icon-plus"
+      }
+    }).click(function() {
+      return dialogs.newProductVersion.dialog("open");
+    });
+    $("" + localIds.remove_product_version).button({
+      text: false,
+      label: '&nbsp;',
+      icons: {
+        primary: "ui-icon-minus"
+      }
+    }).click(function() {
+      var id;
+      id = $("" + localIds.select_product_version).val();
+      if (!id) {
+        return;
+      }
+      return $.post('/app/remove-product', {
+        id: id
+      }, function(json) {
+        if (json.status !== 0) {
+          $.msgBox(json.message, null, {
+            title: c18n.error
+          });
+          return;
+        }
+        return $("" + localIds.select_product_version + " option:selected").remove().trigger('change');
+      });
+    });
     productInfo = {};
     $(localIds.select_product_version).change(function() {
       var product;
@@ -51,7 +89,14 @@
       },
       getProductSelectOptions: function() {
         return $(localIds.select_product_version).children('option').clone(true);
-      }
+      },
+      addNewProduct: function(product) {
+        var newOption;
+        newOption = new Option(product.version, product.id);
+        newOption.selected = true;
+        return $(localIds.select_product_version).append(newOption).trigger('change');
+      },
+      removeProduct: function(product) {}
     };
   });
 

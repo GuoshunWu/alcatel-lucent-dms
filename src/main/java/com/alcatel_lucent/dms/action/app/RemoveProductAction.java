@@ -7,8 +7,12 @@ import com.alcatel_lucent.dms.service.ProductService;
 public class RemoveProductAction extends JSONAction {
 	
 	private ProductService productService;
-	
-	private Long id;	// product id
+
+    public void setProductService(ProductService productService) {
+        this.productService = productService;
+    }
+
+    private Long id;	// product id
 
 	@Override
 	protected String performAction() throws Exception {
