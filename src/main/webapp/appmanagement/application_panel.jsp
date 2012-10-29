@@ -30,8 +30,8 @@
                 <table border="0" width="100%">
                     <tr>
                         <td style="width: 120px;">
-                            <%--@declare id="dctfileupload"--%><label for="dctFileUpload"><s:text
-                                name="appmng.deliverapp"/></label>
+                            <%--@declare id="dctfileupload"--%>
+                            <label for="dctFileUpload"><s:text name="appmng.deliverapp"/></label>
                         </td>
                         <td style="width: 100px;">
                             <div id="uploadBrower"></div>
@@ -65,7 +65,9 @@
                             </form>
                             <button id="generateDict">Generate dictionary</button>
 
-                            <button id="batchAddLanguage">Add language</button><button id="batchDelete">Delete</button></td>
+                            <button id="batchAddLanguage">Add language</button>
+                            <button id="batchDelete">Delete</button>
+                        </td>
                     </tr>
                 </table>
             </td>

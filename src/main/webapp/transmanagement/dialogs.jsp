@@ -3,6 +3,7 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
 
+
 <div id="createTranslationTaskDialog" title="<s:text name="transmng.dialogs.transtask.title"/>">
     <table width="100%" border="0">
         <%--<tr>--%>

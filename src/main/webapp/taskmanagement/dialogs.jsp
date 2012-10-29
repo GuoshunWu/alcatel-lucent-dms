@@ -3,6 +3,10 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
 
+<div id="progressbar" class="ui-widget-content">
+    <div id="barvalue" style="z-index: 1000;position: absolute;left:45%;"></div>
+</div>
+
 <div id="translationReportDialog" title="<s:text name="taskmng.dialogs.transreport.title"/>">
     <table border="0" width="100%">
         <tr><td>&nbsp;</td></tr>

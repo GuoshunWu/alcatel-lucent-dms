@@ -19,7 +19,7 @@ import java.util.Date;
  */
 @SuppressWarnings("serial")
 @ParentPackage("json-default")
-@Result(type="json", params={"noCache","true","ignoreHierarchy","false","includeProperties","fileLoc,message,status"})
+@Result(type = "json", params = {"noCache", "true", "ignoreHierarchy", "false", "includeProperties", "fileLoc,message,status"})
 public class GenerateTaskFilesAction extends JSONAction {
 
     private String filename;
@@ -30,7 +30,7 @@ public class GenerateTaskFilesAction extends JSONAction {
     private TaskService taskService;
     private SimpleDateFormat dFmt = new SimpleDateFormat("yyyyMMdd_HHmmss");
 
-    
+
     @Value("${dms.send.dir}")
     private String tmpDownload;
 
@@ -66,12 +66,11 @@ public class GenerateTaskFilesAction extends JSONAction {
     public String performAction() throws Exception {
         String downTmpPath = tmpDownload + File.separator + "USER_" + dFmt.format(new Date());
         taskService.generateTaskFiles(downTmpPath, id);
-//        ProductName_Version_translation_.zip
 
-//        File zipFile = new File(tmpDownload, filename);
-//        Util.createZip(new File(downTmpPath), zipFile);
-//
-//        setFileLoc(zipFile.getAbsolutePath());
+        File zipFile = new File(tmpDownload, filename);
+        Util.createZip(new File(downTmpPath).listFiles(), zipFile);
+
+        setFileLoc(zipFile.getAbsolutePath());
 
         setStatus(0);
         setMessage(getText("message.success"));

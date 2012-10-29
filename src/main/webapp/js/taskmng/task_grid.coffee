@@ -1,22 +1,18 @@
-define ['jqgrid', 'util', 'require', 'taskmng/dialogs', 'i18n!nls/taskmng', 'i18n!nls/common', 'blockui', 'jqmsgbox'], ($, util, require, dialogs, i18n, c18n)->
+define ['jqgrid', 'util', 'require', 'taskmng/dialogs', 'i18n!nls/taskmng', 'i18n!nls/common', 'blockui', 'jqmsgbox', 'jqupload', 'iframetransport'], ($, util, require, dialogs, i18n, c18n)->
   handlers =
     'Download': (param)->
-      console.log param
-      filename = "#{$('#appDispAppName').text()}_#{$('#selAppVersion option:selected').text()}_#{new Date().format 'yyyyMMdd_hhmmss'}.zip"
-      console.log filename
-      param.name
-      param.id
-#      $.blockUI css: {backgroundColor: '#fff'}, overlayCSS: {opacity: 0.2}
-#      $.post '/task/generate-task-files', {dicts: dicts.join(','), filename: filename}, (json)->
-#        $.unblockUI()
-#        ($.msgBox json.message, null, {title: c18n.error};return) if json.status != 0
+      filename = "#{$('#productBase option:selected').text()}_#{$('#productRelease option:selected').text()}_translation"
+      filename += "_#{new Date().format 'yyyyMMdd_hhmmss'}.zip"
 
+      $.blockUI css: {backgroundColor: '#fff'}, overlayCSS: {opacity: 0.2}
+      $.post '/task/generate-task-files', {id: param.id, filename: filename}, (json)->
+        $.unblockUI()
+        ($.msgBox json.message, null, {title: c18n.error};return) if json.status != 0
 
-    #      downloadForm = $('#downloadDict')
-    #      $('#fileLoc', downloadForm).val json.fileLoc
-    #      downloadForm.submit()
-
-
+        downloadForm = $('#downloadTaskFiles')
+        $('#fileLoc', downloadForm).val json.fileLoc
+        downloadForm.submit()
+    'Upload': (param)->
     'History…': (param)->
       alert 'History…'
       console.log param
@@ -45,7 +41,7 @@ define ['jqgrid', 'util', 'require', 'taskmng/dialogs', 'i18n!nls/taskmng', 'i18
     {name: 'lastUpdateTime', index: 'lastUpdateTime', width: 150, align: 'left'}
     {name: 'status', index: 'status', width: 80, align: 'left', editable: false, edittype: 'select',
     editoptions: {value: "0:#{i18n.task.open};1:#{i18n.task.closed}"}, formatter: 'select'}
-    {name: 'actions', index: 'actions', width: 240, align: 'center'}
+    {name: 'actions', index: 'actions', width: 280, align: 'center'}
   ]
   beforeProcessing: (data, status, xhr)->
   #   add actions
@@ -59,7 +55,8 @@ define ['jqgrid', 'util', 'require', 'taskmng/dialogs', 'i18n!nls/taskmng', 'i18
     $(data.rows).each (index)->
       rowData = @
       @cell[actIndex] = $(actions).map(
-        (index)->
+        (index, action)->
+          return "<span id='action_#{@}_#{rowData.id}_#{actIndex}'/>" if action == 'Upload'
           "<A id='action_#{@}_#{rowData.id}_#{actIndex}' style='color:blue'title='#{@}' href=#  >#{@}</A>"
       ).get().join('&nbsp;&nbsp;&nbsp;&nbsp;')
   gridComplete: ->
@@ -72,6 +69,46 @@ define ['jqgrid', 'util', 'require', 'taskmng/dialogs', 'i18n!nls/taskmng', 'i18
       rowData.id = rowid
 
       handlers[action] rowData
+
+
+    $('span[id^=action_]', @).button(label: 'Upload',
+      create: (e, ui)->
+        [_, _, rowid]=@id.split('_')
+
+        ($("#progressbar").draggable({grid: [50, 20], opacity: 0.35}).css({
+        'z-index': 100, width: 600, textAlign: 'center'
+        'position': 'absolute', 'top': '45%', 'left': '30%'}).progressbar {
+        change: (e, ui)->
+          value = ($(@).progressbar "value").toPrecision(4) + '%'
+          $('#barvalue', @).html(value).css {"display": "block", "textAlign": "center"}
+        }).hide()
+
+        fileInput = $("<input type='file' id='#{@id}_fileInput' name='upload' title='Upload task file'accept='application/zip' multiple/>").css({
+        position: 'absolute', top: -3, right: -3, border: '1px solid', borderWidth: '1px 1px 10px 0px',
+        opacity: 0, filter: 'alpha(opacity=0)', cursor: 'pointer'}).appendTo @
+
+        fileInput.fileupload {
+        type: 'POST'
+        url: "/task/receive-task-files?id=#{rowid}"
+        acceptFileTypes: /zip$/i
+        add: (e, data)->
+          data.submit()
+          $("#progressbar").show() if !$.browser.msie
+        progressall: (e, data)->
+          progress = data.loaded / data.total * 100
+          $('#progressbar').progressbar "value", progress
+        done: (e, data)->
+          $("#progressbar").hide() if !$.browser.msie
+          #    request handler
+          jsonFromServer = eval "(#{data.result})"
+
+          if(0 != jsonFromServer.status)
+            $.msgBox jsonFromServer.message, null, {title: c18n.error}
+            return
+          dialogs.transReport.data 'param', {id: rowid}
+          dialogs.transReport.dialog 'open'
+        }
+    ).css(overflow: 'hidden')
 
 
   afterCreate: (grid)->

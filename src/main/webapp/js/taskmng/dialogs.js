@@ -46,6 +46,24 @@
       autoOpen: false,
       width: 'auto',
       height: 'auto',
+      open: function() {
+        var param;
+        param = $(this).data('param');
+        return $.ajax('/rest/languages', {
+          async: false,
+          dataType: 'json',
+          data: {
+            task: param.id,
+            prop: 'id,name'
+          },
+          success: function(languages) {
+            return reportgrid.regenerateGrid({
+              id: param.id,
+              languages: languages
+            });
+          }
+        });
+      },
       buttons: [
         {
           text: 'Import',
