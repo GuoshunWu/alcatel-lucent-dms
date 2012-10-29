@@ -91,6 +91,7 @@
             text: c18n.create,
             click: function() {
               var dicts, langids, languages, name;
+              taskDialog = $(this);
               languages = ($(":checkbox[name='languages']", this).map(function() {
                 if (this.checked) {
                   return {
@@ -126,7 +127,7 @@
                 $.msgBox(json.message, null, {
                   title: title
                 });
-                return $(this).dialog("close");
+                return taskDialog.dialog("close");
               });
             }
           }, {

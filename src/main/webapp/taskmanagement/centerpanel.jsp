@@ -31,6 +31,13 @@
                         <div id="taskPager"/>
                     </td>
                 </tr>
+                <tr>
+                    <td>
+                        <form id="downloadTaskFiles" action="/app/download-app-dict" method="post">
+                            <input type="hidden" id="fileLoc" name="fileLoc"/>
+                        </form>
+                    </td>
+                </tr>
             </table>
         </td>
     </tr>
@@ -51,38 +58,11 @@
                     </td>
                     <td>
                         <button id='transReport'>TransReoprt</button>
-                        <style type="text/css">
-                            <!--
-                            .a1:link {
-                                color: #FF0000;
-                            }
-
-                            .a1:visited {
-                                color: #0000FF;
-                            }
-
-                            .a1:hover {
-                                color: #990000;
-                            }
-
-                            .a1:active {
-                                color: #993399;
-                            }
-
-                        </style>
-                        <a href="#" class="a1">test</a>
                         <button id='viewDetail'>viewDetail</button>
                     </td>
-                    <td style="width: 120px;">
-                        <%--@declare id="taskfileupload"--%><label for="taskFileUpload"><s:text
-                            name="appmng.deliverapp"/></label>
-                    </td>
-                    <td style="width: 100px;">
-                        <div id="uploadTask"></div>
-                    </td>
-                    <td>
-                        <span id="uploadTaskStatus">status</span>
-                    </td>
+                    <%--<td style="width: 100px;">--%>
+                        <%--<div id="uploadTask"></div>--%>
+                    <%--</td>--%>
                 </tr>
             </table>
         </td>

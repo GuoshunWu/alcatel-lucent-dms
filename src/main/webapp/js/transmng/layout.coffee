@@ -59,6 +59,7 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
     buttons: [
       {text: c18n.create
       click: ->
+        taskDialog=$(@)
         languages = ($(":checkbox[name='languages']", @).map -> {id: @id, name: @value} if @checked).get()
         if(languages.length == 0)
           $.msgBox (i18n.msgbox.createtranstask.msg.format c18n.language), null, title: (c18n.warning)
@@ -71,7 +72,7 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
         $.post '/task/create-task', {prod: $('#productRelease').val(), language: langids, dict: dicts, name: name }, (json)->
           title = if(json.status != 0) then c18n.error else c18n.info
           $.msgBox json.message, null, {title: title}
-          $(@).dialog "close"
+          taskDialog.dialog "close"
       }
       {text: c18n.cancel, click: -> $(@).dialog "close"}
     ]

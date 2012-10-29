@@ -2,42 +2,13 @@
 (function() {
 
   define(['jqgrid', 'util', 'require'], function($, util, require) {
-    var colModel, colNames, cols, groupHeaders, languages, transReportGrid;
-    languages = [
-      {
-        id: 2,
-        name: 'Arabic'
-      }, {
-        id: 6,
-        name: 'Chinese (China)'
-      }, {
-        id: 7,
-        name: 'Catalan (Spain)'
-      }, {
-        id: 8,
-        name: 'German (Germany)'
-      }, {
-        id: 9,
-        name: 'French (France)'
-      }, {
-        id: 10,
-        name: 'Spanish (Spain)'
-      }, {
-        id: 11,
-        name: 'Italian (Italy)'
-      }, {
-        id: 12,
-        name: 'Chinese (Taiwan)'
-      }
-    ];
-    cols = ['T', 'N'];
-    groupHeaders = [];
+    var colModel, colNames, grid, groupHeader;
     colNames = ['Dictionary', 'Total'];
     colModel = [
       {
         name: 'name',
         index: 'dict',
-        width: 100,
+        width: 500,
         editable: false,
         stype: 'select',
         align: 'left',
@@ -46,30 +17,13 @@
         name: 'total',
         index: 'total',
         width: 90,
-        editable: true,
+        editable: false,
         align: 'right',
         frozen: true
       }
     ];
-    $(languages).each(function(index, language) {
-      $.merge(colNames, cols);
-      $.merge(colModel, $(cols).map(function(index) {
-        return {
-          name: "" + language.name + "." + this,
-          sortable: false,
-          index: "s(" + language.id + ")[" + index + "]",
-          width: 40,
-          editable: false,
-          align: 'center'
-        };
-      }).get());
-      return groupHeaders.push({
-        startColumnName: "" + language.name + ".T",
-        numberOfColumns: cols.length,
-        titleText: "<bold>" + language.name + "</bold>"
-      });
-    });
-    transReportGrid = $("#reportGrid").jqGrid({
+    groupHeader = [];
+    grid = $("#reportGrid").jqGrid({
       url: 'json/transreportgrid.json',
       mtype: 'POST',
       postData: {},
@@ -85,24 +39,71 @@
       sortorder: 'asc',
       viewrecords: true,
       gridview: true,
-      multiselect: true,
+      multiselect: false,
       cellEdit: true,
       cellurl: '',
       colNames: colNames,
-      colModel: colModel
+      colModel: colModel,
+      groupHeaders: groupHeader,
+      afterCreate: function(grid) {
+        grid.setGroupHeaders({
+          useColSpanStyle: true,
+          groupHeaders: grid.getGridParam('groupHeaders')
+        });
+        grid.navGrid('#reportPager', {
+          edit: false,
+          add: false,
+          del: false,
+          search: false,
+          view: false
+        });
+        return grid.setFrozenColumns();
+      }
     });
-    transReportGrid.setGroupHeaders({
-      useColSpanStyle: true,
-      groupHeaders: groupHeaders
-    });
-    transReportGrid.navGrid('#reportPager', {
-      edit: false,
-      add: false,
-      del: false,
-      search: false,
-      view: false
-    });
-    return transReportGrid.setFrozenColumns();
+    grid.getGridParam('afterCreate')(grid);
+    return {
+      regenerateGrid: function(params) {
+        var cols, gridId, gridParam, newGrid;
+        gridId = '#reportGrid';
+        gridParam = $(gridId).jqGrid('getGridParam');
+        $(gridId).GridUnload('reportGrid');
+        cols = ['T', 'N'];
+        gridParam.colNames = colNames.slice(0);
+        gridParam.colModel = colModel.slice(0);
+        gridParam.groupHeader = groupHeader.slice(0);
+        $(params.languages).each(function(index, language) {
+          $.merge(gridParam.colNames, cols);
+          $.merge(gridParam.colModel, $(cols).map(function(index) {
+            return {
+              name: "" + language.name + "." + this,
+              sortable: false,
+              index: "s(" + language.id + ")[" + index + "]",
+              width: 40,
+              editable: false,
+              align: 'center'
+            };
+          }).get());
+          return gridParam.groupHeaders.push({
+            startColumnName: "" + language.name + ".T",
+            numberOfColumns: cols.length,
+            titleText: "<bold>" + language.name + "</bold>"
+          });
+        });
+        gridParam.url = '/rest/task/summary';
+        gridParam.postData = {
+          task: params.id,
+          format: 'grid',
+          prop: 'context.name,' + $(params.languages).map(function(index, language) {
+            return $([0, 1]).map(function(idx) {
+              return "s(" + language.id + ")[" + idx + "]";
+            }).get().join(',');
+          }).get().join(',')
+        };
+        delete gridParam.selarrrow;
+        newGrid = $(gridId).jqGrid(gridParam);
+        return gridParam.afterCreate(newGrid);
+      }
+    };
   });
 
 }).call(this);

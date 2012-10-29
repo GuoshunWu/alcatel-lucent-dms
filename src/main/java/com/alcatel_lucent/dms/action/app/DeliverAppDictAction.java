@@ -89,7 +89,7 @@ public class DeliverAppDictAction extends JSONAction {
         filename = dir.getName();
 
         setStatus(0);
-        setMessage("Success");
+        setMessage(getText("message.success"));
         return SUCCESS;
     }
 
