@@ -14,6 +14,7 @@ import com.alcatel_lucent.dms.model.ApplicationBase;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.Product;
 import com.alcatel_lucent.dms.model.ProductBase;
+import com.alcatel_lucent.dms.model.Task;
 
 /**
  * Created by IntelliJ IDEA.
@@ -97,6 +98,13 @@ public class ProductServiceImpl implements ProductService {
     	Product product = (Product) dao.retrieve(Product.class, productId);
     	if (product.getApplications() != null && product.getApplications().size() > 0) {
     		throw new BusinessException(BusinessException.PRODUCT_NOT_EMPTY);
+    	}
+    	String hql = "from Task where product.id=:productId";
+    	Map param = new HashMap();
+    	param.put("productId", productId);
+    	Collection<Task> tasks = dao.retrieve(hql, param);
+    	if (!tasks.isEmpty()) {
+    		throw new BusinessException(BusinessException.PRODUCT_CONTAINS_TASK);
     	}
     	dao.delete(product);
     }

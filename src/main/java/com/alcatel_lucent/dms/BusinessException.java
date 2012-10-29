@@ -59,6 +59,7 @@ public class BusinessException extends RuntimeException {
 	static public final int PRODUCT_ALREADY_EXISTS = 314;
 	static public final int APPLICATION_ALREADY_IN_PRODUCT = 315;
 	static public final int APPLICATION_NOT_EMPTY = 316;
+	static public final int PRODUCT_CONTAINS_TASK = 317;
 	
 	// task management
 	static public final int INVALID_TASK_STATUS = 401;
