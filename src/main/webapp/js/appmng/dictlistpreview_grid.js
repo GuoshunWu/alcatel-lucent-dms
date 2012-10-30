@@ -41,7 +41,7 @@
       gridview: true,
       multiselect: true,
       caption: i18n.grid.dictlistpreview.caption,
-      colNames: ['LangRefCode', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels', 'Action'],
+      colNames: ['LangRefCode', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels', 'Error', 'Warning', 'Action'],
       colModel: [
         {
           name: 'langrefcode',
@@ -87,6 +87,16 @@
           width: 20,
           align: 'center'
         }, {
+          name: 'error',
+          index: 'errorCount',
+          width: 20,
+          align: 'center'
+        }, {
+          name: 'warning',
+          index: 'warningCount',
+          width: 20,
+          align: 'center'
+        }, {
           name: 'action',
           index: 'action',
           width: 70,
@@ -95,7 +105,7 @@
         }
       ],
       beforeProcessing: function(data, status, xhr) {
-        var actIndex, actions, k, v;
+        var actIndex, actions, grid, k, v;
         actIndex = $(this).getGridParam('colNames').indexOf('Action');
         if ($(this).getGridParam('multiselect')) {
           --actIndex;
@@ -105,6 +115,7 @@
           v = handlers[k];
           actions.push(k);
         }
+        grid = this;
         return $(data.rows).each(function(index) {
           var rowData;
           rowData = this;
@@ -126,6 +137,16 @@
       gridComplete: function() {
         var grid;
         grid = $(this);
+        $("tr[class!='jqgfirstrow']", grid).each(function(index, row) {
+          var rowData;
+          rowData = grid.getRowData(row.id);
+          if (parseInt(rowData.warning) > 0) {
+            $(row).css('background', '#FFFFAA');
+          }
+          if (parseInt(rowData.error) > 0) {
+            return $(row).css('background', '#FFD2D2');
+          }
+        });
         return $('a[id^=action_]', this).click(function() {
           var a, action, col, rowData, rowid, _ref;
           _ref = this.id.split('_'), a = _ref[0], action = _ref[1], rowid = _ref[2], col = _ref[3];

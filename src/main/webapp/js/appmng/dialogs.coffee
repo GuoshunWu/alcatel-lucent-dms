@@ -25,9 +25,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   #  Create new product release dialog
   newProductVersion = $("##{ids.dialog.new_product_release}").dialog {
   autoOpen: false
-  height: 200
-  width: 500
-  modal: true
+  height: 200, width: 500, modal: true
   buttons: [
     {text: c18n.ok, click: ->
       url = 'app/create-product-release'
@@ -52,9 +50,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   #  Create new application release dialog
   newAppVersion = $("#newApplicationVersionDialog").dialog {
   autoOpen: false
-  height: 200
-  width: 500
-  modal: true
+  height: 200, width: 500, modal: true
   buttons: [
     {text: c18n.ok, click: ->
       url = '/app/create-application'
@@ -121,6 +117,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
 
   langSettings = $('#languageSettingsDialog').dialog {
   autoOpen: false
+  modal: true
   width: 'auto', height: 'auto', title: i18n.dialog.languagesettings.title
 
   open: (e, ui)->
@@ -134,6 +131,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   stringSettings = $('#stringSettingsDialog').dialog {
   autoOpen: false
   width: 'auto', height: 'auto', title: i18n.dialog.stringsettings.title
+  modal: true
   open: (e, ui)->
   # param must be attached to the dialog before the dialog open
     param = $(@).data "param"
@@ -150,6 +148,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
 
   dictListPreview = $('#dictListPreviewDialog').dialog {
   autoOpen: false
+  modal: true
   width: 'auto', height: 'auto', title: i18n.dialog.dictlistpreview.title
   open: ->
   #    param need to be initilize before the dialog open
@@ -158,7 +157,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
     postData =
       format: 'grid',
       handler: param.handler
-      prop: 'languageReferenceCode,base.name,version,base.format,base.encoding,labelNum'
+      prop: 'languageReferenceCode,base.name,version,base.format,base.encoding,labelNum,errorCount,warningCount'
     $('#dictListPreviewGrid').setGridParam(url: '/rest/delivery/dict', postData: postData).trigger 'reloadGrid'
   }
 
@@ -166,7 +165,6 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
     param = dictListPreview.data "param"
     postData = handler: param.handler, app: $('#selAppVersion').val()
 
-    #    TODO: refine here.
     dictListPreview.dialog 'close'
 
     $.blockUI css: {backgroundColor: '#fff'}, overlayCSS: {opacity: 0.2}
@@ -182,6 +180,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
 
   dictPreviewStringSettings = $('#dictPreviewStringSettingsDialog').dialog {
   autoOpen: false
+  modal: true
   width: 'auto', height: 'auto', title: i18n.dialog.dictpreviewstringsettings.title
   open: ->
     param = $(@).data 'param'
@@ -202,6 +201,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
 
   dictPreviewLangSettings = $('#dictPreviewLanguageSettingsDialog').dialog {
   autoOpen: false
+  modal: true
   width: 'auto', height: 'auto', title: i18n.dialog.languagesettings.title
   open: ->
     param = $(@).data 'param'

@@ -23,7 +23,7 @@ define (require, util, i18n)->
   viewrecords: true, cellEdit: true, cellurl: '/app/deliver-update-dict'
   gridview: true, multiselect: true
   caption: i18n.grid.dictlistpreview.caption
-  colNames: ['LangRefCode', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels', 'Action']
+  colNames: ['LangRefCode', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels','Error','Warning', 'Action']
   colModel: [
     {name: 'langrefcode', index: 'langrefcode', width: 55, align: 'center', hidden: true}
     {name: 'name', index: 'base.name', width: 200, editable: true, align: 'left'}
@@ -34,15 +34,19 @@ define (require, util, i18n)->
     {name: 'encoding', index: 'base.encoding', width: 40, editable: true, edittype: 'select',
     editoptions: {value: 'ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE'}, align: 'center'}
     {name: 'labelNum', index: 'labelNum', width: 20, align: 'center'}
+    {name: 'error', index: 'errorCount', width: 20, align: 'center'}
+    {name: 'warning', index: 'warningCount', width: 20, align: 'center'}
     {name: 'action', index: 'action', width: 70, editable: false, align: 'center'}
   ]
   beforeProcessing: (data, status, xhr)->
+
     actIndex = $(@).getGridParam('colNames').indexOf('Action')
     --actIndex if $(@).getGridParam('multiselect')
 
     actions = []
     actions.push k for k,v of handlers
 
+    grid=@
     $(data.rows).each (index)->
       rowData = @
       @cell[actIndex] = $(actions).map(
@@ -57,6 +61,14 @@ define (require, util, i18n)->
 
   gridComplete: ->
     grid = $(@)
+
+    #      high light error rows
+    $("tr[class!='jqgfirstrow']",grid).each (index,row)->
+      rowData = grid.getRowData(row.id)
+
+      $(row).css 'background','#FFFFAA' if parseInt(rowData.warning)>0
+      $(row).css 'background','#FFD2D2' if parseInt(rowData.error)>0
+
     $('a[id^=action_]', @).click ()->
       [a, action, rowid, col]=@id.split('_')
       rowData = grid.getRowData(rowid)

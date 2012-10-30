@@ -33,7 +33,6 @@
           return downloadForm.submit();
         });
       },
-      'Upload': function(param) {},
       'History…': function(param) {
         alert('History…');
         return console.log(param);
@@ -62,7 +61,8 @@
           }
           return $("#taskGrid").trigger('reloadGrid');
         });
-      }
+      },
+      'Upload': function(param) {}
     };
     taskGrid = $("#taskGrid").jqGrid({
       url: 'json/taskgrid.json',
@@ -140,9 +140,9 @@
           rowData = this;
           return this.cell[actIndex] = $(actions).map(function(index, action) {
             if (action === 'Upload') {
-              return "<span id='action_" + this + "_" + rowData.id + "_" + actIndex + "'/>";
+              return "<span id='upload_" + this + "_" + rowData.id + "_" + actIndex + "'></span>";
             }
-            return "<A id='action_" + this + "_" + rowData.id + "_" + actIndex + "' style='color:blue'title='" + this + "' href=#  >" + this + "</A>";
+            return "<a id='action_" + this + "_" + rowData.id + "_" + actIndex + "' style='color:blue'title='" + this + "' href=#  >" + this + "</A>";
           }).get().join('&nbsp;&nbsp;&nbsp;&nbsp;');
         });
       },
@@ -157,32 +157,32 @@
           rowData.id = rowid;
           return handlers[action](rowData);
         });
-        return $('span[id^=action_]', this).button({
+        ($("#progressbar").draggable({
+          grid: [50, 20],
+          opacity: 0.35
+        }).css({
+          'z-index': 100,
+          width: 600,
+          textAlign: 'center',
+          'position': 'absolute',
+          'top': '45%',
+          'left': '30%'
+        }).progressbar({
+          change: function(e, ui) {
+            var value;
+            value = ($(this).progressbar("value")).toPrecision(4) + '%';
+            return $('#barvalue', this).html(value).css({
+              "display": "block",
+              "textAlign": "center"
+            });
+          }
+        })).hide();
+        return $('span[id^=upload_]', this).button({
           label: 'Upload'
         }, {
           create: function(e, ui) {
             var fileInput, rowid, _, _ref;
             _ref = this.id.split('_'), _ = _ref[0], _ = _ref[1], rowid = _ref[2];
-            ($("#progressbar").draggable({
-              grid: [50, 20],
-              opacity: 0.35
-            }).css({
-              'z-index': 100,
-              width: 600,
-              textAlign: 'center',
-              'position': 'absolute',
-              'top': '45%',
-              'left': '30%'
-            }).progressbar({
-              change: function(e, ui) {
-                var value;
-                value = ($(this).progressbar("value")).toPrecision(4) + '%';
-                return $('#barvalue', this).html(value).css({
-                  "display": "block",
-                  "textAlign": "center"
-                });
-              }
-            })).hide();
             fileInput = $("<input type='file' id='" + this.id + "_fileInput' name='upload' title='Upload task file'accept='application/zip' multiple/>").css({
               position: 'absolute',
               top: -3,

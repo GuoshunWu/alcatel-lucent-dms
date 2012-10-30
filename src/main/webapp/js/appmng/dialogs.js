@@ -186,6 +186,7 @@
     });
     langSettings = $('#languageSettingsDialog').dialog({
       autoOpen: false,
+      modal: true,
       width: 'auto',
       height: 'auto',
       title: i18n.dialog.languagesettings.title,
@@ -209,6 +210,7 @@
       width: 'auto',
       height: 'auto',
       title: i18n.dialog.stringsettings.title,
+      modal: true,
       open: function(e, ui) {
         var param, postData;
         param = $(this).data("param");
@@ -232,6 +234,7 @@
     });
     dictListPreview = $('#dictListPreviewDialog').dialog({
       autoOpen: false,
+      modal: true,
       width: 'auto',
       height: 'auto',
       title: i18n.dialog.dictlistpreview.title,
@@ -244,7 +247,7 @@
         postData = {
           format: 'grid',
           handler: param.handler,
-          prop: 'languageReferenceCode,base.name,version,base.format,base.encoding,labelNum'
+          prop: 'languageReferenceCode,base.name,version,base.format,base.encoding,labelNum,errorCount,warningCount'
         };
         return $('#dictListPreviewGrid').setGridParam({
           url: '/rest/delivery/dict',
@@ -282,6 +285,7 @@
     });
     dictPreviewStringSettings = $('#dictPreviewStringSettingsDialog').dialog({
       autoOpen: false,
+      modal: true,
       width: 'auto',
       height: 'auto',
       title: i18n.dialog.dictpreviewstringsettings.title,
@@ -309,6 +313,7 @@
     });
     dictPreviewLangSettings = $('#dictPreviewLanguageSettingsDialog').dialog({
       autoOpen: false,
+      modal: true,
       width: 'auto',
       height: 'auto',
       title: i18n.dialog.languagesettings.title,

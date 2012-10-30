@@ -12,7 +12,6 @@ define ['jqgrid', 'util', 'require', 'taskmng/dialogs', 'i18n!nls/taskmng', 'i18
         downloadForm = $('#downloadTaskFiles')
         $('#fileLoc', downloadForm).val json.fileLoc
         downloadForm.submit()
-    'Upload': (param)->
     'History…': (param)->
       alert 'History…'
       console.log param
@@ -25,6 +24,7 @@ define ['jqgrid', 'util', 'require', 'taskmng/dialogs', 'i18n!nls/taskmng', 'i18
           $.msgBox json.message, null, {title: c18n.error}
           return
         $("#taskGrid").trigger 'reloadGrid'
+    'Upload': (param)->
 
   taskGrid = $("#taskGrid").jqGrid {
   url: 'json/taskgrid.json'
@@ -56,8 +56,8 @@ define ['jqgrid', 'util', 'require', 'taskmng/dialogs', 'i18n!nls/taskmng', 'i18
       rowData = @
       @cell[actIndex] = $(actions).map(
         (index, action)->
-          return "<span id='action_#{@}_#{rowData.id}_#{actIndex}'/>" if action == 'Upload'
-          "<A id='action_#{@}_#{rowData.id}_#{actIndex}' style='color:blue'title='#{@}' href=#  >#{@}</A>"
+          return "<span id='upload_#{@}_#{rowData.id}_#{actIndex}'></span>" if action == 'Upload'
+          "<a id='action_#{@}_#{rowData.id}_#{actIndex}' style='color:blue'title='#{@}' href=#  >#{@}</A>"
       ).get().join('&nbsp;&nbsp;&nbsp;&nbsp;')
   gridComplete: ->
     grid = $(@)
@@ -70,18 +70,18 @@ define ['jqgrid', 'util', 'require', 'taskmng/dialogs', 'i18n!nls/taskmng', 'i18
 
       handlers[action] rowData
 
+    ($("#progressbar").draggable({grid: [50, 20], opacity: 0.35}).css({
+    'z-index': 100, width: 600, textAlign: 'center'
+    'position': 'absolute', 'top': '45%', 'left': '30%'}).progressbar {
+    change: (e, ui)->
+      value = ($(@).progressbar "value").toPrecision(4) + '%'
+      $('#barvalue', @).html(value).css {"display": "block", "textAlign": "center"}
+    }).hide()
 
-    $('span[id^=action_]', @).button(label: 'Upload',
+
+    $('span[id^=upload_]', @).button(label: 'Upload',
       create: (e, ui)->
         [_, _, rowid]=@id.split('_')
-
-        ($("#progressbar").draggable({grid: [50, 20], opacity: 0.35}).css({
-        'z-index': 100, width: 600, textAlign: 'center'
-        'position': 'absolute', 'top': '45%', 'left': '30%'}).progressbar {
-        change: (e, ui)->
-          value = ($(@).progressbar "value").toPrecision(4) + '%'
-          $('#barvalue', @).html(value).css {"display": "block", "textAlign": "center"}
-        }).hide()
 
         fileInput = $("<input type='file' id='#{@id}_fileInput' name='upload' title='Upload task file'accept='application/zip' multiple/>").css({
         position: 'absolute', top: -3, right: -3, border: '1px solid', borderWidth: '1px 1px 10px 0px',

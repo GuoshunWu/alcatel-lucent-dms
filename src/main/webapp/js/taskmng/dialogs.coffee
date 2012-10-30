@@ -1,9 +1,12 @@
 define [ 'jqueryui', 'require', 'taskmng/taskreport_grid', 'taskmng/transdetail_grid'], ($, require, reportgrid, detailgrid)->
   c18n = require 'i18n!nls/common'
   util = require 'util'
+
+  require 'jqmsgbox'
+  c18n = require 'i18n!nls/common'
+
   #  require 'blockui'
-  #  require 'jqmsgbox'
-  #  require 'taskmng/taskreport_grid'
+
 
   languageChooserDialog = $("<div title='Study' id='languageChooser'>").dialog {
   autoOpen: false, position: [23, 126], height: 'auto', width: 'auto'
@@ -28,7 +31,10 @@ define [ 'jqueryui', 'require', 'taskmng/taskreport_grid', 'taskmng/transdetail_
 
   buttons: [
     {text: 'Import', click: ()->
-      alert 'Hi'
+      param = $(@).data 'param'
+      $.post '/task/apply-task', {id: param.id}, (json)->
+        $.msgBox json.message, null, {title: c18n.error} if json.status != 0
+
       $(@).dialog "close"
     }
     {text: 'Cancel', click: ()-> $(@).dialog "close"}
@@ -40,6 +46,10 @@ define [ 'jqueryui', 'require', 'taskmng/taskreport_grid', 'taskmng/transdetail_
   viewDetail = $('#translationDetailDialog').dialog {
   autoOpen: false
   width: 'auto', height: 'auto'
+  open: ->
+    param = $(@).data 'param'
+    postData = $.extend param, {format: 'grid', prop: 'labelKey,maxLength,text.context.name,text.reference,newTranslation'}
+    detailgrid.setGridParam(url: '/rest/task/details', postData: postData).trigger 'reloadGrid'
   }
 
   transReport: transReport

@@ -8,7 +8,7 @@
       {
         name: 'name',
         index: 'dict',
-        width: 500,
+        width: 240,
         editable: false,
         stype: 'select',
         align: 'left',
@@ -39,7 +39,7 @@
       sortorder: 'asc',
       viewrecords: true,
       gridview: true,
-      multiselect: false,
+      multiselect: true,
       cellEdit: true,
       cellurl: '',
       colNames: colNames,
@@ -58,6 +58,27 @@
           view: false
         });
         return grid.setFrozenColumns();
+      },
+      ondblClickRow: function(rowid, iRow, iCol, e) {
+        var col, dialogs, id, language, trs, _ref;
+        col = $(this).getGridParam('colModel')[iCol];
+        _ref = [/s\(\d+\)\[(\d+)\]/ig.exec(col.index), /s\((\d+)\)\[\d+\]/ig.exec(col.index)], trs = _ref[0], id = _ref[1];
+        if (!trs) {
+          return;
+        }
+        language = {
+          name: col.name.split('.')[0],
+          translated: Number(!parseInt(trs[1])),
+          id: id[1]
+        };
+        dialogs = require('taskmng/dialogs');
+        dialogs.viewDetail.data('param', {
+          task: $(this).getGridParam('postData').task,
+          language: language.id,
+          translated: language.translated,
+          context: rowid
+        });
+        return dialogs.viewDetail.dialog('open');
       }
     });
     grid.getGridParam('afterCreate')(grid);
@@ -93,7 +114,7 @@
         gridParam.postData = {
           task: params.id,
           format: 'grid',
-          prop: 'context.name,' + $(params.languages).map(function(index, language) {
+          prop: 'context.name,total,' + $(params.languages).map(function(index, language) {
             return $([0, 1]).map(function(idx) {
               return "s(" + language.id + ")[" + idx + "]";
             }).get().join(',');

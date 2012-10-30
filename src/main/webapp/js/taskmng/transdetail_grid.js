@@ -17,7 +17,7 @@
       pager: '#ViewDetailPager',
       rowNum: 60,
       rowList: [10, 20, 30, 60, 120],
-      sortname: 'key',
+      sortname: 'labelKey',
       sortorder: 'asc',
       viewrecords: true,
       gridview: true,
@@ -28,7 +28,7 @@
       colModel: [
         {
           name: 'label',
-          index: 'label',
+          index: 'labelKey',
           width: 100,
           editable: false,
           stype: 'select',
@@ -36,7 +36,7 @@
           frozen: true
         }, {
           name: 'maxlen',
-          index: 'maxlen',
+          index: 'maxLength',
           width: 90,
           editable: true,
           align: 'right',
@@ -44,21 +44,21 @@
           search: false
         }, {
           name: 'context',
-          index: 'context',
+          index: 'text.context.name',
           width: 80,
           align: 'left',
           frozen: true,
           search: false
         }, {
           name: 'reflang',
-          index: 'reflang',
+          index: 'text.reference',
           width: 150,
           align: 'left',
           frozen: true,
           search: false
         }, {
           name: 'trans',
-          index: 'trans',
+          index: 'newTranslation',
           width: 250,
           align: 'left',
           frozen: true,

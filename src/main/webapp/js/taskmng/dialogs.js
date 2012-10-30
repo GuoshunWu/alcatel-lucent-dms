@@ -5,6 +5,8 @@
     var c18n, languageChooserDialog, transReport, util, viewDetail;
     c18n = require('i18n!nls/common');
     util = require('util');
+    require('jqmsgbox');
+    c18n = require('i18n!nls/common');
     languageChooserDialog = $("<div title='Study' id='languageChooser'>").dialog({
       autoOpen: false,
       position: [23, 126],
@@ -68,7 +70,17 @@
         {
           text: 'Import',
           click: function() {
-            alert('Hi');
+            var param;
+            param = $(this).data('param');
+            $.post('/task/apply-task', {
+              id: param.id
+            }, function(json) {
+              if (json.status !== 0) {
+                return $.msgBox(json.message, null, {
+                  title: c18n.error
+                });
+              }
+            });
             return $(this).dialog("close");
           }
         }, {
@@ -85,7 +97,19 @@
     viewDetail = $('#translationDetailDialog').dialog({
       autoOpen: false,
       width: 'auto',
-      height: 'auto'
+      height: 'auto',
+      open: function() {
+        var param, postData;
+        param = $(this).data('param');
+        postData = $.extend(param, {
+          format: 'grid',
+          prop: 'labelKey,maxLength,text.context.name,text.reference,newTranslation'
+        });
+        return detailgrid.setGridParam({
+          url: '/rest/task/details',
+          postData: postData
+        }).trigger('reloadGrid');
+      }
     });
     return {
       transReport: transReport,
