@@ -66,6 +66,14 @@ public class LabelTranslation extends BaseEntity {
 		}
 		return true;
 	}
+	
+	public boolean isValidText(String text) {
+		if (text != null) {
+			return CharsetUtil.isValid(text, language.getName());
+		}
+		return true;
+	}
+
 	public void setSortNo(int sortNo) {
 		this.sortNo = sortNo;
 	}

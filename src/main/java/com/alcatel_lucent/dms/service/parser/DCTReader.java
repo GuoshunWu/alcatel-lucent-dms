@@ -73,13 +73,13 @@ public class DCTReader extends LineNumberReader {
 
         String line = readLine();
         if (line == null) {
-            log.error("Parser was broken on line: " + line);
+            log.error("Parser was broken on line " + getLineNumber() + ": " + line);
             throw new BusinessException(BusinessException.INVALID_DCT_FILE,
                     getLineNumber(), dictionary.getName());
         }
         Matcher m = patternLanguage.matcher(line);
         if (!m.matches()) {
-            log.error("Parser was broken on line: " + line);
+            log.error("Parser was broken on line " + getLineNumber() + ": " + line);
             throw new BusinessException(BusinessException.INVALID_DCT_FILE,
                     getLineNumber(), dictionary.getName());
         }
@@ -102,23 +102,18 @@ public class DCTReader extends LineNumberReader {
 //                exception.addNestedException(new BusinessException(BusinessException.UNKNOWN_LANG_CODE, getLineNumber(), languageCode));
             }
             dl.setLanguage(language);
-            Charset charset = null;
-            // DictionaryLanguage CharSet is the dictionary encoding
-//            charset = languageService.getCharsets().get(
-//                    dictionary.getEncoding());
-            if (null == charset) {
-//                exception.addNestedException(new BusinessException(
-//                        BusinessException.CHARSET_NOT_FOUND,
-//                        dictionary.getEncoding()));
+            if (dictionary.getEncoding() == "ISO-8859-1") {	// ANSI
+            	if (language != null) {
+            		dl.setCharset(languageService.getCharset(language.getDefaultCharset()));
+            	}
+            } else {	// UTF-8 or UTF-16LE
+            	dl.setCharset(languageService.getCharset(dictionary.getEncoding()));
             }
-            dl.setCharset(charset);
             dl.setSortNo(sortNo++);
 
             dictLangs.add(dl);
         }
-
         return dictLangs;
-
     }
 
     public Dictionary readDictionary() throws IOException {

@@ -155,7 +155,7 @@ public class LabelXMLParser extends DictionaryParser {
 		int sortNo = 1;
 		Collection<DictionaryLanguage> dictLanguages = new ArrayList<DictionaryLanguage>();
 		dictionary.setDictLanguages(dictLanguages);
-		dictionary.setLabels(readLabels(refFile, dictionary, warnings, refFileExceptions));
+		dictionary.setLabels(readLabels(refFile, dictionary, null, warnings, refFileExceptions));
 		for (Label label : dictionary.getLabels()) {
 			label.setContext(context);
 		}
@@ -181,7 +181,7 @@ public class LabelXMLParser extends DictionaryParser {
 			dictLanguages.add(dictLanguage);
 			if (!langCode.equals(refLangCode)) {
 				Dictionary tempDict = new Dictionary();	// to get file-level annotations
-				Collection<Label> labels = readLabels(file, tempDict, warnings, fileExceptions);
+				Collection<Label> labels = readLabels(file, tempDict, dictLanguage, warnings, fileExceptions);
 				dictLanguage.setAnnotation1(tempDict.getAnnotation1());		// attributes of root element
 				dictLanguage.setAnnotation2(tempDict.getAnnotation2());		// comment of the file
 				dictLanguage.setAnnotation3(tempDict.getAnnotation3());		// namespaces of root element
@@ -214,7 +214,7 @@ public class LabelXMLParser extends DictionaryParser {
         return dictionary;
 	}
 	
-	private Collection<Label> readLabels(File file, Dictionary dict, Collection<BusinessWarning> warnings, BusinessException exceptions) {
+	private Collection<Label> readLabels(File file, Dictionary dict, DictionaryLanguage dl, Collection<BusinessWarning> warnings, BusinessException exceptions) {
 		Collection<Label> result = new ArrayList<Label>();
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder db;
@@ -310,7 +310,9 @@ public class LabelXMLParser extends DictionaryParser {
 				}
 			}
 			if (keys.contains(key)) {
-				warnings.add(new BusinessWarning(BusinessWarning.DUPLICATE_LABEL_KEY, 0, key));
+				if (dl == null) {	// add this type of warning only for label
+					warnings.add(new BusinessWarning(BusinessWarning.DUPLICATE_LABEL_KEY, 0, key));
+				}
 				continue;
 			} else {
 				keys.add(key);

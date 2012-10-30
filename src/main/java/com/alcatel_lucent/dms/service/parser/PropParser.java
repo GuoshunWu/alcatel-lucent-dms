@@ -146,6 +146,7 @@ public class PropParser extends DictionaryParser {
 			dictLanguage.setSortNo(sortNo);
 			language = languageService.getLanguage(langCode);
 			dictLanguage.setLanguage(language);
+			dictLanguage.setCharset(languageService.getCharset("ISO-8859-1"));
 			dictLanguages.add(dictLanguage);
 			if (!langCode.equals(refLangCode)) {
 				Collection<Label> labels = readLabels(file, dictionary, dictLanguage, warnings, fileExceptions);

@@ -322,39 +322,67 @@ public class Dictionary extends BaseEntity {
 			}
 		}
 		if (labels != null) {
+			// sort malformed character warnings
+			TreeMap<String, Collection<BusinessWarning>> malformWarnings = new TreeMap<String, Collection<BusinessWarning>>();
+			for (Label label : labels) {
+				if (label.getOrigTranslations() != null) {
+					for (LabelTranslation lt : label.getOrigTranslations()) {
+						String langCode = lt.getLanguageCode();
+						DictionaryLanguage dl = getDictLanguage(langCode);
+						if (dl.getCharset() == null) continue;
+						String charsetName = dl.getCharset().getName();
+						String encodedTranslation = lt.getOrigTranslation();
+						boolean invalidText = false;
+						if (!getEncoding().equals(charsetName)) {
+							try {
+								byte[] source = lt.getOrigTranslation().getBytes(getEncoding());
+								encodedTranslation = new String(source, charsetName);
+								byte[] target = encodedTranslation.getBytes(charsetName);
+		                        if (!Arrays.equals(source, target)) {
+		                        	invalidText = true;
+		                        	Collection<BusinessWarning> warnings = malformWarnings.get(langCode);
+		                        	if (warnings == null) {
+		                        		warnings = new ArrayList<BusinessWarning>();
+		                        		malformWarnings.put(langCode, warnings);
+		                        	}
+		                        	warnings.add(new BusinessWarning(
+		                        			BusinessWarning.INVALID_TEXT, 
+		                        			encodedTranslation, dl.getCharset().getName(), 
+		                        			langCode, label.getKey()));
+		                        }
+	                        } catch (UnsupportedEncodingException e) {
+	                        	previewErrors.add(new BusinessException(
+	                        			BusinessException.CHARSET_NOT_FOUND, charsetName));
+	                        }
+						}
+						if (!invalidText && lt.getLanguage() != null && !lt.isValidText(encodedTranslation)) {
+                        	Collection<BusinessWarning> warnings = malformWarnings.get(langCode);
+                        	if (warnings == null) {
+                        		warnings = new ArrayList<BusinessWarning>();
+                        		malformWarnings.put(langCode, warnings);
+                        	}
+                        	warnings.add(new BusinessWarning(
+                        			BusinessWarning.SUSPICIOUS_CHARACTER, 
+                        			encodedTranslation, dl.getCharset().getName(), 
+                        			langCode, label.getKey()));
+						}
+					}
+				}
+			}
+			for (Collection<BusinessWarning> warnings : malformWarnings.values()) {
+				importWarnings.addAll(warnings);
+			}
 			for (Label label : labels) {
 				if (!label.checkLength(label.getReference())) {
 					importWarnings.add(new BusinessWarning(
 							BusinessWarning.EXCEED_MAX_LENGTH, "Reference", label.getKey()));
-					if (label.getOrigTranslations() != null) {
-						for (LabelTranslation lt : label.getOrigTranslations()) {
-							if (!label.checkLength(lt.getOrigTranslation())) {
-								importWarnings.add(new BusinessWarning(
-										BusinessWarning.EXCEED_MAX_LENGTH, 
-										lt.getLanguageCode(), label.getKey()));
-							}
-						}
-						for (LabelTranslation lt : label.getOrigTranslations()) {
-							String langCode = lt.getLanguageCode();
-							DictionaryLanguage dl = getDictLanguage(langCode);
-							if (dl.getLanguage() == null || dl.getCharset() == null) continue;
-							String charsetName = dl.getCharset().getName();
-							if (!getEncoding().equals(charsetName)) {
-								try {
-									byte[] source = lt.getOrigTranslation().getBytes(getEncoding());
-									String encodedTranslation = new String(source, charsetName);
-									byte[] target = encodedTranslation.getBytes(charsetName);
-			                        if (!Arrays.equals(source, target) || lt.isValidText()) {
-			                        	importWarnings.add(new BusinessWarning(
-			                        			BusinessWarning.INVALID_TEXT, 
-			                        			encodedTranslation, dl.getCharset().getName(), 
-			                        			langCode, label.getKey()));
-			                        }
-		                        } catch (UnsupportedEncodingException e) {
-		                        	previewErrors.add(new BusinessException(
-		                        			BusinessException.CHARSET_NOT_FOUND, charsetName));
-		                        }
-							}
+				}
+				if (label.getOrigTranslations() != null) {
+					for (LabelTranslation lt : label.getOrigTranslations()) {
+						if (!label.checkLength(lt.getOrigTranslation())) {
+							importWarnings.add(new BusinessWarning(
+									BusinessWarning.EXCEED_MAX_LENGTH, 
+									lt.getLanguageCode(), label.getKey()));
 						}
 					}
 				}

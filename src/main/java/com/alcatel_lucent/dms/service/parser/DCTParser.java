@@ -66,7 +66,7 @@ public class DCTParser extends DictionaryParser {
         	return deliveredDicts;
         }
 
-        if (Util.isZipFile(file)) {
+/*        if (Util.isZipFile(file)) {
             try {
                 deliveredDicts.addAll(parseZip(new ZipFile(file)));
             } catch (IOException e) {
@@ -77,42 +77,27 @@ public class DCTParser extends DictionaryParser {
             }
             return deliveredDicts;
         }
-        
+*/        
         String dictPath = file.getAbsolutePath().replace("\\", "/");
 		String dictName = dictPath;
 		if (rootDir != null && dictName.startsWith(rootDir)) {
 			dictName = dictName.substring(rootDir.length());
 		}
-        FileInputStream in = null;
-        try {
-        	in = new FileInputStream(file);
-        	try {
-        		Dictionary dict = parseDCT(dictName, dictPath, in);
-        		deliveredDicts.add(dict);
-        	} catch (BusinessException e) {
-        		exceptions.addNestedException(e);
-        	}
-    		acceptedFiles.add(file);
-            if (entry && exceptions.hasNestedException()) {
-            	throw exceptions;
-            }
-            return deliveredDicts;
-        } catch (IOException e) {
-        	e.printStackTrace();
-        	throw new BusinessException(e.toString());
-        } finally {
-        	if (in != null) {
-        		try {
-					in.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-        	}
+    	try {
+    		Dictionary dict = parseDCT(dictName, dictPath, file);
+    		deliveredDicts.add(dict);
+    	} catch (BusinessException e) {
+    		exceptions.addNestedException(e);
+    	}
+		acceptedFiles.add(file);
+        if (entry && exceptions.hasNestedException()) {
+        	throw exceptions;
         }
+        return deliveredDicts;
 	}
 
 	@SuppressWarnings("unchecked")
-	private Collection<Dictionary> parseZip(ZipFile file) throws BusinessException {
+/*	private Collection<Dictionary> parseZip(ZipFile file) throws BusinessException {
         Collection<Dictionary> deliveredDicts = new ArrayList<Dictionary>();
 
         Enumeration<ZipEntry> entries = (Enumeration<ZipEntry>) file.entries();
@@ -137,28 +122,39 @@ public class DCTParser extends DictionaryParser {
 
         return deliveredDicts;
 	}
-	
-	private Dictionary parseDCT(String dictName, String path, InputStream in) throws BusinessException {
-        log.info("Parsing DCT file '" + dictName + "'");
+*/	
+	private Dictionary parseDCT(String dictName, String path, File file) throws BusinessException {
         Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
-        String encoding = null;
-        try {
-        	encoding = dictProp.getDictionaryEncoding(dictName);
-        } catch (Exception e) {
-        	log.warn("Encoding is not specified for '" + dictName + "', using ISO8859-1.");
-        	encoding = "ISO-8859-1";
-        }
         
-        DictionaryBase dictBase=new DictionaryBase();
-        dictBase.setName(dictName);
-        dictBase.setPath(path);
-        dictBase.setEncoding(encoding);
-        dictBase.setFormat(Constants.DICT_FORMAT_DCT);
-        
-		Dictionary dictionary = new Dictionary();
-		dictionary.setBase(dictBase);
-
+		FileInputStream in = null;
 		try {
+	        String encoding = Util.detectEncoding(file);	// first detect encoding by BOM
+	        if (encoding.equals("ISO-8859-1")) {	// if no BOM
+	        	if (Util.validateFileCharset(file, "UTF-8")) {
+	        		encoding = "UTF-8";
+	        	} else {
+	        		if (Util.validateFileCharset(file, "UTF-16LE", "LANGUAGES")) {
+	        			encoding = "UTF-16LE";
+	        		}
+	        	}
+	        }
+	        log.info("Parsing DCT file '" + dictName + "' (" + encoding + ")");
+	/*        try {
+	        	encoding = dictProp.getDictionaryEncoding(dictName);
+	        } catch (Exception e) {
+	        	log.warn("Encoding is not specified for '" + dictName + "', using ISO8859-1.");
+	        	encoding = "ISO-8859-1";
+	        }
+	*/        
+	        DictionaryBase dictBase=new DictionaryBase();
+	        dictBase.setName(dictName);
+	        dictBase.setPath(path);
+	        dictBase.setEncoding(encoding);
+	        dictBase.setFormat(Constants.DICT_FORMAT_DCT);
+	        
+			Dictionary dictionary = new Dictionary();
+			dictionary.setBase(dictBase);
+			in = new FileInputStream(file);
 /*
 			if (in instanceof FileInputStream) {
 				FileChannel channel = ((FileInputStream) in).getChannel();
@@ -189,7 +185,15 @@ public class DCTParser extends DictionaryParser {
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new BusinessException(e.toString());
-		}
+		} finally {
+        	if (in != null) {
+        		try {
+					in.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+        	}
+        }
 	}
 
 }
