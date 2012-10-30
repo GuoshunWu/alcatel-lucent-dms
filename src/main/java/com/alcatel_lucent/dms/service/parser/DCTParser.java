@@ -38,8 +38,13 @@ public class DCTParser extends DictionaryParser {
     @Autowired
     private DictionaryProp dictProp;
     
+    private BusinessException exceptions = new BusinessException(BusinessException.NESTED_ERROR);
+    private boolean isFirstLevel = true;
+    
 	@Override
-	public ArrayList<Dictionary> parse(String rootDir, File file, Collection<BusinessWarning> warnings) throws BusinessException {
+	public ArrayList<Dictionary> parse(String rootDir, File file, Collection<File> acceptedFiles) throws BusinessException {
+		boolean entry = isFirstLevel; 
+		isFirstLevel = false;
         ArrayList<Dictionary> deliveredDicts = new ArrayList<Dictionary>();
         if (!file.exists()) return deliveredDicts;
         if (file.isDirectory()) {
@@ -51,7 +56,10 @@ public class DCTParser extends DictionaryParser {
                 }
             });
             for (File dctFile : dctFileOrDirs) {
-                deliveredDicts.addAll(parse(rootDir, dctFile, warnings));
+                deliveredDicts.addAll(parse(rootDir, dctFile, acceptedFiles));
+            }
+            if (entry && exceptions.hasNestedException()) {
+            	throw exceptions;
             }
             return deliveredDicts;
         } else if (!Util.isDCTFile(file)) {
@@ -60,9 +68,12 @@ public class DCTParser extends DictionaryParser {
 
         if (Util.isZipFile(file)) {
             try {
-                deliveredDicts.addAll(parseZip(new ZipFile(file), warnings));
+                deliveredDicts.addAll(parseZip(new ZipFile(file)));
             } catch (IOException e) {
                 throw new SystemError(e.getMessage());
+            }
+            if (entry && exceptions.hasNestedException()) {
+            	throw exceptions;
             }
             return deliveredDicts;
         }
@@ -75,8 +86,16 @@ public class DCTParser extends DictionaryParser {
         FileInputStream in = null;
         try {
         	in = new FileInputStream(file);
-            Dictionary dict = parseDCT(dictName, dictPath, in, warnings);
-    		deliveredDicts.add(dict);
+        	try {
+        		Dictionary dict = parseDCT(dictName, dictPath, in);
+        		deliveredDicts.add(dict);
+        	} catch (BusinessException e) {
+        		exceptions.addNestedException(e);
+        	}
+    		acceptedFiles.add(file);
+            if (entry && exceptions.hasNestedException()) {
+            	throw exceptions;
+            }
             return deliveredDicts;
         } catch (IOException e) {
         	e.printStackTrace();
@@ -93,7 +112,7 @@ public class DCTParser extends DictionaryParser {
 	}
 
 	@SuppressWarnings("unchecked")
-	private Collection<Dictionary> parseZip(ZipFile file, Collection<BusinessWarning> warnings) throws BusinessException {
+	private Collection<Dictionary> parseZip(ZipFile file) throws BusinessException {
         Collection<Dictionary> deliveredDicts = new ArrayList<Dictionary>();
 
         Enumeration<ZipEntry> entries = (Enumeration<ZipEntry>) file.entries();
@@ -107,7 +126,7 @@ public class DCTParser extends DictionaryParser {
                 InputStream is = file.getInputStream(entry);
                 String dictionaryName = entry.getName();
                 String path = file.getName() + dictionaryName;
-                Dictionary dict = parseDCT(dictionaryName, path, is, warnings);
+                Dictionary dict = parseDCT(dictionaryName, path, is);
                 if (null != dict) {
                     deliveredDicts.add(dict);
                 }
@@ -119,9 +138,10 @@ public class DCTParser extends DictionaryParser {
         return deliveredDicts;
 	}
 	
-	private Dictionary parseDCT(String dictName, String path, InputStream in, Collection<BusinessWarning> warnings) throws BusinessException {
+	private Dictionary parseDCT(String dictName, String path, InputStream in) throws BusinessException {
         log.info("Parsing DCT file '" + dictName + "'");
-		String encoding = null;
+        Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
+        String encoding = null;
         try {
         	encoding = dictProp.getDictionaryEncoding(dictName);
         } catch (Exception e) {
@@ -163,7 +183,7 @@ public class DCTParser extends DictionaryParser {
 			DCTReader dr = new DCTReader(dctReader, dictionary);
 	        dr.setLanguageService(this.languageService);
 	 		Dictionary dict = dr.readDictionary();
-			warnings.addAll(dr.getWarnnings());
+	 		dict.setParseWarnings(warnings);
 			dr.close();
 			return dict;
 		} catch (IOException e) {

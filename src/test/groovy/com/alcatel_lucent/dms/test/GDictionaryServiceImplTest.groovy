@@ -105,7 +105,7 @@ class GDictionaryServiceImplTest {
         Collection<BusinessWarning> warnings = []
 
         /***************************************** Test for deliver DCT ****************************************/
-        Collection<Dictionary> dicts = ds.previewDictionaries testFilesPathDir, new File(testFilePath), warnings
+        Collection<Dictionary> dicts = ds.previewDictionaries testFilesPathDir, new File(testFilePath)
 		Dictionary dbDict = ds.importDictionary appId, dicts[0], version, Constants.DELIVERY_MODE, langCodes, langCharset, warnings
 		//Dictionary dbDict = ds.deliverDCT dictName, version, testFilePath, appId, Constants.DELIVERY_MODE, encoding, langCodes, langCharset, warnings
 
@@ -203,7 +203,7 @@ class GDictionaryServiceImplTest {
         // re deliver the updated DCT file
         langCharset.CH1 = 'Big5'
 
-        dicts = ds.previewDictionaries testFilesPathDir, new File(testFilePath), warnings
+        dicts = ds.previewDictionaries testFilesPathDir, new File(testFilePath)
 		dicts[0].setName dictName
 		dicts[0].labels.each {
 			it.context.name = dictName
@@ -240,7 +240,7 @@ class GDictionaryServiceImplTest {
         }
 
         // updated translation
-        dicts = ds.previewDictionaries testFilesPathDir, new File(testFilePath), warnings
+        dicts = ds.previewDictionaries testFilesPathDir, new File(testFilePath)
 		dicts[0].setName dictName
 		dicts[0].labels.each {
 			it.context.name = dictName
@@ -261,9 +261,9 @@ class GDictionaryServiceImplTest {
 
         /*************************** Test generate dct file from dictionary in database *************************/
         String targetFileName = "target/${dictName}_generated.dct"
-        ds.generateDCT targetFileName, dbDict.getId(), encoding, langCodes
-        def generatedFile = new File(targetFileName)
-        assertTrue "Dictionary $generatedFile.name is not generated.", generatedFile.exists()
+//        ds.generateDCT targetFileName, dbDict.getId(), encoding, langCodes
+//        def generatedFile = new File(targetFileName)
+//        assertTrue "Dictionary $generatedFile.name is not generated.", generatedFile.exists()
 
         /*************************** Test deletel dictionary in database *************************/
 //        daoService.delete 'delete from Dictionary where version=:version and base.name=:name', ['version':version, 'name':dictName] as Map<String,String>
@@ -337,8 +337,8 @@ class GDictionaryServiceImplTest {
         langCodeForPkg.each {subDir, langCodes ->
 			int mode = subDir.equals('EN-UK') ? Constants.DELIVERY_MODE : Constants.TRANSLATION_MODE
 //            String rootDir = "Z:/$subDir"
-			String rootDir = "D:/Translation/ICS_unified_management_framework/6.6"
-//			String rootDir = "D:/projects/translation/ICS6.7.1_oamp_dcts/6.6_merge_result"
+//			String rootDir = "D:/temp/prop_test_in"
+			String rootDir = "D:/translation/ICS_OAMP/6.6_translated"
 //			mode = Constants.TRANSLATION_MODE
             String testFilePath = rootDir
             log.info "Begin to import directory: $testFilePath".center(100, '=')
@@ -365,7 +365,7 @@ class GDictionaryServiceImplTest {
 
             long before = System.currentTimeMillis()
 			//Collection<Dictionary> dictionaries = ds.deliverDCTFiles rootDir, new File(testFilePath), appId, mode, encoding, langCodes as String[], null, warnings
-			Collection<Dictionary> dictionaries = ds.previewDictionaries rootDir, new File(testFilePath), warnings
+			Collection<Dictionary> dictionaries = ds.previewDictionaries rootDir, new File(testFilePath)
 			dictionaries.each {dict ->
 				Map<String, String>langCharset
 				if (dict.getFormat().equals("DCT")) {
@@ -383,8 +383,8 @@ class GDictionaryServiceImplTest {
 				} else {
 					langCharset = [default: 'ISO-8859-1']
 				}
-				Long appId = 15
-				String dictVersion = "6.6"
+				Long appId = 1
+				String dictVersion = "1.0"
 				ds.importDictionary appId, dict, dictVersion, mode, langCodes as String[], langCharset, warnings 
 				if (!warnings.isEmpty()) {
 					join(warnings, '\n').replace("\"", "\"\"");
@@ -417,14 +417,7 @@ class GDictionaryServiceImplTest {
     @Test
     void testGenerateDctFiles(){
         Collection<Long> dictionaryIds = dao.retrieve('select id from Dictionary') as List<Long>
-        ds.generateDCTFiles("D:/temp/ICSR6.6_merge3",dictionaryIds, null)
-    }
-
-    @Test
-    void testGenerateDctFile() {
-        Dictionary dict = dao.retrieve(Dictionary.class, 1L) as Dictionary
-//        ds.generateDCT("D:/tmp/mytest.dct",dict.id,dict.encoding,null)
-        ds.generateMDC "D:/tmp/mytest.xml", dict.id, null
+        ds.generateDictFiles("D:/temp/prop_test_out",dictionaryIds)
     }
 
     /**

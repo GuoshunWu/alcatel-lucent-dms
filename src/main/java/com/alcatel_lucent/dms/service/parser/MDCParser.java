@@ -44,13 +44,16 @@ public class MDCParser extends DictionaryParser {
 	private LanguageService languageService;
 
 	private Logger log = Logger.getLogger(MDCParser.class);
-
+    private BusinessException exceptions = new BusinessException(BusinessException.NESTED_ERROR);
+    private boolean isFirstLevel = true;
+    
 	@Override
-	public ArrayList<Dictionary> parse(String rootDir, File file,
-			Collection<BusinessWarning> warnings) throws BusinessException {
+	public ArrayList<Dictionary> parse(String rootDir, File file, Collection<File> acceptedFiles) throws BusinessException {
+		boolean entry = isFirstLevel;
+		isFirstLevel = false;
 		ArrayList<Dictionary> deliveredDicts = new ArrayList<Dictionary>();
 		if (!file.exists())
-            return null;
+            return deliveredDicts;
         if (file.isDirectory()) {
             File[] dctFileOrDirs = file.listFiles(new FileFilter() {
                 @Override
@@ -59,7 +62,10 @@ public class MDCParser extends DictionaryParser {
                 }
             });
             for (File dctFile : dctFileOrDirs) {
-            	deliveredDicts.addAll(parse(rootDir, dctFile, warnings));
+            	deliveredDicts.addAll(parse(rootDir, dctFile, acceptedFiles));
+            }
+            if (entry && exceptions.hasNestedException()) {
+            	throw exceptions;
             }
             return deliveredDicts;
         } else if (!Util.isMDCFile(file)) {
@@ -71,8 +77,16 @@ public class MDCParser extends DictionaryParser {
         FileInputStream in = null;
         try {
         	in = new FileInputStream(file);
-            Dictionary dict = parseMDC(dictName, dictPath, in, warnings);
-    		deliveredDicts.add(dict);
+        	try {
+	            Dictionary dict = parseMDC(dictName, dictPath, in);
+	    		deliveredDicts.add(dict);
+        	} catch (BusinessException e) {
+        		exceptions.addNestedException(e);
+        	}
+    		acceptedFiles.add(file);
+            if (entry && exceptions.hasNestedException()) {
+            	throw exceptions;
+            }
             return deliveredDicts;
         } catch (IOException e) {
         	e.printStackTrace();
@@ -89,9 +103,10 @@ public class MDCParser extends DictionaryParser {
 	}
 
 	public Dictionary parseMDC(String dictionaryName, String path,
-			InputStream dctInputStream, Collection<BusinessWarning> warnings)
+			InputStream dctInputStream)
 			throws BusinessException {
         log.info("Parsing Multilingual Dictionary configuration file '" + dictionaryName + "'");
+        Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder db;
 		org.w3c.dom.Document doc;
@@ -145,6 +160,7 @@ public class MDCParser extends DictionaryParser {
 		if (nonBreakExceptions.hasNestedException()) {
 			throw nonBreakExceptions;
 		}
+		dictionary.setParseWarnings(warnings);
 		return dictionary;
 	}
 
@@ -191,7 +207,7 @@ public class MDCParser extends DictionaryParser {
 		int labelSortNo = 1;
 		for (String oLangCode : orderedLangCodes) {
 
-			if (oLangCode.equals("GAE")) {
+			if (oLangCode.equals("en-GB")) {
 				continue;
 			}
 
@@ -238,18 +254,17 @@ public class MDCParser extends DictionaryParser {
 
 			Language language = languageService.getLanguage(langCode);
 			if (null == language) {
-				exception.addNestedException(new BusinessException(
-						BusinessException.UNKNOWN_LANG_CODE, -1, langCode));
+//				exception.addNestedException(new BusinessException(
+//						BusinessException.UNKNOWN_LANG_CODE, -1, langCode));
 			}
 			dl.setLanguage(language);
 			Charset charset = null;
 			// DictionaryLanguage CharSet is the dictionary encoding
-			charset = languageService.getCharsets().get(
-					dictionary.getEncoding());
+			charset = languageService.getCharsets().get("UTF-8");
 			if (null == charset) {
-				exception.addNestedException(new BusinessException(
-						BusinessException.CHARSET_NOT_FOUND, dictionary
-								.getEncoding()));
+//				exception.addNestedException(new BusinessException(
+//						BusinessException.CHARSET_NOT_FOUND, dictionary
+//								.getEncoding()));
 			}
 			dl.setCharset(charset);
 			dl.setSortNo(sortNo++);

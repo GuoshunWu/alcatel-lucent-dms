@@ -17,9 +17,10 @@ public class BusinessException extends RuntimeException {
 
 	// general
 	static public final int ACCESS_DENIED = 100;
-	static public final int INVALID_DCT_FILE = 200;
+	static public final int NESTED_ERROR = 101;
 
 	// dict error
+	static public final int INVALID_DCT_FILE = 200;
     static public final int DUPLICATE_DCT_NAME = 201;
 	static public final int DCT_FILE_NOT_FOUND = 202;
 	static public final int UNDEFINED_LANG_CODE = 203;
@@ -41,6 +42,8 @@ public class BusinessException extends RuntimeException {
 	static public final int UNKNOWN_XML_LANG_CODE = 222;
 	static public final int TARGET_IS_NOT_DIRECTORY = 223;
 	static public final int FAILED_TO_MKDIRS = 224;
+	static public final int PREVIEW_DICT_ERRORS = 225;
+	static public final int UNRECOGNIZED_DICT_FILE = 226;
 	
 	// application management
 	static public final int CHARSET_NOT_FOUND = 301;
@@ -60,6 +63,8 @@ public class BusinessException extends RuntimeException {
 	static public final int APPLICATION_ALREADY_IN_PRODUCT = 315;
 	static public final int APPLICATION_NOT_EMPTY = 316;
 	static public final int PRODUCT_CONTAINS_TASK = 317;
+	static public final int LACK_DICT_NAME = 318;
+	static public final int LACK_DICT_VERSION = 319;
 	
 	// task management
 	static public final int INVALID_TASK_STATUS = 401;
@@ -77,6 +82,10 @@ public class BusinessException extends RuntimeException {
 		this.errorCode = errorCode;
 		this.parameters = params;
 	}
+    
+    public int getErrorCode() {
+    	return errorCode;
+    }
 
 	public Object[] getParameters() {
 		return parameters;

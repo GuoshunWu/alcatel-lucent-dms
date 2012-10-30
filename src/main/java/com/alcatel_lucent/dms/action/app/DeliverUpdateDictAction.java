@@ -35,6 +35,7 @@ public class DeliverUpdateDictAction extends JSONAction {
 			if (encoding != null && !encoding.trim().isEmpty()) {
 				dict.setEncoding(encoding);
 			}
+			dict.validate();
 		} catch (BusinessException e) {
 			setMessage(e.toString());
 			setStatus(-1);

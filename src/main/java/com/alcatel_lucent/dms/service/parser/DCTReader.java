@@ -97,19 +97,19 @@ public class DCTReader extends LineNumberReader {
 
             dl.setDictionary(dictionary);
             dl.setLanguageCode(languageCode);
-            Language language=languageService.getLanguage(languageCode);
-            if(null==language){
-                exception.addNestedException(new BusinessException(BusinessException.UNKNOWN_LANG_CODE, getLineNumber(), languageCode));
+            Language language = languageService.getLanguage(languageCode);
+            if(null == language){
+//                exception.addNestedException(new BusinessException(BusinessException.UNKNOWN_LANG_CODE, getLineNumber(), languageCode));
             }
             dl.setLanguage(language);
             Charset charset = null;
             // DictionaryLanguage CharSet is the dictionary encoding
-            charset = languageService.getCharsets().get(
-                    dictionary.getEncoding());
+//            charset = languageService.getCharsets().get(
+//                    dictionary.getEncoding());
             if (null == charset) {
-                exception.addNestedException(new BusinessException(
-                        BusinessException.CHARSET_NOT_FOUND,
-                        dictionary.getEncoding()));
+//                exception.addNestedException(new BusinessException(
+//                        BusinessException.CHARSET_NOT_FOUND,
+//                        dictionary.getEncoding()));
             }
             dl.setCharset(charset);
             dl.setSortNo(sortNo++);

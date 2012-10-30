@@ -1,9 +1,14 @@
 package com.alcatel_lucent.dms.rest;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Map;
 
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.UriInfo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,5 +35,21 @@ public class PreviewDictREST extends BaseREST {
 		requestMap.put("records", "" + dictList.size());
 		return toJSON(dictList, requestMap);
 	}
+
+    @GET
+    @Path("/{id}")
+    public String getEntityById(@Context UriInfo ui, @PathParam("id") Long id) {
+    	String prop = ui.getQueryParameters().getFirst("prop");
+    	String handler = ui.getQueryParameters().getFirst("handler");
+    	Dictionary dict = pool.getDictionary(handler, id);
+    	try {
+			return jsonService.toJSONString(dict, prop);
+		} catch (Exception e) {
+			e.printStackTrace();
+    		log.error(e);
+    		throw new RESTException(e);
+		}
+    }
+    	
 
 }

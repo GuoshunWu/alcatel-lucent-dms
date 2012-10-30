@@ -2,7 +2,11 @@ package com.alcatel_lucent.dms.model;
 
 import net.sf.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.*;
+
+import com.alcatel_lucent.dms.BusinessException;
+import com.alcatel_lucent.dms.BusinessWarning;
 
 public class Dictionary extends BaseEntity {
 
@@ -232,7 +236,133 @@ public class Dictionary extends BaseEntity {
         return app;
     }
     
-    public int getMaxSortNo() {
+    private Collection<BusinessWarning> parseWarnings;		// transient variable for parse warnings information
+    private Collection<BusinessWarning> importWarnings;		// transient variable for import warnings information
+    private Collection<BusinessException> previewErrors;			// transient variable for errors information;
+    
+	public Collection<BusinessWarning> getParseWarnings() {
+		return parseWarnings;
+	}
+
+	public void setParseWarnings(Collection<BusinessWarning> parseWarnings) {
+		this.parseWarnings = parseWarnings;
+	}
+	
+	public Collection<BusinessWarning> getImportWarnings() {
+		return importWarnings;
+	}
+
+	public void setImportWarnings(Collection<BusinessWarning> importWarnings) {
+		this.importWarnings = importWarnings;
+	}
+
+	public Collection<BusinessException> getPreviewErrors() {
+		return previewErrors;
+	}
+
+	public void setPreviewErrors(Collection<BusinessException> previewErrors) {
+		this.previewErrors = previewErrors;
+	}
+
+	public int getWarningCount() {
+		return (parseWarnings == null ? 0 : parseWarnings.size()) + 
+				(importWarnings == null ? 0 : importWarnings.size());
+	}
+	
+	public int getErrorCount() {
+		return previewErrors == null ? 0 : previewErrors.size();
+	}
+	
+	public Collection<String> getWarnings() {
+		Collection<String> result = new ArrayList<String>();
+		if (parseWarnings != null) {
+			for (BusinessWarning warning : parseWarnings) {
+				result.add(warning.toString());
+			}
+		}
+		if (importWarnings != null) {
+			for (BusinessWarning warning : importWarnings) {
+				result.add(warning.toString());
+			}
+		}
+		return result;
+	}
+	
+	public Collection<String> getErrors() {
+		Collection<String> result = new ArrayList<String>();
+		if (previewErrors != null) {
+			for (BusinessException e : previewErrors) {
+				result.add(e.toString());
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * Validate dictionary before importing.
+	 * The method will refresh "previewErrors" and "importWarnings" properties.
+	 */
+	public void validate() {
+		previewErrors = new ArrayList<BusinessException>();
+		importWarnings = new ArrayList<BusinessWarning>();
+		if (getName() == null || getName().trim().isEmpty()) {
+			previewErrors.add(new BusinessException(BusinessException.LACK_DICT_NAME));
+		}
+		if (getVersion() == null || getVersion().trim().isEmpty()) {
+			previewErrors.add(new BusinessException(BusinessException.LACK_DICT_VERSION));
+		}
+		if (dictLanguages != null) {
+			for (DictionaryLanguage dl : dictLanguages) {
+				if (dl.getLanguage() == null) {
+					previewErrors.add(new BusinessException(BusinessException.UNKNOWN_LANG_CODE, dl.getLanguageCode()));
+				}
+				if (dl.getCharset() == null) {
+					previewErrors.add(new BusinessException(BusinessException.CHARSET_NOT_DEFINED, dl.getLanguageCode()));
+				}
+			}
+		}
+		if (labels != null) {
+			for (Label label : labels) {
+				if (!label.checkLength(label.getReference())) {
+					importWarnings.add(new BusinessWarning(
+							BusinessWarning.EXCEED_MAX_LENGTH, "Reference", label.getKey()));
+					if (label.getOrigTranslations() != null) {
+						for (LabelTranslation lt : label.getOrigTranslations()) {
+							if (!label.checkLength(lt.getOrigTranslation())) {
+								importWarnings.add(new BusinessWarning(
+										BusinessWarning.EXCEED_MAX_LENGTH, 
+										lt.getLanguageCode(), label.getKey()));
+							}
+						}
+						for (LabelTranslation lt : label.getOrigTranslations()) {
+							String langCode = lt.getLanguageCode();
+							DictionaryLanguage dl = getDictLanguage(langCode);
+							if (dl.getLanguage() == null || dl.getCharset() == null) continue;
+							String charsetName = dl.getCharset().getName();
+							if (!getEncoding().equals(charsetName)) {
+								try {
+									byte[] source = lt.getOrigTranslation().getBytes(getEncoding());
+									String encodedTranslation = new String(source, charsetName);
+									byte[] target = encodedTranslation.getBytes(charsetName);
+			                        if (!Arrays.equals(source, target) || lt.isValidText()) {
+			                        	importWarnings.add(new BusinessWarning(
+			                        			BusinessWarning.INVALID_TEXT, 
+			                        			encodedTranslation, dl.getCharset().getName(), 
+			                        			langCode, label.getKey()));
+			                        }
+		                        } catch (UnsupportedEncodingException e) {
+		                        	previewErrors.add(new BusinessException(
+		                        			BusinessException.CHARSET_NOT_FOUND, charsetName));
+		                        }
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+   public int getMaxSortNo() {
     	if (dictLanguages == null) {
     		return 0;
     	}

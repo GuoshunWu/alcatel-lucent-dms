@@ -18,11 +18,13 @@ abstract public class DictionaryParser {
 	 * Parse dictionaries into object.
 	 * @param rootDir part of path to be trimmed in dictionary name
 	 * @param file directory or file to be parsed, if file is a dictionary, files under the dictionary will be parsed recursively.
-	 * @param warnings holder of warnings
+	 * @param acceptedFiles output parameter, holder of accepted files list
 	 * @return list of Dictionary objects
-	 * @throws BusinessException
+	 * @throws BusinessException fatal errors, multiple exceptions can be put into a NESTED_ERROR exception.
+	 * It's suggested to go through all files before throw a fatel error, so that user can get as more as possible
+	 * information about errors.
 	 */
-	abstract public ArrayList<Dictionary> parse(String rootDir, File file, Collection<BusinessWarning> warnings) throws BusinessException;
+	abstract public ArrayList<Dictionary> parse(String rootDir, File file, Collection<File> acceptedFiles) throws BusinessException;
 	
 	protected String[] splitFileName(String filename) {
 		int dotPos = filename.lastIndexOf(".");

@@ -16,11 +16,10 @@ public interface DictionaryService {
      * Parse and preview application dictionaries in a folder
      * @param rootDir the part of absolute part to be removed from dictionary name
      * @param file A directory or a dictionary file
-     * @param warnings a collection to hold output warnings
      * @return transient Dictionary object 
      * @throws BusinessException
      */
-    public Collection<Dictionary> previewDictionaries(String rootDir, File file, Collection<BusinessWarning> warnings) throws BusinessException;
+    public Collection<Dictionary> previewDictionaries(String rootDir, File file) throws BusinessException;
     
     /**
      * Import an application dictionary
