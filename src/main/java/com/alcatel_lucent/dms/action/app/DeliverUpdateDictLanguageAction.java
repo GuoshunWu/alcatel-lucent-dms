@@ -39,6 +39,7 @@ public class DeliverUpdateDictLanguageAction extends JSONAction {
 						break;
 					}
 				}
+				dictionary.validate();
 			}
 	    } catch (BusinessException e) {
 			setMessage(e.toString());

@@ -83,20 +83,68 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         super();
     }
 
-    public Collection<Dictionary> previewDictionaries(String rootDir, File file, Collection<BusinessWarning> warnings) throws BusinessException {
+    public Collection<Dictionary> previewDictionaries(String rootDir, File file) throws BusinessException {
     	Collection<Dictionary> result = new ArrayList<Dictionary>();
+    	BusinessException exceptions = new BusinessException(BusinessException.PREVIEW_DICT_ERRORS);
     	rootDir = rootDir.replace("\\", "/");
         long before = System.currentTimeMillis();
+        HashSet<String> allAcceptedFiles = new HashSet<String>();
     	for (com.alcatel_lucent.dms.service.parser.DictionaryParser parser : parsers) {
-    		result.addAll(parser.parse(rootDir, file, warnings));
+    		Collection<File> acceptedFiles = new ArrayList<File>();
+    		try {
+    			result.addAll(parser.parse(rootDir, file, acceptedFiles));
+    		} catch (BusinessException e) {
+    			if (e.getErrorCode() == BusinessException.NESTED_ERROR) {
+    				for (BusinessException subE : e.getNested()) {
+    					exceptions.addNestedException(subE);
+    				}
+    			} else {
+    				exceptions.addNestedException(e);
+    			}
+    		}
+    		for (File acceptedFile : acceptedFiles) {
+    			String filename = acceptedFile.getAbsolutePath().replace("\\", "/");
+    			allAcceptedFiles.add(filename);
+    		}
     	}
         long after = System.currentTimeMillis();
         log.info("**************preview directory '" + file.getAbsolutePath() + "' take " + (after - before)
                 + " milliseconds of time.************");
+    	// check files not accepted
+    	Collection<String> notAcceptedFiles = getNotAcceptedFiles(file, allAcceptedFiles);
+    	if (!notAcceptedFiles.isEmpty()) {
+    		for (String notAcceptedFile : notAcceptedFiles) {
+    			if (notAcceptedFile.startsWith(rootDir)) {
+    				notAcceptedFile = notAcceptedFile.substring(rootDir.length());
+    			}
+    			exceptions.addNestedException(new BusinessException(BusinessException.UNRECOGNIZED_DICT_FILE, notAcceptedFile));
+    		}
+    	}
+    	if (exceptions.hasNestedException()) {
+    		throw exceptions;
+    	}
     	return result;
     }
     
-    /**
+    private Collection<String> getNotAcceptedFiles(File file,
+			HashSet<String> allAcceptedFiles) {
+    	Collection<String> result = new ArrayList<String>();
+    	if (!file.exists()) return result;
+    	if (file.isDirectory()) {
+    		File[] subFiles = file.listFiles();
+    		for (File subFile : subFiles) {
+    			result.addAll(getNotAcceptedFiles(subFile, allAcceptedFiles));
+    		}
+    	} else {
+    		String filename = file.getAbsolutePath().replace("\\", "/");
+    		if (!allAcceptedFiles.contains(filename)) {
+    			result.add(filename);
+    		}
+    	}
+    	return result;
+	}
+
+	/**
      * Generate dct file of specific dictionary in the dicts collections
      *
      * @param dir   root directory save dct files

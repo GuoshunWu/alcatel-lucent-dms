@@ -27,22 +27,25 @@ public class DeliverUpdateLabelAction extends JSONAction {
 				", maxLength=" + maxLength + ", context=" + context);
 		try {
 			Dictionary dictionary = deliveringDictPool.getDictionary(handler, dict);
-			for (Label label : dictionary.getLabels()) {
-				if (label.getId().equals(id)) {
-		    		if (maxLength != null) {
-		    			label.setMaxLength(maxLength);
-		    		}
-		    		if (description != null) {
-		    			label.setDescription(description);
-		    		}
-		    		if (context != null) {
-			    		Context ctx = new Context();
-			    		ctx.setName(context);
-		    			label.setContext(ctx);
-		    		}
-					
-					break;
+			if (dictionary.getLabels() != null) {
+				for (Label label : dictionary.getLabels()) {
+					if (label.getId().equals(id)) {
+			    		if (maxLength != null) {
+			    			label.setMaxLength(maxLength);
+			    		}
+			    		if (description != null) {
+			    			label.setDescription(description);
+			    		}
+			    		if (context != null) {
+				    		Context ctx = new Context();
+				    		ctx.setName(context);
+			    			label.setContext(ctx);
+			    		}
+						
+						break;
+					}
 				}
+				dictionary.validate();
 			}
 	    } catch (BusinessException e) {
 			setMessage(e.toString());

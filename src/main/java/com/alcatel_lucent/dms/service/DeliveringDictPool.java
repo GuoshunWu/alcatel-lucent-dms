@@ -33,15 +33,14 @@ public class DeliveringDictPool {
 	
 	private Map<String, Date> lifeMap = new HashMap<String, Date>();
 	private Map<String, Collection<Dictionary>> dictMap = new HashMap<String, Collection<Dictionary>>();
-	private Map<String, Collection<BusinessWarning>> warningMap = new HashMap<String, Collection<BusinessWarning>>();
+//	private Map<String, Collection<BusinessWarning>> warningMap = new HashMap<String, Collection<BusinessWarning>>();
 	
 	
 	public void addHandler(String handler) throws BusinessException {
 		log.info("Add handler '" + handler + "' to pool.");
 		checkTimeout();
 		String dir = baseDir + "/" + handler;
-		Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
-		Collection<Dictionary> dictList = dictionaryService.previewDictionaries(dir, new File(dir), warnings);
+		Collection<Dictionary> dictList = dictionaryService.previewDictionaries(dir, new File(dir));
 		
 		// add fake id for preview process
 		long dictFid = 1;
@@ -59,11 +58,13 @@ public class DeliveringDictPool {
 					label.setId(labelFid++);
 				}
 			}
+			// populate additional errors and warnings
+			dict.validate();
 		}
 		
 		synchronized (lifeMap) {
 			dictMap.put(handler, dictList);
-			warningMap.put(handler, warnings);
+//			warningMap.put(handler, warnings);
 			lifeMap.put(handler, new Date());
 		}
 	}
@@ -77,7 +78,7 @@ public class DeliveringDictPool {
 			}
 		}
 	}
-	
+/*	
 	public Collection<BusinessWarning> getWarnings(String handler) {
 		synchronized (lifeMap) {
 			if (warningMap.containsKey(handler)) {
@@ -88,6 +89,7 @@ public class DeliveringDictPool {
 		}
 	}
 	
+*/	
 	public Dictionary getDictionary(String handler, Long dictFid) throws BusinessException {
 		Collection<Dictionary> dictList = getDictionaries(handler);
 		for (Dictionary dict : dictList) {
@@ -106,7 +108,7 @@ public class DeliveringDictPool {
 					log.info("Handler '" + key + "' timed out.");
 					lifeMap.remove(key);
 					dictMap.remove(key);
-					warningMap.remove(key);
+//					warningMap.remove(key);
 				}
 			}
 		}

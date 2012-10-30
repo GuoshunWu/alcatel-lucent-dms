@@ -35,10 +35,13 @@ public class PropParser extends DictionaryParser {
 
 	@Autowired
 	private LanguageService languageService;
+    private BusinessException exceptions = new BusinessException(BusinessException.NESTED_ERROR);
+    private boolean isFirstLevel = true;
 	
 	@Override
-	public ArrayList<Dictionary> parse(String rootDir, File file,
-			Collection<BusinessWarning> warnings) throws BusinessException {
+	public ArrayList<Dictionary> parse(String rootDir, File file, Collection<File> acceptedFiles) throws BusinessException {
+        boolean entry = isFirstLevel;
+        isFirstLevel = false;
         ArrayList<Dictionary> deliveredDicts = new ArrayList<Dictionary>();
         if (!file.exists()) return deliveredDicts;
         rootDir = rootDir.replace("\\", "/");
@@ -53,7 +56,7 @@ public class PropParser extends DictionaryParser {
             Map<String, Collection<File>> propFiles = new HashMap<String, Collection<File>>();
             for (File subFile : fileOrDirs) {
             	if (subFile.isDirectory()) {
-            		deliveredDicts.addAll(parse(rootDir, subFile, warnings));
+            		deliveredDicts.addAll(parse(rootDir, subFile, acceptedFiles));
             	} else {
             		String[] nameParts = splitFileName(subFile.getName());
             		if (nameParts != null) {
@@ -67,15 +70,23 @@ public class PropParser extends DictionaryParser {
             	}
             }
             for (String baseName : propFiles.keySet()) {
-            	deliveredDicts.add(parseProp(rootDir, baseName, propFiles.get(baseName), warnings));
+            	try {
+            		deliveredDicts.add(parseProp(rootDir, baseName, propFiles.get(baseName)));
+            	} catch (BusinessException e) {
+            		exceptions.addNestedException(e);
+            	}
+            	acceptedFiles.addAll(propFiles.get(baseName));
             }
+        }
+        if (entry && exceptions.hasNestedException()) {
+        	throw exceptions;
         }
 		return deliveredDicts;
 	}
 
 	private Dictionary parseProp(String rootDir,
-			String baseName, Collection<File> files,
-			Collection<BusinessWarning> warnings) {
+			String baseName, Collection<File> files) {
+		Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
 		String refLangCode = null;
 		File refFile = null;
 		String dictName = null;
@@ -161,6 +172,7 @@ public class PropParser extends DictionaryParser {
 		if (dictExceptions.hasNestedException()) {
 			throw dictExceptions;
 		}
+		dictionary.setParseWarnings(warnings);
 		return dictionary;
 	}
 
