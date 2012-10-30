@@ -48,6 +48,7 @@ public class TaskSummaryREST extends BaseREST {
 			TaskContext tc = new TaskContext();
 			tc.setContext(context);
 			tc.setS(taskSummary.get(contextId));
+			tc.count();
 			result.add(tc);
 		}
 		requestMap.put("records", "" + result.size());
