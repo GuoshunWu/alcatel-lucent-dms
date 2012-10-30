@@ -102,14 +102,18 @@ public class DeliveringDictPool {
 	
 	public void checkTimeout() {
 		synchronized (lifeMap) {
+			Collection<String> keysToRemove = new ArrayList<String>();
 			for (String key : lifeMap.keySet()) {
 				Date createTime = lifeMap.get(key);
 				if (System.currentTimeMillis() - createTime.getTime() > TIMEOUT_VALUE) {
 					log.info("Handler '" + key + "' timed out.");
-					lifeMap.remove(key);
-					dictMap.remove(key);
-//					warningMap.remove(key);
+					keysToRemove.add(key);
 				}
+			}
+			for (String key : keysToRemove) {
+				lifeMap.remove(key);
+				dictMap.remove(key);
+//				warningMap.remove(key);
 			}
 		}
 	}
