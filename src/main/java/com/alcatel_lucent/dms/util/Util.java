@@ -292,7 +292,24 @@ public class Util {
         createZip(srcFile, new File(zipPath));
     }
     
+    /**
+     * Validate if a file can be decoded by specified charset.
+     * @param file file object
+     * @param charsetName charset name
+     * @return true if validated
+     */
     public static boolean validateFileCharset(File file, String charsetName) {
+    	return validateFileCharset(file, charsetName, null);
+    }
+
+    /**
+     * Validate if a file can be decoded by specified charset.
+     * @param file file object
+     * @param charsetName charset name
+     * @param keyword the decoded text must contain the keyword if provided
+     * @return true if validated
+     */
+    public static boolean validateFileCharset(File file, String charsetName, String keyword) {
     	boolean result = true;
 		char[] buf = new char[65536];
 		Charset charset = Charset.forName(charsetName);
@@ -301,12 +318,23 @@ public class Util {
 		decoder.onUnmappableCharacter(CodingErrorAction.REPORT);
 
 		InputStreamReader reader = null;
+		int pos = 0;
 		try {
 			reader = new InputStreamReader(new FileInputStream(file), decoder);
 			int chars;
-			while ((chars = reader.read(buf)) >= 0);
+			while ((chars = reader.read(buf)) >= 0) {
+				if (keyword != null && pos < keyword.length()) {
+					for (int i = 0; i < chars; i++) {
+						if (buf[i] == keyword.charAt(pos)) {
+							pos++;
+						} else {
+							pos = 0;
+						}
+					}
+				}
+			}
 		} catch (CharacterCodingException ex) {
-			ex.printStackTrace();
+//			ex.printStackTrace();
 			result = false;
 		} catch (IOException ex) {
 			result = false;
@@ -318,8 +346,7 @@ public class Util {
 					// dummy
 				}
 		}
-		return result;
-
+		return result && (keyword == null || pos >= keyword.length());
     }
     
     public static boolean isASCII(File file) {
