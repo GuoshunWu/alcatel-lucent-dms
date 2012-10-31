@@ -28,6 +28,7 @@
       url: '',
       datatype: 'json',
       editurl: "",
+      mtype: 'POST',
       width: 1000,
       minHeight: 200,
       height: 240,
@@ -107,6 +108,7 @@
           align: 'center'
         }
       ],
+      ondblClickRow: function(rowid, iRow, iCol, e) {},
       beforeProcessing: function(data, status, xhr) {
         var actIndex, actions, grid, k, v;
         actIndex = $(this).getGridParam('colNames').indexOf('Action');
@@ -133,10 +135,13 @@
         };
       },
       afterSubmitCell: function(serverresponse, rowid, cellname, value, iRow, iCol) {
-        var jsonFromServer;
+        var jsonFromServer, success;
         jsonFromServer = eval("(" + serverresponse.responseText + ")");
-        [0 === jsonFromServer.status, jsonFromServer.message];
-        return $(this).trigger('reloadGrid');
+        success = 0 === jsonFromServer.status;
+        if (success) {
+          $(this).trigger('reloadGrid');
+        }
+        return [success, jsonFromServer.message];
       },
       gridComplete: function() {
         var grid;
