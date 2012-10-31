@@ -187,6 +187,7 @@
     langSettings = $('#languageSettingsDialog').dialog({
       autoOpen: false,
       modal: true,
+      zIndex: 900,
       width: 'auto',
       height: 'auto',
       title: i18n.dialog.languagesettings.title,
@@ -211,6 +212,7 @@
       height: 'auto',
       title: i18n.dialog.stringsettings.title,
       modal: true,
+      zIndex: 900,
       open: function(e, ui) {
         var param, postData;
         param = $(this).data("param");
@@ -235,6 +237,7 @@
     dictListPreview = $('#dictListPreviewDialog').dialog({
       autoOpen: false,
       modal: true,
+      zIndex: 900,
       width: 'auto',
       height: 'auto',
       title: i18n.dialog.dictlistpreview.title,
@@ -287,6 +290,7 @@
     dictPreviewStringSettings = $('#dictPreviewStringSettingsDialog').dialog({
       autoOpen: false,
       modal: true,
+      zIndex: 920,
       width: 'auto',
       height: 'auto',
       title: i18n.dialog.dictpreviewstringsettings.title,
@@ -315,6 +319,7 @@
     dictPreviewLangSettings = $('#dictPreviewLanguageSettingsDialog').dialog({
       autoOpen: false,
       modal: true,
+      zIndex: 920,
       width: 'auto',
       height: 'auto',
       title: i18n.dialog.languagesettings.title,
