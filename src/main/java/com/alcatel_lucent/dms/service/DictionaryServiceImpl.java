@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -596,7 +597,13 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     	Map param = new HashMap();
     	param.put("appId", appId);
     	param.put("name", dictionaryName);
-    	return (Dictionary) dao.retrieveOne(hql, param);
+    	Dictionary dict = (Dictionary) dao.retrieveOne(hql, param);
+    	if (dict != null && dict.getDictLanguages() != null) {
+    		for (DictionaryLanguage dl : dict.getDictLanguages()) {
+    			Hibernate.initialize(dl);
+    		}
+    	}
+    	return dict;
     }
     
     public void removeDictionaryFromApplication(Long appId, Long dictId) {
