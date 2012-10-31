@@ -97,7 +97,9 @@
         $.each(data.files, function(index, file) {
           return $('#uploadStatus').html("" + i18n.uploadingfile + file.name);
         });
-        data.submit();
+        if ($("#selAppVersion").val()) {
+          data.submit();
+        }
         if (!$.browser.msie) {
           return $("#progressbar").show();
         }
@@ -123,7 +125,8 @@
           return;
         }
         $('#dictListPreviewDialog').data('param', {
-          handler: jsonFromServer.filename
+          handler: jsonFromServer.filename,
+          appId: $("#selAppVersion").val()
         });
         return $('#dictListPreviewDialog').dialog('open');
       }

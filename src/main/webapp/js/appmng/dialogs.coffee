@@ -154,7 +154,9 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   #    param need to be initilize before the dialog open
     param = $(@).data 'param'
     return if !param
+
     postData =
+      appId: param.appId
       format: 'grid',
       handler: param.handler
       prop: 'languageReferenceCode,base.name,version,base.format,base.encoding,labelNum,errorCount,warningCount'

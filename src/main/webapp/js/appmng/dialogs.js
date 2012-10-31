@@ -245,6 +245,7 @@
           return;
         }
         postData = {
+          appId: param.appId,
           format: 'grid',
           handler: param.handler,
           prop: 'languageReferenceCode,base.name,version,base.format,base.encoding,labelNum,errorCount,warningCount'

@@ -1,8 +1,8 @@
 define ['jqgrid', 'util', 'require'], ($, util, require)->
   colNames = ['Dictionary', 'Total']
   colModel = [
-    {name: 'name', index: 'dict', width: 240, editable: false, stype: 'select', align: 'left', frozen: true}
-    {name: 'total', index: 'total', width: 90, editable: false, align: 'right', frozen: true}
+    {name: 'name', index: 'dict', width: 240, editable: false, stype: 'select', align: 'left',frozen:true}
+    {name: 'total', index: 'total', width: 90, editable: false, align: 'right', frozen:true}
   ]
   groupHeader = []
   grid = $("#reportGrid").jqGrid {
@@ -17,7 +17,8 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
   afterCreate: (grid)->
     grid.setGroupHeaders {useColSpanStyle: true, groupHeaders: grid.getGridParam('groupHeaders')}
     grid.navGrid '#reportPager', {edit: false, add: false, del: false, search: false, view: false}
-    grid.setFrozenColumns()
+    grid.jqGrid 'setFrozenColumns'
+
   ondblClickRow: (rowid, iRow, iCol, e)->
     col = $(@).getGridParam('colModel')[iCol]
     [trs, id] = [/s\(\d+\)\[(\d+)\]/ig.exec(col.index), /s\((\d+)\)\[\d+\]/ig.exec(col.index)]

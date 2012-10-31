@@ -60,7 +60,10 @@
           index: 'version',
           width: 25,
           editable: true,
-          align: 'center'
+          align: 'center',
+          editrules: {
+            required: true
+          }
         }, {
           name: 'format',
           index: 'base.format',
@@ -132,7 +135,8 @@
       afterSubmitCell: function(serverresponse, rowid, cellname, value, iRow, iCol) {
         var jsonFromServer;
         jsonFromServer = eval("(" + serverresponse.responseText + ")");
-        return [0 === jsonFromServer.status, jsonFromServer.message];
+        [0 === jsonFromServer.status, jsonFromServer.message];
+        return $(this).trigger('reloadGrid');
       },
       gridComplete: function() {
         var grid;

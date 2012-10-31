@@ -53,7 +53,9 @@ define (require)->
   add: (e, data)->
     $.each data.files, (index, file) ->
       $('#uploadStatus').html "#{i18n.uploadingfile}#{file.name}"
-    data.submit()
+
+    data.submit() if $("#selAppVersion").val()
+
     $("#progressbar").show() if !$.browser.msie
   progressall: (e, data) ->
     progress = data.loaded / data.total * 100
@@ -67,7 +69,8 @@ define (require)->
     if(0 != jsonFromServer.status)
       $.msgBox jsonFromServer.message, null, {title: c18n.error}
       return
-    $('#dictListPreviewDialog').data 'param', {handler: jsonFromServer.filename}
+
+    $('#dictListPreviewDialog').data 'param', {handler: jsonFromServer.filename,appId:$("#selAppVersion").val()}
     $('#dictListPreviewDialog').dialog 'open'
   }
 
