@@ -120,15 +120,15 @@
                 <div id="dictListPreviewPager"></div>
             </td>
         </tr>
-        <tr>
-            <table width="100%">
-                <tr>
-                    <td align="right"><button id="import"/><s:text name="button.import"/></td>
-                    <td style="width:20px;"/>
-                </tr>
-            </table>
-            
-        </tr>
+        <%--<tr>--%>
+            <%--<table width="100%">--%>
+                <%--<tr>--%>
+                    <%--<td align="right"><button id="import"/><s:text name="button.import"/></td>--%>
+                    <%--<td style="width:20px;"/>--%>
+                <%--</tr>--%>
+            <%--</table>--%>
+            <%----%>
+        <%--</tr>--%>
     </table>
 </div>
 

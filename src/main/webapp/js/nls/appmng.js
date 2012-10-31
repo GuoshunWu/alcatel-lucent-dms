@@ -30,7 +30,10 @@ define({
                 title:'Delete'
             },
             dictlistpreview:{
-                title: 'Dictionaries Preview'
+                title: 'Dictionaries Preview',
+                import: 'Import',
+                check:'There are some errors need to be fixed before import!',
+                success: 'Import dictionaries to {0} successful.'
             },
             dictpreviewstringsettings:{
                 title: 'Labels in Dictionary Preview'

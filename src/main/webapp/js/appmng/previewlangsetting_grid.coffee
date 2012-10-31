@@ -20,9 +20,12 @@ define (require)->
   beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
     postData = $(@).getGridParam 'postData'
     dict: postData.dict, handler: postData.handler
-  afterSubmit: (response, postdata)->
-    jsonfromServer = eval "(#{response.responseText})"
-    [jsonfromServer.status == 0 , jsonfromServer.message, -1]
+#  afterSubmit: (response, postdata)->
+  afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
+    jsonfromServer = eval "(#{serverresponse.responseText})"
+    success = 0 == jsonfromServer.status
+    $('#dictListPreviewGrid').trigger 'reloadGrid' if success
+    [success, jsonfromServer.message,-1]
   }
   langSettingGrid.jqGrid 'navGrid', '#previewLangSettingPager', {edit: false, add: false, del: false, search: false}, {}, {}
 

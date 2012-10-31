@@ -71,9 +71,13 @@
         };
       },
       afterSubmitCell: function(serverresponse, rowid, cellname, value, iRow, iCol) {
-        var jsonFromServer;
+        var jsonFromServer, success;
         jsonFromServer = eval("(" + serverresponse.responseText + ")");
-        return [0 === jsonFromServer.status, jsonFromServer.message];
+        success = 0 === jsonFromServer.status;
+        if (success) {
+          $('#dictListPreviewGrid').trigger('reloadGrid');
+        }
+        return [success, jsonFromServer.message];
       }
     });
     return dicGrid.jqGrid('navGrid', '#dictPreviewStringSettingsPager', {

@@ -2,7 +2,7 @@
 (function() {
 
   define(function(require) {
-    var $, appId, appInfo, c18n, dctFileUpload, dialogs, grid, i18n,
+    var $, appInfo, c18n, dctFileUpload, dialogs, grid, i18n,
       _this = this;
     $ = require('jqueryui');
     require('appmng/langsetting_grid');
@@ -90,48 +90,57 @@
       filter: 'alpha(opacity=0)',
       cursor: 'pointer'
     }));
-    appId = $("#selAppVersion").val();
-    if (appId) {
-      $("#" + dctFileUpload).fileupload({
-        type: 'POST',
-        url: "app/deliver-app-dict?appId=" + appId,
-        add: function(e, data) {
-          $.each(data.files, function(index, file) {
-            return $('#uploadStatus').html("" + i18n.uploadingfile + file.name);
-          });
-          data.submit();
-          if (!$.browser.msie) {
-            return $("#progressbar").show();
-          }
-        },
-        progressall: function(e, data) {
-          var progress;
-          progress = data.loaded / data.total * 100;
-          return $('#progressbar').progressbar("value", progress);
-        },
-        done: function(e, data) {
-          var jsonFromServer;
-          $.each(data.files, function(index, file) {
-            return $('#uploadStatus').html("" + file.name + " " + i18n.uploadfinished);
-          });
-          if (!$.browser.msie) {
-            $("#progressbar").hide();
-          }
-          jsonFromServer = eval("(" + data.result + ")");
-          if (0 !== jsonFromServer.status) {
-            $.msgBox(jsonFromServer.message, null, {
-              title: c18n.error
-            });
-            return;
-          }
-          $('#dictListPreviewDialog').data('param', {
-            handler: jsonFromServer.filename,
-            appId: appId
-          });
-          return $('#dictListPreviewDialog').dialog('open');
+    $("#" + dctFileUpload).fileupload({
+      type: 'POST',
+      dataType: 'json',
+      url: "app/deliver-app-dict",
+      add: function(e, data) {
+        var appId;
+        $.each(data.files, function(index, file) {
+          return $('#uploadStatus').html("" + i18n.uploadingfile + file.name);
+        });
+        appId = $("#selAppVersion").val();
+        if (!appId) {
+          return;
         }
-      });
-    }
+        $(this).fileupload('option', 'formData', [
+          {
+            name: 'appId',
+            value: $("#selAppVersion").val()
+          }
+        ]);
+        data.submit();
+        if (!$.browser.msie) {
+          return $("#progressbar").show();
+        }
+      },
+      progressall: function(e, data) {
+        var progress;
+        progress = data.loaded / data.total * 100;
+        return $('#progressbar').progressbar("value", progress);
+      },
+      done: function(e, data) {
+        var jsonFromServer;
+        $.each(data.files, function(index, file) {
+          return $('#uploadStatus').html("" + file.name + " " + i18n.uploadfinished);
+        });
+        if (!$.browser.msie) {
+          $("#progressbar").hide();
+        }
+        jsonFromServer = data.result;
+        if (0 !== jsonFromServer.status) {
+          $.msgBox(jsonFromServer.message, null, {
+            title: c18n.error
+          });
+          return;
+        }
+        $('#dictListPreviewDialog').data('param', {
+          handler: jsonFromServer.filename,
+          appId: $("#selAppVersion").val()
+        });
+        return $('#dictListPreviewDialog').dialog('open');
+      }
+    });
     return {
       getApplicationSelectOptions: function() {
         return $('#selAppVersion').children('option').clone(true);

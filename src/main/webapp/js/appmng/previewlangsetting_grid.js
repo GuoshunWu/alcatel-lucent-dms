@@ -51,10 +51,14 @@
           handler: postData.handler
         };
       },
-      afterSubmit: function(response, postdata) {
-        var jsonfromServer;
-        jsonfromServer = eval("(" + response.responseText + ")");
-        return [jsonfromServer.status === 0, jsonfromServer.message, -1];
+      afterSubmitCell: function(serverresponse, rowid, cellname, value, iRow, iCol) {
+        var jsonfromServer, success;
+        jsonfromServer = eval("(" + serverresponse.responseText + ")");
+        success = 0 === jsonfromServer.status;
+        if (success) {
+          $('#dictListPreviewGrid').trigger('reloadGrid');
+        }
+        return [success, jsonfromServer.message, -1];
       }
     });
     langSettingGrid.jqGrid('navGrid', '#previewLangSettingPager', {

@@ -195,7 +195,14 @@
             }).appendTo(this);
             return fileInput.fileupload({
               type: 'POST',
-              url: "/task/receive-task-files?id=" + rowid,
+              dataType: 'json',
+              url: "/task/receive-task-files",
+              formData: [
+                {
+                  name: 'id',
+                  value: rowid
+                }
+              ],
               acceptFileTypes: /zip$/i,
               add: function(e, data) {
                 data.submit();
@@ -213,7 +220,7 @@
                 if (!$.browser.msie) {
                   $("#progressbar").hide();
                 }
-                jsonFromServer = eval("(" + data.result + ")");
+                jsonFromServer = data.result;
                 if (0 !== jsonFromServer.status) {
                   $.msgBox(jsonFromServer.message, null, {
                     title: c18n.error

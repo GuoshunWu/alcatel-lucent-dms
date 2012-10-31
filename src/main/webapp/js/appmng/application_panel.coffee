@@ -44,20 +44,19 @@ define (require)->
   position: 'absolute', top: -3, right: -3, border: '1px solid', borderWidth: '1px 1px 10px 0px',
   opacity: 0, filter: 'alpha(opacity=0)', cursor: 'pointer'}
 
-  appId = $("#selAppVersion").val()
-
-
   $("##{dctFileUpload}").fileupload {
-  type: 'POST'
-  url: "app/deliver-app-dict?appId=#{appId}"
+  type: 'POST', dataType: 'json'
+  url: "app/deliver-app-dict"
+
   #  forceIframeTransport:true
 
   add: (e, data)->
     $.each data.files, (index, file) ->
       $('#uploadStatus').html "#{i18n.uploadingfile}#{file.name}"
-
+    appId = $("#selAppVersion").val()
+    return if !appId
+    $(@).fileupload 'option', 'formData', [{name: 'appId', value: $("#selAppVersion").val()}]
     data.submit()
-
     $("#progressbar").show() if !$.browser.msie
   progressall: (e, data) ->
     progress = data.loaded / data.total * 100
@@ -66,15 +65,15 @@ define (require)->
     $.each data.files, (index, file) ->$('#uploadStatus').html "#{file.name} #{i18n.uploadfinished}"
     $("#progressbar").hide() if !$.browser.msie
     #    request handler
-    jsonFromServer = eval "(#{data.result})"
+    jsonFromServer = data.result
 
     if(0 != jsonFromServer.status)
       $.msgBox jsonFromServer.message, null, {title: c18n.error}
       return
 
-    $('#dictListPreviewDialog').data 'param', {handler: jsonFromServer.filename, appId: appId}
+    $('#dictListPreviewDialog').data 'param', {handler: jsonFromServer.filename, appId: $("#selAppVersion").val()}
     $('#dictListPreviewDialog').dialog 'open'
-  } if appId
+  }
 
   getApplicationSelectOptions: ()->$('#selAppVersion').children('option').clone(true)
   addNewApplication: (app) ->

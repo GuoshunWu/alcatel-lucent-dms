@@ -241,6 +241,48 @@
       width: 'auto',
       height: 'auto',
       title: i18n.dialog.dictlistpreview.title,
+      buttons: [
+        {
+          text: i18n.dialog.dictlistpreview["import"],
+          click: function() {
+            var param, postData;
+            param = dictListPreview.data("param");
+            postData = {
+              handler: param.handler,
+              app: $('#selAppVersion').val()
+            };
+            if (grid.gridHasErrors()) {
+              $.msgBox(i18n.dialog.dictlistpreview.check, null, {
+                title: c18n.error
+              });
+              return;
+            }
+            dictListPreview.dialog('close');
+            $.blockUI({
+              css: {
+                backgroundColor: '#fff'
+              },
+              overlayCSS: {
+                opacity: 0.2
+              }
+            });
+            return $.post('/app/deliver-dict', postData, function(json) {
+              var appInfo;
+              $.unblockUI();
+              if (json.status !== 0) {
+                return;
+                $.msgBox(json.message, null, {
+                  title: c18n.error
+                });
+              }
+              appInfo = "" + ($('#appDispAppName').text()) + " " + ($('#selAppVersion option:selected').text());
+              return $.msgBox(i18n.dictlistpreview.success.format(appInfo, null, {
+                title: c18n.info
+              }));
+            });
+          }
+        }
+      ],
       open: function() {
         var param, postData;
         param = $(this).data('param');
@@ -258,34 +300,6 @@
           postData: postData
         }).trigger('reloadGrid');
       }
-    });
-    $('#import', dictListPreview).button({}).click(function() {
-      var param, postData;
-      param = dictListPreview.data("param");
-      postData = {
-        handler: param.handler,
-        app: $('#selAppVersion').val()
-      };
-      dictListPreview.dialog('close');
-      $.blockUI({
-        css: {
-          backgroundColor: '#fff'
-        },
-        overlayCSS: {
-          opacity: 0.2
-        }
-      });
-      return $.post('/app/deliver-dict', postData, function(json) {
-        $.unblockUI();
-        console.log(json);
-        if (json.status !== 0) {
-          $.msgBox(json.message, null, {
-            title: c18n.error
-          });
-          return;
-        }
-        return alert('Import successful.');
-      });
     });
     dictPreviewStringSettings = $('#dictPreviewStringSettingsDialog').dialog({
       autoOpen: false,

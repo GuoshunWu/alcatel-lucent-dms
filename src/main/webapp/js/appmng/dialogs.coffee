@@ -4,8 +4,6 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   i18n = require 'i18n!nls/appmng'
   require 'blockui'
   require 'jqmsgbox'
-  #  sgrid = require 'appmng/dictpreviewstringsettings_grid'
-  #  lgrid  = require  'appmng/previewlangsetting_grid'
 
   ids = {
   button:
@@ -117,7 +115,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
 
   langSettings = $('#languageSettingsDialog').dialog {
   autoOpen: false
-  modal: true,zIndex:900
+  modal: true, zIndex: 900
   width: 'auto', height: 'auto', title: i18n.dialog.languagesettings.title
 
   open: (e, ui)->
@@ -131,7 +129,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   stringSettings = $('#stringSettingsDialog').dialog {
   autoOpen: false
   width: 'auto', height: 'auto', title: i18n.dialog.stringsettings.title
-  modal: true,zIndex:900
+  modal: true, zIndex: 900
   open: (e, ui)->
   # param must be attached to the dialog before the dialog open
     param = $(@).data "param"
@@ -148,8 +146,24 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
 
   dictListPreview = $('#dictListPreviewDialog').dialog {
   autoOpen: false
-  modal: true,zIndex:900
+  modal: true, zIndex: 900
   width: 'auto', height: 'auto', title: i18n.dialog.dictlistpreview.title
+  buttons: [
+    {text: i18n.dialog.dictlistpreview.import, click: ()->
+      param = dictListPreview.data "param"
+      postData = handler: param.handler, app: $('#selAppVersion').val()
+      ($.msgBox i18n.dialog.dictlistpreview.check, null, {title: c18n.error};return) if grid.gridHasErrors()
+      dictListPreview.dialog 'close'
+
+      $.blockUI css: {backgroundColor: '#fff'}, overlayCSS: {opacity: 0.2}
+      $.post '/app/deliver-dict', postData, (json)->
+        $.unblockUI()
+        (return;$.msgBox json.message, null, {title: c18n.error}) if(json.status != 0)
+        appInfo = "#{$('#appDispAppName').text()} #{$('#selAppVersion option:selected').text()}"
+
+        $.msgBox i18n.dictlistpreview.success.format appInfo, null, {title: c18n.info}
+    }
+  ]
   open: ->
   #    param need to be initilize before the dialog open
     param = $(@).data 'param'
@@ -163,26 +177,10 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
     $('#dictListPreviewGrid').setGridParam(url: '/rest/delivery/dict', postData: postData).trigger 'reloadGrid'
   }
 
-  $('#import', dictListPreview).button({}).click ()->
-    param = dictListPreview.data "param"
-    postData = handler: param.handler, app: $('#selAppVersion').val()
-
-    dictListPreview.dialog 'close'
-
-    $.blockUI css: {backgroundColor: '#fff'}, overlayCSS: {opacity: 0.2}
-    $.post '/app/deliver-dict', postData, (json)->
-      $.unblockUI()
-      console.log json
-      if(json.status != 0)
-        $.msgBox json.message, null, {title: c18n.error}
-        return
-      #      $.msgBox json.message, null, {title: c18n.error}
-      alert 'Import successful.'
-
 
   dictPreviewStringSettings = $('#dictPreviewStringSettingsDialog').dialog {
   autoOpen: false
-  modal: true,zIndex:920
+  modal: true, zIndex: 920
   width: 'auto', height: 'auto', title: i18n.dialog.dictpreviewstringsettings.title
   open: ->
     param = $(@).data 'param'
@@ -203,7 +201,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
 
   dictPreviewLangSettings = $('#dictPreviewLanguageSettingsDialog').dialog {
   autoOpen: false
-  modal: true,zIndex:920
+  modal: true, zIndex: 920
   width: 'auto', height: 'auto', title: i18n.dialog.languagesettings.title
   open: ->
     param = $(@).data 'param'
