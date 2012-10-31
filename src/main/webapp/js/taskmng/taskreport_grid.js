@@ -57,7 +57,7 @@
           search: false,
           view: false
         });
-        return grid.setFrozenColumns();
+        return grid.jqGrid('setFrozenColumns');
       },
       ondblClickRow: function(rowid, iRow, iCol, e) {
         var col, dialogs, id, language, trs, _ref;

@@ -27,7 +27,9 @@ define (require, util, i18n)->
   colModel: [
     {name: 'langrefcode', index: 'langrefcode', width: 55, align: 'center', hidden: true}
     {name: 'name', index: 'base.name', width: 200, editable: true, align: 'left'}
-    {name: 'version', index: 'version', width: 25, editable: true, align: 'center'}
+    {name: 'version', index: 'version', width: 25, editable: true, align: 'center',
+    editrules:{required:true}
+    }
     {name: 'format', index: 'base.format', width: 60, editable: true, edittype: 'select',
     editoptions: {value: "DCT:DCT;Dictionary conf:Dictionary conf;Text properties:Text properties;XML labels:XML labels"},
     align: 'center'}
@@ -58,6 +60,7 @@ define (require, util, i18n)->
   afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
     jsonFromServer = eval "(#{serverresponse.responseText})"
     [0 == jsonFromServer.status, jsonFromServer.message]
+    $(@).trigger 'reloadGrid'
 
   gridComplete: ->
     grid = $(@)
