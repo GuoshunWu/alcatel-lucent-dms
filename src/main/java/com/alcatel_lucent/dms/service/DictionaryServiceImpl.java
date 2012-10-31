@@ -592,7 +592,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     }
     
     public Dictionary findDictionaryInApp(Long appId, String dictionaryName) {
-    	String hql = "select obj from Application app join app.dictionaries obj where app.id=:appId and obj.name=:name";
+    	String hql = "select obj from Application app join app.dictionaries obj where app.id=:appId and obj.base.name=:name";
     	Map param = new HashMap();
     	param.put("appId", appId);
     	param.put("name", dictionaryName);
