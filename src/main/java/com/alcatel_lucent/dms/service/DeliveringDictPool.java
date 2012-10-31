@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
+import com.alcatel_lucent.dms.model.Application;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryLanguage;
 import com.alcatel_lucent.dms.model.Label;
@@ -27,6 +28,9 @@ public class DeliveringDictPool {
 	
 	@Autowired
 	private DictionaryService dictionaryService;
+	
+	@Autowired
+	private DaoService dao;
 
     @Value("${dms.deliver.dir}")
 	private String baseDir;
@@ -36,20 +40,31 @@ public class DeliveringDictPool {
 //	private Map<String, Collection<BusinessWarning>> warningMap = new HashMap<String, Collection<BusinessWarning>>();
 	
 	
-	public void addHandler(String handler) throws BusinessException {
+	public void addHandler(String handler, Long appId) throws BusinessException {
 		log.info("Add handler '" + handler + "' to pool.");
 		checkTimeout();
 		String dir = baseDir + "/" + handler;
 		Collection<Dictionary> dictList = dictionaryService.previewDictionaries(dir, new File(dir));
+		Application app = (Application) dao.retrieve(Application.class, appId);
 		
-		// add fake id for preview process
+		// set id, version for preview process
+		// if dictionary already exists, get language and charset information from existing one
 		long dictFid = 1;
 		for (Dictionary dict : dictList) {
+			Dictionary dbDict = dictionaryService.findDictionaryInApp(appId, dict.getName());
 			dict.setId(dictFid++);
+			dict.setVersion(app.getVersion());
 			if (dict.getDictLanguages() != null) {
 				long dlFid = 1;
 				for (DictionaryLanguage dl : dict.getDictLanguages()) {
 					dl.setId(dlFid++);
+					if (dbDict != null) {
+						DictionaryLanguage dbDl = dbDict.getDictLanguage(dl.getLanguageCode());
+						if (dbDl != null) {
+							dl.setLanguage(dbDl.getLanguage());
+							dl.setCharset(dbDl.getCharset());
+						}
+					}
 				}
 			}
 			if (dict.getLabels() != null) {

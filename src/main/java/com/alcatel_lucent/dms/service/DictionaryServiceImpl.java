@@ -591,6 +591,14 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     	return (Dictionary) dao.retrieveOne(hql, param);
     }
     
+    public Dictionary findDictionaryInApp(Long appId, String dictionaryName) {
+    	String hql = "select obj from Application app join app.dictionaries obj where app.id=:appId and obj.name=:name";
+    	Map param = new HashMap();
+    	param.put("appId", appId);
+    	param.put("name", dictionaryName);
+    	return (Dictionary) dao.retrieveOne(hql, param);
+    }
+    
     public void removeDictionaryFromApplication(Long appId, Long dictId) {
     	Application app = (Application) dao.retrieve(Application.class, appId);
     	app.removeDictionary(dictId);

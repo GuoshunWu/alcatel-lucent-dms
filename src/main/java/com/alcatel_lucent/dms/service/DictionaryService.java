@@ -82,6 +82,14 @@ public interface DictionaryService {
     Dictionary getLatestDictionary(Long dictionaryBaseId, Long beforeDictionaryId);
     
     /**
+     * Find dictionary by name in application
+     * @param appId application id
+     * @param dictionaryName dictionary name
+     * @return null if not found
+     */
+    Dictionary findDictionaryInApp(Long appId, String dictionaryName);
+    
+    /**
      * Remove a dictionary from an application, without deleting it.
      * @param appId application id
      * @param dictId dictionary id
