@@ -32,6 +32,7 @@ public class DeliverAppDictAction extends JSONAction {
     private File upload;
     private String contentType;
     private String filename;
+    private Long appId;
 
     private SimpleDateFormat dFmt=new SimpleDateFormat("yyyyMMdd_HHmmss");
 
@@ -83,7 +84,7 @@ public class DeliverAppDictAction extends JSONAction {
             }
         }
         if(fileCreateSuccess){
-            deliveringDictPool.addHandler(dir.getName());
+            deliveringDictPool.addHandler(dir.getName(), appId);
         }
 
         filename = dir.getName();
@@ -92,5 +93,13 @@ public class DeliverAppDictAction extends JSONAction {
         setMessage(getText("message.success"));
         return SUCCESS;
     }
+
+	public Long getAppId() {
+		return appId;
+	}
+
+	public void setAppId(Long appId) {
+		this.appId = appId;
+	}
 
 }
