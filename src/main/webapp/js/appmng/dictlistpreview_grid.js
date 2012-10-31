@@ -2,12 +2,22 @@
 (function() {
 
   define(function(require, util, i18n) {
-    var $, c18n, dicGrid, handlers;
+    var $, c18n, dicGrid, handlers, infoDialog;
     $ = require('jqgrid');
     util = require('util');
     i18n = require('i18n!nls/appmng');
     require('jqmsgbox');
     c18n = require('i18n!nls/common');
+    infoDialog = $('<div>').dialog({
+      autoOpen: false,
+      height: 400,
+      width: 'auto',
+      buttons: {
+        OK: function() {
+          return $(this).dialog('close');
+        }
+      }
+    });
     handlers = {
       'String': {
         title: i18n.dialog.stringsettings.title,
@@ -91,24 +101,42 @@
           width: 20,
           align: 'center'
         }, {
-          name: 'error',
+          name: 'errors',
           index: 'errorCount',
           width: 20,
           align: 'center'
         }, {
-          name: 'warning',
+          name: 'warnings',
           index: 'warningCount',
           width: 20,
           align: 'center'
         }, {
-          name: 'action',
+          name: 'actions',
           index: 'action',
           width: 70,
           editable: false,
           align: 'center'
         }
       ],
-      ondblClickRow: function(rowid, iRow, iCol, e) {},
+      ondblClickRow: function(rowid, iRow, iCol, e) {
+        var handler, name, value;
+        name = $(this).getGridParam('colModel')[iCol].name;
+        value = $(this).getRowData(rowid)[name];
+        if (!(name === 'errors' || name === 'warnings') || parseInt(value) === 0) {
+          return;
+        }
+        handler = $(this).getGridParam('postData').handler;
+        return $.getJSON("/rest/delivery/dict/" + rowid, {
+          handler: handler,
+          prop: name
+        }, function(json) {
+          infoDialog.dialog('option', {
+            title: name
+          });
+          infoDialog.html($('<table border=1>').append('<tr><td>' + json[name].join('<tr><td>')));
+          return infoDialog.dialog('open');
+        });
+      },
       beforeProcessing: function(data, status, xhr) {
         var actIndex, actions, grid, k, v;
         actIndex = $(this).getGridParam('colNames').indexOf('Action');
@@ -149,10 +177,10 @@
         $("tr[class!='jqgfirstrow']", grid).each(function(index, row) {
           var rowData;
           rowData = grid.getRowData(row.id);
-          if (parseInt(rowData.warning) > 0) {
+          if (parseInt(rowData.warnings) > 0) {
             $(row).css('background', '#FFFFAA');
           }
-          if (parseInt(rowData.error) > 0) {
+          if (parseInt(rowData.errors) > 0) {
             return $(row).css('background', '#FFD2D2');
           }
         });
@@ -167,12 +195,25 @@
         });
       }
     });
-    return dicGrid.jqGrid('navGrid', '#dictListPreviewPager', {
+    dicGrid.jqGrid('navGrid', '#dictListPreviewPager', {
       add: false,
       edit: false,
       search: false,
       del: false
     }, {}, {}, {});
+    return {
+      gridHasErrors: function() {
+        var hasError;
+        hasError = false;
+        $($('#dictListPreviewGrid').getRowData()).each(function(index, row) {
+          hasError = parseInt(row.errors) > 0;
+          if (hasError) {
+            return false;
+          }
+        });
+        return hasError;
+      }
+    };
   });
 
 }).call(this);

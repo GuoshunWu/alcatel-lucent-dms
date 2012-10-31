@@ -88,8 +88,11 @@ define ['jqgrid', 'util', 'require', 'taskmng/dialogs', 'i18n!nls/taskmng', 'i18
         opacity: 0, filter: 'alpha(opacity=0)', cursor: 'pointer'}).appendTo @
 
         fileInput.fileupload {
-        type: 'POST'
-        url: "/task/receive-task-files?id=#{rowid}"
+        type: 'POST', dataType: 'json'
+        url: "/task/receive-task-files"
+        formData: [
+          {name: 'id', value: rowid}
+        ]
         acceptFileTypes: /zip$/i
         add: (e, data)->
           data.submit()
@@ -100,7 +103,7 @@ define ['jqgrid', 'util', 'require', 'taskmng/dialogs', 'i18n!nls/taskmng', 'i18
         done: (e, data)->
           $("#progressbar").hide() if !$.browser.msie
           #    request handler
-          jsonFromServer = eval "(#{data.result})"
+          jsonFromServer = data.result
 
           if(0 != jsonFromServer.status)
             $.msgBox jsonFromServer.message, null, {title: c18n.error}

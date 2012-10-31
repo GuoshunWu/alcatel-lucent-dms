@@ -28,7 +28,9 @@ define ['jqgrid', 'require'], ($, require)->
 
   afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
     jsonFromServer = eval "(#{serverresponse.responseText})"
-    [0 == jsonFromServer.status, jsonFromServer.message]
+    success = 0 == jsonFromServer.status
+    $('#dictListPreviewGrid').trigger 'reloadGrid' if success
+    [success, jsonFromServer.message]
   }
   dicGrid.jqGrid 'navGrid', '#dictPreviewStringSettingsPager', {edit: false, add: false, del: false, search: false, view: false}
 
