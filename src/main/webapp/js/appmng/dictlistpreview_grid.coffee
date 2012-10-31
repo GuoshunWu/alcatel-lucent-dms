@@ -16,7 +16,7 @@ define (require, util, i18n)->
         dialogs.dictPreviewLangSettings.dialog 'open'
 
   dicGrid = $('#dictListPreviewGrid').jqGrid {
-  url: '', datatype: 'json', editurl: "",
+  url: '', datatype: 'json', editurl: "",mtype:'POST'
   width: 1000, minHeight: 200, height: 240
   pager: '#dictListPreviewPager', rowNum: 100
   sortname: 'base.name', sortorder: 'asc'
@@ -40,6 +40,8 @@ define (require, util, i18n)->
     {name: 'warning', index: 'warningCount', width: 20, align: 'center'}
     {name: 'action', index: 'action', width: 70, editable: false, align: 'center'}
   ]
+  ondblClickRow: (rowid, iRow, iCol, e)->
+
   beforeProcessing: (data, status, xhr)->
 
     actIndex = $(@).getGridParam('colNames').indexOf('Action')
@@ -59,8 +61,10 @@ define (require, util, i18n)->
   beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->handler: ($(@).getGridParam 'postData').handler
   afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
     jsonFromServer = eval "(#{serverresponse.responseText})"
-    [0 == jsonFromServer.status, jsonFromServer.message]
-    $(@).trigger 'reloadGrid'
+
+    success = 0 == jsonFromServer.status
+    $(@).trigger 'reloadGrid' if success
+    [success, jsonFromServer.message]
 
   gridComplete: ->
     grid = $(@)

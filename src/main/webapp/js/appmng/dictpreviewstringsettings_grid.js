@@ -38,7 +38,16 @@
           index: 'maxLength',
           width: 40,
           editable: true,
-          align: 'center'
+          align: 'center',
+          editrules: {
+            custom: true,
+            custom_func: function(value, colname) {
+              if (!/^\d+(\s*,?\s*\d+\s*)*$/.test(value)) {
+                return [false, 'Invalid max length format.'];
+              }
+              return [true, ''];
+            }
+          }
         }, {
           name: 'context',
           index: 'context.name',

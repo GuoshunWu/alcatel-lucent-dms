@@ -44,17 +44,19 @@ define (require)->
   position: 'absolute', top: -3, right: -3, border: '1px solid', borderWidth: '1px 1px 10px 0px',
   opacity: 0, filter: 'alpha(opacity=0)', cursor: 'pointer'}
 
+  appId = $("#selAppVersion").val()
+
 
   $("##{dctFileUpload}").fileupload {
   type: 'POST'
-  url: 'app/deliver-app-dict'
+  url: "app/deliver-app-dict?appId=#{appId}"
   #  forceIframeTransport:true
 
   add: (e, data)->
     $.each data.files, (index, file) ->
       $('#uploadStatus').html "#{i18n.uploadingfile}#{file.name}"
 
-    data.submit() if $("#selAppVersion").val()
+    data.submit()
 
     $("#progressbar").show() if !$.browser.msie
   progressall: (e, data) ->
@@ -70,9 +72,9 @@ define (require)->
       $.msgBox jsonFromServer.message, null, {title: c18n.error}
       return
 
-    $('#dictListPreviewDialog').data 'param', {handler: jsonFromServer.filename,appId:$("#selAppVersion").val()}
+    $('#dictListPreviewDialog').data 'param', {handler: jsonFromServer.filename, appId: appId}
     $('#dictListPreviewDialog').dialog 'open'
-  }
+  } if appId
 
   getApplicationSelectOptions: ()->$('#selAppVersion').children('option').clone(true)
   addNewApplication: (app) ->

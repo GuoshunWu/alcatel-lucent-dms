@@ -117,7 +117,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
 
   langSettings = $('#languageSettingsDialog').dialog {
   autoOpen: false
-  modal: true
+  modal: true,zIndex:900
   width: 'auto', height: 'auto', title: i18n.dialog.languagesettings.title
 
   open: (e, ui)->
@@ -131,7 +131,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   stringSettings = $('#stringSettingsDialog').dialog {
   autoOpen: false
   width: 'auto', height: 'auto', title: i18n.dialog.stringsettings.title
-  modal: true
+  modal: true,zIndex:900
   open: (e, ui)->
   # param must be attached to the dialog before the dialog open
     param = $(@).data "param"
@@ -148,7 +148,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
 
   dictListPreview = $('#dictListPreviewDialog').dialog {
   autoOpen: false
-  modal: true
+  modal: true,zIndex:900
   width: 'auto', height: 'auto', title: i18n.dialog.dictlistpreview.title
   open: ->
   #    param need to be initilize before the dialog open
@@ -182,7 +182,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
 
   dictPreviewStringSettings = $('#dictPreviewStringSettingsDialog').dialog {
   autoOpen: false
-  modal: true
+  modal: true,zIndex:920
   width: 'auto', height: 'auto', title: i18n.dialog.dictpreviewstringsettings.title
   open: ->
     param = $(@).data 'param'
@@ -203,7 +203,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
 
   dictPreviewLangSettings = $('#dictPreviewLanguageSettingsDialog').dialog {
   autoOpen: false
-  modal: true
+  modal: true,zIndex:920
   width: 'auto', height: 'auto', title: i18n.dialog.languagesettings.title
   open: ->
     param = $(@).data 'param'
