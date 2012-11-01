@@ -13,6 +13,10 @@
             <td><select id="dupVersion"></select></td>
         </tr>
     </table>
+    <div style="display: none" id="productErrInfo">
+        <br/><hr/>
+        <span style="color: red"><s:text name="appmng.newproduct.required"/></span>
+    </div>
 </div>
 
 <div id="newApplicationVersionDialog" title="<s:text name="appmng.newapp"/>">
@@ -26,6 +30,10 @@
             <td><select id="dupDictsVersion"></select></td>
         </tr>
     </table>
+    <div style="display: none" id="appErrInfo">
+        <br/><hr/>
+        <span style="color: red"><s:text name="appmng.newapp.required"/></span>
+    </div>
 </div>
 
 <div id="addApplicationDialog" title="<s:text name="appmng.addapp"/>">
@@ -120,15 +128,6 @@
                 <div id="dictListPreviewPager"></div>
             </td>
         </tr>
-        <%--<tr>--%>
-            <%--<table width="100%">--%>
-                <%--<tr>--%>
-                    <%--<td align="right"><button id="import"/><s:text name="button.import"/></td>--%>
-                    <%--<td style="width:20px;"/>--%>
-                <%--</tr>--%>
-            <%--</table>--%>
-            <%----%>
-        <%--</tr>--%>
     </table>
 </div>
 
@@ -143,7 +142,8 @@
                         <td><label for="previewDictVersion" style="width: 200px"><s:text name="version"/></label></td>
                         <td><input id="previewDictVersion" readonly="readonly"/></td>
                     <tr>
-                        <td style="width:35px;"><label for="previewDictFormat"><s:text name="dictionary.format"/></label></td>
+                        <td style="width:35px;"><label for="previewDictFormat"><s:text
+                                name="dictionary.format"/></label></td>
                         <td><input id="previewDictFormat" size="48" readonly="readonly"/></td>
                         <td><label for="previewDictEncoding"><s:text name="dictionary.encoding"/></label></td>
                         <td><input id="previewDictEncoding" readonly="readonly"/></td>
@@ -171,7 +171,8 @@
             <td>
                 <table>
                     <tr>
-                        <td><label for="previewRefCode"><s:text name="appmng.dialogs.languagesettings.refcode"/></label></td>
+                        <td><label for="previewRefCode"><s:text name="appmng.dialogs.languagesettings.refcode"/></label>
+                        </td>
                         <td><input id="previewRefCode" readonly="readonly"/></td>
                     </tr>
                 </table>
