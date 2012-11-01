@@ -40,22 +40,23 @@
         </tr>
         <tr>
             <td>
-                <table>
+                <table border="0" width="100%">
                     <tr>
                         <td>
-                            <%--@declare id="dctfileupload"--%>
                             <form id="downloadDict" action="/app/download-app-dict" method="post">
                                 <input type="hidden" id="fileLoc" name="fileLoc"/>
                             </form>
+
                             <button id="generateDict">Generate dictionary</button>
                             <button id="batchAddLanguage">Add language</button>
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </td>
+                        <td align="right">
                             <label class="show-label" for="dctFileUpload"><s:text name="appmng.deliverapp"/></label>
                             &nbsp;&nbsp;
                             <div id="uploadBrower"></div>
-                            &nbsp;&nbsp;
-                            <span id="uploadStatus"/>
+                            <%--<span id="uploadStatus"/>--%>
                         </td>
+                        <td style="width:20px;"/>
                     </tr>
                 </table>
             </td>
