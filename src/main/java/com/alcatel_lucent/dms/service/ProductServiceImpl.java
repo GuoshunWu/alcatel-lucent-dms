@@ -32,6 +32,11 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private DaoService dao;
     
+    public void removeApplicationFromProduct(Long productId, Long appId) {
+    	Product product = (Product) dao.retrieve(Product.class, productId);
+    	product.removeApplication(appId);
+    }
+    
     public void removeApplicationFromProduct(Long productId, Collection<Long> appIds) {
     	Product product = (Product) dao.retrieve(Product.class, productId);
     	for (Long appId : appIds) {
