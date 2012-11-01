@@ -3,6 +3,7 @@ package com.alcatel_lucent.dms.service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +32,11 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private DaoService dao;
     
-    public void removeApplicationFromProduct(Long productId, Long appId) {
+    public void removeApplicationFromProduct(Long productId, Collection<Long> appIds) {
     	Product product = (Product) dao.retrieve(Product.class, productId);
-    	product.removeApplication(appId);
+    	for (Long appId : appIds) {
+    		product.removeApplication(appId);
+    	}
     }
 
     @Override
@@ -156,7 +159,7 @@ public class ProductServiceImpl implements ProductService {
 		if (inheritAppId != null) {
 			Application inheritApp = (Application) dao.retrieve(Application.class, inheritAppId);
 			if (inheritApp.getDictionaries() != null) {
-				app.setDictionaries(new ArrayList<Dictionary>(inheritApp.getDictionaries()));
+				app.setDictionaries(new HashSet<Dictionary>(inheritApp.getDictionaries()));
 			}
 		}
 		return app.getId();
@@ -195,7 +198,7 @@ public class ProductServiceImpl implements ProductService {
 		if (inheritProdId != null) {
 			Product inheritProd = (Product) dao.retrieve(Product.class, inheritProdId);
 			if (inheritProd.getApplications() != null) {
-				prod.setApplications(new ArrayList<Application>(inheritProd.getApplications()));
+				prod.setApplications(new HashSet<Application>(inheritProd.getApplications()));
 			}
 		}
 		return prod.getId();
