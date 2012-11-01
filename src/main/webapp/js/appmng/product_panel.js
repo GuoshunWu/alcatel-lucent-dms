@@ -2,7 +2,7 @@
 (function() {
 
   define(function(require) {
-    var $, URL, c18n, dialogs, grid, localIds, productInfo,
+    var $, URL, c18n, dialogs, grid, productInfo,
       _this = this;
     $ = require('jquery');
     grid = require('appmng/application_grid');
@@ -12,13 +12,7 @@
     URL = {
       get_product_by_base_id: '/rest/products/version'
     };
-    localIds = {
-      select_product_version: '#selVersion',
-      new_product_version: '#newVersion',
-      remove_product_version: '#removeVersion',
-      disp_product_name: '#dispProductName'
-    };
-    $("" + localIds.new_product_version).button({
+    $("#newVersion").button({
       text: false,
       label: '&nbsp;',
       icons: {
@@ -27,7 +21,7 @@
     }).click(function() {
       return dialogs.newProductVersion.dialog("open");
     });
-    $("" + localIds.remove_product_version).button({
+    $("#removeVersion").button({
       text: false,
       label: '&nbsp;',
       icons: {
@@ -35,7 +29,7 @@
       }
     }).click(function() {
       var id;
-      id = $("" + localIds.select_product_version).val();
+      id = $("#selVersion").val();
       if (!id) {
         return;
       }
@@ -48,11 +42,12 @@
           });
           return;
         }
-        return $("" + localIds.select_product_version + " option:selected").remove().trigger('change');
+        $("#selVersion option:selected").remove();
+        return $('#selVersion').trigger('change');
       });
     });
     productInfo = {};
-    $(localIds.select_product_version).change(function() {
+    $('#selVersion').change(function() {
       var product;
       product = {
         version: $(this).find("option:selected").text(),
@@ -70,34 +65,33 @@
           id: info.id,
           text: info.text
         };
-        $(localIds.disp_product_name).html(productInfo.base.text);
+        $('#dispProductName').html(productInfo.base.text);
         return $.getJSON(URL.get_product_by_base_id, {
           base: productInfo.base.id,
           prop: 'id,version'
         }, function(json) {
-          $(localIds.select_product_version).empty().append($(json).map(function() {
+          $('#selVersion').empty().append($(json).map(function() {
             return new Option(this.version, this.id);
           }));
-          $("" + localIds.select_product_version + " option:last").attr('selected', true);
-          return $(localIds.select_product_version).trigger('change');
+          $("#selVersion option:last").attr('selected', true);
+          return $('#selVersion').trigger('change');
         });
       },
       getSelectedProduct: function() {
         return {
-          version: $(localIds.select_product_version).find("option:selected").text(),
-          id: $(localIds.select_product_version).val()
+          version: $("#selVersion option:selected").text(),
+          id: $('#selVersion').val()
         };
       },
       getProductSelectOptions: function() {
-        return $(localIds.select_product_version).children('option').clone(true);
+        return $('#selVersion').children('option').clone(true);
       },
       addNewProduct: function(product) {
         var newOption;
         newOption = new Option(product.version, product.id);
         newOption.selected = true;
-        return $(localIds.select_product_version).append(newOption).trigger('change');
-      },
-      removeProduct: function(product) {}
+        return $('#selVersion').append(newOption).trigger('change');
+      }
     };
   });
 

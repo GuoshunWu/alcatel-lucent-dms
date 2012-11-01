@@ -45,7 +45,8 @@
           });
           return;
         }
-        return $("#selAppVersion option:selected").remove().trigger('change');
+        $("#selAppVersion option:selected").remove();
+        return $("#selAppVersion").trigger('change');
       });
     });
     $("#selAppVersion").change(function(e) {
@@ -96,9 +97,7 @@
       url: "app/deliver-app-dict",
       add: function(e, data) {
         var appId;
-        $.each(data.files, function(index, file) {
-          return $('#uploadStatus').html("" + i18n.uploadingfile + file.name);
-        });
+        $.each(data.files, function(index, file) {});
         appId = $("#selAppVersion").val();
         if (!appId) {
           return;

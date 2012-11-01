@@ -23,7 +23,8 @@ define (require)->
       if json.status != 0
         $.msgBox json.message, null, {title: c18n.error}
         return
-      $("#selAppVersion option:selected").remove().trigger 'change'
+      $("#selAppVersion option:selected").remove()
+      $("#selAppVersion").trigger 'change'
 
   $("#selAppVersion").change (e)->
     appInfo.app = {version: $("option:selected", @).text(), id: if @value then @value else -1}
@@ -52,7 +53,7 @@ define (require)->
 
   add: (e, data)->
     $.each data.files, (index, file) ->
-      $('#uploadStatus').html "#{i18n.uploadingfile}#{file.name}"
+#      $('#uploadStatus').html "#{i18n.uploadingfile}#{file.name}"
     appId = $("#selAppVersion").val()
     return if !appId
     $(@).fileupload 'option', 'formData', [{name: 'appId', value: $("#selAppVersion").val()}]
