@@ -31,6 +31,11 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
       dupVersionId = $("#dupVersion").val()
       tree = require 'appmng/navigatetree'
       productBaseId = tree.getNodeInfo().id
+
+      if !versionName
+        $("#productErrInfo").show()
+        return
+
       $.post url, {version: versionName, dupVersionId: dupVersionId, id: productBaseId}, (json)->
         if (json.status != 0)
           $.msgBox json.message, null, {title: c18n.error, width: 300, height: 'auto'}
@@ -43,6 +48,8 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   open: (event, ui)->
     $(ids.product_duplication).empty().append new Option '', -1
     (require 'appmng/product_panel').getProductSelectOptions().appendTo $ ids.product_duplication
+  close:( event, ui )->
+    errDiv=$("#productErrInfo").hide()
   }
 
   #  Create new application release dialog
@@ -55,6 +62,11 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
       versionName = $('#appVersionName').val()
       dupVersionId = $("#dupDictsVersion").val()
       appBaseId = (require 'appmng/navigatetree').getNodeInfo().id
+
+      if !versionName
+        $("#appErrInfo").show()
+        return
+
       $.post url, {version: versionName, dupVersionId: dupVersionId, id: appBaseId}, (json)->
         if (json.status != 0)
           $.msgBox json.message, null, {title: c18n.error, width: 300, height: 'auto'}
@@ -66,6 +78,8 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   ]
   open: (event, ui)->
     $("#dupDictsVersion").empty().append(new Option '', -1).append (require 'appmng/application_panel').getApplicationSelectOptions()
+  close:( event, ui )->
+    $("#appErrInfo").hide()
   }
 
   # Add application to product dialog

@@ -35,6 +35,10 @@
             dupVersionId = $("#dupVersion").val();
             tree = require('appmng/navigatetree');
             productBaseId = tree.getNodeInfo().id;
+            if (!versionName) {
+              $("#productErrInfo").show();
+              return;
+            }
             $.post(url, {
               version: versionName,
               dupVersionId: dupVersionId,
@@ -65,6 +69,10 @@
       open: function(event, ui) {
         $(ids.product_duplication).empty().append(new Option('', -1));
         return (require('appmng/product_panel')).getProductSelectOptions().appendTo($(ids.product_duplication));
+      },
+      close: function(event, ui) {
+        var errDiv;
+        return errDiv = $("#productErrInfo").hide();
       }
     });
     newAppVersion = $("#newApplicationVersionDialog").dialog({
@@ -81,6 +89,10 @@
             versionName = $('#appVersionName').val();
             dupVersionId = $("#dupDictsVersion").val();
             appBaseId = (require('appmng/navigatetree')).getNodeInfo().id;
+            if (!versionName) {
+              $("#appErrInfo").show();
+              return;
+            }
             $.post(url, {
               version: versionName,
               dupVersionId: dupVersionId,
@@ -110,6 +122,9 @@
       ],
       open: function(event, ui) {
         return $("#dupDictsVersion").empty().append(new Option('', -1)).append((require('appmng/application_panel')).getApplicationSelectOptions());
+      },
+      close: function(event, ui) {
+        return $("#appErrInfo").hide();
       }
     });
     addApplication = $("#" + ids.dialog.new_or_add_application).dialog({
