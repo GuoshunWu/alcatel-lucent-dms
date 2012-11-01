@@ -25,7 +25,7 @@ public class RemoveApplicationAction extends JSONAction {
 
     private boolean permanent;
     private String oper;
-    private Long id;
+    private String id;
     private Long productId;
 
     public Long getProductId() {
@@ -52,22 +52,22 @@ public class RemoveApplicationAction extends JSONAction {
         this.oper = oper;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
     public String performAction() throws Exception {
         log.setLevel(Level.DEBUG);
-        log.debug(String.format("productId=%d,id=%d, oper=%s, permanent=%b.",productId, id, oper, permanent));
+        log.debug(String.format("productId=%d,id=%s, oper=%s, permanent=%b.",productId, id, oper, permanent));
 
         if (permanent) {
-            id=productService.deleteApplication(id);
+            id = "" + productService.deleteApplication(Long.valueOf(id));
         } else {
-            productService.removeApplicationFromProduct(productId,id);
+            productService.removeApplicationFromProduct(productId,toIdList(id));
         }
 
         setStatus(0);

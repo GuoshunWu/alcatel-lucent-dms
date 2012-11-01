@@ -1,5 +1,7 @@
 package com.alcatel_lucent.dms.service;
 
+import java.util.Collection;
+
 import com.alcatel_lucent.dms.BusinessException;
 
 /**
@@ -83,9 +85,9 @@ public interface ProductService {
     /**
      * Remove an application from a product, without deleting it.
      * @param productId
-     * @param appId
+     * @param appIds
      */
-    void removeApplicationFromProduct(Long productId, Long appId);
+    void removeApplicationFromProduct(Long productId, Collection<Long> appIds);
 
     /**
      * Add an application to a product
