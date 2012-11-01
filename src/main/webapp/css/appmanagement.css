@@ -36,3 +36,10 @@ html, body {
     overflow: hidden;
 }
 
+.show-label{
+    font-size: medium;
+}
+
+input[readonly]{
+    border-style: none
+}

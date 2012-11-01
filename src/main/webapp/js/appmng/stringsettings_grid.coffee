@@ -13,7 +13,7 @@ define ['jqgrid', 'require'], ($, require)->
   colModel: [
     {name: 'key', index: 'key', width: 100, editable: false, align: 'left'}
     {name: 'reference', index: 'reference', width: 100, editable: false, align: 'left'}
-    {name: 'maxLength', index: 'maxLength', width: 40, editable: true, align: 'left'}
+    {name: 'maxLength', index: 'maxLength', width: 40, editable: true, align: 'right'}
     {name: 'context', index: 'context.name', width: 80, editable: true, align: 'left'}
     {name: 'description', index: 'description', width: 60, editable: true, align: 'left'}
   ]

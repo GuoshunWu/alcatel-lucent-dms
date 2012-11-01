@@ -50,7 +50,7 @@
       cellEdit: true,
       cellurl: '/app/deliver-update-dict',
       gridview: true,
-      multiselect: true,
+      multiselect: false,
       caption: i18n.grid.dictlistpreview.caption,
       colNames: ['LangRefCode', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels', 'Error', 'Warning', 'Action'],
       colModel: [
@@ -71,7 +71,7 @@
           index: 'version',
           width: 25,
           editable: true,
-          align: 'center',
+          align: 'left',
           editrules: {
             required: true
           }
@@ -84,7 +84,7 @@
           editoptions: {
             value: "DCT:DCT;Dictionary conf:Dictionary conf;Text properties:Text properties;XML labels:XML labels"
           },
-          align: 'center'
+          align: 'left'
         }, {
           name: 'encoding',
           index: 'base.encoding',
@@ -94,22 +94,22 @@
           editoptions: {
             value: 'ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE'
           },
-          align: 'center'
+          align: 'left'
         }, {
           name: 'labelNum',
           index: 'labelNum',
           width: 20,
-          align: 'center'
+          align: 'right'
         }, {
           name: 'errors',
           index: 'errorCount',
           width: 20,
-          align: 'center'
+          align: 'right'
         }, {
           name: 'warnings',
           index: 'warningCount',
           width: 20,
-          align: 'center'
+          align: 'right'
         }, {
           name: 'actions',
           index: 'action',
@@ -118,42 +118,26 @@
           align: 'center'
         }
       ],
-      ondblClickRow: function(rowid, iRow, iCol, e) {
-        var handler, name, value;
-        name = $(this).getGridParam('colModel')[iCol].name;
-        value = $(this).getRowData(rowid)[name];
-        if (!(name === 'errors' || name === 'warnings') || parseInt(value) === 0) {
-          return;
-        }
-        handler = $(this).getGridParam('postData').handler;
-        return $.getJSON("/rest/delivery/dict/" + rowid, {
-          handler: handler,
-          prop: name
-        }, function(json) {
-          infoDialog.dialog('option', {
-            title: name
-          });
-          infoDialog.html($('<table border=1>').append('<tr><td>' + json[name].join('<tr><td>')));
-          return infoDialog.dialog('open');
-        });
-      },
+      ondblClickRow: function(rowid, iRow, iCol, e) {},
       beforeProcessing: function(data, status, xhr) {
-        var actIndex, actions, grid, k, v;
-        actIndex = $(this).getGridParam('colNames').indexOf('Action');
-        if ($(this).getGridParam('multiselect')) {
-          --actIndex;
+        var actIdx, actions, errorIdx, grid, k, v, warningIdx, _ref;
+        grid = $(this);
+        _ref = [grid.getGridParam('colNames').indexOf('Action'), grid.getGridParam('colNames').indexOf('Warning'), grid.getGridParam('colNames').indexOf('Error')], actIdx = _ref[0], warningIdx = _ref[1], errorIdx = _ref[2];
+        if (grid.getGridParam('multiselect')) {
+          --actIdx;
+          --warningIdx;
+          --errorIdx;
         }
         actions = [];
         for (k in handlers) {
           v = handlers[k];
           actions.push(k);
         }
-        grid = this;
-        return $(data.rows).each(function(index) {
-          var rowData;
-          rowData = this;
-          return this.cell[actIndex] = $(actions).map(function() {
-            return "<A id='action_" + this + "_" + rowData.id + "_" + actIndex + "'style='color:blue' title='" + handlers[this].title + "' href=# >" + this + "</A>";
+        return $(data.rows).each(function(index, rowData) {
+          this.cell[warningIdx] = "<a id='warnAndErr_warnings_" + rowData.id + "' title='details' href=#>" + this.cell[warningIdx] + "</a>";
+          this.cell[errorIdx] = "<a id='warnAndErr_errors_" + rowData.id + "' title='details' href=#>" + this.cell[errorIdx] + "</a>";
+          return this.cell[actIdx] = $(actions).map(function() {
+            return "<a id='action_" + this + "_" + rowData.id + "_" + actIdx + "' title='" + handlers[this].title + "' href=# >" + this + "</A>";
           }).get().join('&nbsp;&nbsp;&nbsp;&nbsp;');
         });
       },
@@ -174,17 +158,26 @@
       gridComplete: function() {
         var grid;
         grid = $(this);
-        $("tr[class!='jqgfirstrow']", grid).each(function(index, row) {
-          var rowData;
-          rowData = grid.getRowData(row.id);
-          if (parseInt(rowData.warnings) > 0) {
-            $(row).css('background', '#FFFFAA');
+        $('a[id^=warnAndErr_]', this).click(function() {
+          var handler, name, rowid, value, _, _ref;
+          _ref = this.id.split('_'), _ = _ref[0], name = _ref[1], rowid = _ref[2];
+          value = $(this).text();
+          if (parseInt(value) === 0) {
+            return;
           }
-          if (parseInt(rowData.errors) > 0) {
-            return $(row).css('background', '#FFD2D2');
-          }
+          handler = grid.getGridParam('postData').handler;
+          return $.getJSON("/rest/delivery/dict/" + rowid, {
+            handler: handler,
+            prop: name
+          }, function(json) {
+            infoDialog.dialog('option', {
+              title: name
+            });
+            infoDialog.html($('<table border=0>').append('<tr><td>' + json[name].join('<tr><td>')));
+            return infoDialog.dialog('open');
+          });
         });
-        return $('a[id^=action_]', this).click(function() {
+        $('a[id^=action_]', this).click(function() {
           var a, action, col, rowData, rowid, _ref;
           _ref = this.id.split('_'), a = _ref[0], action = _ref[1], rowid = _ref[2], col = _ref[3];
           rowData = grid.getRowData(rowid);
@@ -192,6 +185,17 @@
           rowData.id = rowid;
           rowData.handler = grid.getGridParam('postData').handler;
           return handlers[action].handler(rowData, require('appmng/dialogs'));
+        });
+        $('a', this).css('color', 'blue');
+        return $("tr[class!='jqgfirstrow']", this).each(function(index, row) {
+          var rowData;
+          rowData = grid.getRowData(row.id);
+          if (parseInt($(rowData.warnings).text()) > 0) {
+            $(row).css('background', '#FFFFAA');
+          }
+          if (parseInt($(rowData.errors).text()) > 0) {
+            return $(row).css('background', '#FFD2D2');
+          }
         });
       }
     });

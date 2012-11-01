@@ -276,9 +276,10 @@
                 });
               }
               appInfo = "" + ($('#appDispAppName').text()) + " " + ($('#selAppVersion option:selected').text());
-              return $.msgBox(i18n.dictlistpreview.success.format(appInfo, null, {
+              $.msgBox(i18n.dialog.dictlistpreview.success.format(appInfo, null, {
                 title: c18n.info
               }));
+              return $('#selAppVersion').trigger('change');
             });
           }
         }

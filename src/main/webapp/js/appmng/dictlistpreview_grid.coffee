@@ -25,52 +25,52 @@ define (require, util, i18n)->
   pager: '#dictListPreviewPager', rowNum: 100
   sortname: 'base.name', sortorder: 'asc'
   viewrecords: true, cellEdit: true, cellurl: '/app/deliver-update-dict'
-  gridview: true, multiselect: true
+  gridview: true, multiselect: false
   caption: i18n.grid.dictlistpreview.caption
   colNames: ['LangRefCode', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels', 'Error', 'Warning', 'Action']
   colModel: [
     {name: 'langrefcode', index: 'langrefcode', width: 55, align: 'center', hidden: true}
     {name: 'name', index: 'base.name', width: 200, editable: true, align: 'left'}
-    {name: 'version', index: 'version', width: 25, editable: true, align: 'center',
+    {name: 'version', index: 'version', width: 25, editable: true, align: 'left',
     editrules: {required: true}
     }
     {name: 'format', index: 'base.format', width: 60, editable: true, edittype: 'select',
     editoptions: {value: "DCT:DCT;Dictionary conf:Dictionary conf;Text properties:Text properties;XML labels:XML labels"},
-    align: 'center'}
+    align: 'left'}
     {name: 'encoding', index: 'base.encoding', width: 40, editable: true, edittype: 'select',
-    editoptions: {value: 'ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE'}, align: 'center'}
-    {name: 'labelNum', index: 'labelNum', width: 20, align: 'center'}
-    {name: 'errors', index: 'errorCount', width: 20, align: 'center'}
-    {name: 'warnings', index: 'warningCount', width: 20, align: 'center'}
+    editoptions: {value: 'ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE'}, align: 'left'}
+    {name: 'labelNum', index: 'labelNum', width: 20, align: 'right'}
+    {name: 'errors', index: 'errorCount', width: 20, align: 'right'}
+    {name: 'warnings', index: 'warningCount', width: 20, align: 'right'}
     {name: 'actions', index: 'action', width: 70, editable: false, align: 'center'}
   ]
   ondblClickRow: (rowid, iRow, iCol, e)->
-    name = $(@).getGridParam('colModel')[iCol].name
-    value = $(@).getRowData(rowid)[name]
-    return if !(name in ['errors', 'warnings']) or parseInt(value) == 0
-
-    handler = $(@).getGridParam('postData').handler
-    $.getJSON "/rest/delivery/dict/#{rowid}", {handler: handler, prop: name}, (json)->
-      infoDialog.dialog 'option', title: name
-      infoDialog.html $('<table border=1>').append '<tr><td>' + json[name].join('<tr><td>')
-      infoDialog.dialog 'open'
-
-  #    /rest/delivery/dict/<dict_id>?handler=<handler>&prop=errors
 
   beforeProcessing: (data, status, xhr)->
-    actIndex = $(@).getGridParam('colNames').indexOf('Action')
-    --actIndex if $(@).getGridParam('multiselect')
+    grid = $(@)
+
+    [actIdx, warningIdx, errorIdx]=[
+      grid.getGridParam('colNames').indexOf('Action'),
+      grid.getGridParam('colNames').indexOf('Warning'),
+      grid.getGridParam('colNames').indexOf('Error')
+    ]
+
+    (--actIdx; --warningIdx; --errorIdx) if grid.getGridParam('multiselect')
 
     actions = []
     actions.push k for k,v of handlers
 
-    grid = @
-    $(data.rows).each (index)->
-      rowData = @
-      @cell[actIndex] = $(actions).map(
+
+    $(data.rows).each (index, rowData)->
+      @cell[warningIdx] = "<a id='warnAndErr_warnings_#{rowData.id}' title='details' href=#>#{@cell[warningIdx]}</a>"
+      @cell[errorIdx] = "<a id='warnAndErr_errors_#{rowData.id}' title='details' href=#>#{@cell[errorIdx]}</a>"
+
+      @cell[actIdx] = $(actions).map(
         ()->
-          "<A id='action_#{@}_#{rowData.id}_#{actIndex}'style='color:blue' title='#{handlers[@].title}' href=# >#{@}</A>"
+          "<a id='action_#{@}_#{rowData.id}_#{actIdx}' title='#{handlers[@].title}' href=# >#{@}</A>"
       ).get().join('&nbsp;&nbsp;&nbsp;&nbsp;')
+
+
 
   beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->handler: ($(@).getGridParam 'postData').handler
   afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
@@ -83,12 +83,18 @@ define (require, util, i18n)->
   gridComplete: ->
     grid = $(@)
 
-    #      high light error rows
-    $("tr[class!='jqgfirstrow']", grid).each (index, row)->
-      rowData = grid.getRowData(row.id)
+    #   error and warning actions
+    $('a[id^=warnAndErr_]', @).click ()->
+      [_, name, rowid]=@id.split '_'
+      value = $(@).text()
+      return if parseInt(value) == 0
+      handler = grid.getGridParam('postData').handler
 
-      $(row).css 'background', '#FFFFAA' if parseInt(rowData.warnings) > 0
-      $(row).css 'background', '#FFD2D2' if parseInt(rowData.errors) > 0
+      $.getJSON "/rest/delivery/dict/#{rowid}", {handler: handler, prop: name}, (json)->
+        infoDialog.dialog 'option', title: name
+        infoDialog.html $('<table border=0>').append '<tr><td>' + json[name].join('<tr><td>')
+        infoDialog.dialog 'open'
+
 
     $('a[id^=action_]', @).click ()->
       [a, action, rowid, col]=@id.split('_')
@@ -97,11 +103,22 @@ define (require, util, i18n)->
       rowData.id = rowid
       rowData.handler = grid.getGridParam('postData').handler
       handlers[action].handler rowData, require 'appmng/dialogs'
+
+    $('a', @).css 'color', 'blue'
+
+    #      high light error rows
+    $("tr[class!='jqgfirstrow']", @).each (index, row)->
+      rowData = grid.getRowData(row.id)
+
+      $(row).css 'background', '#FFFFAA' if parseInt($(rowData.warnings).text()) > 0
+      $(row).css 'background', '#FFD2D2' if parseInt($(rowData.errors).text()) > 0
+
+
   }
   dicGrid.jqGrid 'navGrid', '#dictListPreviewPager', {add: false, edit: false, search: false, del: false}, {}, {}, {}
   gridHasErrors: ()->
     hasError = false
-    $($('#dictListPreviewGrid').getRowData()).each (index,row) ->
+    $($('#dictListPreviewGrid').getRowData()).each (index, row) ->
       hasError = parseInt(row.errors) > 0
       return false if hasError
     hasError

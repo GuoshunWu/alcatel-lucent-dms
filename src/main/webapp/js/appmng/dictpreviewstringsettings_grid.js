@@ -32,13 +32,13 @@
           index: 'reference',
           width: 40,
           editable: false,
-          align: 'center'
+          align: 'left'
         }, {
           name: 'maxLength',
           index: 'maxLength',
           width: 40,
           editable: true,
-          align: 'center',
+          align: 'right',
           editrules: {
             custom: true,
             custom_func: function(value, colname) {
@@ -59,7 +59,7 @@
           index: 'description',
           width: 40,
           editable: true,
-          align: 'center'
+          align: 'left'
         }
       ],
       beforeSubmitCell: function(rowid, cellname, value, iRow, iCol) {

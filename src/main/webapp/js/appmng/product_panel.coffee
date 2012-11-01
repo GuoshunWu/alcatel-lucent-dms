@@ -44,6 +44,7 @@ define (require)->
     $.getJSON URL.get_product_by_base_id, {base: productInfo.base.id, prop: 'id,version'}, (json)->
     # update product version select
       $(localIds.select_product_version).empty().append($(json).map ()-> new Option @version, @id)
+      $("#{localIds.select_product_version} option:last").attr('selected', true)
       $(localIds.select_product_version).trigger 'change'
 
   getSelectedProduct: -> {version: $(localIds.select_product_version).find("option:selected").text(), id: $(localIds.select_product_version).val()}

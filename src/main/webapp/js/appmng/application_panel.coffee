@@ -88,4 +88,5 @@ define (require)->
 
     $.getJSON "rest/applications/apps/#{info.id}", {}, (json)->
       $("#selAppVersion").empty().append ($(json).map ()-> new Option @version, @id)
+      $("#selAppVersion option:last").attr 'selected',true
       $("#selAppVersion").trigger "change"

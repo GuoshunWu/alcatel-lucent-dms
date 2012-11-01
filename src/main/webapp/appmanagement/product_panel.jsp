@@ -6,11 +6,11 @@
 
     <table border="0">
         <tr>
-            <td style="width:30px;"><s:text name="product"/></td>
-            <td><span id="dispProductName"></span></td>
+            <td style="width:30px;" class="show-label"><s:text name="product"/></td>
+            <td class="show-label"><span id="dispProductName"></span></td>
         </tr>
         <tr>
-            <td><s:text name="version"/></td>
+            <td style="font-size: medium;"><s:text name="version"/></td>
             <td><select id="selVersion"></select>
                 <button id="newVersion" title="<s:text name="appmng.newproduct"/> "></button>
                 &nbsp;&nbsp;
