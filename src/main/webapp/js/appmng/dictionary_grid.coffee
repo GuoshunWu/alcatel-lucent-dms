@@ -43,7 +43,7 @@ define (require, util, dialogs, i18n)->
   url: ''
   datatype: 'json'
   width: 1000
-  height: 310
+  height: 320
   pager: '#dictPager'
   editurl: "app/create-or-add-application"
   rowNum: 10, rowList: [10, 20, 30]

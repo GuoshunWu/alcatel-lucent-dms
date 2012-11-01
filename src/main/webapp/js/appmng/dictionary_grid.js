@@ -62,7 +62,7 @@
       url: '',
       datatype: 'json',
       width: 1000,
-      height: 310,
+      height: 320,
       pager: '#dictPager',
       editurl: "app/create-or-add-application",
       rowNum: 10,

@@ -7,32 +7,22 @@
         <tr>
             <td>
                 <table border="0" width="100%">
+                    <%--<tr>--%>
+                    <%--<td style="width:70px;" align="left" class="show-label"><s:text name="product"/></td>--%>
+                    <%--<td class="show-label" align="left"><span id="appDispProductName"></span></td>--%>
+                    <%--</tr>--%>
                     <tr>
-                        <td style="width:70px;" align="left" class="show-label"><s:text name="product"/></td>
-                        <td class="show-label" align="left"><span id="appDispProductName"></span></td>
-                    </tr>
-                    <tr>
-                        <td align="left" class="show-label"><s:text name="application"/></td>
-                        <td align="left" class="show-label"><span id="appDispAppName"></span></td>
-                    </tr>
-                    <tr>
-                        <td><span class="show-label"><s:text name="version"/></span></td>
-                        <td>
+                        <td style="width: 80px" align="left" class="show-label"><s:text name="application"/></td>
+                        <td align="left">
+                            <span class="show-label" id="appDispAppName"></span>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <span class="show-label"><s:text name="version"/></span>
                             <select id="selAppVersion"></select>
                             <button id="newAppVersion" title="<s:text name="appmng.newapp"/> "></button>
                             &nbsp;&nbsp;
                             <button id="removeAppVersion" title="<s:text name="appmng.removeapp"/>"></button>
+
                         </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <%--@declare id="dctfileupload"--%>
-                            <label class="show-label" for="dctFileUpload"><s:text name="appmng.deliverapp"/></label>
-                            &nbsp;&nbsp;
-                            <div id="uploadBrower"></div>
-                            &nbsp;&nbsp;
-                            <span id="uploadStatus"/>
-                    </tr>
                 </table>
             </td>
         </tr>
@@ -53,12 +43,18 @@
                 <table>
                     <tr>
                         <td>
+                            <%--@declare id="dctfileupload"--%>
                             <form id="downloadDict" action="/app/download-app-dict" method="post">
                                 <input type="hidden" id="fileLoc" name="fileLoc"/>
                             </form>
                             <button id="generateDict">Generate dictionary</button>
-
                             <button id="batchAddLanguage">Add language</button>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <label class="show-label" for="dctFileUpload"><s:text name="appmng.deliverapp"/></label>
+                            &nbsp;&nbsp;
+                            <div id="uploadBrower"></div>
+                            &nbsp;&nbsp;
+                            <span id="uploadStatus"/>
                         </td>
                     </tr>
                 </table>
