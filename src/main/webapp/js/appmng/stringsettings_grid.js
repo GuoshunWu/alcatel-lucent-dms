@@ -39,7 +39,7 @@
           index: 'maxLength',
           width: 40,
           editable: true,
-          align: 'left'
+          align: 'right'
         }, {
           name: 'context',
           index: 'context.name',

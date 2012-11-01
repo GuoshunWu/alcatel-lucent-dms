@@ -78,6 +78,7 @@
           $(localIds.select_product_version).empty().append($(json).map(function() {
             return new Option(this.version, this.id);
           }));
+          $("" + localIds.select_product_version + " option:last").attr('selected', true);
           return $(localIds.select_product_version).trigger('change');
         });
       },

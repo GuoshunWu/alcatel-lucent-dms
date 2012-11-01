@@ -162,6 +162,7 @@
           $("#selAppVersion").empty().append($(json).map(function() {
             return new Option(this.version, this.id);
           }));
+          $("#selAppVersion option:last").attr('selected', true);
           return $("#selAppVersion").trigger("change");
         });
       }

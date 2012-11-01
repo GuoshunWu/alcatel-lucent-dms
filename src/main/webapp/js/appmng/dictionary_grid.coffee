@@ -43,7 +43,7 @@ define (require, util, dialogs, i18n)->
   url: ''
   datatype: 'json'
   width: 1000
-  height: 330
+  height: 310
   pager: '#dictPager'
   editurl: "app/create-or-add-application"
   rowNum: 10, rowList: [10, 20, 30]
@@ -54,15 +54,15 @@ define (require, util, dialogs, i18n)->
   caption: 'Dictionary for Application'
   colNames: ['LangRefCode', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels', 'Action']
   colModel: [
-    {name: 'langrefcode', index: 'langrefcode', width: 55, align: 'center', hidden: true}
+    {name: 'langrefcode', index: 'langrefcode', width: 55, align: 'left', hidden: true}
     {name: 'name', index: 'base.name', width: 200, editable: false, align: 'left'}
-    {name: 'version', index: 'version', width: 25, editable: true, edittype: 'select', editoptions: {value: {}}, align: 'center'}
+    {name: 'version', index: 'version', width: 25, editable: true, edittype: 'select', editoptions: {value: {}}, align: 'left'}
     {name: 'format', index: 'base.format', width: 60, editable: true, edittype: 'select',
     editoptions: {value: "DCT:DCT;Dictionary conf:Dictionary conf;Text properties:Text properties;XML labels:XML labels"},
-    align: 'center'}
+    align: 'left'}
     {name: 'encoding', index: 'base.encoding', width: 40, editable: true, edittype: 'select',
     editoptions: {value: 'ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE'}, align: 'center'}
-    {name: 'labelNum', index: 'labelNum', width: 20, align: 'center'}
+    {name: 'labelNum', index: 'labelNum', width: 20, align: 'right'}
     {name: 'action', index: 'action', width: 80, editable: false, align: 'center'}
   ]
   beforeProcessing: (data, status, xhr)->
@@ -104,7 +104,6 @@ define (require, util, dialogs, i18n)->
   }
   dicGrid.jqGrid 'navGrid', '#dictPager', {add: false, edit: false, search: false}, {}, {}, deleteOptions
 
-  ($('#batchDelete').button {}).click ->alert "Useless"
   ($('#generateDict').button {}).click ->
   #    Test
     dicts = dicGrid.getGridParam('selarrrow')

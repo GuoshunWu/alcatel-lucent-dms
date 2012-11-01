@@ -161,7 +161,9 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
         (return;$.msgBox json.message, null, {title: c18n.error}) if(json.status != 0)
         appInfo = "#{$('#appDispAppName').text()} #{$('#selAppVersion option:selected').text()}"
 
-        $.msgBox i18n.dictlistpreview.success.format appInfo, null, {title: c18n.info}
+        $.msgBox i18n.dialog.dictlistpreview.success.format appInfo, null, {title: c18n.info}
+
+        $('#selAppVersion').trigger 'change'
     }
   ]
   open: ->

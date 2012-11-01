@@ -13,9 +13,9 @@ define (require)->
   gridview: true, cellEdit: true, cellurl: '/app/deliver-update-dict-language'
   colNames: [ 'Code', 'Language', 'Charset']
   colModel: [
-    {name: 'code', index: 'languageCode', width: 40, editable: false, align: 'center'}
+    {name: 'code', index: 'languageCode', width: 40, editable: false, align: 'left'}
     {name: 'languageId', index: 'language.name', width: 50, editable: true, edittype: 'select', align: 'left'}
-    {name: 'charsetId', index: 'charset.name', width: 40, editable: true, edittype: 'select', align: 'center'}
+    {name: 'charsetId', index: 'charset.name', width: 40, editable: true, edittype: 'select', align: 'left'}
   ]
   beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
     postData = $(@).getGridParam 'postData'

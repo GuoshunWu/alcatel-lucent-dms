@@ -62,7 +62,7 @@
       url: '',
       datatype: 'json',
       width: 1000,
-      height: 330,
+      height: 310,
       pager: '#dictPager',
       editurl: "app/create-or-add-application",
       rowNum: 10,
@@ -81,7 +81,7 @@
           name: 'langrefcode',
           index: 'langrefcode',
           width: 55,
-          align: 'center',
+          align: 'left',
           hidden: true
         }, {
           name: 'name',
@@ -98,7 +98,7 @@
           editoptions: {
             value: {}
           },
-          align: 'center'
+          align: 'left'
         }, {
           name: 'format',
           index: 'base.format',
@@ -108,7 +108,7 @@
           editoptions: {
             value: "DCT:DCT;Dictionary conf:Dictionary conf;Text properties:Text properties;XML labels:XML labels"
           },
-          align: 'center'
+          align: 'left'
         }, {
           name: 'encoding',
           index: 'base.encoding',
@@ -123,7 +123,7 @@
           name: 'labelNum',
           index: 'labelNum',
           width: 20,
-          align: 'center'
+          align: 'right'
         }, {
           name: 'action',
           index: 'action',
@@ -208,9 +208,6 @@
       edit: false,
       search: false
     }, {}, {}, deleteOptions);
-    ($('#batchDelete').button({})).click(function() {
-      return alert("Useless");
-    });
     ($('#generateDict').button({})).click(function() {
       var dicts, filename;
       dicts = dicGrid.getGridParam('selarrrow');

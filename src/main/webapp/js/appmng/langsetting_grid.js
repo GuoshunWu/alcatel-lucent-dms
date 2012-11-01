@@ -28,7 +28,7 @@
           index: 'languageCode',
           width: 40,
           editable: false,
-          align: 'center'
+          align: 'left'
         }, {
           name: 'languageId',
           index: 'language.name',
@@ -42,7 +42,7 @@
           width: 40,
           editable: true,
           edittype: 'select',
-          align: 'center'
+          align: 'left'
         }
       ],
       gridComplete: function() {}
