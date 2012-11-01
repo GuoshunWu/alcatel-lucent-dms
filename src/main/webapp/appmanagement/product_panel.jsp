@@ -7,16 +7,17 @@
     <table border="0">
         <tr>
             <td style="width:30px;" class="show-label"><s:text name="product"/></td>
-            <td class="show-label"><span id="dispProductName"></span></td>
-        </tr>
-        <tr>
-            <td style="font-size: medium;"><s:text name="version"/></td>
-            <td><select id="selVersion"></select>
+            <td><span class="show-label" id="dispProductName"></span>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <label class="show-label" for="selVersion"><s:text name="version"/></label>
+                <select id="selVersion"></select>
                 <button id="newVersion" title="<s:text name="appmng.newproduct"/> "></button>
                 &nbsp;&nbsp;
                 <button id="removeVersion" title="<s:text name="appmng.removeproduct"/>"></button>
             </td>
+
         </tr>
+
         <tr>
             <td valign="top" colspan="2">
                 <div id="applicationGrid">
