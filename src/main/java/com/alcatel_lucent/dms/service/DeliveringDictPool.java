@@ -51,7 +51,7 @@ public class DeliveringDictPool {
 		// if dictionary already exists, get language and charset information from existing one
 		long dictFid = 1;
 		for (Dictionary dict : dictList) {
-			Dictionary dbDict = dictionaryService.findDictionaryInApp(appId, dict.getName());
+			Dictionary dbDict = dictionaryService.findLatestDictionaryInApp(appId, dict.getName());
 			dict.setId(dictFid++);
 			dict.setVersion(app.getVersion());
 			if (dict.getDictLanguages() != null) {

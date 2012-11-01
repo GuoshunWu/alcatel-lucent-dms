@@ -592,8 +592,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     	return (Dictionary) dao.retrieveOne(hql, param);
     }
     
-    public Dictionary findDictionaryInApp(Long appId, String dictionaryName) {
-    	String hql = "select obj from Application app join app.dictionaries obj where app.id=:appId and obj.base.name=:name";
+    public Dictionary findLatestDictionaryInApp(Long appId, String dictionaryName) {
+    	String hql = "select obj from Application app join app.base.dictionaryBases db join db.dictionaries obj" +
+    			" where app.id=:appId and db.name=:name order by obj.id desc";
     	Map param = new HashMap();
     	param.put("appId", appId);
     	param.put("name", dictionaryName);
