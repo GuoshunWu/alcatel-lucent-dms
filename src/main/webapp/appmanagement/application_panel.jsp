@@ -8,38 +8,30 @@
             <td>
                 <table border="0" width="100%">
                     <tr>
-                        <td align="right" class="show-label">
-                            <s:text name="product"/>
-                        </td>
-                        <td colspan="2" class="show-label" align="left">
-                            <span id="appDispProductName"></span>
-                        </td>
+                        <td style="width:70px;" align="left" class="show-label"><s:text name="product"/></td>
+                        <td class="show-label" align="left"><span id="appDispProductName"></span></td>
                     </tr>
                     <tr>
-                        <td align="right" class="show-label" style="width: 70px"><s:text name="application"/></td>
-                        <td align="left" class="show-label" style="width: 70px"><span id="appDispAppName"></span></td>
-                        <td><span class="show-label"><s:text name="version"/></span><select id="selAppVersion"></select>
+                        <td align="left" class="show-label"><s:text name="application"/></td>
+                        <td align="left" class="show-label"><span id="appDispAppName"></span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="show-label"><s:text name="version"/></span></td>
+                        <td>
+                            <select id="selAppVersion"></select>
                             <button id="newAppVersion" title="<s:text name="appmng.newapp"/> "></button>
                             &nbsp;&nbsp;
                             <button id="removeAppVersion" title="<s:text name="appmng.removeapp"/>"></button>
                         </td>
                     </tr>
-                </table>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <table border="0" width="100%">
                     <tr>
-                        <td style="width: 250px">
+                        <td colspan="2">
                             <%--@declare id="dctfileupload"--%>
                             <label class="show-label" for="dctFileUpload"><s:text name="appmng.deliverapp"/></label>
                             &nbsp;&nbsp;
                             <div id="uploadBrower"></div>
-                        </td>
-                        <td align="left">
+                            &nbsp;&nbsp;
                             <span id="uploadStatus"/>
-                        </td>
                     </tr>
                 </table>
             </td>
