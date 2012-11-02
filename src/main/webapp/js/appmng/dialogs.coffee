@@ -169,7 +169,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
       ($.msgBox i18n.dialog.dictlistpreview.check, null, {title: c18n.error};return) if grid.gridHasErrors()
       dictListPreview.dialog 'close'
 
-      $.blockUI css: {backgroundColor: '#fff'}, overlayCSS: {opacity: 0.2}
+      $.blockUI()
       $.post '/app/deliver-dict', postData, (json)->
         $.unblockUI()
         (return;$.msgBox json.message, null, {title: c18n.error}) if(json.status != 0)

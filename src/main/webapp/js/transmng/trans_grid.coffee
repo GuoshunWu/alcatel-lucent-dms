@@ -1,14 +1,14 @@
-define ['jqgrid','util', 'require', 'jqmsgbox','transmng/grid.colmodel','blockui'], ($, util, require,msgbox)->
-  i18n=require('i18n!nls/transmng')
-  c18n=require('i18n!nls/common')
+define ['jqgrid', 'util', 'require', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui'], ($, util, require, msgbox)->
+  i18n = require('i18n!nls/transmng')
+  c18n = require('i18n!nls/common')
   common =
     {
     colNames: ['ID', 'Application', 'Version', 'Num of String']
     colModel: [
       {name: 'id', index: 'id', width: 55, align: 'center', hidden: true, frozen: true}
-      {name: 'application', index: 'base.name', width: 100, editable: false, stype: 'select', align: 'center', frozen: true}
-      {name: 'appVersion', index: 'version', width: 90, editable: true, align: 'center', frozen: true, search: false}
-      {name: 'numOfString', index: 'labelNum', width: 80, align: 'left', frozen: true, search: false}
+      {name: 'application', index: 'base.name', width: 100, editable: false, stype: 'select', align: 'left', frozen: true}
+      {name: 'appVersion', index: 'version', width: 90, editable: true, align: 'left', frozen: true, search: false}
+      {name: 'numOfString', index: 'labelNum', width: 80, align: 'right', frozen: true, search: false}
     ]
     }
 
@@ -18,15 +18,15 @@ define ['jqgrid','util', 'require', 'jqmsgbox','transmng/grid.colmodel','blockui
     colNames: common.colNames.slice(0).insert 3, ['Dictionary', 'Version', 'Encoding', 'Format']
     colModel: common.colModel.slice(0).insert 3, [
       {name: 'dictionary', index: 'base.name', width: 90, editable: true, align: 'left', frozen: true, search: false}
-      {name: 'dictVersion', index: 'version', width: 90, editable: true, align: 'center', frozen: true, search: false}
-      {name: 'encoding', index: 'base.encoding', width: 90, editable: true, stype: 'select', searchoptions: {value: ':All;ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE'}, align: 'center', frozen: true}
-      {name: 'format', index: 'base.format', width: 90, editable: true, stype: 'select', searchoptions: {value: ":All;DCT:DCT;Dictionary conf:Dictionary conf;Text properties:Text properties;XML labels:XML labels"}, align: 'center', frozen: true}
+      {name: 'dictVersion', index: 'version', width: 90, editable: true, align: 'left', frozen: true, search: false}
+      {name: 'encoding', index: 'base.encoding', width: 90, editable: true, stype: 'select', searchoptions: {value: ':All;ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE'}, align: 'left', frozen: true}
+      {name: 'format', index: 'base.format', width: 90, editable: true, stype: 'select', searchoptions: {value: ":All;DCT:DCT;Dictionary conf:Dictionary conf;Text properties:Text properties;XML labels:XML labels"}, align: 'left', frozen: true}
     ]
     ondblClickRow: (rowid, iRow, iCol, e)->
-      language = {name: $(@).getGridParam('colModel')[iCol].name.split('.')[0], id: parseInt(/s\((\d+)\)\[\d+\]/ig.exec($(@).getGridParam('colModel')[iCol].index)[1])}
-      dictName = $(@).getCell rowid, $(@).getGridParam('colNames').indexOf 'Dictionary'
-      util.getDictLanguagesByDictId rowid, (languages)=>
-        require('transmng/layout').showTransDetailDialog {dict: {id: rowid, name: dictName}, language: language, languages: languages}
+    #      language = {name: $(@).getGridParam('colModel')[iCol].name.split('.')[0], id: parseInt(/s\((\d+)\)\[\d+\]/ig.exec($(@).getGridParam('colModel')[iCol].index)[1])}
+    #      dictName = $(@).getCell rowid, $(@).getGridParam('colNames').indexOf 'Dictionary'
+    #      util.getDictLanguagesByDictId rowid, (languages)=>
+    #        require('transmng/layout').showTransDetailDialog {dict: {id: rowid, name: dictName}, language: language, languages: languages}
     }
   application:
     {
@@ -55,6 +55,21 @@ define ['jqgrid','util', 'require', 'jqmsgbox','transmng/grid.colmodel','blockui
     grid.navGrid '#transPager', {edit: false, add: false, del: false, search: false, view: false}
     grid.navButtonAdd "#transPager", {caption: "Clear", title: "Clear Search", buttonicon: 'ui-icon-refresh', position: 'first', onClickButton: ()->grid[0].clearToolbar()}
     grid.setFrozenColumns()
+  beforeProcessing: (data, status, xhr)->
+  gridComplete: ->
+    transGrid = $(@)
+    $('a', @).css('color', 'blue').click ()->
+      language = {}
+      [rowid, language.id, language.name]= $(@href.split('?')[1].split('&')).map (index)->@split('=')[1]
+      rowData = transGrid.getRowData(rowid)
+      allZero = true
+      $(['T', 'N', 'I']).each (index, elem)->
+        allZero = 0 == parseInt rowData["#{language.name}.#{elem}"]
+        allZero
+
+      (console.log 'zero';return) if allZero
+      util.getDictLanguagesByDictId rowid, (languages)=>
+        require('transmng/layout').showTransDetailDialog {dict: {id: rowid, name: rowData.dictionary}, language: language, languages: languages}
   }
   transGrid.getGridParam('afterCreate') transGrid
 
@@ -64,17 +79,17 @@ define ['jqgrid','util', 'require', 'jqmsgbox','transmng/grid.colmodel','blockui
     if !selectedRowIds
       $.msgBox i18n.msgbox.rowsel.msg, null, title: c18n.warning
       return
-    #    console.log "selected: #{selectedRowIds}, type: #{getTableType()}, value: #{@value}"
 
-    $.blockUI css:{backgroundColor:'#fff'},overlayCSS:{opacity:0.2}
+    $.blockUI()
     $.post '/trans/update-status', {type: getTableType(), transStatus: @value, id: selectedRowIds}, (json)->
       (alert json.message; return) if json.status != 0
-      $.unblockUI();
+      $.unblockUI()
       $.msgBox i18n.msgbox.transstatus.msg, null, title: c18n.message
       transGrid.trigger 'reloadGrid'
   ).parent().buttonset()
 
   productReleaseChanged: (param) ->
+    transGrid = $("#transGrid")
     summary = ($(param.languages).map ->_this = @;($([0, 1, 2]).map ->"s(#{_this.id})[#{@}]").get().join(',')).get().join(',')
     gridParam = transGrid.getGridParam()
 

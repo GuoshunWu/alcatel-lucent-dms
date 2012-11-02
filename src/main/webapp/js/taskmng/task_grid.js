@@ -8,14 +8,7 @@
         var filename;
         filename = "" + ($('#productBase option:selected').text()) + "_" + ($('#productRelease option:selected').text()) + "_translation";
         filename += "_" + (new Date().format('yyyyMMdd_hhmmss')) + ".zip";
-        $.blockUI({
-          css: {
-            backgroundColor: '#fff'
-          },
-          overlayCSS: {
-            opacity: 0.2
-          }
-        });
+        $.blockUI();
         return $.post('/task/generate-task-files', {
           id: param.id,
           filename: filename
@@ -41,14 +34,7 @@
         if (param.status === '1') {
           return;
         }
-        $.blockUI({
-          css: {
-            backgroundColor: '#fff'
-          },
-          overlayCSS: {
-            opacity: 0.2
-          }
-        });
+        $.blockUI;
         return $.post('/task/close-task', {
           id: param.id
         }, function(json) {

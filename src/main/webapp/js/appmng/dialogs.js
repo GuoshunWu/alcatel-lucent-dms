@@ -273,14 +273,7 @@
               return;
             }
             dictListPreview.dialog('close');
-            $.blockUI({
-              css: {
-                backgroundColor: '#fff'
-              },
-              overlayCSS: {
-                opacity: 0.2
-              }
-            });
+            $.blockUI();
             return $.post('/app/deliver-dict', postData, function(json) {
               var appInfo;
               $.unblockUI();

@@ -13,8 +13,10 @@
             <td>
                 <table border="0" width="100%">
                     <tr>
-                        <td><s:text name="transmng.dialogs.transtask.taskname"/></td>
-                        <td><input size="45" id="taskName"></td>
+                        <td style="width: 75px"><s:text name="transmng.dialogs.transtask.taskname"/></td>
+                        <td><input size="45" id="taskName">
+                            <span id="transTaskErr" style="display: none;color: red">* <s:text name="transmng.dialogs.transtask.namerequired"/></span>
+                        </td>
                     </tr>
                 </table>
             </td>

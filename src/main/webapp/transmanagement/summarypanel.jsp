@@ -20,7 +20,7 @@
                     <td align="right" style="width: 50px"><s:text name="version"/></td>
                     <td style="width:200px"><select id="productRelease" style="width:99%;"/></td>
                     <td style="width: 250px">
-                        <div style="border: thin solid;width: 280px;text-align: center">
+                        <div style="border: none;width: 280px;text-align: center">
                             <input type="radio" id="applicationView" name="viewOption" value="application"><label
                                 for="applicationView"><s:text
                                 name="transmng.summarypanel.viewoption.applicationlevel"/></label>&nbsp;&nbsp;&nbsp;&nbsp;

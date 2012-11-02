@@ -38,17 +38,22 @@
       addTaskLanguage: function(language, url, postData) {
         var colModels, cols;
         cols = ['T', 'N', 'I'];
-        colModels = ($(cols).map(function(index) {
+        colModels = $(cols).map(function(index) {
           return {
             name: "" + language.name + "." + this,
             sortable: false,
             index: "s(" + language.id + ")[" + index + "]",
             width: 40,
-            editable: false,
+            align: 'right',
+            formatter: 'showlink',
+            formatoptions: {
+              baseLinkUrl: '#',
+              addParam: "&languageId=" + language.id + "&languaeName=" + language.name
+            },
             search: false,
-            align: 'center'
+            editable: false
           };
-        })).get();
+        }).get();
         this.getGridParam('groupHeaders').push({
           startColumnName: "" + language.name + ".T",
           numberOfColumns: cols.length,
@@ -65,7 +70,7 @@
         cols = ['T', 'N', 'I'];
         gridParam = this.getGridParam();
         gridParam.colNames = $.grep(gridParam.colNames, function(val, key) {
-          return __indexOf.call(cols, val) < 0;
+          return !(__indexOf.call(cols, val) >= 0);
         });
         gridParam.colModel = $.grep(gridParam.colModel, function(val, key) {
           return !/.+\.[TIN]/g.test(val.name);

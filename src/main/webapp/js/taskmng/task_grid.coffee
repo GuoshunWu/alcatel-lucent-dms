@@ -4,7 +4,7 @@ define ['jqgrid', 'util', 'require', 'taskmng/dialogs', 'i18n!nls/taskmng', 'i18
       filename = "#{$('#productBase option:selected').text()}_#{$('#productRelease option:selected').text()}_translation"
       filename += "_#{new Date().format 'yyyyMMdd_hhmmss'}.zip"
 
-      $.blockUI css: {backgroundColor: '#fff'}, overlayCSS: {opacity: 0.2}
+      $.blockUI()
       $.post '/task/generate-task-files', {id: param.id, filename: filename}, (json)->
         $.unblockUI()
         ($.msgBox json.message, null, {title: c18n.error};return) if json.status != 0
@@ -17,7 +17,7 @@ define ['jqgrid', 'util', 'require', 'taskmng/dialogs', 'i18n!nls/taskmng', 'i18
       console.log param
     'Close': (param)->
       return if param.status == '1'
-      $.blockUI css: {backgroundColor: '#fff'}, overlayCSS: {opacity: 0.2}
+      $.blockUI
       $.post '/task/close-task', {id: param.id}, (json)->
         $.unblockUI()
         if json.status != 0
