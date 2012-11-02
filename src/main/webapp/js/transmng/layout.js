@@ -148,7 +148,7 @@
                   return;
                 }
                 if (confirm('Do you want to manage the task now?')) {
-                  window.location = "/taskmng.jsp?productBase=" + ($('#productBase').val()) + "&product=" + ($('#productRelease').val());
+                  window.location = "/taskmng.jsp?productBase=" + (escape($('#productBase').val())) + "&product=" + (escape($('#productRelease').val()));
                 }
                 return taskDialog.dialog("close");
               });
