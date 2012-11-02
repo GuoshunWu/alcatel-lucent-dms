@@ -2,19 +2,33 @@
 (function() {
 
   define(['jqlayout', 'taskmng/task_grid', 'require', 'i18n!nls/common', 'taskmng/dialogs'], function($, grid, require, c18n, dialogs) {
-    var taskFileUpload;
+    var productInfo, taskFileUpload;
     $('#pageNavigator').val(window.location.pathname);
     $("#optional-container").layout({
       resizable: true,
       closable: true
     });
+    productInfo = {};
+    if (window.location.search) {
+      $(window.location.search.split('?')[1].split('&')).each(function(index, elem) {
+        var kv;
+        kv = elem.split('=');
+        return productInfo[kv[0]] = kv[1];
+      });
+    }
     $.getJSON('rest/products', {
       prop: 'id,name'
     }, function(json) {
       $('#productBase').append(new Option(c18n.select.product.tip, -1));
-      return $('#productBase').append($(json).map(function() {
-        return new Option(this.name, this.id);
+      $('#productBase').append($(json).map(function() {
+        var opt;
+        opt = new Option(this.name, this.id);
+        if (productInfo.productBase && this.id === parseInt(productInfo.productBase)) {
+          opt.selected = true;
+        }
+        return opt;
       }));
+      return $('#productBase').trigger('change');
     });
     $('#productBase').change(function() {
       $('#productRelease').empty();
@@ -27,7 +41,12 @@
       }, function(json) {
         $('#productRelease').append(new Option(c18n.select.release.tip, -1));
         $('#productRelease').append($(json).map(function() {
-          return new Option(this.version, this.id);
+          var opt;
+          opt = new Option(this.version, this.id);
+          if (productInfo.product && this.id === parseInt(productInfo.product)) {
+            opt.selected = true;
+          }
+          return opt;
         }));
         return $('#productRelease').trigger("change");
       });

@@ -218,14 +218,7 @@
         return;
       }
       filename = "" + ($('#appDispAppName').text()) + "_" + ($('#selAppVersion option:selected').text()) + "_" + (new Date().format('yyyyMMdd_hhmmss')) + ".zip";
-      $.blockUI({
-        css: {
-          backgroundColor: '#fff'
-        },
-        overlayCSS: {
-          opacity: 0.2
-        }
-      });
+      $.blockUI();
       return $.post('/app/generate-dict', {
         dicts: dicts.join(','),
         filename: filename

@@ -113,7 +113,7 @@ define (require, util, dialogs, i18n)->
 
     filename = "#{$('#appDispAppName').text()}_#{$('#selAppVersion option:selected').text()}_#{new Date().format 'yyyyMMdd_hhmmss'}.zip"
 
-    $.blockUI css: {backgroundColor: '#fff'}, overlayCSS: {opacity: 0.2}
+    $.blockUI()
     $.post '/app/generate-dict', {dicts: dicts.join(','), filename: filename}, (json)->
       $.unblockUI()
       if(json.status != 0)

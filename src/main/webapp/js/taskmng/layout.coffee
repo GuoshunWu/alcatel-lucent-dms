@@ -1,21 +1,34 @@
-define ['jqlayout', 'taskmng/task_grid','require','i18n!nls/common', 'taskmng/dialogs'], ($, grid, require,c18n,dialogs)->
-
+define ['jqlayout', 'taskmng/task_grid', 'require', 'i18n!nls/common', 'taskmng/dialogs'], ($, grid, require, c18n, dialogs)->
   $('#pageNavigator').val(window.location.pathname)
   $("#optional-container").layout {resizable: true, closable: true}
+  productInfo = {}
+  if window.location.search
+    $(window.location.search.split('?')[1].split('&')).each (index, elem)->
+      kv = elem.split('=')
+      productInfo[kv[0]] = kv[1]
 
   # selects on summary panel
-  $.getJSON 'rest/products', {prop:'id,name'}, (json)->
+  $.getJSON 'rest/products', {prop: 'id,name'}, (json)->
     $('#productBase').append new Option(c18n.select.product.tip, -1)
-    $('#productBase').append $(json).map ()->new Option @name, @id
+    $('#productBase').append $(json).map ()->
+      opt = new Option @name, @id
+      opt.selected = true if productInfo.productBase and @id == parseInt(productInfo.productBase)
+      opt
+    $('#productBase').trigger 'change'
+
 
   #  load product in product base
   $('#productBase').change ()->
     $('#productRelease').empty()
     return false if parseInt($('#productBase').val()) == -1
 
-    $.getJSON "/rest/products/version", {base:$(@).val(),prop:'id,version'}, (json)->
+    $.getJSON "/rest/products/version", {base: $(@).val(), prop: 'id,version'}, (json)->
       $('#productRelease').append new Option(c18n.select.release.tip, -1)
-      $('#productRelease').append $(json).map ()->new Option @version, @id
+      $('#productRelease').append $(json).map ()->
+        opt = new Option @version, @id
+        if productInfo.product and @id == parseInt(productInfo.product)
+          opt.selected = true
+        opt
       $('#productRelease').trigger "change"
 
   $('#productRelease').change ->
@@ -49,7 +62,7 @@ define ['jqlayout', 'taskmng/task_grid','require','i18n!nls/common', 'taskmng/di
   border: '1px transparent', borderWidth: '0 0 40px 0px',
   opacity: 0, filter: 'alpha(opacity=0)', cursor: 'pointer'}
 
-    #   show main page.
+  #   show main page.
   $('#optional-container').show()
   $('#loading-container').remove()
 

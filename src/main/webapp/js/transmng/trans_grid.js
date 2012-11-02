@@ -21,21 +21,21 @@
           width: 100,
           editable: false,
           stype: 'select',
-          align: 'center',
+          align: 'left',
           frozen: true
         }, {
           name: 'appVersion',
           index: 'version',
           width: 90,
           editable: true,
-          align: 'center',
+          align: 'left',
           frozen: true,
           search: false
         }, {
           name: 'numOfString',
           index: 'labelNum',
           width: 80,
-          align: 'left',
+          align: 'right',
           frozen: true,
           search: false
         }
@@ -58,7 +58,7 @@
             index: 'version',
             width: 90,
             editable: true,
-            align: 'center',
+            align: 'left',
             frozen: true,
             search: false
           }, {
@@ -70,7 +70,7 @@
             searchoptions: {
               value: ':All;ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE'
             },
-            align: 'center',
+            align: 'left',
             frozen: true
           }, {
             name: 'format',
@@ -81,29 +81,11 @@
             searchoptions: {
               value: ":All;DCT:DCT;Dictionary conf:Dictionary conf;Text properties:Text properties;XML labels:XML labels"
             },
-            align: 'center',
+            align: 'left',
             frozen: true
           }
         ]),
-        ondblClickRow: function(rowid, iRow, iCol, e) {
-          var dictName, language,
-            _this = this;
-          language = {
-            name: $(this).getGridParam('colModel')[iCol].name.split('.')[0],
-            id: parseInt(/s\((\d+)\)\[\d+\]/ig.exec($(this).getGridParam('colModel')[iCol].index)[1])
-          };
-          dictName = $(this).getCell(rowid, $(this).getGridParam('colNames').indexOf('Dictionary'));
-          return util.getDictLanguagesByDictId(rowid, function(languages) {
-            return require('transmng/layout').showTransDetailDialog({
-              dict: {
-                id: rowid,
-                name: dictName
-              },
-              language: language,
-              languages: languages
-            });
-          });
-        }
+        ondblClickRow: function(rowid, iRow, iCol, e) {}
       },
       application: {
         colNames: ['Dummy'].concat(common.colNames),
@@ -176,6 +158,38 @@
           }
         });
         return grid.setFrozenColumns();
+      },
+      beforeProcessing: function(data, status, xhr) {},
+      gridComplete: function() {
+        transGrid = $(this);
+        return $('a', this).css('color', 'blue').click(function() {
+          var allZero, language, rowData, rowid, _ref,
+            _this = this;
+          language = {};
+          _ref = $(this.href.split('?')[1].split('&')).map(function(index) {
+            return this.split('=')[1];
+          }), rowid = _ref[0], language.id = _ref[1], language.name = _ref[2];
+          rowData = transGrid.getRowData(rowid);
+          allZero = true;
+          $(['T', 'N', 'I']).each(function(index, elem) {
+            allZero = 0 === parseInt(rowData["" + language.name + "." + elem]);
+            return allZero;
+          });
+          if (allZero) {
+            console.log('zero');
+            return;
+          }
+          return util.getDictLanguagesByDictId(rowid, function(languages) {
+            return require('transmng/layout').showTransDetailDialog({
+              dict: {
+                id: rowid,
+                name: rowData.dictionary
+              },
+              language: language,
+              languages: languages
+            });
+          });
+        });
       }
     });
     transGrid.getGridParam('afterCreate')(transGrid);
@@ -189,14 +203,7 @@
         });
         return;
       }
-      $.blockUI({
-        css: {
-          backgroundColor: '#fff'
-        },
-        overlayCSS: {
-          opacity: 0.2
-        }
-      });
+      $.blockUI();
       return $.post('/trans/update-status', {
         type: getTableType(),
         transStatus: this.value,
@@ -216,6 +223,7 @@
     return {
       productReleaseChanged: function(param) {
         var gridParam, isApp, postData, prop, summary, url;
+        transGrid = $("#transGrid");
         summary = ($(param.languages).map(function() {
           var _this;
           _this = this;

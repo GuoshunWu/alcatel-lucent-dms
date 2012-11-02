@@ -33,10 +33,20 @@
           effect: 'slide',
           direction: "up"
         },
-        create: function() {
-          var _this = this;
-          return $.getJSON('rest/languages?prop=id,name', {}, function(languages) {
-            return $(_this).append(util.generateLanguageTable(languages));
+        open: function() {
+          var id, param,
+            _this = this;
+          param = $(this).data('param');
+          if (param) {
+            id = param.id;
+          } else {
+            id = -1;
+          }
+          return $.getJSON('rest/languages', {
+            prod: id,
+            prop: 'id,name'
+          }, function(languages) {
+            return $(_this).text('').append(util.generateLanguageTable(languages));
           });
         },
         buttons: [
@@ -64,9 +74,12 @@
           direction: "down"
         },
         open: function() {
-          var info, langFilterTableId, nums, postData, tableType,
+          var info, langFilterTableId, nums, postData, tableType, taskname,
             _this = this;
           info = grid.getTotalSelectedRowInfo();
+          taskname = "" + ($('#productBase option:selected').text()) + "_" + ($('#productRelease option:selected').text());
+          taskname += "_" + (new Date().format('yyyyMMddhhmmss'));
+          $('#taskName').val(taskname).select();
           tableType = grid.getTableType();
           nums = info.rowIds.length;
           $("#dictSelected").html("<b>" + nums + "</b>");
@@ -85,6 +98,9 @@
               return $(_this).append(util.generateLanguageTable(languages, langFilterTableId));
             }
           });
+        },
+        close: function() {
+          return $('#transTaskErr').hide();
         },
         buttons: [
           {
@@ -108,6 +124,7 @@
               }
               name = $('#taskName').val();
               if ('' === name) {
+                $('#transTaskErr').show();
                 return;
               }
               langids = $(languages).map(function() {
@@ -116,17 +133,23 @@
               dicts = $(grid.getTotalSelectedRowInfo().rowIds).map(function() {
                 return this;
               }).get().join(',');
+              taskDialog.parent().block();
               return $.post('/task/create-task', {
                 prod: $('#productRelease').val(),
                 language: langids,
                 dict: dicts,
                 name: name
               }, function(json) {
-                var title;
-                title = json.status !== 0 ? c18n.error : c18n.info;
-                $.msgBox(json.message, null, {
-                  title: title
-                });
+                taskDialog.parent().unblock();
+                if (json.status !== 0) {
+                  $.msgBox(json.message, null, {
+                    title: c18n.error
+                  });
+                  return;
+                }
+                if (confirm('Do you want to manage the task now?')) {
+                  window.location = "/taskmng.jsp?productBase=" + ($('#productBase').val()) + "&product=" + ($('#productRelease').val());
+                }
                 return taskDialog.dialog("close");
               });
             }
@@ -208,6 +231,7 @@
         if (!$('#productBase').val() || parseInt($('#productBase').val()) === -1) {
           return false;
         }
+        $(languageFilterDialog).data('param', param.release);
         if (!param.release.id || parseInt(param.release.id) === -1) {
           return false;
         }
