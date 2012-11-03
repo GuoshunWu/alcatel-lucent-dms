@@ -179,6 +179,39 @@ To change this template use File | Settings | File Templates.
         }, function(languages) {
           return callback(languages);
         });
+      },
+      setCookie: function(name, value, expires, domain, path, secure) {
+        var arg, c, start;
+        c = "" + name + "=" + (escape(value));
+        start = 2;
+        if ((function() {
+          var _i, _len, _ref, _results;
+          _ref = ['expires', 'domain', 'path', 'secure'];
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            arg = _ref[_i];
+            _results.push(arguments[start]);
+          }
+          return _results;
+        }).apply(this, arguments)) {
+          c += ";" + arg + "=" + arguments[start++];
+        }
+        return document.cookie = c;
+      },
+      getCookie: function(name) {
+        var c, cname, value, _i, _len, _ref, _ref1;
+        _ref = document.cookie.split("; ");
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          c = _ref[_i];
+          _ref1 = c.split('='), cname = _ref1[0], value = _ref1[1];
+          if (cname === name) {
+            return value;
+          }
+        }
+        return null;
+      },
+      delCookie: function(name) {
+        return document.cookie = "" + name + "=" + (escape('')) + "; expires=Fri, 31 Dec 1999 23:59:59 GMT;";
       }
     };
   });

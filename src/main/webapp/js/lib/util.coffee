@@ -99,7 +99,7 @@ define ["jquery"], ($) ->
   #  a=[1,2,3]
   #  console.log a.insert 1,["a",'b']
 
-  generateLanguageTable:(languages, tableId, colNum)->
+  generateLanguageTable: (languages, tableId, colNum)->
     tableId = 'languageFilterTable' if !tableId
     colNum = 5 if !colNum
     rowCount = Math.ceil(languages.length / colNum)
@@ -126,5 +126,27 @@ define ["jquery"], ($) ->
 
 
 
-  json2string: (jsonObj) ->formatJonString JSON.stringify(jsonObj)
-  getDictLanguagesByDictId: (id,callback)->$.getJSON 'rest/languages', {prop: 'id,name', dict: id}, (languages)=>callback languages
+  json2string: (jsonObj)->formatJonString JSON.stringify(jsonObj)
+  getDictLanguagesByDictId: (id, callback)->$.getJSON 'rest/languages', {prop: 'id,name', dict: id}, (languages)=>callback languages
+  # expires=date; Setting no expiration date on a cookie causes it to expire when the browser closes. If you set an expiration date in the future, the cookie is saved across browser sessions. If you set an expiration date in the past, the cookie is deleted. Use GMT format to specify the date.
+  # domain=domainname; Setting the domain of the cookie allows pages on a domain made up of more than one server to share cookie information.
+  #  path=path;Setting a path for the cookie allows the current document to share cookie information with other pages within the same domain—that is, if the path is set to /thispathname, all pages in /thispathname and all pages in subfolders of /thispathname can access the same cookie information.
+  #  secure; Setting a cookie as secure; means the stored cookie information can be accessed only from a secure environment.
+  setCookie: (name, value, expires, domain, path, secure)->
+    c = "#{name}=#{escape(value)}"
+    start = 2
+    c += ";#{arg}=#{arguments[start++]}" if arguments[start] for arg in ['expires', 'domain', 'path', 'secure']
+    document.cookie = c
+  #  Retrieve the value of the cookie with the specified name.
+  getCookie: (name)->
+    for c in document.cookie.split("; ")
+      [cname, value] = c.split('=')
+      return value if cname == name
+    null
+  #  Del cookie
+  delCookie: (name)->document.cookie = "#{name}=#{escape('')}; expires=Fri, 31 Dec 1999 23:59:59 GMT;"
+
+
+
+
+
