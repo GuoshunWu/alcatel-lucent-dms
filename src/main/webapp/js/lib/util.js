@@ -12,7 +12,7 @@ To change this template use File | Settings | File Templates.
 (function() {
 
   define(["jquery"], function($) {
-    var formatJonString;
+    var formatJonString, setCookie;
     String.prototype.format = function() {
       var args;
       args = arguments;
@@ -135,6 +135,24 @@ To change this template use File | Settings | File Templates.
       }
       return retval;
     };
+    setCookie = function(name, value, expires, domain, path, secure) {
+      var arg, c, start;
+      c = "" + name + "=" + (escape(value));
+      start = 2;
+      if ((function() {
+        var _i, _len, _ref, _results;
+        _ref = ['expires', 'domain', 'path', 'secure'];
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          arg = _ref[_i];
+          _results.push(arguments[start]);
+        }
+        return _results;
+      }).apply(this, arguments)) {
+        c += ";" + arg + "=" + arguments[start++];
+      }
+      return document.cookie = c;
+    };
     return {
       /*
         Test here.
@@ -149,7 +167,7 @@ To change this template use File | Settings | File Templates.
           colNum = 5;
         }
         rowCount = Math.ceil(languages.length / colNum);
-        languageFilterTable = $("<table id='" + tableId + "' align='center' border='0'><tr valign='top' /></table>");
+        languageFilterTable = $("<table id='" + tableId + "' align='center'width='100%' border='0'><tr valign='top' /></table>");
         outerTableFirstRow = $("tr:eq(0)", languageFilterTable);
         languageCells = $(languages).map(function() {
           return $("<td><input type='checkbox' checked value=\"" + this.name + "\" name='languages' id=" + this.id + " /><label for=" + this.id + ">" + this.name + "</label></td>").css('width', '180px');
@@ -180,24 +198,7 @@ To change this template use File | Settings | File Templates.
           return callback(languages);
         });
       },
-      setCookie: function(name, value, expires, domain, path, secure) {
-        var arg, c, start;
-        c = "" + name + "=" + (escape(value));
-        start = 2;
-        if ((function() {
-          var _i, _len, _ref, _results;
-          _ref = ['expires', 'domain', 'path', 'secure'];
-          _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            arg = _ref[_i];
-            _results.push(arguments[start]);
-          }
-          return _results;
-        }).apply(this, arguments)) {
-          c += ";" + arg + "=" + arguments[start++];
-        }
-        return document.cookie = c;
-      },
+      setCookie: setCookie,
       getCookie: function(name) {
         var c, cname, value, _i, _len, _ref, _ref1;
         _ref = document.cookie.split("; ");

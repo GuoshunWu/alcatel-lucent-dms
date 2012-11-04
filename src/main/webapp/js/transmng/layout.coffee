@@ -89,6 +89,7 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
             return
           if(confirm('Do you want to manage the task now?'))
             window.location = "/taskmng.jsp?productBase=#{escape $('#productBase').val()}&product=#{escape $('#productRelease').val()}"
+
           #            $('<form>').attr(method: 'post', action: '/taskmng.jsp').
           #            append($('<input>').attr(name: 'productBase').val($('#productBase').val()))
           taskDialog.dialog "close"
@@ -163,9 +164,7 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
     createButtons(dialogs.taskDialog, dialogs.languageFilterDialog, dialogs.transDetailDialog)
     #   show main page.
     $('#optional-container').show()
-    ;
     $('#loading-container').remove()
-    ;
 
   # initialize page
   initPage()
