@@ -71,7 +71,13 @@ public class ApplicationREST extends BaseREST {
     	if (sord == null) {
     		sord = "ASC";
     	}
-        hSQL += " order by app." + sidx + " " + sord;
+    	if (sidx.equals("labelNum")) {
+    		hSQL = "select app from Product p join p.applications app join app.dictionaries d where p.id=:id" +
+    				" group by app order by sum(d.labels.size) " + sord;
+    		
+    	} else {
+    		hSQL += " order by app." + sidx + " " + sord;
+    	}
 
     	String countHSQL = "select p.applications.size from Product p where p.id=:id";
         Collection<Application> resultSet = retrieve(hSQL, params, countHSQL, params, requestMap);
