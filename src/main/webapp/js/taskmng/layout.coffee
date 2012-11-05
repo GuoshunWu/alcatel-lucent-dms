@@ -1,4 +1,4 @@
-define ['jqlayout', 'taskmng/task_grid', 'require', 'i18n!nls/common', 'taskmng/dialogs'], ($, grid, require, c18n, dialogs)->
+define ['jqlayout', 'taskmng/task_grid', 'i18n!nls/common', 'taskmng/dialogs','require'], ($, grid, c18n, dialogs,require)->
 
   $('#pageNavigator').val(window.location.pathname)
   $("#optional-container").layout {resizable: true, closable: true}
@@ -58,3 +58,6 @@ define ['jqlayout', 'taskmng/task_grid', 'require', 'i18n!nls/common', 'taskmng/
   #   show main page.
   $('#optional-container').show()
   $('#loading-container').remove()
+
+
+

@@ -1,6 +1,4 @@
-define ['jqgrid', 'util', 'taskmng/dialogs', 'i18n!nls/taskmng', 'i18n!nls/common', 'blockui', 'jqupload', 'iframetransport', 'require'], ($, util, dialogs, i18n, c18n, blockui, jqupload, ifram, require)->
-  require 'jqmsgbox'
-  require 'jqueryui'
+define ['jqgrid','jqmsgbox', 'util', 'taskmng/dialogs', 'i18n!nls/taskmng', 'i18n!nls/common', 'blockui', 'jqupload', 'iframetransport', 'require'], ($,jqmsgbox,util, dialogs, i18n, c18n, blockui, jqupload, ifram, require)->
 
   handlers =
     'Download': (param)->
