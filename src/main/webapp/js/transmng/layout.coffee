@@ -26,7 +26,7 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
     open: ->
       param = $(@).data 'param'
       if param then id = param.id else id = -1
-      $.getJSON 'rest/languages', {prod:id,prop:'id,name'}, (languages)=>
+      $.getJSON 'rest/languages', {prod: id, prop: 'id,name'}, (languages)=>
         $(@).text('').append util.generateLanguageTable languages
     buttons: [
       { text: c18n.ok, click: ()->
@@ -41,8 +41,8 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
     width: 'auto', height: 'auto', position: [25, 100], show: { effect: 'slide', direction: "down" }
     open: ->
       info = grid.getTotalSelectedRowInfo()
-      taskname="#{$('#productBase option:selected').text()}_#{$('#productRelease option:selected').text()}"
-      taskname+="_#{new Date().format('yyyyMMddhhmmss')}"
+      taskname = "#{$('#productBase option:selected').text()}_#{$('#productRelease option:selected').text()}"
+      taskname += "_#{new Date().format('yyyyMMddhhmmss')}"
       $('#taskName').val(taskname).select()
       #      tableType is app or dict
       tableType = grid.getTableType()
@@ -67,7 +67,7 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
     buttons: [
       {text: c18n.create
       click: ->
-        taskDialog=$(@)
+        taskDialog = $(@)
         languages = ($(":checkbox[name='languages']", @).map -> {id: @id, name: @value} if @checked).get()
         if(languages.length == 0)
           $.msgBox (i18n.msgbox.createtranstask.msg.format c18n.language), null, title: (c18n.warning)
@@ -78,7 +78,8 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
           return
         langids = $(languages).map(
           ()->@id).get().join ','
-        dicts = $(grid.getTotalSelectedRowInfo().rowIds).map(()->@).get().join(',')
+        dicts = $(grid.getTotalSelectedRowInfo().rowIds).map(
+          ()->@).get().join(',')
 
         taskDialog.parent().block()
         $.post '/task/create-task', {prod: $('#productRelease').val(), language: langids, dict: dicts, name: name }, (json)->
@@ -87,7 +88,10 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
             $.msgBox json.message, null, {title: c18n.error}
             return
           if(confirm('Do you want to manage the task now?'))
-            window.location="/taskmng.jsp?productBase=#{$('#productBase').val()}&product=#{$('#productRelease').val()}"
+            window.location = "/taskmng.jsp?productBase=#{escape $('#productBase').val()}&product=#{escape $('#productRelease').val()}"
+
+          #            $('<form>').attr(method: 'post', action: '/taskmng.jsp').
+          #            append($('<input>').attr(name: 'productBase').val($('#productBase').val()))
           taskDialog.dialog "close"
       }
       {text: c18n.cancel, click: -> $(@).dialog "close"}
@@ -121,13 +125,18 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
         $('#productRelease').trigger "change"
 
     $('#productRelease').change ->
-
-
       param = {
       release: {id: $(@).val(), version: $(@).find("option:selected").text()}
-      languages: ($(":checkbox[name='languages']", $("#" + ids.languageFilterDialogId)).map () -> {id: @id, name: @value} if @checked).get()
       level: $(":radio[name='viewOption'][checked]").val()
       }
+      checkboxes = $("##{ids.languageFilterDialogId} input:checkbox[name='languages']")
+      param.languages = checkboxes.map(() -> {id: @id, name: @value} if @checked).get()
+      console.log checkboxes
+      if 0 == checkboxes.length
+        $.ajax {url: "rest/languages", async: false, data: {prod: param.release.id, prop: 'id,name'}, dataType: 'json', success: (languages)->
+          param.languages = languages
+        }
+
       if !$('#productBase').val() || parseInt($('#productBase').val()) == -1
       #        $.msgBox i18n.select.product.msg, null,title: i18n.select.product.msgtitle
         return false
@@ -162,9 +171,7 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
     createButtons(dialogs.taskDialog, dialogs.languageFilterDialog, dialogs.transDetailDialog)
     #   show main page.
     $('#optional-container').show()
-    ;
     $('#loading-container').remove()
-    ;
 
   # initialize page
   initPage()

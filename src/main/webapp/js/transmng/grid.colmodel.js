@@ -36,23 +36,28 @@
         return this.getGridParam('afterCreate')(newGrid);
       },
       addTaskLanguage: function(language, url, postData) {
-        var colModels, cols;
+        var colModels, cols, level;
         cols = ['T', 'N', 'I'];
+        level = $(":radio[name='viewOption'][checked]").val();
         colModels = $(cols).map(function(index) {
-          return {
+          var model;
+          model = {
             name: "" + language.name + "." + this,
             sortable: false,
             index: "s(" + language.id + ")[" + index + "]",
             width: 40,
             align: 'right',
-            formatter: 'showlink',
-            formatoptions: {
-              baseLinkUrl: '#',
-              addParam: "&languageId=" + language.id + "&languaeName=" + language.name
-            },
             search: false,
             editable: false
           };
+          if (level !== 'application') {
+            model.formatter = 'showlink';
+            model.formatoptions = {
+              baseLinkUrl: '#',
+              addParam: "&languageId=" + language.id + "&languaeName=" + language.name
+            };
+          }
+          return model;
         }).get();
         this.getGridParam('groupHeaders').push({
           startColumnName: "" + language.name + ".T",
