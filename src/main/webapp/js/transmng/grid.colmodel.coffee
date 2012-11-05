@@ -28,7 +28,7 @@ define ['jqgrid'], ($)->
 
   addTaskLanguage: (language, url, postData)->
     cols = ['T', 'N', 'I']
-    level = $(":radio[name='viewOption'][checked]").val()
+    level = $("input:radio[name='viewOption'][checked]").val()
     colModels = $(cols).map(
       (index)->
         model={

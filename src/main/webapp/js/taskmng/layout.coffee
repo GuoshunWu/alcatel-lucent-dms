@@ -1,4 +1,5 @@
 define ['jqlayout', 'taskmng/task_grid', 'require', 'i18n!nls/common', 'taskmng/dialogs'], ($, grid, require, c18n, dialogs)->
+
   $('#pageNavigator').val(window.location.pathname)
   $("#optional-container").layout {resizable: true, closable: true}
   info = {}
@@ -6,7 +7,6 @@ define ['jqlayout', 'taskmng/task_grid', 'require', 'i18n!nls/common', 'taskmng/
     $(window.location.search.split('?')[1].split('&')).each (index, elem)->
       kv = elem.split('=')
       info[kv[0]] = unescape kv[1]
-  console.log info
   # selects on summary panel
   $.getJSON 'rest/products', {prop: 'id,name'}, (json)->
     $('#productBase').append(new Option c18n.select.product.tip, -1).append(
@@ -21,7 +21,8 @@ define ['jqlayout', 'taskmng/task_grid', 'require', 'i18n!nls/common', 'taskmng/
     $.getJSON "/rest/products/version", {base: $(@).val(), prop: 'id,version'}, (json)->
       $('#productRelease').append(new Option c18n.select.release.tip, -1).append(
         $(json).map ()->$(new Option(@version, @id)).attr('selected', info.product and @id == parseInt info.product)[0]
-      ).trigger "change"
+      )
+      $('#productRelease').trigger "change"
 
   $('#productRelease').change ->
   #    todo: refresh grid according to the product release

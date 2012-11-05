@@ -11,6 +11,7 @@ define({
         cancel: 'Cancel',
         error:'Error',
         warning: 'Warning',
+        confirm:'Confirm',
         message:'Message',
         create:'Create',
         app:'application',

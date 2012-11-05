@@ -15,7 +15,8 @@ define({
         },
         msgbox:{
             createtranstask:{
-                msg:'Please select {0} first!'
+                msg:'Please select {0} first!',
+                confirm: 'Do you want to manage the task now?'
             },
             rowsel:{
                 msg:'Please select row first!'

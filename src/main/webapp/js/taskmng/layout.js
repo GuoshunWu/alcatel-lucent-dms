@@ -16,7 +16,6 @@
         return info[kv[0]] = unescape(kv[1]);
       });
     }
-    console.log(info);
     $.getJSON('rest/products', {
       prop: 'id,name'
     }, function(json) {
@@ -33,9 +32,10 @@
         base: $(this).val(),
         prop: 'id,version'
       }, function(json) {
-        return $('#productRelease').append(new Option(c18n.select.release.tip, -1)).append($(json).map(function() {
+        $('#productRelease').append(new Option(c18n.select.release.tip, -1)).append($(json).map(function() {
           return $(new Option(this.version, this.id)).attr('selected', info.product && this.id === parseInt(info.product))[0];
-        })).trigger("change");
+        }));
+        return $('#productRelease').trigger("change");
       });
     });
     $('#productRelease').change(function() {

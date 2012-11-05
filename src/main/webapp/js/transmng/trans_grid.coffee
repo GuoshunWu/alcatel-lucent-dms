@@ -42,7 +42,7 @@ define ['jqgrid', 'util', 'require', 'jqmsgbox', 'transmng/grid.colmodel', 'bloc
   transGrid = $("#transGrid").jqGrid {
   url: '' # url: 'json/taskgrid.json'
   mtype: 'POST', postData: {}, editurl: "", datatype: 'json'
-  width: $(window).width() * 0.95, height: 350, shrinkToFit: false
+  width: $(window).width() * 0.95, height: 330, shrinkToFit: false
   rownumbers: true, loadonce: false # for reload the colModel
   pager: '#transPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
   sortname: 'base.name', sortorder: 'asc', viewrecords: true, gridview: true, multiselect: true
@@ -55,6 +55,7 @@ define ['jqgrid', 'util', 'require', 'jqmsgbox', 'transmng/grid.colmodel', 'bloc
     grid.navGrid '#transPager', {edit: false, add: false, del: false, search: false, view: false}
     grid.navButtonAdd "#transPager", {caption: "Clear", title: "Clear Search", buttonicon: 'ui-icon-refresh', position: 'first', onClickButton: ()->grid[0].clearToolbar()}
     grid.setFrozenColumns()
+
   beforeProcessing: (data, status, xhr)->
   gridComplete: ->
     transGrid = $(@)
