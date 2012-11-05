@@ -151,7 +151,6 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
     #    for view level
     $(':radio[name=viewOption]').change ->refreshGrid()
 
-
   #  private method
   initPage = ->
   ###################################### Elements in summary panel ######################################
