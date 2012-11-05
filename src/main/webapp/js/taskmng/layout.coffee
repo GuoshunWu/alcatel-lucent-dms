@@ -1,35 +1,27 @@
 define ['jqlayout', 'taskmng/task_grid', 'require', 'i18n!nls/common', 'taskmng/dialogs'], ($, grid, require, c18n, dialogs)->
   $('#pageNavigator').val(window.location.pathname)
   $("#optional-container").layout {resizable: true, closable: true}
-  productInfo = {}
+  info = {}
   if window.location.search
     $(window.location.search.split('?')[1].split('&')).each (index, elem)->
       kv = elem.split('=')
-      productInfo[kv[0]] = kv[1]
-
+      info[kv[0]] = unescape kv[1]
+  console.log info
   # selects on summary panel
   $.getJSON 'rest/products', {prop: 'id,name'}, (json)->
-    $('#productBase').append new Option(c18n.select.product.tip, -1)
-    $('#productBase').append $(json).map ()->
-      opt = new Option @name, @id
-      opt.selected = true if productInfo.productBase and @id == parseInt(productInfo.productBase)
-      opt
-    $('#productBase').trigger 'change'
-
-
+    $('#productBase').append(new Option c18n.select.product.tip, -1).append(
+      $(json).map ()->
+        $(new Option(@name, @id)).attr('selected', info.productBase and @id == parseInt info.productBase)[0]
+    ).trigger 'change'
   #  load product in product base
   $('#productBase').change ()->
     $('#productRelease').empty()
     return false if parseInt($('#productBase').val()) == -1
 
     $.getJSON "/rest/products/version", {base: $(@).val(), prop: 'id,version'}, (json)->
-      $('#productRelease').append new Option(c18n.select.release.tip, -1)
-      $('#productRelease').append $(json).map ()->
-        opt = new Option @version, @id
-        if productInfo.product and @id == parseInt(productInfo.product)
-          opt.selected = true
-        opt
-      $('#productRelease').trigger "change"
+      $('#productRelease').append(new Option c18n.select.release.tip, -1).append(
+        $(json).map ()->$(new Option(@version, @id)).attr('selected', info.product and @id == parseInt info.product)[0]
+      ).trigger "change"
 
   $('#productRelease').change ->
   #    todo: refresh grid according to the product release
@@ -65,8 +57,3 @@ define ['jqlayout', 'taskmng/task_grid', 'require', 'i18n!nls/common', 'taskmng/
   #   show main page.
   $('#optional-container').show()
   $('#loading-container').remove()
-
-
-
-
-
