@@ -1,8 +1,8 @@
-define [ 'jqueryui', 'require', 'taskmng/taskreport_grid', 'taskmng/transdetail_grid'], ($, require, reportgrid, detailgrid)->
+define [ 'jqueryui', 'require', 'taskmng/taskreport_grid', 'taskmng/transdetail_grid','jqmsgbox'], ($, require, reportgrid, detailgrid)->
   c18n = require 'i18n!nls/common'
   util = require 'util'
 
-  require 'jqmsgbox'
+#  require 'jqmsgbox'
   c18n = require 'i18n!nls/common'
 
   #  require 'blockui'

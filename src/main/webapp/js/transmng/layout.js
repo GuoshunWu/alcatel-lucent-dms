@@ -2,7 +2,7 @@
 (function() {
 
   define(['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng', 'transmng/trans_grid', 'transmng/transdetail_grid'], function($, require, blockui, msgbox, c18n, i18n, grid, detailgrid) {
-    var createButtons, createDialogs, createSelects, dialogs, ids, initPage, pageLayout, util;
+    var createButtons, createDialogs, createSelects, dialogs, ids, initPage, pageLayout, refreshGrid, util;
     util = require('util');
     ids = {
       languageFilterTableId: 'languageFilterTable',
@@ -22,6 +22,26 @@
       return $(this).removeClass("ui-state-hover");
     });
     dialogs = null;
+    refreshGrid = function() {
+      var checkboxes, param;
+      param = {
+        release: {
+          id: $('#productRelease').val(),
+          version: $("#productRelease option:selected").text()
+        },
+        level: $("input:radio[name='viewOption'][checked]").val()
+      };
+      checkboxes = $("#" + ids.languageFilterDialogId + " input:checkbox[name='languages']");
+      param.languages = checkboxes.map(function() {
+        if (this.checked) {
+          return {
+            id: this.id,
+            name: this.value
+          };
+        }
+      }).get();
+      return grid.productReleaseChanged(param);
+    };
     createDialogs = function() {
       var languageFilterDialog, taskDialog, transDetailDialog;
       languageFilterDialog = $("<div title='" + i18n.select.languagefilter.title + "' id='" + ids.languageFilterDialogId + "'>").dialog({
@@ -33,27 +53,11 @@
           effect: 'slide',
           direction: "up"
         },
-        open: function() {
-          var id, param,
-            _this = this;
-          param = $(this).data('param');
-          if (param) {
-            id = param.id;
-          } else {
-            id = -1;
-          }
-          return $.getJSON('rest/languages', {
-            prod: id,
-            prop: 'id,name'
-          }, function(languages) {
-            return $(_this).text('').append(util.generateLanguageTable(languages));
-          });
-        },
         buttons: [
           {
             text: c18n.ok,
             click: function() {
-              $('#productRelease').trigger("change");
+              refreshGrid();
               return $(this).dialog("close");
             }
           }, {
@@ -147,9 +151,13 @@
                   });
                   return;
                 }
-                if (confirm('Do you want to manage the task now?')) {
-                  window.location = "/taskmng.jsp?productBase=" + (escape($('#productBase').val())) + "&product=" + (escape($('#productRelease').val()));
-                }
+                $.msgBox(i18n.msgbox.createtranstask.confirm, (function(keyPressed) {
+                  if (c18n.ok === keyPressed) {
+                    return window.location = "/taskmng.jsp?productBase=" + (escape($('#productBase').val())) + "&product=" + (escape($('#productRelease').val()));
+                  }
+                }), {
+                  title: c18n.confirm
+                }, [c18n.ok, c18n.cancel]);
                 return taskDialog.dialog("close");
               });
             }
@@ -212,46 +220,22 @@
         });
       });
       return $('#productRelease').change(function() {
-        var checkboxes, param;
-        param = {
-          release: {
-            id: $(this).val(),
-            version: $(this).find("option:selected").text()
+        if (-1 === parseInt(this.value)) {
+          return;
+        }
+        $.ajax({
+          url: "rest/languages",
+          async: false,
+          data: {
+            prod: this.value,
+            prop: 'id,name'
           },
-          level: $(":radio[name='viewOption'][checked]").val()
-        };
-        checkboxes = $("#" + ids.languageFilterDialogId + " input:checkbox[name='languages']");
-        param.languages = checkboxes.map(function() {
-          if (this.checked) {
-            return {
-              id: this.id,
-              name: this.value
-            };
+          dataType: 'json',
+          success: function(languages) {
+            return $("#" + ids.languageFilterDialogId).empty().append(util.generateLanguageTable(languages));
           }
-        }).get();
-        console.log(checkboxes);
-        if (0 === checkboxes.length) {
-          $.ajax({
-            url: "rest/languages",
-            async: false,
-            data: {
-              prod: param.release.id,
-              prop: 'id,name'
-            },
-            dataType: 'json',
-            success: function(languages) {
-              return param.languages = languages;
-            }
-          });
-        }
-        if (!$('#productBase').val() || parseInt($('#productBase').val()) === -1) {
-          return false;
-        }
-        $(languageFilterDialog).data('param', param.release);
-        if (!param.release.id || parseInt(param.release.id) === -1) {
-          return false;
-        }
-        return grid.productReleaseChanged(param);
+        });
+        return refreshGrid();
       });
     };
     createButtons = function(taskDialog, languageFilterDialog) {
@@ -272,7 +256,7 @@
         return languageFilterDialog.dialog("open");
       });
       return $(':radio[name=viewOption]').change(function() {
-        return $('#productRelease').trigger("change");
+        return refreshGrid();
       });
     };
     initPage = function() {

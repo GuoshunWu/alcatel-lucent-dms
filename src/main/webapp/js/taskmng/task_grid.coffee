@@ -1,4 +1,7 @@
-define ['jqgrid', 'util', 'require', 'taskmng/dialogs', 'i18n!nls/taskmng', 'i18n!nls/common', 'blockui', 'jqmsgbox', 'jqupload', 'iframetransport'], ($, util, require, dialogs, i18n, c18n)->
+define ['jqgrid', 'util', 'taskmng/dialogs', 'i18n!nls/taskmng', 'i18n!nls/common', 'blockui', 'jqupload', 'iframetransport', 'require'], ($, util, dialogs, i18n, c18n, blockui, jqupload, ifram, require)->
+  require 'jqmsgbox'
+  require 'jqueryui'
+
   handlers =
     'Download': (param)->
       filename = "#{$('#productBase option:selected').text()}_#{$('#productRelease option:selected').text()}_translation"
@@ -14,7 +17,6 @@ define ['jqgrid', 'util', 'require', 'taskmng/dialogs', 'i18n!nls/taskmng', 'i18
         downloadForm.submit()
     'History…': (param)->
       alert 'History…'
-      console.log param
     'Close': (param)->
       return if param.status == '1'
       $.blockUI
@@ -24,7 +26,7 @@ define ['jqgrid', 'util', 'require', 'taskmng/dialogs', 'i18n!nls/taskmng', 'i18
           $.msgBox json.message, null, {title: c18n.error}
           return
         $("#taskGrid").trigger 'reloadGrid'
-    'Upload': (param)->
+    'Upload': ((param)->)
 
   taskGrid = $("#taskGrid").jqGrid {
   url: 'json/taskgrid.json'
@@ -32,7 +34,7 @@ define ['jqgrid', 'util', 'require', 'taskmng/dialogs', 'i18n!nls/taskmng', 'i18
   width: $(window).width() * 0.95, height: 400, shrinkToFit: false
   rownumbers: true, loadonce: false # for reload the colModel
   pager: '#taskPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
-  sortname: 'name', sortorder: 'asc', viewrecords: true, gridview: true, multiselect: true,
+  sortname: 'createTime', sortorder: 'desc', viewrecords: true, gridview: true, multiselect: true,
   cellEdit: true, cellurl: 'http://127.0.0.1:2000'
   colNames: ['Task', 'Create time', 'Last upload time', 'Status' , 'Actions']
   colModel: [

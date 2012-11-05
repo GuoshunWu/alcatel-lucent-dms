@@ -18,19 +18,25 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
 
   dialogs = null
 
+  refreshGrid = ()->
+    param = {
+    release: {id: $('#productRelease').val(), version: $("#productRelease option:selected").text()}
+    level: $("input:radio[name='viewOption'][checked]").val()
+    }
+    checkboxes = $("##{ids.languageFilterDialogId} input:checkbox[name='languages']")
+    param.languages = checkboxes.map(
+      ()-> return {id: @id, name: @value} if @checked).get()
+
+    grid.productReleaseChanged param
+
   createDialogs = ->
   #dialog
     languageFilterDialog = $("<div title='#{i18n.select.languagefilter.title}' id='#{ids.languageFilterDialogId}'>").dialog {
     autoOpen: false, position: [23, 126], height: 'auto', width: 'auto'
     show: { effect: 'slide', direction: "up" }
-    open: ->
-      param = $(@).data 'param'
-      if param then id = param.id else id = -1
-      $.getJSON 'rest/languages', {prod: id, prop: 'id,name'}, (languages)=>
-        $(@).text('').append util.generateLanguageTable languages
     buttons: [
       { text: c18n.ok, click: ()->
-        $('#productRelease').trigger "change"
+        refreshGrid()
         $(@).dialog "close"
       }
       {text: c18n.cancel, click: ()->$(@).dialog "close"}
@@ -87,11 +93,10 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
           if(json.status != 0)
             $.msgBox json.message, null, {title: c18n.error}
             return
-          if(confirm('Do you want to manage the task now?'))
-            window.location = "/taskmng.jsp?productBase=#{escape $('#productBase').val()}&product=#{escape $('#productRelease').val()}"
+          $.msgBox i18n.msgbox.createtranstask.confirm, ((keyPressed)->
+            window.location = "/taskmng.jsp?productBase=#{escape $('#productBase').val()}&product=#{escape $('#productRelease').val()}" if c18n.ok == keyPressed
+          ), {title: c18n.confirm}, [c18n.ok, c18n.cancel]
 
-          #            $('<form>').attr(method: 'post', action: '/taskmng.jsp').
-          #            append($('<input>').attr(name: 'productBase').val($('#productBase').val()))
           taskDialog.dialog "close"
       }
       {text: c18n.cancel, click: -> $(@).dialog "close"}
@@ -125,26 +130,11 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
         $('#productRelease').trigger "change"
 
     $('#productRelease').change ->
-      param = {
-      release: {id: $(@).val(), version: $(@).find("option:selected").text()}
-      level: $(":radio[name='viewOption'][checked]").val()
+      return if -1 == parseInt @value
+      $.ajax {url: "rest/languages", async: false, data: {prod: @value, prop: 'id,name'}, dataType: 'json', success: (languages)->
+        $("##{ids.languageFilterDialogId}").empty().append util.generateLanguageTable languages
       }
-      checkboxes = $("##{ids.languageFilterDialogId} input:checkbox[name='languages']")
-      param.languages = checkboxes.map(() -> {id: @id, name: @value} if @checked).get()
-      console.log checkboxes
-      if 0 == checkboxes.length
-        $.ajax {url: "rest/languages", async: false, data: {prod: param.release.id, prop: 'id,name'}, dataType: 'json', success: (languages)->
-          param.languages = languages
-        }
-
-      if !$('#productBase').val() || parseInt($('#productBase').val()) == -1
-      #        $.msgBox i18n.select.product.msg, null,title: i18n.select.product.msgtitle
-        return false
-      $(languageFilterDialog).data 'param', param.release
-
-      if !param.release.id || parseInt(param.release.id) == -1
-        return false
-      grid.productReleaseChanged param
+      refreshGrid()
 
   createButtons = (taskDialog, languageFilterDialog) ->
   #   buttons summary panel
@@ -159,7 +149,7 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
 
     $('#languageFilter').button().click ()->languageFilterDialog.dialog "open"
     #    for view level
-    $(':radio[name=viewOption]').change -> $('#productRelease').trigger "change"
+    $(':radio[name=viewOption]').change ->refreshGrid()
 
 
   #  private method

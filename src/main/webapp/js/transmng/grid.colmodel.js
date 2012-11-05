@@ -38,7 +38,7 @@
       addTaskLanguage: function(language, url, postData) {
         var colModels, cols, level;
         cols = ['T', 'N', 'I'];
-        level = $(":radio[name='viewOption'][checked]").val();
+        level = $("input:radio[name='viewOption'][checked]").val();
         colModels = $(cols).map(function(index) {
           var model;
           model = {

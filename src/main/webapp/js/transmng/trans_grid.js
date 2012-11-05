@@ -115,7 +115,7 @@
       editurl: "",
       datatype: 'json',
       width: $(window).width() * 0.95,
-      height: 350,
+      height: 330,
       shrinkToFit: false,
       rownumbers: true,
       loadonce: false,
