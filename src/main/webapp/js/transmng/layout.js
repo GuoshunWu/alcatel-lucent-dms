@@ -212,22 +212,38 @@
         });
       });
       return $('#productRelease').change(function() {
-        var param;
+        var checkboxes, param;
         param = {
           release: {
             id: $(this).val(),
             version: $(this).find("option:selected").text()
           },
-          languages: ($(":checkbox[name='languages']", $("#" + ids.languageFilterDialogId)).map(function() {
-            if (this.checked) {
-              return {
-                id: this.id,
-                name: this.value
-              };
-            }
-          })).get(),
           level: $(":radio[name='viewOption'][checked]").val()
         };
+        checkboxes = $("#" + ids.languageFilterDialogId + " input:checkbox[name='languages']");
+        param.languages = checkboxes.map(function() {
+          if (this.checked) {
+            return {
+              id: this.id,
+              name: this.value
+            };
+          }
+        }).get();
+        console.log(checkboxes);
+        if (0 === checkboxes.length) {
+          $.ajax({
+            url: "rest/languages",
+            async: false,
+            data: {
+              prod: param.release.id,
+              prop: 'id,name'
+            },
+            dataType: 'json',
+            success: function(languages) {
+              return param.languages = languages;
+            }
+          });
+        }
         if (!$('#productBase').val() || parseInt($('#productBase').val()) === -1) {
           return false;
         }

@@ -28,13 +28,19 @@ define ['jqgrid'], ($)->
 
   addTaskLanguage: (language, url, postData)->
     cols = ['T', 'N', 'I']
+    level = $(":radio[name='viewOption'][checked]").val()
     colModels = $(cols).map(
       (index)->
-        {name: "#{language.name}.#{@}",
+        model={
+        name: "#{language.name}.#{@}",
         sortable: false, index: "s(#{language.id})[#{index}]",
         width: 40, align: 'right',
-        formatter: 'showlink', formatoptions:{baseLinkUrl:'#', addParam: "&languageId=#{language.id}&languaeName=#{language.name}"}
-        search: false, editable: false, }
+        search: false, editable: false,
+        }
+        if level != 'application'
+          model.formatter =  'showlink'
+          model.formatoptions={baseLinkUrl: '#', addParam: "&languageId=#{language.id}&languaeName=#{language.name}"}
+        model
     ).get()
     @getGridParam('groupHeaders').push {startColumnName: "#{language.name}.T", numberOfColumns: cols.length, titleText: "<bold>#{language.name}</bold>"}
     @addColumns cols, colModels, url, postData

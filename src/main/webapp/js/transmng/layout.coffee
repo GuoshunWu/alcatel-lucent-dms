@@ -127,9 +127,16 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
     $('#productRelease').change ->
       param = {
       release: {id: $(@).val(), version: $(@).find("option:selected").text()}
-      languages: ($(":checkbox[name='languages']", $("#" + ids.languageFilterDialogId)).map () -> {id: @id, name: @value} if @checked).get()
       level: $(":radio[name='viewOption'][checked]").val()
       }
+      checkboxes = $("##{ids.languageFilterDialogId} input:checkbox[name='languages']")
+      param.languages = checkboxes.map(() -> {id: @id, name: @value} if @checked).get()
+      console.log checkboxes
+      if 0 == checkboxes.length
+        $.ajax {url: "rest/languages", async: false, data: {prod: param.release.id, prop: 'id,name'}, dataType: 'json', success: (languages)->
+          param.languages = languages
+        }
+
       if !$('#productBase').val() || parseInt($('#productBase').val()) == -1
       #        $.msgBox i18n.select.product.msg, null,title: i18n.select.product.msgtitle
         return false
