@@ -314,7 +314,7 @@ public class Dictionary extends BaseEntity {
 		if (dictLanguages != null) {
 			for (DictionaryLanguage dl : dictLanguages) {
 				if (dl.getLanguage() == null) {
-					previewErrors.add(new BusinessException(BusinessException.UNKNOWN_LANG_CODE, dl.getLanguageCode()));
+					previewErrors.add(new BusinessException(BusinessException.UNKNOWN_LANG_CODE, 0, dl.getLanguageCode()));
 				}
 				if (dl.getCharset() == null) {
 					previewErrors.add(new BusinessException(BusinessException.CHARSET_NOT_DEFINED, dl.getLanguageCode()));
@@ -433,6 +433,27 @@ public class Dictionary extends BaseEntity {
 
 	public void setAnnotation4(String annotation4) {
 		this.annotation4 = annotation4;
+	}
+
+	/**
+	 * Update language of a specific language code
+	 * @param languageCode language code
+	 * @param retrieve language
+	 */
+	public void updateLanguage(String languageCode, Language language) {
+		DictionaryLanguage dl = this.getDictLanguage(languageCode);
+		if (dl != null) {
+			dl.setLanguage(language);
+		}
+		if (labels != null) {
+			for (Label label : labels) {
+				LabelTranslation lt = label.getOrigTranslation(languageCode);
+				if (lt != null) {
+					lt.setLanguage(language);
+				}
+			}
+		}
+		
 	}
 
 }

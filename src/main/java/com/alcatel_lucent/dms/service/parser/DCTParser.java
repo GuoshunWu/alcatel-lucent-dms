@@ -38,13 +38,18 @@ public class DCTParser extends DictionaryParser {
     @Autowired
     private DictionaryProp dictProp;
     
-    private BusinessException exceptions = new BusinessException(BusinessException.NESTED_ERROR);
-    private boolean isFirstLevel = true;
-    
 	@Override
 	public ArrayList<Dictionary> parse(String rootDir, File file, Collection<File> acceptedFiles) throws BusinessException {
-		boolean entry = isFirstLevel; 
-		isFirstLevel = false;
+		BusinessException exceptions = new BusinessException(BusinessException.NESTED_ERROR);
+		ArrayList<Dictionary> result = parse(rootDir, file, acceptedFiles, exceptions);
+		if (exceptions.hasNestedException()) {
+			throw exceptions;
+		} else {
+			return result;
+		}
+	}
+	
+	public ArrayList<Dictionary> parse(String rootDir, File file, Collection<File> acceptedFiles, BusinessException exceptions) throws BusinessException {
         ArrayList<Dictionary> deliveredDicts = new ArrayList<Dictionary>();
         if (!file.exists()) return deliveredDicts;
         if (file.isDirectory()) {
@@ -56,10 +61,7 @@ public class DCTParser extends DictionaryParser {
                 }
             });
             for (File dctFile : dctFileOrDirs) {
-                deliveredDicts.addAll(parse(rootDir, dctFile, acceptedFiles));
-            }
-            if (entry && exceptions.hasNestedException()) {
-            	throw exceptions;
+                deliveredDicts.addAll(parse(rootDir, dctFile, acceptedFiles, exceptions));
             }
             return deliveredDicts;
         } else if (!Util.isDCTFile(file)) {
@@ -90,9 +92,6 @@ public class DCTParser extends DictionaryParser {
     		exceptions.addNestedException(e);
     	}
 		acceptedFiles.add(file);
-        if (entry && exceptions.hasNestedException()) {
-        	throw exceptions;
-        }
         return deliveredDicts;
 	}
 

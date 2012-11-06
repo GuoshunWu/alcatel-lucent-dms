@@ -118,22 +118,6 @@ public interface DictionaryService {
     void deleteDictionary(Collection<Long> idList);
     
     /**
-     * Calculate translation summary in dictionary level
-     * @param prodId product id
-     * @return composite map with dictionary id as 1st-level key and language id as 2nd-level key
-     * 			value is {num_of_translated_labels, num_of_not_translated_labels, num_of_in_progress_labels }
-     */
-    Map<Long, Map<Long, int[]>> getDictTranslationSummary(Long prodId);
-
-    /**
-     * Calculate translation summary in application level
-     * @param prodId product id
-     * @return composite map with application id as 1st-level key and language id as 2nd-level key
-     * 			value is {num_of_translated_labels, num_of_not_translated_labels, num_of_in_progress_labels }
-     */
-    Map<Long, Map<Long, int[]>> getAppTranslationSummary(Long prodId);
-
-    /**
      * Count total number of labels in an application
      * @param appId application id
      * @return total number of labels

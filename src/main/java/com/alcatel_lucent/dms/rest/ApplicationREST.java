@@ -2,8 +2,8 @@ package com.alcatel_lucent.dms.rest;
 
 import com.alcatel_lucent.dms.model.Application;
 import com.alcatel_lucent.dms.model.ApplicationBase;
-import com.alcatel_lucent.dms.model.Dictionary;
-import com.alcatel_lucent.dms.service.DictionaryService;
+import com.alcatel_lucent.dms.service.TranslationService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -45,7 +45,7 @@ import java.util.Map;
 public class ApplicationREST extends BaseREST {
 
     @Autowired
-    private DictionaryService dictionaryService;
+    private TranslationService translationService;
     
 	@Override
     @SuppressWarnings("rawtypes")
@@ -85,7 +85,7 @@ public class ApplicationREST extends BaseREST {
 		// additional properties
     	String prop = requestMap.get("prop");
 		if (prop.indexOf(",s(") != -1) {	// has summary
-			Map<Long, Map<Long, int[]>> summary = dictionaryService.getAppTranslationSummary(prodId);
+			Map<Long, Map<Long, int[]>> summary = translationService.getAppTranslationSummary(prodId);
 			Collection<Long> allLanguageId = dao.retrieve("select id from Language");
 			for(Application app : resultSet) {
 				Map<Long, int[]> appSummary = summary.get(app.getId());

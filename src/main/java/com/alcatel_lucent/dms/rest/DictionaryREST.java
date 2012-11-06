@@ -11,8 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.alcatel_lucent.dms.model.Application;
 import com.alcatel_lucent.dms.model.Dictionary;
-import com.alcatel_lucent.dms.service.DictionaryService;
-import com.alcatel_lucent.dms.service.LanguageService;
+import com.alcatel_lucent.dms.service.TranslationService;
 
 /**
  * Dictionary REST service.
@@ -50,7 +49,7 @@ import com.alcatel_lucent.dms.service.LanguageService;
 public class DictionaryREST extends BaseREST {
 
     @Autowired
-    private DictionaryService dictionaryService;
+    private TranslationService translationService;
     
 	@Override
     @SuppressWarnings("rawtypes")
@@ -127,7 +126,7 @@ public class DictionaryREST extends BaseREST {
 		// additional properties
     	String prop = requestMap.get("prop");
 		if (prop.indexOf(",s(") != -1) {	// has summary
-			Map<Long, Map<Long, int[]>> summary = dictionaryService.getDictTranslationSummary(prodId);
+			Map<Long, Map<Long, int[]>> summary = translationService.getDictTranslationSummary(prodId);
 			Collection<Long> allLanguageId = dao.retrieve("select id from Language");
 			for(Dictionary dict : dictionaries) {
 				Map<Long, int[]> dictSummary = summary.get(dict.getId());

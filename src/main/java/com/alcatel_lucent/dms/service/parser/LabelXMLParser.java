@@ -42,9 +42,6 @@ public class LabelXMLParser extends DictionaryParser {
 	@Autowired
 	private LanguageService languageService;
 	
-    private BusinessException exceptions = new BusinessException(BusinessException.NESTED_ERROR);
-    private boolean isFirstLevel = true;
-
     protected String getRootName() {
 		return "LABELS";
 	}
@@ -67,8 +64,16 @@ public class LabelXMLParser extends DictionaryParser {
 
 	@Override
 	public ArrayList<Dictionary> parse(String rootDir, File file, Collection<File> acceptedFiles) throws BusinessException {
-        boolean entry = isFirstLevel;
-        isFirstLevel = false;
+		BusinessException exceptions = new BusinessException(BusinessException.NESTED_ERROR);
+		ArrayList<Dictionary> result = parse(rootDir, file, acceptedFiles, exceptions);
+		if (exceptions.hasNestedException()) {
+			throw exceptions;
+		} else {
+			return result;
+		}
+	}
+	
+	public ArrayList<Dictionary> parse(String rootDir, File file, Collection<File> acceptedFiles, BusinessException exceptions) throws BusinessException {
 		ArrayList<Dictionary> deliveredDicts = new ArrayList<Dictionary>();
         if (!file.exists()) return deliveredDicts;
         rootDir = rootDir.replace("\\", "/");
@@ -83,7 +88,7 @@ public class LabelXMLParser extends DictionaryParser {
             Map<String, Collection<File>> propFiles = new HashMap<String, Collection<File>>();
             for (File subFile : fileOrDirs) {
             	if (subFile.isDirectory()) {
-            		deliveredDicts.addAll(parse(rootDir, subFile, acceptedFiles));
+            		deliveredDicts.addAll(parse(rootDir, subFile, acceptedFiles, exceptions));
             	} else {
             		String[] nameParts = splitFileName(subFile.getName());
             		if (nameParts != null) {
@@ -107,9 +112,6 @@ public class LabelXMLParser extends DictionaryParser {
             		}
             	}
             }
-        }
-        if (entry && exceptions.hasNestedException()) {
-        	throw exceptions;
         }
 		return deliveredDicts;
 	}

@@ -77,7 +77,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 		task = (Task) dao.create(task);
 		
 		log.info("Preparing translation task details...");
-		String hql = "select distinct dl.language,l.text,l.key,l.maxLength,l.description,ct " +
+		String hql = "select distinct dl.language,l.text,l.key,l.maxLength,l.description,ct,l.context,l.sortNo " +
 				"from Dictionary d join d.labels l join d.dictLanguages dl " +
 				"left join l.origTranslations lt " +
 				"left join l.text.translations ct " +
@@ -155,6 +155,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 
 	@Override
 	public void generateTaskFiles(String targetDir, Long taskId) {
+		log.info("Generate task files to " + targetDir + ", id=" + taskId);
 		Task task = (Task) dao.retrieve(Task.class, taskId);
 		ArrayList<TaskDetail> currentDetails = new ArrayList<TaskDetail>();
 		String currentLanguage = null;

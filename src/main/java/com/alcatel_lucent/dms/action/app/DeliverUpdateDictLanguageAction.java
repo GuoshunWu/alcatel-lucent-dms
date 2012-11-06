@@ -31,7 +31,8 @@ public class DeliverUpdateDictLanguageAction extends JSONAction {
 				for (DictionaryLanguage dl : dictionary.getDictLanguages()) {
 					if (dl.getId().equals(id)) {
 						if (languageId != null) {
-				        	dl.setLanguage((Language) daoService.retrieve(Language.class, languageId));
+//				        	dl.setLanguage((Language) daoService.retrieve(Language.class, languageId));
+				        	dictionary.updateLanguage(dl.getLanguageCode(), (Language) daoService.retrieve(Language.class, languageId));
 				    	}
 				    	if (charsetId != null) {
 				        	dl.setCharset((Charset) daoService.retrieve(Charset.class, charsetId));
