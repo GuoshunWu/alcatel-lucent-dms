@@ -27,7 +27,6 @@ require.config({
         taskmng:'../taskmng',
         login:'../login',
 
-        domReady:'../domReady',
         nls:'../nls',
 //      for coffee script
         cs:'../cs',
@@ -35,6 +34,10 @@ require.config({
     },
     shim:{
         'jqueryui':{
+            deps:['jquery'],
+            exports:'jQuery'
+        },
+        'jqupload':{
             deps:['jquery'],
             exports:'jQuery'
         },

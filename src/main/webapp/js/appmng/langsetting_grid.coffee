@@ -11,7 +11,7 @@ define (require)->
   sortname: 'language.name'
   sortorder: 'asc'
   viewrecords: true
-  gridview: true, multiselect: true, cellEdit: true, cellurl: '/app/update-dict-language'
+  gridview: true, multiselect: true, cellEdit: true, cellurl: 'app/update-dict-language'
   colNames: [ 'Code', 'Language', 'Charset']
   colModel: [
     {name: 'code', index: 'languageCode', width: 40, editable: false, align: 'left'}
@@ -24,7 +24,7 @@ define (require)->
   langSettingGrid.jqGrid 'navGrid', '#langSettingPager', {edit: false, add: true, del: true, search: false}, {}, {
   #    prmAdd
 #  zIndex:1010
-  url: '/app/add-dict-language'
+  url: 'app/add-dict-language'
   onclickSubmit: (params, posdata)->{dicts: $('#languageSettingGrid').getGridParam('postData').dict}
   onClose: ->$('#languageSettingGrid').setColProp 'code', editable: false
   beforeInitData: ->$('#languageSettingGrid').setColProp 'code', editable: true
@@ -33,14 +33,14 @@ define (require)->
     [jsonfromServer.status ==0 ,jsonfromServer.message,-1]
   }, {
   #    prmDel
-  url: '/app/remove-dict-language'
+  url: 'app/remove-dict-language'
   }
 
   #    query all the languages
-  $.getJSON '/rest/languages', {prop: 'id,name'}, (languages)->
+  $.getJSON 'rest/languages', {prop: 'id,name'}, (languages)->
     langSettingGrid.setColProp 'languageId', editoptions: {value: ($(languages).map ()->"#{@id}:#{@name}").get().join(';')}
   #    query all the charsets
-  $.getJSON '/rest/charsets', {prop: 'id,name'}, (charsets)->
+  $.getJSON 'rest/charsets', {prop: 'id,name'}, (charsets)->
     langSettingGrid.setColProp 'charsetId', editoptions: {value: ($(charsets).map ()->"#{@id}:#{@name}").get().join(';')}
 
 

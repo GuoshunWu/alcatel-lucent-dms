@@ -10,7 +10,7 @@
     require('jqmsgbox');
     c18n = require('i18n!nls/common');
     URL = {
-      get_product_by_base_id: '/rest/products/version'
+      get_product_by_base_id: 'rest/products/version'
     };
     $("#newVersion").button({
       text: false,

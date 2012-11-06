@@ -18,14 +18,24 @@
 
     <link rel="stylesheet" type="text/css" href="css/transmanagement.css">
     <%@include file="common/env.jsp" %>
-    <script type="text/javascript" data-main="js/transmng" src="js/require.js"></script>
+    <script type="text/javascript" src="js/lib/require.js"></script>
+    <script type="text/javascript">
+        //Load common code that includes config, then load the app
+        //logic for this page. Do the require calls here instead of
+        //a separate file so after a build there are only 2 HTTP
+        //requests instead of three.
+
+        require(['./js/config'], function (config) {
+            require(['transmng/layout']);
+        }, function (err) {
+            console.log("load module err: " + err);
+        });
+    </script>
+
 
 </head>
 <body>
 
-<!--[if IE 5]><div id="ie5" class="ie"><![endif]-->
-<!--[if IE 6]><div id="ie6" class="ie"><![endif]-->
-<!--[if IE 7]><div id="ie7" class="ie"><![endif]-->
 
 <%@include file="common/maskdiv.jsp" %>
 
@@ -51,11 +61,10 @@
     <div id="ui_center" class="ui-layout-center">
         <%@include file="transmanagement/summarypanel.jsp" %>
     </div>
-    <%--<div class="ui-layout-west"></div>--%>
-    <%--<div class="ui-layout-south"> South</div>--%>
+
     <%@include file="transmanagement/dialogs.jsp" %>
 </div>
-<!--[if lte IE 7]></div><![endif]-->
+
 
 </body>
 </html>

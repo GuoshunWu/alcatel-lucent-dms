@@ -216,7 +216,7 @@
           prop: 'languageCode,language.name,charset.name'
         };
         return $('#languageSettingGrid').setGridParam({
-          url: '/rest/dictLanguages',
+          url: 'rest/dictLanguages',
           postData: postData
         }).trigger("reloadGrid");
       }
@@ -244,7 +244,7 @@
           prop: "key,reference,maxLength,context.name,description"
         };
         return $('#stringSettingsGrid').setGridParam({
-          url: '/rest/labels',
+          url: 'rest/labels',
           postData: postData
         }).trigger("reloadGrid");
       }
@@ -305,7 +305,7 @@
           prop: 'languageReferenceCode,base.name,version,base.format,base.encoding,labelNum,errorCount,warningCount'
         };
         return $('#dictListPreviewGrid').setGridParam({
-          url: '/rest/delivery/dict',
+          url: 'rest/delivery/dict',
           postData: postData
         }).trigger('reloadGrid');
       }
@@ -334,7 +334,7 @@
           prop: "key,reference,maxLength,context.name,description"
         };
         return $('#dictPreviewStringSettingsGrid').setGridParam({
-          url: '/rest/delivery/labels',
+          url: 'rest/delivery/labels',
           postData: postData
         }).trigger("reloadGrid");
       }
@@ -360,7 +360,7 @@
           prop: 'languageCode,language.name,charset.name'
         };
         return $('#previewLanguageSettingGrid').setGridParam({
-          url: '/rest/delivery/dictLanguages',
+          url: 'rest/delivery/dictLanguages',
           postData: postData
         }).trigger("reloadGrid");
       }
