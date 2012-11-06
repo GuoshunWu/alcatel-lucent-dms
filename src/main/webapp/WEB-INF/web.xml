@@ -116,7 +116,7 @@
     </servlet-mapping>
 
     <welcome-file-list>
-        <welcome-file>appmng.jsp</welcome-file>
+        <welcome-file>login.jsp</welcome-file>
         <welcome-file>index.html</welcome-file>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>

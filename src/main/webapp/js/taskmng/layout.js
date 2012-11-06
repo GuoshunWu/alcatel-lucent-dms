@@ -32,10 +32,9 @@
         base: $(this).val(),
         prop: 'id,version'
       }, function(json) {
-        $('#productRelease').append(new Option(c18n.select.release.tip, -1)).append($(json).map(function() {
+        return $('#productRelease').append(new Option(c18n.select.release.tip, -1)).append($(json).map(function() {
           return $(new Option(this.version, this.id)).attr('selected', info.product && this.id === parseInt(info.product))[0];
         }));
-        return $('#productRelease').trigger("change");
       });
     });
     $('#productRelease').change(function() {
@@ -46,9 +45,6 @@
           version: $(this).find("option:selected").text()
         }
       };
-      if (!$('#productBase').val() || parseInt($('#productBase').val()) === -1) {
-        return false;
-      }
       if (!param.release.id || parseInt(param.release.id) === -1) {
         return false;
       }

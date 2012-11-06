@@ -1,4 +1,15 @@
-define ['jqgrid','jqmsgbox', 'util', 'taskmng/dialogs', 'i18n!nls/taskmng', 'i18n!nls/common', 'blockui', 'jqupload', 'iframetransport', 'require'], ($,jqmsgbox,util, dialogs, i18n, c18n, blockui, jqupload, ifram, require)->
+#define ['jqgrid','jqmsgbox','taskmng/dialogs', 'i18n!nls/taskmng', 'i18n!nls/common', 'blockui', 'require'], ($,jqmsgbox,dialogs, i18n, c18n, blockui, require)->
+define (require)->
+  $ = require 'jqgrid'
+  util = require 'util'
+  dialogs = require 'taskmng/dialogs'
+  c18n = require 'i18n!nls/common'
+  i18n = require 'i18n!nls/taskmng'
+
+  require 'blockui'
+  require 'jqmsgbox'
+  require 'jqupload'
+  require  'iframetransport'
 
   handlers =
     'Download': (param)->
@@ -26,9 +37,18 @@ define ['jqgrid','jqmsgbox', 'util', 'taskmng/dialogs', 'i18n!nls/taskmng', 'i18
         $("#taskGrid").trigger 'reloadGrid'
     'Upload': ((param)->)
 
+
+
+  productId = window.location.search.split('?')[1].split('&')[1].split('=')[1] if window.location.search
+
+  url = if productId then '/rest/tasks'else 'json/taskgrid.json'
+  prop = "name,createTime,lastUpdateTime,status"
+#  console.log "Task grid url: #{url}."
+
   taskGrid = $("#taskGrid").jqGrid {
-  url: 'json/taskgrid.json'
-  mtype: 'POST', postData: {}, editurl: "", datatype: 'json'
+  url: url
+  mtype: 'POST', postData: {prod: productId, format: 'grid', prop: prop},
+  editurl: "", datatype: 'json'
   width: $(window).width() * 0.95, height: 400, shrinkToFit: false
   rownumbers: true, loadonce: false # for reload the colModel
   pager: '#taskPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]

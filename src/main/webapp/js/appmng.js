@@ -6,6 +6,6 @@
  * To change this template use File | Settings | File Templates.
  */
 
-require(['../config'], function (c) {
+require(['config'], function (c) {
     require(['appmng/navigatetree']);
 });

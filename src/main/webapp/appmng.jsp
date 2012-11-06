@@ -18,7 +18,7 @@
 
     <link rel="stylesheet" type="text/css" href="css/appmanagement.css"/>
     <%@include file="common/env.jsp"%>
-    <script type="text/javascript" data-main="js/appmng/appmng" src="js/require.js"></script>
+    <script type="text/javascript" data-main="js/appmng" src="js/require.js"></script>
 
 </head>
 <body>
