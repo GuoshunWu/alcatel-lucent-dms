@@ -22,16 +22,14 @@ define ['jqlayout', 'taskmng/task_grid', 'i18n!nls/common', 'taskmng/dialogs','r
       $('#productRelease').append(new Option c18n.select.release.tip, -1).append(
         $(json).map ()->$(new Option(@version, @id)).attr('selected', info.product and @id == parseInt info.product)[0]
       )
-      $('#productRelease').trigger "change"
+
+#      $('#productRelease').change()
 
   $('#productRelease').change ->
   #    todo: refresh grid according to the product release
     param = {
     release: {id: $(@).val(), version: $(@).find("option:selected").text()}
     }
-    if !$('#productBase').val() || parseInt($('#productBase').val()) == -1
-    #        $.msgBox i18n.select.product.msg, null,title: i18n.select.product.msgtitle
-      return false
 
     if !param.release.id || parseInt(param.release.id) == -1
     #        $.msgBox i18n.select.release.msg, null, title: i18n.select.release.msgtitle

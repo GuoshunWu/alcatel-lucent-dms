@@ -460,6 +460,11 @@
 					<groupId>org.apache.tomcat.maven</groupId>
 					<artifactId>tomcat7-maven-plugin</artifactId>
 					<version>2.0-beta-1</version>
+                    <configuration>
+                        <url>http://127.0.0.1:8080/manager/html</url>
+                        <path>dms</path>
+                        <server>tomcat</server>
+                    </configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>

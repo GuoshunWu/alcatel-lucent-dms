@@ -18,7 +18,7 @@
 
     <link rel="stylesheet" type="text/css" href="css/transmanagement.css">
     <%@include file="common/env.jsp" %>
-    <script type="text/javascript" data-main="js/transmng/transmng" src="js/require.js"></script>
+    <script type="text/javascript" data-main="js/transmng" src="js/require.js"></script>
 
 </head>
 <body>

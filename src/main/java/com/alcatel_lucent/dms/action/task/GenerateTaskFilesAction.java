@@ -67,8 +67,15 @@ public class GenerateTaskFilesAction extends JSONAction {
         String downTmpPath = tmpDownload + File.separator + "USER_" + dFmt.format(new Date());
         taskService.generateTaskFiles(downTmpPath, id);
 
+
+        File generatedTaskFiles=new File(downTmpPath);
+        if (!generatedTaskFiles.exists()){
+            setStatus(-1);
+            setMessage(getText("message.genfail"));
+            return SUCCESS;
+        }
         File zipFile = new File(tmpDownload, filename);
-        Util.createZip(new File(downTmpPath).listFiles(), zipFile);
+        Util.createZip(generatedTaskFiles.listFiles(), zipFile);
 
         setFileLoc(zipFile.getAbsolutePath());
 

@@ -25,6 +25,7 @@ require.config({
         appmng:'../appmng',
         transmng:'../transmng',
         taskmng:'../taskmng',
+        login:'../login',
 
         domReady:'../domReady',
         nls:'../nls',

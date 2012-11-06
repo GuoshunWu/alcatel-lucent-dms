@@ -74,6 +74,13 @@ public class GenerateDictAction extends JSONAction {
         String downTmpPath = tmpDownload + File.separator + "USER_" + dFmt.format(new Date());
         dictionaryService.generateDictFiles(downTmpPath, toIdList(dicts));
 
+        File generatedTaskFiles=new File(downTmpPath);
+        if (!generatedTaskFiles.exists()){
+            setStatus(-1);
+            setMessage(getText("message.genfail"));
+            return SUCCESS;
+        }
+
         File zipFile = new File(tmpDownload, filename);
         Util.createZip(new File(downTmpPath).listFiles(), zipFile);
 
