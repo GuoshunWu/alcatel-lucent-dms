@@ -1,5 +1,6 @@
 package com.alcatel_lucent.dms.service;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -110,5 +111,14 @@ public class LanguageServiceImpl extends BaseServiceImpl implements LanguageServ
 		Map param = new HashMap();
 		param.put("name", name);
 		return (Language) dao.retrieveOne(hql, param);
+	}
+	
+	public Collection<Language> getLanguagesInProduct(Long productId) {
+		String hql = "select distinct obj" +
+				" from Product p join p.applications a join a.dictionaries d join d.dictLanguages dl join dl.language obj" +
+				" where p.id=:prodId order by obj.name";
+		Map param = new HashMap();
+		param.put("prodId", productId);
+		return dao.retrieve(hql, param);
 	}
 }
