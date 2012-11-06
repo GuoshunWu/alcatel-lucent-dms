@@ -1,5 +1,6 @@
 package com.alcatel_lucent.dms.service;
 
+import java.util.Collection;
 import java.util.Map;
 
 import com.alcatel_lucent.dms.model.AlcatelLanguageCode;
@@ -30,4 +31,11 @@ public interface LanguageService {
     Language getLanguage(String languageCode);
 
 	Language findLanguageByName(String name);
+	
+	/**
+	 * Get all languages included in a product.
+	 * @param productId product id
+	 * @return languages
+	 */
+	Collection<Language> getLanguagesInProduct(Long productId);
 }
