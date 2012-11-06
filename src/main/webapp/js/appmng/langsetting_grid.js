@@ -20,7 +20,7 @@
       gridview: true,
       multiselect: true,
       cellEdit: true,
-      cellurl: '/app/update-dict-language',
+      cellurl: 'app/update-dict-language',
       colNames: ['Code', 'Language', 'Charset'],
       colModel: [
         {
@@ -53,7 +53,7 @@
       del: true,
       search: false
     }, {}, {
-      url: '/app/add-dict-language',
+      url: 'app/add-dict-language',
       onclickSubmit: function(params, posdata) {
         return {
           dicts: $('#languageSettingGrid').getGridParam('postData').dict
@@ -75,9 +75,9 @@
         return [jsonfromServer.status === 0, jsonfromServer.message, -1];
       }
     }, {
-      url: '/app/remove-dict-language'
+      url: 'app/remove-dict-language'
     });
-    $.getJSON('/rest/languages', {
+    $.getJSON('rest/languages', {
       prop: 'id,name'
     }, function(languages) {
       return langSettingGrid.setColProp('languageId', {
@@ -88,7 +88,7 @@
         }
       });
     });
-    return $.getJSON('/rest/charsets', {
+    return $.getJSON('rest/charsets', {
       prop: 'id,name'
     }, function(charsets) {
       return langSettingGrid.setColProp('charsetId', {

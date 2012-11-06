@@ -105,7 +105,7 @@
           prop: 'labelKey,maxLength,text.context.name,text.reference,newTranslation'
         });
         return detailgrid.setGridParam({
-          url: '/rest/task/details',
+          url: 'rest/task/details',
           postData: postData
         }).trigger('reloadGrid');
       }

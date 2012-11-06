@@ -19,7 +19,7 @@
       gridview: true,
       multiselect: true,
       cellEdit: true,
-      cellurl: '/app/update-label',
+      cellurl: 'app/update-label',
       colNames: ['Label', 'Reference Language', 'Max Length', 'Context', 'Description'],
       colModel: [
         {

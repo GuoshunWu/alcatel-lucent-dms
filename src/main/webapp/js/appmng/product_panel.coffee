@@ -7,7 +7,7 @@ define (require)->
 
   URL = {
   # get product by it id url, append product id to this url
-  get_product_by_base_id: '/rest/products/version'
+  get_product_by_base_id: 'rest/products/version'
   }
 
 

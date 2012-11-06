@@ -147,7 +147,7 @@ define (require)->
   productVersionChanged: (product)->
     taskGrid = $("#taskGrid")
     prop = "name,createTime,lastUpdateTime,status"
-    taskGrid.setGridParam(url: '/rest/tasks', postData: {prod: product.release.id, format: 'grid', prop: prop}).trigger "reloadGrid"
+    taskGrid.setGridParam(url: 'rest/tasks', postData: {prod: product.release.id, format: 'grid', prop: prop}).trigger "reloadGrid"
 
 
 

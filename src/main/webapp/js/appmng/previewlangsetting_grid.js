@@ -18,7 +18,7 @@
       viewrecords: true,
       gridview: true,
       cellEdit: true,
-      cellurl: '/app/deliver-update-dict-language',
+      cellurl: 'app/deliver-update-dict-language',
       colNames: ['Code', 'Language', 'Charset'],
       colModel: [
         {
@@ -67,7 +67,7 @@
       del: false,
       search: false
     }, {}, {});
-    $.getJSON('/rest/languages', {
+    $.getJSON('rest/languages', {
       prop: 'id,name'
     }, function(languages) {
       return langSettingGrid.setColProp('languageId', {
@@ -78,7 +78,7 @@
         }
       });
     });
-    return $.getJSON('/rest/charsets', {
+    return $.getJSON('rest/charsets', {
       prop: 'id,name'
     }, function(charsets) {
       return langSettingGrid.setColProp('charsetId', {
