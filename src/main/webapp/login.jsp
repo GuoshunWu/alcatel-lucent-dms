@@ -11,7 +11,20 @@
 
     <link rel="stylesheet" type="text/css" href="css/login.css"/>
     <%@include file="common/env.jsp"%>
-    <script type="text/javascript" data-main="js/login" src="js/require.js"></script>
+    <script type="text/javascript" src="js/lib/require.js"></script>
+    <script type="text/javascript">
+        //Load common code that includes config, then load the app
+        //logic for this page. Do the require calls here instead of
+        //a separate file so after a build there are only 2 HTTP
+        //requests instead of three.
+
+        require(['./js/config'], function (config) {
+            require(['login/main']);
+        }, function (err) {
+            console.log("load module err: " + err);
+        });
+    </script>
+
 
 </head>
 <body>

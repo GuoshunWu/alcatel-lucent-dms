@@ -48,7 +48,7 @@
       sortorder: 'asc',
       viewrecords: true,
       cellEdit: true,
-      cellurl: '/app/deliver-update-dict',
+      cellurl: 'app/deliver-update-dict',
       gridview: true,
       multiselect: false,
       caption: i18n.grid.dictlistpreview.caption,
@@ -166,7 +166,7 @@
             return;
           }
           handler = grid.getGridParam('postData').handler;
-          return $.getJSON("/rest/delivery/dict/" + rowid, {
+          return $.getJSON("rest/delivery/dict/" + rowid, {
             handler: handler,
             prop: name
           }, function(json) {

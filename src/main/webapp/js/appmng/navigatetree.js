@@ -13,7 +13,7 @@
       navigateTree: 'appTree'
     };
     URL = {
-      navigateTree: '/rest/products?format=tree&nocache=' + new Date().getTime(),
+      navigateTree: 'rest/products?format=tree&nocache=' + new Date().getTime(),
       product: {
         create: '/app/create-product',
         del: '/app/remove-product-base'

@@ -17,19 +17,23 @@
     <meta http-equiv="Pragma" content="no-cache"/>
 
     <link rel="stylesheet" type="text/css" href="css/appmanagement.css"/>
-    <%@include file="common/env.jsp"%>
-    <script type="text/javascript" data-main="js/appmng" src="js/require.js"></script>
+    <%@include file="common/env.jsp" %>
+    <script type="text/javascript" src="js/lib/require.js"></script>
+    <script type="text/javascript">
+        //Load common code that includes config, then load the app
+        //logic for this page. Do the require calls here instead of
+        //a separate file so after a build there are only 2 HTTP
+        //requests instead of three.
+
+        require(['./js/config'],function(config){
+            require(['appmng/navigatetree']);
+        });
+    </script>
 
 </head>
 <body>
 
-<!--[if IE 5]>
-<div id="ie5" class="ie"><![endif]-->
-<!--[if IE 6]>
-<div id="ie6" class="ie"><![endif]-->
-<!--[if IE 7]>
-<div id="ie7" class="ie"><![endif]-->
-<%@include file="common/maskdiv.jsp"%>
+<%@include file="common/maskdiv.jsp" %>
 <div id="optional-container">
     <div class="ui-layout-north" style="text-align: left; bottom:0px">
         <table width="99%" border="0">
@@ -43,7 +47,7 @@
                     <div id="switcher"></div>
                 </td>
                 <td align="right">
-                    <%@include file="common/pagenavigator.jsp"%>
+                    <%@include file="common/pagenavigator.jsp" %>
                 </td>
             </tr>
         </table>
@@ -62,11 +66,7 @@
         <p>&nbsp;</p>
     </div>
 
-    <%--<div class="ui-layout-south"> South</div>--%>
-    <%-- All the dialogs here --%>
     <%@include file="appmanagement/dialogs.jsp" %>
 </div>
-<!--[if lte IE 7]></div><![endif]-->
-
 </body>
 </html>

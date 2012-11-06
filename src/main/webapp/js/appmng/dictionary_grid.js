@@ -15,7 +15,7 @@
     };
     deleteOptions = {
       reloadAfterSubmit: false,
-      url: '/app/remove-dict',
+      url: 'app/remove-dict',
       beforeShowForm: function(form) {
         var permanent;
         permanent = $('#permanentDeleteSignId', form);
@@ -71,7 +71,7 @@
       sortorder: 'asc',
       viewrecords: true,
       cellEdit: true,
-      cellurl: '/app/update-dict',
+      cellurl: 'app/update-dict',
       gridview: true,
       multiselect: true,
       caption: 'Dictionary for Application',
@@ -118,7 +118,7 @@
           editoptions: {
             value: 'ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE'
           },
-          align: 'center'
+          align: 'left'
         }, {
           name: 'labelNum',
           index: 'labelNum',
@@ -156,7 +156,7 @@
         grid = this;
         if (name === 'version') {
           return $.ajax({
-            url: "/rest/dict?slibing=" + id + "&prop=id,version",
+            url: "rest/dict?slibing=" + id + "&prop=id,version",
             async: false,
             dataType: 'json',
             success: function(json) {
@@ -246,7 +246,7 @@
         return;
       }
       return $('#languageSettingGrid').editGridRow("new", {
-        url: '/app/add-dict-language',
+        url: 'app/add-dict-language',
         onclickSubmit: function(params, posdata) {
           return {
             dicts: dicts.join(',')

@@ -24,7 +24,7 @@ define (require, util, i18n)->
   width: 1000, minHeight: 200, height: 240
   pager: '#dictListPreviewPager', rowNum: 100
   sortname: 'base.name', sortorder: 'asc'
-  viewrecords: true, cellEdit: true, cellurl: '/app/deliver-update-dict'
+  viewrecords: true, cellEdit: true, cellurl: 'app/deliver-update-dict'
   gridview: true, multiselect: false
   caption: i18n.grid.dictlistpreview.caption
   colNames: ['LangRefCode', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels', 'Error', 'Warning', 'Action']
@@ -90,7 +90,7 @@ define (require, util, i18n)->
       return if parseInt(value) == 0
       handler = grid.getGridParam('postData').handler
 
-      $.getJSON "/rest/delivery/dict/#{rowid}", {handler: handler, prop: name}, (json)->
+      $.getJSON "rest/delivery/dict/#{rowid}", {handler: handler, prop: name}, (json)->
         infoDialog.dialog 'option', title: name
         infoDialog.html $('<table border=0>').append '<tr><td>' + json[name].join('<tr><td>')
         infoDialog.dialog 'open'

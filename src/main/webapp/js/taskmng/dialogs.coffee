@@ -49,7 +49,7 @@ define [ 'jqueryui', 'require', 'taskmng/taskreport_grid', 'taskmng/transdetail_
   open: ->
     param = $(@).data 'param'
     postData = $.extend param, {format: 'grid', prop: 'labelKey,maxLength,text.context.name,text.reference,newTranslation'}
-    detailgrid.setGridParam(url: '/rest/task/details', postData: postData).trigger 'reloadGrid'
+    detailgrid.setGridParam(url: 'rest/task/details', postData: postData).trigger 'reloadGrid'
   }
 
   transReport: transReport

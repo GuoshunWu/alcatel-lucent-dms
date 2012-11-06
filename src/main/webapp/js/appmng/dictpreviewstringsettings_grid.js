@@ -11,7 +11,7 @@
       height: 300,
       pager: '#dictPreviewStringSettingsPager',
       editurl: "",
-      cellurl: '/app/deliver-update-label',
+      cellurl: 'app/deliver-update-label',
       cellEdit: true,
       rowNum: 10,
       rowList: [10, 20, 30],

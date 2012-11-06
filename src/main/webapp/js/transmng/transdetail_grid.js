@@ -23,7 +23,7 @@
       gridview: true,
       multiselect: true,
       cellEdit: true,
-      cellurl: '/trans/update-status',
+      cellurl: 'trans/update-status',
       colNames: ['Label', 'Max Length', 'Context', 'Reference language', 'Translation', 'Status'],
       colModel: [
         {

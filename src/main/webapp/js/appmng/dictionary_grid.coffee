@@ -12,7 +12,7 @@ define (require, util, dialogs, i18n)->
   dic_grid: '#dictionaryGridList'
   }
   deleteOptions = {
-  reloadAfterSubmit: false, url: '/app/remove-dict'
+  reloadAfterSubmit: false, url: 'app/remove-dict'
   beforeShowForm: (form)->
     permanent = $('#permanentDeleteSignId', form)
     $("<tr><td>#{i18n.grid.permanenttext}<td><input align='left' type='checkbox' id='permanentDeleteSignId'>")
@@ -49,7 +49,7 @@ define (require, util, dialogs, i18n)->
   rowNum: 10, rowList: [10, 20, 30]
   sortname: 'base.name'
   sortorder: 'asc'
-  viewrecords: true, cellEdit: true, cellurl: '/app/update-dict'
+  viewrecords: true, cellEdit: true, cellurl: 'app/update-dict'
   gridview: true, multiselect: true
   caption: 'Dictionary for Application'
   colNames: ['LangRefCode', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels', 'Action']
@@ -61,7 +61,7 @@ define (require, util, dialogs, i18n)->
     editoptions: {value: "DCT:DCT;Dictionary conf:Dictionary conf;Text properties:Text properties;XML labels:XML labels"},
     align: 'left'}
     {name: 'encoding', index: 'base.encoding', width: 40, editable: true, edittype: 'select',
-    editoptions: {value: 'ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE'}, align: 'center'}
+    editoptions: {value: 'ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE'}, align: 'left'}
     {name: 'labelNum', index: 'labelNum', width: 20, align: 'right'}
     {name: 'action', index: 'action', width: 80, editable: false, align: 'center'}
   ]
@@ -81,7 +81,7 @@ define (require, util, dialogs, i18n)->
     grid = @
     if name == 'version'
     #        console.log "name=#{name},id=#{id},val=#{val}"
-      $.ajax {url: "/rest/dict?slibing=#{id}&prop=id,version", async: false, dataType: 'json', success: (json)->
+      $.ajax {url: "rest/dict?slibing=#{id}&prop=id,version", async: false, dataType: 'json', success: (json)->
         $("##{iRow}_version", grid).append $(json).map ()->opt = new Option(@version, @id);opt.selected = @version == val; opt
       }
   beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
@@ -131,7 +131,7 @@ define (require, util, dialogs, i18n)->
       $.msgBox c18n.selrow, null, {title: c18n.warning}
       return
     $('#languageSettingGrid').editGridRow "new", {
-    url: '/app/add-dict-language'
+    url: 'app/add-dict-language'
     onclickSubmit: (params, posdata)->{dicts: dicts.join(',')}
     beforeInitData: ->$('#languageSettingGrid').setColProp 'code', editable: true
     onClose: ->$('#languageSettingGrid').setColProp 'code', editable: false
