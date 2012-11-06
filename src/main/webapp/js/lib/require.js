@@ -1818,6 +1818,9 @@ var requirejs, require, define;
     req.load = function (context, moduleName, url) {
         var config = (context && context.config) || {},
             node;
+//        if(moduleName == 'jquery'){
+//            console.log (config);
+//        }
         if (isBrowser) {
             //In the browser so use a script tag
             node = config.xhtml ?

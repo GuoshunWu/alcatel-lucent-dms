@@ -263,7 +263,7 @@
         taskGrid = $("#taskGrid");
         prop = "name,createTime,lastUpdateTime,status";
         return taskGrid.setGridParam({
-          url: '/rest/tasks',
+          url: 'rest/tasks',
           postData: {
             prod: product.release.id,
             format: 'grid',

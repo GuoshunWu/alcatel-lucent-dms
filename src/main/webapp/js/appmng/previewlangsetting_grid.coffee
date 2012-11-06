@@ -10,7 +10,7 @@ define (require)->
   sortname: 'language.name'
   sortorder: 'asc'
   viewrecords: true
-  gridview: true, cellEdit: true, cellurl: '/app/deliver-update-dict-language'
+  gridview: true, cellEdit: true, cellurl: 'app/deliver-update-dict-language'
   colNames: [ 'Code', 'Language', 'Charset']
   colModel: [
     {name: 'code', index: 'languageCode', width: 40, editable: false, align: 'left'}
@@ -30,10 +30,10 @@ define (require)->
   langSettingGrid.jqGrid 'navGrid', '#previewLangSettingPager', {edit: false, add: false, del: false, search: false}, {}, {}
 
   #    query all the languages
-  $.getJSON '/rest/languages', {prop: 'id,name'}, (languages)->
+  $.getJSON 'rest/languages', {prop: 'id,name'}, (languages)->
     langSettingGrid.setColProp 'languageId', editoptions: {value: ($(languages).map ()->"#{@id}:#{@name}").get().join(';')}
   #    query all the charsets
-  $.getJSON '/rest/charsets', {prop: 'id,name'}, (charsets)->
+  $.getJSON 'rest/charsets', {prop: 'id,name'}, (charsets)->
     langSettingGrid.setColProp 'charsetId', editoptions: {value: ($(charsets).map ()->"#{@id}:#{@name}").get().join(';')}
 
 

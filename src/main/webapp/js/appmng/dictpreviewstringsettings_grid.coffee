@@ -3,7 +3,7 @@ define ['jqgrid', 'require'], ($, require)->
   url: '', mtype: 'post', datatype: 'json'
   width: 700, height: 300
   pager: '#dictPreviewStringSettingsPager'
-  editurl: "", cellurl: '/app/deliver-update-label', cellEdit: true
+  editurl: "", cellurl: 'app/deliver-update-label', cellEdit: true
   rowNum: 10, rowList: [10, 20, 30]
   sortname: 'name'
   sortorder: 'asc'

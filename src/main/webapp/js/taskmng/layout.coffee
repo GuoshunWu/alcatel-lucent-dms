@@ -1,6 +1,7 @@
 define ['jqlayout', 'taskmng/task_grid', 'i18n!nls/common', 'taskmng/dialogs','require'], ($, grid, c18n, dialogs,require)->
 
   $('#pageNavigator').val(window.location.pathname)
+
   $("#optional-container").layout {resizable: true, closable: true}
   info = {}
   if window.location.search

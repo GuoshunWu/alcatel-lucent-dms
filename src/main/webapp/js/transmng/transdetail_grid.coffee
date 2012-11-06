@@ -6,7 +6,7 @@ define ['jqgrid', 'util', 'require', 'i18n!nls/transmng'], ($, util, require, i1
   rownumbers: true, loadonce: false # for reload the colModel
   pager: '#transDetailsPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
   sortname: 'key', sortorder: 'asc', viewrecords: true, gridview: true, multiselect: true,
-  cellEdit: true, cellurl: '/trans/update-status'
+  cellEdit: true, cellurl: 'trans/update-status'
   colNames: ['Label', 'Max Length', 'Context', 'Reference language', 'Translation', 'Status']
   colModel: [
     {name: 'key', index: 'key', width: 100, editable: false, stype: 'select', align: 'left', frozen: true}
