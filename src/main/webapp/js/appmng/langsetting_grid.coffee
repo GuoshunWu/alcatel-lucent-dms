@@ -1,6 +1,8 @@
 define (require)->
   $ = require 'jqgrid'
 
+  lastEditedCell = null
+
   langSettingGrid = $('#languageSettingGrid').jqGrid {
   url: '', mtype: 'post', datatype: 'json'
   width: 500, height: 230
@@ -18,6 +20,7 @@ define (require)->
     {name: 'languageId', index: 'language.name', width: 50, editable: true, edittype: 'select', align: 'left'}
     {name: 'charsetId', index: 'charset.name', width: 40, editable: true, edittype: 'select', align: 'left'}
   ]
+  afterEditCell: (rowid, cellname, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
   gridComplete: ->
   #    $('#languageSettingGrid').getGridParam('postData').dict
   }
@@ -42,6 +45,8 @@ define (require)->
   #    query all the charsets
   $.getJSON 'rest/charsets', {prop: 'id,name'}, (charsets)->
     langSettingGrid.setColProp 'charsetId', editoptions: {value: ($(charsets).map ()->"#{@id}:#{@name}").get().join(';')}
+
+  saveLastEditedCell: ()->langSettingGrid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
 
 
 

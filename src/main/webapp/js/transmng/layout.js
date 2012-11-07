@@ -2,7 +2,7 @@
 (function() {
 
   define(['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng', 'transmng/trans_grid', 'transmng/transdetail_grid'], function($, require, blockui, msgbox, c18n, i18n, grid, detailgrid) {
-    var createButtons, createDialogs, createSelects, dialogs, ids, initPage, pageLayout, refreshGrid, util;
+    var createButtons, createDialogs, createSelects, dialogs, ids, initPage, pageLayout, pathArray, refreshGrid, util;
     util = require('util');
     ids = {
       languageFilterTableId: 'languageFilterTable',
@@ -11,7 +11,8 @@
         page: 'optional-container'
       }
     };
-    $('#pageNavigator').val(window.location.pathname);
+    pathArray = window.location.pathname.split('/');
+    $('#pageNavigator').val(pathArray[pathArray.length - 1]);
     pageLayout = $("#" + ids.container.page).layout({
       resizable: true,
       closable: true
@@ -172,7 +173,7 @@
       transDetailDialog = $('#translationDetailDialog').dialog({
         autoOpen: false,
         width: 'auto',
-        height: 400,
+        height: 'auto',
         create: function() {
           return $('#detailLanguageSwitcher').change(function() {
             var dict, language;
@@ -186,7 +187,18 @@
               dict: dict
             });
           });
-        }
+        },
+        close: function(event, ui) {
+          return detailgrid.saveLastEditedCell();
+        },
+        buttons: [
+          {
+            text: c18n.close,
+            click: function() {
+              return $(this).dialog('close');
+            }
+          }
+        ]
       });
       return {
         taskDialog: taskDialog,
@@ -208,7 +220,7 @@
         if (parseInt($('#productBase').val()) === -1) {
           return false;
         }
-        return $.getJSON("/rest/products/version", {
+        return $.getJSON("rest/products/version", {
           base: $(this).val(),
           prop: 'id,version'
         }, function(json) {
@@ -271,11 +283,10 @@
       name: 'layout',
       showTransDetailDialog: function(param) {
         $('#dictionaryName', dialogs.transDetailDialog).html(param.dict.name);
-        $('#detailLanguageSwitcher', dialogs.transDetailDialog).append($(param.languages).map(function(index) {
-          var opt;
-          opt = new Option(this.name, this.id);
-          opt.selected = this.name === param.language.name;
-          return opt;
+        $('#detailLanguageSwitcher', dialogs.transDetailDialog).empty().append($(param.languages).map(function(index) {
+          var isSelected;
+          isSelected = this.name === param.language.name;
+          return new Option(this.name, this.id, isSelected, isSelected);
         }));
         $('#translationDetailDialog').data('dict', param.dict);
         $('#detailLanguageSwitcher').trigger("change");

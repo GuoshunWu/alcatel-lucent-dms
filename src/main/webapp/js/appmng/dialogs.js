@@ -85,7 +85,7 @@
           text: c18n.ok,
           click: function() {
             var appBaseId, dupVersionId, url, versionName;
-            url = '/app/create-application';
+            url = 'app/create-application';
             versionName = $('#appVersionName').val();
             dupVersionId = $("#dupDictsVersion").val();
             appBaseId = (require('appmng/navigatetree')).getNodeInfo().id;
@@ -219,7 +219,18 @@
           url: 'rest/dictLanguages',
           postData: postData
         }).trigger("reloadGrid");
-      }
+      },
+      close: function(event, ui) {
+        return (require('appmng/langsetting_grid')).saveLastEditedCell();
+      },
+      buttons: [
+        {
+          text: c18n.close,
+          click: function() {
+            return $(this).dialog('close');
+          }
+        }
+      ]
     });
     stringSettings = $('#stringSettingsDialog').dialog({
       autoOpen: false,
@@ -247,7 +258,18 @@
           url: 'rest/labels',
           postData: postData
         }).trigger("reloadGrid");
-      }
+      },
+      close: function(event, ui) {
+        return (require('appmng/stringsettings_grid')).saveLastEditedCell();
+      },
+      buttons: [
+        {
+          text: c18n.close,
+          click: function() {
+            return $(this).dialog('close');
+          }
+        }
+      ]
     });
     dictListPreview = $('#dictListPreviewDialog').dialog({
       autoOpen: false,
@@ -274,7 +296,7 @@
             }
             dictListPreview.dialog('close');
             $.blockUI();
-            return $.post('/app/deliver-dict', postData, function(json) {
+            return $.post('app/deliver-dict', postData, function(json) {
               var appInfo;
               $.unblockUI();
               if (json.status !== 0) {
@@ -337,7 +359,18 @@
           url: 'rest/delivery/labels',
           postData: postData
         }).trigger("reloadGrid");
-      }
+      },
+      close: function(event, ui) {
+        return (require('appmng/dictpreviewstringsettings_grid')).saveLastEditedCell();
+      },
+      buttons: [
+        {
+          text: c18n.close,
+          click: function() {
+            return $(this).dialog('close');
+          }
+        }
+      ]
     });
     dictPreviewLangSettings = $('#dictPreviewLanguageSettingsDialog').dialog({
       autoOpen: false,
@@ -363,7 +396,18 @@
           url: 'rest/delivery/dictLanguages',
           postData: postData
         }).trigger("reloadGrid");
-      }
+      },
+      close: function(event, ui) {
+        return (require('appmng/previewlangsetting_grid')).saveLastEditedCell();
+      },
+      buttons: [
+        {
+          text: c18n.close,
+          click: function() {
+            return $(this).dialog('close');
+          }
+        }
+      ]
     });
     return {
       dictPreviewLangSettings: dictPreviewLangSettings,

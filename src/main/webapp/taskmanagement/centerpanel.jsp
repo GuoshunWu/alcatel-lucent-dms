@@ -33,7 +33,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <form id="downloadTaskFiles" action="/app/download-app-dict" method="post">
+                        <form id="downloadTaskFiles" action="app/download-app-dict" method="post">
                             <input type="hidden" id="fileLoc" name="fileLoc"/>
                         </form>
                     </td>

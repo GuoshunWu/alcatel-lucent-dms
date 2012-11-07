@@ -2,7 +2,8 @@
 (function() {
 
   define(['jqgrid', 'util', 'require', 'i18n!nls/transmng'], function($, util, require, i18n) {
-    var transDetailGrid;
+    var lastEditedCell, transDetailGrid;
+    lastEditedCell = null;
     transDetailGrid = $("#transDetailGridList").jqGrid({
       url: 'json/transdetailgrid.json',
       mtype: 'POST',
@@ -38,7 +39,7 @@
           name: 'maxlen',
           index: 'maxLength',
           width: 90,
-          editable: true,
+          editable: false,
           align: 'right',
           frozen: true,
           search: false
@@ -75,6 +76,14 @@
           formatter: 'select'
         }
       ],
+      afterEditCell: function(rowid, cellname, val, iRow, iCol) {
+        return lastEditedCell = {
+          iRow: iRow,
+          iCol: iCol,
+          name: name,
+          val: val
+        };
+      },
       beforeSubmitCell: function(rowid, cellname, value, iRow, iCol) {
         return {
           type: 'trans'
@@ -116,7 +125,7 @@
       languageChanged: function(param) {
         var prop, url;
         transDetailGrid = $("#transDetailGridList");
-        url = "/rest/labels";
+        url = "rest/labels";
         prop = "key,maxLength,context.name,reference,ct.translation,ct.status";
         return transDetailGrid.setGridParam({
           url: url,
@@ -129,6 +138,11 @@
             idprop: 'ct.id'
           }
         }).trigger("reloadGrid");
+      },
+      saveLastEditedCell: function() {
+        if (lastEditedCell) {
+          return transDetailGrid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol);
+        }
       }
     };
   });

@@ -8,6 +8,7 @@
 define({
     root:{
         ok:'OK',
+        close:'Close',
         cancel: 'Cancel',
         error:'Error',
         warning: 'Warning',

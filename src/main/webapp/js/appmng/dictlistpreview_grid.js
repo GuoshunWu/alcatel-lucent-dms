@@ -2,7 +2,7 @@
 (function() {
 
   define(function(require, util, i18n) {
-    var $, c18n, dicGrid, handlers, infoDialog;
+    var $, c18n, dicGrid, handlers, infoDialog, lastEditedCell;
     $ = require('jqgrid');
     util = require('util');
     i18n = require('i18n!nls/appmng');
@@ -34,6 +34,7 @@
         }
       }
     };
+    lastEditedCell = null;
     dicGrid = $('#dictListPreviewGrid').jqGrid({
       url: '',
       datatype: 'json',
@@ -49,6 +50,9 @@
       viewrecords: true,
       cellEdit: true,
       cellurl: 'app/deliver-update-dict',
+      ajaxCellOptions: {
+        async: false
+      },
       gridview: true,
       multiselect: false,
       caption: i18n.grid.dictlistpreview.caption,
@@ -118,6 +122,14 @@
           align: 'center'
         }
       ],
+      afterEditCell: function(rowid, cellname, val, iRow, iCol) {
+        return lastEditedCell = {
+          iRow: iRow,
+          iCol: iCol,
+          name: name,
+          val: val
+        };
+      },
       ondblClickRow: function(rowid, iRow, iCol, e) {},
       beforeProcessing: function(data, status, xhr) {
         var actIdx, actions, errorIdx, grid, k, v, warningIdx, _ref;
@@ -180,6 +192,9 @@
         $('a[id^=action_]', this).click(function() {
           var a, action, col, rowData, rowid, _ref;
           _ref = this.id.split('_'), a = _ref[0], action = _ref[1], rowid = _ref[2], col = _ref[3];
+          if (lastEditedCell) {
+            grid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol);
+          }
           rowData = grid.getRowData(rowid);
           delete rowData.action;
           rowData.id = rowid;

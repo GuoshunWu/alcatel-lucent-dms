@@ -1,4 +1,6 @@
 define ['jqgrid', 'util', 'require', 'i18n!nls/transmng'], ($, util, require, i18n)->
+  lastEditedCell = null
+
   transDetailGrid = $("#transDetailGridList").jqGrid {
   url: 'json/transdetailgrid.json'
   mtype: 'POST', postData: {}, editurl: "", datatype: 'json'
@@ -10,7 +12,7 @@ define ['jqgrid', 'util', 'require', 'i18n!nls/transmng'], ($, util, require, i1
   colNames: ['Label', 'Max Length', 'Context', 'Reference language', 'Translation', 'Status']
   colModel: [
     {name: 'key', index: 'key', width: 100, editable: false, stype: 'select', align: 'left', frozen: true}
-    {name: 'maxlen', index: 'maxLength', width: 90, editable: true, align: 'right', frozen: true, search: false}
+    {name: 'maxlen', index: 'maxLength', width: 90, editable: false, align: 'right', frozen: true, search: false}
     {name: 'context', index: 'context.name', width: 80, align: 'left', frozen: true, search: false}
     {name: 'reflang', index: 'reference', width: 150, align: 'left', frozen: true, search: false}
     {name: 'trans', index: 'ct.translation', width: 150, align: 'left', search: false}
@@ -18,6 +20,7 @@ define ['jqgrid', 'util', 'require', 'i18n!nls/transmng'], ($, util, require, i1
     editoptions: {value: "0:#{i18n.trans.nottranslated};1:#{i18n.trans.inprogress};2:#{i18n.trans.translated}"}, formatter: 'select'
     }
   ]
+  afterEditCell: (rowid, cellname, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
   beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->{type: 'trans'}
   afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
     jsonFromServer = eval('(' + serverresponse.responseText + ')')
@@ -39,11 +42,11 @@ define ['jqgrid', 'util', 'require', 'i18n!nls/transmng'], ($, util, require, i1
 
   languageChanged: (param)->
     transDetailGrid = $("#transDetailGridList")
-    url = "/rest/labels"
+    url = "rest/labels"
     prop = "key,maxLength,context.name,reference,ct.translation,ct.status"
     transDetailGrid.setGridParam({url: url, datatype: "json", postData: {dict: param.dict.id, language: param.language.id, format: 'grid', prop: prop, idprop: 'ct.id'}}).trigger("reloadGrid")
 
-
+  saveLastEditedCell: ()->transDetailGrid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
 
 
 
