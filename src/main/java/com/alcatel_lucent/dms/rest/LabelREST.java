@@ -25,6 +25,8 @@ import com.alcatel_lucent.dms.service.DictionaryService;
  *   	If language is supplied, relative LabelTranslation and Translation object can be accessed by
  *   	adding "ot" or "ct" prefix to the property name, e.g. ot.needTranslation,ct.translation
  *   	Otherwise, only label properties can be accessed. 
+ *   filters	(optional) jqGrid-style filter string, in json format, e.g.
+ *   	{"groupOp":"AND","rules":[{"field":"status","op":"eq","data":"2"}]}
  *   
  * Sort parameters:
  *   sidx		(optional) sort by, default is "sortNo"
@@ -91,6 +93,16 @@ public class LabelREST extends BaseREST {
     		hql = "select obj,ot,ct" +
     				" from Label obj join obj.origTranslations ot left join obj.text.translations ct" +
     				" where obj.dictionary.id=:dictId and ot.language.id=:langId and ct.language.id=:langId";
+        	Map<String, String> filters = getGridFilters(requestMap);
+        	if (filters != null) {
+        		int i = 0;
+        		for (String field : filters.keySet()) {
+        			hql += " and " + field + "=:p" + i;
+        			param.put("p" + i, filters.get(field));
+        			i++;
+        		}
+        	}
+
     		hql += " order by " + sidx + " " + sord;
     		param.put("langId", langId);
     		Collection<Object[]> result = retrieve(hql, param, countHql, countParam, requestMap);
