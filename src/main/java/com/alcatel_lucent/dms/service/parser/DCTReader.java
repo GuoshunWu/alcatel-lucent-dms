@@ -265,7 +265,7 @@ public class DCTReader extends LineNumberReader {
             }
 
             buffer.append(line);
-            if (suffixComment != null && suffixComment.toString().startsWith("--???")) {
+            if (suffixComment != null && suffixComment.toString().substring(2).trim().startsWith("???")) {
             	langCodesRequestTranslation.add(langCode);
             }
 

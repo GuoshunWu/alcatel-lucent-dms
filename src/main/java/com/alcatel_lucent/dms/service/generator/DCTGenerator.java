@@ -189,6 +189,9 @@ public class DCTGenerator implements DictionaryGenerator {
 
     private String convertContent(int indentSize, String content,
             String contentLineSeparator, String joinedStringLineSeparator) {
+    	if (content.isEmpty()) {
+    		return "\"\"";
+    	}
 		String[] contents = content.split(contentLineSeparator);
 		for (int i = 0; i < contents.length; ++i) {
 		contents[i] = "\"" + contents[i] + "\"";
