@@ -1,6 +1,8 @@
 define ['jqlayout', 'taskmng/task_grid', 'i18n!nls/common', 'taskmng/dialogs','require'], ($, grid, c18n, dialogs,require)->
 
-  $('#pageNavigator').val(window.location.pathname)
+  pathArray = window.location.pathname.split('/')
+  $('#pageNavigator').val(pathArray[pathArray.length - 1])
+
 
   $("#optional-container").layout {resizable: true, closable: true}
   info = {}
@@ -19,7 +21,7 @@ define ['jqlayout', 'taskmng/task_grid', 'i18n!nls/common', 'taskmng/dialogs','r
     $('#productRelease').empty()
     return false if parseInt($('#productBase').val()) == -1
 
-    $.getJSON "/rest/products/version", {base: $(@).val(), prop: 'id,version'}, (json)->
+    $.getJSON "rest/products/version", {base: $(@).val(), prop: 'id,version'}, (json)->
       $('#productRelease').append(new Option c18n.select.release.tip, -1).append(
         $(json).map ()->$(new Option(@version, @id)).attr('selected', info.product and @id == parseInt info.product)[0]
       )

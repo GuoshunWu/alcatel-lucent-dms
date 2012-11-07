@@ -2,7 +2,7 @@
 (function() {
 
   define(function(require, util, dialogs, i18n) {
-    var $, blockui, c18n, deleteOptions, dicGrid, handlers, localIds;
+    var $, blockui, c18n, deleteOptions, dicGrid, handlers, lastEditedCell, localIds;
     $ = require('jqgrid');
     util = require('util');
     dialogs = require('appmng/dialogs');
@@ -58,6 +58,7 @@
         }
       }
     };
+    lastEditedCell = null;
     dicGrid = $(localIds.dic_grid).jqGrid({
       url: '',
       datatype: 'json',
@@ -72,6 +73,9 @@
       viewrecords: true,
       cellEdit: true,
       cellurl: 'app/update-dict',
+      ajaxCellOptions: {
+        async: false
+      },
       gridview: true,
       multiselect: true,
       caption: 'Dictionary for Application',
@@ -153,6 +157,12 @@
       },
       afterEditCell: function(id, name, val, iRow, iCol) {
         var grid;
+        lastEditedCell = {
+          iRow: iRow,
+          iCol: iCol,
+          name: name,
+          val: val
+        };
         grid = this;
         if (name === 'version') {
           return $.ajax({
@@ -174,7 +184,7 @@
         var isVersion;
         isVersion = cellname === 'version';
         $(this).setGridParam({
-          cellurl: isVersion ? '/app/change-dict-version' : '/app/update-dict'
+          cellurl: isVersion ? 'app/change-dict-version' : 'app/update-dict'
         });
         if (isVersion) {
           return {
@@ -196,6 +206,9 @@
         return $('a[id^=action_]', this).click(function() {
           var a, action, col, rowData, rowid, _ref;
           _ref = this.id.split('_'), a = _ref[0], action = _ref[1], rowid = _ref[2], col = _ref[3];
+          if (lastEditedCell) {
+            grid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol);
+          }
           rowData = grid.getRowData(rowid);
           delete rowData.action;
           rowData.id = rowid;
@@ -219,7 +232,7 @@
       }
       filename = "" + ($('#appDispAppName').text()) + "_" + ($('#selAppVersion option:selected').text()) + "_" + (new Date().format('yyyyMMdd_hhmmss')) + ".zip";
       $.blockUI();
-      return $.post('/app/generate-dict', {
+      return $.post('app/generate-dict', {
         dicts: dicts.join(','),
         filename: filename
       }, function(json) {

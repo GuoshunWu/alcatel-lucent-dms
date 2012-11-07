@@ -19,7 +19,7 @@ define (require)->
   $("#removeAppVersion").button({text: false, label: '&nbsp;', icons: {primary: "ui-icon-minus"}}).click (e) =>
     id = $("#selAppVersion").val()
     return if !id
-    $.post '/app/remove-application', {id: id, permanent: 'true'}, (json)->
+    $.post 'app/remove-application', {id: id, permanent: 'true'}, (json)->
       if json.status != 0
         $.msgBox json.message, null, {title: c18n.error}
         return

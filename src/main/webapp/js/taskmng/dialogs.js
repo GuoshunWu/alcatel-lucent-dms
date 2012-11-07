@@ -50,7 +50,7 @@
       open: function() {
         var param;
         param = $(this).data('param');
-        return $.ajax('/rest/languages', {
+        return $.ajax('rest/languages', {
           async: false,
           dataType: 'json',
           data: {

@@ -33,7 +33,7 @@
       if (!id) {
         return;
       }
-      return $.post('/app/remove-product', {
+      return $.post('app/remove-product', {
         id: id
       }, function(json) {
         if (json.status !== 0) {

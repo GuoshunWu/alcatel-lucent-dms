@@ -19,12 +19,13 @@ define (require, util, i18n)->
         dialogs.dictPreviewLangSettings.data "param", rowData
         dialogs.dictPreviewLangSettings.dialog 'open'
 
+  lastEditedCell = null
   dicGrid = $('#dictListPreviewGrid').jqGrid {
   url: '', datatype: 'json', editurl: "", mtype: 'POST'
   width: 1000, minHeight: 200, height: 240
   pager: '#dictListPreviewPager', rowNum: 100
   sortname: 'base.name', sortorder: 'asc'
-  viewrecords: true, cellEdit: true, cellurl: 'app/deliver-update-dict'
+  viewrecords: true, cellEdit: true, cellurl: 'app/deliver-update-dict',ajaxCellOptions: {async:false}
   gridview: true, multiselect: false
   caption: i18n.grid.dictlistpreview.caption
   colNames: ['LangRefCode', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels', 'Error', 'Warning', 'Action']
@@ -44,6 +45,7 @@ define (require, util, i18n)->
     {name: 'warnings', index: 'warningCount', width: 20, align: 'right'}
     {name: 'actions', index: 'action', width: 70, editable: false, align: 'center'}
   ]
+  afterEditCell: (rowid, cellname, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
   ondblClickRow: (rowid, iRow, iCol, e)->
 
   beforeProcessing: (data, status, xhr)->
@@ -98,6 +100,9 @@ define (require, util, i18n)->
 
     $('a[id^=action_]', @).click ()->
       [a, action, rowid, col]=@id.split('_')
+      #      save grid edit before get data
+      grid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
+
       rowData = grid.getRowData(rowid)
       delete rowData.action
       rowData.id = rowid

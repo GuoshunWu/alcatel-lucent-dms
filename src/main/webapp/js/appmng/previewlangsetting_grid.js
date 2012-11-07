@@ -2,8 +2,9 @@
 (function() {
 
   define(function(require) {
-    var $, langSettingGrid;
+    var $, langSettingGrid, lastEditedCell;
     $ = require('jqgrid');
+    lastEditedCell = null;
     langSettingGrid = $('#previewLanguageSettingGrid').jqGrid({
       url: '',
       mtype: 'post',
@@ -43,6 +44,14 @@
           align: 'left'
         }
       ],
+      afterEditCell: function(rowid, cellname, val, iRow, iCol) {
+        return lastEditedCell = {
+          iRow: iRow,
+          iCol: iCol,
+          name: name,
+          val: val
+        };
+      },
       beforeSubmitCell: function(rowid, cellname, value, iRow, iCol) {
         var postData;
         postData = $(this).getGridParam('postData');
@@ -78,7 +87,7 @@
         }
       });
     });
-    return $.getJSON('rest/charsets', {
+    $.getJSON('rest/charsets', {
       prop: 'id,name'
     }, function(charsets) {
       return langSettingGrid.setColProp('charsetId', {
@@ -89,6 +98,13 @@
         }
       });
     });
+    return {
+      saveLastEditedCell: function() {
+        if (lastEditedCell) {
+          return langSettingGrid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol);
+        }
+      }
+    };
   });
 
 }).call(this);

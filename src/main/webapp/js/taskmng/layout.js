@@ -2,8 +2,9 @@
 (function() {
 
   define(['jqlayout', 'taskmng/task_grid', 'i18n!nls/common', 'taskmng/dialogs', 'require'], function($, grid, c18n, dialogs, require) {
-    var info, taskFileUpload;
-    $('#pageNavigator').val(window.location.pathname);
+    var info, pathArray, taskFileUpload;
+    pathArray = window.location.pathname.split('/');
+    $('#pageNavigator').val(pathArray[pathArray.length - 1]);
     $("#optional-container").layout({
       resizable: true,
       closable: true
@@ -28,7 +29,7 @@
       if (parseInt($('#productBase').val()) === -1) {
         return false;
       }
-      return $.getJSON("/rest/products/version", {
+      return $.getJSON("rest/products/version", {
         base: $(this).val(),
         prop: 'id,version'
       }, function(json) {
