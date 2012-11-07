@@ -35,7 +35,7 @@
       if (!id) {
         return;
       }
-      return $.post('/app/remove-application', {
+      return $.post('app/remove-application', {
         id: id,
         permanent: 'true'
       }, function(json) {

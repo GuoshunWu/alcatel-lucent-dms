@@ -43,7 +43,7 @@
                 <table border="0" width="100%">
                     <tr>
                         <td>
-                            <form id="downloadDict" action="/app/download-app-dict" method="post">
+                            <form id="downloadDict" action="app/download-app-dict" method="post">
                                 <input type="hidden" id="fileLoc" name="fileLoc"/>
                             </form>
 

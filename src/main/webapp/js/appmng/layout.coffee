@@ -1,5 +1,5 @@
 define (require)->
-  $=require('jqlayout')
+  $ = require('jqlayout')
 
   PANEL_PREFIX = 'DMS'
   ids = {
@@ -15,10 +15,10 @@ define (require)->
     application: PANEL_PREFIX + "_applicationPanel"
     }
   }
+  pathArray = window.location.pathname.split('/')
+  $('#pageNavigator').val(pathArray[pathArray.length - 1])
 
-  $('#pageNavigator').val(window.location.pathname)
-
-#  console.log module
+  #  console.log module
   pageLayout = $("##{ids.container.page}").layout {resizable: true, closable: true}
   dmsPanels = $ "##{ids.container.center} div[id^=#{PANEL_PREFIX}]"
 
@@ -40,6 +40,6 @@ define (require)->
 
   #export the method for other module use
   showProductPanel: ->showCenterPanel ids.panel.product
-  showApplicationPanel:->showCenterPanel ids.panel.application
-  showWelcomePanel:->showCenterPanel ids.panel.welcome
+  showApplicationPanel: ->showCenterPanel ids.panel.application
+  showWelcomePanel: ->showCenterPanel ids.panel.welcome
 

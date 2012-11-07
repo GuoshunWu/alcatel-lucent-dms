@@ -110,7 +110,7 @@
             titleText: "<bold>" + language.name + "</bold>"
           });
         });
-        gridParam.url = '/rest/task/summary';
+        gridParam.url = 'rest/task/summary';
         gridParam.postData = {
           task: params.id,
           format: 'grid',

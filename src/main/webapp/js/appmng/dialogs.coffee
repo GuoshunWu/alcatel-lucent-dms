@@ -48,8 +48,8 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   open: (event, ui)->
     $(ids.product_duplication).empty().append new Option '', -1
     (require 'appmng/product_panel').getProductSelectOptions().appendTo $ ids.product_duplication
-  close:( event, ui )->
-    errDiv=$("#productErrInfo").hide()
+  close: (event, ui)->
+    errDiv = $("#productErrInfo").hide()
   }
 
   #  Create new application release dialog
@@ -58,7 +58,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   height: 200, width: 500, modal: true
   buttons: [
     {text: c18n.ok, click: ->
-      url = '/app/create-application'
+      url = 'app/create-application'
       versionName = $('#appVersionName').val()
       dupVersionId = $("#dupDictsVersion").val()
       appBaseId = (require 'appmng/navigatetree').getNodeInfo().id
@@ -78,7 +78,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   ]
   open: (event, ui)->
     $("#dupDictsVersion").empty().append(new Option '', -1).append (require 'appmng/application_panel').getApplicationSelectOptions()
-  close:( event, ui )->
+  close: (event, ui)->
     $("#appErrInfo").hide()
   }
 
@@ -138,6 +138,14 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
     $('#refCode').val param.langrefcode
     postData = dict: param.id, format: 'grid', prop: 'languageCode,language.name,charset.name'
     $('#languageSettingGrid').setGridParam(url: 'rest/dictLanguages', postData: postData).trigger "reloadGrid"
+  close: (event, ui)->
+    (require 'appmng/langsetting_grid').saveLastEditedCell()
+  buttons: [
+    {text: c18n.close, click: ()->
+      $(@).dialog 'close'
+    }
+  ]
+
   }
 
   stringSettings = $('#stringSettingsDialog').dialog {
@@ -156,6 +164,13 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
 
     postData = dict: param.id, format: 'grid', prop: "key,reference,maxLength,context.name,description"
     $('#stringSettingsGrid').setGridParam(url: 'rest/labels', postData: postData).trigger "reloadGrid"
+  close: (event, ui)->
+    (require 'appmng/stringsettings_grid').saveLastEditedCell()
+  buttons: [
+    {text: c18n.close, click: ()->
+      $(@).dialog 'close'
+    }
+  ]
   }
 
   dictListPreview = $('#dictListPreviewDialog').dialog {
@@ -170,7 +185,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
       dictListPreview.dialog 'close'
 
       $.blockUI()
-      $.post '/app/deliver-dict', postData, (json)->
+      $.post 'app/deliver-dict', postData, (json)->
         $.unblockUI()
         (return;$.msgBox json.message, null, {title: c18n.error}) if(json.status != 0)
         appInfo = "#{$('#appDispAppName').text()} #{$('#selAppVersion option:selected').text()}"
@@ -213,6 +228,13 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
       format: 'grid', prop: "key,reference,maxLength,context.name,description"
 
     $('#dictPreviewStringSettingsGrid').setGridParam(url: 'rest/delivery/labels', postData: postData).trigger "reloadGrid"
+  close: (event, ui)->
+    (require 'appmng/dictpreviewstringsettings_grid').saveLastEditedCell()
+  buttons: [
+    {text: c18n.close, click: ()->
+      $(@).dialog 'close'
+    }
+  ]
   }
 
   dictPreviewLangSettings = $('#dictPreviewLanguageSettingsDialog').dialog {
@@ -226,6 +248,13 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
     $('#previewRefCode').val param.langrefcode
     postData = handler: param.handler, dict: param.id, format: 'grid', prop: 'languageCode,language.name,charset.name'
     $('#previewLanguageSettingGrid').setGridParam(url: 'rest/delivery/dictLanguages', postData: postData).trigger "reloadGrid"
+  close: (event, ui)->
+    (require 'appmng/previewlangsetting_grid').saveLastEditedCell()
+  buttons: [
+    {text: c18n.close, click: ()->
+      $(@).dialog 'close'
+    }
+  ]
   }
 
   dictPreviewLangSettings: dictPreviewLangSettings
