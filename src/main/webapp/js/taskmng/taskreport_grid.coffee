@@ -50,7 +50,7 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
         (index)->name: "#{language.name}.#{@}", sortable: false, index: "s(#{language.id})[#{index}]", width: 40, editable: false, align: 'center').get()
       gridParam.groupHeaders.push {startColumnName: "#{language.name}.T", numberOfColumns: cols.length, titleText: "<bold>#{language.name}</bold>"}
 
-    gridParam.url = '/rest/task/summary'
+    gridParam.url = 'rest/task/summary'
     gridParam.postData = task: params.id, format: 'grid', prop: 'context.name,total,' + $(params.languages).map(
       (index, language)->$([0, 1]).map(
         (idx)->"s(#{language.id})[#{idx}]").get().join(',')

@@ -2,7 +2,7 @@
 (function() {
 
   define(function(require) {
-    var $, PANEL_PREFIX, dmsPanels, ids, pageLayout, showCenterPanel;
+    var $, PANEL_PREFIX, dmsPanels, ids, pageLayout, pathArray, showCenterPanel;
     $ = require('jqlayout');
     PANEL_PREFIX = 'DMS';
     ids = {
@@ -16,7 +16,8 @@
         application: PANEL_PREFIX + "_applicationPanel"
       }
     };
-    $('#pageNavigator').val(window.location.pathname);
+    pathArray = window.location.pathname.split('/');
+    $('#pageNavigator').val(pathArray[pathArray.length - 1]);
     pageLayout = $("#" + ids.container.page).layout({
       resizable: true,
       closable: true

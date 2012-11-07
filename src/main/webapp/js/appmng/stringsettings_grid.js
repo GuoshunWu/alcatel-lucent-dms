@@ -2,7 +2,8 @@
 (function() {
 
   define(['jqgrid', 'require'], function($, require) {
-    var dicGrid;
+    var dicGrid, lastEditedCell;
+    lastEditedCell = null;
     dicGrid = $('#stringSettingsGrid').jqGrid({
       url: '',
       mtype: 'post',
@@ -53,15 +54,30 @@
           editable: true,
           align: 'left'
         }
-      ]
+      ],
+      afterEditCell: function(rowid, cellname, val, iRow, iCol) {
+        return lastEditedCell = {
+          iRow: iRow,
+          iCol: iCol,
+          name: name,
+          val: val
+        };
+      }
     });
-    return dicGrid.jqGrid('navGrid', '#stringSettingsPager', {
+    dicGrid.jqGrid('navGrid', '#stringSettingsPager', {
       edit: false,
       add: false,
       del: false,
       search: false,
       view: false
     }, {}, {}, {});
+    return {
+      saveLastEditedCell: function() {
+        if (lastEditedCell) {
+          return dicGrid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol);
+        }
+      }
+    };
   });
 
 }).call(this);

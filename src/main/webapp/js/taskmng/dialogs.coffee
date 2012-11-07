@@ -26,7 +26,7 @@ define [ 'jqueryui', 'require', 'taskmng/taskreport_grid', 'taskmng/transdetail_
   width: 'auto', height: 'auto'
   open: ()->
     param = $(@).data 'param'
-    $.ajax '/rest/languages', async: false, dataType: 'json', data: {task: param.id, prop: 'id,name'}, success: (languages)->
+    $.ajax 'rest/languages', async: false, dataType: 'json', data: {task: param.id, prop: 'id,name'}, success: (languages)->
       reportgrid.regenerateGrid {id: param.id, languages: languages}
 
   buttons: [

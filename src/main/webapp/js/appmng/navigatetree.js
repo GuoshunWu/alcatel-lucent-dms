@@ -15,12 +15,12 @@
     URL = {
       navigateTree: 'rest/products?format=tree&nocache=' + new Date().getTime(),
       product: {
-        create: '/app/create-product',
-        del: '/app/remove-product-base'
+        create: 'app/create-product',
+        del: 'app/remove-product-base'
       },
       app: {
-        create: '/app/create-application-base',
-        del: '/app/remove-application-base'
+        create: 'app/create-application-base',
+        del: 'app/remove-application-base'
       }
     };
     appTree = null;

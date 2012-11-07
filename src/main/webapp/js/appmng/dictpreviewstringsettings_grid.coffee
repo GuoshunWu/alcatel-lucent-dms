@@ -1,4 +1,7 @@
 define ['jqgrid', 'require'], ($, require)->
+
+  lastEditedCell = null
+
   dicGrid = $('#dictPreviewStringSettingsGrid').jqGrid {
   url: '', mtype: 'post', datatype: 'json'
   width: 700, height: 300
@@ -22,6 +25,7 @@ define ['jqgrid', 'require'], ($, require)->
     {name: 'context', index: 'context.name', width: 50, editable: true, align: 'left'}
     {name: 'description', index: 'description', width: 40, editable: true, align: 'left'}
   ]
+  afterEditCell: (rowid, cellname, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
   beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
     postData = $(@).getGridParam 'postData'
     handler: postData.handler, dict: postData.dict
@@ -34,4 +38,5 @@ define ['jqgrid', 'require'], ($, require)->
   }
   dicGrid.jqGrid 'navGrid', '#dictPreviewStringSettingsPager', {edit: false, add: false, del: false, search: false, view: false}
 
+  saveLastEditedCell: ()->dicGrid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
 

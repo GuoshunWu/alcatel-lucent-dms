@@ -11,7 +11,9 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
     }
   }
 
-  $('#pageNavigator').val(window.location.pathname)
+  pathArray = window.location.pathname.split('/')
+  $('#pageNavigator').val(pathArray[pathArray.length - 1])
+
   pageLayout = $("##{ids.container.page}").layout {resizable: true, closable: true}
 
   $(".header-footer").hover (->$(@).addClass "ui-state-hover"), -> $(@).removeClass "ui-state-hover"
@@ -103,12 +105,18 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
     ]
     }
     transDetailDialog = $('#translationDetailDialog').dialog {
-    autoOpen: false, width: 'auto', height: 400
+    autoOpen: false, width: 'auto', height: 'auto'
     create: ()->
       $('#detailLanguageSwitcher').change ->
         dict = $('#translationDetailDialog').data "dict"
         language = {id: $(@).val(), name: $(@).find("option:selected").text()}
         detailgrid.languageChanged {language: language, dict: dict}
+    close: (event, ui)->detailgrid.saveLastEditedCell()
+    buttons: [
+      {text: c18n.close, click: ()->
+        $(@).dialog 'close'
+      }
+    ]
     }
 
     {taskDialog: taskDialog, languageFilterDialog: languageFilterDialog, transDetailDialog: transDetailDialog}
@@ -124,7 +132,7 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
       $('#productRelease').empty()
       return false if parseInt($('#productBase').val()) == -1
 
-      $.getJSON "/rest/products/version", {base: $(@).val(), prop: 'id,version'}, (json)->
+      $.getJSON "rest/products/version", {base: $(@).val(), prop: 'id,version'}, (json)->
         $('#productRelease').append new Option(c18n.select.release.tip, -1)
         $('#productRelease').append $(json).map ()->new Option @version, @id
         $('#productRelease').trigger "change"
@@ -172,10 +180,9 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
   showTransDetailDialog: (param)->
   #    refresh dialog
     $('#dictionaryName', dialogs.transDetailDialog).html param.dict.name
-    $('#detailLanguageSwitcher', dialogs.transDetailDialog).append ($(param.languages).map (index) ->
-      opt = new Option @name, @id
-      opt.selected = @name == param.language.name
-      opt
+    $('#detailLanguageSwitcher', dialogs.transDetailDialog).empty().append ($(param.languages).map (index) ->
+      isSelected = @name == param.language.name
+      new Option @name, @id, isSelected, isSelected
     )
     $('#translationDetailDialog').data 'dict', param.dict
     $('#detailLanguageSwitcher').trigger "change"

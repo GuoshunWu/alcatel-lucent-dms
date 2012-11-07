@@ -39,6 +39,7 @@ define (require, util, dialogs, i18n)->
         dialogs.langSettings.dialog 'open'
     'X': title: i18n.dialog.delete.title, handler: (rowData)->$(localIds.dic_grid).jqGrid 'delGridRow', rowData.id, deleteOptions
 
+  lastEditedCell = null
   dicGrid = $(localIds.dic_grid).jqGrid {
   url: ''
   datatype: 'json'
@@ -49,7 +50,7 @@ define (require, util, dialogs, i18n)->
   rowNum: 10, rowList: [10, 20, 30]
   sortname: 'base.name'
   sortorder: 'asc'
-  viewrecords: true, cellEdit: true, cellurl: 'app/update-dict'
+  viewrecords: true, cellEdit: true, cellurl: 'app/update-dict',ajaxCellOptions: {async:false}
   gridview: true, multiselect: true
   caption: 'Dictionary for Application'
   colNames: ['LangRefCode', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels', 'Action']
@@ -78,6 +79,7 @@ define (require, util, dialogs, i18n)->
           "<A id='action_#{@}_#{rowData.id}_#{actIndex}'style='color:blue' title='#{handlers[@].title}' href=# >#{@}</A>"
       ).get().join('&nbsp;&nbsp;&nbsp;&nbsp;')
   afterEditCell: (id, name, val, iRow, iCol)->
+    lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
     grid = @
     if name == 'version'
     #        console.log "name=#{name},id=#{id},val=#{val}"
@@ -86,7 +88,7 @@ define (require, util, dialogs, i18n)->
       }
   beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
     isVersion = cellname == 'version'
-    $(@).setGridParam cellurl: if isVersion then '/app/change-dict-version' else '/app/update-dict'
+    $(@).setGridParam cellurl: if isVersion then 'app/change-dict-version' else 'app/update-dict'
     if isVersion then {appId: $("#selAppVersion").val(), newDictId: value} else {}
 
   afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
@@ -97,7 +99,11 @@ define (require, util, dialogs, i18n)->
 
     $('a[id^=action_]', @).click ()->
       [a, action, rowid, col]=@id.split('_')
+      #      save grid edit before get data
+      grid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
+
       rowData = grid.getRowData(rowid)
+
       delete rowData.action
       rowData.id = rowid
       handlers[action].handler rowData
@@ -114,7 +120,7 @@ define (require, util, dialogs, i18n)->
     filename = "#{$('#appDispAppName').text()}_#{$('#selAppVersion option:selected').text()}_#{new Date().format 'yyyyMMdd_hhmmss'}.zip"
 
     $.blockUI()
-    $.post '/app/generate-dict', {dicts: dicts.join(','), filename: filename}, (json)->
+    $.post 'app/generate-dict', {dicts: dicts.join(','), filename: filename}, (json)->
       $.unblockUI()
       if(json.status != 0)
         $.msgBox json.message, null, {title: c18n.error}
