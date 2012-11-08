@@ -136,20 +136,15 @@ To change this template use File | Settings | File Templates.
       return retval;
     };
     setCookie = function(name, value, expires, domain, path, secure) {
-      var arg, c, start;
+      var arg, c, start, _i, _len, _ref;
       c = "" + name + "=" + (escape(value));
       start = 2;
-      if ((function() {
-        var _i, _len, _ref, _results;
-        _ref = ['expires', 'domain', 'path', 'secure'];
-        _results = [];
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          arg = _ref[_i];
-          _results.push(arguments[start]);
+      _ref = ['expires', 'domain', 'path', 'secure'];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        arg = _ref[_i];
+        if (arguments[start]) {
+          c += ";" + arg + "=" + arguments[start++];
         }
-        return _results;
-      }).apply(this, arguments)) {
-        c += ";" + arg + "=" + arguments[start++];
       }
       return document.cookie = c;
     };

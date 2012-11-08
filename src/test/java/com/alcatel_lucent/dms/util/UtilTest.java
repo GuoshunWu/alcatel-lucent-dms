@@ -1,5 +1,6 @@
 package com.alcatel_lucent.dms.util;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -11,6 +12,7 @@ import java.io.File;
  * Time: 上午11:14
  * To change this template use File | Settings | File Templates.
  */
+@Ignore
 public class UtilTest {
 //    @Test
     public void testUnzip() throws Exception {
