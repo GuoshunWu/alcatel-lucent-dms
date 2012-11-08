@@ -21,7 +21,7 @@
 //    appDir:'${basedir}',
     mainConfigFile:'config.js',
 //    dir:'../../../../target/dms_build',
-    dir:'D:/ProgramTools/apache-tomcat-7.0.30/webapps/dms',
+//    dir:'D:/ProgramTools/apache-tomcat-7.0.30/webapps/dms',
 
     //How to optimize all the JS files in the build output directory.
     //Right now only the following values
