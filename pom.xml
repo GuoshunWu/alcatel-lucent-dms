@@ -390,7 +390,7 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.2</version>
                 <configuration>
-                    <packagingExcludes>src/main/webapp/js/**/*.coffee</packagingExcludes>
+                    <warSourceExcludes>**/*.coffee</warSourceExcludes>
                 </configuration>
             </plugin>
 
@@ -471,7 +471,7 @@
                         <!--${basedir}/src/main/webapp/tools/r.js-->
                     <!--</optimizerFile>-->
                     <!--&lt;!&ndash; whether or not to process config with maven filters &ndash;&gt;-->
-                    <!--&lt;!&ndash;<filterConfig>true</filterConfig>&ndash;&gt;-->
+                    <!--<filterConfig>true</filterConfig>-->
                     <!--&lt;!&ndash; Skip requirejs optimization if true &ndash;&gt;-->
                 <!--</configuration>-->
             <!--</plugin>-->

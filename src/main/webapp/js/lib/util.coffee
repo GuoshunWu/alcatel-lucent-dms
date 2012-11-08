@@ -93,10 +93,11 @@ define ["jquery"], ($) ->
       i++
     retval
 
-  setCookie= (name, value, expires, domain, path, secure)->
+  setCookie = (name, value, expires, domain, path, secure)->
     c = "#{name}=#{escape(value)}"
     start = 2
-    c += ";#{arg}=#{arguments[start++]}" if arguments[start] for arg in ['expires', 'domain', 'path', 'secure']
+    for arg in ['expires', 'domain', 'path', 'secure']
+      c += ";#{arg}=#{arguments[start++]}" if arguments[start]
     document.cookie = c
 
   ###
