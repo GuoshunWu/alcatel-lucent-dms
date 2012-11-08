@@ -2,8 +2,9 @@
 (function() {
 
   define(['jqueryui', 'require', 'taskmng/taskreport_grid', 'taskmng/transdetail_grid', 'jqmsgbox'], function($, require, reportgrid, detailgrid) {
-    var c18n, languageChooserDialog, transReport, util, viewDetail;
+    var c18n, i18n, languageChooserDialog, transReport, util, viewDetail;
     c18n = require('i18n!nls/common');
+    i18n = require('i18n!nls/taskmng');
     util = require('util');
     c18n = require('i18n!nls/common');
     languageChooserDialog = $("<div title='Study' id='languageChooser'>").dialog({
@@ -71,14 +72,34 @@
           click: function() {
             var param;
             param = $(this).data('param');
-            $.post('/task/apply-task', {
+            $.post('task/apply-task', {
               id: param.id
             }, function(json) {
               if (json.status !== 0) {
-                return $.msgBox(json.message, null, {
+                $.msgBox(json.message, null, {
                   title: c18n.error
                 });
+                return;
               }
+              return $.msgBox(i18n.task.confirmmsg, (function(keyPressed) {
+                if (c18n.ok === keyPressed) {
+                  $.blockUI;
+                  return $.post('task/close-task', {
+                    id: param.id
+                  }, function(json) {
+                    $.unblockUI();
+                    if (json.status !== 0) {
+                      $.msgBox(json.message, null, {
+                        title: c18n.error
+                      });
+                      return;
+                    }
+                    return $("#taskGrid").trigger('reloadGrid');
+                  });
+                }
+              }), {
+                title: c18n.confirm
+              }, [c18n.ok, c18n.cancel]);
             });
             return $(this).dialog("close");
           }

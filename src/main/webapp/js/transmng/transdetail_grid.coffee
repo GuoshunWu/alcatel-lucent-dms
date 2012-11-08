@@ -16,8 +16,10 @@ define ['jqgrid', 'util', 'require', 'i18n!nls/transmng'], ($, util, require, i1
     {name: 'context', index: 'context.name', width: 80, align: 'left', frozen: true, search: false}
     {name: 'reflang', index: 'reference', width: 150, align: 'left', frozen: true, search: false}
     {name: 'trans', index: 'ct.translation', width: 150, align: 'left', search: false}
-    {name: 'transStatus', index: 'ct.status', width: 150, align: 'left', editable: true, edittype: 'select',
-    editoptions: {value: "0:#{i18n.trans.nottranslated};1:#{i18n.trans.inprogress};2:#{i18n.trans.translated}"}, formatter: 'select'
+    {name: 'transStatus', index: 'ct.status', width: 150, align: 'left', editable: true,search:true,
+    edittype: 'select',editoptions: {value: "0:#{i18n.trans.nottranslated};1:#{i18n.trans.inprogress};2:#{i18n.trans.translated}"},
+    formatter: 'select',
+    stype:'select',searchoptions: {value: "0:#{i18n.trans.nottranslated};1:#{i18n.trans.inprogress};2:#{i18n.trans.translated}"}
     }
   ]
   afterEditCell: (rowid, cellname, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
@@ -28,6 +30,7 @@ define ['jqgrid', 'util', 'require', 'i18n!nls/transmng'], ($, util, require, i1
 
   afterCreate: (grid)->
     grid.navGrid '#transDetailsPager', {edit: false, add: false, del: false, search: false, view: false}
+    grid.filterToolbar {stringResult: true, searchOnEnter: false}
   }
   transDetailGrid.getGridParam('afterCreate') transDetailGrid
 

@@ -17,19 +17,20 @@ define (require)->
       filename += "_#{new Date().format 'yyyyMMdd_hhmmss'}.zip"
 
       $.blockUI()
-      $.post '/task/generate-task-files', {id: param.id, filename: filename}, (json)->
+      $.post 'task/generate-task-files', {id: param.id, filename: filename}, (json)->
         $.unblockUI()
         ($.msgBox json.message, null, {title: c18n.error};return) if json.status != 0
 
         downloadForm = $('#downloadTaskFiles')
         $('#fileLoc', downloadForm).val json.fileLoc
         downloadForm.submit()
-    'History…': (param)->
-      alert 'History…'
+    'View…': (param)->
+      dialogs.transReport.data 'param', {id: param.id}
+      dialogs.transReport.dialog 'open'
     'Close': (param)->
       return if param.status == '1'
       $.blockUI
-      $.post '/task/close-task', {id: param.id}, (json)->
+      $.post 'task/close-task', {id: param.id}, (json)->
         $.unblockUI()
         if json.status != 0
           $.msgBox json.message, null, {title: c18n.error}
@@ -109,7 +110,7 @@ define (require)->
 
         fileInput.fileupload {
         type: 'POST', dataType: 'json'
-        url: "/task/receive-task-files"
+        url: "task/receive-task-files"
         formData: [
           {name: 'id', value: rowid}
         ]
@@ -140,9 +141,6 @@ define (require)->
   taskGrid.getGridParam('afterCreate') taskGrid
 
 
-  #    test button
-  $('#transReport').button({}).click ()->dialogs.transReport.dialog 'open'
-  $('#viewDetail').button({}).click ()->dialogs.viewDetail.dialog 'open'
 
   productVersionChanged: (product)->
     taskGrid = $("#taskGrid")

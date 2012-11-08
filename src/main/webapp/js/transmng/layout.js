@@ -139,7 +139,7 @@
                 return this;
               }).get().join(',');
               taskDialog.parent().block();
-              return $.post('/task/create-task', {
+              return $.post('task/create-task', {
                 prod: $('#productRelease').val(),
                 language: langids,
                 dict: dicts,
@@ -154,7 +154,7 @@
                 }
                 $.msgBox(i18n.msgbox.createtranstask.confirm, (function(keyPressed) {
                   if (c18n.ok === keyPressed) {
-                    return window.location = "/taskmng.jsp?productBase=" + (escape($('#productBase').val())) + "&product=" + (escape($('#productRelease').val()));
+                    return window.location = "taskmng.jsp?productBase=" + (escape($('#productBase').val())) + "&product=" + (escape($('#productRelease').val()));
                   }
                 }), {
                   title: c18n.confirm

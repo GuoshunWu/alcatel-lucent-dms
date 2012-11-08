@@ -1,8 +1,9 @@
-define [ 'jqueryui', 'require', 'taskmng/taskreport_grid', 'taskmng/transdetail_grid','jqmsgbox'], ($, require, reportgrid, detailgrid)->
+define [ 'jqueryui', 'require', 'taskmng/taskreport_grid', 'taskmng/transdetail_grid', 'jqmsgbox'], ($, require, reportgrid, detailgrid)->
   c18n = require 'i18n!nls/common'
+  i18n = require 'i18n!nls/taskmng'
   util = require 'util'
 
-#  require 'jqmsgbox'
+  #  require 'jqmsgbox'
   c18n = require 'i18n!nls/common'
 
   #  require 'blockui'
@@ -32,8 +33,21 @@ define [ 'jqueryui', 'require', 'taskmng/taskreport_grid', 'taskmng/transdetail_
   buttons: [
     {text: 'Import', click: ()->
       param = $(@).data 'param'
-      $.post '/task/apply-task', {id: param.id}, (json)->
-        $.msgBox json.message, null, {title: c18n.error} if json.status != 0
+      $.post 'task/apply-task', {id: param.id}, (json)->
+        if json.status != 0
+          $.msgBox json.message, null, {title: c18n.error}
+          return
+        $.msgBox i18n.task.confirmmsg, ((keyPressed)->
+          if c18n.ok == keyPressed
+            $.blockUI
+            $.post 'task/close-task', {id: param.id}, (json)->
+              $.unblockUI()
+              if json.status != 0
+                $.msgBox json.message, null, {title: c18n.error}
+                return
+              $("#taskGrid").trigger 'reloadGrid'
+        ), {title: c18n.confirm}, [c18n.ok, c18n.cancel]
+
 
       $(@).dialog "close"
     }

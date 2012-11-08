@@ -69,11 +69,16 @@
           width: 150,
           align: 'left',
           editable: true,
+          search: true,
           edittype: 'select',
           editoptions: {
             value: "0:" + i18n.trans.nottranslated + ";1:" + i18n.trans.inprogress + ";2:" + i18n.trans.translated
           },
-          formatter: 'select'
+          formatter: 'select',
+          stype: 'select',
+          searchoptions: {
+            value: "0:" + i18n.trans.nottranslated + ";1:" + i18n.trans.inprogress + ";2:" + i18n.trans.translated
+          }
         }
       ],
       afterEditCell: function(rowid, cellname, val, iRow, iCol) {
@@ -95,12 +100,16 @@
         return [0 === jsonFromServer.status, jsonFromServer.message];
       },
       afterCreate: function(grid) {
-        return grid.navGrid('#transDetailsPager', {
+        grid.navGrid('#transDetailsPager', {
           edit: false,
           add: false,
           del: false,
           search: false,
           view: false
+        });
+        return grid.filterToolbar({
+          stringResult: true,
+          searchOnEnter: false
         });
       }
     });

@@ -18,7 +18,7 @@
         filename = "" + ($('#productBase option:selected').text()) + "_" + ($('#productRelease option:selected').text()) + "_translation";
         filename += "_" + (new Date().format('yyyyMMdd_hhmmss')) + ".zip";
         $.blockUI();
-        return $.post('/task/generate-task-files', {
+        return $.post('task/generate-task-files', {
           id: param.id,
           filename: filename
         }, function(json) {
@@ -35,15 +35,18 @@
           return downloadForm.submit();
         });
       },
-      'History…': function(param) {
-        return alert('History…');
+      'View…': function(param) {
+        dialogs.transReport.data('param', {
+          id: param.id
+        });
+        return dialogs.transReport.dialog('open');
       },
       'Close': function(param) {
         if (param.status === '1') {
           return;
         }
         $.blockUI;
-        return $.post('/task/close-task', {
+        return $.post('task/close-task', {
           id: param.id
         }, function(json) {
           $.unblockUI();
@@ -199,7 +202,7 @@
             return fileInput.fileupload({
               type: 'POST',
               dataType: 'json',
-              url: "/task/receive-task-files",
+              url: "task/receive-task-files",
               formData: [
                 {
                   name: 'id',
@@ -252,12 +255,6 @@
       }
     });
     taskGrid.getGridParam('afterCreate')(taskGrid);
-    $('#transReport').button({}).click(function() {
-      return dialogs.transReport.dialog('open');
-    });
-    $('#viewDetail').button({}).click(function() {
-      return dialogs.viewDetail.dialog('open');
-    });
     return {
       productVersionChanged: function(product) {
         taskGrid = $("#taskGrid");
