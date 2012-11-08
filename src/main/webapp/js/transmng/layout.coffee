@@ -90,13 +90,13 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
           ()->@).get().join(',')
 
         taskDialog.parent().block()
-        $.post '/task/create-task', {prod: $('#productRelease').val(), language: langids, dict: dicts, name: name }, (json)->
+        $.post 'task/create-task', {prod: $('#productRelease').val(), language: langids, dict: dicts, name: name }, (json)->
           taskDialog.parent().unblock()
           if(json.status != 0)
             $.msgBox json.message, null, {title: c18n.error}
             return
           $.msgBox i18n.msgbox.createtranstask.confirm, ((keyPressed)->
-            window.location = "/taskmng.jsp?productBase=#{escape $('#productBase').val()}&product=#{escape $('#productRelease').val()}" if c18n.ok == keyPressed
+            window.location = "taskmng.jsp?productBase=#{escape $('#productBase').val()}&product=#{escape $('#productRelease').val()}" if c18n.ok == keyPressed
           ), {title: c18n.confirm}, [c18n.ok, c18n.cancel]
 
           taskDialog.dialog "close"

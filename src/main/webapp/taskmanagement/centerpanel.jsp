@@ -41,31 +41,5 @@
             </table>
         </td>
     </tr>
-    <tr>
-        <td>
-            <table width="100%" border="0" style="border-color: blue">
-                <tr>
-                    <td style="width:30px"></td>
-                    <td>
-                        <select id="actions">
-                            <option value="actions">
-                                <button>Study</button>
-                            </option>
-                            <option value="actions">
-                                <button>Two</button>
-                            </option>
-                        </select>
-                    </td>
-                    <td>
-                        <button id='transReport'>TransReoprt</button>
-                        <button id='viewDetail'>viewDetail</button>
-                    </td>
-                    <%--<td style="width: 100px;">--%>
-                        <%--<div id="uploadTask"></div>--%>
-                    <%--</td>--%>
-                </tr>
-            </table>
-        </td>
-    </tr>
 </table>
 

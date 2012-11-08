@@ -10,7 +10,8 @@ define({
     root:{
         task:{
             open:'Open',
-            closed:'Closed'
+            closed:'Closed',
+            confirmmsg:'Do you want to close the task?'
         }
 
     },
