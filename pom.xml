@@ -449,6 +449,30 @@
                 </configuration>
             </plugin>
 
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <executions>
+                    <execution>
+                        <!--<phase>prepare-package</phase>-->
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <executable>node</executable>
+                    <arguments>
+                        <argument>${basedir}/src/main/webapp/tools/r.js</argument>
+                        <argument>-o</argument>
+                        <argument>${basedir}/src/main/webapp/js/app.build.js</argument>
+                        <argument>dir=${project.build.directory}/${project.build.finalName}</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
+
             <!--<plugin>-->
                 <!--<groupId>com.github.mcheely</groupId>-->
                 <!--<artifactId>requirejs-maven-plugin</artifactId>-->
