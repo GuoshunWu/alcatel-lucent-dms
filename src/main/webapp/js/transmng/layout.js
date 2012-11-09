@@ -285,7 +285,7 @@
         $('#dictionaryName', dialogs.transDetailDialog).html(param.dict.name);
         $('#detailLanguageSwitcher', dialogs.transDetailDialog).empty().append($(param.languages).map(function(index) {
           var isSelected;
-          isSelected = this.name === param.language.name;
+          isSelected = this.id === parseInt(param.language.id);
           return new Option(this.name, this.id, isSelected, isSelected);
         }));
         $('#translationDetailDialog').data('dict', param.dict);

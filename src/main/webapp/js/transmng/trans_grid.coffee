@@ -61,7 +61,7 @@ define ['jqgrid', 'util', 'require', 'jqmsgbox', 'transmng/grid.colmodel', 'bloc
     transGrid = $(@)
     $('a', @).css('color', 'blue').click ()->
       language = {}
-      [rowid, language.id, language.name]= $(@href.split('?')[1].split('&')).map (index)->@split('=')[1]
+      [rowid, language.id, language.name]= $(@href.split('?')[1].split('&')).map (index)->decodeURIComponent(@split('=')[1])
       rowData = transGrid.getRowData(rowid)
       allZero = true
       $(['T', 'N', 'I']).each (index, elem)->

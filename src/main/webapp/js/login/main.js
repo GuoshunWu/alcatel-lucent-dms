@@ -3,8 +3,7 @@
 
   define(function(require) {
     var $;
-    $ = require('jqueryui');
-    return alert('Hi');
+    return $ = require('jqueryui');
   });
 
 }).call(this);

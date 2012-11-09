@@ -181,7 +181,7 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
   #    refresh dialog
     $('#dictionaryName', dialogs.transDetailDialog).html param.dict.name
     $('#detailLanguageSwitcher', dialogs.transDetailDialog).empty().append ($(param.languages).map (index) ->
-      isSelected = @name == param.language.name
+      isSelected = @id == parseInt param.language.id
       new Option @name, @id, isSelected, isSelected
     )
     $('#translationDetailDialog').data 'dict', param.dict
