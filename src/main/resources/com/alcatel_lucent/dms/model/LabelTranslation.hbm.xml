@@ -13,8 +13,7 @@
             </generator>
         </id>
 
-        <property name="origTranslation" type="string" column="ORIG_TRANSLATION"
-                  length="1024"/>
+        <property name="origTranslation" type="string" column="ORIG_TRANSLATION" length="1024"/>
         <property name="needTranslation" type="boolean" column="NEED_TRANSLATION"/>
         <property name="annotation1" type="text" column="ANNOTATION1"/>
         <property name="annotation2" type="text" column="ANNOTATION2"/>
@@ -22,9 +21,8 @@
         <property name="languageCode" type="string" column="LANGUAGE_CODE"/>
 		<property name="sortNo" type="integer" column="SORT_NO"/>
         <property name="requestTranslation" type="boolean" column="REQUEST_TRANSLATION"/>
-        <many-to-one name="label" column="LABEL_ID" not-null="true"/>
-        <many-to-one lazy="false" name="language" column="LANGUAGE_ID"
-                     not-null="true"/>
+        <many-to-one name="label" column="LABEL_ID" index="I_LABEL_TRANSLATION_LABEL_LANG" not-null="true"/>
+        <many-to-one lazy="false" name="language" index="I_LABEL_TRANSLATION_LABEL_LANG" column="LANGUAGE_ID" not-null="true"/>
 
     </class>
 

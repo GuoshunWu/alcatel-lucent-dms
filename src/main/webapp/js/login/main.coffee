@@ -1,3 +1,3 @@
 define (require)->
   $= require 'jqueryui'
-  alert 'Hi'
+#  alert 'Hi'

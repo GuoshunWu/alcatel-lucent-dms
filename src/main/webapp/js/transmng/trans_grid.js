@@ -167,7 +167,7 @@
             _this = this;
           language = {};
           _ref = $(this.href.split('?')[1].split('&')).map(function(index) {
-            return this.split('=')[1];
+            return decodeURIComponent(this.split('=')[1]);
           }), rowid = _ref[0], language.id = _ref[1], language.name = _ref[2];
           rowData = transGrid.getRowData(rowid);
           allZero = true;
