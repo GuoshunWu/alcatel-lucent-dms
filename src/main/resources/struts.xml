@@ -1,29 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE struts PUBLIC
-    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
-    "http://struts.apache.org/dtds/struts-2.0.dtd">
-    
+        "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+        "http://struts.apache.org/dtds/struts-2.3.dtd">
 <struts>
-	<constant name="struts.action.excludePattern" value="/rest/.*"/>
+    <constant name="struts.action.excludePattern" value="/rest/.*"/>
+
+    <package name="default" extends="struts-default" >
+        <interceptors>
+            <interceptor name="authenticationInterceptor" class="com.alcatel_lucent.dms.interceptors.AuthenticationInterceptor"/>
+
+            <interceptor-stack name="defaultSecurityStackWithAuthentication">
+                <interceptor-ref name="authenticationInterceptor"/>
+                <interceptor-ref name="defaultStack"/>
+            </interceptor-stack>
+        </interceptors>
+
+        <default-interceptor-ref name="defaultSecurityStackWithAuthentication"/>
+
+        <global-results>
+            <result name="error">/error.jsp</result>
+        </global-results>
+    </package>
 
     <!-- integrate with spring here -->
-    <constant name="struts.objectFactory" value="spring" />
-    <constant name="struts.objectFactory.spring.autoWire" value="name"   />
-
-
+    <constant name="struts.objectFactory" value="spring"/>
+    <constant name="struts.objectFactory.spring.autoWire" value="name"/>
     <constant name="struts.i18n.encoding" value="UTF-8"/>
 
-    <constant name="struts.multipart.maxSize" value="1073741824" />
-    <constant name="struts.multipart.saveDir" value="tmp" />
+    <constant name="struts.multipart.maxSize" value="1073741824"/>
+    <constant name="struts.multipart.saveDir" value="tmp"/>
 
-<!-- 	<package name="app" extends="json-default" namespace="/app">
-		<global-results>
-		    <result name="success" type="json"></result>
-		</global-results>    
-		<action name="CreateProduct" class="com.alcatel_lucent.dms.action.app.CreateProductAction">
-			<result type="json"></result>
-		</action>
-	</package>
- -->
- 
- </struts>
+    <constant name="struts.devMode" value="true"/>
+    <constant name="struts.convention.classes.reload" value="true"/>
+
+
+
+    <!-- 	<package name="app" extends="json-default" namespace="/app">
+           <global-results>
+               <result name="success" type="json"></result>
+           </global-results>
+           <action name="CreateProduct" class="com.alcatel_lucent.dms.action.app.CreateProductAction">
+               <result type="json"></result>
+           </action>
+       </package>
+    -->
+
+</struts>

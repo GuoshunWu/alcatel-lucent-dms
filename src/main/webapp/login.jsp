@@ -34,14 +34,14 @@
     <img src="images/login/LoginMiddle.jpg" alt="picture"/>
 
     <div>
-        <s:form id="loginForm" name="loginForm" action="appmng.jsp" theme="simple" method="post">
+        <s:form id="loginForm" name="loginForm" action="login/login" theme="simple" method="post">
             <table align='center'>
                 <tr>
                     <td><strong><s:label for="idUsername"><s:text name="login.username"/></s:label></strong></td>
                     <td><s:textfield name="username" id="idUsername" size="25" maxlength="40"/></td>
                 </tr>
                 <tr>
-                    <td><strong><s:label for="idPassword"><s:text name="login.password"/></s:label><strong></td>
+                    <td><strong><s:label for="idPassword"><s:text name="login.password"/></s:label></strong></td>
                     <td><s:password name="password" id="idPassword" size="25" maxlength="40"/></td>
                 </tr>
                 <tr>
@@ -60,7 +60,8 @@
         <img src="images/login/LoginBottom.gif" alt=""/>
     </div>
     <div style="height:18px">
-        <div style="float: right; font-size: 13px; font-weight:bold; padding-right:5px">V1.1 Build 111116</div>
+        <div style="float: right; font-size: 13px; font-weight:bold; padding-right:5px"><s:property
+                value="#version"/></div>
     </div>
 </div>
 </body>
