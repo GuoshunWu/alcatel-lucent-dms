@@ -1,12 +1,13 @@
 package com.alcatel_lucent.dms.action.login;
 
 import com.alcatel_lucent.dms.action.BaseAction;
-import org.apache.struts2.convention.annotation.Action;
-import org.apache.struts2.convention.annotation.Result;
+import org.apache.struts2.convention.annotation.*;
 
 @SuppressWarnings("serial")
 
-public class LoginAction extends BaseAction {
+@ParentPackage("default")
+//@InterceptorRef("defaultSecurityStackWithAuthentication")
+public class LoginAction extends BaseAction{
 
     private String username;
     private String password;

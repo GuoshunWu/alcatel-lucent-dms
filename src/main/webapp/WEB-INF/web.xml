@@ -52,12 +52,12 @@
 
     <filter-mapping>
         <filter-name>struts2</filter-name>
-        <url-pattern>/*</url-pattern>
-        <!--<url-pattern>/app/*</url-pattern>-->
-        <!--<url-pattern>/trans/*</url-pattern>-->
-        <!--<url-pattern>/task/*</url-pattern>-->
-        <!--<url-pattern>/login/*</url-pattern>-->
-        <!--<url-pattern>*.jsp</url-pattern>-->
+        <!--<url-pattern>/*</url-pattern>-->
+        <url-pattern>/app/*</url-pattern>
+        <url-pattern>/trans/*</url-pattern>
+        <url-pattern>/task/*</url-pattern>
+        <url-pattern>/login/*</url-pattern>
+        <url-pattern>*.jsp</url-pattern>
     </filter-mapping>
 
 
