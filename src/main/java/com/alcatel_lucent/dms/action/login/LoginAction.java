@@ -28,6 +28,7 @@ public class LoginAction extends BaseAction{
         this.password = password;
     }
 
+    @Override
     @Action(results = {
             @Result(name = SUCCESS, type = "redirect", location = "/appmng.jsp"),
             @Result(name = LOGIN, type = "dispatcher", location = "/login.jsp")
