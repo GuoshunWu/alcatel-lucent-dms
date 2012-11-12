@@ -7,3 +7,12 @@
     <option value="transmng.jsp"><s:text name="transmng.title"/></option>
     <option value="taskmng.jsp"><s:text name="taskmng.title"/></option>
 </select>
+
+<%--<s:form id="langForm" action="" method="post" theme="simple">--%>
+    <%--<select name="request_locale" onchange="return $('#langForm').submit();">--%>
+        <%--<option value="en_US">English</option>--%>
+        <%--<option value="zh_CN">Chinese</option>--%>
+    <%--</select>--%>
+<%--</s:form>--%>
+<%--WW_TRANS_I18N_LOCALE: <s:property value="session['WW_TRANS_I18N_LOCALE']"/>--%>
+<%--request_locale: <s:property value="#parameters.request_locale"/>--%>
