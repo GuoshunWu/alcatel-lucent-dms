@@ -9,7 +9,15 @@ import javax.xml.bind.annotation.XmlTransient;
 public class ProductBase extends BaseEntity {
 
     private String name = "Unknown";
+    private User owner;
 
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
 
     @XmlTransient
     private Collection<Product> products;

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.alcatel_lucent.dms.model">
+
+    <class name="User" table="USER">
+        <id name="loginName" type="string" column="LOGIN_NAME"/>
+
+        <property name="name" not-null="true" type="string" column="NAME"/>
+        <property name="email" not-null="true" type="string" column="EMAIL"/>
+        <property name="lastLoginTime" type="timestamp" column="LAST_LOGIN_TIME"/>
+        <property name="status" not-null="true" type="integer" column="STATUS"/>
+        <property name="role" not-null="true" type="integer" column="ROLE"/>
+
+    </class>
+
+</hibernate-mapping>

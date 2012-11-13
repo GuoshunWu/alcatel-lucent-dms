@@ -12,6 +12,7 @@
 		<property column="PATH" name="path" type="string" />
 
         <many-to-one name="applicationBase" column="APPLICATION_BASE_ID" />
+        <many-to-one name="owner" column="USER_ID" />
 
         <set name="dictionaries" inverse="true">
             <key column="DICTIONARY_BASE_ID" not-null="true" on-delete="cascade"/>

@@ -17,6 +17,15 @@ public class DictionaryBase extends BaseEntity {
 
 	private boolean locked;
 
+    private User owner;
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
 
     public Collection<Dictionary> getDictionaries() {
         return dictionaries;

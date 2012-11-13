@@ -11,6 +11,8 @@
         <property name="name" type="string" column="NAME" not-null="true" />
 
 		<many-to-one name="productBase" column="PRODUCT_BASE_ID" not-null="true"/>
+        <many-to-one name="owner" column="USER_ID"  />
+
 
         <set name="applications" inverse="true">
             <key column="APPLICATION_BASE_ID" on-delete="cascade" not-null="true"/>
