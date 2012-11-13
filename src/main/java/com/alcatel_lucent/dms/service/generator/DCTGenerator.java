@@ -194,9 +194,23 @@ public class DCTGenerator implements DictionaryGenerator {
     	}
 		String[] contents = content.split(contentLineSeparator);
 		for (int i = 0; i < contents.length; ++i) {
-		contents[i] = "\"" + contents[i] + "\"";
+		contents[i] = "\"" + escapeContent(contents[i]) + "\"";
 		}
 		return join(contents, joinedStringLineSeparator	+ generateSpace(indentSize));
 	}
+    
+    private String escapeContent(String s) {
+    	StringBuffer result = new StringBuffer();
+    	char prev = 0;
+    	for (int i = 0; i < s.length(); i++) {
+    		char c = s.charAt(i);
+    		if (c == '\"' && prev != '\\') {
+    			result.append("\\");
+    		}
+    		result.append(c);
+    		prev = c;
+    	}
+    	return result.toString();
+    }
 	
 }
