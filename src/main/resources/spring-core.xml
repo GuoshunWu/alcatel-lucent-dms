@@ -108,6 +108,8 @@
                 <value>com/alcatel_lucent/dms/model/Translation.hbm.xml</value>
                 <value>com/alcatel_lucent/dms/model/Task.hbm.xml</value>
                 <value>com/alcatel_lucent/dms/model/TaskDetail.hbm.xml</value>
+
+                <value>com/alcatel_lucent/dms/model/User.hbm.xml</value>
             </list>
         </property>
     </bean>

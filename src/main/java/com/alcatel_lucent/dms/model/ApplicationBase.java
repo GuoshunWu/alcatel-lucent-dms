@@ -19,6 +19,15 @@ public class ApplicationBase extends BaseEntity {
     @XmlTransient
     private Collection<DictionaryBase> dictionaryBases;
 
+    private User owner;
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
 
 
 	public String getName() {

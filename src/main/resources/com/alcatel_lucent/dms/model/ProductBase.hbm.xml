@@ -8,6 +8,7 @@
 			<generator class="native" />
 		</id>
 
+        <many-to-one name="owner" column="USER_ID" />
 		<property name="name" type="string" column="NAME" not-null="true" />
 
 	    <set name="products" inverse="true">
