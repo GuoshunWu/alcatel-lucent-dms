@@ -83,7 +83,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 				"left join l.text.translations ct " +
 				"where lt.language=dl.language and ct.language=dl.language " +
 				"and d.id in (:dictIds) and dl.language.id in (:langIds) " +
-				"and (lt is null or lt.needTranslation=1) " +
+				"and (lt is null or lt.needTranslation=true) " +
 				"and (ct is null or ct.status=:status) " +
 				"order by dl.language.id,l.context.id,l.sortNo";
 		Map param = new HashMap();

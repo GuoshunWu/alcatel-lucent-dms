@@ -37,9 +37,9 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     	Map<Long, int[]> result = new HashMap<Long, int[]>();
     	Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
     	String hql = "select ot.language.id" +
-    			",sum(case when ot.needTranslation=0 or t.status=" + Translation.STATUS_TRANSLATED + " then 1 else 0 end) " +
-    			",sum(case when ot.needTranslation=1 and t.status=" + Translation.STATUS_UNTRANSLATED + " then 1 else 0 end) " +
-    			",sum(case when ot.needTranslation=1 and t.status=" + Translation.STATUS_IN_PROGRESS + " then 1 else 0 end) " +
+    			",sum(case when ot.needTranslation=false or t.status=" + Translation.STATUS_TRANSLATED + " then 1 else 0 end) " +
+    			",sum(case when ot.needTranslation=true and t.status=" + Translation.STATUS_UNTRANSLATED + " then 1 else 0 end) " +
+    			",sum(case when ot.needTranslation=true and t.status=" + Translation.STATUS_IN_PROGRESS + " then 1 else 0 end) " +
     			" from Dictionary d join d.labels l join l.origTranslations ot join l.text.translations t" +
     			" where d.id=:dictId and ot.language=t.language" +
     			" group by ot.language.id";
@@ -56,9 +56,9 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     public Map<Long, Map<Long, int[]>> getDictTranslationSummary(Long prodId) {
     	Map<Long, Map<Long, int[]>> result = new HashMap<Long, Map<Long, int[]>>();
     	String hql = "select d.id,ot.language.id" +
-    			",sum(case when ot.needTranslation=0 or t.status=" + Translation.STATUS_TRANSLATED + " then 1 else 0 end) " +
-    			",sum(case when ot.needTranslation=1 and t.status=" + Translation.STATUS_UNTRANSLATED + " then 1 else 0 end) " +
-    			",sum(case when ot.needTranslation=1 and t.status=" + Translation.STATUS_IN_PROGRESS + " then 1 else 0 end) " +
+    			",sum(case when ot.needTranslation=false or t.status=" + Translation.STATUS_TRANSLATED + " then 1 else 0 end) " +
+    			",sum(case when ot.needTranslation=true and t.status=" + Translation.STATUS_UNTRANSLATED + " then 1 else 0 end) " +
+    			",sum(case when ot.needTranslation=true and t.status=" + Translation.STATUS_IN_PROGRESS + " then 1 else 0 end) " +
     			" from Product p join p.applications a join a.dictionaries d" +
     			" join d.labels l join l.origTranslations ot join l.text.translations t" +
     			" where p.id=:prodId and ot.language=t.language" +
@@ -82,9 +82,9 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     public Map<Long, Map<Long, int[]>> getAppTranslationSummary(Long prodId) {
     	Map<Long, Map<Long, int[]>> result = new HashMap<Long, Map<Long, int[]>>();
     	String hql = "select a.id,ot.language.id" +
-    			",sum(case when ot.needTranslation=0 or t.status=" + Translation.STATUS_TRANSLATED + " then 1 else 0 end) " +
-    			",sum(case when ot.needTranslation=1 and t.status=" + Translation.STATUS_UNTRANSLATED + " then 1 else 0 end) " +
-    			",sum(case when ot.needTranslation=1 and t.status=" + Translation.STATUS_IN_PROGRESS + " then 1 else 0 end) " +
+    			",sum(case when ot.needTranslation=false or t.status=" + Translation.STATUS_TRANSLATED + " then 1 else 0 end) " +
+    			",sum(case when ot.needTranslation=true and t.status=" + Translation.STATUS_UNTRANSLATED + " then 1 else 0 end) " +
+    			",sum(case when ot.needTranslation=true and t.status=" + Translation.STATUS_IN_PROGRESS + " then 1 else 0 end) " +
     			" from Product p join p.applications a join a.dictionaries d" +
     			" join d.labels l join l.origTranslations ot join l.text.translations t" +
     			" where p.id=:prodId and ot.language=t.language" +
