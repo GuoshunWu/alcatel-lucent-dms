@@ -97,8 +97,13 @@ public class LabelREST extends BaseREST {
         	if (filters != null) {
         		int i = 0;
         		for (String field : filters.keySet()) {
+                	// entity specific conversion
+        			Object value = filters.get(field);
+        			if (field.equals("ct.status") && value != null && !value.toString().isEmpty()) {
+        				value = Integer.valueOf(value.toString());
+        			}
         			hql += " and " + field + "=:p" + i;
-        			param.put("p" + i, filters.get(field));
+        			param.put("p" + i, value);
         			i++;
         		}
         	}
