@@ -4,7 +4,9 @@
 <hibernate-mapping package="com.alcatel_lucent.dms.model">
 	<class name="Dictionary" table="DICTIONARY">
 		<id column="ID" name="id">
-			<generator class="native" />
+			<generator class="native">
+                <param name="sequence">ID_DICTIONARY</param>
+			</generator>
 		</id>
 		<property column="VERSION" name="version" not-null="true" type="string" />
 		
