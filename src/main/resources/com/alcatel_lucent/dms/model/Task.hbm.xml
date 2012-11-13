@@ -4,7 +4,9 @@
 <hibernate-mapping package="com.alcatel_lucent.dms.model">
 	<class name="Task" table="TASK">
 		<id column="ID" name="id">
-			<generator class="native" />
+			<generator class="native">
+                <param name="sequence">ID_TASK</param>
+			</generator>
 		</id>
 		<property name="name" type="string" column="NAME" />
 		<property name="createTime" type="java.util.Date" column="CREATE_TIME" />

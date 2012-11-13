@@ -5,7 +5,9 @@
 <hibernate-mapping package="com.alcatel_lucent.dms.model">
     <class name="DictionaryLanguage" table="DICTIONARY_LANGUAGE">
         <id column="ID" name="id">
-            <generator class="native"/>
+            <generator class="native">
+                <param name="sequence">ID_DICTIONARY_LANGUAGE</param>
+            </generator>
         </id>
 
         <property name="languageCode" type="string" column="LANGUAGE_CODE"/>

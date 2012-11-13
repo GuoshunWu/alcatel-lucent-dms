@@ -5,7 +5,9 @@
 <hibernate-mapping package="com.alcatel_lucent.dms.model"   >
 	<class name="Application" table="APPLICATION" >
 		<id column="ID" name="id">
-			<generator class="native" />
+			<generator class="native">
+                <param name="sequence">ID_APPLICATION</param>
+			</generator>
 		</id>
 
         <property name="version" type="string" column="VERSION" not-null="true" />

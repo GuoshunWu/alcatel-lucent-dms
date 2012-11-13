@@ -69,6 +69,8 @@
                 <prop key="hibernate.connection.pool_size">10</prop>
                 <!-- Enable Hibernate's automatic session context management -->
                 <prop key="hibernate.current_session_context_class">thread</prop>
+                <!--<prop key="hib"></prop>-->
+
 
                 <prop key="hibernate.jdbc.batch_size">100</prop>
                 <!--<prop key="jdbc.fetch_size">100</prop>-->
