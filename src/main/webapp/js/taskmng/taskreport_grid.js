@@ -39,12 +39,41 @@
       sortorder: 'asc',
       viewrecords: true,
       gridview: true,
-      multiselect: true,
+      multiselect: false,
       cellEdit: true,
       cellurl: '',
       colNames: colNames,
       colModel: colModel,
       groupHeaders: groupHeader,
+      gridComplete: function() {
+        return $('a', this).css('color', 'blue').click(function() {
+          var allZero, dialogs, param, rowData;
+          param = {};
+          $(this.href.replace('#', '').split('?').slice(1).join('&').split('&')).each(function(index, elem) {
+            var k, v, _ref;
+            _ref = elem.split('='), k = _ref[0], v = _ref[1];
+            return param[k] = decodeURIComponent(v);
+          });
+          rowData = grid.getRowData(parseInt(param.id));
+          allZero = true;
+          $(['T', 'N']).each(function(index, elem) {
+            allZero = 0 === parseInt(rowData["" + param.languaeName + "." + elem]);
+            return allZero;
+          });
+          if (allZero) {
+            console.log('zero');
+            return;
+          }
+          dialogs = require('taskmng/dialogs');
+          dialogs.viewDetail.data('param', {
+            task: grid.getGridParam('postData').task,
+            language: param.languageId,
+            translated: Number(param.languaeName.split('.')[1] === 'T'),
+            context: param.id
+          });
+          return dialogs.viewDetail.dialog('open');
+        });
+      },
       afterCreate: function(grid) {
         grid.setGroupHeaders({
           useColSpanStyle: true,
@@ -59,27 +88,7 @@
         });
         return grid.jqGrid('setFrozenColumns');
       },
-      ondblClickRow: function(rowid, iRow, iCol, e) {
-        var col, dialogs, id, language, trs, _ref;
-        col = $(this).getGridParam('colModel')[iCol];
-        _ref = [/s\(\d+\)\[(\d+)\]/ig.exec(col.index), /s\((\d+)\)\[\d+\]/ig.exec(col.index)], trs = _ref[0], id = _ref[1];
-        if (!trs) {
-          return;
-        }
-        language = {
-          name: col.name.split('.')[0],
-          translated: Number(!parseInt(trs[1])),
-          id: id[1]
-        };
-        dialogs = require('taskmng/dialogs');
-        dialogs.viewDetail.data('param', {
-          task: $(this).getGridParam('postData').task,
-          language: language.id,
-          translated: language.translated,
-          context: rowid
-        });
-        return dialogs.viewDetail.dialog('open');
-      }
+      ondblClickRow: function(rowid, iRow, iCol, e) {}
     });
     grid.getGridParam('afterCreate')(grid);
     return {
@@ -101,7 +110,12 @@
               index: "s(" + language.id + ")[" + index + "]",
               width: 40,
               editable: false,
-              align: 'center'
+              align: 'center',
+              formatter: 'showlink',
+              formatoptions: {
+                baseLinkUrl: '#',
+                addParam: encodeURI("&languageId=" + language.id + "&languaeName=" + language.name + "." + this)
+              }
             };
           }).get());
           return gridParam.groupHeaders.push({

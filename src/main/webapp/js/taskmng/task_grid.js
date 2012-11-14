@@ -88,7 +88,7 @@
       sortorder: 'desc',
       viewrecords: true,
       gridview: true,
-      multiselect: true,
+      multiselect: false,
       cellEdit: true,
       cellurl: 'http://127.0.0.1:2000',
       colNames: ['Task', 'Create time', 'Last upload time', 'Status', 'Actions'],

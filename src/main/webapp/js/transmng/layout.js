@@ -71,6 +71,7 @@
       });
       taskDialog = $("#createTranslationTaskDialog").dialog({
         autoOpen: false,
+        modal: true,
         width: 'auto',
         height: 'auto',
         position: [25, 100],
@@ -174,6 +175,7 @@
         autoOpen: false,
         width: 'auto',
         height: 'auto',
+        modal: true,
         create: function() {
           return $('#detailLanguageSwitcher').change(function() {
             var dict, language;

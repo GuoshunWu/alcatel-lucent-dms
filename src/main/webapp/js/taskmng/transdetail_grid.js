@@ -21,7 +21,7 @@
       sortorder: 'asc',
       viewrecords: true,
       gridview: true,
-      multiselect: true,
+      multiselect: false,
       cellEdit: true,
       cellurl: 'http://127.0.0.1:2000',
       colNames: ['Label', 'Max len', 'Context', 'Reference language', 'Translation'],

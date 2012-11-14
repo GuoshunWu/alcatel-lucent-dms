@@ -204,7 +204,7 @@
         return;
       }
       $.blockUI();
-      return $.post('/trans/update-status', {
+      return $.post('trans/update-status', {
         type: getTableType(),
         transStatus: this.value,
         id: selectedRowIds

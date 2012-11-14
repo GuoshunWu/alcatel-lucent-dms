@@ -40,7 +40,7 @@ define ['jqgrid'], ($)->
         if level != 'application'
 
           model.formatter =  'showlink'
-          model.formatoptions={baseLinkUrl: '#', addParam: encodeURI("&languageId=#{language.id}&languaeName=#{language.name}")}
+          model.formatoptions={baseLinkUrl: '#', addParam: encodeURI("&languageId=#{language.id}&languaeName=#{model.name}")}
         model
     ).get()
     @getGridParam('groupHeaders').push {startColumnName: "#{language.name}.T", numberOfColumns: cols.length, titleText: "<bold>#{language.name}</bold>"}
