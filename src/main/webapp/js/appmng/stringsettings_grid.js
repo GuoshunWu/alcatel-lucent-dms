@@ -18,7 +18,7 @@
       sortorder: 'asc',
       viewrecords: true,
       gridview: true,
-      multiselect: true,
+      multiselect: false,
       cellEdit: true,
       cellurl: 'app/update-label',
       colNames: ['Label', 'Reference Language', 'Max Length', 'Context', 'Description'],

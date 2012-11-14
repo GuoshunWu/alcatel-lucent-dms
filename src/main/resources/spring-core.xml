@@ -9,12 +9,6 @@
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
 ">
 
-    <!--<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">-->
-    <!--<property name="configLocation">-->
-    <!--<value>classpath:hibernate.cfg.xml</value>-->
-    <!--</property>-->
-    <!--</bean>-->
-
     <bean id="transactionManager" scope="singleton"
           class="org.springframework.orm.hibernate3.HibernateTransactionManager">
         <property name="sessionFactory">
@@ -48,15 +42,11 @@
         <property name="url" value="proxool.H2_Pool"/>
     </bean>
 
-    <bean id="sessionFactory"
-          class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
-        <!--<property name="configLocation">-->
-        <!--<value>classpath:hibernate.cfg.xml</value>-->
-        <!--</property>-->
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.proxool.properties">${proxool.properties}</prop>
-
                 <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
 
                 <prop key="hibernate.proxool.pool_alias">${proxool.alias}</prop>
@@ -88,30 +78,10 @@
             </props>
         </property>
 
-        <property name="mappingResources">
+        <property name="packagesToScan" value="com.alcatel_lucent.dms.model"/>
+        <property name="mappingDirectoryLocations">
             <list>
-                <value>com/alcatel_lucent/dms/model/ProductBase.hbm.xml</value>
-                <value>com/alcatel_lucent/dms/model/Product.hbm.xml</value>
-                <value>com/alcatel_lucent/dms/model/Application.hbm.xml</value>
-                <value>com/alcatel_lucent/dms/model/ApplicationBase.hbm.xml</value>
-
-                <value>com/alcatel_lucent/dms/model/Dictionary.hbm.xml</value>
-                <value>com/alcatel_lucent/dms/model/DictionaryBase.hbm.xml</value>
-
-                <value>com/alcatel_lucent/dms/model/DictionaryLanguage.hbm.xml</value>
-                <value>com/alcatel_lucent/dms/model/Label.hbm.xml</value>
-                <value>com/alcatel_lucent/dms/model/LabelTranslation.hbm.xml</value>
-                <value>com/alcatel_lucent/dms/model/Text.hbm.xml</value>
-                <value>com/alcatel_lucent/dms/model/Context.hbm.xml</value>
-                <value>com/alcatel_lucent/dms/model/Charset.hbm.xml</value>
-                <value>com/alcatel_lucent/dms/model/Language.hbm.xml</value>
-                <value>com/alcatel_lucent/dms/model/AlcatelLanguageCode.hbm.xml</value>
-                <value>com/alcatel_lucent/dms/model/ISOLanguageCode.hbm.xml</value>
-                <value>com/alcatel_lucent/dms/model/Translation.hbm.xml</value>
-                <value>com/alcatel_lucent/dms/model/Task.hbm.xml</value>
-                <value>com/alcatel_lucent/dms/model/TaskDetail.hbm.xml</value>
-
-                <value>com/alcatel_lucent/dms/model/User.hbm.xml</value>
+                <value>classpath:com/alcatel_lucent/dms/model</value>
             </list>
         </property>
     </bean>

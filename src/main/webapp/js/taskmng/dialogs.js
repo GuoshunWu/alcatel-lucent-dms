@@ -12,6 +12,7 @@
       position: [23, 126],
       height: 'auto',
       width: 'auto',
+      modal: true,
       show: {
         effect: 'slide',
         direction: "up"
@@ -46,6 +47,7 @@
     });
     transReport = $('#translationReportDialog').dialog({
       autoOpen: false,
+      modal: true,
       width: 'auto',
       height: 'auto',
       open: function() {
@@ -116,6 +118,7 @@
     });
     viewDetail = $('#translationDetailDialog').dialog({
       autoOpen: false,
+      modal: true,
       width: 'auto',
       height: 'auto',
       open: function() {

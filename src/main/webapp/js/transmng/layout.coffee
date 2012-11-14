@@ -45,7 +45,7 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
     ]
     }
     taskDialog = $("#createTranslationTaskDialog").dialog {
-    autoOpen: false
+    autoOpen: false,modal: true
     width: 'auto', height: 'auto', position: [25, 100], show: { effect: 'slide', direction: "down" }
     open: ->
       info = grid.getTotalSelectedRowInfo()
@@ -105,13 +105,14 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
     ]
     }
     transDetailDialog = $('#translationDetailDialog').dialog {
-    autoOpen: false, width: 'auto', height: 'auto'
+    autoOpen: false, width: 'auto', height: 'auto',modal: true
     create: ()->
       $('#detailLanguageSwitcher').change ->
         dict = $('#translationDetailDialog').data "dict"
         language = {id: $(@).val(), name: $(@).find("option:selected").text()}
         detailgrid.languageChanged {language: language, dict: dict}
-    close: (event, ui)->detailgrid.saveLastEditedCell()
+    close: (event, ui)->
+      detailgrid.saveLastEditedCell()
     buttons: [
       {text: c18n.close, click: ()->
         $(@).dialog 'close'

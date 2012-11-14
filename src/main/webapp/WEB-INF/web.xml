@@ -46,7 +46,7 @@
         </init-param>
         <init-param>
             <param-name>forceEncoding</param-name>
-            <param-value>true </param-value>
+            <param-value>true</param-value>
         </init-param>
     </filter>
 
@@ -121,6 +121,17 @@
     <servlet-mapping>
         <servlet-name>GroovyServlet</servlet-name>
         <url-pattern>*.groovy</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
+        <servlet-name>proxoolAdmin</servlet-name>
+        <servlet-class>org.logicalcobwebs.proxool.admin.servlet.AdminServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>proxoolAdmin</servlet-name>
+        <url-pattern>/padmin</url-pattern>
     </servlet-mapping>
 
     <welcome-file-list>

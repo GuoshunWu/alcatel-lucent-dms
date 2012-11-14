@@ -82,7 +82,7 @@ define ['jqgrid', 'util', 'require', 'jqmsgbox', 'transmng/grid.colmodel', 'bloc
       return
 
     $.blockUI()
-    $.post '/trans/update-status', {type: getTableType(), transStatus: @value, id: selectedRowIds}, (json)->
+    $.post 'trans/update-status', {type: getTableType(), transStatus: @value, id: selectedRowIds}, (json)->
       (alert json.message; return) if json.status != 0
       $.unblockUI()
       $.msgBox i18n.msgbox.transstatus.msg, null, title: c18n.message

@@ -53,7 +53,7 @@ define (require)->
   width: $(window).width() * 0.95, height: 400, shrinkToFit: false
   rownumbers: true, loadonce: false # for reload the colModel
   pager: '#taskPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
-  sortname: 'createTime', sortorder: 'desc', viewrecords: true, gridview: true, multiselect: true,
+  sortname: 'createTime', sortorder: 'desc', viewrecords: true, gridview: true, multiselect: false,
   cellEdit: true, cellurl: 'http://127.0.0.1:2000'
   colNames: ['Task', 'Create time', 'Last upload time', 'Status' , 'Actions']
   colModel: [

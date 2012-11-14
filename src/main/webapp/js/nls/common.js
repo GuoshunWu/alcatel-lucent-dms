@@ -7,6 +7,7 @@
  */
 define({
     root:{
+        all:'All',
         ok:'OK',
         close:'Close',
         cancel: 'Cancel',

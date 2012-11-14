@@ -1,5 +1,11 @@
 package com.alcatel_lucent.dms.model;
 
+import org.hibernate.annotations.Type;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.sql.Timestamp;
 
 /**
@@ -9,7 +15,9 @@ import java.sql.Timestamp;
  * Time: 上午11:34
  * To change this template use File | Settings | File Templates.
  */
-public class User{
+@Entity
+@Table(name = "USER")
+public class User {
     private String loginName;
     private String name;
     private String email;
@@ -18,7 +26,8 @@ public class User{
     private int role;
     private int status;
 
-
+    @Id
+    @Column(name = "LOGIN_NAME")
     public String getLoginName() {
         return loginName;
     }
@@ -27,6 +36,7 @@ public class User{
         this.loginName = loginName;
     }
 
+    @Column(name = "NAME")
     public String getName() {
         return name;
     }
@@ -35,6 +45,7 @@ public class User{
         this.name = name;
     }
 
+    @Column(name = "LAST_LOGIN_Time")
     public Timestamp getLastLoginTime() {
         return lastLoginTime;
     }
@@ -43,6 +54,7 @@ public class User{
         this.lastLoginTime = lastLoginTime;
     }
 
+    @Column(name = "ROLE")
     public int getRole() {
         return role;
     }
@@ -51,6 +63,7 @@ public class User{
         this.role = role;
     }
 
+    @Column(name = "STATUS")
     public int getStatus() {
         return status;
     }
@@ -59,6 +72,7 @@ public class User{
         this.status = status;
     }
 
+    @Column(name = "EMAIL")
     public String getEmail() {
         return email;
     }

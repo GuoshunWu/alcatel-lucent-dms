@@ -10,7 +10,7 @@ define ['jqgrid', 'require'], ($, require)->
   sortname: 'key'
   sortorder: 'asc'
   viewrecords: true
-  gridview: true, multiselect: true, cellEdit: true, cellurl: 'app/update-label'
+  gridview: true, multiselect: false, cellEdit: true, cellurl: 'app/update-label'
   colNames: ['Label', 'Reference Language', 'Max Length', 'Context', 'Description']
   colModel: [
     {name: 'key', index: 'key', width: 100, editable: false, align: 'left'}
