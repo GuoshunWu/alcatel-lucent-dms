@@ -416,7 +416,7 @@
                     <port>80</port>
                     <uriEncoding>utf-8</uriEncoding>
                     <!--<server>tomcat</server>-->
-                    <url>http://172.24.190.236/manager/html</url>
+                    <url>http://172.24.190.236:9080/manager/html</url>
                     <!--<url>http://localhost:8080/manager/html</url>-->
                     <!-- application path always starts with / -->
                     <path>/dms</path>
