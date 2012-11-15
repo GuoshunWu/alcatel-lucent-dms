@@ -39,11 +39,11 @@
             <table align='center'>
                 <tr>
                     <td><strong><s:label for="idLoginname"><s:text name="login.loginname"/></s:label></strong></td>
-                    <td><s:textfield name="loginname" id="idLoginname" size="25" maxlength="40"/></td>
+                    <td><s:textfield name="loginname" id="idLoginname" size="25" maxlength="40"/><s:fielderror fieldName="loginname"/></td>
                 </tr>
                 <tr>
                     <td><strong><s:label for="idPassword"><s:text name="login.password"/></s:label></strong></td>
-                    <td><s:password name="password" id="idPassword" size="25" maxlength="40"/></td>
+                    <td><s:password name="password" id="idPassword" size="25" maxlength="40"/><s:fielderror fieldName="password"/> </td>
                 </tr>
                 <tr>
                     <td colspan="2"/>
