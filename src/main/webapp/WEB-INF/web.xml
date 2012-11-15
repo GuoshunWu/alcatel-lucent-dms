@@ -27,6 +27,11 @@
     <filter>
         <filter-name>authenticationFilter</filter-name>
         <filter-class>com.alcatel_lucent.dms.filters.AuthenticationFilter</filter-class>
+        <!-- exclude patterns URL, which are regular expression separated by comma-->
+        <init-param>
+            <param-name>excludePatterns</param-name>
+            <param-value>login*</param-value>
+        </init-param>
     </filter>
 
     <filter-mapping>
