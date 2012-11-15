@@ -19,7 +19,7 @@ import java.io.UnsupportedEncodingException;
  * Time: 下午3:06
  * To change this template use File | Settings | File Templates.
  */
-//@Ignore
+@Ignore
 public class LoginActionTest extends StrutsSpringTestCase {
     /*
         If you use Spring as the object factory, the StrutsSpringTestCase class can be used to write your JUnits.
@@ -32,7 +32,7 @@ public class LoginActionTest extends StrutsSpringTestCase {
 
     @Test
     public void testGetActionMapping() throws Exception {
-        ActionMapping mapping = getActionMapping("/login/login.action");
+        ActionMapping mapping = getActionMapping("/login/login");
         assertNotNull(mapping);
         assertEquals("/login", mapping.getNamespace());
         assertEquals("login", mapping.getName());
@@ -41,10 +41,10 @@ public class LoginActionTest extends StrutsSpringTestCase {
     @Test
     public void testGetActionProxy() throws Exception {
 //        set parameters before calling getActionProxy
-        request.setParameter("username", "WGS");
+        request.setParameter("loginname", "WGS");
         request.setParameter("password", "123456");
 
-        ActionProxy proxy = getActionProxy("/login/login.action");
+        ActionProxy proxy = getActionProxy("/login/login");
         assertNotNull(proxy);
 
         LoginAction action = (LoginAction) proxy.getAction();
@@ -52,7 +52,7 @@ public class LoginActionTest extends StrutsSpringTestCase {
 
         String result = proxy.execute();
         assertEquals(Action.SUCCESS, result);
-        assertEquals("WGS", action.getUsername());
+        assertEquals("WGS", action.getLoginname());
         assertEquals("123456", action.getPassword());
     }
 
@@ -63,7 +63,7 @@ public class LoginActionTest extends StrutsSpringTestCase {
     }
 
     public void testGetValueFromStack() throws ServletException, UnsupportedEncodingException {
-        request.setParameter("username", "WGS");
+        request.setParameter("loginname", "WGS");
         request.setParameter("password", "123456");
 
         executeAction("/login/login");
