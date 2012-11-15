@@ -1,9 +1,13 @@
 package com.alcatel_lucent.dms.filters;
 
+import com.alcatel_lucent.dms.UserContext;
 import org.apache.log4j.Logger;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -25,8 +29,25 @@ public class AuthenticationFilter implements Filter {
     }
 
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws ServletException, IOException {
-        chain.doFilter(req, resp);
+        HttpServletRequest request = (HttpServletRequest) req;
+        HttpServletResponse response = (HttpServletResponse) resp;
+        HttpSession session = request.getSession();
+        String uri = request.getRequestURI();
 
+//        log.debug("uri=" + uri);
+        for (String pattern : excludePatterns) {
+            if (uri.matches(pattern)) {
+//                log.debug("URI " + uri + " match pattern: " + pattern + ", ignore.");
+                chain.doFilter(req, resp);
+                return;
+            }
+        }
+
+        if (null != session.getAttribute(UserContext.SESSION_USER_CONTEXT)) {
+            chain.doFilter(req, resp);
+            return;
+        }
+        response.sendRedirect(request.getContextPath()+"/login.jsp");
     }
 
     public void init(FilterConfig config) throws ServletException {

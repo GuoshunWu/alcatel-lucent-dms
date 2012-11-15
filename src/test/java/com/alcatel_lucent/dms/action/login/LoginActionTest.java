@@ -19,7 +19,7 @@ import java.io.UnsupportedEncodingException;
  * Time: 下午3:06
  * To change this template use File | Settings | File Templates.
  */
-@Ignore
+//@Ignore
 public class LoginActionTest extends StrutsSpringTestCase {
     /*
         If you use Spring as the object factory, the StrutsSpringTestCase class can be used to write your JUnits.

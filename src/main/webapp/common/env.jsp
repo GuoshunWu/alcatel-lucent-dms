@@ -78,7 +78,7 @@
     };
 
     var param = {};
-    HTTP.get('app/get-locale', function (json) {
+    HTTP.get('<s:url value="/"/>app/get-locale', function (json) {
         var locale = json.message.replace('_', '-').toLocaleLowerCase();
         param.locale = locale;
 //    param.locale = 'zh-cn'
@@ -90,20 +90,4 @@
         console.log("Error:" + errText + "(" + errStatus + ")");
     });
 
-    /**
-     * Convert module dependencies to its correct name
-     * */
-    function convertDependencies(moduleName, array) {
-        if (typeof array == "string") return moduleName + "/" + array;
-        var newArray = [];
-        for (var i = 0; i < array.length; ++i) {
-            var dependency = moduleName + "/" + array[i];
-            if (array[i].indexOf('!') != -1) {
-                var splitParts = array[i].split('!');
-                dependency = splitParts[0] + "!" + moduleName + "/" + splitParts[1];
-            }
-            newArray.push(dependency);
-        }
-        return newArray;
-    }
 </script>

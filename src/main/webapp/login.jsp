@@ -34,11 +34,12 @@
     <img src="images/login/LoginMiddle.jpg" alt="picture"/>
 
     <div>
-        <s:form id="loginForm" name="loginForm" action="login/login" theme="simple" method="post">
+        <s:form id="loginForm" name="loginForm" validate="false" theme="simple" namespace="/login" action="login"
+                method="post">
             <table align='center'>
                 <tr>
-                    <td><strong><s:label for="idUsername"><s:text name="login.username"/></s:label></strong></td>
-                    <td><s:textfield name="username" id="idUsername" size="25" maxlength="40"/></td>
+                    <td><strong><s:label for="idLoginname"><s:text name="login.loginname"/></s:label></strong></td>
+                    <td><s:textfield name="loginname" id="idLoginname" size="25" maxlength="40"/></td>
                 </tr>
                 <tr>
                     <td><strong><s:label for="idPassword"><s:text name="login.password"/></s:label></strong></td>

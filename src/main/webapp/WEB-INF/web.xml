@@ -30,7 +30,7 @@
         <!-- exclude patterns URL, which are regular expression separated by comma-->
         <init-param>
             <param-name>excludePatterns</param-name>
-            <param-value>login*</param-value>
+            <param-value>.*login(?:\.(?:jsp|action))?,.*.js,.*.css,.*images.*,.*.ico</param-value>
         </init-param>
     </filter>
 

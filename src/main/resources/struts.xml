@@ -5,21 +5,28 @@
 <struts>
     <constant name="struts.action.excludePattern" value="/rest/.*"/>
 
-    <package name="default" extends="struts-default" >
-        <interceptors>
-            <interceptor name="authenticationInterceptor" class="com.alcatel_lucent.dms.interceptors.AuthenticationInterceptor"/>
+    <package name="default" extends="struts-default">
+        <!--<interceptors>-->
+            <!--<interceptor name="authenticationInterceptor"-->
+                         <!--class="com.alcatel_lucent.dms.interceptors.AuthenticationInterceptor"/>-->
 
-            <interceptor-stack name="defaultSecurityStackWithAuthentication">
-                <interceptor-ref name="authenticationInterceptor"/>
-                <interceptor-ref name="defaultStack"/>
-            </interceptor-stack>
-        </interceptors>
+            <!--<interceptor-stack name="defaultSecurityStackWithAuthentication">-->
+                <!--<interceptor-ref name="authenticationInterceptor">-->
+                    <!--&lt;!&ndash;<param name="excludeMethods">login</param>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<param name="includeMethods">execute</param>&ndash;&gt;-->
+                <!--</interceptor-ref>-->
+                <!--<interceptor-ref name="defaultStack"/>-->
+            <!--</interceptor-stack>-->
+        <!--</interceptors>-->
 
-        <default-interceptor-ref name="defaultSecurityStackWithAuthentication"/>
+        <!--<default-interceptor-ref name="defaultSecurityStackWithAuthentication"/>-->
 
-        <global-results>
-            <result name="error">/error.jsp</result>
-        </global-results>
+        <!--<global-results>-->
+            <!--<result name="error">/error.jsp</result>-->
+            <!--<result name="login" type="redirect">-->
+                <!--<param name="location">/login.jsp</param>-->
+            <!--</result>-->
+        <!--</global-results>-->
     </package>
 
     <!-- integrate with spring here -->
@@ -32,7 +39,6 @@
 
     <constant name="struts.devMode" value="true"/>
     <constant name="struts.convention.classes.reload" value="true"/>
-
 
 
     <!-- 	<package name="app" extends="json-default" namespace="/app">

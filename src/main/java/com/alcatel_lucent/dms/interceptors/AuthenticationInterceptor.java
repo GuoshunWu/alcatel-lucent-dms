@@ -6,6 +6,7 @@ import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
+import com.opensymphony.xwork2.interceptor.MethodFilterInterceptor;
 import com.opensymphony.xwork2.util.LocalizedTextUtil;
 import org.apache.log4j.Logger;
 import org.apache.struts2.StrutsStatics;
@@ -24,15 +25,16 @@ public class AuthenticationInterceptor extends AbstractInterceptor implements St
     protected static Logger log = Logger.getLogger(AuthenticationInterceptor.class);
 
     @SuppressWarnings("unchecked")
-    @Override
-    public String intercept(ActionInvocation invocation) throws Exception {
+//    @Override
+    protected String doIntercept(ActionInvocation invocation) throws Exception {
         log.debug("Start AuthenticationInterceptor");
         final Object action = invocation.getAction();
         final ActionContext context = invocation.getInvocationContext();
-        Map attibutes = context.getSession();
+        Map session = context.getSession();
 
-        UserContext uctx = UserContext.getInstance();    // get user profile from http session
-        if (uctx == null) {       // not logged in
+
+        UserContext uCtx = UserContext.getInstance();    // get user profile from http session
+        if (uCtx == null) {       // not logged in
             return Action.LOGIN;  // “message” is defined as a global result in struts.xml
 
 //        log.info(uctx.getUser().getLoginName() + " - " + ActionContext.getContext().getName());
@@ -43,11 +45,31 @@ public class AuthenticationInterceptor extends AbstractInterceptor implements St
     }
 
     @Override
-    public void destroy(){
+    public void destroy() {
         log.debug("AuthenticationInterceptor destroyed.");
     }
+
     @Override
-    public void init(){
+    public String intercept(ActionInvocation invocation) throws Exception {
+        log.debug("Start AuthenticationInterceptor intercept");
+        final Object action = invocation.getAction();
+        final ActionContext context = invocation.getInvocationContext();
+        Map session = context.getSession();
+
+
+        UserContext uCtx = UserContext.getInstance();    // get user profile from http session
+        if (uCtx == null) {       // not logged in
+//            return Action.LOGIN;  // “message” is defined as a global result in struts.xml
+
+//        log.info(uctx.getUser().getLoginName() + " - " + ActionContext.getContext().getName());
+            // now you have user info and action name, to do privilege check here
+        }
+        // if permission denied, return “message” directly
+        return invocation.invoke();          // pass the privilege check.
+    }
+
+    @Override
+    public void init() {
         log.debug("AuthenticationInterceptor initialized.");
     }
 }

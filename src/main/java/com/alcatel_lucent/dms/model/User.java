@@ -15,6 +15,8 @@ import java.sql.Timestamp;
  * Time: 上午11:34
  * To change this template use File | Settings | File Templates.
  */
+
+
 @Entity
 @Table(name = "USER")
 public class User {
@@ -82,5 +84,15 @@ public class User {
     }
 
     public User() {
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "lastLoginTime=" + lastLoginTime +
+                ", loginName='" + loginName + '\'' +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }
