@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alcatel_lucent.dms.SystemError;
+import com.alcatel_lucent.dms.model.Application;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.Language;
 import com.alcatel_lucent.dms.model.Translation;
@@ -116,8 +117,8 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 		int col = 0;
 		headRow1.createCell(col).setCellValue("Application");
 		sheet.addMergedRegion(new CellRangeAddress(0, 1, col, col));
-		headRow1.createCell(++col).setCellValue("App version");
-		sheet.addMergedRegion(new CellRangeAddress(0, 1, col, col));
+//		headRow1.createCell(++col).setCellValue("App version");
+//		sheet.addMergedRegion(new CellRangeAddress(0, 1, col, col));
 		headRow1.createCell(++col).setCellValue("Dictionary");
 		sheet.addMergedRegion(new CellRangeAddress(0, 1, col, col));
 		headRow1.createCell(++col).setCellValue("Dict version");
@@ -141,8 +142,8 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 		for (Long dictId : data.keySet()) {
 			Row row = sheet.createRow(rowNo++);
 			Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
-			createCell(row, col++, dict.getApp().getName(), null);
-			createCell(row, col++, dict.getApp().getVersion(), null);
+			col = 0;
+			createCell(row, col++, dict.getBase().getApplicationBase().getName(), null);
 			createCell(row, col++, dict.getName(), null);
 			createCell(row, col++, dict.getVersion(), null);
 			createCell(row, col++, dict.getEncoding(), null);
@@ -170,7 +171,52 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 	@Override
 	public void generateAppTranslationReport(Long prodId, OutputStream output) {
 		Map<Long, Map<Long, int[]>> data = getAppTranslationSummary(prodId);
-		
+		Collection<Language> languages = languageService.getLanguagesInProduct(prodId);
+		Workbook wb = new HSSFWorkbook();
+		Sheet sheet = wb.createSheet("Sheet1");
+		Row headRow1 = sheet.createRow(0);
+		Row headRow2 = sheet.createRow(1);
+		int col = 0;
+		headRow1.createCell(col).setCellValue("Application");
+		sheet.addMergedRegion(new CellRangeAddress(0, 1, col, col));
+		headRow1.createCell(++col).setCellValue("App version");
+		sheet.addMergedRegion(new CellRangeAddress(0, 1, col, col));
+		headRow1.createCell(++col).setCellValue("Num of string");
+		sheet.addMergedRegion(new CellRangeAddress(0, 1, col, col));
+		col++;
+		for (Language lang : languages) {
+			headRow1.createCell(col).setCellValue(lang.getName());
+			sheet.addMergedRegion(new CellRangeAddress(0, 0, col, col + 2));
+			headRow2.createCell(col).setCellValue("T");
+			headRow2.createCell(col + 1).setCellValue("N");
+			headRow2.createCell(col + 2).setCellValue("I");
+			col += 3;
+		}
+		int rowNo = 2;
+		for (Long appId : data.keySet()) {
+			Row row = sheet.createRow(rowNo++);
+			Application app = (Application) dao.retrieve(Application.class, appId);
+			col = 0;
+			createCell(row, col++, app.getName(), null);
+			createCell(row, col++, app.getVersion(), null);
+			createCell(row, col++, app.getLabelNum(), null);
+			for (Language lang : languages) {
+				int[] values = data.get(appId).get(lang.getId());
+				if (values == null) {
+					values = new int[] {0, 0, 0};
+				}
+				for (int i = 0; i < 3; i++) {
+					createCell(row, col++, values[i], null);
+				}
+			}
+		}
+		try {
+			wb.write(output);
+		} catch (IOException e) {
+			e.printStackTrace();
+			log.error(e);
+			throw new SystemError(e);
+		}
 	}	
 	
 	private Cell createCell(Row row, int column, Object value, CellStyle style) {
