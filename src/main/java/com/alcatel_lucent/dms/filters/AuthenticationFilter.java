@@ -47,6 +47,9 @@ public class AuthenticationFilter implements Filter {
             chain.doFilter(req, resp);
             return;
         }
+
+//        forward will cause struts core filter error
+//        request.getRequestDispatcher("/login.jsp").forward(req,resp);
         response.sendRedirect(request.getContextPath()+"/login.jsp");
     }
 

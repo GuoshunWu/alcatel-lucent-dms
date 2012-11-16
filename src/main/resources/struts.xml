@@ -5,7 +5,7 @@
 <struts>
     <constant name="struts.action.excludePattern" value="/rest/.*"/>
 
-    <package name="default" extends="struts-default">
+    <!--<package name="default" extends="struts-default">-->
         <!--<interceptors>-->
             <!--<interceptor name="authenticationInterceptor"-->
                          <!--class="com.alcatel_lucent.dms.interceptors.AuthenticationInterceptor"/>-->
@@ -27,7 +27,7 @@
                 <!--<param name="location">/login.jsp</param>-->
             <!--</result>-->
         <!--</global-results>-->
-    </package>
+    <!--</package>-->
 
     <!-- integrate with spring here -->
     <constant name="struts.objectFactory" value="spring"/>

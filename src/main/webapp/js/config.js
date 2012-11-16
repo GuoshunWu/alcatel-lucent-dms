@@ -14,6 +14,8 @@ require.config({
     paths:{
         jquery:'jquery-1.7.2.min',
         jqueryui:'jquery-ui-1.8.22.custom.min',
+        jqvalidate:'jquery.validate',
+        jqform:'jquery.form',
         jqgrid:'jquery.jqGrid.min',
         jqtree:'jquery.jstree',
         jqlayout:'jquery.layout-latest',
@@ -33,6 +35,14 @@ require.config({
         'coffee-script':'../coffee-script'
     },
     shim:{
+        'jqvalidate':{
+            deps:['jquery'],
+            exports:'jQuery'
+        },
+        'jqform':{
+            deps:['jquery'],
+            exports:'jQuery'
+        },
         'jqueryui':{
             deps:['jquery'],
             exports:'jQuery'
