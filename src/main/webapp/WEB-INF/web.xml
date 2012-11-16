@@ -24,21 +24,6 @@
         <param-value>classpath:log4j.xml</param-value>
     </context-param>
 
-    <filter>
-        <filter-name>authenticationFilter</filter-name>
-        <filter-class>com.alcatel_lucent.dms.filters.AuthenticationFilter</filter-class>
-        <!-- exclude patterns URL, which are regular expression separated by comma-->
-        <init-param>
-            <param-name>excludePatterns</param-name>
-            <param-value>.*login(?:\.(?:jsp|action))?,.*.js,.*.css,.*images.*,.*.ico</param-value>
-        </init-param>
-    </filter>
-
-    <filter-mapping>
-        <filter-name>authenticationFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-
     <!--process request encoding -->
     <filter>
         <filter-name>encodingFilter</filter-name>
@@ -60,6 +45,18 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
+
+    <!-- login check -->
+    <filter>
+        <filter-name>authenticationFilter</filter-name>
+        <filter-class>com.alcatel_lucent.dms.filters.AuthenticationFilter</filter-class>
+        <!-- exclude patterns URL, which are regular expression separated by comma-->
+        <init-param>
+            <param-name>excludePatterns</param-name>
+            <param-value>.*login(?:\.(?:jsp|action))?,.*.js,.*.css,.*images.*,.*.ico</param-value>
+        </init-param>
+    </filter>
+
     <filter>
         <filter-name>struts2</filter-name>
         <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
@@ -73,6 +70,13 @@
         <url-pattern>/task/*</url-pattern>
         <url-pattern>/login/*</url-pattern>
         <url-pattern>*.jsp</url-pattern>
+    </filter-mapping>
+
+
+
+    <filter-mapping>
+        <filter-name>authenticationFilter</filter-name>
+        <url-pattern>/*</url-pattern>
     </filter-mapping>
 
 

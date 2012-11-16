@@ -2,8 +2,42 @@
 (function() {
 
   define(function(require) {
-    var $;
-    return $ = require('jqueryui');
+    var $, i18n;
+    $ = require('jqueryui');
+    require('jqvalidate');
+    require('jqform');
+    require('blockui');
+    i18n = require('i18n!nls/login');
+    $('#loginForm').validate({
+      rules: {
+        loginname: "required",
+        password: 'required'
+      },
+      messages: {
+        loginname: i18n.namerequired,
+        password: i18n.pwdrequired
+      },
+      errorPlacement: function(error, element) {
+        return error.appendTo(element.parent("td").next("td"));
+      },
+      debug: false
+    });
+    return $('#loginForm').ajaxForm({
+      dataType: 'json',
+      beforeSubmit: function(formData, jqForm, options) {
+        return $('#loginForm').block({
+          message: '<h1><img src="images/busy.gif" />Login...Please wait</h1>'
+        });
+      },
+      success: function(json, statusText, xhr, $form) {
+        $('#loginForm').unblock();
+        if (0 !== json.status) {
+          $('#loginStatus').text(json.message);
+          return;
+        }
+        return window.location = 'appmng.jsp';
+      }
+    });
   });
 
 }).call(this);

@@ -34,24 +34,41 @@
     <img src="images/login/LoginMiddle.jpg" alt="picture"/>
 
     <div>
-        <s:form id="loginForm" name="loginForm" validate="false" theme="simple" namespace="/login" action="login"
-                method="post">
-            <table align='center'>
+        <s:form id="loginForm" name="loginForm" validate="false" theme="simple" method="post" action='login'
+                namespace='/login'>
+            <table border="0" align='center'>
                 <tr>
-                    <td><strong><s:label for="idLoginname"><s:text name="login.loginname"/></s:label></strong></td>
-                    <td><s:textfield name="loginname" id="idLoginname" size="25" maxlength="40"/><s:fielderror fieldName="loginname"/></td>
+                    <td style="width: 100px" align="right"><strong>
+                        <label for="idLoginname"><s:text name="login.loginname"/></label></strong></td>
+                    <td><s:textfield name="loginname" id="idLoginname" size="25"
+                                     maxlength="40"/>
+                            <%--<span id="loginNameErr" style="color:red"/>--%>
+                    </td>
+                    <td align="left"/>
                 </tr>
                 <tr>
-                    <td><strong><s:label for="idPassword"><s:text name="login.password"/></s:label></strong></td>
-                    <td><s:password name="password" id="idPassword" size="25" maxlength="40"/><s:fielderror fieldName="password"/> </td>
+                    <td style="width: 100px" align="right">
+                        <strong><label for="idPassword"><s:text name="login.password"/></label></strong>
+                    </td>
+                    <td><s:password name="password" id="idPassword" size="25" maxlength="40"/>
+                            <%--<span id="pwdErr" style="color:red"/>--%>
+                    </td>
+                    <td align="left"/>
                 </tr>
                 <tr>
-                    <td colspan="2"/>
+                    <td colspan="3"></td>
                 </tr>
                 <tr>
-                    <td colspan="2">
+                    <td colspan="3">
+                            <%--<input type="button" name='loginAction' id="loginButton" value="<s:text name="login.login"/>"--%>
+                            <%--class="button"/>--%>
                         <s:submit value="%{getText('login.login')}" cssClass="button"/>
                         <s:reset value="%{getText('login.reset')}" cssClass="button"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <div id="loginStatus" style="color:red"></div>
                     </td>
                 </tr>
             </table>
