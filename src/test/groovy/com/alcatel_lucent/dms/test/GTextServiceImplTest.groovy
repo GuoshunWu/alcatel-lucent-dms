@@ -16,6 +16,7 @@ import static org.junit.Assert.*
 import com.alcatel_lucent.dms.service.DaoService
 import net.sf.json.JSONObject
 import com.alcatel_lucent.dms.BusinessException
+import org.junit.Ignore
 
 /**
  * Created by IntelliJ IDEA.
@@ -24,6 +25,7 @@ import com.alcatel_lucent.dms.BusinessException
  * Time: 下午2:10
  * To change this template use File | Settings | File Templates.
  */
+@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = ["/spring.xml"])
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)

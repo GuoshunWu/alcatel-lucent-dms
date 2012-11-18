@@ -46,11 +46,11 @@
 
         <property name="hibernateProperties">
             <props>
-                <prop key="hibernate.proxool.properties">${proxool.properties}</prop>
-                <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+                <prop key="hibernate.proxool.properties">proxool.properties</prop>
+                <prop key="hibernate.hbm2ddl.auto">${db.hbm2ddl.auto}</prop>
 
-                <prop key="hibernate.proxool.pool_alias">${proxool.alias}</prop>
-                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+                <prop key="hibernate.proxool.pool_alias">DB_Pool</prop>
+                <prop key="hibernate.dialect">${db.dialect}</prop>
 
                 <prop key="hibernate.proxool.existing_pool">false</prop>
                 <prop key="hibernate.connection.provider_class">org.hibernate.connection.ProxoolConnectionProvider
