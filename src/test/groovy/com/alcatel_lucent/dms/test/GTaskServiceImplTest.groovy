@@ -15,8 +15,10 @@ import com.alcatel_lucent.dms.service.DaoService
 import net.sf.json.JSONObject
 import com.alcatel_lucent.dms.BusinessException
 
-import com.alcatel_lucent.dms.service.DaoService;
+import com.alcatel_lucent.dms.service.DaoService
+import org.junit.Ignore;
 
+@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = ["/spring.xml"])
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
