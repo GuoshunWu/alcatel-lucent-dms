@@ -38,7 +38,7 @@
           name: 'maxlen',
           index: 'maxLength',
           width: 90,
-          editable: true,
+          editable: false,
           align: 'right',
           frozen: true,
           search: false

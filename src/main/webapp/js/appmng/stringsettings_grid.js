@@ -40,18 +40,21 @@
           index: 'maxLength',
           width: 40,
           editable: true,
+          classes: 'editable-column',
           align: 'right'
         }, {
           name: 'context',
           index: 'context.name',
           width: 80,
           editable: true,
+          classes: 'editable-column',
           align: 'left'
         }, {
           name: 'description',
           index: 'description',
           width: 60,
           editable: true,
+          classes: 'editable-column',
           align: 'left'
         }
       ],

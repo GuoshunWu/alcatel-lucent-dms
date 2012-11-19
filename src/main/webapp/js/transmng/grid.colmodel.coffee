@@ -15,6 +15,8 @@ define ['jqgrid'], ($)->
   reloadAll: (url, postData)->
     return if !url
     gridParam = @getGridParam()
+    $(gridParam.colModel).each(index,colModel)->colModel.classes = 'editable-column' if colModel.editable
+
     @GridUnload @getId()
     gridParam.url = url
     gridParam.postData = postData if postData
