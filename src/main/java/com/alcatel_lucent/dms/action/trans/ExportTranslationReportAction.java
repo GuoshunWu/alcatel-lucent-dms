@@ -13,7 +13,6 @@ import com.alcatel_lucent.dms.action.BaseAction;
 import com.alcatel_lucent.dms.service.TranslationService;
 
 @SuppressWarnings("serial")
-@ParentPackage("default")
 public class ExportTranslationReportAction extends BaseAction {
 
 	private TranslationService translationService;

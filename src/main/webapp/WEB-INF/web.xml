@@ -57,6 +57,11 @@
         </init-param>
     </filter>
 
+    <filter-mapping>
+        <filter-name>authenticationFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
     <filter>
         <filter-name>struts2</filter-name>
         <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
@@ -72,15 +77,7 @@
         <url-pattern>*.jsp</url-pattern>
     </filter-mapping>
 
-
-
-    <filter-mapping>
-        <filter-name>authenticationFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-
-
-    <!-- Listening Log4j -->
+   <!-- Listening Log4j -->
     <listener>
         <listener-class>
             org.springframework.web.util.Log4jConfigListener
