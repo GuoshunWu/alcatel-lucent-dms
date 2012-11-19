@@ -46,11 +46,11 @@
 
         <property name="hibernateProperties">
             <props>
-                <prop key="hibernate.proxool.properties">${proxool.properties}</prop>
-                <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+                <prop key="hibernate.proxool.properties">proxool.properties</prop>
+                <prop key="hibernate.hbm2ddl.auto">${db.hbm2ddl.auto}</prop>
 
-                <prop key="hibernate.proxool.pool_alias">${proxool.alias}</prop>
-                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+                <prop key="hibernate.proxool.pool_alias">DB_Pool</prop>
+                <prop key="hibernate.dialect">${db.dialect}</prop>
 
                 <prop key="hibernate.proxool.existing_pool">false</prop>
                 <prop key="hibernate.connection.provider_class">org.hibernate.connection.ProxoolConnectionProvider
@@ -75,6 +75,16 @@
 
                 <prop key="hibernate.connection.release_mode">auto</prop>
                 <prop key="hibernate.bytecode.use_reflection_optimizer">true</prop>
+                <!--
+                We recommend all new projects to use the new enhanced identifier generators.
+                They are deactivated by default for entities using annotations but can be activated
+                using  hibernate.id.new_generator_mappings=true. These new generators
+                are more efficient and closer to the JPA 2 specification semantic.
+                However they are not backward compatible with existing Hibernate based
+                application (if a sequence or a table is used for id generation). See XXXXXXX ???
+                for more information on how to activate them.
+                -->
+                <prop key="hibernate.id.new_generator_mappings">false</prop>
             </props>
         </property>
 

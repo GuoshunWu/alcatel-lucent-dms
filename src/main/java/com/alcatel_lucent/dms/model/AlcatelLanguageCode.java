@@ -1,45 +1,58 @@
 package com.alcatel_lucent.dms.model;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
 import java.io.Serializable;
 
-public class AlcatelLanguageCode implements Serializable, LanguageCode{
+@Entity
+@Table(name = "ALCATEL_LANGUAGE_CODE")
+public class AlcatelLanguageCode implements Serializable, LanguageCode {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -7050518854634982880L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = -7050518854634982880L;
 
-	private String code;
-	private Language language;
-	private boolean defaultCode;
+    @Id
+    @Column(name = "CODE")
+    private String code;
 
-	public String getCode() {
-		return code;
-	}
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "LANGUAGE_ID", updatable = false)
+    private Language language;
 
-	public void setCode(String code) {
-		this.code = code;
-	}
+    @Column(name = "DEFAULT_CODE")
+    private boolean defaultCode;
 
-	public Language getLanguage() {
-		return language;
-	}
+    public String getCode() {
+        return code;
+    }
 
-	public void setLanguage(Language language) {
-		this.language = language;
-	}
+    public void setCode(String code) {
+        this.code = code;
+    }
 
-	public boolean isDefaultCode() {
-		return defaultCode;
-	}
+    public Language getLanguage() {
+        return language;
+    }
 
-	public void setDefaultCode(boolean defaultCode) {
-		this.defaultCode = defaultCode;
-	}
+    public void setLanguage(Language language) {
+        this.language = language;
+    }
 
-	@Override
-	public String toString() {
-		return String.format("AlcatelLanguageCode [code=%s]", code);
-	}
+    public boolean isDefaultCode() {
+        return defaultCode;
+    }
+
+    public void setDefaultCode(boolean defaultCode) {
+        this.defaultCode = defaultCode;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("AlcatelLanguageCode [code=%s]", code);
+    }
 
 }
