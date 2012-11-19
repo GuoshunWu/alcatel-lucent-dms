@@ -2,7 +2,7 @@
 (function() {
 
   define(['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng', 'transmng/trans_grid', 'transmng/transdetail_grid'], function($, require, blockui, msgbox, c18n, i18n, grid, detailgrid) {
-    var createButtons, createDialogs, createSelects, dialogs, ids, initPage, pageLayout, pathArray, refreshGrid, util;
+    var createButtons, createDialogs, createSelects, dialogs, exportAppOrDicts, ids, initPage, pageLayout, pathArray, refreshGrid, util;
     util = require('util');
     ids = {
       languageFilterTableId: 'languageFilterTable',
@@ -273,10 +273,43 @@
         return refreshGrid();
       });
     };
+    exportAppOrDicts = function(ftype) {
+      var checkboxes, id, languages, type;
+      id = $('#productRelease').val();
+      if (!id) {
+        return;
+      }
+      id = parseInt(id);
+      if (-1 === id) {
+        return;
+      }
+      checkboxes = $("#languageFilterDialog input:checkbox[name='languages']:checked");
+      languages = checkboxes.map(function() {
+        return this.id;
+      }).get().join(',');
+      type = $("input:radio[name='viewOption'][checked]").val();
+      type = type.slice(0, 4);
+      if (type[0] === 'a') {
+        type = type.slice(0, 3);
+      }
+      $("#exportForm input[name='prod']").val(id);
+      $("#exportForm input[name='language']").val(languages);
+      $("#exportForm input[name='type']").val(type);
+      if (ftype) {
+        $("#exportForm input[name='type']").val(ftype);
+      }
+      return $("#exportForm").submit();
+    };
     initPage = function() {
       createSelects();
       dialogs = createDialogs();
       createButtons(dialogs.taskDialog, dialogs.languageFilterDialog, dialogs.transDetailDialog);
+      $("#exportExcel").click(function() {
+        return exportAppOrDicts('excel');
+      });
+      $("#exportPDF").click(function() {
+        return exportAppOrDicts('pdf');
+      });
       $('#optional-container').show();
       return $('#loading-container').remove();
     };
