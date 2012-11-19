@@ -11,7 +11,7 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
   colNames: ['Label', 'Max len', 'Context', 'Reference language','Translation']
   colModel: [
     {name: 'label', index: 'labelKey', width: 100, editable: false, stype: 'select', align: 'left', frozen: true}
-    {name: 'maxlen', index: 'maxLength', width: 90, editable: true, align: 'right', frozen: true, search: false}
+    {name: 'maxlen', index: 'maxLength', width: 90, editable: false, align: 'right', frozen: true, search: false}
     {name: 'context', index: 'text.context.name', width: 80, align: 'left', frozen: true, search: false}
     {name: 'reflang', index: 'text.reference', width: 150, align: 'left', frozen: true, search: false}
     {name: 'trans', index: 'newTranslation', width: 250, align: 'left', frozen: true, search: false}

@@ -17,8 +17,8 @@ define (require)->
   colNames: [ 'Code', 'Language', 'Charset']
   colModel: [
     {name: 'code', index: 'languageCode', width: 40, editable: false, align: 'left'}
-    {name: 'languageId', index: 'language.name', width: 50, editable: true, edittype: 'select', align: 'left'}
-    {name: 'charsetId', index: 'charset.name', width: 40, editable: true, edittype: 'select', align: 'left'}
+    {name: 'languageId', index: 'language.name', width: 50, editable: true, classes: 'editable-column', edittype: 'select', align: 'left'}
+    {name: 'charsetId', index: 'charset.name', width: 40, editable: true, classes: 'editable-column', edittype: 'select', align: 'left'}
   ]
   afterEditCell: (rowid, cellname, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
   gridComplete: ->
@@ -26,14 +26,14 @@ define (require)->
   }
   langSettingGrid.jqGrid 'navGrid', '#langSettingPager', {edit: false, add: true, del: true, search: false}, {}, {
   #    prmAdd
-#  zIndex:1010
+  #  zIndex:1010
   url: 'app/add-dict-language'
   onclickSubmit: (params, posdata)->{dicts: $('#languageSettingGrid').getGridParam('postData').dict}
   onClose: ->$('#languageSettingGrid').setColProp 'code', editable: false
   beforeInitData: ->$('#languageSettingGrid').setColProp 'code', editable: true
-  afterSubmit:(response, postdata)->
+  afterSubmit: (response, postdata)->
     jsonfromServer = eval "(#{response.responseText})"
-    [jsonfromServer.status ==0 ,jsonfromServer.message,-1]
+    [jsonfromServer.status == 0 , jsonfromServer.message, -1]
   }, {
   #    prmDel
   url: 'app/remove-dict-language'

@@ -2,7 +2,7 @@
 (function() {
 
   define(function(require, util, dialogs, i18n) {
-    var $, blockui, c18n, deleteOptions, dicGrid, handlers, lastEditedCell, localIds;
+    var $, blockui, c18n, colModel, deleteOptions, dicGrid, handlers, lastEditedCell, localIds;
     $ = require('jqgrid');
     util = require('util');
     dialogs = require('appmng/dialogs');
@@ -59,6 +59,68 @@
       }
     };
     lastEditedCell = null;
+    colModel = [
+      {
+        name: 'langrefcode',
+        index: 'langrefcode',
+        width: 55,
+        align: 'left',
+        hidden: true
+      }, {
+        name: 'name',
+        index: 'base.name',
+        width: 200,
+        editable: false,
+        align: 'left'
+      }, {
+        name: 'version',
+        index: 'version',
+        width: 25,
+        editable: true,
+        classes: 'editable-column',
+        edittype: 'select',
+        editoptions: {
+          value: {}
+        },
+        align: 'left'
+      }, {
+        name: 'format',
+        index: 'base.format',
+        width: 60,
+        editable: true,
+        edittype: 'select',
+        editoptions: {
+          value: "DCT:DCT;Dictionary conf:Dictionary conf;Text properties:Text properties;XML labels:XML labels"
+        },
+        align: 'left'
+      }, {
+        name: 'encoding',
+        index: 'base.encoding',
+        width: 40,
+        editable: true,
+        edittype: 'select',
+        editoptions: {
+          value: 'ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE'
+        },
+        align: 'left'
+      }, {
+        name: 'labelNum',
+        index: 'labelNum',
+        width: 20,
+        align: 'right'
+      }, {
+        name: 'action',
+        index: 'action',
+        width: 80,
+        editable: false,
+        align: 'center'
+      }
+    ];
+    $(colModel).each(function(index, colModel) {
+      if (colModel.editable) {
+        return colModel.classes = 'editable-column';
+      }
+    });
     dicGrid = $(localIds.dic_grid).jqGrid({
       url: '',
       datatype: 'json',
@@ -80,62 +142,7 @@
       multiselect: true,
       caption: 'Dictionary for Application',
       colNames: ['LangRefCode', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels', 'Action'],
-      colModel: [
-        {
-          name: 'langrefcode',
-          index: 'langrefcode',
-          width: 55,
-          align: 'left',
-          hidden: true
-        }, {
-          name: 'name',
-          index: 'base.name',
-          width: 200,
-          editable: false,
-          align: 'left'
-        }, {
-          name: 'version',
-          index: 'version',
-          width: 25,
-          editable: true,
-          edittype: 'select',
-          editoptions: {
-            value: {}
-          },
-          align: 'left'
-        }, {
-          name: 'format',
-          index: 'base.format',
-          width: 60,
-          editable: true,
-          edittype: 'select',
-          editoptions: {
-            value: "DCT:DCT;Dictionary conf:Dictionary conf;Text properties:Text properties;XML labels:XML labels"
-          },
-          align: 'left'
-        }, {
-          name: 'encoding',
-          index: 'base.encoding',
-          width: 40,
-          editable: true,
-          edittype: 'select',
-          editoptions: {
-            value: 'ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE'
-          },
-          align: 'left'
-        }, {
-          name: 'labelNum',
-          index: 'labelNum',
-          width: 20,
-          align: 'right'
-        }, {
-          name: 'action',
-          index: 'action',
-          width: 80,
-          editable: false,
-          align: 'center'
-        }
-      ],
+      colModel: colModel,
       beforeProcessing: function(data, status, xhr) {
         var actIndex, actions, k, v;
         actIndex = $(this).getGridParam('colNames').indexOf('Action');

@@ -35,6 +35,7 @@
           index: 'language.name',
           width: 50,
           editable: true,
+          classes: 'editable-column',
           edittype: 'select',
           align: 'left'
         }, {
@@ -42,6 +43,7 @@
           index: 'charset.name',
           width: 40,
           editable: true,
+          classes: 'editable-column',
           edittype: 'select',
           align: 'left'
         }

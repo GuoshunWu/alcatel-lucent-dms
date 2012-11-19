@@ -1,6 +1,7 @@
 
 @import "jqueryUI/themes/base/jquery.ui.all.css";
 @import "jqueryLayout/layout-default-latest.css";
+@import "common.css";
 @import "jqgrid/ui.jqgrid.css";
 
 /* Using an 'optional-container' instead of 'body', so need body to have a 'height' */
@@ -43,3 +44,4 @@ html, body {
 input[readonly]{
     border-style: none
 }
+

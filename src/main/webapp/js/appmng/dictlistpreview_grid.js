@@ -2,7 +2,7 @@
 (function() {
 
   define(function(require, util, i18n) {
-    var $, c18n, dicGrid, handlers, infoDialog, lastEditedCell;
+    var $, c18n, colModel, dicGrid, handlers, infoDialog, lastEditedCell;
     $ = require('jqgrid');
     util = require('util');
     i18n = require('i18n!nls/appmng');
@@ -35,6 +35,76 @@
       }
     };
     lastEditedCell = null;
+    colModel = [
+      {
+        name: 'langrefcode',
+        index: 'langrefcode',
+        width: 55,
+        align: 'center',
+        hidden: true
+      }, {
+        name: 'name',
+        index: 'base.name',
+        width: 200,
+        editable: true,
+        align: 'left'
+      }, {
+        name: 'version',
+        index: 'version',
+        width: 25,
+        editable: true,
+        align: 'left',
+        editrules: {
+          required: true
+        }
+      }, {
+        name: 'format',
+        index: 'base.format',
+        width: 60,
+        editable: true,
+        edittype: 'select',
+        editoptions: {
+          value: "DCT:DCT;Dictionary conf:Dictionary conf;Text properties:Text properties;XML labels:XML labels"
+        },
+        align: 'left'
+      }, {
+        name: 'encoding',
+        index: 'base.encoding',
+        width: 40,
+        editable: true,
+        edittype: 'select',
+        editoptions: {
+          value: 'ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE'
+        },
+        align: 'left'
+      }, {
+        name: 'labelNum',
+        index: 'labelNum',
+        width: 20,
+        align: 'right'
+      }, {
+        name: 'errors',
+        index: 'errorCount',
+        width: 20,
+        align: 'right'
+      }, {
+        name: 'warnings',
+        index: 'warningCount',
+        width: 20,
+        align: 'right'
+      }, {
+        name: 'actions',
+        index: 'action',
+        width: 70,
+        editable: false,
+        align: 'center'
+      }
+    ];
+    $(colModel).each(function(index, colModel) {
+      if (colModel.editable) {
+        return colModel.classes = 'editable-column';
+      }
+    });
     dicGrid = $('#dictListPreviewGrid').jqGrid({
       url: '',
       datatype: 'json',
@@ -57,71 +127,7 @@
       multiselect: false,
       caption: i18n.grid.dictlistpreview.caption,
       colNames: ['LangRefCode', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels', 'Error', 'Warning', 'Action'],
-      colModel: [
-        {
-          name: 'langrefcode',
-          index: 'langrefcode',
-          width: 55,
-          align: 'center',
-          hidden: true
-        }, {
-          name: 'name',
-          index: 'base.name',
-          width: 200,
-          editable: true,
-          align: 'left'
-        }, {
-          name: 'version',
-          index: 'version',
-          width: 25,
-          editable: true,
-          align: 'left',
-          editrules: {
-            required: true
-          }
-        }, {
-          name: 'format',
-          index: 'base.format',
-          width: 60,
-          editable: true,
-          edittype: 'select',
-          editoptions: {
-            value: "DCT:DCT;Dictionary conf:Dictionary conf;Text properties:Text properties;XML labels:XML labels"
-          },
-          align: 'left'
-        }, {
-          name: 'encoding',
-          index: 'base.encoding',
-          width: 40,
-          editable: true,
-          edittype: 'select',
-          editoptions: {
-            value: 'ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE'
-          },
-          align: 'left'
-        }, {
-          name: 'labelNum',
-          index: 'labelNum',
-          width: 20,
-          align: 'right'
-        }, {
-          name: 'errors',
-          index: 'errorCount',
-          width: 20,
-          align: 'right'
-        }, {
-          name: 'warnings',
-          index: 'warningCount',
-          width: 20,
-          align: 'right'
-        }, {
-          name: 'actions',
-          index: 'action',
-          width: 70,
-          editable: false,
-          align: 'center'
-        }
-      ],
+      colModel: colModel,
       afterEditCell: function(rowid, cellname, val, iRow, iCol) {
         return lastEditedCell = {
           iRow: iRow,

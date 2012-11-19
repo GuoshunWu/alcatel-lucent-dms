@@ -72,6 +72,7 @@
           width: 150,
           align: 'left',
           editable: true,
+          classes: 'editable-column',
           search: true,
           edittype: 'select',
           editoptions: {

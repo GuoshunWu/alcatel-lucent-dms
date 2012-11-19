@@ -25,7 +25,7 @@ define ['jqgrid', 'i18n!nls/appmng', 'appmng/dialogs', 'require'], ($, i18n, dia
   colModel: [
     {name: 'id', index: 'id', width: 55, align: 'center', editable: false, hidden: true}
     {name: 'name', index: 'name', width: 100, editable: false, align: 'center'}
-    {name: 'version', index: 'version', width: 90, editable: true, align: 'center', edittype: 'select', editoptions: {value: {}}}
+    {name: 'version', index: 'version', width: 90, editable: true, classes:'editable-column', align: 'center', edittype: 'select', editoptions: {value: {}}}
     {name: 'dictNum', index: 'dictNum', width: 80, editable: false, align: 'center'}
   ],
   afterEditCell: (id, name, val, iRow, iCol)->

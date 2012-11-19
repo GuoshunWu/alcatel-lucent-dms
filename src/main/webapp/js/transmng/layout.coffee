@@ -45,7 +45,7 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
     ]
     }
     taskDialog = $("#createTranslationTaskDialog").dialog {
-    autoOpen: false,modal: true
+    autoOpen: false, modal: true
     width: 'auto', height: 'auto', position: [25, 100], show: { effect: 'slide', direction: "down" }
     open: ->
       info = grid.getTotalSelectedRowInfo()
@@ -105,7 +105,7 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
     ]
     }
     transDetailDialog = $('#translationDetailDialog').dialog {
-    autoOpen: false, width: 'auto', height: 'auto',modal: true
+    autoOpen: false, width: 'auto', height: 'auto', modal: true
     create: ()->
       $('#detailLanguageSwitcher').change ->
         dict = $('#translationDetailDialog').data "dict"
@@ -160,13 +160,41 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
     #    for view level
     $(':radio[name=viewOption]').change ->refreshGrid()
 
+  exportAppOrDicts = (ftype)->
+    id = $('#productRelease').val()
+    return if !id
+    id = parseInt(id)
+    return if -1 == id
+
+    checkboxes = $("#languageFilterDialog input:checkbox[name='languages']:checked")
+    languages = checkboxes.map(
+      ()-> return @id
+    ).get().join(',')
+
+    type = $("input:radio[name='viewOption'][checked]").val()
+    type = type[..3]
+    type = type[..2] if type[0] == 'a'
+
+    $("#exportForm input[name='prod']").val id
+    $("#exportForm input[name='language']").val languages
+    $("#exportForm input[name='type']").val type
+    $("#exportForm input[name='type']").val ftype if ftype
+    $("#exportForm").submit()
+
   #  private method
   initPage = ->
+
   ###################################### Elements in summary panel ######################################
     createSelects()
     ###################################### Initialize elements in north panel ######################################
     dialogs = createDialogs()
     createButtons(dialogs.taskDialog, dialogs.languageFilterDialog, dialogs.transDetailDialog)
+
+    #    add action for export
+    $("#exportExcel").click ()->exportAppOrDicts 'excel'
+    $("#exportPDF").click ()->exportAppOrDicts 'pdf'
+
+
     #   show main page.
     $('#optional-container').show()
     $('#loading-container').remove()
