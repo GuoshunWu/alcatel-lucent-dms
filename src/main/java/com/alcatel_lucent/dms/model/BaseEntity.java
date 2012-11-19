@@ -7,15 +7,13 @@ import javax.persistence.SequenceGenerator;
 import java.io.Serializable;
 
 public abstract class BaseEntity implements Serializable {
-	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -3756598069703614852L;
-	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @SequenceGenerator(name="id_app_seq",sequenceName = "ID_APPLICATION", allocationSize = 100)
+
     private Long id;
+
 	public Long getId() {
 		return id;
 	}

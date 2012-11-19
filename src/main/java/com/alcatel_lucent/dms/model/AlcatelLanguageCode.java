@@ -20,10 +20,11 @@ public class AlcatelLanguageCode implements Serializable, LanguageCode {
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "LANGUAGE_ID", updatable = false)
+    @JoinColumn(name = "LANGUAGE_ID")
     private Language language;
 
     @Column(name = "DEFAULT_CODE")
+
     private boolean defaultCode;
 
     public String getCode() {
