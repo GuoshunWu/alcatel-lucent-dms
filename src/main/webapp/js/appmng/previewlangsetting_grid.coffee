@@ -16,8 +16,8 @@ define (require)->
   colNames: [ 'Code', 'Language', 'Charset']
   colModel: [
     {name: 'code', index: 'languageCode', width: 40, editable: false, align: 'left'}
-    {name: 'languageId', index: 'language.name', width: 50, editable: true, edittype: 'select', align: 'left'}
-    {name: 'charsetId', index: 'charset.name', width: 40, editable: true, edittype: 'select', align: 'left'}
+    {name: 'languageId', index: 'language.name', width: 50, editable: true,classes:'editable-column', edittype: 'select', align: 'left'}
+    {name: 'charsetId', index: 'charset.name', width: 40, editable: true, classes:'editable-column', edittype: 'select', align: 'left'}
   ]
   afterEditCell: (rowid, cellname, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
   beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
