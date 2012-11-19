@@ -1,0 +1,4393 @@
+--�1000 §1000 #CHECKSUM=40803504#
+
+--                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      §1 1000 #CHECKSUM=4163287#
+-- 1 1000 #CHECKSUM=4085117#
+-- 1 1000 #CHECKSUM=3687779#
+-- ----------------------------------------------------------
+-- Dictionary of myProfile MFI dataModel
+-- ----------------------------------------------------------
+-- Supported languages
+
+LANGUAGES {GAE, en, ru, en_US, en_GB, fr, de, es, it, nl, no, pt, ko_KR, zh_CN, pl, fi, ca_ES, cs, sv, hu, zh_TW, ar, he, tr, da}
+
+MFI.MYPROFILE.DOMAIN.LINKS.HELP:
+--SIZECHAR 1024;
+  GAE "Shortcuts to web applications", -- CMU
+  en "Shortcuts to web applications", -- CMU
+  ru "Кнопки быстрого доступа к веб-приложениям",
+  en_US "No help content", --!!! 
+  en_GB "Shortcuts to web applications", --!!! 
+  fr "Raccourcis vers les applications web", -- CMU
+  de "Schnellzugriff auf Web-Anwendungen",
+  es "Accesos directos a aplicaciones Web",
+  it "Collegamenti ad applicazioni Web",
+  nl "Snelkoppelingen naar webtoepassingen",
+  no "Snarveier til webapplikasjoner", -- -
+  pt "Atalhos para aplicações da Web",
+  ko_KR "도움말 내용 없음", --!!! 
+  zh_CN "No help content", --???
+  pl "Skróty do aplikacji sieciowych",
+  fi "Pikakuvake verkkosovelluksiin", --!!! 
+  ca_ES "Dreceres a les aplicacions web", --!!! 
+  cs "Zástupci webových aplikací",
+  sv "Genvägar till webbprogram",
+  hu "Nincs súgó tartalom",
+  zh_TW "No help content", --???
+  ar "اختصارات إلى تطبيقات الويب",
+  he "Shortcuts to web applications", --???
+  tr "Shortcuts to web applications", --???
+  da "Genveje til webprogrammer"; --!!! 
+
+MFI.MYPROFILE.DOMAIN.LINKS.LABEL:
+--SIZECHAR 1024;
+  GAE "Shortcuts", -- CMU
+  en "Shortcuts", -- CMU
+  ru "Кнопки быстрого доступа",
+  en_US "Links", --!!! 
+  en_GB "Shortcuts", --!!! 
+  fr "Raccourcis", -- CMU
+  de "Schnellzugriff",
+  es "Accesos directos",
+  it "Collegamenti",
+  nl "Snelkoppelingen",
+  no "Linker",
+  pt "Atalhos",
+  ko_KR "링크", --!!! 
+  zh_CN "Links", --???
+  pl "Skróty",
+  fi "Pikakuvakkeet", --!!! 
+  ca_ES "Dreceres", --!!! 
+  cs "Zástupci",
+  sv "Länkar",
+  hu "Hivatkozások",
+  zh_TW "Links", --???
+  ar "اختصارات",
+  he "Shortcuts", --???
+  tr "Shortcuts", --???
+  da "Genveje"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.LINK.TO.MYASSISTANT.LABEL:
+--SIZECHAR 1024;
+  GAE "One Number Services", -- CMU
+  en "One Number Services", -- CMU
+  ru "One Number Services",
+  en_US "One Number Services", --!!! 
+  en_GB "One Number Services", --!!! 
+  fr "Services de routage", -- CMU
+  de "One-Number-Dienste",
+  es "One Number Services",
+  it "One Number Services",
+  nl "Eénnummerservices",
+  no "One Number Services",
+  pt "Serviços de um número",
+  ko_KR "내 도우미", --!!! 
+  zh_CN "My Assistant", --???
+  pl "One Number Services",
+  fi "One Number Services", --!!! 
+  ca_ES "One Number Services", --!!! 
+  cs "Služby jednoho čísla",
+  sv "One Number Services",
+  hu "One Number szolgáltatások",
+  zh_TW "My Assistant", --???
+  ar "خدمات الرقم الواحد",
+  he "One Number Services", --???
+  tr "One Number Services", --???
+  da "One number-tjenester"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.LINK.TO.MYMESSAGING.LABEL:
+--SIZECHAR 1024;
+  GAE "Messaging Services", -- CMU
+  en "Messaging Services", -- CMU
+  ru "Messaging Services",
+  en_US "Messaging Services", --!!! 
+  en_GB "Messaging Services", --!!! 
+  fr "Services de messagerie", -- CMU
+  de "Messaging-Dienste",
+  es "Messaging Services",
+  it "Messaging Services",
+  nl "Berichtservices",
+  no "Messaging Services",
+  pt "Serviços de mensagens",
+  ko_KR "내 메시징", --!!! 
+  zh_CN "My Messaging", --???
+  pl "Usługi przesyłania wiadomości",
+  fi "Messaging Services", --!!! 
+  ca_ES "Messaging Services", --!!! 
+  cs "Služby pro zasílání zpráv",
+  sv "Meddelandetjänster",
+  hu "Üzenetkezelési szolgáltatások",
+  zh_TW "My Messaging", --???
+  ar "خدمات المراسلة",
+  he "Messaging Services", --???
+  tr "Messaging Services", --???
+  da "Meddelelsestjenester"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.LINK.TO.WEBSOFTPHONE.LABEL:
+--SIZECHAR 1024;
+  GAE "Telephony Services", -- CMU
+  en "Telephony Services", -- CMU
+  ru "Telephony Services",
+  en_US "Telephony Services", --!!! 
+  en_GB "Telephony Services", --!!! 
+  fr "Services de téléphonie", -- CMU
+  de "Telefoniedienste",
+  es "Telephony Services",
+  it "Telephony Services",
+  nl "Telefonieservices",
+  no "Telephony Services",
+  pt "Serviços de telefonia",
+  ko_KR "웹 SoftPhone", --!!! 
+  zh_CN "Web SoftPhone", --???
+  pl "Usługi telefoniczne",
+  fi "Telephony Services", --!!! 
+  ca_ES "Telephony Services", --!!! 
+  cs "Telefonní služby",
+  sv "Telefonitjänster",
+  hu "Telefóniás szolgáltatások",
+  zh_TW "Web SoftPhone", --???
+  ar "الخدمات الهاتفية",
+  he "Telephony Services", --???
+  tr "Telephony Services", --???
+  da "Telefonitjenester"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.INTERNAL.CALL.GREETING.HELP:
+--SIZECHAR 1024;
+  GAE "Activate this greeting for internal calls (available if the Personal greeting has been selected)", -- CMU
+  en "Activate this greeting for internal calls (available if the Personal greeting has been selected)", -- CMU
+  ru "Включить это приветствие для внутренних вызовов (доступно, если выбрано личное приветствие)",
+  en_US "No help content", --!!! 
+  en_GB "Activate this greeting for internal calls (available if the Personal greeting has been selected)", --!!! 
+  fr "Activer ce message d'accueil pour les appels internes (disponible si l'accueil Personnel a été sélectionné)", -- CMU
+  de "Diese Begrüßung für interne Anrufe aktivieren (verfügbar, wenn die persönliche Begrüßung ausgewählt wurde)",
+  es "Activar este saludo para llamadas internas (disponible si se ha seleccionado el saludo personal)",
+  it "Attivare questa formula iniziale per chiamate interne (disponibile se la formula iniziale personale è stata selezionata)",
+  nl "Deze begroeting activeren voor interne oproepen (beschikbaar als de persoonlijke begroeting is geselecteerd)",
+  no "Aktiver denne hilsenen for interne anrop (tilgjengelig dersom personlig hilsen er valgt)",
+  pt "Activar esta saudação para as chamadas internas (disponível se a saudação pessoal estiver seleccionada)",
+  ko_KR "도움말 내용 없음", --!!! 
+  zh_CN "No help content", --???
+  pl "Aktywuj to powitanie dla połączeń wewnętrznych (opcja dostępna, o ile wybrano osobiste powitanie)",
+  fi "Aktivoi tämä tervehdys sisäisiin puheluihin (käytettävissä, jos henkilökohtainen tervehdys on valittu)", --!!! 
+  ca_ES "Activeu aquesta salutació per a les trucades internes (disponible si la salutació personal s'ha seleccionat)", --!!! 
+  cs "Toto uvítání aktivujte pro interní volání (dostupné, bylo-li vybráno Osobní uvítání)",
+  sv "Aktivera den här hälsningsfrasen för interna samtal (tillgänglig om Personlig hälsning har valts)",
+  hu "Az üdvözlés aktiválása belső hívásokhoz (akkor érhető el, ha a személyes üdvözlés ki van választva)",
+  zh_TW "No help content", --???
+  ar "تنشيط هذا الترحيب للمكالمات الداخلية (متاح إذا تم تحديد الترحيب الشخصي)",
+  he "Activate this greeting for internal calls (available if the Personal greeting has been selected)", --???
+  tr "Activate this greeting for internal calls (available if the Personal greeting has been selected)", --???
+  da "Aktiver denne velkomstbesked for interne opkald (tilgængelig hvis personlig velkomstbesked er valgt)"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.GREETING.EXTENDED.ABSENCE.VALUE.HELP:
+  GAE "Extended absence", -- CMU
+  en "Extended absence", -- CMU
+  ru "Продленное отсут",
+  en_US "extended absence", --!!! 
+  en_GB "Extended absence", --!!! 
+  fr "Abs. prolong�e", -- CMU
+  de "Längere Abwes.", --!!! 
+  es "Ausencia prolon.",
+  it "assenza estesa",
+  nl "Langdurig afw.",
+  no "langtidsfravær",
+  pt "Ausência prolng.",
+  ko_KR "계속 부재", --!!! 
+  zh_CN "extended absence", --???
+  pl "Dłuższa nieobec.",
+  fi "Piden. poissaolo", --!!! 
+  ca_ES "Absència perll.", --!!! 
+  cs "Delší nepřítomn.", --!!! 
+  sv "längre frånvaro",
+  hu "Hosszú távollét",
+  zh_TW "extended absence", --???
+  ar "الغياب الممتد",
+  he "Extended absence", --???
+  tr "Extended absence", --???
+  da "Forlænget fravær"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.ALTERNATE.GREETING.LABEL:
+  GAE "Alternate greeting", --???
+  en "Alternate greeting", --???
+  ru "Alternate greeting",
+  en_US "Alternate greeting", --!!! 
+  en_GB "Alternate greeting", --!!! 
+  fr "Autre mes. accueil",
+  de "Alternat. Begrüß.", --!!! 
+  es "Saludo alternativo",
+  it "Mess. iniz. alt.", --!!! 
+  nl "Altern. begroeting",
+  no "Alternativ hilsen", --!!! 
+  pt "Saudação alternada",
+  ko_KR "Alternate greeting", --???
+  zh_CN "Alternate greeting", --???
+  pl "Alternatywna wiad.",
+  fi "Vaiht. tervehdys", --!!! 
+  ca_ES "Salutació alter.", --!!! 
+  cs "Alternat. uvítání", --!!! 
+  sv "Alternativt medd.", --!!! 
+  hu "Altern. üdvözlés",
+  zh_TW "Alternate greeting", --???
+  ar "الترحيب البديل",
+  he "Alternate greeting", --???
+  tr "Alternate greeting", --???
+  da "Alternativ besked"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.GREETING.ALTERNATE.EMPTY.VALUE.LABEL:
+  GAE "Not selected", --???
+  en "Not selected", --???
+  ru "Not selected",
+  en_US "Not selected", --!!! 
+  en_GB "Not selected", --!!! 
+  fr "Non s�lect.",
+  de "Nicht ausgew", --!!! 
+  es "Sin selecc.",
+  it "Non selez.", --!!! 
+  nl "Niet gesel.",
+  no "Ikke valgt", --!!! 
+  pt "Não selecnd.",
+  ko_KR "Not selected", --???
+  zh_CN "Not selected", --???
+  pl "Nie wybrano",
+  fi "Ei valittu", --!!! 
+  ca_ES "No selecc.", --!!! 
+  cs "Není vybráno", --!!! 
+  sv "Ej vald", --!!! 
+  hu "Nincs kijel.",
+  zh_TW "Not selected", --???
+  ar "غير محدد",
+  he "Not selected", --???
+  tr "Not selected", --???
+  da "Ikke valgt"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.GREETING.ALTERNATE1.VALUE.LABEL:
+  GAE "Alternative 1", --???
+  en "Alternative 1", --???
+  ru "Альтерн. 1",
+  en_US "Alternative 1", --!!! 
+  en_GB "Alternative 1", --!!! 
+  fr "Alternative 1",
+  de "Alternat. 1", --!!! 
+  es "Alternat. 1",
+  it "Altern. 1", --!!! 
+  nl "Altern. 1",
+  no "Altern. 1", --!!! 
+  pt "Alternt. 1",
+  ko_KR "Alternative 1", --???
+  zh_CN "Alternative 1", --???
+  pl "Wersja 1",
+  fi "Vaihtoeh. 1", --!!! 
+  ca_ES "Alternat. 1", --!!! 
+  cs "Alternat. 1", --!!! 
+  sv "Alt. 1", --!!! 
+  hu "1. altern.",
+  zh_TW "Alternative 1", --???
+  ar "البديل 1",
+  he "Alternative 1", --???
+  tr "Alternative 1", --???
+  da "Alternativ 1"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.GREETING.ALTERNATE2.VALUE.LABEL:
+  GAE "Alternative 2", --???
+  en "Alternative 2", --???
+  ru "Альтерн. 2",
+  en_US "Alternative 2", --!!! 
+  en_GB "Alternative 2", --!!! 
+  fr "Alternative 2",
+  de "Alternat. 2", --!!! 
+  es "Alternat. 2",
+  it "Altern. 2", --!!! 
+  nl "Altern. 2",
+  no "Altern. 2", --!!! 
+  pt "Alternt. 2",
+  ko_KR "Alternative 2", --???
+  zh_CN "Alternative 2", --???
+  pl "Wersja 2",
+  fi "Vaihtoeh. 2", --!!! 
+  ca_ES "Alternat. 2", --!!! 
+  cs "Alternat. 2", --!!! 
+  sv "Alt. 2", --!!! 
+  hu "2. altern.",
+  zh_TW "Alternative 2", --???
+  ar "البديل 2",
+  he "Alternative 2", --???
+  tr "Alternative 2", --???
+  da "Alternativ 2"; --!!! 
+
+MFI.MYPROFILE.ERROR.UNEXPECTED.VMB.TYPE:
+--SIZECHAR 1024;
+-- CMU (not used)
+  GAE "Unexpected/unknown VMB type",
+  en "Unexpected/unknown VMB type",
+  ru "Неожиданный/неизвестный тип VMB",
+  en_US "Unexpected/unknown VMB type", --!!! 
+  en_GB "Unexpected/unknown VMB type", --!!! 
+  fr "Type VMB inconnu",
+  de "Unerwarteter/unbekannter VMB-Typ",
+  es "Tipo de VMB desconocido o inesperado",
+  it "Tipo VMB imprevisto/sconosciuto",
+  nl "Onverwacht/onbekend VMB-type",
+  no "Uventet/ukjent VMB-type",
+  pt "Tipo de VMB inesperado/desconhecido",
+  ko_KR "예기치 않은/알 수 없는 VMB 유형", --!!! 
+  zh_CN "Unexpected/unknown VMB type", --???
+  pl "Nieoczekiwany lub nieznany typ VMB",
+  fi "Odottamaton/tuntematon VMB-tyyppi", --!!! 
+  ca_ES "Tipus VMB inesperat o desconegut", --!!! 
+  cs "Neočekávaný/neznámý typ VMB",
+  sv "Oväntad/okänd VMB-typ",
+  hu "Váratlan/ismeretlen VMB típus",
+  zh_TW "Unexpected/unknown VMB type", --???
+  ar "نوع VMB غير متوقع/غير معروف",
+  he "Unexpected/unknown VMB type", --???
+  tr "Unexpected/unknown VMB type", --???
+  da "Uventet/ukendt VMB-type"; --!!! 
+
+MFI.MYPROFILE.ERROR.UNEXPECTED.VMB.SET:
+--SIZECHAR 1024;
+-- CMU (no used)
+  GAE "Unexpected/unknown VMB set",
+  en "Unexpected/unknown VMB set",
+  ru "Неожиданный/неизвестный аппарат VMB",
+  en_US "Unexpected/unknown VMB set", --!!! 
+  en_GB "Unexpected/unknown VMB set", --!!! 
+  fr "VMB inconnu",
+  de "Unerwartetes/unbekanntes VMB-Set",
+  es "Conjunto de VMB desconocido o inesperado",
+  it "Insieme VMB imprevisto/sconosciuto",
+  nl "Onverwachte/onbekende VMB-set",
+  no "Uventet/ukjent VMB-sett",
+  pt "Conjunto de VMB inesperado/desconhecido",
+  ko_KR "예기치 않은/알 수 없는 VMB 세트", --!!! 
+  zh_CN "Unexpected/unknown VMB set", --???
+  pl "Nieoczekiwany lub nieznany zestaw VMB",
+  fi "Odottamaton/tuntematon VMB-laite", --!!! 
+  ca_ES "Conjunt VMB inesperat o desconegut", --!!! 
+  cs "Neočekávaná/neznámá sada VMB",
+  sv "Oväntad/okänd VMB-inställning",
+  hu "Váratlan/ismeretlen VMB készlet",
+  zh_TW "Unexpected/unknown VMB set", --???
+  ar "جهاز VMB غير متوقع/غير معروف",
+  he "Unexpected/unknown VMB set", --???
+  tr "Unexpected/unknown VMB set", --???
+  da "Uventet/ukendt VMB-enhed"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.IMAP4.EMAIL.USERNAME.LABEL:
+--SIZECHAR 1024;
+  GAE "Username",
+  en "Username",
+  ru "Имя пользователя",
+  en_US "Username", --!!! 
+  en_GB "Username", --!!! 
+  fr "Nom d'utilisateur", -- CMU
+  de "Benutzername",
+  es "Nombre de usuario",
+  it "Nome utente",
+  nl "Gebruikersnaam",
+  no "Brukernavn",
+  pt "Nome de utilizador",
+  ko_KR "사용자 이름", --!!! 
+  zh_CN "Username", --???
+  pl "Nazwa użytkownika",
+  fi "Käyttäjänimi", --!!! 
+  ca_ES "Nom d'usuari", --!!! 
+  cs "Uživatelské jméno",
+  sv "Användarnamn",
+  hu "Felhasználói név",
+  zh_TW "Username", --???
+  ar "اسم المستخدم",
+  he "Username", --???
+  tr "Username", --???
+  da "Brugernavn"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.IMAP4.EMAIL.PASSWORD.LABEL:
+--SIZECHAR 1024;
+  GAE "Password",
+  en "Password",
+  ru "Пароль",
+  en_US "Password", --!!! 
+  en_GB "Password", --!!! 
+  fr "Mot de passe", -- CMU
+  de "Passwort",
+  es "Contraseña",
+  it "Password",
+  nl "Wachtwoord",
+  no "Passord",
+  pt "Palavra-passe",
+  ko_KR "암호", --!!! 
+  zh_CN "Password", --???
+  pl "Hasło",
+  fi "Salasana", --!!! 
+  ca_ES "Contrasenya", --!!! 
+  cs "Heslo",
+  sv "Lösenord",
+  hu "Jelszó",
+  zh_TW "Password", --???
+  ar "كلمة المرور",
+  he "Password", --???
+  tr "Password", --???
+  da "Adgangskode"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.IMAP4.VMBMAIL.USERNAME.LABEL:
+--SIZECHAR 1024;
+  GAE "Username",
+  en "Username",
+  ru "Имя пользователя",
+  en_US "Username", --!!! 
+  en_GB "Username", --!!! 
+  fr "Nom d'utilisateur", -- CMU
+  de "Benutzername",
+  es "Nombre de usuario",
+  it "Nome utente",
+  nl "Gebruikersnaam",
+  no "Brukernavn",
+  pt "Nome de utilizador",
+  ko_KR "사용자 이름", --!!! 
+  zh_CN "Username", --???
+  pl "Nazwa użytkownika",
+  fi "Käyttäjänimi", --!!! 
+  ca_ES "Nom d'usuari", --!!! 
+  cs "Uživatelské jméno",
+  sv "Användarnamn",
+  hu "Felhasználói név",
+  zh_TW "Username", --???
+  ar "اسم المستخدم",
+  he "Username", --???
+  tr "Username", --???
+  da "Brugernavn"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.IMAP4.VMBMAIL.PASSWORD.LABEL:
+--SIZECHAR 1024;
+  GAE "Password",
+  en "Password",
+  ru "Пароль",
+  en_US "Password", --!!! 
+  en_GB "Password", --!!! 
+  fr "Mot de passe", -- CMU
+  de "Passwort",
+  es "Contraseña",
+  it "Password",
+  nl "Wachtwoord",
+  no "Passord",
+  pt "Palavra-passe",
+  ko_KR "암호", --!!! 
+  zh_CN "Password", --???
+  pl "Hasło",
+  fi "Salasana", --!!! 
+  ca_ES "Contrasenya", --!!! 
+  cs "Heslo",
+  sv "Lösenord",
+  hu "Jelszó",
+  zh_TW "Password", --???
+  ar "كلمة المرور",
+  he "Password", --???
+  tr "Password", --???
+  da "Adgangskode"; --!!! 
+
+MFI.MYPROFILE.DOMAIN.IMAP4.EMAIL.LABEL:
+--SIZECHAR 1024;
+  GAE "Email access", -- CMU
+  en "Email access", -- CMU
+  ru "Доступ к электронной почте",
+  en_US "Voice Mail Box", --!!! 
+  en_GB "Voice Mail Box", --!!! 
+  fr "Accès email", -- CMU
+  de "E-Mail-Zugang",
+  es "Acceso a correo electrónico",
+  it "Accesso a posta elettronica",
+  nl "E-mailtoegang",
+  no "Tilgang til E-post",
+  pt "Caixa de correio de voz",
+  ko_KR "음성 사서함", --!!! 
+  zh_CN "Voice Mail Box", --???
+  pl "Dostęp do e-maila",
+  fi "Sähköpostin käyttö", --!!! 
+  ca_ES "Bústia de correu de veu", --!!! 
+  cs "Přístup k e-mailu",
+  sv "Röstbrevlåda",
+  hu "E-mail elérés",
+  zh_TW "Voice Mail Box", --???
+  ar "الوصول إلى البريد الإلكتروني",
+  he "Email access", --???
+  tr "Email access", --???
+  da "E-mail-adgang"; --!!! 
+
+MFI.MYPROFILE.DOMAIN.IMAP4.EMAIL.HELP:
+--SIZECHAR 1024;
+  GAE "Email user account for IMAP access", -- CMU
+  en "Email user account for IMAP access", -- CMU
+  ru "Учетная запись электронной почты для доступа к IMAP",
+  en_US "No help content", --!!! 
+  en_GB "Email user account for IMAP access", --!!! 
+  fr "Compte utilisateur email pour l'accès IMAP", -- CMU
+  de "E-Mail-Benutzerkonto für IMAP-Zugriff",
+  es "Cuenta de usuario de correo electrónico para acceso IMAP",
+  it "Account utente posta elettronica per accesso IMAP",
+  nl "E-mailgebruikersaccount voor IMAP-toegang",
+  no "E-postbrukerkonto for IMAP-tilgang",
+  pt "Conta de utilizador de correio electrónico para aceder ao IMAP",
+  ko_KR "도움말 내용 없음", --!!! 
+  zh_CN "No help content", --???
+  pl "Konto e-mail z dostępem przez IMAP",
+  fi "Sähköpostin käyttäjätili IMAP-käytölle", --!!! 
+  ca_ES "Compte d'usuari de correu electrònic per a l'accés IMAP", --!!! 
+  cs "Účet uživatele e-mailu pro přístup k účtu IMAP",
+  sv "E-postanvändarkonto för IMAP-åtkomst",
+  hu "E-mail felhasználói fiók IMAP hozzáféréshez",
+  zh_TW "No help content", --???
+  ar "حساب مستخدم البريد الإلكتروني للوصول إلى IMAP",
+  he "Email user account for IMAP access", --???
+  tr "Email user account for IMAP access", --???
+  da "E-mail brugerkonto for IMAP-adgang"; --!!! 
+
+MFI.MYPROFILE.DOMAIN.IMAP4.VMBMAIL.LABEL:
+--SIZECHAR 1024;
+  GAE "Voice mail access", -- CMU
+  en "Voice mail access", -- CMU
+  ru "Доступ к голосовой почте",
+  en_US "Email Box", --!!! 
+  en_GB "Voice mail access", --!!! 
+  fr "Accès à la messagerie vocale", -- CMU
+  de "Voice Mail-Zugriff",
+  es "Acceso a buzón de voz",
+  it "Accesso a posta vocale",
+  nl "Voicemailtoegang",
+  no "Tilgang til talepostkasse",
+  pt "Acesso ao correio de voz",
+  ko_KR "전자 메일함", --!!! 
+  zh_CN "Email Box", --???
+  pl "Dostęp do poczty głosowej",
+  fi "Puhepostin käyttäminen", --!!! 
+  ca_ES "Accés de correu de veu", --!!! 
+  cs "Přístup k hlasové schránce",
+  sv "Åtkomst till röstbrevlåda",
+  hu "Hangposta elérés",
+  zh_TW "Email Box", --???
+  ar "الوصول إلى البريد الصوتي",
+  he "Voice mail access", --???
+  tr "Voice mail access", --???
+  da "Voicemail-adgang"; --!!! 
+
+MFI.MYPROFILE.DOMAIN.IMAP4.VMBMAIL.HELP:
+--SIZECHAR 1024;
+  GAE "Voice mail user account for IMAP access", -- CMU
+  en "Voice mail user account for IMAP access", -- CMU
+  ru "Учетная запись голосовой почты для доступа к IMAP",
+  en_US "No help content", --!!! 
+  en_GB "Voice mail user account for IMAP access", --!!! 
+  fr "Compte utilisateur messagerie vocale pour l'accès IMAP", -- CMU
+  de "Voice Mail-Benutzerkonto für IMAP-Zugriff",
+  es "Cuenta de usuario de buzón de voz para acceso IMAP",
+  it "Account utente posta vocale per accesso IMAP",
+  nl "Voicemailgebruikersaccount voor IMAP-toegang",
+  no "Talepostkassens brukerkonto for IMAP-tilgang",
+  pt "Conta de utilizador de correio de voz para aceder ao IMAP",
+  ko_KR "도움말 내용 없음", --!!! 
+  zh_CN "No help content", --???
+  pl "Konto poczty głosowej z dostępem przez IMAP",
+  fi "Puhepostin käyttäjätili IMAP-käytölle", --!!! 
+  ca_ES "Compte d'usuari de correu de veu per a l'accés IMAP", --!!! 
+  cs "Účet uživatele e-mailu pro přístup k účtu IMAP",
+  sv "Användarens röstbrevlådakonto för IMAP-åtkomst",
+  hu "Hangposta felhasználói fiók IMPA hozzáféréshez",
+  zh_TW "No help content", --???
+  ar "حساب مستخدم البريد الصوتي للوصول إلى IMAP",
+  he "Voice mail user account for IMAP access", --???
+  tr "Voice mail user account for IMAP access", --???
+  da "Voicemail-brugerkonto for IMAP-adgang"; --!!! 
+
+MFI.MYPROFILE.ZONE.APPLICATION.LABEL:
+--SIZECHAR 1024;
+  GAE "Applications",
+  en "Applications",
+  ru "Приложения",
+  en_US "Applications", --!!! 
+  en_GB "Applications", --!!! 
+  fr "Applications", -- CMU (correct)
+  de "Anwendungen",
+  es "Aplicaciones",
+  it "Applicazioni",
+  nl "Toepassingen",
+  no "Applikasjoner",
+  pt "Aplicações",
+  ko_KR "애플리케이션", --!!! 
+  zh_CN "Applications", --???
+  pl "Aplikacje",
+  fi "Sovellukset", --!!! 
+  ca_ES "Aplicacions", --!!! 
+  cs "Aplikace",
+  sv "Program",
+  hu "Alkalmazások",
+  zh_TW "Applications", --???
+  ar "التطبيقات",
+  he "Applications", --???
+  tr "Applications", --???
+  da "Programmer"; --!!! 
+
+MFI.MYPROFILE.ZONE.APPLICATION.HELP:
+--SIZECHAR 1024;
+  GAE "Access to applications", -- CMU
+  en "Access to applications", -- CMU
+  ru "Доступ к приложениям",
+  en_US "No help content", --!!! 
+  en_GB "Access to applications", --!!! 
+  fr "Accès aux applications", -- CMU
+  de "Zugriff auf Anwendungen",
+  es "Acceso a aplicaciones",
+  it "Accesso alle applicazioni",
+  nl "Toegang tot toepassingen",
+  no "Tilgang til applikasjoner",
+  pt "Acesso às aplicações",
+  ko_KR "도움말 내용 없음", --!!! 
+  zh_CN "No help content", --???
+  pl "Dostęp do aplikacji",
+  fi "Sovellusten käyttö", --!!! 
+  ca_ES "Accés a les aplicacions", --!!! 
+  cs "Přístup k aplikacím",
+  sv "Programåtkomst",
+  hu "Hozzáférés az alkalmazásokhoz",
+  zh_TW "No help content", --???
+  ar "الوصول إلى التطبيقات",
+  he "Access to applications", --???
+  tr "Access to applications", --???
+  da "Adgang til programmer"; --!!! 
+
+MFI.MYPROFILE.ZONE.IMAP4.AUTHENTICATION.LABEL:
+--SIZECHAR 1024;
+  GAE "IMAP authentication", -- CMU
+  en "IMAP authentication", -- CMU
+  ru "Авторизация IMAP",
+  en_US "IMAP4 authentication", --!!! 
+  en_GB "IMAP4 authentication", --!!! 
+  fr "Authentification IMAP", -- CMU
+  de "IMAP Authentifizierung",
+  es "Autenticación IMAP",
+  it "Autenticazione IMAP4",
+  nl "IMAP verificatie",
+  no "IMAP4 autentisering",
+  pt "Autenticação IMAP",
+  ko_KR "IMAP4 인증", --!!! 
+  zh_CN "IMAP4 authentication", --???
+  pl "Uwierzytelnianie IMAP",
+  fi "IMAP todennus", --!!! 
+  ca_ES "Autenticació IMAP4", --!!! 
+  cs "Ověřování IMAP4",
+  sv "IMAP4 autentisering",
+  hu "IMAP hitelesítés",
+  zh_TW "IMAP4 authentication", --???
+  ar "مصادقة IMAP",
+  he "IMAP authentication", --???
+  tr "IMAP authentication", --???
+  da "IMAP godkendelse"; --!!! 
+
+MFI.MYPROFILE.ZONE.IMAP4.AUTHENTICATION.HELP:
+--SIZECHAR 1024;
+  GAE "Email and voice mail accounts for IMAP access", -- CMU
+  en "Email and voice mail accounts for IMAP access", -- CMU
+  ru "Учетные записи электронной и голосовой почты для доступа к IMAP",
+  en_US "Email and voice mail accounts for IMAP access", --!!! 
+  en_GB "Email and voice mail accounts for IMAP access", --!!! 
+  fr "Comptes utilisateur email et messagerie vocale pour l'accès IMAP", -- CMU
+  de "E-Mail- und Voice Mail-Konten für IMAP-Zugriff",
+  es "Cuentas de buzón de voz y correo electrónico para acceso IMAP",
+  it "Account di posta vocale ed elettronica per accesso IMAP",
+  nl "E-mail- en voicemailaccounts voor IMAP-toegang",
+  no "E-post- og talemeldingskontoer for IMAP-tilgang",
+  pt "Contas de correio electrónico e de correio de voz para aceder ao IMAP",
+  ko_KR "도움말 내용 없음", --!!! 
+  zh_CN "No help content", --???
+  pl "Konta e-mail i poczty głosowej z dostępem przez IMAP",
+  fi "Sähköposti- ja puhepostitilit IMAP-käytölle", --!!! 
+  ca_ES "Comptes d'usuari de correu electrònic i de veu per a l'accés IMAP", --!!! 
+  cs "Účty pro e-mail a hlasovou schránku pro přístup k účtu IMAP",
+  sv "Röstbrevlåde- och e-postkonton för IMAP-åtkomst",
+  hu "E-mail és hangposta fiókok IMAP hozzáféréshez",
+  zh_TW "No help content", --???
+  ar "حسابات البريد الإلكتروني والبريد الصوتي للوصول إلى IMAP",
+  he "Email and voice mail accounts for IMAP access", --???
+  tr "Email and voice mail accounts for IMAP access", --???
+  da "E-mail- og voicemail-konti for IMAP-adgang"; --!!! 
+
+MFI.MYPROFILE.DOMAIN.LANGUAGES.HELP:
+--SIZECHAR 1024;
+  GAE "Display (GUI) and voice access (TUI) languages", -- CMU
+  en "Display (GUI) and voice access (TUI) languages", -- CMU
+  ru "Языки отображения (GUI) и доступа к голосовой службе (TUI)",
+  en_US "Display (GUI) and voice access (TUI) languages", --!!! 
+  en_GB "Display (GUI) and voice access (TUI) languages", --!!! 
+  fr "Langues de l'interface utilisateur et de l'accès vocal", -- CMU
+  de "Sprachen von Anzeige (GUI) und Sprachzugriff (TUI)",
+  es "Idiomas de visualización (GUI) y acceso por voz (TUI)",
+  it "Lingue di visualizzazione (GUI) e accesso vocale (TUI)",
+  nl "Talen voor weergave (GUI) en spraaktoegang (TUI)",
+  no "Vis GUI- og TUI-språk",
+  pt "Idiomas de acesso de voz (TUI) e de apresentação (GUI)",
+  ko_KR "도움말 내용 없음", --!!! 
+  zh_CN "No help content", --???
+  pl "Wyświetl języki z interfejsem graficznym (GUI) i dostępem głosowym (TUI)",
+  fi "Näytön (GUI) ja äänen käyttökielet (TUI)", --!!! 
+  ca_ES "Idiomes de visualització (GUI) i d'accés de veu (TUI)", --!!! 
+  cs "Jazyky zobrazení (GUI) a hlasového přístupu (TUI)",
+  sv "Språk för gränssnitts- och röståtkomst (GUI och TUI)",
+  hu "Képernyő- (GUI) és hanghozzáférési (TUI) nyelvek",
+  zh_TW "No help content", --???
+  ar "عرض (GUI) ولغات الوصول إلى الصوت (TUI)",
+  he "Display (GUI) and voice access (TUI) languages", --???
+  tr "Display (GUI) and voice access (TUI) languages", --???
+  da "Sprog for brugergrænseflade (GUI) og stemmeadgang (TUI)"; --!!! 
+
+MFI.MYPROFILE.DOMAIN.LANGUAGES.LABEL:
+--SIZECHAR 1024;
+  GAE "Languages",
+  en "Languages",
+  ru "Языки",
+  en_US "Languages", --!!! 
+  en_GB "Languages", --!!! 
+  fr "Langues", -- CMU
+  de "Sprachen",
+  es "Idiomas",
+  it "Lingue",
+  nl "Talen",
+  no "Språk",
+  pt "Idiomas",
+  ko_KR "언어", --!!! 
+  zh_CN "Languages", --???
+  pl "Języki",
+  fi "Kielet", --!!! 
+  ca_ES "Idiomes", --!!! 
+  cs "Jazyky",
+  sv "Språk",
+  hu "Nyelvek",
+  zh_TW "Languages", --???
+  ar "اللغات",
+  he "Languages", --???
+  tr "Languages", --???
+  da "Sprog"; --!!! 
+
+MFI.MYPROFILE.DOMAIN.NUMBERS.PERSONAL.HELP:
+--SIZECHAR 1024;
+  GAE "Personal telephone numbers", -- CMU
+  en "Personal telephone numbers", -- CMU
+  ru "Личные телефонные номера",
+  en_US "Personal telephone numbers", --!!! 
+  en_GB "Personal telephone numbers", --!!! 
+  fr "Numéros de téléphone personnels", -- CMU
+  de "Persönliche Telefonnummern",
+  es "Números de teléfono personales",
+  it "Numeri di telefono personali",
+  nl "Persoonlijke telefoonnummers",
+  no "Personlige telefonnumre",
+  pt "Números de telefone pessoais",
+  ko_KR "도움말 내용 없음", --!!! 
+  zh_CN "No help content", --???
+  pl "Osobiste numery telefonu",
+  fi "Henkilökohtaiset puhelinnumerot", --!!! 
+  ca_ES "Números de telèfon personals", --!!! 
+  cs "Osobní telefonní čísla",
+  sv "Privata telefonnummer",
+  hu "Személyes telefonszámok",
+  zh_TW "No help content", --???
+  ar "أرقام الهواتف الخلوية",
+  he "Personal telephone numbers", --???
+  tr "Personal telephone numbers", --???
+  da "Private telefonnumre"; --!!! 
+
+MFI.MYPROFILE.DOMAIN.NUMBERS.PERSONAL.LABEL:
+--SIZECHAR 1024;
+  GAE "Personal numbers", -- CMU
+  en "Personal numbers", -- CMU
+  ru "Личные номера",
+  en_US "Personal", --!!! 
+  en_GB "Personal numbers", --!!! 
+  fr "Numéros personnels", -- CMU
+  de "Persönliche Nummern",
+  es "Números personales",
+  it "Numeri personali",
+  nl "Persoonlijke nummers",
+  no "Personlige numre",
+  pt "Números pessoais",
+  ko_KR "개인", --!!! 
+  zh_CN "Personal", --???
+  pl "Numery osobiste",
+  fi "Henkilökohtaiset numerot", --!!! 
+  ca_ES "Números personals", --!!! 
+  cs "Osobní čísla",
+  sv "Privata nummer",
+  hu "Személyes számok",
+  zh_TW "Personal", --???
+  ar "أرقام الهواتف الخلوية",
+  he "Personal numbers", --???
+  tr "Personal numbers", --???
+  da "Private numre"; --!!! 
+
+MFI.MYPROFILE.DOMAIN.NUMBERS.PROFESSIONAL.HELP:
+--SIZECHAR 1024;
+  GAE "Professional telephone numbers", -- CMU
+  en "Professional telephone numbers", -- CMU
+  ru "Рабочие телефонные номера",
+  en_US "Professional telephone numbers", --!!! 
+  en_GB "Professional telephone numbers", --!!! 
+  fr "Numéros de téléphone professionnels", -- CMU
+  de "Geschäftliche Telefonnummern",
+  es "Números de teléfono profesionales",
+  it "Numeri di telefono professionali",
+  nl "Professionele telefoonnummers",
+  no "Jobbtelefonnumre",
+  pt "Números de telefone profissionais",
+  ko_KR "도움말 내용 없음", --!!! 
+  zh_CN "No help content", --???
+  pl "Służbowe numery telefonu",
+  fi "Ammatilliset puhelinnumerot", --!!! 
+  ca_ES "Números de telèfon professionals", --!!! 
+  cs "Pracovní telefonní čísla",
+  sv "Arbetstelefonnummer",
+  hu "Professzionális telefonszámok",
+  zh_TW "No help content", --???
+  ar "أرقام هواتف العمل",
+  he "Professional telephone numbers", --???
+  tr "Professional telephone numbers", --???
+  da "Arbejdstelefonnumre"; --!!! 
+
+MFI.MYPROFILE.DOMAIN.NUMBERS.PROFESSIONAL.LABEL:
+--SIZECHAR 1024;
+  GAE "Professional numbers", -- CMU
+  en "Professional numbers", -- CMU
+  ru "Рабочие номера",
+  en_US "Professional", --!!! 
+  en_GB "Professional numbers", --!!! 
+  fr "Numéros professionnels", -- CMU
+  de "Geschäftliche Nummern",
+  es "Números profesionales",
+  it "Numeri professionali",
+  nl "Professionele nummers",
+  no "Jobbnumre",
+  pt "Números profissionais",
+  ko_KR "전문", --!!! 
+  zh_CN "Professional", --???
+  pl "Numery służbowe",
+  fi "Ammatilliset numerot", --!!! 
+  ca_ES "Números professionals", --!!! 
+  cs "Pracovní čísla",
+  sv "Arbete",
+  hu "Professzionális",
+  zh_TW "Professional", --???
+  ar "أرقام هواتف العمل",
+  he "Professional numbers", --???
+  tr "Professional numbers", --???
+  da "Arbejdsnumre"; --!!! 
+
+MFI.MYPROFILE.DOMAIN.PASSWORD.SYSTEM.HELP:
+--SIZECHAR 1024;
+  GAE "Password required for the Graphical User Interface (GUI)", -- CMU
+  en "Password required for the Graphical User Interface (GUI)", -- CMU
+  ru "Требуется пароль для доступа к графическому интерфейсу пользователя (GUI)",
+  en_US "Password required for the Graphical User Interface (GUI)", --!!! 
+  en_GB "Password required for the Graphical User Interface (GUI)", --!!! 
+  fr "Mot de passe requis pour l'interface utilisateur (GUI)", -- CMU
+  de "Passwort für die grafische Benutzeroberfläche (GUI) erforderlich",
+  es "Se necesita contraseña para la interfaz gráfica de usuario (GUI)",
+  it "Password richiesta per l'interfaccia utente grafica (GUI)",
+  nl "Wachtwoord vereist voor de grafische gebruikersinterface (GUI)",
+  no "Grafisk brukergrensesnitt (GUI) krever passord",
+  pt "Palavra-passe necessária para a interface gráfica de utilizador (GUI)",
+  ko_KR "도움말 내용 없음", --!!! 
+  zh_CN "No help content", --???
+  pl "Wymagane hasło do interfejsu graficznego (GUI)",
+  fi "Graafiselle käyttöliittymälle (GUI) vaaditaan salasana", --!!! 
+  ca_ES "Contrasenya necessària per a la interfície gràfica d'usuari (GUI)", --!!! 
+  cs "Pro grafické uživatelské rozhraní (GUI) je vyžadováno heslo",
+  sv "Lösenord krävs för användargränssnittet (GUI)",
+  hu "A grafikus felhasználói felülethez (GUI) jelszó szükséges ",
+  zh_TW "No help content", --???
+  ar "كلمة المرور المطلوبة لواجهة المستخدم الرسومية (GUI)",
+  he "Password required for the Graphical User Interface (GUI)", --???
+  tr "Password required for the Graphical User Interface (GUI)", --???
+  da "Adgangskode kræves for brugergrænsefladen (GUI)"; --!!! 
+
+MFI.MYPROFILE.DOMAIN.PASSWORD.SYSTEM.LABEL:
+--SIZECHAR 1024;
+  GAE "GUI password", -- CMU
+  en "GUI password", -- CMU
+  ru "Пароль GUI",
+  en_US "GUI password", --!!! 
+  en_GB "GUI password", --!!! 
+  fr "Mot de passe de l'interface utilisateur", -- CMU
+  de "GUI-Passwort",
+  es "Contraseña de GUI",
+  it "Password GUI",
+  nl "GUI-wachtwoord",
+  no "GUI-passord",
+  pt "Palavra-passe de GUI",
+  ko_KR "시스템 암호", --!!! 
+  zh_CN "System password", --???
+  pl "Hasło interfejsu graficznego",
+  fi "GUI-salasana", --!!! 
+  ca_ES "Contrasenya de la GUI", --!!! 
+  cs "Heslo GUI",
+  sv "Lösenord för användargränssnitt",
+  hu "GUI jelszó",
+  zh_TW "System password", --???
+  ar "كلمة مرور GUI",
+  he "GUI password", --???
+  tr "GUI password", --???
+  da "GUI-adgangskode"; --!!! 
+
+MFI.MYPROFILE.DOMAIN.PASSWORD.TUI.HELP:
+--SIZECHAR 1024;
+  GAE "Password required for the voice access (TUI)", -- CMU
+  en "Password required for the voice access (TUI)", -- CMU
+  ru "Требуется пароль для доступа к голосовой службе (TUI)",
+  en_US "Password required for the voice access (TUI)", --!!! 
+  en_GB "Password required for the voice access (TUI)", --!!! 
+  fr "Mot de passe requis pour l'accès vocal (TUI)", -- CMU
+  de "Passwort für den Sprachzugriff (TUI) erforderlich",
+  es "Se necesita contraseña para el acceso por voz (TUI)",
+  it "Password richiesta per l'accesso vocale (TUI)",
+  nl "Wachtwoord vereist voor spraaktoegang (TUI)",
+  no "Talebrukergrensesnittet (TUI) krever passord",
+  pt "Palavra-passe necessária para acesso de voz (TUI)",
+  ko_KR "도움말 내용 없음", --!!! 
+  zh_CN "No help content", --???
+  pl "Wymagane hasło dostępu głosowego (TUI)",
+  fi "Äänen käyttöön (TUI) vaaditaan salasana", --!!! 
+  ca_ES "Es necessita una contrasenya per a l'accés de veu (TUI)", --!!! 
+  cs "Pro hlasový přístup je vyžadováno heslo (TUI)",
+  sv "Lösenord krävs för röståtkomst (TUI)",
+  hu "A hangeléréshez (TUI) jelszó szükséges ",
+  zh_TW "No help content", --???
+  ar "كلمة المرور اللازمة للوصول إلى الصوت (TUI)",
+  he "Password required for the voice access (TUI)", --???
+  tr "Password required for the voice access (TUI)", --???
+  da "Adgangskode kræves for stemmeadgang (TUI)"; --!!! 
+
+MFI.MYPROFILE.DOMAIN.PASSWORD.TUI.LABEL:
+--SIZECHAR 1024;
+  GAE "Voice access (TUI) password", -- CMU
+  en "Voice access (TUI) password", -- CMU
+  ru "Пароль голосовой службы (TUI)",
+  en_US "TUI password", --!!! 
+  en_GB "Voice access (TUI) password", --!!! 
+  fr "Mot de passe de l'accès vocal", -- CMU
+  de "Passwort für Sprachzugriff (TUI)",
+  es "Contraseña de acceso por voz (TUI)",
+  it "Password accesso vocale (TUI)",
+  nl "Wachtwoord voor spraaktoegang (TUI)",
+  no "TUI-passord",
+  pt "Palavra-passe de acesso de voz (TUI)",
+  ko_KR "TUI 암호", --!!! 
+  zh_CN "TUI password", --???
+  pl "Hasło dostępu głosowego (TUI)",
+  fi "Äänen käytön (TUI) salasana", --!!! 
+  ca_ES "Contrasenya d'accés de veu (TUI)", --!!! 
+  cs "Heslo pro hlasový přístup (TUI)",
+  sv "Lösenord för röståtkomst (TUI)",
+  hu "Hangelérés (TUI) jelszó",
+  zh_TW "TUI password", --???
+  ar "كلمة مرور الوصول إلى الصوت (TUI)",
+  he "Voice access (TUI) password", --???
+  tr "Voice access (TUI) password", --???
+  da "Adgangskode til stemmeadgang (TUI)"; --!!! 
+
+MFI.MYPROFILE.DOMAIN.TIME.ZONES.HELP:
+--SIZECHAR 1024;
+  GAE "Set the time zone (physical location)", -- CMU
+  en "Set the time zone (physical location)", -- CMU
+  ru "Установка часового пояса (физическое расположение)",
+  en_US "Set the time zone (physical location)", --!!! 
+  en_GB "Set the time zone (physical location)", --!!! 
+  fr "Sélection du fuseau horaire (emplacement géographique)", -- CMU
+  de "Zeitzone einstellen (physische Position)",
+  es "Establecer la misma zona horaria (ubicación física)",
+  it "Impostare il fuso orario (ubicazione fisica)",
+  nl "Tijdzone instellen (fysieke locatie)",
+  no "Velg tiddsone (fysisk plassering)",
+  pt "Definição do fuso horário (localização geográfica)",
+  ko_KR "도움말 내용 없음", --!!! 
+  zh_CN "No help content", --???
+  pl "Ustaw strefę czasową (lokalizacja fizyczna)",
+  fi "Määritä aikavyöhyke (fyysinen sijainti)", --!!! 
+  ca_ES "Establir la zona horària (ubicació física)", --!!! 
+  cs "Nastavte časové pásmo (fyzické umístění)",
+  sv "Ange tidszon (fysisk plats)",
+  hu "Állítsa be az időzónát (fizikai hely)",
+  zh_TW "No help content", --???
+  ar "تعيين المنطقة الزمنية (الموقع الفعلي)",
+  he "Set the time zone (physical location)", --???
+  tr "Set the time zone (physical location)", --???
+  da "Indstil tidszonen (fysisk sted)"; --!!! 
+
+MFI.MYPROFILE.DOMAIN.TIME.ZONES.LABEL:
+--SIZECHAR 1024;
+  GAE "Time zone", -- CMU
+  en "Time zone", -- CMU
+  ru "Часовой пояс",
+  en_US "Time zones", --!!! 
+  en_GB "Time zones", --!!! 
+  fr "Fuseau horaire", -- CMU
+  de "Zeitzone",
+  es "Zona horaria",
+  it "Fusi orari",
+  nl "Tijdzone",
+  no "Tidssoner",
+  pt "Fuso horário",
+  ko_KR "표준 시간대", --!!! 
+  zh_CN "Time zones", --???
+  pl "Strefa czasowa",
+  fi "Aikavyöhyke", --!!! 
+  ca_ES "Zones horàries", --!!! 
+  cs "Časové pásmo",
+  sv "Tidszoner",
+  hu "Időzónák",
+  zh_TW "Time zones", --???
+  ar "المنطقة الزمنية",
+  he "Time zone", --???
+  tr "Time zone", --???
+  da "Tidszone"; --!!! 
+
+MFI.MYPROFILE.DOMAIN.VOICEMAIL.GREETINGS.HELP:
+--SIZECHAR 1024;
+  GAE "Set the current greeting message", -- CMU
+  en "Set the current greeting message", -- CMU
+  ru "Установка текущего сообщения приветствия",
+  en_US "Set the current greeting message", --!!! 
+  en_GB "Set the current greeting message", --!!! 
+  fr "Sélection du message d'accueil courant", -- CMU
+  de "Aktuelle Begrüßungsmeldung einstellen",
+  es "Establecer el mensaje de saludo actual",
+  it "Impostare il messaggio di formula iniziale corrente",
+  nl "Het huidige begroetingsbericht instellen",
+  no "Velg gjeldende hilsen",
+  pt "Definição da mensagem de saudação actual",
+  ko_KR "도움말 내용 없음", --!!! 
+  zh_CN "No help content", --???
+  pl "Ustaw bieżącą wiadomość powitalną",
+  fi "Määritä nykyinen tervehdysviesti", --!!! 
+  ca_ES "Establir el missatge de salutació actual", --!!! 
+  cs "Nastavte aktuální zprávu uvítání",
+  sv "Ställ in aktuellt hälsningsmeddelande",
+  hu "Jelenlegi üdvözlőüzenet beállítása",
+  zh_TW "No help content", --???
+  ar "تعيين رسالة الترحيب الحالية",
+  he "Set the current greeting message", --???
+  tr "Set the current greeting message", --???
+  da "Indstil den aktuelle velkomstbesked"; --!!! 
+
+MFI.MYPROFILE.DOMAIN.VOICEMAIL.GREETINGS.LABEL:
+--SIZECHAR 1024;
+  GAE "Greetings", -- CMU
+  en "Greetings", -- CMU
+  ru "Приветствия",
+  en_US "Greeting", --!!! 
+  en_GB "Greeting", --!!! 
+  fr "Messages d'accueil", -- CMU
+  de "Begrüßungsmeldungen",
+  es "Saludos",
+  it "Formule iniziali",
+  nl "Begroetingen",
+  no "Hilsen",
+  pt "Saudações",
+  ko_KR "인사말", --!!! 
+  zh_CN "Greeting", --???
+  pl "Powitania",
+  fi "Tervehdykset", --!!! 
+  ca_ES "Salutació", --!!! 
+  cs "Uvítání",
+  sv "Hälsningsfras",
+  hu "Üdvözlés",
+  zh_TW "Greeting", --???
+  ar "التحيات",
+  he "Greetings", --???
+  tr "Greetings", --???
+  da "Velkomstbeskeder"; --!!! 
+
+MFI.MYPROFILE.DOMAIN.VOICEMAIL.OPTIONS.HELP:
+--SIZECHAR 1024;
+  GAE "Additional voice mail options", -- CMU
+  en "Additional voice mail options", -- CMU
+  ru "Дополнительные параметры голосовой почты",
+  en_US "Additional voice mail options", --!!! 
+  en_GB "Additional voice mail options", --!!! 
+  fr "Options supplémentaires pour la messagerie vocale", -- CMU
+  de "Zusätzliche Voice Mail-Optionen",
+  es "Opciones de buzón de voz adicionales",
+  it "Opzioni posta vocale aggiuntive",
+  nl "Aanvullende voicemailopties",
+  no "Tilleggsalternativer for talemelding",
+  pt "Opções adicionais do correio de voz",
+  ko_KR "도움말 내용 없음", --!!! 
+  zh_CN "No help content", --???
+  pl "Dodatkowe opcje poczty głosowej",
+  fi "Puheviestien lisäasetukset", --!!! 
+  ca_ES "Opcions addicionals del correu de veu", --!!! 
+  cs "Další možnosti hlasové schránky",
+  sv "Fler alternativ för röstbrevlåda",
+  hu "További hangposta beállítások",
+  zh_TW "No help content", --???
+  ar "خيارات البريد الصوتي الأخرى",
+  he "Additional voice mail options", --???
+  tr "Additional voice mail options", --???
+  da "Flere voicemail-indstillinger"; --!!! 
+
+MFI.MYPROFILE.DOMAIN.VOICEMAIL.OPTIONS.LABEL:
+--SIZECHAR 1024;
+  GAE "Options",
+  en "Options",
+  ru "Параметры",
+  en_US "Options", --!!! 
+  en_GB "Options", --!!! 
+  fr "Options", -- CMU (correct)
+  de "Optionen",
+  es "Opciones",
+  it "Opzioni",
+  nl "Opties",
+  no "Alternativer",
+  pt "Opções",
+  ko_KR "옵션", --!!! 
+  zh_CN "Options", --???
+  pl "Opcje",
+  fi "Asetukset", --!!! 
+  ca_ES "Opcions", --!!! 
+  cs "Možnosti",
+  sv "Alternativ",
+  hu "Beállítások",
+  zh_TW "Options", --???
+  ar "خيارات",
+  he "Options", --???
+  tr "Options", --???
+  da "Indstillinger"; --!!! 
+
+MFI.MYPROFILE.DOMAIN.VOICEMAIL.PRINT.TO.FAX.HELP:
+--SIZECHAR 1024;
+  GAE "Print documents to a fax machine", -- CMU
+  en "Print documents to a fax machine", -- CMU
+  ru "Печать документов на аппарате факсимильной связи",
+  en_US "Print documents to a fax machine", --!!! 
+  en_GB "Print documents to a fax machine", --!!! 
+  fr "Imprimer des documents vers une machine fax", -- CMU
+  de "Dokumente auf einem Faxgerät drucken",
+  es "Imprimir documentos en un fax",
+  it "Stampa documenti su un fax",
+  nl "Documenten afdrukken naar een faxapparaat",
+  no "Skriv ut dokumentene til faks",
+  pt "Imprimir documentos num fax",
+  ko_KR "도움말 내용 없음", --!!! 
+  zh_CN "No help content", --???
+  pl "Wydrukuj dokumenty faksem",
+  fi "Tulosta asiakirjat faksilaitteeseen", --!!! 
+  ca_ES "Imprimir documents a un fax", --!!! 
+  cs "Vytisknout dokumenty na faxovém přístroji",
+  sv "Skriv ut dokument till fax",
+  hu "Dokumentumok nyomtatása faxkészülékre",
+  zh_TW "No help content", --???
+  ar "طباعة المستندات إلى جهاز الفاكس",
+  he "Print documents to a fax machine", --???
+  tr "Print documents to a fax machine", --???
+  da "Udskriv dokumenter til fax"; --!!! 
+
+MFI.MYPROFILE.DOMAIN.VOICEMAIL.PRINT.TO.FAX.LABEL:
+--SIZECHAR 1024;
+  GAE "Print to fax",
+  en "Print to fax",
+  ru "Печать факса",
+  en_US "Print to fax", --!!! 
+  en_GB "Print to fax", --!!! 
+  fr "Imprimer vers un fax", -- CMU
+  de "Drucken an Fax",
+  es "Imprimir en fax",
+  it "Stampa su fax",
+  nl "Afdrukken naar fax",
+  no "Skriv ut til faks",
+  pt "Imprimir num fax",
+  ko_KR "팩스로 인쇄", --!!! 
+  zh_CN "Print to fax", --???
+  pl "Drukuj faksem",
+  fi "Tulosta faksiin", --!!! 
+  ca_ES "Imprimir a un fax", --!!! 
+  cs "Vytisknout faxem",
+  sv "Skriv ut till fax",
+  hu "Nyomtatás faxra",
+  zh_TW "Print to fax", --???
+  ar "طباعة إلى الفاكس",
+  he "Print to fax", --???
+  tr "Print to fax", --???
+  da "Udskriv til fax"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.FIRST.NAME.LABEL:
+--SIZECHAR 1024;
+-- CMU (not used)
+  GAE "first name",
+  en "first name",
+  ru "Имя",
+  en_US "first name", --!!! 
+  en_GB "first name", --!!! 
+  fr "pr�nom",
+  de "Vorname",
+  es "Nombre",
+  it "nome",
+  nl "voornaam",
+  no "fornavn",
+  pt "nome próprio",
+  ko_KR "이름", --!!! 
+  zh_CN "first name", --???
+  pl "imię",
+  fi "etunimi", --!!! 
+  ca_ES "nom", --!!! 
+  cs "jméno",
+  sv "förnamn",
+  hu "keresztnév",
+  zh_TW "first name", --???
+  ar "الاسم الأول",
+  he "first name", --???
+  tr "first name", --???
+  da "fornavn"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.GREETING.PERSONAL.VALUE.LABEL:
+--SIZECHAR 1024;
+  GAE "Personal", -- CMU
+  en "Personal", -- CMU
+  ru "Личный",
+  en_US "Personal", --!!! 
+  en_GB "personal", --!!! 
+  fr "Personnel", -- CMU
+  de "Persönlich",
+  es "Personal",
+  it "Personale",
+  nl "Persoonlijk",
+  no "personlig",
+  pt "Pessoal",
+  ko_KR "개인", --!!! 
+  zh_CN "personal", --???
+  pl "Osobiste",
+  fi "Henkilökohtainen", --!!! 
+  ca_ES "Personal", --!!! 
+  cs "Osobní",
+  sv "privat",
+  hu "Személyes",
+  zh_TW "personal", --???
+  ar "شخصي",
+  he "Personal", --???
+  tr "Personal", --???
+  da "Privat"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.GREETING.PERSONAL_AND_INTERNAL_CALL.VALUE.LABEL:
+--SIZECHAR 1024;
+  GAE "Personal and Internal call", -- CMU
+  en "Personal and Internal call", -- CMU
+  ru "Personal and Internal call", --!!! 
+  en_US "Personal and Internal call", --!!! 
+  en_GB "Personal and Internal call", --!!! 
+  fr "Appel personnel et interne",
+  de "Personal and Internal call", --!!! 
+  es "Llamada personal e interna",
+  it "Personal and Internal call", --!!! 
+  nl "Personal and Internal call", --!!! 
+  no "Personal and Internal call", --!!! 
+  pt "Chamada pessoal e interna",
+  ko_KR "Personal and Internal call", --!!! 
+  zh_CN "Personal and Internal call", --!!! 
+  pl "Personal and Internal call", --!!! 
+  fi "Personal and Internal call", --!!! 
+  ca_ES "Personal and Internal call", --!!! 
+  cs "Personal and Internal call", --!!! 
+  sv "Personal and Internal call", --!!! 
+  hu "Personal and Internal call",
+  zh_TW "Personal and Internal call", --!!! 
+  ar "المكالمة الشخصية والداخلية",
+  he "Personal and Internal call", --!!! 
+  tr "Personal and Internal call", --!!! 
+  da "Privat og internt opkald"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.GREETING.EXTENDED.ABSENCE.VALUE.LABEL:
+--SIZECHAR 1024;
+  GAE "Extended absence", -- CMU
+  en "Extended absence", -- CMU
+  ru "Дополнительно при отсутствии",
+  en_US "extended absence", --!!! 
+  en_GB "extended absence", --!!! 
+  fr "Absence prolongée", -- CMU
+  de "Längere Abwesenheit",
+  es "Ausencia prolongada",
+  it "assenza estesa",
+  nl "Langdurige afwezigheid",
+  no "langtidsfravær",
+  pt "Ausência prolongada",
+  ko_KR "계속 부재", --!!! 
+  zh_CN "extended absence", --???
+  pl "Dłuższa nieobecność",
+  fi "Pidennetty poissaolo", --!!! 
+  ca_ES "Absència prolongada", --!!! 
+  cs "Delší nepřítomnost",
+  sv "längre frånvaro",
+  hu "Bővített hiányzás",
+  zh_TW "extended absence", --???
+  ar "الغياب الممتد",
+  he "Extended absence", --???
+  tr "Extended absence", --???
+  da "Forlænget fravær"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.GREETING.LABEL:
+--SIZECHAR 1024;
+  GAE "Activate a greeting", -- CMU
+  en "Activate a greeting", -- CMU
+  ru "Включить приветствие",
+  en_US "Activate a greeting", --!!! 
+  en_GB "Activate a greeting", --!!! 
+  fr "Activer un message d'accueil", -- CMU
+  de "Eine Begrüßung aktivieren",
+  es "Activar un saludo",
+  it "Attivare una formula iniziale",
+  nl "Een begroeting activeren",
+  no "Aktiver en hilsen",
+  pt "Activar uma saudação",
+  ko_KR "인사말", --!!! 
+  zh_CN "Greeting", --???
+  pl "Włącz powitanie",
+  fi "Aktivoi tervehdys", --!!! 
+  ca_ES "Activar una salutació", --!!! 
+  cs "Aktivujte uvítání",
+  sv "Aktivera en hälsningsfras",
+  hu "Üdvözlés aktiválása",
+  zh_TW "Greeting", --???
+  ar "تنشيط الترحيب",
+  he "Activate a greeting", --???
+  tr "Activate a greeting", --???
+  da "Aktiver en velkomstbesked"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.GREETING.STANDARD.VALUE.LABEL:
+--SIZECHAR 1024;
+  GAE "Standard", -- CMU
+  en "Standard", -- CMU
+  ru "Стандартно",
+  en_US "Standard", --!!! 
+  en_GB "standard", --!!! 
+  fr "Standard", -- CMU
+  de "Standard",
+  es "Estándar",
+  it "Standard",
+  nl "Standaard",
+  no "Standard",
+  pt "Standard",
+  ko_KR "표준", --!!! 
+  zh_CN "standard", --???
+  pl "Standard",
+  fi "Vakio", --!!! 
+  ca_ES "Estàndard", --!!! 
+  cs "Standardní",
+  sv "Standard",
+  hu "Hagyományos",
+  zh_TW "standard", --???
+  ar "قياسي",
+  he "Standard", --???
+  tr "Standard", --???
+  da "Standard"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.INTERNAL.CALL.GREETING.LABEL:
+--SIZECHAR 1024;
+  GAE "Internal call greeting",
+  en "Internal call greeting",
+  ru "Приветствие для внутреннего вызова",
+  en_US "Internal call greeting", --!!! 
+  en_GB "Internal call greeting", --!!! 
+  fr "Message d'accueil pour les appels internes", -- CMU
+  de "Interne Begrüßungsansage",
+  es "Saludo para llamadas internas",
+  it "Formula iniziale chiamata interna",
+  nl "Begroeting voor interne oproep",
+  no "Hilsen for internt anrop",
+  pt "Saudação de chamada interna",
+  ko_KR "내부 통화 인사말", --!!! 
+  zh_CN "Internal call greeting", --???
+  pl "Powitanie w połączeniach wewnętrznych",
+  fi "Sisäisen puhelun tervehdys", --!!! 
+  ca_ES "Salutació de trucada interna", --!!! 
+  cs "Uvítání interního volání",
+  sv "Intern hälsningsfras",
+  hu "Belső hívás üdvözlet",
+  zh_TW "Internal call greeting", --???
+  ar "الترحيب بالمكالمات الداخلية",
+  he "Internal call greeting", --???
+  tr "Internal call greeting", --???
+  da "Intern velkomstbesked"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.GUI.LANGUAGE.LABEL:
+--SIZECHAR 1024;
+  GAE "Display language (GUI)", -- CMU
+  en "Display language (GUI)", -- CMU
+  ru "Язык отображения (GUI)",
+  en_US "Display language (GUI)", --!!! 
+  en_GB "Display language (GUI)", --!!! 
+  fr "Langue d'affichage (interface graphique)", -- CMU
+  de "Sprache der Benutzeroberfläche (GUI)",
+  es "Idioma de visualización (GUI)",
+  it "Lingua di visualizzazione (GUI)",
+  nl "Weergavetaal (GUI)",
+  no "Visningsspråk (GUI)",
+  pt "Idioma de apresentação (GUI)",
+  ko_KR "시스템 언어", --!!! 
+  zh_CN "System language", --???
+  pl "Wyświetlany język (GUI)",
+  fi "Näyttökieli (GUI)", --!!! 
+  ca_ES "Idioma de visualització (GUI)", --!!! 
+  cs "Jazyk zobrazení (GUI)",
+  sv "Språk för användargränssnitt (GUI)",
+  hu "Képernyő nyelve (GUI)",
+  zh_TW "System language", --???
+  ar "لغة العرض (GUI)",
+  he "Display language (GUI)", --???
+  tr "Display language (GUI)", --???
+  da "Visningssprog (GUI)"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.OPTION.24.HOUR.MODE.HELP:
+--SIZECHAR 1024;
+  GAE "Announce the hour in the 24-hour clock convention", -- CMU
+  en "Announce the hour in the 24-hour clock convention", -- CMU
+  ru "Объявлять время в 24-часовой системе",
+  en_US "Announce the hour in the 24-hour clock convention", --!!! 
+  en_GB "Announce the hour in the 24-hour clock convention", --!!! 
+  fr "Annonce de l'heure dans le format 24 heures", -- CMU
+  de "Geben Sie die Uhrzeit in der 24-Stunden-Formatkonvention an",
+  es "Indicar la hora en modo de reloj 24h",
+  it "Annunciare l'ora in formato 24 ore",
+  nl "Tijd aankondigen in 24-uursnotatie",
+  no "Viser tidspunkt i 24-timersformat",
+  pt "Anuncia as horas em formato de 24 horas",
+  ko_KR "도움말 내용 없음", --!!! 
+  zh_CN "No help content", --???
+  pl "Podawaj czas w formacie 24-godzinnym",
+  fi "Näytä tunnit 24 tunnin muodossa", --!!! 
+  ca_ES "Anunciar l'hora en format de 24 hores", --!!! 
+  cs "Ve 24hodinovém režimu ohlásit hodinu",
+  sv "Visa tid i 24-timmarsformat",
+  hu "24-órás beosztás szerint mondja be az órát",
+  zh_TW "No help content", --???
+  ar "إعلان الساعة بنظام الـ 24 ساعة",
+  he "Announce the hour in the 24-hour clock convention", --???
+  tr "Announce the hour in the 24-hour clock convention", --???
+  da "Vis tid i 24-timers format"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.OPTION.24.HOUR.MODE.LABEL:
+--SIZECHAR 1024;
+  GAE "24-hour clock",
+  en "24-hour clock",
+  ru "24 часа",
+  en_US "24-hour clock", --!!! 
+  en_GB "24-hour clock", --!!! 
+  fr "Format 24 heures", -- CMU
+  de "24-Stunden-Format",
+  es "Reloj 24h",
+  it "Formato 24 ore",
+  nl "24-uurs klok",
+  no "24-timersformat",
+  pt "Formato de 24 horas",
+  ko_KR "24시간제", --!!! 
+  zh_CN "24-hour clock", --???
+  pl "Zegar 24-godzinny",
+  fi "24 tunnin kello", --!!! 
+  ca_ES "Rellotge de 24 hores", --!!! 
+  cs "24hodinový režim",
+  sv "24-timmarsformat",
+  hu "24-órás óra",
+  zh_TW "24-hour clock", --???
+  ar "نظام الـ 24 ساعة",
+  he "24-hour clock", --???
+  tr "24-hour clock", --???
+  da "24-timers format"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.OPTION.ADDRESSING.BY.NAME.HELP:
+--SIZECHAR 1024;
+  GAE "Address messages by name (vs. by extension)", -- CMU
+  en "Address messages by name (vs. by extension)", -- CMU
+  ru "Адресация сообщений по имени (не по расширению)",
+  en_US "Address messages by name (vs. by extension)", --!!! 
+  en_GB "Address messages by name (vs. by extension)", --!!! 
+  fr "Adressage des messages par nom (versus par numéro de téléphone)", -- CMU
+  de "Nachrichten per Name versenden (anstatt per Nebenstelle)",
+  es "Direccionamiento de mensajes por nombre (en lugar de por extensión)",
+  it "Indirizzare messaggi per nome (rispetto all'estensione)",
+  nl "Berichten adresseren met naam (en niet op toestelnummer)",
+  no "Adresser meldinger med navn (kontra nummer)",
+  pt "Endereçamento de mensagens por nome (vs. por extensão)",
+  ko_KR "도움말 내용 없음", --!!! 
+  zh_CN "No help content", --???
+  pl "Adresuj wiadomości za pomocą nazwy (a nie rozszerzenia)",
+  fi "Viestien osoitteet nimen mukaan (vs. tunnisteen mukaan)", --!!! 
+  ca_ES "Adreçament de missatges per nom (no per extensió)", --!!! 
+  cs "Adresování zpráv podle názvu (vs. dle přípony)",
+  sv "Visa meddelanden efter namn (i stället för efter telefonnummer)",
+  hu "Üzenetek címzése név szerint (nem kiterjesztés szerint)",
+  zh_TW "No help content", --???
+  ar "توجيه رسائل حسب الاسم (مقابل حسب الملحق)",
+  he "Address messages by name (vs. by extension)", --???
+  tr "Address messages by name (vs. by extension)", --???
+  da "Vis beskeder efter navn (i stedet for efter telefonnummer)"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.OPTION.ADDRESSING.BY.NAME.LABEL:
+--SIZECHAR 1024;
+  GAE "Address messages by name",
+  en "Address messages by name",
+  ru "Адресация сообщений по имени",
+  en_US "Address messages by name", --!!! 
+  en_GB "Address messages by name", --!!! 
+  fr "Adressage des messages par nom", -- CMU
+  de "Nachrichten per Name versenden",
+  es "Direccionamiento de mensajes por nombre",
+  it "Indirizzare messaggi per nome",
+  nl "Berichten adresseren met naam",
+  no "Adresser meldinger med navn",
+  pt "Endereçamento de mensagens por nome ",
+  ko_KR "이름별 메시지 주소 지정", --!!! 
+  zh_CN "Address messages by name", --???
+  pl "Adresuj wiadomości za pomocą nazwy",
+  fi "Viestien osoitteet nimen mukaan", --!!! 
+  ca_ES "Adreçament de missatges per nom", --!!! 
+  cs "Adresování zpráv podle názvu",
+  sv "Visa meddelanden efter namn",
+  hu "Üzenetek címzése név szerint",
+  zh_TW "Address messages by name", --???
+  ar "توجيه رسائل حسب الاسم",
+  he "Address messages by name", --???
+  tr "Address messages by name", --???
+  da "Vis beskeder efter navn"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.OPTION.ANSWER.ONLY.HELP:
+--SIZECHAR 1024;
+  GAE "Callers are not able to leave messages", -- CMU
+  en "Callers are not able to leave messages", -- CMU
+  ru "Вызывающие абоненты не могут оставлять сообщения",
+  en_US "Callers are not able to leave messages", --!!! 
+  en_GB "Callers are not able to leave messages", --!!! 
+  fr "Les appelants ne peuvent déposer de messages", -- CMU
+  de "Anrufer können Nachrichten nicht verlassen",
+  es "Los llamantes no pueden dejar mensajes",
+  it "I chiamanti non possono lasciare messaggi",
+  nl "Bellers kunnen geen berichten achterlaten",
+  no "Det er ikke mulig å legge igjen beskjed",
+  pt "Os emissores não podem deixar mensagens",
+  ko_KR "도움말 내용 없음", --!!! 
+  zh_CN "No help content", --???
+  pl "Dzwoniący nie mogą zostawiać wiadomości",
+  fi "Soittajat eivät voi jättää viestejä", --!!! 
+  ca_ES "Els autors de la trucada no poden deixar missatges", --!!! 
+  cs "Volající nemohou zanechávat zprávy",
+  sv "Den uppringande kan inte lämna meddelande",
+  hu "A hívók nem tudnak üzenetet hagyni",
+  zh_TW "No help content", --???
+  ar "لا يمكن للمتصلين ترك رسائل",
+  he "Callers are not able to leave messages", --???
+  tr "Callers are not able to leave messages", --???
+  da "Opkaldere kan ikke lægge beskeder"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.OPTION.ANSWER.ONLY.LABEL:
+--SIZECHAR 1024;
+  GAE "Announce only mode",
+  en "Announce only mode",
+  ru "Режим только приветствия",
+  en_US "Announce only mode", --!!! 
+  en_GB "Announce only mode", --!!! 
+  fr "Mode répondeur simple", -- CMU
+  de "Modus nur Ansage",
+  es "Modo de sólo anuncio",
+  it "Modalità solo annuncio",
+  nl "Modus Alleen aankondigen",
+  no "Kun hilsen",
+  pt "Modo de anúncio apenas",
+  ko_KR "알림 전용 모드", --!!! 
+  zh_CN "Announce only mode", --???
+  pl "Tryb Tylko powiadamiaj",
+  fi "Vain ilmoitus -tila", --!!! 
+  ca_ES "Mode de només anunci", --!!! 
+  cs "Režim Pouze ohlášení",
+  sv "Endast visningsläge",
+  hu "Csak bemondás",
+  zh_TW "Announce only mode", --???
+  ar "وضع الإعلان فقط",
+  he "Announce only mode", --???
+  tr "Announce only mode", --???
+  da "Kun visningstilstand"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.OPTION.AUTOMATIC.READING.HELP:
+--SIZECHAR 1024;
+  GAE "New messages are played automatically when accessing the voice mail", -- CMU
+  en "New messages are played automatically when accessing the voice mail", -- CMU
+  ru "Новые сообщения воспроизводятся автоматически при доступе к голосовой почте",
+  en_US "New messages are played automatically when accessing the voice mail", --!!! 
+  en_GB "New messages are played automatically when accessing the voice mail", --!!! 
+  fr "Les nouveaux messages sont lus automatiquement dès l'accès à la messagerie vocale", -- CMU
+  de "Neue Nachrichten werden beim Voice Mail-Zugriff automatisch abgespielt",
+  es "Los mensajes nuevos se reproducen automáticamente al acceder al buzón de voz",
+  it "I nuovi messaggi sono riprodotti automaticamente quando si accede alla posta vocale",
+  nl "Als u naar de voicemail gaat, worden nieuwe berichten automatisch afgespeeld",
+  no "Nye meldinger spilles av automatisk når du åpner talepostkassen",
+  pt "As novas mensagens são reproduzidas automaticamente ao aceder ao correio de voz",
+  ko_KR "도움말 내용 없음", --!!! 
+  zh_CN "No help content", --???
+  pl "Automatyczne odtwarzanie nowych wiadomości po połączeniu z pocztą głosową",
+  fi "Uudet viestit toistetaan automaattisesti, kun puheposti avataan", --!!! 
+  ca_ES "Els missatges nous es reprodueixen automàticament en accedir al correu de veu", --!!! 
+  cs "Nové zprávy jsou automaticky přehrávány při otevření hlasové schránky",
+  sv "Nya meddelanden spelas upp automatiskt vid anslutning till röstbrevlådan",
+  hu "Az új üzenetek automatikusan lejátszásra kerülnek a hangposta elérésekor",
+  zh_TW "No help content", --???
+  ar "يتم تشغيل الرسائل الجديدة تلقائيًا في حالة الوصول إلى البريد الصوتي",
+  he "New messages are played automatically when accessing the voice mail", --???
+  tr "New messages are played automatically when accessing the voice mail", --???
+  da "Nye beskeder afspilles automatisk, når du åbner din voicemail"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.OPTION.AUTOMATIC.READING.LABEL:
+--SIZECHAR 1024;
+  GAE "Automatic message playback", -- CMU
+  en "Automatic message playback", -- CMU
+  ru "Автоматическое воспроизведение сообщений",
+  en_US "Automatic message playback", --!!! 
+  en_GB "Automatic message playback", --!!! 
+  fr "Lecture automatique des messages", -- CMU
+  de "Automatische Nachrichtenwiedergabe",
+  es "Reproducción automática de mensajes",
+  it "Riproduzione messaggi automatica",
+  nl "Bericht automatisch afspelen",
+  no "Automatisk avspilling",
+  pt "Reprodução automática de mensagens",
+  ko_KR "메시지 재생 횟수", --!!! 
+  zh_CN "Play message counts", --???
+  pl "Automatyczne odtwarzanie wiadomości",
+  fi "Automaattinen viestien toisto", --!!! 
+  ca_ES "Reproducció automàtica de missatges", --!!! 
+  cs "Automatické přehrávání zpráv",
+  sv "Automatisk uppspelning av meddelanden",
+  hu "Automatikus üzenet lejátszás",
+  zh_TW "Play message counts", --???
+  ar "إعادة تشغيل الرسائل التلقائية",
+  he "Automatic message playback", --???
+  tr "Automatic message playback", --???
+  da "Automatisk afspilning af besked"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.OPTION.MAIL.DELETION.CONFIRMATION.HELP:
+--SIZECHAR 1024;
+  GAE "System asks the owner for confirmation before deleting a message", -- CMU
+  en "System asks the owner for confirmation before deleting a message", -- CMU
+  ru "Система запрашивает подтверждение владельца перед удалением сообщения",
+  en_US "System asks the owner for confirmation before deleting a message", --!!! 
+  en_GB "System asks the owner for confirmation before deleting a message", --!!! 
+  fr "Le système demande confirmation avant suppression d'un message", -- CMU
+  de "Das System fordert den Benutzer vor dem Löschen einer Nachricht zur Bestätigung auf",
+  es "El sistema solicita confirmación antes de eliminar un mensaje",
+  it "Il sistema chiede al proprietario la conferma prima di eliminare un messaggio",
+  nl "Systeem vraagt de eigenaar om bevestiging voordat een bericht wordt verwijderd",
+  no "Systemet ber eieren om bekreftelse før en melding slettes",
+  pt "O sistema solicita a confirmação antes de eliminar uma mensagem",
+  ko_KR "도움말 내용 없음", --!!! 
+  zh_CN "No help content", --???
+  pl "Przed usunięciem wiadomości system prosi właściciela o potwierdzenie",
+  fi "Järjestelmä pyytää omistajalta vahvistusta ennen viestin poistamista", --!!! 
+  ca_ES "El sistema demana permís al propietari abans de suprimir un missatge", --!!! 
+  cs "Před odstraněním zprávy systém požádá vlastníka o potvrzení",
+  sv "En bekräftelseuppmaning visas innan meddelanden tas bort",
+  hu "A rendszer az üzenet törlése előtt a tulajdonos engedélyét kéri",
+  zh_TW "No help content", --???
+  ar "يطالب النظام المالك بالقيام بالتأكيد قبل حذف أية رسالة",
+  he "System asks the owner for confirmation before deleting a message", --???
+  tr "System asks the owner for confirmation before deleting a message", --???
+  da "Systemet beder ejeren om at bekræfte, inden beskeden slettes"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.OPTION.MAIL.DELETION.CONFIRMATION.LABEL:
+--SIZECHAR 1024;
+  GAE "Confirm when deleting a message",
+  en "Confirm when deleting a message",
+  ru "Подтверждать удаление сообщений",
+  en_US "Confirm when deleting a message", --!!! 
+  en_GB "Confirm when deleting a message", --!!! 
+  fr "Confirmer la suppression d'un message", -- CMU
+  de "Beim Löschen einer Nachricht bestätigen",
+  es "Confirmar al eliminar un mensaje",
+  it "Conferma quando si elimina un messaggio",
+  nl "Bevestigen bij verwijderen van een bericht",
+  no "Bekreft før melding slettes",
+  pt "Confirmar a eliminação de uma mensagem",
+  ko_KR "메시지 삭제 시 확인", --!!! 
+  zh_CN "Confirm when deleting a message", --???
+  pl "Potwierdzenie usunięcia wiadomości",
+  fi "Vahvista, kun viesti poistetaan", --!!! 
+  ca_ES "Confirmar abans de suprimir un missatge", --!!! 
+  cs "Potvrdit při odstraňování zprávy",
+  sv "Bekräfta vid borttagning av meddelande",
+  hu "Üzenet törlésekor megerősítés",
+  zh_TW "Confirm when deleting a message", --???
+  ar "التأكيد عند حذف رسالة ما",
+  he "Confirm when deleting a message", --???
+  tr "Confirm when deleting a message", --???
+  da "Bekræft når en besked slettes"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.OPTION.PERSONAL.ASSISTANT.HELP:
+--SIZECHAR 1024;
+  GAE "While listening to the greeting, callers can contact (or call) an other party (a phone number)", -- CMU
+  en "While listening to the greeting, callers can contact (or call) an other party (a phone number)", -- CMU
+  ru "Во время приветствия вызывающий абонент может связаться с другим абонентом (или позвонить на другой номер)",
+  en_US "While listening to the greeting, callers can contact (or call) an other party (a phone number)", --!!! 
+  en_GB "While listening to the greeting, callers can contact (or call) an other party (a phone number)", --!!! 
+  fr "Pendant l'écoute du message d'accueil, les appelants peuvent contacter (ou appeler) une autre personne (un numéro de téléphone)", -- CMU
+  de "Beim Hören der Begrüßungsmeldung können Anrufer einen anderen Teilnehmer (eine Telefonnummer) kontaktieren bzw. anrufen",
+  es "Al escuchar el saludo, los llamantes pueden ponerse en contacto (llamar) con otro participante (un número de teléfono)",
+  it "Durante l'ascolto della formula iniziale, i chiamanti possono contattare (o chiamare) un altro utente (o numero di telefono)",
+  nl "Tijdens het beluisteren van de begroeting, kunnen bellers contact opnemen (of bellen) met een andere partij (een telefoonnummer)",
+  no "Når hilsenen spilles kan man kontakte (eller ringe) en tredjeperson (et telefonnummer)",
+  pt "Ao ouvir a mensagem de atendimento, os emissores podem contactar (ou ligar para) outra pessoa (número de telefone)",
+  ko_KR "도움말 내용 없음", --!!! 
+  zh_CN "No help content", --???
+  pl "Odsłuchując powitania, dzwoniący mogą się skontaktować (zadzwonić) z inną osobą (numerem telefonicznym)",
+  fi "Tervehdystä kuunnellessa soittajat voivat ottaa yhteyttä (tai soittaa) toiseen yhteyshenkilöön (puhelinnumeroon)", --!!! 
+  ca_ES "En escoltar la salutació, els autors de la trucada poden contactar (o trucar) un altre interlocutor (un número de telèfon)", --!!! 
+  cs "Během poslechu uvítaní mohou volající kontaktovat (volat) jinou stranu (telefonní číslo)",
+  sv "När den uppringande hör hälsningsfrasen kan hon/han kontakta (eller ringa) någon annan",
+  hu "Az üdvözlés hallgatása közben a hívó kapcsolatba léphet (vagy hívhatja) a másik féllel (a másik telefonszámot)",
+  zh_TW "No help content", --???
+  ar "في حالة الاستماع إلى الترحيب، فإنه يمكن للمتصلين الاتصال (أو مكالمة) بجماعة أخرى (رقم هاتف)",
+  he "While listening to the greeting, callers can contact (or call) an other party (a phone number)", --???
+  tr "While listening to the greeting, callers can contact (or call) an other party (a phone number)", --???
+  da "Når opkalderne lytter til velkomstbeskeden, kan de kontakte (eller ringe) til en anden person (et andet telefonnummer)"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.OPTION.PERSONAL.ASSISTANT.LABEL:
+--SIZECHAR 1024;
+  GAE "Activate the personal assistant",
+  en "Activate the personal assistant",
+  ru "Включить личного секретаря",
+  en_US "Activate the personal assistant", --!!! 
+  en_GB "Activate the personal assistant", --!!! 
+  fr "Activation de l'assistant personnel", -- CMU
+  de "Personal Assistant aktivieren",
+  es "Activar el asistente personal",
+  it "Attivare l'assistente personale",
+  nl "De persoonlijke assistent activeren",
+  no "Aktiver den personlige assistenten",
+  pt "Activar o assistente pessoal",
+  ko_KR "개인 도우미 활성화", --!!! 
+  zh_CN "Activate the personal assistant", --???
+  pl "Aktywuj osobistego asystenta",
+  fi "Ota käyttöön oma avustaja", --!!! 
+  ca_ES "Activar l'assistent personal", --!!! 
+  cs "Aktivovat osobního asistenta",
+  sv "Aktivera personlig assistent",
+  hu "Aktiválja a személyi asszisztenst",
+  zh_TW "Activate the personal assistant", --???
+  ar "تنشيط المساعد الشخصي",
+  he "Activate the personal assistant", --???
+  tr "Activate the personal assistant", --???
+  da "Aktiver den personlige assistent"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.OTHER.COLLEAGUE.LABEL:
+--SIZECHAR 1024;
+  GAE "Colleague",
+  en "Colleague",
+  ru "Коллега",
+  en_US "Colleague", --!!! 
+  en_GB "Colleague", --!!! 
+  fr "Collègue", -- CMU
+  de "Kollege",
+  es "Compañero de trabajo",
+  it "Collega",
+  nl "Collega",
+  no "Kollega",
+  pt "Colega",
+  ko_KR "동료", --!!! 
+  zh_CN "Colleague", --???
+  pl "Kolega",
+  fi "Työtoveri", --!!! 
+  ca_ES "Company de feina", --!!! 
+  cs "Kolega",
+  sv "Kollega",
+  hu "Munkatárs",
+  zh_TW "Colleague", --???
+  ar "زميل",
+  he "Colleague", --???
+  tr "Colleague", --???
+  da "Kollega"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.PERSONAL.HOME.LABEL:
+--SIZECHAR 1024;
+  GAE "Home",
+  en "Home",
+  ru "Домашний",
+  en_US "Home", --!!! 
+  en_GB "Home", --!!! 
+  fr "Domicile", -- CMU
+  de "Privat",
+  es "Casa",
+  it "Domicilio",
+  nl "Thuis",
+  no "Hjem",
+  pt "Casa",
+  ko_KR "집", --!!! 
+  zh_CN "Home", --???
+  pl "Dom",
+  fi "Koti", --!!! 
+  ca_ES "Casa", --!!! 
+  cs "Domov",
+  sv "Hem",
+  hu "Otthoni",
+  zh_TW "Home", --???
+  ar "المنزل",
+  he "Home", --???
+  tr "Home", --???
+  da "Start"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.PERSONAL.MOBILE.LABEL:
+--SIZECHAR 1024;
+  GAE "Mobile",
+  en "Mobile",
+  ru "Мобильный",
+  en_US "Mobile", --!!! 
+  en_GB "Mobile", --!!! 
+  fr "Mobile", -- CMU (correct)
+  de "Mobil",
+  es "Móvil",
+  it "Cellulare",
+  nl "Mobiel",
+  no "Mobil",
+  pt "Telemóvel",
+  ko_KR "모바일", --!!! 
+  zh_CN "Mobile", --???
+  pl "Komórka",
+  fi "Matkapuhelin", --!!! 
+  ca_ES "Mòbil", --!!! 
+  cs "Mobilní telefon",
+  sv "Mobil",
+  hu "Mobil",
+  zh_TW "Mobile", --???
+  ar "هاتف جوال",
+  he "Mobile", --???
+  tr "Mobile", --???
+  da "Mobil"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.PRINT.TO.FAX.LABEL:
+--SIZECHAR 1024;
+  GAE "Fax number", -- CMU
+  en "Fax number", -- CMU
+  ru "Номер факса",
+  en_US "Fax number", --!!! 
+  en_GB "Fax number", --!!! 
+  fr "Numéro de fax", -- CMU
+  de "Faxnummer",
+  es "Número de fax",
+  it "Numero fax",
+  nl "Faxnummer",
+  no "Skriv ut til faks",
+  pt "Número de fax",
+  ko_KR "팩스로 인쇄", --!!! 
+  zh_CN "Print to fax", --???
+  pl "Numer faksu",
+  fi "Faksinumero", --!!! 
+  ca_ES "Número de fax", --!!! 
+  cs "Tisknout faxem",
+  sv "Faxnummer",
+  hu "Faxszám",
+  zh_TW "Print to fax", --???
+  ar "رقم الفاكس",
+  he "Fax number", --???
+  tr "Fax number", --???
+  da "Faxnummer"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.PROFESSIONAL.BUSINESS.LABEL:
+--SIZECHAR 1024;
+  GAE "Business",
+  en "Business",
+  ru "Рабочий",
+  en_US "Business", --!!! 
+  en_GB "Business", --!!! 
+  fr "Bureau", -- CMU
+  de "Geschäftlich",
+  es "Empresa",
+  it "Ufficio",
+  nl "Zakelijk",
+  no "Kontor",
+  pt "Profissional",
+  ko_KR "비즈니스", --!!! 
+  zh_CN "Business", --???
+  pl "Praca",
+  fi "Työ", --!!! 
+  ca_ES "Feina", --!!! 
+  cs "Práce",
+  sv "Arbete",
+  hu "Üzleti",
+  zh_TW "Business", --???
+  ar "العمل",
+  he "Business", --???
+  tr "Business", --???
+  da "Arbejde"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.PROFESSIONAL.FAX:
+--SIZECHAR 1024;
+  GAE "Fax",
+  en "Fax",
+  ru "Факс",
+  en_US "Fax", --!!! 
+  en_GB "Fax", --!!! 
+  fr "Fax", -- CMU (correct)
+  de "Fax",
+  es "Fax",
+  it "Fax",
+  nl "Fax",
+  no "Faks",
+  pt "Fax",
+  ko_KR "팩스", --!!! 
+  zh_CN "Fax", --???
+  pl "Faks",
+  fi "Faksi", --!!! 
+  ca_ES "Fax", --!!! 
+  cs "Fax",
+  sv "Fax",
+  hu "Fax",
+  zh_TW "Fax", --???
+  ar "الفاكس",
+  he "Fax", --???
+  tr "Fax", --???
+  da "Fax"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.OTHER.PROFESSIONAL.MOBILE.LABEL:
+--SIZECHAR 1024;
+  GAE "Professional Mobile",
+  en "Professional Mobile",
+  ru "Рабочий мобильный",
+  en_US "Professional Mobile", --!!! 
+  en_GB "Professional Mobile", --!!! 
+  fr "Mobile professionnel",
+  de "Geschäftliche Mobilfunknummer",
+  es "Móvil profesional",
+  it "Cellulare professionale",
+  nl "Mobiele telefoon werk",
+  no "Jobbmobil",
+  pt "Telemóvel profissional",
+  ko_KR "전문 모바일", --!!! 
+  zh_CN "Professional Mobile", --???
+  pl "Komórka służbowa",
+  fi "Työmatkapuhelin", --!!! 
+  ca_ES "Mòbil de la feina", --!!! 
+  cs "Pracovní mobilní telefon",
+  sv "Arbetsmobil",
+  hu "Professzionális mobil",
+  zh_TW "Professional Mobile", --???
+  ar "هاتف جوال خاص بالعمل",
+  he "Professional Mobile", --???
+  tr "Professional Mobile", --???
+  da "Arbejdsmobil"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.PROFESSIONAL.MOBILE.LABEL:
+--SIZECHAR 1024;
+  GAE "Mobile",
+  en "Mobile",
+  ru "Мобильный",
+  en_US "Mobile", --!!! 
+  en_GB "Mobile", --!!! 
+  fr "Mobile", -- CMU (correct)
+  de "Mobil",
+  es "Móvil",
+  it "Cellulare",
+  nl "Mobiel",
+  no "Mobil",
+  pt "Telemóvel",
+  ko_KR "모바일", --!!! 
+  zh_CN "Mobile", --???
+  pl "Komórka",
+  fi "Matkapuhelin", --!!! 
+  ca_ES "Mòbil", --!!! 
+  cs "Mobilní telefon",
+  sv "Mobil",
+  hu "Mobil",
+  zh_TW "Mobile", --???
+  ar "هاتف جوال",
+  he "Mobile", --???
+  tr "Mobile", --???
+  da "Mobil"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.PROFESSIONAL.VOICE.MAIL.LABEL:
+--SIZECHAR 1024;
+  GAE "Voice mail",
+  en "Voice mail",
+  ru "Голосовая почта",
+  en_US "Voice mail", --!!! 
+  en_GB "Voice mail", --!!! 
+  fr "Messagerie vocale", -- CMU
+  de "Voice Mail",
+  es "Correo de voz",
+  it "Posta vocale",
+  nl "Voicemail",
+  no "Talepostkasse",
+  pt "Correio de voz",
+  ko_KR "음성 메일", --!!! 
+  zh_CN "Voice mail", --???
+  pl "Poczta głosowa",
+  fi "Puheviestit", --!!! 
+  ca_ES "Correu de veu", --!!! 
+  cs "Hlasová schránka",
+  sv "Röstbrevlåda",
+  hu "Hangposta",
+  zh_TW "Voice mail", --???
+  ar "البريد الصوتي",
+  he "Voice mail", --???
+  tr "Voice mail", --???
+  da "Voicemail"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.PROFESSIONAL.WIRELESS.LABEL:
+--SIZECHAR 1024;
+  GAE "Wireless",
+  en "Wireless",
+  ru "Беспроводной",
+  en_US "Wireless", --!!! 
+  en_GB "Wireless", --!!! 
+  fr "Sans fil", -- CMU
+  de "Funk",
+  es "Inalámbrico",
+  it "Wireless",
+  nl "Draadloos",
+  no "Trådløs",
+  pt "Sem fios",
+  ko_KR "무선", --!!! 
+  zh_CN "Wireless", --???
+  pl "Bezprzewodowy",
+  fi "Langaton", --!!! 
+  ca_ES "Sense fils", --!!! 
+  cs "Bezdrátový telefon",
+  sv "Trådlöst",
+  hu "Vezetéknélküli",
+  zh_TW "Wireless", --???
+  ar "لاسلكي",
+  he "Wireless", --???
+  tr "Wireless", --???
+  da "Trådløs"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.GUI.OLD.PASSWORD.LABEL:
+--SIZECHAR 1024;
+  GAE "Old password",
+  en "Old password",
+  ru "Старый пароль",
+  en_US "Old password", --!!! 
+  en_GB "Old password", --!!! 
+  fr "Ancien mot de passe", -- CMU
+  de "Altes Passwort",
+  es "Contraseña anterior",
+  it "Password precedente",
+  nl "Oud wachtwoord",
+  no "Gammelt passord",
+  pt "Palavra-passe antiga",
+  ko_KR "이전 암호", --!!! 
+  zh_CN "Old password", --???
+  pl "Stare hasło",
+  fi "Vanha salasana", --!!! 
+  ca_ES "Contrasenya antiga", --!!! 
+  cs "Staré heslo",
+  sv "Gammalt lösenord",
+  hu "Régi jelszó",
+  zh_TW "Old password", --???
+  ar "كلمة المرور القديمة",
+  he "Old password", --???
+  tr "Old password", --???
+  da "Gammel adgangskode"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.GUI.PASSWORD.LABEL:
+--SIZECHAR 1024;
+  GAE "New password", -- CMU
+  en "New password", -- CMU
+  ru "Новый пароль",
+  en_US "New password", --!!! 
+  en_GB "New password", --!!! 
+  fr "Nouveau mot de passe", -- CMU
+  de "Neues Passwort",
+  es "Nueva contraseña",
+  it "Nuova password",
+  nl "Nieuw wachtwoord",
+  no "Passord",
+  pt "Nova palavra-passe",
+  ko_KR "암호", --!!! 
+  zh_CN "Password", --???
+  pl "Nowe hasło",
+  fi "Uusi salasana", --!!! 
+  ca_ES "Contrasenya nova", --!!! 
+  cs "Nové heslo",
+  sv "Nytt lösenord",
+  hu "Jelszó",
+  zh_TW "Password", --???
+  ar "كلمة المرور الجديدة",
+  he "New password", --???
+  tr "New password", --???
+  da "Ny adgangskode"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.GUI.PASSWORD.CHANGE.LABEL:
+--SIZECHAR 1024;
+  GAE "Change password", --???
+  en "Change password", --???
+  ru "Изменить пароль",
+  en_US "Change password", --!!! 
+  en_GB "Change password", --!!! 
+  fr "Changer le mot de passe",
+  de "Passwort ändern",
+  es "Cambiar contraseña",
+  it "Modifica password",
+  nl "Wachtwoord wijzigen",
+  no "Endre passord",
+  pt "Alterar palavra-passe",
+  ko_KR "암호 변경", --!!! 
+  zh_CN "Change password", --???
+  pl "Zmień hasło",
+  fi "Salasanan muuttaminen", --!!! 
+  ca_ES "Canviar contrasenya", --!!! 
+  cs "Změnit heslo",
+  sv "Ändra lösenord",
+  hu "Jelszó módosítása",
+  zh_TW "Change password", --???
+  ar "تغيير كلمة المرور",
+  he "Change password", --???
+  tr "Change password", --???
+  da "Skift adgangskode"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.TIME.ZONE.LABEL:
+--SIZECHAR 1024;
+  GAE "Which time zone are you in ?", -- CMU
+  en "Which time zone are you in ?", -- CMU
+  ru "В каком часовом поясе вы находитесь?",
+  en_US "Which time zone are you in ?", --!!! 
+  en_GB "Which time zone are you in ?", --!!! 
+  fr "Quel est votre fuseau horaire ?", -- CMU
+  de "In welcher Zeitzone befinden Sie sich?",
+  es "¿En qué zona horaria se encuentra?",
+  it "In quale fuso orario si trova l'utente?",
+  nl "Wat is uw tijdzone?",
+  no "Hvilken tidssone befinner du deg i?",
+  pt "Está em que fuso horário?",
+  ko_KR "표준 시간대", --!!! 
+  zh_CN "Time zone", --???
+  pl "W jakiej strefie czasowej jesteś?",
+  fi "Millä aikavyöhykkeellä olet?", --!!! 
+  ca_ES "A quina zona horària us trobeu?", --!!! 
+  cs "Ve kterém časovém pásmu se nacházíte?",
+  sv "Vilken tidszon befinner du dig i?",
+  hu "Melyik időzónában van?",
+  zh_TW "Time zone", --???
+  ar "أي منطقة زمنية تكون فيها؟",
+  he "Which time zone are you in ?", --???
+  tr "Which time zone are you in ?", --???
+  da "Hvilken tidszone er du i?"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.TUI.LANGUAGE.LABEL:
+--SIZECHAR 1024;
+  GAE "Voice access (TUI) language", -- CMU
+  en "Voice access (TUI) language", -- CMU
+  ru "Язык голосовой службы (TUI)",
+  en_US "Voice access (TUI) language", --!!! 
+  en_GB "Voice access (TUI) language", --!!! 
+  fr "Langue de l'accès vocal", -- CMU
+  de "Sprache des Sprachzugangs (TUI)",
+  es "Idioma de acceso por voz (TUI)",
+  it "Lingua accesso vocale (TUI)",
+  nl "Taal voor spraaktoegang (TUI)",
+  no "Taletilgangsspråk ",
+  pt "Idioma de acesso de voz (TUI)",
+  ko_KR "TUI 언어", --!!! 
+  zh_CN "TUI language", --???
+  pl "Język dostępu głosowego (TUI)",
+  fi "Äänen käytön (TUI) kieli", --!!! 
+  ca_ES "Idioma d'accés de veu (TUI)", --!!! 
+  cs "Jazyk hlasového přístupu (TUI)",
+  sv "Språk för röståtkomst (TUI)",
+  hu "Hangelérés (TUI) nyelv",
+  zh_TW "TUI language", --???
+  ar "لغة (TUI) الوصول إلى الصوت",
+  he "Voice access (TUI) language", --???
+  tr "Voice access (TUI) language", --???
+  da "Sprog for taleadgang (TUI)"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.TUI.OLD.PASSWORD.LABEL:
+--SIZECHAR 1024;
+  GAE "Old password",
+  en "Old password",
+  ru "Старый пароль",
+  en_US "Old password", --!!! 
+  en_GB "Old password", --!!! 
+  fr "Ancien mot de passe", -- CMU
+  de "Altes Passwort",
+  es "Contraseña anterior",
+  it "Password precedente",
+  nl "Oud wachtwoord",
+  no "Gammelt passord",
+  pt "Palavra-passe antiga",
+  ko_KR "이전 암호", --!!! 
+  zh_CN "Old password", --???
+  pl "Stare hasło",
+  fi "Vanha salasana", --!!! 
+  ca_ES "Contrasenya antiga", --!!! 
+  cs "Staré heslo",
+  sv "Gammalt lösenord",
+  hu "Régi jelszó",
+  zh_TW "Old password", --???
+  ar "كلمة المرور القديمة",
+  he "Old password", --???
+  tr "Old password", --???
+  da "Gammel adgangskode"; --!!! 
+
+MFI.MYPROFILE.ATTRIBUTE.TUI.PASSWORD.LABEL:
+--SIZECHAR 1024;
+  GAE "New password", -- CMU
+  en "New password", -- CMU
+  ru "Новый пароль",
+  en_US "New password", --!!! 
+  en_GB "New password", --!!! 
+  fr "Nouveau mot de passe", -- CMU
+  de "Neues Passwort",
+  es "Nueva contraseña",
+  it "Nuova password",
+  nl "Nieuw wachtwoord",
+  no "Passord",
+  pt "Nova palavra-passe",
+  ko_KR "암호", --!!! 
+  zh_CN "Password", --???
+  pl "Nowe hasło",
+  fi "Uusi salasana", --!!! 
+  ca_ES "Contrasenya nova", --!!! 
+  cs "Nové heslo",
+  sv "Nytt lösenord",
+  hu "Új jelszó",
+  zh_TW "Password", --???
+  ar "كلمة المرور الجديدة",
+  he "New password", --???
+  tr "New password", --???
+  da "Ny adgangskode"; --!!! 
+
+MFI.MYPROFILE.ZONE.GENERAL.HELP:
+--SIZECHAR 1024;
+  GAE "General settings", -- CMU
+  en "General settings", -- CMU
+  ru "Общие настройки",
+  en_US "General settings", --!!! 
+  en_GB "General settings", --!!! 
+  fr "Paramètres généraux", -- CMU
+  de "Allgemeine Einstellungen",
+  es "Parámetros generales",
+  it "Impostazioni generali",
+  nl "Algemene instellingen",
+  no "Generelle innstillinger",
+  pt "Definições gerais",
+  ko_KR "도움말 내용 없음", --!!! 
+  zh_CN "No help content", --???
+  pl "Ustawienia ogólne",
+  fi "Yleiset asetukset", --!!! 
+  ca_ES "Configuració general", --!!! 
+  cs "Obecná nastavení",
+  sv "Allmänna inställningar",
+  hu "Általános beállítások",
+  zh_TW "No help content", --???
+  ar "الإعدادات العامة",
+  he "General settings", --???
+  tr "General settings", --???
+  da "Generelle indstillinger"; --!!! 
+
+MFI.MYPROFILE.ZONE.GENERAL.LABEL:
+--SIZECHAR 1024;
+  GAE "General",
+  en "General",
+  ru "Общие",
+  en_US "General", --!!! 
+  en_GB "General", --!!! 
+  fr "Général", -- CMU
+  de "Allgemein",
+  es "General",
+  it "Generale",
+  nl "Algemeen",
+  no "Generell",
+  pt "Geral",
+  ko_KR "일반", --!!! 
+  zh_CN "General", --???
+  pl "Ogólne",
+  fi "Yleistä", --!!! 
+  ca_ES "General", --!!! 
+  cs "Obecné",
+  sv "Allmänt",
+  hu "Általános",
+  zh_TW "General", --???
+  ar "عام",
+  he "General", --???
+  tr "General", --???
+  da "Generelt"; --!!! 
+
+MFI.MYPROFILE.ZONE.PASSWORD.HELP:
+--SIZECHAR 1024;
+  GAE "Passwords for the voice access (TUI) and graphical user interface (GUI)", -- CMU
+  en "Password for the voice access (TUI) and graphical user interface (GUI)", -- CMU
+  ru "Пароли для доступа к голосовой службе (TUI) и графическому интерфейсу пользователя (GUI)",
+  en_US "Password for the voice access (TUI) and graphical user interface (GUI)", --!!! 
+  en_GB "Password for the voice access (TUI) and graphical user interface (GUI)", --!!! 
+  fr "Mots de passe pour l'accès vocal et l'interface utilisateur", -- CMU
+  de "Passwörter für den Sprachzugriff (TUI) und die grafische Benutzeroberfläche (GUI)",
+  es "Contraseñas para el acceso por voz (TUI) y la interfaz gráfica de usuario (GUI)",
+  it "Password per l'accesso vocale (TUI) e interfaccia utente grafica (GUI)",
+  nl "Wachtwoorden voor spraaktoegang (TUI) en de grafische gebruikersinterface (GUI)",
+  no "Passorg for taletilgang (TUI) og grafisk brukergrensesnitt (GUI)",
+  pt "Palavras-passe para o acesso de voz (TUI) e a interface gráfica de utilizador (GUI)",
+  ko_KR "도움말 내용 없음", --!!! 
+  zh_CN "No help content", --???
+  pl "Hasła dostępu głosowego (TUI) i interfejsu graficznego (GUI)",
+  fi "Salasanat äänen käyttöön (TUI) ja graafiseen käyttöliittymään (GUI)", --!!! 
+  ca_ES "Contrasenyes per a l'accés de veu (TUI) i la interfície gràfica d'usuari (GUI)", --!!! 
+  cs "Hesla pro hlasové přístup (TUI) a grafické uživatelské rozhraní (GUI)",
+  sv "Lösenord för röståtkomst (TUI) och grafiskt användargränssnitt (GUI)",
+  hu "A hangelérés (TUI) és grafikus felhasználói felület (GUI) jelszava",
+  zh_TW "No help content", --???
+  ar "كلمة مرور للوصول إلى الصوت (TUI) وواجهة المستخدم الرسومية (GUI)",
+  he "Passwords for the voice access (TUI) and graphical user interface (GUI)", --???
+  tr "Passwords for the voice access (TUI) and graphical user interface (GUI)", --???
+  da "Adgangskoder for taleadgang (TUI) og brugergrænseflade (GUI)"; --!!! 
+
+MFI.MYPROFILE.ZONE.PASSWORD.LABEL:
+--SIZECHAR 1024;
+  GAE "Passwords",
+  en "Passwords",
+  ru "Пароли",
+  en_US "Passwords", --!!! 
+  en_GB "Passwords", --!!! 
+  fr "Mots de passe", -- CMU
+  de "Passwörter",
+  es "Contraseñas",
+  it "Password",
+  nl "Wachtwoorden",
+  no "Passord",
+  pt "Palavras-passe",
+  ko_KR "암호", --!!! 
+  zh_CN "Passwords", --???
+  pl "Hasła",
+  fi "Salasanat", --!!! 
+  ca_ES "Contrasenyes", --!!! 
+  cs "Hesla",
+  sv "Lösenord",
+  hu "Jelszavak",
+  zh_TW "Passwords", --???
+  ar "كلمات المرور",
+  he "Passwords", --???
+  tr "Passwords", --???
+  da "Adgangskoder"; --!!! 
+
+MFI.MYPROFILE.ZONE.PHONE.NUMBERS.HELP:
+--SIZECHAR 1024;
+  GAE "Professional and personal numbers", -- CMU
+  en "Professional and personal numbers", -- CMU
+  ru "Рабочие и личные номера",
+  en_US "Professional and personal numbers", --!!! 
+  en_GB "Professional and personal numbers", --!!! 
+  fr "Numéros professionnels et personnels", -- CMU
+  de "Geschäftliche und persönliche Nummern",
+  es "Números personales y profesionales",
+  it "Numeri personali e professionali",
+  nl "Werknummers en persoonlijke nummers",
+  no "Jobbrelaterte og private numre",
+  pt "Números profissionais e pessoais",
+  ko_KR "도움말 내용 없음", --!!! 
+  zh_CN "No help content", --???
+  pl "Numery służbowe i osobiste",
+  fi "Ammatilliset ja henkilökohtaiset numerot", --!!! 
+  ca_ES "Números de la feina i personal", --!!! 
+  cs "Pracovní a osobní čísla",
+  sv "Arbetsnummer och privata nummer",
+  hu "Professzionális és személyes számok",
+  zh_TW "No help content", --???
+  ar "أرقام شخصية وخاصة بالعمل",
+  he "Professional and personal numbers", --???
+  tr "Professional and personal numbers", --???
+  da "Arbejdsnumre og private numre"; --!!! 
+
+MFI.MYPROFILE.ZONE.PHONE.NUMBERS.LABEL:
+--SIZECHAR 1024;
+  GAE "My numbers",
+  en "My numbers",
+  ru "Мои номера",
+  en_US "My numbers", --!!! 
+  en_GB "My numbers", --!!! 
+  fr "Mes numéros", -- CMU
+  de "Meine Rufnummern",
+  es "Mis números",
+  it "Numeri personali",
+  nl "Mijn nummers",
+  no "Mine numre",
+  pt "Os meus números",
+  ko_KR "내 번호", --!!! 
+  zh_CN "My numbers", --???
+  pl "Moje numery",
+  fi "Omat numerot", --!!! 
+  ca_ES "Els meus números", --!!! 
+  cs "Má čísla",
+  sv "Mina nummer",
+  hu "Saját számok",
+  zh_TW "My numbers", --???
+  ar "أرقام خاصة بي",
+  he "My numbers", --???
+  tr "My numbers", --???
+  da "Mine numre"; --!!! 
+
+MFI.MYPROFILE.ZONE.VOICE.MAILBOX.HELP:
+--SIZECHAR 1024;
+  GAE "Voice mail settings", -- CMU
+  en "Voice mail settings", -- CMU
+  ru "Настройки голосовой почты",
+  en_US "Voice mail settings", --!!! 
+  en_GB "Voice mail settings", --!!! 
+  fr "Paramètres de la messagerie vocale", -- CMU
+  de "Voice Mail-Einstellungen",
+  es "Parámetros de correo de voz",
+  it "Impostazioni posta vocale",
+  nl "Voicemailinstellingen",
+  no "Talepostkassens innstillinger",
+  pt "Definições do correio de voz",
+  ko_KR "도움말 내용 없음", --!!! 
+  zh_CN "No help content", --???
+  pl "Ustawienia poczty głosowej",
+  fi "Puhepostin asetukset", --!!! 
+  ca_ES "Configuració del correu de veu", --!!! 
+  cs "Nastavení hlasové schránky",
+  sv "Inställningar för röstbrevlåda",
+  hu "Hangposta beállítások",
+  zh_TW "No help content", --???
+  ar "إعدادات البريد الصوتي",
+  he "Voice mail settings", --???
+  tr "Voice mail settings", --???
+  da "Voicemail-indstillinger"; --!!! 
+
+MFI.MYPROFILE.ZONE.VOICE.MAILBOX.LABEL:
+--SIZECHAR 1024;
+  GAE "Voice mail",
+  en "Voice mail",
+  ru "Голосовая почта",
+  en_US "Voice mail", --!!! 
+  en_GB "Voice mail", --!!! 
+  fr "Messagerie vocale", -- CMU
+  de "Voice Mail",
+  es "Correo de voz",
+  it "Posta vocale",
+  nl "Voicemail",
+  no "Talepostkasse",
+  pt "Correio de voz",
+  ko_KR "음성 메일", --!!! 
+  zh_CN "Voice mail", --???
+  pl "Poczta głosowa",
+  fi "Puheposti", --!!! 
+  ca_ES "Correu de veu", --!!! 
+  cs "Hlasová schránka",
+  sv "Röstbrevlåda",
+  hu "Hangposta",
+  zh_TW "Voice mail", --???
+  ar "البريد الصوتي",
+  he "Voice mail", --???
+  tr "Voice mail", --???
+  da "Voicemail"; --!!! 
+
+MFI.MYPROFILE.STATUS.SUCCESS:
+--SIZECHAR 1024;
+-- CMU (used but not displayed)
+  GAE "Success",
+  en "Success",
+  ru "Успех",
+  en_US "Success", --!!! 
+  en_GB "Success", --!!! 
+  fr "Succ�s",
+  de "Erfolg",
+  es "Correcto",
+  it "Riuscito",
+  nl "Succes",
+  no "Fullført",
+  pt "Bem sucedido",
+  ko_KR "성공", --!!! 
+  zh_CN "Success", --???
+  pl "Powodzenie",
+  fi "Onnistunut", --!!! 
+  ca_ES "Correcte", --!!! 
+  cs "Úspěch",
+  sv "Lyckades",
+  hu "Sikeres",
+  zh_TW "Success", --???
+  ar "نجاح",
+  he "Success", --???
+  tr "Success", --???
+  da "Udført"; --!!! 
+
+MFI.MYPROFILE.STATUS.ERROR.PASSWORD:
+--SIZECHAR 1024;
+  GAE "Invalid password", -- CMU
+  en "Invalid password", -- CMU
+  ru "Недействительный пароль",
+  en_US "Invalid password", --!!! 
+  en_GB "Invalid password", --!!! 
+  fr "Mot de passe invalide", -- CMU
+  de "Passwort ungültig",
+  es "Contraseña no válida",
+  it "Password non valida",
+  nl "Ongeldig wachtwoord",
+  no "Ugyldig passord",
+  pt "Palavra-passe inválida",
+  ko_KR "암호 오류", --!!! 
+  zh_CN "Password error", --???
+  pl "Nieprawidłowe hasło",
+  fi "Virheellinen salasana", --!!! 
+  ca_ES "Contrasenya no vàlida", --!!! 
+  cs "Neplatné heslo",
+  sv "Ogiltigt lösenord",
+  hu "Érvénytelen jelszó",
+  zh_TW "Password error", --???
+  ar "كلمة مرور غير صالحة",
+  he "Invalid password", --???
+  tr "Invalid password", --???
+  da "Ugyldig adgangskode"; --!!! 
+
+MFI.MYPROFILE.STATUS.ERROR.UPDATE:
+--SIZECHAR 1024;
+-- CMU (used but not displayed)
+  GAE "Update error",
+  en "Update error",
+  ru "Ошибка обновления",
+  en_US "Update error", --!!! 
+  en_GB "Update error", --!!! 
+  fr "Erreur de mise � jour",
+  de "Fehler bei Aktualisierung",
+  es "Error al actualizar",
+  it "Errore aggiornamento",
+  nl "Updatefout",
+  no "Oppdateringsfeil",
+  pt "Erro de actualização",
+  ko_KR "업데이트 오류", --!!! 
+  zh_CN "Update error", --???
+  pl "Błąd aktualizacji",
+  fi "Päivitysvirhe", --!!! 
+  ca_ES "Error d'actualització", --!!! 
+  cs "Chyba aktualizace",
+  sv "Uppdateringsfel",
+  hu "Frissítési hiba",
+  zh_TW "Update error", --???
+  ar "خطأ في التحديث",
+  he "Update error", --???
+  tr "Update error", --???
+  da "Opdateringsfejl"; --!!! 
+
+MFI.MYPROFILE.STATUS.ERROR.DTA.INIT:
+--SIZECHAR 1024;
+  GAE "Connection error", -- CMU
+  en "Connection error", -- CMU
+  ru "Ошибка подключения",
+  en_US "Connection error", --!!! 
+  en_GB "Connection error", --!!! 
+  fr "Erreur de connexion", -- CMU
+  de "Verbindungsfehler",
+  es "Error de conexión",
+  it "Errore connessione",
+  nl "Verbindingsfout",
+  no "Feil ved tilkobling",
+  pt "Erro de ligação",
+  ko_KR "DTA 초기화 오류", --!!! 
+  zh_CN "DTA initialization error", --???
+  pl "Błąd połączenia",
+  fi "Yhteysvirhe", --!!! 
+  ca_ES "Error de connexió", --!!! 
+  cs "Chyba připojení",
+  sv "Anslutningsfel",
+  hu "Hiba a kapcsolatban",
+  zh_TW "DTA initialization error", --???
+  ar "خطأ في الاتصال",
+  he "Connection error", --???
+  tr "Connection error", --???
+  da "Forbindelsesfejl"; --!!! 
+
+--                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      GUI languages (18)
+-- [ca_ES] Catalan
+-- [zh_CN] Chinese Simplified
+-- [zh_TW] Chinese Traditional
+-- [cs   ] Czech
+-- [nl   ] Dutch
+-- [en_GB] English British
+-- [en_US] English U.S.
+-- [fi   ] Finnish
+-- [fr   ] French
+-- [de   ] German
+-- [hu   ] Hungarian
+-- [it   ] Italian
+-- [ko_KR] Korean
+-- [no   ] Norwegian
+-- [pl   ] Polish
+-- [pt   ] Portuguese
+-- [ru   ] Russian
+-- [es   ] Spanish
+-- [sv   ] Swedish
+-- [da   ] Danish
+
+sv:
+--SIZECHAR 1024;
+  GAE "Swedish",
+  en "Swedish", --???
+  ru "Шведский",
+  en_US "Swedish",
+  en_GB "Swedish",
+  fr "Su�dois",
+  de "Schwedisch",
+  es "Sueco",
+  it "Svedese",
+  nl "Zweeds",
+  no "Svensk",
+  pt "Sueco",
+  ko_KR "스웨덴어", --!!! 
+  zh_CN "Swedish", --???
+  pl "Szwedzki",
+  fi "Ruotsi", --!!! 
+  ca_ES "Suec", --!!! 
+  cs "Švédština",
+  sv "Svenska",
+  hu "Svéd",
+  zh_TW "Swedish", --???
+  ar "السويدية",
+  he "Swedish", --???
+  tr "Swedish", --???
+  da "Svensk"; --!!! 
+
+en_GB:
+--SIZECHAR 1024;
+  GAE "English GB",
+  en "English GB", --???
+  ru "Английский (Великобритания)",
+  en_US "English GB",
+  en_GB "English British", -- CMU
+  fr "Anglais GB",
+  de "Englisch GB",
+  es "Inglés GB",
+  it "Inglese GB",
+  nl "Engels GB",
+  no "Engelsk (britisk)",
+  pt "Inglês GB",
+  ko_KR "영어(영국)", --!!! 
+  zh_CN "English GB", --???
+  pl "Angielski (brytyjski)",
+  fi "Englanti GB",
+  ca_ES "Anglès GB", --!!! 
+  cs "Britská angličtina",
+  sv "Engelska GB",
+  hu "Angol GB",
+  zh_TW "English GB", --???
+  ar "الإنجليزية (بريطانيا العظمى)",
+  he "English GB", --???
+  tr "English GB", --???
+  da "Engelsk GB"; --!!! 
+
+en_US:
+--SIZECHAR 1024;
+  GAE "English US",
+  en "English US", --???
+  ru "Английский (США)",
+  en_US "English US",
+  en_GB "English U.S.", -- CMU
+  fr "Anglais US",
+  de "Englisch USA",
+  es "Inglés US",
+  it "Inglese US",
+  nl "Engels US",
+  no "Engelsk (amerikansk)",
+  pt "Inglês US",
+  ko_KR "영어(미국)", --!!! 
+  zh_CN "English US", --???
+  pl "Angielski (amerykaĹ„ski)",
+  fi "Englanti US",
+  ca_ES "Anglès EUA", --!!! 
+  cs "Americká angličtina",
+  sv "Engelska US",
+  hu "Angol US",
+  zh_TW "English US", --???
+  ar "الإنجليزية US",
+  he "English US", --???
+  tr "English US", --???
+  da "Engelsk US"; --!!! 
+
+fr:
+--SIZECHAR 1024;
+  GAE "French",
+  en "French", --???
+  ru "Французский",
+  en_US "French",
+  en_GB "French",
+  fr "Français",
+  de "Französisch",
+  es "Francés",
+  it "Francese",
+  nl "Frans",
+  no "Fransk",
+  pt "Francês",
+  ko_KR "프랑스어", --!!! 
+  zh_CN "French", --???
+  pl "Francuski",
+  fi "Ranska",
+  ca_ES "Francès", --!!! 
+  cs "Francouzština",
+  sv "Franska",
+  hu "Francia",
+  zh_TW "French", --???
+  ar "الفرنسية",
+  he "French", --???
+  tr "French", --???
+  da "Fransk"; --!!! 
+
+de:
+--SIZECHAR 1024;
+  GAE "German",
+  en "German", --???
+  ru "Немецкий",
+  en_US "German",
+  en_GB "German",
+  fr "Allemand",
+  de "Deutsch",
+  es "Alemán",
+  it "Tedesco",
+  nl "Duits",
+  no "Tysk",
+  pt "Alemão",
+  ko_KR "독일어", --!!! 
+  zh_CN "German", --???
+  pl "Niemiecki",
+  fi "Saksa",
+  ca_ES "Alemany", --!!! 
+  cs "Němčina",
+  sv "Tyska",
+  hu "Német",
+  zh_TW "German", --???
+  ar "الألمانية",
+  he "German", --???
+  tr "German", --???
+  da "Tysk"; --!!! 
+
+it:
+--SIZECHAR 1024;
+  GAE "Italian",
+  en "Italian", --???
+  ru "Итальянский",
+  en_US "Italian",
+  en_GB "Italian",
+  fr "Italien",
+  de "Italienisch",
+  es "Italiano",
+  it "Italiano",
+  nl "Italiaans",
+  no "Italiensk",
+  pt "Italiano",
+  ko_KR "이탈리아어", --!!! 
+  zh_CN "Italian", --???
+  pl "Włoski",
+  fi "Italia",
+  ca_ES "Italià", --!!! 
+  cs "Italština",
+  sv "Italienska",
+  hu "Olasz",
+  zh_TW "Italian", --???
+  ar "الإيطالية",
+  he "Italian", --???
+  tr "Italian", --???
+  da "Italiensk"; --!!! 
+
+es:
+--SIZECHAR 1024;
+  GAE "Spanish",
+  en "Spanish", --???
+  ru "Испанский",
+  en_US "Spanish",
+  en_GB "Spanish",
+  fr "Espagnol",
+  de "Spanisch",
+  es "Español",
+  it "Spagnolo",
+  nl "Spaans",
+  no "Spansk",
+  pt "Espanhol",
+  ko_KR "스페인어", --!!! 
+  zh_CN "Spanish", --???
+  pl "Hiszpański",
+  fi "Espanja",
+  ca_ES "Espanyol", --!!! 
+  cs "Španělština",
+  sv "Spanska",
+  hu "Spanyol",
+  zh_TW "Spanish", --???
+  ar "الإسبانية",
+  he "Spanish", --???
+  tr "Spanish", --???
+  da "Spansk"; --!!! 
+
+pt:
+--SIZECHAR 1024;
+  GAE "Portuguese",
+  en "Portuguese", --???
+  ru "Португальский",
+  en_US "Portuguese",
+  en_GB "Portuguese",
+  fr "Portugais",
+  de "Portugiesisch",
+  es "Portugués",
+  it "Portoghese",
+  nl "Portugees",
+  no "Portugisisk",
+  pt "Português",
+  ko_KR "포르투갈어", --!!! 
+  zh_CN "Portuguese", --???
+  pl "Portugalski",
+  fi "Portugali",
+  ca_ES "Portuguès", --!!! 
+  cs "Portugalština",
+  sv "Portugisiska",
+  hu "Portugál",
+  zh_TW "Portuguese", --???
+  ar "البرتغالية",
+  he "Portuguese", --???
+  tr "Portuguese", --???
+  da "Portugisisk"; --!!! 
+
+ca_ES:
+--SIZECHAR 1024;
+  GAE "Catalan",
+  en "Catalan", --???
+  ru "Каталанский",
+  en_US "Catalan", --!!! 
+  en_GB "Catalan",
+  fr "Catalan",
+  de "Katalanisch",
+  es "Catalan",
+  it "Catalano",
+  nl "Catalaans",
+  no "Katalansk",
+  pt "Catalao",
+  ko_KR "카탈로니아어", --!!! 
+  zh_CN "Catalan", --???
+  pl "katalonski",
+  fi "Katalaani", --!!! 
+  ca_ES "Català", --!!! 
+  cs "Katalanstina", --!!! 
+  sv "Katalanska",
+  hu "Katalán",
+  zh_TW "Catalan", --???
+  ar "الكاتلانية",
+  he "Catalan", --???
+  tr "Catalan", --???
+  da "Katalansk"; --!!! 
+
+no:
+--SIZECHAR 1024;
+  GAE "Norwegian",
+  en "Norwegian", --???
+  ru "Норвежский",
+  en_US "Norwegian",
+  en_GB "Norwegian",
+  fr "Norvégien",
+  de "Norwegisch",
+  es "Noruego",
+  it "Norvegese",
+  nl "Noors",
+  no "Norsk",
+  pt "Norueguês",
+  ko_KR "노르웨이어", --!!! 
+  zh_CN "Norwegian", --???
+  pl "Norweski",
+  fi "Norja",
+  ca_ES "Noruec", --!!! 
+  cs "Norština",
+  sv "Norska", --!!! 
+  hu "Norvég",
+  zh_TW "Norwegian", --???
+  ar "النرويجية",
+  he "Norwegian", --???
+  tr "Norwegian", --???
+  da "Norsk"; --!!! 
+
+nl:
+--SIZECHAR 1024;
+  GAE "Dutch",
+  en "Dutch", --???
+  ru "Голландский",
+  en_US "Dutch",
+  en_GB "Dutch",
+  fr "Néerlandais", -- CMU
+  de "Niederländisch",
+  es "Holandés",
+  it "Olandese",
+  nl "Nederlands",
+  no "Nederlandsk",
+  pt "Holandês",
+  ko_KR "네덜란드어", --!!! 
+  zh_CN "Dutch", --???
+  pl "Holenderski",
+  fi "Hollanti",
+  ca_ES "Holandès", --!!! 
+  cs "Nizozemština",
+  sv "Holländska",
+  hu "Holland",
+  zh_TW "Dutch", --???
+  ar "الهولندية",
+  he "Dutch", --???
+  tr "Dutch", --???
+  da "Hollandsk"; --!!! 
+
+zh_TW:
+--SIZECHAR 1024;
+  GAE "Chinese Traditional", -- CMU
+  en "Cantonese Chinese", --???
+  ru "Китайский традиционный",
+  en_US "Cantonese Chinese",
+  en_GB "Chinese Traditional", -- CMU
+  fr "Chinois Traditionnel", -- CMU
+  de "Kantonesisch",
+  es "Chino cantonés",
+  it "Cinese tradizionale",
+  nl "Chinees Traditioneel",
+  no "Kantonesisk kinesisk",
+  pt "Chinês tradicional",
+  ko_KR "중국어(광둥어)", --!!! 
+  zh_CN "Cantonese Chinese", --???
+  pl "Chiński tradycyjny",
+  fi "Perinteinen kiina", --!!! 
+  ca_ES "Xinès tradicional", --!!! 
+  cs "Kantonská čínština",
+  sv "Traditionell kinesiska",
+  hu "Kanton Kínai",
+  zh_TW "Cantonese Chinese", --???
+  ar "الصينية الكانتونية",
+  he "Chinese Traditional", --???
+  tr "Chinese Traditional", --???
+  da "Traditionel kinesisk"; --!!! 
+
+zh_CN:
+--SIZECHAR 1024;
+  GAE "Chinese Simplified", -- CMU
+  en "Chinese", --???
+  ru "Китайский упрощенный",
+  en_US "Chinese", --!!! 
+  en_GB "Chinese Simplified", -- CMU
+  fr "Chinois Simplifié", -- CMU
+  de "Vereinfachtes Chinesisch",
+  es "Chino simplificado",
+  it "Cinese semplificato",
+  nl "Chinees Vereenvoudigd",
+  no "Forenklet kinesisk",
+  pt "Chinês simplificado",
+  ko_KR "중국어", --!!! 
+  zh_CN "Chinese", --???
+  pl "Chiński uproszczony",
+  fi "Yksinkertaistettu kiina", --!!! 
+  ca_ES "Xinès simplificat", --!!! 
+  cs "Zjednodušená čínština",
+  sv "Förenklad kinesiska",
+  hu "Kínai",
+  zh_TW "Chinese", --???
+  ar "الصينية",
+  he "Chinese Simplified", --???
+  tr "Chinese Simplified", --???
+  da "Forenklet kinesisk"; --!!! 
+
+ko_KR:
+--SIZECHAR 1024;
+  GAE "Korean",
+  en "Korean", --???
+  ru "Корейский",
+  en_US "Korean",
+  en_GB "Korean",
+  fr "Coréen",
+  de "Koreanisch",
+  es "Coreano",
+  it "Coreano",
+  nl "Koreaans",
+  no "Koreansk",
+  pt "Coreano",
+  ko_KR "한국어", --!!! 
+  zh_CN "Korean", --???
+  pl "Koreański",
+  fi "Korea",
+  ca_ES "Coreà", --!!! 
+  cs "Korejština",
+  sv "Koreanska",
+  hu "Koreai",
+  zh_TW "Korean", --???
+  ar "الكورية",
+  he "Korean", --???
+  tr "Korean", --???
+  da "Koreansk"; --!!! 
+
+ru:
+--SIZECHAR 1024;
+  GAE "Russian",
+  en "Russian", --???
+  ru "Русский",
+  en_US "Russian",
+  en_GB "Russian",
+  fr "Russe",
+  de "Russisch",
+  es "Ruso",
+  it "Russo",
+  nl "Russisch",
+  no "Russisk",
+  pt "Russo",
+  ko_KR "러시아어", --!!! 
+  zh_CN "Russian", --???
+  pl "Rosyjski",
+  fi "Venäjä",
+  ca_ES "Rus", --!!! 
+  cs "Ruština",
+  sv "Ryska",
+  hu "Orosz",
+  zh_TW "Russian", --???
+  ar "الروسية",
+  he "Russian", --???
+  tr "Russian", --???
+  da "Russisk"; --!!! 
+
+cs:
+--SIZECHAR 1024;
+  GAE "Czech",
+  en "Czech", --???
+  ru "Чешский",
+  en_US "Czech",
+  en_GB "Czech",
+  fr "Tchèque", -- CMU
+  de "Tschechisch",
+  es "Checho",
+  it "Ceco",
+  nl "Tsjechisch",
+  no "Tsjekkisk",
+  pt "Checo",
+  ko_KR "체코어", --!!! 
+  zh_CN "Czech", --???
+  pl "czeski",
+  fi "Tsekki",
+  ca_ES "Txec",
+  cs "Cestina",
+  sv "Tjeckiska",
+  hu "Cseh",
+  zh_TW "Czech", --???
+  ar "التشيكية",
+  he "Czech", --???
+  tr "Czech", --???
+  da "Tjekkisk"; --!!! 
+
+fi:
+--SIZECHAR 1024;
+  GAE "Finnish",
+  en "Finnish", --???
+  ru "Финский",
+  en_US "Finnish",
+  en_GB "Finnish",
+  fr "Finlandais",
+  de "Finnisch",
+  es "Finlandés",
+  it "Finlandese",
+  nl "Fins",
+  no "Finsk",
+  pt "Finlandês",
+  ko_KR "핀란드어", --!!! 
+  zh_CN "Finnish", --???
+  pl "Fiński",
+  fi "Suomi",
+  ca_ES "Finlandès", --!!! 
+  cs "Finština",
+  sv "Finska",
+  hu "Finn",
+  zh_TW "Finnish", --???
+  ar "الفنلندية",
+  he "Finnish", --???
+  tr "Finnish", --???
+  da "Finsk"; --!!! 
+
+hu:
+--SIZECHAR 1024;
+  GAE "Hungarian", --???
+  en "Hungarian", --???
+  ru "Венгерский",
+  en_US "Hungarian", --!!! 
+  en_GB "Hungarian", --!!! 
+  fr "Hongrois",
+  de "Ungarisch",
+  es "Húngaro",
+  it "Ungherese",
+  nl "Hongaars",
+  no "Ungarsk",
+  pt "Húngaro",
+  ko_KR "헝가리어", --!!! 
+  zh_CN "Hungarian", --???
+  pl "Węgierski",
+  fi "Unkari", --!!! 
+  ca_ES "Hongarès", --!!! 
+  cs "Maďarština",
+  sv "Ungerska",
+  hu "Magyar",
+  zh_TW "Hungarian", --???
+  ar "المجرية",
+  he "Hungarian", --???
+  tr "Hungarian", --???
+  da "Ungarsk"; --!!! 
+
+pl:
+--SIZECHAR 1024;
+  GAE "Polish",
+  en "Polish", --???
+  ru "Польский",
+  en_US "Polish",
+  en_GB "Polish",
+  fr "Polonais",
+  de "Polnisch",
+  es "Polaco",
+  it "Polacco",
+  nl "Pools",
+  no "Polsk",
+  pt "Polaco",
+  ko_KR "폴란드어", --!!! 
+  zh_CN "Polish", --???
+  pl "Polski",
+  fi "Puola",
+  ca_ES "Polonès", --!!! 
+  cs "Polština",
+  sv "Polska",
+  hu "Lengyel",
+  zh_TW "Polish", --???
+  ar "البولندية",
+  he "Polish", --???
+  tr "Polish", --???
+  da "Polsk"; --!!! 
+
+ar:
+--SIZECHAR 1024;
+  GAE "Arabic",
+  en "Arabic",
+  ru "Арабский",
+  en_US "Arabic",
+  en_GB "Arabic",
+  fr "Arabe",
+  de "Arabisch",
+  es "Árabe",
+  it "Arabo",
+  nl "Arabisch",
+  no "Arabisk",
+  pt "Árabe",
+  ko_KR "아랍어", --!!! 
+  zh_CN "Arabic", --???
+  pl "Arabski",
+  fi "Arabia", --!!! 
+  ca_ES "Àrab", --!!! 
+  cs "Arabština",
+  sv "Arabiska",
+  hu "Arab",
+  zh_TW "Arabic", --???
+  ar "العربية",
+  he "Arabic", --???
+  tr "Arabic", --???
+  da "Arabisk"; --!!! 
+
+he:
+--SIZECHAR 1024;
+  GAE "Hebrew",
+  en "Hebrew",
+  ru "Иврит",
+  en_US "Hebrew",
+  en_GB "Hebrew",
+  fr "H�breu",
+  de "Hebräisch",
+  es "Hebreo",
+  it "Ebraico",
+  nl "Hebreeuws",
+  no "Hebraisk",
+  pt "Hebraico",
+  ko_KR "히브리어", --!!! 
+  zh_CN "Hebrew", --???
+  pl "Hebrajski",
+  fi "Hebrea", --!!! 
+  ca_ES "Hebreu", --!!! 
+  cs "Hebrejština",
+  sv "Hebreiska",
+  hu "Héber",
+  zh_TW "Hebrew", --???
+  ar "العبرية",
+  he "Hebrew", --???
+  tr "Hebrew", --???
+  da "Hebraisk"; --!!! 
+
+da:
+--SIZECHAR 1024;
+  GAE "Danish",
+  en "Danish",
+  ru "Датский",
+  en_US "Danish",
+  en_GB "Danish",
+  fr "Danois",
+  de "Dänisch", --!!! 
+  es "Danés",
+  it "Danese", --!!! 
+  nl "Deens",
+  no "Dansk", --!!! 
+  pt "Dinamarquês",
+  ko_KR "Danish", --???
+  zh_CN "Danish", --???
+  pl "Duński", --!!! 
+  fi "Tanska", --!!! 
+  ca_ES "Danès",
+  cs "Dánština", --!!! 
+  sv "Danska", --!!! 
+  hu "Dán",
+  zh_TW "Danish", --???
+  ar "الدانمركية",
+  he "Danish", --???
+  tr "Danish", --???
+  da "Dansk"; --!!! 
+
+--                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      TUI languages (20)
+-- [ca_ES_TUI] Catalan
+-- [zh_HK_TUI] Chinese Cantonese
+-- [zh_CN_TUI] Chinese Mandarin
+-- [nl   _TUI] Dutch
+-- [en_GB_TUI] English British
+-- [en_US_TUI] English U.S.
+-- [fr   _TUI] French
+-- [de   _TUI] German
+-- [it   _TUI] Italian
+-- [ko_KR_TUI] Korean
+-- [no   _TUI] Norwegian
+-- [pt_BR_TUI] Portuguese Brazilian
+-- [pt   _TUI] Portuguese Portuguese
+-- [ru   _TUI] Russian
+-- [es_MX_TUI] Spanish Americas
+-- [es   _TUI] Spanish Castilian
+-- [sv   _TUI] Swedish
+-- [tr   _TUI] Turkish
+-- [da   _TUI] Danish
+-- [nl_BE_TUI] Flemish (Dutch-Belgium)
+-- [cs   _TUI] Czech
+
+pt_TUI:
+--SIZECHAR 1024;
+  GAE "Portuguese",
+  en "Portuguese", --???
+  ru "Португальский",
+  en_US "Portuguese",
+  en_GB "Portuguese",
+  fr "Portugais",
+  de "Portugiesisch",
+  es "Portugués",
+  it "Portoghese",
+  nl "Portugees",
+  no "Portugisisk",
+  pt "Português",
+  ko_KR "포르투갈어", --!!! 
+  zh_CN "Portuguese", --???
+  pl "Portugalski",
+  fi "Portugali",
+  ca_ES "Portuguès", --!!! 
+  cs "Portugalština",
+  sv "Portugisiska",
+  hu "Portugál",
+  zh_TW "Portuguese", --???
+  ar "البرتغالية",
+  he "Portuguese", --???
+  tr "Portuguese", --???
+  da "Portugisisk"; --!!! 
+
+no_TUI:
+--SIZECHAR 1024;
+  GAE "Norwegian",
+  en "Norwegian", --???
+  ru "Норвежский",
+  en_US "Norwegian",
+  en_GB "Norwegian",
+  fr "Norvégien",
+  de "Norwegisch",
+  es "Noruego",
+  it "Norvegese",
+  nl "Noors",
+  no "Norsk",
+  pt "Norueguês",
+  ko_KR "노르웨이어", --!!! 
+  zh_CN "Norwegian", --???
+  pl "Norweski",
+  fi "Norja",
+  ca_ES "Noruec", --!!! 
+  cs "Norština",
+  sv "Norska", --!!! 
+  hu "Norvég",
+  zh_TW "Norwegian", --???
+  ar "النرويجية",
+  he "Norwegian", --???
+  tr "Norwegian", --???
+  da "Norsk"; --!!! 
+
+zh_CN_TUI:
+--SIZECHAR 1024;
+  GAE "Chinese Mandarin", -- CMU
+  en "Chinese Mandarin",
+  ru "Китайский (мандаринский)",
+  en_US "Chinese Mandarin", --!!! 
+  en_GB "Chinese Mandarin", -- CMU
+  fr "Chinois Mandarin", -- CMU
+  de "Chinesisch (Mandarin)",
+  es "Chino mandarín",
+  it "Cinese mandarino",
+  nl "Chinees Mandarijn",
+  no "Mandarin",
+  pt "Mandarim",
+  ko_KR "중국어(북경어)", --!!! 
+  zh_CN "Chinese", --???
+  pl "Chiński mandaryński",
+  fi "Mandariinikiina", --!!! 
+  ca_ES "Xinès mandarí", --!!! 
+  cs "Mandarínská čínština",
+  sv "Kinesiska (mandarin)",
+  hu "Kínai",
+  zh_TW "Chinese", --???
+  ar "الصينية",
+  he "Chinese Mandarin", --???
+  tr "Chinese Mandarin", --???
+  da "Kinesisk (mandarin)"; --!!! 
+
+zh_HK_TUI:
+--SIZECHAR 1024;
+  GAE "Chinese Cantonese", -- CMU
+  en "Chinese Cantonese",
+  ru "Китайский (кантонский)",
+  en_US "Chinese Cantonese", --!!! 
+  en_GB "Chinese Cantonese", -- CMU
+  fr "Chinois Cantonais", -- CMU
+  de "Kantonesisch",
+  es "Chino cantonés",
+  it "Cinese cantonese",
+  nl "Chinees Kantonees",
+  no "Kantonesisk kinesisk",
+  pt "Cantonês",
+  ko_KR "중국어(광둥어)", --!!! 
+  zh_CN "Chinese", --???
+  pl "Chiński kantoński",
+  fi "Kantoninkiina", --!!! 
+  ca_ES "Xinès cantonès", --!!! 
+  cs "Kantonská čínština",
+  sv "Kantonesiska",
+  hu "Kínai",
+  zh_TW "Chinese", --???
+  ar "الصينية",
+  he "Chinese Cantonese", --???
+  tr "Chinese Cantonese", --???
+  da "Kantonesisk"; --!!! 
+
+es_MX_TUI:
+--SIZECHAR 1024;
+  GAE "Spanish Americas", -- CMU
+  en "Mexican", --???
+  ru "Латинская Америка",
+  en_US "Mexican",
+  en_GB "Spanish Americas", -- CMU
+  fr "Espagnol Amérique Latine", -- CMU
+  de "Spanisch Lateinamerika",
+  es "Español de Latinoamérica",
+  it "Spagnolo America Latina",
+  nl "Spaans Latijns-Amerika",
+  no "Amerikansk spansk",
+  pt "Espanhol da América Latina",
+  ko_KR "멕시코어", --!!! 
+  zh_CN "Mexican", --???
+  pl "Hiszpański - Ameryka Łacińska",
+  fi "Amerikan espanja", --!!! 
+  ca_ES "Espanyol iberoamericà", --!!! 
+  cs "Americká španělština",
+  sv "Spanska, Amerika",
+  hu "Spanyol Amerikai",
+  zh_TW "Mexican", --???
+  ar "المكسيكية",
+  he "Spanish Americas", --???
+  tr "Spanish Americas", --???
+  da "Spansk, Amerika"; --!!! 
+
+ru_TUI:
+--SIZECHAR 1024;
+  GAE "Russian",
+  en "Russian", --???
+  ru "Русский",
+  en_US "Russian",
+  en_GB "Russian",
+  fr "Russe",
+  de "Russisch",
+  es "Ruso",
+  it "Russo",
+  nl "Russisch",
+  no "Russisk",
+  pt "Russo",
+  ko_KR "러시아어", --!!! 
+  zh_CN "Russian", --???
+  pl "Rosyjski",
+  fi "Venäjä",
+  ca_ES "Rus", --!!! 
+  cs "Ruština",
+  sv "Ryska",
+  hu "Orosz",
+  zh_TW "Russian", --???
+  ar "الروسية",
+  he "Russian", --???
+  tr "Russian", --???
+  da "Russisk"; --!!! 
+
+nl_TUI:
+--SIZECHAR 1024;
+  GAE "Dutch",
+  en "Dutch", --???
+  ru "Голландский",
+  en_US "Dutch",
+  en_GB "Dutch",
+  fr "Néerlandais", -- CMU
+  de "Niederländisch",
+  es "Holandés",
+  it "Olandese",
+  nl "Nederlands",
+  no "Nederlandsk",
+  pt "Holandês",
+  ko_KR "네덜란드어", --!!! 
+  zh_CN "Dutch", --???
+  pl "Holenderski",
+  fi "Hollanti",
+  ca_ES "Holandès", --!!! 
+  cs "Nizozemština",
+  sv "Holländska",
+  hu "Holland",
+  zh_TW "Dutch", --???
+  ar "الهولندية",
+  he "Dutch", --???
+  tr "Dutch", --???
+  da "Hollandsk"; --!!! 
+
+ca_ES_TUI:
+--SIZECHAR 1024;
+  GAE "Catalan",
+  en "Catalan", --???
+  ru "Каталанский",
+  en_US "Catalan", --!!! 
+  en_GB "Catalan",
+  fr "Catalan",
+  de "Katalanisch",
+  es "Catalan",
+  it "Catalano",
+  nl "Catalaans",
+  no "Katalansk",
+  pt "Catalao",
+  ko_KR "카탈로니아어", --!!! 
+  zh_CN "Catalan", --???
+  pl "katalonski",
+  fi "Katalaani", --!!! 
+  ca_ES "Català", --!!! 
+  cs "Katalanstina", --!!! 
+  sv "Katalanska",
+  hu "Katalán",
+  zh_TW "Catalan", --???
+  ar "الكاتلانية",
+  he "Catalan", --???
+  tr "Catalan", --???
+  da "Katalansk"; --!!! 
+
+pt_BR_TUI:
+--SIZECHAR 1024;
+  GAE "Portuguese Brazilian", -- CMU
+  en "Brazilian", --???
+  ru "Португальский (Бразилия)",
+  en_US "Brazilian", --!!! 
+  en_GB "Portuguese Brazilian", -- CMU
+  fr "Portugais Brésilien", -- CMU
+  de "Portugiesisch (Brasilien)",
+  es "Portugués de Brasil",
+  it "Portoghese brasiliano",
+  nl "Portugees Braziliaans",
+  no "Portugisisk brasiliansk",
+  pt "Português do Brasil",
+  ko_KR "브라질어", --!!! 
+  zh_CN "Brazilian", --???
+  pl "Portugalski - Brazylia",
+  fi "Brasilian portugali", --!!! 
+  ca_ES "Portuguès de Brasil", --!!! 
+  cs "Brazilská portugalština",
+  sv "Brasiliansk portugisiska",
+  hu "Portugál Brazil",
+  zh_TW "Brazilian", --???
+  ar "البرازيلية",
+  he "Portuguese Brazilian", --???
+  tr "Portuguese Brazilian", --???
+  da "Brasiliansk portugisisk"; --!!! 
+
+es_TUI:
+--SIZECHAR 1024;
+  GAE "Spanish",
+  en "Spanish", --???
+  ru "Испанский",
+  en_US "Spanish",
+  en_GB "Spanish",
+  fr "Espagnol",
+  de "Spanisch",
+  es "Español",
+  it "Spagnolo",
+  nl "Spaans",
+  no "Spansk",
+  pt "Espanhol",
+  ko_KR "스페인어", --!!! 
+  zh_CN "Spanish", --???
+  pl "HiszpaĹ„ski",
+  fi "Espanja",
+  ca_ES "Espanyol", --!!! 
+  cs "Španělština",
+  sv "Spanska",
+  hu "Spanyol",
+  zh_TW "Spanish", --???
+  ar "الإسبانية",
+  he "Spanish", --???
+  tr "Spanish", --???
+  da "Spansk"; --!!! 
+
+it_TUI:
+--SIZECHAR 1024;
+  GAE "Italian",
+  en "Italian", --???
+  ru "Итальянский",
+  en_US "Italian",
+  en_GB "Italian",
+  fr "Italien",
+  de "Italienisch",
+  es "Italiano",
+  it "Italiano",
+  nl "Italiaans",
+  no "Italiensk",
+  pt "Italiano",
+  ko_KR "이탈리아어", --!!! 
+  zh_CN "Italian", --???
+  pl "Włoski",
+  fi "Italia",
+  ca_ES "Italià", --!!! 
+  cs "Italština",
+  sv "Italienska",
+  hu "Olasz",
+  zh_TW "Italian", --???
+  ar "الإيطالية",
+  he "Italian", --???
+  tr "Italian", --???
+  da "Italiensk"; --!!! 
+
+de_TUI:
+--SIZECHAR 1024;
+  GAE "German",
+  en "German", --???
+  ru "Немецкий",
+  en_US "German",
+  en_GB "German",
+  fr "Allemand",
+  de "Deutsch",
+  es "Alemán",
+  it "Tedesco",
+  nl "Duits",
+  no "Tysk",
+  pt "Alemão",
+  ko_KR "독일어", --!!! 
+  zh_CN "German", --???
+  pl "Niemiecki",
+  fi "Saksa",
+  ca_ES "Alemany", --!!! 
+  cs "Němčina",
+  sv "Tyska",
+  hu "Német",
+  zh_TW "German", --???
+  ar "الألمانية",
+  he "German", --???
+  tr "German", --???
+  da "Tysk"; --!!! 
+
+fr_TUI:
+--SIZECHAR 1024;
+  GAE "French",
+  en "French", --???
+  ru "Французский",
+  en_US "French",
+  en_GB "French",
+  fr "Français",
+  de "Französisch",
+  es "Francés",
+  it "Francese",
+  nl "Frans",
+  no "Fransk",
+  pt "Francês",
+  ko_KR "프랑스어", --!!! 
+  zh_CN "French", --???
+  pl "Francuski",
+  fi "Ranska",
+  ca_ES "Francès", --!!! 
+  cs "Francouzština",
+  sv "Franska",
+  hu "Francia",
+  zh_TW "French", --???
+  ar "الفرنسية",
+  he "French", --???
+  tr "French", --???
+  da "Fransk"; --!!! 
+
+en_US_TUI:
+--SIZECHAR 1024;
+  GAE "English US",
+  en "English US", --???
+  ru "Английский (США)",
+  en_US "English US",
+  en_GB "English U.S.", -- CMU
+  fr "Anglais US",
+  de "Englisch USA",
+  es "Inglés US",
+  it "Inglese US",
+  nl "Engels US",
+  no "Engelsk (amerikansk)",
+  pt "Inglês US",
+  ko_KR "영어(미국)", --!!! 
+  zh_CN "English US", --???
+  pl "Angielski (amerykański)",
+  fi "Englanti US",
+  ca_ES "Anglès EUA", --!!! 
+  cs "Americká angličtina",
+  sv "Engelska US",
+  hu "Angol US",
+  zh_TW "English US", --???
+  ar "الإنجليزية US",
+  he "English US", --???
+  tr "English US", --???
+  da "Engelsk US"; --!!! 
+
+en_GB_TUI:
+--SIZECHAR 1024;
+  GAE "English GB",
+  en "English GB", --???
+  ru "Английский (Великобритания)",
+  en_US "English GB",
+  en_GB "English British", -- CMU
+  fr "Anglais GB",
+  de "Englisch GB",
+  es "Inglés GB",
+  it "Inglese GB",
+  nl "Engels GB",
+  no "Engelsk (britisk)",
+  pt "Inglês GB",
+  ko_KR "영어(영국)", --!!! 
+  zh_CN "English GB", --???
+  pl "Angielski (brytyjski)",
+  fi "Englanti GB",
+  ca_ES "Anglès GB", --!!! 
+  cs "Britská angličtina",
+  sv "Engelska GB",
+  hu "Angol GB",
+  zh_TW "English GB", --???
+  ar "الإنجليزية GB",
+  he "English GB", --???
+  tr "English GB", --???
+  da "Engelsk GB"; --!!! 
+
+ko_KR_TUI:
+--SIZECHAR 1024;
+  GAE "Korean",
+  en "Korean", --???
+  ru "Корейский",
+  en_US "Korean",
+  en_GB "Korean",
+  fr "Coréen",
+  de "Koreanisch",
+  es "Coreano",
+  it "Coreano",
+  nl "Koreaans",
+  no "Koreansk",
+  pt "Coreano",
+  ko_KR "한국어", --!!! 
+  zh_CN "Korean", --???
+  pl "Koreański",
+  fi "Korea",
+  ca_ES "Coreà", --!!! 
+  cs "Korejština",
+  sv "Koreanska",
+  hu "Koreai",
+  zh_TW "Korean", --???
+  ar "الكورية",
+  he "Korean", --???
+  tr "Korean", --???
+  da "Koreansk"; --!!! 
+
+sv_TUI:
+--SIZECHAR 1024;
+  GAE "Swedish",
+  en "Swedish", --???
+  ru "Шведский",
+  en_US "Swedish",
+  en_GB "Swedish",
+  fr "Su�dois",
+  de "Schwedisch",
+  es "Sueco",
+  it "Svedese",
+  nl "Zweeds",
+  no "Svensk",
+  pt "Sueco",
+  ko_KR "스웨덴어", --!!! 
+  zh_CN "Swedish", --???
+  pl "Szwedzki",
+  fi "Ruotsi", --!!! 
+  ca_ES "Suec", --!!! 
+  cs "Švédština",
+  sv "Svenska", --!!! 
+  hu "Svéd",
+  zh_TW "Swedish", --???
+  ar "السويدية",
+  he "Swedish", --???
+  tr "Swedish", --???
+  da "Svensk"; --!!! 
+
+tr_TUI:
+--SIZECHAR 1024;
+  GAE "Turkish",
+  en "Turkish",
+  ru "Турецкий",
+  en_US "Turkish",
+  en_GB "Turkish",
+  fr "Turc",
+  de "Turkish", --!!! 
+  es "Turco",
+  it "Turkish", --!!! 
+  nl "Turkish", --!!! 
+  no "Turkish", --!!! 
+  pt "Turco",
+  ko_KR "Turkish", --!!! 
+  zh_CN "Turkish", --!!! 
+  pl "Turkish", --!!! 
+  fi "Turkki", --!!! 
+  ca_ES "Turkish", --!!! 
+  cs "Turkish", --!!! 
+  sv "Turkish", --!!! 
+  hu "Turkish",
+  zh_TW "Turkish", --!!! 
+  ar "التركية",
+  he "Turkish", --!!! 
+  tr "Turkish", --!!! 
+  da "Tyrkisk"; --!!! 
+
+da_TUI:
+--SIZECHAR 1024;
+  GAE "Danish",
+  en "Danish",
+  ru "Датский", --!!! 
+  en_US "Danish",
+  en_GB "Danish",
+  fr "Danois",
+  de "Dänisch", --!!! 
+  es "Danés",
+  it "Danese", --!!! 
+  nl "Deens",
+  no "Dansk", --!!! 
+  pt "Dinamarquês",
+  ko_KR "Danish", --???
+  zh_CN "Danish", --???
+  pl "Duński", --!!! 
+  fi "Tanska", --!!! 
+  ca_ES "Danès",
+  cs "Dánština", --!!! 
+  sv "Danska", --!!! 
+  hu "Dán",
+  zh_TW "Danish", --???
+  ar "الدانمركية",
+  he "Danish", --???
+  tr "Danish", --???
+  da "Dansk"; --!!! 
+
+nl_BE_TUI:
+--SIZECHAR 1024;
+  GAE "Flemish",
+  en "Flemish",
+  ru "Фламандский", --!!! 
+  en_US "Flemish",
+  en_GB "Flemish",
+  fr "Flamand",
+  de "Flämish", --!!! 
+  es "Neerlandés",
+  it "Fiammingo", --!!! 
+  nl "Vlaams",
+  no "Flamsk", --!!! 
+  pt "Flamengo",
+  ko_KR "Flemish", --???
+  zh_CN "Flemish", --???
+  pl "Flamandzki", --!!! 
+  fi "Flaami", --!!! 
+  ca_ES "Flamenc",
+  cs "Vlámština", --!!! 
+  sv "Flamländska", --!!! 
+  hu "Flamand",
+  zh_TW "Flemish", --???
+  ar "الفلمنكية",
+  he "Flemish", --???
+  tr "Flemish",
+  da "Flamsk"; --!!! 
+
+cs_TUI:
+--SIZECHAR 1024;
+  GAE "Czech",
+  en "Czech", --???
+  ru "Чешский",
+  en_US "Czech",
+  en_GB "Czech",
+  fr "Tchèque", -- CMU
+  de "Tschechisch",
+  es "Checho",
+  it "Ceco",
+  nl "Tsjechisch",
+  no "Tsjekkisk",
+  pt "Checo",
+  ko_KR "체코어", --!!! 
+  zh_CN "Czech", --???
+  pl "czeski",
+  fi "Tsekki",
+  ca_ES "Txec",
+  cs "Cestina",
+  sv "Tjeckiska",
+  hu "Cseh",
+  zh_TW "Czech", --???
+  ar "التشيكية",
+  he "Czech", --???
+  tr "Czech", --???
+  da "Tjekkisk"; --!!! 
+
+MFI.MYPROFILE.ZONE.VOICE.MAILBOX.NOTIFICATION.HELP:
+--SIZECHAR 1024;
+  GAE "Voice mail notification settings",
+  en "Voice mail notification settings",
+  ru "Voice mail notification settings", --???
+  en_US "Voice mail notification settings", --???
+  en_GB "Voice mail notification settings", --???
+  fr "Param�tres de notification de messagerie vocale",
+  de "Voice mail notification settings", --???
+  es "Voice mail notification settings", --???
+  it "Voice mail notification settings", --???
+  nl "Voice mail notification settings", --???
+  no "Voice mail notification settings", --???
+  pt "Voice mail notification settings", --???
+  ko_KR "Voice mail notification settings", --???
+  zh_CN "Voice mail notification settings", --???
+  pl "Voice mail notification settings", --???
+  fi "Voice mail notification settings", --???
+  ca_ES "Voice mail notification settings", --???
+  cs "Voice mail notification settings", --???
+  sv "Voice mail notification settings", --???
+  hu "Voice mail notification settings", --???
+  zh_TW "Voice mail notification settings", --???
+  ar "Voice mail notification settings", --???
+  he "Voice mail notification settings", --???
+  tr "Voice mail notification settings", --???
+  da "Voice mail notification settings"; --???
+
+MFI.MYPROFILE.ZONE.VOICE.MAILBOX.NOTIFICATION.LABEL:
+--SIZECHAR 1024;
+  GAE "Notification",
+  en "Notification",
+  ru "Notification", --???
+  en_US "Notification", --???
+  en_GB "Notification", --???
+  fr "Notification",
+  de "Notification", --???
+  es "Notification", --???
+  it "Notification", --???
+  nl "Notification", --???
+  no "Notification", --???
+  pt "Notification", --???
+  ko_KR "Notification", --???
+  zh_CN "Notification", --???
+  pl "Notification", --???
+  fi "Notification", --???
+  ca_ES "Notification", --???
+  cs "Notification", --???
+  sv "Notification", --???
+  hu "Notification", --???
+  zh_TW "Notification", --???
+  ar "Notification", --???
+  he "Notification", --???
+  tr "Notification", --???
+  da "Notification"; --???
+
+MFI.MYPROFILE.DOMAIN.VOICEMAIL.NOTIFICATION.LABEL:
+--SIZECHAR 1024;
+  GAE "Message notification",
+  en "Message notification",
+  ru "Message notification", --???
+  en_US "Message notification", --???
+  en_GB "Message notification", --???
+  fr "Notification de message",
+  de "Message notification", --???
+  es "Message notification", --???
+  it "Message notification", --???
+  nl "Message notification", --???
+  no "Message notification", --???
+  pt "Message notification", --???
+  ko_KR "Message notification", --???
+  zh_CN "Message notification", --???
+  pl "Message notification", --???
+  fi "Message notification", --???
+  ca_ES "Message notification", --???
+  cs "Message notification", --???
+  sv "Message notification", --???
+  hu "Message notification", --???
+  zh_TW "Message notification", --???
+  ar "Message notification", --???
+  he "Message notification", --???
+  tr "Message notification", --???
+  da "Message notification"; --???
+
+MFI.MYPROFILE.DOMAIN.VOICEMAIL.NOTIFICATION.HELP:
+--SIZECHAR 1024;
+  GAE "Message notification options",
+  en "Message notification options",
+  ru "Message notification options", --???
+  en_US "Message notification options", --???
+  en_GB "Message notification options", --???
+  fr "Options de notification de message",
+  de "Message notification options", --???
+  es "Message notification options", --???
+  it "Message notification options", --???
+  nl "Message notification options", --???
+  no "Message notification options", --???
+  pt "Message notification options", --???
+  ko_KR "Message notification options", --???
+  zh_CN "Message notification options", --???
+  pl "Message notification options", --???
+  fi "Message notification options", --???
+  ca_ES "Message notification options", --???
+  cs "Message notification options", --???
+  sv "Message notification options", --???
+  hu "Message notification options", --???
+  zh_TW "Message notification options", --???
+  ar "Message notification options", --???
+  he "Message notification options", --???
+  tr "Message notification options", --???
+  da "Message notification options"; --???
+
+MFI.MYPROFILE.ATTRIBUTE.OPTION.EMAIL.NOTIFICATION.ENABLED.LABEL:
+--SIZECHAR 1024;
+  GAE "E-mail notification enabled",
+  en "E-mail notification enabled",
+  ru "E-mail notification enabled", --???
+  en_US "E-mail notification enabled", --???
+  en_GB "E-mail notification enabled", --???
+  fr "Notification d'e-mail activ�e",
+  de "E-mail notification enabled", --???
+  es "E-mail notification enabled", --???
+  it "E-mail notification enabled", --???
+  nl "E-mail notification enabled", --???
+  no "E-mail notification enabled", --???
+  pt "E-mail notification enabled", --???
+  ko_KR "E-mail notification enabled", --???
+  zh_CN "E-mail notification enabled", --???
+  pl "E-mail notification enabled", --???
+  fi "E-mail notification enabled", --???
+  ca_ES "E-mail notification enabled", --???
+  cs "E-mail notification enabled", --???
+  sv "E-mail notification enabled", --???
+  hu "E-mail notification enabled", --???
+  zh_TW "E-mail notification enabled", --???
+  ar "E-mail notification enabled", --???
+  he "E-mail notification enabled", --???
+  tr "E-mail notification enabled", --???
+  da "E-mail notification enabled"; --???
+
+MFI.MYPROFILE.ATTRIBUTE.OPTION.EMAIL.NOTIFICATION.ENABLED.HELP:
+--SIZECHAR 1024;
+  GAE "Enabled notification about voice mail messages by e-mail",
+  en "Enabled notification about voice mail messages by e-mail",
+  ru "Enabled notification about voice mail messages by e-mail", --???
+  en_US "Enabled notification about voice mail messages by e-mail", --???
+  en_GB "Enabled notification about voice mail messages by e-mail", --???
+  fr "Notification des messages vocaux par e-mail activ�e",
+  de "Enabled notification about voice mail messages by e-mail", --???
+  es "Enabled notification about voice mail messages by e-mail", --???
+  it "Enabled notification about voice mail messages by e-mail", --???
+  nl "Enabled notification about voice mail messages by e-mail", --???
+  no "Enabled notification about voice mail messages by e-mail", --???
+  pt "Enabled notification about voice mail messages by e-mail", --???
+  ko_KR "Enabled notification about voice mail messages by e-mail", --???
+  zh_CN "Enabled notification about voice mail messages by e-mail", --???
+  pl "Enabled notification about voice mail messages by e-mail", --???
+  fi "Enabled notification about voice mail messages by e-mail", --???
+  ca_ES "Enabled notification about voice mail messages by e-mail", --???
+  cs "Enabled notification about voice mail messages by e-mail", --???
+  sv "Enabled notification about voice mail messages by e-mail", --???
+  hu "Enabled notification about voice mail messages by e-mail", --???
+  zh_TW "Enabled notification about voice mail messages by e-mail", --???
+  ar "Enabled notification about voice mail messages by e-mail", --???
+  he "Enabled notification about voice mail messages by e-mail", --???
+  tr "Enabled notification about voice mail messages by e-mail", --???
+  da "Enabled notification about voice mail messages by e-mail"; --???
+
+MFI.MYPROFILE.ATTRIBUTE.NOTIFICATION.EMAIL.ADDRESS:
+--SIZECHAR 1024;
+  GAE "E-mail notification address",
+  en "E-mail notification address",
+  ru "E-mail notification address", --???
+  en_US "E-mail notification address", --???
+  en_GB "E-mail notification address", --???
+  fr "Adresse de notification par e-mail",
+  de "E-mail notification address", --???
+  es "E-mail notification address", --???
+  it "E-mail notification address", --???
+  nl "E-mail notification address", --???
+  no "E-mail notification address", --???
+  pt "E-mail notification address", --???
+  ko_KR "E-mail notification address", --???
+  zh_CN "E-mail notification address", --???
+  pl "E-mail notification address", --???
+  fi "E-mail notification address", --???
+  ca_ES "E-mail notification address", --???
+  cs "E-mail notification address", --???
+  sv "E-mail notification address", --???
+  hu "E-mail notification address", --???
+  zh_TW "E-mail notification address", --???
+  ar "E-mail notification address", --???
+  he "E-mail notification address", --???
+  tr "E-mail notification address", --???
+  da "E-mail notification address"; --???
+
+MFI.MYPROFILE.ATTRIBUTE.OPTION.SMS.NOTIFICATION.ENABLED.LABEL:
+--SIZECHAR 1024;
+  GAE "SMS notification enabled",
+  en "SMS notification enabled",
+  ru "SMS notification enabled", --???
+  en_US "SMS notification enabled", --???
+  en_GB "SMS notification enabled", --???
+  fr "Notification par SMS activ�e",
+  de "SMS notification enabled", --???
+  es "SMS notification enabled", --???
+  it "SMS notification enabled", --???
+  nl "SMS notification enabled", --???
+  no "SMS notification enabled", --???
+  pt "SMS notification enabled", --???
+  ko_KR "SMS notification enabled", --???
+  zh_CN "SMS notification enabled", --???
+  pl "SMS notification enabled", --???
+  fi "SMS notification enabled", --???
+  ca_ES "SMS notification enabled", --???
+  cs "SMS notification enabled", --???
+  sv "SMS notification enabled", --???
+  hu "SMS notification enabled", --???
+  zh_TW "SMS notification enabled", --???
+  ar "SMS notification enabled", --???
+  he "SMS notification enabled", --???
+  tr "SMS notification enabled", --???
+  da "SMS notification enabled"; --???
+
+MFI.MYPROFILE.ATTRIBUTE.OPTION.SMS.NOTIFICATION.ENABLED.HELP:
+--SIZECHAR 1024;
+  GAE "Enabled notification about voice mail messages by SMS",
+  en "Enabled notification about voice mail messages by SMS",
+  ru "Enabled notification about voice mail messages by SMS", --???
+  en_US "Enabled notification about voice mail messages by SMS", --???
+  en_GB "Enabled notification about voice mail messages by SMS", --???
+  fr "Notification des messages vocaux par SMS activ�e",
+  de "Enabled notification about voice mail messages by SMS", --???
+  es "Enabled notification about voice mail messages by SMS", --???
+  it "Enabled notification about voice mail messages by SMS", --???
+  nl "Enabled notification about voice mail messages by SMS", --???
+  no "Enabled notification about voice mail messages by SMS", --???
+  pt "Enabled notification about voice mail messages by SMS", --???
+  ko_KR "Enabled notification about voice mail messages by SMS", --???
+  zh_CN "Enabled notification about voice mail messages by SMS", --???
+  pl "Enabled notification about voice mail messages by SMS", --???
+  fi "Enabled notification about voice mail messages by SMS", --???
+  ca_ES "Enabled notification about voice mail messages by SMS", --???
+  cs "Enabled notification about voice mail messages by SMS", --???
+  sv "Enabled notification about voice mail messages by SMS", --???
+  hu "Enabled notification about voice mail messages by SMS", --???
+  zh_TW "Enabled notification about voice mail messages by SMS", --???
+  ar "Enabled notification about voice mail messages by SMS", --???
+  he "Enabled notification about voice mail messages by SMS", --???
+  tr "Enabled notification about voice mail messages by SMS", --???
+  da "Enabled notification about voice mail messages by SMS"; --???
+
+MFI.MYPROFILE.ATTRIBUTE.NOTIFICATION.PHONE.TYPE:
+--SIZECHAR 1024;
+  GAE "SMS notification phone number",
+  en "SMS notification phone number",
+  ru "SMS notification phone number", --???
+  en_US "SMS notification phone number", --???
+  en_GB "SMS notification phone number", --???
+  fr "Num�ro de t�l�phone de notification par SMS",
+  de "SMS notification phone number", --???
+  es "SMS notification phone number", --???
+  it "SMS notification phone number", --???
+  nl "SMS notification phone number", --???
+  no "SMS notification phone number", --???
+  pt "SMS notification phone number", --???
+  ko_KR "SMS notification phone number", --???
+  zh_CN "SMS notification phone number", --???
+  pl "SMS notification phone number", --???
+  fi "SMS notification phone number", --???
+  ca_ES "SMS notification phone number", --???
+  cs "SMS notification phone number", --???
+  sv "SMS notification phone number", --???
+  hu "SMS notification phone number", --???
+  zh_TW "SMS notification phone number", --???
+  ar "SMS notification phone number", --???
+  he "SMS notification phone number", --???
+  tr "SMS notification phone number", --???
+  da "SMS notification phone number"; --???
+
+MFI.MYPROFILE.PHONE.TYPE.PROFESSIONAL_NUMBER:
+--SIZECHAR 1024;
+  GAE "Professional number",
+  en "Professional number",
+  ru "Professional number", --???
+  en_US "Professional number", --???
+  en_GB "Professional number", --???
+  fr "Num�ro professionel",
+  de "Professional number", --???
+  es "Professional number", --???
+  it "Professional number", --???
+  nl "Professional number", --???
+  no "Professional number", --???
+  pt "Professional number", --???
+  ko_KR "Professional number", --???
+  zh_CN "Professional number", --???
+  pl "Professional number", --???
+  fi "Professional number", --???
+  ca_ES "Professional number", --???
+  cs "Professional number", --???
+  sv "Professional number", --???
+  hu "Professional number", --???
+  zh_TW "Professional number", --???
+  ar "Professional number", --???
+  he "Professional number", --???
+  tr "Professional number", --???
+  da "Professional number"; --???
+
+MFI.MYPROFILE.PHONE.TYPE.PERSONAL_NUMBER:
+--SIZECHAR 1024;
+  GAE "Personal number",
+  en "Personal number",
+  ru "Personal number", --???
+  en_US "Personal number", --???
+  en_GB "Personal number", --???
+  fr "Num�ro personnel",
+  de "Personal number", --???
+  es "Personal number", --???
+  it "Personal number", --???
+  nl "Personal number", --???
+  no "Personal number", --???
+  pt "Personal number", --???
+  ko_KR "Personal number", --???
+  zh_CN "Personal number", --???
+  pl "Personal number", --???
+  fi "Personal number", --???
+  ca_ES "Personal number", --???
+  cs "Personal number", --???
+  sv "Personal number", --???
+  hu "Personal number", --???
+  zh_TW "Personal number", --???
+  ar "Personal number", --???
+  he "Personal number", --???
+  tr "Personal number", --???
+  da "Personal number"; --???
+
+MFI.MYPROFILE.PHONE.TYPE.FREE_NUMBER:
+--SIZECHAR 1024;
+  GAE "Free number selection",
+  en "Free number selection",
+  ru "Free number selection", --???
+  en_US "Free number selection", --???
+  en_GB "Free number selection", --???
+  fr "S�lection de num�ro gratuit",
+  de "Free number selection", --???
+  es "Free number selection", --???
+  it "Free number selection", --???
+  nl "Free number selection", --???
+  no "Free number selection", --???
+  pt "Free number selection", --???
+  ko_KR "Free number selection", --???
+  zh_CN "Free number selection", --???
+  pl "Free number selection", --???
+  fi "Free number selection", --???
+  ca_ES "Free number selection", --???
+  cs "Free number selection", --???
+  sv "Free number selection", --???
+  hu "Free number selection", --???
+  zh_TW "Free number selection", --???
+  ar "Free number selection", --???
+  he "Free number selection", --???
+  tr "Free number selection", --???
+  da "Free number selection"; --???
+
+MFI.MYPROFILE.ATTRIBUTE.NOTIFICATION.PHONE.NUMBER:
+--SIZECHAR 1024;
+  GAE "Free selected phone number",
+  en "Free selected phone number",
+  ru "Free selected phone number", --???
+  en_US "Free selected phone number", --???
+  en_GB "Free selected phone number", --???
+  fr "Num�ro de t�l�phone s�lectionn� gratuit",
+  de "Free selected phone number", --???
+  es "Free selected phone number", --???
+  it "Free selected phone number", --???
+  nl "Free selected phone number", --???
+  no "Free selected phone number", --???
+  pt "Free selected phone number", --???
+  ko_KR "Free selected phone number", --???
+  zh_CN "Free selected phone number", --???
+  pl "Free selected phone number", --???
+  fi "Free selected phone number", --???
+  ca_ES "Free selected phone number", --???
+  cs "Free selected phone number", --???
+  sv "Free selected phone number", --???
+  hu "Free selected phone number", --???
+  zh_TW "Free selected phone number", --???
+  ar "Free selected phone number", --???
+  he "Free selected phone number", --???
+  tr "Free selected phone number", --???
+  da "Free selected phone number"; --???
+
+MFI.MYPROFILE.ATTRIBUTE.OPTION.TEXT.ON:
+--SIZECHAR 1024;
+  GAE "On",
+  en "On",
+  ru "On", --???
+  en_US "On", --???
+  en_GB "On", --???
+  fr "Activ�",
+  de "On", --???
+  es "On", --???
+  it "On", --???
+  nl "On", --???
+  no "On", --???
+  pt "On", --???
+  ko_KR "On", --???
+  zh_CN "On", --???
+  pl "On", --???
+  fi "On", --???
+  ca_ES "On", --???
+  cs "On", --???
+  sv "On", --???
+  hu "On", --???
+  zh_TW "On", --???
+  ar "On", --???
+  he "On", --???
+  tr "On", --???
+  da "On"; --???
+
+MFI.MYPROFILE.ATTRIBUTE.OPTION.TEXT.OFF:
+--SIZECHAR 1024;
+  GAE "Off",
+  en "Off",
+  ru "Off", --???
+  en_US "Off", --???
+  en_GB "Off", --???
+  fr "D�sactiv�",
+  de "Off", --???
+  es "Off", --???
+  it "Off", --???
+  nl "Off", --???
+  no "Off", --???
+  pt "Off", --???
+  ko_KR "Off", --???
+  zh_CN "Off", --???
+  pl "Off", --???
+  fi "Off", --???
+  ca_ES "Off", --???
+  cs "Off", --???
+  sv "Off", --???
+  hu "Off", --???
+  zh_TW "Off", --???
+  ar "Off", --???
+  he "Off", --???
+  tr "Off", --???
+  da "Off"; --???
+
+he_TUI:
+--SIZECHAR 1024;
+  GAE "Hebrew",
+  fr "H�breu",
+  en_GB "Hebrew",
+  de "Hebräisch", --!!! 
+  es "Hebreo",
+  pt "Hebraico",
+  it "Ebraico",
+  no "Hebraisk",
+  en_US "Hebrew",
+  nl "Hebreeuws",
+  ko_KR "히브리어",
+  zh_CN "Hebrew", --???
+  ru "Иврит",
+  fi "Hebrea", --!!! 
+  pl "Hebrajski",
+  ca_ES "Hebreu", --!!! 
+  cs "Hebrejština", --!!! 
+  hu "Héber",
+  zh_TW "Hebrew", --???
+  sv "Hebreiska",
+  ar "العبرية",
+  he "Hebrew", --???
+  tr "Hebrew", --???
+  da "Hebrew"; --???
+
+ja_TUI:
+--SIZECHAR 1024;
+  GAE "Japonese",
+  fr "Japonais",
+  en_GB "Japonese",
+  de "Japonese", --???
+  es "Japonese", --???
+  pt "Japonese", --???
+  it "Japonese", --???
+  no "Japonese", --???
+  en_US "Japonese",
+  nl "Japonese", --???
+  ko_KR "Japonese", --???
+  zh_CN "Japonese", --???
+  ru "Japonese", --???
+  fi "Japonese", --???
+  pl "Japonese", --???
+  ca_ES "Japonese", --???
+  cs "Japonese", --???
+  hu "Japonese", --???
+  zh_TW "Japonese", --???
+  sv "Japonese", --???
+  ar "Japonese", --???
+  he "Japonese", --???
+  tr "Japonese", --???
+  da "Japonese"; --???
+
+pl_TUI:
+--SIZECHAR 1024;
+  GAE "Polish",
+  fr "Polonais",
+  en_GB "Polish",
+  de "Polish", --???
+  es "Polish", --???
+  pt "Polish", --???
+  it "Polish", --???
+  no "Polish", --???
+  en_US "Polish",
+  nl "Polish", --???
+  ko_KR "Polish", --???
+  zh_CN "Polish", --???
+  ru "Polish", --???
+  fi "Polish", --???
+  pl "Polish", --???
+  ca_ES "Polish", --???
+  cs "Polish", --???
+  hu "Polish", --???
+  zh_TW "Polish", --???
+  sv "Polish", --???
+  ar "Polish", --???
+  he "Polish", --???
+  tr "Polish", --???
+  da "Polish"; --???
+
+fi_TUI:
+--SIZECHAR 1024;
+  GAE "Finnish",
+  fr "Finnois",
+  en_GB "Finnish",
+  de "Finnish", --???
+  es "Finnish", --???
+  pt "Finnish", --???
+  it "Finnish", --???
+  no "Finnish", --???
+  en_US "Finnish",
+  nl "Finnish", --???
+  ko_KR "Finnish", --???
+  zh_CN "Finnish", --???
+  ru "Finnish", --???
+  fi "Finnish", --???
+  pl "Finnish", --???
+  ca_ES "Finnish", --???
+  cs "Finnish", --???
+  hu "Finnish", --???
+  zh_TW "Finnish", --???
+  sv "Finnish", --???
+  ar "Finnish", --???
+  he "Finnish", --???
+  tr "Finnish", --???
+  da "Finnish"; --???
+
