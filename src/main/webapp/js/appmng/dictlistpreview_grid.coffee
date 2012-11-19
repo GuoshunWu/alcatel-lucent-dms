@@ -20,16 +20,8 @@ define (require, util, i18n)->
         dialogs.dictPreviewLangSettings.dialog 'open'
 
   lastEditedCell = null
-  dicGrid = $('#dictListPreviewGrid').jqGrid {
-  url: '', datatype: 'json', editurl: "", mtype: 'POST'
-  width: 1000, minHeight: 200, height: 240
-  pager: '#dictListPreviewPager', rowNum: 100
-  sortname: 'base.name', sortorder: 'asc'
-  viewrecords: true, cellEdit: true, cellurl: 'app/deliver-update-dict',ajaxCellOptions: {async:false}
-  gridview: true, multiselect: false
-  caption: i18n.grid.dictlistpreview.caption
-  colNames: ['LangRefCode', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels', 'Error', 'Warning', 'Action']
-  colModel: [
+
+  colModel = [
     {name: 'langrefcode', index: 'langrefcode', width: 55, align: 'center', hidden: true}
     {name: 'name', index: 'base.name', width: 200, editable: true, align: 'left'}
     {name: 'version', index: 'version', width: 25, editable: true, align: 'left',
@@ -45,6 +37,18 @@ define (require, util, i18n)->
     {name: 'warnings', index: 'warningCount', width: 20, align: 'right'}
     {name: 'actions', index: 'action', width: 70, editable: false, align: 'center'}
   ]
+  $(colModel).each (index,colModel)->colModel.classes = 'editable-column' if colModel.editable
+
+  dicGrid = $('#dictListPreviewGrid').jqGrid {
+  url: '', datatype: 'json', editurl: "", mtype: 'POST'
+  width: 1000, minHeight: 200, height: 240
+  pager: '#dictListPreviewPager', rowNum: 100
+  sortname: 'base.name', sortorder: 'asc'
+  viewrecords: true, cellEdit: true, cellurl: 'app/deliver-update-dict', ajaxCellOptions: {async: false}
+  gridview: true, multiselect: false
+  caption: i18n.grid.dictlistpreview.caption
+  colNames: ['LangRefCode', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels', 'Error', 'Warning', 'Action']
+  colModel: colModel
   afterEditCell: (rowid, cellname, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
   ondblClickRow: (rowid, iRow, iCol, e)->
 

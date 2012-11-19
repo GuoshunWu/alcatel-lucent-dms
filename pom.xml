@@ -502,11 +502,11 @@
 
                 <db.dialect>org.hibernate.dialect.H2Dialect</db.dialect>
                 <!-- none, create, create-drop, update, validate -->
-                <db.hbm2ddl.auto>create</db.hbm2ddl.auto>
+                <db.hbm2ddl.auto>validate</db.hbm2ddl.auto>
             </properties>
 
             <build>
-                <defaultGoal>tomcat7:deploy</defaultGoal>
+                <defaultGoal>tomcat7:run</defaultGoal>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.tomcat.maven</groupId>
@@ -530,10 +530,8 @@
             <id>test</id>
             <activation>
                 <os>
-                    <name>Window 7</name>
-                    <family>windows</family>
-                    <arch>x86</arch>
-                    <version>6.1.7601</version>
+                    <name>Redhat Enterprise Linux Server 6</name>
+                    <family>linux</family>
                 </os>
             </activation>
             <properties>
@@ -565,6 +563,7 @@
 
             </properties>
             <build>
+                <defaultGoal>tomcat7:deploy</defaultGoal>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.tomcat.maven</groupId>

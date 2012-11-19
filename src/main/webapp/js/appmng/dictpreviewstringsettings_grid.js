@@ -39,6 +39,7 @@
           index: 'maxLength',
           width: 40,
           editable: true,
+          classes: 'editable-column',
           align: 'right',
           editrules: {
             custom: true,
@@ -53,12 +54,14 @@
           name: 'context',
           index: 'context.name',
           width: 50,
+          classes: 'editable-column',
           editable: true,
           align: 'left'
         }, {
           name: 'description',
           index: 'description',
           width: 40,
+          classes: 'editable-column',
           editable: true,
           align: 'left'
         }

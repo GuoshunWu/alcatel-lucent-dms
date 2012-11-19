@@ -49,6 +49,7 @@
           index: 'version',
           width: 90,
           editable: true,
+          classes: 'editable-column',
           align: 'center',
           edittype: 'select',
           editoptions: {

@@ -1,5 +1,4 @@
 define ['jqgrid', 'require'], ($, require)->
-
   lastEditedCell = null
 
   dicGrid = $('#dictPreviewStringSettingsGrid').jqGrid {
@@ -16,15 +15,16 @@ define ['jqgrid', 'require'], ($, require)->
   colModel: [
     {name: 'key', index: 'key', width: 50, editable: false, align: 'left'}
     {name: 'reference', index: 'reference', width: 40, editable: false, align: 'left'}
-    {name: 'maxLength', index: 'maxLength', width: 40, editable: true, align: 'right'
+    {name: 'maxLength', index: 'maxLength', width: 40, editable: true, classes: 'editable-column', align: 'right'
     editrules:
       {custom: true, custom_func: (value, colname)->
         return [false, 'Invalid max length format.'] if !/^\d+(\s*,?\s*\d+\s*)*$/.test(value)
         [true, '']
       }}
-    {name: 'context', index: 'context.name', width: 50, editable: true, align: 'left'}
-    {name: 'description', index: 'description', width: 40, editable: true, align: 'left'}
+    {name: 'context', index: 'context.name', width: 50, classes: 'editable-column', editable: true, align: 'left'}
+    {name: 'description', index: 'description', width: 40, classes: 'editable-column', editable: true, align: 'left'}
   ]
+
   afterEditCell: (rowid, cellname, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
   beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
     postData = $(@).getGridParam 'postData'

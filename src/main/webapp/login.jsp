@@ -61,7 +61,6 @@
                 <tr>
                     <td colspan="3">
                             <%--<input type="button" name='loginAction' id="loginButton" value="<s:text name="login.login"/>"--%>
-                            <%--class="button"/>--%>
                         <s:submit value="%{getText('login.login')}" cssClass="button"/>
                         <s:reset value="%{getText('login.reset')}" cssClass="button"/>
                     </td>
