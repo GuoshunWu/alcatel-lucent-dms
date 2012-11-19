@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
 <%@ page contentType="text/html;charset=utf-8" %>
 <script type="text/javascript">
     // a ajax tool to request struts locale info
@@ -79,6 +79,7 @@
 
     var param = {};
     HTTP.get('<s:url value="/"/>app/get-locale', function (json) {
+
         var locale = json.message.replace('_', '-').toLocaleLowerCase();
         param.locale = locale;
 //    param.locale = 'zh-cn'
