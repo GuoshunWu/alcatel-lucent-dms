@@ -24,7 +24,7 @@ public class Application extends BaseEntity {
     private static final long serialVersionUID = 7168527218137875020L;
 
     @ManyToOne
-    @JoinColumn(name = "LANGUAGE_ID")
+    @JoinColumn(name = "APPLICATION_BASE_ID")
     private ApplicationBase base;
 
     @Column(name = "VERSION")

@@ -10,5 +10,3 @@ var Text = {
 	"": ""
 </s:i18n>
 };
-
-//alert(Text.select_product);
