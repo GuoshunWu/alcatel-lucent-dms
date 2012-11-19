@@ -30,8 +30,15 @@
                         </div>
                     </td>
                     <td style="width: 240px"><s:text name="transmng.summarypanel.searchtext"/><input/></td>
-                    <td><a href="">Excel</a></td>
-                    <td><a href="">PDF</a></td>
+                    <td><a id="exportExcel" href="#"><img src="images/excel.gif"/><s:text name="export"/></a></td>
+                    <td><a id="exportPDF" href="#">PDF
+                        <form id="exportForm" method="post" action="trans/export-translation-report">
+                            <input type="hidden" name="prod"/>
+                            <input type="hidden" name="type"/>
+                            <input type="hidden" name="language"/>
+                            <input type="hidden" name="ftype"/>
+                        </form>
+                    </a></td>
                     <td style="width:18px;"></td>
                 </tr>
             </table>
@@ -51,7 +58,7 @@
                             </tr>
                         </table>
                         <div id="transPager"/>
-                   </td>
+                    </td>
                 </tr>
             </table>
         </td>
@@ -66,7 +73,7 @@
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <s:text name="transmng.summarypanel.makelabelas"/>&nbsp;&nbsp;
                         <button id='makeLabelTranslated' value="2">T</button>
-                        <button id="makeLabelNotTranslated" value="0" >N</button>
+                        <button id="makeLabelNotTranslated" value="0">N</button>
                     </td>
                     <td style="width: 15px"/>
                 </tr>
