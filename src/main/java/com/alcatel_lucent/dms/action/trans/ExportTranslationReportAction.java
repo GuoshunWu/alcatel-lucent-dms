@@ -18,6 +18,7 @@ public class ExportTranslationReportAction extends BaseAction {
 	private TranslationService translationService;
 	private Long prod;
 	private String type;
+	private String language;
 	private InputStream inputStream;
 	
 	@Override
@@ -28,9 +29,9 @@ public class ExportTranslationReportAction extends BaseAction {
 		try {
 			ByteArrayOutputStream output = new ByteArrayOutputStream(); 
 			if (type != null && type.equals("app")) {
-				translationService.generateAppTranslationReport(prod, output);
+				translationService.generateAppTranslationReport(prod, toIdList(language), output);
 			} else {
-				translationService.generateDictTranslationReport(prod, output);
+				translationService.generateDictTranslationReport(prod, toIdList(language), output);
 			}
 			inputStream = new ByteArrayInputStream(output.toByteArray());
 			return SUCCESS;
@@ -66,5 +67,13 @@ public class ExportTranslationReportAction extends BaseAction {
 
 	public void setInputStream(InputStream inputStream) {
 		this.inputStream = inputStream;
+	}
+
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
 	}
 }

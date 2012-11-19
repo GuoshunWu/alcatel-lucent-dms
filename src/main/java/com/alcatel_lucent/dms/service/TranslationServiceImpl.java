@@ -5,6 +5,8 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -107,9 +109,18 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     }
 
 	@Override
-	public void generateDictTranslationReport(Long prodId, OutputStream output) {
+	public void generateDictTranslationReport(Long prodId, Collection<Long> langIds, OutputStream output) {
 		Map<Long, Map<Long, int[]>> data = getDictTranslationSummary(prodId);
 		Collection<Language> languages = languageService.getLanguagesInProduct(prodId);
+		if (langIds != null) {
+			HashSet<Long> langIdSet = new HashSet<Long>(langIds);
+			for (Iterator<Language> iter = languages.iterator(); iter.hasNext();) {
+				Language language = iter.next();
+				if (!langIdSet.contains(language.getId())) {
+					iter.remove();
+				}
+			}
+		}
 		Workbook wb = new HSSFWorkbook();
 		Sheet sheet = wb.createSheet("Sheet1");
 		Row headRow1 = sheet.createRow(0);
@@ -169,9 +180,18 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 	}
 
 	@Override
-	public void generateAppTranslationReport(Long prodId, OutputStream output) {
+	public void generateAppTranslationReport(Long prodId, Collection<Long> langIds, OutputStream output) {
 		Map<Long, Map<Long, int[]>> data = getAppTranslationSummary(prodId);
 		Collection<Language> languages = languageService.getLanguagesInProduct(prodId);
+		if (langIds != null) {
+			HashSet<Long> langIdSet = new HashSet<Long>(langIds);
+			for (Iterator<Language> iter = languages.iterator(); iter.hasNext();) {
+				Language language = iter.next();
+				if (!langIdSet.contains(language.getId())) {
+					iter.remove();
+				}
+			}
+		}
 		Workbook wb = new HSSFWorkbook();
 		Sheet sheet = wb.createSheet("Sheet1");
 		Row headRow1 = sheet.createRow(0);

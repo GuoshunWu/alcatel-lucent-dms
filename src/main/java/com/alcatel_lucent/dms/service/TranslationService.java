@@ -1,6 +1,7 @@
 package com.alcatel_lucent.dms.service;
 
 import java.io.OutputStream;
+import java.util.Collection;
 import java.util.Map;
 
 public interface TranslationService {
@@ -24,14 +25,16 @@ public interface TranslationService {
     /**
      * Generate excel report of translation summary in dictionary level
      * @param prodId product id
+     * @param langIds language filters, null in case of all languages
      * @param output output stream
      */
-    void generateDictTranslationReport(Long prodId, OutputStream output);
+    void generateDictTranslationReport(Long prodId, Collection<Long> langIds, OutputStream output);
     
     /**
      * Generate excel report of translation summary in application level
      * @param prodId product id
+     * @param langIds language filters, null in case of all languages
      * @param output output stream
      */
-    void generateAppTranslationReport(Long prodId, OutputStream output);
+    void generateAppTranslationReport(Long prodId, Collection<Long> langIds, OutputStream output);
 }
