@@ -131,7 +131,7 @@ public class LabelXMLParser extends DictionaryParser {
 				refFile = file;
 				dictName = refFile.getAbsolutePath().replace("\\", "/");
 				if (rootDir != null && dictName.startsWith(rootDir)) {
-					dictName = dictName.substring(rootDir.length());
+					dictName = dictName.substring(rootDir.length() + 1);
 				}
 				break;
 			}

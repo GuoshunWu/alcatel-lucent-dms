@@ -75,7 +75,10 @@ public class MDCParser extends DictionaryParser {
         }
         
         String dictPath = file.getAbsolutePath().replace("\\", "/");
-        String dictName = rootDir == null ? dictPath : dictPath.replace(rootDir, "");
+		String dictName = dictPath;
+		if (rootDir != null && dictName.startsWith(rootDir)) {
+			dictName = dictName.substring(rootDir.length() + 1);
+		}
         FileInputStream in = null;
         try {
         	in = new FileInputStream(file);
