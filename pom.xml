@@ -88,6 +88,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>4.3.0.Final</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.6.1</version>
@@ -408,21 +414,6 @@
             </plugin>
 
             <plugin>
-                <groupId>org.apache.tomcat.maven</groupId>
-                <artifactId>tomcat7-maven-plugin</artifactId>
-                <version>2.0-beta-1</version>
-                <configuration>
-                    <uriEncoding>utf-8</uriEncoding>
-                    <!--<server>tomcat</server>-->
-                    <url>http://172.24.190.236:8080/manager/text</url>
-                    <update>true</update>
-                    <path>/dmsqa</path>
-                    <server>tomcat</server>
-                </configuration>
-            </plugin>
-
-
-            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.2.1</version>
@@ -474,7 +465,124 @@
             <!--</plugin>-->
         </plugins>
 
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
     </build>
+
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <os>
+                    <name>Window 7</name>
+                    <family>Windows</family>
+                    <arch>x86</arch>
+                    <version>6.1.7601</version>
+                </os>
+            </activation>
+            <properties>
+                <dms.deliver.dir>D:/tmp/dms/deliver</dms.deliver.dir>
+                <dms.generate.dir>D:/tmp/dms/generate</dms.generate.dir>
+                <dms.send.dir>D:/tmp/dms/send</dms.send.dir>
+                <dms.receive.dir>D:/tmp/dms/receive</dms.receive.dir>
+
+                <db.driver>org.h2.Driver</db.driver>
+                <db.url>
+                    jdbc:h2:tcp://localhost/dms;MODE=MYSQL;AUTO_SERVER=TRUE;DB_CLOSE_DELAY=-1;INIT=create schema if not exists dms;
+                </db.url>
+                <db.user>dms</db.user>
+                <db.password>alcatel123</db.password>
+
+                <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
+
+                <db.dialect>org.hibernate.dialect.H2Dialect</db.dialect>
+                <!-- none, create, create-drop, update, validate -->
+                <db.hbm2ddl.auto>create</db.hbm2ddl.auto>
+            </properties>
+
+            <build>
+                <defaultGoal>tomcat7:deploy</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.tomcat.maven</groupId>
+                        <artifactId>tomcat7-maven-plugin</artifactId>
+                        <version>2.0</version>
+                        <configuration>
+                            <uriEncoding>utf-8</uriEncoding>
+                            <!--<server>tomcat</server>-->
+                            <url>http://localhost:8080/manager/html</url>
+                            <update>true</update>
+                            <path>/dms</path>
+                            <update>true</update>
+                            <username>admin</username>
+                            <password>alcatel123</password>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>test</id>
+            <activation>
+                <os>
+                    <name>Window 7</name>
+                    <family>windows</family>
+                    <arch>x86</arch>
+                    <version>6.1.7601</version>
+                </os>
+            </activation>
+            <properties>
+                <dms.deliver.dir>/dms/deliver</dms.deliver.dir>
+                <dms.generate.dir>/dms/generate</dms.generate.dir>
+                <dms.send.dir>/dms/send</dms.send.dir>
+                <dms.receive.dir>/dms/receive</dms.receive.dir>
+
+                <db.driver>org.postgresql.Driver</db.driver>
+                <db.url>jdbc\:postgresql\://172.24.190.236\:5432/dms_qa</db.url>
+                <db.user>dms</db.user>
+                <db.password>alcatel123</db.password>
+
+                <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
+
+                <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
+                <db.hbm2ddl.auto>validate</db.hbm2ddl.auto>
+
+                <!--for mysql-->
+                <!--<db.driver>com.mysql.jdbc.Driver</db.driver>-->
+                <!--<db.url>jdbc:MySQL://172.24.191.199:3306/dms?characterEncoding=utf8&amp;useCursorFetch=true&amp;useUnicode=true</db.url>-->
+                <!--<db.user>dms</db.user>-->
+                <!--<db.password>alcatel123</db.password>-->
+
+                <!--<db.house-keeping-test-sql>select CURRENT_DATE</db.house-keeping-test-sql>-->
+
+                <!--<db.dialect>org.hibernate.dialect.MySQL5InnoDBDialect</db.dialect>-->
+                <!--<db.hbm2ddl.auto>validate</db.hbm2ddl.auto>-->
+
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.tomcat.maven</groupId>
+                        <artifactId>tomcat7-maven-plugin</artifactId>
+                        <version>2.0</version>
+                        <configuration>
+                            <uriEncoding>utf-8</uriEncoding>
+                            <server>tomcat</server>
+                            <url>http://172.24.190.236:8080/manager/text</url>
+                            <update>true</update>
+                            <path>/dmsqa</path>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+
+        </profile>
+    </profiles>
 
     <!--<repositories> -->
     <!--<repository> -->

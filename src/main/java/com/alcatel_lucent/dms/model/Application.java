@@ -9,6 +9,11 @@ import java.util.Map;
 import com.alcatel_lucent.dms.SpringContext;
 import com.alcatel_lucent.dms.service.DictionaryService;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="APPLICATION")
 public class Application extends BaseEntity {
 	/**
 	 * 
