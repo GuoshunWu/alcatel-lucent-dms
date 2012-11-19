@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.alcatel_lucent.dms.model">
+
+	<class name="Text" table="TEXT">
+		<id column="ID" name="id">
+			<generator class="hilo">
+                <param name="table">ID_TEXT</param>
+                <param name="column">next_hi</param>
+                <param name="max_lo">100</param>
+        	</generator>
+		</id>
+
+		<property name="reference" type="string" column="REFERENCE"
+			length="1024" />
+		<property name="status" type="integer" column="STATUS" />
+        <many-to-one name="context" column="CONTEXT_ID" not-null="true" />
+
+		<set name="translations" cascade="delete" inverse="true">
+			<key column="TEXT_ID" />
+			<one-to-many class="Translation" />
+		</set>
+	</class>
+
+</hibernate-mapping>
