@@ -83,7 +83,7 @@ public class DCTParser extends DictionaryParser {
         String dictPath = file.getAbsolutePath().replace("\\", "/");
 		String dictName = dictPath;
 		if (rootDir != null && dictName.startsWith(rootDir)) {
-			dictName = dictName.substring(rootDir.length());
+			dictName = dictName.substring(rootDir.length() + 1);
 		}
     	try {
     		Dictionary dict = parseDCT(dictName, dictPath, file);
