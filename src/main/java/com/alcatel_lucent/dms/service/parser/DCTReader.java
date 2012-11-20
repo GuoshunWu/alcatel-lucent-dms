@@ -57,7 +57,7 @@ public class DCTReader extends LineNumberReader {
         super(in);
         this.dictionary = dictionary;
         this.context = new Context();
-        context.setName(dictionary.getName());
+        context.setName(Context.DEFAULT_CTX);
         this.warnings = new ArrayList<BusinessWarning>();
     }
 

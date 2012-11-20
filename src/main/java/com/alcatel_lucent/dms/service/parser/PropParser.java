@@ -118,7 +118,7 @@ public class PropParser extends DictionaryParser {
         dictBase.setFormat(Constants.DICT_FORMAT_TEXT_PROP);
         
         Context context = new Context();
-        context.setName(dictName);
+        context.setName(Context.DEFAULT_CTX);
         
 		Dictionary dictionary = new Dictionary();
 		dictionary.setBase(dictBase);

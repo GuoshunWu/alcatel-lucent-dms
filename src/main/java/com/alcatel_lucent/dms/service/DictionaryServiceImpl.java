@@ -126,10 +126,50 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     		log.error(exceptions);
     		throw exceptions;
     	}
+    	populateDefaultContext(result);
     	return result;
     }
     
-    private Collection<String> getNotAcceptedFiles(File file,
+    /**
+     * Determine default context of labels.
+     * If the label was already assigned to a non-default context, keep it;
+     * If any translation of the label is different than default context, take dictionary name;
+     * Otherwise, take default context.
+     * @param dictList
+     */
+    private void populateDefaultContext(Collection<Dictionary> dictList) {
+    	Context defaultCtx = new Context(Context.DEFAULT_CTX);
+    	Context dbDefaultCtx = textService.getContextByName(Context.DEFAULT_CTX);
+    	Map<String, Text> textMap = dbDefaultCtx == null ? new HashMap<String, Text>() : 
+    				textService.getTextsAsMap(dbDefaultCtx.getId());
+		for (Dictionary dict : dictList) {
+			Context dictCtx = new Context(dict.getName());
+			if (dict.getLabels() == null) continue;
+			for (Label label : dict.getLabels()) {
+				if (label.getContext() != null && !label.getContext().getName().equals(Context.DEFAULT_CTX))
+					continue;
+				for (LabelTranslation lt : label.getOrigTranslations()) {
+					if (lt.getLanguage() != null && !lt.getOrigTranslation().equals(label.getReference())) {
+						Text text = textMap.get(label.getReference());
+						if (text != null) {
+							Translation trans = text.getTranslation(lt.getLanguage().getId());
+							if (trans != null && !trans.getTranslation().equals(lt.getOrigTranslation())) {
+								log.info("###Reference:" + label.getReference() + ", Translation:" + lt.getOrigTranslation() + ", ContextTranslation:" + trans.getTranslation());
+								label.setContext(dictCtx);
+								break;
+							}
+						}
+					}
+				}
+				if (label.getContext() == null) {
+					label.setContext(defaultCtx);
+				}
+			}
+		}
+		
+	}
+
+	private Collection<String> getNotAcceptedFiles(File file,
 			HashSet<String> allAcceptedFiles) {
     	Collection<String> result = new ArrayList<String>();
     	if (!file.exists()) return result;
