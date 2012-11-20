@@ -49,11 +49,11 @@ class GTextServiceImplTest {
 
     @Test
     void testReceiveTranslation() {
-        String dir = 'Z:/ICSR6.6_incorrect_character'
+        String dir = 'D:/Translation/ICS_OAMP/6.7.1_translation_result'
         //dir='dct_test_files'
-        [  'AR', 'CA', 'CZ', 'DA', 'DE', 'ES', 'FI', 'HU','PL', 'KO' , 'NO', 'RU', 'ZH-CN', 'ZH-TW'
-        ].each { langCode ->
-
+//        [  'CA-ES', 'DA', 'DE', 'DE-AT', 'DE-CH', 'EL', 'EN-AU', 'EN-US', 'ET', 'ES', 'FI', 'FR', 'FR-BE', 'FR-CH', 'HU', 'IT', 'IT-CH', 'JA', 'KO', 'LT', 'LV', 'NL', 'NL-BE', 'NO', 'PL', 'PT', 'PT-BR', 'RO', 'RU', 'SK', 'SL', 'SV', 'TR', 'ZH-CN', 'ZH-TW'
+//        ].each { langCode ->
+			String langCode = 'HE'
             String fileName = new File(dir, "${langCode}.xls").absolutePath;
             //query languageID
 
@@ -73,6 +73,6 @@ class GTextServiceImplTest {
                 return
             }
             println "File '$fileName' has been merged, totally updated $count Translation. ".center(80, '=')
-        }
+//        }
     }
 }
