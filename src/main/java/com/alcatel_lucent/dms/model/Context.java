@@ -1,6 +1,9 @@
 package com.alcatel_lucent.dms.model;
 
 public class Context extends BaseEntity {
+	
+	public static final String DEFAULT_CTX = "Default";
+	
     /**
      *
      */

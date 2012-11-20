@@ -132,7 +132,7 @@ public class MDCParser extends DictionaryParser {
 		Dictionary dictionary = new Dictionary();
 		dictionary.setBase(dictBase);
 
-		Context context = new Context(dictionary.getName());
+		Context context = new Context(Context.DEFAULT_CTX);
 
 		BusinessException nonBreakExceptions = new BusinessException(
 				BusinessException.NESTED_DCT_PARSE_ERROR, dictionary.getName());

@@ -322,6 +322,17 @@ public class Dictionary extends BaseEntity {
 			}
 		}
 		if (labels != null) {
+			// check duplicate reference+context
+			HashSet<String> existingReference = new HashSet<String>();
+			for (Label label : labels) {
+				String key = label.getContext() + "~~" + label.getReference();
+				if (existingReference.contains(key)) {
+					importWarnings.add(new BusinessWarning(BusinessWarning.DUPLICATE_REFERENCE, label.getContext(), label.getReference()));
+				} else {
+					existingReference.add(key);
+				}
+			}
+			
 			// sort malformed character warnings
 			TreeMap<String, Collection<BusinessWarning>> malformWarnings = new TreeMap<String, Collection<BusinessWarning>>();
 			for (Label label : labels) {
