@@ -502,7 +502,7 @@
 
                 <db.dialect>org.hibernate.dialect.H2Dialect</db.dialect>
                 <!-- none, create, create-drop, update, validate -->
-                <db.hbm2ddl.auto>validate</db.hbm2ddl.auto>
+                <db.hbm2ddl.auto>none</db.hbm2ddl.auto>
             </properties>
 
             <build>
@@ -564,6 +564,57 @@
             </properties>
             <build>
                 <defaultGoal>tomcat7:deploy</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.tomcat.maven</groupId>
+                        <artifactId>tomcat7-maven-plugin</artifactId>
+                        <version>2.0</version>
+                        <configuration>
+                            <uriEncoding>utf-8</uriEncoding>
+                            <server>tomcat</server>
+                            <url>http://172.24.190.236:8080/manager/text</url>
+                            <update>true</update>
+                            <path>/dmsqa</path>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+
+        </profile>
+        <profile>
+            <id>prod</id>
+            <activation>
+                <os>
+                    <name>Window 7</name>
+                    <family>windows</family>
+                    <arch>x86</arch>
+                    <version>6.1.7601</version>
+                </os>
+            </activation>
+            <properties>
+                <dms.deliver.dir>/dms/deliver</dms.deliver.dir>
+                <dms.generate.dir>/dms/generate</dms.generate.dir>
+                <dms.send.dir>/dms/send</dms.send.dir>
+                <dms.receive.dir>/dms/receive</dms.receive.dir>
+
+                <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
+
+                <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
+                <db.hbm2ddl.auto>validate</db.hbm2ddl.auto>
+
+                <!--for mysql-->
+                <db.driver>com.mysql.jdbc.Driver</db.driver>
+                <db.url>jdbc:MySQL://172.24.191.199:3306/dms_prod?characterEncoding=utf8&amp;useCursorFetch=true&amp;useUnicode=true</db.url>
+                <db.user>dms</db.user>
+                <db.password>alcatel123</db.password>
+
+                <!--<db.house-keeping-test-sql>select CURRENT_DATE</db.house-keeping-test-sql>-->
+
+                <!--<db.dialect>org.hibernate.dialect.MySQL5InnoDBDialect</db.dialect>-->
+                <!--<db.hbm2ddl.auto>validate</db.hbm2ddl.auto>-->
+
+            </properties>
+            <build>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.tomcat.maven</groupId>
