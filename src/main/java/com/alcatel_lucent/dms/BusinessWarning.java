@@ -17,6 +17,7 @@ public class BusinessWarning {
 	public static final int SUSPICIOUS_CHARACTER = 205;
 	static public final int DUPLICATE_LABEL_KEY = 206;
 	static public final int DUPLICATE_LANG_CODE = 207;
+	public static final int DUPLICATE_REFERENCE = 208;
 	
 	public BusinessWarning(int code, Object...parameters) {
 		this.warningCode = code;

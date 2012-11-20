@@ -147,7 +147,7 @@ public class LabelXMLParser extends DictionaryParser {
         dictBase.setFormat(getFormat());
         
         Context context = new Context();
-        context.setName(dictName);
+        context.setName(Context.DEFAULT_CTX);
         
 		Dictionary dictionary = new Dictionary();
 		dictionary.setBase(dictBase);
