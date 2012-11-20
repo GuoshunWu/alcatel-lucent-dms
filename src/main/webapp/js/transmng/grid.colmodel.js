@@ -26,6 +26,11 @@
           return;
         }
         gridParam = this.getGridParam();
+        $(gridParam.colModel).each(function(index, colModel) {
+          if (colModel.editable) {
+            return colModel.classes = 'editable-column';
+          }
+        });
         this.GridUnload(this.getId());
         gridParam.url = url;
         if (postData) {

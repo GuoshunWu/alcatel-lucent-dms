@@ -136,7 +136,7 @@
     })).parent().buttonset();
     return {
       languageChanged: function(param) {
-        var map, prop, status, url;
+        var prop, url;
         transDetailGrid = $("#transDetailGridList");
         url = "rest/labels";
         prop = "key,maxLength,context.name,reference,ct.translation,ct.status";
@@ -151,13 +151,8 @@
             idprop: 'ct.id'
           }
         });
-        map = {
-          'N': '0',
-          'I': '1',
-          'T': '2'
-        };
-        status = param.language.name.split('.')[1];
-        return transDetailGrid.trigger("reloadGrid");
+        $('#gs_transStatus').val(param.searchStatus);
+        return transDetailGrid[0].triggerToolbar();
       },
       saveLastEditedCell: function() {
         if (lastEditedCell) {

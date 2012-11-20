@@ -15,8 +15,8 @@ define ['jqgrid', 'util', 'require', 'jqmsgbox', 'transmng/grid.colmodel', 'bloc
   grid = {
   dictionary:
     {
-    colNames: common.colNames.slice(0).insert 3, ['Dictionary', 'Version', 'Encoding', 'Format']
-    colModel: common.colModel.slice(0).insert 3, [
+    colNames: common.colNames[0..].insert 3, ['Dictionary', 'Version', 'Encoding', 'Format']
+    colModel: common.colModel[0..].insert 3, [
       {name: 'dictionary', index: 'base.name', width: 90, editable: true, align: 'left', frozen: true, search: false}
       {name: 'dictVersion', index: 'version', width: 90, editable: true, align: 'left', frozen: true, search: false}
       {name: 'encoding', index: 'base.encoding', width: 90, editable: true, stype: 'select', searchoptions: {value: ':All;ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE'}, align: 'left', frozen: true}

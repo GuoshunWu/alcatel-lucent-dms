@@ -108,9 +108,9 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
     autoOpen: false, width: 'auto', height: 'auto', modal: true
     create: ()->
       $('#detailLanguageSwitcher').change ->
-        dict = $('#translationDetailDialog').data "dict"
-        language = {id: $(@).val(), name: $(@).find("option:selected").text()}
-        detailgrid.languageChanged {language: language, dict: dict}
+        param = $('#translationDetailDialog').data "param"
+        language = {id: $(@).val(), name: $("option:selected", @).text()}
+        detailgrid.languageChanged {language: language, dict: param.dict, searchStatus: param.searchStatus}
     close: (event, ui)->
       detailgrid.saveLastEditedCell()
     buttons: [
@@ -213,7 +213,14 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
       isSelected = @id == parseInt param.language.id
       new Option @name, @id, isSelected, isSelected
     )
-    $('#translationDetailDialog').data 'dict', param.dict
+
+    #   set status toolbar search to selected column
+    transDetailGrid = $("#transDetailGridList")
+
+    map = 'N': '0', 'I': '1', 'T': '2'
+    status = param.language.name.split('.')[1]
+
+    $('#translationDetailDialog').data 'param', {dict: param.dict, searchStatus:map[status]}
     $('#detailLanguageSwitcher').trigger "change"
 
     dialogs.transDetailDialog.dialog "open"

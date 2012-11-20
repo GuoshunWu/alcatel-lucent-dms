@@ -502,7 +502,7 @@
 
                 <db.dialect>org.hibernate.dialect.H2Dialect</db.dialect>
                 <!-- none, create, create-drop, update, validate -->
-                <db.hbm2ddl.auto>validate</db.hbm2ddl.auto>
+                <db.hbm2ddl.auto>none</db.hbm2ddl.auto>
             </properties>
 
             <build>

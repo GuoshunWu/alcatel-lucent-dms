@@ -178,15 +178,16 @@
         modal: true,
         create: function() {
           return $('#detailLanguageSwitcher').change(function() {
-            var dict, language;
-            dict = $('#translationDetailDialog').data("dict");
+            var language, param;
+            param = $('#translationDetailDialog').data("param");
             language = {
               id: $(this).val(),
-              name: $(this).find("option:selected").text()
+              name: $("option:selected", this).text()
             };
             return detailgrid.languageChanged({
               language: language,
-              dict: dict
+              dict: param.dict,
+              searchStatus: param.searchStatus
             });
           });
         },
@@ -317,13 +318,24 @@
     return {
       name: 'layout',
       showTransDetailDialog: function(param) {
+        var map, status, transDetailGrid;
         $('#dictionaryName', dialogs.transDetailDialog).html(param.dict.name);
         $('#detailLanguageSwitcher', dialogs.transDetailDialog).empty().append($(param.languages).map(function(index) {
           var isSelected;
           isSelected = this.id === parseInt(param.language.id);
           return new Option(this.name, this.id, isSelected, isSelected);
         }));
-        $('#translationDetailDialog').data('dict', param.dict);
+        transDetailGrid = $("#transDetailGridList");
+        map = {
+          'N': '0',
+          'I': '1',
+          'T': '2'
+        };
+        status = param.language.name.split('.')[1];
+        $('#translationDetailDialog').data('param', {
+          dict: param.dict,
+          searchStatus: map[status]
+        });
         $('#detailLanguageSwitcher').trigger("change");
         return dialogs.transDetailDialog.dialog("open");
       }

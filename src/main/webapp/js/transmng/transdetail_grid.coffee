@@ -16,7 +16,7 @@ define ['jqgrid', 'util', 'require', 'i18n!nls/transmng', 'i18n!nls/common'], ($
     {name: 'context', index: 'context.name', width: 80, align: 'left', frozen: true, search: false}
     {name: 'reflang', index: 'reference', width: 150, align: 'left', frozen: true, search: false}
     {name: 'trans', index: 'ct.translation', width: 150, align: 'left', search: false}
-    {name: 'transStatus', index: 'ct.status', width: 150, align: 'left', editable: true, classes:'editable-column', search: true,
+    {name: 'transStatus', index: 'ct.status', width: 150, align: 'left', editable: true, classes: 'editable-column', search: true,
     edittype: 'select', editoptions: {value: "0:#{i18n.trans.nottranslated};1:#{i18n.trans.inprogress};2:#{i18n.trans.translated}"},
     formatter: 'select',
     stype: 'select', searchoptions: {value: ":#{c18n.all};0:#{i18n.trans.nottranslated};1:#{i18n.trans.inprogress};2:#{i18n.trans.translated}"}
@@ -47,13 +47,11 @@ define ['jqgrid', 'util', 'require', 'i18n!nls/transmng', 'i18n!nls/common'], ($
     transDetailGrid = $("#transDetailGridList")
     url = "rest/labels"
     prop = "key,maxLength,context.name,reference,ct.translation,ct.status"
-    transDetailGrid.setGridParam({url: url, datatype: "json", postData: {dict: param.dict.id, language: param.language.id, format: 'grid', prop: prop, idprop: 'ct.id'}})
-#   set status toolbar search to selected column
-    map = 'N': '0', 'I': '1', 'T': '2'
-    status = param.language.name.split('.')[1]
-#    $('#gs_transStatus').val(map[status]).trigger 'change'
-#    transDetailGrid.setColProp 'transStatus', {value: "1:#{i18n.trans.inprogress};2:#{i18n.trans.translated}"}
-    transDetailGrid.trigger("reloadGrid")
+    transDetailGrid.setGridParam url: url, datatype: "json", postData: {dict: param.dict.id, language: param.language.id, format: 'grid', prop: prop, idprop: 'ct.id'}
+
+    $('#gs_transStatus').val param.searchStatus
+    transDetailGrid[0].triggerToolbar()
+  #    transDetailGrid.trigger("reloadGrid")
 
   saveLastEditedCell: ()->
     transDetailGrid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell

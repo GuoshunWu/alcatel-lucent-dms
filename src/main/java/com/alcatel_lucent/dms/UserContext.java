@@ -3,6 +3,7 @@ package com.alcatel_lucent.dms;
 import com.alcatel_lucent.dms.model.User;
 import com.opensymphony.xwork2.ActionContext;
 
+import javax.servlet.http.HttpSession;
 import java.io.Serializable;
 import java.util.Locale;
 import java.util.Map;
@@ -13,7 +14,10 @@ import java.util.Map;
  */
 public class UserContext implements Serializable {
 
+    private static final long serialVersionUID = 7061256090839337985L;
+
     public static String SESSION_USER_CONTEXT = "user_context";
+    private static ThreadLocal<UserContext> instance = new ThreadLocal<UserContext>();
 
     private Locale locale;
     private User user;
@@ -27,11 +31,11 @@ public class UserContext implements Serializable {
     }
 
     public static UserContext getInstance() {
-        Map session = ActionContext.getContext().getSession();
-        if (session != null) {
-            return (UserContext) session.get(SESSION_USER_CONTEXT);
-        }
-        return null;
+        return instance.get();
+    }
+    
+    public static void setUserContext(UserContext uc) {
+        instance.set(uc);
     }
 
     public Locale getLocale() {

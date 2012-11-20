@@ -34,6 +34,9 @@ public class AuthenticationFilter implements Filter {
         HttpSession session = request.getSession();
         String uri = request.getRequestURI();
 
+        UserContext uc = (UserContext) session.getAttribute(UserContext.SESSION_USER_CONTEXT);
+        UserContext.setUserContext(uc);
+
 //        log.debug("uri=" + uri);
         for (String pattern : excludePatterns) {
             if (uri.matches(pattern)) {
@@ -43,7 +46,7 @@ public class AuthenticationFilter implements Filter {
             }
         }
 
-        if (null != session.getAttribute(UserContext.SESSION_USER_CONTEXT)) {
+        if (null != uc) {
             chain.doFilter(req, resp);
             return;
         }

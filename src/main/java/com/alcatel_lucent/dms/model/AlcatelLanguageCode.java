@@ -18,9 +18,8 @@ public class AlcatelLanguageCode implements Serializable, LanguageCode {
     @Column(name = "CODE")
     private String code;
 
-    @NotNull
     @ManyToOne
-    @JoinColumn(name = "LANGUAGE_ID")
+    @JoinColumn(name = "LANGUAGE_ID", nullable = false)
     private Language language;
 
     @Column(name = "DEFAULT_CODE")

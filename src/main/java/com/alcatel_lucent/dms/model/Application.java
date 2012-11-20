@@ -27,15 +27,14 @@ public class Application extends BaseEntity {
     @JoinColumn(name = "APPLICATION_BASE_ID")
     private ApplicationBase base;
 
-    @Column(name = "VERSION")
-    @NotNull
+    @Column(name = "VERSION", nullable = false)
     private String version;
 
     @ManyToMany(targetEntity = Dictionary.class)
     @JoinTable(
-            name="APPLICATION_DICTIONARY",
-            joinColumns = @JoinColumn(name="APPLICATION_ID"),
-            inverseJoinColumns = @JoinColumn(name="DICTIONARY_ID")
+            name = "APPLICATION_DICTIONARY",
+            joinColumns = @JoinColumn(name = "APPLICATION_ID"),
+            inverseJoinColumns = @JoinColumn(name = "DICTIONARY_ID")
     )
     @Fetch(FetchMode.JOIN)
     private Collection<Dictionary> dictionaries;

@@ -15,7 +15,7 @@ define ['jqgrid'], ($)->
   reloadAll: (url, postData)->
     return if !url
     gridParam = @getGridParam()
-    $(gridParam.colModel).each(index,colModel)->colModel.classes = 'editable-column' if colModel.editable
+    $(gridParam.colModel).each (index, colModel)->colModel.classes = 'editable-column' if colModel.editable
 
     @GridUnload @getId()
     gridParam.url = url
@@ -33,7 +33,7 @@ define ['jqgrid'], ($)->
     level = $("input:radio[name='viewOption'][checked]").val()
     colModels = $(cols).map(
       (index)->
-        model={
+        model = {
         name: "#{language.name}.#{@}",
         sortable: false, index: "s(#{language.id})[#{index}]",
         width: 40, align: 'right',
@@ -41,8 +41,8 @@ define ['jqgrid'], ($)->
         }
         if level != 'application'
 
-          model.formatter =  'showlink'
-          model.formatoptions={baseLinkUrl: '#', addParam: encodeURI("&languageId=#{language.id}&languaeName=#{model.name}")}
+          model.formatter = 'showlink'
+          model.formatoptions = {baseLinkUrl: '#', addParam: encodeURI("&languageId=#{language.id}&languaeName=#{model.name}")}
         model
     ).get()
     @getGridParam('groupHeaders').push {startColumnName: "#{language.name}.T", numberOfColumns: cols.length, titleText: "<bold>#{language.name}</bold>"}
