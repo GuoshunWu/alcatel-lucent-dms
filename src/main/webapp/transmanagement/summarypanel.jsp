@@ -31,7 +31,7 @@
                     </td>
                     <td style="width: 240px"><s:text name="transmng.summarypanel.searchtext"/><input/></td>
                     <td><a id="exportExcel" href="#"><img src="images/excel.gif"/><s:text name="export"/></a></td>
-                    <td><a id="exportPDF" href="#">PDF
+                    <td><a style="display: none" id="exportPDF" href="#">PDF
                         <form id="exportForm" method="post" action="trans/export-translation-report">
                             <input type="hidden" name="prod"/>
                             <input type="hidden" name="type"/>

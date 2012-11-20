@@ -76,6 +76,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <version>3.1.2.RELEASE</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-proxool</artifactId>
             <version>${hibernate.version}</version>
@@ -517,6 +523,7 @@
                             <!--<server>tomcat</server>-->
                             <url>http://localhost:8080/manager/html</url>
                             <update>true</update>
+                            <port>80</port>
                             <path>/dms</path>
                             <update>true</update>
                             <username>admin</username>
