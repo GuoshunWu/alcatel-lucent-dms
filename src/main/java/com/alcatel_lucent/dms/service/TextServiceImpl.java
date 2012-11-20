@@ -326,7 +326,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
      * @param ctxId context id
      * @return text map with reference as key
      */
-    private Map<String, Text> getTextsAsMap(Long ctxId) {
+    public Map<String, Text> getTextsAsMap(Long ctxId) {
         String hql = "from Text where context.id=:ctxId";
         Map param = new HashMap();
         param.put("ctxId", ctxId);
@@ -337,5 +337,5 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
         }
         return result;
     }
-
+    
 }

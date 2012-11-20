@@ -103,4 +103,11 @@ public interface TextService {
      * @param transStatus new translation status
      */
     void updateTranslationStatusByApp(Collection<Long> appIds, int transStatus);
+
+    /**
+     * Get translation details by context
+     * @param ctxId context id
+     * @return map of text objects indexed by reference.
+     */
+    Map<String, Text> getTextsAsMap(Long ctxId);
 }
