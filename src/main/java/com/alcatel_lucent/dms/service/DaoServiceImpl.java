@@ -15,6 +15,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.SessionFactoryUtils;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import com.alcatel_lucent.dms.SystemError;
@@ -25,10 +26,10 @@ import com.alcatel_lucent.dms.model.BaseEntity;
  * Date: 2008-11-13
  */
 
-@Service("daoService")
+@Repository("daoService")
 public class DaoServiceImpl implements DaoService {
     private static Logger log = Logger.getLogger(DaoServiceImpl.class);
-    
+
     @Autowired
     private SessionFactory sessionFactory;
 
@@ -47,7 +48,8 @@ public class DaoServiceImpl implements DaoService {
     }
 
     public Session getSession() {
-        return SessionFactoryUtils.getSession(sessionFactory, false);
+//        return sessionFactory.getCurrentSession();
+         return SessionFactoryUtils.getSession(sessionFactory, false);
     }
 
     public Object retrieve(Class clazz, Serializable id) {
@@ -70,6 +72,7 @@ public class DaoServiceImpl implements DaoService {
                 }
             }
         }
+
         return obj;
     }
 
@@ -195,6 +198,7 @@ public class DaoServiceImpl implements DaoService {
     public Object update(Object obj) {
         return update(obj, null);
     }
+
     public Object update(Object obj, String[] propertyNames) {
         Session session = getSession();
         try {
@@ -239,6 +243,7 @@ public class DaoServiceImpl implements DaoService {
             throw ex;
         }
     }
+
     public Object createOrUpdate(Object obj) {
         Session session = getSession();
         try {
@@ -257,6 +262,7 @@ public class DaoServiceImpl implements DaoService {
     public void delete(Object obj) {
         delete(obj, true);
     }
+
     public void delete(Object obj, boolean flush) {
         Session session = getSession();
         try {
@@ -282,7 +288,7 @@ public class DaoServiceImpl implements DaoService {
             throw new SystemError(ex.getMessage(), ex);
         }
     }
-    
+
     public void delete(Class c, Serializable id) {
         Object obj = retrieve(c, id);
         delete(obj);
