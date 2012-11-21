@@ -131,7 +131,9 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 	                if (dbTrans == null) {
 						dbTrans = addTranslation(dbText, trans);
 	                } else if (mode == Constants.TRANSLATION_MODE) { // update translations in TRANSLATION_MODE
-	                    dbTrans.setTranslation(trans.getTranslation());
+	                	if (trans.getTranslation() != null) {
+	                		dbTrans.setTranslation(trans.getTranslation());
+	                	}
 						dbTrans.setStatus(trans.getStatus());
 	                } else {	// in DELIVERY_MODE, set status to UNTRANSLATED if translation is explicitly requested 
 	                	if (dbTrans.getTranslation().equals(trans.getTranslation()) && 

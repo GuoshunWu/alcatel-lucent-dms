@@ -44,12 +44,15 @@ public interface TaskService {
 	
 	/**
 	 * Apply translation results in the task to context dictionaries.
-	 * Only translations which are different than their orginal values will be applied.
+	 * The translation result will be ignored in following cases:
+	 *   the translation value is empty, ignore it.
+	 *   the translation value equals to reference and markAllTranslated parameter is set to false
 	 * @param taskId task id
+	 * @param markAllTranslated indicate whether to mark all strings as translated, even if it's same as reference
 	 * @return Task object
 	 * @throws BusinessException
 	 */
-	Task applyTask(Long taskId) throws BusinessException;
+	Task applyTask(Long taskId, boolean markAllTranslated) throws BusinessException;
 	
 	/**
 	 * Calculate task summary
