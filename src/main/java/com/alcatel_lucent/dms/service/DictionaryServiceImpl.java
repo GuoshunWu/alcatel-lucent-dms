@@ -511,7 +511,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	                t.setLanguage(trans.getLanguage());
 	                
 	                // determine translation status
-	                if (trans.getRequestTranslation() != null) {
+	                if (label.getReference().trim().isEmpty()) {
+	                	t.setStatus(Translation.STATUS_TRANSLATED);
+	                } else if (trans.getRequestTranslation() != null) {
 	                	t.setStatus(trans.getRequestTranslation() ? Translation.STATUS_UNTRANSLATED : Translation.STATUS_TRANSLATED);
 	                } else if (!trans.isNeedTranslation()) {
 	                	t.setStatus(Translation.STATUS_TRANSLATED);

@@ -406,7 +406,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 	}
 
 	@Override
-	public Task applyTask(Long taskId) throws BusinessException {
+	public Task applyTask(Long taskId, boolean markAllTranslated) throws BusinessException {
 		log.info("Applying task: " + taskId);
 		Task task = (Task) dao.retrieve(Task.class,taskId);
 		if (task.getStatus() == Task.STATUS_CLOSED || task.getLastUpdateTime() == null) {
@@ -415,7 +415,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 		Collection<Context> contexts = getTaskContexts(taskId);
 		int count = 0;
 		for (Context context : contexts) {
-			count += applyTask(task, context);
+			count += applyTask(task, context, markAllTranslated);
 		}
 		task.setLastApplyTime(new Date());
 		log.info("" + count + " translation results were applied.");
@@ -435,9 +435,8 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 	 * @param context context
 	 * @return number of translations applied
 	 */
-	private int applyTask(Task task, Context context) {
-		String hql = "from TaskDetail where task.id=:taskId and text.context.id=:contextId" +
-				" and origTranslation<>newTranslation";
+	private int applyTask(Task task, Context context, boolean markAllTranslated) {
+		String hql = "from TaskDetail where task.id=:taskId and text.context.id=:contextId";
 		Map param = new HashMap();
 		param.put("taskId", task.getId());
 		param.put("contextId", context.getId());
@@ -446,6 +445,9 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 		int count = 0;
 		for (TaskDetail td : details) {
 			if (td.getNewTranslation() == null || td.getNewTranslation().trim().isEmpty()) {
+				continue;
+			}
+			if (!markAllTranslated && td.getNewTranslation().equals(td.getText().getReference())) {
 				continue;
 			}
 			Text text = textMap.get(td.getText().getReference());

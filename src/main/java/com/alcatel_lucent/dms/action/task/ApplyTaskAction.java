@@ -13,7 +13,7 @@ public class ApplyTaskAction extends JSONAction {
 	@Override
 	protected String performAction() throws Exception {
 		log.info("ApplyTaskAction: id=" + id);
-		taskService.applyTask(id);
+		taskService.applyTask(id, true);
 		setMessage(getText("message.success"));
 		return SUCCESS;
 	}
