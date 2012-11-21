@@ -15,7 +15,7 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
-//@Entity
+@Entity
 @Table(name = "APPLICATION")
 public class Application extends BaseEntity {
     /**
