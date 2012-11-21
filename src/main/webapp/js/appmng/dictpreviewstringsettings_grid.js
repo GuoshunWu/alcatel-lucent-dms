@@ -31,13 +31,13 @@
         }, {
           name: 'reference',
           index: 'reference',
-          width: 40,
+          width: 160,
           editable: false,
           align: 'left'
         }, {
           name: 'maxLength',
           index: 'maxLength',
-          width: 40,
+          width: 35,
           editable: true,
           classes: 'editable-column',
           align: 'right',
@@ -53,7 +53,7 @@
         }, {
           name: 'context',
           index: 'context.name',
-          width: 50,
+          width: 25,
           classes: 'editable-column',
           editable: true,
           align: 'left'

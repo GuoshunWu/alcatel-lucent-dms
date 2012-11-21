@@ -14,14 +14,14 @@ define ['jqgrid', 'require'], ($, require)->
   colNames: ['Label', 'Reference Language', 'Max Length', 'Context', 'Description']
   colModel: [
     {name: 'key', index: 'key', width: 50, editable: false, align: 'left'}
-    {name: 'reference', index: 'reference', width: 40, editable: false, align: 'left'}
-    {name: 'maxLength', index: 'maxLength', width: 40, editable: true, classes: 'editable-column', align: 'right'
+    {name: 'reference', index: 'reference', width: 160, editable: false, align: 'left'}
+    {name: 'maxLength', index: 'maxLength', width: 35, editable: true, classes: 'editable-column', align: 'right'
     editrules:
       {custom: true, custom_func: (value, colname)->
         return [false, 'Invalid max length format.'] if !/^\d+(\s*,?\s*\d+\s*)*$/.test(value)
         [true, '']
       }}
-    {name: 'context', index: 'context.name', width: 50, classes: 'editable-column', editable: true, align: 'left'}
+    {name: 'context', index: 'context.name', width: 25, classes: 'editable-column', editable: true, align: 'left'}
     {name: 'description', index: 'description', width: 40, classes: 'editable-column', editable: true, align: 'left'}
   ]
 
