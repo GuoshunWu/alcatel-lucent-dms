@@ -324,10 +324,14 @@ public class Dictionary extends BaseEntity {
 		if (labels != null) {
 			// check duplicate reference+context
 			HashSet<String> existingReference = new HashSet<String>();
+			HashSet<String> alreadyWarning = new HashSet<String>();
 			for (Label label : labels) {
 				String key = label.getContext() + "~~" + label.getReference();
 				if (existingReference.contains(key)) {
-					importWarnings.add(new BusinessWarning(BusinessWarning.DUPLICATE_REFERENCE, label.getContext(), label.getReference()));
+					if (!alreadyWarning.contains(key)) {	// warn only once
+						importWarnings.add(new BusinessWarning(BusinessWarning.DUPLICATE_REFERENCE, label.getContext().getName(), label.getReference()));
+						alreadyWarning.add(key);
+					}
 				} else {
 					existingReference.add(key);
 				}
