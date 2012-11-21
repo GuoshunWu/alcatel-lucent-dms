@@ -16,7 +16,6 @@
     <!-- Core -->
     <import resource="spring-core.xml"/>
     <import resource="spring-service.xml"/>
-
-
+    <import resource="spring-security.xml"/>
     <!-- Struts -->
 </beans>
