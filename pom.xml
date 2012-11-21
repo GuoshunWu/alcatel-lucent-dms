@@ -578,10 +578,11 @@
                         <version>2.0</version>
                         <configuration>
                             <uriEncoding>utf-8</uriEncoding>
-                            <server>tomcat</server>
                             <url>http://172.24.190.236:8080/manager/text</url>
                             <update>true</update>
                             <path>/dmsqa</path>
+                            <username>admin</username>
+                            <password>alcatel123</password>
                         </configuration>
                     </plugin>
                 </plugins>
