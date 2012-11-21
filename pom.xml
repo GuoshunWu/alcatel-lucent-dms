@@ -530,7 +530,7 @@
                             <url>http://localhost:8080/manager/html</url>
                             <update>true</update>
                             <port>80</port>
-                            <path>/dms</path>
+                            <path>/</path>
                             <update>true</update>
                             <username>admin</username>
                             <password>alcatel123</password>
@@ -585,7 +585,7 @@
                             <uriEncoding>utf-8</uriEncoding>
                             <url>http://172.24.190.236:8888/manager/text</url>
                             <update>true</update>
-                            <path>/dmsqa</path>
+                            <path>/</path>
                             <username>admin</username>
                             <password>alcatel123</password>
                         </configuration>
