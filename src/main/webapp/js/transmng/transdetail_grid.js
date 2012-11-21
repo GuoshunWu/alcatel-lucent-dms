@@ -136,7 +136,7 @@
     })).parent().buttonset();
     return {
       languageChanged: function(param) {
-        var prop, url;
+        var options, prop, url;
         transDetailGrid = $("#transDetailGridList");
         url = "rest/labels";
         prop = "key,maxLength,context.name,reference,ct.translation,ct.status";
@@ -150,6 +150,11 @@
             prop: prop,
             idprop: 'ct.id'
           }
+        });
+        options = transDetailGrid.getColProp('transStatus').searchoptions;
+        options.defaultValue = param.searchStatus;
+        transDetailGrid.setColProp('transStatus', {
+          searchoptions: options
         });
         $('#gs_transStatus').val(param.searchStatus);
         return transDetailGrid[0].triggerToolbar();

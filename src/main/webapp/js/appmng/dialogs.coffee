@@ -137,7 +137,8 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
     param = $(@).data "param"
     $('#refCode').val param.langrefcode
     postData = dict: param.id, format: 'grid', prop: 'languageCode,language.name,charset.name'
-    $('#languageSettingGrid').setGridParam(url: 'rest/dictLanguages', postData: postData).trigger "reloadGrid"
+    $('#languageSettingGrid').setGridParam(url: 'rest/dictLanguages', page: 1, postData: postData).trigger "reloadGrid"
+
   close: (event, ui)->
     (require 'appmng/langsetting_grid').saveLastEditedCell()
   buttons: [
@@ -163,7 +164,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
     $('#dictEncoding', @).val(param.encoding)
 
     postData = dict: param.id, format: 'grid', prop: "key,reference,maxLength,context.name,description"
-    $('#stringSettingsGrid').setGridParam(url: 'rest/labels', postData: postData).trigger "reloadGrid"
+    $('#stringSettingsGrid').setGridParam(url: 'rest/labels',page:1,postData: postData).trigger "reloadGrid"
   close: (event, ui)->
     (require 'appmng/stringsettings_grid').saveLastEditedCell()
   buttons: [
@@ -205,7 +206,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
       format: 'grid',
       handler: param.handler
       prop: 'languageReferenceCode,base.name,version,base.format,base.encoding,labelNum,errorCount,warningCount'
-    $('#dictListPreviewGrid').setGridParam(url: 'rest/delivery/dict', postData: postData).trigger 'reloadGrid'
+    $('#dictListPreviewGrid').setGridParam(url: 'rest/delivery/dict', page: 1, postData: postData).trigger 'reloadGrid'
   }
 
 
@@ -227,7 +228,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
       dict: param.id
       format: 'grid', prop: "key,reference,maxLength,context.name,description"
 
-    $('#dictPreviewStringSettingsGrid').setGridParam(url: 'rest/delivery/labels', postData: postData).trigger "reloadGrid"
+    $('#dictPreviewStringSettingsGrid').setGridParam(url: 'rest/delivery/labels', page: 1, postData: postData).trigger "reloadGrid"
   close: (event, ui)->
     (require 'appmng/dictpreviewstringsettings_grid').saveLastEditedCell()
   buttons: [
@@ -247,7 +248,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
 
     $('#previewRefCode').val param.langrefcode
     postData = handler: param.handler, dict: param.id, format: 'grid', prop: 'languageCode,language.name,charset.name'
-    $('#previewLanguageSettingGrid').setGridParam(url: 'rest/delivery/dictLanguages', postData: postData).trigger "reloadGrid"
+    $('#previewLanguageSettingGrid').setGridParam(url: 'rest/delivery/dictLanguages', page: 1, postData: postData).trigger "reloadGrid"
   close: (event, ui)->
     (require 'appmng/previewlangsetting_grid').saveLastEditedCell()
   buttons: [
