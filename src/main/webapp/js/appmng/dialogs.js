@@ -217,6 +217,7 @@
         };
         return $('#languageSettingGrid').setGridParam({
           url: 'rest/dictLanguages',
+          page: 1,
           postData: postData
         }).trigger("reloadGrid");
       },
@@ -256,6 +257,7 @@
         };
         return $('#stringSettingsGrid').setGridParam({
           url: 'rest/labels',
+          page: 1,
           postData: postData
         }).trigger("reloadGrid");
       },
@@ -328,6 +330,7 @@
         };
         return $('#dictListPreviewGrid').setGridParam({
           url: 'rest/delivery/dict',
+          page: 1,
           postData: postData
         }).trigger('reloadGrid');
       }
@@ -357,6 +360,7 @@
         };
         return $('#dictPreviewStringSettingsGrid').setGridParam({
           url: 'rest/delivery/labels',
+          page: 1,
           postData: postData
         }).trigger("reloadGrid");
       },
@@ -394,6 +398,7 @@
         };
         return $('#previewLanguageSettingGrid').setGridParam({
           url: 'rest/delivery/dictLanguages',
+          page: 1,
           postData: postData
         }).trigger("reloadGrid");
       },

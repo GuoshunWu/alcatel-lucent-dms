@@ -63,7 +63,7 @@ define (require, util, dialogs, i18n)->
   height: 320
   pager: '#dictPager'
   editurl: "app/create-or-add-application"
-  rowNum: 10, rowList: [10, 20, 30]
+  rowNum: 120, rowList: [15, 30, 120], loadonce:true
   sortname: 'base.name'
   sortorder: 'asc'
   viewrecords: true, cellEdit: true, cellurl: 'app/update-dict', ajaxCellOptions: {async: false}
