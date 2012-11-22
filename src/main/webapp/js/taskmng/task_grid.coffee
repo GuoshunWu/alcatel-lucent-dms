@@ -42,7 +42,8 @@ define (require)->
 
   productId = window.location.search.split('?')[1].split('&')[1].split('=')[1] if window.location.search
 
-  url = if productId then 'rest/tasks'else 'json/taskgrid.json'
+#  url = if productId then 'rest/tasks'else 'json/taskgrid.json'
+  url = if productId then 'rest/tasks'else ''
   prop = "name,createTime,lastUpdateTime,status"
 #  console.log "Task grid url: #{url}."
 

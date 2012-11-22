@@ -64,7 +64,7 @@
     if (window.location.search) {
       productId = window.location.search.split('?')[1].split('&')[1].split('=')[1];
     }
-    url = productId ? 'rest/tasks' : 'json/taskgrid.json';
+    url = productId ? 'rest/tasks' : '';
     prop = "name,createTime,lastUpdateTime,status";
     taskGrid = $("#taskGrid").jqGrid({
       url: url,

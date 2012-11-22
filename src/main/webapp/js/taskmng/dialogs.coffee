@@ -38,7 +38,7 @@ define [ 'jqueryui', 'require', 'taskmng/taskreport_grid', 'taskmng/transdetail_
           $.msgBox json.message, null, {title: c18n.error}
           return
         $.msgBox i18n.task.confirmmsg, ((keyPressed)->
-          if c18n.ok == keyPressed
+          if c18n.no == keyPressed
             $.blockUI
             $.post 'task/close-task', {id: param.id}, (json)->
               $.unblockUI()
@@ -46,7 +46,7 @@ define [ 'jqueryui', 'require', 'taskmng/taskreport_grid', 'taskmng/transdetail_
                 $.msgBox json.message, null, {title: c18n.error}
                 return
               $("#taskGrid").trigger 'reloadGrid'
-        ), {title: c18n.confirm}, [c18n.ok, c18n.cancel]
+        ), {title: c18n.confirm}, [c18n.yes, c18n.no]
 
 
       $(@).dialog "close"

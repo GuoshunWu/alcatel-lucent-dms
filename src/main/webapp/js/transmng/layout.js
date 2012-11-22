@@ -154,12 +154,12 @@
                   return;
                 }
                 $.msgBox(i18n.msgbox.createtranstask.confirm, (function(keyPressed) {
-                  if (c18n.ok === keyPressed) {
+                  if (c18n.yes === keyPressed) {
                     return window.location = "taskmng.jsp?productBase=" + (escape($('#productBase').val())) + "&product=" + (escape($('#productRelease').val()));
                   }
                 }), {
                   title: c18n.confirm
-                }, [c18n.ok, c18n.cancel]);
+                }, [c18n.yes, c18n.no]);
                 return taskDialog.dialog("close");
               });
             }

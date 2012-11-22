@@ -39,11 +39,10 @@ define({
                 title:'Labels in Dictionary Preview'
             }
         },
-        browse:'Browse...',
+        browse:'Upload dictionaries',
         choosefile:'Choose file',
         uploadingfile:'Uploading: ',
         uploadfinished:'upload finished.'
-
 
     },
     "zh-cn":true

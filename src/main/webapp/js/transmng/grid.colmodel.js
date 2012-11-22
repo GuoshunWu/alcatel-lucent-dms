@@ -44,7 +44,7 @@
         var colModels, cols, level;
         cols = ['T', 'N', 'I'];
         level = $("input:radio[name='viewOption'][checked]").val();
-        colModels = $(cols).map(function(index) {
+        colModels = $(cols).map(function(index, elem) {
           var model;
           model = {
             name: "" + language.name + "." + this,
@@ -55,6 +55,9 @@
             search: false,
             editable: false
           };
+          if (elem === 'T') {
+            model.classes = 'language-group-border';
+          }
           if (level !== 'application') {
             model.formatter = 'showlink';
             model.formatoptions = {
