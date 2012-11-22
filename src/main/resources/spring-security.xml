@@ -7,4 +7,25 @@
            http://www.springframework.org/schema/security
            http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
+    <!--<http path-type="regex" pattern=".*login(?:\.(?:jsp|action))?" security="none"/>-->
+    <!--<http pattern="/js/**" security="none"/>-->
+    <!--<http pattern="/images/**" security="none"/>-->
+    <!--<http pattern="/css/**" security="none"/>-->
+    <!--<http pattern="/app/get-locale" security="none"/>-->
+
+
+    <authentication-manager>
+        <authentication-provider>
+            <user-service>
+                <user name="guoshunw" password="123" authorities="ROLE_USER, ROLE_ADMIN"/>
+            </user-service>
+        </authentication-provider>
+    </authentication-manager>
+
+    <http auto-config="true">
+        <intercept-url pattern="/login-page" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <intercept-url pattern="/**" access="ROLE_USER"/>
+        <form-login />
+    </http>
+
 </beans:beans>

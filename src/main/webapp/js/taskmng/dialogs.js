@@ -84,7 +84,7 @@
                 return;
               }
               return $.msgBox(i18n.task.confirmmsg, (function(keyPressed) {
-                if (c18n.ok === keyPressed) {
+                if (c18n.no === keyPressed) {
                   $.blockUI;
                   return $.post('task/close-task', {
                     id: param.id
@@ -101,7 +101,7 @@
                 }
               }), {
                 title: c18n.confirm
-              }, [c18n.ok, c18n.cancel]);
+              }, [c18n.yes, c18n.no]);
             });
             return $(this).dialog("close");
           }

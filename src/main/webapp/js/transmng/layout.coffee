@@ -96,8 +96,8 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
             $.msgBox json.message, null, {title: c18n.error}
             return
           $.msgBox i18n.msgbox.createtranstask.confirm, ((keyPressed)->
-            window.location = "taskmng.jsp?productBase=#{escape $('#productBase').val()}&product=#{escape $('#productRelease').val()}" if c18n.ok == keyPressed
-          ), {title: c18n.confirm}, [c18n.ok, c18n.cancel]
+            window.location = "taskmng.jsp?productBase=#{escape $('#productBase').val()}&product=#{escape $('#productRelease').val()}" if c18n.yes == keyPressed
+          ), {title: c18n.confirm}, [c18n.yes, c18n.no]
 
           taskDialog.dialog "close"
       }

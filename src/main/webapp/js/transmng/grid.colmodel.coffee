@@ -32,15 +32,16 @@ define ['jqgrid'], ($)->
     cols = ['T', 'N', 'I']
     level = $("input:radio[name='viewOption'][checked]").val()
     colModels = $(cols).map(
-      (index)->
+      (index, elem)->
         model = {
         name: "#{language.name}.#{@}",
         sortable: false, index: "s(#{language.id})[#{index}]",
         width: 40, align: 'right',
-        search: false, editable: false,
+        search: false, editable: false
         }
+        if elem == 'T'
+          model.classes = 'language-group-border'
         if level != 'application'
-
           model.formatter = 'showlink'
           model.formatoptions = {baseLinkUrl: '#', addParam: encodeURI("&languageId=#{language.id}&languaeName=#{model.name}")}
         model
