@@ -61,7 +61,7 @@ class GTaskServiceImplTest {
 	
 	@Test
 	void testApplyTask() {
-		taskService.applyTask(2);
+		taskService.applyTask(2, true);
 	}
 
 }
