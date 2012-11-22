@@ -117,6 +117,14 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                 continue;
             }
             Text dbText = dbTextMap.get(text.getReference());
+            if (text.getReference().equals("Bad init")) {
+            	System.out.println("###" + (dbText == null ? "no text" : "has text"));
+            	if (dbText != null && dbText.getTranslations() != null) {
+            		for (Translation trans : dbText.getTranslations()) {
+            			System.out.println("###" + trans.getLanguage().getId() + "," + trans.getTranslation());
+            		}
+            	}
+            }
             if (dbText == null) {
                 dbText = addText(ctxId, text.getReference());
             }
@@ -128,8 +136,13 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 	                    continue;
 	                }
 	                Translation dbTrans = dbText.getTranslation(trans.getLanguage().getId());
+	                if (text.getReference().equals("Bad init")) {
+	                	System.out.println("### bad init: lang=" + trans.getLanguage().getId() + " text=" + trans.getTranslation());
+	                	System.out.println("###" + (dbTrans == null ? "no dbTrans" : "has dbTrans"));
+	                }
 	                if (dbTrans == null) {
 						dbTrans = addTranslation(dbText, trans);
+						dbText.addTranslation(dbTrans);
 	                } else if (mode == Constants.TRANSLATION_MODE) { // update translations in TRANSLATION_MODE
 	                	if (trans.getTranslation() != null) {
 	                		dbTrans.setTranslation(trans.getTranslation());
