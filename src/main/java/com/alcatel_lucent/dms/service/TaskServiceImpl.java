@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.SystemError;
+import com.alcatel_lucent.dms.UserContext;
 import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Language;
 import com.alcatel_lucent.dms.model.Product;
@@ -73,6 +74,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 		task.setName(name);
 		task.setProduct((Product) dao.retrieve(Product.class, productId));
 		task.setCreateTime(new Date());
+		task.setCreator(UserContext.getInstance().getUser());
 		task.setStatus(Task.STATUS_OPEN);
 		task = (Task) dao.create(task);
 		
@@ -94,7 +96,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 		log.info("Creating " + resultSet.size() + " task details...");
 		Collection<Translation> newTransList = new ArrayList<Translation>();
 		HashSet<String> unique = new HashSet<String>();	// unique by language and text
-		if (resultSet != null) {
+		if (resultSet != null && resultSet.size() > 0) {
 			for (Object[] row : resultSet) {
 				Language language = (Language) row[0];
 				Text text = (Text) row[1];
@@ -125,6 +127,8 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 				td.setDescription(description);
 				dao.create(td, false);
 			}
+		} else {
+			throw new BusinessException(BusinessException.EMPTY_TASK);
 		}
 		for (Translation trans : newTransList) {
 			dao.create(trans);
@@ -139,6 +143,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 		if (task.getStatus() == Task.STATUS_CLOSED) {
 			throw new BusinessException(BusinessException.INVALID_TASK_STATUS);
 		}
+		task.setCloseTime(new Date());
 		task.setStatus(Task.STATUS_CLOSED);
 		String hql = "select ct from Translation ct,Task t join t.details td " +
 				"where td.text=ct.text and td.language=ct.language " +
@@ -325,6 +330,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 			}
 		}
 		task.setLastUpdateTime(new Date());
+		task.setLastUpdater(UserContext.getInstance().getUser());
 		return task;
 	}
 	

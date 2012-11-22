@@ -13,10 +13,12 @@
 		<property name="createTime" type="java.util.Date" column="CREATE_TIME" />
 		<property name="lastUpdateTime" type="java.util.Date" column="LAST_UPDATE_TIME" />
 		<property name="lastApplyTime" type="java.util.Date" column="LAST_APPLY_TIME" />
+		<property name="closeTime" type="java.util.Date" column="CLOSE_TIME" />
 		<property name="status" type="int" column="STATUS" />
 
         <many-to-one name="product" class="Product" column="PRODUCT_ID" />
-
+		<many-to-one name="creator" column="CREATOR_ID"  />	
+		<many-to-one name="lastUpdater" column="LAST_UPDATER_ID"  />
 		<set inverse="true" name="details" order-by="ID">
 			<key column="TASK_ID" on-delete="cascade" not-null="true" />
 			<one-to-many class="TaskDetail" />
