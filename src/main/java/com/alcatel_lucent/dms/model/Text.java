@@ -2,6 +2,7 @@ package com.alcatel_lucent.dms.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 
 public class Text extends BaseEntity {
 	/**
@@ -70,7 +71,7 @@ public class Text extends BaseEntity {
 
 	public void addTranslation(Translation trans) {
 		if (translations == null) {
-			translations = new ArrayList<Translation>();
+			translations = new HashSet<Translation>();
 		}
 		translations.add(trans);
 	}

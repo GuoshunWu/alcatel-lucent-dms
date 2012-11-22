@@ -148,21 +148,65 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 			for (Label label : dict.getLabels()) {
 				if (label.getContext() != null && !label.getContext().getName().equals(Context.DEFAULT_CTX))
 					continue;
+				// check for each language, if translation in any language is conflict 
+				// with Default context, set the label to dictionary context
 				for (LabelTranslation lt : label.getOrigTranslations()) {
 					if (lt.getLanguage() != null && !lt.getOrigTranslation().equals(label.getReference())) {
 						Text text = textMap.get(label.getReference());
 						if (text != null) {
 							Translation trans = text.getTranslation(lt.getLanguage().getId());
-							if (trans != null && !trans.getTranslation().equals(lt.getOrigTranslation())) {
-								log.info("###Reference:" + label.getReference() + ", Translation:" + lt.getOrigTranslation() + ", ContextTranslation:" + trans.getTranslation());
-								label.setContext(dictCtx);
-								break;
+							if (trans != null) {	// compare converted label translation with context translation
+								String translation = lt.getOrigTranslation();
+								DictionaryLanguage dl = dict.getDictLanguage(lt.getLanguageCode());
+								if (dl != null && dl.getCharset() != null && dict.getEncoding() != null) {
+									try {
+										translation = new String(translation.getBytes(dict.getEncoding()), dl.getCharset().getName());
+									} catch (UnsupportedEncodingException e) {
+										log.error(e);
+									}
+								}
+								if (!trans.getTranslation().equals(translation)) {
+									log.info("Context conflict - Reference:" + label.getReference() + ", Translation:" + lt.getOrigTranslation() + ", ContextTranslation:" + trans.getTranslation());
+									label.setContext(dictCtx);
+									break;
+								}
 							}
 						}
 					}
 				}
 				if (label.getContext() == null) {
 					label.setContext(defaultCtx);
+				}
+				
+				// temporarily add in-memory LabelTranslations to Default context text map
+				// to ensure no conflict inside current delivery
+				if (label.getContext().getName().equals(Context.DEFAULT_CTX)) {
+					Text text = textMap.get(label.getReference());
+					if (text == null) {
+						text = new Text();
+						text.setReference(label.getReference());
+						textMap.put(label.getReference(), text);
+					}
+					for (LabelTranslation lt : label.getOrigTranslations()) {
+						if (lt.getLanguage() != null && !lt.getOrigTranslation().equals(label.getReference())) {
+							Translation trans = text.getTranslation(lt.getLanguage().getId());
+							if (trans == null) {
+								trans = new Translation();
+								String translation = lt.getOrigTranslation();
+								DictionaryLanguage dl = dict.getDictLanguage(lt.getLanguageCode());
+								if (dl != null && dl.getCharset() != null && dict.getEncoding() != null) {
+									try {
+										translation = new String(translation.getBytes(dict.getEncoding()), dl.getCharset().getName());
+									} catch (UnsupportedEncodingException e) {
+										log.error(e);
+									}
+								}
+								trans.setLanguage(lt.getLanguage());
+								trans.setTranslation(translation);
+								text.addTranslation(trans);
+							}
+						}
+					}
 				}
 			}
 		}
