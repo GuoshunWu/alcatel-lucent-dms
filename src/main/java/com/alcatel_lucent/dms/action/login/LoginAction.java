@@ -4,6 +4,7 @@ import com.alcatel_lucent.dms.UserContext;
 import com.alcatel_lucent.dms.action.BaseAction;
 import com.alcatel_lucent.dms.action.JSONAction;
 import com.alcatel_lucent.dms.model.User;
+import com.alcatel_lucent.dms.service.AuthenticationService;
 import com.alcatel_lucent.dms.service.LDAPService;
 import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
@@ -23,12 +24,8 @@ public class LoginAction extends JSONAction implements SessionAware {
     private String loginname;
     private String password;
 
-    private LDAPService ldapService;
+    private AuthenticationService authenticationService;
     private Map<String, Object> session;
-
-    public void setLdapService(LDAPService ldapService) {
-        this.ldapService = ldapService;
-    }
 
     public String getLoginname() {
         return loginname;
@@ -52,9 +49,8 @@ public class LoginAction extends JSONAction implements SessionAware {
     }
 
     protected String performAction() throws Exception {
-        User user = null;
-        if (ldapService.login(loginname, password) && null != (user = ldapService.findUserByCSL(loginname))) {
-            user.setLastLoginTime(new Timestamp(new Date().getTime()));
+        User user = authenticationService.login(loginname, password);
+        if (user != null) {
             session.put(UserContext.SESSION_USER_CONTEXT, new UserContext(getLocale(), user));
             log.debug("user: " + user);
             setMessage(getText("message.success"));
@@ -66,4 +62,12 @@ public class LoginAction extends JSONAction implements SessionAware {
         setStatus(-1);
         return SUCCESS;
     }
+
+	public AuthenticationService getAuthenticationService() {
+		return authenticationService;
+	}
+
+	public void setAuthenticationService(AuthenticationService authenticationService) {
+		this.authenticationService = authenticationService;
+	}
 }
