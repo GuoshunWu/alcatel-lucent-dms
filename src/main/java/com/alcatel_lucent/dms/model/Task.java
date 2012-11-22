@@ -14,7 +14,10 @@ public class Task extends BaseEntity {
 	private Date createTime;
 	private Date lastUpdateTime;
 	private Date lastApplyTime;
+	private Date closeTime;
 	private int status;
+	private User creator;
+	private User lastUpdater;
 	private Collection<TaskDetail> details;
 	
 	public String getName() {
@@ -58,5 +61,23 @@ public class Task extends BaseEntity {
 	}
 	public void setLastApplyTime(Date lastApplyTime) {
 		this.lastApplyTime = lastApplyTime;
+	}
+	public User getCreator() {
+		return creator;
+	}
+	public void setCreator(User creator) {
+		this.creator = creator;
+	}
+	public User getLastUpdater() {
+		return lastUpdater;
+	}
+	public void setLastUpdater(User lastUpdater) {
+		this.lastUpdater = lastUpdater;
+	}
+	public Date getCloseTime() {
+		return closeTime;
+	}
+	public void setCloseTime(Date closeTime) {
+		this.closeTime = closeTime;
 	}
 }
