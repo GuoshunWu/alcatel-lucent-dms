@@ -22,6 +22,7 @@ import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.SystemError;
+import com.alcatel_lucent.dms.UserContext;
 import com.alcatel_lucent.dms.model.Application;
 import com.alcatel_lucent.dms.model.Charset;
 import com.alcatel_lucent.dms.model.Context;
@@ -33,6 +34,7 @@ import com.alcatel_lucent.dms.model.LabelTranslation;
 import com.alcatel_lucent.dms.model.Language;
 import com.alcatel_lucent.dms.model.Text;
 import com.alcatel_lucent.dms.model.Translation;
+import com.alcatel_lucent.dms.model.User;
 import com.alcatel_lucent.dms.service.generator.DCTGenerator;
 import com.alcatel_lucent.dms.service.generator.DictionaryGenerator;
 import com.alcatel_lucent.dms.service.generator.LabelXMLGenerator;
@@ -287,7 +289,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
         BusinessException nonBreakExceptions = new BusinessException(
                 BusinessException.NESTED_DCT_PARSE_ERROR, dict.getName());
-
+        User user = UserContext.getInstance().getUser();
         // check langCodes parameter
         if (langCodes != null) {
             Collection<String> dictLangCodes = dict.getAllLanguageCodes();
@@ -338,6 +340,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             baseDBDict.setEncoding(dict.getEncoding());
             baseDBDict.setPath(dict.getPath());
             baseDBDict.setApplicationBase(app.getBase());
+            baseDBDict.setOwner(user);
             baseDBDict=(DictionaryBase)getDao().create(baseDBDict);
         } else{
             if (mode == Constants.DELIVERY_MODE) {

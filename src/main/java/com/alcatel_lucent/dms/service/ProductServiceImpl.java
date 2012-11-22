@@ -10,12 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alcatel_lucent.dms.BusinessException;
+import com.alcatel_lucent.dms.UserContext;
 import com.alcatel_lucent.dms.model.Application;
 import com.alcatel_lucent.dms.model.ApplicationBase;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.Product;
 import com.alcatel_lucent.dms.model.ProductBase;
 import com.alcatel_lucent.dms.model.Task;
+import com.alcatel_lucent.dms.model.User;
 
 /**
  * Created by IntelliJ IDEA.
@@ -124,6 +126,7 @@ public class ProductServiceImpl implements ProductService {
     	} else {
     		pb = new ProductBase();
     		pb.setName(name);
+    		pb.setOwner(UserContext.getInstance().getUser());
     		pb = (ProductBase) dao.create(pb);
     		return pb.getId();
     	}
@@ -144,6 +147,7 @@ public class ProductServiceImpl implements ProductService {
 			ab = new ApplicationBase();
 			ab.setName(name);
 			ab.setProductBase((ProductBase) dao.retrieve(ProductBase.class, productBaseId));
+			ab.setOwner(UserContext.getInstance().getUser());
 			ab = (ApplicationBase) dao.create(ab);
 			return ab.getId();
 		}
