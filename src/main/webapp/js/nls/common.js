@@ -8,9 +8,12 @@
 define({
     root:{
         all:'All',
+
         ok:'OK',
-        close:'Close',
         cancel: 'Cancel',
+        yes:'Yes',
+        no:'No',
+        close:'Close',
         error:'Error',
         warning: 'Warning',
         confirm:'Confirm',

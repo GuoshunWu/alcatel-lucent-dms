@@ -27,7 +27,7 @@
           name: 'appVersion',
           index: 'version',
           width: 90,
-          editable: true,
+          editable: false,
           align: 'left',
           frozen: true,
           search: false
@@ -49,7 +49,7 @@
             name: 'dictionary',
             index: 'base.name',
             width: 90,
-            editable: true,
+            editable: false,
             align: 'left',
             frozen: true,
             search: false
@@ -57,7 +57,7 @@
             name: 'dictVersion',
             index: 'version',
             width: 90,
-            editable: true,
+            editable: false,
             align: 'left',
             frozen: true,
             search: false
@@ -65,7 +65,7 @@
             name: 'encoding',
             index: 'base.encoding',
             width: 90,
-            editable: true,
+            editable: false,
             stype: 'select',
             searchoptions: {
               value: ':All;ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE'
@@ -76,7 +76,7 @@
             name: 'format',
             index: 'base.format',
             width: 90,
-            editable: true,
+            editable: false,
             stype: 'select',
             searchoptions: {
               value: ":All;DCT:DCT;Dictionary conf:Dictionary conf;Text properties:Text properties;XML labels:XML labels"
@@ -162,6 +162,11 @@
       beforeProcessing: function(data, status, xhr) {},
       gridComplete: function() {
         transGrid = $(this);
+        $('a', this).each(function(index, a) {
+          if ('0' === $(a).text()) {
+            return $(a).text('');
+          }
+        });
         return $('a', this).css('color', 'blue').click(function() {
           var allZero, language, rowData, rowid, _ref,
             _this = this;
@@ -172,7 +177,9 @@
           rowData = transGrid.getRowData(rowid);
           allZero = true;
           $(['T', 'N', 'I']).each(function(index, elem) {
-            allZero = 0 === parseInt(rowData["" + language.name + "." + elem]);
+            var num;
+            num = parseInt(rowData["" + language.name + "." + elem]);
+            allZero = 0 === num;
             return allZero;
           });
           if (allZero) {

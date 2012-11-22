@@ -46,14 +46,14 @@
                             <form id="downloadDict" action="app/download-app-dict" method="post">
                                 <input type="hidden" id="fileLoc" name="fileLoc"/>
                             </form>
-
+                            <div id="uploadBrower"></div>
                             <button id="generateDict">Generate dictionary</button>
                             <button id="batchAddLanguage">Add language</button>
                         </td>
                         <td align="right">
-                            <label class="show-label" for="dctFileUpload"><s:text name="appmng.deliverapp"/></label>
-                            &nbsp;&nbsp;
-                            <div id="uploadBrower"></div>
+                            <%--<label class="show-label" for="dctFileUpload"><s:text name="appmng.deliverapp"/></label>--%>
+                            <%--&nbsp;&nbsp;--%>
+
                             <%--<span id="uploadStatus"/>--%>
                         </td>
                         <td style="width:20px;"/>

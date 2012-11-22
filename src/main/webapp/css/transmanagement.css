@@ -40,3 +40,6 @@ html, body {
     overflow: hidden;
 }
 
+.language-group-border{
+    border-left: solid #000000 1px
+}
