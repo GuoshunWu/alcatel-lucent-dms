@@ -164,7 +164,7 @@
         transGrid = $(this);
         $('a', this).each(function(index, a) {
           if ('0' === $(a).text()) {
-            return $(a).text('');
+            return $(a).before(' ').remove();
           }
         });
         return $('a', this).css('color', 'blue').click(function() {

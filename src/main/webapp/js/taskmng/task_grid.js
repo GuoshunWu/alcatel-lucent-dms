@@ -131,7 +131,7 @@
       ],
       beforeProcessing: function(data, status, xhr) {
         var actIndex, actions, k, v;
-        actIndex = $(this).getGridParam('colNames').indexOf('Actions');
+        actIndex = $.inArray('Actions', $(this).getGridParam('colNames'));
         --actIndex;
         if ($(this).getGridParam('multiselect')) {
           --actIndex;

@@ -42,15 +42,19 @@
             <td>
                 <table border="0" width="100%">
                     <tr>
-                        <td>
+                        <td style="width: 165px">
                             <form id="downloadDict" action="app/download-app-dict" method="post">
                                 <input type="hidden" id="fileLoc" name="fileLoc"/>
                             </form>
-                            <div id="uploadBrower"></div>
+                            <span id="uploadBrower" style="height: 28px"></span>
+                        </td>
+                        <td style="width: 175px">
                             <button id="generateDict">Generate dictionary</button>
+                        </td>
+                        <td>
                             <button id="batchAddLanguage">Add language</button>
                         </td>
-                        <td align="right">
+                        <td>
                             <%--<label class="show-label" for="dctFileUpload"><s:text name="appmng.deliverapp"/></label>--%>
                             <%--&nbsp;&nbsp;--%>
 

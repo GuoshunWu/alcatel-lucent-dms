@@ -592,6 +592,7 @@
                             <url>http://172.24.190.236:8888/manager/text</url>
                             <update>true</update>
                             <path>/</path>
+                            <port>80</port>
                             <username>admin</username>
                             <password>alcatel123</password>
                         </configuration>
@@ -644,7 +645,7 @@
                             <server>tomcat</server>
                             <url>http://172.24.190.236:8888/manager/text</url>
                             <update>true</update>
-                            <path>/dmsqa</path>
+                            <path>/</path>
                         </configuration>
                     </plugin>
                 </plugins>
