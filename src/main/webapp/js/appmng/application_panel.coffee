@@ -43,8 +43,10 @@ define (require)->
   #  create upload filebutton
   $('#uploadBrower').button({label: i18n.browse}).css({overflow: 'hidden'}).append $(
     "<input type='file' id='#{dctFileUpload}' name='upload' title='#{i18n.choosefile}' accept='application/zip' multiple/>").css {
-  position: 'absolute', top: -3, right: -3, border: '1px solid', borderWidth: '1px 1px 10px 0px',
-  opacity: 0, filter: 'alpha(opacity=0)', cursor: 'pointer'}
+  position: 'absolute', top: -3, right: -3, border: '1px solid', borderWidth: '10px 180px 40px 20px',
+  opacity: 0, filter: 'alpha(opacity=0)',
+  cursor: 'pointer'
+  }
 
   $("##{dctFileUpload}").fileupload {
   type: 'POST', dataType: 'json'

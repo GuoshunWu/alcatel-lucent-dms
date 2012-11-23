@@ -14,7 +14,6 @@ define ['jqgrid', 'i18n!nls/appmng', 'appmng/dialogs', 'util', 'require'], ($, i
   editurl: "app/create-or-add-application"
   cellurl: 'app/change-application-version'
   cellsubmit: 'remote', cellEdit: true
-  ajaxSelectOptions: 'json/selecttest.json'
   width: 700, height: 350
   pager: '#pager', rowNum: 10, rowList: [10, 20, 30], multiselect: true
   sortname: 'name', sortorder: 'asc'

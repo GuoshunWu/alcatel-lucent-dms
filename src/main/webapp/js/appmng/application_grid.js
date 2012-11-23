@@ -16,7 +16,6 @@
       cellurl: 'app/change-application-version',
       cellsubmit: 'remote',
       cellEdit: true,
-      ajaxSelectOptions: 'json/selecttest.json',
       width: 700,
       height: 350,
       pager: '#pager',

@@ -106,7 +106,7 @@ define (require)->
         [_, _, rowid]=@id.split('_')
 
         fileInput = $("<input type='file' id='#{@id}_fileInput' name='upload' title='Upload task file'accept='application/zip' multiple/>").css({
-        position: 'absolute', top: -3, right: -3, border: '1px solid', borderWidth: '1px 1px 10px 0px',
+        position: 'absolute', top: -3, right: -3, border: '1px solid', borderWidth: '10px 180px 40px 20px',
         opacity: 0, filter: 'alpha(opacity=0)', cursor: 'pointer'}).appendTo @
 
         fileInput.fileupload {

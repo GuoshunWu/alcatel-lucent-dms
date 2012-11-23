@@ -13,6 +13,7 @@ define (require)->
   sortname: 'language.name'
   sortorder: 'asc'
   viewrecords: true
+#  ajaxGridOptions:{async:false}
   gridview: true, multiselect: true, cellEdit: true, cellurl: 'app/update-dict-language'
   colNames: [ 'Code', 'Language', 'Charset']
   colModel: [

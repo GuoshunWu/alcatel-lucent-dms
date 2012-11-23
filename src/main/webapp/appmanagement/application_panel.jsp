@@ -48,19 +48,14 @@
                             </form>
                             <span id="uploadBrower" style="height: 28px"></span>
                         </td>
-                        <td style="width: 175px">
-                            <button id="generateDict">Generate dictionary</button>
+                        <td style="width: 170px">
+                            <button style="width:160;" id="generateDict">Generate dictionary</button>
                         </td>
                         <td>
                             <button id="batchAddLanguage">Add language</button>
-                        </td>
-                        <td>
                             <%--<label class="show-label" for="dctFileUpload"><s:text name="appmng.deliverapp"/></label>--%>
-                            <%--&nbsp;&nbsp;--%>
-
                             <%--<span id="uploadStatus"/>--%>
                         </td>
-                        <td style="width:20px;"/>
                     </tr>
                 </table>
             </td>
