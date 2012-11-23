@@ -200,9 +200,12 @@
       autoOpen: false,
       modal: true,
       zIndex: 900,
-      width: 'auto',
+      width: 530,
       height: 'auto',
       title: i18n.dialog.languagesettings.title,
+      resize: function(event, ui) {
+        return $('#languageSettingGrid').setGridWidth(ui.size.width - 35, true).setGridHeight(ui.size.height - 180, true);
+      },
       open: function(e, ui) {
         var param, postData;
         param = $(this).data("param");
@@ -232,8 +235,8 @@
     });
     stringSettings = $('#stringSettingsDialog').dialog({
       autoOpen: false,
-      width: 'auto',
       height: 'auto',
+      width: 730,
       title: i18n.dialog.stringsettings.title,
       modal: true,
       zIndex: 900,
@@ -260,6 +263,28 @@
       },
       close: function(event, ui) {
         return (require('appmng/stringsettings_grid')).saveLastEditedCell();
+      },
+      /*
+        event
+          Type: Event
+        ui
+          Type: Object
+            orginalPosition
+            Type: Object
+            The CSS position of the dialog prior to being resized.
+            position
+            Type: Object
+            The current CSS position of the dialog.
+            originalSize
+            Type: Object
+            The size of the dialog prior to being resized.
+            size
+            Type: Object
+            The current size of the dialog.
+      */
+
+      resize: function(event, ui) {
+        return $('#stringSettingsGrid').setGridWidth(ui.size.width - 35, true).setGridHeight(ui.size.height - 210, true);
       },
       buttons: [
         {

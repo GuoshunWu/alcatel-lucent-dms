@@ -131,8 +131,8 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   langSettings = $('#languageSettingsDialog').dialog {
   autoOpen: false
   modal: true, zIndex: 900
-  width: 'auto', height: 'auto', title: i18n.dialog.languagesettings.title
-
+  width: 530, height: 'auto', title: i18n.dialog.languagesettings.title
+  resize: (event, ui)->$('#languageSettingGrid').setGridWidth(ui.size.width - 35, true).setGridHeight(ui.size.height - 180, true)
   open: (e, ui)->
   # param must be attached to the dialog before the dialog open
     param = $(@).data "param"
@@ -152,8 +152,8 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
 
   stringSettings = $('#stringSettingsDialog').dialog {
   autoOpen: false
-  width: 'auto', height: 'auto', title: i18n.dialog.stringsettings.title
-  modal: true, zIndex: 900
+  height:'auto',width: 730
+  title: i18n.dialog.stringsettings.title, modal: true, zIndex: 900
   open: (e, ui)->
   # param must be attached to the dialog before the dialog open
     param = $(@).data "param"
@@ -166,8 +166,26 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
 
     postData = dict: param.id, format: 'grid', prop: "key,reference,maxLength,context.name,description"
     $('#stringSettingsGrid').setGridParam(url: 'rest/labels', page: 1, postData: postData).trigger "reloadGrid"
-  close: (event, ui)->
-    (require 'appmng/stringsettings_grid').saveLastEditedCell()
+  close: (event, ui)->(require 'appmng/stringsettings_grid').saveLastEditedCell()
+  ###
+  event
+    Type: Event
+  ui
+    Type: Object
+      orginalPosition
+      Type: Object
+      The CSS position of the dialog prior to being resized.
+      position
+      Type: Object
+      The current CSS position of the dialog.
+      originalSize
+      Type: Object
+      The size of the dialog prior to being resized.
+      size
+      Type: Object
+      The current size of the dialog.
+  ###
+  resize: (event, ui)->$('#stringSettingsGrid').setGridWidth(ui.size.width - 35, true).setGridHeight(ui.size.height - 210, true)
   buttons: [
     {text: c18n.close, click: ()->
       $(@).dialog 'close'
