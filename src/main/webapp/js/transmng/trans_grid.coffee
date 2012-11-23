@@ -60,7 +60,7 @@ define ['jqgrid', 'util', 'require', 'jqmsgbox', 'transmng/grid.colmodel', 'bloc
   gridComplete: ->
     transGrid = $(@)
 
-    $('a', @).each (index, a)->$(a).text('') if '0' == $(a).text()
+    $('a', @).each (index, a)->$(a).before(' ').remove() if '0' == $(a).text()
 
     $('a', @).css('color', 'blue').click ()->
       language = {}

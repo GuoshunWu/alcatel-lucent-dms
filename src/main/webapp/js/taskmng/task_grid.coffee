@@ -67,7 +67,7 @@ define (require)->
   ]
   beforeProcessing: (data, status, xhr)->
   #   add actions
-    actIndex = $(@).getGridParam('colNames').indexOf('Actions')
+    actIndex = $.inArray 'Actions', $(@).getGridParam('colNames')
     --actIndex
     --actIndex if $(@).getGridParam('multiselect')
 
