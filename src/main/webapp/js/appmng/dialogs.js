@@ -2,12 +2,13 @@
 (function() {
 
   define(['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsettings_grid', 'appmng/previewlangsetting_grid'], function(require, grid, sgrid, lgrid) {
-    var $, addApplication, c18n, dictListPreview, dictPreviewLangSettings, dictPreviewStringSettings, i18n, ids, langSettings, newAppVersion, newProductVersion, stringSettings;
+    var $, addApplication, c18n, dictListPreview, dictPreviewLangSettings, dictPreviewStringSettings, i18n, ids, langSettings, newAppVersion, newProductVersion, stringSettings, util;
     $ = require('jqueryui');
     c18n = require('i18n!nls/common');
     i18n = require('i18n!nls/appmng');
     require('blockui');
     require('jqmsgbox');
+    util = require('util');
     ids = {
       button: {
         new_product: 'newProduct'
@@ -67,7 +68,7 @@
         }
       ],
       open: function(event, ui) {
-        $(ids.product_duplication).empty().append(new Option('', -1));
+        $(ids.product_duplication).empty().append(util.newOption('', -1));
         return (require('appmng/product_panel')).getProductSelectOptions().appendTo($(ids.product_duplication));
       },
       close: function(event, ui) {
@@ -121,7 +122,7 @@
         }
       ],
       open: function(event, ui) {
-        return $("#dupDictsVersion").empty().append(new Option('', -1)).append((require('appmng/application_panel')).getApplicationSelectOptions());
+        return $("#dupDictsVersion").empty().append(util.newOption('', -1)).append((require('appmng/application_panel')).getApplicationSelectOptions());
       },
       close: function(event, ui) {
         return $("#appErrInfo").hide();
@@ -130,7 +131,7 @@
     addApplication = $("#" + ids.dialog.new_or_add_application).dialog({
       autoOpen: false,
       height: 'auto',
-      width: 'auto',
+      width: 300,
       modal: true,
       position: "center",
       show: {
@@ -148,9 +149,7 @@
           }
           url = "rest/applications/apps/" + appBaseId;
           return $.getJSON(url, {}, function(json) {
-            return $("#version").append($(json).map(function() {
-              return new Option(this.version, this.id);
-            })).trigger("change");
+            return $("#version").append(util.json2Options(json)).trigger("change");
           });
         });
       },
@@ -161,9 +160,7 @@
         console.log(productId);
         url = "rest/applications/base/" + productId;
         return $.getJSON(url, {}, function(json) {
-          return $('#applicationName', _this).empty().append($(json).map(function() {
-            return new Option(this.name, this.id);
-          })).trigger('change');
+          return $('#applicationName', _this).empty().append(util.json2Options(json, false, 'name')).trigger('change');
         });
       },
       buttons: [

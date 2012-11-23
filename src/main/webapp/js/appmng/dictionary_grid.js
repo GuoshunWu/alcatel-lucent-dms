@@ -145,7 +145,7 @@
       colModel: colModel,
       beforeProcessing: function(data, status, xhr) {
         var actIndex, actions, k, v;
-        actIndex = $(this).getGridParam('colNames').indexOf('Action');
+        actIndex = $.inArray('Action', $(this).getGridParam('colNames'));
         if ($(this).getGridParam('multiselect')) {
           --actIndex;
         }
@@ -177,12 +177,7 @@
             async: false,
             dataType: 'json',
             success: function(json) {
-              return $("#" + iRow + "_version", grid).append($(json).map(function() {
-                var opt;
-                opt = new Option(this.version, this.id);
-                opt.selected = this.version === val;
-                return opt;
-              }));
+              return $("#" + iRow + "_version", grid).append(util.json2Options(json, val));
             }
           });
         }

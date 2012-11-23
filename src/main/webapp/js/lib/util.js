@@ -12,7 +12,7 @@ To change this template use File | Settings | File Templates.
 (function() {
 
   define(["jquery"], function($) {
-    var formatJonString, setCookie;
+    var formatJonString, newOption, setCookie;
     String.prototype.format = function() {
       var args;
       args = arguments;
@@ -148,6 +148,9 @@ To change this template use File | Settings | File Templates.
       }
       return document.cookie = c;
     };
+    newOption = function(text, value, selected) {
+      return "<option " + (selected ? 'selected ' : '') + "value='" + value + "'>" + text + "</option>";
+    };
     return {
       /*
         Test here.
@@ -208,6 +211,33 @@ To change this template use File | Settings | File Templates.
       },
       delCookie: function(name) {
         return document.cookie = "" + name + "=" + (escape('')) + "; expires=Fri, 31 Dec 1999 23:59:59 GMT;";
+      },
+      newOption: newOption,
+      /*
+        convert a json array to a list of options.
+        @params
+        json: json array
+        selectedValue: default selected option value
+      */
+
+      json2Options: function(json, selectedValue, textFieldName, valueFieldName, sep) {
+        if (selectedValue == null) {
+          selectedValue = false;
+        }
+        if (textFieldName == null) {
+          textFieldName = "version";
+        }
+        if (valueFieldName == null) {
+          valueFieldName = "id";
+        }
+        if (sep == null) {
+          sep = '\n';
+        }
+        return $(json).map(function(index, elem) {
+          var selected;
+          selected = !selectedValue ? index === json.length - 1 : (String(selectedValue)) === (String(this[valueFieldName]));
+          return newOption(this[textFieldName], this[valueFieldName], selected);
+        }).get().join(sep);
       }
     };
   });

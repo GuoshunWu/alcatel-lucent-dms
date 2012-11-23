@@ -53,7 +53,7 @@ define (require, util, dialogs, i18n)->
     {name: 'labelNum', index: 'labelNum', width: 20, align: 'right'}
     {name: 'action', index: 'action', width: 80, editable: false, align: 'center'}
   ]
-  $(colModel).each (index,colModel)->colModel.classes = 'editable-column' if colModel.editable
+  $(colModel).each (index, colModel)->colModel.classes = 'editable-column' if colModel.editable
 
 
   dicGrid = $(localIds.dic_grid).jqGrid {
@@ -63,7 +63,7 @@ define (require, util, dialogs, i18n)->
   height: 320
   pager: '#dictPager'
   editurl: "app/create-or-add-application"
-  rowNum: 999, loadonce:false
+  rowNum: 999, loadonce: false
   sortname: 'base.name'
   sortorder: 'asc'
   viewrecords: true, cellEdit: true, cellurl: 'app/update-dict', ajaxCellOptions: {async: false}
@@ -72,7 +72,7 @@ define (require, util, dialogs, i18n)->
   colNames: ['LangRefCode', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels', 'Action']
   colModel: colModel
   beforeProcessing: (data, status, xhr)->
-    actIndex = $(@).getGridParam('colNames').indexOf('Action')
+    actIndex = $.inArray('Action', $(@).getGridParam('colNames'))
     --actIndex if $(@).getGridParam('multiselect')
     actions = []
     actions.push k for k,v of handlers
@@ -89,7 +89,7 @@ define (require, util, dialogs, i18n)->
     if name == 'version'
     #        console.log "name=#{name},id=#{id},val=#{val}"
       $.ajax {url: "rest/dict?slibing=#{id}&prop=id,version", async: false, dataType: 'json', success: (json)->
-        $("##{iRow}_version", grid).append $(json).map ()->opt = new Option(@version, @id);opt.selected = @version == val; opt
+        $("##{iRow}_version", grid).append util.json2Options json, val
       }
   beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
     isVersion = cellname == 'version'

@@ -4,6 +4,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   i18n = require 'i18n!nls/appmng'
   require 'blockui'
   require 'jqmsgbox'
+  util = require 'util'
 
   ids = {
   button:
@@ -46,7 +47,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
     {text: c18n.cancel, click: -> $(@).dialog "close"}
   ]
   open: (event, ui)->
-    $(ids.product_duplication).empty().append new Option '', -1
+    $(ids.product_duplication).empty().append util.newOption '', -1
     (require 'appmng/product_panel').getProductSelectOptions().appendTo $ ids.product_duplication
   close: (event, ui)->
     errDiv = $("#productErrInfo").hide()
@@ -77,32 +78,32 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
     {text: c18n.cancel, click: -> $(@).dialog "close"}
   ]
   open: (event, ui)->
-    $("#dupDictsVersion").empty().append(new Option '', -1).append (require 'appmng/application_panel').getApplicationSelectOptions()
+    $("#dupDictsVersion").empty().append(util.newOption '', -1).append (require 'appmng/application_panel').getApplicationSelectOptions()
   close: (event, ui)->
     $("#appErrInfo").hide()
   }
 
   # Add application to product dialog
   addApplication = $("##{ids.dialog.new_or_add_application}").dialog {
-  autoOpen: false, height: 'auto', width: 'auto', modal: true, position: "center",
+  autoOpen: false, height: 'auto', width: 300, modal: true, position: "center",
   show: { effect: 'drop', direction: "up" }
   create: (event, ui)->
     $("select", @).css('width', "80px")
-
     $("#applicationName").change ->
       $("#version").empty()
       appBaseId = $(@).val()
       return if (-1 == parseInt(appBaseId))
 
       url = "rest/applications/apps/#{appBaseId}"
-      $.getJSON url, {}, (json)->$("#version").append($(json).map ->new Option(@version, @id)).trigger "change"
+      $.getJSON url, {}, (json)->$("#version").append(util.json2Options json).trigger "change"
 
 
   open: (event, ui)->
     productId = $("#selVersion").val()
     console.log productId
     url = "rest/applications/base/#{productId}"
-    $.getJSON url, {}, (json)=>$('#applicationName', @).empty().append($(json).map ->new Option @name, @id).trigger 'change'
+    $.getJSON url, {}, (json)=>
+      $('#applicationName', @).empty().append(util.json2Options json, false, 'name').trigger 'change'
   buttons: [
     {text: c18n.ok, click: ->
       url = 'app/add-application'
@@ -164,7 +165,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
     $('#dictEncoding', @).val(param.encoding)
 
     postData = dict: param.id, format: 'grid', prop: "key,reference,maxLength,context.name,description"
-    $('#stringSettingsGrid').setGridParam(url: 'rest/labels',page:1,postData: postData).trigger "reloadGrid"
+    $('#stringSettingsGrid').setGridParam(url: 'rest/labels', page: 1, postData: postData).trigger "reloadGrid"
   close: (event, ui)->
     (require 'appmng/stringsettings_grid').saveLastEditedCell()
   buttons: [

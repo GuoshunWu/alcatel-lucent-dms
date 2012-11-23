@@ -2,13 +2,14 @@
 (function() {
 
   define(function(require) {
-    var $, URL, c18n, dialogs, grid, productInfo,
+    var $, URL, c18n, dialogs, grid, productInfo, util,
       _this = this;
     $ = require('jquery');
+    require('jqmsgbox');
+    util = require('util');
+    c18n = require('i18n!nls/common');
     grid = require('appmng/application_grid');
     dialogs = require('appmng/dialogs');
-    require('jqmsgbox');
-    c18n = require('i18n!nls/common');
     URL = {
       get_product_by_base_id: 'rest/products/version'
     };
@@ -70,11 +71,7 @@
           base: productInfo.base.id,
           prop: 'id,version'
         }, function(json) {
-          $('#selVersion').empty().append($(json).map(function() {
-            return new Option(this.version, this.id);
-          }));
-          $("#selVersion option:last").attr('selected', true);
-          return $('#selVersion').trigger('change');
+          return $('#selVersion').empty().append(util.json2Options(json)).trigger('change');
         });
       },
       getSelectedProduct: function() {
@@ -87,10 +84,7 @@
         return $('#selVersion').children('option').clone(true);
       },
       addNewProduct: function(product) {
-        var newOption;
-        newOption = new Option(product.version, product.id);
-        newOption.selected = true;
-        return $('#selVersion').append(newOption).trigger('change');
+        return $('#selVersion').append(util.newOption(product.version, product.id, true)).trigger('change');
       }
     };
   });

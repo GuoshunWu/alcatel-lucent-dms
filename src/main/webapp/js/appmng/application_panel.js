@@ -2,7 +2,7 @@
 (function() {
 
   define(function(require) {
-    var $, appInfo, c18n, dctFileUpload, dialogs, grid, i18n,
+    var $, appInfo, c18n, dctFileUpload, dialogs, grid, i18n, util,
       _this = this;
     $ = require('jqueryui');
     require('appmng/langsetting_grid');
@@ -13,6 +13,7 @@
     grid = require('appmng/dictionary_grid');
     i18n = require('i18n!nls/appmng');
     c18n = require('i18n!nls/appmng');
+    util = require('util');
     appInfo = {};
     $("#newAppVersion").button({
       text: false,
@@ -145,10 +146,7 @@
         return $('#selAppVersion').children('option').clone(true);
       },
       addNewApplication: function(app) {
-        var newOption;
-        newOption = new Option(app.version, app.id);
-        newOption.selected = true;
-        return $('#selAppVersion').append(newOption).trigger('change');
+        return $('#selAppVersion').append("<option value='" + app.id + "' selected>" + app.version + "</option>").trigger('change');
       },
       refresh: function(info) {
         $('#appDispProductName').html(info.parent.text);
@@ -158,11 +156,7 @@
           id: info.id
         };
         return $.getJSON("rest/applications/apps/" + info.id, {}, function(json) {
-          $("#selAppVersion").empty().append($(json).map(function() {
-            return new Option(this.version, this.id);
-          }));
-          $("#selAppVersion option:last").attr('selected', true);
-          return $("#selAppVersion").trigger("change");
+          return $("#selAppVersion").empty().append(util.json2Options(json)).trigger("change");
         });
       }
     };

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 
-	<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 
     <style type="text/css">
         .html, body {
@@ -10,14 +10,33 @@
             font-size: 10px;
         }
     </style>
-    
-    <!--<script type="text/javascript" charset="utf-8" src="test.js"></script>-->
+
+    <script type="text/javascript" charset="utf-8" src="../js/lib/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../js/lib/util.js"></script>
 
 </head>
 <body>
-    <form method="POST" action="/app/download-app-dict">
-        FileName: <input name="filename"/>
-        <input type="submit" value="Download"/>
-    </form>
+<H1>Compatible mode</H1>
+AddButton: <button id="add" onclick="addOptions();">Add</button>
+<select id="testSel"/>
+
+<script type="text/javascript">
+    var opt = [
+        {version:'aaa', id:'bbb'},
+        {version:'ccc', id:'ddd'}
+    ];
+
+    function addOptions(){
+        options = $(opt).map(function () {
+            return "<option value='" + this.id + "'>" + this.version + "</option>"
+//            return new Option(this.version, this.id);
+        }).get().join('')
+        console.log(options);
+
+        $('#testSel').empty().append(options);
+//        $('#testSel').empty().get(0).add(options);
+    }
+</script>
+
 </body>
 </html>

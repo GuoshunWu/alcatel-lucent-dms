@@ -125,8 +125,8 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
   createSelects = ->
   # selects on summary panel
     $.getJSON 'rest/products', {prop: 'id,name'}, (json)->
-      $('#productBase').append new Option(c18n.select.product.tip, -1)
-      $('#productBase').append $(json).map ()->new Option @name, @id
+      $('#productBase').append util.newOption(c18n.select.product.tip, -1)
+      $('#productBase').append util.json2Options json, false, 'name'
 
     #  load product in product base
     $('#productBase').change ()->
@@ -134,8 +134,8 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
       return false if parseInt($('#productBase').val()) == -1
 
       $.getJSON "rest/products/version", {base: $(@).val(), prop: 'id,version'}, (json)->
-        $('#productRelease').append new Option(c18n.select.release.tip, -1)
-        $('#productRelease').append $(json).map ()->new Option @version, @id
+        $('#productRelease').append util.newOption(c18n.select.release.tip, -1)
+        $('#productRelease').append util.json2Options json
         $('#productRelease').trigger "change"
 
     $('#productRelease').change ->
@@ -209,10 +209,7 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
   showTransDetailDialog: (param)->
   #    refresh dialog
     $('#dictionaryName', dialogs.transDetailDialog).html param.dict.name
-    $('#detailLanguageSwitcher', dialogs.transDetailDialog).empty().append ($(param.languages).map (index) ->
-      isSelected = @id == parseInt param.language.id
-      new Option @name, @id, isSelected, isSelected
-    )
+    $('#detailLanguageSwitcher', dialogs.transDetailDialog).empty().append (util.json2Options param.languages, param.language.id, 'name')
 
     #   set status toolbar search to selected column
     transDetailGrid = $("#transDetailGridList")
@@ -220,7 +217,7 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
     map = 'N': '0', 'I': '1', 'T': '2'
     status = param.language.name.split('.')[1]
 
-    $('#translationDetailDialog').data 'param', {dict: param.dict, searchStatus:map[status]}
+    $('#translationDetailDialog').data 'param', {dict: param.dict, searchStatus: map[status]}
     $('#detailLanguageSwitcher').trigger "change"
 
     dialogs.transDetailDialog.dialog "open"

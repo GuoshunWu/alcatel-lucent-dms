@@ -1,4 +1,4 @@
-define ['jqgrid', 'i18n!nls/appmng', 'appmng/dialogs', 'require'], ($, i18n, dialogs, require)->
+define ['jqgrid', 'i18n!nls/appmng', 'appmng/dialogs', 'util', 'require'], ($, i18n, dialogs, util, require)->
   URL = {
   # get application in product by product id
   get_application_by_product_id: 'rest/applications'
@@ -25,13 +25,13 @@ define ['jqgrid', 'i18n!nls/appmng', 'appmng/dialogs', 'require'], ($, i18n, dia
   colModel: [
     {name: 'id', index: 'id', width: 55, align: 'center', editable: false, hidden: true}
     {name: 'name', index: 'name', width: 100, editable: false, align: 'center'}
-    {name: 'version', index: 'version', width: 90, editable: true, classes:'editable-column', align: 'center', edittype: 'select', editoptions: {value: {}}}
+    {name: 'version', index: 'version', width: 90, editable: true, classes: 'editable-column', align: 'center', edittype: 'select', editoptions: {value: {}}}
     {name: 'dictNum', index: 'dictNum', width: 80, editable: false, align: 'center'}
   ],
   afterEditCell: (id, name, val, iRow, iCol)->
     if name == 'version'
       $.ajax {url: "rest/applications/appssamebase/#{id}", async: false, dataType: 'json', success: (json)->
-        $("##{iRow}_version", localIds.app_grid).append $(json).map ()->opt = new Option(@version, @id);opt.selected = @version == val; opt
+        $("##{iRow}_version", localIds.app_grid).append util.json2Options json, val
       }
   beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
     prodpnl = require 'appmng/product_panel'
@@ -52,7 +52,7 @@ define ['jqgrid', 'i18n!nls/appmng', 'appmng/dialogs', 'require'], ($, i18n, dia
   onclickSubmit: (params, posdata)->
     prodpnl = require 'appmng/product_panel'
     product = prodpnl.getSelectedProduct()
-#    permanent = Boolean $('#permanentDeleteSignId').attr "checked"
+    #    permanent = Boolean $('#permanentDeleteSignId').attr "checked"
     {productId: product.id}
   afterSubmit: (response, postdata)->
     jsonFromServer = eval "(#{response.responseText})"

@@ -1,5 +1,4 @@
-define ['jqlayout', 'taskmng/task_grid', 'i18n!nls/common', 'taskmng/dialogs','require'], ($, grid, c18n, dialogs,require)->
-
+define ['jqlayout', 'taskmng/task_grid', 'i18n!nls/common', 'taskmng/dialogs', 'util', 'require'], ($, grid, c18n, dialogs, util, require)->
   pathArray = window.location.pathname.split('/')
   $('#pageNavigator').val(pathArray[pathArray.length - 1])
 
@@ -12,9 +11,10 @@ define ['jqlayout', 'taskmng/task_grid', 'i18n!nls/common', 'taskmng/dialogs','r
       info[kv[0]] = unescape kv[1]
   # selects on summary panel
   $.getJSON 'rest/products', {prop: 'id,name'}, (json)->
-    $('#productBase').append(new Option c18n.select.product.tip, -1).append(
-      $(json).map ()->
-        $(new Option(@name, @id)).attr('selected', info.productBase and @id == parseInt info.productBase)[0]
+    $('#productBase').append(util.newOption c18n.select.product.tip, -1).append(
+      #      $(json).map ()->
+      #        $(new Option(@name, @id)).attr('selected', info.productBase and @id == parseInt info.productBase)[0]
+      util.json2Options(json, info.productBase, 'name')
     ).trigger 'change'
   #  load product in product base
   $('#productBase').change ()->
@@ -22,11 +22,12 @@ define ['jqlayout', 'taskmng/task_grid', 'i18n!nls/common', 'taskmng/dialogs','r
     return false if parseInt($('#productBase').val()) == -1
 
     $.getJSON "rest/products/version", {base: $(@).val(), prop: 'id,version'}, (json)->
-      $('#productRelease').append(new Option c18n.select.release.tip, -1).append(
-        $(json).map ()->$(new Option(@version, @id)).attr('selected', info.product and @id == parseInt info.product)[0]
+      $('#productRelease').append(util.newOption c18n.select.release.tip, -1).append(
+        #        $(json).map ()->$(new Option(@version, @id)).attr('selected', info.product and @id == parseInt info.product)[0]
+        util.json2Options json, info.product
       )
 
-#      $('#productRelease').change()
+  #      $('#productRelease').change()
 
   $('#productRelease').change ->
   #    todo: refresh grid according to the product release
