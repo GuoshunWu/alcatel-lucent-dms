@@ -26,12 +26,12 @@ define({
             languagesettings:{
                 title:'Language settings'
             },
-            delete:{
+            "delete":{
                 title:'Delete'
             },
             dictlistpreview:{
                 title:'Dictionaries Preview',
-                import:'Import',
+                "import":'Import',
                 check:'There are some errors need to be fixed before import!',
                 success:'Import dictionaries to {0} successful.'
             },

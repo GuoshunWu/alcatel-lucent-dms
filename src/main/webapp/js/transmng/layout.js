@@ -213,10 +213,8 @@
       $.getJSON('rest/products', {
         prop: 'id,name'
       }, function(json) {
-        $('#productBase').append(new Option(c18n.select.product.tip, -1));
-        return $('#productBase').append($(json).map(function() {
-          return new Option(this.name, this.id);
-        }));
+        $('#productBase').append(util.newOption(c18n.select.product.tip, -1));
+        return $('#productBase').append(util.json2Options(json, false, 'name'));
       });
       $('#productBase').change(function() {
         $('#productRelease').empty();
@@ -227,10 +225,8 @@
           base: $(this).val(),
           prop: 'id,version'
         }, function(json) {
-          $('#productRelease').append(new Option(c18n.select.release.tip, -1));
-          $('#productRelease').append($(json).map(function() {
-            return new Option(this.version, this.id);
-          }));
+          $('#productRelease').append(util.newOption(c18n.select.release.tip, -1));
+          $('#productRelease').append(util.json2Options(json));
           return $('#productRelease').trigger("change");
         });
       });
@@ -320,11 +316,7 @@
       showTransDetailDialog: function(param) {
         var map, status, transDetailGrid;
         $('#dictionaryName', dialogs.transDetailDialog).html(param.dict.name);
-        $('#detailLanguageSwitcher', dialogs.transDetailDialog).empty().append($(param.languages).map(function(index) {
-          var isSelected;
-          isSelected = this.id === parseInt(param.language.id);
-          return new Option(this.name, this.id, isSelected, isSelected);
-        }));
+        $('#detailLanguageSwitcher', dialogs.transDetailDialog).empty().append(util.json2Options(param.languages, param.language.id, 'name'));
         transDetailGrid = $("#transDetailGridList");
         map = {
           'N': '0',

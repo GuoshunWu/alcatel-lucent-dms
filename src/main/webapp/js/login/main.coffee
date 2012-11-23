@@ -6,6 +6,8 @@ define (require)->
 
   i18n = require 'i18n!nls/login'
 
+#  console.log i18n.namerequired
+
   $('#loginForm').validate(
     rules:
       loginname: "required"

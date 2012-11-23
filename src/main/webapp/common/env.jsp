@@ -52,7 +52,7 @@
         var request = HTTP.newRequest();
         request.onreadystatechange = function () {
             if (request.readyState == 4) {
-                if (request.status = 200) {
+                if (200 == request.status) {
                     callback(HTTP._getResponse(request));
                 }
                 else {

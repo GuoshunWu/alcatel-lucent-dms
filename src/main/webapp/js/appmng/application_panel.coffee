@@ -10,6 +10,7 @@ define (require)->
   grid = require 'appmng/dictionary_grid'
   i18n = require 'i18n!nls/appmng'
   c18n = require 'i18n!nls/appmng'
+  util = require 'util'
 
   appInfo = {}
 
@@ -53,10 +54,12 @@ define (require)->
 
   add: (e, data)->
     $.each data.files, (index, file) ->
-#      $('#uploadStatus').html "#{i18n.uploadingfile}#{file.name}"
+    #      $('#uploadStatus').html "#{i18n.uploadingfile}#{file.name}"
     appId = $("#selAppVersion").val()
     return if !appId
-    $(@).fileupload 'option', 'formData', [{name: 'appId', value: $("#selAppVersion").val()}]
+    $(@).fileupload 'option', 'formData', [
+      {name: 'appId', value: $("#selAppVersion").val()}
+    ]
     data.submit()
     $("#progressbar").show() if !$.browser.msie
   progressall: (e, data) ->
@@ -78,16 +81,11 @@ define (require)->
 
   getApplicationSelectOptions: ()->$('#selAppVersion').children('option').clone(true)
   addNewApplication: (app) ->
-    newOption = new Option app.version, app.id
-    newOption.selected = true
-    $('#selAppVersion').append(newOption).trigger 'change'
+    $('#selAppVersion').append("<option value='#{app.id}' selected>#{app.version}</option>").trigger 'change'
   refresh: (info)->
     $('#appDispProductName').html info.parent.text
     $('#appDispAppName').html info.text
 
     appInfo.base = {text: info.text, id: info.id}
 
-    $.getJSON "rest/applications/apps/#{info.id}", {}, (json)->
-      $("#selAppVersion").empty().append ($(json).map ()-> new Option @version, @id)
-      $("#selAppVersion option:last").attr 'selected',true
-      $("#selAppVersion").trigger "change"
+    $.getJSON "rest/applications/apps/#{info.id}", {}, (json)->$("#selAppVersion").empty().append(util.json2Options json).trigger "change"

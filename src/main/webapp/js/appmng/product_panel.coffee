@@ -1,9 +1,11 @@
 define (require)->
   $ = require 'jquery'
+  require 'jqmsgbox'
+  util = require 'util'
+  c18n = require 'i18n!nls/common'
   grid = require 'appmng/application_grid'
   dialogs = require 'appmng/dialogs'
-  require 'jqmsgbox'
-  c18n = require 'i18n!nls/common'
+
 
   URL = {
   # get product by it id url, append product id to this url
@@ -39,13 +41,8 @@ define (require)->
     $('#dispProductName').html productInfo.base.text
     $.getJSON URL.get_product_by_base_id, {base: productInfo.base.id, prop: 'id,version'}, (json)->
     # update product version select
-      $('#selVersion').empty().append($(json).map ()-> new Option @version, @id)
-      $("#selVersion option:last").attr('selected', true)
-      $('#selVersion').trigger 'change'
+      $('#selVersion').empty().append(util.json2Options json).trigger 'change'
 
   getSelectedProduct: -> {version: $("#selVersion option:selected").text(), id: $('#selVersion').val()}
   getProductSelectOptions: ->$('#selVersion').children('option').clone(true)
-  addNewProduct: (product)->
-    newOption = new Option product.version, product.id
-    newOption.selected = true
-    $('#selVersion').append(newOption).trigger 'change'
+  addNewProduct: (product)->$('#selVersion').append(util.newOption product.version, product.id, true).trigger 'change'

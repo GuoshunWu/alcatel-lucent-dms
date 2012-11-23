@@ -148,7 +148,6 @@
                         //Figure out the best fit
                         var needed = [],
                             part;
-
                         //Always allow for root, then do the rest of the locale parts.
                         addPart("root", master, needed, toLoad, prefix, suffix);
                         for (i = 0; i < parts.length; i++) {

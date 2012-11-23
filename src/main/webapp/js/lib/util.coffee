@@ -100,6 +100,8 @@ define ["jquery"], ($) ->
       c += ";#{arg}=#{arguments[start++]}" if arguments[start]
     document.cookie = c
 
+  newOption = (text, value, selected )->"<option #{if selected then 'selected ' else ''}value='#{value}'>#{text}</option>"
+
   ###
   Test here.
   ###
@@ -145,6 +147,21 @@ define ["jquery"], ($) ->
     null
   #  Del cookie
   delCookie: (name)->document.cookie = "#{name}=#{escape('')}; expires=Fri, 31 Dec 1999 23:59:59 GMT;"
+
+  newOption: newOption
+  ###
+  convert a json array to a list of options.
+  @params
+  json: json array
+  selectedValue: default selected option value
+
+###
+  json2Options: (json, selectedValue = false, textFieldName = "version", valueFieldName = "id", sep = '\n')->
+    $(json).map(
+      (index, elem)->
+        selected = if !selectedValue then index == json.length - 1 else (String selectedValue) == (String @[valueFieldName])
+        newOption @[textFieldName], @[valueFieldName], selected
+    ).get().join(sep)
 
 
 
