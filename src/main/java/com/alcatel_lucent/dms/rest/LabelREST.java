@@ -3,6 +3,8 @@ package com.alcatel_lucent.dms.rest;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.ws.rs.Path;
@@ -27,6 +29,7 @@ import com.alcatel_lucent.dms.service.DictionaryService;
  *   	Otherwise, only label properties can be accessed. 
  *   filters	(optional) jqGrid-style filter string, in json format, e.g.
  *   	{"groupOp":"AND","rules":[{"field":"status","op":"eq","data":"2"}]}
+ *   NOTE: only support filter "ct.status" for the moment
  *   
  * Sort parameters:
  *   sidx		(optional) sort by, default is "sortNo"
@@ -73,9 +76,9 @@ public class LabelREST extends BaseREST {
     	if (sord == null) {
     		sord = "ASC";
     	}
-    	if (!sidx.startsWith("ot.") && !sidx.startsWith("ct.")) {
-    		sidx = "obj." + sidx;
-    	}
+//    	if (!sidx.startsWith("ot.") && !sidx.startsWith("ct.")) {
+//    		sidx = "obj." + sidx;
+//    	}
     	
     	Long langId = requestMap.get("language") == null ? null : Long.valueOf(requestMap.get("language"));
     	String hql;
@@ -84,39 +87,91 @@ public class LabelREST extends BaseREST {
     	Map countParam = new HashMap();
     	param.put("dictId", dictId);
     	countParam.put("dictId", dictId);
-    	Collection<Label> labels;
-    	if (langId == null) {
-    		hql = "select obj from Label obj where obj.dictionary.id=:dictId";
-    		hql += " order by " + sidx + " " + sord;
-    		labels = retrieve(hql, param, countHql, countParam, requestMap);
-    	} else {
-    		hql = "select obj,ot,ct" +
-    				" from Label obj join obj.origTranslations ot left join obj.text.translations ct" +
-    				" where obj.dictionary.id=:dictId and ot.language.id=:langId and ct.language.id=:langId";
+		hql = "select obj from Label obj where obj.dictionary.id=:dictId";
+		hql += " order by " + sidx + " " + sord;
+		Collection<Label> labels = retrieve(hql, param, countHql, countParam, requestMap);
+		Map<Long, Label> labelMap = new HashMap<Long, Label>();
+		for (Label label : labels) {
+			labelMap.put(label.getId(), label);
+		}
+		// add ot and ct information if a specific language was specified
+    	if (langId != null) {
+    		int countT = 0, countN = 0, countI = 0;
         	Map<String, String> filters = getGridFilters(requestMap);
+        	Integer statusFilter = null;
         	if (filters != null) {
-        		int i = 0;
-        		for (String field : filters.keySet()) {
-                	// entity specific conversion
-        			Object value = filters.get(field);
-        			if (field.equals("ct.status") && value != null && !value.toString().isEmpty()) {
-        				value = Integer.valueOf(value.toString());
-        			}
-        			hql += " and " + field + "=:p" + i;
-        			param.put("p" + i, value);
-        			i++;
+        		String statusParam = filters.get("ct.status");
+        		if (statusParam != null && !statusParam.isEmpty()) {
+        			statusFilter = Integer.valueOf(statusParam);
         		}
         	}
-
-    		hql += " order by " + sidx + " " + sord;
+        	HashSet<Long> noNeedTranslationLabels = new HashSet<Long>();
+    		hql = "select l.id,ot" +
+    				" from Label l join l.origTranslations ot" +
+    				" where l.dictionary.id=:dictId and ot.language.id=:langId";
     		param.put("langId", langId);
-    		Collection<Object[]> result = retrieve(hql, param, countHql, countParam, requestMap);
-    		labels = new ArrayList<Label>();
-    		for (Object[] row : result) {
-    			Label label = (Label) row[0];
-    			label.setOt((LabelTranslation) row[1]);
-    			label.setCt((Translation) row[2]);
-    			labels.add(label);
+    		Collection<Object[]> qr = dao.retrieve(hql, param);
+    		for (Object[] row : qr) {
+    			Long labelId = ((Number) row[0]).longValue();
+    			LabelTranslation ot = (LabelTranslation) row[1];
+    			Label label = labelMap.get(labelId);
+    			if (label != null) {
+    				label.setOt(ot);
+    			}
+    			if (!ot.isNeedTranslation()) {
+    				noNeedTranslationLabels.add(labelId);
+    			}
+    		}
+    		hql = "select l.id,ct" +
+    				" from Label l join l.text.translations ct" +
+    				" where l.dictionary.id=:dictId and ct.language.id=:langId";
+    		qr = dao.retrieve(hql, param);
+    		for (Object[] row : qr) {
+    			Long labelId = ((Number) row[0]).longValue();
+    			Translation ct = (Translation) row[1];
+    			Label label = labelMap.get(labelId);
+    			if (label != null) {
+    				label.setCt(ct);
+    			}
+    			if (ct.getStatus() == Translation.STATUS_TRANSLATED || noNeedTranslationLabels.contains(labelId)) {
+    				countT++;
+    			} else if (ct.getStatus() == Translation.STATUS_IN_PROGRESS) {
+    				countI++;
+    			}
+    		}
+
+        	// populate default ct and ot values, and apply status filter
+    		Iterator<Label> iter = labels.iterator();
+    		while (iter.hasNext()) {
+    			Label label = iter.next();
+    			if (label.getOt() == null) {
+    				LabelTranslation ot = new LabelTranslation();
+    				ot.setOrigTranslation(label.getReference());
+    				ot.setNeedTranslation(true);
+    				label.setOt(ot);
+    			}
+    			if (label.getCt() == null) {
+    				Translation ct = new Translation();
+    				ct.setId(-(label.getId() * 1000 + langId));	// virtual tid < 0, indicating a non-existing ct object
+    				ct.setTranslation(label.getReference());
+    				ct.setStatus(label.getOt().isNeedTranslation() ? Translation.STATUS_UNTRANSLATED : Translation.STATUS_TRANSLATED);
+    				label.setCt(ct);
+    			}
+    			if (statusFilter != null && statusFilter != label.getCt().getStatus()) {
+    				iter.remove();
+    			}
+    		}
+    		if (statusFilter != null) {
+    			int count;
+    			if (statusFilter == Translation.STATUS_TRANSLATED) {
+    				count = countT;
+    			} else if (statusFilter == Translation.STATUS_IN_PROGRESS) {
+    				count = countI;
+    			} else {
+    				int countAll = Integer.parseInt(requestMap.get("records"));
+    				count = countAll - countT - countI;
+    			}
+    			requestMap.put("records", "" + count);
     		}
     	}
     	

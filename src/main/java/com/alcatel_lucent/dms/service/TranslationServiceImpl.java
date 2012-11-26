@@ -55,17 +55,18 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     	return result;
     }
 */
-    
+/*
+ * aborted due to HQL left join issue
     public Map<Long, Map<Long, int[]>> getDictTranslationSummary(Long prodId) {
     	Map<Long, Map<Long, int[]>> result = new HashMap<Long, Map<Long, int[]>>();
-    	String hql = "select d.id,ot.language.id" +
+    	String hql = "select d.id,dl.language.id" +
     			",sum(case when ot.needTranslation=false or t.status=" + Translation.STATUS_TRANSLATED + " then 1 else 0 end) " +
-    			",sum(case when ot.needTranslation=true and t.status=" + Translation.STATUS_UNTRANSLATED + " then 1 else 0 end) " +
-    			",sum(case when ot.needTranslation=true and t.status=" + Translation.STATUS_IN_PROGRESS + " then 1 else 0 end) " +
-    			" from Product p join p.applications a join a.dictionaries d" +
-    			" join d.labels l join l.origTranslations ot join l.text.translations t" +
-    			" where p.id=:prodId and ot.language=t.language" +
-    			" group by d.id,ot.language.id";
+    			",sum(case when (ot.needTranslation is null or ot.needTranslation=true) and (t.status is null or t.status=" + Translation.STATUS_UNTRANSLATED + ") then 1 else 0 end) " +
+    			",sum(case when (ot.needTranslation is null or ot.needTranslation=true) and t.status=" + Translation.STATUS_IN_PROGRESS + " then 1 else 0 end) " +
+    			" from Product p join p.applications a join a.dictionaries d join d.dictLanguages dl" +
+    			" join d.labels l left join l.origTranslations ot with language.id=dl.language.id left join l.text.translations t with language.id=dl.language.id" +
+    			" where p.id=:prodId" +
+    			" group by d.id,dl.language.id";
     	Map param = new HashMap();
     	param.put("prodId", prodId);
     	Collection<Object[]> qr = dao.retrieve(hql, param);
@@ -107,6 +108,140 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     	}
     	return result;
     }
+
+*/ 
+    public Map<Long, Map<Long, int[]>> getDictTranslationSummary(Long prodId) {
+    	Map<Long, Map<Long, int[]>> result = new HashMap<Long, Map<Long, int[]>>();
+    	
+    	// count labels for each dictionary
+    	String hql = "select d.id,count(*)" +
+    			" from Product p join p.applications a join a.dictionaries d join d.labels l" +
+    			" where p.id=:prodId" +
+    			" group by d.id";
+    	Map param = new HashMap();
+    	param.put("prodId", prodId);
+    	Collection<Object[]> qr = dao.retrieve(hql, param);
+    	Map<Long, Integer> labelCount = new HashMap<Long, Integer>();
+    	for (Object[] row : qr) {
+    		labelCount.put(((Number) row[0]).longValue(), ((Number)row[1]).intValue());
+    	}
+    	
+    	// count translated and in progress translations for each dictionary
+    	hql = "select d.id,dl.language.id" +
+    			",sum(case when t.status=" + Translation.STATUS_TRANSLATED + " then 1 else 0 end) " +
+    			",sum(case when t.status=" + Translation.STATUS_IN_PROGRESS + " then 1 else 0 end) " +
+    			" from Product p join p.applications a join a.dictionaries d join d.dictLanguages dl" +
+    			" join d.labels l join l.text.translations t" +
+    			" where p.id=:prodId and t.language=dl.language" +
+    			" group by d.id,dl.language.id";
+    	qr = dao.retrieve(hql, param);
+    	for (Object[] row : qr) {
+    		Long dictId = (Long) row[0];
+    		Long langId = (Long) row[1];
+    		Map<Long, int[]> langMap = result.get(dictId);
+    		if (langMap == null) {
+    			langMap = new HashMap<Long, int[]>();
+    			result.put(dictId, langMap);
+    		}
+    		langMap.put(langId, new int[] {((Number)row[2]).intValue(), 0, ((Number)row[3]).intValue()});
+    	}
+    	
+    	// take into account LabelTranslation.needTranslation flag
+    	// exclude labels with needTranslation=false from count of translated and in progress
+    	hql = "select d.id,ot.language.id" +
+    			",sum(case when t.status=" + Translation.STATUS_TRANSLATED + " then 1 else 0 end) " +
+    			",sum(case when t.status=" + Translation.STATUS_IN_PROGRESS + " then 1 else 0 end) " +
+    			" from Product p join p.applications a join a.dictionaries d join d.labels l join l.origTranslations ot,Translation t" +
+    			" where p.id=:prodId and ot.needTranslation=false and t.language=ot.language and t.text=l.text" +
+    			" group by d.id,ot.language.id";
+    	qr = dao.retrieve(hql, param);
+    	for (Object[] row : qr) {
+    		Long dictId = (Long) row[0];
+    		Long langId = (Long) row[1];
+    		Map<Long, int[]> langMap = result.get(dictId);
+    		int[] values = langMap.get(langId);
+    		values[0] -= ((Number) row[2]).intValue();
+    		values[2] -= ((Number) row[3]).intValue();
+    	}
+    	
+    	// set untranslated = total - translated - in process
+    	for (Long dictId : result.keySet()) {
+    		Map<Long, int[]> langMap = result.get(dictId);
+    		int total = labelCount.get(dictId);
+    		for (int[] values : langMap.values()) {
+    			values[1] = total - values[0] - values[2];
+    		}
+    	}
+    	
+    	return result;
+    }
+
+    public Map<Long, Map<Long, int[]>> getAppTranslationSummary(Long prodId) {
+    	Map<Long, Map<Long, int[]>> result = new HashMap<Long, Map<Long, int[]>>();
+    	
+    	// count labels for each app
+    	String hql = "select a.id,count(*)" +
+    			" from Product p join p.applications a join a.dictionaries d join d.labels l" +
+    			" where p.id=:prodId" +
+    			" group by a.id";
+    	Map param = new HashMap();
+    	param.put("prodId", prodId);
+    	Collection<Object[]> qr = dao.retrieve(hql, param);
+    	Map<Long, Integer> labelCount = new HashMap<Long, Integer>();
+    	for (Object[] row : qr) {
+    		labelCount.put(((Number) row[0]).longValue(), ((Number)row[1]).intValue());
+    	}
+    	
+    	// count translated and in progress translations for each app
+    	hql = "select a.id,dl.language.id" +
+    			",sum(case when t.status=" + Translation.STATUS_TRANSLATED + " then 1 else 0 end) " +
+    			",sum(case when t.status=" + Translation.STATUS_IN_PROGRESS + " then 1 else 0 end) " +
+    			" from Product p join p.applications a join a.dictionaries d join d.dictLanguages dl" +
+    			" join d.labels l join l.text.translations t" +
+    			" where p.id=:prodId and t.language=dl.language" +
+    			" group by a.id,dl.language.id";
+    	qr = dao.retrieve(hql, param);
+    	for (Object[] row : qr) {
+    		Long appId = (Long) row[0];
+    		Long langId = (Long) row[1];
+    		Map<Long, int[]> langMap = result.get(appId);
+    		if (langMap == null) {
+    			langMap = new HashMap<Long, int[]>();
+    			result.put(appId, langMap);
+    		}
+    		langMap.put(langId, new int[] {((Number)row[2]).intValue(), 0, ((Number)row[3]).intValue()});
+    	}
+    	
+    	// take into account LabelTranslation.needTranslation flag
+    	// exclude labels with needTranslation=false from count of translated and in progress
+    	hql = "select a.id,ot.language.id" +
+    			",sum(case when t.status=" + Translation.STATUS_TRANSLATED + " then 1 else 0 end) " +
+    			",sum(case when t.status=" + Translation.STATUS_IN_PROGRESS + " then 1 else 0 end) " +
+    			" from Product p join p.applications a join a.dictionaries d join d.labels l join l.origTranslations ot,Translation t" +
+    			" where p.id=:prodId and ot.needTranslation=false and t.language=ot.language and t.text=l.text" +
+    			" group by a.id,ot.language.id";
+    	qr = dao.retrieve(hql, param);
+    	for (Object[] row : qr) {
+    		Long appId = (Long) row[0];
+    		Long langId = (Long) row[1];
+    		Map<Long, int[]> langMap = result.get(appId);
+    		int[] values = langMap.get(langId);
+    		values[0] -= ((Number) row[2]).intValue();
+    		values[2] -= ((Number) row[3]).intValue();
+    	}
+    	
+    	// set untranslated = total - translated - in process
+    	for (Long appId : result.keySet()) {
+    		Map<Long, int[]> langMap = result.get(appId);
+    		int total = labelCount.get(appId);
+    		for (int[] values : langMap.values()) {
+    			values[1] = total - values[0] - values[2];
+    		}
+    	}
+    	
+    	return result;
+    }
+
 
 	@Override
 	public void generateDictTranslationReport(Long prodId, Collection<Long> langIds, OutputStream output) {
