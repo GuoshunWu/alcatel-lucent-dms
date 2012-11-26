@@ -11,6 +11,7 @@ import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.action.JSONAction;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.service.DeliveringDictPool;
+import com.alcatel_lucent.dms.service.DeliveryReport;
 import com.alcatel_lucent.dms.service.DictionaryService;
 
 @SuppressWarnings("serial")
@@ -23,13 +24,13 @@ public class DeliverDictAction extends JSONAction {
 	private DeliveringDictPool deliveringDictPool;
 	private DictionaryService dictionaryService;
 	
-	private Map<String, Collection<BusinessWarning>> warnings;
+	private DeliveryReport report;
 
 	@Override
 	protected String performAction() throws Exception {
 		try {
 			Collection<Dictionary> dictList = deliveringDictPool.getDictionaries(handler);
-			warnings = dictionaryService.importDictionaries(app, dictList, Constants.DELIVERY_MODE);
+			report = dictionaryService.importDictionaries(app, dictList, Constants.DELIVERY_MODE);
 		} catch (BusinessException e) {
 			setMessage(e.toString());
 			setStatus(-1);
@@ -69,12 +70,12 @@ public class DeliverDictAction extends JSONAction {
 		this.deliveringDictPool = deliveringDictPool;
 	}
 
-	public Map<String, Collection<BusinessWarning>> getWarnings() {
-		return warnings;
+	public DeliveryReport getReport() {
+		return report;
 	}
 
-	public void setWarnings(Map<String, Collection<BusinessWarning>> warnings) {
-		this.warnings = warnings;
+	public void setReport(DeliveryReport report) {
+		this.report = report;
 	}
 
 }

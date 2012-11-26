@@ -651,7 +651,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         return dbDict;
     }
     
-    public Map<String, Collection<BusinessWarning>> importDictionaries(Long appId, Collection<Dictionary> dictList, int mode) throws BusinessException {
+    public DeliveryReport importDictionaries(Long appId, Collection<Dictionary> dictList, int mode) throws BusinessException {
+    	DeliveryReport report = new DeliveryReport();
     	Map<String, Collection<BusinessWarning>> warningMap = new TreeMap<String, Collection<BusinessWarning>>();
     	for (Dictionary dict : dictList) {
     		Map<String, String> langCharset = new HashMap<String, String>();
@@ -664,7 +665,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     		importDictionary(appId, dict, dict.getVersion(), mode, null, langCharset, warnings);
     		warningMap.put(dict.getName(), warnings);
     	}
-    	return warningMap;
+    	report.setWarningMap(warningMap);
+    	return report;
     }
 
     private String getUnifiedLangCode(String langCode) {
