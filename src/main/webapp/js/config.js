@@ -91,5 +91,6 @@ require.config({
             locale:typeof param !== "undefined" && param !== null ? param.locale : 'en_us'
         }
     },
-    urlArgs:"bust=" + (new Date()).getTime()
+    urlArgs:"bust=" + (new Date()).getTime(),
+    waitSeconds:30
 });

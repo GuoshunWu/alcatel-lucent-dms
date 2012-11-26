@@ -10,7 +10,7 @@ define [ 'jqueryui', 'require', 'taskmng/taskreport_grid', 'taskmng/transdetail_
 
 
   languageChooserDialog = $("<div title='Study' id='languageChooser'>").dialog {
-  autoOpen: false, position: [23, 126], height: 'auto', width: 'auto', modal: true
+  autoOpen: false, position: [23, 126], height: 'auto', width: 900, modal: true
   show: { effect: 'slide', direction: "up" }
   create: ->$.getJSON 'rest/languages?prop=id,name', {}, (languages)=>$(@).append(util.generateLanguageTable languages)
   buttons: [
@@ -24,7 +24,7 @@ define [ 'jqueryui', 'require', 'taskmng/taskreport_grid', 'taskmng/transdetail_
 
   transReport = $('#translationReportDialog').dialog {
   autoOpen: false, modal: true
-  width: 'auto', height: 'auto'
+  width: 850, height: 'auto'
   open: ()->
     param = $(@).data 'param'
     $.ajax 'rest/languages', async: false, dataType: 'json', data: {task: param.id, prop: 'id,name'}, success: (languages)->
@@ -59,7 +59,7 @@ define [ 'jqueryui', 'require', 'taskmng/taskreport_grid', 'taskmng/transdetail_
 
   viewDetail = $('#translationDetailDialog').dialog {
   autoOpen: false, modal: true
-  width: 'auto', height: 'auto'
+  width: 850, height: 'auto'
   open: ->
     param = $(@).data 'param'
     postData = $.extend param, {format: 'grid', prop: 'labelKey,maxLength,text.context.name,text.reference,newTranslation'}

@@ -48,6 +48,7 @@ public class LoginAction extends JSONAction implements SessionAware {
         this.session = session;
     }
 
+
     protected String performAction() throws Exception {
         User user = authenticationService.login(loginname, password);
         if (user != null) {
@@ -57,6 +58,7 @@ public class LoginAction extends JSONAction implements SessionAware {
             setStatus(0);
             return SUCCESS;
         }
+
 
         setMessage(getText("message.loginfail"));
         setStatus(-1);

@@ -11,7 +11,7 @@
       autoOpen: false,
       position: [23, 126],
       height: 'auto',
-      width: 'auto',
+      width: 900,
       modal: true,
       show: {
         effect: 'slide',
@@ -48,7 +48,7 @@
     transReport = $('#translationReportDialog').dialog({
       autoOpen: false,
       modal: true,
-      width: 'auto',
+      width: 850,
       height: 'auto',
       open: function() {
         var param;
@@ -119,7 +119,7 @@
     viewDetail = $('#translationDetailDialog').dialog({
       autoOpen: false,
       modal: true,
-      width: 'auto',
+      width: 850,
       height: 'auto',
       open: function() {
         var param, postData;

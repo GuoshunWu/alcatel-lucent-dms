@@ -49,7 +49,7 @@
         autoOpen: false,
         position: [23, 126],
         height: 'auto',
-        width: 'auto',
+        width: 900,
         show: {
           effect: 'slide',
           direction: "up"
@@ -72,7 +72,7 @@
       taskDialog = $("#createTranslationTaskDialog").dialog({
         autoOpen: false,
         modal: true,
-        width: 'auto',
+        width: 900,
         height: 'auto',
         position: [25, 100],
         show: {
@@ -173,7 +173,7 @@
       });
       transDetailDialog = $('#translationDetailDialog').dialog({
         autoOpen: false,
-        width: 'auto',
+        width: 860,
         height: 'auto',
         modal: true,
         create: function() {
