@@ -43,7 +43,7 @@
         <table width="100%" border="0">
             <tr>
                 <td>
-            <span style="font-family:fantasy; font-size:14pt; font-style:normal; ">
+            <span style="font-family:Trebuchet MS,Verdana,Arial, Helvetica; font-size:14pt; font-style:normal; ">
                 <s:text name="taskmng.title"/>
             </span>
                 </td>

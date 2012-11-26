@@ -44,7 +44,7 @@
         <table width="99%" border="0">
             <tr>
                 <td colspan="2">
-                    <span style="font-family:fantasy,verdana, '黑体'; font-size:14pt; font-style:normal; ">
+                    <span style="font-family:Trebuchet MS,Verdana,Arial, Helvetica; font-size:14pt; font-style:normal; ">
                         <s:text name="transmng.title"/>
                     </span>
                 </td>
