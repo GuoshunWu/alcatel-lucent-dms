@@ -13,13 +13,18 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring.version>3.1.1.RELEASE</spring.version>
-        <!--<hibernate.version>3.2.7.ga</hibernate.version>-->
         <hibernate.version>3.6.9.Final</hibernate.version>
         <gmavenVersion>1.4</gmavenVersion>
         <jerseyVersion>1.13</jerseyVersion>
     </properties>
 
+
     <dependencies>
+        <dependency>
+            <groupId>com.ibm.icu</groupId>
+            <artifactId>icu4j</artifactId>
+            <version>49.1</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>

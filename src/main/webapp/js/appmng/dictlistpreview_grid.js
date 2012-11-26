@@ -140,7 +140,7 @@
       beforeProcessing: function(data, status, xhr) {
         var actIdx, actions, errorIdx, grid, k, v, warningIdx, _ref;
         grid = $(this);
-        _ref = [grid.getGridParam('colNames').indexOf('Action'), grid.getGridParam('colNames').indexOf('Warning'), grid.getGridParam('colNames').indexOf('Error')], actIdx = _ref[0], warningIdx = _ref[1], errorIdx = _ref[2];
+        _ref = [$.inArray('Action', grid.getGridParam('colNames')), $.inArray('Warning', grid.getGridParam('colNames')), $.inArray('Error', grid.getGridParam('colNames'))], actIdx = _ref[0], warningIdx = _ref[1], errorIdx = _ref[2];
         if (grid.getGridParam('multiselect')) {
           --actIdx;
           --warningIdx;

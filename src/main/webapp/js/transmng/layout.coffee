@@ -34,7 +34,7 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
   createDialogs = ->
   #dialog
     languageFilterDialog = $("<div title='#{i18n.select.languagefilter.title}' id='#{ids.languageFilterDialogId}'>").dialog {
-    autoOpen: false, position: [23, 126], height: 'auto', width: 'auto'
+    autoOpen: false, position: [23, 126], height: 'auto', width: 900
     show: { effect: 'slide', direction: "up" }
     buttons: [
       { text: c18n.ok, click: ()->
@@ -46,7 +46,7 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
     }
     taskDialog = $("#createTranslationTaskDialog").dialog {
     autoOpen: false, modal: true
-    width: 'auto', height: 'auto', position: [25, 100], show: { effect: 'slide', direction: "down" }
+    width: 900, height: 'auto', position: [25, 100], show: { effect: 'slide', direction: "down" }
     open: ->
       info = grid.getTotalSelectedRowInfo()
       taskname = "#{$('#productBase option:selected').text()}_#{$('#productRelease option:selected').text()}"
@@ -105,7 +105,7 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
     ]
     }
     transDetailDialog = $('#translationDetailDialog').dialog {
-    autoOpen: false, width: 'auto', height: 'auto', modal: true
+    autoOpen: false, width: 860, height: 'auto', modal: true
     create: ()->
       $('#detailLanguageSwitcher').change ->
         param = $('#translationDetailDialog').data "param"

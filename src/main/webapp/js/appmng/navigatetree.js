@@ -165,7 +165,8 @@
         });
       });
       appTree = $.jstree._reference("#" + ids.navigateTree);
-      return $('#loading-container').remove();
+      $('#loading-container').remove();
+      return $('#optional-container').show();
     });
     return {
       getNodeInfo: getNodeInfo

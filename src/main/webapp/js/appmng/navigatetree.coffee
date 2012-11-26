@@ -119,6 +119,7 @@ define (require)->
     #      appTree.open_node node
 
     $('#loading-container').remove()
+    $('#optional-container').show()
 
   getNodeInfo: getNodeInfo
 

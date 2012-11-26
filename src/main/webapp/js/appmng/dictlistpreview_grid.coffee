@@ -37,7 +37,7 @@ define (require, util, i18n)->
     {name: 'warnings', index: 'warningCount', width: 20, align: 'right'}
     {name: 'actions', index: 'action', width: 70, editable: false, align: 'center'}
   ]
-  $(colModel).each (index,colModel)->colModel.classes = 'editable-column' if colModel.editable
+  $(colModel).each (index, colModel)->colModel.classes = 'editable-column' if colModel.editable
 
   dicGrid = $('#dictListPreviewGrid').jqGrid {
   url: '', datatype: 'json', editurl: "", mtype: 'POST'
@@ -56,9 +56,9 @@ define (require, util, i18n)->
     grid = $(@)
 
     [actIdx, warningIdx, errorIdx]=[
-      grid.getGridParam('colNames').indexOf('Action'),
-      grid.getGridParam('colNames').indexOf('Warning'),
-      grid.getGridParam('colNames').indexOf('Error')
+      $.inArray 'Action', grid.getGridParam('colNames')
+      $.inArray 'Warning', grid.getGridParam('colNames')
+      $.inArray 'Error', grid.getGridParam('colNames')
     ]
 
     (--actIdx; --warningIdx; --errorIdx) if grid.getGridParam('multiselect')

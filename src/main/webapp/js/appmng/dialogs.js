@@ -299,9 +299,12 @@
       autoOpen: false,
       modal: true,
       zIndex: 900,
-      width: 'auto',
       height: 'auto',
+      width: 1030,
       title: i18n.dialog.dictlistpreview.title,
+      resize: function(event, ui) {
+        return $('#dictListPreviewGrid').setGridWidth(ui.size.width - 55, true).setGridHeight(ui.size.height - 165, true);
+      },
       buttons: [
         {
           text: i18n.dialog.dictlistpreview["import"],
@@ -361,9 +364,12 @@
       autoOpen: false,
       modal: true,
       zIndex: 920,
-      width: 'auto',
       height: 'auto',
+      width: 730,
       title: i18n.dialog.dictpreviewstringsettings.title,
+      resize: function(event, ui) {
+        return $('#dictPreviewStringSettingsGrid').setGridWidth(ui.size.width - 35, true).setGridHeight(ui.size.height - 210, true);
+      },
       open: function() {
         var param, postData;
         param = $(this).data('param');
@@ -402,9 +408,12 @@
       autoOpen: false,
       modal: true,
       zIndex: 920,
-      width: 'auto',
+      width: 530,
       height: 'auto',
       title: i18n.dialog.languagesettings.title,
+      resize: function(event, ui) {
+        return $('#previewLanguageSettingGrid').setGridWidth(ui.size.width - 35, true).setGridHeight(ui.size.height - 180, true);
+      },
       open: function() {
         var param, postData;
         param = $(this).data('param');
