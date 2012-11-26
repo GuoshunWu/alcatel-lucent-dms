@@ -61,10 +61,10 @@ public interface DictionaryService {
      * @param appId application id
      * @param dictList collection of transient dictionaries which should contain all necessary information
      * @param mode importing mode
-     * @return warnings in a map, key is dictionary name
+     * @return delivery report
      * @throws BusinessException
      */
-    Map<String, Collection<BusinessWarning>> importDictionaries(Long appId, Collection<Dictionary> dictList, int mode) throws BusinessException;
+    DeliveryReport importDictionaries(Long appId, Collection<Dictionary> dictList, int mode) throws BusinessException;
 
     /**
      * Generate dictionary files.
