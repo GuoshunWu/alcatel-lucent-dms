@@ -24,6 +24,7 @@ import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.model.Context;
+import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.Language;
 import com.alcatel_lucent.dms.model.Text;
 import com.alcatel_lucent.dms.model.Translation;
@@ -204,8 +205,26 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
     
     public void updateTranslationStatus(Collection<Long> transIds, int transStatus) {
     	for (Long id : transIds) {
-    		Translation trans = (Translation) dao.retrieve(Translation.class, id);
-    		trans.setStatus(transStatus);
+    		if (id > 0) {
+	    		Translation trans = (Translation) dao.retrieve(Translation.class, id);
+	    		trans.setStatus(transStatus);
+    		} else {	// virtual tid = - (label_id * 1000 + language_id)
+    			id = -id;
+    			Long labelId = id / 1000;
+    			Long langId = id % 1000;
+    			Label label = (Label) dao.retrieve(Label.class, labelId);
+    			Translation trans = label.getText().getTranslation(langId);
+    			if (trans == null) {
+    				trans = new Translation();
+        			trans.setTranslation(label.getReference());
+        			trans.setLanguage((Language) dao.retrieve(Language.class, langId));
+        			trans.setStatus(transStatus);
+        			trans.setText(label.getText());
+        			dao.create(trans);
+    			} else {
+    				trans.setStatus(transStatus);
+    			}
+    		}
     	}
     }
     
