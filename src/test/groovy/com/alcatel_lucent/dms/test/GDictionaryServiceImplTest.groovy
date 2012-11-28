@@ -21,6 +21,7 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.test.context.transaction.TransactionConfiguration
 import com.alcatel_lucent.dms.model.*
+import com.alcatel_lucent.dms.service.*
 import com.alcatel_lucent.dms.Constants
 
 import static org.apache.commons.lang.StringUtils.join;
@@ -106,7 +107,8 @@ class GDictionaryServiceImplTest {
 
         /***************************************** Test for deliver DCT ****************************************/
         Collection<Dictionary> dicts = ds.previewDictionaries testFilesPathDir, new File(testFilePath)
-		Dictionary dbDict = ds.importDictionary appId, dicts[0], version, Constants.DELIVERY_MODE, langCodes, langCharset, warnings
+		DeliveryReport report = new DeliveryReport()
+		Dictionary dbDict = ds.importDictionary appId, dicts[0], version, Constants.DELIVERY_MODE, langCodes, langCharset, warnings, report
 		//Dictionary dbDict = ds.deliverDCT dictName, version, testFilePath, appId, Constants.DELIVERY_MODE, encoding, langCodes, langCharset, warnings
 
         // dictionary check
@@ -208,7 +210,7 @@ class GDictionaryServiceImplTest {
 		dicts[0].labels.each {
 			it.context.name = dictName
 		}
-		dbDict = ds.importDictionary appId, dicts[0], version, Constants.DELIVERY_MODE, langCodes, langCharset, warnings
+		dbDict = ds.importDictionary appId, dicts[0], version, Constants.DELIVERY_MODE, langCodes, langCharset, warnings, new DeliveryReport()
 //        dbDict = ds.deliverDCT dictName, version, testFilePath, appId, Constants.DELIVERY_MODE, encoding, langCodes, langCharset, warnings
         // check result
 
@@ -245,7 +247,7 @@ class GDictionaryServiceImplTest {
 		dicts[0].labels.each {
 			it.context.name = dictName
 		}
-		dbDict = ds.importDictionary appId, dicts[0], version, Constants.TRANSLATION_MODE, langCodes, langCharset, warnings
+		dbDict = ds.importDictionary appId, dicts[0], version, Constants.TRANSLATION_MODE, langCodes, langCharset, warnings, new DeliveryReport()
 		
         translatedStringMap[new MultiKey("COPYRIGHT", "CH0")] = "用于测试的改变，2007-2012年阿尔卡特朗讯版权所有。保留所有权力\nAlcatel-Lucent与Alcatel-Lucent标识是阿尔卡特朗讯各自的注册商标和服务标记。"
 
@@ -385,7 +387,7 @@ class GDictionaryServiceImplTest {
 				}
 				Long appId = 1
 				String dictVersion = "1.0"
-				ds.importDictionary appId, dict, dictVersion, mode, langCodes as String[], langCharset, warnings 
+				ds.importDictionary appId, dict, dictVersion, mode, langCodes as String[], langCharset, warnings, new DeliveryReport()
 				if (!warnings.isEmpty()) {
 					join(warnings, '\n').replace("\"", "\"\"");
 					String forCSV = warnings.toString().replace("\"", "\"\"");
@@ -472,7 +474,7 @@ class GDictionaryServiceImplTest {
                 'sv-SE': 'UTF-8',
         ]
         String[] langCodes = null
-        ds.importDictionary dict, langCodes, langCharset, warnings
+        ds.importDictionary dict, langCodes, langCharset, warnings, new DeliveryReport()
 
         assertNotNull dict
 
