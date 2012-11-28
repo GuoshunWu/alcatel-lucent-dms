@@ -42,7 +42,7 @@
             <s:token/>
             <table border="0" align='center'>
                 <tr>
-                    <td align="right" style="width:90px">
+                    <td align="right" style="width:100px">
                         <label for="idLoginname"><s:text name="login.loginname"/></label></td>
                     <td><s:textfield name="loginname" id="idLoginname" size="25" maxlength="40"/></td>
                     <td style="width:100px">
