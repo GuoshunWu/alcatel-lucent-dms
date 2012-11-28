@@ -12,7 +12,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 
-    <title><s:text name="transmng.title"/></title>
+    <title><s:text name="taskmng.title"/></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta http-equiv="Pragma" content="no-cache">
 
