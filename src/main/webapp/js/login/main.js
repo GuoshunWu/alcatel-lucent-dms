@@ -16,7 +16,7 @@
     $("#idLoginname").formValidator({
       onShow: i18n.nameshowtip,
       onFocus: i18n.namefocustip,
-      onCorrect: ""
+      onCorrect: i18n.namecorrecttip
     }).inputValidator({
       min: 1,
       max: 30,
@@ -25,7 +25,7 @@
     $("#idPassword").formValidator({
       onShow: i18n.pwdshowtip,
       onFocus: i18n.pwdfocustip,
-      onCorrect: ""
+      onCorrect: i18n.pwdcorrecttip
     }).inputValidator({
       min: 1,
       max: 30,

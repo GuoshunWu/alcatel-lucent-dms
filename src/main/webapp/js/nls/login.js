@@ -10,7 +10,7 @@ define({
         nameshowtip:'CSL',
         namefocustip:'CSL',
         nameerrtip:'Please input your CSL.',
-        namecorrecttip:' ',
+        namecorrecttip:'aaa',
         pwdshowtip:'CIP',
         pwdfocustip:'CIP',
         pwderrtip:'Please input your CIP.',
