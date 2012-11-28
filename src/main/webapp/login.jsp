@@ -42,11 +42,11 @@
             <s:token/>
             <table border="0" align='center'>
                 <tr>
-                    <td align="right">
-                        <label for="idLoginname"><s:text name="login.loginname"/></label>
+                    <td align="right" style="width:90px">
+                        <label for="idLoginname"><s:text name="login.loginname"/></label></td>
                     <td><s:textfield name="loginname" id="idLoginname" size="25" maxlength="40"/></td>
-                    <td>
-                        <div id="idLoginnameTip" style="width:250px">
+                    <td style="width:100px">
+                        <div id="idLoginnameTip">
                             <s:fielderror name="loginname"/>
                         </div>
                     </td>
@@ -57,7 +57,7 @@
                     </td>
                     <td><s:password name="password" id="idPassword" size="25" maxlength="40"/></td>
                     <td>
-                        <div id="idPasswordTip" style="width:250px">
+                        <div id="idPasswordTip">
                             <s:fielderror name="password"/>
                         </div>
                     </td>

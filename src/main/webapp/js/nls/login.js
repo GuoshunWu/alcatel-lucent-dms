@@ -7,14 +7,14 @@
  */
 define({
     root:{
-        nameshowtip:'CSL',
-        namefocustip:'CSL',
-        nameerrtip:'Please input your CSL.',
-        namecorrecttip:'aaa',
-        pwdshowtip:'CIP',
-        pwdfocustip:'CIP',
-        pwderrtip:'Please input your CIP.',
-        pwdcorrecttip: ' '
+        nameshowtip:'Your CSL',
+        namefocustip:'Your CSL',
+        nameerrtip:'No empty',
+        namecorrecttip:'&nbsp;',
+        pwdshowtip:'Your CIP',
+        pwdfocustip:'Your CIP',
+        pwderrtip:'No empty',
+        pwdcorrecttip: '&nbsp;'
     },
     "zh-cn":true
 });
