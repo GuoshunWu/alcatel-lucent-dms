@@ -1,9 +1,16 @@
 package com.alcatel_lucent.dms.service;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import com.alcatel_lucent.dms.BusinessWarning;
+import com.alcatel_lucent.dms.model.Context;
+import com.alcatel_lucent.dms.model.Dictionary;
+import com.alcatel_lucent.dms.model.DictionaryLanguage;
+import com.alcatel_lucent.dms.model.Label;
+import com.alcatel_lucent.dms.model.Text;
 
 public class DeliveryReport {
 	
@@ -19,6 +26,10 @@ public class DeliveryReport {
 	private int translatedWC;		// word count of translated strings
 	private int matchedNum;			// number of auto-matched strings
 	private int matchedWC;			// word count of auto-matched strings
+	
+	private HashSet<String> dictNames = new HashSet<String>();
+	// key=<context_name>~~<langId>~~<reference>, value is whether it's auto-matched
+	private HashMap<String, Boolean> translationMap = new HashMap<String, Boolean>();
 	
 	private Map<String, Collection<BusinessWarning>> warningMap;
 
@@ -124,6 +135,23 @@ public class DeliveryReport {
 
 	public void setMatchedWC(int matchedWC) {
 		this.matchedWC = matchedWC;
+	}
+
+	public void addData(Context context, Dictionary dict,
+			Collection<Label> labels, Map<String, Text> textMap) {
+		if (!dictNames.contains(dict.getName())) {
+			dictNum++;
+			dictNames.add(dict.getName());
+		}
+		labelNum += labels.size();
+		if (dict.getDictLanguages() == null || dict.getDictLanguages().isEmpty()) return;
+		translationNum += labels.size() * dict.getDictLanguages().size();
+		for (Label label : labels) {
+			for (DictionaryLanguage dl : dict.getDictLanguages()) {
+			}
+		}
+		
+		
 	}
 
 }

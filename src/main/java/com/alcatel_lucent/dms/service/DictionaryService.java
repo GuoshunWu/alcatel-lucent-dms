@@ -54,7 +54,7 @@ public interface DictionaryService {
      */
     Dictionary importDictionary(Long appId, Dictionary dict, String version, int mode, String[] langCodes,
                          Map<String, String> langCharset,
-                         Collection<BusinessWarning> warnings);
+                         Collection<BusinessWarning> warnings, DeliveryReport report);
     
     /**
      * Import a batch dictionaries

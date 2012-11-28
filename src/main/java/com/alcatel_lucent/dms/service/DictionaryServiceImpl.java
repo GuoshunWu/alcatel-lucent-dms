@@ -152,25 +152,27 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 					continue;
 				// check for each language, if translation in any language is conflict 
 				// with Default context, set the label to dictionary context
-				for (LabelTranslation lt : label.getOrigTranslations()) {
-					if (lt.getLanguage() != null && !lt.getOrigTranslation().equals(label.getReference())) {
-						Text text = textMap.get(label.getReference());
-						if (text != null) {
-							Translation trans = text.getTranslation(lt.getLanguage().getId());
-							if (trans != null) {	// compare converted label translation with context translation
-								String translation = lt.getOrigTranslation();
-								DictionaryLanguage dl = dict.getDictLanguage(lt.getLanguageCode());
-								if (dl != null && dl.getCharset() != null && dict.getEncoding() != null) {
-									try {
-										translation = new String(translation.getBytes(dict.getEncoding()), dl.getCharset().getName());
-									} catch (UnsupportedEncodingException e) {
-										log.error(e);
+				if (label.getOrigTranslations() != null) {
+					for (LabelTranslation lt : label.getOrigTranslations()) {
+						if (lt.getLanguage() != null && !lt.getOrigTranslation().equals(label.getReference())) {
+							Text text = textMap.get(label.getReference());
+							if (text != null) {
+								Translation trans = text.getTranslation(lt.getLanguage().getId());
+								if (trans != null) {	// compare converted label translation with context translation
+									String translation = lt.getOrigTranslation();
+									DictionaryLanguage dl = dict.getDictLanguage(lt.getLanguageCode());
+									if (dl != null && dl.getCharset() != null && dict.getEncoding() != null) {
+										try {
+											translation = new String(translation.getBytes(dict.getEncoding()), dl.getCharset().getName());
+										} catch (UnsupportedEncodingException e) {
+											log.error(e);
+										}
 									}
-								}
-								if (!trans.getTranslation().equals(translation)) {
-									log.info("Context conflict - Reference:" + label.getReference() + ", Translation:" + lt.getOrigTranslation() + ", ContextTranslation:" + trans.getTranslation());
-									label.setContext(dictCtx);
-									break;
+									if (!trans.getTranslation().equals(translation)) {
+										log.info("Context conflict - Reference:" + label.getReference() + ", Translation:" + lt.getOrigTranslation() + ", ContextTranslation:" + trans.getTranslation());
+										label.setContext(dictCtx);
+										break;
+									}
 								}
 							}
 						}
@@ -189,23 +191,25 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 						text.setReference(label.getReference());
 						textMap.put(label.getReference(), text);
 					}
-					for (LabelTranslation lt : label.getOrigTranslations()) {
-						if (lt.getLanguage() != null && !lt.getOrigTranslation().equals(label.getReference())) {
-							Translation trans = text.getTranslation(lt.getLanguage().getId());
-							if (trans == null) {
-								trans = new Translation();
-								String translation = lt.getOrigTranslation();
-								DictionaryLanguage dl = dict.getDictLanguage(lt.getLanguageCode());
-								if (dl != null && dl.getCharset() != null && dict.getEncoding() != null) {
-									try {
-										translation = new String(translation.getBytes(dict.getEncoding()), dl.getCharset().getName());
-									} catch (UnsupportedEncodingException e) {
-										log.error(e);
+					if (label.getOrigTranslations() != null) {
+						for (LabelTranslation lt : label.getOrigTranslations()) {
+							if (lt.getLanguage() != null && !lt.getOrigTranslation().equals(label.getReference())) {
+								Translation trans = text.getTranslation(lt.getLanguage().getId());
+								if (trans == null) {
+									trans = new Translation();
+									String translation = lt.getOrigTranslation();
+									DictionaryLanguage dl = dict.getDictLanguage(lt.getLanguageCode());
+									if (dl != null && dl.getCharset() != null && dict.getEncoding() != null) {
+										try {
+											translation = new String(translation.getBytes(dict.getEncoding()), dl.getCharset().getName());
+										} catch (UnsupportedEncodingException e) {
+											log.error(e);
+										}
 									}
+									trans.setLanguage(lt.getLanguage());
+									trans.setTranslation(translation);
+									text.addTranslation(trans);
 								}
-								trans.setLanguage(lt.getLanguage());
-								trans.setTranslation(translation);
-								text.addTranslation(trans);
 							}
 						}
 					}
@@ -282,7 +286,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	@Override
     public Dictionary importDictionary(Long appId, Dictionary dict, String version, int mode, String[] langCodes,
                                 Map<String, String> langCharset,
-                                Collection<BusinessWarning> warnings) {
+                                Collection<BusinessWarning> warnings, DeliveryReport report) {
         log.info("Start importing dictionary in " + (mode == Constants.DELIVERY_MODE ? "DELIVERY" : "TRANSLATION") + " mode");
         if (null == dict)
             return null;
@@ -642,6 +646,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	                }
                 }
             }
+            report.addData(context, dbDict, labels, dbTextMap);
         }
 
         if (nonBreakExceptions.hasNestedException()) {
@@ -662,7 +667,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     			}
     		}
     		Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
-    		importDictionary(appId, dict, dict.getVersion(), mode, null, langCharset, warnings);
+    		importDictionary(appId, dict, dict.getVersion(), mode, null, langCharset, warnings, report);
     		warningMap.put(dict.getName(), warnings);
     	}
     	report.setWarningMap(warningMap);

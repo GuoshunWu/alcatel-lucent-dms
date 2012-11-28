@@ -143,6 +143,7 @@ public class PropParser extends DictionaryParser {
 		for (File file : files) {
 			String[] nameParts = splitFileName(file.getName());
 			String langCode = nameParts[2];
+			if (langCode.equals(refLangCode)) continue;
 			BusinessException fileExceptions = new BusinessException(BusinessException.NESTED_PROP_FILE_ERROR, file.getName());
 			DictionaryLanguage dictLanguage = new DictionaryLanguage();
 			dictLanguage.setLanguageCode(langCode);
@@ -151,21 +152,19 @@ public class PropParser extends DictionaryParser {
 			dictLanguage.setLanguage(language);
 			dictLanguage.setCharset(languageService.getCharset("ISO-8859-1"));
 			dictLanguages.add(dictLanguage);
-			if (!langCode.equals(refLangCode)) {
-				Collection<Label> labels = readLabels(file, dictionary, dictLanguage, warnings, fileExceptions);
-				for (Label label : labels) {
-					Label refLabel = dictionary.getLabel(label.getKey());
-					if (refLabel == null) {
-						// TODO handle unexpected labels
-					} else {
-						LabelTranslation trans = new LabelTranslation();
-						trans.setLanguageCode(langCode);
-						trans.setLanguage(language);
-						trans.setOrigTranslation(label.getReference());
-						trans.setAnnotation1(label.getAnnotation1());
-						trans.setSortNo(sortNo);
-						refLabel.addOrigTranslation(trans);
-					}
+			Collection<Label> labels = readLabels(file, dictionary, dictLanguage, warnings, fileExceptions);
+			for (Label label : labels) {
+				Label refLabel = dictionary.getLabel(label.getKey());
+				if (refLabel == null) {
+					// TODO handle unexpected labels
+				} else {
+					LabelTranslation trans = new LabelTranslation();
+					trans.setLanguageCode(langCode);
+					trans.setLanguage(language);
+					trans.setOrigTranslation(label.getReference());
+					trans.setAnnotation1(label.getAnnotation1());
+					trans.setSortNo(sortNo);
+					refLabel.addOrigTranslation(trans);
 				}
 			}
 			sortNo++;
