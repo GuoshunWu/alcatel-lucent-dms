@@ -2,6 +2,7 @@ package com.alcatel_lucent.dms.service;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.HashMap;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ public class AuthenticationServiceImpl extends BaseServiceImpl implements Authen
 
 	@Autowired
 	private LDAPService ldapService;
+	
+	private HashMap<String, User> tokenMap = new HashMap<String, User>();
 	
 	public User login(String username, String password) {
 		if (ldapService.login(username, password)) {	// login successfully
@@ -38,4 +41,20 @@ public class AuthenticationServiceImpl extends BaseServiceImpl implements Authen
 		}
 	}
 	
+	public String secureLogin1(String username, String password) {
+		User user = login(username, password);
+		if (user != null) {
+			String token = "" + ("DMS" + username + password + System.currentTimeMillis()).hashCode();
+			tokenMap.put(token, user);
+			return token;
+		} else {
+			return null;
+		}
+	}
+	
+	public User secureLogin2(String token) {
+		User user = tokenMap.get(token);
+		tokenMap.remove(token);
+		return user;
+	}
 }
