@@ -14,7 +14,9 @@ require.config({
     paths:{
         jquery:'jquery-1.7.2.min',
         jqueryui:'jquery-ui-1.8.22.custom.min',
-        jqvalidate:'jquery.validate',
+//        jqvalidate:'jquery.validate',
+        formvalidate:'formValidator-4.0.1.min',
+        formvalreg:'formValidatorRegex',
         jqform:'jquery.form',
         jqgrid:'jquery.jqGrid.min',
         jqtree:'jquery.jstree',
@@ -35,10 +37,15 @@ require.config({
         'coffee-script':'../coffee-script'
     },
     shim:{
-        'jqvalidate':{
+        'formvalidate':{
             deps:['jquery'],
             exports:'jQuery'
         },
+        'formvalreg':{},
+//        'jqvalidate':{
+//            deps:['jquery'],
+//            exports:'jQuery'
+//        },
         'jqform':{
             deps:['jquery'],
             exports:'jQuery'

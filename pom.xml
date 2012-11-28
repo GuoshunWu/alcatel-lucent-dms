@@ -308,12 +308,12 @@
             <version>2.3.4.1</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.struts</groupId>
-            <artifactId>struts2-junit-plugin</artifactId>
-            <version>2.3.4.1</version>
-            <scope>test</scope>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.apache.struts</groupId>-->
+            <!--<artifactId>struts2-junit-plugin</artifactId>-->
+            <!--<version>2.3.4.1</version>-->
+            <!--<scope>test</scope>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>commons-fileupload</groupId>
@@ -360,6 +360,13 @@
             <artifactId>jstl</artifactId>
             <version>1.2</version>
             <scope>provided</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-jci-fam</artifactId>
+            <version>1.0</version>
         </dependency>
 
     </dependencies>
@@ -442,7 +449,7 @@
                 <version>1.2.1</version>
                 <executions>
                     <execution>
-                        <!--<phase>prepare-package</phase>-->
+                        <phase>prepare-package</phase>
                         <goals>
                             <goal>exec</goal>
                         </goals>
@@ -494,6 +501,10 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
+
+        <pluginManagement>
+
+        </pluginManagement>
     </build>
 
     <profiles>
@@ -516,7 +527,8 @@
 
                 <db.driver>org.h2.Driver</db.driver>
                 <db.url>
-                    jdbc:h2:tcp://localhost/dms;MODE=MYSQL;AUTO_SERVER=TRUE;DB_CLOSE_DELAY=-1;INIT=create schema if not exists dms;
+                    jdbc:h2:tcp://localhost/dms;MODE=MYSQL;AUTO_SERVER=TRUE;DB_CLOSE_DELAY=-1;
+                    <!--INIT=create schema if not exists dms;-->
                 </db.url>
                 <db.user>dms</db.user>
                 <db.password>alcatel123</db.password>
@@ -526,6 +538,9 @@
                 <db.dialect>org.hibernate.dialect.H2Dialect</db.dialect>
                 <!-- none, create, create-drop, update, validate -->
                 <db.hbm2ddl.auto>none</db.hbm2ddl.auto>
+
+                <httpsPort>8443</httpsPort>
+                <httpPort>80</httpPort>
             </properties>
 
             <build>
@@ -545,6 +560,9 @@
                             <update>true</update>
                             <username>admin</username>
                             <password>alcatel123</password>
+                            <httpsPort>8443</httpsPort>
+                            <keystoreFile>conf/.keystore</keystoreFile>
+                            <keystorePass>changeit</keystorePass>
                         </configuration>
                     </plugin>
                 </plugins>

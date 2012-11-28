@@ -53,7 +53,7 @@ public class AuthenticationFilter implements Filter {
 
 //        forward will cause struts core filter error
 //        request.getRequestDispatcher("/login.jsp").forward(req,resp);
-        response.sendRedirect(request.getContextPath()+"/login.jsp");
+        response.sendRedirect(request.getContextPath()+"/login/forward-to-https");
     }
 
     public void init(FilterConfig config) throws ServletException {

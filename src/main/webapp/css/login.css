@@ -53,6 +53,21 @@ input.button {
     *border-top: #CFCBDF solid 1px;
 }
 
+input.disabledbutton {
+    background: gray url(../images/login/bar_alcatel.gif);
+    width: 70px;
+    PADDING-RIGHT: 5px;
+    PADDING-LEFT: 5px;
+    FONT-SIZE: 12px;
+    font-weight: bold;
+    CURSOR: pointer;
+    COLOR: white;
+    PADDING-TOP: 1px;
+    border: #3E2782 outset 1px;
+    *border-left: #CFCBDF solid 1px;
+    *border-top: #CFCBDF solid 1px;
+}
+
 /* ------------------------------------------------------------------*/
 /* WebWork2 CSS Classes                                              */
 /* ------------------------------------------------------------------*/
@@ -76,7 +91,6 @@ input.button {
 }
 
 label {
-    width: 10em;
     float: left;
 }
 
@@ -100,3 +114,5 @@ em {
     padding-right: 1em;
     vertical-align: top;
 }
+
+/*@import "jqformvalidator/validator.css";*/

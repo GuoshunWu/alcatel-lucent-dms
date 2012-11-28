@@ -3,39 +3,37 @@
 
   define(function(require) {
     var $, i18n;
-    $ = require('jqueryui');
-    require('jqvalidate');
-    require('jqform');
-    require('blockui');
+    $ = require('formvalidate');
     i18n = require('i18n!nls/login');
-    $('#loginForm').validate({
-      rules: {
-        loginname: "required",
-        password: 'required'
-      },
-      messages: {
-        loginname: i18n.namerequired,
-        password: i18n.pwdrequired
-      },
-      errorPlacement: function(error, element) {
-        return error.appendTo(element.parent("td").next("td"));
-      },
-      debug: false
+    $.formValidator.initConfig({
+      formID: "loginForm",
+      autoTip: true
+    }, {
+      onError: function(msg) {}
+    }, {
+      inIframe: false
     });
-    return $('#loginForm').ajaxForm({
-      dataType: 'json',
-      beforeSubmit: function(formData, jqForm, options) {
-        return $('#loginForm').block({
-          message: '<h1><img src="images/busy.gif" />Login...Please wait</h1>'
-        });
-      },
-      success: function(json, statusText, xhr, $form) {
-        $('#loginForm').unblock();
-        if (0 !== json.status) {
-          $('#loginStatus').text(json.message);
-          return;
-        }
-        return window.location = 'appmng.jsp';
+    $("#idLoginname").formValidator({
+      onShow: i18n.nameshowtip,
+      onFocus: i18n.namefocustip,
+      onCorrect: ""
+    }).inputValidator({
+      min: 1,
+      max: 30,
+      onError: i18n.nameerrtip
+    });
+    $("#idPassword").formValidator({
+      onShow: i18n.pwdshowtip,
+      onFocus: i18n.pwdfocustip,
+      onCorrect: ""
+    }).inputValidator({
+      min: 1,
+      max: 30,
+      onError: i18n.pwderrtip
+    });
+    return $('#loginForm').bind('submit', function() {
+      if ($.formValidator.pageIsValid()) {
+        return $("#idSubmit").attr('disabled', true).css('color', 'grey');
       }
     });
   });
