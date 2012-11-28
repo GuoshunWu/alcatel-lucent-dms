@@ -114,9 +114,6 @@ define (require)->
     #   get tree instance
     appTree = $.jstree._reference("##{ids.navigateTree}")
 
-    #    $(products).each (index, node)->
-    #      console.log node
-    #      appTree.open_node node
 
     $('#loading-container').remove()
     $('#optional-container').show()

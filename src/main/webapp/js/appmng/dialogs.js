@@ -157,7 +157,6 @@
         var productId, url,
           _this = this;
         productId = $("#selVersion").val();
-        console.log(productId);
         url = "rest/applications/base/" + productId;
         return $.getJSON(url, {}, function(json) {
           return $('#applicationName', _this).empty().append(util.json2Options(json, false, 'name')).trigger('change');

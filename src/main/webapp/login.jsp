@@ -10,7 +10,10 @@
     <meta http-equiv="Pragma" content="no-cache"/>
 
     <link rel="stylesheet" type="text/css" href="css/login.css"/>
+    <link rel="stylesheet" type="text/css" href="css/jqformvalidator/validator.css"/>
+
     <%@include file="common/env.jsp" %>
+
     <script type="text/javascript" src="js/lib/require.js"></script>
     <script type="text/javascript">
         //Load common code that includes config, then load the app
@@ -18,7 +21,7 @@
         //a separate file so after a build there are only 2 HTTP
         //requests instead of three.
 
-        require(['./js/config'], function (config) {
+        require(['./js/config.js?bust=' + new Date().getTime()], function (config) {
             require(['login/main']);
         }, function (err) {
             console.log("load module err: " + err);
@@ -35,39 +38,44 @@
 
     <div>
         <s:form id="loginForm" name="loginForm" validate="false" theme="simple" method="post" action='login'
-                namespace='/login'>
+                namespace='/'>
+            <s:token/>
             <table border="0" align='center'>
                 <tr>
-                    <td style="width: 100px" align="right"><strong>
-                        <label for="idLoginname"><s:text name="login.loginname"/></label></strong></td>
-                    <td><s:textfield name="loginname" id="idLoginname" size="25"
-                                     maxlength="40"/>
-                            <%--<span id="loginNameErr" style="color:red"/>--%>
+                    <td align="right">
+                        <label for="idLoginname"><s:text name="login.loginname"/></label>
+                    <td><s:textfield name="loginname" id="idLoginname" size="25" maxlength="40"/></td>
+                    <td>
+                        <div id="idLoginnameTip" style="width:250px">
+                            <s:fielderror name="loginname"/>
+                        </div>
                     </td>
-                    <td align="left"/>
                 </tr>
                 <tr>
-                    <td style="width: 100px" align="right">
-                        <strong><label for="idPassword"><s:text name="login.password"/></label></strong>
+                    <td align="right">
+                        <label for="idPassword"><s:text name="login.password"/></label>
                     </td>
-                    <td><s:password name="password" id="idPassword" size="25" maxlength="40"/>
-                            <%--<span id="pwdErr" style="color:red"/>--%>
+                    <td><s:password name="password" id="idPassword" size="25" maxlength="40"/></td>
+                    <td>
+                        <div id="idPasswordTip" style="width:250px">
+                            <s:fielderror name="password"/>
+                        </div>
                     </td>
-                    <td align="left"/>
                 </tr>
                 <tr>
                     <td colspan="3"></td>
                 </tr>
                 <tr>
                     <td colspan="3">
-                            <%--<input type="button" name='loginAction' id="loginButton" value="<s:text name="login.login"/>"--%>
-                        <s:submit value="%{getText('login.login')}" cssClass="button"/>
+                        <s:submit id="idSubmit" value="%{getText('login.login')}" cssClass="button"/>
                         <s:reset value="%{getText('login.reset')}" cssClass="button"/>
                     </td>
                 </tr>
                 <tr>
                     <td colspan="3">
-                        <div id="loginStatus" style="color:red"></div>
+                        <div id="loginStatus" style="color:red">
+                            <s:actionerror/>
+                        </div>
                     </td>
                 </tr>
             </table>

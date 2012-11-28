@@ -176,6 +176,9 @@
         width: 860,
         height: 'auto',
         modal: true,
+        resize: function(event, ui) {
+          return $("#transDetailGridList").setGridWidth(ui.size.width - 48, true).setGridHeight(ui.size.height - 270, true);
+        },
         create: function() {
           return $('#detailLanguageSwitcher').change(function() {
             var language, param;

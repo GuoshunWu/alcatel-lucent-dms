@@ -16,7 +16,7 @@ public class LogoutAction extends BaseAction implements SessionAware {
 
     @Override
 	@Action(results = {
-            @Result(name = SUCCESS, type = "redirect", location = "/login.jsp")
+            @Result(name = SUCCESS, type = "redirect", location = "/login/forward-to-https")
     })
 	public String execute() {
     	UserContext uc = (UserContext) session.get(UserContext.SESSION_USER_CONTEXT);

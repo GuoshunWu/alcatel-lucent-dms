@@ -47,6 +47,7 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
     taskDialog = $("#createTranslationTaskDialog").dialog {
     autoOpen: false, modal: true
     width: 900, height: 'auto', position: [25, 100], show: { effect: 'slide', direction: "down" }
+
     open: ->
       info = grid.getTotalSelectedRowInfo()
       taskname = "#{$('#productBase option:selected').text()}_#{$('#productRelease option:selected').text()}"
@@ -106,6 +107,7 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
     }
     transDetailDialog = $('#translationDetailDialog').dialog {
     autoOpen: false, width: 860, height: 'auto', modal: true
+    resize: (event, ui)->$("#transDetailGridList").setGridWidth(ui.size.width - 48, true).setGridHeight(ui.size.height - 270, true)
     create: ()->
       $('#detailLanguageSwitcher').change ->
         param = $('#translationDetailDialog').data "param"

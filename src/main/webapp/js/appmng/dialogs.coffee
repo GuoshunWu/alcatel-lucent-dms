@@ -100,7 +100,6 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
 
   open: (event, ui)->
     productId = $("#selVersion").val()
-    console.log productId
     url = "rest/applications/base/#{productId}"
     $.getJSON url, {}, (json)=>
       $('#applicationName', @).empty().append(util.json2Options json, false, 'name').trigger 'change'

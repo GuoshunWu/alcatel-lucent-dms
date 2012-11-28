@@ -25,7 +25,7 @@
         //a separate file so after a build there are only 2 HTTP
         //requests instead of three.
 
-        require(['./js/config'],function(config){
+        require(['./js/config.js?bust='+new Date().getTime()],function(config){
             require(['appmng/navigatetree']);
         });
     </script>

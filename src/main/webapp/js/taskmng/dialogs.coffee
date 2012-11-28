@@ -1,21 +1,10 @@
-define [ 'jqueryui', 'require', 'taskmng/taskreport_grid', 'taskmng/transdetail_grid', 'jqmsgbox'], ($, require, reportgrid, detailgrid)->
-  c18n = require 'i18n!nls/common'
-  i18n = require 'i18n!nls/taskmng'
-  util = require 'util'
-
-  #  require 'jqmsgbox'
-  c18n = require 'i18n!nls/common'
-
-  #  require 'blockui'
-
-
+define ['jqueryui', 'taskmng/taskreport_grid', 'taskmng/transdetail_grid', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/taskmng', 'util', 'require'], ($, reportgrid, detailgrid, msgbox, c18n, i18n, util, require)->
   languageChooserDialog = $("<div title='Study' id='languageChooser'>").dialog {
   autoOpen: false, position: [23, 126], height: 'auto', width: 900, modal: true
   show: { effect: 'slide', direction: "up" }
   create: ->$.getJSON 'rest/languages?prop=id,name', {}, (languages)=>$(@).append(util.generateLanguageTable languages)
   buttons: [
     { text: c18n.ok, click: ()->
-      console.log ($(":checkbox[name='languages']", @).map () -> {id: @id, name: @value} if @checked).get()
       $(@).dialog "close"
     }
     {text: c18n.cancel, click: ()->$(@).dialog "close"}
@@ -29,6 +18,7 @@ define [ 'jqueryui', 'require', 'taskmng/taskreport_grid', 'taskmng/transdetail_
     param = $(@).data 'param'
     $.ajax 'rest/languages', async: false, dataType: 'json', data: {task: param.id, prop: 'id,name'}, success: (languages)->
       reportgrid.regenerateGrid {id: param.id, languages: languages}
+  resize: (event, ui)->$("#reportGrid").setGridWidth(ui.size.width - 40, true).setGridHeight(ui.size.height - 190, true)
 
   buttons: [
     {text: 'Import', click: ()->
@@ -60,6 +50,7 @@ define [ 'jqueryui', 'require', 'taskmng/taskreport_grid', 'taskmng/transdetail_
   viewDetail = $('#translationDetailDialog').dialog {
   autoOpen: false, modal: true
   width: 850, height: 'auto'
+  resize: (event, ui)->$("#viewDetailGrid", @).setGridWidth(ui.size.width - 35, true).setGridHeight(ui.size.height - 145, true)
   open: ->
     param = $(@).data 'param'
     postData = $.extend param, {format: 'grid', prop: 'labelKey,maxLength,text.context.name,text.reference,newTranslation'}

@@ -10,7 +10,19 @@
     <description>
         Dictionary Management System
     </description>
+    <!--
+    The Spring plugin can be configured to automatically reload classes that change in the file system.
+    This feature will enable code changes to be "hot deployed" without having to restart the web container.
+    To enable this feature follow these steps:
 
+    Set "struts.devMode" to "true"
+    Set "struts.class.reloading.watchList" to a comma separated list of directories, or jar files (absolute or relative paths)
+    Add this to web.xml:
+    -->
+    <!--<context-param>-->
+    <!--<param-name>contextClass</param-name>-->
+    <!--<param-value>org.apache.struts2.spring.ClassReloadingXMLWebApplicationContext</param-value>-->
+    <!--</context-param>-->
 
     <!-- Load Spring -->
     <context-param>
@@ -53,7 +65,7 @@
         <!-- exclude patterns URL, which are regular expression separated by comma-->
         <init-param>
             <param-name>excludePatterns</param-name>
-            <param-value>.*login(?:\.(?:jsp|action))?,.*.js,.*get-locale,.*.css,.*images.*,.*.ico</param-value>
+            <param-value>.*login.*,.*.js,.*get-locale,.*.css,.*images.*,.*.ico</param-value>
         </init-param>
     </filter>
 
@@ -63,13 +75,13 @@
     </filter-mapping>
 
     <!--<filter>-->
-        <!--<filter-name>springSecurityFilterChain</filter-name>-->
-        <!--<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>-->
+    <!--<filter-name>springSecurityFilterChain</filter-name>-->
+    <!--<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>-->
     <!--</filter>-->
 
     <!--<filter-mapping>-->
-        <!--<filter-name>springSecurityFilterChain</filter-name>-->
-        <!--<url-pattern>/*</url-pattern>-->
+    <!--<filter-name>springSecurityFilterChain</filter-name>-->
+    <!--<url-pattern>/*</url-pattern>-->
     <!--</filter-mapping>-->
 
     <filter>
@@ -84,6 +96,7 @@
         <url-pattern>/trans/*</url-pattern>
         <url-pattern>/task/*</url-pattern>
         <url-pattern>/login/*</url-pattern>
+        <url-pattern>*.action</url-pattern>
         <url-pattern>*.jsp</url-pattern>
     </filter-mapping>
 
@@ -151,8 +164,6 @@
     </servlet-mapping>
 
     <welcome-file-list>
-        <welcome-file>login.jsp</welcome-file>
         <welcome-file>index.html</welcome-file>
-        <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
 </web-app>

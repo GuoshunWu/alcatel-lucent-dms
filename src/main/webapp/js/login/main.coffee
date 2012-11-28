@@ -1,35 +1,29 @@
 define (require)->
-  $ = require 'jqueryui'
-  require 'jqvalidate'
-  require 'jqform'
-  require 'blockui'
-
+  $ = require 'formvalidate'
   i18n = require 'i18n!nls/login'
 
-#  console.log i18n.namerequired
+  $.formValidator.initConfig(formID: "loginForm", autoTip: true, (onError: (msg)->
+  #    alert(msg)
+  ), inIframe: false)
+  $("#idLoginname").formValidator(onShow: i18n.nameshowtip, onFocus: i18n.namefocustip, onCorrect: "")
+  .inputValidator(min: 1, max: 30, onError: i18n.nameerrtip)
+  $("#idPassword").formValidator(onShow: i18n.pwdshowtip, onFocus: i18n.pwdfocustip, onCorrect: "")
+  .inputValidator(min: 1, max: 30, onError: i18n.pwderrtip)
 
-  $('#loginForm').validate(
-    rules:
-      loginname: "required"
-      password: 'required'
-    messages:
-      loginname: i18n.namerequired
-      password: i18n.pwdrequired
-    errorPlacement: (error, element)->
-      error.appendTo(element.parent("td").next("td"))
-    debug: false
-  )
+  $('#loginForm').bind 'submit', ()->$("#idSubmit").attr('disabled', true).css('color', 'grey') if $.formValidator.pageIsValid()
 
-
-  $('#loginForm').ajaxForm(
-    dataType: 'json'
-    beforeSubmit: (formData, jqForm, options)->
-      $('#loginForm').block(message: '<h1><img src="images/busy.gif" />Login...Please wait</h1>')
-    success: (json, statusText, xhr, $form)->
-      $('#loginForm').unblock()
-      if 0 != json.status
-        $('#loginStatus').text json.message
-        return
-      window.location = 'appmng.jsp'
-  )
+#  require 'jqform'
+#  require 'blockui'
+#
+#  $('#loginForm').ajaxForm(
+#    dataType: 'json'
+#    beforeSubmit: (formData, jqForm, options)->
+#      $('#loginForm').block(message: '<h1><img src="images/busy.gif" />Login...Please wait</h1>')
+#    success: (json, statusText, xhr, $form)->
+#      $('#loginForm').unblock()
+#      if 0 != json.status
+#        $('#loginStatus').text json.message
+#        return
+#      window.location = "http://#{window.location.hostname}:80/appmng.jsp"
+#  )
 
