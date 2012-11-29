@@ -90,5 +90,7 @@
     }, function (errStatus, errText) {
         console.log("Error:" + errText + "(" + errStatus + ")");
     });
+    param.buildNumber = '1';
+
 
 </script>
