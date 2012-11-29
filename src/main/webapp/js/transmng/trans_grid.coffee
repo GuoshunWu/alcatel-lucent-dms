@@ -1,8 +1,5 @@
-define ['jqgrid', 'util', 'require', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui'], ($, util, require, msgbox)->
-  i18n = require('i18n!nls/transmng')
-  c18n = require('i18n!nls/common')
+define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n!nls/transmng', 'i18n!nls/common', 'require' ], ($, util, msgbox, gmodel, i18n, c18n, require)->
   common =
-    {
     colNames: ['ID', 'Application', 'Version', 'Num of String']
     colModel: [
       {name: 'id', index: 'id', width: 55, align: 'center', hidden: true, frozen: true}
@@ -10,72 +7,63 @@ define ['jqgrid', 'util', 'require', 'jqmsgbox', 'transmng/grid.colmodel', 'bloc
       {name: 'appVersion', index: 'version', width: 90, editable: false, align: 'left', frozen: true, search: false}
       {name: 'numOfString', index: 'labelNum', width: 80, align: 'right', frozen: true, search: false}
     ]
-    }
 
-  grid = {
-  dictionary:
-    {
-    colNames: common.colNames[0..].insert 3, ['Dictionary', 'Version', 'Encoding', 'Format']
-    colModel: common.colModel[0..].insert 3, [
-      {name: 'dictionary', index: 'base.name', width: 90, editable: false, align: 'left', frozen: true, search: false}
-      {name: 'dictVersion', index: 'version', width: 90, editable: false, align: 'left', frozen: true, search: false}
-      {name: 'encoding', index: 'base.encoding', width: 90, editable: false, stype: 'select', searchoptions: {value: ':All;ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE'}, align: 'left', frozen: true}
-      {name: 'format', index: 'base.format', width: 90, editable: false, stype: 'select', searchoptions: {value: ":All;DCT:DCT;Dictionary conf:Dictionary conf;Text properties:Text properties;XML labels:XML labels"}, align: 'left', frozen: true}
-    ]
-    ondblClickRow: (rowid, iRow, iCol, e)->
-    #      language = {name: $(@).getGridParam('colModel')[iCol].name.split('.')[0], id: parseInt(/s\((\d+)\)\[\d+\]/ig.exec($(@).getGridParam('colModel')[iCol].index)[1])}
-    #      dictName = $(@).getCell rowid, $(@).getGridParam('colNames').indexOf 'Dictionary'
-    #      util.getDictLanguagesByDictId rowid, (languages)=>
-    #        require('transmng/layout').showTransDetailDialog {dict: {id: rowid, name: dictName}, language: language, languages: languages}
-    }
-  application:
-    {
-    colNames: ['Dummy'].concat common.colNames
-    colModel: [
-      {name: 'dummy', index: 'dummy', width: 55, align: 'center', hidden: true, frozen: true}
-    ].concat common.colModel
-    }
-  }
+  grid =
+    dictionary:
+      colNames: (common.colNames[0..].insert 3, ['Dictionary', 'Version', 'Encoding', 'Format'])
+      colModel: (common.colModel[0..].insert 3, [
+        {name: 'dictionary', index: 'base.name', width: 90, editable: false, align: 'left', frozen: true, search: false}
+        {name: 'dictVersion', index: 'version', width: 90, editable: false, align: 'left', frozen: true, search: false}
+        {name: 'encoding', index: 'base.encoding', width: 90, editable: false, stype: 'select', searchoptions: {value: ':All;ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE'}, align: 'left', frozen: true}
+        {name: 'format', index: 'base.format', width: 90, editable: false, stype: 'select', searchoptions: {value: ":All;DCT:DCT;Dictionary conf:Dictionary conf;Text properties:Text properties;XML labels:XML labels"}, align: 'left', frozen: true}
+      ])
+    application:
+      colNames: ['Dummy'].concat common.colNames
+      colModel: [
+        {name: 'dummy', index: 'dummy', width: 55, align: 'center', hidden: true, frozen: true}
+      ].concat common.colModel
 
   getTableType = ->if -1 == ($.inArray 'Dummy', $("#transGrid").getGridParam('colNames')) then  'dict' else 'app'
-
   transGrid = $("#transGrid").jqGrid {
-  url: '' # url: 'json/taskgrid.json'
-  mtype: 'POST', postData: {}, editurl: "", datatype: 'json'
-  width: $(window).width() * 0.95, height: 330, shrinkToFit: false
-  rownumbers: true, loadonce: false # for reload the colModel
-  pager: '#transPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
-  sortname: 'base.name', sortorder: 'asc', viewrecords: true, gridview: true, multiselect: true
-  colNames: grid.dictionary.colNames, colModel: grid.dictionary.colModel
-  groupHeaders: []
-  afterCreate: (grid)->
-    grid.setGroupHeaders {useColSpanStyle: true, groupHeaders: grid.getGridParam 'groupHeaders'}
-    grid.filterToolbar {stringResult: true, searchOnEnter: false} if getTableType() == 'dict'
+    url:'json/dummy.json'
+    mtype: 'POST', postData: {}, editurl: "", datatype: 'json'
+    width: $(window).width() * 0.95, height: 330, shrinkToFit: false
+    rownumbers: true, loadonce: false # for reload the colModel
+    pager: '#transPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
+    sortname: 'base.name', sortorder: 'asc', viewrecords: true, gridview: true, multiselect: true
+    colNames: grid.dictionary.colNames, colModel: grid.dictionary.colModel
+    groupHeaders: []
+    afterCreate: (grid)->
+      grid.setGroupHeaders {useColSpanStyle: true, groupHeaders: grid.getGridParam 'groupHeaders'}
+      grid.filterToolbar {stringResult: true, searchOnEnter: false} if getTableType() == 'dict'
 
-    grid.navGrid '#transPager', {edit: false, add: false, del: false, search: false, view: false}
-    grid.navButtonAdd "#transPager", {caption: "Clear", title: "Clear Search", buttonicon: 'ui-icon-refresh', position: 'first', onClickButton: ()->grid[0].clearToolbar()}
-    grid.setFrozenColumns()
+      grid.navGrid '#transPager', {edit: false, add: false, del: false, search: false, view: false}
+      grid.navButtonAdd "#transPager", {caption: "Clear", title: "Clear Search", buttonicon: 'ui-icon-refresh', position: 'first', onClickButton: ()->grid[0].clearToolbar()}
+      grid.setFrozenColumns()
 
-  beforeProcessing: (data, status, xhr)->
-  gridComplete: ->
-    transGrid = $(@)
+    beforeProcessing: (data, status, xhr)->
+    gridComplete: ->
+      transGrid = $(@)
 
-    $('a', @).each (index, a)->$(a).before(' ').remove() if '0' == $(a).text()
+      $('a', @).each (index, a)->$(a).before(' ').remove() if '0' == $(a).text()
 
-    $('a', @).css('color', 'blue').click ()->
-      language = {}
-      [rowid, language.id, language.name]= $(@href.split('?')[1].split('&')).map (index)->decodeURIComponent(@split('=')[1])
-      rowData = transGrid.getRowData(rowid)
-      allZero = true
-      $(['T', 'N', 'I']).each (index, elem)->
-        num = parseInt rowData["#{language.name}.#{elem}"]
-        allZero = 0 == num
-        allZero
+      $('a', @).css('color', 'blue').click ()->
+        pageParams = util.getUrlParams(@href)
+        #      console?.log pageParams
+        rowid = pageParams?.id
+        language = id: pageParams.languageId, name: pageParams.languageName
 
-      (console.log 'zero';return) if allZero
-      util.getDictLanguagesByDictId rowid, (languages)=>
-        require('transmng/layout').showTransDetailDialog {dict: {id: rowid, name: rowData.dictionary}, language: language, languages: languages}
-  }
+        rowData = transGrid.getRowData(rowid)
+        allZero = true
+        $(['T', 'N', 'I']).each (index, elem)->
+          num = parseInt rowData["#{language.name}.#{elem}"]
+          allZero = 0 == num
+          allZero
+
+        (console.log 'zero';return) if allZero
+        util.getDictLanguagesByDictId rowid, (languages)=>
+          require('transmng/layout').showTransDetailDialog {dict: {id: rowid, name: rowData.dictionary}, language: language, languages: languages}
+    }
   transGrid.getGridParam('afterCreate') transGrid
 
   ($("[id^=makeLabel]").button().click ()->

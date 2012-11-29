@@ -106,7 +106,7 @@
       }
     });
     dicGrid = $('#dictListPreviewGrid').jqGrid({
-      url: '',
+      url: 'json/dummy.json',
       datatype: 'json',
       editurl: "",
       mtype: 'POST',

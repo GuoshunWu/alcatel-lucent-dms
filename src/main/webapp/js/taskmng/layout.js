@@ -2,9 +2,7 @@
 (function() {
 
   define(['jqlayout', 'taskmng/task_grid', 'i18n!nls/common', 'taskmng/dialogs', 'util', 'require'], function($, grid, c18n, dialogs, util, require) {
-    var info, pathArray, taskFileUpload;
-    pathArray = window.location.pathname.split('/');
-    $('#pageNavigator').val(pathArray[pathArray.length - 1]);
+    var info, taskFileUpload;
     $("#optional-container").layout({
       resizable: true,
       closable: true

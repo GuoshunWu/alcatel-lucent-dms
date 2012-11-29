@@ -122,7 +122,7 @@
       }
     });
     dicGrid = $(localIds.dic_grid).jqGrid({
-      url: '',
+      url: 'json/dummy.json',
       datatype: 'json',
       width: 1000,
       height: 320,

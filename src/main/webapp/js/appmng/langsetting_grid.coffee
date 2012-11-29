@@ -4,7 +4,7 @@ define (require)->
   lastEditedCell = null
 
   langSettingGrid = $('#languageSettingGrid').jqGrid {
-  url: '', mtype: 'post', datatype: 'json'
+  url: 'json/dummy.json', mtype: 'post', datatype: 'json'
   width: 500, height: 230
   pager: '#langSettingPager'
   editurl: ""

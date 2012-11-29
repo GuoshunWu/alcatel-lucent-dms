@@ -2,7 +2,7 @@ define ['jqgrid', 'require'], ($, require)->
   lastEditedCell = null
 
   dicGrid = $('#stringSettingsGrid').jqGrid {
-  url: '', mtype: 'post', datatype: 'json'
+  url: 'json/dummy.json', mtype: 'post', datatype: 'json'
   width: 700, height: 300
   pager: '#stringSettingsPager'
   editurl: ""

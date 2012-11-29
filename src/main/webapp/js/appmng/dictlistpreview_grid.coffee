@@ -40,7 +40,7 @@ define (require, util, i18n)->
   $(colModel).each (index, colModel)->colModel.classes = 'editable-column' if colModel.editable
 
   dicGrid = $('#dictListPreviewGrid').jqGrid {
-  url: '', datatype: 'json', editurl: "", mtype: 'POST'
+  url: 'json/dummy.json', datatype: 'json', editurl: "", mtype: 'POST'
   width: 1000, minHeight: 200, height: 240
   pager: '#dictListPreviewPager', rowNum: 100
   sortname: 'base.name', sortorder: 'asc'

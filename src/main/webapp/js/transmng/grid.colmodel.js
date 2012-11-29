@@ -62,7 +62,7 @@
             model.formatter = 'showlink';
             model.formatoptions = {
               baseLinkUrl: '#',
-              addParam: encodeURI("&languageId=" + language.id + "&languaeName=" + model.name)
+              addParam: encodeURI("&languageId=" + language.id + "&languageName=" + model.name)
             };
           }
           return model;

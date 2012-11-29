@@ -33,7 +33,7 @@
     //- "closure.keepLines": Same as closure option, but keeps line returns
     //in the minified files.
     //- "none": no minification will be done.
-    optimize:"none",
+//    optimize:"none",
 
     modules:[
         //First set up the common build layer.
