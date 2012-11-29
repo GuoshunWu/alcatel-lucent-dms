@@ -92,7 +92,7 @@
     }, function (errStatus, errText) {
         console.log("Error:" + errText + "(" + errStatus + ")");
     });
-    param.buildNumber = '<%=((Config) SpringContext.getBean("config")).getBuildNumber() %>';
+    param.buildNumber = <%=((Config) SpringContext.getBean("config")).getBuildNumber() %>;
 
 
 </script>
