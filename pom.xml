@@ -16,6 +16,8 @@
         <hibernate.version>3.6.9.Final</hibernate.version>
         <gmavenVersion>1.4</gmavenVersion>
         <jerseyVersion>1.13</jerseyVersion>
+        <maven.build.timestamp.format>yyyyMMdd-HHmmss</maven.build.timestamp.format>
+        <buildNumber>${maven.build.timestamp}</buildNumber>
     </properties>
 
 
@@ -423,7 +425,7 @@
                     <!--<jettyConfig></jettyConfig> -->
                     <connectors>
                         <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
-                            <port>80</port>
+                            <port>8080</port>
                             <maxIdleTime>60000</maxIdleTime>
                         </connector>
                     </connectors>
@@ -539,8 +541,8 @@
                 <!-- none, create, create-drop, update, validate -->
                 <db.hbm2ddl.auto>none</db.hbm2ddl.auto>
 
+                <httpPort>8888</httpPort>
                 <httpsPort>8443</httpsPort>
-                <httpPort>80</httpPort>
             </properties>
 
             <build>
@@ -555,7 +557,7 @@
                             <!--<server>tomcat</server>-->
                             <url>http://localhost:8080/manager/html</url>
                             <update>true</update>
-                            <port>80</port>
+                            <port>8888</port>
                             <path>/</path>
                             <update>true</update>
                             <username>admin</username>
@@ -589,8 +591,10 @@
                 <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
 
                 <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
-                <db.hbm2ddl.auto>validate</db.hbm2ddl.auto>
+                <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
 
+                <httpPort>8888</httpPort>
+                <httpsPort>8443</httpsPort>
                 <!--for mysql-->
                 <!--<db.driver>com.mysql.jdbc.Driver</db.driver>-->
                 <!--<db.url>jdbc:MySQL://172.24.191.199:3306/dms?characterEncoding=utf8&amp;useCursorFetch=true&amp;useUnicode=true</db.url>-->
@@ -615,7 +619,7 @@
                             <url>http://172.24.190.236:8888/manager/text</url>
                             <update>true</update>
                             <path>/</path>
-                            <port>80</port>
+                            <port>8888</port>
                             <username>admin</username>
                             <password>alcatel123</password>
                         </configuration>
@@ -651,6 +655,8 @@
                 <db.user>dms</db.user>
                 <db.password>alcatel123</db.password>
 
+                <httpPort>80</httpPort>
+                <httpsPort>443</httpsPort>
                 <!--<db.house-keeping-test-sql>select CURRENT_DATE</db.house-keeping-test-sql>-->
 
                 <!--<db.dialect>org.hibernate.dialect.MySQL5InnoDBDialect</db.dialect>-->
