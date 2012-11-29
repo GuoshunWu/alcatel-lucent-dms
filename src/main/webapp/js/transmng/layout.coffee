@@ -1,6 +1,5 @@
-define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng', 'transmng/trans_grid', 'transmng/transdetail_grid'], ($, require, blockui, msgbox, c18n, i18n, grid, detailgrid)->
-#  console.log module
-#  private variables
+define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng', 'transmng/trans_grid','transmng/transdetail_grid', 'util','require'], ($, blockui, msgbox, c18n, i18n, grid, detailgrid, util)->
+
   util = require 'util'
   ids = {
   languageFilterTableId: 'languageFilterTable'
@@ -10,9 +9,6 @@ define ['jqlayout', 'require', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!n
     page: 'optional-container'
     }
   }
-
-  pathArray = window.location.pathname.split('/')
-  $('#pageNavigator').val(pathArray[pathArray.length - 1])
 
   pageLayout = $("##{ids.container.page}").layout {resizable: true, closable: true}
 

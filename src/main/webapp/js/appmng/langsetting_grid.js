@@ -6,7 +6,7 @@
     $ = require('jqgrid');
     lastEditedCell = null;
     langSettingGrid = $('#languageSettingGrid').jqGrid({
-      url: '',
+      url: 'json/dummy.json',
       mtype: 'post',
       datatype: 'json',
       width: 500,

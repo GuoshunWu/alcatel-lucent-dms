@@ -9,7 +9,7 @@ define (require)->
   require 'blockui'
   require 'jqmsgbox'
   require 'jqupload'
-  require  'iframetransport'
+  require 'iframetransport'
 
   handlers =
     'Download': (param)->
@@ -39,13 +39,13 @@ define (require)->
     'Upload': ((param)->)
 
 
+  params = util.getUrlParams()
+  productId = params.product
 
-  productId = window.location.search.split('?')[1].split('&')[1].split('=')[1] if window.location.search
-
-#  url = if productId then 'rest/tasks'else 'json/taskgrid.json'
-  url = if productId then 'rest/tasks'else ''
+  #  url = if productId then 'rest/tasks'else 'json/taskgrid.json'
+  url = if productId then 'rest/tasks' else null
   prop = "name,createTime,lastUpdateTime,status"
-#  console.log "Task grid url: #{url}."
+  #  console.log "Task grid url: #{url}."
 
   taskGrid = $("#taskGrid").jqGrid {
   url: url
@@ -140,7 +140,6 @@ define (require)->
     grid.navGrid '#taskPager', {edit: false, add: false, del: false, search: false, view: false}
   }
   taskGrid.getGridParam('afterCreate') taskGrid
-
 
 
   productVersionChanged: (product)->

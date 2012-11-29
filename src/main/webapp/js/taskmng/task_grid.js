@@ -2,7 +2,7 @@
 (function() {
 
   define(function(require) {
-    var $, c18n, dialogs, handlers, i18n, productId, prop, taskGrid, url, util;
+    var $, c18n, dialogs, handlers, i18n, params, productId, prop, taskGrid, url, util;
     $ = require('jqgrid');
     util = require('util');
     dialogs = require('taskmng/dialogs');
@@ -61,10 +61,9 @@
       },
       'Upload': (function(param) {})
     };
-    if (window.location.search) {
-      productId = window.location.search.split('?')[1].split('&')[1].split('=')[1];
-    }
-    url = productId ? 'rest/tasks' : '';
+    params = util.getUrlParams();
+    productId = params.product;
+    url = productId ? 'rest/tasks' : null;
     prop = "name,createTime,lastUpdateTime,status";
     taskGrid = $("#taskGrid").jqGrid({
       url: url,

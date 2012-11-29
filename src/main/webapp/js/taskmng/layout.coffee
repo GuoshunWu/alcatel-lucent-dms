@@ -1,7 +1,4 @@
 define ['jqlayout', 'taskmng/task_grid', 'i18n!nls/common', 'taskmng/dialogs', 'util', 'require'], ($, grid, c18n, dialogs, util, require)->
-  pathArray = window.location.pathname.split('/')
-  $('#pageNavigator').val(pathArray[pathArray.length - 1])
-
 
   $("#optional-container").layout {resizable: true, closable: true}
   info = {}

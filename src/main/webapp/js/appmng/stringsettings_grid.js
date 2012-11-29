@@ -5,7 +5,7 @@
     var dicGrid, lastEditedCell;
     lastEditedCell = null;
     dicGrid = $('#stringSettingsGrid').jqGrid({
-      url: '',
+      url: 'json/dummy.json',
       mtype: 'post',
       datatype: 'json',
       width: 700,

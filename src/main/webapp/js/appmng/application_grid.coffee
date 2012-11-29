@@ -10,7 +10,7 @@ define ['jqgrid', 'i18n!nls/appmng', 'appmng/dialogs', 'util', 'require'], ($, i
 
   appGrid = $(localIds.app_grid).jqGrid {
   datatype: 'json'
-  url: 'json/appgrid.json'
+  url: 'json/dummy.json'
   editurl: "app/create-or-add-application"
   cellurl: 'app/change-application-version'
   cellsubmit: 'remote', cellEdit: true

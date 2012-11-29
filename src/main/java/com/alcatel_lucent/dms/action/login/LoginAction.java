@@ -49,7 +49,7 @@ public class LoginAction extends ActionSupport implements SessionAware {
     }
 
     public String getLocation() {
-        return "http://" + request.getServerName() + ":" + httpPort + request.getContextPath() + "/appmng.jsp";
+        return "http://" + request.getServerName() + ":" + httpPort + request.getContextPath() + "/entry.action?naviTo=appmng.jsp";
     }
 
     public void setLoginname(String loginname) {

@@ -15,10 +15,6 @@ define (require)->
     application: PANEL_PREFIX + "_applicationPanel"
     }
   }
-  pathArray = window.location.pathname.split('/')
-  $('#pageNavigator').val(pathArray[pathArray.length - 1])
-
-  #  console.log module
   pageLayout = $("##{ids.container.page}").layout {resizable: true, closable: true}
   dmsPanels = $ "##{ids.container.center} div[id^=#{PANEL_PREFIX}]"
 

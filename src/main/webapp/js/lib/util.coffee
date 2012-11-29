@@ -100,7 +100,7 @@ define ["jquery"], ($) ->
       c += ";#{arg}=#{arguments[start++]}" if arguments[start]
     document.cookie = c
 
-  newOption = (text, value, selected )->"<option #{if selected then 'selected ' else ''}value='#{value}'>#{text}</option>"
+  newOption = (text, value, selected)->"<option #{if selected then 'selected ' else ''}value='#{value}'>#{text}</option>"
 
   ###
   Test here.
@@ -147,7 +147,10 @@ define ["jquery"], ($) ->
     null
   #  Del cookie
   delCookie: (name)->document.cookie = "#{name}=#{escape('')}; expires=Fri, 31 Dec 1999 23:59:59 GMT;"
-
+  getUrlParams: (suffix = window.location.search or window.location.hash)->
+    params = {}
+    ([k, v]=param.split('=');params[k] = decodeURIComponent(v) ) for param in suffix.split('?')[1].split('&') if suffix
+    params
   newOption: newOption
   ###
   convert a json array to a list of options.
