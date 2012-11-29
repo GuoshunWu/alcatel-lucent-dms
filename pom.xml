@@ -16,7 +16,7 @@
         <hibernate.version>3.6.9.Final</hibernate.version>
         <gmavenVersion>1.4</gmavenVersion>
         <jerseyVersion>1.13</jerseyVersion>
-        <maven.build.timestamp.format>yyyyMMdd-HHmmss</maven.build.timestamp.format>
+        <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <buildNumber>${maven.build.timestamp}</buildNumber>
     </properties>
 
@@ -543,6 +543,7 @@
 
                 <httpPort>8888</httpPort>
                 <httpsPort>8443</httpsPort>
+                <buildNumber>(new Date()).getTime()</buildNumber>
             </properties>
 
             <build>
