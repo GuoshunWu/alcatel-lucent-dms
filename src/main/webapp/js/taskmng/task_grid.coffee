@@ -42,8 +42,7 @@ define (require)->
   params = util.getUrlParams()
   productId = params.product
 
-  #  url = if productId then 'rest/tasks'else 'json/taskgrid.json'
-  url = if productId then 'rest/tasks' else null
+  url = if productId then 'rest/tasks' else 'json/dummy.json'
   prop = "name,createTime,lastUpdateTime,status"
   #  console.log "Task grid url: #{url}."
 

@@ -18,6 +18,9 @@
         <jerseyVersion>1.13</jerseyVersion>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <buildNumber>${maven.build.timestamp}</buildNumber>
+
+        <httpPort>8888</httpPort>
+        <httpsPort>8443</httpsPort>
     </properties>
 
 
@@ -311,10 +314,10 @@
         </dependency>
 
         <!--<dependency>-->
-            <!--<groupId>org.apache.struts</groupId>-->
-            <!--<artifactId>struts2-junit-plugin</artifactId>-->
-            <!--<version>2.3.4.1</version>-->
-            <!--<scope>test</scope>-->
+        <!--<groupId>org.apache.struts</groupId>-->
+        <!--<artifactId>struts2-junit-plugin</artifactId>-->
+        <!--<version>2.3.4.1</version>-->
+        <!--<scope>test</scope>-->
         <!--</dependency>-->
 
         <dependency>
@@ -506,7 +509,25 @@
         </resources>
 
         <pluginManagement>
-
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.tomcat.maven</groupId>
+                    <artifactId>tomcat7-maven-plugin</artifactId>
+                    <version>2.0</version>
+                    <configuration>
+                        <uriEncoding>utf-8</uriEncoding>
+                        <url>http://localhost:8080/manager/html</url>
+                        <port>8888</port>
+                        <path>/</path>
+                        <update>true</update>
+                        <username>admin</username>
+                        <password>alcatel123</password>
+                        <httpsPort>8443</httpsPort>
+                        <keystoreFile>conf/.keystore</keystoreFile>
+                        <keystorePass>changeit</keystorePass>
+                    </configuration>
+                </plugin>
+            </plugins>
         </pluginManagement>
     </build>
 
@@ -541,35 +562,11 @@
                 <db.dialect>org.hibernate.dialect.H2Dialect</db.dialect>
                 <!-- none, create, create-drop, update, validate -->
                 <db.hbm2ddl.auto>none</db.hbm2ddl.auto>
-
-                <httpPort>8888</httpPort>
-                <httpsPort>8443</httpsPort>
-                <buildNumber>(new Date()).getTime()</buildNumber>
+               <buildNumber>(new Date()).getTime()</buildNumber>
             </properties>
 
             <build>
                 <defaultGoal>tomcat7:run</defaultGoal>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.tomcat.maven</groupId>
-                        <artifactId>tomcat7-maven-plugin</artifactId>
-                        <version>2.0</version>
-                        <configuration>
-                            <uriEncoding>utf-8</uriEncoding>
-                            <!--<server>tomcat</server>-->
-                            <url>http://localhost:8080/manager/html</url>
-                            <update>true</update>
-                            <port>8888</port>
-                            <path>/</path>
-                            <update>true</update>
-                            <username>admin</username>
-                            <password>alcatel123</password>
-                            <httpsPort>8443</httpsPort>
-                            <keystoreFile>conf/.keystore</keystoreFile>
-                            <keystorePass>changeit</keystorePass>
-                        </configuration>
-                    </plugin>
-                </plugins>
             </build>
         </profile>
         <profile>
@@ -595,8 +592,6 @@
                 <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
                 <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
 
-                <httpPort>8888</httpPort>
-                <httpsPort>8443</httpsPort>
                 <!--for mysql-->
                 <!--<db.driver>com.mysql.jdbc.Driver</db.driver>-->
                 <!--<db.url>jdbc:MySQL://172.24.191.199:3306/dms?characterEncoding=utf8&amp;useCursorFetch=true&amp;useUnicode=true</db.url>-->
@@ -617,13 +612,7 @@
                         <artifactId>tomcat7-maven-plugin</artifactId>
                         <version>2.0</version>
                         <configuration>
-                            <uriEncoding>utf-8</uriEncoding>
                             <url>http://172.24.190.236:8888/manager/text</url>
-                            <update>true</update>
-                            <path>/</path>
-                            <port>8888</port>
-                            <username>admin</username>
-                            <password>alcatel123</password>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -672,11 +661,7 @@
                         <artifactId>tomcat7-maven-plugin</artifactId>
                         <version>2.0</version>
                         <configuration>
-                            <uriEncoding>utf-8</uriEncoding>
-                            <server>tomcat</server>
                             <url>http://172.24.190.236:8888/manager/text</url>
-                            <update>true</update>
-                            <path>/</path>
                         </configuration>
                     </plugin>
                 </plugins>

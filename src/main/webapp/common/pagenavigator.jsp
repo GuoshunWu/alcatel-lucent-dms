@@ -2,20 +2,12 @@
 <%@ page contentType="text/html;charset=utf-8" isELIgnored="false" %>
 <span style="font-family:Trebuchet MS,Verdana,Arial, Helvetica;font-size:12px">
 
-
 <s:form id="naviForm" theme="simple" action="entry" namespace="/" method="post">
     <label for="pageNavigator"><s:text name="header.currentView"/></label>
-    <s:select key="header.currentView" list="naviPages" id="pageNavigator" name="naviTo" value="naviTo"
-              onchange="$(this).parent('form').submit()"/>
-    <%--<s:if test="naviTo=='appmng.jsp'">--%>
-    <%--</s:if>--%>
-    <%--<s:else>--%>
-        <%--In other.jsp--%>
-    <%--</s:else>--%>
-
-    <s:hidden name="pbId"/>
-    <s:hidden name="pId"/>
-
+    <s:select key="header.currentView" list="naviPages" id="pageNavigator" name="naviTo" value="naviTo"/>
+    <s:hidden id="bId" name="bId"/>
+    <s:hidden id="pId" name="pId"/>
+    <s:hidden id="type" name="type"/>
 </s:form>
 
 <div style="margin-top:5px">

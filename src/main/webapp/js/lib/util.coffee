@@ -102,6 +102,22 @@ define ["jquery"], ($) ->
 
   newOption = (text, value, selected)->"<option #{if selected then 'selected ' else ''}value='#{value}'>#{text}</option>"
 
+  #  for page navigator
+  currentPage = $('#pageNavigator').val()
+  $('#pageNavigator').change (e)->
+    $("#bId").val $("#productBase").val()
+    $("#pId").val $("#productRelease").val()
+    $("#type").val null
+
+    if (currentPage == 'appmng.jsp')
+      $("#pId").val $("#selVersion").val()
+      appTree = $.jstree._reference("#appTree")
+      bId = appTree.get_selected().attr('id')
+      $("#bId").val(bId)
+      $("#type").val(appTree.get_selected().attr('type'))
+    console.log("currentPage=" + currentPage + ", pId=" + $("#pId").val() + ", bId=" + $("#bId").val() + ", type=" + $("#type").val())
+    $('#naviForm').submit()
+
   ###
   Test here.
   ###

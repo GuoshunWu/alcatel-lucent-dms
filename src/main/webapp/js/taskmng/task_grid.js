@@ -63,7 +63,7 @@
     };
     params = util.getUrlParams();
     productId = params.product;
-    url = productId ? 'rest/tasks' : null;
+    url = productId ? 'rest/tasks' : 'json/dummy.json';
     prop = "name,createTime,lastUpdateTime,status";
     taskGrid = $("#taskGrid").jqGrid({
       url: url,

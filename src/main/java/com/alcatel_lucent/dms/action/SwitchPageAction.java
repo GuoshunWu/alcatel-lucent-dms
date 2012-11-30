@@ -32,36 +32,26 @@ public class SwitchPageAction extends ActionSupport implements SessionAware {
 
     @Autowired
     private DaoService dao;
+    //    The page navigate to
+    private String naviTo;
+    //    build number for deploy
+    @Value("${buildNumber}")
+    private String buildNumber;
+
+    public void setBuildNumber(String buildNumber) {
+        this.buildNumber = buildNumber;
+    }
+
+    public String getBuildNumber() {
+        return buildNumber;
+    }
 
     public void setDao(DaoService dao) {
         this.dao = dao;
     }
 
-    //    current product id from client
-    private Long pId;
-    //    current product base id from client
-    private Long pbId;
-
-    private String naviTo;
-
-
-    public Long getpId() {
-        return pId;
-    }
-
-    public void setpId(Long pId) {
-        this.pId = pId;
-    }
-
-    public Long getPbId() {
-        return pbId;
-    }
-
-    public void setPbId(Long pbId) {
-        this.pbId = pbId;
-    }
-
     public String getNaviTo() {
+        if (null == naviTo) naviTo = "appmng.jsp";
         return naviTo;
     }
 
@@ -81,6 +71,7 @@ public class SwitchPageAction extends ActionSupport implements SessionAware {
     })
     public String execute() throws Exception {
         log.debug("Switch to " + getNaviTo());
+//        log.debug(String.format("Product id=%d, Product base id=%d, type=%s"));
         return SUCCESS;
     }
 
@@ -94,15 +85,24 @@ public class SwitchPageAction extends ActionSupport implements SessionAware {
             isFirst = false;
         }
         strPages.append("}");
-        Map<String, String> pagesMap = JSONObject.fromObject(strPages);
+        Map<String, String> pagesMap = JSONObject.fromObject(strPages.toString());
         return pagesMap;
     }
 
     @SuppressWarnings("unchecked")
     public ProductBase getProductBase() {
-        if (null != pbId) {
-            return (ProductBase) dao.retrieve(ProductBase.class, pbId);
-        }
+//        if (null != bId) {
+//            return (ProductBase) dao.retrieve(ProductBase.class, bId);
+//        }
         return null;
+    }
+
+    /**
+     * For client parameters
+     */
+    public Map<String, String> getClientParams() {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("locale", getLocale().toString());
+        return params;
     }
 }
