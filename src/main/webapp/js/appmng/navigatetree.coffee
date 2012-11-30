@@ -90,7 +90,8 @@ define (require)->
             apppnl.refresh nodeInfo
             layout.showApplicationPanel()
 
-    ).bind('create.jstree', (event, data)->
+    ).bind('create.jstree',
+      (event, data)->
         appTree = data.inst
         node = data.rslt.obj
         name = data.rslt.name
@@ -108,17 +109,17 @@ define (require)->
             return false
           #            add type for created node
           data.rslt.obj.attr {id: json.id}
+    ).bind('loaded.jstree', (event, data)->
+        appTree = data.inst
+        #   productBase should be selected if param.currentSelected.productBaseId is not -1
+        if param.currentSelected.productBaseId
+          appTree.select_node $("#appTree li ##{param.currentSelected.productBaseId}[type='product']")
     )
-
-
-    #   get tree instance
-    appTree = $.jstree._reference("##{ids.navigateTree}")
-
 
     $('#loading-container').remove()
     $('#optional-container').show()
 
-  getNodeInfo: getNodeInfo
+    getNodeInfo: getNodeInfo
 
 
 

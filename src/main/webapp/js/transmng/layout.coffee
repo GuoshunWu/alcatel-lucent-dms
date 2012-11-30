@@ -123,8 +123,8 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
   createSelects = ->
   # selects on summary panel
     $.getJSON 'rest/products', {prop: 'id,name'}, (json)->
-      $('#productBase').append util.newOption(c18n.select.product.tip, -1)
-      $('#productBase').append util.json2Options json, false, 'name'
+#      $('#productBase').append util.newOption(c18n.select.product.tip, -1)
+#      $('#productBase').append util.json2Options json, false, 'name'
 
     #  load product in product base
     $('#productBase').change ()->
@@ -184,6 +184,7 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
 
   ###################################### Elements in summary panel ######################################
     createSelects()
+    $('#productRelease').trigger 'change'
     ###################################### Initialize elements in north panel ######################################
     dialogs = createDialogs()
     createButtons(dialogs.taskDialog, dialogs.languageFilterDialog, dialogs.transDetailDialog)

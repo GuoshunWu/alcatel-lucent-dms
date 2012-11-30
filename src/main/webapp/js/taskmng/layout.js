@@ -15,11 +15,6 @@
         return info[kv[0]] = unescape(kv[1]);
       });
     }
-    $.getJSON('rest/products', {
-      prop: 'id,name'
-    }, function(json) {
-      return $('#productBase').append(util.newOption(c18n.select.product.tip, -1)).append(util.json2Options(json, info.productBase, 'name')).trigger('change');
-    });
     $('#productBase').change(function() {
       $('#productRelease').empty();
       if (parseInt($('#productBase').val()) === -1) {
@@ -45,6 +40,7 @@
       }
       return grid.productVersionChanged(param);
     });
+    $('#productRelease').trigger('change');
     ($("#progressbar").draggable({
       grid: [50, 20],
       opacity: 0.35

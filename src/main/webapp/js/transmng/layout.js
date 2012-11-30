@@ -213,10 +213,7 @@
     createSelects = function() {
       $.getJSON('rest/products', {
         prop: 'id,name'
-      }, function(json) {
-        $('#productBase').append(util.newOption(c18n.select.product.tip, -1));
-        return $('#productBase').append(util.json2Options(json, false, 'name'));
-      });
+      }, function(json) {});
       $('#productBase').change(function() {
         $('#productRelease').empty();
         if (parseInt($('#productBase').val()) === -1) {
@@ -300,6 +297,7 @@
     };
     initPage = function() {
       createSelects();
+      $('#productRelease').trigger('change');
       dialogs = createDialogs();
       createButtons(dialogs.taskDialog, dialogs.languageFilterDialog, dialogs.transDetailDialog);
       $("#exportExcel").click(function() {

@@ -12,7 +12,7 @@ To change this template use File | Settings | File Templates.
 (function() {
 
   define(["jquery"], function($) {
-    var currentPage, formatJonString, newOption, setCookie;
+    var formatJonString, newOption, setCookie;
     String.prototype.format = function() {
       var args;
       args = arguments;
@@ -151,20 +151,21 @@ To change this template use File | Settings | File Templates.
     newOption = function(text, value, selected) {
       return "<option " + (selected ? 'selected ' : '') + "value='" + value + "'>" + text + "</option>";
     };
-    currentPage = $('#pageNavigator').val();
     $('#pageNavigator').change(function(e) {
-      var appTree, bId;
-      $("#bId").val($("#productBase").val());
-      $("#pId").val($("#productRelease").val());
-      $("#type").val(null);
-      if (currentPage === 'appmng.jsp') {
-        $("#pId").val($("#selVersion").val());
+      var appTree, node, productBaseId, type;
+      $("#curProductBaseId").val($("#productBase").val());
+      $("#curProductId").val($("#productRelease").val());
+      if (param.naviTo === 'appmng.jsp') {
+        $("#curProductId").val($("#selVersion").val() ? $("#selVersion").val() : -1);
         appTree = $.jstree._reference("#appTree");
-        bId = appTree.get_selected().attr('id');
-        $("#bId").val(bId);
-        $("#type").val(appTree.get_selected().attr('type'));
+        node = appTree.get_selected();
+        productBaseId = -1;
+        if (node.length > 0) {
+          type = node.attr('type');
+          productBaseId = type === 'product' ? node.attr('id') : type === 'app' ? appTree._get_parent(node).attr('id') : -1;
+        }
+        $("#curProductBaseId").val(productBaseId);
       }
-      console.log("currentPage=" + currentPage + ", pId=" + $("#pId").val() + ", bId=" + $("#bId").val() + ", type=" + $("#type").val());
       return $('#naviForm').submit();
     });
     return {

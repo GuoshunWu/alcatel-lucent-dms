@@ -25,9 +25,9 @@ import java.util.*;
 
 @SuppressWarnings("serial")
 @ResultPath("/")
-public class SwitchPageAction extends ActionSupport implements SessionAware {
+public class EntryAction extends ActionSupport {
 
-    private static Logger log = Logger.getLogger(SwitchPageAction.class);
+    private static Logger log = Logger.getLogger(EntryAction.class);
     private Map<String, Object> session;
 
     @Autowired
@@ -37,6 +37,25 @@ public class SwitchPageAction extends ActionSupport implements SessionAware {
     //    build number for deploy
     @Value("${buildNumber}")
     private String buildNumber;
+
+    private Long curProductId = -1L;
+    private Long curProductBaseId = -1L;
+
+    public Long getCurProductId() {
+        return curProductId;
+    }
+
+    public void setCurProductId(Long curProductId) {
+        this.curProductId = curProductId;
+    }
+
+    public Long getCurProductBaseId() {
+        return curProductBaseId;
+    }
+
+    public void setCurProductBaseId(Long curProductBaseId) {
+        this.curProductBaseId = curProductBaseId;
+    }
 
     public void setBuildNumber(String buildNumber) {
         this.buildNumber = buildNumber;
@@ -51,7 +70,6 @@ public class SwitchPageAction extends ActionSupport implements SessionAware {
     }
 
     public String getNaviTo() {
-        if (null == naviTo) naviTo = "appmng.jsp";
         return naviTo;
     }
 
@@ -59,19 +77,13 @@ public class SwitchPageAction extends ActionSupport implements SessionAware {
         this.naviTo = naviTo;
     }
 
-
-    @Override
-    public void setSession(Map<String, Object> session) {
-        this.session = session;
-    }
-
-    @Action(value = "entry", results = {
+    @Action(results = {
             @Result(location = "${naviTo}"),
             @Result(name = INPUT, location = "/login.jsp")
     })
     public String execute() throws Exception {
         log.debug("Switch to " + getNaviTo());
-//        log.debug(String.format("Product id=%d, Product base id=%d, type=%s"));
+        log.debug(String.format("Product id=%d, Product base id=%d", curProductId, curProductBaseId));
         return SUCCESS;
     }
 
@@ -90,11 +102,18 @@ public class SwitchPageAction extends ActionSupport implements SessionAware {
     }
 
     @SuppressWarnings("unchecked")
-    public ProductBase getProductBase() {
-//        if (null != bId) {
-//            return (ProductBase) dao.retrieve(ProductBase.class, bId);
-//        }
-        return null;
+    public List<ProductBase> getProductBases() {
+        return dao.retrieve("from ProductBase");
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Product> getProducts() {
+        if (null != curProductBaseId) {
+            Map<String, Long> param = new HashMap<String, Long>();
+            param.put("baseId", curProductBaseId);
+            return dao.retrieve("from Product where base.id = :baseId", param);
+        }
+        return new ArrayList<Product>();
     }
 
     /**

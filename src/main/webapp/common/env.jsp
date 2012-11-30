@@ -3,18 +3,25 @@
 <%@ page contentType="text/html;charset=utf-8" %>
 
 <script type="text/javascript">
-    gridI18NMap = {
-        'zh-cn':'cn',
-        'en-us':'en'
-    };
+    gridI18NMap = { 'zh-cn':'cn', 'en-us':'en'};
     function paramWarn(paramName, defaultVal) {
         if (console && console.log) console.log("Couldn't get " + paramName + " parameter form server, use default: " + defaultVal);
     }
     var param = {
         naviTo:'<s:property value="naviTo"/>',
         locale:'<s:property value="clientParams.locale"/>'.replace('_', '-').toLocaleLowerCase(),
-        buildNumber:'<s:property value="buildNumber"/>'
+        buildNumber:<s:property value="buildNumber"/>,
+        currentSelected:{
+            productBaseId:<s:property value="curProductBaseId"/>,
+            productId:<s:property value="curProductId"/>
+        }
     }
+
+    if (!param.naviTo) {
+        param.naviTo = 'appmng.jsp';
+        paramWarn('naviTo', param.naviTo);
+    }
+
     if (!param.naviTo) {
         param.naviTo = 'appmng.jsp';
         paramWarn('naviTo', param.naviTo);
@@ -27,8 +34,7 @@
         param.buildNumber = '-1';
         paramWarn('buildNumber', param.buildNumber);
     }
-
     param.i18ngridfile = 'i18n/grid.locale-' + (gridI18NMap[param.locale] ? gridI18NMap[param.locale] : param.locale);
-    console.log(param);
+
 
 </script>

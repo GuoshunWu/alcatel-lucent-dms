@@ -15,33 +15,33 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
-@Entity
-@Table(name = "APPLICATION")
+//@Entity
+//@Table(name = "APPLICATION")
 public class Application extends BaseEntity {
     /**
      *
      */
     private static final long serialVersionUID = 7168527218137875020L;
 
-    @ManyToOne
-    @JoinColumn(name = "APPLICATION_BASE_ID")
+//    @ManyToOne
+//    @JoinColumn(name = "APPLICATION_BASE_ID")
     private ApplicationBase base;
 
-    @Column(name = "VERSION", nullable = false)
+//    @Column(name = "VERSION", nullable = false)
     private String version;
 
-    @ManyToMany(targetEntity = Dictionary.class)
-    @JoinTable(
-            name = "APPLICATION_DICTIONARY",
-            joinColumns = @JoinColumn(name = "APPLICATION_ID"),
-            inverseJoinColumns = @JoinColumn(name = "DICTIONARY_ID")
-    )
-    @Fetch(FetchMode.JOIN)
+//    @ManyToMany(targetEntity = Dictionary.class)
+//    @JoinTable(
+//            name = "APPLICATION_DICTIONARY",
+//            joinColumns = @JoinColumn(name = "APPLICATION_ID"),
+//            inverseJoinColumns = @JoinColumn(name = "DICTIONARY_ID")
+//    )
+//    @Fetch(FetchMode.JOIN)
     private Collection<Dictionary> dictionaries;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "appIdGen")
-    @SequenceGenerator(name = "appIdGen", sequenceName = "ID_APPLICATION", allocationSize = 50)
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.AUTO, generator = "appIdGen")
+//    @SequenceGenerator(name = "appIdGen", sequenceName = "ID_APPLICATION", allocationSize = 50)
     @Override
     public Long getId() {
         return super.getId();

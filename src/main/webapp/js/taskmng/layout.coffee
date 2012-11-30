@@ -7,12 +7,10 @@ define ['jqlayout', 'taskmng/task_grid', 'i18n!nls/common', 'taskmng/dialogs', '
       kv = elem.split('=')
       info[kv[0]] = unescape kv[1]
   # selects on summary panel
-  $.getJSON 'rest/products', {prop: 'id,name'}, (json)->
-    $('#productBase').append(util.newOption c18n.select.product.tip, -1).append(
-      #      $(json).map ()->
-      #        $(new Option(@name, @id)).attr('selected', info.productBase and @id == parseInt info.productBase)[0]
-      util.json2Options(json, info.productBase, 'name')
-    ).trigger 'change'
+#  $.getJSON 'rest/products', {prop: 'id,name'}, (json)->
+#    $('#productBase').append(util.newOption c18n.select.product.tip, -1).append(
+#      util.json2Options(json, info.productBase, 'name')
+#    ).trigger 'change'
   #  load product in product base
   $('#productBase').change ()->
     $('#productRelease').empty()
@@ -36,6 +34,8 @@ define ['jqlayout', 'taskmng/task_grid', 'i18n!nls/common', 'taskmng/dialogs', '
     #        $.msgBox i18n.select.release.msg, null, title: i18n.select.release.msgtitle
       return false
     grid.productVersionChanged param
+
+  $('#productRelease').trigger 'change'
 
   # file uploader
   ($("#progressbar").draggable({grid: [50, 20], opacity: 0.35}).css({

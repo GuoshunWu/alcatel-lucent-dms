@@ -101,7 +101,7 @@
       }
     };
     $.jstree._themes = "css/jstree/themes/";
-    $.getJSON(URL.navigateTree, {}, function(treeInfo) {
+    return $.getJSON(URL.navigateTree, {}, function(treeInfo) {
       $("#" + ids.navigateTree).jstree({
         json_data: {
           data: treeInfo
@@ -163,14 +163,18 @@
             id: json.id
           });
         });
+      }).bind('loaded.jstree', function(event, data) {
+        appTree = data.inst;
+        if (param.currentSelected.productBaseId) {
+          return appTree.select_node($("#appTree li #" + param.currentSelected.productBaseId + "[type='product']"));
+        }
       });
-      appTree = $.jstree._reference("#" + ids.navigateTree);
       $('#loading-container').remove();
-      return $('#optional-container').show();
+      $('#optional-container').show();
+      return {
+        getNodeInfo: getNodeInfo
+      };
     });
-    return {
-      getNodeInfo: getNodeInfo
-    };
   });
 
 }).call(this);

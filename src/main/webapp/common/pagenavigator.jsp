@@ -5,9 +5,8 @@
 <s:form id="naviForm" theme="simple" action="entry" namespace="/" method="post">
     <label for="pageNavigator"><s:text name="header.currentView"/></label>
     <s:select key="header.currentView" list="naviPages" id="pageNavigator" name="naviTo" value="naviTo"/>
-    <s:hidden id="bId" name="bId"/>
-    <s:hidden id="pId" name="pId"/>
-    <s:hidden id="type" name="type"/>
+    <s:hidden id="curProductBaseId" name="curProductBaseId"/>
+    <s:hidden id="curProductId" name="curProductId"/>
 </s:form>
 
 <div style="margin-top:5px">

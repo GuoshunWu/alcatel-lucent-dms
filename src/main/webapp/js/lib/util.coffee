@@ -103,19 +103,23 @@ define ["jquery"], ($) ->
   newOption = (text, value, selected)->"<option #{if selected then 'selected ' else ''}value='#{value}'>#{text}</option>"
 
   #  for page navigator
-  currentPage = $('#pageNavigator').val()
   $('#pageNavigator').change (e)->
-    $("#bId").val $("#productBase").val()
-    $("#pId").val $("#productRelease").val()
-    $("#type").val null
+    $("#curProductBaseId").val $("#productBase").val()
+    $("#curProductId").val $("#productRelease").val()
 
-    if (currentPage == 'appmng.jsp')
-      $("#pId").val $("#selVersion").val()
+    #    param is global var in /common/env.jsp
+    if (param.naviTo == 'appmng.jsp')
+      $("#curProductId").val(if $("#selVersion").val() then $("#selVersion").val() else -1)
       appTree = $.jstree._reference("#appTree")
-      bId = appTree.get_selected().attr('id')
-      $("#bId").val(bId)
-      $("#type").val(appTree.get_selected().attr('type'))
-    console.log("currentPage=" + currentPage + ", pId=" + $("#pId").val() + ", bId=" + $("#bId").val() + ", type=" + $("#type").val())
+      node = appTree.get_selected()
+
+      productBaseId = -1
+      #  -1 indicate that no node is selected
+      #      a node is selected
+      if node.length > 0
+        type = node.attr('type')
+        productBaseId = if type == 'product' then node.attr('id') else if type == 'app' then appTree._get_parent(node).attr('id') else -1
+      $("#curProductBaseId").val productBaseId
     $('#naviForm').submit()
 
   ###
