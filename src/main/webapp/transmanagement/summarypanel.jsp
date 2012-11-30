@@ -11,14 +11,25 @@
         <td>
             <table border="0" width="100%" style="border-color: red">
                 <tr>
-                    <td style="width:18px;"></td>
+                    <td style="width:18px;">
+                        <%--Base: <s:property value="productBases"/><br/>--%>
+                        <%--Product:<s:property value="products"/>--%>
+                    </td>
                     <td style="width: 130px">
                         <button id="languageFilter"><s:text name="transmng.summarypanel.languagefilter"/></button>
                     </td>
                     <td style="width: 60px" align="right"><s:text name="product"/></td>
-                    <td style="width:160px"><select id="productBase" style="width:99%;"/></td>
+                    <td style="width:160px">
+                        <s:select theme="simple" id="productBase" list="productBases" listKey="id" listValue="name"
+                                  cssStyle="width:99%;" headerKey="-1" headerValue="%{getText('product.select.head')}"
+                                value="curProductBaseId" />
+                    </td>
                     <td align="right" style="width: 50px"><s:text name="version"/></td>
-                    <td style="width:200px"><select id="productRelease" style="width:99%;"/></td>
+                    <td style="width:200px">
+                        <s:select theme="simple" id="productRelease" list="products" listKey="id" listValue="version"
+                                  cssStyle="width:99%;" headerKey="-1" headerValue="%{getText('product.version.select.head')}"
+                                  value="curProductId" />
+                    </td>
                     <td style="width: 250px">
                         <div style="border: none;width: 280px;text-align: center">
                             <input type="radio" id="applicationView" name="viewOption" value="application"><label

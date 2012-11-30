@@ -71,7 +71,11 @@
           base: productInfo.base.id,
           prop: 'id,version'
         }, function(json) {
-          return $('#selVersion').empty().append(util.json2Options(json)).trigger('change');
+          $('#selVersion').empty().append(util.json2Options(json));
+          if (param.currentSelected.productId) {
+            $('#selVersion').val(param.currentSelected.productId);
+          }
+          return $('#selVersion').trigger('change');
         });
       },
       getSelectedProduct: function() {

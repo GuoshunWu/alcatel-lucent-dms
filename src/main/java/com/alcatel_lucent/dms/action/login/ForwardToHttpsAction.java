@@ -29,7 +29,7 @@ public class ForwardToHttpsAction extends ActionSupport {
     }
 
     public String getLocation() {
-        return "https://" + request.getServerName() + ":" + httpsPort + request.getContextPath() + "/login.jsp";
+        return "https://" + request.getServerName() + ":" + httpsPort + request.getContextPath() + "/entry.action?naviTo=login.jsp";
     }
 
     @Override

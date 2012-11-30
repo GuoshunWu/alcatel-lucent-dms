@@ -37,10 +37,14 @@ public class AuthenticationFilter implements Filter {
         UserContext uc = (UserContext) session.getAttribute(UserContext.SESSION_USER_CONTEXT);
         UserContext.setUserContext(uc);
 
+        if (uri.endsWith("entry.action")) {
+//                process real uri
+            uri += '?' + request.getParameter("naviTo");
+        }
 //        log.debug("uri=" + uri);
         for (String pattern : excludePatterns) {
             if (uri.matches(pattern)) {
-//                log.debug("URI " + uri + " match pattern: " + pattern + ", ignore.");
+//                log.debug("uri " + uri + " match pattern: " + pattern + ", ignore.");
                 chain.doFilter(req, resp);
                 return;
             }
@@ -53,7 +57,7 @@ public class AuthenticationFilter implements Filter {
 
 //        forward will cause struts core filter error
 //        request.getRequestDispatcher("/login.jsp").forward(req,resp);
-        response.sendRedirect(request.getContextPath()+"/login/forward-to-https");
+        response.sendRedirect(request.getContextPath() + "/login/forward-to-https");
     }
 
     public void init(FilterConfig config) throws ServletException {
