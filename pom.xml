@@ -22,6 +22,11 @@
         <httpPort>8888</httpPort>
         <httpsPort>8443</httpsPort>
         <ldap.url>ldap://ldap.sxb.bsf.alcatel.fr</ldap.url>
+
+        <dms.deliver.dir>/dms/deliver</dms.deliver.dir>
+        <dms.generate.dir>/dms/generate</dms.generate.dir>
+        <dms.send.dir>/dms/send</dms.send.dir>
+        <dms.receive.dir>/dms/receive</dms.receive.dir>
     </properties>
 
 
@@ -432,7 +437,6 @@
                         </systemProperty>
                     </systemProperties>
 
-                    <!--<jettyConfig></jettyConfig> -->
                     <connectors>
                         <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
                             <port>8080</port>
@@ -535,14 +539,9 @@
             </resource>
         </resources>
 
-
-        <pluginManagement>
-
-        </pluginManagement>
     </build>
 
     <profiles>
-
         <profile>
             <id>localLDAP</id>
             <activation>
@@ -554,9 +553,8 @@
                 <ldap.url>ldap://localhost:10389</ldap.url>
             </properties>
         </profile>
-
         <profile>
-            <id>H2DB</id>
+            <id>H2</id>
             <properties>
                 <db.driver>org.h2.Driver</db.driver>
                 <db.url>
@@ -571,6 +569,34 @@
                 <db.dialect>org.hibernate.dialect.H2Dialect</db.dialect>
                 <!-- none, create, create-drop, update, validate -->
                 <db.hbm2ddl.auto>none</db.hbm2ddl.auto>
+            </properties>
+        </profile>
+        <profile>
+            <id>MySQL</id>
+            <properties>
+
+                <db.driver>com.mysql.jdbc.Driver</db.driver>
+                <db.url>jdbc:MySQL://172.24.191.199:3306/dms?characterEncoding=utf8&amp;useCursorFetch=true&amp;useUnicode=true</db.url>
+                <db.user>dms</db.user>
+                <db.password>alcatel123</db.password>
+
+                <db.house-keeping-test-sql>select CURRENT_DATE</db.house-keeping-test-sql>
+
+                <db.dialect>org.hibernate.dialect.MySQL5InnoDBDialect</db.dialect>
+                <!-- none, create, create-drop, update, validate -->
+                <db.hbm2ddl.auto>validate</db.hbm2ddl.auto>
+            </properties>
+        </profile>
+        <profile>
+            <id>PostGreSQL</id>
+            <properties>
+                <db.driver>org.postgresql.Driver</db.driver>
+                <db.url>jdbc\:postgresql\://172.24.190.236\:5432/dms_qa</db.url>
+                <db.user>dms</db.user>
+                <db.password>alcatel123</db.password>
+                <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
+                <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
+                <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
             </properties>
         </profile>
 
@@ -595,39 +621,6 @@
 
         <profile>
             <id>test</id>
-            <activation>
-                <os>
-                    <name>Redhat Enterprise Linux Server 6</name>
-                    <family>linux</family>
-                </os>
-            </activation>
-            <properties>
-                <dms.deliver.dir>/dms/deliver</dms.deliver.dir>
-                <dms.generate.dir>/dms/generate</dms.generate.dir>
-                <dms.send.dir>/dms/send</dms.send.dir>
-                <dms.receive.dir>/dms/receive</dms.receive.dir>
-
-                <db.driver>org.postgresql.Driver</db.driver>
-                <db.url>jdbc\:postgresql\://172.24.190.236\:5432/dms_qa</db.url>
-                <db.user>dms</db.user>
-                <db.password>alcatel123</db.password>
-                <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
-
-                <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
-                <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
-
-                <!--for mysql-->
-                <!--<db.driver>com.mysql.jdbc.Driver</db.driver>-->
-                <!--<db.url>jdbc:MySQL://172.24.191.199:3306/dms?characterEncoding=utf8&amp;useCursorFetch=true&amp;useUnicode=true</db.url>-->
-                <!--<db.user>dms</db.user>-->
-                <!--<db.password>alcatel123</db.password>-->
-
-                <!--<db.house-keeping-test-sql>select CURRENT_DATE</db.house-keeping-test-sql>-->
-
-                <!--<db.dialect>org.hibernate.dialect.MySQL5InnoDBDialect</db.dialect>-->
-                <!--<db.hbm2ddl.auto>validate</db.hbm2ddl.auto>-->
-
-            </properties>
             <build>
                 <defaultGoal>tomcat7:deploy</defaultGoal>
                 <plugins>
@@ -643,40 +636,12 @@
             </build>
 
         </profile>
+
         <profile>
             <id>prod</id>
-            <activation>
-                <os>
-                    <name>Window 7</name>
-                    <family>windows</family>
-                    <arch>x86</arch>
-                    <version>6.1.7601</version>
-                </os>
-            </activation>
             <properties>
-                <dms.deliver.dir>/dms/deliver</dms.deliver.dir>
-                <dms.generate.dir>/dms/generate</dms.generate.dir>
-                <dms.send.dir>/dms/send</dms.send.dir>
-                <dms.receive.dir>/dms/receive</dms.receive.dir>
-
-                <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
-
-                <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
-                <db.hbm2ddl.auto>validate</db.hbm2ddl.auto>
-
-                <!--for mysql-->
-                <db.driver>com.mysql.jdbc.Driver</db.driver>
-                <db.url>jdbc:MySQL://172.24.191.199:3306/dms_prod?characterEncoding=utf8&amp;useCursorFetch=true&amp;useUnicode=true</db.url>
-                <db.user>dms</db.user>
-                <db.password>alcatel123</db.password>
-
-                <httpPort>80</httpPort>
+          <httpPort>80</httpPort>
                 <httpsPort>443</httpsPort>
-                <!--<db.house-keeping-test-sql>select CURRENT_DATE</db.house-keeping-test-sql>-->
-
-                <!--<db.dialect>org.hibernate.dialect.MySQL5InnoDBDialect</db.dialect>-->
-                <!--<db.hbm2ddl.auto>validate</db.hbm2ddl.auto>-->
-
             </properties>
             <build>
                 <plugins>
