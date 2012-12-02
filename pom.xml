@@ -21,6 +21,7 @@
 
         <httpPort>8888</httpPort>
         <httpsPort>8443</httpsPort>
+        <ldap.url>ldap://ldap.sxb.bsf.alcatel.fr</ldap.url>
     </properties>
 
 
@@ -374,6 +375,12 @@
             <version>1.0</version>
         </dependency>
 
+        <!--<dependency>-->
+        <!--<groupId>directory.directory</groupId>-->
+        <!--<artifactId>apacheds</artifactId>-->
+        <!--<version>0.9</version>-->
+        <!--</dependency>-->
+
     </dependencies>
 
     <build>
@@ -499,6 +506,26 @@
             <!--&lt;!&ndash; Skip requirejs optimization if true &ndash;&gt;-->
             <!--</configuration>-->
             <!--</plugin>-->
+
+
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.0</version>
+                <configuration>
+                    <uriEncoding>utf-8</uriEncoding>
+                    <url>http://localhost:8080/manager/html</url>
+                    <port>8888</port>
+                    <path>/</path>
+                    <update>true</update>
+                    <username>admin</username>
+                    <password>alcatel123</password>
+                    <httpsPort>8443</httpsPort>
+                    <keystoreFile>conf/.keystore</keystoreFile>
+                    <keystorePass>changeit</keystorePass>
+                </configuration>
+            </plugin>
+
         </plugins>
 
         <resources>
@@ -508,47 +535,29 @@
             </resource>
         </resources>
 
+
         <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.tomcat.maven</groupId>
-                    <artifactId>tomcat7-maven-plugin</artifactId>
-                    <version>2.0</version>
-                    <configuration>
-                        <uriEncoding>utf-8</uriEncoding>
-                        <url>http://localhost:8080/manager/html</url>
-                        <port>8888</port>
-                        <path>/</path>
-                        <update>true</update>
-                        <username>admin</username>
-                        <password>alcatel123</password>
-                        <httpsPort>8443</httpsPort>
-                        <keystoreFile>conf/.keystore</keystoreFile>
-                        <keystorePass>changeit</keystorePass>
-                    </configuration>
-                </plugin>
-            </plugins>
+
         </pluginManagement>
     </build>
 
     <profiles>
+
         <profile>
-            <id>dev</id>
+            <id>localLDAP</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
-                <os>
-                    <name>Window 7</name>
-                    <family>Windows</family>
-                    <arch>x86</arch>
-                    <version>6.1.7601</version>
-                </os>
+                <file>
+                    <exists>C:/Program Files (x86)/Apache Directory Studio/Apache Directory Studio.exe</exists>
+                </file>
             </activation>
             <properties>
-                <dms.deliver.dir>D:/tmp/dms/deliver</dms.deliver.dir>
-                <dms.generate.dir>D:/tmp/dms/generate</dms.generate.dir>
-                <dms.send.dir>D:/tmp/dms/send</dms.send.dir>
-                <dms.receive.dir>D:/tmp/dms/receive</dms.receive.dir>
+                <ldap.url>ldap://localhost:10389</ldap.url>
+            </properties>
+        </profile>
 
+        <profile>
+            <id>H2DB</id>
+            <properties>
                 <db.driver>org.h2.Driver</db.driver>
                 <db.url>
                     jdbc:h2:tcp://localhost/dms;MODE=MYSQL;AUTO_SERVER=TRUE;DB_CLOSE_DELAY=-1;
@@ -562,13 +571,28 @@
                 <db.dialect>org.hibernate.dialect.H2Dialect</db.dialect>
                 <!-- none, create, create-drop, update, validate -->
                 <db.hbm2ddl.auto>none</db.hbm2ddl.auto>
-               <buildNumber>(new Date()).getTime()</buildNumber>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <dms.deliver.dir>D:/tmp/dms/deliver</dms.deliver.dir>
+                <dms.generate.dir>D:/tmp/dms/generate</dms.generate.dir>
+                <dms.send.dir>D:/tmp/dms/send</dms.send.dir>
+                <dms.receive.dir>D:/tmp/dms/receive</dms.receive.dir>
+
+                <buildNumber>(new Date()).getTime()</buildNumber>
             </properties>
 
             <build>
                 <defaultGoal>tomcat7:run</defaultGoal>
             </build>
         </profile>
+
         <profile>
             <id>test</id>
             <activation>
