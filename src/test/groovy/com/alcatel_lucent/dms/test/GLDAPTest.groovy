@@ -38,6 +38,35 @@ class GLDAPTest {
     }
 
     @Test
+    public void testAlcatelLDAP() throws Exception {
+        InitialDirContext ctx = new InitialDirContext(
+                [
+                        "$Context.INITIAL_CONTEXT_FACTORY": 'com.sun.jndi.ldap.LdapCtxFactory',
+                        "$Context.PROVIDER_URL": 'ldap://ldap.sxb.bsf.alcatel.fr',
+                        "$Context.SECURITY_AUTHENTICATION": 'simple',
+                        "$Context.SECURITY_PRINCIPAL": 'dms',
+                        "$Context.SECURITY_CREDENTIALS": ''
+                ] as Hashtable
+        )
+        SearchControls constraints = new SearchControls(
+                returningObjFlag: true,
+                searchScope: SearchControls.SUBTREE_SCOPE,
+                attributesToReturn: ["cn", "cslx500", "mail"]
+        )
+        String csl = "guoshunw"
+        String baseDN = "o=alcatel"
+        String filter = "(&(objectclass=person)(cslx500=$csl))"
+        println "baseDN=$baseDN, filter=$filter"
+        NamingEnumeration<SearchResult> results = ctx.search(baseDN, filter, constraints)
+//        results.toList().each {result ->
+//            result.attributes.all.toList().each {attr ->
+//                println attr
+//            }
+//
+//            println '=' * 80
+//        }
+    }
+//    @Test
     public void testLDAPSettings() throws Exception {
         String name = "Cornelius Buckley"
         String uid = "cbuckley"
