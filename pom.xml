@@ -416,6 +416,7 @@
                 </executions>
                 <configuration>
                     <warSourceExcludes>**/*.coffee</warSourceExcludes>
+                    <warSourceExcludes>**/config.js</warSourceExcludes>
                     <useCache>true</useCache>
                 </configuration>
             </plugin>
@@ -537,6 +538,16 @@
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
             </resource>
+            <resource>
+                <directory>src/main/webapp/js</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/config.js</include>
+                </includes>
+                <targetPath>
+                    ${project.build.directory}/${project.build.finalName}/js/
+                </targetPath>
+            </resource>
         </resources>
 
     </build>
@@ -640,7 +651,7 @@
         <profile>
             <id>prod</id>
             <properties>
-          <httpPort>80</httpPort>
+                <httpPort>80</httpPort>
                 <httpsPort>443</httpsPort>
             </properties>
             <build>
