@@ -49,7 +49,7 @@
                             <span id="uploadBrower" style="height: 28px"></span>
                         </td>
                         <td style="width: 170px">
-                            <button style="width:160;" id="generateDict">Generate dictionary</button>
+                            <button style="width:160;" id="generateDict"><s:text name="appmng.generatedict"/></button>
                         </td>
                         <td>
                             <button id="batchAddLanguage">Add language</button>

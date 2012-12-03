@@ -13,7 +13,7 @@ define({
             version:'Select version'
         },
         grid:{
-            delappmsg:'Please select row to delete!',
+            delappmsg:'Please select application to delete.',
             permanenttext:'Delete permanently',
             dictlistpreview:{
                 caption:'Dictionaries in zip'
@@ -36,7 +36,7 @@ define({
                 success:'Import dictionaries to {0} successful.'
             },
             dictpreviewstringsettings:{
-                title:'Labels in Dictionary Preview'
+                title:'String settings'
             }
         },
         browse:'Upload dictionaries',
