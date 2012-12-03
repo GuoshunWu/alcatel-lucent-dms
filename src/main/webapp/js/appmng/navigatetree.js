@@ -168,6 +168,9 @@
         if (param.currentSelected.productBaseId) {
           return appTree.select_node($("#appTree li #" + param.currentSelected.productBaseId + "[type='product']"));
         }
+      }).bind('dblclick_node.jstree', function(event, data) {
+        appTree = data.inst;
+        return appTree.toggle_node(data.rslt.obj);
       });
       $('#loading-container').remove();
       $('#optional-container').show();

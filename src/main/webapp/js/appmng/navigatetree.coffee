@@ -109,11 +109,15 @@ define (require)->
             return false
           #            add type for created node
           data.rslt.obj.attr {id: json.id}
-    ).bind('loaded.jstree', (event, data)->
+    ).bind('loaded.jstree',
+      (event, data)->
         appTree = data.inst
         #   productBase should be selected if param.currentSelected.productBaseId is not -1
         if param.currentSelected.productBaseId
           appTree.select_node $("#appTree li ##{param.currentSelected.productBaseId}[type='product']")
+    ).bind('dblclick_node.jstree', (event, data)->
+        appTree = data.inst
+        appTree.toggle_node data.rslt.obj
     )
 
     $('#loading-container').remove()
