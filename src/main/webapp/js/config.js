@@ -98,6 +98,6 @@ require.config({
             locale:typeof param !== "undefined" && param !== null ? param.locale : 'en_us'
         }
     },
-    urlArgs:"bust=" + (typeof param !== "undefined" && param !== null ? param.buildNumber : '1'),
+    urlArgs: ${buildNumber},
     waitSeconds:60
 });
