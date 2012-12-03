@@ -1,5 +1,4 @@
-define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng', 'transmng/trans_grid','transmng/transdetail_grid', 'util','require'], ($, blockui, msgbox, c18n, i18n, grid, detailgrid, util)->
-
+define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng', 'transmng/trans_grid', 'transmng/transdetail_grid', 'util', 'require'], ($, blockui, msgbox, c18n, i18n, grid, detailgrid, util)->
   util = require 'util'
   ids = {
   languageFilterTableId: 'languageFilterTable'
@@ -24,7 +23,6 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
     checkboxes = $("##{ids.languageFilterDialogId} input:checkbox[name='languages']")
     param.languages = checkboxes.map(
       ()-> return {id: @id, name: @value} if @checked).get()
-
     grid.productReleaseChanged param
 
   createDialogs = ->
@@ -93,7 +91,10 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
             $.msgBox json.message, null, {title: c18n.error}
             return
           $.msgBox i18n.msgbox.createtranstask.confirm, ((keyPressed)->
-            window.location = "taskmng.jsp?productBase=#{escape $('#productBase').val()}&product=#{escape $('#productRelease').val()}" if c18n.yes == keyPressed
+          #            window.location = "taskmng.jsp?productBase=#{escape $('#productBase').val()}&product=#{escape $('#productRelease').val()}" if c18n.yes == keyPressed
+          #            navigate form is in common/pagenavigator.jsp
+            $('#pageNavigator').val 'taskmng.jsp'
+            $('#naviForm').submit()
           ), {title: c18n.confirm}, [c18n.yes, c18n.no]
 
           taskDialog.dialog "close"
@@ -122,11 +123,7 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
 
   createSelects = ->
   # selects on summary panel
-    $.getJSON 'rest/products', {prop: 'id,name'}, (json)->
-#      $('#productBase').append util.newOption(c18n.select.product.tip, -1)
-#      $('#productBase').append util.json2Options json, false, 'name'
-
-    #  load product in product base
+  #  load product in product base
     $('#productBase').change ()->
       $('#productRelease').empty()
       return false if parseInt($('#productBase').val()) == -1
@@ -136,12 +133,16 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
         $('#productRelease').append util.json2Options json
         $('#productRelease').trigger "change"
 
+    $('#productRelease option:last').attr('selected', true) if !param.currentSelected.productId || '-1' == String(param.currentSelected.productId)
     $('#productRelease').change ->
       return if -1 == parseInt @value
       $.ajax {url: "rest/languages", async: false, data: {prod: @value, prop: 'id,name'}, dataType: 'json', success: (languages)->
-        $("##{ids.languageFilterDialogId}").empty().append util.generateLanguageTable languages
+        langTable=util.generateLanguageTable languages
+        $("#languageFilterDialog").empty().append langTable
       }
       refreshGrid()
+      console.log "grid refresh"
+    $('#productRelease').trigger 'change'
 
   createButtons = (taskDialog, languageFilterDialog) ->
   #   buttons summary panel
@@ -181,12 +182,11 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
 
   #  private method
   initPage = ->
-
+  ###################################### Initialize elements in north panel ######################################
+    dialogs = createDialogs()
   ###################################### Elements in summary panel ######################################
     createSelects()
-    $('#productRelease').trigger 'change'
-    ###################################### Initialize elements in north panel ######################################
-    dialogs = createDialogs()
+
     createButtons(dialogs.taskDialog, dialogs.languageFilterDialog, dialogs.transDetailDialog)
 
     #    add action for export

@@ -2,7 +2,7 @@
 (function() {
 
   define(function(require) {
-    var $, c18n, dialogs, handlers, i18n, params, productId, prop, taskGrid, url, util;
+    var $, c18n, dialogs, handlers, i18n, prop, taskGrid, util;
     $ = require('jqgrid');
     util = require('util');
     dialogs = require('taskmng/dialogs');
@@ -61,20 +61,11 @@
       },
       'Upload': (function(param) {})
     };
-    params = util.getUrlParams();
-    productId = params.product;
-    url = productId ? 'rest/tasks' : 'json/dummy.json';
     prop = "name,createTime,lastUpdateTime,status";
     taskGrid = $("#taskGrid").jqGrid({
-      url: url,
       mtype: 'POST',
-      postData: {
-        prod: productId,
-        format: 'grid',
-        prop: prop
-      },
       editurl: "",
-      datatype: 'json',
+      datatype: 'local',
       width: $(window).width() * 0.95,
       height: 400,
       shrinkToFit: false,
@@ -244,6 +235,9 @@
         });
       },
       afterCreate: function(grid) {
+        grid.setGridParam({
+          'datatype': 'json'
+        });
         return grid.navGrid('#taskPager', {
           edit: false,
           add: false,

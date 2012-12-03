@@ -2,7 +2,7 @@
 (function() {
 
   define(function(require) {
-    var $, URL, appTree, apppnl, c18n, getNodeInfo, ids, layout, nodeCtxMenu, productpnl, removeNode;
+    var $, URL, appTree, apppnl, c18n, getNodeInfo, ids, layout, nodeCtxMenu, productpnl, removeNode, timeFunName;
     $ = require('jqtree');
     c18n = require('i18n!nls/common');
     require('jqmsgbox');
@@ -13,7 +13,7 @@
       navigateTree: 'appTree'
     };
     URL = {
-      navigateTree: 'rest/products?format=tree&nocache=' + new Date().getTime(),
+      navigateTree: 'rest/products?format=tree',
       product: {
         create: 'app/create-product',
         del: 'app/remove-product-base'
@@ -101,7 +101,8 @@
       }
     };
     $.jstree._themes = "css/jstree/themes/";
-    return $.getJSON(URL.navigateTree, {}, function(treeInfo) {
+    timeFunName = null;
+    $.getJSON(URL.navigateTree, {}, function(treeInfo) {
       $("#" + ids.navigateTree).jstree({
         json_data: {
           data: treeInfo
@@ -119,21 +120,6 @@
           }
         },
         plugins: ["themes", "json_data", "ui", "core", "crrm", "contextmenu"]
-      }).bind("select_node.jstree", function(event, data) {
-        var node, nodeInfo;
-        appTree = data.inst;
-        node = data.rslt.obj;
-        nodeInfo = getNodeInfo(node);
-        switch (node.attr('type')) {
-          case 'products':
-            return layout.showWelcomePanel();
-          case 'product':
-            productpnl.refresh(nodeInfo);
-            return layout.showProductPanel();
-          case 'app':
-            apppnl.refresh(nodeInfo);
-            return layout.showApplicationPanel();
-        }
       }).bind('create.jstree', function(event, data) {
         var name, node, pbId;
         appTree = data.inst;
@@ -168,16 +154,34 @@
         if (param.currentSelected.productBaseId) {
           return appTree.select_node($("#appTree li #" + param.currentSelected.productBaseId + "[type='product']"));
         }
+      }).bind("select_node.jstree", function(event, data) {
+        clearTimeout(timeFunName);
+        return timeFunName = setTimeout(function() {
+          var node, nodeInfo;
+          appTree = data.inst;
+          node = data.rslt.obj;
+          nodeInfo = getNodeInfo(node);
+          switch (node.attr('type')) {
+            case 'products':
+              return layout.showWelcomePanel();
+            case 'product':
+              productpnl.refresh(nodeInfo);
+              return layout.showProductPanel();
+            case 'app':
+              apppnl.refresh(nodeInfo);
+              return layout.showApplicationPanel();
+          }
+        }, 300);
       }).bind('dblclick_node.jstree', function(event, data) {
-        appTree = data.inst;
-        return appTree.toggle_node(data.rslt.obj);
+        clearTimeout(timeFunName);
+        return data.inst.toggle_node(data.rslt.obj);
       });
       $('#loading-container').remove();
-      $('#optional-container').show();
-      return {
-        getNodeInfo: getNodeInfo
-      };
+      return $('#optional-container').show();
     });
+    return {
+      getNodeInfo: getNodeInfo
+    };
   });
 
 }).call(this);

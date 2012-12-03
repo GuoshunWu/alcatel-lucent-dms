@@ -152,9 +152,8 @@
                   return;
                 }
                 $.msgBox(i18n.msgbox.createtranstask.confirm, (function(keyPressed) {
-                  if (c18n.yes === keyPressed) {
-                    return window.location = "taskmng.jsp?productBase=" + (escape($('#productBase').val())) + "&product=" + (escape($('#productRelease').val()));
-                  }
+                  $('#pageNavigator').val('taskmng.jsp');
+                  return $('#naviForm').submit();
                 }), {
                   title: c18n.confirm
                 }, [c18n.yes, c18n.no]);
@@ -211,9 +210,6 @@
       };
     };
     createSelects = function() {
-      $.getJSON('rest/products', {
-        prop: 'id,name'
-      }, function(json) {});
       $('#productBase').change(function() {
         $('#productRelease').empty();
         if (parseInt($('#productBase').val()) === -1) {
@@ -228,7 +224,10 @@
           return $('#productRelease').trigger("change");
         });
       });
-      return $('#productRelease').change(function() {
+      if (!param.currentSelected.productId || '-1' === String(param.currentSelected.productId)) {
+        $('#productRelease option:last').attr('selected', true);
+      }
+      $('#productRelease').change(function() {
         if (-1 === parseInt(this.value)) {
           return;
         }
@@ -241,11 +240,15 @@
           },
           dataType: 'json',
           success: function(languages) {
-            return $("#" + ids.languageFilterDialogId).empty().append(util.generateLanguageTable(languages));
+            var langTable;
+            langTable = util.generateLanguageTable(languages);
+            return $("#languageFilterDialog").empty().append(langTable);
           }
         });
-        return refreshGrid();
+        refreshGrid();
+        return console.log("grid refresh");
       });
+      return $('#productRelease').trigger('change');
     };
     createButtons = function(taskDialog, languageFilterDialog) {
       $("#create").button().click(function() {
@@ -296,9 +299,8 @@
       return $("#exportForm").submit();
     };
     initPage = function() {
-      createSelects();
-      $('#productRelease').trigger('change');
       dialogs = createDialogs();
+      createSelects();
       createButtons(dialogs.taskDialog, dialogs.languageFilterDialog, dialogs.transDetailDialog);
       $("#exportExcel").click(function() {
         return exportAppOrDicts('excel');

@@ -1,24 +1,10 @@
 package com.alcatel_lucent.dms.test
 
-import com.alcatel_lucent.dms.BusinessException
-import com.alcatel_lucent.dms.model.Language
-import com.alcatel_lucent.dms.service.DaoService
-import com.alcatel_lucent.dms.service.LanguageService
-import com.alcatel_lucent.dms.service.TextService
-import org.junit.BeforeClass
-import org.junit.Ignore
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
-import org.springframework.test.context.transaction.TransactionConfiguration
-import static org.junit.Assert.assertNotNull
 import javax.naming.Context
-import javax.naming.directory.InitialDirContext
-import javax.naming.directory.SearchControls
 import javax.naming.NamingEnumeration
-import javax.naming.directory.SearchResult
+import org.junit.BeforeClass
+import org.junit.Test
+import javax.naming.directory.*
 
 /**
  * Created by IntelliJ IDEA.
@@ -39,32 +25,39 @@ class GLDAPTest {
 
     @Test
     public void testAlcatelLDAP() throws Exception {
-        InitialDirContext ctx = new InitialDirContext(
-                [
-                        "$Context.INITIAL_CONTEXT_FACTORY": 'com.sun.jndi.ldap.LdapCtxFactory',
-                        "$Context.PROVIDER_URL": 'ldap://ldap.sxb.bsf.alcatel.fr',
-                        "$Context.SECURITY_AUTHENTICATION": 'simple',
-                        "$Context.SECURITY_PRINCIPAL": 'dms',
-                        "$Context.SECURITY_CREDENTIALS": ''
-                ] as Hashtable
+        String INITCTX = "com.sun.jndi.ldap.LdapCtxFactory"
+        String ldapUrl = "ldap://ldap.sxb.bsf.alcatel.fr"
+        String LDAP_DN = "o=alcatel"
+
+        String username = "guoshunw"
+        String password = ""
+
+        Hashtable<String, Object> env = new Hashtable<String, Object>();
+        env.put(Context.INITIAL_CONTEXT_FACTORY, INITCTX);
+        env.put(Context.PROVIDER_URL, ldapUrl);
+        env.put(Context.SECURITY_AUTHENTICATION, "simple");
+        env.put(Context.SECURITY_PRINCIPAL, username);
+        env.put(Context.SECURITY_CREDENTIALS, password);
+
+        DirContext ctx = new InitialDirContext(env)
+
+        NamingEnumeration<SearchResult> results = ctx.search(LDAP_DN,
+                "(&(objectclass=person)(cslx500=$username))",
+                new SearchControls(
+                        returningObjFlag: true,
+                        searchScope: SearchControls.SUBTREE_SCOPE,
+                        attributesToReturn: ["cn", "cslx500", "mail"]
+                )
         )
-        SearchControls constraints = new SearchControls(
-                returningObjFlag: true,
-                searchScope: SearchControls.SUBTREE_SCOPE,
-                attributesToReturn: ["cn", "cslx500", "mail"]
-        )
-        String csl = "guoshunw"
-        String baseDN = "o=alcatel"
-        String filter = "(&(objectclass=person)(cslx500=$csl))"
-        println "baseDN=$baseDN, filter=$filter"
-        NamingEnumeration<SearchResult> results = ctx.search(baseDN, filter, constraints)
-//        results.toList().each {result ->
-//            result.attributes.all.toList().each {attr ->
-//                println attr
-//            }
-//
-//            println '=' * 80
-//        }
+        Attributes attrs = null
+        results.toList().each {result ->
+            attrs = result.attributes
+            println attrs.cn.get()
+            println attrs.cslx500.get()
+            println attrs.mail.get()
+            println '=' * 80
+        }
+        ctx.close()
     }
 //    @Test
     public void testLDAPSettings() throws Exception {

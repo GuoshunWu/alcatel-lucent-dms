@@ -39,17 +39,13 @@ define (require)->
     'Upload': ((param)->)
 
 
-  params = util.getUrlParams()
-  productId = params.product
 
-  url = if productId then 'rest/tasks' else 'json/dummy.json'
   prop = "name,createTime,lastUpdateTime,status"
-  #  console.log "Task grid url: #{url}."
 
   taskGrid = $("#taskGrid").jqGrid {
-  url: url
-  mtype: 'POST', postData: {prod: productId, format: 'grid', prop: prop},
-  editurl: "", datatype: 'json'
+#  url: 'json/dummy.json'
+  mtype: 'POST'
+  editurl: "", datatype: 'local'
   width: $(window).width() * 0.95, height: 400, shrinkToFit: false
   rownumbers: true, loadonce: false # for reload the colModel
   pager: '#taskPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
@@ -136,6 +132,7 @@ define (require)->
 
 
   afterCreate: (grid)->
+    grid.setGridParam 'datatype':'json'
     grid.navGrid '#taskPager', {edit: false, add: false, del: false, search: false, view: false}
   }
   taskGrid.getGridParam('afterCreate') taskGrid

@@ -8,13 +8,6 @@
       closable: true
     });
     info = {};
-    if (window.location.search) {
-      $(window.location.search.split('?')[1].split('&')).each(function(index, elem) {
-        var kv;
-        kv = elem.split('=');
-        return info[kv[0]] = unescape(kv[1]);
-      });
-    }
     $('#productBase').change(function() {
       $('#productRelease').empty();
       if (parseInt($('#productBase').val()) === -1) {
@@ -40,6 +33,9 @@
       }
       return grid.productVersionChanged(param);
     });
+    if (!param.currentSelected.productId || '-1' === String(param.currentSelected.productId)) {
+      $('#productRelease option:last').attr('selected', true);
+    }
     $('#productRelease').trigger('change');
     ($("#progressbar").draggable({
       grid: [50, 20],

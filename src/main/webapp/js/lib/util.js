@@ -151,7 +151,7 @@ To change this template use File | Settings | File Templates.
     newOption = function(text, value, selected) {
       return "<option " + (selected ? 'selected ' : '') + "value='" + value + "'>" + text + "</option>";
     };
-    $('#pageNavigator').change(function(e) {
+    $('#naviForm').bind('submit', function(e) {
       var appTree, node, productBaseId, type;
       $("#curProductBaseId").val($("#productBase").val());
       $("#curProductId").val($("#productRelease").val());
@@ -162,10 +162,16 @@ To change this template use File | Settings | File Templates.
         productBaseId = -1;
         if (node.length > 0) {
           type = node.attr('type');
-          productBaseId = type === 'product' ? node.attr('id') : type === 'app' ? appTree._get_parent(node).attr('id') : -1;
+          if (type === 'product') {
+            productBaseId = node.attr('id');
+          } else if (type === 'app') {
+            productBaseId = appTree._get_parent(node).attr('id');
+          }
         }
-        $("#curProductBaseId").val(productBaseId);
+        return $("#curProductBaseId").val(productBaseId);
       }
+    });
+    $('#pageNavigator').change(function(e) {
       return $('#naviForm').submit();
     });
     return {

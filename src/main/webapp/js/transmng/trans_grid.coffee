@@ -1,4 +1,4 @@
-define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n!nls/transmng', 'i18n!nls/common', 'require' ], ($, util, msgbox, gmodel, i18n, c18n, require)->
+define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n!nls/transmng', 'i18n!nls/common', 'require' ], ($, util, msgbox, gmodel,blockui, i18n, c18n, require)->
   common =
     colNames: ['ID', 'Application', 'Version', 'Num of String']
     colModel: [
@@ -25,8 +25,8 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
 
   getTableType = ->if -1 == ($.inArray 'Dummy', $("#transGrid").getGridParam('colNames')) then  'dict' else 'app'
   transGrid = $("#transGrid").jqGrid {
-    url:'json/dummy.json'
-    mtype: 'POST', postData: {}, editurl: "", datatype: 'json'
+#    url:'json/dummy.json'
+    mtype: 'POST', postData: {}, editurl: "", datatype: 'local'
     width: $(window).width() * 0.95, height: 330, shrinkToFit: false
     rownumbers: true, loadonce: false # for reload the colModel
     pager: '#transPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
@@ -34,6 +34,7 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
     colNames: grid.dictionary.colNames, colModel: grid.dictionary.colModel
     groupHeaders: []
     afterCreate: (grid)->
+      grid.setGridParam 'datatype':'json'
       grid.setGroupHeaders {useColSpanStyle: true, groupHeaders: grid.getGridParam 'groupHeaders'}
       grid.filterToolbar {stringResult: true, searchOnEnter: false} if getTableType() == 'dict'
 
@@ -62,7 +63,8 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
 
         (console.log 'zero';return) if allZero
         util.getDictLanguagesByDictId rowid, (languages)=>
-          require('transmng/layout').showTransDetailDialog {dict: {id: rowid, name: rowData.dictionary}, language: language, languages: languages}
+          transLayout = require('transmng/layout')
+          transLayout.showTransDetailDialog {dict: {id: rowid, name: rowData.dictionary}, language: language, languages: languages}
     }
   transGrid.getGridParam('afterCreate') transGrid
 
