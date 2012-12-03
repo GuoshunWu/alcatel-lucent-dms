@@ -7,12 +7,11 @@ define (require)->
   productpnl = require 'appmng/product_panel'
   apppnl = require 'appmng/application_panel'
 
-
   ids = {
   navigateTree: 'appTree'
   }
   URL = {
-  navigateTree: 'rest/products?format=tree&nocache=' + new Date().getTime()
+  navigateTree: 'rest/products?format=tree'
   product:
     {
     create: 'app/create-product'
@@ -69,27 +68,15 @@ define (require)->
 
 
   $.jstree._themes = "css/jstree/themes/"
+
+  #  single click node event
+  timeFunName = null
+
   $.getJSON URL.navigateTree, {}, (treeInfo) ->
     $("##{ids.navigateTree}").jstree(
       json_data: {data: treeInfo}
       ui: {select_limit: 1}, themes: {}, core: {initially_open: ["-1"]}, contextmenu: {items: (node)->nodeCtxMenu[node.attr('type')]}
       plugins: [ "themes", "json_data", "ui", "core", "crrm", "contextmenu"]
-    ).bind("select_node.jstree",
-      (event, data)->
-        appTree = data.inst
-        node = data.rslt.obj
-        nodeInfo = getNodeInfo node
-
-        switch node.attr('type')
-          when 'products'
-            layout.showWelcomePanel()
-          when 'product'
-            productpnl.refresh nodeInfo
-            layout.showProductPanel()
-          when 'app'
-            apppnl.refresh nodeInfo
-            layout.showApplicationPanel()
-
     ).bind('create.jstree',
       (event, data)->
         appTree = data.inst
@@ -115,15 +102,38 @@ define (require)->
         #   productBase should be selected if param.currentSelected.productBaseId is not -1
         if param.currentSelected.productBaseId
           appTree.select_node $("#appTree li ##{param.currentSelected.productBaseId}[type='product']")
+    ).bind("select_node.jstree",
+      (event, data)->
+      #  Cancel the last time delay unexecuted method
+        clearTimeout(timeFunName)
+        # Delay 300 milliseconds executive click
+        timeFunName = setTimeout(
+          ()->
+            appTree = data.inst
+            node = data.rslt.obj
+            nodeInfo = getNodeInfo node
+
+            switch node.attr('type')
+              when 'products'
+                layout.showWelcomePanel()
+              when 'product'
+                productpnl.refresh nodeInfo
+                layout.showProductPanel()
+              when 'app'
+                apppnl.refresh nodeInfo
+                layout.showApplicationPanel()
+          , 300)
+
     ).bind('dblclick_node.jstree', (event, data)->
-        appTree = data.inst
-        appTree.toggle_node data.rslt.obj
+      #  Cancel the last time delay unexecuted method
+        clearTimeout(timeFunName)
+        data.inst.toggle_node data.rslt.obj
     )
 
     $('#loading-container').remove()
     $('#optional-container').show()
 
-    getNodeInfo: getNodeInfo
+  getNodeInfo: getNodeInfo
 
 
 

@@ -2,10 +2,10 @@ define ['jqlayout', 'taskmng/task_grid', 'i18n!nls/common', 'taskmng/dialogs', '
 
   $("#optional-container").layout {resizable: true, closable: true}
   info = {}
-  if window.location.search
-    $(window.location.search.split('?')[1].split('&')).each (index, elem)->
-      kv = elem.split('=')
-      info[kv[0]] = unescape kv[1]
+#  if window.location.search
+#    $(window.location.search.split('?')[1].split('&')).each (index, elem)->
+#      kv = elem.split('=')
+#      info[kv[0]] = unescape kv[1]
   # selects on summary panel
 #  $.getJSON 'rest/products', {prop: 'id,name'}, (json)->
 #    $('#productBase').append(util.newOption c18n.select.product.tip, -1).append(
@@ -35,6 +35,7 @@ define ['jqlayout', 'taskmng/task_grid', 'i18n!nls/common', 'taskmng/dialogs', '
       return false
     grid.productVersionChanged param
 
+  $('#productRelease option:last').attr('selected', true) if !param.currentSelected.productId || '-1' == String(param.currentSelected.productId)
   $('#productRelease').trigger 'change'
 
   # file uploader

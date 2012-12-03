@@ -103,7 +103,8 @@ define ["jquery"], ($) ->
   newOption = (text, value, selected)->"<option #{if selected then 'selected ' else ''}value='#{value}'>#{text}</option>"
 
   #  for page navigator
-  $('#pageNavigator').change (e)->
+
+  $('#naviForm').bind 'submit', (e)->
     $("#curProductBaseId").val $("#productBase").val()
     $("#curProductId").val $("#productRelease").val()
 
@@ -118,9 +119,13 @@ define ["jquery"], ($) ->
       #      a node is selected
       if node.length > 0
         type = node.attr('type')
-        productBaseId = if type == 'product' then node.attr('id') else if type == 'app' then appTree._get_parent(node).attr('id') else -1
+        if type == 'product'
+          productBaseId = node.attr('id')
+        else if type == 'app'
+          productBaseId = appTree._get_parent(node).attr('id')
       $("#curProductBaseId").val productBaseId
-    $('#naviForm').submit()
+
+  $('#pageNavigator').change (e)->$('#naviForm').submit()
 
   ###
   Test here.
