@@ -416,7 +416,7 @@
                 </executions>
                 <configuration>
                     <warSourceExcludes>**/*.coffee</warSourceExcludes>
-                    <warSourceExcludes>**/config.js</warSourceExcludes>
+                    <!--<warSourceExcludes>**/config.js</warSourceExcludes>-->
                     <useCache>true</useCache>
                 </configuration>
             </plugin>
