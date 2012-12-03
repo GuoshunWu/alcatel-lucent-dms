@@ -35,6 +35,19 @@
     //- "none": no minification will be done.
 //    optimize:"none",
 
+    //Same as "pragmas", but only applied once during the file save phase
+    //of an optimization. "pragmas" are applied both during the dependency
+    //mapping and file saving phases on an optimization. Some pragmas
+    //should not be processed during the dependency mapping phase of an
+    //operation, such as the pragma in the CoffeeScript loader plugin,
+    //which wants the CoffeeScript compiler during the dependency mapping
+    //phase, but once files are saved as plain JavaScript, the CoffeeScript
+    //compiler is no longer needed. In that case, pragmasOnSave would be used
+    //to exclude the compiler code during the save phase.
+    pragmasOnSave: {
+        //Just an example
+        excludeCoffeeScript: true
+    },
     modules:[
         //First set up the common build layer.
         {
