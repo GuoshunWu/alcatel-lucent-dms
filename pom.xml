@@ -599,7 +599,7 @@
             </properties>
         </profile>
         <profile>
-            <id>PostGreSQL</id>
+            <id>PostgreSQL</id>
             <properties>
                 <db.driver>org.postgresql.Driver</db.driver>
                 <db.url>jdbc\:postgresql\://172.24.190.236\:5432/dms_qa</db.url>
