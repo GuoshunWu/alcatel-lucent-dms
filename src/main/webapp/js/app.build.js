@@ -35,19 +35,18 @@
     //- "none": no minification will be done.
 //    optimize:"none",
 
-    //Same as "pragmas", but only applied once during the file save phase
-    //of an optimization. "pragmas" are applied both during the dependency
-    //mapping and file saving phases on an optimization. Some pragmas
-    //should not be processed during the dependency mapping phase of an
-    //operation, such as the pragma in the CoffeeScript loader plugin,
-    //which wants the CoffeeScript compiler during the dependency mapping
-    //phase, but once files are saved as plain JavaScript, the CoffeeScript
-    //compiler is no longer needed. In that case, pragmasOnSave would be used
-    //to exclude the compiler code during the save phase.
-    pragmasOnSave: {
-        //Just an example
-        excludeCoffeeScript: true
-    },
+    //When the optimizer copies files from the source location to the
+    //destination directory, it will skip directories and files that start
+    //with a ".". If you want to copy .directories or certain .files, for
+    //instance if you keep some packages in a .packages directory, or copy
+    //over .htaccess files, you can set this to null. If you want to change
+    //the exclusion rules, change it to a different regexp. If the regexp
+    //matches, it means the directory will be excluded. This used to be
+    //called dirExclusionRegExp before the 1.0.2 release.
+    //As of 1.0.3, this value can also be a string that is converted to a
+    //RegExp via new RegExp().
+    fileExclusionRegExp:"/^\./|.*\.coffee",
+
     modules:[
         //First set up the common build layer.
         {
