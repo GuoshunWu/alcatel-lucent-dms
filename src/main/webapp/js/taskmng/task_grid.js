@@ -81,12 +81,19 @@
       multiselect: false,
       cellEdit: true,
       cellurl: 'http://127.0.0.1:2000',
-      colNames: ['Task', 'Create time', 'Last upload time', 'Status', 'Actions'],
+      colNames: ['Task', 'Creator', 'Create time', 'Last upload time', 'Status', 'Actions'],
       colModel: [
         {
           name: 'name',
           index: 'name',
           width: 250,
+          editable: false,
+          stype: 'select',
+          align: 'left'
+        }, {
+          name: 'creator.name',
+          index: 'creator.name',
+          width: 100,
           editable: false,
           stype: 'select',
           align: 'left'
@@ -115,8 +122,8 @@
         }, {
           name: 'actions',
           index: 'actions',
-          width: 280,
-          align: 'center'
+          width: 260,
+          align: 'left'
         }
       ],
       beforeProcessing: function(data, status, xhr) {
@@ -134,9 +141,12 @@
         return $(data.rows).each(function(index) {
           var rowData;
           rowData = this;
-          return this.cell[actIndex] = $(actions).map(function(index, action) {
+          return this.cell[actIndex] = '&nbsp;&nbsp;&nbsp;&nbsp;' + $(actions).map(function(index, action) {
+            if ('1' === rowData.cell[actIndex - 1] && (action === 'Upload' || action === 'Close')) {
+              return;
+            }
             if (action === 'Upload') {
-              return "<span id='upload_" + this + "_" + rowData.id + "_" + actIndex + "'></span>";
+              return "<a id='upload_" + this + "_" + rowData.id + "_" + actIndex + "'></a>";
             }
             return "<a id='action_" + this + "_" + rowData.id + "_" + actIndex + "' style='color:blue'title='" + this + "' href=#  >" + this + "</A>";
           }).get().join('&nbsp;&nbsp;&nbsp;&nbsp;');
@@ -173,7 +183,7 @@
             });
           }
         })).hide();
-        return $('span[id^=upload_]', this).button({
+        $('a[id^=upload_]', this).button({
           label: 'Upload'
         }, {
           create: function(e, ui) {
@@ -230,8 +240,12 @@
               }
             });
           }
-        }).css({
+        }).removeClass().addClass('ui-button').css({
           overflow: 'hidden'
+        });
+        return $('a[id^=upload_] .ui-button-text').css({
+          textDecoration: 'underline',
+          color: 'blue'
         });
       },
       afterCreate: function(grid) {
@@ -251,7 +265,7 @@
     return {
       productVersionChanged: function(product) {
         taskGrid = $("#taskGrid");
-        prop = "name,createTime,lastUpdateTime,status";
+        prop = "name,creator.name,createTime,lastUpdateTime,status";
         return taskGrid.setGridParam({
           url: 'rest/tasks',
           postData: {

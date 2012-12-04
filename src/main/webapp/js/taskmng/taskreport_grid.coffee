@@ -1,5 +1,5 @@
 define ['jqgrid', 'util', 'require'], ($, util, require)->
-  colNames = ['Dictionary', 'Total']
+  colNames = ['Context', 'Total']
   colModel = [
     {name: 'name', index: 'dict', width: 240, editable: false, stype: 'select', align: 'left', frozen: true}
     {name: 'total', index: 'total', width: 90, editable: false, align: 'right', frozen: true}
@@ -9,7 +9,7 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
 
   url: 'json/transreportgrid.json'
   mtype: 'POST', postData: {}, editurl: "", datatype: 'json'
-  width: $(window).width() * 0.6, height: 200, shrinkToFit: false
+  width:  $(window).width() * 0.78, height: 200, shrinkToFit: true
   pager: '#reportPager', rowNum: 60, rowList: [30, 60, 120]
   sortname: 'key', sortorder: 'asc', viewrecords: true, gridview: true, multiselect: false
   cellEdit: true, cellurl: ''
@@ -34,22 +34,11 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
       }
       dialogs.viewDetail.dialog 'open'
 
-
-
   afterCreate: (grid)->
     grid.setGroupHeaders {useColSpanStyle: true, groupHeaders: grid.getGridParam('groupHeaders')}
     grid.navGrid '#reportPager', {edit: false, add: false, del: false, search: false, view: false}
     grid.jqGrid 'setFrozenColumns'
 
-  ondblClickRow: (rowid, iRow, iCol, e)->
-  #      col = $(@).getGridParam('colModel')[iCol]
-  #      [trs, id] = [/s\(\d+\)\[(\d+)\]/ig.exec(col.index), /s\((\d+)\)\[\d+\]/ig.exec(col.index)]
-  #      return if !trs
-  #      language = name: col.name.split('.')[0], translated: Number(!parseInt trs[1]), id: id[1]
-  #      dialogs = require 'taskmng/dialogs'
-  #
-  #      dialogs.viewDetail.data 'param', {task: $(@).getGridParam('postData').task, language: language.id, translated: language.translated, context: rowid}
-  #      dialogs.viewDetail.dialog 'open'
   }
 
   grid.getGridParam('afterCreate') grid

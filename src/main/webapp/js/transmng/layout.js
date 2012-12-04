@@ -152,6 +152,9 @@
                   return;
                 }
                 $.msgBox(i18n.msgbox.createtranstask.confirm, (function(keyPressed) {
+                  if (c18n.yes !== keyPressed) {
+                    return;
+                  }
                   $('#pageNavigator').val('taskmng.jsp');
                   return $('#naviForm').submit();
                 }), {
@@ -245,8 +248,7 @@
             return $("#languageFilterDialog").empty().append(langTable);
           }
         });
-        refreshGrid();
-        return console.log("grid refresh");
+        return refreshGrid();
       });
       return $('#productRelease').trigger('change');
     };
@@ -257,7 +259,7 @@
         info = grid.getTotalSelectedRowInfo();
         type = $(':radio[name=viewOption][checked]').val();
         if (!info.rowIds.length) {
-          $.msgBox(i18n.msgbox.createtranstask.msg.format(c18n[grid.getTableType()]), null, {
+          $.msgBox(c18n.selrow.format(c18n[grid.getTableType()]), null, {
             title: c18n.warning
           });
           return;

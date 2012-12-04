@@ -184,7 +184,9 @@
             return allZero;
           });
           if (allZero) {
-            console.log('zero');
+            if (typeof console !== "undefined" && console !== null) {
+              console.log('zero');
+            }
             return;
           }
           return util.getDictLanguagesByDictId(rowid, function(languages) {
@@ -208,7 +210,7 @@
       transGrid = $("#transGrid");
       selectedRowIds = transGrid.getGridParam('selarrrow').join(',');
       if (!selectedRowIds) {
-        $.msgBox(i18n.msgbox.rowsel.msg, null, {
+        $.msgBox(c18n.selrow.format(c18n.dict), null, {
           title: c18n.warning
         });
         return;

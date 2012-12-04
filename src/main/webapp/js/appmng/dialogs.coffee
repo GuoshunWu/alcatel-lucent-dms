@@ -6,23 +6,8 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   require 'jqmsgbox'
   util = require 'util'
 
-  ids = {
-  button:
-    {
-    new_product: 'newProduct'
-    }
-  dialog:
-    {
-    new_product: 'newProductDialog',
-    new_product_release: 'newProductReleaseDialog',
-    new_or_add_application: 'addApplicationDialog'
-    }
-  productName: '#productName'
-  product_duplication: '#dupVersion'
-  }
-
   #  Create new product release dialog
-  newProductVersion = $("##{ids.dialog.new_product_release}").dialog {
+  newProductVersion = $("#newProductReleaseDialog").dialog {
   autoOpen: false
   height: 200, width: 500, modal: true
   buttons: [
@@ -47,8 +32,8 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
     {text: c18n.cancel, click: -> $(@).dialog "close"}
   ]
   open: (event, ui)->
-    $(ids.product_duplication).empty().append util.newOption '', -1
-    (require 'appmng/product_panel').getProductSelectOptions().appendTo $ ids.product_duplication
+    $('#dupVersion').empty().append util.newOption '', -1
+    (require 'appmng/product_panel').getProductSelectOptions().appendTo $ '#dupVersion'
   close: (event, ui)->
     errDiv = $("#productErrInfo").hide()
   }
@@ -84,7 +69,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   }
 
   # Add application to product dialog
-  addApplication = $("##{ids.dialog.new_or_add_application}").dialog {
+  addApplication = $("#addApplicationDialog").dialog {
   autoOpen: false, height: 'auto', width: 300, modal: true, position: "center",
   show: { effect: 'drop', direction: "up" }
   create: (event, ui)->

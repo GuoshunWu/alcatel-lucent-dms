@@ -227,7 +227,7 @@
       var dicts, filename;
       dicts = dicGrid.getGridParam('selarrrow');
       if (!dicts || dicts.length === 0) {
-        $.msgBox(c18n.selrow, null, {
+        $.msgBox(c18n.selrow.format(c18n.dict), null, {
           title: c18n.warning
         });
         return;
@@ -255,7 +255,7 @@
       var dicts;
       dicts = dicGrid.getGridParam('selarrrow');
       if (!dicts || dicts.length === 0) {
-        $.msgBox(c18n.selrow, null, {
+        $.msgBox(c18n.selrow.format(c18n.dict), null, {
           title: c18n.warning
         });
         return;

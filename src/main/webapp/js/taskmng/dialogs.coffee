@@ -13,7 +13,7 @@ define ['jqueryui', 'taskmng/taskreport_grid', 'taskmng/transdetail_grid', 'jqms
 
   transReport = $('#translationReportDialog').dialog {
   autoOpen: false, modal: true
-  width: 850, height: 'auto'
+  width: $(window).width() * 0.8, height: 'auto'
   open: ()->
     param = $(@).data 'param'
     $.ajax 'rest/languages', async: false, dataType: 'json', data: {task: param.id, prop: 'id,name'}, success: (languages)->

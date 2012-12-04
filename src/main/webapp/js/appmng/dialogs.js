@@ -2,26 +2,14 @@
 (function() {
 
   define(['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsettings_grid', 'appmng/previewlangsetting_grid'], function(require, grid, sgrid, lgrid) {
-    var $, addApplication, c18n, dictListPreview, dictPreviewLangSettings, dictPreviewStringSettings, i18n, ids, langSettings, newAppVersion, newProductVersion, stringSettings, util;
+    var $, addApplication, c18n, dictListPreview, dictPreviewLangSettings, dictPreviewStringSettings, i18n, langSettings, newAppVersion, newProductVersion, stringSettings, util;
     $ = require('jqueryui');
     c18n = require('i18n!nls/common');
     i18n = require('i18n!nls/appmng');
     require('blockui');
     require('jqmsgbox');
     util = require('util');
-    ids = {
-      button: {
-        new_product: 'newProduct'
-      },
-      dialog: {
-        new_product: 'newProductDialog',
-        new_product_release: 'newProductReleaseDialog',
-        new_or_add_application: 'addApplicationDialog'
-      },
-      productName: '#productName',
-      product_duplication: '#dupVersion'
-    };
-    newProductVersion = $("#" + ids.dialog.new_product_release).dialog({
+    newProductVersion = $("#newProductReleaseDialog").dialog({
       autoOpen: false,
       height: 200,
       width: 500,
@@ -68,8 +56,8 @@
         }
       ],
       open: function(event, ui) {
-        $(ids.product_duplication).empty().append(util.newOption('', -1));
-        return (require('appmng/product_panel')).getProductSelectOptions().appendTo($(ids.product_duplication));
+        $('#dupVersion').empty().append(util.newOption('', -1));
+        return (require('appmng/product_panel')).getProductSelectOptions().appendTo($('#dupVersion'));
       },
       close: function(event, ui) {
         var errDiv;
@@ -128,7 +116,7 @@
         return $("#appErrInfo").hide();
       }
     });
-    addApplication = $("#" + ids.dialog.new_or_add_application).dialog({
+    addApplication = $("#addApplicationDialog").dialog({
       autoOpen: false,
       height: 'auto',
       width: 300,

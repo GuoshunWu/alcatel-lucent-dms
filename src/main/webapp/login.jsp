@@ -9,6 +9,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta http-equiv="Pragma" content="no-cache"/>
 
+    <%--<link rel="stylesheet" href="../css/jqueryUI/themes/base/jquery.ui.all.css">--%>
+
     <link rel="stylesheet" type="text/css" href="css/login.css"/>
     <link rel="stylesheet" type="text/css" href="css/jqformvalidator/validator.css"/>
 
@@ -88,6 +90,8 @@
         <div style="float: right; font-size: 13px; font-weight:bold; padding-right:5px"><s:property
                 value="#version"/></div>
     </div>
+    
+    <div id="testForDialog"></div>
 </div>
 </body>
 </html>

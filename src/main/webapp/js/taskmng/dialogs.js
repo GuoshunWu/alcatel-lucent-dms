@@ -36,7 +36,7 @@
     transReport = $('#translationReportDialog').dialog({
       autoOpen: false,
       modal: true,
-      width: 850,
+      width: $(window).width() * 0.8,
       height: 'auto',
       open: function() {
         var param;
