@@ -132,7 +132,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     			",sum(case when t.status=" + Translation.STATUS_IN_PROGRESS + " then 1 else 0 end) " +
     			" from Product p join p.applications a join a.dictionaries d join d.dictLanguages dl" +
     			" join d.labels l join l.text.translations t" +
-    			" where p.id=:prodId and t.language=dl.language" +
+    			" where p.id=:prodId and t.language=dl.language and dl.language.id<>1" +
     			" group by d.id,dl.language.id";
     	qr = dao.retrieve(hql, param);
     	for (Object[] row : qr) {
@@ -153,7 +153,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     			",sum(case when t.status=" + Translation.STATUS_TRANSLATED + " then 1 else 0 end) " +
     			",sum(case when t.status=" + Translation.STATUS_IN_PROGRESS + " then 1 else 0 end) " +
     			" from Product p join p.applications a join a.dictionaries d join d.dictLanguages dl join d.labels l join l.origTranslations ot,Translation t" +
-    			" where p.id=:prodId and ot.needTranslation=false and t.language=dl.language and t.language=ot.language and t.text=l.text" +
+    			" where p.id=:prodId and ot.needTranslation=false and t.language=dl.language and t.language=ot.language and t.text=l.text and dl.language.id<>1" +
     			" group by d.id,ot.language.id";
     	qr = dao.retrieve(hql, param);
     	for (Object[] row : qr) {
@@ -200,7 +200,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     			",sum(case when t.status=" + Translation.STATUS_IN_PROGRESS + " then 1 else 0 end) " +
     			" from Product p join p.applications a join a.dictionaries d join d.dictLanguages dl" +
     			" join d.labels l join l.text.translations t" +
-    			" where p.id=:prodId and t.language=dl.language" +
+    			" where p.id=:prodId and t.language=dl.language and dl.language.id<>1" +
     			" group by a.id,dl.language.id";
     	qr = dao.retrieve(hql, param);
     	for (Object[] row : qr) {
@@ -221,7 +221,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     			",sum(case when t.status=" + Translation.STATUS_TRANSLATED + " then 1 else 0 end) " +
     			",sum(case when t.status=" + Translation.STATUS_IN_PROGRESS + " then 1 else 0 end) " +
     			" from Product p join p.applications a join a.dictionaries d join d.dictLanguages dl join d.labels l join l.origTranslations ot,Translation t" +
-    			" where p.id=:prodId and ot.needTranslation=false and t.language=dl.language and t.language=ot.language and t.text=l.text" +
+    			" where p.id=:prodId and ot.needTranslation=false and t.language=dl.language and t.language=ot.language and t.text=l.text and dl.language.id<>1" +
     			" group by a.id,ot.language.id";
     	qr = dao.retrieve(hql, param);
     	for (Object[] row : qr) {
