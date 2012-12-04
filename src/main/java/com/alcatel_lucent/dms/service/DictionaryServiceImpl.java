@@ -564,8 +564,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	                // determine translation status
 	                if (label.getReference().trim().isEmpty()) {
 	                	t.setStatus(Translation.STATUS_TRANSLATED);
-	                } else if (trans.getRequestTranslation() != null) {
-	                	t.setStatus(trans.getRequestTranslation() ? Translation.STATUS_UNTRANSLATED : Translation.STATUS_TRANSLATED);
+//	                } else if (trans.getRequestTranslation() != null) {
+//	                	t.setStatus(trans.getRequestTranslation() ? Translation.STATUS_UNTRANSLATED : Translation.STATUS_TRANSLATED);
 	                } else if (!trans.isNeedTranslation()) {
 	                	t.setStatus(Translation.STATUS_TRANSLATED);
 	                } else if (label.getReference().equals(trans.getOrigTranslation())) {
