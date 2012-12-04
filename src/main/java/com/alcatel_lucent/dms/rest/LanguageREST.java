@@ -56,21 +56,21 @@ public class LanguageREST extends BaseREST {
     	if (dictStr != null && !dictStr.trim().isEmpty()) {	// query by dictionaries
     		hql = "select distinct obj" +
     				" from DictionaryLanguage dl join dl.language obj" +
-    				" where dl.dictionary.id in (:dictId)";
+    				" where dl.dictionary.id in (:dictId) and obj.id<>1";
     		param.put("dictId", toIdList(dictStr));
     	} else {	
 	    	String appStr = requestMap.get("app");
 	    	if (appStr != null && !appStr.trim().isEmpty()) {	// query by applications
 	    		hql = "select distinct obj" +
 	    				" from Application a join a.dictionaries d join d.dictLanguages dl join dl.language obj" +
-	    				" where a.id in (:appId)";
+	    				" where a.id in (:appId) and obj.id<>1";
 	    		param.put("appId", toIdList(appStr));
 	    	} else {
 	    		String prodStr = requestMap.get("prod");
 	    		if (prodStr != null && !prodStr.trim().isEmpty()) {	// query by products
 		    		hql = "select distinct obj" +
 		    				" from Product p join p.applications a join a.dictionaries d join d.dictLanguages dl join dl.language obj" +
-		    				" where p.id in (:prodId)";
+		    				" where p.id in (:prodId) and obj.id<>1";
 		    		param.put("prodId", toIdList(prodStr));
 	    		} else {
 	    			String taskStr = requestMap.get("task");
