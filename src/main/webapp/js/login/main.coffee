@@ -12,6 +12,18 @@ define (require)->
 
   $('#loginForm').bind 'submit', ()->$("#idSubmit").attr('disabled', true).css('color', 'grey') if $.formValidator.pageIsValid()
 
+  #  test jqueryui dialog
+#  require 'jqueryui'
+#
+#  $('#testForDialog').dialog {
+#  autoOpen: true
+#  title: 'A test'
+#  width: 'auto'
+#  buttons: [
+#    {text: 'OK', click: ()-> alert 'OK'}
+#    {text: 'Cancel', click: ()-> alert 'Cancel'}
+#  ]
+#  }
 #  require 'jqform'
 #  require 'blockui'
 #

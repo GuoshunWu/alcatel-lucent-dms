@@ -1,38 +1,22 @@
 define ['jqlayout', 'taskmng/task_grid', 'i18n!nls/common', 'taskmng/dialogs', 'util', 'require'], ($, grid, c18n, dialogs, util, require)->
-
   $("#optional-container").layout {resizable: true, closable: true}
-  info = {}
-#  if window.location.search
-#    $(window.location.search.split('?')[1].split('&')).each (index, elem)->
-#      kv = elem.split('=')
-#      info[kv[0]] = unescape kv[1]
-  # selects on summary panel
-#  $.getJSON 'rest/products', {prop: 'id,name'}, (json)->
-#    $('#productBase').append(util.newOption c18n.select.product.tip, -1).append(
-#      util.json2Options(json, info.productBase, 'name')
-#    ).trigger 'change'
-  #  load product in product base
+
   $('#productBase').change ()->
     $('#productRelease').empty()
     return false if parseInt($('#productBase').val()) == -1
 
     $.getJSON "rest/products/version", {base: $(@).val(), prop: 'id,version'}, (json)->
-      $('#productRelease').append(util.newOption c18n.select.release.tip, -1).append(
-        #        $(json).map ()->$(new Option(@version, @id)).attr('selected', info.product and @id == parseInt info.product)[0]
-        util.json2Options json, info.product
-      )
-
-  #      $('#productRelease').change()
+      $('#productRelease')
+      .append(util.newOption c18n.select.release.tip, -1)
+      .append(util.json2Options json).trigger 'change'
 
   $('#productRelease').change ->
   #    todo: refresh grid according to the product release
     param = {
     release: {id: $(@).val(), version: $(@).find("option:selected").text()}
     }
+    return false if !param.release.id || parseInt(param.release.id) == -1
 
-    if !param.release.id || parseInt(param.release.id) == -1
-    #        $.msgBox i18n.select.release.msg, null, title: i18n.select.release.msgtitle
-      return false
     grid.productVersionChanged param
 
   $('#productRelease option:last').attr('selected', true) if !param.currentSelected.productId || '-1' == String(param.currentSelected.productId)

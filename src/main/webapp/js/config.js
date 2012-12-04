@@ -13,7 +13,9 @@ require.config({
 //    enforceDefine: true,
     paths:{
         jquery:'jquery-1.7.2.min',
+//        jquery:'jquery-1.8.3.min',
         jqueryui:'jquery-ui-1.8.22.custom.min',
+//        jqueryui:'jquery-ui-1.9.2.custom.min',
 //        jqvalidate:'jquery.validate',
         formvalidate:'formValidator-4.0.1.min',
         formvalreg:'formValidatorRegex',

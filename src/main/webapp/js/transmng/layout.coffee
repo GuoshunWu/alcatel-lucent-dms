@@ -93,6 +93,7 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
           $.msgBox i18n.msgbox.createtranstask.confirm, ((keyPressed)->
           #            window.location = "taskmng.jsp?productBase=#{escape $('#productBase').val()}&product=#{escape $('#productRelease').val()}" if c18n.yes == keyPressed
           #            navigate form is in common/pagenavigator.jsp
+            return if c18n.yes != keyPressed
             $('#pageNavigator').val 'taskmng.jsp'
             $('#naviForm').submit()
           ), {title: c18n.confirm}, [c18n.yes, c18n.no]
@@ -141,7 +142,7 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
         $("#languageFilterDialog").empty().append langTable
       }
       refreshGrid()
-      console.log "grid refresh"
+#      console?.log "grid refresh"
     $('#productRelease').trigger 'change'
 
   createButtons = (taskDialog, languageFilterDialog) ->
@@ -151,7 +152,7 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
       info = grid.getTotalSelectedRowInfo()
       type = $(':radio[name=viewOption][checked]').val()
       if !info.rowIds.length
-        $.msgBox (i18n.msgbox.createtranstask.msg.format c18n[grid.getTableType()]), null, title: c18n.warning
+        $.msgBox (c18n.selrow.format c18n[grid.getTableType()]), null, title: c18n.warning
         return
       taskDialog.dialog "open"
 

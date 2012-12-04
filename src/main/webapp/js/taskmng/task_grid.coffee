@@ -39,11 +39,10 @@ define (require)->
     'Upload': ((param)->)
 
 
-
   prop = "name,createTime,lastUpdateTime,status"
 
   taskGrid = $("#taskGrid").jqGrid {
-#  url: 'json/dummy.json'
+  #  url: 'json/dummy.json'
   mtype: 'POST'
   editurl: "", datatype: 'local'
   width: $(window).width() * 0.95, height: 400, shrinkToFit: false
@@ -51,14 +50,15 @@ define (require)->
   pager: '#taskPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
   sortname: 'createTime', sortorder: 'desc', viewrecords: true, gridview: true, multiselect: false,
   cellEdit: true, cellurl: 'http://127.0.0.1:2000'
-  colNames: ['Task', 'Create time', 'Last upload time', 'Status' , 'Actions']
+  colNames: ['Task','Creator', 'Create time', 'Last upload time', 'Status' , 'Actions']
   colModel: [
     {name: 'name', index: 'name', width: 250, editable: false, stype: 'select', align: 'left'}
+    {name: 'creator.name', index: 'creator.name', width: 100, editable: false, stype: 'select', align: 'left'}
     {name: 'createTime', index: 'createTime', width: 150, editable: false, align: 'right' }
     {name: 'lastUpdateTime', index: 'lastUpdateTime', width: 150, align: 'left'}
     {name: 'status', index: 'status', width: 80, align: 'left', editable: false, edittype: 'select',
     editoptions: {value: "0:#{i18n.task.open};1:#{i18n.task.closed}"}, formatter: 'select'}
-    {name: 'actions', index: 'actions', width: 280, align: 'center'}
+    {name: 'actions', index: 'actions', width: 260, align: 'left'}
   ]
   beforeProcessing: (data, status, xhr)->
   #   add actions
@@ -71,9 +71,12 @@ define (require)->
 
     $(data.rows).each (index)->
       rowData = @
-      @cell[actIndex] = $(actions).map(
+
+      @cell[actIndex] = '&nbsp;&nbsp;&nbsp;&nbsp;' + $(actions).map(
         (index, action)->
-          return "<span id='upload_#{@}_#{rowData.id}_#{actIndex}'></span>" if action == 'Upload'
+        #      test if task is closed
+          return if '1' == rowData.cell[actIndex - 1] and action in ['Upload', 'Close']
+          return "<a id='upload_#{@}_#{rowData.id}_#{actIndex}'></a>" if action == 'Upload'
           "<a id='action_#{@}_#{rowData.id}_#{actIndex}' style='color:blue'title='#{@}' href=#  >#{@}</A>"
       ).get().join('&nbsp;&nbsp;&nbsp;&nbsp;')
   gridComplete: ->
@@ -96,9 +99,11 @@ define (require)->
     }).hide()
 
 
-    $('span[id^=upload_]', @).button(label: 'Upload',
+    $('a[id^=upload_]', @).button(label: 'Upload',
       create: (e, ui)->
         [_, _, rowid]=@id.split('_')
+
+        #        modify the css of this button
 
         fileInput = $("<input type='file' id='#{@id}_fileInput' name='upload' title='Upload task file'accept='application/zip' multiple/>").css({
         position: 'absolute', top: -3, right: -3, border: '1px solid', borderWidth: '10px 180px 40px 20px',
@@ -128,11 +133,11 @@ define (require)->
           dialogs.transReport.data 'param', {id: rowid}
           dialogs.transReport.dialog 'open'
         }
-    ).css(overflow: 'hidden')
-
+    ).removeClass().addClass('ui-button').css(overflow: 'hidden')
+    $('a[id^=upload_] .ui-button-text').css({textDecoration: 'underline', color: 'blue'})
 
   afterCreate: (grid)->
-    grid.setGridParam 'datatype':'json'
+    grid.setGridParam 'datatype': 'json'
     grid.navGrid '#taskPager', {edit: false, add: false, del: false, search: false, view: false}
   }
   taskGrid.getGridParam('afterCreate') taskGrid
@@ -140,7 +145,7 @@ define (require)->
 
   productVersionChanged: (product)->
     taskGrid = $("#taskGrid")
-    prop = "name,createTime,lastUpdateTime,status"
+    prop = "name,creator.name,createTime,lastUpdateTime,status"
     taskGrid.setGridParam(url: 'rest/tasks', postData: {prod: product.release.id, format: 'grid', prop: prop}).trigger "reloadGrid"
 
 

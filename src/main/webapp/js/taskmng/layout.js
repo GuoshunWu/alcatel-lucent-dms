@@ -2,12 +2,11 @@
 (function() {
 
   define(['jqlayout', 'taskmng/task_grid', 'i18n!nls/common', 'taskmng/dialogs', 'util', 'require'], function($, grid, c18n, dialogs, util, require) {
-    var info, taskFileUpload;
+    var taskFileUpload;
     $("#optional-container").layout({
       resizable: true,
       closable: true
     });
-    info = {};
     $('#productBase').change(function() {
       $('#productRelease').empty();
       if (parseInt($('#productBase').val()) === -1) {
@@ -17,7 +16,7 @@
         base: $(this).val(),
         prop: 'id,version'
       }, function(json) {
-        return $('#productRelease').append(util.newOption(c18n.select.release.tip, -1)).append(util.json2Options(json, info.product));
+        return $('#productRelease').append(util.newOption(c18n.select.release.tip, -1)).append(util.json2Options(json)).trigger('change');
       });
     });
     $('#productRelease').change(function() {

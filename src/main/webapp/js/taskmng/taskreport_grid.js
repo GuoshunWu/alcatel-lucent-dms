@@ -3,7 +3,7 @@
 
   define(['jqgrid', 'util', 'require'], function($, util, require) {
     var colModel, colNames, grid, groupHeader;
-    colNames = ['Dictionary', 'Total'];
+    colNames = ['Context', 'Total'];
     colModel = [
       {
         name: 'name',
@@ -29,9 +29,9 @@
       postData: {},
       editurl: "",
       datatype: 'json',
-      width: $(window).width() * 0.6,
+      width: $(window).width() * 0.78,
       height: 200,
-      shrinkToFit: false,
+      shrinkToFit: true,
       pager: '#reportPager',
       rowNum: 60,
       rowList: [30, 60, 120],
@@ -87,8 +87,7 @@
           view: false
         });
         return grid.jqGrid('setFrozenColumns');
-      },
-      ondblClickRow: function(rowid, iRow, iCol, e) {}
+      }
     });
     grid.getGridParam('afterCreate')(grid);
     return {

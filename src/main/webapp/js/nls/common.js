@@ -23,11 +23,11 @@ define({
         app:'application',
         dict:'dictionary',
         language:'language',
-        selrow:'Please select row',
+        selrow:'Please select {0} first',
         select:{
             product:{
                 tip:'Please select product',
-                msg:'Please select product!',
+                msg:'Please select product',
                 msgtitle:'Select product'
             },
             release:{

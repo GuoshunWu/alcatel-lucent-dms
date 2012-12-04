@@ -5,7 +5,6 @@
     <title>FileInput Test</title>
 
     <link rel="stylesheet" href="../css/jqueryUI/themes/base/jquery.ui.all.css">
-
     <script src="../js/lib/jquery-1.7.2.min.js"></script>
     <script src="../js/lib/jquery-ui-1.8.22.custom.min.js"></script>
     <style>
@@ -14,14 +13,17 @@
     <script>
         $(function () {
             $('<input type="file" id="myBtn" name="files" multiple/>').css({
-                position:'absolute', top:0, right:0, margin:0,
-                border:'1px solid', borderWidth:'0 0 40px 0px',
+                position:'absolute', top:-3, right:-3, margin:0,
+                border:'1px solid', borderWidth:'10px 180px 40px 20px',
                 opacity:0, filter:'alpha(opacity=0)',
                 cursor:'pointer'
             }).appendTo(
-                    $('#fileBtn').button({label:'Browse'})
+                    $('#fileBtn').button({label:'Browse'}).removeClass()
+                            .addClass('ui-button')
                             .css({overflow:'hidden'})
+
             );
+            $('#fileBtn .ui-button-text').css({textDecoration:'underline', color:'blue'});
         });
     </script>
 </head>
@@ -37,15 +39,16 @@
     <tr>
         <td>Middle left</td>
         <td>
-            <div id="fileBtn"></div>
+            <a id="fileBtn"></a>
+            </span>
         </td>
         <td>Middle Right</td>
     </tr>
     <tr>
         <td>
             <script>
-                var temp={
-                    name:typeof a !== "undefined" && a !== null?a:'noName'
+                var temp = {
+                    name:typeof a !== "undefined" && a !== null ? a : 'noName'
                 }
                 console.log(temp);
             </script>
@@ -56,5 +59,24 @@
         <td>Down right</td>
     </tr>
 </table>
+<h2>Different version of jquery UI dialog test</h2>
+
+<div id="dialogHolder"></div>
+<script type="text/javascript">
+    $('#dialogHolder').dialog({
+        autoOpen:true,
+        title:'just a test.',
+        closeTextType: 'Close',
+//        width:100,
+        buttons:[
+            {text:'OK', click:function () {
+                alert('OK')
+            }},
+            {text:'Cancel', click:function () {
+                alert('Cancel')
+            }}
+        ]
+    });
+</script>
 </body>
 </html>

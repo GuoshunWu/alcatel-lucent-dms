@@ -120,7 +120,7 @@ define (require, util, dialogs, i18n)->
   #    Test
     dicts = dicGrid.getGridParam('selarrrow')
     if !dicts || dicts.length == 0
-      $.msgBox c18n.selrow, null, {title: c18n.warning}
+      $.msgBox (c18n.selrow.format c18n.dict), null, {title: c18n.warning}
       return
 
     filename = "#{$('#appDispAppName').text()}_#{$('#selAppVersion option:selected').text()}_#{new Date().format 'yyyyMMdd_hhmmss'}.zip"
@@ -140,7 +140,7 @@ define (require, util, dialogs, i18n)->
   ($('#batchAddLanguage').button {}).click ->
     dicts = dicGrid.getGridParam('selarrrow')
     if !dicts || dicts.length == 0
-      $.msgBox c18n.selrow, null, {title: c18n.warning}
+      $.msgBox (c18n.selrow.format c18n.dict), null, {title: c18n.warning}
       return
     $('#languageSettingGrid').editGridRow "new", {
     url: 'app/add-dict-language'
