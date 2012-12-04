@@ -89,14 +89,16 @@ public class LabelREST extends BaseREST {
     	countParam.put("dictId", dictId);
 		hql = "select obj from Label obj where obj.dictionary.id=:dictId";
 		hql += " order by " + sidx + " " + sord;
-		Collection<Label> labels = retrieve(hql, param, countHql, countParam, requestMap);
+		Collection<Label> labels; 
 		Map<Long, Label> labelMap = new HashMap<Long, Label>();
-		for (Label label : labels) {
-			labelMap.put(label.getId(), label);
-		}
+		if (langId == null) {
+			labels  = retrieve(hql, param, countHql, countParam, requestMap);
+		} else {
 		// add ot and ct information if a specific language was specified
-    	if (langId != null) {
-    		int countT = 0, countN = 0, countI = 0;
+			labels = dao.retrieve(hql, param);
+			for (Label label : labels) {
+				labelMap.put(label.getId(), label);
+			}
         	Map<String, String> filters = getGridFilters(requestMap);
         	Integer statusFilter = null;
         	if (filters != null) {
@@ -105,7 +107,6 @@ public class LabelREST extends BaseREST {
         			statusFilter = Integer.valueOf(statusParam);
         		}
         	}
-        	HashSet<Long> noNeedTranslationLabels = new HashSet<Long>();
     		hql = "select l.id,ot" +
     				" from Label l join l.origTranslations ot" +
     				" where l.dictionary.id=:dictId and ot.language.id=:langId";
@@ -118,9 +119,6 @@ public class LabelREST extends BaseREST {
     			if (label != null) {
     				label.setOt(ot);
     			}
-    			if (!ot.isNeedTranslation()) {
-    				noNeedTranslationLabels.add(labelId);
-    			}
     		}
     		hql = "select l.id,ct" +
     				" from Label l join l.text.translations ct" +
@@ -132,11 +130,6 @@ public class LabelREST extends BaseREST {
     			Label label = labelMap.get(labelId);
     			if (label != null) {
     				label.setCt(ct);
-    			}
-    			if (ct.getStatus() == Translation.STATUS_TRANSLATED || noNeedTranslationLabels.contains(labelId)) {
-    				countT++;
-    			} else if (ct.getStatus() == Translation.STATUS_IN_PROGRESS) {
-    				countI++;
     			}
     		}
 
@@ -161,6 +154,8 @@ public class LabelREST extends BaseREST {
     				iter.remove();
     			}
     		}
+    		requestMap.put("records", "" + labels.size());
+    		/*
     		if (statusFilter != null) {
     			int count;
     			if (statusFilter == Translation.STATUS_TRANSLATED) {
@@ -173,6 +168,10 @@ public class LabelREST extends BaseREST {
     			}
     			requestMap.put("records", "" + count);
     		}
+    		*/
+    		
+    		// filter by page
+    		labels = pageFilter(labels, requestMap);
     	}
     	
     	return toJSON(labels, requestMap);
