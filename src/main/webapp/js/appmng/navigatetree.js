@@ -152,7 +152,7 @@
       }).bind('loaded.jstree', function(event, data) {
         appTree = data.inst;
         if (param.currentSelected.productBaseId) {
-          return appTree.select_node($("#appTree li #" + param.currentSelected.productBaseId + "[type='product']"));
+          return appTree.select_node($("#appTree li [id=" + param.currentSelected.productBaseId + "][type=product]"));
         }
       }).bind("select_node.jstree", function(event, data) {
         clearTimeout(timeFunName);

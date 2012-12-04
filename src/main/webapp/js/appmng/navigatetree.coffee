@@ -101,7 +101,7 @@ define (require)->
         appTree = data.inst
         #   productBase should be selected if param.currentSelected.productBaseId is not -1
         if param.currentSelected.productBaseId
-          appTree.select_node $("#appTree li ##{param.currentSelected.productBaseId}[type='product']")
+          appTree.select_node $("#appTree li [id=#{param.currentSelected.productBaseId}][type=product]")
     ).bind("select_node.jstree",
       (event, data)->
       #  Cancel the last time delay unexecuted method
