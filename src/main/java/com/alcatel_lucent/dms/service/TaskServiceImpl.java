@@ -81,18 +81,24 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 		log.info("Preparing translation task details...");
 		String hql = "select distinct dl.language,l.text,l.key,l.maxLength,l.description,ct,l.context,l.sortNo " +
 				"from Dictionary d join d.labels l join d.dictLanguages dl " +
-				"left join l.origTranslations lt " +
-				"left join l.text.translations ct " +
-				"where lt.language=dl.language and ct.language=dl.language " +
-				"and d.id in (:dictIds) and dl.language.id in (:langIds) " +
-				"and (lt is null or lt.needTranslation=true) " +
-				"and (ct is null or ct.status=:status) " +
+				"join l.text.translations ct " +
+				"where d.id in (:dictIds) and dl.language.id in (:langIds) and ct.status=:status " +
+				"and not exists(select lt from LabelTranslation lt where lt.language=dl.language and lt.label=l and lt.needTranslation=true) " +
 				"order by dl.language.id,l.context.id,l.sortNo";
 		Map param = new HashMap();
 		param.put("dictIds", dictIds);
 		param.put("langIds", languageIds);
 		param.put("status", Translation.STATUS_UNTRANSLATED);
 		Collection<Object[]> resultSet = dao.retrieve(hql, param);
+		hql = "select distinct dl.language,l.text,l.key,l.maxLength,l.description,l.context,l.sortNo " +
+				"from Dictionary d join d.labels l join d.dictLanguages dl " +
+				"where d.id in (:dictIds) and dl.language.id in (:langIds) " +
+				"and not exists(select lt from LabelTranslation lt where lt.language=dl.language and lt.label=l and lt.needTranslation=true) " +
+				"and not exists(select ct from Translation ct where ct.text=l.text and ct.language=dl.language) ";
+		param = new HashMap();
+		param.put("dictIds", dictIds);
+		param.put("langIds", languageIds);
+		resultSet.addAll(dao.retrieve(hql,param));
 		log.info("Creating " + resultSet.size() + " task details...");
 		Collection<Translation> newTransList = new ArrayList<Translation>();
 		HashSet<String> unique = new HashSet<String>();	// unique by language and text
@@ -106,7 +112,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 				String labelKey = (String) row[2];
 				String maxLength = (String) row[3];
 				String description = (String) row[4];
-				Translation translation = (Translation) row[5];
+				Translation translation = row[5] instanceof Translation ? (Translation) row[5] : null;
 				if (translation == null) {
 					translation = new Translation();
 					translation.setText(text);
