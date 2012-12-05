@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -67,6 +69,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
         headerMap.put(ExcelFileHeader.REMARKS, "Remarks");
     }
     
+	@SuppressWarnings("unchecked")
 	@Override
 	public Task createTask(Long productId, String name,
 			Collection<Long> dictIds, Collection<Long> languageIds) {
@@ -99,11 +102,34 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 		param.put("dictIds", dictIds);
 		param.put("langIds", languageIds);
 		resultSet.addAll(dao.retrieve(hql,param));
-		log.info("Creating " + resultSet.size() + " task details...");
+		ArrayList<Object[]> sortedDetails = new ArrayList<Object[]>(resultSet);
+		
+		// Sort task details by language,context,label.sortNo
+		// The order is important because of the way of generating files
+		Collections.sort(sortedDetails, new Comparator<Object[]>() {
+			@Override
+			public int compare(Object[] o1, Object[] o2) {
+				Long langId1 = ((Language) o1[0]).getId();
+				Long ctxId1 = ((Text) o1[1]).getContext().getId();
+				Long langId2 = ((Language) o2[0]).getId();
+				Long ctxId2 = ((Text) o2[1]).getContext().getId();
+				if (langId1 != langId2) {
+					return langId1 > langId2 ? 1 : -1;
+				} else {
+					if (ctxId1 != ctxId2) {
+						return ctxId1 > ctxId2 ? 1 : -1;
+					} else {
+						return 0;
+					}
+				}
+			}
+			
+		});
+		log.info("Creating " + sortedDetails.size() + " task details...");
 		Collection<Translation> newTransList = new ArrayList<Translation>();
 		HashSet<String> unique = new HashSet<String>();	// unique by language and text
-		if (resultSet != null && resultSet.size() > 0) {
-			for (Object[] row : resultSet) {
+		if (sortedDetails != null && sortedDetails.size() > 0) {
+			for (Object[] row : sortedDetails) {
 				Language language = (Language) row[0];
 				Text text = (Text) row[1];
 				String key = language.getId() + "," + text.getId();
@@ -142,7 +168,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 
 		return task;
 	}
-
+	
 	@Override
 	public void closeTask(Long taskId) throws BusinessException {
 		Task task = (Task) dao.retrieve(Task.class, taskId);
@@ -197,9 +223,12 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 		}
 		if (currentDetails.size() > 0) {
 			generateTaskFile(targetDir, currentLanguage, currentContext, currentDetails, existingFilenames);
+			labelCountMap.put(currentLanguage, labelCount);
+			wordCountMap.put(currentLanguage, wordCount);
 		}
 		
-		// TODO create statistics file
+		// create statistics file
+		generateStatisticsFile(targetDir, labelCountMap, wordCountMap);
 	}
 	
 	private void generateTaskFile(String targetDir, String languageName,
@@ -276,9 +305,56 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 		
 	}
 
+	private void generateStatisticsFile(String targetDir,
+			Map<String, Integer> labelCountMap,
+			Map<String, Integer> wordCountMap) {
+		Workbook wb = new HSSFWorkbook();
+		Sheet sheet = wb.createSheet("summary");
+		Font fontHead = wb.createFont();
+		fontHead.setFontHeightInPoints((short)10);
+		fontHead.setFontName("Arial Unicode MS");
+		fontHead.setBoldweight(Font.BOLDWEIGHT_BOLD);
+	    CellStyle styleHead = wb.createCellStyle();
+	    styleHead.setFont(fontHead);
+		Row row = sheet.createRow(0);
+		createCell(row, 0, "Language", styleHead);
+		createCell(row, 1, "Label count", styleHead);
+		createCell(row, 2, "Word count", styleHead);
+		sheet.setColumnWidth(0, 20 * 256);
+		sheet.setColumnWidth(1, 20 * 256);
+		sheet.setColumnWidth(2, 20 * 256);
+		short r = 1;
+		int totalLabel = 0, totalWord = 0;
+		for (String langName : labelCountMap.keySet()) {
+			row = sheet.createRow(r++);
+			row.createCell(0).setCellValue(langName);
+			row.createCell(1).setCellValue(labelCountMap.get(langName));
+			row.createCell(2).setCellValue(wordCountMap.get(langName));
+			totalLabel += labelCountMap.get(langName);
+			totalWord += wordCountMap.get(langName);
+		}
+		row = sheet.createRow(r++);
+		createCell(row, 0, "Total", styleHead);
+		row.createCell(1).setCellValue(totalLabel);
+		row.createCell(2).setCellValue(totalWord);
+		FileOutputStream fos = null;
+		try {
+			fos = new FileOutputStream(new File(targetDir, "summary.xls"));
+			wb.write(fos);
+		} catch (Exception e) {
+			log.error(e);
+			e.printStackTrace();
+			throw new SystemError(e);
+		} finally {
+			if (fos != null) try {fos.close();} catch (Exception e) {}
+		}
+	}
+
 	private Cell createCell(Row row, int column, String value, CellStyle style) {
 		Cell cell = row.createCell(column);
-		cell.setCellStyle(style);
+		if (style != null) {
+			cell.setCellStyle(style);
+		}
 		cell.setCellValue(value);
 		return cell;
 	}
