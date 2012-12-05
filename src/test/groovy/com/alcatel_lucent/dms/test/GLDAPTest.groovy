@@ -40,9 +40,10 @@ class GLDAPTest {
         env.put(Context.SECURITY_CREDENTIALS, password);
 
         DirContext ctx = new InitialDirContext(env)
-
+        def filter = "(&(objectclass=person)(cslx500=$username))"
+//        filter = "(&(objectclass=person))"
         NamingEnumeration<SearchResult> results = ctx.search(LDAP_DN,
-                "(&(objectclass=person)(cslx500=$username))",
+                filter,
                 new SearchControls(
                         returningObjFlag: true,
                         searchScope: SearchControls.SUBTREE_SCOPE,

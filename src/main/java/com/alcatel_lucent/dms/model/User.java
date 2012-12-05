@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,22 +22,29 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "USER")
 public class User implements Serializable {
-	
-	public static final int ROLE_GUEST = 0;
-	public static final int ROLE_APPLICATION_OWNER = 1;
-	public static final int ROLE_TRANSLATION_MANAGER = 2;
-	public static final int ROLE_ADMINISTRATOR = 3;
-	
-	public static final int ENABLED = 1;
-	public static final int DISABLED = 0;
-	
+
+    public static final int ROLE_GUEST = 0;
+    public static final int ROLE_APPLICATION_OWNER = 1;
+    public static final int ROLE_TRANSLATION_MANAGER = 2;
+    public static final int ROLE_ADMINISTRATOR = 3;
+
+    public static final int ENABLED = 1;
+    public static final int DISABLED = 0;
+
     private String loginName;
     private String name;
     private String email;
-    private Timestamp lastLoginTime;
+    private Timestamp lastLoginTime = new Timestamp(new Date().getTime());
 
-    private int role;
-    private int status;
+    private int role = ROLE_GUEST;
+    private int status = ENABLED;
+
+
+    public User(String loginName, String name, String email) {
+        this.loginName = loginName;
+        this.name = name;
+        this.email = email;
+    }
 
     @Id
     @Column(name = "LOGIN_NAME")

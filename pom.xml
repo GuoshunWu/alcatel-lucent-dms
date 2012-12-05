@@ -158,18 +158,18 @@
             <scope>runtime</scope>
         </dependency>
 
-        <dependency>
-            <groupId>proxool</groupId>
-            <artifactId>proxool</artifactId>
-            <version>0.9.1</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>proxool</groupId>-->
+            <!--<artifactId>proxool</artifactId>-->
+            <!--<version>0.9.1</version>-->
+        <!--</dependency>-->
 
 
-        <dependency>
-            <groupId>proxool</groupId>
-            <artifactId>proxool-cglib</artifactId>
-            <version>0.9.1</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>proxool</groupId>-->
+            <!--<artifactId>proxool-cglib</artifactId>-->
+            <!--<version>0.9.1</version>-->
+        <!--</dependency>-->
 
 
         <dependency>
@@ -379,9 +379,9 @@
         </dependency>
 
         <!--<dependency>-->
-        <!--<groupId>directory.directory</groupId>-->
-        <!--<artifactId>apacheds</artifactId>-->
-        <!--<version>0.9</version>-->
+            <!--<groupId>org.apache.directory.server</groupId>-->
+            <!--<artifactId>apacheds-all</artifactId>-->
+            <!--<version>2.0.0-M1</version>-->
         <!--</dependency>-->
 
     </dependencies>
@@ -617,7 +617,7 @@
                 <db.password>alcatel123</db.password>
                 <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
                 <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
-                <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
+                <db.hbm2ddl.auto>create</db.hbm2ddl.auto>
             </properties>
         </profile>
 

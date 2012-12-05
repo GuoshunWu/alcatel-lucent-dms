@@ -50,7 +50,7 @@ define (require)->
   pager: '#taskPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
   sortname: 'createTime', sortorder: 'desc', viewrecords: true, gridview: true, multiselect: false,
   cellEdit: true, cellurl: 'http://127.0.0.1:2000'
-  colNames: ['Task','Creator', 'Create time', 'Last upload time', 'Status' , 'Actions']
+  colNames: ['Task', 'Creator', 'Create time', 'Last upload time', 'Status' , 'Actions']
   colModel: [
     {name: 'name', index: 'name', width: 250, editable: false, stype: 'select', align: 'left'}
     {name: 'creator.name', index: 'creator.name', width: 100, editable: false, stype: 'select', align: 'left'}
@@ -106,7 +106,7 @@ define (require)->
         #        modify the css of this button
 
         fileInput = $("<input type='file' id='#{@id}_fileInput' name='upload' title='Upload task file'accept='application/zip' multiple/>").css({
-        position: 'absolute', top: -3, right: -3, border: '1px solid', borderWidth: '10px 180px 40px 20px',
+        position: 'absolute', top: 0, right: 0, border: '1px solid', borderWidth: '10px 180px 40px 20px',
         opacity: 0, filter: 'alpha(opacity=0)', cursor: 'pointer'}).appendTo @
 
         fileInput.fileupload {
