@@ -38,4 +38,8 @@ public interface LanguageService {
 	 * @return languages
 	 */
 	Collection<Language> getLanguagesInProduct(Long productId);
+
+	String getPreferredLanguageCode(Collection<Long> dictIdList, Long languageId);
+
+	Charset getPreferredCharset(Collection<Long> dictIdList, Long languageId);
 }

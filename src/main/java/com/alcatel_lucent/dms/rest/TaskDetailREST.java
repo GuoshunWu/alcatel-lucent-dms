@@ -12,7 +12,7 @@ import com.alcatel_lucent.dms.model.TaskDetail;
 
 /**
  * Label REST service.
- * URL: /rest/labels
+ * URL: /rest/task/details
  * Filter parameters:
  *   task		(required) task id
  *   context	(required) context id
