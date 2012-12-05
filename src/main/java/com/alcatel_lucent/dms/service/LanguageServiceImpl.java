@@ -7,8 +7,10 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.model.AlcatelLanguageCode;
 import com.alcatel_lucent.dms.model.Charset;
+import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.ISOLanguageCode;
 import com.alcatel_lucent.dms.model.Language;
 
@@ -120,5 +122,61 @@ public class LanguageServiceImpl extends BaseServiceImpl implements LanguageServ
 		Map param = new HashMap();
 		param.put("prodId", productId);
 		return dao.retrieve(hql, param);
+	}
+
+	@Override
+	public String getPreferredLanguageCode(Collection<Long> dictIdList,
+			Long languageId) {
+		Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, (Long) dictIdList.iterator().next());
+		if (dict.getFormat().equals(Constants.DICT_FORMAT_DCT)) {
+			AlcatelLanguageCode alCode = getDefaultAlcatelLanguageCode(languageId);
+			if (alCode != null) {
+				return alCode.getCode();
+			} else {
+				ISOLanguageCode isoCode = getDefaultISOLanguageCode(languageId);
+				if (isoCode != null) {
+					return isoCode.getCode();
+				} else {
+					return null;
+				}
+			}
+		} else {
+			ISOLanguageCode isoCode = getDefaultISOLanguageCode(languageId);
+			if (isoCode != null) {
+				return isoCode.getCode();
+			} else {
+				return null;
+			}
+		}
+	}
+	
+	private AlcatelLanguageCode getDefaultAlcatelLanguageCode(Long languageId) {
+		String hql = "from AlcatelLanguageCode where language.id=:langId and defaultCode=true";
+		Map param = new HashMap();
+		param.put("langId", languageId);
+		return (AlcatelLanguageCode) dao.retrieveOne(hql, param);
+	}
+	
+	private ISOLanguageCode getDefaultISOLanguageCode(Long languageId) {
+		String hql = "from ISOLanguageCode where language.id=:langId and defaultCode=true";
+		Map param = new HashMap();
+		param.put("langId", languageId);
+		return (ISOLanguageCode) dao.retrieveOne(hql, param);
+	}
+
+	@Override
+	public Charset getPreferredCharset(Collection<Long> dictIdList,
+			Long languageId) {
+		Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, (Long) dictIdList.iterator().next());
+		if (dict.getFormat().equals(Constants.DICT_FORMAT_DCT)) {
+			if (dict.getEncoding().equals("ISO-8859-1")) {
+				Language language = (Language) dao.retrieve(Language.class, languageId);
+				return getCharset(language.getDefaultCharset());
+			} else {
+				return getCharset(dict.getEncoding());
+			}
+		} else {
+			return getCharset("UTF-8");
+		}
 	}
 }
