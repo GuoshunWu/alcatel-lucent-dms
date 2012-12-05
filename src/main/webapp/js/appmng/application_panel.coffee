@@ -74,7 +74,7 @@ define (require)->
     jsonFromServer = data.result
 
     if(0 != jsonFromServer.status)
-      $.msgBox jsonFromServer.message, null, {title: c18n.error}
+      $.msgBox jsonFromServer.message, null, {title: c18n.error, height: 600, width: 800}
       return
 
     $('#dictListPreviewDialog').data 'param', {handler: jsonFromServer.filename, appId: $("#selAppVersion").val()}

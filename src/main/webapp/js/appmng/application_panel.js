@@ -130,7 +130,9 @@
         jsonFromServer = data.result;
         if (0 !== jsonFromServer.status) {
           $.msgBox(jsonFromServer.message, null, {
-            title: c18n.error
+            title: c18n.error,
+            height: 600,
+            width: 800
           });
           return;
         }

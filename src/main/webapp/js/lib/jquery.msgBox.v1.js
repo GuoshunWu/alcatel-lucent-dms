@@ -66,6 +66,8 @@
 
         height: 'auto',
         width: 300,
+//        maxWidth:1200,
+//        maxHeight:600,
         title: "Message",
         modal: true,
         resizable: true,

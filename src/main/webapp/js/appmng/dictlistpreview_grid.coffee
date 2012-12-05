@@ -6,7 +6,7 @@ define (require, util, i18n)->
   c18n = require 'i18n!nls/common'
 
   infoDialog = $('<div>').dialog {
-  autoOpen: false, height: 400, width: 'auto'
+  autoOpen: false, height: 400, width: 800
   buttons: OK: ->$(@).dialog 'close'
   }
   handlers =
@@ -98,7 +98,7 @@ define (require, util, i18n)->
 
       $.getJSON "rest/delivery/dict/#{rowid}", {handler: handler, prop: name}, (json)->
         infoDialog.dialog 'option', title: name
-        infoDialog.html $('<table border=0>').append '<tr><td>' + json[name].join('<tr><td>')
+        infoDialog.html $('<table border=1>').append '<tr><td>' + json[name].join('<tr><td>')
         infoDialog.dialog 'open'
 
 
