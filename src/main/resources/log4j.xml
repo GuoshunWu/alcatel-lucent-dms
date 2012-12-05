@@ -107,7 +107,7 @@
     <!--</logger>-->
 
     <logger name="com.alcatel_lucent.dms">
-        <level value="DEBUG"/>
+        <level value="INFO"/>
     </logger>
 
     <logger name="DictDeliverSuccess">
