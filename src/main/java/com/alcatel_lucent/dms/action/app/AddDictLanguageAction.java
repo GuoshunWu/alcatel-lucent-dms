@@ -2,6 +2,7 @@ package com.alcatel_lucent.dms.action.app;
 
 import java.util.Collection;
 
+import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.action.JSONAction;
 import com.alcatel_lucent.dms.service.DictionaryService;
 
@@ -19,7 +20,11 @@ public class AddDictLanguageAction extends JSONAction {
 		log.info("AddDictLanguageAction: dicts=" + dicts + ", languageId=" + languageId + ", code=" + code + ", charsetId=" + charsetId);
 		Collection<Long> idList = toIdList(dicts);
 		for (Long dictId : idList) {
-			dictionaryService.addLanguage(dictId, code, languageId, charsetId);
+			try {
+				dictionaryService.addLanguage(dictId, code, languageId, charsetId);
+			} catch (BusinessException e) {
+				// ignore
+			}
 		}
 		setStatus(0);
 		setMessage(getText("message.success"));
