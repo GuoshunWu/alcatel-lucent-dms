@@ -617,7 +617,7 @@
                 <db.password>alcatel123</db.password>
                 <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
                 <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
-                <db.hbm2ddl.auto>create</db.hbm2ddl.auto>
+                <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
             </properties>
         </profile>
 

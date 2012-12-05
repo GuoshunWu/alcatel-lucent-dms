@@ -229,6 +229,7 @@ public class LabelXMLParser extends DictionaryParser {
 			DOMReader domReader = new DOMReader();
 			document = domReader.read(doc);
 		} catch (Exception e1) {
+			log.error("Error parsing " + file.getName(), e1);
 			throw new BusinessException(BusinessException.INVALID_XML_FILE, file.getName());
 		}
 			
