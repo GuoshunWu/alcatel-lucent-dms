@@ -376,7 +376,20 @@ public class Util {
     }
 
 	public static int countWords(String text) {
-		// TODO count words
-		return 0;
+		int count = 0;
+		boolean inWord = false;
+		for (int i = 0; i < text.length(); i++) {
+			char c = text.charAt(i);
+			if (c == ' ' || c == '\t' || c == '\n' || c == '\r') {
+				if (inWord) {
+					count++;
+					inWord = false;
+				}
+			} else {
+				inWord = true;
+			}
+		}
+		if (inWord) count++;
+		return count;
 	}
 }
