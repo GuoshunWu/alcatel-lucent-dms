@@ -19,8 +19,6 @@
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <buildNumber>${maven.build.timestamp}</buildNumber>
 
-        <httpPort>8888</httpPort>
-        <httpsPort>8443</httpsPort>
         <ldap.url>ldap://ldap.sxb.bsf.alcatel.fr</ldap.url>
 
         <dms.deliver.dir>/dms/deliver</dms.deliver.dir>
@@ -599,7 +597,7 @@
             </properties>
         </profile>
         <profile>
-            <id>PostgreSQL</id>
+            <id>qa-db</id>
             <properties>
                 <db.driver>org.postgresql.Driver</db.driver>
                 <db.url>jdbc\:postgresql\://172.24.190.236\:5432/dms_qa</db.url>
@@ -608,6 +606,18 @@
                 <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
                 <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
                 <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
+            </properties>
+        </profile>
+        <profile>
+            <id>qa2-db</id>
+            <properties>
+                <db.driver>org.postgresql.Driver</db.driver>
+                <db.url>jdbc\:postgresql\://172.24.190.236\:5432/dms_qa2</db.url>
+                <db.user>dms</db.user>
+                <db.password>alcatel123</db.password>
+                <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
+                <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
+                <db.hbm2ddl.auto>create</db.hbm2ddl.auto>
             </properties>
         </profile>
 
@@ -621,6 +631,8 @@
                 <dms.generate.dir>D:/tmp/dms/generate</dms.generate.dir>
                 <dms.send.dir>D:/tmp/dms/send</dms.send.dir>
                 <dms.receive.dir>D:/tmp/dms/receive</dms.receive.dir>
+		        <httpPort>8888</httpPort>
+		        <httpsPort>8443</httpsPort>
 
                 <buildNumber>(new Date()).getTime()</buildNumber>
             </properties>
@@ -632,6 +644,10 @@
 
         <profile>
             <id>test</id>
+            <properties>
+		        <httpPort>8888</httpPort>
+		        <httpsPort>8443</httpsPort>
+            </properties>
             <build>
                 <defaultGoal>tomcat7:deploy</defaultGoal>
                 <plugins>
@@ -641,6 +657,27 @@
                         <version>2.0</version>
                         <configuration>
                             <url>http://172.24.190.236:8888/manager/text</url>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+
+        </profile>
+        <profile>
+            <id>test2</id>
+            <properties>
+		        <httpPort>9999</httpPort>
+		        <httpsPort>9443</httpsPort>
+            </properties>
+            <build>
+                <defaultGoal>tomcat7:deploy</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.tomcat.maven</groupId>
+                        <artifactId>tomcat7-maven-plugin</artifactId>
+                        <version>2.0</version>
+                        <configuration>
+                            <url>http://172.24.190.236:9999/manager/text</url>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -661,7 +698,7 @@
                         <artifactId>tomcat7-maven-plugin</artifactId>
                         <version>2.0</version>
                         <configuration>
-                            <url>http://172.24.190.236:8888/manager/text</url>
+                            <url>http://172.24.190.236/manager/text</url>
                         </configuration>
                     </plugin>
                 </plugins>
