@@ -9,7 +9,7 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
 
   url: 'json/transreportgrid.json'
   mtype: 'POST', postData: {}, editurl: "", datatype: 'json'
-  width:  $(window).width() * 0.78, height: 200, shrinkToFit: true
+  width:  $(window).width() * 0.78, height: 200, shrinkToFit: false
   pager: '#reportPager', rowNum: 60, rowList: [30, 60, 120]
   sortname: 'key', sortorder: 'asc', viewrecords: true, gridview: true, multiselect: false
   cellEdit: true, cellurl: ''

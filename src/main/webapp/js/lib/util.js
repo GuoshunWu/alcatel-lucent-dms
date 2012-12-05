@@ -274,7 +274,7 @@ To change this template use File | Settings | File Templates.
         }
         return $(json).map(function(index, elem) {
           var selected;
-          selected = !selectedValue ? index === json.length - 1 : (String(selectedValue)) === (String(this[valueFieldName]));
+          selected = (String(selectedValue)) === (String(this[valueFieldName]));
           return newOption(this[textFieldName], this[valueFieldName], selected);
         }).get().join(sep);
       }

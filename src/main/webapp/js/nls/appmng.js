@@ -37,6 +37,12 @@ define({
             },
             dictpreviewstringsettings:{
                 title:'String settings'
+            },
+            "addlanguage":{
+                "languagetip":"Please select language",
+                "charsettip":"Please select charset",
+                "coderequired":"Code is required",
+                "successtip": "Add language {0} success"
             }
         },
         browse:'Upload dictionaries',

@@ -60,10 +60,12 @@
     });
     langSettingGrid.jqGrid('navGrid', '#langSettingPager', {
       edit: false,
-      add: true,
+      add: false,
       del: true,
       search: false
     }, {}, {
+      zIndex: 2000,
+      modal: true,
       url: 'app/add-dict-language',
       onclickSubmit: function(params, posdata) {
         return {
@@ -86,7 +88,19 @@
         return [jsonfromServer.status === 0, jsonfromServer.message, -1];
       }
     }, {
+      zIndex: 2000,
       url: 'app/remove-dict-language'
+    });
+    langSettingGrid.navButtonAdd('#langSettingPager', {
+      caption: "",
+      buttonicon: "ui-icon-plus",
+      position: "first",
+      onClickButton: function() {
+        $('#addLanguageDialog').data('param', {
+          dicts: [$('#languageSettingGrid').getGridParam('postData').dict]
+        });
+        return $('#addLanguageDialog').dialog("open");
+      }
     });
     $.getJSON('rest/languages', {
       prop: 'id,name'

@@ -31,7 +31,7 @@
       datatype: 'json',
       width: $(window).width() * 0.78,
       height: 200,
-      shrinkToFit: true,
+      shrinkToFit: false,
       pager: '#reportPager',
       rowNum: 60,
       rowList: [30, 60, 120],

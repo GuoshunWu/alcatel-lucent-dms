@@ -142,15 +142,10 @@ define (require, util, dialogs, i18n)->
     if !dicts || dicts.length == 0
       $.msgBox (c18n.selrow.format c18n.dict), null, {title: c18n.warning}
       return
-    $('#languageSettingGrid').editGridRow "new", {
-    url: 'app/add-dict-language'
-    onclickSubmit: (params, posdata)->{dicts: dicts.join(',')}
-    beforeInitData: ->$('#languageSettingGrid').setColProp 'code', editable: true
-    onClose: ->$('#languageSettingGrid').setColProp 'code', editable: false
-    afterSubmit: (response, postdata)->
-      jsonfromServer = eval "(#{response.responseText})"
-      [jsonfromServer.status == 0 , jsonfromServer.message, -1]
-    }
+#    pass parameters to dialog
+    $('#addLanguageDialog').data 'param', dicts:dicts
+    $('#addLanguageDialog').dialog 'open'
+
   appChanged: (param)->
     prop = "languageReferenceCode,base.name,version,base.format,base.encoding,labelNum"
     dicGrid.setGridParam(url: 'rest/dict', postData: {app: param.app.id, format: 'grid', prop: prop}).trigger "reloadGrid"

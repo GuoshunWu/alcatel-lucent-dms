@@ -260,29 +260,10 @@
         });
         return;
       }
-      return $('#languageSettingGrid').editGridRow("new", {
-        url: 'app/add-dict-language',
-        onclickSubmit: function(params, posdata) {
-          return {
-            dicts: dicts.join(',')
-          };
-        },
-        beforeInitData: function() {
-          return $('#languageSettingGrid').setColProp('code', {
-            editable: true
-          });
-        },
-        onClose: function() {
-          return $('#languageSettingGrid').setColProp('code', {
-            editable: false
-          });
-        },
-        afterSubmit: function(response, postdata) {
-          var jsonfromServer;
-          jsonfromServer = eval("(" + response.responseText + ")");
-          return [jsonfromServer.status === 0, jsonfromServer.message, -1];
-        }
+      $('#addLanguageDialog').data('param', {
+        dicts: dicts
       });
+      return $('#addLanguageDialog').dialog('open');
     });
     return {
       appChanged: function(param) {

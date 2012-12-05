@@ -13,7 +13,7 @@ define (require)->
   sortname: 'language.name'
   sortorder: 'asc'
   viewrecords: true
-#  ajaxGridOptions:{async:false}
+  #  ajaxGridOptions:{async:false}
   gridview: true, multiselect: true, cellEdit: true, cellurl: 'app/update-dict-language'
   colNames: [ 'Code', 'Language', 'Charset']
   colModel: [
@@ -25,9 +25,10 @@ define (require)->
   gridComplete: ->
   #    $('#languageSettingGrid').getGridParam('postData').dict
   }
-  langSettingGrid.jqGrid 'navGrid', '#langSettingPager', {edit: false, add: true, del: true, search: false}, {}, {
+  langSettingGrid.jqGrid 'navGrid', '#langSettingPager', {edit: false, add: false, del: true, search: false}, {}, {
   #    prmAdd
-  #  zIndex:1010
+  zIndex: 2000
+  modal: true
   url: 'app/add-dict-language'
   onclickSubmit: (params, posdata)->{dicts: $('#languageSettingGrid').getGridParam('postData').dict}
   onClose: ->$('#languageSettingGrid').setColProp 'code', editable: false
@@ -37,7 +38,14 @@ define (require)->
     [jsonfromServer.status == 0 , jsonfromServer.message, -1]
   }, {
   #    prmDel
+  zIndex: 2000
   url: 'app/remove-dict-language'
+  }
+  #  custom button for add language
+  langSettingGrid.navButtonAdd '#langSettingPager', {caption: "", buttonicon: "ui-icon-plus", position: "first"
+  onClickButton: ()->
+    $('#addLanguageDialog').data 'param', dicts: [$('#languageSettingGrid').getGridParam('postData').dict]
+    $('#addLanguageDialog').dialog "open"
   }
 
   #    query all the languages

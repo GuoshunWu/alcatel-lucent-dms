@@ -14,7 +14,8 @@
         </tr>
     </table>
     <div style="display: none" id="productErrInfo">
-        <br/><hr/>
+        <br/>
+        <hr/>
         <span style="color: red"><s:text name="appmng.newproduct.required"/></span>
     </div>
 </div>
@@ -31,7 +32,8 @@
         </tr>
     </table>
     <div style="display: none" id="appErrInfo">
-        <br/><hr/>
+        <br/>
+        <hr/>
         <span style="color: red"><s:text name="appmng.newapp.required"/></span>
     </div>
 </div>
@@ -191,4 +193,25 @@
     </table>
 </div>
 
-
+<div id="addLanguageDialog" title="<s:text name="appmng.addlanguage.title"/> ">
+    <table>
+        <tr>
+            <td><label for="languageName"><s:text name="appmng.addlanguage.name"/></label></td>
+            <td><select id="languageName" name="languageName"/></td>
+        </tr>
+        <tr>
+            <td><label for="charset"><s:text name="appmng.addlanguage.charset"/></label></td>
+            <td><select id="charset" name="charset"/></td>
+        </tr>
+        <tr>
+            <td><label for="addLangCode"><s:text name="appmng.addlanguage.code"/></label></td>
+            <td><input id="addLangCode" name='code'></td>
+        </tr>
+        <tr>
+            <td style="width: 25px"/>
+            <td align="left">
+                <span id="errorMsg" style="color:red"></span>
+            </td>
+        </tr>
+    </table>
+</div>

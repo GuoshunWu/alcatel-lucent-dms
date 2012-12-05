@@ -191,8 +191,8 @@
             _ref = this.id.split('_'), _ = _ref[0], _ = _ref[1], rowid = _ref[2];
             fileInput = $("<input type='file' id='" + this.id + "_fileInput' name='upload' title='Upload task file'accept='application/zip' multiple/>").css({
               position: 'absolute',
-              top: -3,
-              right: -3,
+              top: 0,
+              right: 0,
               border: '1px solid',
               borderWidth: '10px 180px 40px 20px',
               opacity: 0,

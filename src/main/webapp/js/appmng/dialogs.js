@@ -2,7 +2,7 @@
 (function() {
 
   define(['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsettings_grid', 'appmng/previewlangsetting_grid'], function(require, grid, sgrid, lgrid) {
-    var $, addApplication, c18n, dictListPreview, dictPreviewLangSettings, dictPreviewStringSettings, i18n, langSettings, newAppVersion, newProductVersion, stringSettings, util;
+    var $, addApplication, addLanguage, c18n, dictListPreview, dictPreviewLangSettings, dictPreviewStringSettings, i18n, langSettings, newAppVersion, newProductVersion, stringSettings, util;
     $ = require('jqueryui');
     c18n = require('i18n!nls/common');
     i18n = require('i18n!nls/appmng');
@@ -186,7 +186,6 @@
     langSettings = $('#languageSettingsDialog').dialog({
       autoOpen: false,
       modal: true,
-      zIndex: 900,
       width: 530,
       height: 'auto',
       title: i18n.dialog.languagesettings.title,
@@ -314,10 +313,10 @@
               var appInfo;
               $.unblockUI();
               if (json.status !== 0) {
-                return;
                 $.msgBox(json.message, null, {
                   title: c18n.error
                 });
+                return;
               }
               appInfo = "" + ($('#appDispAppName').text()) + " " + ($('#selAppVersion option:selected').text());
               $.msgBox(i18n.dialog.dictlistpreview.success.format(appInfo, null, {
@@ -432,7 +431,91 @@
         }
       ]
     });
+    addLanguage = $('#addLanguageDialog').dialog({
+      autoOpen: false,
+      create: function(event, ui) {
+        var _this = this;
+        $.getJSON('rest/languages', {
+          prop: 'id,name'
+        }, function(languages) {
+          return $('#languageName', _this).append("<option value='-1'>" + c18n.selecttip + "</option>").append(util.json2Options(languages, false, 'name')).change(function(e) {
+            var postData;
+            postData = {
+              prop: 'languageCode,charset.id',
+              'language': $('#languageName', _this).val(),
+              dict: $(_this).data('param').dicts.join(',')
+            };
+            return $.post('rest/preferredCharset', postData, function(json) {
+              $('#addLangCode', _this).val(json.languageCode);
+              return $('#charset', _this).val(json['charset.id']);
+            });
+          });
+        });
+        return $.getJSON('rest/charsets', {
+          prop: 'id,name'
+        }, function(charsets) {
+          return $('#charset', _this).append("<option value='-1'>" + c18n.selecttip + "</option>").append(util.json2Options(charsets, false, 'name'));
+        });
+      },
+      open: function(event, ui) {
+        $('#addLangCode', this).select();
+        $('#charset', this).val('-1');
+        return $('#languageName', this).val('-1');
+      },
+      buttons: [
+        {
+          text: 'Add',
+          icons: {
+            primary: "ui-icon-locked"
+          },
+          click: function(e) {
+            var postData,
+              _this = this;
+            postData = {
+              dicts: $('#addLanguageDialog').data('param').dicts.join(','),
+              languageId: $('#addLanguageDialog #languageName').val(),
+              charsetId: $('#addLanguageDialog #charset').val(),
+              code: $('#addLanguageDialog #addLangCode').val()
+            };
+            $('#errorMsg', this).empty();
+            if (!postData.code || '-1' === postData.languageId || '-1' === postData.charsetId) {
+              if (!postData.code) {
+                $('#errorMsg', this).append($("<li>" + i18n.dialog.addlanguage.coderequired + "</li>"));
+              }
+              if ('-1' === postData.languageId) {
+                $('#errorMsg', this).append($("<li>" + i18n.dialog.addlanguage.languagetip + "</li>"));
+              }
+              if ('-1' === postData.charsetId) {
+                $('#errorMsg', this).append($("<li>" + i18n.dialog.addlanguage.charsettip + "</li>"));
+              }
+              return;
+            }
+            return $.post('app/add-dict-language', postData, function(json) {
+              if (json.status !== 0) {
+                $.msgBox(json.message, null, {
+                  title: c18n.error
+                });
+                return;
+              }
+              if (-1 === postData.dicts.indexOf(',')) {
+                $('#languageSettingGrid').trigger("reloadGrid");
+              }
+              $(_this).dialog('close');
+              return $.msgBox(i18n.dialog.addlanguage.successtip.format($('#languageName option:selected').text(), null, {
+                title: c18n.error
+              }));
+            });
+          }
+        }, {
+          text: 'Cancel',
+          click: function(e) {
+            return $(this).dialog('close');
+          }
+        }
+      ]
+    });
     return {
+      addLanguage: addLanguage,
       dictPreviewLangSettings: dictPreviewLangSettings,
       dictPreviewStringSettings: dictPreviewStringSettings,
       dictListPreview: dictListPreview,

@@ -114,7 +114,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
 
   langSettings = $('#languageSettingsDialog').dialog {
   autoOpen: false
-  modal: true, zIndex: 900
+  modal: true
   width: 530, height: 'auto', title: i18n.dialog.languagesettings.title
   resize: (event, ui)->$('#languageSettingGrid').setGridWidth(ui.size.width - 35, true).setGridHeight(ui.size.height - 180, true)
   open: (e, ui)->
@@ -193,7 +193,9 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
       $.blockUI()
       $.post 'app/deliver-dict', postData, (json)->
         $.unblockUI()
-        (return;$.msgBox json.message, null, {title: c18n.error}) if(json.status != 0)
+        if json.status != 0
+          $.msgBox json.message, null, {title: c18n.error}
+          return
         appInfo = "#{$('#appDispAppName').text()} #{$('#selAppVersion option:selected').text()}"
         $.msgBox i18n.dialog.dictlistpreview.success.format appInfo, null, {title: c18n.info}
         $('#selAppVersion').trigger 'change'
@@ -262,7 +264,61 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
     }
   ]
   }
+  addLanguage = $('#addLanguageDialog').dialog {
+  autoOpen: false
+  create: (event, ui)->
+    $.getJSON 'rest/languages', {prop: 'id,name'}, (languages)=>$('#languageName', @)
+    .append("<option value='-1'>#{c18n.selecttip}</option>")
+    .append(util.json2Options languages, false, 'name').change (e)=>
+    #     send the selected dictionary list ids, langId to server, expect language code and charset id response from server
+      postData =
+        prop: 'languageCode,charset.id'
+        'language': $('#languageName', @).val()
+        dict: $(@).data('param').dicts.join(',')
 
+      $.post 'rest/preferredCharset', postData, (json)=>
+        $('#addLangCode', @).val json.languageCode
+        $('#charset', @).val json['charset.id']
+
+    $.getJSON 'rest/charsets', {prop: 'id,name'}, (charsets)=>$('#charset', @)
+    .append("<option value='-1'>#{c18n.selecttip}</option>")
+    .append(util.json2Options charsets, false, 'name')
+
+  open: (event, ui)->
+  #    get selected dictionary ids
+  #    console.log $(@).data('param').dicts
+    $('#addLangCode', @).select()
+    $('#charset', @).val '-1'
+    $('#languageName', @).val '-1'
+
+  buttons: [
+    {text: 'Add', icons: {primary: "ui-icon-locked"},
+    click: (e)->
+      postData =
+        dicts: $('#addLanguageDialog').data('param').dicts.join(',')
+        languageId: $('#addLanguageDialog #languageName').val()
+        charsetId: $('#addLanguageDialog #charset').val()
+        code: $('#addLanguageDialog #addLangCode').val()
+
+      #      validate postData such as code is blank
+      $('#errorMsg', @).empty()
+      if !postData.code || '-1' == postData.languageId || '-1' == postData.charsetId
+        $('#errorMsg', @).append($("<li>#{i18n.dialog.addlanguage.coderequired}</li>")) if !postData.code
+        $('#errorMsg', @).append($("<li>#{i18n.dialog.addlanguage.languagetip}</li>")) if '-1' == postData.languageId
+        $('#errorMsg', @).append($("<li>#{i18n.dialog.addlanguage.charsettip}</li>")) if '-1' == postData.charsetId
+
+        return
+
+      $.post 'app/add-dict-language', postData, (json)=>
+        ($.msgBox(json.message, null, {title: c18n.error});return) if json.status != 0
+        $('#languageSettingGrid').trigger("reloadGrid") if -1 == postData.dicts.indexOf(',')
+        $(@).dialog 'close'
+        $.msgBox i18n.dialog.addlanguage.successtip.format $('#languageName option:selected').text(), null, {title: c18n.error}
+    },
+    {text: 'Cancel', click: (e)->$(@).dialog 'close'}
+  ]
+  }
+  addLanguage: addLanguage
   dictPreviewLangSettings: dictPreviewLangSettings
   dictPreviewStringSettings: dictPreviewStringSettings
   dictListPreview: dictListPreview

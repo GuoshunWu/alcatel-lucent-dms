@@ -24,6 +24,7 @@ define({
         dict:'dictionary',
         language:'language',
         selrow:'Please select {0} first',
+        'selecttip':'Please select',
         select:{
             product:{
                 tip:'Please select product',
