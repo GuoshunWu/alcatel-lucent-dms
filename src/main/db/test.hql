@@ -1,0 +1,1 @@
+select al.language.id,al.code from AlcatelLanguageCode al where code in ('EN0','CH0','US0')
