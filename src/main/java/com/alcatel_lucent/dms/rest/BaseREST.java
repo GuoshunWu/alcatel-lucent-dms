@@ -2,6 +2,7 @@ package com.alcatel_lucent.dms.rest;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -15,6 +16,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import net.sf.json.JSONArray;
@@ -38,13 +40,15 @@ public abstract class BaseREST {
     protected JSONService jsonService;
     
     @GET
-    public String doGet(@Context UriInfo ui) {
+    public Response doGet(@Context UriInfo ui) {
     	Map<String, String> map = new HashMap<String, String>();
     	for (String key : ui.getQueryParameters().keySet()) {
     		map.put(key, ui.getQueryParameters().getFirst(key));
     	}
     	try {
-    		return doGetOrPost(map);
+    		Response.ResponseBuilder response = Response.ok(doGetOrPost(map));
+    		response.expires(new Date(0));
+    		return response.build();
     	} catch (Exception e) {
     		e.printStackTrace();
     		log.error(e);
@@ -54,7 +58,7 @@ public abstract class BaseREST {
     
     @POST
     @Consumes("application/x-www-form-urlencoded")
-    public String doPost(MultivaluedMap<String, String> formParams, @Context UriInfo ui) {
+    public Response doPost(MultivaluedMap<String, String> formParams, @Context UriInfo ui) {
     	Map<String, String> map = new HashMap<String, String>();
     	for (String key : formParams.keySet()) {
     		map.put(key, formParams.getFirst(key));
@@ -63,7 +67,9 @@ public abstract class BaseREST {
     		map.put(key, ui.getQueryParameters().getFirst(key));
     	}
     	try {
-    		return doGetOrPost(map);
+    		Response.ResponseBuilder response = Response.ok(doGetOrPost(map));
+    		response.expires(new Date(0));
+    		return response.build();
     	} catch (Exception e) {
     		e.printStackTrace();
     		log.error(e);
