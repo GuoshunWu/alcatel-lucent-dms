@@ -3,7 +3,6 @@ package com.alcatel_lucent.dms.service;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -12,10 +11,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFDataFormatter;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -38,7 +37,6 @@ import com.alcatel_lucent.dms.model.Task;
 import com.alcatel_lucent.dms.model.TaskDetail;
 import com.alcatel_lucent.dms.model.Text;
 import com.alcatel_lucent.dms.model.Translation;
-import com.alcatel_lucent.dms.service.TextServiceImpl.ExcelFileHeader;
 import com.alcatel_lucent.dms.util.Util;
 
 @Service("taskService")
@@ -453,6 +451,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
             inp = new FileInputStream(taskFile);
             Workbook wb = WorkbookFactory.create(inp);
             Sheet sheet = wb.getSheetAt(0);
+            HSSFDataFormatter formatter = new HSSFDataFormatter();
             Row header = sheet.getRow(sheet.getFirstRowNum());
             int columnCount = header.getLastCellNum();
             /**
@@ -470,9 +469,9 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
             }
             Row row;
             for (int dataIndex = sheet.getFirstRowNum() + 1; (null != (row = sheet.getRow(dataIndex))); ++dataIndex) {
-                String context = row.getCell(cellIndexMap.get(headerMap.get(ExcelFileHeader.CONTEXT))).getStringCellValue();
-                String reference = row.getCell(cellIndexMap.get(headerMap.get(ExcelFileHeader.REFERENCE))).getStringCellValue();
-                String translation = row.getCell(cellIndexMap.get(headerMap.get(ExcelFileHeader.TRANSLATION))).getStringCellValue();
+                String context = formatter.formatCellValue(row.getCell(cellIndexMap.get(headerMap.get(ExcelFileHeader.CONTEXT))));
+                String reference = formatter.formatCellValue(row.getCell(cellIndexMap.get(headerMap.get(ExcelFileHeader.REFERENCE))));
+                String translation = formatter.formatCellValue(row.getCell(cellIndexMap.get(headerMap.get(ExcelFileHeader.TRANSLATION))));
                 if (context == null || context.isEmpty() || reference == null) {
                 	throw new BusinessException(BusinessException.INVALID_TASK_FILE, language.getName() + "/" + taskFile.getName());
                 }
@@ -492,7 +491,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
         	if (inp != null) try {inp.close();} catch (Exception e) {}
         }
 	}
-
+	
 	@Override
 	public Task applyTask(Long taskId, boolean markAllTranslated) throws BusinessException {
 		log.info("Applying task: " + taskId);
