@@ -98,7 +98,7 @@ define (require, util, i18n)->
 
       $.getJSON "rest/delivery/dict/#{rowid}", {handler: handler, prop: name}, (json)->
         infoDialog.dialog 'option', title: name
-        infoDialog.html $('<table border=1>').append '<tr><td>' + json[name].join('<tr><td>')
+        infoDialog.html $('<table border=0>').append '<tr><td>' + json[name].join('<tr><td>')
         infoDialog.dialog 'open'
 
 
