@@ -27,7 +27,8 @@ define({
                 title:'Language settings'
             },
             "delete":{
-                title:'Delete'
+                title:'Delete',
+                "delmsg": 'Delete selected {0}(s)?'
             },
             dictlistpreview:{
                 title:'Dictionaries Preview',

@@ -118,6 +118,7 @@
       open: function() {
         var param, postData;
         param = $(this).data('param');
+        console.log(param);
         postData = $.extend(param, {
           format: 'grid',
           prop: 'labelKey,maxLength,text.context.name,text.reference,newTranslation'

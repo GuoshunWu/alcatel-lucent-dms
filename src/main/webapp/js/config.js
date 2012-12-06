@@ -101,5 +101,6 @@ require.config({
         }
     },
     urlArgs:"bust=" + (typeof param !== "undefined" && param !== null ? param.buildNumber : '1'),
+//    urlArgs:"bust=" + new Date().getTime(),
     waitSeconds:60
 });

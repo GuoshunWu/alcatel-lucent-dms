@@ -122,7 +122,6 @@ define (require, util, i18n)->
       $(row).css 'background', '#FFFFAA' if parseInt($(rowData.warnings).text()) > 0
       $(row).css 'background', '#FFD2D2' if parseInt($(rowData.errors).text()) > 0
 
-
   }
   dicGrid.jqGrid 'navGrid', '#dictListPreviewPager', {add: false, edit: false, search: false, del: false}, {}, {}, {}
   gridHasErrors: ()->

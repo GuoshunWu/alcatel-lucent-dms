@@ -577,11 +577,11 @@
 
                 <db.dialect>org.hibernate.dialect.H2Dialect</db.dialect>
                 <!-- none, create, create-drop, update, validate -->
-                <db.hbm2ddl.auto>none</db.hbm2ddl.auto>
+                <db.hbm2ddl.auto>validate</db.hbm2ddl.auto>
             </properties>
         </profile>
         <profile>
-            <id>MySQL</id>
+            <id>MySQL199</id>
             <properties>
 
                 <db.driver>com.mysql.jdbc.Driver</db.driver>
@@ -593,7 +593,7 @@
 
                 <db.dialect>org.hibernate.dialect.MySQL5InnoDBDialect</db.dialect>
                 <!-- none, create, create-drop, update, validate -->
-                <db.hbm2ddl.auto>validate</db.hbm2ddl.auto>
+                <db.hbm2ddl.auto>create</db.hbm2ddl.auto>
             </properties>
         </profile>
         <profile>

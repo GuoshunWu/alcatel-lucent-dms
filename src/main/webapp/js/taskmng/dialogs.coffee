@@ -53,6 +53,7 @@ define ['jqueryui', 'taskmng/taskreport_grid', 'taskmng/transdetail_grid', 'jqms
   resize: (event, ui)->$("#viewDetailGrid", @).setGridWidth(ui.size.width - 35, true).setGridHeight(ui.size.height - 145, true)
   open: ->
     param = $(@).data 'param'
+    console.log param
     postData = $.extend param, {format: 'grid', prop: 'labelKey,maxLength,text.context.name,text.reference,newTranslation'}
     detailgrid.setGridParam(url: 'rest/task/details', postData: postData).trigger 'reloadGrid'
   }

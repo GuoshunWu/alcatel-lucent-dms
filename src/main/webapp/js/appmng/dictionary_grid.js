@@ -2,7 +2,7 @@
 (function() {
 
   define(function(require, util, dialogs, i18n) {
-    var $, blockui, c18n, colModel, deleteOptions, dicGrid, handlers, lastEditedCell, localIds;
+    var $, blockui, c18n, colModel, deleteOptions, dicGrid, handlers, lastEditedCell;
     $ = require('jqgrid');
     util = require('util');
     dialogs = require('appmng/dialogs');
@@ -10,19 +10,18 @@
     require('jqmsgbox');
     c18n = require('i18n!nls/common');
     blockui = require('blockui');
-    localIds = {
-      dic_grid: '#dictionaryGridList'
-    };
     deleteOptions = {
+      msg: i18n.dialog["delete"].delmsg.format(c18n.dict),
+      top: 250,
+      left: 550,
       reloadAfterSubmit: false,
       url: 'app/remove-dict',
       beforeShowForm: function(form) {
         var permanent;
         permanent = $('#permanentDeleteSignId', form);
         if (permanent.length === 0) {
-          $("<tr><td>" + i18n.grid.permanenttext + "<td><input align='left' type='checkbox' id='permanentDeleteSignId'>").appendTo($("tbody", form));
+          return $("<tr><td>" + i18n.grid.permanenttext + "<td><input align='left'checked type='checkbox' id='permanentDeleteSignId'>").hide().appendTo($("tbody", form));
         }
-        return permanent != null ? permanent.removeAttr('checked') : void 0;
       },
       onclickSubmit: function(params, posdata) {
         return {
@@ -54,7 +53,7 @@
       'X': {
         title: i18n.dialog["delete"].title,
         handler: function(rowData) {
-          return $(localIds.dic_grid).jqGrid('delGridRow', rowData.id, deleteOptions);
+          return $('#dictionaryGridList').jqGrid('delGridRow', rowData.id, deleteOptions);
         }
       }
     };
@@ -121,7 +120,7 @@
         return colModel.classes = 'editable-column';
       }
     });
-    dicGrid = $(localIds.dic_grid).jqGrid({
+    dicGrid = $('#dictionaryGridList').jqGrid({
       url: 'json/dummy.json',
       datatype: 'json',
       width: 1000,

@@ -7,17 +7,17 @@ define (require, util, dialogs, i18n)->
   c18n = require 'i18n!nls/common'
   blockui = require 'blockui'
 
-
-  localIds = {
-  dic_grid: '#dictionaryGridList'
-  }
+  #  for form edit delete option
   deleteOptions = {
+  msg: i18n.dialog.delete.delmsg.format c18n.dict
+  top: 250, left: 550
   reloadAfterSubmit: false, url: 'app/remove-dict'
   beforeShowForm: (form)->
     permanent = $('#permanentDeleteSignId', form)
-    $("<tr><td>#{i18n.grid.permanenttext}<td><input align='left' type='checkbox' id='permanentDeleteSignId'>")
-    .appendTo $("tbody", form) if permanent.length == 0
-    permanent?.removeAttr 'checked'
+    #    make permanent sign default checked and hide
+    $("<tr><td>#{i18n.grid.permanenttext}<td><input align='left'checked type='checkbox' id='permanentDeleteSignId'>")
+    .hide().appendTo $("tbody", form) if permanent.length == 0
+  #    permanent?.removeAttr 'checked'
   onclickSubmit: (params, posdata)->
     {appId: $("#selAppVersion").val(), permanent: Boolean($('#permanentDeleteSignId').attr("checked"))}
   afterSubmit: (response, postdata)->
@@ -37,7 +37,7 @@ define (require, util, dialogs, i18n)->
       #    {dictId: rowData.id, refCode: rowData.langrefcode}
         dialogs.langSettings.data "param", rowData
         dialogs.langSettings.dialog 'open'
-    'X': title: i18n.dialog.delete.title, handler: (rowData)->$(localIds.dic_grid).jqGrid 'delGridRow', rowData.id, deleteOptions
+    'X': title: i18n.dialog.delete.title, handler: (rowData)->$('#dictionaryGridList').jqGrid 'delGridRow', rowData.id, deleteOptions
 
   lastEditedCell = null
 
@@ -56,7 +56,7 @@ define (require, util, dialogs, i18n)->
   $(colModel).each (index, colModel)->colModel.classes = 'editable-column' if colModel.editable
 
 
-  dicGrid = $(localIds.dic_grid).jqGrid {
+  dicGrid = $('#dictionaryGridList').jqGrid {
   url: 'json/dummy.json'
   datatype: 'json'
   width: 1000
@@ -142,8 +142,8 @@ define (require, util, dialogs, i18n)->
     if !dicts || dicts.length == 0
       $.msgBox (c18n.selrow.format c18n.dict), null, {title: c18n.warning}
       return
-#    pass parameters to dialog
-    $('#addLanguageDialog').data 'param', dicts:dicts
+    #    pass parameters to dialog
+    $('#addLanguageDialog').data 'param', dicts: dicts
     $('#addLanguageDialog').dialog 'open'
 
   appChanged: (param)->
