@@ -2,8 +2,10 @@
 (function() {
 
   define(function(require) {
-    var $, langSettingGrid, lastEditedCell;
+    var $, c18n, i18n, langSettingGrid, lastEditedCell;
     $ = require('jqgrid');
+    i18n = require('i18n!nls/appmng');
+    c18n = require('i18n!nls/common');
     lastEditedCell = null;
     langSettingGrid = $('#languageSettingGrid').jqGrid({
       url: 'json/dummy.json',
@@ -89,6 +91,9 @@
       }
     }, {
       zIndex: 2000,
+      top: 250,
+      left: 550,
+      msg: i18n.dialog["delete"].delmsg.format(c18n.language),
       url: 'app/remove-dict-language'
     });
     langSettingGrid.navButtonAdd('#langSettingPager', {

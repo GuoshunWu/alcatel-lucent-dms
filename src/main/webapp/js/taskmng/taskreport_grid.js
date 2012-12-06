@@ -66,7 +66,7 @@
           }
           dialogs = require('taskmng/dialogs');
           dialogs.viewDetail.data('param', {
-            task: grid.getGridParam('postData').task,
+            task: $('#reportGrid').getGridParam('postData').task,
             language: param.languageId,
             translated: Number(param.languaeName.split('.')[1] === 'T'),
             context: param.id
