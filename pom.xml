@@ -159,16 +159,16 @@
         </dependency>
 
         <!--<dependency>-->
-            <!--<groupId>proxool</groupId>-->
-            <!--<artifactId>proxool</artifactId>-->
-            <!--<version>0.9.1</version>-->
+        <!--<groupId>proxool</groupId>-->
+        <!--<artifactId>proxool</artifactId>-->
+        <!--<version>0.9.1</version>-->
         <!--</dependency>-->
 
 
         <!--<dependency>-->
-            <!--<groupId>proxool</groupId>-->
-            <!--<artifactId>proxool-cglib</artifactId>-->
-            <!--<version>0.9.1</version>-->
+        <!--<groupId>proxool</groupId>-->
+        <!--<artifactId>proxool-cglib</artifactId>-->
+        <!--<version>0.9.1</version>-->
         <!--</dependency>-->
 
 
@@ -378,11 +378,18 @@
             <version>1.0</version>
         </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>org.apache.directory.server</groupId>-->
-            <!--<artifactId>apacheds-all</artifactId>-->
-            <!--<version>2.0.0-M1</version>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>org.apache.directory.server</groupId>
+            <artifactId>apacheds-all</artifactId>
+            <exclusions>
+                <!-- shared-ldap-schema module needs to be excluded to avoid multiple schema resources on the classpath-->
+                <exclusion>
+                    <groupId>org.apache.directory.shared</groupId>
+                    <artifactId>shared-ldap-schema</artifactId>
+                </exclusion>
+            </exclusions>
+            <version>1.5.7</version>
+        </dependency>
 
     </dependencies>
 
@@ -552,32 +559,59 @@
 
     <profiles>
         <profile>
-            <id>localLDAP</id>
-            <activation>
-                <file>
-                    <exists>C:/Program Files (x86)/Apache Directory Studio/Apache Directory Studio.exe</exists>
-                </file>
-            </activation>
+            <id>LDAPServer</id>
             <properties>
                 <ldap.url>ldap://localhost:10389</ldap.url>
             </properties>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.2.1</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>java</goal>
+                                    <!--<goal>exec</goal>-->
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <mainClass>com.alcatel_lucent.dms.service.EmbeddedADService</mainClass>
+                            <!--<executable>java</executable>-->
+                            <!--<arguments>-->
+                                <!--<argument>-classpath</argument>-->
+                                <!--&lt;!&ndash; automatically creates the classpath using all project dependencies, also adding-->
+                                <!--the project build directory &ndash;&gt;-->
+                                <!--<classpath>-->
+                                <!--</classpath>-->
+                                <!--<argument>com.alcatel_lucent.dms.service.EmbeddedADService</argument>-->
+                            <!--</arguments>-->
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+
         </profile>
+
         <profile>
             <id>H2</id>
             <properties>
                 <db.driver>org.h2.Driver</db.driver>
+                <db.urlparam>
+                    MODE=MYSQL;AUTO_SERVER=TRUE;DB_CLOSE_DELAY=-1;INIT=create schema if not exists dms;
+                </db.urlparam>
                 <db.url>
-                    jdbc:h2:tcp://localhost/dms;MODE=MYSQL;AUTO_SERVER=TRUE;DB_CLOSE_DELAY=-1;
-                    <!--INIT=create schema if not exists dms;-->
+                    jdbc:h2:tcp://localhost/dms;${db.urlparam}
                 </db.url>
                 <db.user>dms</db.user>
                 <db.password>alcatel123</db.password>
-
                 <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
-
                 <db.dialect>org.hibernate.dialect.H2Dialect</db.dialect>
                 <!-- none, create, create-drop, update, validate -->
-                <db.hbm2ddl.auto>validate</db.hbm2ddl.auto>
+                <db.hbm2ddl.auto>none</db.hbm2ddl.auto>
             </properties>
         </profile>
         <profile>
@@ -631,8 +665,8 @@
                 <dms.generate.dir>D:/tmp/dms/generate</dms.generate.dir>
                 <dms.send.dir>D:/tmp/dms/send</dms.send.dir>
                 <dms.receive.dir>D:/tmp/dms/receive</dms.receive.dir>
-		        <httpPort>8888</httpPort>
-		        <httpsPort>8443</httpsPort>
+                <httpPort>8888</httpPort>
+                <httpsPort>8443</httpsPort>
 
                 <buildNumber>(new Date()).getTime()</buildNumber>
             </properties>
@@ -645,8 +679,8 @@
         <profile>
             <id>test</id>
             <properties>
-		        <httpPort>8888</httpPort>
-		        <httpsPort>8443</httpsPort>
+                <httpPort>8888</httpPort>
+                <httpsPort>8443</httpsPort>
             </properties>
             <build>
                 <defaultGoal>tomcat7:deploy</defaultGoal>
@@ -666,8 +700,8 @@
         <profile>
             <id>test2</id>
             <properties>
-		        <httpPort>9999</httpPort>
-		        <httpsPort>9443</httpsPort>
+                <httpPort>9999</httpPort>
+                <httpsPort>9443</httpsPort>
             </properties>
             <build>
                 <defaultGoal>tomcat7:deploy</defaultGoal>
