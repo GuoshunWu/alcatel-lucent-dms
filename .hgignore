@@ -3,15 +3,15 @@ syntax:glob
 *~
 *.orig
 *.rej
-
+.hgignore
 # Java
 *.class
 target/
 *.bak
 Main.java
 SimpleTest.java
+AuthenticationServiceImpl.java
 # idea files
-src/main/java/com/alcatel_lucent/dms/resources
 .idea/
 
 #gradle files
