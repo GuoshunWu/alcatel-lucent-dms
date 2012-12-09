@@ -3,13 +3,9 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
   ids = {
   languageFilterTableId: 'languageFilterTable'
   languageFilterDialogId: 'languageFilterDialog'
-  container:
-    {
-    page: 'optional-container'
-    }
   }
 
-  pageLayout = $("##{ids.container.page}").layout {resizable: true, closable: true}
+  pageLayout = $("#optional-container").layout {resizable: true, closable: true}
 
   $(".header-footer").hover (->$(@).addClass "ui-state-hover"), -> $(@).removeClass "ui-state-hover"
 

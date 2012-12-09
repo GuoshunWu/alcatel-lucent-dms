@@ -1,5 +1,6 @@
 package com.alcatel_lucent.dms.action.app;
 
+import com.alcatel_lucent.dms.UserContext;
 import com.alcatel_lucent.dms.action.JSONAction;
 import com.alcatel_lucent.dms.service.DictionaryService;
 import com.alcatel_lucent.dms.util.Util;
@@ -24,7 +25,7 @@ import java.util.Date;
  */
 @SuppressWarnings("serial")
 @ParentPackage("json-default")
-@Result(type="json", params={"noCache","true","ignoreHierarchy","false","includeProperties","fileLoc,message,status"})
+@Result(type = "json", params = {"noCache", "true", "ignoreHierarchy", "false", "includeProperties", "fileLoc,message,status"})
 public class GenerateDictAction extends JSONAction {
 
     private String filename;
@@ -35,10 +36,9 @@ public class GenerateDictAction extends JSONAction {
     private DictionaryService dictionaryService;
     private SimpleDateFormat dFmt = new SimpleDateFormat("yyyyMMdd_HHmmss");
 
-    
+
     @Value("${dms.generate.dir}")
     private String tmpDownload;
-
 
 
     public void setDictionaryService(DictionaryService dictionaryService) {
@@ -71,11 +71,11 @@ public class GenerateDictAction extends JSONAction {
     }
 
     public String performAction() throws Exception {
-        String downTmpPath = tmpDownload + File.separator + "USER_" + dFmt.format(new Date());
+        String downTmpPath = tmpDownload + File.separator + UserContext.getInstance().getUser().getName() +"_"+ dFmt.format(new Date());
         dictionaryService.generateDictFiles(downTmpPath, toIdList(dicts));
 
-        File generatedTaskFiles=new File(downTmpPath);
-        if (!generatedTaskFiles.exists()){
+        File generatedTaskFiles = new File(downTmpPath);
+        if (!generatedTaskFiles.exists()) {
             setStatus(-1);
             setMessage(getText("message.genfail"));
             return SUCCESS;

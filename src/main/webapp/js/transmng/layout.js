@@ -6,12 +6,9 @@
     util = require('util');
     ids = {
       languageFilterTableId: 'languageFilterTable',
-      languageFilterDialogId: 'languageFilterDialog',
-      container: {
-        page: 'optional-container'
-      }
+      languageFilterDialogId: 'languageFilterDialog'
     };
-    pageLayout = $("#" + ids.container.page).layout({
+    pageLayout = $("#optional-container").layout({
       resizable: true,
       closable: true
     });
