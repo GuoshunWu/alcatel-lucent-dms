@@ -1,5 +1,6 @@
 package com.alcatel_lucent.dms.action.task;
 
+import com.alcatel_lucent.dms.UserContext;
 import com.alcatel_lucent.dms.action.JSONAction;
 import com.alcatel_lucent.dms.service.DictionaryService;
 import com.alcatel_lucent.dms.service.TaskService;
@@ -64,7 +65,7 @@ public class GenerateTaskFilesAction extends JSONAction {
     }
 
     public String performAction() throws Exception {
-        String downTmpPath = tmpDownload + File.separator + "USER_" + dFmt.format(new Date());
+        String downTmpPath = tmpDownload + File.separator + UserContext.getInstance().getUser().getName() +"_" +dFmt.format(new Date());
         taskService.generateTaskFiles(downTmpPath, id);
 
 

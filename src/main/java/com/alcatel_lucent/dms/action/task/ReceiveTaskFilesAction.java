@@ -1,5 +1,6 @@
 package com.alcatel_lucent.dms.action.task;
 
+import com.alcatel_lucent.dms.UserContext;
 import com.alcatel_lucent.dms.action.JSONAction;
 import com.alcatel_lucent.dms.service.TaskService;
 import com.alcatel_lucent.dms.util.Util;
@@ -69,7 +70,7 @@ public class ReceiveTaskFilesAction extends JSONAction {
     protected String performAction() throws Exception {
         log.info("receive dir=" + receiveDir + ", task id=" + id + ", filename=" + filename);
 
-        File dir = new File(receiveDir, "USER_" + dFmt.format(new Date()));
+        File dir = new File(receiveDir, UserContext.getInstance().getUser().getName() + "_" + dFmt.format(new Date()));
         if (!dir.exists()) dir.mkdirs();
 
         boolean fileCreateSuccess = true;

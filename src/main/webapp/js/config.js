@@ -32,6 +32,7 @@ require.config({
         transmng:'../transmng',
         taskmng:'../taskmng',
         login:'../login',
+        admin:'../admin',
 
         nls:'../nls',
 //      for coffee script

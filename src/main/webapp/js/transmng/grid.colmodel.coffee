@@ -25,6 +25,13 @@ define ['jqgrid'], ($)->
     delete gridParam.selarrrow
     #    delete gridParam.selrow
     newGrid = $(@getId()).jqGrid gridParam
+#    save search tool bar status before recreate the grid
+    searchValues=
+      app: $('#gs_application').val()
+      encoding: $('#gs_encoding').val()
+      format: $('#gs_format').val()
+    console.log searchValues
+
     @getGridParam('afterCreate') newGrid
 
 

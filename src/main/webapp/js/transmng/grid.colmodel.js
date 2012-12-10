@@ -21,7 +21,7 @@
         return this.reloadAll(url, postData);
       },
       reloadAll: function(url, postData) {
-        var gridParam, newGrid;
+        var gridParam, newGrid, searchValues;
         if (!url) {
           return;
         }
@@ -38,6 +38,12 @@
         }
         delete gridParam.selarrrow;
         newGrid = $(this.getId()).jqGrid(gridParam);
+        searchValues = {
+          app: $('#gs_application').val(),
+          encoding: $('#gs_encoding').val(),
+          format: $('#gs_format').val()
+        };
+        console.log(searchValues);
         return this.getGridParam('afterCreate')(newGrid);
       },
       addTaskLanguage: function(language, url, postData) {
