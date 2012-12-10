@@ -63,7 +63,7 @@
     langSettingGrid.jqGrid('navGrid', '#langSettingPager', {
       edit: false,
       add: false,
-      del: true,
+      del: false,
       search: false
     }, {}, {
       zIndex: 2000,
@@ -89,14 +89,27 @@
         jsonfromServer = eval("(" + response.responseText + ")");
         return [jsonfromServer.status === 0, jsonfromServer.message, -1];
       }
-    }, {
-      zIndex: 2000,
-      top: 250,
-      left: 550,
-      msg: i18n.dialog["delete"].delmsg.format(c18n.language),
-      url: 'app/remove-dict-language'
-    });
-    langSettingGrid.navButtonAdd('#langSettingPager', {
+    }).navButtonAdd('#langSettingPager', {
+      caption: "",
+      buttonicon: "ui-icon-trash",
+      position: "first",
+      onClickButton: function() {
+        var rowIds;
+        if ((rowIds = $(this).getGridParam('selarrrow')).length === 0) {
+          $.msgBox(c18n.selrow.format(c18n.language), null, {
+            title: c18n.warning
+          });
+          return;
+        }
+        return $(this).jqGrid('delGridRow', rowIds, {
+          zIndex: 2000,
+          top: 250,
+          left: 550,
+          msg: i18n.dialog["delete"].delmsg.format(c18n.language),
+          url: 'app/remove-dict-language'
+        });
+      }
+    }).navButtonAdd('#langSettingPager', {
       caption: "",
       buttonicon: "ui-icon-plus",
       position: "first",
