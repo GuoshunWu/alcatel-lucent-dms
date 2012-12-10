@@ -42,4 +42,50 @@ public interface LanguageService {
 	String getPreferredLanguageCode(Collection<Long> dictIdList, Long languageId);
 
 	Charset getPreferredCharset(Collection<Long> dictIdList, Long languageId);
+	
+	/**
+	 * Create a language.
+	 * @param name language name
+	 * @param defaultCharsetId default charset id
+	 * @return new Language object
+	 */
+	Language createLanguage(String name, Long defaultCharsetId);
+
+	/**
+	 * Update a language.
+	 * @param id language id
+	 * @param name new name, null if not changed
+	 * @param defaultCharsetId new default charset id, null if not changed
+	 * @return Language object
+	 */
+	Language updateLanguage(Long id, String name, Long defaultCharsetId);
+
+	/**
+	 * Delete languages.
+	 * Note: Languages used by any of app dict or context dict cannot be deleted.
+	 * @param idList
+	 */
+	void deleteLanguages(Collection<Long> idList);
+
+	/**
+	 * Create a charset.
+	 * @param name charset name
+	 * @return new Charset object
+	 */
+	Charset createCharset(String name);
+
+	/**
+	 * Update a charset.
+	 * @param id charset id
+	 * @param name new charset name
+	 * @return Charset object
+	 */
+	Charset updateCharset(Long id, String name);
+
+	/**
+	 * Delete charsets.
+	 * Charset being used by any app dictionary cannot be deleted.
+	 * @param idList
+	 */
+	void deleteCharset(Collection<Long> idList);
 }
