@@ -10,6 +10,6 @@ define (require)->
 
     colNames: ['Name']
     colModel: [
-      {name: 'name', index: 'name', classes: 'editable-column',align: 'left'}
+      {name: 'name', index: 'name', editable:true, classes: 'editable-column',align: 'left'}
     ]
   ).jqGrid('navGrid', '#charsetPager', {})

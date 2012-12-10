@@ -24,6 +24,7 @@
         {
           name: 'name',
           index: 'name',
+          editable: true,
           classes: 'editable-column',
           align: 'left'
         }
