@@ -80,7 +80,7 @@ public class LanguageREST extends BaseREST {
 	    				param.put("taskId", toIdList(taskStr));
 	    			} else {	// query all
 	    				hql = "from Language obj where name not like '%-%'";
-	    				countHql = "select count(*) from Language where name not like '%-%";
+	    				countHql = "select count(*) from Language where name not like '%-%'";
 	    			}
 	    		}
 	    	}
