@@ -220,8 +220,23 @@
     dicGrid.jqGrid('navGrid', '#dictPager', {
       add: false,
       edit: false,
-      search: false
-    }, {}, {}, deleteOptions);
+      search: false,
+      del: false
+    }, {}, {}, deleteOptions).navButtonAdd('#dictPager', {
+      caption: "",
+      buttonicon: "ui-icon-trash",
+      position: "first",
+      onClickButton: function() {
+        var rowIds;
+        if ((rowIds = $(this).getGridParam('selarrrow')).length === 0) {
+          $.msgBox(c18n.selrow.format(c18n.dict), null, {
+            title: c18n.warning
+          });
+          return;
+        }
+        return $(this).jqGrid('delGridRow', rowIds, deleteOptions);
+      }
+    });
     ($('#generateDict').button({})).click(function() {
       var dicts, filename;
       dicts = dicGrid.getGridParam('selarrrow');

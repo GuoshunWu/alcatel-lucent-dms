@@ -23,7 +23,7 @@ class GLDAPTest {
 
     }
 
-    @Test
+//    @Test
     public void testAlcatelLDAP() throws Exception {
         String INITCTX = "com.sun.jndi.ldap.LdapCtxFactory"
         String ldapUrl = "ldap://ldap.sxb.bsf.alcatel.fr"
@@ -60,12 +60,12 @@ class GLDAPTest {
         }
         ctx.close()
     }
-//    @Test
+    @Test
     public void testLDAPSettings() throws Exception {
-        String name = "Cornelius Buckley"
+        String name = "admin"
         String uid = "cbuckley"
-        String authDN = "cn=${name},ou=people,o=sevenSeas"
-        String password = "pass"
+        String authDN = "uid=${name},ou=system"
+        String password = "secret"
 
 //        name = "admin"
 //        authDN = "uid=${name},ou=system"
@@ -81,8 +81,7 @@ class GLDAPTest {
 
         InitialDirContext ctx = new InitialDirContext(env)
         SearchControls constraints = new SearchControls(returningObjFlag: true, searchScope: SearchControls.SUBTREE_SCOPE, attributesToReturn: ['uid', "commonName", "surname", "manager", "mail"])
-//        String filter = "(&(objectclass=person)(cslx500=" + csl + "))";
-        String baseDN = "ou=people,o=sevenSeas"
+        String baseDN = "ou=system"
         String filter = "(&(objectClass=person))"
 //        filter = "(&(objectClass=inetOrgPerson)(uid={0}))";
 
@@ -94,6 +93,8 @@ class GLDAPTest {
 
             println '=' * 80
         }
+        results.close()
+        ctx.close()
     }
 
 }

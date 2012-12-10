@@ -96,8 +96,12 @@ public class EntryAction extends ActionSupport {
             strPages.append(String.format("'%s':'%s'", pagePrefix + "mng.jsp", getText(pagePrefix + "mng.title")));
             isFirst = false;
         }
+
+        strPages.append(String.format(", '%s':'%s'", "admin.jsp", getText("admin.title")));
+
         strPages.append("}");
         Map<String, String> pagesMap = JSONObject.fromObject(strPages.toString());
+//        log.debug(pagesMap);
         return pagesMap;
     }
 
