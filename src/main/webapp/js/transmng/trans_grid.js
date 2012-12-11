@@ -156,6 +156,7 @@
     */
 
     transGrid = $("#transGrid").jqGrid({
+      url: 'rest/dict',
       mtype: 'post',
       postData: {},
       datatype: 'local',

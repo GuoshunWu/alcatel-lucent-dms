@@ -21,8 +21,11 @@
       },
       reloadAll: function(url, postData) {
         var gridParam, newGrid;
-        if (!url) {
-          return;
+        if (url == null) {
+          url = this.getGridParam('url');
+        }
+        if (postData == null) {
+          postData = this.getGridParam('postData');
         }
         gridParam = this.getGridParam();
         $(gridParam.colModel).each(function(index, colModel) {

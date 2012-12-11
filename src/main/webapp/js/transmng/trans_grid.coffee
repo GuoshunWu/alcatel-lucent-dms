@@ -35,7 +35,6 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
         {name: 'encoding', index: 'base.encoding', width: 90, editable: false, align: 'left', frozen: true
         stype: 'select', searchoptions:
           value: ':All;ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE'
-          #          value:':All'
           dataEvents: [
             {
             type: 'change', fn: (e)->
@@ -68,7 +67,7 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
 
   ### Construct the grid with the column name(model) parameters above and other required parameters ###
   transGrid = $("#transGrid").jqGrid {
-  #    url:'json/dummy.json'
+  url : 'rest/dict'
   mtype: 'post', postData: {}, datatype: 'local'
   width: $(window).innerWidth() * 0.95, height: 330
   rownumbers: true, shrinkToFit: false

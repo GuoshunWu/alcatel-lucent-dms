@@ -11,8 +11,7 @@ define ['jqgrid'], ($)->
     $.merge gridParam.colNames, newColNames
 
 
-  reloadAll: (url, postData)->
-    return if !url
+  reloadAll: (url = this.getGridParam('url'), postData = this.getGridParam('postData'))->
     gridParam = @getGridParam()
     $(gridParam.colModel).each (index, colModel)->colModel.classes = 'editable-column' if colModel.editable
 
