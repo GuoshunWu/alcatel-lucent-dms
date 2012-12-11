@@ -378,19 +378,6 @@
             <version>1.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.directory.server</groupId>
-            <artifactId>apacheds-all</artifactId>
-            <exclusions>
-                <!-- shared-ldap-schema module needs to be excluded to avoid multiple schema resources on the classpath-->
-                <exclusion>
-                    <groupId>org.apache.directory.shared</groupId>
-                    <artifactId>shared-ldap-schema</artifactId>
-                </exclusion>
-            </exclusions>
-            <version>1.5.7</version>
-        </dependency>
-
     </dependencies>
 
     <build>
@@ -651,7 +638,7 @@
                 <db.password>alcatel123</db.password>
                 <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
                 <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
-                <db.hbm2ddl.auto>create</db.hbm2ddl.auto>
+                <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
             </properties>
         </profile>
 
