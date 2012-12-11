@@ -502,8 +502,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	                String langCode = langCodeMap.get(trans.getLanguage().getId());
 	                DictionaryLanguage dl = dict.getDictLanguage(langCode);
 	                String charsetName = dl.getCharset().getName();
+                    boolean invalidText = false;
 	                try {
-	                    boolean invalidText = false;
 	                    if (!dict.getEncoding().equals(charsetName)) {
 	                        byte[] source = trans.getOrigTranslation().getBytes(dict.getEncoding());
 	                        String encodedTranslation = new String(source, charsetName);
@@ -525,6 +525,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	                                trans.getOrigTranslation(), charsetName, langCode,
 	                                label.getKey()));
 	                        labelWarnings += BusinessWarning.INVALID_TEXT;
+	                        invalidText = true;
 	                    }
 	
 	                    // check length
@@ -562,7 +563,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	                t.setLanguage(trans.getLanguage());
 	                
 	                // determine translation status
-	                if (label.getReference().trim().isEmpty()) {
+	                if (invalidText) {	// mark labels containing suspecious character as "Not translated"
+	                	t.setStatus(Translation.STATUS_UNTRANSLATED);
+	                } else if (label.getReference().trim().isEmpty()) {
 	                	t.setStatus(Translation.STATUS_TRANSLATED);
 //	                } else if (trans.getRequestTranslation() != null) {
 //	                	t.setStatus(trans.getRequestTranslation() ? Translation.STATUS_UNTRANSLATED : Translation.STATUS_TRANSLATED);
