@@ -77,6 +77,12 @@ public class BusinessException extends RuntimeException {
     static public final int CONTEXT_NOT_FOUND = 503;
     static public final int FILE_NOT_FOUND = 504;
     public static final int TEXT_NOT_FOUND =505;
+    
+    // administration
+    static public final int LANGUAGE_ALREADY_EXISTS = 601;
+    static public final int LANGUAGE_IS_IN_USE = 602;
+    static public final int CHARSET_ALREADY_EXISTS = 603;
+    static public final int CHARSET_IS_IN_USE = 604;
 
 
     public BusinessException(int errorCode, Object... params) {

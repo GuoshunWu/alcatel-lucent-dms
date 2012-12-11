@@ -120,7 +120,7 @@ public class JSONServiceImpl implements JSONService {
         }
 
         if (rows != null && page != null) {
-	        int totalPages = records > 0 ? (int) ceil(records / (float) rows) : 0;
+	        int totalPages = (records != null && records > 0) ? (int) ceil(records / (float) rows) : 0;
 	        if (page > totalPages) page = totalPages;
 	
 	        jsonGrid.put("page", page);

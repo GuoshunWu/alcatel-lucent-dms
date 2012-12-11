@@ -1,6 +1,7 @@
 package com.alcatel_lucent.dms.action.app;
 
 import com.alcatel_lucent.dms.SpringContext;
+import com.alcatel_lucent.dms.UserContext;
 import com.alcatel_lucent.dms.action.JSONAction;
 import com.alcatel_lucent.dms.service.DeliveringDictPool;
 import com.alcatel_lucent.dms.util.Util;
@@ -27,14 +28,14 @@ import java.util.Date;
 
 public class DeliverAppDictAction extends JSONAction {
 
-    private static Logger log= Logger.getLogger(DeliverAppDictAction.class);
-    
+    private static Logger log = Logger.getLogger(DeliverAppDictAction.class);
+
     private File upload;
     private String contentType;
     private String filename;
     private Long appId;
 
-    private SimpleDateFormat dFmt=new SimpleDateFormat("yyyyMMdd_HHmmss");
+    private SimpleDateFormat dFmt = new SimpleDateFormat("yyyyMMdd_HHmmss");
 
     @Value("${dms.deliver.dir}")
     private String deliverDir;
@@ -66,24 +67,24 @@ public class DeliverAppDictAction extends JSONAction {
     }
 
     public String performAction() throws Exception {
-        log.info("deliverDir="+deliverDir);
-        File dir =  new File(deliverDir, "USER_"+dFmt.format(new Date()));
-        if(!dir.exists()) dir.mkdirs();
+        log.info("deliverDir=" + deliverDir);
+        File dir = new File(deliverDir, UserContext.getInstance().getUser().getName() +"_"+ dFmt.format(new Date()));
+        if (!dir.exists()) dir.mkdirs();
 
-        boolean fileCreateSuccess=true;
-        if(Util.isZipFile(filename)){
+        boolean fileCreateSuccess = true;
+        if (Util.isZipFile(filename)) {
             log.info("decompress file " + upload + " to " + dir.getAbsolutePath());
             Util.unzip(upload, dir.getAbsolutePath());
 
-        }else{
+        } else {
             log.info("deliver normal(not zip) file.");
-            fileCreateSuccess=upload.renameTo(new File(dir,filename));
-            if(!fileCreateSuccess){
+            fileCreateSuccess = upload.renameTo(new File(dir, filename));
+            if (!fileCreateSuccess) {
                 log.warn("move file fail.");
-                fileCreateSuccess=false;
+                fileCreateSuccess = false;
             }
         }
-        if(fileCreateSuccess){
+        if (fileCreateSuccess) {
             deliveringDictPool.addHandler(dir.getName(), appId);
         }
 
@@ -94,12 +95,12 @@ public class DeliverAppDictAction extends JSONAction {
         return SUCCESS;
     }
 
-	public Long getAppId() {
-		return appId;
-	}
+    public Long getAppId() {
+        return appId;
+    }
 
-	public void setAppId(Long appId) {
-		this.appId = appId;
-	}
+    public void setAppId(Long appId) {
+        this.appId = appId;
+    }
 
 }

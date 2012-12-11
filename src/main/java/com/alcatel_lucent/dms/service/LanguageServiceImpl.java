@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.model.AlcatelLanguageCode;
 import com.alcatel_lucent.dms.model.Charset;
@@ -177,6 +178,94 @@ public class LanguageServiceImpl extends BaseServiceImpl implements LanguageServ
 			}
 		} else {
 			return getCharset("UTF-8");
+		}
+	}
+
+	@Override
+	public Language createLanguage(String name, Long defaultCharsetId) {
+		Language language = findLanguageByName(name.trim());
+		if (language != null) {
+			throw new BusinessException(BusinessException.LANGUAGE_ALREADY_EXISTS, name);
+		}
+		language = new Language();
+		language.setName(name.trim());
+		language.setDefaultCharset(((Charset) dao.retrieve(Charset.class, defaultCharsetId)).getName());
+		language = (Language) dao.create(language);
+		languages = null;	// reset cache
+		return language;
+	}
+
+	@Override
+	public Language updateLanguage(Long id, String name, Long defaultCharsetId) {
+		Language language = (Language) dao.retrieve(Language.class, id);
+		if (language != null) {
+			if (name != null && !name.trim().equals("")) {
+				language.setName(name.trim());
+			}
+			if (defaultCharsetId != null) {
+				language.setDefaultCharset(((Charset) dao.retrieve(Charset.class, defaultCharsetId)).getName());
+			}
+		}
+		languages = null;	// reset cache
+		return language;
+	}
+
+	@Override
+	public void deleteLanguages(Collection<Long> idList) {
+		String hql = "select count(*) from DictionaryLanguage where language.id in (:idList)";
+		Map param = new HashMap();
+		param.put("idList", idList);
+		Number count = (Number) dao.retrieveOne(hql, param);
+		if (count.intValue() == 0) {
+			hql = "select count(*) from Translation where language.id in (:idList)";
+			count = (Number) dao.retrieveOne(hql, param);
+		}
+		if (count.intValue() > 0) {
+			throw new BusinessException(BusinessException.LANGUAGE_IS_IN_USE);
+		} else {
+			for (Long id : idList) {
+				dao.delete(Language.class, id);
+			}
+			languages = null;	// reset cache
+		}
+	}
+
+	@Override
+	public Charset createCharset(String name) {
+		Charset charset = getCharset(name.trim());
+		if (charset != null) {
+			throw new BusinessException(BusinessException.CHARSET_ALREADY_EXISTS, name);
+		}
+		charset = new Charset();
+		charset.setName(name);
+		charset = (Charset) dao.create(charset);
+		charsets = null;	// reset cache
+		return charset;
+	}
+
+	@Override
+	public Charset updateCharset(Long id, String name) {
+		Charset charset = (Charset) dao.retrieve(Charset.class, id);
+		if (charset != null) {
+			charset.setName(name);
+			charsets = null;	// reset cache
+		}
+		return charset;
+	}
+
+	@Override
+	public void deleteCharset(Collection<Long> idList) {
+		String hql = "select count(*) from DictionaryLanguage where charset.id in (:idList)";
+		Map param = new HashMap();
+		param.put("idList", idList);
+		Number count = (Number) dao.retrieveOne(hql, param);
+		if (count.intValue() > 0) {
+			throw new BusinessException(BusinessException.CHARSET_IS_IN_USE);
+		} else {
+			for (Long id : idList) {
+				dao.delete(Charset.class, id);
+			}
+			charsets = null;	// reset cache
 		}
 	}
 }

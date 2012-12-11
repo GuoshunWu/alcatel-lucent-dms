@@ -51,6 +51,7 @@ public class LanguageREST extends BaseREST {
     @Override
 	protected String doGetOrPost(Map<String, String> requestMap) throws Exception {
     	String hql;
+    	String countHql = null;
     	Map param = new HashMap();
     	String dictStr = requestMap.get("dict");
     	if (dictStr != null && !dictStr.trim().isEmpty()) {	// query by dictionaries
@@ -79,6 +80,7 @@ public class LanguageREST extends BaseREST {
 	    				param.put("taskId", toIdList(taskStr));
 	    			} else {	// query all
 	    				hql = "from Language obj where name not like '%-%'";
+	    				countHql = "select count(*) from Language where name not like '%-%'";
 	    			}
 	    		}
 	    	}
@@ -92,7 +94,7 @@ public class LanguageREST extends BaseREST {
     		sord = "ASC";
     	}
     	hql += " order by obj." + sidx + " " + sord;
-        Collection<Language> result = retrieve(hql, param, null, null, requestMap);
+        Collection<Language> result = retrieve(hql, param, countHql, null, requestMap);
         return toJSON(result, requestMap);
     }
     

@@ -2,7 +2,18 @@
 (function() {
 
   define(['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n!nls/transmng', 'i18n!nls/common', 'require'], function($, util, msgbox, gmodel, blockui, i18n, c18n, require) {
-    var common, getTableType, grid, transGrid;
+    var common, getTableType, grid, restoreSearchToolBarValue, transGrid;
+    restoreSearchToolBarValue = function(column, value) {
+      var searchOpts;
+      if (typeof console !== "undefined" && console !== null) {
+        console.log("Set default value to " + value + " for " + column);
+      }
+      searchOpts = ($("#transGrid").jqGrid('getColProp', column)).searchoptions;
+      searchOpts.defaultValue = value;
+      return $("#transGrid").jqGrid('setColProp', column, {
+        searchoptions: searchOpts
+      });
+    };
     common = {
       colNames: ['ID', 'Application', 'Version', 'Num of String'],
       colModel: [
@@ -18,9 +29,23 @@
           index: 'base.name',
           width: 100,
           editable: false,
-          stype: 'select',
           align: 'left',
-          frozen: true
+          frozen: true,
+          stype: 'select',
+          searchoptions: {
+            value: ":All",
+            dataEvents: [
+              {
+                type: 'change',
+                fn: function(e) {
+                  var searchvalue;
+                  searchvalue = $("#transGrid").jqGrid('getGridParam', 'searchvalue');
+                  searchvalue.app = e.target.value;
+                  return $("#transGrid").jqGrid('setGridParam', 'searchvalue', searchvalue);
+                }
+              }
+            ]
+          }
         }, {
           name: 'appVersion',
           index: 'version',
@@ -64,23 +89,45 @@
             index: 'base.encoding',
             width: 90,
             editable: false,
+            align: 'left',
+            frozen: true,
             stype: 'select',
             searchoptions: {
-              value: ':All;ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE'
-            },
-            align: 'left',
-            frozen: true
+              value: ':All;ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE',
+              dataEvents: [
+                {
+                  type: 'change',
+                  fn: function(e) {
+                    var searchvalue;
+                    searchvalue = $("#transGrid").jqGrid('getGridParam', 'searchvalue');
+                    searchvalue.encoding = e.target.value;
+                    return $("#transGrid").jqGrid('setGridParam', 'searchvalue', searchvalue);
+                  }
+                }
+              ]
+            }
           }, {
             name: 'format',
             index: 'base.format',
             width: 90,
             editable: false,
+            align: 'left',
+            frozen: true,
             stype: 'select',
             searchoptions: {
-              value: ":All;DCT:DCT;Dictionary conf:Dictionary conf;Text properties:Text properties;XML labels:XML labels"
-            },
-            align: 'left',
-            frozen: true
+              value: ":All;DCT:DCT;Dictionary conf:Dictionary conf;Text properties:Text properties;XML labels:XML labels",
+              dataEvents: [
+                {
+                  type: 'change',
+                  fn: function(e) {
+                    var searchvalue;
+                    searchvalue = $("#transGrid").jqGrid('getGridParam', 'searchvalue');
+                    searchvalue.format = e.target.value;
+                    return $("#transGrid").jqGrid('setGridParam', 'searchvalue', searchvalue);
+                  }
+                }
+              ]
+            }
           }
         ])
       },
@@ -105,59 +152,26 @@
         return 'app';
       }
     };
+    /* Construct the grid with the column name(model) parameters above and other required parameters
+    */
+
     transGrid = $("#transGrid").jqGrid({
-      mtype: 'POST',
+      url: 'rest/dict',
+      mtype: 'post',
       postData: {},
-      editurl: "",
       datatype: 'local',
-      width: $(window).width() * 0.95,
+      width: $(window).innerWidth() * 0.95,
       height: 330,
-      shrinkToFit: false,
       rownumbers: true,
-      loadonce: false,
+      shrinkToFit: false,
       pager: '#transPager',
       rowNum: 60,
       rowList: [10, 20, 30, 60, 120],
       sortname: 'base.name',
       sortorder: 'asc',
-      viewrecords: true,
-      gridview: true,
       multiselect: true,
       colNames: grid.dictionary.colNames,
       colModel: grid.dictionary.colModel,
-      groupHeaders: [],
-      afterCreate: function(grid) {
-        grid.setGridParam({
-          'datatype': 'json'
-        });
-        grid.setGroupHeaders({
-          useColSpanStyle: true,
-          groupHeaders: grid.getGridParam('groupHeaders')
-        });
-        if (getTableType() === 'dict') {
-          grid.filterToolbar({
-            stringResult: true,
-            searchOnEnter: false
-          });
-        }
-        grid.navGrid('#transPager', {
-          edit: false,
-          add: false,
-          del: false,
-          search: false,
-          view: false
-        });
-        grid.navButtonAdd("#transPager", {
-          caption: "Clear",
-          title: "Clear Search",
-          buttonicon: 'ui-icon-refresh',
-          position: 'first',
-          onClickButton: function() {
-            return grid[0].clearToolbar();
-          }
-        });
-        return grid.setFrozenColumns();
-      },
       beforeProcessing: function(data, status, xhr) {},
       gridComplete: function() {
         transGrid = $(this);
@@ -202,6 +216,31 @@
             });
           });
         });
+      },
+      searchvalue: {},
+      groupHeaders: [],
+      afterCreate: function(grid) {
+        grid.setGridParam({
+          'datatype': 'json'
+        });
+        grid.setGroupHeaders({
+          useColSpanStyle: false,
+          groupHeaders: grid.getGridParam('groupHeaders')
+        });
+        if (getTableType() === 'dict') {
+          grid.filterToolbar({
+            stringResult: true,
+            searchOnEnter: false
+          });
+        }
+        grid.navGrid('#transPager', {
+          edit: false,
+          add: false,
+          del: false,
+          search: false,
+          view: false
+        });
+        return grid.setFrozenColumns();
       }
     });
     transGrid.getGridParam('afterCreate')(transGrid);
@@ -234,7 +273,7 @@
     })).parent().buttonset();
     return {
       productReleaseChanged: function(param) {
-        var gridParam, isApp, postData, prop, summary, url;
+        var gridParam, isApp, postData, prop, searchoptions, searchvalue, summary, url;
         transGrid = $("#transGrid");
         summary = ($(param.languages).map(function() {
           var _this;
@@ -248,7 +287,6 @@
         if (isApp) {
           gridParam.colNames = grid.application.colNames;
           gridParam.colModel = grid.application.colModel;
-          gridParam.ondblClickRow = (function() {});
           url = 'rest/applications';
           prop = "id,id,base.name,version,labelNum," + summary;
           transGrid.setColProp('application', {
@@ -258,9 +296,9 @@
         } else {
           gridParam.colNames = grid.dictionary.colNames;
           gridParam.colModel = grid.dictionary.colModel;
-          gridParam.ondblClickRow = grid.dictionary.ondblClickRow;
           url = 'rest/dict';
           prop = "id,app.base.name,app.version,base.name,version,base.encoding,base.format,labelNum," + summary;
+          searchoptions = transGrid.getColProp('application').searchoptions;
           $.ajax({
             url: "rest/applications?prod=" + param.release.id + "&prop=id,name",
             async: false,
@@ -271,22 +309,31 @@
               $(json).each(function() {
                 return app += ";" + this.name + ":" + this.name;
               });
-              return transGrid.setColProp('application', {
-                search: true,
-                searchoptions: {
-                  value: app
-                },
-                index: 'app.base.name'
-              });
+              return searchoptions.value = app;
             }
           });
+          transGrid.setColProp('application', {
+            searchoptions: searchoptions,
+            index: 'app.base.name'
+          });
+          searchvalue = $("#transGrid").jqGrid('getGridParam', 'searchvalue');
+          if (searchvalue.app) {
+            restoreSearchToolBarValue('application', searchvalue.app);
+          }
+          if (searchvalue.encoding) {
+            restoreSearchToolBarValue('encoding', searchvalue.encoding);
+          }
+          if (searchvalue.format) {
+            restoreSearchToolBarValue('format', searchvalue.format);
+          }
         }
         postData = {
           prod: param.release.id,
           format: 'grid',
           prop: prop
         };
-        return transGrid.updateTaskLanguage(param.languages, url, postData);
+        transGrid.updateTaskLanguage(param.languages);
+        return transGrid.reloadAll(url, postData);
       },
       getTotalSelectedRowInfo: function() {
         var count, selectedRowIds;

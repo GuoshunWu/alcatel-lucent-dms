@@ -43,6 +43,7 @@ public class CharsetREST extends BaseREST {
 	@Override
 	protected String doGetOrPost(Map<String, String> requestMap) throws Exception {
 		String hql = "from Charset";
+		String countHql = "select count(*) from Charset";
     	String sidx = requestMap.get("sidx");
     	String sord = requestMap.get("sord");
     	if (sidx == null || sidx.trim().isEmpty()) {
@@ -52,7 +53,7 @@ public class CharsetREST extends BaseREST {
     		sord = "ASC";
     	}
     	hql += " order by " + sidx + " " + sord;
-		Collection<Charset> result = retrieve(hql, null, null, null, requestMap);
+		Collection<Charset> result = retrieve(hql, null, countHql, null, requestMap);
 		return toJSON(result, requestMap);
 	}
 }

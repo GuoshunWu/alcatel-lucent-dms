@@ -49,13 +49,14 @@ define ['jqgrid', 'util', 'require', 'i18n!nls/transmng', 'i18n!nls/common'], ($
     prop = "key,maxLength,context.name,reference,ct.translation,ct.status"
     transDetailGrid.setGridParam url: url, datatype: "json", postData: {dict: param.dict.id, language: param.language.id, format: 'grid', prop: prop, idprop: 'ct.id'}
 
+#   set search tool bar status
     options = transDetailGrid.getColProp('transStatus').searchoptions
     options.defaultValue = param.searchStatus
     transDetailGrid.setColProp 'transStatus', searchoptions: options
 
     $('#gs_transStatus').val param.searchStatus
     transDetailGrid[0].triggerToolbar()
-  #    transDetailGrid.trigger("reloadGrid")
+
 
   saveLastEditedCell: ()->
     transDetailGrid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
