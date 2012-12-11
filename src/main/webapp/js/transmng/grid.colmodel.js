@@ -7,7 +7,7 @@
       getId: function() {
         return "#" + (this.attr('id'));
       },
-      addColumns: function(newColNames, newColModelEntrys, url, postData) {
+      addColumns: function(newColNames, newColModelEntrys) {
         var gridParam;
         gridParam = this.getGridParam();
         gridParam.colNames = $.grep(gridParam.colNames, function(val, key) {
@@ -17,13 +17,15 @@
           return "rn" !== val.name;
         });
         $.merge(gridParam.colModel, newColModelEntrys);
-        $.merge(gridParam.colNames, newColNames);
-        return this.reloadAll(url, postData);
+        return $.merge(gridParam.colNames, newColNames);
       },
       reloadAll: function(url, postData) {
         var gridParam, newGrid;
-        if (!url) {
-          return;
+        if (url == null) {
+          url = this.getGridParam('url');
+        }
+        if (postData == null) {
+          postData = this.getGridParam('postData');
         }
         gridParam = this.getGridParam();
         $(gridParam.colModel).each(function(index, colModel) {
@@ -40,7 +42,7 @@
         newGrid = $(this.getId()).jqGrid(gridParam);
         return this.getGridParam('afterCreate')(newGrid);
       },
-      addTaskLanguage: function(language, url, postData) {
+      addTaskLanguage: function(language) {
         var colModels, cols, level;
         cols = ['T', 'N', 'I'];
         level = $("input:radio[name='viewOption'][checked]").val();
@@ -72,13 +74,16 @@
           numberOfColumns: cols.length,
           titleText: "<bold>" + language.name + "</bold>"
         });
-        return this.addColumns(cols, colModels, url, postData);
+        return this.addColumns(cols, colModels);
       },
-      updateTaskLanguage: function(languages, url, postData) {
+      updateTaskLanguage: function(languages) {
         var cols, gridParam,
           _this = this;
         if ($.isEmptyObject(languages)) {
-          return false;
+          return;
+        }
+        if ($.isArray(languages) && 0 === languages.length) {
+          return;
         }
         cols = ['T', 'N', 'I'];
         gridParam = this.getGridParam();
@@ -88,21 +93,13 @@
         gridParam.colModel = $.grep(gridParam.colModel, function(val, key) {
           return !/.+\.[TIN]/g.test(val.name);
         });
-        if (!$.isArray(languages)) {
-          this.addTaskLanguage(languages, url, postData, 0);
-          return;
-        }
-        if (0 === languages.length) {
-          this.reloadAll(url, postData);
-          return;
-        }
-        return $(languages).each(function(index, language) {
-          if (index < languages.length - 1) {
+        if ($.isArray(languages)) {
+          $(languages).each(function(index, language) {
             return _this.addTaskLanguage(language);
-          } else {
-            return _this.addTaskLanguage(language, url, postData);
-          }
-        });
+          });
+          return;
+        }
+        return this.addTaskLanguage(languages);
       }
     });
   });

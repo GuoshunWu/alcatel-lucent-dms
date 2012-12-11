@@ -6,12 +6,9 @@
     util = require('util');
     ids = {
       languageFilterTableId: 'languageFilterTable',
-      languageFilterDialogId: 'languageFilterDialog',
-      container: {
-        page: 'optional-container'
-      }
+      languageFilterDialogId: 'languageFilterDialog'
     };
-    pageLayout = $("#" + ids.container.page).layout({
+    pageLayout = $("#optional-container").layout({
       resizable: true,
       closable: true
     });
@@ -223,13 +220,10 @@
           prop: 'id,version'
         }, function(json) {
           $('#productRelease').append(util.newOption(c18n.select.release.tip, -1));
-          $('#productRelease').append(util.json2Options(json));
+          $('#productRelease').append(util.json2Options(json, json[json.length - 1].id));
           return $('#productRelease').trigger("change");
         });
       });
-      if (!param.currentSelected.productId || '-1' === String(param.currentSelected.productId)) {
-        $('#productRelease option:last').attr('selected', true);
-      }
       $('#productRelease').change(function() {
         if (-1 === parseInt(this.value)) {
           return;

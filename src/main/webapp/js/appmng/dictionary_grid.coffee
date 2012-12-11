@@ -34,8 +34,8 @@ define (require, util, dialogs, i18n)->
         dialogs.stringSettings.dialog 'open'
     'Language':
       title: i18n.dialog.languagesettings.title, handler: (rowData)->
-      #    {dictId: rowData.id, refCode: rowData.langrefcode}
-        dialogs.langSettings.data "param", rowData
+#        dialogs.langSettings.data "param", rowData
+        dialogs.langSettings.on 'dialogopen',{param:rowData}, $('#languageSettingsDialog').dialog('option', 'openEvent')
         dialogs.langSettings.dialog 'open'
     'X': title: i18n.dialog.delete.title, handler: (rowData)->$('#dictionaryGridList').jqGrid 'delGridRow', rowData.id, deleteOptions
 
@@ -114,7 +114,16 @@ define (require, util, dialogs, i18n)->
       rowData.id = rowid
       handlers[action].handler rowData
   }
-  dicGrid.jqGrid 'navGrid', '#dictPager', {add: false, edit: false, search: false}, {}, {}, deleteOptions
+  dicGrid.jqGrid('navGrid', '#dictPager', {add: false, edit: false, search: false, del: false}, {}, {}, deleteOptions)
+  #  custom button for del dictionary
+  .navButtonAdd '#dictPager', {caption: "", buttonicon: "ui-icon-trash", position: "first"
+  onClickButton: ()->
+    if(rowIds = $(@).getGridParam('selarrrow')).length == 0
+      $.msgBox (c18n.selrow.format c18n.dict), null, {title: c18n.warning}
+      return
+    $(@).jqGrid 'delGridRow', rowIds, deleteOptions
+  }
+
 
   ($('#generateDict').button {}).click ->
   #    Test

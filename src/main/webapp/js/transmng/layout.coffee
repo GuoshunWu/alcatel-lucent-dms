@@ -3,13 +3,9 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
   ids = {
   languageFilterTableId: 'languageFilterTable'
   languageFilterDialogId: 'languageFilterDialog'
-  container:
-    {
-    page: 'optional-container'
-    }
   }
 
-  pageLayout = $("##{ids.container.page}").layout {resizable: true, closable: true}
+  pageLayout = $("#optional-container").layout {resizable: true, closable: true}
 
   $(".header-footer").hover (->$(@).addClass "ui-state-hover"), -> $(@).removeClass "ui-state-hover"
 
@@ -131,18 +127,19 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
 
       $.getJSON "rest/products/version", {base: $(@).val(), prop: 'id,version'}, (json)->
         $('#productRelease').append util.newOption(c18n.select.release.tip, -1)
-        $('#productRelease').append util.json2Options json
+        $('#productRelease').append util.json2Options json, json[json.length-1].id
         $('#productRelease').trigger "change"
 
-    $('#productRelease option:last').attr('selected', true) if !param.currentSelected.productId || '-1' == String(param.currentSelected.productId)
+
     $('#productRelease').change ->
       return if -1 == parseInt @value
       $.ajax {url: "rest/languages", async: false, data: {prod: @value, prop: 'id,name'}, dataType: 'json', success: (languages)->
-        langTable=util.generateLanguageTable languages
+        langTable = util.generateLanguageTable languages
         $("#languageFilterDialog").empty().append langTable
       }
       refreshGrid()
-#      console?.log "grid refresh"
+
+
     $('#productRelease').trigger 'change'
 
   createButtons = (taskDialog, languageFilterDialog) ->
@@ -185,7 +182,7 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
   initPage = ->
   ###################################### Initialize elements in north panel ######################################
     dialogs = createDialogs()
-  ###################################### Elements in summary panel ######################################
+    ###################################### Elements in summary panel ######################################
     createSelects()
 
     createButtons(dialogs.taskDialog, dialogs.languageFilterDialog, dialogs.transDetailDialog)
