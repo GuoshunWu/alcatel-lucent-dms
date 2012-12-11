@@ -46,7 +46,9 @@
       'Language': {
         title: i18n.dialog.languagesettings.title,
         handler: function(rowData) {
-          dialogs.langSettings.data("param", rowData);
+          dialogs.langSettings.on('dialogopen', {
+            param: rowData
+          }, $('#languageSettingsDialog').dialog('option', 'openEvent'));
           return dialogs.langSettings.dialog('open');
         }
       },

@@ -112,27 +112,32 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   ]
   }
 
-  langSettings = $('#languageSettingsDialog').dialog {
-  autoOpen: false
-  modal: true
-  width: 530, height: 'auto', title: i18n.dialog.languagesettings.title
-  resize: (event, ui)->$('#languageSettingGrid').setGridWidth(ui.size.width - 35, true).setGridHeight(ui.size.height - 180, true)
-  open: (e, ui)->
-  # param must be attached to the dialog before the dialog open
-    param = $(@).data "param"
-    $('#refCode').val param.langrefcode
-    postData = dict: param.id, format: 'grid', prop: 'languageCode,language.name,charset.name'
-    $('#languageSettingGrid').setGridParam(url: 'rest/dictLanguages', page: 1, postData: postData).trigger "reloadGrid"
-
-  close: (event, ui)->
-    (require 'appmng/langsetting_grid').saveLastEditedCell()
-  buttons: [
-    {text: c18n.close, click: ()->
-      $(@).dialog 'close'
-    }
-  ]
-
-  }
+  langSettings = $('#languageSettingsDialog').dialog(
+    autoOpen: false
+    modal: true
+    width: 530, height: 'auto', title: i18n.dialog.languagesettings.title
+    resize: (event, ui)->$('#languageSettingGrid').setGridWidth(ui.size.width - 35, true).setGridHeight(ui.size.height - 180, true)
+    ###
+      Customed option for dialog open
+      When user click the language action link in dictionary grid, the handler for that link will bind open event
+      for this dialog and pass the related parameters to it.
+      e.data will be the passed parameters
+    ###
+    openEvent: (e, ui)->
+    # param must be attached to the dialog before the dialog open
+      #      param = $(@).data "param"
+      param = e.data.param
+      $('#refCode').val param.langrefcode
+      postData = dict: param.id, format: 'grid', prop: 'languageCode,language.name,charset.name'
+      $('#languageSettingGrid').setGridParam(url: 'rest/dictLanguages', page: 1, postData: postData).trigger "reloadGrid"
+    close: (event, ui)->
+      (require 'appmng/langsetting_grid').saveLastEditedCell()
+    buttons: [
+      {text: c18n.close, click: ()->
+        $(@).dialog 'close'
+      }
+    ]
+  )
 
   stringSettings = $('#stringSettingsDialog').dialog {
   autoOpen: false
