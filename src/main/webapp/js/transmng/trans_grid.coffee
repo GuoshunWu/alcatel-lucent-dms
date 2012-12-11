@@ -3,7 +3,18 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
     colNames: ['ID', 'Application', 'Version', 'Num of String']
     colModel: [
       {name: 'id', index: 'id', width: 55, align: 'center', hidden: true, frozen: true}
-      {name: 'application', index: 'base.name', width: 100, editable: false, stype: 'select', align: 'left', frozen: true}
+      {name: 'application', index: 'base.name', width: 100, editable: false, align: 'left', frozen: true, stype: 'select'
+      searchoptions:
+        dataEvents: [
+          {
+          type: 'change', fn: (e)->
+#            todo: check here, can't get search value
+            searchvalue = $("#transGrid").jqGrid 'getGridParam', 'searchvalue'
+            searchvalue.app = e.target.value
+            $("#transGrid").jqGrid 'setGridParam', 'searchvalue', searchvalue
+          }
+        ]
+      }
       {name: 'appVersion', index: 'version', width: 90, editable: false, align: 'left', frozen: true, search: false}
       {name: 'numOfString', index: 'labelNum', width: 80, align: 'right', frozen: true, search: false}
     ]
@@ -14,8 +25,30 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
       colModel: (common.colModel[0..].insert 3, [
         {name: 'dictionary', index: 'base.name', width: 90, editable: false, align: 'left', frozen: true, search: false}
         {name: 'dictVersion', index: 'version', width: 90, editable: false, align: 'left', frozen: true, search: false}
-        {name: 'encoding', index: 'base.encoding', width: 90, editable: false, stype: 'select', searchoptions: {value: ':All;ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE'}, align: 'left', frozen: true}
-        {name: 'format', index: 'base.format', width: 90, editable: false, stype: 'select', searchoptions: {value: ":All;DCT:DCT;Dictionary conf:Dictionary conf;Text properties:Text properties;XML labels:XML labels"}, align: 'left', frozen: true}
+        {name: 'encoding', index: 'base.encoding', width: 90, editable: false, align: 'left', frozen: true
+        stype: 'select', searchoptions:
+          value: ':All;ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE'
+          dataEvents: [
+            {
+            type: 'change', fn: (e)->
+              searchvalue = $("#transGrid").jqGrid 'getGridParam', 'searchvalue'
+              searchvalue.encoding = e.target.value
+              $("#transGrid").jqGrid 'setGridParam', 'searchvalue', searchvalue
+            }
+          ]
+        }
+        {name: 'format', index: 'base.format', width: 90, editable: false, align: 'left', frozen: true
+        stype: 'select', searchoptions:
+          value: ":All;DCT:DCT;Dictionary conf:Dictionary conf;Text properties:Text properties;XML labels:XML labels"
+          dataEvents: [
+            {
+            type: 'change', fn: (e)->
+              searchvalue = $("#transGrid").jqGrid 'getGridParam', 'searchvalue'
+              searchvalue.format = e.target.value
+              $("#transGrid").jqGrid 'setGridParam', 'searchvalue', searchvalue
+            }
+          ]
+        }
       ])
     application:
       colNames: ['Dummy'].concat common.colNames
@@ -30,6 +63,8 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
   width: $(window).width() * 0.95, height: 330, shrinkToFit: false
   rownumbers: true, loadonce: false # for reload the colModel
   pager: '#transPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
+  #  customed option for save the toolbar search value
+  searchvalue: {}
   sortname: 'base.name', sortorder: 'asc', viewrecords: true, gridview: true, multiselect: true
   colNames: grid.dictionary.colNames, colModel: grid.dictionary.colModel
   groupHeaders: []

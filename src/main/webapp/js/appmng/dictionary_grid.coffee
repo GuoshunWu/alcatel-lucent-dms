@@ -34,8 +34,8 @@ define (require, util, dialogs, i18n)->
         dialogs.stringSettings.dialog 'open'
     'Language':
       title: i18n.dialog.languagesettings.title, handler: (rowData)->
-      #    {dictId: rowData.id, refCode: rowData.langrefcode}
-        dialogs.langSettings.data "param", rowData
+#        dialogs.langSettings.data "param", rowData
+        dialogs.langSettings.on 'dialogopen',{param:rowData}, $('#languageSettingsDialog').dialog('option', 'openEvent')
         dialogs.langSettings.dialog 'open'
     'X': title: i18n.dialog.delete.title, handler: (rowData)->$('#dictionaryGridList').jqGrid 'delGridRow', rowData.id, deleteOptions
 

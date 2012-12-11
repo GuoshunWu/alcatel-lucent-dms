@@ -2,9 +2,14 @@
 (function() {
 
   define(function(require) {
-    var $, grid, util;
+    var $, afterSubmit, grid, util;
     $ = require('jqgrid');
     util = require('util');
+    afterSubmit = function(response, postdata) {
+      var jsonFromServer;
+      jsonFromServer = $.parseJSON(response.responseText);
+      return [jsonFromServer.status === 0, jsonFromServer.message];
+    };
     return grid = $('#languageGrid').jqGrid({
       url: 'rest/languages',
       postData: {
@@ -14,7 +19,17 @@
       datatype: 'json',
       mtype: 'post',
       pager: '#languagePager',
+      rowNum: 15,
+      rowList: [15, 30, 60],
       multiselect: true,
+      cellEdit: true,
+      cellurl: 'admin/language',
+      afterSubmitCell: function(serverresponse, rowid, cellname, value, iRow, iCol) {
+        var jsonFromServer;
+        jsonFromServer = $.parseJSON(serverresponse.responseText);
+        return [jsonFromServer.status === 0, jsonFromServer.message];
+      },
+      editurl: 'admin/language',
       loadtext: 'Loading, please wait...',
       caption: 'Place holder',
       width: $(window).innerWidth() * 0.95,
@@ -23,25 +38,52 @@
       colModel: [
         {
           name: 'name',
-          index: 'base.name',
+          index: 'name',
           width: 100,
           classes: 'editable-column',
-          editable: false,
-          align: 'left'
+          editable: true,
+          align: 'left',
+          editrules: {
+            required: true
+          }
         }, {
           name: 'defaultCharset',
           index: 'defaultCharset',
           width: 100,
+          align: 'left',
           editable: true,
           classes: 'editable-column',
           edittype: 'select',
           editoptions: {
-            value: {}
+            dataUrl: 'rest/charsets?prop=id,name',
+            buildSelect: function(response) {
+              return "<select>" + (($($.parseJSON(response)).map(function(idx, elem) {
+                return "<option value=" + this.id + ">" + this.name + "</option>";
+              })).get().join('\n')) + "</select>";
+            }
           },
-          align: 'left'
+          editrules: {
+            required: true
+          }
         }
       ]
-    }).jqGrid('navGrid', '#languagePager', {});
+    }).jqGrid('navGrid', '#languagePager', {
+      search: false,
+      edit: false
+    }, {}, {
+      mtype: 'post',
+      afterSubmit: afterSubmit,
+      closeAfterAdd: true,
+      beforeShowForm: function(formid) {
+        return console.log(formid);
+      }
+    }, {
+      mtype: 'post',
+      afterSubmit: afterSubmit,
+      beforeShowForm: function(formid) {
+        return console.log(formid);
+      }
+    });
   });
 
 }).call(this);

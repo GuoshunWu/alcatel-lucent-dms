@@ -18,9 +18,22 @@
           index: 'base.name',
           width: 100,
           editable: false,
-          stype: 'select',
           align: 'left',
-          frozen: true
+          frozen: true,
+          stype: 'select',
+          searchoptions: {
+            dataEvents: [
+              {
+                type: 'change',
+                fn: function(e) {
+                  var searchvalue;
+                  searchvalue = $("#transGrid").jqGrid('getGridParam', 'searchvalue');
+                  searchvalue.app = e.target.value;
+                  return $("#transGrid").jqGrid('setGridParam', 'searchvalue', searchvalue);
+                }
+              }
+            ]
+          }
         }, {
           name: 'appVersion',
           index: 'version',
@@ -64,23 +77,45 @@
             index: 'base.encoding',
             width: 90,
             editable: false,
+            align: 'left',
+            frozen: true,
             stype: 'select',
             searchoptions: {
-              value: ':All;ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE'
-            },
-            align: 'left',
-            frozen: true
+              value: ':All;ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE',
+              dataEvents: [
+                {
+                  type: 'change',
+                  fn: function(e) {
+                    var searchvalue;
+                    searchvalue = $("#transGrid").jqGrid('getGridParam', 'searchvalue');
+                    searchvalue.encoding = e.target.value;
+                    return $("#transGrid").jqGrid('setGridParam', 'searchvalue', searchvalue);
+                  }
+                }
+              ]
+            }
           }, {
             name: 'format',
             index: 'base.format',
             width: 90,
             editable: false,
+            align: 'left',
+            frozen: true,
             stype: 'select',
             searchoptions: {
-              value: ":All;DCT:DCT;Dictionary conf:Dictionary conf;Text properties:Text properties;XML labels:XML labels"
-            },
-            align: 'left',
-            frozen: true
+              value: ":All;DCT:DCT;Dictionary conf:Dictionary conf;Text properties:Text properties;XML labels:XML labels",
+              dataEvents: [
+                {
+                  type: 'change',
+                  fn: function(e) {
+                    var searchvalue;
+                    searchvalue = $("#transGrid").jqGrid('getGridParam', 'searchvalue');
+                    searchvalue.format = e.target.value;
+                    return $("#transGrid").jqGrid('setGridParam', 'searchvalue', searchvalue);
+                  }
+                }
+              ]
+            }
           }
         ])
       },
@@ -118,6 +153,7 @@
       pager: '#transPager',
       rowNum: 60,
       rowList: [10, 20, 30, 60, 120],
+      searchvalue: {},
       sortname: 'base.name',
       sortorder: 'asc',
       viewrecords: true,
