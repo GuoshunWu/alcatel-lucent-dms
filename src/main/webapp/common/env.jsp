@@ -12,9 +12,19 @@
         locale:'<s:property value="clientParams.locale"/>'.replace('_', '-').toLocaleLowerCase(),
         buildNumber:<s:property value="buildNumber"/>,
         currentSelected:{
-            productBaseId:<s:property value="curProductBaseId"/>,
-            productId:<s:property value="curProductId"/>
+            productBaseId:'<s:property value="curProductBaseId"/>',
+            productId:'<s:property value="curProductId"/>'
         }
+    }
+
+    if (!param.currentSelected.productBaseId) {
+        param.currentSelected.productBaseId = -1;
+        paramWarn('productBaseId', param.currentSelected.productBaseId);
+    }
+
+    if (!param.currentSelected.productId) {
+        param.currentSelected.productId = -1;
+        paramWarn('productId', param.currentSelected.productId);
     }
 
     if (!param.naviTo) {
