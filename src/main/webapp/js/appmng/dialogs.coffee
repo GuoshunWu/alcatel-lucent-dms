@@ -174,7 +174,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
       Type: Object
       The current size of the dialog.
   ###
-#  resize: (event, ui)->$('#stringSettingsGrid').setGridWidth(ui.size.width - 35, true).setGridHeight(ui.size.height - 210, true)
+  #  resize: (event, ui)->$('#stringSettingsGrid').setGridWidth(ui.size.width - 35, true).setGridHeight(ui.size.height - 210, true)
   buttons: [
     text: c18n.close, click: ()->
       $(@).dialog 'close'
@@ -188,7 +188,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
       menu = $(@).next().show().position(my: "right top", at: "right bottom", of: this)
       $(document).one "click", ()->menu.hide()
       false
-  ).next().menu(select:(event,ui)->
+  ).next().menu(select: (event, ui)->
       alert ui.item
   ).hide()
 
