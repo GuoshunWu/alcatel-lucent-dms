@@ -125,7 +125,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
     ###
     openEvent: (e, ui)->
     # param must be attached to the dialog before the dialog open
-      #      param = $(@).data "param"
+    #      param = $(@).data "param"
       param = e.data.param
       $('#refCode').val param.langrefcode
       postData = dict: param.id, format: 'grid', prop: 'languageCode,language.name,charset.name'
@@ -140,7 +140,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   )
 
   stringSettings = $('#stringSettingsDialog').dialog {
-  autoOpen: false
+  autoOpen: true
   height: 'auto', width: 730
   title: i18n.dialog.stringsettings.title, modal: true, zIndex: 900
   open: (e, ui)->
@@ -174,13 +174,23 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
       Type: Object
       The current size of the dialog.
   ###
-  resize: (event, ui)->$('#stringSettingsGrid').setGridWidth(ui.size.width - 35, true).setGridHeight(ui.size.height - 210, true)
+#  resize: (event, ui)->$('#stringSettingsGrid').setGridWidth(ui.size.width - 35, true).setGridHeight(ui.size.height - 210, true)
   buttons: [
-    {text: c18n.close, click: ()->
+    text: c18n.close, click: ()->
       $(@).dialog 'close'
-    }
   ]
   }
+  #  buttons in string settings dialog
+  $('#setContexts').button(
+    icons: secondary: "ui-icon-triangle-1-s"
+  ).on('click', {dialog: stringSettings},
+    (e)->
+      menu = $(@).next().show().position(my: "right top", at: "right bottom", of: this)
+      $(document).one "click", ()->menu.hide()
+      false
+  ).next().menu(select:(event,ui)->
+      alert ui.item
+  ).hide()
 
   dictListPreview = $('#dictListPreviewDialog').dialog {
   autoOpen: false

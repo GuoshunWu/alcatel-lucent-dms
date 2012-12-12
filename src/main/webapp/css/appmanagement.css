@@ -13,3 +13,4 @@ input[readonly]{
     border-style: none
 }
 
+.ui-menu { position: absolute; width: 100px; }

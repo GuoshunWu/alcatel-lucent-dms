@@ -227,7 +227,7 @@
       ]
     });
     stringSettings = $('#stringSettingsDialog').dialog({
-      autoOpen: false,
+      autoOpen: true,
       height: 'auto',
       width: 730,
       title: i18n.dialog.stringsettings.title,
@@ -276,9 +276,6 @@
             The current size of the dialog.
       */
 
-      resize: function(event, ui) {
-        return $('#stringSettingsGrid').setGridWidth(ui.size.width - 35, true).setGridHeight(ui.size.height - 210, true);
-      },
       buttons: [
         {
           text: c18n.close,
@@ -288,6 +285,28 @@
         }
       ]
     });
+    $('#setContexts').button({
+      icons: {
+        secondary: "ui-icon-triangle-1-s"
+      }
+    }).on('click', {
+      dialog: stringSettings
+    }, function(e) {
+      var menu;
+      menu = $(this).next().show().position({
+        my: "right top",
+        at: "right bottom",
+        of: this
+      });
+      $(document).one("click", function() {
+        return menu.hide();
+      });
+      return false;
+    }).next().menu({
+      select: function(event, ui) {
+        return alert(ui.item);
+      }
+    }).hide();
     dictListPreview = $('#dictListPreviewDialog').dialog({
       autoOpen: false,
       modal: true,

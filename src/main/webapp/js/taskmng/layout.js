@@ -3,6 +3,7 @@
 
   define(['jqlayout', 'taskmng/task_grid', 'i18n!nls/common', 'taskmng/dialogs', 'util', 'require'], function($, grid, c18n, dialogs, util, require) {
     var taskFileUpload;
+    require('jqueryui');
     $("#optional-container").layout({
       resizable: true,
       closable: true
@@ -73,7 +74,9 @@
       cursor: 'pointer'
     }));
     $('#optional-container').show();
-    return $('#loading-container').remove();
+    return $('#loading-container').slideUp('slow', function() {
+      return $(this).remove();
+    });
   });
 
 }).call(this);

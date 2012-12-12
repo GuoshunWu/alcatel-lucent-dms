@@ -115,6 +115,20 @@
                 <div id="stringSettingsPager"></div>
             </td>
         </tr>
+        <tr>
+            <td>
+                <button id="setContexts"><s:text name="appmng.dialogs.languagesettings.setcontext"/></button>
+                <ul>
+                    <%--<li><a href="#"><span class="ui-icon ui-icon-disk"></span>Save</a></li>--%>
+                    <li><a href="#">Default</a></li>
+                    <li><a href="#">Exclusion</a></li>
+                    <li><a href="#">Dictionary</a></li>
+                    <li><a href="#">Application</a></li>
+                    <li><a href="#">Product</a></li>
+                    <li><a href="#">Custom</a></li>
+                </ul>
+            </td>
+        </tr>
     </table>
 </div>
 

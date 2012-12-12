@@ -130,8 +130,8 @@ define (require)->
         data.inst.toggle_node data.rslt.obj
     )
 
-    $('#loading-container').remove()
-    $('#optional-container').show()
+    #    $('#loading-container').fadeOut 'slow','swing',()->$(@).remove()
+    $('#loading-container').slideUp 'slow', ()->$(@).remove()
 
   getNodeInfo: getNodeInfo
 

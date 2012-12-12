@@ -1,4 +1,5 @@
 define ['jqlayout', 'taskmng/task_grid', 'i18n!nls/common', 'taskmng/dialogs', 'util', 'require'], ($, grid, c18n, dialogs, util, require)->
+  require 'jqueryui'
   $("#optional-container").layout {resizable: true, closable: true}
 
   $('#productBase').change ()->
@@ -41,7 +42,11 @@ define ['jqlayout', 'taskmng/task_grid', 'i18n!nls/common', 'taskmng/dialogs', '
 
   #   show main page.
   $('#optional-container').show()
-  $('#loading-container').remove()
+  #  $('#loading-container').fadeOut 'slow','swing',()->$(@).remove()
+  $('#loading-container').slideUp 'slow', ()->$(@).remove()
+#  $('#loading-container').toggle { effect: "scale", direction: "both" }
+#  $('#loading-container').toggle { effect: "explode", pieces : 9 }
+
 
 
 
