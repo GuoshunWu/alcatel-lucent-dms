@@ -44,7 +44,7 @@
         autoOpen: false,
         position: [23, 126],
         height: 'auto',
-        width: 900,
+        width: 1000,
         show: {
           effect: 'slide',
           direction: "up"
@@ -150,6 +150,7 @@
                 }
                 $.msgBox(i18n.msgbox.createtranstask.confirm, (function(keyPressed) {
                   if (c18n.yes !== keyPressed) {
+                    $("#transGrid").trigger('reloadGrid');
                     return;
                   }
                   $('#pageNavigator').val('taskmng.jsp');
@@ -305,7 +306,9 @@
         return exportAppOrDicts('pdf');
       });
       $('#optional-container').show();
-      return $('#loading-container').remove();
+      return $('#loading-container').slideUp('slow', function() {
+        return $(this).remove();
+      });
     };
     initPage();
     return {

@@ -24,7 +24,7 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
   createDialogs = ->
   #dialog
     languageFilterDialog = $("<div title='#{i18n.select.languagefilter.title}' id='#{ids.languageFilterDialogId}'>").dialog {
-    autoOpen: false, position: [23, 126], height: 'auto', width: 900
+    autoOpen: false, position: [23, 126], height: 'auto', width: 1000
     show: { effect: 'slide', direction: "up" }
     buttons: [
       { text: c18n.ok, click: ()->
@@ -89,7 +89,9 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
           $.msgBox i18n.msgbox.createtranstask.confirm, ((keyPressed)->
           #            window.location = "taskmng.jsp?productBase=#{escape $('#productBase').val()}&product=#{escape $('#productRelease').val()}" if c18n.yes == keyPressed
           #            navigate form is in common/pagenavigator.jsp
-            return if c18n.yes != keyPressed
+            if c18n.yes != keyPressed
+              $("#transGrid").trigger 'reloadGrid'
+              return
             $('#pageNavigator').val 'taskmng.jsp'
             $('#naviForm').submit()
           ), {title: c18n.confirm}, [c18n.yes, c18n.no]
@@ -127,7 +129,7 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
 
       $.getJSON "rest/products/version", {base: $(@).val(), prop: 'id,version'}, (json)->
         $('#productRelease').append util.newOption(c18n.select.release.tip, -1)
-        $('#productRelease').append util.json2Options json, json[json.length-1].id
+        $('#productRelease').append util.json2Options json, json[json.length - 1].id
         $('#productRelease').trigger "change"
 
 
@@ -194,7 +196,8 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
 
     #   show main page.
     $('#optional-container').show()
-    $('#loading-container').remove()
+    #    $('#loading-container').fadeOut 'slow', ()->$(@).remove()
+    $('#loading-container').slideUp 'slow', ()->$(@).remove()
 
   # initialize page
   initPage()

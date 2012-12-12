@@ -23,7 +23,7 @@ class GLDAPTest {
 
     }
 
-//    @Test
+    @Test
     public void testAlcatelLDAP() throws Exception {
         String INITCTX = "com.sun.jndi.ldap.LdapCtxFactory"
         String ldapUrl = "ldap://ldap.sxb.bsf.alcatel.fr"
@@ -47,20 +47,24 @@ class GLDAPTest {
                 new SearchControls(
                         returningObjFlag: true,
                         searchScope: SearchControls.SUBTREE_SCOPE,
-                        attributesToReturn: ["cn", "cslx500", "mail"]
+//                        attributesToReturn: ["cn", "cslx500", "mail"]
                 )
         )
         Attributes attrs = null
         results.toList().each {result ->
             attrs = result.attributes
-            println attrs.cn.get()
-            println attrs.cslx500.get()
-            println attrs.mail.get()
+            attrs.all.toList().each {attr->
+                println attr
+            }
+//            println attrs.cn.get()
+//            println attrs.cslx500.get()
+//            println attrs.mail.get()
+            
             println '=' * 80
         }
         ctx.close()
     }
-    @Test
+//    @Test
     public void testLDAPSettings() throws Exception {
         String name = "admin"
         String uid = "cbuckley"
