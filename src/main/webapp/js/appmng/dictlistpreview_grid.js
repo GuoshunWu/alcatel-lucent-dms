@@ -107,7 +107,7 @@
     });
     dicGrid = $('#dictListPreviewGrid').jqGrid({
       url: 'json/dummy.json',
-      datatype: 'json',
+      datatype: 'local',
       editurl: "",
       mtype: 'POST',
       width: 1000,
@@ -219,8 +219,9 @@
           }
         });
       }
-    });
-    dicGrid.jqGrid('navGrid', '#dictListPreviewPager', {
+    }).setGridParam({
+      datatype: 'json'
+    }).jqGrid('navGrid', '#dictListPreviewPager', {
       add: false,
       edit: false,
       search: false,

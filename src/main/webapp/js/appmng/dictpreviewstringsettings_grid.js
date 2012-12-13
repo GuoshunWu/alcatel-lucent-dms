@@ -7,7 +7,7 @@
     dicGrid = $('#dictPreviewStringSettingsGrid').jqGrid({
       url: 'json/dummy.json',
       mtype: 'post',
-      datatype: 'json',
+      datatype: 'local',
       width: 700,
       height: 300,
       pager: '#dictPreviewStringSettingsPager',
@@ -91,13 +91,14 @@
         }
         return [success, jsonFromServer.message];
       }
-    });
-    dicGrid.jqGrid('navGrid', '#dictPreviewStringSettingsPager', {
+    }).jqGrid('navGrid', '#dictPreviewStringSettingsPager', {
       edit: false,
       add: false,
       del: false,
       search: false,
       view: false
+    }).setGridParam({
+      datatype: 'json'
     });
     return {
       saveLastEditedCell: function() {

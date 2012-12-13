@@ -8,7 +8,7 @@
     langSettingGrid = $('#previewLanguageSettingGrid').jqGrid({
       url: 'json/dummy.json',
       mtype: 'post',
-      datatype: 'json',
+      datatype: 'local',
       width: 500,
       height: 230,
       pager: '#previewLangSettingPager',
@@ -71,8 +71,9 @@
         }
         return [success, jsonfromServer.message, -1];
       }
-    });
-    langSettingGrid.jqGrid('navGrid', '#previewLangSettingPager', {
+    }).setGridParam({
+      datatype: 'json'
+    }).jqGrid('navGrid', '#previewLangSettingPager', {
       edit: false,
       add: false,
       del: false,

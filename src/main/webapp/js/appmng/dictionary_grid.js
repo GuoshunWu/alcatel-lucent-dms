@@ -124,7 +124,7 @@
     });
     dicGrid = $('#dictionaryGridList').jqGrid({
       url: 'json/dummy.json',
-      datatype: 'json',
+      datatype: 'local',
       width: 1000,
       height: 320,
       pager: '#dictPager',
@@ -218,8 +218,7 @@
           return handlers[action].handler(rowData);
         });
       }
-    });
-    dicGrid.jqGrid('navGrid', '#dictPager', {
+    }).jqGrid('navGrid', '#dictPager', {
       add: false,
       edit: false,
       search: false,
@@ -238,6 +237,8 @@
         }
         return $(this).jqGrid('delGridRow', rowIds, deleteOptions);
       }
+    }).setGridParam({
+      datatype: 'json'
     });
     ($('#generateDict').button({})).click(function() {
       var dicts, filename;
