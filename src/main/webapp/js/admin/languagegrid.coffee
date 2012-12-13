@@ -1,6 +1,7 @@
 define (require)->
   $ = require 'jqgrid'
   util = require 'util'
+  i18n= require 'i18n!nls/admin'
 
   afterSubmit = (response, postdata)->
     jsonFromServer = $.parseJSON response.responseText
@@ -14,7 +15,7 @@ define (require)->
       jsonFromServer = $.parseJSON serverresponse.responseText
       [jsonFromServer.status == 0, jsonFromServer.message]
     editurl: 'admin/language'
-    loadtext: 'Loading, please wait...', caption: 'Place holder'
+    loadtext: 'Loading, please wait...', caption: i18n.langgrid.caption
     width: $(window).innerWidth() * 0.95, height: $(window).innerHeight() * 0.6
     colNames: ['Name', 'Default Charset']
     colModel: [
@@ -30,10 +31,11 @@ define (require)->
   ).jqGrid('navGrid', '#languagePager', {search: false, edit: false}, {}, {
     #      paramAdd
     mtype: 'post', afterSubmit: afterSubmit, closeAfterAdd: true
-    beforeShowForm: (formid)->console.log formid
+    beforeShowForm: (form)->
+      console.log form.parent('#editmodlanguageGrid')
     }, {
     #      paramDel
     mtype: 'post', afterSubmit: afterSubmit
-    beforeShowForm: (formid)->console.log formid
+    beforeShowForm: (form)->console.log formid
     }
   )

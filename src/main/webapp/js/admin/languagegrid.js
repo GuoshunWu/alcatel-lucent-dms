@@ -2,9 +2,10 @@
 (function() {
 
   define(function(require) {
-    var $, afterSubmit, grid, util;
+    var $, afterSubmit, grid, i18n, util;
     $ = require('jqgrid');
     util = require('util');
+    i18n = require('i18n!nls/admin');
     afterSubmit = function(response, postdata) {
       var jsonFromServer;
       jsonFromServer = $.parseJSON(response.responseText);
@@ -31,7 +32,7 @@
       },
       editurl: 'admin/language',
       loadtext: 'Loading, please wait...',
-      caption: 'Place holder',
+      caption: i18n.langgrid.caption,
       width: $(window).innerWidth() * 0.95,
       height: $(window).innerHeight() * 0.6,
       colNames: ['Name', 'Default Charset'],
@@ -74,13 +75,13 @@
       mtype: 'post',
       afterSubmit: afterSubmit,
       closeAfterAdd: true,
-      beforeShowForm: function(formid) {
-        return console.log(formid);
+      beforeShowForm: function(form) {
+        return console.log(form.parent('#editmodlanguageGrid'));
       }
     }, {
       mtype: 'post',
       afterSubmit: afterSubmit,
-      beforeShowForm: function(formid) {
+      beforeShowForm: function(form) {
         return console.log(formid);
       }
     });

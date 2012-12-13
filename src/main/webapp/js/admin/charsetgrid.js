@@ -2,9 +2,10 @@
 (function() {
 
   define(function(require) {
-    var $, afterSubmit, grid, util;
+    var $, afterSubmit, grid, i18n, util;
     $ = require('jqgrid');
     util = require('util');
+    i18n = require('i18n!nls/admin');
     afterSubmit = function(response, postdata) {
       var jsonFromServer;
       jsonFromServer = $.parseJSON(response.responseText);
@@ -23,7 +24,7 @@
       rowNum: 15,
       rowList: [15, 30, 60],
       loadtext: 'Loading, please wait...',
-      caption: 'Place holder',
+      caption: i18n.charsetgrid.caption,
       width: $(window).innerWidth() * 0.95,
       height: $(window).innerHeight() * 0.6,
       cellurl: 'admin/charset',
