@@ -62,7 +62,7 @@
       ajaxDelOptions: {
         dataType: 'json'
       },
-      beforeShowForm: function(formid) {}
+      beforeShowForm: function(form) {}
     });
   });
 

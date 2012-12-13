@@ -30,4 +30,4 @@ define (require)->
     beforeShowForm: (form)-> }, {
     #      paramDel
     mtype: 'post', afterSubmit: afterSubmit, ajaxDelOptions: {dataType: 'json'}
-    beforeShowForm: (formid)->})
+    beforeShowForm: (form)->})

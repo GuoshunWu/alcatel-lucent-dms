@@ -16,7 +16,7 @@ define ['jqgrid', 'require'], ($, require)->
     {name: 'key', index: 'key', width: 100, editable: false, align: 'left'}
     {name: 'reference', index: 'reference', width: 100, editable: false, align: 'left'}
     {name: 'maxLength', index: 'maxLength', width: 40, editable: true, classes: 'editable-column', align: 'right'}
-    {name: 'context', index: 'context.name', width: 80, editable: true, classes: 'editable-column', align: 'left'}
+    {name: 'context', index: 'context.name', editrules: {required: true}, width: 80, editable: true, classes: 'editable-column', align: 'left'}
     {name: 'description', index: 'description', width: 60, editable: true, classes: 'editable-column', align: 'left'}
   ]
   afterEditCell: (rowid, cellname, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
