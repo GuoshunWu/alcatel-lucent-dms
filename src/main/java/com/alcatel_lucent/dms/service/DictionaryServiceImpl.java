@@ -141,15 +141,23 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
      */
     private void populateDefaultContext(Collection<Dictionary> dictList) {
     	Context defaultCtx = new Context(Context.DEFAULT);
+    	Context exclusionCtx = new Context(Context.EXCLUSION);
     	Context dbDefaultCtx = textService.getContextByExpression(Context.DEFAULT, null);
+    	Context dbExclusionCtx = textService.getContextByExpression(Context.EXCLUSION, null);
     	Map<String, Text> textMap = dbDefaultCtx == null ? new HashMap<String, Text>() : 
     				textService.getTextsAsMap(dbDefaultCtx.getId());
+    	Map<String, Text> exclusionMap = textService.getTextsAsMap(dbExclusionCtx.getId());
 		for (Dictionary dict : dictList) {
 			Context dictCtx = new Context(Context.DICT);
 			if (dict.getLabels() == null) continue;
 			for (Label label : dict.getLabels()) {
 				if (label.getContext() != null)
 					continue;
+				if (exclusionMap.containsKey(label.getReference())) {
+					label.setContext(exclusionCtx);
+					continue;
+				}
+				
 				// check for each language, if translation in any language is conflict 
 				// with Default context, set the label to dictionary context
 				if (label.getOrigTranslations() != null) {
