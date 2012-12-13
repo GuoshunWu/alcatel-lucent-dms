@@ -499,6 +499,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	            for (LabelTranslation trans : label.getOrigTranslations()) {
 	            	// determine charset, first take value from DictionaryLanguage
 	            	// if not specified in DictionaryLanguage, then take value from langCharset parameter
+	            	trans.setLabel(label);
 	                String langCode = langCodeMap.get(trans.getLanguage().getId());
 	                DictionaryLanguage dl = dict.getDictLanguage(langCode);
 	                String charsetName = dl.getCharset().getName();
@@ -565,16 +566,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	                // determine translation status
 	                if (invalidText) {	// mark labels containing suspecious character as "Not translated"
 	                	t.setStatus(Translation.STATUS_UNTRANSLATED);
-	                } else if (label.getReference().trim().isEmpty()) {
-	                	t.setStatus(Translation.STATUS_TRANSLATED);
-//	                } else if (trans.getRequestTranslation() != null) {
-//	                	t.setStatus(trans.getRequestTranslation() ? Translation.STATUS_UNTRANSLATED : Translation.STATUS_TRANSLATED);
-	                } else if (!trans.isNeedTranslation()) {
-	                	t.setStatus(Translation.STATUS_TRANSLATED);
-	                } else if (label.getReference().equals(trans.getOrigTranslation())) {
-	                	t.setStatus(Translation.STATUS_UNTRANSLATED);
 	                } else {
-	                	t.setStatus(Translation.STATUS_TRANSLATED);
+	                	t.setStatus(populateTranslationStatus(trans));
 	                }
 	                text.addTranslation(t);
 	            } //for
@@ -653,6 +646,21 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         log.info("Import dictionary finish");
         return dbDict;
     }
+	
+	private int populateTranslationStatus(LabelTranslation trans) {
+		Label label = trans.getLabel();
+		if (label.getReference().trim().isEmpty()) {
+        	return Translation.STATUS_TRANSLATED;
+//        } else if (trans.getRequestTranslation() != null) {
+//        	t.setStatus(trans.getRequestTranslation() ? Translation.STATUS_UNTRANSLATED : Translation.STATUS_TRANSLATED);
+        } else if (!trans.isNeedTranslation()) {
+        	return Translation.STATUS_TRANSLATED;
+        } else if (label.getReference().equals(trans.getOrigTranslation())) {
+        	return Translation.STATUS_UNTRANSLATED;
+        } else {
+        	return Translation.STATUS_TRANSLATED;
+        }
+	}
     
     public DeliveryReport importDictionaries(Long appId, Collection<Dictionary> dictList, int mode) throws BusinessException {
     	DeliveryReport report = new DeliveryReport();
@@ -754,7 +762,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     public void updateDictionaryFormat(Long id, String format) throws BusinessException {
     	Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, id);
     	// TODO: update valid format list
-    	String[] validFormats = {"DCT", "Dictionary conf", "XML labels", "XML properties", "Text properties"};
+    	String[] validFormats = {Constants.DICT_FORMAT_DCT, Constants.DICT_FORMAT_MDC, Constants.DICT_FORMAT_TEXT_PROP, 
+    			Constants.DICT_FORMAT_XML_LABEL, Constants.DICT_FORMAT_XML_PROP};
     	if (!Arrays.asList(validFormats).contains(format)) {
     		throw new BusinessException(BusinessException.INVALID_DICT_FORMAT, format);
     	}
@@ -862,6 +871,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	private void updateLabelContext(Context context, Collection<Label> labels) {
 		Collection<Text> texts = new ArrayList<Text>();
 		for (Label label : labels) {
+			label.setContext(context);
 			Text text = new Text();
 			text.setReference(label.getReference());
 			if (label.getOrigTranslations() != null) {
@@ -869,6 +879,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 					Translation trans = new Translation();
 					trans.setTranslation(lt.getOrigTranslation());
 					trans.setLanguage(lt.getLanguage());
+					trans.setStatus(populateTranslationStatus(lt));
 					text.addTranslation(trans);
 				}
 			}
