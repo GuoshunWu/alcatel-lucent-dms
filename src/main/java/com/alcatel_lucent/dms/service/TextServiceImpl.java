@@ -24,6 +24,7 @@ import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.model.Context;
+import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.Language;
 import com.alcatel_lucent.dms.model.Text;
@@ -45,11 +46,11 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
         headerMap.put(ExcelFileHeader.TRANSLATION,"Translation");
     }
     
-    public Context getContextByName(String name) {
+    public Context getContextByKey(String key) {
         return (Context) getDao().retrieveOne(
-                "from Context where name=:name",
-                JSONObject.fromObject(String.format("{'name':'%s'}",
-                        name)));
+                "from Context where key=:key",
+                JSONObject.fromObject(String.format("{'key':'%s'}",
+                        key)));
     }
 
 
@@ -359,5 +360,35 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
         }
         return result;
     }
-    
+
+
+	@Override
+	public Context getContextByExpression(String contextExp, Dictionary dict) {
+		String contextKey = populateContextKey(contextExp, dict);
+		Context context = getContextByKey(contextKey);
+		if (context == null) {
+			context = new Context();
+			context.setKey(contextKey);
+			context.setName(contextExp);
+			context = (Context) dao.create(context);
+		}
+		return context;
+	}
+	
+	public String populateContextKey(String contextExp, Dictionary dict) {
+		if (dict != null) {
+			contextExp = replaceVar(contextExp, Context.DICT, "[DICT-" + dict.getBase().getId() + "]");
+			contextExp = replaceVar(contextExp, Context.APP, "[APP-" + dict.getBase().getApplicationBase().getId() + "]");
+			contextExp = replaceVar(contextExp, Context.PROD, "[PROD-" + dict.getBase().getApplicationBase().getProductBase().getId() + "]");
+		}
+		return contextExp;
+	}
+	
+	public String replaceVar(String exp, String from, String to) {
+		int pos;
+		while ((pos = exp.indexOf(from)) != -1) {
+			exp = exp.substring(0, pos) + to + exp.substring(pos + from.length());
+		}
+		return exp;
+	}
 }

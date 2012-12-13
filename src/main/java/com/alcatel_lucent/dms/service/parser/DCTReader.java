@@ -35,7 +35,6 @@ import com.alcatel_lucent.dms.service.LanguageService;
 public class DCTReader extends LineNumberReader {
 
     private Dictionary dictionary;
-    private Context context;
 
     private Collection<BusinessWarning> warnings;
     private LanguageService languageService;
@@ -56,8 +55,6 @@ public class DCTReader extends LineNumberReader {
     protected DCTReader(Reader in, Dictionary dictionary) {
         super(in);
         this.dictionary = dictionary;
-        this.context = new Context();
-        context.setName(Context.DEFAULT_CTX);
         this.warnings = new ArrayList<BusinessWarning>();
     }
 
@@ -186,7 +183,6 @@ public class DCTReader extends LineNumberReader {
         label.setKey(key);
         label.setAnnotation1(commentBeforeLabel);
         label.setDictionary(dictionary);
-        label.setContext(context);
         label.setDescription(null);
 
         Map<String, String> entriesInLabel = new HashMap<String, String>();

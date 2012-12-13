@@ -132,8 +132,6 @@ public class MDCParser extends DictionaryParser {
 		Dictionary dictionary = new Dictionary();
 		dictionary.setBase(dictBase);
 
-		Context context = new Context(Context.DEFAULT_CTX);
-
 		BusinessException nonBreakExceptions = new BusinessException(
 				BusinessException.NESTED_DCT_PARSE_ERROR, dictionary.getName());
 
@@ -145,7 +143,7 @@ public class MDCParser extends DictionaryParser {
 		HashSet<String> labelKeys = new HashSet<String>();
 		for (Object node : nodes) {
 			try {
-				label = readLabel((Element) node, dictionary, context, warnings);
+				label = readLabel((Element) node, dictionary, warnings);
 
 			} catch (BusinessException e) {
 				nonBreakExceptions.addNestedException(e);
@@ -167,13 +165,11 @@ public class MDCParser extends DictionaryParser {
 	}
 
 	@SuppressWarnings("unchecked")
-	private Label readLabel(Element elem, Dictionary dictionary,
-			Context context, Collection<BusinessWarning> warnings)
+	private Label readLabel(Element elem, Dictionary dictionary, Collection<BusinessWarning> warnings)
 			throws BusinessException {
 		Label label = new Label();
 		label.setKey(elem.getName());
 		label.setDictionary(dictionary);
-		label.setContext(context);
 		label.setDescription(null);
 		label.setMaxLength(null);
 

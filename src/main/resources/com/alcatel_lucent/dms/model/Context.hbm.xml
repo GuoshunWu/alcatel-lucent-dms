@@ -10,7 +10,7 @@
                 <param name="sequence">ID_CONTEXT</param>
 			</generator>
 		</id>
-
+		<property name="key" type="string" column="CONTEXT_KEY"/>
 		<property name="name" type="string" column="NAME" />
 	</class>
 

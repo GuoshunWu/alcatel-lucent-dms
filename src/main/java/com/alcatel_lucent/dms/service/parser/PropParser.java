@@ -117,9 +117,6 @@ public class PropParser extends DictionaryParser {
         dictBase.setEncoding("ISO-8859-1");
         dictBase.setFormat(Constants.DICT_FORMAT_TEXT_PROP);
         
-        Context context = new Context();
-        context.setName(Context.DEFAULT_CTX);
-        
 		Dictionary dictionary = new Dictionary();
 		dictionary.setBase(dictBase);
 		BusinessException dictExceptions = new BusinessException(BusinessException.NESTED_PROP_ERROR);
@@ -134,9 +131,6 @@ public class PropParser extends DictionaryParser {
 		refDl.setLanguage(language);
 		dictLanguages.add(refDl);
 		dictionary.setLabels(readLabels(refFile, dictionary, refDl, warnings, refFileExceptions));
-		for (Label label : dictionary.getLabels()) {
-			label.setContext(context);
-		}
 		if (refFileExceptions.hasNestedException()) {
 			dictExceptions.addNestedException(refFileExceptions);
 		}

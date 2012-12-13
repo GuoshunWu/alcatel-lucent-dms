@@ -201,7 +201,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 		Map<String, Integer> wordCountMap = new TreeMap<String, Integer>();
 		for (TaskDetail td : task.getDetails()) {
 			String languageName = td.getLanguage().getName();
-			String contextName = td.getText().getContext().getName();
+			String contextName = td.getText().getContext().getKey();
 			if ((currentLanguage != null && !currentLanguage.equals(languageName)) || 
 					(currentContext != null && !currentContext.equals(contextName))) {
 				generateTaskFile(targetDir, currentLanguage, currentContext, currentDetails, existingFilenames);
@@ -380,7 +380,9 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 		contextName = contextName.replace('<', '_');
 		contextName = contextName.replace('>', '_');
 		contextName = contextName.replace('|', '_');
-		return contextName;
+		contextName = contextName.replace('[', ' ');
+		contextName = contextName.replace(']', ' ');
+		return contextName.trim();
 	}
 	
 	public Task receiveTaskFiles(Long taskId, String taskDir) throws BusinessException {

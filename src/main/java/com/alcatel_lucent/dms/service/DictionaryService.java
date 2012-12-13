@@ -184,7 +184,6 @@ public interface DictionaryService {
 	 */
 	void updateLabels(Collection<Long> idList, String maxLength,
 			String description, String context);
-	
-    
+
     //Dictionary previewProp(String dictionaryName, Map<String, Collection<Properties>> propMap, Collection<BusinessWarning> warnings) throws BusinessException;
 }

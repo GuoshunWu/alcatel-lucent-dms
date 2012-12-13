@@ -146,9 +146,6 @@ public class LabelXMLParser extends DictionaryParser {
         dictBase.setEncoding("UTF-8");
         dictBase.setFormat(getFormat());
         
-        Context context = new Context();
-        context.setName(Context.DEFAULT_CTX);
-        
 		Dictionary dictionary = new Dictionary();
 		dictionary.setBase(dictBase);
 		BusinessException dictExceptions = new BusinessException(BusinessException.NESTED_LABEL_XML_ERROR);
@@ -158,9 +155,6 @@ public class LabelXMLParser extends DictionaryParser {
 		Collection<DictionaryLanguage> dictLanguages = new ArrayList<DictionaryLanguage>();
 		dictionary.setDictLanguages(dictLanguages);
 		dictionary.setLabels(readLabels(refFile, dictionary, null, warnings, refFileExceptions));
-		for (Label label : dictionary.getLabels()) {
-			label.setContext(context);
-		}
 		if (refFileExceptions.hasNestedException()) {
 			dictExceptions.addNestedException(refFileExceptions);
 		}
