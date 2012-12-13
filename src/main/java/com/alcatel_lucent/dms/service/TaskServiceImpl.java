@@ -270,6 +270,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 		createCell(row, 4, headerMap.get(ExcelFileHeader.REFERENCE), styleHead);
 		createCell(row, 5, headerMap.get(ExcelFileHeader.TRANSLATION), styleHead);
 		createCell(row, 6, headerMap.get(ExcelFileHeader.REMARKS), styleHead);
+		sheet.setColumnWidth(1, 0);
 		sheet.setColumnWidth(4, 40 * 256);
 		sheet.setColumnWidth(5, 40 * 256);
 		sheet.setColumnWidth(6, 20 * 256);
