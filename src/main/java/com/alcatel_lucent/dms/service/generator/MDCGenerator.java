@@ -72,19 +72,7 @@ public class MDCGenerator implements DictionaryGenerator {
 
             for (String dictLangCode : dictLangCodes) {
                 Element langElement = labelElement.addElement("lang");
-                String translatedString = label.getReference();
-
-                DictionaryLanguage dl = dict.getDictLanguage(dictLangCode);
-
-                Language dictLangCodeLanguage = dl.getLanguage();
-
-                for (Translation translation : translations) {
-                    if (translation.getLanguage().getId().equals(dictLangCodeLanguage.getId())) {
-                        translatedString = translation.getTranslation();
-                        break;
-                    }
-                }
-
+                String translatedString = label.getTranslation(dictLangCode);
                 langElement.addAttribute("id", dictLangCode);
                 langElement.setText(translatedString);
             }

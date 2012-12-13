@@ -92,12 +92,7 @@ public class LabelXMLGenerator implements DictionaryGenerator {
 	    				annotation1 = lt.getAnnotation1();
 	    				annotation2 = lt.getAnnotation2();
 	    			}
-	    			if (lt != null && !lt.isNeedTranslation()) {	// no translation needed
-	    				text = lt.getOrigTranslation();
-	    			} else {	// get translation from context dictionary
-	    				Translation trans = label.getText().getTranslation(dl.getLanguage().getId());
-	    				text = (trans == null ? label.getReference() : trans.getTranslation());
-	    			}
+	    			text = label.getTranslation(dl.getLanguageCode());
 	    		}
 	    		// add leading comments
 	    		if (annotation2 != null) {

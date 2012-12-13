@@ -108,30 +108,18 @@ public class DCTGenerator implements DictionaryGenerator {
                         "\n", System.getProperty("line.separator")));
                 for (String langCode : dictLangCodes) {
 //                for (LabelTranslation trans :  label.getOrigTranslations()) {
-                	LabelTranslation trans = label.getOrigTranslation(langCode);
+//                	LabelTranslation trans = label.getOrigTranslation(langCode);
                     // output translation separator
                     out.println(",");
                     
                     out.print("  " + langCode + " ");
 
                     // output dictLangCode translation
-                    String translationString = label.getReference();
+                    String translationString = label.getTranslation(langCode);
                     
                     // if need translation, get translation from context dictionary
                     // otherwise, get translation from original translation
                     DictionaryLanguage dl = dict.getDictLanguage(langCode);
-                    if (trans != null && !trans.isNeedTranslation()) {
-                    	translationString = trans.getOrigTranslation();
-                    } else {
-	                    for (Translation translation : label.getText()
-	                            .getTranslations()) {
-	                        if (translation.getLanguage().getId()
-	                                .equals(dl.getLanguage().getId())) {
-	                            translationString = translation.getTranslation();
-	                            break;
-	                        }
-	                    }
-                    }
 
                     String converedString = convertContent(indentSize,
                             translationString, "\n",

@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.LabelTranslation;
 import com.alcatel_lucent.dms.model.Translation;
@@ -146,8 +147,17 @@ public class LabelREST extends BaseREST {
     			if (label.getCt() == null) {
     				Translation ct = new Translation();
     				ct.setId(-(label.getId() * 1000 + langId));	// virtual tid < 0, indicating a non-existing ct object
-    				ct.setTranslation(label.getReference());
-    				ct.setStatus(label.getOt().isNeedTranslation() ? Translation.STATUS_UNTRANSLATED : Translation.STATUS_TRANSLATED);
+    				ct.setTranslation(label.getOt().getOrigTranslation());
+    				ct.setStatus(Translation.STATUS_UNTRANSLATED);
+    				label.setCt(ct);
+    			}
+    			// set status to Translated if no translation needed
+    			if (!label.getOt().isNeedTranslation() || label.getContext().getName().equals(Context.EXCLUSION)) {
+    				// duplicate an in-memory object to avoid database update
+    				Translation ct = new Translation();
+    				ct.setId(label.getCt().getId());
+    				ct.setTranslation(label.getCt().getTranslation());
+    				ct.setStatus(Translation.STATUS_TRANSLATED);
     				label.setCt(ct);
     			}
     			if (statusFilter != null && statusFilter != label.getCt().getStatus()) {

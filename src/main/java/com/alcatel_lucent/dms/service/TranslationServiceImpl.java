@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.model.Application;
+import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.Language;
 import com.alcatel_lucent.dms.model.Translation;
@@ -135,14 +136,17 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     		labelCount.put(dictId, ((Number)row[2]).intValue());
     	}
     	
-    	// count translated and in progress translations for each dictionary
+    	// count untranslated and in progress translations for each dictionary
     	hql = "select d.id,dl.language.id,count(distinct dl.languageCode)" +
-    			",sum(case when t.status=" + Translation.STATUS_TRANSLATED + " then 1 else 0 end) " +
+    			",sum(case when t.status=" + Translation.STATUS_UNTRANSLATED + " then 1 else 0 end) " +
     			",sum(case when t.status=" + Translation.STATUS_IN_PROGRESS + " then 1 else 0 end) " +
     			" from Product p join p.applications a join a.dictionaries d join d.dictLanguages dl" +
     			" join d.labels l join l.text.translations t" +
     			" where p.id=:prodId and t.language=dl.language and dl.language.id<>1" +
+    			" and not exists(select lt from LabelTranslation lt where lt.language=dl.language and lt.label=l and lt.needTranslation=false)" +
+    			" and l.context.name<>:exclusion" +
     			" group by d.id,dl.language.id";
+    	param.put("exclusion", Context.EXCLUSION);
     	qr = dao.retrieve(hql, param);
     	for (Object[] row : qr) {
     		Long dictId = (Long) row[0];
@@ -153,17 +157,19 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     			langMap = new HashMap<Long, int[]>();
     			result.put(dictId, langMap);
     		}
-    		langMap.put(langId, new int[] {((Number)row[3]).intValue() / factor, 0, ((Number)row[4]).intValue() / factor});
+    		langMap.put(langId, new int[] {0, ((Number)row[3]).intValue() / factor, ((Number)row[4]).intValue() / factor});
     	}
     	
-    	// take into account LabelTranslation.needTranslation flag
-    	// exclude labels with needTranslation=false from count of translated and in progress
-    	hql = "select d.id,ot.language.id,count(distinct dl.languageCode)" +
-    			",sum(case when t.status=" + Translation.STATUS_TRANSLATED + " then 1 else 0 end) " +
-    			",sum(case when t.status=" + Translation.STATUS_IN_PROGRESS + " then 1 else 0 end) " +
-    			" from Product p join p.applications a join a.dictionaries d join d.dictLanguages dl join d.labels l join l.origTranslations ot,Translation t" +
-    			" where p.id=:prodId and ot.needTranslation=false and t.language=dl.language and t.language=ot.language and t.text=l.text and dl.language.id<>1" +
-    			" group by d.id,ot.language.id";
+    	// in case of no Translation object associated
+    	// count as untranslated
+    	hql = "select d.id,dl.language.id,count(distinct dl.languageCode)" +
+    			",count(*) " +
+    			" from Product p join p.applications a join a.dictionaries d join d.dictLanguages dl join d.labels l" +
+    			" where p.id=:prodId and dl.language.id<>1" +
+				" and not exists(select lt from LabelTranslation lt where lt.language=dl.language and lt.label=l and lt.needTranslation=false) " +
+				" and not exists(select ct from Translation ct where ct.text=l.text and ct.language=dl.language) " +
+    			" and l.context.name<>:exclusion" +
+    			" group by d.id,dl.language.id";
     	qr = dao.retrieve(hql, param);
     	for (Object[] row : qr) {
     		Long dictId = (Long) row[0];
@@ -171,16 +177,15 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     		int factor = ((Number) row[2]).intValue();
     		Map<Long, int[]> langMap = result.get(dictId);
     		int[] values = langMap.get(langId);
-    		values[0] -= ((Number) row[3]).intValue() / factor;
-    		values[2] -= ((Number) row[4]).intValue() / factor;
+    		values[1] += ((Number) row[3]).intValue() / factor;
     	}
     	
-    	// set untranslated = total - translated - in process
+    	// set translated = total - untranslated - in process
     	for (Long dictId : result.keySet()) {
     		Map<Long, int[]> langMap = result.get(dictId);
     		int total = labelCount.get(dictId);
     		for (int[] values : langMap.values()) {
-    			values[1] = total - values[0] - values[2];
+    			values[0] = total - values[1] - values[2];
     		}
     	}
     	
@@ -203,13 +208,39 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     		labelCount.put(((Number) row[0]).longValue(), ((Number)row[1]).intValue());
     	}
     	
-    	// count translated and in progress translations for each app
+    	// count untranslated and in progress translations for each app
     	hql = "select a.id,dl.language.id,count(distinct dl.languageCode)" +
-    			",sum(case when t.status=" + Translation.STATUS_TRANSLATED + " then 1 else 0 end) " +
+    			",sum(case when t.status=" + Translation.STATUS_UNTRANSLATED + " then 1 else 0 end) " +
     			",sum(case when t.status=" + Translation.STATUS_IN_PROGRESS + " then 1 else 0 end) " +
     			" from Product p join p.applications a join a.dictionaries d join d.dictLanguages dl" +
     			" join d.labels l join l.text.translations t" +
     			" where p.id=:prodId and t.language=dl.language and dl.language.id<>1" +
+    			" and not exists(select lt from LabelTranslation lt where lt.language=dl.language and lt.label=l and lt.needTranslation=false)" +
+    			" and l.context.name<>:exclusion" +
+    			" group by a.id,dl.language.id";
+    	param.put("exclusion", Context.EXCLUSION);
+    	qr = dao.retrieve(hql, param);
+    	for (Object[] row : qr) {
+    		Long appId = (Long) row[0];
+    		Long langId = (Long) row[1];
+    		int factor = ((Number) row[2]).intValue();	// number of lang codes for the same language, needed for division 
+    		Map<Long, int[]> langMap = result.get(appId);
+    		if (langMap == null) {
+    			langMap = new HashMap<Long, int[]>();
+    			result.put(appId, langMap);
+    		}
+    		langMap.put(langId, new int[] {0, ((Number)row[3]).intValue() / factor, ((Number)row[4]).intValue() / factor});
+    	}
+    	
+    	// in case of no Translation object associated
+    	// count as untranslated
+    	hql = "select a.id,dl.language.id,count(distinct dl.languageCode)" +
+    			",count(*) " +
+    			" from Product p join p.applications a join a.dictionaries d join d.dictLanguages dl join d.labels l" +
+    			" where p.id=:prodId and dl.language.id<>1" +
+				" and not exists(select lt from LabelTranslation lt where lt.language=dl.language and lt.label=l and lt.needTranslation=false) " +
+				" and not exists(select ct from Translation ct where ct.text=l.text and ct.language=dl.language) " +
+    			" and l.context.name<>:exclusion" +
     			" group by a.id,dl.language.id";
     	qr = dao.retrieve(hql, param);
     	for (Object[] row : qr) {
@@ -217,38 +248,16 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     		Long langId = (Long) row[1];
     		int factor = ((Number) row[2]).intValue();
     		Map<Long, int[]> langMap = result.get(appId);
-    		if (langMap == null) {
-    			langMap = new HashMap<Long, int[]>();
-    			result.put(appId, langMap);
-    		}
-    		langMap.put(langId, new int[] {((Number)row[3]).intValue() / factor, 0, ((Number)row[4]).intValue() / factor});
-    	}
-    	
-    	// take into account LabelTranslation.needTranslation flag
-    	// exclude labels with needTranslation=false from count of translated and in progress
-    	hql = "select a.id,ot.language.id,count(distinct dl.languageCode)" +
-    			",sum(case when t.status=" + Translation.STATUS_TRANSLATED + " then 1 else 0 end) " +
-    			",sum(case when t.status=" + Translation.STATUS_IN_PROGRESS + " then 1 else 0 end) " +
-    			" from Product p join p.applications a join a.dictionaries d join d.dictLanguages dl join d.labels l join l.origTranslations ot,Translation t" +
-    			" where p.id=:prodId and ot.needTranslation=false and t.language=dl.language and t.language=ot.language and t.text=l.text and dl.language.id<>1" +
-    			" group by a.id,ot.language.id";
-    	qr = dao.retrieve(hql, param);
-    	for (Object[] row : qr) {
-    		Long appId = (Long) row[0];
-    		Long langId = (Long) row[1];
-    		int factor = ((Number) row[2]).intValue();
-    		Map<Long, int[]> langMap = result.get(appId);
     		int[] values = langMap.get(langId);
-    		values[0] -= ((Number) row[3]).intValue() / factor;
-    		values[2] -= ((Number) row[4]).intValue() / factor;
+    		values[2] += ((Number) row[3]).intValue() / factor;
     	}
     	
-    	// set untranslated = total - translated - in process
-    	for (Long appId : result.keySet()) {
-    		Map<Long, int[]> langMap = result.get(appId);
-    		int total = labelCount.get(appId);
+    	// set translated = total - untranslated - in process
+    	for (Long dictId : result.keySet()) {
+    		Map<Long, int[]> langMap = result.get(dictId);
+    		int total = labelCount.get(dictId);
     		for (int[] values : langMap.values()) {
-    			values[1] = total - values[0] - values[2];
+    			values[0] = total - values[1] - values[2];
     		}
     	}
     	

@@ -81,15 +81,7 @@ public class PropGenerator implements DictionaryGenerator {
 	        				out.println(lt.getAnnotation1());
 	        			}
 	        			// populate translation result
-	        			String text = label.getReference();
-	        			if (lt != null && !lt.isNeedTranslation()) {
-	        				text = lt.getOrigTranslation();
-	        			} else {
-	        				Translation trans = label.getText().getTranslation(dl.getLanguage().getId());
-	        				if (trans != null) {
-	        					text = trans.getTranslation();
-	        				}
-	        			}
+	        			String text = label.getTranslation(dl.getLanguageCode());
 	        			out.print(escape(label.getKey(), true));
 	        			out.print("=");
 	        			out.println(escape(text, false));

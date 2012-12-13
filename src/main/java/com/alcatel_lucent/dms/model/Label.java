@@ -216,5 +216,25 @@ public class Label extends BaseEntity {
 		this.ct = ct;
 	}
 
+	/**
+	 * Calculate final translation of the label
+	 * @param langCode language code
+	 * @return
+	 */
+	public String getTranslation(String langCode) {
+		DictionaryLanguage dl = this.getDictionary().getDictLanguage(langCode);
+		LabelTranslation lt = getOrigTranslation(langCode);
+		if (lt != null && (!lt.isNeedTranslation() || context.getName().equals(Context.EXCLUSION))) {
+			return lt.getOrigTranslation();
+		} else {
+			for (Translation translation : getText().getTranslations()) {
+                if (translation.getLanguage().getId().equals(dl.getLanguage().getId())) {
+                    return translation.getTranslation();
+                }
+            }
+		}
+		return reference;
+	}
+
 
 }

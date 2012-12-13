@@ -85,20 +85,24 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 				"join l.text.translations ct " +
 				"where d.id in (:dictIds) and dl.language.id in (:langIds) and ct.language=dl.language and ct.status=:status " +
 				"and not exists(select lt from LabelTranslation lt where lt.language=dl.language and lt.label=l and lt.needTranslation=false) " +
+				"and l.context.name<>:exclusion " +
 				"order by dl.language.id,l.context.id,l.sortNo";
 		Map param = new HashMap();
 		param.put("dictIds", dictIds);
 		param.put("langIds", languageIds);
 		param.put("status", Translation.STATUS_UNTRANSLATED);
+		param.put("exclusion", Context.EXCLUSION);
 		Collection<Object[]> resultSet = dao.retrieve(hql, param);
 		hql = "select distinct dl.language,l.text,l.key,l.maxLength,l.description,l.context,l.sortNo " +
 				"from Dictionary d join d.labels l join d.dictLanguages dl " +
 				"where d.id in (:dictIds) and dl.language.id in (:langIds) " +
 				"and not exists(select lt from LabelTranslation lt where lt.language=dl.language and lt.label=l and lt.needTranslation=false) " +
+				"and l.context.name<>:exclusion " +
 				"and not exists(select ct from Translation ct where ct.text=l.text and ct.language=dl.language) ";
 		param = new HashMap();
 		param.put("dictIds", dictIds);
 		param.put("langIds", languageIds);
+		param.put("exclusion", Context.EXCLUSION);
 		resultSet.addAll(dao.retrieve(hql,param));
 		ArrayList<Object[]> sortedDetails = new ArrayList<Object[]>(resultSet);
 		
