@@ -1,6 +1,9 @@
 # Implement the navigation tree on the east
 define (require)->
-  $ = require 'jqtree'
+#  $ = require 'jqtree'
+  $ = require 'jqueryui'
+  util = require 'util'
+  require 'jqtree'
   c18n = require 'i18n!nls/common'
   require 'jqmsgbox'
   layout = require 'appmng/layout'

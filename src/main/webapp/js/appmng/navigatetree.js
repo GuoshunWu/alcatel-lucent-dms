@@ -2,8 +2,10 @@
 (function() {
 
   define(function(require) {
-    var $, URL, appTree, apppnl, c18n, getNodeInfo, ids, layout, nodeCtxMenu, productpnl, removeNode, timeFunName;
-    $ = require('jqtree');
+    var $, URL, appTree, apppnl, c18n, getNodeInfo, ids, layout, nodeCtxMenu, productpnl, removeNode, timeFunName, util;
+    $ = require('jqueryui');
+    util = require('util');
+    require('jqtree');
     c18n = require('i18n!nls/common');
     require('jqmsgbox');
     layout = require('appmng/layout');

@@ -39,8 +39,8 @@ define (require, util, i18n)->
   ]
   $(colModel).each (index, colModel)->colModel.classes = 'editable-column' if colModel.editable
 
-  dicGrid = $('#dictListPreviewGrid').jqGrid {
-  url: 'json/dummy.json', datatype: 'json', editurl: "", mtype: 'POST'
+  dicGrid = $('#dictListPreviewGrid').jqGrid({
+  url: 'json/dummy.json', datatype: 'local', editurl: "", mtype: 'POST'
   width: 1000, minHeight: 200, height: 240
   pager: '#dictListPreviewPager', rowNum: 100
   sortname: 'base.name', sortorder: 'asc'
@@ -122,8 +122,8 @@ define (require, util, i18n)->
       $(row).css 'background', '#FFFFAA' if parseInt($(rowData.warnings).text()) > 0
       $(row).css 'background', '#FFD2D2' if parseInt($(rowData.errors).text()) > 0
 
-  }
-  dicGrid.jqGrid 'navGrid', '#dictListPreviewPager', {add: false, edit: false, search: false, del: false}, {}, {}, {}
+  }).setGridParam(datatype: 'json')
+  .jqGrid('navGrid', '#dictListPreviewPager', {add: false, edit: false, search: false, del: false}, {}, {}, {})
   gridHasErrors: ()->
     hasError = false
     $($('#dictListPreviewGrid').getRowData()).each (index, row) ->
