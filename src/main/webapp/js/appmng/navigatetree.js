@@ -178,7 +178,7 @@
         clearTimeout(timeFunName);
         return data.inst.toggle_node(data.rslt.obj);
       });
-      return $('#loading-container').slideUp('slow', function() {
+      return $('#loading-container').fadeOut('slow', 'swing', function() {
         return $(this).remove();
       });
     });

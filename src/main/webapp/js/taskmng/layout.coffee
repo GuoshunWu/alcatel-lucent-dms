@@ -41,9 +41,9 @@ define ['jqlayout', 'taskmng/task_grid', 'i18n!nls/common', 'taskmng/dialogs', '
   opacity: 0, filter: 'alpha(opacity=0)', cursor: 'pointer'}
 
   #   show main page.
+  $('#loading-container').fadeOut 'slow','swing',()->$(@).remove()
   $('#optional-container').show()
-  #  $('#loading-container').fadeOut 'slow','swing',()->$(@).remove()
-  $('#loading-container').slideUp 'slow', ()->$(@).remove()
+#  $('#loading-container').slideUp 'slow', ()->$(@).remove()
 #  $('#loading-container').toggle { effect: "scale", direction: "both" }
 #  $('#loading-container').toggle { effect: "explode", pieces : 9 }
 
