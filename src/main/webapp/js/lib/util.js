@@ -32,6 +32,11 @@ To change this template use File | Settings | File Templates.
       }
       return this.substr(0, str.length) === str;
     };
+    String.prototype.capitalize = function() {
+      return this.toLowerCase().replace(/\b[a-z]/g, function(letter) {
+        return letter.toUpperCase();
+      });
+    };
     /*
         Dateformat
     */

@@ -10,7 +10,7 @@
       app_grid: '#applicationGridList'
     };
     appGrid = $(localIds.app_grid).jqGrid({
-      datatype: 'json',
+      datatype: 'local',
       url: 'json/dummy.json',
       editurl: "app/create-or-add-application",
       cellurl: 'app/change-application-version',
@@ -87,8 +87,7 @@
         jsonFromServer = eval("(" + serverresponse.responseText + ")");
         return [jsonFromServer.status === 0, jsonFromServer.message];
       }
-    });
-    appGrid.jqGrid('navGrid', '#pager', {
+    }).jqGrid('navGrid', '#pager', {
       edit: false,
       add: false,
       del: true,

@@ -140,8 +140,8 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   )
 
   stringSettings = $('#stringSettingsDialog').dialog {
-  autoOpen: true
-  height: 'auto', width: 730
+  autoOpen: false
+  height: 'auto', width: 750
   title: i18n.dialog.stringsettings.title, modal: true, zIndex: 900
   open: (e, ui)->
   # param must be attached to the dialog before the dialog open
@@ -156,25 +156,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
     postData = dict: param.id, format: 'grid', prop: "key,reference,maxLength,context.name,description"
     $('#stringSettingsGrid').setGridParam(url: 'rest/labels', page: 1, postData: postData).trigger "reloadGrid"
   close: (event, ui)->(require 'appmng/stringsettings_grid').saveLastEditedCell()
-  ###
-  event
-    Type: Event
-  ui
-    Type: Object
-      orginalPosition
-      Type: Object
-      The CSS position of the dialog prior to being resized.
-      position
-      Type: Object
-      The current CSS position of the dialog.
-      originalSize
-      Type: Object
-      The size of the dialog prior to being resized.
-      size
-      Type: Object
-      The current size of the dialog.
-  ###
-#  resize: (event, ui)->$('#stringSettingsGrid').setGridWidth(ui.size.width - 35, true).setGridHeight(ui.size.height - 210, true)
+  #  resize: (event, ui)->$('#stringSettingsGrid').setGridWidth(ui.size.width - 35, true).setGridHeight(ui.size.height - 210, true)
   buttons: [
     text: c18n.close, click: ()->
       $(@).dialog 'close'
@@ -185,12 +167,39 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
     icons: secondary: "ui-icon-triangle-1-s"
   ).on('click', {dialog: stringSettings},
     (e)->
-      menu = $(@).next().show().position(my: "right top", at: "right bottom", of: this)
+      menu = $('#setContextMenu').show()
+      .position {my: "right bottom", at: "right top", of: this}
       $(document).one "click", ()->menu.hide()
       false
-  ).next().menu(select:(event,ui)->
-      alert ui.item
-  ).hide()
+  )
+  setContextTo = (context = 'Default', labelids = $('#stringSettingsGrid').getGridParam('selarrrow'))->
+    ($.msgBox(i18n.dialog.customcontext.labeltip, null, {title: c18n.warn});return) if labelids.length == 0
+    $.post 'app/update-label', {id: labelids.join(','), context: context}, (json)->
+      ($.msgBox json.message, null, {title: c18n.error}; return) if json.status != 0
+      $('#stringSettingsGrid').trigger 'reloadGrid'
+
+  #   get dictionary info.
+  #    set context.
+
+  $('#customContext').dialog { autoOpen: false, modal: true
+  buttons: [
+    {text: c18n.ok, click: ()->
+      if !(context = $('#contextName', @).val())
+        $('#customCtxErrorMsg').empty().html i18n.dialog.customcontext.namerequired
+        return
+      setContextTo(context)
+      $(@).dialog 'close'
+    }
+    {text: c18n.cancel, click: ()->$(@).dialog 'close'}
+  ]
+  }
+  $('#setContextMenu').menu().hide().find("li").on 'click', (e)->
+    console?.log 'debug'
+    if e.target.name != 'Custom'
+      setContextTo(e.target.name)
+      return
+    $('#customContext').dialog 'open'
+
 
   dictListPreview = $('#dictListPreviewDialog').dialog {
   autoOpen: false
@@ -301,7 +310,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
 
   open: (event, ui)->
   #    get selected dictionary ids
-  #    console.log $(@).data('param').dicts
+  #    console?.log $(@).data('param').dicts
     $('#addLangCode', @).select()
     $('#charset', @).val '-1'
     $('#languageName', @).val '-1'

@@ -44,6 +44,10 @@ define({
                 "charsettip":"Please select charset",
                 "coderequired":"Code is required",
                 "successtip": "Add language {0} success"
+            },
+            "customcontext":{
+                "namerequired":'Context name is required.',
+                "labeltip":'Please select label(s)'
             }
         },
         browse:'Upload dictionaries',

@@ -10,7 +10,7 @@
     langSettingGrid = $('#languageSettingGrid').jqGrid({
       url: 'json/dummy.json',
       mtype: 'post',
-      datatype: 'json',
+      datatype: 'local',
       width: 500,
       height: 230,
       pager: '#langSettingPager',
@@ -59,8 +59,7 @@
         };
       },
       gridComplete: function() {}
-    });
-    langSettingGrid.jqGrid('navGrid', '#langSettingPager', {
+    }).jqGrid('navGrid', '#langSettingPager', {
       edit: false,
       add: false,
       del: false,
@@ -89,6 +88,8 @@
         jsonfromServer = eval("(" + response.responseText + ")");
         return [jsonfromServer.status === 0, jsonfromServer.message, -1];
       }
+    }).setGridParam({
+      datatype: 'json'
     }).navButtonAdd('#langSettingPager', {
       caption: "",
       buttonicon: "ui-icon-trash",
