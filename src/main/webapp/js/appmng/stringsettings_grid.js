@@ -45,6 +45,9 @@
         }, {
           name: 'context',
           index: 'context.name',
+          editrules: {
+            required: true
+          },
           width: 80,
           editable: true,
           classes: 'editable-column',

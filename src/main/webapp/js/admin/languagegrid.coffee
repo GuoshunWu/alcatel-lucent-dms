@@ -1,7 +1,7 @@
 define (require)->
   $ = require 'jqgrid'
   util = require 'util'
-  i18n= require 'i18n!nls/admin'
+  i18n = require 'i18n!nls/admin'
 
   afterSubmit = (response, postdata)->
     jsonFromServer = $.parseJSON response.responseText
@@ -31,11 +31,10 @@ define (require)->
   ).jqGrid('navGrid', '#languagePager', {search: false, edit: false}, {}, {
     #      paramAdd
     mtype: 'post', afterSubmit: afterSubmit, closeAfterAdd: true
-    beforeShowForm: (form)->
-      console.log form.parent('#editmodlanguageGrid')
+    afterShowForm: (form)->$("#editmod#{@id}").position {my: 'center', at: 'center', of: window}
     }, {
     #      paramDel
     mtype: 'post', afterSubmit: afterSubmit
-    beforeShowForm: (form)->console.log formid
+#    afterShowForm: (form)->$("#delhd#{@id}").position {my: 'center', at: 'center', of: window}
     }
   )

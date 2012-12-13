@@ -75,15 +75,16 @@
       mtype: 'post',
       afterSubmit: afterSubmit,
       closeAfterAdd: true,
-      beforeShowForm: function(form) {
-        return console.log(form.parent('#editmodlanguageGrid'));
+      afterShowForm: function(form) {
+        return $("#editmod" + this.id).position({
+          my: 'center',
+          at: 'center',
+          of: window
+        });
       }
     }, {
       mtype: 'post',
-      afterSubmit: afterSubmit,
-      beforeShowForm: function(form) {
-        return console.log(formid);
-      }
+      afterSubmit: afterSubmit
     });
   });
 
