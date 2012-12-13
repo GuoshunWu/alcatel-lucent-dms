@@ -5,8 +5,8 @@ define (require)->
 
   lastEditedCell = null
 
-  langSettingGrid = $('#languageSettingGrid').jqGrid {
-  url: 'json/dummy.json', mtype: 'post', datatype: 'json'
+  langSettingGrid = $('#languageSettingGrid').jqGrid({
+  url: 'json/dummy.json', mtype: 'post', datatype: 'local'
   width: 500, height: 230
   pager: '#langSettingPager'
   editurl: ""
@@ -26,8 +26,7 @@ define (require)->
   afterEditCell: (rowid, cellname, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
   gridComplete: ->
   #    $('#languageSettingGrid').getGridParam('postData').dict
-  }
-  langSettingGrid.jqGrid('navGrid', '#langSettingPager', {edit: false, add: false, del: false, search: false}, {}, {
+  }).jqGrid('navGrid', '#langSettingPager', {edit: false, add: false, del: false, search: false}, {}, {
   #    prmAdd
   zIndex: 2000
   modal: true
@@ -38,7 +37,7 @@ define (require)->
   afterSubmit: (response, postdata)->
     jsonfromServer = eval "(#{response.responseText})"
     [jsonfromServer.status == 0 , jsonfromServer.message, -1]
-  })
+  }).setGridParam(datatype:'json')
   #  custom button for del language
   .navButtonAdd('#langSettingPager', {caption: "", buttonicon: "ui-icon-trash", position: "first", onClickButton: ()->
       if(rowIds = $(@).getGridParam('selarrrow')).length == 0

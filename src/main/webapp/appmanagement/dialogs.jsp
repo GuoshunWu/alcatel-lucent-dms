@@ -117,19 +117,32 @@
         </tr>
         <tr>
             <td>
-                <button id="setContexts"><s:text name="appmng.dialogs.languagesettings.setcontext"/></button>
-                <ul>
-                    <%--<li><a href="#"><span class="ui-icon ui-icon-disk"></span>Save</a></li>--%>
-                    <li><a href="#">Default</a></li>
-                    <li><a href="#">Exclusion</a></li>
-                    <li><a href="#">Dictionary</a></li>
-                    <li><a href="#">Application</a></li>
-                    <li><a href="#">Product</a></li>
-                    <li><a href="#">Custom</a></li>
+                <ul id="setContextMenu">
+                    <li><a name="[DEFAULT]" href="#"><s:text name="context.default"/></a></li>
+                    <li><a name="[EXCLUSION]" href="#"><s:text name="context.excl"/></a></li>
+                    <li><a name="[DICT]" href="#"><s:text name="context.dict"/></a></li>
+                    <li><a name="[APP]" href="#"><s:text name="context.app"/></a></li>
+                    <li><a name="[PROD]" href="#"><s:text name="context.prod"/></a></li>
+                    <li><a  name="Custom" href="#"><s:text name="context.custom"/></a></li>
                 </ul>
+                <button id="setContexts"><s:text name="appmng.dialogs.languagesettings.setcontext"/></button>
             </td>
         </tr>
     </table>
+</div>
+
+<div id="customContext" title="<s:text name="context.custom.title"/>">
+    <table border="0" style="width: 100%;height: 100%">
+        <tr>
+            <td align="right"><label for="contextName"><s:text name="context.custom.name"/></label></td>
+            <td align="left"><input id="contextName"/></td>
+        </tr>
+        <tr>
+            <td align="center" colspan="2">
+                <span id="customCtxErrorMsg" style="color: red"></span>
+            </td>
+        </tr>
+    </table>    
 </div>
 
 <div id="dictListPreviewDialog">

@@ -7,7 +7,7 @@
     dicGrid = $('#stringSettingsGrid').jqGrid({
       url: 'json/dummy.json',
       mtype: 'post',
-      datatype: 'json',
+      datatype: 'local',
       width: 700,
       height: 300,
       pager: '#stringSettingsPager',
@@ -18,7 +18,7 @@
       sortorder: 'asc',
       viewrecords: true,
       gridview: true,
-      multiselect: false,
+      multiselect: true,
       cellEdit: true,
       cellurl: 'app/update-label',
       colNames: ['Label', 'Reference Language', 'Max Length', 'Context', 'Description'],
@@ -66,8 +66,9 @@
           val: val
         };
       }
-    });
-    dicGrid.jqGrid('navGrid', '#stringSettingsPager', {
+    }).setGridParam({
+      datatype: 'json'
+    }).jqGrid('navGrid', '#stringSettingsPager', {
       edit: false,
       add: false,
       del: false,

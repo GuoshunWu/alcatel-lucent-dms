@@ -2,7 +2,7 @@
 (function() {
 
   define(['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsettings_grid', 'appmng/previewlangsetting_grid'], function(require, grid, sgrid, lgrid) {
-    var $, addApplication, addLanguage, c18n, dictListPreview, dictPreviewLangSettings, dictPreviewStringSettings, i18n, langSettings, newAppVersion, newProductVersion, stringSettings, util;
+    var $, addApplication, addLanguage, c18n, dictListPreview, dictPreviewLangSettings, dictPreviewStringSettings, i18n, langSettings, newAppVersion, newProductVersion, setContextTo, stringSettings, util;
     $ = require('jqueryui');
     c18n = require('i18n!nls/common');
     i18n = require('i18n!nls/appmng');
@@ -227,9 +227,9 @@
       ]
     });
     stringSettings = $('#stringSettingsDialog').dialog({
-      autoOpen: true,
+      autoOpen: false,
       height: 'auto',
-      width: 730,
+      width: 750,
       title: i18n.dialog.stringsettings.title,
       modal: true,
       zIndex: 900,
@@ -257,25 +257,6 @@
       close: function(event, ui) {
         return (require('appmng/stringsettings_grid')).saveLastEditedCell();
       },
-      /*
-        event
-          Type: Event
-        ui
-          Type: Object
-            orginalPosition
-            Type: Object
-            The CSS position of the dialog prior to being resized.
-            position
-            Type: Object
-            The current CSS position of the dialog.
-            originalSize
-            Type: Object
-            The size of the dialog prior to being resized.
-            size
-            Type: Object
-            The current size of the dialog.
-      */
-
       buttons: [
         {
           text: c18n.close,
@@ -293,20 +274,75 @@
       dialog: stringSettings
     }, function(e) {
       var menu;
-      menu = $(this).next().show().position({
-        my: "right top",
-        at: "right bottom",
+      menu = $('#setContextMenu').show().position({
+        my: "right bottom",
+        at: "right top",
         of: this
       });
       $(document).one("click", function() {
         return menu.hide();
       });
       return false;
-    }).next().menu({
-      select: function(event, ui) {
-        return alert(ui.item);
+    });
+    setContextTo = function(context, labelids) {
+      if (context == null) {
+        context = 'Default';
       }
-    }).hide();
+      if (labelids == null) {
+        labelids = $('#stringSettingsGrid').getGridParam('selarrrow');
+      }
+      if (labelids.length === 0) {
+        $.msgBox(i18n.dialog.customcontext.labeltip, null, {
+          title: c18n.warn
+        });
+        return;
+      }
+      return $.post('app/update-label', {
+        id: labelids.join(','),
+        context: context
+      }, function(json) {
+        if (json.status !== 0) {
+          $.msgBox(json.message, null, {
+            title: c18n.error
+          });
+          return;
+        }
+        return $('#stringSettingsGrid').trigger('reloadGrid');
+      });
+    };
+    $('#customContext').dialog({
+      autoOpen: false,
+      modal: true,
+      buttons: [
+        {
+          text: c18n.ok,
+          click: function() {
+            var context;
+            if (!(context = $('#contextName', this).val())) {
+              $('#customCtxErrorMsg').empty().html(i18n.dialog.customcontext.namerequired);
+              return;
+            }
+            setContextTo(context);
+            return $(this).dialog('close');
+          }
+        }, {
+          text: c18n.cancel,
+          click: function() {
+            return $(this).dialog('close');
+          }
+        }
+      ]
+    });
+    $('#setContextMenu').menu().hide().find("li").on('click', function(e) {
+      if (typeof console !== "undefined" && console !== null) {
+        console.log('debug');
+      }
+      if (e.target.name !== 'Custom') {
+        setContextTo(e.target.name);
+        return;
+      }
+      return $('#customContext').dialog('open');
+    });
     dictListPreview = $('#dictListPreviewDialog').dialog({
       autoOpen: false,
       modal: true,

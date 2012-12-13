@@ -17,6 +17,7 @@ define ["jquery"], ($) ->
   String:: startWith = (str) ->
     return false  if !str or str.length > @length
     @substr(0, str.length) is str
+  String:: capitalize = () ->@toLowerCase().replace(/\b[a-z]/g, (letter)->letter.toUpperCase())
   ###
     Dateformat
   ###
@@ -187,7 +188,7 @@ define ["jquery"], ($) ->
   json2Options: (json, selectedValue = false, textFieldName = "version", valueFieldName = "id", sep = '\n')->
     $(json).map(
       (index, elem)->
-#        selected = if !selectedValue then index == json.length - 1 else (String selectedValue) == (String @[valueFieldName])
+      #        selected = if !selectedValue then index == json.length - 1 else (String selectedValue) == (String @[valueFieldName])
         selected = (String selectedValue) == (String @[valueFieldName])
         newOption @[textFieldName], @[valueFieldName], selected
     ).get().join(sep)

@@ -56,9 +56,9 @@ define (require, util, dialogs, i18n)->
   $(colModel).each (index, colModel)->colModel.classes = 'editable-column' if colModel.editable
 
 
-  dicGrid = $('#dictionaryGridList').jqGrid {
+  dicGrid = $('#dictionaryGridList').jqGrid({
   url: 'json/dummy.json'
-  datatype: 'json'
+  datatype: 'local'
   width: 1000
   height: 320
   pager: '#dictPager'
@@ -113,16 +113,15 @@ define (require, util, dialogs, i18n)->
       delete rowData.action
       rowData.id = rowid
       handlers[action].handler rowData
-  }
-  dicGrid.jqGrid('navGrid', '#dictPager', {add: false, edit: false, search: false, del: false}, {}, {}, deleteOptions)
+  }).jqGrid('navGrid', '#dictPager', {add: false, edit: false, search: false, del: false}, {}, {}, deleteOptions)
   #  custom button for del dictionary
-  .navButtonAdd '#dictPager', {caption: "", buttonicon: "ui-icon-trash", position: "first"
+  .navButtonAdd('#dictPager', {caption: "", buttonicon: "ui-icon-trash", position: "first"
   onClickButton: ()->
     if(rowIds = $(@).getGridParam('selarrrow')).length == 0
       $.msgBox (c18n.selrow.format c18n.dict), null, {title: c18n.warning}
       return
     $(@).jqGrid 'delGridRow', rowIds, deleteOptions
-  }
+  }).setGridParam(datatype:'json')
 
 
   ($('#generateDict').button {}).click ->

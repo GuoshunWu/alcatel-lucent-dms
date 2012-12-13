@@ -1,8 +1,8 @@
 define ['jqgrid', 'require'], ($, require)->
   lastEditedCell = null
 
-  dicGrid = $('#stringSettingsGrid').jqGrid {
-  url: 'json/dummy.json', mtype: 'post', datatype: 'json'
+  dicGrid = $('#stringSettingsGrid').jqGrid({
+  url: 'json/dummy.json', mtype: 'post', datatype: 'local'
   width: 700, height: 300
   pager: '#stringSettingsPager'
   editurl: ""
@@ -10,7 +10,7 @@ define ['jqgrid', 'require'], ($, require)->
   sortname: 'key'
   sortorder: 'asc'
   viewrecords: true
-  gridview: true, multiselect: false, cellEdit: true, cellurl: 'app/update-label'
+  gridview: true, multiselect: true, cellEdit: true, cellurl: 'app/update-label'
   colNames: ['Label', 'Reference Language', 'Max Length', 'Context', 'Description']
   colModel: [
     {name: 'key', index: 'key', width: 100, editable: false, align: 'left'}
@@ -20,8 +20,8 @@ define ['jqgrid', 'require'], ($, require)->
     {name: 'description', index: 'description', width: 60, editable: true, classes: 'editable-column', align: 'left'}
   ]
   afterEditCell: (rowid, cellname, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
-  }
-  dicGrid.jqGrid 'navGrid', '#stringSettingsPager', {edit: false, add: false, del: false, search: false, view: false}, {}, {}, {}
+  }).setGridParam(datatype: 'json')
+  .jqGrid 'navGrid', '#stringSettingsPager', {edit: false, add: false, del: false, search: false, view: false}, {}, {}, {}
 
   saveLastEditedCell: ()->dicGrid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
 

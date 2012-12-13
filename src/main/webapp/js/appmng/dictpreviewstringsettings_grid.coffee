@@ -1,8 +1,8 @@
 define ['jqgrid', 'require'], ($, require)->
   lastEditedCell = null
 
-  dicGrid = $('#dictPreviewStringSettingsGrid').jqGrid {
-  url: 'json/dummy.json', mtype: 'post', datatype: 'json'
+  dicGrid = $('#dictPreviewStringSettingsGrid').jqGrid({
+  url: 'json/dummy.json', mtype: 'post', datatype: 'local'
   width: 700, height: 300
   pager: '#dictPreviewStringSettingsPager'
   editurl: "", cellurl: 'app/deliver-update-label', cellEdit: true
@@ -35,8 +35,7 @@ define ['jqgrid', 'require'], ($, require)->
     success = 0 == jsonFromServer.status
     $('#dictListPreviewGrid').trigger 'reloadGrid' if success
     [success, jsonFromServer.message]
-  }
-  dicGrid.jqGrid 'navGrid', '#dictPreviewStringSettingsPager', {edit: false, add: false, del: false, search: false, view: false}
+  }).jqGrid('navGrid', '#dictPreviewStringSettingsPager', {edit: false, add: false, del: false, search: false, view: false}).setGridParam(datatype: 'json')
 
   saveLastEditedCell: ()->dicGrid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
 
