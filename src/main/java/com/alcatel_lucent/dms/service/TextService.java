@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.Map;
 
 import com.alcatel_lucent.dms.model.Context;
+import com.alcatel_lucent.dms.model.Dictionary;
+import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.Text;
 import com.alcatel_lucent.dms.model.Translation;
 
@@ -14,7 +16,7 @@ public interface TextService {
 	 * @param name context name
 	 * @return persistent Context object
 	 */
-	Context getContextByName(String name);
+	Context getContextByKey(String key);
 	
 	/**
 	 * Find text object by context and reference.
@@ -110,4 +112,12 @@ public interface TextService {
      * @return map of text objects indexed by reference.
      */
     Map<String, Text> getTextsAsMap(Long ctxId);
+
+    /**
+     * Populate context name and get the Context instance, create one if not exists.
+     * @param contextExp context expression, supported variables: $DICT, $APP, $PROD
+     * @param dict Dictionary object, used to populate context value
+     * @return Context instance
+     */
+	Context getContextByExpression(String contextExp, Dictionary dict);
 }

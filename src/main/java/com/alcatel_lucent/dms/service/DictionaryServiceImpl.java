@@ -133,22 +133,22 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     }
     
     /**
-     * Determine default context of labels.
-     * If the label was already assigned to a non-default context, keep it;
-     * If any translation of the label is different than default context, take dictionary name;
+     * Determine default context of labels which have no context info.
+     * If the label was already assigned to a context, keep it;
+     * If any translation of the label is different than default context, take dictionary context;
      * Otherwise, take default context.
      * @param dictList
      */
     private void populateDefaultContext(Collection<Dictionary> dictList) {
-    	Context defaultCtx = new Context(Context.DEFAULT_CTX);
-    	Context dbDefaultCtx = textService.getContextByName(Context.DEFAULT_CTX);
+    	Context defaultCtx = new Context(Context.DEFAULT);
+    	Context dbDefaultCtx = textService.getContextByExpression(Context.DEFAULT, null);
     	Map<String, Text> textMap = dbDefaultCtx == null ? new HashMap<String, Text>() : 
     				textService.getTextsAsMap(dbDefaultCtx.getId());
 		for (Dictionary dict : dictList) {
-			Context dictCtx = new Context(dict.getName());
+			Context dictCtx = new Context(Context.DICT);
 			if (dict.getLabels() == null) continue;
 			for (Label label : dict.getLabels()) {
-				if (label.getContext() != null && !label.getContext().getName().equals(Context.DEFAULT_CTX))
+				if (label.getContext() != null)
 					continue;
 				// check for each language, if translation in any language is conflict 
 				// with Default context, set the label to dictionary context
@@ -183,8 +183,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 				}
 				
 				// temporarily add in-memory LabelTranslations to Default context text map
-				// to ensure no conflict inside current delivery
-				if (label.getContext().getName().equals(Context.DEFAULT_CTX)) {
+				// to ensure no conflict translation in scope of current delivery are put into DEFAULT context
+				if (label.getContext().getName().equals(Context.DEFAULT)) {
 					Text text = textMap.get(label.getReference());
 					if (text == null) {
 						text = new Text();
@@ -584,12 +584,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         // for each context, insert or update label/text/translation data
         for (String contextName : textMap.keySet()) {
             log.info("Importing data into context " + contextName);
-            Context context = textService.getContextByName(contextName);
-            if (context == null) {
-                context = new Context();
-                context.setName(contextName);
-                context = (Context) dao.create(context);
-            }
+            Context context = textService.getContextByExpression(contextName, dbDict);
             Collection<Text> texts = textMap.get(contextName);
             Collection<Label> labels = labelMap.get(contextName);
             Map<String, Text> dbTextMap = textService.updateTranslations(
@@ -838,16 +833,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     }
     
     public void updateLabels(Collection<Long> idList, String maxLength,
-			String description, String context) {
+			String description, String contextExp) {
     	Context ctx = null;
-    	if (context != null) {
-    		ctx = textService.getContextByName(context);
-    		if (ctx == null) {
-				ctx = new Context();
-				ctx.getName();
-				ctx = (Context) dao.create(ctx);
-    		}
-    	}
+    	Collection<Label> labelsToChangeContext = new ArrayList<Label>();
     	for (Long id : idList) {
     		Label label = (Label) dao.retrieve(Label.class, id);
     		if (maxLength != null) {
@@ -856,19 +844,39 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     		if (description != null) {
     			label.setDescription(description);
     		}
-    		if (ctx != null) {
+    		if (contextExp != null) {
+    			if (ctx == null) {
+    				ctx = textService.getContextByExpression(contextExp, label.getDictionary());
+    			}
     			if (!label.getContext().getId().equals(ctx.getId())) {	
     				// context changed
-    				// create text object in the new context if necessary
-    				label.setContext(ctx);
-    				// TODO update context dictionary
+    				labelsToChangeContext.add(label);
     			}
     		}
     	}
+    	if (!labelsToChangeContext.isEmpty()) {
+    		updateLabelContext(ctx, labelsToChangeContext);
+    	}
     }
     
-
-	
-
-	
+	private void updateLabelContext(Context context, Collection<Label> labels) {
+		Collection<Text> texts = new ArrayList<Text>();
+		for (Label label : labels) {
+			Text text = new Text();
+			text.setReference(label.getReference());
+			if (label.getOrigTranslations() != null) {
+				for (LabelTranslation lt : label.getOrigTranslations()) {
+					Translation trans = new Translation();
+					trans.setTranslation(lt.getOrigTranslation());
+					trans.setLanguage(lt.getLanguage());
+					text.addTranslation(trans);
+				}
+			}
+			texts.add(text);
+		}
+		Map<String, Text> textMap = textService.updateTranslations(context.getId(), texts, Constants.DELIVERY_MODE);
+		for (Label label : labels) {
+			label.setText(textMap.get(label.getReference()));
+		}
+	}
 }

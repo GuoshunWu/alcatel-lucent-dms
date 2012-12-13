@@ -2,12 +2,17 @@ package com.alcatel_lucent.dms.model;
 
 public class Context extends BaseEntity {
 	
-	public static final String DEFAULT_CTX = "Default";
+	public static final String DEFAULT = "[DEFAULT]";
+	public static final String EXCLUSION = "[EXCLUSION]";
+	public static final String DICT = "[DICT]";
+	public static final String APP = "[APP]";
+	public static final String PROD = "[PROD]";
 	
     /**
      *
      */
     private static final long serialVersionUID = 1417207278044645451L;
+    private String key;
     private String name;
 
     public Context() {
@@ -54,5 +59,13 @@ public class Context extends BaseEntity {
             return false;
         return true;
     }
+
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
+	}
 
 }
