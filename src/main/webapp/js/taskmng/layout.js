@@ -73,10 +73,10 @@
       filter: 'alpha(opacity=0)',
       cursor: 'pointer'
     }));
-    $('#optional-container').show();
-    return $('#loading-container').slideUp('slow', function() {
+    $('#loading-container').fadeOut('slow', 'swing', function() {
       return $(this).remove();
     });
+    return $('#optional-container').show();
   });
 
 }).call(this);

@@ -12,4 +12,6 @@ define (require)->
   $('#tabs').tabs {
 
   }
-  $('#loading-container').remove()
+
+  $('#loading-container').fadeOut 'slow', ()->$(@).remove()
+

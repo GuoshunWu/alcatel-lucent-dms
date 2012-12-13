@@ -305,10 +305,10 @@
       $("#exportPDF").click(function() {
         return exportAppOrDicts('pdf');
       });
-      $('#optional-container').show();
-      return $('#loading-container').slideUp('slow', function() {
+      $('#loading-container').fadeOut('slow', function() {
         return $(this).remove();
       });
+      return $('#optional-container').show();
     };
     initPage();
     return {
