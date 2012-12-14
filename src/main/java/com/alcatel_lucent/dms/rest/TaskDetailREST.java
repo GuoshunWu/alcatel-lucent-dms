@@ -47,7 +47,7 @@ public class TaskDetailREST extends BaseREST {
 		String context = requestMap.get("context");
 		String language = requestMap.get("language");
 		String translated = requestMap.get("translated");
-		String hql = "from TaskDetail where task.id=:taskId and text.context.id=:contextId and language.id=:languageId";
+		String hql = "from TaskDetail where task.id=:taskId and label.dictionary.base.applicationBase.id=:appBaseId and language.id=:languageId";
 		if (translated != null && translated.equals("1")) {
 			hql += " and newTranslation<>text.reference";
 		} else {
@@ -65,7 +65,7 @@ public class TaskDetailREST extends BaseREST {
     	hql += " order by " +  sidx + " " + sord;
     	Map param = new HashMap();
     	param.put("taskId", Long.valueOf(task));
-    	param.put("contextId", Long.valueOf(context));
+    	param.put("appBaseId", Long.valueOf(context));
     	param.put("languageId", Long.valueOf(language));
     	Collection<TaskDetail> result = retrieve(hql, param, countHql, param, requestMap);
 		return toJSON(result, requestMap);

@@ -31,6 +31,7 @@ import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.UserContext;
 import com.alcatel_lucent.dms.model.Context;
+import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.Language;
 import com.alcatel_lucent.dms.model.Product;
 import com.alcatel_lucent.dms.model.Task;
@@ -80,20 +81,19 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 		task = (Task) dao.create(task);
 		
 		log.info("Preparing translation task details...");
-		String hql = "select distinct dl.language,l.text,l.key,l.maxLength,l.description,ct,l.context,l.sortNo " +
+		String hql = "select distinct dl.language,l,ct " +
 				"from Dictionary d join d.labels l join d.dictLanguages dl " +
 				"join l.text.translations ct " +
 				"where d.id in (:dictIds) and dl.language.id in (:langIds) and ct.language=dl.language and ct.status=:status " +
 				"and not exists(select lt from LabelTranslation lt where lt.language=dl.language and lt.label=l and lt.needTranslation=false) " +
-				"and l.context.name<>:exclusion " +
-				"order by dl.language.id,l.context.id,l.sortNo";
+				"and l.context.name<>:exclusion ";
 		Map param = new HashMap();
 		param.put("dictIds", dictIds);
 		param.put("langIds", languageIds);
 		param.put("status", Translation.STATUS_UNTRANSLATED);
 		param.put("exclusion", Context.EXCLUSION);
 		Collection<Object[]> resultSet = dao.retrieve(hql, param);
-		hql = "select distinct dl.language,l.text,l.key,l.maxLength,l.description,l.context,l.sortNo " +
+		hql = "select distinct dl.language,l " +
 				"from Dictionary d join d.labels l join d.dictLanguages dl " +
 				"where d.id in (:dictIds) and dl.language.id in (:langIds) " +
 				"and not exists(select lt from LabelTranslation lt where lt.language=dl.language and lt.label=l and lt.needTranslation=false) " +
@@ -106,24 +106,20 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 		resultSet.addAll(dao.retrieve(hql,param));
 		ArrayList<Object[]> sortedDetails = new ArrayList<Object[]>(resultSet);
 		
-		// Sort task details by language,context,label.sortNo
+		// Sort task details by language,app,dict,label.sortNo
 		// The order is important because of the way of generating files
 		Collections.sort(sortedDetails, new Comparator<Object[]>() {
 			@Override
 			public int compare(Object[] o1, Object[] o2) {
-				Long langId1 = ((Language) o1[0]).getId();
-				Long ctxId1 = ((Text) o1[1]).getContext().getId();
-				Long langId2 = ((Language) o2[0]).getId();
-				Long ctxId2 = ((Text) o2[1]).getContext().getId();
-				if (langId1 != langId2) {
-					return langId1 > langId2 ? 1 : -1;
-				} else {
-					if (ctxId1 != ctxId2) {
-						return ctxId1 > ctxId2 ? 1 : -1;
-					} else {
-						return 0;
-					}
-				}
+				Language language1 = (Language) o1[0];
+				Label label1 = (Label) o1[1];
+				String key1 = language1.getId() + "_" + label1.getDictionary().getBase().getApplicationBase().getId() + 
+						"_" + label1.getDictionary().getId() + "_" + label1.getSortNo();
+				Language language2 = (Language) o2[0];
+				Label label2 = (Label) o2[1];
+				String key2 = language2.getId() + "_" + label2.getDictionary().getBase().getApplicationBase().getId() + 
+						"_" + label2.getDictionary().getId() + "_" + label2.getSortNo();
+				return key1.compareTo(key2);
 			}
 			
 		});
@@ -133,14 +129,12 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 		if (sortedDetails != null && sortedDetails.size() > 0) {
 			for (Object[] row : sortedDetails) {
 				Language language = (Language) row[0];
-				Text text = (Text) row[1];
+				Label label = (Label) row[1];
+				Translation translation = (Translation) (row.length > 2 ? row[2] : null);
+				Text text = label.getText();
 				String key = language.getId() + "," + text.getId();
 				if (unique.contains(key)) continue;
 				unique.add(key);
-				String labelKey = (String) row[2];
-				String maxLength = (String) row[3];
-				String description = (String) row[4];
-				Translation translation = row[5] instanceof Translation ? (Translation) row[5] : null;
 				if (translation == null) {
 					translation = new Translation();
 					translation.setText(text);
@@ -156,9 +150,10 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 				td.setLanguage(language);
 				td.setText(text);
 				td.setOrigTranslation(translation.getTranslation());
-				td.setLabelKey(labelKey);
-				td.setMaxLength(maxLength);
-				td.setDescription(description);
+				td.setLabel(label);
+				td.setLabelKey(label.getKey());
+				td.setMaxLength(label.getMaxLength());
+				td.setDescription(label.getDescription());
 				dao.create(td, false);
 			}
 		} else {
@@ -198,17 +193,17 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 		Task task = (Task) dao.retrieve(Task.class, taskId);
 		ArrayList<TaskDetail> currentDetails = new ArrayList<TaskDetail>();
 		String currentLanguage = null;
-		String currentContext = null;
+		String currentApp = null;
 		ArrayList<String> existingFilenames = new ArrayList<String>();
 		int labelCount = 0, wordCount = 0;
 		Map<String, Integer> labelCountMap = new TreeMap<String, Integer>();
 		Map<String, Integer> wordCountMap = new TreeMap<String, Integer>();
 		for (TaskDetail td : task.getDetails()) {
 			String languageName = td.getLanguage().getName();
-			String contextName = td.getText().getContext().getKey();
+			String appName = td.getLabel().getDictionary().getBase().getApplicationBase().getName();
 			if ((currentLanguage != null && !currentLanguage.equals(languageName)) || 
-					(currentContext != null && !currentContext.equals(contextName))) {
-				generateTaskFile(targetDir, currentLanguage, currentContext, currentDetails, existingFilenames);
+					(currentApp != null && !currentApp.equals(appName))) {
+				generateTaskFile(targetDir, currentLanguage, currentApp, currentDetails, existingFilenames);
 				currentDetails.clear();
 				if (currentLanguage != null && !currentLanguage.equals(languageName)) {
 					labelCountMap.put(currentLanguage, labelCount);
@@ -218,13 +213,13 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 				}
 			}
 			currentLanguage = languageName;
-			currentContext = contextName;
+			currentApp = appName;
 			currentDetails.add(td);
 			labelCount++;
 			wordCount += Util.countWords(td.getText().getReference());
 		}
 		if (currentDetails.size() > 0) {
-			generateTaskFile(targetDir, currentLanguage, currentContext, currentDetails, existingFilenames);
+			generateTaskFile(targetDir, currentLanguage, currentApp, currentDetails, existingFilenames);
 			labelCountMap.put(currentLanguage, labelCount);
 			wordCountMap.put(currentLanguage, wordCount);
 		}
@@ -234,14 +229,14 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 	}
 	
 	private void generateTaskFile(String targetDir, String languageName,
-			String contextName, ArrayList<TaskDetail> taskDetails, ArrayList<String> existingFilenames) {
+			String appName, ArrayList<TaskDetail> taskDetails, ArrayList<String> existingFilenames) {
 		File dir = new File(targetDir, languageName);
 		if (!dir.exists()) {
 			dir.mkdirs();
 		}
-		// convert context name to target file name
+		// convert application name to target file name
 		// if names conflict after the convertion, add number suffix
-		String filename = toFilename(contextName);
+		String filename = toFilename(appName);
 		String tempname = filename;
 		int i = 2;
 		while (existingFilenames.contains(tempname)) {
@@ -282,7 +277,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 		for (TaskDetail td : taskDetails) {
 			row = sheet.createRow(rowNo++);
 			createCell(row, 0, td.getLabelKey(), styleBody);
-			createCell(row, 1, contextName, styleBody);
+			createCell(row, 1, td.getText().getContext().getKey(), styleBody);
 			if (td.getMaxLength() != null) {
 				createCell(row, 2, td.getMaxLength(), styleBody);
 			}
@@ -368,25 +363,23 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 	 * @param contextName
 	 * @return
 	 */
-	private String toFilename(String contextName) {
-		int pos1 = contextName.lastIndexOf('/');
-		int pos2 = contextName.lastIndexOf('\\');
+	private String toFilename(String name) {
+		int pos1 = name.lastIndexOf('/');
+		int pos2 = name.lastIndexOf('\\');
 		int pos = Math.max(pos1, pos2);
-		if (pos != -1 && pos != contextName.length() - 1) {
-			contextName = contextName.substring(pos + 1);
+		if (pos != -1 && pos != name.length() - 1) {
+			name = name.substring(pos + 1);
 		}
-		contextName = contextName.replace('\\', '_');
-		contextName = contextName.replace('/', '_');
-		contextName = contextName.replace(':', '_');
-		contextName = contextName.replace('*', '_');
-		contextName = contextName.replace('?', '_');
-		contextName = contextName.replace('\"', '_');
-		contextName = contextName.replace('<', '_');
-		contextName = contextName.replace('>', '_');
-		contextName = contextName.replace('|', '_');
-		contextName = contextName.replace('[', ' ');
-		contextName = contextName.replace(']', ' ');
-		return contextName.trim();
+		name = name.replace('\\', '_');
+		name = name.replace('/', '_');
+		name = name.replace(':', '_');
+		name = name.replace('*', '_');
+		name = name.replace('?', '_');
+		name = name.replace('\"', '_');
+		name = name.replace('<', '_');
+		name = name.replace('>', '_');
+		name = name.replace('|', '_');
+		return name.trim();
 	}
 	
 	public Task receiveTaskFiles(Long taskId, String taskDir) throws BusinessException {
@@ -409,8 +402,8 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 				for (File taskFile : dir.listFiles()) {
 					if (taskFile.isFile() && taskFile.getName().toLowerCase().endsWith(".xls")) {
 						Map<String, Map<String, String>> transResult = receiveTaskFile(task, language, taskFile);
-						for (String contextName : transResult.keySet()) {
-							updateTaskDetails(task, language, contextName, transResult.get(contextName));
+						for (String contextKey : transResult.keySet()) {
+							updateTaskDetails(task, language, contextKey, transResult.get(contextKey));
 						}
 					}
 				}
@@ -428,17 +421,19 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 	 * @param contextName context name
 	 * @param translationMap map of reference-translation pairs
 	 */
-	private void updateTaskDetails(Task task, Language language, String contextName,
+	private void updateTaskDetails(Task task, Language language, String contextKey,
 			Map<String, String> translationMap) {
 		String hql = "from TaskDetail where task.id=:taskId" +
-				" and language.id=:languageId and text.context.name=:contextName";
+				" and language.id=:languageId and text.context.key=:contextKey";
 		Map param = new HashMap();
 		param.put("taskId", task.getId());
 		param.put("languageId", language.getId());
-		param.put("contextName", contextName);
+		param.put("contextKey", contextKey);
 		Collection<TaskDetail> details = dao.retrieve(hql, param);
 		for (TaskDetail td : details) {
-			td.setNewTranslation(translationMap.get(td.getText().getReference()));
+			if (translationMap.containsKey(td.getText().getReference())) {
+				td.setNewTranslation(translationMap.get(td.getText().getReference()));
+			}
 		}
 	}
 
@@ -447,7 +442,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 	 * @param task task
 	 * @param language language
 	 * @param taskFile task file
-	 * @return first level key is context name, second level key is reference text, value is translation
+	 * @return first level key is context key, second level key is reference text, value is translation
 	 */
 	private Map<String, Map<String, String>> receiveTaskFile(Task task, Language language, File taskFile) {
 		log.info("Receiving task file " + taskFile + " ...");
@@ -565,26 +560,26 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 
 	@Override
 	public Map<Long, Map<Long, int[]>> getTaskSummary(Long taskId) {
-		String hql = "select td.text.context.id,td.language.id," +
+		String hql = "select td.label.dictionary.base.applicationBase.id,td.language.id," +
 				"sum(case when td.newTranslation<>td.text.reference then 1 else 0 end)," +
 				"sum(case when td.newTranslation is null or td.newTranslation='' or td.newTranslation=td.text.reference then 1 else 0 end) " +
 				"from TaskDetail td " +
 				"where td.task.id=:taskId " +
-				"group by td.text.context.id,td.language.id";
+				"group by td.label.dictionary.base.applicationBase.id,td.language.id";
 		Map param = new HashMap();
 		param.put("taskId", taskId);
 		Collection<Object[]> resultSet = dao.retrieve(hql, param);
 		Map<Long, Map<Long, int[]>> result = new HashMap<Long, Map<Long, int[]>>();
 		for (Object[] row : resultSet) {
-			Long contextId = ((Number) row[0]).longValue();
+			Long appBaseId = ((Number) row[0]).longValue();
 			Long languageId = ((Number) row[1]).longValue();
 			int[] value = new int[2];
 			value[0] = ((Number) row[2]).intValue();
 			value[1] = ((Number) row[3]).intValue();
-			Map<Long, int[]> langMap = result.get(contextId);
+			Map<Long, int[]> langMap = result.get(appBaseId);
 			if (langMap == null) {
 				langMap = new HashMap<Long, int[]>();
-				result.put(contextId, langMap);
+				result.put(appBaseId, langMap);
 			}
 			langMap.put(languageId, value);
 		}

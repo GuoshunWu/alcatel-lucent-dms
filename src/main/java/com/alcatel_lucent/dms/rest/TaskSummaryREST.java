@@ -9,6 +9,7 @@ import javax.ws.rs.Path;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.alcatel_lucent.dms.model.ApplicationBase;
 import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.service.TaskService;
 
@@ -43,11 +44,14 @@ public class TaskSummaryREST extends BaseREST {
 		String task = requestMap.get("task");
 		Map<Long, Map<Long, int[]>> taskSummary = taskService.getTaskSummary(Long.valueOf(task));
 		Collection<TaskContext> result = new ArrayList<TaskContext>();
-		for (Long contextId : taskSummary.keySet()) {
-			Context context = (Context) dao.retrieve(Context.class, contextId);
+		for (Long appBaseId : taskSummary.keySet()) {
+			ApplicationBase appBase = (ApplicationBase) dao.retrieve(ApplicationBase.class, appBaseId);
+			Context context = new Context();	// fake context
+			context.setId(appBaseId);
+			context.setName(appBase.getName());
 			TaskContext tc = new TaskContext();
 			tc.setContext(context);
-			tc.setS(taskSummary.get(contextId));
+			tc.setS(taskSummary.get(appBaseId));
 			tc.count();
 			result.add(tc);
 		}
