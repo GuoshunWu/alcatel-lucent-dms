@@ -44,3 +44,4 @@ jettyStart.cmd
 WEB-INF/classes/
 target
 tmp
+atlassian-ide-plugin.xml
