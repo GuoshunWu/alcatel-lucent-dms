@@ -37,14 +37,16 @@ public class AuthenticationFilter implements Filter {
         UserContext uc = (UserContext) session.getAttribute(UserContext.SESSION_USER_CONTEXT);
         UserContext.setUserContext(uc);
 
+        uri=uri.replace(request.getContextPath(),"");
         if (uri.endsWith("entry.action")) {
 //                process real uri
             uri += '?' + request.getParameter("naviTo");
         }
-//        log.debug("uri=" + uri);
+        log.debug("uri=" + uri);
         for (String pattern : excludePatterns) {
+
             if (uri.matches(pattern)) {
-//                log.debug("uri " + uri + " match pattern: " + pattern + ", ignore.");
+                log.debug("uri " + uri + " match pattern: " + pattern + ", ignore.");
                 chain.doFilter(req, resp);
                 return;
             }
@@ -65,7 +67,7 @@ public class AuthenticationFilter implements Filter {
         if (null != strExcludePatterns) {
             excludePatterns = Arrays.asList(strExcludePatterns.split(","));
         }
-        log.info("String Exclude pattern=" + strExcludePatterns);
+        log.debug("String Exclude pattern=" + strExcludePatterns);
     }
 
 }
