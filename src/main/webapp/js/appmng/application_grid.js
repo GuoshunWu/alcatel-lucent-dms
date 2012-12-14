@@ -87,6 +87,8 @@
         jsonFromServer = eval("(" + serverresponse.responseText + ")");
         return [jsonFromServer.status === 0, jsonFromServer.message];
       }
+    }).setGridParam({
+      datatype: 'json'
     }).jqGrid('navGrid', '#pager', {
       edit: false,
       add: false,
@@ -110,8 +112,7 @@
         jsonFromServer = eval("(" + response.responseText + ")");
         return [0 === jsonFromServer.status, jsonFromServer.message];
       }
-    });
-    appGrid.navButtonAdd('#pager', {
+    }).navButtonAdd('#pager', {
       caption: "",
       buttonicon: "ui-icon-plus",
       position: "first",
