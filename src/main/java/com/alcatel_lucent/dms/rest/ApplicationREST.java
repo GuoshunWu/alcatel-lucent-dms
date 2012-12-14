@@ -110,7 +110,10 @@ public class ApplicationREST extends BaseREST {
         Map<String, Long> params = new HashMap<String, Long>();
         params.put("id", id);
         //TODO: optimize the hql statement
-        String hql = "select appBase from Product p ,ApplicationBase appBase where p.id =:id and appBase.productBase= p.base and not exists (from Product product join product.applications app where app.base=appBase and product.id =:id)";
+        String hql = "select appBase from Product p ,ApplicationBase appBase" +
+        		" where p.id =:id and appBase.productBase= p.base" +
+        		" and not exists (from Product product join product.applications app where app.base=appBase and product.id =:id)" +
+        		" and exists(from Application a where a.base=appBase)";
         Collection<ApplicationBase> appBases = dao.retrieve(hql, params);
 
         Map<String, Collection<String>> propFilter = new HashMap<String, Collection<String>>();
