@@ -1,5 +1,5 @@
 define ['jqgrid', 'util', 'require'], ($, util, require)->
-  colNames = ['Context', 'Total']
+  colNames = ['Application', 'Total']
   colModel = [
     {name: 'name', index: 'dict', width: 240, editable: false, stype: 'select', align: 'left', frozen: true}
     {name: 'total', index: 'total', width: 90, editable: false, align: 'right', frozen: true}
