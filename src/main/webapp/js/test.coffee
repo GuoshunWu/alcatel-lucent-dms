@@ -74,16 +74,23 @@ Date:: format = (format)->
   format
 
 #console.log new Date().format('yyyy-MM-dd')
+testArray = ()->
+  handlers =
+    'Download': (param)->alert 'download'
+    'History…': (param)->alert 'History…'
+    'End': (param)->alert 'End'
+    'X': (param)->alert 'X'
+  action = []
+  for k,v of handlers
+    action.push k
+  console.log action
 
-handlers =
-  'Download': (param)->alert 'download'
-  'History…': (param)->alert 'History…'
-  'End': (param)->alert 'End'
-  'X': (param)->alert 'X'
-action=[]
-for k,v of handlers
-  action.push k
-console.log action
+main = ()->
+  console.log '==============Test start============='
+  testArray()
+  console.log '==============Test end==============='
+
+main()
 
 
 
