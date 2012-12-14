@@ -378,6 +378,7 @@
             <version>1.0</version>
         </dependency>
 
+
     </dependencies>
 
     <build>
@@ -570,12 +571,12 @@
                             <mainClass>com.alcatel_lucent.dms.service.EmbeddedADService</mainClass>
                             <!--<executable>java</executable>-->
                             <!--<arguments>-->
-                                <!--<argument>-classpath</argument>-->
-                                <!--&lt;!&ndash; automatically creates the classpath using all project dependencies, also adding-->
-                                <!--the project build directory &ndash;&gt;-->
-                                <!--<classpath>-->
-                                <!--</classpath>-->
-                                <!--<argument>com.alcatel_lucent.dms.service.EmbeddedADService</argument>-->
+                            <!--<argument>-classpath</argument>-->
+                            <!--&lt;!&ndash; automatically creates the classpath using all project dependencies, also adding-->
+                            <!--the project build directory &ndash;&gt;-->
+                            <!--<classpath>-->
+                            <!--</classpath>-->
+                            <!--<argument>com.alcatel_lucent.dms.service.EmbeddedADService</argument>-->
                             <!--</arguments>-->
                         </configuration>
                     </plugin>
