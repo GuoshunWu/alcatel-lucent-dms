@@ -42,7 +42,7 @@ public class AuthenticationFilter implements Filter {
 //                process real uri
             uri += '?' + request.getParameter("naviTo");
         }
-        log.info("uri=" + uri);
+        log.debug("uri=" + uri);
         for (String pattern : excludePatterns) {
 
             if (uri.matches(pattern)) {
