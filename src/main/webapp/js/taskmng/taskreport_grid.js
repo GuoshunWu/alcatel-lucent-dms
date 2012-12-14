@@ -3,7 +3,7 @@
 
   define(['jqgrid', 'util', 'require'], function($, util, require) {
     var colModel, colNames, grid, groupHeader;
-    colNames = ['Context', 'Total'];
+    colNames = ['Application', 'Total'];
     colModel = [
       {
         name: 'name',
