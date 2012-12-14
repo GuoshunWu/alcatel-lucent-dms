@@ -4,14 +4,12 @@ import com.alcatel_lucent.dms.UserContext;
 import org.apache.log4j.Logger;
 
 import javax.servlet.*;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,8 +19,8 @@ import java.util.regex.Pattern;
  * To change this template use File | Settings | File Templates.
  */
 //@WebFilter(filterName = "authenticationFilter", urlPatterns = {"/*"})
-public class AuthenticationFilter implements Filter {
-    protected Logger log = Logger.getLogger(AuthenticationFilter.class);
+public class AjaxSessionFilter implements Filter {
+    protected Logger log = Logger.getLogger(AjaxSessionFilter.class);
     private List<String> excludePatterns;
 
     public void destroy() {
@@ -34,17 +32,10 @@ public class AuthenticationFilter implements Filter {
         HttpSession session = request.getSession();
         String uri = request.getRequestURI();
 
-        UserContext uc = (UserContext) session.getAttribute(UserContext.SESSION_USER_CONTEXT);
-        UserContext.setUserContext(uc);
-
         uri=uri.replace(request.getContextPath(),"");
-        if (uri.endsWith("entry.action")) {
-//                process real uri
-            uri += '?' + request.getParameter("naviTo");
-        }
-        log.info("uri=" + uri);
-        for (String pattern : excludePatterns) {
+        log.info("In AjaxSessionFilter uri=" + uri);
 
+        for (String pattern : excludePatterns) {
             if (uri.matches(pattern)) {
                 log.debug("uri " + uri + " match pattern: " + pattern + ", ignore.");
                 chain.doFilter(req, resp);
@@ -52,22 +43,22 @@ public class AuthenticationFilter implements Filter {
             }
         }
 
-        if (null != uc) {
-            chain.doFilter(req, resp);
-            return;
+        UserContext uc = (UserContext) session.getAttribute(UserContext.SESSION_USER_CONTEXT);
+        if(null!=uc){
+            chain.doFilter(request,response);
         }
 
-//        forward will cause struts core filter error
-//        request.getRequestDispatcher("/login.jsp").forward(req,resp);
-        response.sendRedirect(request.getContextPath() + "/login/forward-to-https");
+//        Write json response to client
     }
+
+
 
     public void init(FilterConfig config) throws ServletException {
         String strExcludePatterns = config.getInitParameter("excludePatterns");
         if (null != strExcludePatterns) {
             excludePatterns = Arrays.asList(strExcludePatterns.split(","));
         }
-        log.debug("String Exclude pattern in AuthenticationFilter=" + strExcludePatterns);
+        log.info("String Exclude pattern in AjaxSessionFilter=" + strExcludePatterns);
     }
 
 }
