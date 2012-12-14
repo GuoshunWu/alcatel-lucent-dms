@@ -467,9 +467,10 @@
                 <configuration>
                     <executable>node</executable>
                     <arguments>
-                        <argument>${project.build.directory}/${project.build.finalName}/tools/r.js</argument>
+                        <argument>src/main/webapp/tools/r.js</argument>
                         <argument>-o</argument>
-                        <argument>${project.build.directory}/${project.build.finalName}/js/app.build.js</argument>
+                        <argument>src/main/webapp/js/app.build.js</argument>
+
                         <argument>dir=${project.build.directory}/${project.build.finalName}</argument>
                         <argument>keepBuildDir=true</argument>
                         <argument>optimize=uglify</argument>
@@ -511,7 +512,7 @@
                 <version>2.0</version>
                 <configuration>
                     <uriEncoding>utf-8</uriEncoding>
-                    <url>http://localhost:8080/manager/html</url>
+                    <url>http://localhost:8888/manager/html</url>
                     <port>8888</port>
                     <path>/</path>
                     <update>true</update>
@@ -660,6 +661,16 @@
 
             <build>
                 <defaultGoal>tomcat7:run</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.tomcat.maven</groupId>
+                        <artifactId>tomcat7-maven-plugin</artifactId>
+                        <version>2.0</version>
+                        <configuration>
+                            <path>/dms</path>
+                        </configuration>
+                    </plugin>
+                </plugins>
             </build>
         </profile>
 

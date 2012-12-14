@@ -77,7 +77,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
     $("#applicationName").change ->
       $("#version").empty()
       appBaseId = $(@).val()
-      return if (-1 == parseInt(appBaseId))
+      return if (!appBaseId or -1 == parseInt(appBaseId))
 
       url = "rest/applications/apps/#{appBaseId}"
       $.getJSON url, {}, (json)->$("#version").append(util.json2Options json).trigger "change"
@@ -85,9 +85,13 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
 
   open: (event, ui)->
     productId = $("#selVersion").val()
-    url = "rest/applications/base/#{productId}"
-    $.getJSON url, {}, (json)=>
-      $('#applicationName', @).empty().append(util.json2Options json, false, 'name').trigger 'change'
+    $.getJSON "rest/applications/base/#{productId}", {}, (json)=>
+      options = util.json2Options json, false, 'name'
+      if !options
+        $(@).dialog 'close'
+        $.msgBox i18n.dialog.addapplication.tip, null, {title: c18n.warn}
+        return
+      $('#applicationName', @).empty().append(options).trigger 'change'
   buttons: [
     {text: c18n.ok, click: ->
       url = 'app/add-application'

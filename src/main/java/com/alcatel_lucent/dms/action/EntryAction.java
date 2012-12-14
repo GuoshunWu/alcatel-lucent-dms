@@ -40,7 +40,6 @@ public class EntryAction extends ActionSupport {
 
     private Long curProductId = -1L;
     private Long curProductBaseId = -1L;
-
     public Long getCurProductId() {
         return curProductId;
     }

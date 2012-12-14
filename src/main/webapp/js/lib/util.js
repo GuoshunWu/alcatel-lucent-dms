@@ -12,7 +12,7 @@ To change this template use File | Settings | File Templates.
 (function() {
 
   define(["jquery"], function($) {
-    var formatJonString, newOption, setCookie;
+    var formatJonString, newOption, pageNavi, sessionCheck, setCookie;
     String.prototype.format = function() {
       var args;
       args = arguments;
@@ -156,29 +156,36 @@ To change this template use File | Settings | File Templates.
     newOption = function(text, value, selected) {
       return "<option " + (selected ? 'selected ' : '') + "value='" + value + "'>" + text + "</option>";
     };
-    $('#naviForm').bind('submit', function(e) {
-      var appTree, node, productBaseId, type;
-      $("#curProductBaseId").val($("#productBase").val());
-      $("#curProductId").val($("#productRelease").val());
-      if (param.naviTo === 'appmng.jsp') {
-        $("#curProductId").val($("#selVersion").val() ? $("#selVersion").val() : -1);
-        appTree = $.jstree._reference("#appTree");
-        node = appTree.get_selected();
-        productBaseId = -1;
-        if (node.length > 0) {
-          type = node.attr('type');
-          if (type === 'product') {
-            productBaseId = node.attr('id');
-          } else if (type === 'app') {
-            productBaseId = appTree._get_parent(node).attr('id');
+    sessionCheck = function() {
+      return $(document).on('ajaxSuccess', function(e, xhr, settings) {});
+    };
+    pageNavi = function() {
+      $('#naviForm').bind('submit', function(e) {
+        var appTree, node, productBaseId, type;
+        $("#curProductBaseId").val($("#productBase").val());
+        $("#curProductId").val($("#productRelease").val());
+        if (param.naviTo === 'appmng.jsp') {
+          $("#curProductId").val($("#selVersion").val() ? $("#selVersion").val() : -1);
+          appTree = $.jstree._reference("#appTree");
+          node = appTree.get_selected();
+          productBaseId = -1;
+          if (node.length > 0) {
+            type = node.attr('type');
+            if (type === 'product') {
+              productBaseId = node.attr('id');
+            } else if (type === 'app') {
+              productBaseId = appTree._get_parent(node).attr('id');
+            }
           }
+          return $("#curProductBaseId").val(productBaseId);
         }
-        return $("#curProductBaseId").val(productBaseId);
-      }
-    });
-    $('#pageNavigator').change(function(e) {
-      return $('#naviForm').submit();
-    });
+      });
+      return $('#pageNavigator').change(function(e) {
+        return $('#naviForm').submit();
+      });
+    };
+    pageNavi();
+    sessionCheck();
     return {
       /*
         Test here.

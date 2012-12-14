@@ -20,6 +20,9 @@ define({
             }
         },
         dialog:{
+            addapplication:{
+                tip:'There is no application to add.'
+            },
             stringsettings:{
                 title:'String settings'
             },

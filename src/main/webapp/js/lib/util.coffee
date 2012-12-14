@@ -103,30 +103,42 @@ define ["jquery"], ($) ->
 
   newOption = (text, value, selected)->"<option #{if selected then 'selected ' else ''}value='#{value}'>#{text}</option>"
 
-  #  for page navigator
 
-  $('#naviForm').bind 'submit', (e)->
-    $("#curProductBaseId").val $("#productBase").val()
-    $("#curProductId").val $("#productRelease").val()
+  sessionCheck = ()->
+  #  Ajax event for all
+    $(document).on 'ajaxSuccess', (e, xhr, settings)->
+#      console?.log "xhr.status=#{xhr.status}"
+#      if 200 != xhr.status
+#        console?.log xhr.responseText
 
-    #    param is global var in /common/env.jsp
-    if (param.naviTo == 'appmng.jsp')
-      $("#curProductId").val(if $("#selVersion").val() then $("#selVersion").val() else -1)
-      appTree = $.jstree._reference("#appTree")
-      node = appTree.get_selected()
+      #  for page navigator
+  pageNavi = ()->
+    $('#naviForm').bind 'submit', (e)->
+      $("#curProductBaseId").val $("#productBase").val()
+      $("#curProductId").val $("#productRelease").val()
 
-      productBaseId = -1
-      #  -1 indicate that no node is selected
-      #      a node is selected
-      if node.length > 0
-        type = node.attr('type')
-        if type == 'product'
-          productBaseId = node.attr('id')
-        else if type == 'app'
-          productBaseId = appTree._get_parent(node).attr('id')
-      $("#curProductBaseId").val productBaseId
+      #    param is global var in /common/env.jsp
+      if (param.naviTo == 'appmng.jsp')
+        $("#curProductId").val(if $("#selVersion").val() then $("#selVersion").val() else -1)
+        appTree = $.jstree._reference("#appTree")
+        node = appTree.get_selected()
 
-  $('#pageNavigator').change (e)->$('#naviForm').submit()
+        productBaseId = -1
+        #  -1 indicate that no node is selected
+        #      a node is selected
+        if node.length > 0
+          type = node.attr('type')
+          if type == 'product'
+            productBaseId = node.attr('id')
+          else if type == 'app'
+            productBaseId = appTree._get_parent(node).attr('id')
+        $("#curProductBaseId").val productBaseId
+
+    $('#pageNavigator').change (e)->$('#naviForm').submit()
+
+  #  for all the JSP pages
+  pageNavi()
+  sessionCheck()
 
   ###
   Test here.

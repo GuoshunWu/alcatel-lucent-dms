@@ -132,7 +132,7 @@
           var appBaseId, url;
           $("#version").empty();
           appBaseId = $(this).val();
-          if (-1 === parseInt(appBaseId)) {
+          if (!appBaseId || -1 === parseInt(appBaseId)) {
             return;
           }
           url = "rest/applications/apps/" + appBaseId;
@@ -142,12 +142,20 @@
         });
       },
       open: function(event, ui) {
-        var productId, url,
+        var productId,
           _this = this;
         productId = $("#selVersion").val();
-        url = "rest/applications/base/" + productId;
-        return $.getJSON(url, {}, function(json) {
-          return $('#applicationName', _this).empty().append(util.json2Options(json, false, 'name')).trigger('change');
+        return $.getJSON("rest/applications/base/" + productId, {}, function(json) {
+          var options;
+          options = util.json2Options(json, false, 'name');
+          if (!options) {
+            $(_this).dialog('close');
+            $.msgBox(i18n.dialog.addapplication.tip, null, {
+              title: c18n.warn
+            });
+            return;
+          }
+          return $('#applicationName', _this).empty().append(options).trigger('change');
         });
       },
       buttons: [
