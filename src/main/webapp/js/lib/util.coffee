@@ -103,15 +103,7 @@ define ["jquery"], ($) ->
 
   newOption = (text, value, selected)->"<option #{if selected then 'selected ' else ''}value='#{value}'>#{text}</option>"
 
-
-  sessionCheck = ()->
-  #  Ajax event for all
-    $(document).on 'ajaxSuccess', (e, xhr, settings)->
-#      console?.log "xhr.status=#{xhr.status}"
-#      if 200 != xhr.status
-#        console?.log xhr.responseText
-
-      #  for page navigator
+  #  for page navigator
   pageNavi = ()->
     $('#naviForm').bind 'submit', (e)->
       $("#curProductBaseId").val $("#productBase").val()
@@ -135,6 +127,15 @@ define ["jquery"], ($) ->
         $("#curProductBaseId").val productBaseId
 
     $('#pageNavigator').change (e)->$('#naviForm').submit()
+
+  #  Ajax event for all pages
+  sessionCheck = ()->
+    $(document).on 'ajaxSuccess', (e, xhr, settings)->
+      console?.log "xhr.status=#{xhr.status}"
+#      TODO: add something before the page redirect.
+      if 203 == xhr.status
+        console?.log $.parseJSON(xhr.responseText)
+        window.location='login/forward-to-https'
 
   #  for all the JSP pages
   pageNavi()

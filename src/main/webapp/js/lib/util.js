@@ -156,9 +156,6 @@ To change this template use File | Settings | File Templates.
     newOption = function(text, value, selected) {
       return "<option " + (selected ? 'selected ' : '') + "value='" + value + "'>" + text + "</option>";
     };
-    sessionCheck = function() {
-      return $(document).on('ajaxSuccess', function(e, xhr, settings) {});
-    };
     pageNavi = function() {
       $('#naviForm').bind('submit', function(e) {
         var appTree, node, productBaseId, type;
@@ -182,6 +179,19 @@ To change this template use File | Settings | File Templates.
       });
       return $('#pageNavigator').change(function(e) {
         return $('#naviForm').submit();
+      });
+    };
+    sessionCheck = function() {
+      return $(document).on('ajaxSuccess', function(e, xhr, settings) {
+        if (typeof console !== "undefined" && console !== null) {
+          console.log("xhr.status=" + xhr.status);
+        }
+        if (203 === xhr.status) {
+          if (typeof console !== "undefined" && console !== null) {
+            console.log($.parseJSON(xhr.responseText));
+          }
+          return window.location = 'login/forward-to-https';
+        }
       });
     };
     pageNavi();

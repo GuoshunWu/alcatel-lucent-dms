@@ -1,6 +1,7 @@
 package com.alcatel_lucent.dms.filters;
 
 import com.alcatel_lucent.dms.UserContext;
+import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
 
 import javax.servlet.*;
@@ -49,6 +50,9 @@ public class AjaxSessionFilter implements Filter {
         }
 
 //        Write json response to client
+        response.setContentType("application/json;charset=UTF-8");
+        response.setStatus(HttpServletResponse.SC_NON_AUTHORITATIVE_INFORMATION);
+        response.getWriter().print(JSONObject.fromObject("{'status':203, 'message':'session time out.'}"));
     }
 
 
