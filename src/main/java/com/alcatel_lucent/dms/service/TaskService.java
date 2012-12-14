@@ -57,7 +57,7 @@ public interface TaskService {
 	/**
 	 * Calculate task summary
 	 * @param taskId task id
-	 * @return first level key is context id, second level key is language id, value is [translated, not translated]
+	 * @return first level key is app base id, second level key is language id, value is [translated, not translated]
 	 */
 	Map<Long, Map<Long, int[]>> getTaskSummary(Long taskId);
 

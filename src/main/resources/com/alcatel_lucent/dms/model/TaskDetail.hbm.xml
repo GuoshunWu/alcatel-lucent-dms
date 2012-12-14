@@ -24,6 +24,7 @@
 		<many-to-one name="task" column="TASK_ID" not-null="true" />
 		<many-to-one name="text" column="TEXT_ID" lazy="false" not-null="true" />
 		<many-to-one name="language" column="LANGUAGE_ID" not-null="true" />
+		<many-to-one name="label" column="LABEL_ID" not-null="true" />
 
 	</class>
 
