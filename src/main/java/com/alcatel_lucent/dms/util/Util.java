@@ -271,14 +271,14 @@ public class Util {
         }
     }
 
-    public static void createZip(File[] srcFiles, File zipFile) throws IOException{
+    public static void createZip(File[] srcFiles, File zipFile) throws IOException {
         ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFile));
-        for(File src: srcFiles){
+        for (File src : srcFiles) {
             writeZip(src, "", zos);
         }
         zos.close();
     }
-    
+
     public static void createZip(File src, File zipFile) throws IOException {
         if (!zipFile.exists()) zipFile.createNewFile();
         ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFile));
@@ -291,105 +291,124 @@ public class Util {
         if (!srcFile.exists()) return;
         createZip(srcFile, new File(zipPath));
     }
-    
+
     /**
      * Validate if a file can be decoded by specified charset.
-     * @param file file object
+     *
+     * @param file        file object
      * @param charsetName charset name
      * @return true if validated
      */
     public static boolean validateFileCharset(File file, String charsetName) {
-    	return validateFileCharset(file, charsetName, null);
+        return validateFileCharset(file, charsetName, null);
     }
 
     /**
      * Validate if a file can be decoded by specified charset.
-     * @param file file object
+     *
+     * @param file        file object
      * @param charsetName charset name
-     * @param keyword the decoded text must contain the keyword if provided
+     * @param keyword     the decoded text must contain the keyword if provided
      * @return true if validated
      */
     public static boolean validateFileCharset(File file, String charsetName, String keyword) {
-    	boolean result = true;
-		char[] buf = new char[65536];
-		Charset charset = Charset.forName(charsetName);
-		CharsetDecoder decoder = charset.newDecoder();
-		decoder.onMalformedInput(CodingErrorAction.REPORT);
-		decoder.onUnmappableCharacter(CodingErrorAction.REPORT);
+        boolean result = true;
+        char[] buf = new char[65536];
+        Charset charset = Charset.forName(charsetName);
+        CharsetDecoder decoder = charset.newDecoder();
+        decoder.onMalformedInput(CodingErrorAction.REPORT);
+        decoder.onUnmappableCharacter(CodingErrorAction.REPORT);
 
-		InputStreamReader reader = null;
-		int pos = 0;
-		try {
-			reader = new InputStreamReader(new FileInputStream(file), decoder);
-			int chars;
-			while ((chars = reader.read(buf)) >= 0) {
-				if (keyword != null && pos < keyword.length()) {
-					for (int i = 0; i < chars; i++) {
-						if (buf[i] == keyword.charAt(pos)) {
-							pos++;
-						} else {
-							pos = 0;
-						}
-					}
-				}
-			}
-		} catch (CharacterCodingException ex) {
+        InputStreamReader reader = null;
+        int pos = 0;
+        try {
+            reader = new InputStreamReader(new FileInputStream(file), decoder);
+            int chars;
+            while ((chars = reader.read(buf)) >= 0) {
+                if (keyword != null && pos < keyword.length()) {
+                    for (int i = 0; i < chars; i++) {
+                        if (buf[i] == keyword.charAt(pos)) {
+                            pos++;
+                        } else {
+                            pos = 0;
+                        }
+                    }
+                }
+            }
+        } catch (CharacterCodingException ex) {
 //			ex.printStackTrace();
-			result = false;
-		} catch (IOException ex) {
-			result = false;
-		} finally {
-			if (reader != null)
-				try {
-					reader.close();
-				} catch (IOException ex) {
-					// dummy
-				}
-		}
-		return result && (keyword == null || pos >= keyword.length());
-    }
-    
-    public static boolean isASCII(File file) {
-		InputStreamReader reader = null;
-		try {
-			reader = new InputStreamReader(new FileInputStream(file), "ISO-8859-1");
-			int chars;
-			char[] buf = new char[65536];
-			while ((chars = reader.read(buf)) >= 0) {
-				for (int i = 0; i < chars; i++) {
-					if (buf[i] < 0x20 || buf[i] > 0x7e)
-						return false;
-				}
-			}
-			return true;
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new SystemError(e);
-		} finally {
-			if (reader != null)
-				try {
-					reader.close();
-				} catch (IOException ex) {
-					// dummy
-				}
-		}
+            result = false;
+        } catch (IOException ex) {
+            result = false;
+        } finally {
+            if (reader != null)
+                try {
+                    reader.close();
+                } catch (IOException ex) {
+                    // dummy
+                }
+        }
+        return result && (keyword == null || pos >= keyword.length());
     }
 
-	public static int countWords(String text) {
-		int count = 0;
-		boolean inWord = false;
-		for (int i = 0; i < text.length(); i++) {
-			char c = text.charAt(i);
-			if (c == ' ' || c == '\t' || c == '\n' || c == '\r') {
-				if (inWord) {
-					count++;
-					inWord = false;
-				}
-			} else {
-				inWord = true;
-			}
-		}
-		if (inWord) count++;
-		return count;
-	}
+    public static boolean isASCII(File file) {
+        InputStreamReader reader = null;
+        try {
+            reader = new InputStreamReader(new FileInputStream(file), "ISO-8859-1");
+            int chars;
+            char[] buf = new char[65536];
+            while ((chars = reader.read(buf)) >= 0) {
+                for (int i = 0; i < chars; i++) {
+                    if (buf[i] < 0x20 || buf[i] > 0x7e)
+                        return false;
+                }
+            }
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new SystemError(e);
+        } finally {
+            if (reader != null)
+                try {
+                    reader.close();
+                } catch (IOException ex) {
+                    // dummy
+                }
+        }
+    }
+
+    public static int countWords(String text) {
+        int count = 0;
+        boolean inWord = false;
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            if (c == ' ' || c == '\t' || c == '\n' || c == '\r') {
+                if (inWord) {
+                    count++;
+                    inWord = false;
+                }
+            } else {
+                inWord = true;
+            }
+        }
+        if (inWord) count++;
+        return count;
+    }
+
+    /**
+     * If any str match any pattern in the list
+     *
+     * @param str      str used for match
+     * @param patterns the pattern list
+     * @return true if atr match any pattern in the list or false
+     */
+    public static boolean anyMatch(String str, List<String> patterns) {
+        for (String pattern : patterns) {
+            if (str.matches(pattern)) {
+                log.debug(str + " match pattern " + pattern);
+                return true;
+            }
+        }
+        return false;
+    }
 }
