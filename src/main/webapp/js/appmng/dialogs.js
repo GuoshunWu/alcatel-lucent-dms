@@ -256,7 +256,7 @@
         postData = {
           dict: param.id,
           format: 'grid',
-          prop: "key,reference,maxLength,context.name,description,t,n,i"
+          prop: "key,reference,t,n,i,maxLength,context.name,description"
         };
         return $('#stringSettingsGrid').setGridParam({
           url: 'rest/labels',
