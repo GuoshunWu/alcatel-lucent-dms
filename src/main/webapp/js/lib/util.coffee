@@ -144,11 +144,11 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
     }
 
     $(document).on 'ajaxSuccess', (e, xhr, settings)->
-      console?.log "xhr.status=#{xhr.status}"
-      #      TODO: add something before the page redirect.
+#      console?.log "xhr.status=#{xhr.status}"
       if 203 == xhr.status
         $('#sessionTimeoutDialog').dialog 'open'
-        console?.log $.parseJSON(xhr.responseText)
+#        console?.log $.parseJSON(xhr.responseText)
+
   #  for all the JSP pages
   pageNavi()
   sessionCheck()

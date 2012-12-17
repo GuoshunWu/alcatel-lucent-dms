@@ -198,12 +198,8 @@ To change this template use File | Settings | File Templates.
         ]
       });
       return $(document).on('ajaxSuccess', function(e, xhr, settings) {
-        if (typeof console !== "undefined" && console !== null) {
-          console.log("xhr.status=" + xhr.status);
-        }
         if (203 === xhr.status) {
-          $('#sessionTimeoutDialog').dialog('open');
-          return typeof console !== "undefined" && console !== null ? console.log($.parseJSON(xhr.responseText)) : void 0;
+          return $('#sessionTimeoutDialog').dialog('open');
         }
       });
     };

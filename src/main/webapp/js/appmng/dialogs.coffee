@@ -145,10 +145,13 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
 
   stringSettings = $('#stringSettingsDialog').dialog {
   autoOpen: false
-  height: 'auto', width: 750
+  height: 'auto'
   title: i18n.dialog.stringsettings.title, modal: true, zIndex: 900
+  create:(e,ui)->
+  # set my width according to the string settings grid width
+    $(@).dialog 'option', 'width', $('#stringSettingsGrid').getGridParam('width') + 40
   open: (e, ui)->
-  # param must be attached to the dialog before the dialog open
+    # param must be attached to the dialog before the dialog open
     param = $(@).data "param"
     return if !param
 
@@ -157,7 +160,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
     $('#dictFormat', @).val(param.format)
     $('#dictEncoding', @).val(param.encoding)
 
-    postData = dict: param.id, format: 'grid', prop: "key,reference,maxLength,context.name,description"
+    postData = dict: param.id, format: 'grid', prop: "key,reference,maxLength,context.name,description,t,n,i"
     $('#stringSettingsGrid').setGridParam(url: 'rest/labels', page: 1, postData: postData).trigger "reloadGrid"
   close: (event, ui)->(require 'appmng/stringsettings_grid').saveLastEditedCell()
   #  resize: (event, ui)->$('#stringSettingsGrid').setGridWidth(ui.size.width - 35, true).setGridHeight(ui.size.height - 210, true)

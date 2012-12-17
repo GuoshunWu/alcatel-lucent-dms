@@ -237,10 +237,12 @@
     stringSettings = $('#stringSettingsDialog').dialog({
       autoOpen: false,
       height: 'auto',
-      width: 750,
       title: i18n.dialog.stringsettings.title,
       modal: true,
       zIndex: 900,
+      create: function(e, ui) {
+        return $(this).dialog('option', 'width', $('#stringSettingsGrid').getGridParam('width') + 40);
+      },
       open: function(e, ui) {
         var param, postData;
         param = $(this).data("param");
@@ -254,7 +256,7 @@
         postData = {
           dict: param.id,
           format: 'grid',
-          prop: "key,reference,maxLength,context.name,description"
+          prop: "key,reference,maxLength,context.name,description,t,n,i"
         };
         return $('#stringSettingsGrid').setGridParam({
           url: 'rest/labels',
