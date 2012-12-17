@@ -42,9 +42,7 @@ public class AuthenticationFilter implements Filter {
         UserContext.setUserContext(uc);
 
         uri = uri.replace(request.getContextPath(), "");
-        if (uri.endsWith("entry.action")) {
-            uri += '?' + request.getParameter("naviTo");
-        }
+        if (uri.endsWith("entry.action")) uri += '?' + request.getParameter("naviTo");
         log.debug("uri=" + uri);
         if (anyMatch(uri, excludePatterns)) {
             log.debug("uri " + uri + " in the exclude pattern list, ignore.");
@@ -65,8 +63,6 @@ public class AuthenticationFilter implements Filter {
 
 
 //        Normal JSP response
-//        forward will cause struts core filter error
-//        request.getRequestDispatcher("/login.jsp").forward(req,resp);
         response.sendRedirect(request.getContextPath() + authURL);
     }
 
