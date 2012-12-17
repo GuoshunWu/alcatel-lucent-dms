@@ -8,7 +8,7 @@
       url: 'json/dummy.json',
       mtype: 'post',
       datatype: 'local',
-      width: 700,
+      width: $(window).innerWidth() * 0.8,
       height: 300,
       pager: '#stringSettingsPager',
       editurl: "",
@@ -21,7 +21,7 @@
       multiselect: true,
       cellEdit: true,
       cellurl: 'app/update-label',
-      colNames: ['Label', 'Reference Language', 'Max Length', 'Context', 'Description'],
+      colNames: ['Label', 'Reference Language', 'Max Length', 'Context', 'Description', 'T', 'N', 'I'],
       colModel: [
         {
           name: 'key',
@@ -59,6 +59,24 @@
           editable: true,
           classes: 'editable-column',
           align: 'left'
+        }, {
+          name: 't',
+          index: 't',
+          sortable: false,
+          width: 20,
+          align: 'right'
+        }, {
+          name: 'n',
+          index: 'n',
+          sortable: false,
+          width: 20,
+          align: 'right'
+        }, {
+          name: 'i',
+          index: 'i',
+          sortable: false,
+          width: 20,
+          align: 'right'
         }
       ],
       afterEditCell: function(rowid, cellname, val, iRow, iCol) {
