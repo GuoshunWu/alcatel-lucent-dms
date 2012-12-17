@@ -224,7 +224,7 @@
           'datatype': 'json'
         });
         grid.setGroupHeaders({
-          useColSpanStyle: false,
+          useColSpanStyle: true,
           groupHeaders: grid.getGridParam('groupHeaders')
         });
         if (getTableType() === 'dict') {
