@@ -48,6 +48,7 @@ public abstract class BaseREST {
     	try {
     		Response.ResponseBuilder response = Response.ok(doGetOrPost(map));
     		response.expires(new Date(0));
+    		response.lastModified(new Date());
     		return response.build();
     	} catch (Exception e) {
     		e.printStackTrace();
@@ -69,6 +70,7 @@ public abstract class BaseREST {
     	try {
     		Response.ResponseBuilder response = Response.ok(doGetOrPost(map));
     		response.expires(new Date(0));
+    		response.lastModified(new Date());
     		return response.build();
     	} catch (Exception e) {
     		e.printStackTrace();
