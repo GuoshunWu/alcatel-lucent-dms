@@ -5,7 +5,7 @@ Date: -8-
 Time: 下午7:
 To change this template use File | Settings | File Templates.
 ###
-define ["jquery"], ($) ->
+define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
 
 #    prototype enhancement
   String:: format = -> args = arguments; @replace /\{(\d+)\}/g, (m, i) ->args[i]
@@ -103,6 +103,7 @@ define ["jquery"], ($) ->
 
   newOption = (text, value, selected)->"<option #{if selected then 'selected ' else ''}value='#{value}'>#{text}</option>"
 
+  $.ajaxPrefilter (options, originalOptions, jqXHR)->
   #  for page navigator
   pageNavi = ()->
     $('#naviForm').bind 'submit', (e)->
@@ -130,13 +131,24 @@ define ["jquery"], ($) ->
 
   #  Ajax event for all pages
   sessionCheck = ()->
+    $('#sessionTimeoutDialog').dialog {
+    width:320, modal: true
+    autoOpen: false
+    buttons: [
+      {
+      text: c18n.ok, click: (e)->
+        $(@).dialog 'close'
+        window.location = 'login/forward-to-https'
+      }
+    ]
+    }
+
     $(document).on 'ajaxSuccess', (e, xhr, settings)->
       console?.log "xhr.status=#{xhr.status}"
-#      TODO: add something before the page redirect.
+      #      TODO: add something before the page redirect.
       if 203 == xhr.status
+        $('#sessionTimeoutDialog').dialog 'open'
         console?.log $.parseJSON(xhr.responseText)
-        window.location='login/forward-to-https'
-
   #  for all the JSP pages
   pageNavi()
   sessionCheck()
