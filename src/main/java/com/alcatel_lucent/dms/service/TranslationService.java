@@ -1,0 +1,48 @@
+package com.alcatel_lucent.dms.service;
+
+import java.io.OutputStream;
+import java.util.Collection;
+import java.util.Map;
+
+public interface TranslationService {
+
+    /**
+     * Calculate translation summary in dictionary level
+     * @param prodId product id
+     * @return composite map with dictionary id as 1st-level key and language id as 2nd-level key
+     * 			value is {num_of_translated_labels, num_of_not_translated_labels, num_of_in_progress_labels }
+     */
+    Map<Long, Map<Long, int[]>> getDictTranslationSummary(Long prodId);
+
+    /**
+     * Calculate translation summary in application level
+     * @param prodId product id
+     * @return composite map with application id as 1st-level key and language id as 2nd-level key
+     * 			value is {num_of_translated_labels, num_of_not_translated_labels, num_of_in_progress_labels }
+     */
+    Map<Long, Map<Long, int[]>> getAppTranslationSummary(Long prodId);
+	
+    /**
+     * Calculate translation summary in label level
+     * @param dictId dictionary id
+     * @return map data map, key is label is, value is {num_of_translated_languages, num_of_not_translated_languages, num_of_in_progress_languages}
+     */
+	Map<Long, int[]> getLabelTranslationSummary(Long dictId);
+
+	/**
+     * Generate excel report of translation summary in dictionary level
+     * @param prodId product id
+     * @param langIds language filters, null in case of all languages
+     * @param output output stream
+     */
+    void generateDictTranslationReport(Long prodId, Collection<Long> langIds, OutputStream output);
+    
+    /**
+     * Generate excel report of translation summary in application level
+     * @param prodId product id
+     * @param langIds language filters, null in case of all languages
+     * @param output output stream
+     */
+    void generateAppTranslationReport(Long prodId, Collection<Long> langIds, OutputStream output);
+
+}

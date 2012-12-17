@@ -1,0 +1,5 @@
+.validator_error {
+	background: #FF7C8A !important;
+	border: 1px #9D0505 solid !important;
+	color: #000 !important;
+}
