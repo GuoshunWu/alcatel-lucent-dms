@@ -196,16 +196,25 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     	Map<Long, Map<Long, int[]>> result = new HashMap<Long, Map<Long, int[]>>();
     	
     	// count labels for each app
-    	String hql = "select a.id,count(*)" +
-    			" from Product p join p.applications a join a.dictionaries d join d.labels l" +
-    			" where p.id=:prodId" +
-    			" group by a.id";
+    	String hql = "select a.id,dl.language.id,count(*)" +
+    			" from Product p join p.applications a join a.dictionaries d join d.labels l join d.dictLanguages dl" +
+    			" where p.id=:prodId and dl.language.id<>1" +
+    			" group by a.id,dl.language.id";
     	Map param = new HashMap();
     	param.put("prodId", prodId);
     	Collection<Object[]> qr = dao.retrieve(hql, param);
     	Map<Long, Integer> labelCount = new HashMap<Long, Integer>();
     	for (Object[] row : qr) {
-    		labelCount.put(((Number) row[0]).longValue(), ((Number)row[1]).intValue());
+    		Long appId = ((Number) row[0]).longValue();
+    		Long langId = ((Number) row[1]).longValue();
+    		// initial empty langMap
+    		Map<Long, int[]> langMap = result.get(appId);
+    		if (langMap == null) {
+    			langMap = new HashMap<Long, int[]>();
+    			result.put(appId, langMap);
+    		}
+    		langMap.put(langId, new int[] {0, 0, 0});
+    		labelCount.put(appId, ((Number)row[2]).intValue());
     	}
     	
     	// count untranslated and in progress translations for each app
