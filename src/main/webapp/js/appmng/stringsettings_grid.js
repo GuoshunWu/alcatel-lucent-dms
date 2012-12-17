@@ -21,7 +21,7 @@
       multiselect: true,
       cellEdit: true,
       cellurl: 'app/update-label',
-      colNames: ['Label', 'Reference Language', 'Max Length', 'Context', 'Description', 'T', 'N', 'I'],
+      colNames: ['Label', 'Reference Language', 'T', 'N', 'I', 'Max Length', 'Context', 'Description'],
       colModel: [
         {
           name: 'key',
@@ -32,9 +32,27 @@
         }, {
           name: 'reference',
           index: 'reference',
-          width: 100,
+          width: 200,
           editable: false,
           align: 'left'
+        }, {
+          name: 't',
+          index: 't',
+          sortable: false,
+          width: 15,
+          align: 'right'
+        }, {
+          name: 'n',
+          index: 'n',
+          sortable: false,
+          width: 15,
+          align: 'right'
+        }, {
+          name: 'i',
+          index: 'i',
+          sortable: false,
+          width: 15,
+          align: 'right'
         }, {
           name: 'maxLength',
           index: 'maxLength',
@@ -48,7 +66,7 @@
           editrules: {
             required: true
           },
-          width: 80,
+          width: 40,
           editable: true,
           classes: 'editable-column',
           align: 'left'
@@ -59,24 +77,6 @@
           editable: true,
           classes: 'editable-column',
           align: 'left'
-        }, {
-          name: 't',
-          index: 't',
-          sortable: false,
-          width: 20,
-          align: 'right'
-        }, {
-          name: 'n',
-          index: 'n',
-          sortable: false,
-          width: 20,
-          align: 'right'
-        }, {
-          name: 'i',
-          index: 'i',
-          sortable: false,
-          width: 20,
-          align: 'right'
         }
       ],
       afterEditCell: function(rowid, cellname, val, iRow, iCol) {
@@ -95,7 +95,16 @@
       del: false,
       search: false,
       view: false
-    }, {}, {}, {});
+    }, {}, {}, {}).setGroupHeaders({
+      useColSpanStyle: true,
+      groupHeaders: [
+        {
+          startColumnName: "t",
+          numberOfColumns: 3,
+          titleText: 'Status'.bold()
+        }
+      ]
+    });
     return {
       saveLastEditedCell: function() {
         if (lastEditedCell) {

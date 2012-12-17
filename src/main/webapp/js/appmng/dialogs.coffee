@@ -160,7 +160,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
     $('#dictFormat', @).val(param.format)
     $('#dictEncoding', @).val(param.encoding)
 
-    postData = dict: param.id, format: 'grid', prop: "key,reference,maxLength,context.name,description,t,n,i"
+    postData = dict: param.id, format: 'grid', prop: "key,reference,t,n,i,maxLength,context.name,description"
     $('#stringSettingsGrid').setGridParam(url: 'rest/labels', page: 1, postData: postData).trigger "reloadGrid"
   close: (event, ui)->(require 'appmng/stringsettings_grid').saveLastEditedCell()
   #  resize: (event, ui)->$('#stringSettingsGrid').setGridWidth(ui.size.width - 35, true).setGridHeight(ui.size.height - 210, true)
