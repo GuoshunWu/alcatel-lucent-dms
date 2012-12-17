@@ -138,15 +138,22 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 	                		dbTrans.setTranslation(trans.getTranslation());
 	                	}
 						dbTrans.setStatus(trans.getStatus());
-	                } 
-	                /*
-	                else {	// in DELIVERY_MODE, set status to UNTRANSLATED if translation is explicitly requested 
-	                	if (dbTrans.getTranslation().equals(trans.getTranslation()) && 
-	                			!dbTrans.getTranslation().equals(text.getReference()) && 
-	                			trans.getStatus() == Translation.STATUS_UNTRANSLATED) {
-	                		dbTrans.setStatus(Translation.STATUS_UNTRANSLATED);
+	                } else {
+	                	// in DELIVERY_MODE, set status to UNTRANSLATED if translation is explicitly requested 
+//	                	if (dbTrans.getTranslation().equals(trans.getTranslation()) && 
+//	                			!dbTrans.getTranslation().equals(text.getReference()) && 
+//	                			trans.getStatus() == Translation.STATUS_UNTRANSLATED) {
+//	                		dbTrans.setStatus(Translation.STATUS_UNTRANSLATED);
+//	                	}
+	                	
+	                	// update translation if got translated in delivered dict
+	                	if (dbTrans.getStatus() != Translation.STATUS_TRANSLATED && 
+	                			trans.getStatus() == Translation.STATUS_TRANSLATED &&
+	                			!trans.getTranslation().equals(text.getReference())) {
+	                		dbTrans.setTranslation(trans.getTranslation());
+	                		dbTrans.setStatus(Translation.STATUS_TRANSLATED);
 	                	}
-	                }*/
+	                }
 	                langSet.add(trans.getLanguage().getId());
 	            }
             }
