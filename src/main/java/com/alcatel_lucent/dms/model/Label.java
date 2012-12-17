@@ -200,6 +200,10 @@ public class Label extends BaseEntity {
 	// transient variable for REST service
 	private LabelTranslation ot;
 	private Translation ct;
+	private Integer t;
+	private Integer n;
+	private Integer i;
+	
 	public LabelTranslation getOt() {
 		return ot;
 	}
@@ -214,6 +218,30 @@ public class Label extends BaseEntity {
 
 	public void setCt(Translation ct) {
 		this.ct = ct;
+	}
+
+	public Integer getT() {
+		return t;
+	}
+
+	public void setT(Integer t) {
+		this.t = t;
+	}
+
+	public Integer getN() {
+		return n;
+	}
+
+	public void setN(Integer n) {
+		this.n = n;
+	}
+
+	public Integer getI() {
+		return i;
+	}
+
+	public void setI(Integer i) {
+		this.i = i;
 	}
 
 	/**
