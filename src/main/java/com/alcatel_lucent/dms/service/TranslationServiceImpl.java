@@ -25,6 +25,7 @@ import com.alcatel_lucent.dms.model.Application;
 import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryLanguage;
+import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.Language;
 import com.alcatel_lucent.dms.model.Translation;
 
@@ -278,6 +279,10 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     public Map<Long, int[]> getLabelTranslationSummary(Long dictId) {
     	Map<Long, int[]> result = new HashMap<Long, int[]>();
     	Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
+    	if (dict.getLabels() == null) return result;
+    	for (Label label : dict.getLabels()) {
+    		result.put(label.getId(), new int[] {0, 0, 0});
+    	}
     	
     	// count untranslated and in progress translations for each label
     	String hql = "select l.id,count(distinct dl.languageCode)" +
