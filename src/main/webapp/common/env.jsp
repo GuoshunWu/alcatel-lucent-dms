@@ -45,6 +45,16 @@
         paramWarn('buildNumber', param.buildNumber);
     }
     param.i18ngridfile = 'i18n/grid.locale-' + (gridI18NMap[param.locale] ? gridI18NMap[param.locale] : param.locale);
-
-
 </script>
+
+
+<div id="sessionTimeoutDialog" style="display: none" title="<s:text name="sessiontimout.title" />">
+    <table style="width: 100%;height: 100%">
+        <tr>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td align="center"><span id="timeOutMsg" style="color: red"><s:text name="sessiontimout.msg"/></span></td>
+        </tr>
+    </table>
+</div>

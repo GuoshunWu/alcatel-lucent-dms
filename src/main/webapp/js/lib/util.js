@@ -11,7 +11,7 @@ To change this template use File | Settings | File Templates.
 
 (function() {
 
-  define(["jquery"], function($) {
+  define(["jquery", "jqueryui", "i18n!nls/common"], function($, ui, c18n) {
     var formatJonString, newOption, pageNavi, sessionCheck, setCookie;
     String.prototype.format = function() {
       var args;
@@ -156,6 +156,7 @@ To change this template use File | Settings | File Templates.
     newOption = function(text, value, selected) {
       return "<option " + (selected ? 'selected ' : '') + "value='" + value + "'>" + text + "</option>";
     };
+    $.ajaxPrefilter(function(options, originalOptions, jqXHR) {});
     pageNavi = function() {
       $('#naviForm').bind('submit', function(e) {
         var appTree, node, productBaseId, type;
@@ -182,15 +183,27 @@ To change this template use File | Settings | File Templates.
       });
     };
     sessionCheck = function() {
+      $('#sessionTimeoutDialog').dialog({
+        width: 320,
+        modal: true,
+        autoOpen: false,
+        buttons: [
+          {
+            text: c18n.ok,
+            click: function(e) {
+              $(this).dialog('close');
+              return window.location = 'login/forward-to-https';
+            }
+          }
+        ]
+      });
       return $(document).on('ajaxSuccess', function(e, xhr, settings) {
         if (typeof console !== "undefined" && console !== null) {
           console.log("xhr.status=" + xhr.status);
         }
         if (203 === xhr.status) {
-          if (typeof console !== "undefined" && console !== null) {
-            console.log($.parseJSON(xhr.responseText));
-          }
-          return window.location = 'login/forward-to-https';
+          $('#sessionTimeoutDialog').dialog('open');
+          return typeof console !== "undefined" && console !== null ? console.log($.parseJSON(xhr.responseText)) : void 0;
         }
       });
     };
