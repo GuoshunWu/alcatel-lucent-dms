@@ -1,9 +1,7 @@
 package com.alcatel_lucent.dms.rest;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -18,6 +16,7 @@ import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.LabelTranslation;
 import com.alcatel_lucent.dms.model.Translation;
 import com.alcatel_lucent.dms.service.DictionaryService;
+import com.alcatel_lucent.dms.service.TranslationService;
 
 /**
  * Label REST service.
@@ -60,6 +59,9 @@ public class LabelREST extends BaseREST {
     @Autowired
     private DictionaryService dictionaryService;
     
+    @Autowired
+    private TranslationService translationService;
+    
     @Override
     @SuppressWarnings("rawtypes")
     public Class getEntityClass() {
@@ -94,6 +96,14 @@ public class LabelREST extends BaseREST {
 		Map<Long, Label> labelMap = new HashMap<Long, Label>();
 		if (langId == null) {
 			labels  = retrieve(hql, param, countHql, countParam, requestMap);
+			// add T/N/I information if no language was specified
+			Map<Long, int[]> summary = translationService.getLabelTranslationSummary(dictId);
+			for (Label label : labels) {
+				int[] tni = summary.get(label.getId());
+				label.setT(tni[0]);
+				label.setN(tni[1]);
+				label.setI(tni[2]);
+			}
 		} else {
 		// add ot and ct information if a specific language was specified
 			labels = dao.retrieve(hql, param);
@@ -186,5 +196,13 @@ public class LabelREST extends BaseREST {
     	
     	return toJSON(labels, requestMap);
     }
+
+	public TranslationService getTranslationService() {
+		return translationService;
+	}
+
+	public void setTranslationService(TranslationService translationService) {
+		this.translationService = translationService;
+	}
 
 }
