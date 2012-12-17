@@ -104,7 +104,7 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
   #  customed method executed when the grid is created.
   afterCreate: (grid)->
     grid.setGridParam 'datatype': 'json'
-    grid.setGroupHeaders {useColSpanStyle: false, groupHeaders: grid.getGridParam 'groupHeaders'}
+    grid.setGroupHeaders {useColSpanStyle: true, groupHeaders: grid.getGridParam 'groupHeaders'}
     grid.filterToolbar {stringResult: true, searchOnEnter: false} if getTableType() == 'dict'
 
     grid.navGrid '#transPager', {edit: false, add: false, del: false, search: false, view: false}
