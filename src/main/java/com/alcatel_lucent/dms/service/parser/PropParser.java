@@ -97,7 +97,7 @@ public class PropParser extends DictionaryParser {
 			String[] nameParts = splitFileName(file.getName());
 			String langCode = nameParts[2];
 			// reference file must end with "en.properties"
-			if (langCode.equalsIgnoreCase("EN")) {
+			if (langCode.equalsIgnoreCase("EN") || langCode.equalsIgnoreCase("EN-EN")) {
 				refLangCode = langCode;
 				refFile = file;
 				dictName = refFile.getAbsolutePath().replace("\\", "/");
