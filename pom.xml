@@ -654,6 +654,18 @@
                 <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
             </properties>
         </profile>
+        <profile>
+            <id>qa3-db</id>
+            <properties>
+                <db.driver>org.postgresql.Driver</db.driver>
+                <db.url>jdbc\:postgresql\://172.24.190.236\:5432/dms_qa3</db.url>
+                <db.user>dms</db.user>
+                <db.password>alcatel123</db.password>
+                <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
+                <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
+                <db.hbm2ddl.auto>create</db.hbm2ddl.auto>
+            </properties>
+        </profile>
 
         <profile>
             <id>dev</id>
@@ -722,6 +734,28 @@
                         <version>2.0</version>
                         <configuration>
                             <url>http://172.24.190.236:9999/manager/text</url>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+
+        </profile>
+
+        <profile>
+            <id>test3</id>
+            <properties>
+                <httpPort>7777</httpPort>
+                <httpsPort>7443</httpsPort>
+            </properties>
+            <build>
+                <defaultGoal>tomcat7:deploy</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.tomcat.maven</groupId>
+                        <artifactId>tomcat7-maven-plugin</artifactId>
+                        <version>2.0</version>
+                        <configuration>
+                            <url>http://172.24.190.236:7777/manager/text</url>
                         </configuration>
                     </plugin>
                 </plugins>
