@@ -56,15 +56,17 @@ public class DCTParser extends DictionaryParser {
             File[] dctFileOrDirs = file.listFiles(new FileFilter() {
                 @Override
                 public boolean accept(File pathname) {
-                    return pathname.isDirectory() || Util.isDCTFile(pathname)
-                            || Util.isZipFile(pathname);
+                    return pathname.isDirectory() || Util.isDCTFile(pathname);
+//                            || Util.isZipFile(pathname);
                 }
             });
             for (File dctFile : dctFileOrDirs) {
                 deliveredDicts.addAll(parse(rootDir, dctFile, acceptedFiles, exceptions));
             }
             return deliveredDicts;
-        } else if (!Util.isDCTFile(file)) {
+        }
+
+        if (!Util.isDCTFile(file)) {
         	return deliveredDicts;
         }
 

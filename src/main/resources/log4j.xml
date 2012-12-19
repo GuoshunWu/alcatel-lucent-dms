@@ -100,10 +100,10 @@
 
 
     <!--<logger name="org.hibernate.type">-->
-        <!--<level value="TRACE"/>-->
+    <!--<level value="TRACE"/>-->
     <!--</logger>-->
     <!--<logger name="org.hibernate.SQL">-->
-        <!--<level value="DEBUG"/>-->
+    <!--<level value="DEBUG"/>-->
     <!--</logger>-->
 
     <logger name="com.alcatel_lucent.dms">
@@ -123,9 +123,9 @@
     </logger>
 
 
-    <!--<logger name="com.alcatel_lucent.dms.filters.AuthenticationFilter">-->
-        <!--<level value="DEBUG"/>-->
-    <!--</logger>-->
+    <logger name="com.alcatel_lucent.dms.service.parser.XMLDictParser">
+        <level value="DEBUG"/>
+    </logger>
 
     <root>
         <level value="INFO"/>

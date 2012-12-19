@@ -198,6 +198,14 @@ public class Util {
         return isSpecificFile(file.getName(), ".properties");
     }
 
+    public static boolean isXdcpFile(File file) {
+        return isSpecificFile(file.getName(), ".xdcp");
+    }
+
+    public static boolean isXdctFile(File file) {
+        return isSpecificFile(file.getName(), ".xdct");
+    }
+
     public static boolean isXmlFile(File file) {
         return isSpecificFile(file.getName(), ".xml");
     }
