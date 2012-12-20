@@ -23,9 +23,9 @@ define ['jqgrid', 'i18n!nls/appmng', 'appmng/dialogs', 'util', 'require'], ($, i
 
     colModel: [
       {name: 'id', index: 'id', width: 55, align: 'center', editable: false, hidden: true}
-      {name: 'name', index: 'name', width: 100, editable: false, align: 'center'}
-      {name: 'version', index: 'version', width: 90, editable: true, classes: 'editable-column', align: 'center', edittype: 'select', editoptions: {value: {}}}
-      {name: 'dictNum', index: 'dictNum', width: 80, editable: false, align: 'center'}
+      {name: 'name', index: 'name', width: 100, editable: false, align: 'left'}
+      {name: 'version', index: 'version', width: 90, editable: true, classes: 'editable-column', align: 'left', edittype: 'select', editoptions: {value: {}}}
+      {name: 'dictNum', index: 'dictNum', width: 80, editable: false, align: 'right'}
     ],
     afterEditCell: (id, name, val, iRow, iCol)->
       if name == 'version'

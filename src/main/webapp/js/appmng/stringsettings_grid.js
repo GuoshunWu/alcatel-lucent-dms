@@ -100,7 +100,7 @@
         {
           startColumnName: "t",
           numberOfColumns: 3,
-          titleText: 'Status'.bold()
+          titleText: 'Status'
         }
       ]
     });
