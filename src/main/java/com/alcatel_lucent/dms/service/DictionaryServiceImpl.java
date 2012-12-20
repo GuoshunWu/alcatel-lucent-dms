@@ -511,7 +511,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 //        for (DictionaryLanguage dl : dict.getDictLanguages()) {
 //            langCodeMap.put(dl.getLanguage().getId(), dl.getLanguageCode()) ;
 //        }
+        int sortNo = 1;
         for (Label label : dict.getLabels()) {
+        	label.setSortNo(sortNo++);
             String contextName = label.getContext().getName();
             Text text = new Text();
             text.setReference(label.getReference());
@@ -646,7 +648,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             }
             
             // NOTE: following code is only executed in DELIVERY_MODE
-            int sortNo = 1;
             for (Label label : labels) {
                 // create or update label
                 Label dbLabel = dbDict.getLabel(label.getKey());
@@ -655,7 +656,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     label.setDictionary(dbDict);
                     label.setContext(context);
                     label.setText(dbTextMap.get(label.getReference()));
-                    label.setSortNo(sortNo++);
                     dbLabel = (Label) dao.create(label, false);
                 } else {
                     newLabel = false;
@@ -667,7 +667,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     dbLabel.setReference(label.getReference());
                     dbLabel.setAnnotation1(label.getAnnotation1());
                     dbLabel.setAnnotation2(label.getAnnotation2());
-                    dbLabel.setSortNo(sortNo++);
+                    dbLabel.setSortNo(label.getSortNo());
                 }
                 
                 // create or update LabelTranslation
