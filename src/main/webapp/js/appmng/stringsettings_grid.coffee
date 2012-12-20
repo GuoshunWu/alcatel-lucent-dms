@@ -26,7 +26,7 @@ define ['jqgrid', 'require'], ($, require)->
   .jqGrid('navGrid', '#stringSettingsPager', {edit: false, add: false, del: false, search: false, view: false},
     {}, {}, {})
   .setGroupHeaders {useColSpanStyle: true, groupHeaders: [
-    {startColumnName: "t", numberOfColumns: 3, titleText: 'Status'.bold()}
+    {startColumnName: "t", numberOfColumns: 3, titleText: 'Status'}
   ]}
 
   saveLastEditedCell: ()->dicGrid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
