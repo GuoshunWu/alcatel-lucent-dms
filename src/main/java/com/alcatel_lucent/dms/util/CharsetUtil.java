@@ -50,6 +50,8 @@ public class CharsetUtil {
 			return ub.equals("CYRILLIC");
 		} else if (lang.equals("Greek")) {
 			return ub.equals("GREEK");
+		} else if (lang.equals("Hebrew")) {
+			return ub.equals("HEBREW");
 		} else {
 			return ub.startsWith("LATIN_");
 		}
