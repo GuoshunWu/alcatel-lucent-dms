@@ -7,7 +7,6 @@ define ['jqgrid', 'require'], ($, require)->
     pager: '#stringSettingsPager'
     editurl: ""
     rowNum: 10, rowList: [10, 20, 30]
-    sortname: 'key'
     sortorder: 'asc'
     viewrecords: true
     gridview: true, multiselect: true, cellEdit: true, cellurl: 'app/update-label'
@@ -15,9 +14,9 @@ define ['jqgrid', 'require'], ($, require)->
     colModel: [
       {name: 'key', index: 'key', width: 100, editable: false, align: 'left'}
       {name: 'reference', index: 'reference', width: 200, editable: false, align: 'left'}
-      {name: 't', index: 't', sortable: false, width: 15, align: 'right'}
-      {name: 'n', index: 'n', sortable: false, width: 15, align: 'right'}
-      {name: 'i', index: 'i', sortable: false, width: 15, align: 'right'}
+      {name: 't', index: 't', sortable: true, width: 15, align: 'right'}
+      {name: 'n', index: 'n', sortable: true, width: 15, align: 'right'}
+      {name: 'i', index: 'i', sortable: true, width: 15, align: 'right'}
       {name: 'maxLength', index: 'maxLength', width: 40, editable: true, classes: 'editable-column', align: 'right'}
       {name: 'context', index: 'context.name', editrules: {required: true}, width: 40, editable: true, classes: 'editable-column', align: 'left'}
       {name: 'description', index: 'description', width: 60, editable: true, classes: 'editable-column', align: 'left'}

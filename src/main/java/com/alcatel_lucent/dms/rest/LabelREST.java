@@ -1,6 +1,9 @@
 package com.alcatel_lucent.dms.rest;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -91,11 +94,21 @@ public class LabelREST extends BaseREST {
     	param.put("dictId", dictId);
     	countParam.put("dictId", dictId);
 		hql = "select obj from Label obj where obj.dictionary.id=:dictId";
-		hql += " order by " + sidx + " " + sord;
+    	LabelSorter tniSorter = null;
+		if (!sidx.equals("t") && !sidx.equals("n") && !sidx.equals("i")) {
+			hql += " order by " + sidx + " " + sord;
+		} else {
+			tniSorter = new LabelSorter(sidx, sord);
+		}
 		Collection<Label> labels; 
 		Map<Long, Label> labelMap = new HashMap<Long, Label>();
 		if (langId == null) {
-			labels  = retrieve(hql, param, countHql, countParam, requestMap);
+			if (tniSorter == null) {
+				labels  = retrieve(hql, param, countHql, countParam, requestMap);
+			} else {
+				labels = new ArrayList<Label>(dao.retrieve(hql, param, null));
+				requestMap.put("records", "" + labels.size());
+			}
 			// add T/N/I information if no language was specified
 			Map<Long, int[]> summary = translationService.getLabelTranslationSummary(dictId);
 			for (Label label : labels) {
@@ -104,6 +117,11 @@ public class LabelREST extends BaseREST {
 				label.setN(tni[1]);
 				label.setI(tni[2]);
 			}
+			if (tniSorter != null) {
+				Collections.sort((ArrayList<Label>)labels, tniSorter);
+				labels = pageFilter(labels, requestMap);
+			}
+			
 		} else {
 		// add ot and ct information if a specific language was specified
 			labels = dao.retrieve(hql, param);
@@ -205,4 +223,23 @@ public class LabelREST extends BaseREST {
 		this.translationService = translationService;
 	}
 
+}
+
+class LabelSorter implements Comparator<Label> {
+	private String field, sord;
+	public LabelSorter(String field, String sord) {
+		this.field = field;
+		this.sord = sord;
+	}
+	@Override
+	public int compare(Label label1, Label label2) {
+		if (field.equals("t")) {
+			return (sord.equalsIgnoreCase("ASC") ? 1 : -1 ) * (label1.getT() - label2.getT());
+		} else if (field.equals("n")) {
+			return (sord.equalsIgnoreCase("ASC") ? 1 : -1 ) * (label1.getN() - label2.getN());
+		} else if (field.equals("i")) {
+			return (sord.equalsIgnoreCase("ASC") ? 1 : -1 ) * (label1.getI() - label2.getI());
+		}
+		return 0;
+	}
 }
