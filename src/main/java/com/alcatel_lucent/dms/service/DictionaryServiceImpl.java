@@ -86,7 +86,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         super();
     }
 
-    public Collection<Dictionary> previewDictionaries(String rootDir, File file) throws BusinessException {
+    public Collection<Dictionary> previewDictionaries(String rootDir, File file, Long appId) throws BusinessException {
     	Collection<Dictionary> result = new ArrayList<Dictionary>();
     	BusinessException exceptions = new BusinessException(BusinessException.PREVIEW_DICT_ERRORS);
     	rootDir = rootDir.replace("\\", "/");
@@ -128,10 +128,58 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     		log.error(exceptions);
     		throw exceptions;
     	}
-    	populateDefaultContext(result);
+
+		// set id, version for preview process
+		// if dictionary already exists, get language/charset/label information from existing one
+		Application app = (Application) dao.retrieve(Application.class, appId);
+		long dictFid = 1;
+		for (Dictionary dict : result) {
+			Dictionary dbDict = findLatestDictionaryInApp(appId, dict.getName());
+			dict.setId(dictFid++);
+			dict.setVersion(app.getVersion());
+			if (dict.getDictLanguages() != null) {
+				long dlFid = 1;
+				for (DictionaryLanguage dl : dict.getDictLanguages()) {
+					dl.setId(dlFid++);
+					if (dbDict != null) {
+						DictionaryLanguage dbDl = dbDict.getDictLanguage(dl.getLanguageCode());
+						if (dbDl != null) {
+							dl.setLanguage(dbDl.getLanguage());
+							dl.setCharset(dbDl.getCharset());
+						}
+					}
+				}
+			}
+			if (dict.getLabels() != null) {
+				long labelFid = 1;
+				for (Label label : dict.getLabels()) {
+					label.setId(labelFid++);
+					if (dbDict != null) {
+						Label dbLabel = dbDict.getLabel(label.getKey());
+						if (dbLabel != null) {
+							label.setContext(dbLabel.getContext());
+							if (label.getMaxLength() == null) {
+								label.setMaxLength(dbLabel.getMaxLength());
+							}
+							if (label.getDescription() == null) {
+								label.setDescription(dbLabel.getDescription());
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		populateDefaultContext(result);
+		
+		for (Dictionary dict : result) {
+			// populate additional errors and warnings
+			dict.validate();
+		}
+
     	return result;
     }
-    
+ 
     /**
      * Determine default context of labels which have no context info.
      * If the label was already assigned to a context, keep it;
@@ -226,6 +274,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 		}
 		
 	}
+
 
 	private Collection<String> getNotAcceptedFiles(File file,
 			HashSet<String> allAcceptedFiles) {
