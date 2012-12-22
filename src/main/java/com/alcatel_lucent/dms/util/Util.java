@@ -20,8 +20,14 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections.Predicate;
+import org.apache.commons.collections.Transformer;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.mozilla.intl.chardet.HtmlCharsetDetector;
 import org.mozilla.intl.chardet.nsDetector;
@@ -29,6 +35,12 @@ import org.mozilla.intl.chardet.nsICharsetDetectionObserver;
 import org.mozilla.intl.chardet.nsPSMDetector;
 
 import com.alcatel_lucent.dms.SystemError;
+
+import static org.apache.commons.collections.MapUtils.orderedMap;
+import static org.apache.commons.collections.MapUtils.typedMap;
+import static org.apache.commons.lang3.ArrayUtils.toArray;
+import static org.apache.commons.lang3.ArrayUtils.toMap;
+import static org.apache.commons.lang3.StringUtils.defaultString;
 
 /**
  * @author guoshunw
@@ -410,13 +422,76 @@ public class Util {
      * @param patterns the pattern list
      * @return true if atr match any pattern in the list or false
      */
-    public static boolean anyMatch(String str, List<String> patterns) {
-        for (String pattern : patterns) {
-            if (str.matches(pattern)) {
-                log.debug(str + " match pattern " + pattern);
-                return true;
+    public static boolean anyMatch(final String str, List<String> patterns) {
+        return CollectionUtils.exists(patterns, new Predicate() {
+            @Override
+            public boolean evaluate(Object object) {
+                return str.matches((String) object);
             }
+        });
+//        for (String pattern : patterns) {
+//            if (str.matches(pattern)) {
+//                log.debug(str + " match pattern " + pattern);
+//                return true;
+//            }
+//        }
+//        return false;
+    }
+
+    /**
+     * Convert a string to map by separators
+     *
+     * @param str        to be converted string
+     * @param separators the map entries and entry key value pairs separator
+     *                   The first separator will be the separator for entries, default semicolon(;)
+     *                   The second separator will be the separator for key value pairs, default equals(=)
+     * @return the converted map
+     */
+    public static Map<String, String> string2Map(String str, String... separators) {
+        if (StringUtils.isEmpty(str)) {
+            return MapUtils.EMPTY_MAP;
         }
-        return false;
+        String entrySep = "\\s*;\\s*";
+        String keyValueSep = "\\s*=\\s*";
+        if (separators.length > 0) entrySep = "\\s*" + separators[0] + "\\s*";
+        if (separators.length > 1) keyValueSep = "\\s*" + separators[1] + "\\s*";
+
+        final String finalKeyValueSep = keyValueSep;
+        List<String[]> lstEntries = (List<String[]>) CollectionUtils.collect(Arrays.asList(str.split(entrySep)), new Transformer() {
+            @Override
+            public Object transform(Object input) {
+                return ((String) input).split(finalKeyValueSep);
+            }
+        });
+        return orderedMap(typedMap(toMap(lstEntries.toArray(new String[0][])), String.class, String.class));
+    }
+
+    /**
+     * Convert a to map to string by separators
+     *
+     * @param map        to be converted map
+     * @param separators the map entries and entry key value pairs separator
+     *                   The first separator will be the separator for entries, default semicolon(;)
+     *                   The second separator will be the separator for key value pairs, default equals(=)*
+     * @return the string result.
+     */
+    public static String map2String(Map map, String... separators) {
+        if (MapUtils.isEmpty(map)) {
+            return StringUtils.EMPTY;
+        }
+        String entrySep = ";";
+        String keyValueSep = "=";
+        if (separators.length > 0) entrySep = separators[0];
+        if (separators.length > 1) keyValueSep = separators[1];
+        final String finalKeyValueSep = keyValueSep;
+
+        return StringUtils.join(
+                CollectionUtils.collect(map.entrySet(), new Transformer() {
+                    @Override
+                    public Object transform(Object input) {
+                        Map.Entry entry = (Map.Entry) input;
+                        return entry.getKey() + finalKeyValueSep + entry.getValue();
+                    }
+                }), entrySep);
     }
 }

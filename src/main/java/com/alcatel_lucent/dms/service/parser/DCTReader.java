@@ -3,31 +3,20 @@
  */
 package com.alcatel_lucent.dms.service.parser;
 
+import com.alcatel_lucent.dms.BusinessException;
+import com.alcatel_lucent.dms.BusinessWarning;
+import com.alcatel_lucent.dms.model.Dictionary;
+import com.alcatel_lucent.dms.model.*;
+import com.alcatel_lucent.dms.service.LanguageService;
+import org.apache.log4j.Logger;
+
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.log4j.Logger;
-
-import com.alcatel_lucent.dms.BusinessException;
-import com.alcatel_lucent.dms.BusinessWarning;
-import com.alcatel_lucent.dms.model.Charset;
-import com.alcatel_lucent.dms.model.Context;
-import com.alcatel_lucent.dms.model.Dictionary;
-import com.alcatel_lucent.dms.model.DictionaryLanguage;
-import com.alcatel_lucent.dms.model.Label;
-import com.alcatel_lucent.dms.model.LabelTranslation;
-import com.alcatel_lucent.dms.model.Language;
-import com.alcatel_lucent.dms.service.LanguageService;
 
 /**
  * @author Guoshun.Wu
@@ -178,6 +167,7 @@ public class DCTReader extends LineNumberReader {
            * End sign is next Label begin, which is the line end with colon
            */
         String key = labelKey.substring(0, labelKey.length() - 1);
+
 
         Label label = new Label();
         label.setKey(key);

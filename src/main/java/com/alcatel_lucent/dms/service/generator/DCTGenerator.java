@@ -19,8 +19,6 @@ import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryLanguage;
 import com.alcatel_lucent.dms.model.Label;
-import com.alcatel_lucent.dms.model.LabelTranslation;
-import com.alcatel_lucent.dms.model.Translation;
 import com.alcatel_lucent.dms.service.DaoService;
 
 @Component("DCTGenerator")

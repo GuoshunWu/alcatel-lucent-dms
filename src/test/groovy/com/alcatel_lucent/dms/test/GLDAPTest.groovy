@@ -23,7 +23,7 @@ class GLDAPTest {
 
     }
 
-    @Test
+//    @Test
     public void testAlcatelLDAP() throws Exception {
         String INITCTX = "com.sun.jndi.ldap.LdapCtxFactory"
         String ldapUrl = "ldap://ldap.sxb.bsf.alcatel.fr"
@@ -53,13 +53,13 @@ class GLDAPTest {
         Attributes attrs = null
         results.toList().each {result ->
             attrs = result.attributes
-            attrs.all.toList().each {attr->
+            attrs.all.toList().each {attr ->
                 println attr
             }
 //            println attrs.cn.get()
 //            println attrs.cslx500.get()
 //            println attrs.mail.get()
-            
+
             println '=' * 80
         }
         ctx.close()
@@ -99,6 +99,11 @@ class GLDAPTest {
         }
         results.close()
         ctx.close()
+    }
+
+    @Test
+    void tempTest() {
+        println org.apache.commons.lang3.StringUtils.removeEnd('abc', 'c')
     }
 
 }

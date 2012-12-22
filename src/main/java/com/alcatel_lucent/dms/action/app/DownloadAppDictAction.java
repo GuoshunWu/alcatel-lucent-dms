@@ -1,19 +1,13 @@
 package com.alcatel_lucent.dms.action.app;
 
 import com.alcatel_lucent.dms.action.JSONAction;
-import com.alcatel_lucent.dms.service.DictionaryService;
-import com.alcatel_lucent.dms.util.Util;
-import com.opensymphony.xwork2.ActionSupport;
-import com.opensymphony.xwork2.inject.Inject;
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Result;
 
 import javax.servlet.ServletContext;
 import java.io.*;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
 
 /**
  * Action of download dictionaries
