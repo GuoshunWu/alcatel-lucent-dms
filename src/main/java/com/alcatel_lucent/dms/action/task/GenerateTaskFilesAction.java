@@ -2,7 +2,6 @@ package com.alcatel_lucent.dms.action.task;
 
 import com.alcatel_lucent.dms.UserContext;
 import com.alcatel_lucent.dms.action.JSONAction;
-import com.alcatel_lucent.dms.service.DictionaryService;
 import com.alcatel_lucent.dms.service.TaskService;
 import com.alcatel_lucent.dms.util.Util;
 import org.apache.struts2.convention.annotation.ParentPackage;

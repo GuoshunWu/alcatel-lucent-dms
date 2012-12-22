@@ -1,17 +1,13 @@
 package com.alcatel_lucent.dms.action.app;
 
-import com.alcatel_lucent.dms.SpringContext;
 import com.alcatel_lucent.dms.UserContext;
 import com.alcatel_lucent.dms.action.JSONAction;
 import com.alcatel_lucent.dms.service.DeliveringDictPool;
 import com.alcatel_lucent.dms.util.Util;
-import com.opensymphony.xwork2.inject.Inject;
 import org.apache.log4j.Logger;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
-import org.springframework.context.ApplicationContext;
 
 import java.io.File;
 import java.text.SimpleDateFormat;

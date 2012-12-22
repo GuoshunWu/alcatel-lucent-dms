@@ -4,17 +4,11 @@ import com.alcatel_lucent.dms.UserContext;
 import com.alcatel_lucent.dms.action.JSONAction;
 import com.alcatel_lucent.dms.service.DictionaryService;
 import com.alcatel_lucent.dms.util.Util;
-import com.opensymphony.xwork2.inject.Inject;
-import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.springframework.beans.factory.annotation.Value;
 
-import javax.servlet.ServletContext;
 import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 

@@ -26,7 +26,6 @@ import org.springframework.stereotype.Component;
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.Constants;
-import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryBase;
 import com.alcatel_lucent.dms.model.DictionaryLanguage;

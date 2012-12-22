@@ -2,8 +2,8 @@ package com.alcatel_lucent.dms.service.parser;
 
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.Constants;
+import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
-import com.alcatel_lucent.dms.model.DictionaryBase;
 import com.alcatel_lucent.dms.service.LanguageService;
 import com.alcatel_lucent.dms.util.Util;
 import com.alcatel_lucent.dms.util.XDCPDTDEntityResolver;
@@ -16,6 +16,10 @@ import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.util.*;
+
+import static org.apache.commons.lang3.BooleanUtils.toBoolean;
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 @Component("XmlDictParser")
 @SuppressWarnings("unchecked")
@@ -45,7 +49,7 @@ public class XMLDictParser extends DictionaryParser {
     }
 
     public Dictionary processDictionary(Map.Entry<String, Collection<File>> entry) {
-        log.info("Parsing xdct '" + entry.getKey() + " in '" + entry.getValue());
+        log.info(center("Start parsing dictionary '" + entry.getKey() + "' in " + entry.getValue(), 50, '='));
 
         DictionaryBase dictBase = new DictionaryBase();
         dictBase.setName(entry.getKey());
@@ -54,11 +58,16 @@ public class XMLDictParser extends DictionaryParser {
         dictBase.setFormat(Constants.DICT_FORMAT_XDCT);
 
         Dictionary dictionary = new Dictionary();
+        dictionary.setDictLanguages(new ArrayList<DictionaryLanguage>());
+        dictionary.setLabels(new ArrayList<Label>());
+
         dictionary.setBase(dictBase);
 
         for (File xdct : entry.getValue()) {
             parseXdctFile(dictionary, xdct);
         }
+
+        log.info(center("Parsing dictionary '" + entry.getKey() + "' complete.", 100, '='));
         return dictionary;
     }
 
@@ -66,6 +75,8 @@ public class XMLDictParser extends DictionaryParser {
         SAXReader saxReader = new SAXReader();
         saxReader.setEntityResolver(xdctdtdEntityResolver);
         Document document;
+
+        log.info(center("Parsing '" + xdctFile + "' for dictionary '" + dict.getName() + "'", 50, '='));
         try {
             document = saxReader.read(xdctFile);
         } catch (Exception e1) {
@@ -74,6 +85,7 @@ public class XMLDictParser extends DictionaryParser {
         }
 
         Element elemDict = document.getRootElement();
+
 //      the name of this dictionary
         String name = elemDict.attributeValue("name");
         /*
@@ -86,39 +98,82 @@ public class XMLDictParser extends DictionaryParser {
         String appli = elemDict.attributeValue("appli");
 //      To cut help's key. This attribute is used if only type is 'help'
         String sep = elemDict.attributeValue("separator");
-//      Only name is used here
+
         if (!name.equals(dict.getName())) {
             log.error("The dictionary name " + name + " in" + xdctFile + " is not same with dictionary name' " + dict.getName() + "'");
             return;
         }
+//        save the related info in dict annotation1
+        dict.setAnnotation1(String.format("name=%s;type=%s;appli=%s;separator=%s", name, type, appli, sep));
+        if (null == dict.getPath()) dict.setPath(xdctFile.getPath());
+//        dict.setEncoding(document.getXMLEncoding());
+
+        /*
+       * @see XLanguage comments
+       * */
         Collection<XLanguage> languages = readLanguagesFromElementList(elemDict.elements("LANGUAGE"));
-//        TODO: convert language to DictionaryLanguage
+        for (XLanguage language : languages) processLanguage(language, dict);
 
         List<Element> keys = elemDict.elements("KEY");
-        for (Element key : keys) {
-            processKey(key);
-        }
+        for (Element key : keys) processKey(key, dict);
+
     }
 
+    private void processLanguage(XLanguage xLanguage, Dictionary dict) {
+        DictionaryLanguage dictLanguage = dict.getDictLanguage(xLanguage.getId());
+        if (null != dictLanguage) {
+            log.debug("Language code '" + dictLanguage.getLanguageCode() + "' already added in dictionary " + dict.getName() + ", ignore.");
+            return;
+        }
+        dictLanguage = new DictionaryLanguage();
 
-    private void processKey(Element key) {
-        key.attributeValue("name");
+        dictLanguage.setDictionary(dict);
+
+        dictLanguage.setLanguageCode(xLanguage.getId());
+        dictLanguage.setLanguage(languageService.getLanguage(xLanguage.getId()));
+        dictLanguage.setCharset(languageService.getCharset(dict.getEncoding()));
+
+        dictLanguage.setAnnotation1(String.format("is_reference=%s;is_context=%s", xLanguage.isIs_reference(), xLanguage.isIs_context()));
+        dictLanguage.setSortNo(-1);
+
+        dict.addDictLanguage(dictLanguage);
+    }
+
+    private void processKey(Element key, Dictionary dict) {
+        String name = key.attributeValue("name");
+        Label label = dict.getLabel(name);
+        if (null == label) {
+            label = new Label();
+            label.setOrigTranslations(new ArrayList<LabelTranslation>());
+            label.setKey(name);
+        }
+
+        label.setDictionary(dict);
+
         /**
          * Indicates global state of translations of this element, this attribute is used in merge process
          * value 'new' indicates that it's a new created KEY, it must translate in each languages
          * value 'modified' indicates the element KEY is modified, so it need translate one more time
          * value 'unmodified' indicates the element KEY is unmodified, so it need not translate one more time
          * */
-        key.attributeValue("state");
+        String state = key.attributeValue("state");
 //      An information field about graphic object which is used this KEY, 'other' indicates no specific graphic zone
-        key.attributeValue("gui_object");
+        String guiObject = defaultString(key.attributeValue("gui_object"), "other");
 //      an Information field about category of this 'KEY'
-        key.attributeValue("message_category");
+        String msgCategory = defaultString(key.attributeValue("message_category"), "label");
 //      controls maxi lines number of each translation, allowed values are number or "unlimited"
-        key.attributeValue("lines");
+        String lines = defaultString(key.attributeValue("lines"), "1");
 //      controls maxi columns number of each line, allowed values are number or "unlimited"
-        key.attributeValue("columns");
+        String column = defaultString(key.attributeValue("columns"), "-1");
 
+        label.setAnnotation1(String.format("name=%s;columns=%s;state=%s;lines=%s;gui_object=%s;message_category=%s", name, column, state, lines, guiObject, msgCategory));
+
+//        Label
+        label.setSortNo(-1);
+
+        if ("unlimited".equals(lines)) lines = "-1";
+        if ("unlimited".equals(column)) lines = "-1";
+        label.setMaxLength(lines + '*' + column);
 
         /**
          * A comment from translator to programmer about translation
@@ -126,11 +181,28 @@ public class XMLDictParser extends DictionaryParser {
          * */
         List<Element> elemComments = key.elements("COMMENT");
 
+        for (Element elementComment : elemComments) {
+            LabelTranslation lt = getOrCreateNewLabelTranslation(elementComment.attributeValue("language"), label);
+//            comment for language '$code'
+            lt.setAnnotation1(lt.getAnnotation1() + ";comment=" + elementComment.getTextTrim());
+        }
+
         /**
          * Contains some context descriptions about 'KEY'
          * Attribute 'language' references an existing element LANGUAGE
          * */
         List<Element> elemContexts = key.elements("CONTEXT");
+        for (Element elementContext : elemContexts) {
+            String langCode = elementContext.attributeValue("language");
+            String contextText = elementContext.getTextTrim();
+            if ("gae".equalsIgnoreCase(langCode)) {
+                label.setAnnotation2(label.getAnnotation2() + ";context=" + contextText);
+                continue;
+            }
+            LabelTranslation lt = getOrCreateNewLabelTranslation(langCode, label);
+            lt.setAnnotation2(lt.getAnnotation2() + ";context=" + contextText);
+        }
+
         /**
          * A text help writted in specified language associated to 'KEY'. It's made up of string, image and table as translation
          * Attribute 'language' references an existing element LANGUAGE
@@ -140,6 +212,15 @@ public class XMLDictParser extends DictionaryParser {
          * Value 'validated' means this translation is validated
          * */
         List<Element> elemHelps = key.elements("HELP");
+        for (Element elemHelp : elemHelps) {
+            String langCode = elemHelp.attributeValue("language");
+            if ("gae".equalsIgnoreCase(langCode)) {
+                label.setAnnotation2(label.getAnnotation2()+";help="+elemHelp.getTextTrim());
+                continue;
+            }
+            LabelTranslation lt = getOrCreateNewLabelTranslation(langCode, label);
+            lt.setAnnotation2(lt.getAnnotation2() + ";help=" + elemHelp.getTextTrim());
+        }
         /**
          * 'PARAM' is a generic element which is used to define a specific parameter for a application
          * Attribute 'name' defines name of this parameter
@@ -147,13 +228,20 @@ public class XMLDictParser extends DictionaryParser {
          * Example : a parameter indiques the type of a KEY : name='type' value ='class' or 'attribute'
          * */
         List<Element> elemParams = key.elements("PARAM");
+        for (Element elemParam : elemParams) {
+            String pName = elemParam.attributeValue("name");
+            String pValue = elemParam.attributeValue("value");
+            label.addParam(pName, pValue);
+        }
 
         /**
          * 'STATIC_TOKEN' is a string don't need to translate, so this strings must find again unchanged in each translation.
          * Example : Alcatel or OmniVista 4760
          * */
         List<Element> elemStaticTokens = key.elements("STATIC_TOKEN");
-
+        for (Element elemStaticToken : elemStaticTokens) {
+            label.addStaticToken(elemStaticToken.getTextTrim());
+        }
         /**
          * A translation writted in specified language associated to 'KEY'. It's made up of string, image and table.
          * Attribute 'language' references an existing element LANGUAGE
@@ -165,6 +253,30 @@ public class XMLDictParser extends DictionaryParser {
          * */
         List<Element> elemTranslations = key.elements("TRANSLATION");
 
+        for (Element elemTrans : elemTranslations) {
+            String langCode = elemTrans.attributeValue("language");
+            if ("gae".equalsIgnoreCase(langCode)) {
+                label.setReference(elemTrans.getTextTrim());
+                continue;
+            }
+            LabelTranslation lt = getOrCreateNewLabelTranslation(langCode, label);
+            lt.setOrigTranslation(elemTrans.getTextTrim());
+            String followUp = elemTrans.attributeValue("follow_up");
+            lt.setAnnotation2(lt.getAnnotation2() + ";follow_up=" + followUp);
+        }
+    }
+
+    private LabelTranslation getOrCreateNewLabelTranslation(String code, Label label) {
+        LabelTranslation lt = label.getOrigTranslation(code);
+        if (null == lt) {
+            lt = new LabelTranslation();
+            lt.setLabel(label);
+            lt.setLanguageCode(code);
+            lt.setSortNo(-1);
+            DictionaryLanguage dl = label.getDictionary().getDictLanguage(code);
+            lt.setLanguage(null == dl ? null : dl.getLanguage());
+        }
+        return lt;
     }
 
     /**
@@ -173,7 +285,7 @@ public class XMLDictParser extends DictionaryParser {
      * @param file      a xdcp file or a dir contained xdcp and xdct files.
      * @param propFiles the initial map for xdct files group.
      * @return map which contained grouped dct files, the key is their name, and the value is a collection of this
-     *         dictionary related File objects..
+     *         dictionary related File objects.
      */
     public Map<String, Collection<File>> groupDictionaries(File file, Map<String, Collection<File>> propFiles) {
         if (file.isFile()) {
@@ -248,10 +360,11 @@ public class XMLDictParser extends DictionaryParser {
     private Collection<XLanguage> readLanguagesFromElementList(List<Element> elemLanguages) {
         Collection<XLanguage> languages = new ArrayList<XLanguage>();
         for (Element elemLanguage : elemLanguages) {
-            languages.add(new XLanguage(
-                    elemLanguage.attributeValue("id"),
-                    null != elemLanguage.attributeValue("is_reference") ? elemLanguage.attributeValue("is_reference").equals("true") : false,
-                    null != elemLanguage.attributeValue("is_context'") ? elemLanguage.attributeValue("is_reference").equals("true") : false));
+
+            languages.add(new XLanguage(elemLanguage.attributeValue("id"),
+                    toBoolean(elemLanguage.attributeValue("is_reference")),
+                    toBoolean(elemLanguage.attributeValue("is_context'")))
+            );
         }
         return languages;
     }
@@ -268,6 +381,10 @@ public class XMLDictParser extends DictionaryParser {
         private boolean is_reference;
         private boolean is_context;
 
+        @Override
+        public String toString() {
+            return reflectionToString(this);
+        }
 
         XLanguage() {
         }
@@ -315,10 +432,7 @@ public class XMLDictParser extends DictionaryParser {
 
         @Override
         public String toString() {
-            return "XDictionary{" +
-                    "name='" + name + '\'' +
-                    ", path='" + path + '\'' +
-                    '}';
+            return reflectionToString(this);
         }
 
         XDictionary() {
@@ -354,6 +468,11 @@ public class XMLDictParser extends DictionaryParser {
         private String name;
         private Collection<XLanguage> languages = new ArrayList<XLanguage>();
         private Collection<XDictionary> dictionaries = new ArrayList<XDictionary>();
+
+        @Override
+        public String toString() {
+            return reflectionToString(this);
+        }
 
         XMLProject() {
         }

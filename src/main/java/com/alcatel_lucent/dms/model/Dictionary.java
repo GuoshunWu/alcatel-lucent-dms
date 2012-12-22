@@ -7,6 +7,9 @@ import java.util.*;
 
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
+import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 public class Dictionary extends BaseEntity {
 
@@ -27,7 +30,15 @@ public class Dictionary extends BaseEntity {
     public String getName() {
         return base.getName();
     }
-
+    
+    public void addDictLanguage(DictionaryLanguage dictionaryLanguage){
+        this.dictLanguages.add(dictionaryLanguage);
+    }
+    
+    public void addLabel(Label label){
+        this.labels.add(label);
+    }
+    
     public String getLanguageReferenceCode() {
         String ref = refCodes.get(getFormat());
         return null == ref ? "en" : ref;
@@ -471,4 +482,11 @@ public class Dictionary extends BaseEntity {
 		
 	}
 
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("name",getName())
+                .append("version",version)
+                .toString();
+    }
 }
