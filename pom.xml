@@ -388,12 +388,6 @@
             <artifactId>commons-jci-fam</artifactId>
             <version>1.0</version>
         </dependency>
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-            <version>3.2.1</version>
-        </dependency>
-
 
     </dependencies>
 
@@ -616,7 +610,7 @@
                 <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
                 <db.dialect>org.hibernate.dialect.H2Dialect</db.dialect>
                 <!-- none, create, create-drop, update, validate -->
-                <db.hbm2ddl.auto>none</db.hbm2ddl.auto>
+                <db.hbm2ddl.auto>create</db.hbm2ddl.auto>
             </properties>
         </profile>
         <profile>
