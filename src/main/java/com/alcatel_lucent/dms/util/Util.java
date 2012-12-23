@@ -24,6 +24,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.collections.Transformer;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -447,9 +448,9 @@ public class Util {
      *                   The second separator will be the separator for key value pairs, default equals(=)
      * @return the converted map
      */
-    public static Map<String, String> string2Map(String str, String... separators) {
+    public static Map string2Map(String str, String... separators) {
         if (StringUtils.isEmpty(str)) {
-            return MapUtils.EMPTY_MAP;
+            return new HashedMap();
         }
         String entrySep = "\\s*;\\s*";
         String keyValueSep = "\\s*=\\s*";
@@ -463,7 +464,7 @@ public class Util {
                 return ((String) input).split(finalKeyValueSep);
             }
         });
-        return orderedMap(typedMap(toMap(lstEntries.toArray(new String[0][])), String.class, String.class));
+        return toMap(lstEntries.toArray(new String[0][]));
     }
 
     /**

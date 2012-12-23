@@ -13,7 +13,8 @@ import org.apache.commons.collections.ListUtils
 import org.apache.commons.collections.Transformer
 import org.apache.commons.collections.Predicate
 import org.apache.commons.collections.functors.EqualPredicate
-import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections.MapUtils
+import com.alcatel_lucent.dms.model.Label;
 
 /**
  * Created by IntelliJ IDEA.
@@ -36,7 +37,23 @@ public class UtilTest {
 
 //    @Test
     void testPredicate() {
+        Map<String, org.apache.commons.collections.Closure> closureMap = [
+                'c1': new org.apache.commons.collections.Closure() {
+                    @Override
+                    void execute(Object input) {
+                        println "In closure c1, input=$input"
+                    }
+                },
+                'c2': new org.apache.commons.collections.Closure() {
+                    @Override
+                    void execute(Object input) {
+                        println "In closure c2, input=$input"
+                    }
+                }
+        ]
 
+        org.apache.commons.collections.Closure mc = ClosureUtils.switchMapClosure(closureMap)
+        CollectionUtils.forAllDo(['c1', 'c3', 'c5', 'c2'], mc)
     }
 
 //    @Test
@@ -62,12 +79,23 @@ public class UtilTest {
 
         List list = ListUtils.transformedList(['a1', 234, 'c'], transformer)
         println CollectionUtils.collect(['a1', 234, 'c'], transformer)
-        println CollectionUtils.exists(['a1','b','c'], new EqualPredicate('a1'))
+        println CollectionUtils.exists(['a1', 'b', 'c'], new EqualPredicate('a1'))
     }
 
-    @Test void testString2Map(){
-        MapUtils.debugPrint(System.out,"Debug for string2Map:" ,Util.string2Map("a=b;c=d;e=f"));
+//    @Test
+    void testString2Map() {
+        MapUtils.debugPrint(System.out, "Debug for string2Map:", Util.string2Map("a=b;c=d;e=f"));
         println Util.map2String(Util.string2Map("a=b;c=d;e=f"))
+    }
+
+
+    @Test
+    void testLabelFieldAccess() {
+        Label label = new Label();
+        label.putKeyValuePairToField("test", "123", Label.annotation1Field)
+        println label.annotation1
+        
+        println label.getValueFromField("test",Label.annotation1Field)
     }
 
 }
