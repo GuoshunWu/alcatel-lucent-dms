@@ -3,18 +3,7 @@
  */
 package com.alcatel_lucent.dms.util;
 
-import java.io.*;
-import java.lang.reflect.InvocationTargetException;
-import java.nio.charset.CharacterCodingException;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetDecoder;
-import java.nio.charset.CodingErrorAction;
-import java.util.*;
-import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipOutputStream;
-
+import com.alcatel_lucent.dms.SystemError;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -30,18 +19,26 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.dom4j.Attribute;
 import org.mozilla.intl.chardet.HtmlCharsetDetector;
 import org.mozilla.intl.chardet.nsDetector;
 import org.mozilla.intl.chardet.nsICharsetDetectionObserver;
 import org.mozilla.intl.chardet.nsPSMDetector;
 
-import com.alcatel_lucent.dms.SystemError;
+import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CodingErrorAction;
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
 
-import static org.apache.commons.collections.MapUtils.orderedMap;
 import static org.apache.commons.collections.MapUtils.typedMap;
-import static org.apache.commons.lang3.ArrayUtils.toArray;
 import static org.apache.commons.lang3.ArrayUtils.toMap;
-import static org.apache.commons.lang3.StringUtils.defaultString;
 
 /**
  * @author guoshunw
@@ -448,23 +445,23 @@ public class Util {
      *                   The second separator will be the separator for key value pairs, default equals(=)
      * @return the converted map
      */
-    public static Map string2Map(String str, String... separators) {
+    public static Map<String, String> string2Map(String str, String... separators) {
         if (StringUtils.isEmpty(str)) {
             return new HashedMap();
         }
-        String entrySep = "\\s*;\\s*";
-        String keyValueSep = "\\s*=\\s*";
-        if (separators.length > 0) entrySep = "\\s*" + separators[0] + "\\s*";
-        if (separators.length > 1) keyValueSep = "\\s*" + separators[1] + "\\s*";
+        String entrySep = ";";
+        String keyValueSep = "=";
+        if (separators.length > 0) entrySep = separators[0].trim();
+        if (separators.length > 1) keyValueSep = separators[1].trim();
 
         final String finalKeyValueSep = keyValueSep;
         List<String[]> lstEntries = (List<String[]>) CollectionUtils.collect(Arrays.asList(str.split(entrySep)), new Transformer() {
             @Override
             public Object transform(Object input) {
-                return ((String) input).split(finalKeyValueSep);
+                return StringUtils.splitPreserveAllTokens((String) input, finalKeyValueSep);
             }
         });
-        return toMap(lstEntries.toArray(new String[0][]));
+        return typedMap(toMap(lstEntries.toArray(new String[0][])), String.class, String.class);
     }
 
     /**
@@ -494,5 +491,19 @@ public class Util {
                         return entry.getKey() + finalKeyValueSep + entry.getValue();
                     }
                 }), entrySep);
+    }
+
+    /**
+     * Convert a attribte list to a map
+     */
+    public static Map<String, String> attributeList2Map(List<Attribute> attributeList) {
+        Collection attributesCollection = CollectionUtils.collect(attributeList, new Transformer() {
+            @Override
+            public Object transform(Object input) {
+                Attribute attr = (Attribute) input;
+                return new String[]{attr.getName(), attr.getValue()};
+            }
+        });
+        return MapUtils.typedMap(ArrayUtils.toMap(attributesCollection.toArray(new String[0][])), String.class, String.class);
     }
 }

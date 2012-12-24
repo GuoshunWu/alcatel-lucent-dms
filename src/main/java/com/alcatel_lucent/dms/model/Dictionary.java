@@ -20,6 +20,7 @@ public class Dictionary extends BaseEntity {
     private boolean locked;
     private DictionaryBase base;
     private String version;
+
     private String annotation1;
     private String annotation2;
     private String annotation3;
