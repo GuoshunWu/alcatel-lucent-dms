@@ -8,6 +8,10 @@ import com.alcatel_lucent.dms.service.LanguageService;
 import com.alcatel_lucent.dms.util.Util;
 import com.alcatel_lucent.dms.util.XDCPDTDEntityResolver;
 import com.alcatel_lucent.dms.util.XDCTDTDEntityResolver;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
@@ -93,18 +97,20 @@ public class XMLDictParser extends DictionaryParser {
         * Value 'dictionary' : a simple dictionary
         * Value 'help' : generated help text from this dictionary
         *  */
-        String type = elemDict.attributeValue("type");
-//      Indicates the application which uses this dictionary
-        String appli = elemDict.attributeValue("appli");
-//      To cut help's key. This attribute is used if only type is 'help'
-        String sep = elemDict.attributeValue("separator");
+//        String type = elemDict.attributeValue("type");
+////      Indicates the application which uses this dictionary
+//        String appli = elemDict.attributeValue("appli");
+////      To cut help's key. This attribute is used if only type is 'help'
+//        String sep = elemDict.attributeValue("separator");
 
         if (!name.equals(dict.getName())) {
             log.error("The dictionary name " + name + " in" + xdctFile + " is not same with dictionary name' " + dict.getName() + "'");
             return;
         }
 //        save the related info in dict annotation1
-        dict.setAnnotation1(String.format("name=%s;type=%s;appli=%s;separator=%s", name, type, appli, sep));
+//        dict.setAnnotation1(String.format("name=%s;type=%s;appli=%s;separator=%s", name, type, appli, sep));
+        String attributes = Util.map2String(Util.attributeList2Map(elemDict.attributes()));
+        dict.setAnnotation1(attributes);
         if (null == dict.getPath()) dict.setPath(xdctFile.getPath());
 //        dict.setEncoding(document.getXMLEncoding());
 
@@ -146,6 +152,7 @@ public class XMLDictParser extends DictionaryParser {
             label = new Label();
             label.setOrigTranslations(new ArrayList<LabelTranslation>());
             label.setKey(name);
+            dict.addLabel(label);
         }
 
         label.setDictionary(dict);
@@ -166,7 +173,12 @@ public class XMLDictParser extends DictionaryParser {
 //      controls maxi columns number of each line, allowed values are number or "unlimited"
         String column = defaultString(key.attributeValue("columns"), "-1");
 
-        label.setAnnotation1(String.format("name=%s;columns=%s;state=%s;lines=%s;gui_object=%s;message_category=%s", name, column, state, lines, guiObject, msgCategory));
+        /* put the above attributes to the label level annotation1 */
+        label.putKeyValuePairToField("state", state, Label.ANNOTATION1);
+        label.putKeyValuePairToField("gui_object", guiObject, Label.ANNOTATION1);
+        label.putKeyValuePairToField("message_category", msgCategory, Label.ANNOTATION1);
+        label.putKeyValuePairToField("lines", lines, Label.ANNOTATION1);
+        label.putKeyValuePairToField("column", column, Label.ANNOTATION1);
 
 //        Label
         label.setSortNo(-1);
@@ -181,10 +193,15 @@ public class XMLDictParser extends DictionaryParser {
          * */
         List<Element> elemComments = key.elements("COMMENT");
 
-        for (Element elementComment : elemComments) {
-            LabelTranslation lt = getOrCreateNewLabelTranslation(elementComment.attributeValue("language"), label);
+        for (Element elemComment : elemComments) {
+            String langCode = elemComment.attributeValue("language");
+            if ("gae".equalsIgnoreCase(langCode)) {
+                label.putKeyValuePairToField("comment", elemComment.getTextTrim(), Label.ANNOTATION1);
+                continue;
+            }
+            LabelTranslation lt = getOrCreateNewLabelTranslation(langCode, label);
 //            comment for language '$code'
-            lt.setAnnotation1(lt.getAnnotation1() + ";comment=" + elementComment.getTextTrim());
+            lt.putKeyValuePairToField("comment", elemComment.getTextTrim(), LabelTranslation.ANNOTATION1);
         }
 
         /**
@@ -196,11 +213,11 @@ public class XMLDictParser extends DictionaryParser {
             String langCode = elementContext.attributeValue("language");
             String contextText = elementContext.getTextTrim();
             if ("gae".equalsIgnoreCase(langCode)) {
-                label.setAnnotation2(label.getAnnotation2() + ";context=" + contextText);
+                label.putKeyValuePairToField("context", contextText, Label.ANNOTATION1);
                 continue;
             }
             LabelTranslation lt = getOrCreateNewLabelTranslation(langCode, label);
-            lt.setAnnotation2(lt.getAnnotation2() + ";context=" + contextText);
+            lt.putKeyValuePairToField("context", contextText, LabelTranslation.ANNOTATION1);
         }
 
         /**
@@ -213,13 +230,14 @@ public class XMLDictParser extends DictionaryParser {
          * */
         List<Element> elemHelps = key.elements("HELP");
         for (Element elemHelp : elemHelps) {
-            String langCode = elemHelp.attributeValue("language");
+            String langCode = elemHelp.attributeValue("language").trim();
             if ("gae".equalsIgnoreCase(langCode)) {
-                label.setAnnotation2(label.getAnnotation2()+";help="+elemHelp.getTextTrim());
+                label.putKeyValuePairToField("help", elemHelp.getTextTrim(), Label.ANNOTATION1);
+                label.putKeyValuePairToField("follow_up", elemHelp.attributeValue("follow_up"), Label.ANNOTATION1);
                 continue;
             }
             LabelTranslation lt = getOrCreateNewLabelTranslation(langCode, label);
-            lt.setAnnotation2(lt.getAnnotation2() + ";help=" + elemHelp.getTextTrim());
+            lt.putKeyValuePairToField("help", elemHelp.getTextTrim(), LabelTranslation.ANNOTATION1);
         }
         /**
          * 'PARAM' is a generic element which is used to define a specific parameter for a application
@@ -238,10 +256,15 @@ public class XMLDictParser extends DictionaryParser {
          * 'STATIC_TOKEN' is a string don't need to translate, so this strings must find again unchanged in each translation.
          * Example : Alcatel or OmniVista 4760
          * */
-        List<Element> elemStaticTokens = key.elements("STATIC_TOKEN");
-        for (Element elemStaticToken : elemStaticTokens) {
-            label.addStaticToken(elemStaticToken.getTextTrim());
-        }
+        String staticTokens =
+                StringUtils.join(
+                        CollectionUtils.collect(key.elements("STATIC_TOKEN"), new Transformer() {
+                            @Override
+                            public Object transform(Object input) {
+                                return ((Element) input).getTextTrim();
+                            }
+                        }).toArray(ArrayUtils.EMPTY_STRING_ARRAY), ';');
+        label.putKeyValuePairToField("STATIC_TOKEN", staticTokens, Label.ANNOTATION2);
         /**
          * A translation writted in specified language associated to 'KEY'. It's made up of string, image and table.
          * Attribute 'language' references an existing element LANGUAGE
@@ -254,7 +277,7 @@ public class XMLDictParser extends DictionaryParser {
         List<Element> elemTranslations = key.elements("TRANSLATION");
 
         for (Element elemTrans : elemTranslations) {
-            String langCode = elemTrans.attributeValue("language");
+            String langCode = elemTrans.attributeValue("language").trim();
             if ("gae".equalsIgnoreCase(langCode)) {
                 label.setReference(elemTrans.getTextTrim());
                 continue;
@@ -262,7 +285,7 @@ public class XMLDictParser extends DictionaryParser {
             LabelTranslation lt = getOrCreateNewLabelTranslation(langCode, label);
             lt.setOrigTranslation(elemTrans.getTextTrim());
             String followUp = elemTrans.attributeValue("follow_up");
-            lt.setAnnotation2(lt.getAnnotation2() + ";follow_up=" + followUp);
+            lt.putKeyValuePairToField("follow_up", followUp, BaseEntity.ANNOTATION1);
         }
     }
 
@@ -275,6 +298,7 @@ public class XMLDictParser extends DictionaryParser {
             lt.setSortNo(-1);
             DictionaryLanguage dl = label.getDictionary().getDictLanguage(code);
             lt.setLanguage(null == dl ? null : dl.getLanguage());
+            label.addLabelTranslation(lt);
         }
         return lt;
     }
@@ -358,15 +382,15 @@ public class XMLDictParser extends DictionaryParser {
     }
 
     private Collection<XLanguage> readLanguagesFromElementList(List<Element> elemLanguages) {
-        Collection<XLanguage> languages = new ArrayList<XLanguage>();
-        for (Element elemLanguage : elemLanguages) {
-
-            languages.add(new XLanguage(elemLanguage.attributeValue("id"),
-                    toBoolean(elemLanguage.attributeValue("is_reference")),
-                    toBoolean(elemLanguage.attributeValue("is_context'")))
-            );
-        }
-        return languages;
+        return CollectionUtils.collect(elemLanguages, new Transformer() {
+            @Override
+            public Object transform(Object input) {
+                Element elemLanguage = (Element) input;
+                return new XLanguage(elemLanguage.attributeValue("id"),
+                        toBoolean(elemLanguage.attributeValue("is_reference")),
+                        toBoolean(elemLanguage.attributeValue("is_context")));
+            }
+        });
     }
 
     /**

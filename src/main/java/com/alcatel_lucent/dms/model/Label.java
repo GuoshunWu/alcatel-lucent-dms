@@ -1,25 +1,16 @@
 package com.alcatel_lucent.dms.model;
 
 import com.alcatel_lucent.dms.SystemError;
-import com.alcatel_lucent.dms.util.Util;
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.IterableMap;
 import org.apache.commons.collections.map.HashedMap;
-import org.apache.commons.lang3.reflect.FieldUtils;
-import org.apache.commons.lang3.reflect.MethodUtils;
-import org.apache.log4j.Logger;
-import sun.reflect.misc.FieldUtil;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
 
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 public class Label extends BaseEntity {
-
-    private static Logger log = Logger.getLogger(Label.class);
     /**
      *
      */
@@ -41,6 +32,10 @@ public class Label extends BaseEntity {
     private String annotation2;
     private Collection<LabelTranslation> origTranslations;
 
+
+    public void addLabelTranslation(LabelTranslation labelTranslation){
+        this.origTranslations.add(labelTranslation);
+    }
     public String getAnnotation2() {
         return annotation2;
     }
@@ -292,48 +287,5 @@ public class Label extends BaseEntity {
 
     public void addParam(String key, String value) {
         params.put(key, value);
-    }
-
-    private List<String> staticTokens = new ArrayList<String>();
-
-    public List<String> getStaticTokens() {
-        return staticTokens;
-    }
-
-    public void setStaticTokens(List<String> staticTokens) {
-        this.staticTokens = staticTokens;
-    }
-
-    public void addStaticToken(String staticToken) {
-        this.staticTokens.add(staticToken);
-    }
-
-    public static final String annotation1Field = "annotation1";
-    public static final String annotation2Field = "annotation2";
-
-    public void putKeyValuePairToField(String key, String value, String fieldName) {
-        String annotationValue = null;
-        try {
-            annotationValue = (String)BeanUtils.getSimpleProperty(this, fieldName);
-            Map<String, String> map = Util.string2Map(annotationValue);
-            map.put(key, value);
-            BeanUtils.setProperty(this,fieldName,Util.map2String(map));
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.error("Field name " + fieldName + " does not exist in object.");
-        }
-    }
-
-    public String getValueFromField(String key, String fieldName) {
-        String annotationValue = null;
-        try {
-            annotationValue = (String)BeanUtils.getSimpleProperty(this, fieldName);
-            Map<String, String> map = Util.string2Map(annotationValue);
-            return map.get(key);
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.error("Field name " + fieldName + " does not exist in object.");
-            return null;
-        }
     }
 }

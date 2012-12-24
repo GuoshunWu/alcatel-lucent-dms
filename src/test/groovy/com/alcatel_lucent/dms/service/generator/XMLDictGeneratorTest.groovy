@@ -41,8 +41,4 @@ public class XMLDictGeneratorTest {
         }
     }
 
-    @Test
-    void testWriteXML(){
-        xmlDictGenerator.generateDocument(null);
-    }
 }
