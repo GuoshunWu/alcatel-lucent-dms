@@ -1,8 +1,10 @@
 package com.alcatel_lucent.dms.model;
 
 import com.alcatel_lucent.dms.SystemError;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.IterableMap;
 import org.apache.commons.collections.map.HashedMap;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
@@ -33,9 +35,10 @@ public class Label extends BaseEntity {
     private Collection<LabelTranslation> origTranslations;
 
 
-    public void addLabelTranslation(LabelTranslation labelTranslation){
+    public void addLabelTranslation(LabelTranslation labelTranslation) {
         this.origTranslations.add(labelTranslation);
     }
+
     public String getAnnotation2() {
         return annotation2;
     }
@@ -151,14 +154,29 @@ public class Label extends BaseEntity {
      * @return
      */
     public boolean checkLength(String text) {
-        if (maxLength == null || maxLength.isEmpty()) {
+        if (StringUtils.isEmpty(maxLength)) {
             return true;    // no constraint
         }
-        String[] lens = maxLength.split(",");
         String[] texts = text.split("\n");
-        for (int i = 0; i < texts.length; i++) {
+
+        if (maxLength.contains("*")) {
+            String[] linesAndColumns = maxLength.split("\\*");
+            int lines = Integer.parseInt(linesAndColumns[0]);
+            if (-1 == lines) lines = Integer.MAX_VALUE;
+            int columns = Integer.parseInt(linesAndColumns[1]);
+            if (-1 == columns) columns = Integer.MAX_VALUE;
+
+            if (texts.length > lines) return false;
+            for (String strLine : texts) {
+                if (strLine.length() > columns) return false;
+            }
+            return true;
+        }
+
+        String[] lens = maxLength.split(",");
+        for (int rowIndex = 0; rowIndex < texts.length; rowIndex++) {
             try {
-                if (i >= lens.length || texts[i].getBytes("ISO-8859-1").length > Integer.parseInt(lens[i])) {
+                if (rowIndex >= lens.length || texts[rowIndex].getBytes("ISO-8859-1").length > Integer.parseInt(lens[rowIndex])) {
                     return false;
                 }
             } catch (NumberFormatException e) {

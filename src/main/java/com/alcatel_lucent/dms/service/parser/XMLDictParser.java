@@ -12,17 +12,21 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
 import java.util.*;
 
 import static org.apache.commons.lang3.BooleanUtils.toBoolean;
-import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.center;
+import static org.apache.commons.lang3.StringUtils.defaultString;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 @Component("XmlDictParser")
@@ -41,19 +45,24 @@ public class XMLDictParser extends DictionaryParser {
         if (!file.exists()) return deliveredDicts;
 
         Map<String, Collection<File>> propFiles = new HashMap<String, Collection<File>>();
-        propFiles = groupDictionaries(file, propFiles);
+        propFiles = groupDictionaries(file, propFiles, acceptedFiles);
 
         /*
         * after grouped, each entry in the propFiles map is a dictionary
         * */
+
+        long begin = System.currentTimeMillis();
         for (Map.Entry<String, Collection<File>> entry : propFiles.entrySet()) {
-            deliveredDicts.add(processDictionary(entry));
+            deliveredDicts.add(processDictionary(entry, acceptedFiles));
         }
+        long end = System.currentTimeMillis();
+        String timeStr = DurationFormatUtils.formatPeriod(begin, end, "mm 'minute(s)' ss 'second(s)'.");
+        log.info(center("All the xdct files in " + file + " have been parsed, total used " + timeStr, 100, '*'));
         return deliveredDicts;
     }
 
-    public Dictionary processDictionary(Map.Entry<String, Collection<File>> entry) {
-        log.info(center("Start parsing dictionary '" + entry.getKey() + "' in " + entry.getValue(), 50, '='));
+    public Dictionary processDictionary(Map.Entry<String, Collection<File>> entry, Collection<File> acceptedFiles) {
+        log.info(center("Parsing dictionary '" + entry.getKey() + "' in " + entry.getValue(), 50, '='));
 
         DictionaryBase dictBase = new DictionaryBase();
         dictBase.setName(entry.getKey());
@@ -68,10 +77,9 @@ public class XMLDictParser extends DictionaryParser {
         dictionary.setBase(dictBase);
 
         for (File xdct : entry.getValue()) {
+            acceptedFiles.add(xdct);
             parseXdctFile(dictionary, xdct);
         }
-
-        log.info(center("Parsing dictionary '" + entry.getKey() + "' complete.", 100, '='));
         return dictionary;
     }
 
@@ -184,7 +192,7 @@ public class XMLDictParser extends DictionaryParser {
         label.setSortNo(-1);
 
         if ("unlimited".equals(lines)) lines = "-1";
-        if ("unlimited".equals(column)) lines = "-1";
+        if ("unlimited".equals(column)) column = "-1";
         label.setMaxLength(lines + '*' + column);
 
         /**
@@ -256,15 +264,19 @@ public class XMLDictParser extends DictionaryParser {
          * 'STATIC_TOKEN' is a string don't need to translate, so this strings must find again unchanged in each translation.
          * Example : Alcatel or OmniVista 4760
          * */
-        String staticTokens =
-                StringUtils.join(
-                        CollectionUtils.collect(key.elements("STATIC_TOKEN"), new Transformer() {
-                            @Override
-                            public Object transform(Object input) {
-                                return ((Element) input).getTextTrim();
-                            }
-                        }).toArray(ArrayUtils.EMPTY_STRING_ARRAY), ';');
-        label.putKeyValuePairToField("STATIC_TOKEN", staticTokens, Label.ANNOTATION2);
+
+        List<Element> elemStaticTokens = key.elements("STATIC_TOKEN");
+        if (!elemStaticTokens.isEmpty()) {
+            String staticTokens =
+                    StringUtils.join(
+                            CollectionUtils.collect(elemStaticTokens, new Transformer() {
+                                @Override
+                                public Object transform(Object input) {
+                                    return ((Element) input).getTextTrim();
+                                }
+                            }).toArray(ArrayUtils.EMPTY_STRING_ARRAY), ';');
+            label.putKeyValuePairToField("STATIC_TOKEN", staticTokens, Label.ANNOTATION2);
+        }
         /**
          * A translation writted in specified language associated to 'KEY'. It's made up of string, image and table.
          * Attribute 'language' references an existing element LANGUAGE
@@ -279,6 +291,7 @@ public class XMLDictParser extends DictionaryParser {
         for (Element elemTrans : elemTranslations) {
             String langCode = elemTrans.attributeValue("language").trim();
             if ("gae".equalsIgnoreCase(langCode)) {
+                label.putKeyValuePairToField("follow_up", elemTrans.attributeValue("follow_up"), Label.ANNOTATION1);
                 label.setReference(elemTrans.getTextTrim());
                 continue;
             }
@@ -306,16 +319,18 @@ public class XMLDictParser extends DictionaryParser {
     /**
      * Group all the xdct files by their name which described in xdcp files
      *
-     * @param file      a xdcp file or a dir contained xdcp and xdct files.
-     * @param propFiles the initial map for xdct files group.
+     * @param file          a xdcp file or a dir contained xdcp and xdct files.
+     * @param propFiles     the initial map for xdct files group.
+     * @param acceptedFiles
      * @return map which contained grouped dct files, the key is their name, and the value is a collection of this
      *         dictionary related File objects.
      */
-    public Map<String, Collection<File>> groupDictionaries(File file, Map<String, Collection<File>> propFiles) {
+    public Map<String, Collection<File>> groupDictionaries(File file, Map<String, Collection<File>> propFiles, Collection<File> acceptedFiles) {
         if (file.isFile()) {
             if (!Util.isXdcpFile(file)) return propFiles;
             /* Read the xdcp file and get the dictionary and their relative path information from it.*/
             XMLProject xmlProject = readXdcp(file);
+            acceptedFiles.add(file);
 
             for (XDictionary dict : xmlProject.getDictionaries()) {
                 Collection<File> dictFiles = propFiles.get(dict.getName());
@@ -351,7 +366,7 @@ public class XMLDictParser extends DictionaryParser {
         });
 
         for (File subFile : xDcpFileOrDirs) {
-            propFiles.putAll(groupDictionaries(subFile, propFiles));
+            propFiles.putAll(groupDictionaries(subFile, propFiles, acceptedFiles));
         }
         return propFiles;
     }

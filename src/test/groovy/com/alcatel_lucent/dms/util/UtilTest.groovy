@@ -14,7 +14,8 @@ import org.apache.commons.collections.Transformer
 import org.apache.commons.collections.Predicate
 import org.apache.commons.collections.functors.EqualPredicate
 import org.apache.commons.collections.MapUtils
-import com.alcatel_lucent.dms.model.Label;
+import com.alcatel_lucent.dms.model.Label
+import org.apache.commons.lang3.time.DurationFormatUtils;
 
 /**
  * Created by IntelliJ IDEA.
@@ -91,11 +92,7 @@ public class UtilTest {
 
     @Test
     void testLabelFieldAccess() {
-        Label label = new Label();
-        label.putKeyValuePairToField("test", "123", Label.annotation1Field)
-        println label.annotation1
-        
-        println label.getValueFromField("test",Label.annotation1Field)
+        println DurationFormatUtils.formatDuration(65450000l,"HH 'hour(s)' mm 'minute(s)' ss 'second(s)'")
     }
 
 }

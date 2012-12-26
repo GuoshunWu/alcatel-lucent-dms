@@ -1,4 +1,4 @@
-package com.alcatel_lucent.dms.service.generator;
+package com.alcatel_lucent.dms.service.generator.xmldict;
 
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -31,12 +31,14 @@ public class XMLDictGeneratorTest {
 
     @Test
     void testGenerateDict() throws Exception {
-        File file = new File("D:/testxdct/xdct/test")
+        File file = new File("D:/testxdct/xdct")
+//        file = new File("D:/testxdct/test")
         ArrayList<Dictionary> dictionaries = xmlDictParser.parse('', file, [] as Collection<File>)
+
 
         int i = 0
         dictionaries.each {dict ->
-            xmlDictGenerator.generateDict(new File("D:/tmp/target$i"), dict)
+            xmlDictGenerator.generateDict(new File("D:/testxdct/test"), dict)
             ++i
         }
     }
