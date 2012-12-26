@@ -1,15 +1,11 @@
-package com.alcatel_lucent.dms.test
+package com.alcatel_lucent.dms.service
 
 import static com.alcatel_lucent.dms.service.DictionaryServiceImpl.logDictDeliverWarning
 import static com.alcatel_lucent.dms.service.DictionaryServiceImpl.logDictDeliverFail
 import static com.alcatel_lucent.dms.service.DictionaryServiceImpl.logDictDeliverSuccess
 
-import java.io.File;
-
 import com.alcatel_lucent.dms.BusinessWarning
-import com.alcatel_lucent.dms.service.DaoService
-import com.alcatel_lucent.dms.service.DictionaryProp;
-import com.alcatel_lucent.dms.service.DictionaryService
+
 import org.apache.commons.collections.keyvalue.MultiKey
 import org.apache.commons.collections.map.MultiKeyMap
 import org.apache.log4j.Logger
@@ -21,7 +17,7 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.test.context.transaction.TransactionConfiguration
 import com.alcatel_lucent.dms.model.*
-import com.alcatel_lucent.dms.service.*
+
 import com.alcatel_lucent.dms.Constants
 
 import static org.apache.commons.lang.StringUtils.join;
@@ -78,7 +74,11 @@ class GDictionaryServiceImplTest {
     }
 
     @Test
-//    @Ignore
+    void testDictionaryService(){
+        println "Just a test..."
+    }
+
+//    @Test
     void testSampleAbout_DCT() throws Exception {
 
         Long appId = 1L
@@ -282,7 +282,7 @@ class GDictionaryServiceImplTest {
         assertTrue "Some label(s): $labels in $origDict.name dictionary was(were) not deleted.", labels.isEmpty()
     }
 
-    @Test
+//    @Test
     void testDeliverDCTFiles() {
         //all language code and package def
         HashMap<String,List<String>> langCodeForPkg = [
@@ -416,7 +416,7 @@ class GDictionaryServiceImplTest {
         }
     }
 
-    @Test
+//    @Test
     void testGenerateDctFiles(){
         Collection<Long> dictionaryIds = dao.retrieve('select id from Dictionary') as List<Long>
         ds.generateDictFiles("D:/temp/prop_test_out",dictionaryIds)
@@ -434,7 +434,7 @@ class GDictionaryServiceImplTest {
         appender.activateOptions()
     }
 
-    @Test
+//    @Test
     void testDeliverMDC() {
         String rootDir = 'Z:/CA'
         String dictName = '/6.6.000.107.a/smart_prs/prs/smartprs/etc/conf/dictionary.conf'

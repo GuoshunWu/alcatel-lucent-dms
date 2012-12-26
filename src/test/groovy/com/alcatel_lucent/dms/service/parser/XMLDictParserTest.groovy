@@ -57,7 +57,7 @@ public class XMLDictParserTest {
     void testGroupDictionaries() throws Exception {
         File file = new File("D:/testxdct/")
 
-        Set entries = xmlDictParser.groupDictionaries(file, [:]).entrySet().toSet()
+        Set entries = xmlDictParser.groupDictionaries(file, [:], acceptedFiles).entrySet().toSet()
 
         int width = 50
         entries.each {entry ->

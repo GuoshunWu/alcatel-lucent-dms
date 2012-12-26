@@ -18,6 +18,7 @@
 
     <appender name="FILE" class="org.apache.log4j.FileAppender">
         <param name="File" value="target/DMSLOG/log4j.log"/>
+        <param name="append" value="false"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d - %c -%-4r [%t] %-5p %x - %m%n"/>
         </layout>
@@ -106,9 +107,6 @@
     <!--<level value="DEBUG"/>-->
     <!--</logger>-->
 
-    <logger name="com.alcatel_lucent.dms">
-        <level value="INFO"/>
-    </logger>
 
     <logger name="DictDeliverSuccess">
         <appender-ref ref="FILE_DIC_DELIVER_SUCCESS"/>
@@ -123,12 +121,12 @@
     </logger>
 
 
-    <logger name="com.alcatel_lucent.dms.service.parser.XMLDictParser">
+    <logger name="com.alcatel_lucent.dms.service">
         <level value="DEBUG"/>
     </logger>
 
     <root>
-        <level value="INFO"/>
+        <level value="WARN"/>
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
         <!-- <appender-ref ref="ASYNC" /> -->
