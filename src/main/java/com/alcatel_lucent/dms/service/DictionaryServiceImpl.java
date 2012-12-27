@@ -24,10 +24,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
     private static Logger log = LoggerFactory.getLogger(DictionaryServiceImpl.class);
 
-    public static Logger logDictDeliverSuccess = LoggerFactory.getLogger("DictDeliverSuccess");
-    public static Logger logDictDeliverFail = LoggerFactory.getLogger("DictDeliverFail");
-    public static Logger logDictDeliverWarning = LoggerFactory.getLogger("DictDeliverWaning");
-
     @Autowired
     private TextService textService;
 

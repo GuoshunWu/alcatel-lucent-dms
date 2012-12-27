@@ -1,26 +1,20 @@
 package com.alcatel_lucent.dms.service
 
-import static com.alcatel_lucent.dms.service.DictionaryServiceImpl.logDictDeliverWarning
-import static com.alcatel_lucent.dms.service.DictionaryServiceImpl.logDictDeliverFail
-import static com.alcatel_lucent.dms.service.DictionaryServiceImpl.logDictDeliverSuccess
 
 import com.alcatel_lucent.dms.BusinessWarning
-
+import com.alcatel_lucent.dms.Constants
 import org.apache.commons.collections.keyvalue.MultiKey
 import org.apache.commons.collections.map.MultiKeyMap
-import org.apache.log4j.Logger
 import org.apache.log4j.FileAppender
-
 import org.junit.runner.RunWith
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.test.context.transaction.TransactionConfiguration
 import com.alcatel_lucent.dms.model.*
-
-import com.alcatel_lucent.dms.Constants
-
-import static org.apache.commons.lang.StringUtils.join;
+import static org.apache.commons.lang.StringUtils.join
 import static org.hamcrest.Matchers.*
 import org.junit.*
 import static org.junit.Assert.*
@@ -47,8 +41,12 @@ class GDictionaryServiceImplTest {
 
     @Autowired
     private DictionaryProp dictProp;
-	
+
     private static Logger log = Logger.getLogger(GDictionaryServiceImplTest.class)
+
+    public static Logger logDictDeliverSuccess
+    public static Logger logDictDeliverFail
+    public static Logger logDictDeliverWarning
 
     @BeforeClass
     static void setUpBeforeClass() throws Exception {
@@ -56,6 +54,11 @@ class GDictionaryServiceImplTest {
         testFilePath = testFilePath.parentFile.parentFile
         testFilesPathDir = "${new File(testFilePath, 'dct_test_files').absolutePath}/"
         log.info "Test file path is: $testFilesPathDir"
+
+//        create statics logger
+        logDictDeliverSuccess = LoggerFactory.getLogger("DictDeliverSuccess")
+        logDictDeliverFail = LoggerFactory.getLogger("DictDeliverFail")
+        logDictDeliverWarning = LoggerFactory.getLogger("DictDeliverWaning")
     }
 
     @AfterClass
@@ -74,7 +77,7 @@ class GDictionaryServiceImplTest {
     }
 
     @Test
-    void testDictionaryService(){
+    void testDictionaryService() {
         println "Just a test..."
     }
 
@@ -96,7 +99,7 @@ class GDictionaryServiceImplTest {
         String[] langCodes = null
 
         String dictName = "CH0/About.dic"
-        String version  = '1.0'
+        String version = '1.0'
         String testFile = "CH0/About.dic"
         String updatedTestFile = "CH0/About_Changed.dic"
 
@@ -107,12 +110,12 @@ class GDictionaryServiceImplTest {
 
         /***************************************** Test for deliver DCT ****************************************/
         Collection<Dictionary> dicts = ds.previewDictionaries testFilesPathDir, new File(testFilePath)
-		DeliveryReport report = new DeliveryReport()
-		Dictionary dbDict = ds.importDictionary appId, dicts[0], version, Constants.DELIVERY_MODE, langCodes, langCharset, warnings, report
-		//Dictionary dbDict = ds.deliverDCT dictName, version, testFilePath, appId, Constants.DELIVERY_MODE, encoding, langCodes, langCharset, warnings
+        DeliveryReport report = new DeliveryReport()
+        Dictionary dbDict = ds.importDictionary appId, dicts[0], version, Constants.DELIVERY_MODE, langCodes, langCharset, warnings, report
+        //Dictionary dbDict = ds.deliverDCT dictName, version, testFilePath, appId, Constants.DELIVERY_MODE, encoding, langCodes, langCharset, warnings
 
         // dictionary check
-        dbDict = dao.retrieveOne("from Dictionary where version=:version and base.name=:name", ['name': dictName,'version':version], ["labels", "dictLanguages"] as String[]) as Dictionary
+        dbDict = dao.retrieveOne("from Dictionary where version=:version and base.name=:name", ['name': dictName, 'version': version], ["labels", "dictLanguages"] as String[]) as Dictionary
 
         assertThat dbDict, is(notNullValue())
 
@@ -206,24 +209,24 @@ class GDictionaryServiceImplTest {
         langCharset.CH1 = 'Big5'
 
         dicts = ds.previewDictionaries testFilesPathDir, new File(testFilePath)
-		dicts[0].setName dictName
-		dicts[0].labels.each {
-			it.context.name = dictName
-		}
-		dbDict = ds.importDictionary appId, dicts[0], version, Constants.DELIVERY_MODE, langCodes, langCharset, warnings, new DeliveryReport()
+        dicts[0].setName dictName
+        dicts[0].labels.each {
+            it.context.name = dictName
+        }
+        dbDict = ds.importDictionary appId, dicts[0], version, Constants.DELIVERY_MODE, langCodes, langCharset, warnings, new DeliveryReport()
 //        dbDict = ds.deliverDCT dictName, version, testFilePath, appId, Constants.DELIVERY_MODE, encoding, langCodes, langCharset, warnings
         // check result
 
-        dbDict = dao.retrieveOne("from Dictionary where version=:version and base.name=:name", ['name': dictName,'version':version], ["labels", "dictLanguages",] as String[]) as Dictionary
+        dbDict = dao.retrieveOne("from Dictionary where version=:version and base.name=:name", ['name': dictName, 'version': version], ["labels", "dictLanguages",] as String[]) as Dictionary
 
         // check added dictionary language
         assertThat dbDict.allLanguageCodes, hasItem("CH1")
 
         // check added new label TESTLABEL
         Label dbLabel = dbDict.getLabel("TESTLABEL")
-        dbLabel = dao.retrieveOne('from Label where id=:id',['id':dbLabel.id],['context'] as String[])
-        
-        
+        dbLabel = dao.retrieveOne('from Label where id=:id', ['id': dbLabel.id], ['context'] as String[])
+
+
         Text dbText = dao.retrieveOne("from Text where reference=:reference and context.id=:contextid",
                 ["reference": dbLabel.reference, "contextid": dbLabel.context.id], ["translations"] as String[]) as Text
         // check translations
@@ -243,16 +246,16 @@ class GDictionaryServiceImplTest {
 
         // updated translation
         dicts = ds.previewDictionaries testFilesPathDir, new File(testFilePath)
-		dicts[0].setName dictName
-		dicts[0].labels.each {
-			it.context.name = dictName
-		}
-		dbDict = ds.importDictionary appId, dicts[0], version, Constants.TRANSLATION_MODE, langCodes, langCharset, warnings, new DeliveryReport()
-		
+        dicts[0].setName dictName
+        dicts[0].labels.each {
+            it.context.name = dictName
+        }
+        dbDict = ds.importDictionary appId, dicts[0], version, Constants.TRANSLATION_MODE, langCodes, langCharset, warnings, new DeliveryReport()
+
         translatedStringMap[new MultiKey("COPYRIGHT", "CH0")] = "用于测试的改变，2007-2012年阿尔卡特朗讯版权所有。保留所有权力\nAlcatel-Lucent与Alcatel-Lucent标识是阿尔卡特朗讯各自的注册商标和服务标记。"
 
 //        dbLabel = dbDict.getLabel("COPYRIGHT")
-        dbLabel = dao.retrieveOne('from Label where dictionary.id=:dictId and key=:key',['dictId':dbDict.id, "key":"COPYRIGHT"],['context'] as String[])
+        dbLabel = dao.retrieveOne('from Label where dictionary.id=:dictId and key=:key', ['dictId': dbDict.id, "key": "COPYRIGHT"], ['context'] as String[])
 
         dbText = dao.retrieveOne("from Text where reference=:reference and context.id=:contextid",
                 ["reference": dbLabel.reference, "contextid": dbLabel.context.id], ["translations"] as String[]) as Text
@@ -269,10 +272,10 @@ class GDictionaryServiceImplTest {
 
         /*************************** Test deletel dictionary in database *************************/
 //        daoService.delete 'delete from Dictionary where version=:version and base.name=:name', ['version':version, 'name':dictName] as Map<String,String>
-        dbDict = dao.retrieveOne("from Dictionary where version=:version and base.name=:name", ['name': dictName,'version':version], ['base'] as String[]) as Dictionary
+        dbDict = dao.retrieveOne("from Dictionary where version=:version and base.name=:name", ['name': dictName, 'version': version], ['base'] as String[]) as Dictionary
         ds.deleteDictionary dbDict.id
         Dictionary origDict = dbDict
-        dbDict = dao.retrieveOne("from Dictionary where version=:version and base.name=:name", ['name': dictName,'version':version] ) as Dictionary
+        dbDict = dao.retrieveOne("from Dictionary where version=:version and base.name=:name", ['name': dictName, 'version': version]) as Dictionary
 
         // check dictionary
         assertThat dbDict, is(nullValue())
@@ -285,8 +288,8 @@ class GDictionaryServiceImplTest {
 //    @Test
     void testDeliverDCTFiles() {
         //all language code and package def
-        HashMap<String,List<String>> langCodeForPkg = [
-            	'EN-UK': null,
+        HashMap<String, List<String>> langCodeForPkg = [
+                'EN-UK': null,
 //                'ZH-CN': ['zh', 'ZH0', 'CH0', 'zh-CN'],
 //                'ZH-TW': ['zh-TW', 'CH1', 'TW0', 'zh-HK', 'HK0'],
 //                'AR': ['AR0', 'ar'],
@@ -335,12 +338,12 @@ class GDictionaryServiceImplTest {
 //                'ru-RU', 'sk-SK', 'sl-SI', 'sr-CS', 'sv-SE', 'tr-TR', 'zh-CN', 'zh-TW'].each {code ->
 //            mdcLangCharset.put(code, 'UTF-8')
 //        }
-				
+
         langCodeForPkg.each {subDir, langCodes ->
-			int mode = subDir.equals('EN-UK') ? Constants.DELIVERY_MODE : Constants.TRANSLATION_MODE
+            int mode = subDir.equals('EN-UK') ? Constants.DELIVERY_MODE : Constants.TRANSLATION_MODE
 //            String rootDir = "Z:/$subDir"
 //			String rootDir = "D:/temp/prop_test_in"
-			String rootDir = "D:/translation/ICS_OAMP/6.6_translated"
+            String rootDir = "D:/translation/ICS_OAMP/6.6_translated"
 //			mode = Constants.TRANSLATION_MODE
             String testFilePath = rootDir
             log.info "Begin to import directory: $testFilePath".center(100, '=')
@@ -353,9 +356,9 @@ class GDictionaryServiceImplTest {
 //			testFilePath = "$rootDir/6.6.000.107.a/voice_applications/eCC_tui/VoiceApplications/dictionaries/TUI.dct"
 
 
-            changeLoggerFile subDir,"SUCCESS",logDictDeliverSuccess
-            changeLoggerFile subDir,"WARNING",logDictDeliverWarning
-            changeLoggerFile subDir,"FAIL",   logDictDeliverFail
+            changeLoggerFile subDir, "SUCCESS", logDictDeliverSuccess
+            changeLoggerFile subDir, "WARNING", logDictDeliverWarning
+            changeLoggerFile subDir, "FAIL", logDictDeliverFail
 
             Collection<BusinessWarning> warnings = []
 
@@ -366,38 +369,38 @@ class GDictionaryServiceImplTest {
             logDictDeliverWarning.info header
 
             long before = System.currentTimeMillis()
-			//Collection<Dictionary> dictionaries = ds.deliverDCTFiles rootDir, new File(testFilePath), appId, mode, encoding, langCodes as String[], null, warnings
-			Collection<Dictionary> dictionaries = ds.previewDictionaries rootDir, new File(testFilePath)
-			dictionaries.each {dict ->
-				Map<String, String>langCharset
-				if (dict.getFormat().equals("DCT")) {
-					try {
-						langCharset = dictProp.getDictionaryCharsets(dict.getName())
-					} catch (Exception e) {
-						langCharset = [default: 'UTF-8']
-					}
-				} else if (dict.getFormat().equals("Dictionary conf")) {
-					langCharset = [default: 'UTF-8']
-				} else if (dict.getFormat().equals("XML labels")) {
-					langCharset = [default: 'UTF-8']
-				} else if (dict.getFormat().equals("XML properties")) {
-					langCharset = [default: 'UTF-8']
-				} else {
-					langCharset = [default: 'ISO-8859-1']
-				}
-				Long appId = 1
-				String dictVersion = "1.0"
-				ds.importDictionary appId, dict, dictVersion, mode, langCodes as String[], langCharset, warnings, new DeliveryReport()
-				if (!warnings.isEmpty()) {
-					join(warnings, '\n').replace("\"", "\"\"");
-					String forCSV = warnings.toString().replace("\"", "\"\"");
-					forCSV = join(warnings, '\n').replace("\"", "\"\"");
-					logDictDeliverWarning.warn(String.format("%s,%s,%s,\"%s\"",
-							dict.getName(), dict.getEncoding(), dict.getPath(),
-							forCSV));
-					warnings.clear()
-				}
-			}
+            //Collection<Dictionary> dictionaries = ds.deliverDCTFiles rootDir, new File(testFilePath), appId, mode, encoding, langCodes as String[], null, warnings
+            Collection<Dictionary> dictionaries = ds.previewDictionaries rootDir, new File(testFilePath)
+            dictionaries.each {dict ->
+                Map<String, String> langCharset
+                if (dict.getFormat().equals("DCT")) {
+                    try {
+                        langCharset = dictProp.getDictionaryCharsets(dict.getName())
+                    } catch (Exception e) {
+                        langCharset = [default: 'UTF-8']
+                    }
+                } else if (dict.getFormat().equals("Dictionary conf")) {
+                    langCharset = [default: 'UTF-8']
+                } else if (dict.getFormat().equals("XML labels")) {
+                    langCharset = [default: 'UTF-8']
+                } else if (dict.getFormat().equals("XML properties")) {
+                    langCharset = [default: 'UTF-8']
+                } else {
+                    langCharset = [default: 'ISO-8859-1']
+                }
+                Long appId = 1
+                String dictVersion = "1.0"
+                ds.importDictionary appId, dict, dictVersion, mode, langCodes as String[], langCharset, warnings, new DeliveryReport()
+                if (!warnings.isEmpty()) {
+                    join(warnings, '\n').replace("\"", "\"\"");
+                    String forCSV = warnings.toString().replace("\"", "\"\"");
+                    forCSV = join(warnings, '\n').replace("\"", "\"\"");
+                    logDictDeliverWarning.warn(String.format("%s,%s,%s,\"%s\"",
+                            dict.getName(), dict.getEncoding(), dict.getPath(),
+                            forCSV));
+                    warnings.clear()
+                }
+            }
 
 //            Collection<Dictionary> dictionaries = ds.deliverMDCFiles rootDir,new File(testFilePath), appId, mode, langCodes as String[], langCharset, warnings
 
@@ -417,9 +420,9 @@ class GDictionaryServiceImplTest {
     }
 
 //    @Test
-    void testGenerateDctFiles(){
+    void testGenerateDctFiles() {
         Collection<Long> dictionaryIds = dao.retrieve('select id from Dictionary') as List<Long>
-        ds.generateDictFiles("D:/temp/prop_test_out",dictionaryIds)
+        ds.generateDictFiles("D:/temp/prop_test_out", dictionaryIds)
     }
 
     /**

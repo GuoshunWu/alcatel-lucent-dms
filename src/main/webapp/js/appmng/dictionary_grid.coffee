@@ -34,8 +34,8 @@ define (require, util, dialogs, i18n)->
         dialogs.stringSettings.dialog 'open'
     'Language':
       title: i18n.dialog.languagesettings.title, handler: (rowData)->
-#        dialogs.langSettings.data "param", rowData
-        dialogs.langSettings.on 'dialogopen',{param:rowData}, $('#languageSettingsDialog').dialog('option', 'openEvent')
+      #        dialogs.langSettings.data "param", rowData
+        dialogs.langSettings.on 'dialogopen', {param: rowData}, $('#languageSettingsDialog').dialog('option', 'openEvent')
         dialogs.langSettings.dialog 'open'
     'X': title: i18n.dialog.delete.title, handler: (rowData)->$('#dictionaryGridList').jqGrid 'delGridRow', rowData.id, deleteOptions
 
@@ -116,12 +116,12 @@ define (require, util, dialogs, i18n)->
   }).jqGrid('navGrid', '#dictPager', {add: false, edit: false, search: false, del: false}, {}, {}, deleteOptions)
   #  custom button for del dictionary
   .navButtonAdd('#dictPager', {caption: "", buttonicon: "ui-icon-trash", position: "first"
-  onClickButton: ()->
-    if(rowIds = $(@).getGridParam('selarrrow')).length == 0
-      $.msgBox (c18n.selrow.format c18n.dict), null, {title: c18n.warning}
-      return
-    $(@).jqGrid 'delGridRow', rowIds, deleteOptions
-  }).setGridParam(datatype:'json')
+      onClickButton: ()->
+        if(rowIds = $(@).getGridParam('selarrrow')).length == 0
+          $.msgBox (c18n.selrow.format c18n.dict), null, {title: c18n.warning}
+          return
+        $(@).jqGrid 'delGridRow', rowIds, deleteOptions
+    }).setGridParam(datatype: 'json')
 
 
   ($('#generateDict').button {}).click ->
@@ -134,7 +134,7 @@ define (require, util, dialogs, i18n)->
     filename = "#{$('#appDispAppName').text()}_#{$('#selAppVersion option:selected').text()}_#{new Date().format 'yyyyMMdd_hhmmss'}.zip"
 
     $.blockUI()
-    $.post 'app/generate-dict', {dicts: dicts.join(','), filename: filename}, (json)->
+    $.ajax 'app/generate-dict', dataType: 'json', timeout: 1000 * 60 * 30, data: {dicts: dicts.join(','), filename: filename}, success: (json, textStatus, jqXHR)->
       $.unblockUI()
       if(json.status != 0)
         $.msgBox json.message, null, {title: c18n.error}

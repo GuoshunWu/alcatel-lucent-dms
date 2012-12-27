@@ -82,6 +82,7 @@ public class XMLDictGenerator implements DictionaryGenerator {
     public Document generateDocument(final Dictionary dict) {
 
         Document doc = DocumentHelper.createDocument();
+
         doc.setXMLEncoding("UTF-8");
         if (null == dict) return doc;
 
@@ -106,6 +107,8 @@ public class XMLDictGenerator implements DictionaryGenerator {
 
         log.info(StringUtils.center("Start writing dictionary " + dict.getName() + " labels(total: " + dict.getLabelNum() + ").", 100, '='));
         CollectionUtils.forAllDo(dict.getLabels(), lc);
+        System.out.println(" done(100%).");
+
         return doc;
     }
 

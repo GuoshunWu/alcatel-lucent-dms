@@ -29,46 +29,6 @@
         </filter>
     </appender>
 
-    <appender name="FILE_DIC_DELIVER_FAIL" class="org.apache.log4j.FileAppender">
-        <param name="File" value="target/DMSLOG/DictionaryDeliverFail.csv"/>
-        <param name="append" value="false"/>
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%m%n"/>
-        </layout>
-
-        <filter class="org.apache.log4j.varia.LevelRangeFilter">
-            <param name="LevelMax" value="ERROR"/>
-            <param name="LevelMin" value="INFO"/>
-        </filter>
-    </appender>
-
-    <appender name="FILE_DIC_DELIVER_SUCCESS" class="org.apache.log4j.FileAppender">
-        <param name="File" value="target/DMSLOG/DictionaryDeliverSuccess.csv"/>
-        <param name="append" value="false"/>
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%m%n"/>
-        </layout>
-
-        <filter class="org.apache.log4j.varia.LevelRangeFilter">
-            <param name="LevelMax" value="ERROR"/>
-            <param name="LevelMin" value="INFO"/>
-        </filter>
-    </appender>
-
-    <appender name="FILE_DIC_DELIVER_WARNING" class="org.apache.log4j.FileAppender">
-        <param name="File" value="target/DMSLOG/DictionaryDeliverWarning.csv"/>
-        <param name="append" value="false"/>
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%m%n"/>
-        </layout>
-
-        <filter class="org.apache.log4j.varia.LevelRangeFilter">
-            <param name="LevelMax" value="ERROR"/>
-            <param name="LevelMin" value="INFO"/>
-        </filter>
-    </appender>
-
-
     <appender name="DATABASE" class="org.apache.log4j.jdbc.JDBCAppender">
         <param name="URL" value="jdbc:mysql://localhost:3306/dms"/>
         <param name="driver" value="com.mysql.jdbc.Driver"/>
@@ -108,6 +68,43 @@
     <!--</logger>-->
 
 
+    <appender name="FILE_DIC_DELIVER_FAIL" class="org.apache.log4j.FileAppender">
+        <param name="File" value="target/DMSLOG/DictionaryDeliverFail.csv"/>
+        <param name="append" value="false"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%m%n"/>
+        </layout>
+
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMax" value="ERROR"/>
+            <param name="LevelMin" value="INFO"/>
+        </filter>
+    </appender>
+    <appender name="FILE_DIC_DELIVER_SUCCESS" class="org.apache.log4j.FileAppender">
+        <param name="File" value="target/DMSLOG/DictionaryDeliverSuccess.csv"/>
+        <param name="append" value="false"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%m%n"/>
+        </layout>
+
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMax" value="ERROR"/>
+            <param name="LevelMin" value="INFO"/>
+        </filter>
+    </appender>
+    <appender name="FILE_DIC_DELIVER_WARNING" class="org.apache.log4j.FileAppender">
+        <param name="File" value="target/DMSLOG/DictionaryDeliverWarning.csv"/>
+        <param name="append" value="false"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%m%n"/>
+        </layout>
+
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMax" value="ERROR"/>
+            <param name="LevelMin" value="INFO"/>
+        </filter>
+    </appender>
+
     <logger name="DictDeliverSuccess">
         <appender-ref ref="FILE_DIC_DELIVER_SUCCESS"/>
     </logger>
@@ -121,12 +118,12 @@
     </logger>
 
 
-    <logger name="com.alcatel_lucent.dms.service">
-        <level value="DEBUG"/>
-    </logger>
+    <!--<logger name="com.alcatel_lucent.dms.service">-->
+        <!--<level value="INFO"/>-->
+    <!--</logger>-->
 
     <root>
-        <level value="WARN"/>
+        <level value="INFO"/>
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
         <!-- <appender-ref ref="ASYNC" /> -->
