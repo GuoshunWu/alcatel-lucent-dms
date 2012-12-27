@@ -9,7 +9,8 @@ import com.alcatel_lucent.dms.util.Util;
 import org.apache.commons.collections.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -31,7 +32,7 @@ import static org.apache.commons.lang3.StringUtils.defaultString;
 @Component("XmlDictGenerator")
 public class XMLDictGenerator implements DictionaryGenerator {
 
-    private static Logger log = Logger.getLogger(XMLDictGenerator.class);
+    private static Logger log = LoggerFactory.getLogger(XMLDictGenerator.class);
 
     @Autowired
     private DaoService dao;
@@ -56,6 +57,8 @@ public class XMLDictGenerator implements DictionaryGenerator {
 
             OutputFormat format = OutputFormat.createPrettyPrint();
             format.setIndentSize(4);
+            format.setXHTML(true);
+
             log.info(center("Start writing dictionary " + dict.getName() + "...", 100, '='));
             writer = new XMLWriter(new BufferedOutputStream(new FileOutputStream(file)), format);
 
@@ -99,7 +102,7 @@ public class XMLDictGenerator implements DictionaryGenerator {
         CollectionUtils.forAllDo(dict.getDictLanguages(), ll);
         log.info(StringUtils.center("Writing dictionary " + dict.getName() + " languages complete", 100, '='));
 
-        LabelClosure lc = new LabelClosure(xmlDict);
+        LabelClosure lc = new LabelClosure(xmlDict, dict.getLabelNum());
 
         log.info(StringUtils.center("Start writing dictionary " + dict.getName() + " labels(total: " + dict.getLabelNum() + ").", 100, '='));
         CollectionUtils.forAllDo(dict.getLabels(), lc);

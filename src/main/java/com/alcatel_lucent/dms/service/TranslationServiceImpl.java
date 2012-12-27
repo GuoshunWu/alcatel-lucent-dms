@@ -9,7 +9,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -33,7 +34,7 @@ import com.alcatel_lucent.dms.model.Translation;
 public class TranslationServiceImpl extends BaseServiceImpl implements
 		TranslationService {
 	
-	private static Logger log = Logger.getLogger(TranslationServiceImpl.class);
+	private static Logger log = LoggerFactory.getLogger(TranslationServiceImpl.class);
 	
 	@Autowired
 	private LanguageService languageService;
@@ -401,7 +402,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 			wb.write(output);
 		} catch (IOException e) {
 			e.printStackTrace();
-			log.error(e);
+			log.error(e.toString());
 			throw new SystemError(e);
 		}
 	}
@@ -461,7 +462,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 			wb.write(output);
 		} catch (IOException e) {
 			e.printStackTrace();
-			log.error(e);
+			log.error(e.toString());
 			throw new SystemError(e);
 		}
 	}	

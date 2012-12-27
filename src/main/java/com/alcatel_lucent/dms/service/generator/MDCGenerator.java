@@ -6,7 +6,8 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -27,7 +28,7 @@ import com.alcatel_lucent.dms.service.DaoService;
 @Component("MDCGenerator")
 public class MDCGenerator implements DictionaryGenerator {
 	
-	private static Logger log = Logger.getLogger(MDCGenerator.class);
+	private static Logger log = LoggerFactory.getLogger(MDCGenerator.class);
 	
 	@Autowired
 	private DaoService dao;

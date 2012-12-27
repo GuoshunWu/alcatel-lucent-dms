@@ -8,7 +8,8 @@ import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 import com.opensymphony.xwork2.interceptor.MethodFilterInterceptor;
 import com.opensymphony.xwork2.util.LocalizedTextUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.struts2.StrutsStatics;
 
 import java.util.Map;
@@ -22,7 +23,7 @@ import java.util.Map;
  */
 public class AuthenticationInterceptor extends AbstractInterceptor implements StrutsStatics {
 
-    protected static Logger log = Logger.getLogger(AuthenticationInterceptor.class);
+    protected static Logger log = LoggerFactory.getLogger(AuthenticationInterceptor.class);
 
     @SuppressWarnings("unchecked")
 //    @Override
@@ -35,12 +36,12 @@ public class AuthenticationInterceptor extends AbstractInterceptor implements St
 
         UserContext uCtx = UserContext.getInstance();    // get user profile from http session
         if (uCtx == null) {       // not logged in
-            return Action.LOGIN;  // “message” is defined as a global result in struts.xml
+            return Action.LOGIN;  // “message is defined as a global result in struts.xml
 
 //        log.info(uctx.getUser().getLoginName() + " - " + ActionContext.getContext().getName());
             // now you have user info and action name, to do privilege check here
         }
-        // if permission denied, return “message” directly
+        // if permission denied, return “message�?directly
         return invocation.invoke();          // pass the privilege check
     }
 
@@ -59,12 +60,12 @@ public class AuthenticationInterceptor extends AbstractInterceptor implements St
 
         UserContext uCtx = UserContext.getInstance();    // get user profile from http session
         if (uCtx == null) {       // not logged in
-//            return Action.LOGIN;  // “message” is defined as a global result in struts.xml
+//            return Action.LOGIN;  // “message�?is defined as a global result in struts.xml
 
 //        log.info(uctx.getUser().getLoginName() + " - " + ActionContext.getContext().getName());
             // now you have user info and action name, to do privilege check here
         }
-        // if permission denied, return “message” directly
+        // if permission denied, return “message�?directly
         return invocation.invoke();          // pass the privilege check.
     }
 

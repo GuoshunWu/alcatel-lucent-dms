@@ -4,7 +4,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.HashSet;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -27,7 +28,7 @@ import com.alcatel_lucent.dms.service.DaoService;
 @Component("LabelXMLGenerator")
 public class LabelXMLGenerator implements DictionaryGenerator {
 
-	private static Logger log = Logger.getLogger(LabelXMLGenerator.class);
+	private static Logger log = LoggerFactory.getLogger(LabelXMLGenerator.class);
 	
 	@Autowired
 	private DaoService dao;
@@ -150,7 +151,7 @@ public class LabelXMLGenerator implements DictionaryGenerator {
     		output.write(doc);
     	} catch (Exception e) {
     		e.printStackTrace();
-    		log.error(e);
+    		log.error(e.toString());
     		throw new SystemError(e);
     	} finally {
     		if (output != null) try {output.close();} catch (Exception e) {}

@@ -4,7 +4,8 @@ import com.alcatel_lucent.dms.UserContext;
 import com.alcatel_lucent.dms.action.JSONAction;
 import com.alcatel_lucent.dms.service.DeliveringDictPool;
 import com.alcatel_lucent.dms.util.Util;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,7 +25,7 @@ import java.util.Date;
 
 public class DeliverAppDictAction extends JSONAction {
 
-    private static Logger log = Logger.getLogger(DeliverAppDictAction.class);
+    private static Logger log = LoggerFactory.getLogger(DeliverAppDictAction.class);
 
     private File upload;
     private String contentType;

@@ -10,7 +10,8 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.*;
 import org.apache.struts2.interceptor.SessionAware;
@@ -26,7 +27,7 @@ import java.util.Map;
 //@Namespace("/")
 public class LoginAction extends ActionSupport implements SessionAware {
 
-    private static Logger log = Logger.getLogger(LoginAction.class);
+    private static Logger log = LoggerFactory.getLogger(LoginAction.class);
 
     private String loginname;
     private String password;

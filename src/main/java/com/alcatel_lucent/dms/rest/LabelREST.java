@@ -10,7 +10,8 @@ import java.util.Map;
 
 import javax.ws.rs.Path;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -57,7 +58,7 @@ import com.alcatel_lucent.dms.service.TranslationService;
 @Component("labelREST")
 public class LabelREST extends BaseREST {
 	
-	private static Logger log= Logger.getLogger(LabelREST.class);
+	private static Logger log= LoggerFactory.getLogger(LabelREST.class);
 	
     @Autowired
     private DictionaryService dictionaryService;

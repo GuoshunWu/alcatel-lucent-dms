@@ -3,15 +3,14 @@ package com.alcatel_lucent.dms.service.generator.xmldict;
 import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.LabelTranslation;
 import com.alcatel_lucent.dms.util.Util;
-import org.apache.commons.collections.Closure;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.IterableMap;
-import org.apache.commons.collections.MapIterator;
-import org.apache.log4j.Logger;
+import org.apache.commons.collections.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.dom4j.Element;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 import static org.apache.commons.lang3.StringUtils.center;
 
@@ -24,14 +23,16 @@ import static org.apache.commons.lang3.StringUtils.center;
  */
 public class LabelClosure implements Closure {
 
-    private static final Logger log = Logger.getLogger(LabelClosure.class);
+    private static final Logger log = LoggerFactory.getLogger(LabelClosure.class);
     private Element xmlDict;
     private LabelTranslationClosure labelTranslationClosure = new LabelTranslationClosure();
 
     private int labelCounter = 0;
+    private int totalLabel;
 
-    public LabelClosure(Element xmlDict) {
+    public LabelClosure(Element xmlDict, int totalLabel) {
         this.xmlDict = xmlDict;
+        this.totalLabel = totalLabel;
     }
 
     public void execute(Object input) {
@@ -41,7 +42,7 @@ public class LabelClosure implements Closure {
         labelCounter++;
         System.out.print('.');
         if (labelCounter % 150 == 0) {
-            System.out.println();
+            System.out.println(String.format("(%1$.2f%%)", (float) labelCounter * 100 / totalLabel));
         }
         final Element xmlKey = xmlDict.addElement("KEY");
         labelTranslationClosure.setXmlKey(xmlKey);
@@ -63,15 +64,12 @@ public class LabelClosure implements Closure {
         writeElement("CONTEXT", map.get("context"), xmlKey, labelTranslations, null);
         writeElement("HELP", map.get("help"), xmlKey, labelTranslations, map.get("follow_up"));
 
-        IterableMap params = label.getParams();
-        MapIterator it = params.mapIterator();
-        while (it.hasNext()) {
-            Object key = it.next();
-            Element param = xmlKey.addElement("PARAM");
-            param.addAttribute("name", (String) key);
-            param.addAttribute("value", (String) it.getValue());
+        Set<Map.Entry<String, String>> params = label.getParams().entrySet();
+        for (Map.Entry<String, String> param : params) {
+            Element eParam = xmlKey.addElement("PARAM");
+            eParam.addAttribute("name", param.getKey());
+            eParam.addAttribute("value", param.getValue());
         }
-
 
         String elemName = "STATIC_TOKEN";
         String value = label.getValueFromField("STATIC_TOKEN", Label.ANNOTATION2);
@@ -79,7 +77,7 @@ public class LabelClosure implements Closure {
             String[] sts = value.split(";");
             for (String st : sts) {
                 Element staticToken = xmlKey.addElement(elemName);
-                if (!st.isEmpty()) staticToken.setText(st);
+                if (!st.isEmpty()) staticToken.addCDATA(st);
             }
         }
 
@@ -103,7 +101,7 @@ public class LabelClosure implements Closure {
                 element.addAttribute("follow_up", followUp);
             }
             element.addAttribute("language", "GAE");
-            if (!value.isEmpty()) element.setText(value);
+            if (!value.isEmpty()) element.addCDATA(value);
         }
         labelTranslationClosure.setName(elemName);
         CollectionUtils.forAllDo(labelTranslations, labelTranslationClosure);

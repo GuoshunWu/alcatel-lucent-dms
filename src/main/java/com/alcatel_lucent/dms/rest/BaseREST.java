@@ -23,7 +23,8 @@ import javax.ws.rs.core.UriInfo;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.alcatel_lucent.dms.service.DaoService;
@@ -32,7 +33,7 @@ import com.alcatel_lucent.dms.service.JSONService;
 @Produces({MediaType.APPLICATION_JSON + ";CHARSET=UTF-8", MediaType.TEXT_HTML + ";CHARSET=UTF-8"})
 public abstract class BaseREST {
 	
-	protected Logger log = Logger.getLogger(this.getClass());
+	protected Logger log = LoggerFactory.getLogger(this.getClass());
     
 	@Autowired
     protected DaoService dao;
@@ -56,7 +57,7 @@ public abstract class BaseREST {
     		return response.build();
     	} catch (Exception e) {
     		e.printStackTrace();
-    		log.error(e);
+    		log.error(e.toString());
     		throw new RESTException(e);
     	}
     }
@@ -81,7 +82,7 @@ public abstract class BaseREST {
     		return response.build();
     	} catch (Exception e) {
     		e.printStackTrace();
-    		log.error(e);
+    		log.error(e.toString());
     		throw new RESTException(e);
     	}
     }
@@ -104,7 +105,7 @@ public abstract class BaseREST {
 			return jsonService.toJSONString(entity, prop);
 		} catch (Exception e) {
 			e.printStackTrace();
-    		log.error(e);
+    		log.error(e.toString());
     		throw new RESTException(e);
 		}
     }

@@ -2,7 +2,8 @@ package com.alcatel_lucent.dms.filters;
 
 import com.alcatel_lucent.dms.UserContext;
 import net.sf.json.JSONObject;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +24,7 @@ import static com.alcatel_lucent.dms.util.Util.anyMatch;
  */
 //@WebFilter(filterName = "authenticationFilter", urlPatterns = {"/*"})
 public class AuthenticationFilter implements Filter {
-    protected Logger log = Logger.getLogger(AuthenticationFilter.class);
+    protected Logger log = LoggerFactory.getLogger(AuthenticationFilter.class);
     private List<String> excludePatterns;
     private List<String> ajaxURIs;
     private String authURL = "/login/forward-to-https";

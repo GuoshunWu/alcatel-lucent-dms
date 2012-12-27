@@ -10,7 +10,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +25,7 @@ import com.alcatel_lucent.dms.service.DaoService;
 @Component("DCTGenerator")
 public class DCTGenerator implements DictionaryGenerator {
 	
-	private static Logger log = Logger.getLogger(DCTGenerator.class);
+	private static Logger log = LoggerFactory.getLogger(DCTGenerator.class);
 	
 	@Autowired
 	private DaoService dao;

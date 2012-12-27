@@ -5,7 +5,8 @@ import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.service.generator.*;
 import com.alcatel_lucent.dms.service.generator.xmldict.XMLDictGenerator;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -21,15 +22,11 @@ import java.util.*;
 public class DictionaryServiceImpl extends BaseServiceImpl implements
         DictionaryService {
 
-    private static Logger log = Logger.getLogger(DictionaryServiceImpl.class);
+    private static Logger log = LoggerFactory.getLogger(DictionaryServiceImpl.class);
 
-    public static Logger logDictDeliverSuccess = Logger
-            .getLogger("DictDeliverSuccess");
-    public static Logger logDictDeliverFail = Logger
-            .getLogger("DictDeliverFail");
-
-    public static Logger logDictDeliverWarning = Logger
-            .getLogger("DictDeliverWaning");
+    public static Logger logDictDeliverSuccess = LoggerFactory.getLogger("DictDeliverSuccess");
+    public static Logger logDictDeliverFail = LoggerFactory.getLogger("DictDeliverFail");
+    public static Logger logDictDeliverWarning = LoggerFactory.getLogger("DictDeliverWaning");
 
     @Autowired
     private TextService textService;
@@ -101,7 +98,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             }
         }
         if (exceptions.hasNestedException()) {
-            log.error(exceptions);
+            log.error(exceptions.toString());
             throw exceptions;
         }
 
@@ -187,6 +184,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 // with Default context, set the label to dictionary context
                 if (label.getOrigTranslations() != null) {
                     for (LabelTranslation lt : label.getOrigTranslations()) {
+                        if (lt == null || lt.getOrigTranslation() == null) {
+                            System.out.println("label.key= " + label.getKey());
+                            System.out.println("label translation = " + lt);
+                            System.out.println("label translation original= " + lt.getOrigTranslation());
+                        }
                         if (lt.getLanguage() != null && !lt.getOrigTranslation().equals(label.getReference())) {
                             Text text = textMap.get(label.getReference());
                             if (text != null) {
@@ -198,7 +200,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                                         try {
                                             translation = new String(translation.getBytes(dict.getEncoding()), dl.getCharset().getName());
                                         } catch (UnsupportedEncodingException e) {
-                                            log.error(e);
+                                            log.error(e.toString());
                                         }
                                     }
                                     if (!trans.getTranslation().equals(translation)) {
@@ -236,7 +238,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                                         try {
                                             translation = new String(translation.getBytes(dict.getEncoding()), dl.getCharset().getName());
                                         } catch (UnsupportedEncodingException e) {
-                                            log.error(e);
+                                            log.error(e.toString());
                                         }
                                     }
                                     trans.setLanguage(lt.getLanguage());
