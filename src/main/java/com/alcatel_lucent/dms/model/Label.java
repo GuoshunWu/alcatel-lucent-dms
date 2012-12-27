@@ -1,14 +1,13 @@
 package com.alcatel_lucent.dms.model;
 
 import com.alcatel_lucent.dms.SystemError;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.IterableMap;
-import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
@@ -293,13 +292,13 @@ public class Label extends BaseEntity {
     /**
      * The follow properties are used for xml dict parser and generator
      */
-    private IterableMap params = new HashedMap();
+    private Map<String, String> params = new HashMap<String, String>();
 
-    public IterableMap getParams() {
+    public Map<String, String> getParams() {
         return params;
     }
 
-    public void setParams(IterableMap params) {
+    public void setParams(Map<String, String> params) {
         this.params = params;
     }
 

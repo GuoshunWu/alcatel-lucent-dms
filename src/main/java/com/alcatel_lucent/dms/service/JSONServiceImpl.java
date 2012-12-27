@@ -14,7 +14,8 @@ import net.sf.json.util.PropertyFilter;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import static java.lang.Math.ceil;
@@ -23,7 +24,7 @@ import static java.lang.Math.ceil;
 @SuppressWarnings("unchecked")
 public class JSONServiceImpl implements JSONService {
 
-    private static Logger log = Logger.getLogger(JSONServiceImpl.class);
+    private static Logger log = LoggerFactory.getLogger(JSONServiceImpl.class);
 
     public String toJSONString(Object entity, String propExp) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
     	return Util.jsonFormat(toJSON(entity, propExp).toString());
@@ -55,7 +56,7 @@ public class JSONServiceImpl implements JSONService {
 	    		}
     		} catch (Exception e) {
     			e.printStackTrace();
-    			log.error(e);
+    			log.error(e.toString());
     		}
     	}
     	return json;
@@ -108,7 +109,7 @@ public class JSONServiceImpl implements JSONService {
         		try {
         			value = PropertyUtils.getProperty(entity, prop.trim());
         		} catch (Exception e) {
-        			log.error(e);
+        			log.error(e.toString());
         		}
         		if (value != null) {	// escape html tags in grid result
         			value = StringEscapeUtils.escapeHtml(value.toString());

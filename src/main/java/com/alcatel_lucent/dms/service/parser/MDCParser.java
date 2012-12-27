@@ -15,7 +15,8 @@ import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -42,7 +43,7 @@ public class MDCParser extends DictionaryParser {
 	@Autowired
 	private LanguageService languageService;
 
-	private Logger log = Logger.getLogger(MDCParser.class);
+	private Logger log = LoggerFactory.getLogger(MDCParser.class);
     
 	@Override
 	public ArrayList<Dictionary> parse(String rootDir, File file, Collection<File> acceptedFiles) throws BusinessException {

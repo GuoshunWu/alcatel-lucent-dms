@@ -4,7 +4,8 @@ import com.alcatel_lucent.dms.UserContext;
 import com.alcatel_lucent.dms.action.JSONAction;
 import com.alcatel_lucent.dms.service.TaskService;
 import com.alcatel_lucent.dms.util.Util;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,7 +23,7 @@ public class ReceiveTaskFilesAction extends JSONAction {
 
     private TaskService taskService;
 
-    private static Logger log = Logger.getLogger(ReceiveTaskFilesAction.class);
+    private static Logger log = LoggerFactory.getLogger(ReceiveTaskFilesAction.class);
 
     private File upload;
     private String contentType;

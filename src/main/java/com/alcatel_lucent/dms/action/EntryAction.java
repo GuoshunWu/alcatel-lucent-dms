@@ -10,7 +10,8 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import net.sf.json.JSON;
 import net.sf.json.JSONObject;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Result;
@@ -27,7 +28,7 @@ import java.util.*;
 @ResultPath("/")
 public class EntryAction extends ActionSupport {
 
-    private static Logger log = Logger.getLogger(EntryAction.class);
+    private static Logger log = LoggerFactory.getLogger(EntryAction.class);
     private Map<String, Object> session;
 
     @Autowired

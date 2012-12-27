@@ -13,7 +13,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.poi.hssf.usermodel.HSSFDataFormatter;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -43,7 +44,7 @@ import com.alcatel_lucent.dms.util.Util;
 @Service("taskService")
 public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 	
-	private static Logger log = Logger.getLogger(TaskServiceImpl.class);
+	private static Logger log = LoggerFactory.getLogger(TaskServiceImpl.class);
 	
 	private static final String PROTECT_PASSWORD = "alcatel123";
 
@@ -294,7 +295,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 			fos = new FileOutputStream(new File(dir, filename));
 			wb.write(fos);
 		} catch (Exception e) {
-			log.error(e);
+			log.error(e.toString());
 			e.printStackTrace();
 			throw new SystemError(e);
 		} finally {
@@ -340,7 +341,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 			fos = new FileOutputStream(new File(targetDir, "summary.xls"));
 			wb.write(fos);
 		} catch (Exception e) {
-			log.error(e);
+			log.error(e.toString());
 			e.printStackTrace();
 			throw new SystemError(e);
 		} finally {
@@ -487,7 +488,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
             return result;
         } catch (Exception e) {
         	e.printStackTrace();
-        	log.error(e);
+        	log.error(e.toString());
         	throw new SystemError(e);
         } finally {
         	if (inp != null) try {inp.close();} catch (Exception e) {}

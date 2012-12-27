@@ -2,14 +2,15 @@ package com.alcatel_lucent.dms.model;
 
 import com.alcatel_lucent.dms.util.Util;
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.Map;
 
 public abstract class BaseEntity implements Serializable {
 
-    protected Logger log = Logger.getLogger(getClass());
+    protected Logger log = LoggerFactory.getLogger(getClass());
 
     public static final String ANNOTATION1="annotation1";
     public static final String ANNOTATION2="annotation2";

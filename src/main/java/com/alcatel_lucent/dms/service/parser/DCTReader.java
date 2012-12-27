@@ -8,7 +8,8 @@ import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.service.LanguageService;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.LineNumberReader;
@@ -34,7 +35,7 @@ public class DCTReader extends LineNumberReader {
     private static final Pattern patternLabelLanguageCode = Pattern
             .compile("^([\\w-]{2,5})\\s*[\\w\\W]*$");
 
-    private Logger log = Logger.getLogger(DCTReader.class);
+    private Logger log = LoggerFactory.getLogger(DCTReader.class);
     private String lastLine = ";";
     private String currentLine;
     private boolean firstLine = true;

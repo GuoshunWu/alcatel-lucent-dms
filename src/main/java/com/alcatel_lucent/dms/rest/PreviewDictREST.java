@@ -45,7 +45,7 @@ public class PreviewDictREST extends BaseREST {
 			return jsonService.toJSONString(dict, prop);
 		} catch (Exception e) {
 			e.printStackTrace();
-    		log.error(e);
+    		log.error(e.toString());
     		throw new RESTException(e);
 		}
     }

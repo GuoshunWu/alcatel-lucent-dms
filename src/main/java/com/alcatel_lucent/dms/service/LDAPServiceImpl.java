@@ -1,6 +1,7 @@
 package com.alcatel_lucent.dms.service;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 
 @Service("ldapService")
 public class LDAPServiceImpl implements LDAPService {
-    private static Logger log = Logger.getLogger(LDAPServiceImpl.class);
+    private static Logger log = LoggerFactory.getLogger(LDAPServiceImpl.class);
     
     @Value("${ldap.url}")
 	private String ldapUrl;

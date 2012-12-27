@@ -5,7 +5,8 @@ import com.alcatel_lucent.dms.action.JSONAction;
 import com.alcatel_lucent.dms.model.User;
 import com.alcatel_lucent.dms.service.AuthenticationService;
 import com.opensymphony.xwork2.ActionSupport;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Result;
@@ -17,7 +18,7 @@ import java.util.Map;
 
 @SuppressWarnings("serial")
 public class ForwardToHttpsAction extends ActionSupport {
-    private static Logger log = Logger.getLogger(ForwardToHttpsAction.class);
+    private static Logger log = LoggerFactory.getLogger(ForwardToHttpsAction.class);
 
     @Value("${httpsPort}")
     private String httpsPort;

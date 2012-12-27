@@ -4,7 +4,8 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,7 @@ import com.alcatel_lucent.dms.model.User;
 @Service("authenticationService")
 public class AuthenticationServiceImpl extends BaseServiceImpl implements AuthenticationService {
 	
-	private static Logger log = Logger.getLogger(AuthenticationServiceImpl.class);
+	private static Logger log = LoggerFactory.getLogger(AuthenticationServiceImpl.class);
 
 	@Autowired
 	private LDAPService ldapService;

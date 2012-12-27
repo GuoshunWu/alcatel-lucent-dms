@@ -7,7 +7,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -28,7 +29,7 @@ import com.alcatel_lucent.dms.model.BaseEntity;
 
 @Repository("daoService")
 public class DaoServiceImpl implements DaoService {
-    private static Logger log = Logger.getLogger(DaoServiceImpl.class);
+    private static Logger log = LoggerFactory.getLogger(DaoServiceImpl.class);
 
     @Autowired
     private SessionFactory sessionFactory;

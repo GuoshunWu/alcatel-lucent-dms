@@ -8,7 +8,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
@@ -28,7 +29,7 @@ import com.alcatel_lucent.dms.model.Translation;
 @Service("deliveringDictPool")
 public class DeliveringDictPool {
 	
-	private static Logger log = Logger.getLogger(DeliveringDictPool.class);
+	private static Logger log = LoggerFactory.getLogger(DeliveringDictPool.class);
 	private static final long TIMEOUT_VALUE = 60 * 60 * 1000;
 	
 	@Autowired

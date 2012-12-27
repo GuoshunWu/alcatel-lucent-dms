@@ -4,6 +4,8 @@ import com.alcatel_lucent.dms.model.LabelTranslation;
 import org.apache.commons.collections.Closure;
 import org.apache.commons.lang3.BooleanUtils;
 import org.dom4j.Element;
+import org.dom4j.Namespace;
+import org.dom4j.QName;
 
 import java.util.Arrays;
 
@@ -47,7 +49,7 @@ public class LabelTranslationClosure implements Closure {
         if (null == value || (name.equals("CONTEXT") && !isContext)) return;
 
         Element element = xmlKey.addElement(name);
-        if (!value.isEmpty()) element.setText(value);
+        if (!value.isEmpty()) element.addCDATA(value);
 
         String followUp = lt.getValueFromField("follow_up", LabelTranslation.ANNOTATION1);
         if (Arrays.asList("HELP", "TRANSLATION").contains(name) && null != followUp)

@@ -37,7 +37,7 @@ public class ExportTranslationReportAction extends BaseAction {
 			return SUCCESS;
 		} catch (Exception e) {
 			e.printStackTrace();
-			log.error(e);
+			log.error(e.toString());
 			throw new SystemError(e);
 		}
 	}

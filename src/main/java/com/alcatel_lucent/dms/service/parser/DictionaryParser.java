@@ -4,7 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
@@ -12,7 +13,7 @@ import com.alcatel_lucent.dms.model.Dictionary;
 
 abstract public class DictionaryParser {
 	
-	protected Logger log = Logger.getLogger(this.getClass());
+	protected Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	/**
 	 * Parse dictionaries into object.

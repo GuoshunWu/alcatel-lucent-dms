@@ -1,6 +1,7 @@
 package com.alcatel_lucent.dms.action.app;
 
-import org.apache.log4j.Level;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 
@@ -61,13 +62,12 @@ public class RemoveApplicationAction extends JSONAction {
     }
 
     public String performAction() throws Exception {
-        log.setLevel(Level.DEBUG);
-        log.debug(String.format("productId=%d,id=%s, oper=%s, permanent=%b.",productId, id, oper, permanent));
+        log.debug("productId=%d,id=%s, oper=%s, permanent=%b.", new Object[]{productId, id, oper, permanent});
 
         if (permanent) {
             id = "" + productService.deleteApplication(Long.valueOf(id));
         } else {
-            productService.removeApplicationFromProduct(productId,toIdList(id));
+            productService.removeApplicationFromProduct(productId, toIdList(id));
         }
 
         setStatus(0);

@@ -130,6 +130,12 @@
             <artifactId>hibernate-search</artifactId>
             <version>4.1.1.Final</version>
         </dependency>
+        <!-- This dependency is used in spring, see "spring-framework-reference page41- Using SLF4j" -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>1.6.1</version>
+        </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -137,17 +143,10 @@
             <version>1.6.1</version>
         </dependency>
 
-
         <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib</artifactId>
             <version>2.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-            <version>3.2.1</version>
         </dependency>
 
         <dependency>
@@ -193,23 +192,12 @@
         </dependency>
 
         <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
-            <version>1.8.3</version>
-        </dependency>
-
-        <dependency>
             <groupId>net.sf.json-lib</groupId>
             <artifactId>json-lib</artifactId>
             <version>2.4</version>
             <classifier>jdk15</classifier>
         </dependency>
 
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
-        </dependency>
 
         <dependency>
             <groupId>com.h2database</groupId>
@@ -316,9 +304,9 @@
             <version>2.3.4.1</version>
         </dependency>
         <!--<dependency>-->
-            <!--<groupId>org.apache.struts</groupId>-->
-            <!--<artifactId>struts2-rest-plugin</artifactId>-->
-            <!--<version>2.3.4.1</version>-->
+        <!--<groupId>org.apache.struts</groupId>-->
+        <!--<artifactId>struts2-rest-plugin</artifactId>-->
+        <!--<version>2.3.4.1</version>-->
         <!--</dependency>-->
 
         <!--<dependency>-->
@@ -328,16 +316,6 @@
         <!--<scope>test</scope>-->
         <!--</dependency>-->
 
-        <dependency>
-            <groupId>commons-fileupload</groupId>
-            <artifactId>commons-fileupload</artifactId>
-            <version>1.2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>1.3.2</version>
-        </dependency>
 
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -375,12 +353,6 @@
             <scope>provided</scope>
         </dependency>
 
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-jci-fam</artifactId>
-            <version>1.0</version>
-        </dependency>
 
     </dependencies>
 
@@ -619,7 +591,7 @@
 
                 <db.dialect>org.hibernate.dialect.MySQL5InnoDBDialect</db.dialect>
                 <!-- none, create, create-drop, update, validate -->
-                <db.hbm2ddl.auto>validate</db.hbm2ddl.auto>
+                <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
             </properties>
         </profile>
         <profile>

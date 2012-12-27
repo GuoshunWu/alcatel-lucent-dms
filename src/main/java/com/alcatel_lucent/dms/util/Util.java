@@ -18,12 +18,13 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 import org.dom4j.Attribute;
 import org.mozilla.intl.chardet.HtmlCharsetDetector;
 import org.mozilla.intl.chardet.nsDetector;
 import org.mozilla.intl.chardet.nsICharsetDetectionObserver;
 import org.mozilla.intl.chardet.nsPSMDetector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -53,7 +54,7 @@ public class Util {
     private static String mdcFileExtsPattern = ".conf";
 
 
-    private static Logger log = Logger.getLogger(Util.class);
+    private static Logger log = LoggerFactory.getLogger(Util.class);
 
     /**
      * <p>
@@ -474,7 +475,7 @@ public class Util {
      * @return the string result.
      */
     public static String map2String(Map map, String... separators) {
-        if (MapUtils.isEmpty(map)) {
+        if (map.keySet().isEmpty()) {
             return StringUtils.EMPTY;
         }
         String entrySep = ";";

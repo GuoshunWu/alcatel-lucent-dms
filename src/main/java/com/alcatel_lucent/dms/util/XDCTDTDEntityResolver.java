@@ -1,6 +1,7 @@
 package com.alcatel_lucent.dms.util;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -17,7 +18,7 @@ import java.io.IOException;
  */
 public class XDCTDTDEntityResolver implements EntityResolver {
 
-    protected static Logger log = Logger.getLogger(XDCTDTDEntityResolver.class);
+    protected static Logger log = LoggerFactory.getLogger(XDCTDTDEntityResolver.class);
 
     @Override
     public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {

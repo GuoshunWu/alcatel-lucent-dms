@@ -7,7 +7,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashSet;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +24,7 @@ import com.alcatel_lucent.dms.service.DaoService;
 @Component("PropGenerator")
 public class PropGenerator implements DictionaryGenerator {
 	
-	private Logger log = Logger.getLogger(PropGenerator.class);
+	private Logger log = LoggerFactory.getLogger(PropGenerator.class);
 
 	@Autowired
 	private DaoService dao;
@@ -89,7 +90,7 @@ public class PropGenerator implements DictionaryGenerator {
 	        	}
 	        }
         } catch (IOException e) {
-        	log.error(e);
+        	log.error(e.toString());
         	e.printStackTrace();
             throw new SystemError(e.getMessage());
         } finally {
