@@ -251,21 +251,26 @@
       }
       filename = "" + ($('#appDispAppName').text()) + "_" + ($('#selAppVersion option:selected').text()) + "_" + (new Date().format('yyyyMMdd_hhmmss')) + ".zip";
       $.blockUI();
-      return $.post('app/generate-dict', {
-        dicts: dicts.join(','),
-        filename: filename
-      }, function(json) {
-        var downloadForm;
-        $.unblockUI();
-        if (json.status !== 0) {
-          $.msgBox(json.message, null, {
-            title: c18n.error
-          });
-          return;
+      return $.ajax('app/generate-dict', {
+        dataType: 'json',
+        timeout: 1000 * 60 * 30,
+        data: {
+          dicts: dicts.join(','),
+          filename: filename
+        },
+        success: function(json, textStatus, jqXHR) {
+          var downloadForm;
+          $.unblockUI();
+          if (json.status !== 0) {
+            $.msgBox(json.message, null, {
+              title: c18n.error
+            });
+            return;
+          }
+          downloadForm = $('#downloadDict');
+          $('#fileLoc', downloadForm).val(json.fileLoc);
+          return downloadForm.submit();
         }
-        downloadForm = $('#downloadDict');
-        $('#fileLoc', downloadForm).val(json.fileLoc);
-        return downloadForm.submit();
       });
     });
     ($('#batchAddLanguage').button({})).click(function() {
