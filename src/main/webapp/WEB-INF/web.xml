@@ -78,7 +78,7 @@
             <param-value>
                 /entry\.action\?login\.jsp,/login\.action,
                 /login/forward-to-https,
-                /test/.*,/json/.*,/docs/.*,.*.js,.*.css,.*images.*,.*.ico
+                /test/.*,/json/.*,/manual/.*,.*.js,.*.css,.*images.*,.*.ico
             </param-value>
         </init-param>
         <init-param>
