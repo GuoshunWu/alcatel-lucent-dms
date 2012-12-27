@@ -40,7 +40,7 @@ public class XMLDictGenerator implements DictionaryGenerator {
     @Override
     public void generateDict(File targetDir, Long dictId) throws BusinessException {
         Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
-
+        generateDict(targetDir, dict);
     }
 
     public void generateDict(File targetDir, Dictionary dict) throws BusinessException {
