@@ -115,12 +115,11 @@ define (require, util, dialogs, i18n)->
       handlers[action].handler rowData
   }).jqGrid('navGrid', '#dictPager', {add: false, edit: false, search: false, del: false}, {}, {}, deleteOptions)
   #  custom button for del dictionary
-  .navButtonAdd('#dictPager', {caption: "", buttonicon: "ui-icon-trash", position: "first"
-      onClickButton: ()->
-        if(rowIds = $(@).getGridParam('selarrrow')).length == 0
-          $.msgBox (c18n.selrow.format c18n.dict), null, {title: c18n.warning}
-          return
-        $(@).jqGrid 'delGridRow', rowIds, deleteOptions
+  .navButtonAdd('#dictPager', {caption: "", buttonicon: "ui-icon-trash", position: "first", onClickButton: ()->
+      if(rowIds = $(@).getGridParam('selarrrow')).length == 0
+        $.msgBox (c18n.selrow.format c18n.dict), null, {title: c18n.warning}
+        return
+      $(@).jqGrid 'delGridRow', rowIds, deleteOptions
     }).setGridParam(datatype: 'json')
 
 
