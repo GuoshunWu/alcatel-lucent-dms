@@ -87,6 +87,9 @@
         <img src="images/login/LoginBottom.gif" alt=""/>
     </div>
     <div style="height:18px">
+    	<div style="float: left;font-size: 13px">
+            &nbsp;<a href="<%=request.getContextPath()%>/docs/Dictionary Management System - User Guide.doc" target="_blank" style="text-decoration:none"><img src="<%=request.getContextPath()%>/images/help.png" alt="" style="border: 0"/>&nbsp;<b>User Guide</b></a>
+        </div>
         <div style="float: right; font-size: 13px; font-weight:bold; padding-right:5px"><s:property
                 value="#version"/></div>
     </div>
