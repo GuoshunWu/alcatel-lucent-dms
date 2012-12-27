@@ -13,6 +13,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -48,7 +49,10 @@ public abstract class BaseREST {
     	try {
     		Response.ResponseBuilder response = Response.ok(doGetOrPost(map));
     		response.expires(new Date(0));
-    		response.lastModified(new Date());
+//    		response.lastModified(new Date());
+    		CacheControl cc = new CacheControl();
+    		cc.setNoCache(true);
+    		response.cacheControl(cc);
     		return response.build();
     	} catch (Exception e) {
     		e.printStackTrace();
@@ -70,7 +74,10 @@ public abstract class BaseREST {
     	try {
     		Response.ResponseBuilder response = Response.ok(doGetOrPost(map));
     		response.expires(new Date(0));
-    		response.lastModified(new Date());
+//    		response.lastModified(new Date());
+    		CacheControl cc = new CacheControl();
+    		cc.setNoCache(true);
+    		response.cacheControl(cc);
     		return response.build();
     	} catch (Exception e) {
     		e.printStackTrace();

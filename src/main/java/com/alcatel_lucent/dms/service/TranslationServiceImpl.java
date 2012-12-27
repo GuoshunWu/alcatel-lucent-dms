@@ -285,7 +285,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     	}
     	
     	// count untranslated and in progress translations for each label
-    	String hql = "select l.id,count(distinct dl.languageCode)" +
+    	String hql = "select l.id" +
     			",sum(case when t.status=" + Translation.STATUS_UNTRANSLATED + " then 1 else 0 end) " +
     			",sum(case when t.status=" + Translation.STATUS_IN_PROGRESS + " then 1 else 0 end) " +
     			" from Dictionary d join d.dictLanguages dl" +
@@ -300,14 +300,13 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     	Collection<Object[]> qr = dao.retrieve(hql, param);
     	for (Object[] row : qr) {
     		Long labelId = ((Number) row[0]).longValue();
-    		int factor = ((Number) row[1]).intValue();
-    		int[] values = new int[] {0, ((Number) row[2]).intValue() / factor, ((Number) row[3]).intValue() / factor};
+    		int[] values = new int[] {0, ((Number) row[1]).intValue(), ((Number) row[2]).intValue()};
     		result.put(labelId, values);
     	}
     	
     	// in case of no Translation object associated
     	// count as untranslated
-    	hql = "select l.id,count(distinct dl.languageCode),count(*) " +
+    	hql = "select l.id,count(*) " +
     			" from Dictionary d join d.dictLanguages dl join d.labels l" +
     			" where d.id=:dictId and dl.language.id<>1" +
 				" and not exists(select lt from LabelTranslation lt where lt.language=dl.language and lt.label=l and lt.needTranslation=false) " +
@@ -317,21 +316,19 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     	qr = dao.retrieve(hql, param);
     	for (Object[] row : qr) {
     		Long labelId = (Long) row[0];
-    		int factor = ((Number) row[1]).intValue();
     		int[] values = result.get(labelId);
-    		values[1] += ((Number) row[2]).intValue() / factor;
+    		values[1] += ((Number) row[1]).intValue();
     	}
     	
     	// set translated = total - untranslated - in process
-    	HashSet<Long> langIds = new HashSet<Long>();
+    	int total = 0;
     	if (dict.getDictLanguages() != null) {
 	    	for (DictionaryLanguage dl : dict.getDictLanguages()) {
 	    		if (dl.getLanguage().getId() != 1L) {
-	    			langIds.add(dl.getLanguage().getId());
+	    			total++;
 	    		}
 	    	}
     	}
-    	int total = langIds.size();
 		for (int[] values : result.values()) {
 			values[0] = total - values[1] - values[2];
 		}
