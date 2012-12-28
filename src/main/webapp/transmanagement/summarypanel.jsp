@@ -2,7 +2,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@ page contentType="text/html;charset=utf-8" %>
 
-<%--dialogs--%>
 <table width="100%" border="0" style="border-color: black">
     <tr>
         <td style="font-weight:bold;font-size: medium;"><s:text name="transmng.summarypanel.summary"/></td>
@@ -22,13 +21,14 @@
                     <td style="width:160px">
                         <s:select theme="simple" id="productBase" list="productBases" listKey="id" listValue="name"
                                   cssStyle="width:99%;" headerKey="-1" headerValue="%{getText('product.select.head')}"
-                                value="curProductBaseId" />
+                                  value="curProductBaseId"/>
                     </td>
                     <td align="right" style="width: 50px"><s:text name="version"/></td>
                     <td style="width:200px">
                         <s:select theme="simple" id="productRelease" list="products" listKey="id" listValue="version"
-                                  cssStyle="width:99%;" headerKey="-1" headerValue="%{getText('product.version.select.head')}"
-                                  value="curProductId" />
+                                  cssStyle="width:99%;" headerKey="-1"
+                                  headerValue="%{getText('product.version.select.head')}"
+                                  value="curProductId"/>
                     </td>
                     <td style="width: 250px">
                         <div style="border: none;width: 280px;text-align: center">
@@ -82,9 +82,13 @@
                     <td>
                         <button id="create"><s:text name="button.translationtask"/></button>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <button id="exportTranslation"><s:text name="button.exporttranslation"/></button>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <s:text name="transmng.summarypanel.makelabelas"/>&nbsp;&nbsp;
-                        <button id='makeLabelTranslated' value="2">T</button>
-                        <button id="makeLabelNotTranslated" value="0">N</button>
+                        <span>
+                            <button id='makeLabelTranslated' value="2">T</button>
+                            <button id="makeLabelNotTranslated" value="0">N</button>
+                        </span>
                     </td>
                     <td style="width: 15px"/>
                 </tr>

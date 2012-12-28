@@ -161,7 +161,7 @@
       postData: {},
       datatype: 'local',
       width: $(window).innerWidth() * 0.95,
-      height: 330,
+      height: 310,
       rownumbers: true,
       shrinkToFit: false,
       pager: '#transPager',
