@@ -43,9 +43,6 @@
                 <table border="0" width="100%">
                     <tr>
                         <td style="width: 165px">
-                            <form id="downloadDict" action="app/download-app-dict" method="post">
-                                <input type="hidden" id="fileLoc" name="fileLoc"/>
-                            </form>
                             <span id="uploadBrower" style="height: 28px"></span>
                         </td>
                         <td style="width: 170px">
@@ -53,8 +50,6 @@
                         </td>
                         <td>
                             <button id="batchAddLanguage">Add language</button>
-                            <%--<label class="show-label" for="dctFileUpload"><s:text name="appmng.deliverapp"/></label>--%>
-                            <%--<span id="uploadStatus"/>--%>
                         </td>
                     </tr>
                 </table>

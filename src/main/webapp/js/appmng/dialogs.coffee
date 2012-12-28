@@ -147,11 +147,11 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   autoOpen: false
   height: 'auto'
   title: i18n.dialog.stringsettings.title, modal: true, zIndex: 900
-  create:(e,ui)->
+  create: (e, ui)->
   # set my width according to the string settings grid width
     $(@).dialog 'option', 'width', $('#stringSettingsGrid').getGridParam('width') + 40
   open: (e, ui)->
-    # param must be attached to the dialog before the dialog open
+  # param must be attached to the dialog before the dialog open
     param = $(@).data "param"
     return if !param
 

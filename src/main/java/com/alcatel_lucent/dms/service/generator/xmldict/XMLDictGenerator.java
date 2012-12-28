@@ -2,32 +2,32 @@ package com.alcatel_lucent.dms.service.generator.xmldict;
 
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.SystemError;
-import com.alcatel_lucent.dms.model.*;
+import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.service.DaoService;
 import com.alcatel_lucent.dms.service.generator.DictionaryGenerator;
 import com.alcatel_lucent.dms.util.Util;
-import org.apache.commons.collections.*;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.*;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Map;
 
-import static org.apache.commons.lang.StringUtils.join;
-import static org.apache.commons.lang.StringUtils.startsWith;
+
+
 import static org.apache.commons.lang3.StringUtils.center;
-import static org.apache.commons.lang3.StringUtils.defaultString;
 
 @Component("XmlDictGenerator")
 public class XMLDictGenerator implements DictionaryGenerator {
@@ -59,15 +59,24 @@ public class XMLDictGenerator implements DictionaryGenerator {
             format.setIndentSize(4);
             format.setXHTML(true);
 
-            log.info(center("Start writing dictionary " + dict.getName() + "...", 100, '='));
+            log.info(center("Start generating dictionary " + dict.getName() + "...", 100, '='));
             writer = new XMLWriter(new BufferedOutputStream(new FileOutputStream(file)), format);
 
             long begin = System.currentTimeMillis();
-            writer.write(generateDocument(dict));
+            Document doc = generateDocument(dict);
             long end = System.currentTimeMillis();
-
             String timeStr = DurationFormatUtils.formatPeriod(begin, end, "mm 'minute(s)' ss 'second(s)'.");
-            log.info(center("Writing dictionary " + dict.getName() + " has completed, total used " + timeStr, 100, '*'));
+            log.info(center("Generating dictionary " + dict.getName() + " using a total of " + timeStr, 100, '*'));
+
+
+            begin = System.currentTimeMillis();
+            log.info(center("Start writing dictionary " + dict.getName() + "...", 100, '='));
+            writer.write(doc);
+            end = System.currentTimeMillis();
+            timeStr = DurationFormatUtils.formatPeriod(begin, end, "mm 'minute(s)' ss 'second(s)'.");
+            log.info(center("Writing dictionary " + dict.getName() + " using a total of " + timeStr, 100, '*'));
+
+
         } catch (IOException e) {
             throw new SystemError(e.getMessage());
         } finally {
@@ -98,14 +107,12 @@ public class XMLDictGenerator implements DictionaryGenerator {
         xmlDict.addAttribute("appli", attributes.get("appli"));
         xmlDict.addAttribute("separator", attributes.get("separator"));
 
-        log.info(StringUtils.center("Start writing dictionary " + dict.getName() + " languages...", 100, '='));
         LanguageClosure ll = new LanguageClosure(xmlDict);
         CollectionUtils.forAllDo(dict.getDictLanguages(), ll);
-        log.info(StringUtils.center("Writing dictionary " + dict.getName() + " languages complete", 100, '='));
 
         LabelClosure lc = new LabelClosure(xmlDict, dict.getLabelNum());
 
-        log.info(StringUtils.center("Start writing dictionary " + dict.getName() + " labels(total: " + dict.getLabelNum() + ").", 100, '='));
+        log.info(StringUtils.center("Start generating dictionary " + dict.getName() + " labels(total: " + dict.getLabelNum() + ").", 100, '='));
         CollectionUtils.forAllDo(dict.getLabels(), lc);
         System.out.println(" done(100%).");
 

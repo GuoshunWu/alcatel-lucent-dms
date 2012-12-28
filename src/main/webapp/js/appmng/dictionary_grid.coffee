@@ -131,17 +131,20 @@ define (require, util, dialogs, i18n)->
       return
 
     filename = "#{$('#appDispAppName').text()}_#{$('#selAppVersion option:selected').text()}_#{new Date().format 'yyyyMMdd_hhmmss'}.zip"
+    #    $.blockUI()
+    $(@).button 'disable'
+    oldLabel = $(@).button 'option', 'label'
+    $(@).button 'option', 'label', i18n.generating
+    $.post 'app/generate-dict', {dicts: dicts.join(','), filename: filename}, (json)=>
+    #      $.unblockUI()
+      $(@).button 'option', 'label', oldLabel
+      $(@).button 'enable'
 
-    $.blockUI()
-    $.ajax 'app/generate-dict', dataType: 'json', timeout: 1000 * 60 * 30, data: {dicts: dicts.join(','), filename: filename}, success: (json, textStatus, jqXHR)->
-      $.unblockUI()
       if(json.status != 0)
         $.msgBox json.message, null, {title: c18n.error}
         return
 
-      downloadForm = $('#downloadDict')
-      $('#fileLoc', downloadForm).val json.fileLoc
-      downloadForm.submit()
+      window.location.href = "app/download-app-dict.action?fileLoc=#{json.fileLoc}"
 
 
   ($('#batchAddLanguage').button {}).click ->

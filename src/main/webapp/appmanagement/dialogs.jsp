@@ -193,7 +193,6 @@
     </table>
 </div>
 
-
 <div id="dictPreviewLanguageSettingsDialog">
     <table border="0" width="100%">
         <tr>
