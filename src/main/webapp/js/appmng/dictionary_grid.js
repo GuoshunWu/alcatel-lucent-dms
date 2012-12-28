@@ -241,7 +241,8 @@
       datatype: 'json'
     });
     ($('#generateDict').button({})).click(function() {
-      var dicts, filename;
+      var dicts, filename, oldLabel,
+        _this = this;
       dicts = dicGrid.getGridParam('selarrrow');
       if (!dicts || dicts.length === 0) {
         $.msgBox(c18n.selrow.format(c18n.dict), null, {
@@ -250,27 +251,22 @@
         return;
       }
       filename = "" + ($('#appDispAppName').text()) + "_" + ($('#selAppVersion option:selected').text()) + "_" + (new Date().format('yyyyMMdd_hhmmss')) + ".zip";
-      $.blockUI();
-      return $.ajax('app/generate-dict', {
-        dataType: 'json',
-        timeout: 1000 * 60 * 30,
-        data: {
-          dicts: dicts.join(','),
-          filename: filename
-        },
-        success: function(json, textStatus, jqXHR) {
-          var downloadForm;
-          $.unblockUI();
-          if (json.status !== 0) {
-            $.msgBox(json.message, null, {
-              title: c18n.error
-            });
-            return;
-          }
-          downloadForm = $('#downloadDict');
-          $('#fileLoc', downloadForm).val(json.fileLoc);
-          return downloadForm.submit();
+      $(this).button('disable');
+      oldLabel = $(this).button('option', 'label');
+      $(this).button('option', 'label', i18n.generating);
+      return $.post('app/generate-dict', {
+        dicts: dicts.join(','),
+        filename: filename
+      }, function(json) {
+        $(_this).button('option', 'label', oldLabel);
+        $(_this).button('enable');
+        if (json.status !== 0) {
+          $.msgBox(json.message, null, {
+            title: c18n.error
+          });
+          return;
         }
+        return window.location.href = "app/download-app-dict.action?fileLoc=" + json.fileLoc;
       });
     });
     ($('#batchAddLanguage').button({})).click(function() {

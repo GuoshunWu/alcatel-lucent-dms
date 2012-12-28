@@ -103,6 +103,7 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
 
   newOption = (text, value, selected)->"<option #{if selected then 'selected ' else ''}value='#{value}'>#{text}</option>"
 
+  $.ajaxSetup {type: 'POST', timeout: 1000 * 60 * 30}
   $.ajaxPrefilter (options, originalOptions, jqXHR)->
   #  for page navigator
   pageNavi = ()->
@@ -132,7 +133,7 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
   #  Ajax event for all pages
   sessionCheck = ()->
     $('#sessionTimeoutDialog').dialog {
-    width:320, modal: true
+    width: 320, modal: true
     autoOpen: false
     buttons: [
       {
@@ -144,10 +145,10 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
     }
 
     $(document).on 'ajaxSuccess', (e, xhr, settings)->
-#      console?.log "xhr.status=#{xhr.status}"
+    #      console?.log "xhr.status=#{xhr.status}"
       if 203 == xhr.status
         $('#sessionTimeoutDialog').dialog 'open'
-#        console?.log $.parseJSON(xhr.responseText)
+  #        console?.log $.parseJSON(xhr.responseText)
 
   #  for all the JSP pages
   pageNavi()

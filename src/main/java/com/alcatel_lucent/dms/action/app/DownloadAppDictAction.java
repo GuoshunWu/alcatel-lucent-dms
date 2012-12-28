@@ -1,13 +1,17 @@
 package com.alcatel_lucent.dms.action.app;
 
 import com.alcatel_lucent.dms.action.JSONAction;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Result;
 
 import javax.servlet.ServletContext;
 import java.io.*;
 import java.util.Arrays;
+
+import static org.apache.commons.lang3.StringUtils.join;
 
 /**
  * Action of download dictionaries
@@ -39,12 +43,11 @@ public class DownloadAppDictAction extends JSONAction {
     }
 
     public String getFilename() {
-        if (null == filename) filename = new File(fileLoc).getName();
-        String[] snippets = filename.split("_");
-        if (snippets.length > 3) {
-            filename = StringUtils.join(Arrays.copyOfRange(snippets, 0, 3), '_') + ".zip";
-        }
-        System.out.println("filename=" + filename);
+        if (null != filename) return filename;
+
+        String[] snippets = FilenameUtils.getBaseName(fileLoc).split("_");
+        filename = join(Arrays.copyOfRange(snippets, 0, Math.min(snippets.length, 3)), '_') + ".zip";
+
         return filename;
     }
 
@@ -61,6 +64,7 @@ public class DownloadAppDictAction extends JSONAction {
     }
 
     public String performAction() throws Exception {
+        log.info("filename=" + this.getFilename());
         return SUCCESS;
     }
 }

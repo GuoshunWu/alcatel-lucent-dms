@@ -126,6 +126,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.jboss.cluster</groupId>
+            <artifactId>hibernate-jbc-cacheprovider</artifactId>
+            <version>1.0.2.GA</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-search</artifactId>
             <version>4.1.1.Final</version>
@@ -591,7 +597,7 @@
 
                 <db.dialect>org.hibernate.dialect.MySQL5InnoDBDialect</db.dialect>
                 <!-- none, create, create-drop, update, validate -->
-                <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
+                <db.hbm2ddl.auto>validate</db.hbm2ddl.auto>
             </properties>
         </profile>
         <profile>

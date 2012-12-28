@@ -156,6 +156,10 @@ To change this template use File | Settings | File Templates.
     newOption = function(text, value, selected) {
       return "<option " + (selected ? 'selected ' : '') + "value='" + value + "'>" + text + "</option>";
     };
+    $.ajaxSetup({
+      type: 'POST',
+      timeout: 1000 * 60 * 30
+    });
     $.ajaxPrefilter(function(options, originalOptions, jqXHR) {});
     pageNavi = function() {
       $('#naviForm').bind('submit', function(e) {

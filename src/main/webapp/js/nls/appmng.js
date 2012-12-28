@@ -54,6 +54,7 @@ define({
             }
         },
         browse:'Upload dictionaries',
+        generating: 'Being generated',
         choosefile:'Choose file',
         uploadingfile:'Uploading: ',
         uploadfinished:'upload finished.'
