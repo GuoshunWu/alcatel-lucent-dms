@@ -6,10 +6,7 @@
 
 <div id="createTranslationTaskDialog" title="<s:text name="transmng.dialogs.transtask.title"/>">
     <table width="100%" border="0">
-        <%--<tr>--%>
-        <%--<td>&nbsp;</td>--%>
-        <%--</tr>--%>
-        <tr>
+       <tr>
             <td>
                 <table border="0" width="100%">
                     <tr>
@@ -53,11 +50,30 @@
     </table>
 </div>
 
+<div id="ExportTranslationsDialog" title="<s:text name="transmng.dialogs.exporttrans.title"/>">
+    <table width="100%" border="0">
+        <tr>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table id="exportTargetLanguages" border="0" width="100%">
+                    <tr>
+                        <td><s:text name="transmng.dialogs.transtask.targetlanguages"/></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+</div>
+
 <div id="translationDetailDialog" title="<s:text name="transmng.dialogs.transdetail.title"/>">
     <table border="0" width="100%">
-        <%--<tr>--%>
-        <%--<td>&nbsp;</td>--%>
-        <%--</tr>--%>
         <tr>
             <td><s:text name="dictionary"/>&nbsp;&nbsp;<span id='dictionaryName'></span></td>
         </tr>

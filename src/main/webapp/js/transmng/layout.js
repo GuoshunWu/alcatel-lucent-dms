@@ -39,7 +39,7 @@
       return grid.productReleaseChanged(param);
     };
     createDialogs = function() {
-      var languageFilterDialog, taskDialog, transDetailDialog;
+      var exportTranslationDialog, languageFilterDialog, taskDialog, transDetailDialog;
       languageFilterDialog = $("<div title='" + i18n.select.languagefilter.title + "' id='" + ids.languageFilterDialogId + "'>").dialog({
         autoOpen: false,
         position: [23, 126],
@@ -64,10 +64,68 @@
           }
         ]
       });
+      exportTranslationDialog = $('#ExportTranslationsDialog').dialog({
+        autoOpen: false,
+        modal: true,
+        width: 950,
+        height: 'auto',
+        position: [25, 100],
+        show: {
+          effect: 'slide',
+          direction: "down"
+        },
+        open: function() {
+          var info, langFilterTableId, postData, tableType,
+            _this = this;
+          info = grid.getTotalSelectedRowInfo();
+          tableType = grid.getTableType();
+          langFilterTableId = "languageFilter_" + ($(this).attr('id'));
+          $("#" + langFilterTableId).remove();
+          postData = {
+            prop: 'id,name'
+          };
+          postData[tableType] = info.rowIds.join(',');
+          return $.getJSON('rest/languages', postData, function(languages) {
+            if (languages.length > 0) {
+              return $(_this).append(util.generateLanguageTable(languages, langFilterTableId));
+            }
+          });
+        },
+        buttons: [
+          {
+            text: c18n["export"],
+            click: function() {
+              var languages, me;
+              me = $(this);
+              languages = ($(":checkbox[name='languages']", this).map(function() {
+                if (this.checked) {
+                  return {
+                    id: this.id,
+                    name: this.value
+                  };
+                }
+              })).get();
+              if (languages.length === 0) {
+                $.msgBox(i18n.msgbox.createtranstask.msg.format(c18n.language), null, {
+                  title: c18n.warning
+                });
+                return;
+              }
+              alert('Export action...');
+              return $(this).dialog('close');
+            }
+          }, {
+            text: c18n.cancel,
+            click: function() {
+              return $(this).dialog('close');
+            }
+          }
+        ]
+      });
       taskDialog = $("#createTranslationTaskDialog").dialog({
         autoOpen: false,
         modal: true,
-        width: 900,
+        width: 950,
         height: 'auto',
         position: [25, 100],
         show: {
@@ -207,7 +265,8 @@
       return {
         taskDialog: taskDialog,
         languageFilterDialog: languageFilterDialog,
-        transDetailDialog: transDetailDialog
+        transDetailDialog: transDetailDialog,
+        exportTranslationDialog: exportTranslationDialog
       };
     };
     createSelects = function() {
@@ -247,25 +306,34 @@
       });
       return $('#productRelease').trigger('change');
     };
-    createButtons = function(taskDialog, languageFilterDialog) {
+    createButtons = function(dialogs) {
       $("#create").button().click(function() {
-        var info, type;
-        require('jqmsgbox');
+        var info;
         info = grid.getTotalSelectedRowInfo();
-        type = $(':radio[name=viewOption][checked]').val();
         if (!info.rowIds.length) {
           $.msgBox(c18n.selrow.format(c18n[grid.getTableType()]), null, {
             title: c18n.warning
           });
           return;
         }
-        return taskDialog.dialog("open");
+        return dialogs.taskDialog.dialog("open");
       });
       $('#languageFilter').button().click(function() {
-        return languageFilterDialog.dialog("open");
+        return dialogs.languageFilterDialog.dialog("open");
       });
-      return $(':radio[name=viewOption]').change(function() {
+      $(':radio[name=viewOption]').change(function() {
         return refreshGrid();
+      });
+      return $("#exportTranslation").button().click(function() {
+        var info;
+        info = grid.getTotalSelectedRowInfo();
+        if (!info.rowIds.length) {
+          $.msgBox(c18n.selrow.format(c18n[grid.getTableType()]), null, {
+            title: c18n.warning
+          });
+          return;
+        }
+        return dialogs.exportTranslationDialog.dialog('open');
       });
     };
     exportAppOrDicts = function(ftype) {
@@ -298,7 +366,7 @@
     initPage = function() {
       dialogs = createDialogs();
       createSelects();
-      createButtons(dialogs.taskDialog, dialogs.languageFilterDialog, dialogs.transDetailDialog);
+      createButtons(dialogs);
       $("#exportExcel").click(function() {
         return exportAppOrDicts('excel');
       });

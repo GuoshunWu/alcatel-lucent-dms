@@ -34,9 +34,39 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
       {text: c18n.cancel, click: ()->$(@).dialog "close"}
     ]
     }
+
+    exportTranslationDialog = $('#ExportTranslationsDialog').dialog {
+    autoOpen: false,
+    modal: true
+    width: 950, height: 'auto', position: [25, 100], show: { effect: 'slide', direction: "down" }
+    open: ->
+      info = grid.getTotalSelectedRowInfo()
+      #      tableType is app or dict
+      tableType = grid.getTableType()
+
+      langFilterTableId = "languageFilter_#{$(@).attr('id')}"
+      $("##{langFilterTableId}").remove()
+      postData = {prop: 'id,name'}
+      postData[tableType] = info.rowIds.join(',')
+
+      $.getJSON 'rest/languages', postData, (languages)=>$(@).append util.generateLanguageTable languages, langFilterTableId if languages.length > 0
+    buttons: [
+      {text: c18n.export, click: ->
+        me = $(@)
+        languages = ($(":checkbox[name='languages']", @).map -> {id: @id, name: @value} if @checked).get()
+        if(languages.length == 0)
+          $.msgBox (i18n.msgbox.createtranstask.msg.format c18n.language), null, title: (c18n.warning)
+          return
+#        TODO: implement export translation action...
+        alert 'Export action...'
+        $(@).dialog 'close'
+      }
+      {text: c18n.cancel, click: ->$(@).dialog 'close'}
+    ]
+    }
     taskDialog = $("#createTranslationTaskDialog").dialog {
     autoOpen: false, modal: true
-    width: 900, height: 'auto', position: [25, 100], show: { effect: 'slide', direction: "down" }
+    width: 950, height: 'auto', position: [25, 100], show: { effect: 'slide', direction: "down" }
 
     open: ->
       info = grid.getTotalSelectedRowInfo()
@@ -118,7 +148,10 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
     ]
     }
 
-    {taskDialog: taskDialog, languageFilterDialog: languageFilterDialog, transDetailDialog: transDetailDialog}
+    {
+    taskDialog: taskDialog, languageFilterDialog: languageFilterDialog,
+    transDetailDialog: transDetailDialog, exportTranslationDialog: exportTranslationDialog
+    }
 
   createSelects = ->
   # selects on summary panel
@@ -144,20 +177,25 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
 
     $('#productRelease').trigger 'change'
 
-  createButtons = (taskDialog, languageFilterDialog) ->
+  createButtons = (dialogs) ->
   #   buttons summary panel
     $("#create").button().click ->
-      require('jqmsgbox')
       info = grid.getTotalSelectedRowInfo()
-      type = $(':radio[name=viewOption][checked]').val()
       if !info.rowIds.length
         $.msgBox (c18n.selrow.format c18n[grid.getTableType()]), null, title: c18n.warning
         return
-      taskDialog.dialog "open"
+      dialogs.taskDialog.dialog "open"
 
-    $('#languageFilter').button().click ()->languageFilterDialog.dialog "open"
+    $('#languageFilter').button().click ()->dialogs.languageFilterDialog.dialog "open"
     #    for view level
     $(':radio[name=viewOption]').change ->refreshGrid()
+
+    $("#exportTranslation").button().click ->
+      info = grid.getTotalSelectedRowInfo()
+      if !info.rowIds.length
+        $.msgBox (c18n.selrow.format c18n[grid.getTableType()]), null, title: c18n.warning
+        return
+      dialogs.exportTranslationDialog.dialog 'open'
 
   exportAppOrDicts = (ftype)->
     id = $('#productRelease').val()
@@ -187,7 +225,7 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
     ###################################### Elements in summary panel ######################################
     createSelects()
 
-    createButtons(dialogs.taskDialog, dialogs.languageFilterDialog, dialogs.transDetailDialog)
+    createButtons(dialogs)
 
     #    add action for export
     $("#exportExcel").click ()->exportAppOrDicts 'excel'

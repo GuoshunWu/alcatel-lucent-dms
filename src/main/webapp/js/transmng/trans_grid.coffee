@@ -69,7 +69,7 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
   transGrid = $("#transGrid").jqGrid {
   url : 'rest/dict'
   mtype: 'post', postData: {}, datatype: 'local'
-  width: $(window).innerWidth() * 0.95, height: 330
+  width: $(window).innerWidth() * 0.95, height: 310
   rownumbers: true, shrinkToFit: false
   pager: '#transPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
   sortname: 'base.name', sortorder: 'asc', multiselect: true
