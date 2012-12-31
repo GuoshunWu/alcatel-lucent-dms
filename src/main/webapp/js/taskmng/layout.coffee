@@ -42,7 +42,9 @@ define ['jqlayout', 'taskmng/task_grid', 'i18n!nls/common', 'taskmng/dialogs', '
 
   #   show main page.
   $('#loading-container').fadeOut 'slow','swing',()->$(@).remove()
+  util.afterInitilized(this)
   $('#optional-container').show()
+
 #  $('#loading-container').slideUp 'slow', ()->$(@).remove()
 #  $('#loading-container').toggle { effect: "scale", direction: "both" }
 #  $('#loading-container').toggle { effect: "explode", pieces : 9 }

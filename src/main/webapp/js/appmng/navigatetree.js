@@ -178,9 +178,10 @@
         clearTimeout(timeFunName);
         return data.inst.toggle_node(data.rslt.obj);
       });
-      return $('#loading-container').fadeOut('slow', 'swing', function() {
+      $('#loading-container').fadeOut('slow', 'swing', function() {
         return $(this).remove();
       });
+      return util.afterInitilized(this);
     });
     return {
       getNodeInfo: getNodeInfo

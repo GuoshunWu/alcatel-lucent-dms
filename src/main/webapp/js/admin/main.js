@@ -18,9 +18,10 @@
       return $(this).removeClass("ui-state-hover");
     });
     $('#tabs').tabs({});
-    return $('#loading-container').fadeOut('slow', function() {
+    $('#loading-container').fadeOut('slow', function() {
       return $(this).remove();
     });
+    return util.afterInitilized(this);
   });
 
 }).call(this);

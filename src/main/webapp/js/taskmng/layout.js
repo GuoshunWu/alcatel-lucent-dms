@@ -76,6 +76,7 @@
     $('#loading-container').fadeOut('slow', 'swing', function() {
       return $(this).remove();
     });
+    util.afterInitilized(this);
     return $('#optional-container').show();
   });
 
