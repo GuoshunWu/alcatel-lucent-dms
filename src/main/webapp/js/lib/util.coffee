@@ -103,7 +103,7 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
 
   newOption = (text, value, selected)->"<option #{if selected then 'selected ' else ''}value='#{value}'>#{text}</option>"
 
-  $.ajaxSetup {type: 'POST', timeout: 1000 * 60 * 30}
+  $.ajaxSetup {timeout: 1000 * 60 * 30}
   $.ajaxPrefilter (options, originalOptions, jqXHR)->
   #  for page navigator
   pageNavi = ()->
@@ -150,9 +150,20 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
         $('#sessionTimeoutDialog').dialog 'open'
   #        console?.log $.parseJSON(xhr.responseText)
 
+  makeGridReadonly = (grid)->
+    console.log "Make grid '#{grid.id}' readonly. "
+    colModel = $(grid).jqGrid 'getGridParam', 'colModel'
+    $.each colModel, (idx, obj) ->
+      if $.isPlainObject(obj) and obj.name and obj.editable
+        obj.editable = false
+        obj.classes = obj.classes.replace('editable-column', '')
+  #    $(grid).trigger 'reloadGrid'
+  makeAllGridReadonly = (grids = $('.ui-jqgrid-btable'))->$.each grids, (idx, grid)->makeGridReadonly grid
+
   #  for all the JSP pages
   pageNavi()
   sessionCheck()
+
 
   ###
   Test here.
@@ -219,7 +230,6 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
         newOption @[textFieldName], @[valueFieldName], selected
     ).get().join(sep)
 
-
-
-
-
+  afterInitilized: (context)->
+    console.log "...Page #{$('#pageNavigator').val()} initialized..."
+    makeAllGridReadonly() if param.user && param.user.role == ROLE.GUEST

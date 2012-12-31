@@ -14,4 +14,5 @@ define (require)->
   }
 
   $('#loading-container').fadeOut 'slow', ()->$(@).remove()
+  util.afterInitilized(this)
 

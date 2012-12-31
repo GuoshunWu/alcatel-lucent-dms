@@ -87,7 +87,6 @@ define (require, util, dialogs, i18n)->
     lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
     grid = @
     if name == 'version'
-    #        console.log "name=#{name},id=#{id},val=#{val}"
       $.ajax {url: "rest/dict?slibing=#{id}&prop=id,version", async: false, dataType: 'json', success: (json)->
         $("##{iRow}_version", grid).append util.json2Options json, val
       }

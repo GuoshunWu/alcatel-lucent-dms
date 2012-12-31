@@ -234,6 +234,7 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
 
     #   show main page.
     $('#loading-container').fadeOut 'slow', ()->$(@).remove()
+    util.afterInitilized(this)
     $('#optional-container').show()
 
   # initialize page

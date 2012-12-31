@@ -376,6 +376,7 @@
       $('#loading-container').fadeOut('slow', function() {
         return $(this).remove();
       });
+      util.afterInitilized(this);
       return $('#optional-container').show();
     };
     initPage();

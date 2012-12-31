@@ -3,7 +3,7 @@
 <%@ page contentType="text/html;charset=utf-8" %>
 
 <script type="text/javascript">
-    gridI18NMap = { 'zh-cn':'cn', 'en-us':'en'};
+    var gridI18NMap = { 'zh-cn':'cn', 'en-us':'en'};
     function paramWarn(paramName, defaultVal) {
         if (console && console.log) console.log("Couldn't get " + paramName + " parameter form server, use default: " + defaultVal);
     }
@@ -16,6 +16,22 @@
             productId:'<s:property value="curProductId"/>'
         }
     }
+
+    var ROLE = {
+        GUEST:0,
+        APPLICATION_OWNER:1,
+        TRANSLATION_MANAGER:2,
+        ADMINISTRATOR:3
+    }
+
+    <s:if test="#session['user_context'].user">
+
+    param.user = {
+        name:'<s:property value="#session['user_context'].user.name"/>',
+        role:<s:property value="#session['user_context'].user.role"/>
+    }
+    </s:if>
+
 
     if (!param.currentSelected.productBaseId) {
         param.currentSelected.productBaseId = -1;

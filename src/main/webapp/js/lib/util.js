@@ -12,7 +12,7 @@ To change this template use File | Settings | File Templates.
 (function() {
 
   define(["jquery", "jqueryui", "i18n!nls/common"], function($, ui, c18n) {
-    var formatJonString, newOption, pageNavi, sessionCheck, setCookie;
+    var formatJonString, makeAllGridReadonly, makeGridReadonly, newOption, pageNavi, sessionCheck, setCookie;
     String.prototype.format = function() {
       var args;
       args = arguments;
@@ -157,7 +157,6 @@ To change this template use File | Settings | File Templates.
       return "<option " + (selected ? 'selected ' : '') + "value='" + value + "'>" + text + "</option>";
     };
     $.ajaxSetup({
-      type: 'POST',
       timeout: 1000 * 60 * 30
     });
     $.ajaxPrefilter(function(options, originalOptions, jqXHR) {});
@@ -205,6 +204,25 @@ To change this template use File | Settings | File Templates.
         if (203 === xhr.status) {
           return $('#sessionTimeoutDialog').dialog('open');
         }
+      });
+    };
+    makeGridReadonly = function(grid) {
+      var colModel;
+      console.log("Make grid '" + grid.id + "' readonly. ");
+      colModel = $(grid).jqGrid('getGridParam', 'colModel');
+      return $.each(colModel, function(idx, obj) {
+        if ($.isPlainObject(obj) && obj.name && obj.editable) {
+          obj.editable = false;
+          return obj.classes = obj.classes.replace('editable-column', '');
+        }
+      });
+    };
+    makeAllGridReadonly = function(grids) {
+      if (grids == null) {
+        grids = $('.ui-jqgrid-btable');
+      }
+      return $.each(grids, function(idx, grid) {
+        return makeGridReadonly(grid);
       });
     };
     pageNavi();
@@ -312,6 +330,12 @@ To change this template use File | Settings | File Templates.
           selected = (String(selectedValue)) === (String(this[valueFieldName]));
           return newOption(this[textFieldName], this[valueFieldName], selected);
         }).get().join(sep);
+      },
+      afterInitilized: function(context) {
+        console.log("...Page " + ($('#pageNavigator').val()) + " initialized...");
+        if (param.user && param.user.role === ROLE.GUEST) {
+          return makeAllGridReadonly();
+        }
       }
     };
   });
