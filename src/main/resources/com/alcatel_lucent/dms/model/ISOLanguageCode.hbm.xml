@@ -5,8 +5,7 @@
 <hibernate-mapping package="com.alcatel_lucent.dms.model">
 
 	<class name="ISOLanguageCode" table="ISO_LANGUAGE_CODE">
-		<id name="code" type="string" column="CODE">
-		</id>
+		<id name="code" type="string" column="CODE"/>
 
 		<property name="defaultCode" type="boolean" column="DEFAULT_CODE" />
 		<many-to-one name="language" lazy="false" column="LANGUAGE_ID" not-null="true" />

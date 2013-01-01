@@ -15,13 +15,13 @@
 		<property name="name" type="string" column="NAME" not-null="true" />
 
 	    <set name="products" inverse="true">
-            <key column="PRODUCT_BASE_ID" on-delete="cascade" not-null="true"/>
-            <one-to-many class="com.alcatel_lucent.dms.model.Product" />
+            <key column="PRODUCT_BASE_ID" on-delete="cascade" />
+            <one-to-many class="Product" />
         </set>
 
         <set name="applicationBases" inverse="true" order-by="name">
-            <key column="PRODUCT_BASE_ID" on-delete="cascade" not-null="true" />
-            <one-to-many class="com.alcatel_lucent.dms.model.ApplicationBase" />
+            <key column="PRODUCT_BASE_ID" on-delete="cascade" />
+            <one-to-many class="ApplicationBase" />
         </set>
 
 	</class>

@@ -2,7 +2,11 @@ package com.alcatel_lucent.dms.model;
 
 import com.alcatel_lucent.dms.SystemError;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.Type;
 
+import javax.persistence.*;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -11,11 +15,24 @@ import java.util.Map;
 
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
+@Entity
+@Table(name = "LABEL")
 public class Label extends BaseEntity {
     /**
      *
      */
     private static final long serialVersionUID = -4086873912554236932L;
+
+    @Id
+    @GeneratedValue(generator = "LABEL_GEN")
+    @TableGenerator(name = "LABEL_GEN", table = "ID_LABEL", allocationSize = 100,
+            valueColumnName = "next_hi")
+    @Column(name = "ID")
+    @Override
+    public Long getId() {
+        return super.getId();
+    }
+
     public static final String CHECK_FIELD_NAME = "CHK";
     public static final String REFERENCE_FIELD_NAME = "GAE";
 
@@ -38,6 +55,8 @@ public class Label extends BaseEntity {
         this.origTranslations.add(labelTranslation);
     }
 
+    @Column(name = "ANNOTATION2", nullable = false)
+    @Type(type = "text")
     public String getAnnotation2() {
         return annotation2;
     }
@@ -46,6 +65,8 @@ public class Label extends BaseEntity {
         this.annotation2 = annotation2;
     }
 
+    @Column(name = "ANNOTATION1")
+    @Type(type = "text")
     public String getAnnotation1() {
         return annotation1;
     }
@@ -54,6 +75,10 @@ public class Label extends BaseEntity {
         this.annotation1 = annotation1;
     }
 
+
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "DICTIONARY_ID")
     public Dictionary getDictionary() {
         return dictionary;
     }
@@ -62,14 +87,17 @@ public class Label extends BaseEntity {
         this.dictionary = dictionary;
     }
 
+    @Column(name = "LABEL_KEY", nullable = false)
     public String getKey() {
         return key;
     }
+
 
     public void setKey(String key) {
         this.key = key;
     }
 
+    @Column(name = "REFERENCE", nullable = false, length = 1024)
     public String getReference() {
         return reference;
     }
@@ -78,6 +106,7 @@ public class Label extends BaseEntity {
         this.reference = reference;
     }
 
+    @Column(name = "DESCRIPTION")
     public String getDescription() {
         return description;
     }
@@ -86,6 +115,7 @@ public class Label extends BaseEntity {
         this.description = description;
     }
 
+    @Column(name = "MAX_LENGTH", nullable = false)
     public String getMaxLength() {
         return maxLength;
     }
@@ -94,6 +124,8 @@ public class Label extends BaseEntity {
         this.maxLength = maxLength;
     }
 
+    @ManyToOne
+    @JoinColumn(name = "CONTEXT_ID", nullable = false)
     public Context getContext() {
         return context;
     }
@@ -102,6 +134,8 @@ public class Label extends BaseEntity {
         this.context = context;
     }
 
+    @ManyToOne
+    @JoinColumn(name = "TEXT_ID", nullable = false)
     public Text getText() {
         return text;
     }
@@ -122,28 +156,6 @@ public class Label extends BaseEntity {
         result = prime * result + ((context == null) ? 0 : context.hashCode());
         result = prime * result + ((key == null) ? 0 : key.hashCode());
         return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!super.equals(obj))
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Label other = (Label) obj;
-        if (context == null) {
-            if (other.context != null)
-                return false;
-        } else if (!context.equals(other.context))
-            return false;
-        if (key == null) {
-            if (other.key != null)
-                return false;
-        } else if (!key.equals(other.key))
-            return false;
-        return true;
     }
 
     /**
@@ -191,6 +203,7 @@ public class Label extends BaseEntity {
         this.sortNo = sortNo;
     }
 
+    @Column(name = "SORT_NO")
     public int getSortNo() {
         return sortNo;
     }
@@ -199,6 +212,7 @@ public class Label extends BaseEntity {
         this.origTranslations = origTranslations;
     }
 
+    @OneToMany
     public Collection<LabelTranslation> getOrigTranslations() {
         return origTranslations;
     }
@@ -228,6 +242,7 @@ public class Label extends BaseEntity {
     private Integer n;
     private Integer i;
 
+    @Transient
     public LabelTranslation getOt() {
         return ot;
     }
@@ -236,6 +251,7 @@ public class Label extends BaseEntity {
         this.ot = ot;
     }
 
+    @Transient
     public Translation getCt() {
         return ct;
     }
@@ -294,6 +310,10 @@ public class Label extends BaseEntity {
      */
     private Map<String, String> params = new HashMap<String, String>();
 
+    @ElementCollection
+    @CollectionTable(name = "LABEL_PARAMS", joinColumns = @JoinColumn(name = "LABEL_ID"))
+    @MapKeyColumn(name = "name")
+    @Column(name = "value")
     public Map<String, String> getParams() {
         return params;
     }

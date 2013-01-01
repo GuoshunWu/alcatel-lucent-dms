@@ -35,14 +35,15 @@
                 <prop key="hibernate.dialect">${db.dialect}</prop>
 
                 <prop key="hibernate.proxool.existing_pool">false</prop>
-                <prop key="hibernate.connection.provider_class">org.hibernate.connection.ProxoolConnectionProvider
-                </prop>
+                <prop key="hibernate.connection.provider_class">org.hibernate.connection.ProxoolConnectionProvider</prop>
                 
                 <prop key="hibernate.connection.release_mode">auto</prop>
                 <!-- connection.pool_size is used to configure the number of connections in Hibernate's built-in connection pool. -->
                 <prop key="hibernate.connection.pool_size">10</prop>
                 <!-- Enable Hibernate's automatic session context management -->
                 <prop key="hibernate.current_session_context_class">thread</prop>
+                
+                <prop key="hibernate.mapping.precedence">class, hbm</prop>
 
 
 
@@ -71,7 +72,7 @@
                 application (if a sequence or a table is used for id generation). See XXXXXXX ???
                 for more information on how to activate them.
                 -->
-                <prop key="hibernate.id.new_generator_mappings">false</prop>
+                <prop key="hibernate.id.new_generator_mappings">true</prop>
             </props>
         </property>
 

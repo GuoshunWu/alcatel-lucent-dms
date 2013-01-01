@@ -1,18 +1,36 @@
 package com.alcatel_lucent.dms.model;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import java.util.Collection;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+@Entity
+@Table(name = "PRODUCT_BASE")
 @XmlRootElement
 public class ProductBase extends BaseEntity {
 
     private String name = "Unknown";
     private User owner;
 
+    @ManyToOne
+    @JoinColumn(nullable = false, name = "USER_ID")
     public User getOwner() {
         return owner;
+    }
+
+    @Id
+    @GeneratedValue(generator = "SEQ_GEN")
+    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "ID_PRODUCT_BASE", allocationSize = 20)
+    @Column(name = "ID")
+    @Override
+    public Long getId() {
+        return super.getId();
     }
 
     public void setOwner(User owner) {
@@ -24,6 +42,7 @@ public class ProductBase extends BaseEntity {
 
     private Collection<ApplicationBase> applicationBases;
 
+    @Column(name = "NAME", nullable = false)
     public String getName() {
         return name;
     }
@@ -32,6 +51,7 @@ public class ProductBase extends BaseEntity {
         this.name = name;
     }
 
+    @OneToMany(mappedBy = "base")
     public Collection<Product> getProducts() {
         return products;
     }
@@ -40,7 +60,8 @@ public class ProductBase extends BaseEntity {
         this.products = products;
     }
 
-    public Collection<ApplicationBase> getApplicationBases() {
+    @OneToMany
+   public Collection<ApplicationBase> getApplicationBases() {
         return applicationBases;
     }
 

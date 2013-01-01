@@ -5,22 +5,32 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Map;
 
+@MappedSuperclass
 public abstract class BaseEntity implements Serializable {
 
     protected Logger log = LoggerFactory.getLogger(getClass());
 
-    public static final String ANNOTATION1="annotation1";
-    public static final String ANNOTATION2="annotation2";
-    public static final String ANNOTATION3="annotation3";
-    public static final String ANNOTATION4="annotation4";
+    public static final String ANNOTATION1 = "annotation1";
+    public static final String ANNOTATION2 = "annotation2";
+    public static final String ANNOTATION3 = "annotation3";
+    public static final String ANNOTATION4 = "annotation4";
 
     /**
      *
      */
     private static final long serialVersionUID = -3756598069703614852L;
+
+    @Transient
+    protected Logger getLog() {
+        return log;
+    }
 
     private Long id;
 

@@ -1,79 +1,99 @@
 package com.alcatel_lucent.dms.model;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
+@Entity
+@Table(name = "TEXT")
 public class Text extends BaseEntity {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -4205533860022959713L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = -4205533860022959713L;
 
-	private Context context;
-	private String reference;
-	private Collection<Translation> translations;
+    @Id
+    @GeneratedValue(generator = "HILO_GEN")
+    @TableGenerator(name = "HILO_GEN", table = "ID_TEXT")
+    @Column(name = "ID")
+    @Override
+    public Long getId() {
+        return super.getId();
+    }
 
-	private int status;
+    private Context context;
+    private String reference;
+    private Collection<Translation> translations;
 
-	public static final int STATUS_NOT_TRANSLATED = 0;
-	public static final int STATUS_IN_PROGRESS = 1;
-	public static final int STATUS_TRANSLATED = 2;
+    private int status;
 
-	public Context getContext() {
-		return context;
-	}
+    public static final int STATUS_NOT_TRANSLATED = 0;
+    public static final int STATUS_IN_PROGRESS = 1;
+    public static final int STATUS_TRANSLATED = 2;
 
-	public void setContext(Context context) {
-		this.context = context;
-	}
+    @ManyToOne
+    @JoinColumn(name = "CONTEXT_ID", nullable = false)
+    public Context getContext() {
+        return context;
+    }
 
-	public String getReference() {
-		return reference;
-	}
+    public void setContext(Context context) {
+        this.context = context;
+    }
 
-	public void setReference(String reference) {
-		this.reference = reference;
-	}
+    @Column(name = "REFERENCE", length = 1024)
+    public String getReference() {
+        return reference;
+    }
 
-	public int getStatus() {
-		return status;
-	}
+    public void setReference(String reference) {
+        this.reference = reference;
+    }
 
-	public void setStatus(int status) {
-		this.status = status;
-	}
+    @Column(name = "STATUS")
+    public int getStatus() {
+        return status;
+    }
 
-	public Collection<Translation> getTranslations() {
-		return translations;
-	}
+    public void setStatus(int status) {
+        this.status = status;
+    }
 
-	public void setTranslations(Collection<Translation> translations) {
-		this.translations = translations;
-	}
+    @OneToMany
+   public Collection<Translation> getTranslations() {
+        return translations;
+    }
 
-	@Override
-	public String toString() {
-		return String.format("Text [context=%s, reference=%s, status=%s]",
-				context, reference, status);
-	}
+    public void setTranslations(Collection<Translation> translations) {
+        this.translations = translations;
+    }
 
-	public Translation getTranslation(Long languageId) {
-		if (translations != null) {
-			for (Translation trans : translations) {
-				if (trans.getLanguage().getId().equals(languageId)) {
-					return trans;
-				}
-			}
-		}
-		return null;
-	}
+    @Override
+    public String toString() {
+        return String.format("Text [context=%s, reference=%s, status=%s]",
+                context, reference, status);
+    }
 
-	public void addTranslation(Translation trans) {
-		if (translations == null) {
-			translations = new HashSet<Translation>();
-		}
-		translations.add(trans);
-	}
+    public Translation getTranslation(Long languageId) {
+        if (translations != null) {
+            for (Translation trans : translations) {
+                if (trans.getLanguage().getId().equals(languageId)) {
+                    return trans;
+                }
+            }
+        }
+        return null;
+    }
+
+    public void addTranslation(Translation trans) {
+        if (translations == null) {
+            translations = new HashSet<Translation>();
+        }
+        translations.add(trans);
+    }
 
 }
