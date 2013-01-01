@@ -1,16 +1,35 @@
 package com.alcatel_lucent.dms.model;
 
+import org.hibernate.annotations.ManyToAny;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import javax.persistence.*;
 import java.util.Collection;
 import java.util.Iterator;
 
+@Entity
+@Table(name = "PRODUCT")
 public class Product extends BaseEntity {
 
 	private ProductBase base;
     private String version;
 	private Collection<Application> applications;
 
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name="PRODUCT_BASE_ID")
     public ProductBase getBase() {
         return base;
+    }
+
+    @Id
+    @GeneratedValue(generator = "SEQ_GEN")
+    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "ID_PRODUCT", allocationSize = 20)
+    @Column(name = "ID")
+    @Override
+    public Long getId() {
+        return super.getId();
     }
 
     public void setBase(ProductBase base) {
@@ -25,6 +44,8 @@ public class Product extends BaseEntity {
         this.version = version;
     }
 
+    @ManyToMany
+    @JoinTable(name = "PRODUCT_APPLICATION")
     public Collection<Application> getApplications() {
 		return applications;
 	}

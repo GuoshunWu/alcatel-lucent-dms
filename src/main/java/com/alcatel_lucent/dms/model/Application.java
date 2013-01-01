@@ -8,58 +8,53 @@ import java.util.Map;
 
 import com.alcatel_lucent.dms.SpringContext;
 import com.alcatel_lucent.dms.service.DictionaryService;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-//@Entity
-//@Table(name = "APPLICATION")
+@Entity
+@Table(name = "APPLICATION")
 public class Application extends BaseEntity {
-    /**
-     *
-     */
+
     private static final long serialVersionUID = 7168527218137875020L;
 
-//    @ManyToOne
-//    @JoinColumn(name = "APPLICATION_BASE_ID")
     private ApplicationBase base;
 
-//    @Column(name = "VERSION", nullable = false)
     private String version;
 
-//    @ManyToMany(targetEntity = Dictionary.class)
-//    @JoinTable(
-//            name = "APPLICATION_DICTIONARY",
-//            joinColumns = @JoinColumn(name = "APPLICATION_ID"),
-//            inverseJoinColumns = @JoinColumn(name = "DICTIONARY_ID")
-//    )
-//    @Fetch(FetchMode.JOIN)
+    @Fetch(FetchMode.JOIN)
     private Collection<Dictionary> dictionaries;
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.AUTO, generator = "appIdGen")
-//    @SequenceGenerator(name = "appIdGen", sequenceName = "ID_APPLICATION", allocationSize = 50)
+    @Id
+    @GeneratedValue(generator = "SEQ_GEN")
+    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "ID_APPLICATION", allocationSize = 20)
+    @Column(name = "ID")
     @Override
     public Long getId() {
         return super.getId();
     }
 
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "APPLICATION_BASE_ID")
     public ApplicationBase getBase() {
         return base;
     }
 
+    @Transient
     public String getName() {
         return base.getName();
     }
 
+    @Transient
     public Integer getDictNum() {
         return dictionaries == null ? 0 : dictionaries.size();
     }
 
-    @SuppressWarnings("unchecked")
+    @Transient
     public Collection getCell() {
         return Arrays.asList(getId(), getName(), version, getDictNum());
     }
@@ -69,6 +64,7 @@ public class Application extends BaseEntity {
      *
      * @return
      */
+    @Transient
     public Map<String, int[]> getS() {
         return summaryCache;
     }
@@ -86,6 +82,7 @@ public class Application extends BaseEntity {
         this.base = base;
     }
 
+    @Column(name = "VERSION")
     public String getVersion() {
         return version;
     }
@@ -95,7 +92,7 @@ public class Application extends BaseEntity {
     }
 
 
-    @ManyToMany(targetEntity = Dictionary.class)
+    @ManyToMany()
     @JoinTable(
             name = "APPLICATION_DICTIONARY",
             joinColumns = @JoinColumn(name = "APPLICATION_ID"),
@@ -120,6 +117,7 @@ public class Application extends BaseEntity {
         }
     }
 
+    @Transient
     public int getLabelNum() {
         DictionaryService dictService = (DictionaryService) SpringContext.getBean("dictionaryService");
         return dictService.getLabelNumByApp(getId());

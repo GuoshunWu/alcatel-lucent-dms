@@ -28,12 +28,6 @@
             <element type="string" column="value"/>
         </map>
 
-        <!--<list name="staticTokens" inverse="true" cascade="delete-orphan" table="LABEL_STATIC_TOKEN">-->
-            <!--<key column="LABEL_ID"/>-->
-            <!--<list-index column="TOKEN_INDEX"/>-->
-            <!--<element column="STATIC_TOKEN" type="string"/>-->
-        <!--</list>-->
-
         <many-to-one name="dictionary" class="Dictionary" column="DICTIONARY_ID"/>
         <many-to-one name="context" column="CONTEXT_ID" class="Context"
                      not-null="true"/>

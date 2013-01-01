@@ -65,7 +65,7 @@ public class User implements Serializable {
         this.name = name;
     }
 
-    @Column(name = "LAST_LOGIN_Time")
+    @Column(name = "LAST_LOGIN_TIME")
     public Timestamp getLastLoginTime() {
         return lastLoginTime;
     }

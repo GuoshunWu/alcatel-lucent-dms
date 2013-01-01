@@ -1,5 +1,9 @@
 package com.alcatel_lucent.dms.model;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "CONTEXT")
 public class Context extends BaseEntity {
 	
 	public static final String DEFAULT = "[DEFAULT]";
@@ -12,6 +16,15 @@ public class Context extends BaseEntity {
      *
      */
     private static final long serialVersionUID = 1417207278044645451L;
+
+    @Id
+    @GeneratedValue(generator = "SEQ_GEN")
+    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "ID_CONTEXT", allocationSize = 20)
+    @Column(name = "ID")
+    @Override
+    public Long getId() {
+        return super.getId();
+    }
     private String key;
     private String name;
 
@@ -22,6 +35,7 @@ public class Context extends BaseEntity {
         this.name = name;
     }
 
+    @Column(name = "NAME")
     public String getName() {
         return name;
     }
@@ -60,6 +74,7 @@ public class Context extends BaseEntity {
         return true;
     }
 
+    @Column(name = "CONTEXT_KEY")
 	public String getKey() {
 		return key;
 	}
