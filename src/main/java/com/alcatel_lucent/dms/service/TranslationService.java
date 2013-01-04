@@ -4,6 +4,8 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Map;
 
+import com.alcatel_lucent.dms.model.Label;
+
 public interface TranslationService {
 
     /**
@@ -44,5 +46,21 @@ public interface TranslationService {
      * @param output output stream
      */
     void generateAppTranslationReport(Long prodId, Collection<Long> langIds, OutputStream output);
+    
+    /**
+     * Generat excel details of label translations
+     * @param dictIds collection of dictionary id
+     * @param langIds collection of language id
+     * @param output output stream
+     */
+    void exportTranslations(Collection<Long> dictIds, Collection<Long> langIds, OutputStream output);
+
+    /**
+     * Retrieve label information with translation of specific language.
+     * @param dictId dictionary id
+     * @param langId language id
+     * @return collection of labels, translation information is contained in ct and ot properties.
+     */
+	Collection<Label> getLabelsWithTranslation(Long dictId, Long langId);
 
 }

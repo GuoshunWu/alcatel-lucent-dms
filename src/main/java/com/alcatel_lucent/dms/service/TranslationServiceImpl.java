@@ -27,6 +27,7 @@ import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryLanguage;
 import com.alcatel_lucent.dms.model.Label;
+import com.alcatel_lucent.dms.model.LabelTranslation;
 import com.alcatel_lucent.dms.model.Language;
 import com.alcatel_lucent.dms.model.Translation;
 
@@ -466,6 +467,109 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 			throw new SystemError(e);
 		}
 	}	
+	
+	public void exportTranslations(Collection<Long> dictIds, Collection<Long> langIds, OutputStream output) {
+		Workbook wb = new HSSFWorkbook();
+		for (Long langId : langIds) {
+			Language language = (Language) dao.retrieve(Language.class, langId);
+			Sheet sheet = wb.createSheet(language.getName());
+			Row headRow = sheet.createRow(0);
+			createCell(headRow, 0, "Dictionary", null);
+			createCell(headRow, 1, "Label", null);
+			createCell(headRow, 2, "Context", null);
+			createCell(headRow, 3, "Max Length", null);
+			createCell(headRow, 4, "Reference", null);
+			createCell(headRow, 5, "Translation", null);
+			createCell(headRow, 6, "Description", null);
+			for (Long dictId : dictIds) {
+				Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
+				Collection<Label> labels = getLabelsWithTranslation(dictId, langId);
+				int r = 1;
+				for (Label label : labels) {
+					Row row = sheet.createRow(r++);
+					createCell(row, 0, dict.getName(), null);
+					createCell(row, 1, label.getKey(), null);
+					createCell(row, 2, label.getContext().getName(), null);
+					createCell(row, 3, label.getMaxLength(), null);
+					createCell(row, 4, label.getReference(), null);
+					createCell(row, 5, label.getCt().getTranslation(), null);
+					createCell(row, 6, label.getDescription(), null);
+				}
+			}
+		}
+		try {
+			wb.write(output);
+		} catch (IOException e) {
+			e.printStackTrace();
+			log.error(e.toString());
+			throw new SystemError(e);
+		}
+	}
+	
+	public Collection<Label> getLabelsWithTranslation(Long dictId, Long langId) {
+		String hql = "select obj from Label obj where obj.dictionary.id=:dictId order by obj.sortNo";
+		Map param = new HashMap();
+		param.put("dictId", dictId);
+		Collection<Label> labels = dao.retrieve(hql, param);
+		Map<Long, Label> labelMap = new HashMap<Long, Label>();
+		for (Label label : labels) {
+			labelMap.put(label.getId(), label);
+		}
+		hql = "select l.id,ot" +
+				" from Label l join l.origTranslations ot" +
+				" where l.dictionary.id=:dictId and ot.language.id=:langId";
+		param.put("langId", langId);
+		Collection<Object[]> qr = dao.retrieve(hql, param);
+		for (Object[] row : qr) {
+			Long labelId = ((Number) row[0]).longValue();
+			LabelTranslation ot = (LabelTranslation) row[1];
+			Label label = labelMap.get(labelId);
+			if (label != null) {
+				label.setOt(ot);
+			}
+		}
+		hql = "select l.id,ct" +
+				" from Label l join l.text.translations ct" +
+				" where l.dictionary.id=:dictId and ct.language.id=:langId";
+		qr = dao.retrieve(hql, param);
+		for (Object[] row : qr) {
+			Long labelId = ((Number) row[0]).longValue();
+			Translation ct = (Translation) row[1];
+			Label label = labelMap.get(labelId);
+			if (label != null) {
+				label.setCt(ct);
+			}
+		}
+		
+    	// populate default ct and ot values
+		Iterator<Label> iter = labels.iterator();
+		while (iter.hasNext()) {
+			Label label = iter.next();
+			if (label.getOt() == null) {
+				LabelTranslation ot = new LabelTranslation();
+				ot.setOrigTranslation(label.getReference());
+				ot.setNeedTranslation(true);
+				label.setOt(ot);
+			}
+			if (label.getCt() == null) {
+				Translation ct = new Translation();
+				ct.setId(-(label.getId() * 1000 + langId));	// virtual tid < 0, indicating a non-existing ct object
+				ct.setTranslation(label.getOt().getOrigTranslation());
+				ct.setStatus(Translation.STATUS_UNTRANSLATED);
+				label.setCt(ct);
+			}
+			// set status to Translated if no translation needed
+			if (!label.getOt().isNeedTranslation() || label.getContext().getName().equals(Context.EXCLUSION)) {
+				// duplicate an in-memory object to avoid database update
+				Translation ct = new Translation();
+				ct.setId(label.getCt().getId());
+				ct.setTranslation(label.getCt().getTranslation());
+				ct.setStatus(Translation.STATUS_TRANSLATED);
+				label.setCt(ct);
+			}
+		}
+		return labels;
+	}
 	
 	private Cell createCell(Row row, int column, Object value, CellStyle style) {
 		Cell cell = row.createCell(column);
