@@ -12,7 +12,7 @@ To change this template use File | Settings | File Templates.
 (function() {
 
   define(["jquery", "jqueryui", "i18n!nls/common"], function($, ui, c18n) {
-    var formatJonString, makeAllGridReadonly, makeGridReadonly, newOption, pageNavi, sessionCheck, setCookie;
+    var changeAllGridReadonly, changeGridReadonly, formatJonString, newOption, pageNavi, sessionCheck, setCookie;
     String.prototype.format = function() {
       var args;
       args = arguments;
@@ -206,23 +206,37 @@ To change this template use File | Settings | File Templates.
         }
       });
     };
-    makeGridReadonly = function(grid) {
+    changeGridReadonly = function(grid, readonly) {
       var colModel;
-      console.log("Make grid '" + grid.id + "' readonly. ");
+      if (readonly == null) {
+        readonly = true;
+      }
+      if (typeof console !== "undefined" && console !== null) {
+        console.log("Make grid '" + grid.id + "' readonly: " + readonly + ". ");
+      }
       colModel = $(grid).jqGrid('getGridParam', 'colModel');
       return $.each(colModel, function(idx, obj) {
-        if ($.isPlainObject(obj) && obj.name && obj.editable) {
-          obj.editable = false;
-          return obj.classes = obj.classes.replace('editable-column', '');
+        if ($.isPlainObject(obj) && obj.name) {
+          if (readonly && obj.editable) {
+            obj.editable = false;
+            obj.classes = obj.classes.replace('editable-column', '');
+            return obj.changedforprivelege = true;
+          } else if (obj.changedforprivelege) {
+            obj.editable = true;
+            return obj.classes = "" + obj.classes + " editable-column";
+          }
         }
       });
     };
-    makeAllGridReadonly = function(grids) {
+    changeAllGridReadonly = function(grids, readonly) {
       if (grids == null) {
         grids = $('.ui-jqgrid-btable');
       }
+      if (readonly == null) {
+        readonly = true;
+      }
       return $.each(grids, function(idx, grid) {
-        return makeGridReadonly(grid);
+        return changeGridReadonly(grid, readonly);
       });
     };
     pageNavi();
@@ -332,11 +346,14 @@ To change this template use File | Settings | File Templates.
         }).get().join(sep);
       },
       afterInitilized: function(context) {
-        console.log("...Page " + ($('#pageNavigator').val()) + " initialized...");
-        if (param.user && param.user.role === ROLE.GUEST) {
-          return makeAllGridReadonly();
+        if (typeof console !== "undefined" && console !== null) {
+          console.log("...Page " + ($('#pageNavigator').val()) + " initialized...");
         }
-      }
+        if (param.user && param.user.role === ROLE.GUEST) {
+          return changeAllGridReadonly();
+        }
+      },
+      changeGridReadonly: changeGridReadonly
     };
   });
 
