@@ -240,7 +240,7 @@
     }).setGridParam({
       datatype: 'json'
     });
-    ($('#generateDict').button({})).click(function() {
+    ($('#generateDict').button({})).width(170).click(function() {
       var dicts, filename, oldLabel,
         _this = this;
       dicts = dicGrid.getGridParam('selarrrow');

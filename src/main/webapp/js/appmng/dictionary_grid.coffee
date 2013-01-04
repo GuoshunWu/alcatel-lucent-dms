@@ -122,7 +122,7 @@ define (require, util, dialogs, i18n)->
     }).setGridParam(datatype: 'json')
 
 
-  ($('#generateDict').button {}).click ->
+  ($('#generateDict').button {}).width(170).click ->
   #    Test
     dicts = dicGrid.getGridParam('selarrrow')
     if !dicts || dicts.length == 0

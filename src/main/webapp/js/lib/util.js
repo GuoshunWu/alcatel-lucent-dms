@@ -37,6 +37,29 @@ To change this template use File | Settings | File Templates.
         return letter.toUpperCase();
       });
     };
+    String.prototype.repeat = function(num) {
+      var buf, i;
+      i = 0;
+      buf = '';
+      while (i++ < num) {
+        buf += this;
+      }
+      return buf;
+    };
+    String.prototype.center = function(width, padding) {
+      var len, pads, remain;
+      if (padding == null) {
+        padding = ' ';
+      }
+      if (this.length >= width) {
+        return this;
+      }
+      padding = padding.slice(0, 1);
+      len = width - this.length;
+      remain = 0 === len % 2 ? "" : padding;
+      pads = padding.repeat(parseInt(len / 2));
+      return pads + this + pads + remain;
+    };
     /*
         Dateformat
     */

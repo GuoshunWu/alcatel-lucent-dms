@@ -18,6 +18,19 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
     return false  if !str or str.length > @length
     @substr(0, str.length) is str
   String:: capitalize = () ->@toLowerCase().replace(/\b[a-z]/g, (letter)->letter.toUpperCase())
+
+  String:: repeat = (num)->
+    i = 0
+    buf = ''
+    buf += this while i++ < num
+    buf
+  String:: center = (width, padding = ' ')->
+    return this if this.length >= width
+    padding = padding[..0]
+    len = width - this.length
+    remain = if 0 == len % 2 then "" else padding
+    pads = padding.repeat(parseInt(len / 2))
+    pads + this + pads + remain
   ###
     Dateformat
   ###
