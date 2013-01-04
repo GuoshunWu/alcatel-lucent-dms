@@ -43,7 +43,7 @@
                 <!-- Enable Hibernate's automatic session context management -->
                 <prop key="hibernate.current_session_context_class">thread</prop>
                 
-                <prop key="hibernate.mapping.precedence">class, hbm</prop>
+                <!--<prop key="hibernate.mapping.precedence">class, hbm</prop>-->
 
 
 
@@ -76,7 +76,7 @@
             </props>
         </property>
 
-        <property name="packagesToScan" value="com.alcatel_lucent.dms.model"/>
+        <!--<property name="packagesToScan" value="com.alcatel_lucent.dms.model"/>-->
         <property name="mappingDirectoryLocations">
             <list>
                 <value>classpath:com/alcatel_lucent/dms/model</value>

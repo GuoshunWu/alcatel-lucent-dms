@@ -140,7 +140,7 @@ public class LabelTranslation extends BaseEntity {
         this.requestTranslation = requestTranslation;
     }
 
-    @Column(name = "ANNOTATION1", nullable = false)
+    @Column(name = "ANNOTATION1")
     @Type(type = "text")
     public String getAnnotation1() {
         return annotation1;
@@ -150,7 +150,7 @@ public class LabelTranslation extends BaseEntity {
         this.annotation1 = annotation1;
     }
 
-    @Column(name = "ANNOTATION2", nullable = false)
+    @Column(name = "ANNOTATION2")
     @Type(type = "text")
     public String getAnnotation2() {
         return annotation2;

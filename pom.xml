@@ -597,7 +597,7 @@
 
                 <db.dialect>org.hibernate.dialect.MySQL5InnoDBDialect</db.dialect>
                 <!-- none, create, create-drop, update, validate -->
-                <db.hbm2ddl.auto>validate</db.hbm2ddl.auto>
+                <db.hbm2ddl.auto>create</db.hbm2ddl.auto>
             </properties>
         </profile>
         <profile>

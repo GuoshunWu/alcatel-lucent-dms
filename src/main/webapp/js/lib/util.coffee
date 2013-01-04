@@ -150,15 +150,22 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
         $('#sessionTimeoutDialog').dialog 'open'
   #        console?.log $.parseJSON(xhr.responseText)
 
-  makeGridReadonly = (grid)->
+  changeGridReadonly = (grid, readonly = true)->
     console?.log "Make grid '#{grid.id}' readonly. "
     colModel = $(grid).jqGrid 'getGridParam', 'colModel'
     $.each colModel, (idx, obj) ->
-      if $.isPlainObject(obj) and obj.name and obj.editable
-        obj.editable = false
-        obj.classes = obj.classes.replace('editable-column', '')
+      if $.isPlainObject(obj) and obj.name
+        if readonly and obj.editable
+          obj.editable = false
+          obj.classes = obj.classes.replace('editable-column', '')
+          obj.changedforprivelege = true
+        else if obj.changedforprivelege
+          obj.editable = true
+          obj.classes = "#{obj.classes} editable-column"
+
   #    $(grid).trigger 'reloadGrid'
-  makeAllGridReadonly = (grids = $('.ui-jqgrid-btable'))->$.each grids, (idx, grid)->makeGridReadonly grid
+  changeAllGridReadonly = (grids = $('.ui-jqgrid-btable'), readonly = true)->$.each grids, (idx, grid)->changeGridReadonly grid, readonly
+
 
   #  for all the JSP pages
   pageNavi()
