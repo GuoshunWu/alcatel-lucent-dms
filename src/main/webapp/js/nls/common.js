@@ -12,8 +12,8 @@ define({
 
         ok:'OK',
         cancel: 'Cancel',
-        export:'Export',
-        yes:'Yes',
+        "export":'Export',
+        "yes":'Yes',
         no:'No',
         close:'Close',
         error:'Error',
