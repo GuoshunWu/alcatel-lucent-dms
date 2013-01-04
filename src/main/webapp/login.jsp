@@ -90,11 +90,13 @@
     	<div style="float: left;font-size: 13px">
             &nbsp;<a href="<%=request.getContextPath()%>/manual/Dictionary Management System - User Guide.doc" target="_blank" style="text-decoration:none"><img src="<%=request.getContextPath()%>/images/help.png" alt="" style="border: 0"/>&nbsp;<b>User Guide</b></a>
         </div>
-        <div style="float: right; font-size: 13px; font-weight:bold; padding-right:5px"><s:property
-                value="#version"/></div>
+        <div style="float: right; font-size: 13px; font-weight:bold; padding-right:5px">V1.0&nbsp;Build&nbsp;<span id="buildNumber"></span></div>
     </div>
     
     <div id="testForDialog"></div>
 </div>
+<script type="text/javascript">
+document.getElementById("buildNumber").innerHTML = param.buildNumber;
+</script>
 </body>
 </html>

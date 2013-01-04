@@ -125,90 +125,24 @@ public class LabelREST extends BaseREST {
 			
 		} else {
 		// add ot and ct information if a specific language was specified
-			labels = dao.retrieve(hql, param);
-			for (Label label : labels) {
-				labelMap.put(label.getId(), label);
-			}
+			labels = translationService.getLabelsWithTranslation(dictId, langId);
         	Map<String, String> filters = getGridFilters(requestMap);
         	Integer statusFilter = null;
         	if (filters != null) {
         		String statusParam = filters.get("ct.status");
         		if (statusParam != null && !statusParam.isEmpty()) {
         			statusFilter = Integer.valueOf(statusParam);
+                	// apply status filter
+            		Iterator<Label> iter = labels.iterator();
+            		while (iter.hasNext()) {
+            			Label label = iter.next();
+            			if (statusFilter != label.getCt().getStatus()) {
+            				iter.remove();
+            			}
+            		}
         		}
         	}
-    		hql = "select l.id,ot" +
-    				" from Label l join l.origTranslations ot" +
-    				" where l.dictionary.id=:dictId and ot.language.id=:langId";
-    		param.put("langId", langId);
-    		Collection<Object[]> qr = dao.retrieve(hql, param);
-    		for (Object[] row : qr) {
-    			Long labelId = ((Number) row[0]).longValue();
-    			LabelTranslation ot = (LabelTranslation) row[1];
-    			Label label = labelMap.get(labelId);
-    			if (label != null) {
-    				label.setOt(ot);
-    			}
-    		}
-    		hql = "select l.id,ct" +
-    				" from Label l join l.text.translations ct" +
-    				" where l.dictionary.id=:dictId and ct.language.id=:langId";
-    		qr = dao.retrieve(hql, param);
-    		for (Object[] row : qr) {
-    			Long labelId = ((Number) row[0]).longValue();
-    			Translation ct = (Translation) row[1];
-    			Label label = labelMap.get(labelId);
-    			if (label != null) {
-    				label.setCt(ct);
-    			}
-    		}
-
-        	// populate default ct and ot values, and apply status filter
-    		Iterator<Label> iter = labels.iterator();
-    		while (iter.hasNext()) {
-    			Label label = iter.next();
-    			if (label.getOt() == null) {
-    				LabelTranslation ot = new LabelTranslation();
-    				ot.setOrigTranslation(label.getReference());
-    				ot.setNeedTranslation(true);
-    				label.setOt(ot);
-    			}
-    			if (label.getCt() == null) {
-    				Translation ct = new Translation();
-    				ct.setId(-(label.getId() * 1000 + langId));	// virtual tid < 0, indicating a non-existing ct object
-    				ct.setTranslation(label.getOt().getOrigTranslation());
-    				ct.setStatus(Translation.STATUS_UNTRANSLATED);
-    				label.setCt(ct);
-    			}
-    			// set status to Translated if no translation needed
-    			if (!label.getOt().isNeedTranslation() || label.getContext().getName().equals(Context.EXCLUSION)) {
-    				// duplicate an in-memory object to avoid database update
-    				Translation ct = new Translation();
-    				ct.setId(label.getCt().getId());
-    				ct.setTranslation(label.getCt().getTranslation());
-    				ct.setStatus(Translation.STATUS_TRANSLATED);
-    				label.setCt(ct);
-    			}
-    			if (statusFilter != null && statusFilter != label.getCt().getStatus()) {
-    				iter.remove();
-    			}
-    		}
     		requestMap.put("records", "" + labels.size());
-    		/*
-    		if (statusFilter != null) {
-    			int count;
-    			if (statusFilter == Translation.STATUS_TRANSLATED) {
-    				count = countT;
-    			} else if (statusFilter == Translation.STATUS_IN_PROGRESS) {
-    				count = countI;
-    			} else {
-    				int countAll = Integer.parseInt(requestMap.get("records"));
-    				count = countAll - countT - countI;
-    			}
-    			requestMap.put("records", "" + count);
-    		}
-    		*/
-    		
     		// filter by page
     		labels = pageFilter(labels, requestMap);
     	}
