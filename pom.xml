@@ -125,10 +125,15 @@
             <version>4.3.0.Final</version>
         </dependency>
 
+        <!--<dependency>-->
+            <!--<groupId>org.hibernate</groupId>-->
+            <!--<artifactId>hibernate-swarmcache</artifactId>-->
+            <!--<version>3.6.9.Final</version>-->
+        <!--</dependency>-->
         <dependency>
-            <groupId>org.jboss.cluster</groupId>
-            <artifactId>hibernate-jbc-cacheprovider</artifactId>
-            <version>1.0.2.GA</version>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-oscache</artifactId>
+            <version>3.6.9.Final</version>
         </dependency>
 
         <dependency>
@@ -597,7 +602,7 @@
 
                 <db.dialect>org.hibernate.dialect.MySQL5InnoDBDialect</db.dialect>
                 <!-- none, create, create-drop, update, validate -->
-                <db.hbm2ddl.auto>create</db.hbm2ddl.auto>
+                <db.hbm2ddl.auto>validate</db.hbm2ddl.auto>
             </properties>
         </profile>
         <profile>

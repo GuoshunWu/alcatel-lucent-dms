@@ -45,11 +45,12 @@
                 
                 <!--<prop key="hibernate.mapping.precedence">class, hbm</prop>-->
 
-
-
                 <!-- Improving performance -->
                 <prop key="hibernate.default_batch_fetch_size">200</prop>
-                <prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
+                <prop key="hibernate.cache.use_second_level_cache">true</prop>
+                <prop key="hibernate.cache.default_cache_concurrency_strategy">read-only</prop>
+                <prop key="hibernate.cache.use_query_cache">true</prop>
+                <prop key="hibernate.cache.provider_class">org.hibernate.cache.OSCacheProvider</prop>
 
                 <prop key="hibernate.jdbc.batch_size">30</prop>
 

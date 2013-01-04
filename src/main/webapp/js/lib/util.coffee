@@ -151,7 +151,7 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
   #        console?.log $.parseJSON(xhr.responseText)
 
   changeGridReadonly = (grid, readonly = true)->
-    console?.log "Make grid '#{grid.id}' readonly. "
+    console?.log "Make grid '#{grid.id}' readonly: #{readonly}. "
     colModel = $(grid).jqGrid 'getGridParam', 'colModel'
     $.each colModel, (idx, obj) ->
       if $.isPlainObject(obj) and obj.name
@@ -239,4 +239,5 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
 
   afterInitilized: (context)->
     console?.log "...Page #{$('#pageNavigator').val()} initialized..."
-    makeAllGridReadonly() if param.user && param.user.role == ROLE.GUEST
+    changeAllGridReadonly() if param.user && param.user.role == ROLE.GUEST
+  changeGridReadonly: changeGridReadonly
