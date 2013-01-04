@@ -12,7 +12,7 @@ import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Map;
 
-@MappedSuperclass
+//@MappedSuperclass
 public abstract class BaseEntity implements Serializable {
 
     protected Logger log = LoggerFactory.getLogger(getClass());

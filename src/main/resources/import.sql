@@ -69,7 +69,7 @@
 -- INSERT INTO dms.PRODUCT_BASE (NAME) VALUES ('ProductB');
 -- INSERT INTO dms.PRODUCT (VERSION,PRODUCT_BASE_ID) VALUES ('1.0' ,2 );
 -- INSERT INTO dms.APPLICATION_BASE (NAME,PRODUCT_BASE_ID) VALUES('App_B1',2);
-INSERT INTO dms.user (login_name, email, last_login_time, name, role,status) VALUES ('test', 'Test@126.com', CURRENT_DATE, 'Test',  1, 3);
+INSERT INTO dms.USER (login_name, email, last_login_time, name, role,status) VALUES ('test', 'Test@126.com', CURRENT_DATE, 'Test',  1, 3);
 
 
 INSERT INTO dms.LANGUAGE(ID,NAME,DEFAULT_CHARSET) VALUES (1,'English','windows-1252');

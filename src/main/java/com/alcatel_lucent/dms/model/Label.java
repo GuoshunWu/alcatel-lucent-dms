@@ -55,7 +55,7 @@ public class Label extends BaseEntity {
         this.origTranslations.add(labelTranslation);
     }
 
-    @Column(name = "ANNOTATION2", nullable = false)
+    @Column(name = "ANNOTATION2")
     @Type(type = "text")
     public String getAnnotation2() {
         return annotation2;
@@ -115,7 +115,7 @@ public class Label extends BaseEntity {
         this.description = description;
     }
 
-    @Column(name = "MAX_LENGTH", nullable = false)
+    @Column(name = "MAX_LENGTH")
     public String getMaxLength() {
         return maxLength;
     }

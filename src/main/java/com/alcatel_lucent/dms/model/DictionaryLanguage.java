@@ -66,6 +66,8 @@ public class DictionaryLanguage extends BaseEntity {
         this.languageCode = languageCode;
     }
 
+    @ManyToOne
+    @JoinColumn(name = "CHARSET_ID")
     public Charset getCharset() {
         return charset;
     }
@@ -95,7 +97,7 @@ public class DictionaryLanguage extends BaseEntity {
         return sortNo;
     }
 
-    @Column(name = "ANNOTATION1", nullable = false)
+    @Column(name = "ANNOTATION1")
     @Type(type = "text")
     public String getAnnotation1() {
         return annotation1;
@@ -105,7 +107,7 @@ public class DictionaryLanguage extends BaseEntity {
         this.annotation1 = annotation1;
     }
 
-    @Column(name = "ANNOTATION2", nullable = false)
+    @Column(name = "ANNOTATION2")
     @Type(type = "text")
     public String getAnnotation2() {
         return annotation2;
@@ -115,7 +117,7 @@ public class DictionaryLanguage extends BaseEntity {
         this.annotation2 = annotation2;
     }
 
-    @Column(name = "ANNOTATION3", nullable = false)
+    @Column(name = "ANNOTATION3")
     @Type(type = "text")
     public String getAnnotation3() {
         return annotation3;
@@ -125,7 +127,7 @@ public class DictionaryLanguage extends BaseEntity {
         this.annotation3 = annotation3;
     }
 
-    @Column(name = "ANNOTATION4", nullable = false)
+    @Column(name = "ANNOTATION4")
     @Type(type = "text")
     public String getAnnotation4() {
         return annotation4;
