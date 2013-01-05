@@ -40,7 +40,8 @@
         }
         delete gridParam.selarrrow;
         newGrid = $(this.getId()).jqGrid(gridParam);
-        return this.getGridParam('afterCreate')(newGrid);
+        this.getGridParam('afterCreate')(newGrid);
+        return newGrid;
       },
       addTaskLanguage: function(language) {
         var colModels, cols, level;

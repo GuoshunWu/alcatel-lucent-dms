@@ -53,8 +53,8 @@
           {
             text: c18n.ok,
             click: function() {
-              refreshGrid();
-              return $(this).dialog("close");
+              $(this).dialog("close");
+              return refreshGrid();
             }
           }, {
             text: c18n.cancel,
@@ -95,7 +95,7 @@
           {
             text: c18n["export"],
             click: function() {
-              var languages, me;
+              var dicts, langids, languages, me;
               me = $(this);
               languages = ($(":checkbox[name='languages']", this).map(function() {
                 if (this.checked) {
@@ -111,7 +111,13 @@
                 });
                 return;
               }
-              alert('Export action...');
+              langids = $(languages).map(function() {
+                return this.id;
+              }).get().join(',');
+              dicts = $(grid.getTotalSelectedRowInfo().rowIds).map(function() {
+                return this;
+              }).get().join(',');
+              window.location.href = "trans/export-translation-details?dict=" + dicts + "&lang=" + langids;
               return $(this).dialog('close');
             }
           }, {

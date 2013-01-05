@@ -2,8 +2,10 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
 #prepare the grid column name and column model parameters for the grid.
   restoreSearchToolBarValue = (column, value)->
     console?.log "Set default value to #{value} for #{column}"
+    $("select[id=gs_#{column}]").each (idx, elem)-> elem.value = value
     searchOpts = ($("#transGrid").jqGrid 'getColProp', column).searchoptions
     searchOpts.defaultValue = value
+
     $("#transGrid").jqGrid 'setColProp', column, searchoptions: searchOpts
 
   common =
@@ -67,7 +69,7 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
 
   ### Construct the grid with the column name(model) parameters above and other required parameters ###
   transGrid = $("#transGrid").jqGrid {
-  url : 'rest/dict'
+  url: 'rest/dict'
   mtype: 'post', postData: {}, datatype: 'local'
   width: $(window).innerWidth() * 0.95, height: 310
   rownumbers: true, shrinkToFit: false
@@ -141,6 +143,10 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
       url = 'rest/applications'
       prop = "id,id,base.name,version,labelNum,#{summary}"
       transGrid.setColProp 'application', {search: false, index: 'base.name'}
+
+      postData = {prod: param.release.id, format: 'grid', prop: prop}
+      transGrid.updateTaskLanguage param.languages
+      transGrid.reloadAll url, postData
     else
       gridParam.colNames = grid.dictionary.colNames
       gridParam.colModel = grid.dictionary.colModel
@@ -156,19 +162,24 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
       }
       transGrid.setColProp('application', searchoptions: searchoptions, index: 'app.base.name')
 
+      postData = {prod: param.release.id, format: 'grid', prop: prop}
+      transGrid.updateTaskLanguage param.languages
+
+      # Use this for toolbar search restore.
+      gridParam.datatype = 'local'
+      transGrid = transGrid.reloadAll url, postData
+
       #  restore search option value by if exists
       searchvalue = $("#transGrid").jqGrid 'getGridParam', 'searchvalue'
       restoreSearchToolBarValue 'application', searchvalue.app if searchvalue.app
       restoreSearchToolBarValue 'encoding', searchvalue.encoding if searchvalue.encoding
       restoreSearchToolBarValue 'format', searchvalue.format if searchvalue.format
 
-    #      $("#transGrid")[0].triggerToolbar() if searchvalue.app || searchvalue.encoding || searchvalue.format
-
-
-    postData = {prod: param.release.id, format: 'grid', prop: prop}
-    transGrid.updateTaskLanguage param.languages
-    transGrid.reloadAll url, postData
-
+      transGrid.setGridParam 'datatype', 'json'
+      if searchvalue.app || searchvalue.encoding || searchvalue.format
+        $("#transGrid")[0].triggerToolbar()
+      else
+        transGrid.trigger 'reloadGrid'
 
   getTotalSelectedRowInfo: ->
     transGrid = $("#transGrid")
