@@ -26,7 +26,7 @@ public class User implements Serializable {
     public static final int ROLE_GUEST = 0;
     public static final int ROLE_APPLICATION_OWNER = 1;
     public static final int ROLE_TRANSLATION_MANAGER = 2;
-    public static final int ROLE_ADMINISTRATOR = 3;
+    public static final int ROLE_ADMINISTRATOR = 4;
 
     public static final int ENABLED = 1;
     public static final int DISABLED = 0;

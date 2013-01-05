@@ -25,7 +25,7 @@ import java.util.Map;
 
 @SuppressWarnings("serial")
 //@Namespace("/")
-public class LoginAction extends ActionSupport implements SessionAware {
+public class LoginAction extends BaseAction implements SessionAware {
 
     private static Logger log = LoggerFactory.getLogger(LoginAction.class);
 

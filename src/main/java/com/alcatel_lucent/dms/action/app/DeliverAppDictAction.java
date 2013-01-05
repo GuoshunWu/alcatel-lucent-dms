@@ -19,7 +19,7 @@ import java.util.Date;
  *
  * @author allany
  */
-@ParentPackage("json-default")
+@ParentPackage("dms-json")
 @Result(type = "json", params = {"noCache", "true", "contentType", "text/html", "ignoreHierarchy", "false",
         "includeProperties", "message,status,filename"})
 
