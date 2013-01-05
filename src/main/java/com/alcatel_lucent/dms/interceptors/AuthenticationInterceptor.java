@@ -21,6 +21,7 @@ import java.util.Map;
  * Time: 上午10:00
  * To change this template use File | Settings | File Templates.
  */
+@Deprecated
 public class AuthenticationInterceptor extends AbstractInterceptor implements StrutsStatics {
 
     protected static Logger log = LoggerFactory.getLogger(AuthenticationInterceptor.class);
@@ -32,6 +33,7 @@ public class AuthenticationInterceptor extends AbstractInterceptor implements St
         final Object action = invocation.getAction();
         final ActionContext context = invocation.getInvocationContext();
         Map session = context.getSession();
+        log.info("Action: " + action.getClass().getSimpleName());
 
 
         UserContext uCtx = UserContext.getInstance();    // get user profile from http session
@@ -59,6 +61,7 @@ public class AuthenticationInterceptor extends AbstractInterceptor implements St
 
 
         UserContext uCtx = UserContext.getInstance();    // get user profile from http session
+        log.info("Action: " + action.getClass().getSimpleName());
         if (uCtx == null) {       // not logged in
 //            return Action.LOGIN;  // “message�?is defined as a global result in struts.xml
 
