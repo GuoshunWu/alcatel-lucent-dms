@@ -14,7 +14,7 @@ import org.apache.struts2.convention.annotation.Result;
  * @author allany
  *
  */
-@ParentPackage("json-default")
+@ParentPackage("dms-json")
 @Result(type="json", params={"noCache","true","ignoreHierarchy","false","includeProperties","status,message"})
 @SuppressWarnings("serial")
 abstract public class JSONAction extends BaseAction {

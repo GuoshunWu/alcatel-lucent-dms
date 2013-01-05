@@ -21,7 +21,7 @@
         GUEST:0,
         APPLICATION_OWNER:1,
         TRANSLATION_MANAGER:2,
-        ADMINISTRATOR:3
+        ADMINISTRATOR:4
     }
 
     <s:if test="#session['user_context'].user">

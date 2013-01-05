@@ -26,7 +26,7 @@ import java.util.*;
 
 @SuppressWarnings("serial")
 @ResultPath("/")
-public class EntryAction extends ActionSupport {
+public class EntryAction extends BaseAction {
 
     private static Logger log = LoggerFactory.getLogger(EntryAction.class);
     private Map<String, Object> session;

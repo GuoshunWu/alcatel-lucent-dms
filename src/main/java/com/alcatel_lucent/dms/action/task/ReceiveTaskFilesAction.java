@@ -16,7 +16,7 @@ import java.util.Date;
 
 @SuppressWarnings("serial")
 
-@ParentPackage("json-default")
+@ParentPackage("dms-json")
 @Result(type = "json", params = {"noCache", "true", "contentType", "text/html", "ignoreHierarchy", "false",
         "includeProperties", "message,status"})
 public class ReceiveTaskFilesAction extends JSONAction {

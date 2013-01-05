@@ -4,32 +4,39 @@
         "http://struts.apache.org/dtds/struts-2.3.dtd">
 <struts>
 
+    <package name="default" extends="struts-default">
+	    <interceptors>
+	    	<interceptor name="authorizationInterceptor"
+	    		class="com.alcatel_lucent.dms.interceptors.AuthorizationInterceptor"/>
+	
+		    <interceptor-stack name="dmsSecurityStack">
+			    <interceptor-ref name="authorizationInterceptor"/>
+		    	<interceptor-ref name="defaultStack"/>
+		    </interceptor-stack>
+	    </interceptors>
+    	<default-interceptor-ref name="dmsSecurityStack"/>
+	    <global-results>
+	    	<result name="denied">/common/access_denied.jsp</result>
+	    </global-results>
+    </package>
 
-    <!--<package name="default" extends="struts-default">-->
+    <package name="dms-json" extends="json-default">
+	    <interceptors>
+	    	<interceptor name="authorizationInterceptor"
+	    		class="com.alcatel_lucent.dms.interceptors.AuthorizationInterceptor"/>
+	
+		    <interceptor-stack name="dmsSecurityStack">
+			    <interceptor-ref name="authorizationInterceptor"/>
+		    	<interceptor-ref name="defaultStack"/>
+		    </interceptor-stack>
+	    </interceptors>
+    	<default-interceptor-ref name="dmsSecurityStack"/>
+	    <global-results>
+	    	<result name="denied">/json/access_denied.json</result>
+	    </global-results>
+    </package>
 
-    <!--<interceptors>-->
-    <!--<interceptor name="authenticationInterceptor"-->
-    <!--class="com.alcatel_lucent.dms.interceptors.AuthenticationInterceptor"/>-->
-
-    <!--<interceptor-stack name="defaultSecurityStackWithAuthentication">-->
-    <!--<interceptor-ref name="authenticationInterceptor">-->
-    <!--&lt;!&ndash;<param name="excludeMethods">login</param>&ndash;&gt;-->
-    <!--&lt;!&ndash;<param name="includeMethods">execute</param>&ndash;&gt;-->
-    <!--</interceptor-ref>-->
-    <!--<interceptor-ref name="defaultStack"/>-->
-    <!--</interceptor-stack>-->
-    <!--</interceptors>-->
-
-    <!--<default-interceptor-ref name="defaultSecurityStackWithAuthentication"/>-->
-
-    <!--<global-results>-->
-    <!--<result name="error">/error.jsp</result>-->
-    <!--<result name="login" type="redirect">-->
-    <!--<param name="location">/login.jsp</param>-->
-    <!--</result>-->
-    <!--</global-results>-->
-    <!--</package>-->
-
+	<constant name="struts.convention.default.parent.package" value="default"/>
     <constant name="struts.locale" value="en_US"/>
 
     <constant name="struts.action.excludePattern" value="/rest/.*"/>

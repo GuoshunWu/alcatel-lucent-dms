@@ -18,7 +18,7 @@ import java.util.Date;
  * @author Guoshun Wu
  */
 @SuppressWarnings("serial")
-@ParentPackage("json-default")
+@ParentPackage("dms-json")
 @Result(type = "json", params = {"noCache", "true", "ignoreHierarchy", "false", "includeProperties", "fileLoc,message,status"})
 public class GenerateDictAction extends JSONAction {
 
