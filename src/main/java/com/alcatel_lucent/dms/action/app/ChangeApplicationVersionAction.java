@@ -11,7 +11,7 @@ import com.alcatel_lucent.dms.service.ProductService;
  *
  * @author allany
  */
-@ParentPackage("json-default")
+@ParentPackage("dms-json")
 @Result(type = "json", params = {"noCache", "true", "ignoreHierarchy", "false", "includeProperties", "productId,id,message,status"})
 
 public class ChangeApplicationVersionAction extends JSONAction {

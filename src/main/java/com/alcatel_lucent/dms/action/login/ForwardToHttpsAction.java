@@ -1,6 +1,7 @@
 package com.alcatel_lucent.dms.action.login;
 
 import com.alcatel_lucent.dms.UserContext;
+import com.alcatel_lucent.dms.action.BaseAction;
 import com.alcatel_lucent.dms.action.JSONAction;
 import com.alcatel_lucent.dms.model.User;
 import com.alcatel_lucent.dms.service.AuthenticationService;
@@ -17,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @SuppressWarnings("serial")
-public class ForwardToHttpsAction extends ActionSupport {
+public class ForwardToHttpsAction extends BaseAction {
     private static Logger log = LoggerFactory.getLogger(ForwardToHttpsAction.class);
 
     @Value("${httpsPort}")
