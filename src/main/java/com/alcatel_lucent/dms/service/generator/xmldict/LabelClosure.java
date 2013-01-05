@@ -2,11 +2,15 @@ package com.alcatel_lucent.dms.service.generator.xmldict;
 
 import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.LabelTranslation;
+import com.alcatel_lucent.dms.service.DaoService;
 import com.alcatel_lucent.dms.util.Util;
 import org.apache.commons.collections.*;
+import org.hibernate.FetchMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.dom4j.Element;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.Map;
@@ -27,12 +31,15 @@ public class LabelClosure implements Closure {
     private Element xmlDict;
     private LabelTranslationClosure labelTranslationClosure = new LabelTranslationClosure();
 
+    private DaoService dao;
+
     private int labelCounter = 0;
     private int totalLabel;
 
-    public LabelClosure(Element xmlDict, int totalLabel) {
+    public LabelClosure(Element xmlDict, int totalLabel, DaoService dao) {
         this.xmlDict = xmlDict;
         this.totalLabel = totalLabel;
+        this.dao = dao;
     }
 
     public void execute(Object input) {
@@ -58,7 +65,6 @@ public class LabelClosure implements Closure {
         if (null != map.get("state")) xmlKey.addAttribute("state", map.get("state"));
 
         Collection<LabelTranslation> labelTranslations = label.getOrigTranslations();
-
 //              write all the comment
         writeElement("COMMENT", map.get("comment"), xmlKey, labelTranslations, null);
         writeElement("CONTEXT", map.get("context"), xmlKey, labelTranslations, null);

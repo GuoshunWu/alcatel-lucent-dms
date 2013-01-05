@@ -14,6 +14,8 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
+import org.hibernate.FetchMode;
+import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
-
 
 
 import static org.apache.commons.lang3.StringUtils.center;
@@ -39,7 +40,23 @@ public class XMLDictGenerator implements DictionaryGenerator {
 
     @Override
     public void generateDict(File targetDir, Long dictId) throws BusinessException {
-        Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
+//        Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
+//        Improving performance
+        long begin = System.currentTimeMillis();
+        Dictionary dict = (Dictionary) dao.getSession().
+                createCriteria(Dictionary.class).
+                add(Restrictions.idEq(dictId)).
+                setFetchMode("labels", FetchMode.JOIN).
+                setCacheable(true).
+//                setFetchMode("labels.params", FetchMode.SELECT).
+//                setFetchMode("labels.origTranslations", FetchMode.DEFAULT).
+//                setFetchMode("labels.text", FetchMode.DEFAULT).
+//                setFetchMode("labels.text.translations", FetchMode.DEFAULT).
+                uniqueResult();
+        long end = System.currentTimeMillis();
+        String timeStr = DurationFormatUtils.formatPeriod(begin, end, "mm 'minute(s)' ss 'second(s)'.");
+        log.info(center("Querying dictionary " + dict.getName() + " using a total of " + timeStr, 100, '*'));
+
         generateDict(targetDir, dict);
     }
 
@@ -110,7 +127,7 @@ public class XMLDictGenerator implements DictionaryGenerator {
         LanguageClosure ll = new LanguageClosure(xmlDict);
         CollectionUtils.forAllDo(dict.getDictLanguages(), ll);
 
-        LabelClosure lc = new LabelClosure(xmlDict, dict.getLabelNum());
+        LabelClosure lc = new LabelClosure(xmlDict, dict.getLabelNum(), dao);
 
         log.info(StringUtils.center("Start generating dictionary " + dict.getName() + " labels(total: " + dict.getLabelNum() + ").", 100, '='));
         CollectionUtils.forAllDo(dict.getLabels(), lc);

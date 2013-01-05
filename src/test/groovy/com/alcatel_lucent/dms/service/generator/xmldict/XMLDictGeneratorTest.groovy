@@ -32,7 +32,7 @@ public class XMLDictGeneratorTest {
     @Test
     void testGenerateDict() throws Exception {
         File file = new File("D:/testxdct/xdct")
-//        file = new File("D:/testxdct/test")
+        file = new File("D:/testxdct/test")
         ArrayList<Dictionary> dictionaries = xmlDictParser.parse('', file, [] as Collection<File>)
 
 

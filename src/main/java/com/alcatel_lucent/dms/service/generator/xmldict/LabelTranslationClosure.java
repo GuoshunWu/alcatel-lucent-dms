@@ -42,10 +42,13 @@ public class LabelTranslationClosure implements Closure {
     @Override
     public void execute(Object input) {
         LabelTranslation lt = (LabelTranslation) input;
+
+        String value = lt.getValueFromField(name.toLowerCase(), LabelTranslation.ANNOTATION1);
+        if (name.equals("TRANSLATION")) value = lt.getLabel().getTranslation(lt.getLanguageCode());
+
         String xpath = "parent::*/LANGUAGE[@id='" + lt.getLanguageCode() + "']/@is_context";
         boolean isContext = BooleanUtils.toBoolean(xmlKey.selectSingleNode(xpath).getStringValue());
 
-        String value = name.equals("TRANSLATION") ? lt.getOrigTranslation() : lt.getValueFromField(name.toLowerCase(), LabelTranslation.ANNOTATION1);
         if (null == value || (name.equals("CONTEXT") && !isContext)) return;
 
         Element element = xmlKey.addElement(name);
