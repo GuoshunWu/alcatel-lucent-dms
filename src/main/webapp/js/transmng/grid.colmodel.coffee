@@ -18,6 +18,7 @@ define ['jqgrid'], ($)->
     @GridUnload @getId()
     gridParam.url = url
     gridParam.postData = postData if postData
+
     #    console.log "recreate grid, gridpostData="
     #    console.log  gridParam.postData
     delete gridParam.selarrrow
@@ -26,6 +27,7 @@ define ['jqgrid'], ($)->
     #    save search tool bar status before recreate the grid
     #    console.log $("#transGrid").jqGrid 'getGridParam', 'searchvalue'
     @getGridParam('afterCreate') newGrid
+    newGrid
 
 
   addTaskLanguage: (language)->

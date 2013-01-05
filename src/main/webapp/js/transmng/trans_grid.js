@@ -8,6 +8,9 @@
       if (typeof console !== "undefined" && console !== null) {
         console.log("Set default value to " + value + " for " + column);
       }
+      $("select[id=gs_" + column + "]").each(function(idx, elem) {
+        return elem.value = value;
+      });
       searchOpts = ($("#transGrid").jqGrid('getColProp', column)).searchoptions;
       searchOpts.defaultValue = value;
       return $("#transGrid").jqGrid('setColProp', column, {
@@ -293,6 +296,13 @@
             search: false,
             index: 'base.name'
           });
+          postData = {
+            prod: param.release.id,
+            format: 'grid',
+            prop: prop
+          };
+          transGrid.updateTaskLanguage(param.languages);
+          return transGrid.reloadAll(url, postData);
         } else {
           gridParam.colNames = grid.dictionary.colNames;
           gridParam.colModel = grid.dictionary.colModel;
@@ -316,6 +326,14 @@
             searchoptions: searchoptions,
             index: 'app.base.name'
           });
+          postData = {
+            prod: param.release.id,
+            format: 'grid',
+            prop: prop
+          };
+          transGrid.updateTaskLanguage(param.languages);
+          gridParam.datatype = 'local';
+          transGrid = transGrid.reloadAll(url, postData);
           searchvalue = $("#transGrid").jqGrid('getGridParam', 'searchvalue');
           if (searchvalue.app) {
             restoreSearchToolBarValue('application', searchvalue.app);
@@ -326,14 +344,13 @@
           if (searchvalue.format) {
             restoreSearchToolBarValue('format', searchvalue.format);
           }
+          transGrid.setGridParam('datatype', 'json');
+          if (searchvalue.app || searchvalue.encoding || searchvalue.format) {
+            return $("#transGrid")[0].triggerToolbar();
+          } else {
+            return transGrid.trigger('reloadGrid');
+          }
         }
-        postData = {
-          prod: param.release.id,
-          format: 'grid',
-          prop: prop
-        };
-        transGrid.updateTaskLanguage(param.languages);
-        return transGrid.reloadAll(url, postData);
       },
       getTotalSelectedRowInfo: function() {
         var count, selectedRowIds;

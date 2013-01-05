@@ -28,8 +28,8 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
     show: { effect: 'slide', direction: "up" }
     buttons: [
       { text: c18n.ok, click: ()->
-        refreshGrid()
         $(@).dialog "close"
+        refreshGrid()
       }
       {text: c18n.cancel, click: ()->$(@).dialog "close"}
     ]
@@ -57,8 +57,12 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
         if(languages.length == 0)
           $.msgBox (i18n.msgbox.createtranstask.msg.format c18n.language), null, title: (c18n.warning)
           return
-#        TODO: implement export translation action...
-        alert 'Export action...'
+
+        langids = $(languages).map(
+          ()->@id).get().join ','
+        dicts = $(grid.getTotalSelectedRowInfo().rowIds).map(
+          ()->@).get().join(',')
+        window.location.href = "trans/export-translation-details?dict=#{dicts}&lang=#{langids}"
         $(@).dialog 'close'
       }
       {text: c18n.cancel, click: ->$(@).dialog 'close'}
