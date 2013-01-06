@@ -240,7 +240,7 @@
     }).setGridParam({
       datatype: 'json'
     });
-    ($('#generateDict').button({})).width(170).click(function() {
+    $('#generateDict').button().width(170).attr('privilegeName', util.urlname2Action('app/deliver-app-dict')).click(function() {
       var dicts, filename, oldLabel,
         _this = this;
       dicts = dicGrid.getGridParam('selarrrow');
@@ -269,7 +269,7 @@
         return window.location.href = "app/download-app-dict.action?fileLoc=" + json.fileLoc;
       });
     });
-    ($('#batchAddLanguage').button({})).click(function() {
+    $('#batchAddLanguage').button().attr('privilegeName', util.urlname2Action('app/add-dict-language')).click(function() {
       var dicts;
       dicts = dicGrid.getGridParam('selarrrow');
       if (!dicts || dicts.length === 0) {

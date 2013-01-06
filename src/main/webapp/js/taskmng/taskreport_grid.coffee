@@ -61,7 +61,6 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
       $.merge gridParam.colModel, $(cols).map(
         (index)->name: "#{language.name}.#{@}", sortable: false, index: "s(#{language.id})[#{index}]", width: 40, editable: false, align: 'center', formatter: 'showlink', formatoptions: {baseLinkUrl: '#', addParam: encodeURI("&languageId=#{language.id}&languaeName=#{language.name}.#{@}")}).get()
 
-
       gridParam.groupHeaders.push {startColumnName: "#{language.name}.T", numberOfColumns: cols.length, titleText: "<bold>#{language.name}</bold>"}
 
     gridParam.url = 'rest/task/summary'

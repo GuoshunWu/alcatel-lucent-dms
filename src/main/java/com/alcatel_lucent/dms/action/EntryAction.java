@@ -10,6 +10,8 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import net.sf.json.JSON;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.struts2.ServletActionContext;
@@ -41,6 +43,7 @@ public class EntryAction extends BaseAction {
 
     private Long curProductId = -1L;
     private Long curProductBaseId = -1L;
+
     public Long getCurProductId() {
         return curProductId;
     }
@@ -126,6 +129,7 @@ public class EntryAction extends BaseAction {
     public Map<String, String> getClientParams() {
         Map<String, String> params = new HashMap<String, String>();
         params.put("locale", getLocale().toString());
+        params.put("forbiddenPrivileges", StringUtils.join(Privileges.getInstance().getForbiddenPrivileges().toArray(ArrayUtils.EMPTY_STRING_ARRAY),","));
         return params;
     }
 }

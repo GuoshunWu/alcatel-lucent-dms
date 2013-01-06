@@ -122,7 +122,7 @@ define (require, util, dialogs, i18n)->
     }).setGridParam(datatype: 'json')
 
 
-  ($('#generateDict').button {}).width(170).click ->
+  $('#generateDict').button().width(170).attr('privilegeName', util.urlname2Action 'app/deliver-app-dict').click ->
   #    Test
     dicts = dicGrid.getGridParam('selarrrow')
     if !dicts || dicts.length == 0
@@ -146,7 +146,7 @@ define (require, util, dialogs, i18n)->
       window.location.href = "app/download-app-dict.action?fileLoc=#{json.fileLoc}"
 
 
-  ($('#batchAddLanguage').button {}).click ->
+  $('#batchAddLanguage').button().attr('privilegeName', util.urlname2Action 'app/add-dict-language').click ->
     dicts = dicGrid.getGridParam('selarrrow')
     if !dicts || dicts.length == 0
       $.msgBox (c18n.selrow.format c18n.dict), null, {title: c18n.warning}

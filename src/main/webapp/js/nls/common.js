@@ -9,7 +9,7 @@ define({
     root:{
         loadingpage: '<h1><img src="busy.gif" />Loading page, please wait...</h1>',
         all:'All',
-
+        "import":'Import',
         ok:'OK',
         cancel: 'Cancel',
         "export":'Export',

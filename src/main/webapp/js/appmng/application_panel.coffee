@@ -14,10 +14,13 @@ define (require)->
 
   appInfo = {}
 
-  $("#newAppVersion").button({text: false, label: '&nbsp;', icons: {primary: "ui-icon-plus"}}).click (e) =>
-    dialogs.newAppVersion.dialog("open")
+  $("#newAppVersion").button({text: false, label: '&nbsp;', icons: {primary: "ui-icon-plus"}}).
+  attr('privilegeName', util.urlname2Action 'app/create-application').
+  click (e) =>dialogs.newAppVersion.dialog("open")
 
-  $("#removeAppVersion").button({text: false, label: '&nbsp;', icons: {primary: "ui-icon-minus"}}).click (e) =>
+  $("#removeAppVersion").button({text: false, label: '&nbsp;', icons: {primary: "ui-icon-minus"}}).
+  attr('privilegeName', util.urlname2Action 'app/remove-application').
+  click (e) =>
     id = $("#selAppVersion").val()
     return if !id
     $.post 'app/remove-application', {id: id, permanent: 'true'}, (json)->
@@ -41,7 +44,7 @@ define (require)->
 
   dctFileUpload = 'dctFileUpload'
   #  create upload filebutton
-  $('#uploadBrower').button({label: i18n.browse}).css({overflow: 'hidden'}).append $(
+  $('#uploadBrower').button(label: i18n.browse).attr('privilegeName', util.urlname2Action('app/deliver-app-dict')).css({overflow: 'hidden'}).append $(
     "<input type='file' id='#{dctFileUpload}' name='upload' title='#{i18n.choosefile}' accept='application/zip' multiple/>").css {
   position: 'absolute', top: -3, right: -3, border: '1px solid', borderWidth: '10px 180px 40px 20px',
   opacity: 0, filter: 'alpha(opacity=0)',
