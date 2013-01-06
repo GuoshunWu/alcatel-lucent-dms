@@ -25,7 +25,8 @@ define (require)->
         $('#fileLoc', downloadForm).val json.fileLoc
         downloadForm.submit()
     'View…': (param)->
-      dialogs.transReport.data 'param', {id: param.id}
+#      dialogs.transReport.data 'param', {id: param.id, showImport: Boolean(param.lastUpdateTime)}
+      dialogs.transReport.data 'param', {id: param.id, viewReport: true}
       dialogs.transReport.dialog 'open'
     'Close': (param)->
       return if param.status == '1'

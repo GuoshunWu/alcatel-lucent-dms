@@ -37,7 +37,8 @@
       },
       'View…': function(param) {
         dialogs.transReport.data('param', {
-          id: param.id
+          id: param.id,
+          viewReport: true
         });
         return dialogs.transReport.dialog('open');
       },

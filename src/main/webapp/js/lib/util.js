@@ -10,6 +10,7 @@ To change this template use File | Settings | File Templates.
 
 
 (function() {
+  var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   define(["jquery", "jqueryui", "i18n!nls/common"], function($, ui, c18n) {
     var changeAllGridReadonly, changeGridReadonly, formatJonString, newOption, pageNavi, sessionCheck, setCookie;
@@ -370,13 +371,25 @@ To change this template use File | Settings | File Templates.
       },
       afterInitilized: function(context) {
         if (typeof console !== "undefined" && console !== null) {
-          console.log("...Page " + ($('#pageNavigator').val()) + " initialized...");
+          console.log("...Page " + ($('#pageNavigator').val()) + " privilege check...");
         }
-        if (param.user && param.user.role === ROLE.GUEST) {
-          return changeAllGridReadonly();
-        }
+        return $('[role=button][privilegeName]').each(function(index, button) {
+          var _ref;
+          if (_ref = $(button).attr('privilegeName'), __indexOf.call(param.forbiddenPrivileges, _ref) >= 0) {
+            return $(button).button('disable');
+          }
+        });
       },
-      changeGridReadonly: changeGridReadonly
+      changeGridReadonly: changeGridReadonly,
+      urlname2Action: function(urlname, suffix) {
+        if (urlname == null) {
+          urlname = '';
+        }
+        if (suffix == null) {
+          suffix = 'Action';
+        }
+        return urlname.split('/').pop().capitalize().split('-').join('') + suffix;
+      }
     };
   });
 

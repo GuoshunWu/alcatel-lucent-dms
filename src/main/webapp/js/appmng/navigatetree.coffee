@@ -54,19 +54,23 @@ define (require)->
     products:
       createproduct:
         label: 'New product'
+        "_disabled": (util.urlname2Action URL.product.create) in param.forbiddenPrivileges
         action: (node)->appTree?.create node, 'last', {data: 'NewProduct', attr: {type: 'product', id: null}}, (->), false
         separator_before: true
     product:
       createapp:
         label: 'New application'
+        "_disabled": (util.urlname2Action URL.app.create) in param.forbiddenPrivileges
         action: (node)->appTree?.create node, 'last', {data: 'NewApp', attr: {type: 'app', id: null}}, (->), false
       del:
         label: 'Delete product'
+        "_disabled": (util.urlname2Action URL.product.del) in param.forbiddenPrivileges
         action: removeNode
         separator_before: true
     app:
       del:
         label: 'Delete application'
+        "_disabled": (util.urlname2Action URL.app.del) in param.forbiddenPrivileges
         action: removeNode
 
 
@@ -85,7 +89,6 @@ define (require)->
         appTree = data.inst
         node = data.rslt.obj
         name = data.rslt.name
-        #        todo: new name need tobe validated here
         if '' == name
         #          console.log 'name is blank, rollback.'
           $.jstree.rollback(data.rlbk)

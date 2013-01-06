@@ -10,6 +10,7 @@
     var param = {
         naviTo:'<s:property value="naviTo"/>',
         locale:'<s:property value="clientParams.locale"/>'.replace('_', '-').toLocaleLowerCase(),
+        forbiddenPrivileges:'<s:property value="clientParams.forbiddenPrivileges"/>'.split(','),
         buildNumber:<s:property value="buildNumber"/>,
         currentSelected:{
             productBaseId:'<s:property value="curProductBaseId"/>',

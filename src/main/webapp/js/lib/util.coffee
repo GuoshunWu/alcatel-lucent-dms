@@ -251,6 +251,11 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
     ).get().join(sep)
 
   afterInitilized: (context)->
-    console?.log "...Page #{$('#pageNavigator').val()} initialized..."
-    changeAllGridReadonly() if param.user && param.user.role == ROLE.GUEST
+    console?.log "...Page #{$('#pageNavigator').val()} privilege check..."
+#    .attr('privilegeName', util.urlname2Action 'app/deliver-app-dict')
+    $('[role=button][privilegeName]').each (index, button)->
+      $(button).button 'disable' if $(button).attr('privilegeName') in param.forbiddenPrivileges
+  #    changeAllGridReadonly() if param.user && param.user.role == ROLE.GUEST
   changeGridReadonly: changeGridReadonly
+  urlname2Action: (urlname = '', suffix = 'Action')->urlname.split('/').pop().capitalize().split('-').join('') + suffix
+

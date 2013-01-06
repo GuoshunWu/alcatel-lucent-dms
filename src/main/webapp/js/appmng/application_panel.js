@@ -21,7 +21,7 @@
       icons: {
         primary: "ui-icon-plus"
       }
-    }).click(function(e) {
+    }).attr('privilegeName', util.urlname2Action('app/create-application')).click(function(e) {
       return dialogs.newAppVersion.dialog("open");
     });
     $("#removeAppVersion").button({
@@ -30,7 +30,7 @@
       icons: {
         primary: "ui-icon-minus"
       }
-    }).click(function(e) {
+    }).attr('privilegeName', util.urlname2Action('app/remove-application')).click(function(e) {
       var id;
       id = $("#selAppVersion").val();
       if (!id) {
@@ -80,7 +80,7 @@
     dctFileUpload = 'dctFileUpload';
     $('#uploadBrower').button({
       label: i18n.browse
-    }).css({
+    }).attr('privilegeName', util.urlname2Action('app/deliver-app-dict')).css({
       overflow: 'hidden'
     }).append($("<input type='file' id='" + dctFileUpload + "' name='upload' title='" + i18n.choosefile + "' accept='application/zip' multiple/>").css({
       position: 'absolute',

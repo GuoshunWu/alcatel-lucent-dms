@@ -16,12 +16,11 @@ define ['jqueryui', 'taskmng/taskreport_grid', 'taskmng/transdetail_grid', 'jqms
   width: $(window).width() * 0.8, height: 'auto'
   open: ()->
     param = $(@).data 'param'
-    $.ajax 'rest/languages', async: false, dataType: 'json', data: {task: param.id, prop: 'id,name'}, success: (languages)->
-      reportgrid.regenerateGrid {id: param.id, languages: languages}
-  resize: (event, ui)->$("#reportGrid").setGridWidth(ui.size.width - 40, true).setGridHeight(ui.size.height - 190, true)
+    buttons = [
+      {text: c18n.close, click: ()-> $(@).dialog "close"}
+    ]
 
-  buttons: [
-    {text: 'Import', click: ()->
+    buttons.unshift {text: c18n.import, click: ()->
       param = $(@).data 'param'
       $.post 'task/apply-task', {id: param.id}, (json)->
         if json.status != 0
@@ -37,13 +36,15 @@ define ['jqueryui', 'taskmng/taskreport_grid', 'taskmng/transdetail_grid', 'jqms
                 return
               $("#taskGrid").trigger 'reloadGrid'
         ), {title: c18n.confirm}, [c18n.yes, c18n.no]
-
-
       $(@).dialog "close"
-    }
-    {text: 'Cancel', click: ()-> $(@).dialog "close"}
-  ]
+    } unless param.viewReport
+    $(@).dialog 'option', 'buttons', buttons
+    $.ajax 'rest/languages', async: false, dataType: 'json', data: {task: param.id, prop: 'id,name'}, success: (languages)->
+      reportgrid.regenerateGrid {id: param.id, languages: languages}
+  resize: (event, ui)->$("#reportGrid").setGridWidth(ui.size.width - 40, true).setGridHeight(ui.size.height - 190, true)
   }
+
+
   $('#langChooser').button({}).click ()->
     languageChooserDialog.dialog 'open'
 

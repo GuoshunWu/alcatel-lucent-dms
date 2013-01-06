@@ -39,8 +39,55 @@
       width: $(window).width() * 0.8,
       height: 'auto',
       open: function() {
-        var param;
+        var buttons, param;
         param = $(this).data('param');
+        buttons = [
+          {
+            text: c18n.close,
+            click: function() {
+              return $(this).dialog("close");
+            }
+          }
+        ];
+        if (!param.viewReport) {
+          buttons.unshift({
+            text: c18n["import"],
+            click: function() {
+              param = $(this).data('param');
+              $.post('task/apply-task', {
+                id: param.id
+              }, function(json) {
+                if (json.status !== 0) {
+                  $.msgBox(json.message, null, {
+                    title: c18n.error
+                  });
+                  return;
+                }
+                return $.msgBox(i18n.task.confirmmsg, (function(keyPressed) {
+                  if (c18n.no === keyPressed) {
+                    $.blockUI;
+                    return $.post('task/close-task', {
+                      id: param.id
+                    }, function(json) {
+                      $.unblockUI();
+                      if (json.status !== 0) {
+                        $.msgBox(json.message, null, {
+                          title: c18n.error
+                        });
+                        return;
+                      }
+                      return $("#taskGrid").trigger('reloadGrid');
+                    });
+                  }
+                }), {
+                  title: c18n.confirm
+                }, [c18n.yes, c18n.no]);
+              });
+              return $(this).dialog("close");
+            }
+          });
+        }
+        $(this).dialog('option', 'buttons', buttons);
         return $.ajax('rest/languages', {
           async: false,
           dataType: 'json',
@@ -58,51 +105,7 @@
       },
       resize: function(event, ui) {
         return $("#reportGrid").setGridWidth(ui.size.width - 40, true).setGridHeight(ui.size.height - 190, true);
-      },
-      buttons: [
-        {
-          text: 'Import',
-          click: function() {
-            var param;
-            param = $(this).data('param');
-            $.post('task/apply-task', {
-              id: param.id
-            }, function(json) {
-              if (json.status !== 0) {
-                $.msgBox(json.message, null, {
-                  title: c18n.error
-                });
-                return;
-              }
-              return $.msgBox(i18n.task.confirmmsg, (function(keyPressed) {
-                if (c18n.no === keyPressed) {
-                  $.blockUI;
-                  return $.post('task/close-task', {
-                    id: param.id
-                  }, function(json) {
-                    $.unblockUI();
-                    if (json.status !== 0) {
-                      $.msgBox(json.message, null, {
-                        title: c18n.error
-                      });
-                      return;
-                    }
-                    return $("#taskGrid").trigger('reloadGrid');
-                  });
-                }
-              }), {
-                title: c18n.confirm
-              }, [c18n.yes, c18n.no]);
-            });
-            return $(this).dialog("close");
-          }
-        }, {
-          text: 'Cancel',
-          click: function() {
-            return $(this).dialog("close");
-          }
-        }
-      ]
+      }
     });
     $('#langChooser').button({}).click(function() {
       return languageChooserDialog.dialog('open');
