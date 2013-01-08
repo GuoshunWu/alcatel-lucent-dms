@@ -31,6 +31,7 @@ public class DeliverDictAction extends JSONAction {
 		try {
 			Collection<Dictionary> dictList = deliveringDictPool.getDictionaries(handler);
 			report = dictionaryService.importDictionaries(app, dictList, Constants.DELIVERY_MODE);
+			setMessage(report.toHTML());
 		} catch (BusinessException e) {
 			setMessage(e.toString());
 			setStatus(-1);

@@ -658,7 +658,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     }
                 }
             }
-            report.addData(context, dbDict, labels, dbTextMap);
+            report.addData(context, dict, labels, dbTextMap);
         }
 
         if (nonBreakExceptions.hasNestedException()) {
@@ -698,6 +698,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             warningMap.put(dict.getName(), warnings);
         }
         report.setWarningMap(warningMap);
+        log.info(report.toString());
         return report;
     }
 
