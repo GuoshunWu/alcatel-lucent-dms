@@ -13,6 +13,7 @@ define ['jqgrid', 'i18n!nls/appmng', 'appmng/dialogs', 'util', 'require'], ($, i
     url: 'json/dummy.json'
     editurl: "app/create-or-add-application"
     cellurl: 'app/change-application-version'
+    cellactionurl: 'app/add-application'
     cellsubmit: 'remote', cellEdit: true
     width: 700, height: 350
     pager: '#pager', rowNum: 10, rowList: [10, 20, 30], multiselect: true
@@ -57,9 +58,11 @@ define ['jqgrid', 'i18n!nls/appmng', 'appmng/dialogs', 'util', 'require'], ($, i
       jsonFromServer = eval "(#{response.responseText})"
       #remove appbase node from apptree.
       [0 == jsonFromServer.status, jsonFromServer.message]
-    }).navButtonAdd('#pager', { caption: "", buttonicon: "ui-icon-plus", position: "first", onClickButton: ()->
-      dialogs.addApplication.dialog "open"
     })
+
+  appGrid.navButtonAdd('#pager', {id: "custom_add_#{appGrid.attr 'id'}", caption: "", buttonicon: "ui-icon-plus", position: "first", onClickButton: ()->
+    dialogs.addApplication.dialog "open"
+  })
 
 
   id: localIds

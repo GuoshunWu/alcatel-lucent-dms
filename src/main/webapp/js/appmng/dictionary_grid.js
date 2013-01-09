@@ -15,7 +15,6 @@
       top: 250,
       left: 550,
       reloadAfterSubmit: false,
-      url: 'app/remove-dict',
       beforeShowForm: function(form) {
         var permanent;
         permanent = $('#permanentDeleteSignId', form);
@@ -37,6 +36,7 @@
     };
     handlers = {
       'String': {
+        url: '',
         title: i18n.dialog.stringsettings.title,
         handler: function(rowData) {
           dialogs.stringSettings.data("param", rowData);
@@ -44,18 +44,13 @@
         }
       },
       'Language': {
+        url: '',
         title: i18n.dialog.languagesettings.title,
         handler: function(rowData) {
           dialogs.langSettings.on('dialogopen', {
             param: rowData
           }, $('#languageSettingsDialog').dialog('option', 'openEvent'));
           return dialogs.langSettings.dialog('open');
-        }
-      },
-      'X': {
-        title: i18n.dialog["delete"].title,
-        handler: function(rowData) {
-          return $('#dictionaryGridList').jqGrid('delGridRow', rowData.id, deleteOptions);
         }
       }
     };
@@ -112,9 +107,27 @@
       }, {
         name: 'action',
         index: 'action',
-        width: 80,
+        width: 70,
         editable: false,
-        align: 'center'
+        align: 'center',
+        formatter: function(cellvalue, options, rowObject) {
+          return $.map(handlers, function(value, index) {
+            return "<A id='action_" + index + "_" + options.rowId + "' style='color:blue' title='" + value.title + "'href=# >" + index + "</A>";
+          }).join('&nbsp;&nbsp;&nbsp;&nbsp;');
+        }
+      }, {
+        name: 'cellaction',
+        index: 'cellaction',
+        width: 20,
+        editable: false,
+        align: 'center',
+        formatter: 'actions',
+        formatoptions: {
+          keys: true,
+          delbutton: true,
+          delOptions: deleteOptions,
+          editbutton: false
+        }
       }
     ];
     $(colModel).each(function(index, colModel) {
@@ -127,8 +140,10 @@
       datatype: 'local',
       width: 1000,
       height: 320,
+      cellactionhandlers: handlers,
       pager: '#dictPager',
       editurl: "app/create-or-add-application",
+      cellactionurl: 'app/remove-dict',
       rowNum: 999,
       loadonce: false,
       sortname: 'base.name',
@@ -142,27 +157,9 @@
       gridview: true,
       multiselect: true,
       caption: 'Dictionary for Application',
-      colNames: ['LangRefCode', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels', 'Action'],
+      colNames: ['LangRefCode', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels', 'Action', 'Del'],
       colModel: colModel,
-      beforeProcessing: function(data, status, xhr) {
-        var actIndex, actions, k, v;
-        actIndex = $.inArray('Action', $(this).getGridParam('colNames'));
-        if ($(this).getGridParam('multiselect')) {
-          --actIndex;
-        }
-        actions = [];
-        for (k in handlers) {
-          v = handlers[k];
-          actions.push(k);
-        }
-        return $(data.rows).each(function(index) {
-          var rowData;
-          rowData = this;
-          return this.cell[actIndex] = $(actions).map(function() {
-            return "<A id='action_" + this + "_" + rowData.id + "_" + actIndex + "'style='color:blue' title='" + handlers[this].title + "' href=# >" + this + "</A>";
-          }).get().join('&nbsp;&nbsp;&nbsp;&nbsp;');
-        });
-      },
+      beforeProcessing: function(data, status, xhr) {},
       afterEditCell: function(id, name, val, iRow, iCol) {
         var grid;
         lastEditedCell = {
@@ -206,15 +203,16 @@
       gridComplete: function() {
         var grid;
         grid = $(this);
+        handlers = grid.getGridParam('cellactionhandlers');
         return $('a[id^=action_]', this).click(function() {
-          var a, action, col, rowData, rowid, _ref;
-          _ref = this.id.split('_'), a = _ref[0], action = _ref[1], rowid = _ref[2], col = _ref[3];
+          var a, action, rowData, rowid, _ref;
+          _ref = this.id.split('_'), a = _ref[0], action = _ref[1], rowid = _ref[2];
           if (lastEditedCell) {
             grid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol);
           }
           rowData = grid.getRowData(rowid);
-          delete rowData.action;
           rowData.id = rowid;
+          delete rowData.action;
           return handlers[action].handler(rowData);
         });
       }
@@ -223,7 +221,11 @@
       edit: false,
       search: false,
       del: false
-    }, {}, {}, deleteOptions).navButtonAdd('#dictPager', {
+    }, {}, {}, deleteOptions).setGridParam({
+      datatype: 'json'
+    });
+    dicGrid.navButtonAdd('#dictPager', {
+      id: "custom_del_" + (dicGrid.attr('id')),
       caption: "",
       buttonicon: "ui-icon-trash",
       position: "first",
@@ -237,8 +239,6 @@
         }
         return $(this).jqGrid('delGridRow', rowIds, deleteOptions);
       }
-    }).setGridParam({
-      datatype: 'json'
     });
     $('#generateDict').button().width(170).attr('privilegeName', util.urlname2Action('app/deliver-app-dict')).click(function() {
       var dicts, filename, oldLabel,

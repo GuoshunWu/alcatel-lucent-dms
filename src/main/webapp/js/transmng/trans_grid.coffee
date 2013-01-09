@@ -71,7 +71,7 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
   transGrid = $("#transGrid").jqGrid {
   url: 'rest/dict'
   mtype: 'post', postData: {}, datatype: 'local'
-  width: $(window).innerWidth() * 0.95, height: 310
+  width: $(window).innerWidth() * 0.95, height: 300
   rownumbers: true, shrinkToFit: false
   pager: '#transPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
   sortname: 'base.name', sortorder: 'asc', multiselect: true
@@ -116,20 +116,29 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
   transGrid.getGridParam('afterCreate') transGrid
 
   #  button for make all label as...
-  ($("[id^=makeLabel]").button().click ()->
+  $('#makeLabelTranslateStatus').attr('privilegeName', util.urlname2Action 'trans/update-status')
+  .button(
+    icons:
+      primary: "ui-icon-triangle-1-n"
+      secondary: "ui-icon-gear"
+  )
+  .click (e)->
+    menu = $('#translationStatus').show().width($(@).width()-3).position(my: "left bottom", at: "left top", of: @)
+    $(document).one "click", ()->menu.hide()
+    false
+
+  $('#translationStatus').menu().hide().find("li").on 'click', (e)->
     transGrid = $("#transGrid")
     selectedRowIds = transGrid.getGridParam('selarrrow').join(',')
-    if !selectedRowIds
-      ($.msgBox (c18n.selrow.format c18n.dict), null, title: c18n.warning)
-      return
+    ($.msgBox (c18n.selrow.format c18n.dict), null, title: c18n.warning; return) unless selectedRowIds
 
     $.blockUI()
-    $.post 'trans/update-status', {type: getTableType(), transStatus: @value, id: selectedRowIds}, (json)->
-      (alert json.message; return) if json.status != 0
+    $.post 'trans/update-status', {type: getTableType(), transStatus: e.target.name, id: selectedRowIds}, (json)->
+      ($.msgBox json.message, null, title: c18n.warning; return) unless json.status == 0
       $.unblockUI()
       $.msgBox i18n.msgbox.transstatus.msg, null, title: c18n.message
       transGrid.trigger 'reloadGrid'
-  ).parent().buttonset()
+
 
   productReleaseChanged: (param) ->
     transGrid = $("#transGrid")

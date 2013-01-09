@@ -183,7 +183,9 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
 
   createButtons = (dialogs) ->
   #   buttons summary panel
-    $("#create").button().click ->
+    $("#create").button()
+    .attr('privilegeName', util.urlname2Action 'task/create-task')
+    .click ->
       info = grid.getTotalSelectedRowInfo()
       if !info.rowIds.length
         $.msgBox (c18n.selrow.format c18n[grid.getTableType()]), null, title: c18n.warning
@@ -194,7 +196,9 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
     #    for view level
     $(':radio[name=viewOption]').change ->refreshGrid()
 
-    $("#exportTranslation").button().click ->
+    $("#exportTranslation").button()
+    .attr('privilegeName', util.urlname2Action 'trans/export-translation-details')
+    .click ->
       info = grid.getTotalSelectedRowInfo()
       if !info.rowIds.length
         $.msgBox (c18n.selrow.format c18n[grid.getTableType()]), null, title: c18n.warning

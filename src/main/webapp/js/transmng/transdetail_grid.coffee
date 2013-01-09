@@ -34,13 +34,24 @@ define ['jqgrid', 'util', 'require', 'i18n!nls/transmng', 'i18n!nls/common'], ($
   }
   transDetailGrid.getGridParam('afterCreate') transDetailGrid
 
-  ($("#translationDetailDialog [id^=detailTrans]").button().click ()->
+  $('#makeDetailLabelTranslateStatus').button(
+    icons:
+      primary: "ui-icon-triangle-1-n"
+      secondary: "ui-icon-gear"
+  )
+  .attr('privilegeName', util.urlname2Action 'trans/update-status')
+  .click (e)->
+    menu = $('#detailTranslationStatus').show().width($(@).width()).position(my: "left bottom", at: "left top", of: @)
+    $(document).one "click", ()->menu.hide()
+    false
+
+  $('#detailTranslationStatus').menu().hide().find("li").on 'click', (e)->
     detailGrid = $("#transDetailGridList")
     selectedRowIds = detailGrid.getGridParam('selarrrow').join(',')
-    $.post 'trans/update-status', {type: 'trans', transStatus: @value, id: selectedRowIds}, (json)->
-      (alert json.message; return) if json.status != 0
+    $.post 'trans/update-status', {type: 'trans', transStatus: e.target.name, id: selectedRowIds}, (json)->
+      ($.msgBox json.message, null, title: c18n.warning; return) unless json.status == 0
       detailGrid.trigger 'reloadGrid'
-  ).parent().buttonset()
+      $("#transGrid").trigger 'reloadGrid'
 
 
   languageChanged: (param)->
@@ -49,7 +60,7 @@ define ['jqgrid', 'util', 'require', 'i18n!nls/transmng', 'i18n!nls/common'], ($
     prop = "key,maxLength,context.name,reference,ct.translation,ct.status"
     transDetailGrid.setGridParam url: url, datatype: "json", postData: {dict: param.dict.id, language: param.language.id, format: 'grid', prop: prop, idprop: 'ct.id'}
 
-#   set search tool bar status
+    #   set search tool bar status
     options = transDetailGrid.getColProp('transStatus').searchoptions
     options.defaultValue = param.searchStatus
     transDetailGrid.setColProp 'transStatus', searchoptions: options
@@ -62,7 +73,3 @@ define ['jqgrid', 'util', 'require', 'i18n!nls/transmng', 'i18n!nls/common'], ($
     transDetailGrid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
     $("#transGrid").trigger 'reloadGrid' if transDetailGrid.getChangedCells('dirty').length > 0
 #    or  $("#transGrid").setCell(rowid,'changed column name','new value','new class')
-
-
-
-

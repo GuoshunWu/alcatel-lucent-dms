@@ -163,21 +163,51 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
         $('#sessionTimeoutDialog').dialog 'open'
   #        console?.log $.parseJSON(xhr.responseText)
 
-  changeGridReadonly = (grid, readonly = true)->
-    console?.log "Make grid '#{grid.id}' readonly: #{readonly}. "
-    colModel = $(grid).jqGrid 'getGridParam', 'colModel'
-    $.each colModel, (idx, obj) ->
-      if $.isPlainObject(obj) and obj.name
-        if readonly and obj.editable
+  urlname2Action = (urlname = '', suffix = 'Action')->urlname.split('/').pop().capitalize().split('-').join('') + suffix
+  checkGridPrivilege = (grid)->
+    console?.log "check the privilege of grid '#{grid.id}'."
+    gridParam = $(grid).jqGrid 'getGridParam'
+    forbiddenTab =
+      cellurl: urlname2Action(gridParam.cellurl) in param.forbiddenPrivileges
+      editurl: urlname2Action(gridParam.editurl) in param.forbiddenPrivileges
+      cellactionurl: urlname2Action(gridParam.cellactionurl) in param.forbiddenPrivileges
+
+    #    for the celledit
+    if forbiddenTab.cellurl
+      $.each gridParam.colModel, (idx, obj) ->
+        if $.isPlainObject(obj) and obj.name and obj.editable
           obj.editable = false
           obj.classes = obj.classes.replace('editable-column', '')
-          obj.changedforprivelege = true
-        else if obj.changedforprivelege
-          obj.editable = true
-          obj.classes = "#{obj.classes} editable-column"
+    #
+    #    for the grid  navigatebar, ['view', 'search', 'refresh'] are readonly operation, enabled
+    $.each ['add', 'edit', 'del'], (index, value)->
+    # for jqgrid predefined navigate buttons
+      actButton = $("##{value}_#{grid.id}")
+
+      if actButton.length > 0 and forbiddenTab.editurl
+        console?.log "Disable button #{actButton.attr('id')} due to forbidden privilege."
+        actButton.addClass 'ui-state-disabled'
+
+      # for custom buttons in navigate gird.
+      actButton = $("#custom_#{value}_#{grid.id}")
+      if actButton.length > 0 and (forbiddenTab.editurl or forbiddenTab.cellactionurl)
+        console?.log "Disable button #{actButton.attr('id')} due to forbidden privilege."
+        actButton.addClass 'ui-state-disabled'
+
+
+    #   for the default cell action of the grid.
+    if forbiddenTab.cellactionurl
+      $.each gridParam.colModel, (idx, obj) ->
+        if $.isPlainObject(obj) and obj.name == 'cellaction'
+          obj.formatoptions.delbutton = false
+          obj.formatoptions.editbutton = false
+    #    for the custom cell action of the grid.
+    tmpHandlers = gridParam.cellactionhandlers
+    if tmpHandlers
+      $.each tmpHandlers, (index, value)->delete tmpHandlers[index] if urlname2Action(value.url) in param.forbiddenPrivileges
 
   #    $(grid).trigger 'reloadGrid'
-  changeAllGridReadonly = (grids = $('.ui-jqgrid-btable'), readonly = true)->$.each grids, (idx, grid)->changeGridReadonly grid, readonly
+  checkAllGridPrivilege = (grids = $('.ui-jqgrid-btable'), readonly = true)->$.each grids, (idx, grid)->checkGridPrivilege grid
 
 
   #  for all the JSP pages
@@ -252,10 +282,11 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
 
   afterInitilized: (context)->
     console?.log "...Page #{$('#pageNavigator').val()} privilege check..."
-#    .attr('privilegeName', util.urlname2Action 'app/deliver-app-dict')
+    #    check all buttons' privilege
     $('[role=button][privilegeName]').each (index, button)->
+    #    .attr('privilegeName', util.urlname2Action 'app/deliver-app-dict')
       $(button).button 'disable' if $(button).attr('privilegeName') in param.forbiddenPrivileges
-  #    changeAllGridReadonly() if param.user && param.user.role == ROLE.GUEST
-  changeGridReadonly: changeGridReadonly
-  urlname2Action: (urlname = '', suffix = 'Action')->urlname.split('/').pop().capitalize().split('-').join('') + suffix
+    #   check all the grids' privilege
+    checkAllGridPrivilege()
+  urlname2Action: urlname2Action
 

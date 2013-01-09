@@ -14,7 +14,8 @@
       width: 500,
       height: 230,
       pager: '#langSettingPager',
-      editurl: "",
+      editurl: "app/add-dict-language",
+      cellactionurl: "app/remove-dict-language",
       rowNum: 10,
       rowList: [10, 20, 30],
       sortname: 'language.name',
@@ -90,7 +91,9 @@
       }
     }).setGridParam({
       datatype: 'json'
-    }).navButtonAdd('#langSettingPager', {
+    });
+    langSettingGrid.navButtonAdd('#langSettingPager', {
+      id: "custom_del_" + (langSettingGrid.attr('id')),
       caption: "",
       buttonicon: "ui-icon-trash",
       position: "first",
@@ -110,7 +113,9 @@
           url: 'app/remove-dict-language'
         });
       }
-    }).navButtonAdd('#langSettingPager', {
+    });
+    langSettingGrid.navButtonAdd('#langSettingPager', {
+      id: "custom_add_" + (langSettingGrid.attr('id')),
       caption: "",
       buttonicon: "ui-icon-plus",
       position: "first",
