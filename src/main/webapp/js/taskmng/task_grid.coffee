@@ -12,32 +12,44 @@ define (require)->
   require 'iframetransport'
 
   handlers =
-    'Download': (param)->
-      filename = "#{$('#productBase option:selected').text()}_#{$('#productRelease option:selected').text()}_translation"
-      filename += "_#{new Date().format 'yyyyMMdd_hhmmss'}.zip"
+    'Download':
+      title: 'Download'
+      url: 'task/generate-task-files'
+      handler: (param)->
+        filename = "#{$('#productBase option:selected').text()}_#{$('#productRelease option:selected').text()}_translation"
+        filename += "_#{new Date().format 'yyyyMMdd_hhmmss'}.zip"
 
-      $.blockUI()
-      $.post 'task/generate-task-files', {id: param.id, filename: filename}, (json)->
-        $.unblockUI()
-        ($.msgBox json.message, null, {title: c18n.error};return) if json.status != 0
+        $.blockUI()
+        $.post 'task/generate-task-files', {id: param.id, filename: filename}, (json)->
+          $.unblockUI()
+          ($.msgBox json.message, null, {title: c18n.error};return) if json.status != 0
 
-        downloadForm = $('#downloadTaskFiles')
-        $('#fileLoc', downloadForm).val json.fileLoc
-        downloadForm.submit()
-    'View…': (param)->
-#      dialogs.transReport.data 'param', {id: param.id, showImport: Boolean(param.lastUpdateTime)}
-      dialogs.transReport.data 'param', {id: param.id, viewReport: true}
-      dialogs.transReport.dialog 'open'
-    'Close': (param)->
-      return if param.status == '1'
-      $.blockUI
-      $.post 'task/close-task', {id: param.id}, (json)->
-        $.unblockUI()
-        if json.status != 0
-          $.msgBox json.message, null, {title: c18n.error}
-          return
-        $("#taskGrid").trigger 'reloadGrid'
-    'Upload': ((param)->)
+          downloadForm = $('#downloadTaskFiles')
+          $('#fileLoc', downloadForm).val json.fileLoc
+          downloadForm.submit()
+    'View…':
+      title: 'View…'
+      url: ''
+      handler: (param)->
+      #      dialogs.transReport.data 'param', {id: param.id, showImport: Boolean(param.lastUpdateTime)}
+        dialogs.transReport.data 'param', {id: param.id, viewReport: true}
+        dialogs.transReport.dialog 'open'
+    'Close':
+      title: 'Close'
+      url: 'task/close-task'
+      handler: (param)->
+        return if param.status == '1'
+        $.blockUI
+        $.post 'task/close-task', {id: param.id}, (json)->
+          $.unblockUI()
+          if json.status != 0
+            $.msgBox json.message, null, {title: c18n.error}
+            return
+          $("#taskGrid").trigger 'reloadGrid'
+    'Upload':
+      title: 'Upload'
+      url: 'task/receive-task-files'
+      handler: ((param)->)
 
 
   prop = "name,createTime,lastUpdateTime,status"
@@ -47,10 +59,11 @@ define (require)->
   mtype: 'POST'
   editurl: "", datatype: 'local'
   width: $(window).width() * 0.95, height: 400, shrinkToFit: false
+  cellactionhandlers: handlers
   rownumbers: true, loadonce: false # for reload the colModel
   pager: '#taskPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
   sortname: 'createTime', sortorder: 'desc', viewrecords: true, gridview: true, multiselect: false,
-  cellEdit: true, cellurl: 'http://127.0.0.1:2000'
+  cellEdit: true, cellurl: ''
   colNames: ['Task', 'Creator', 'Create time', 'Last upload time', 'Status' , 'Actions']
   colModel: [
     {name: 'name', index: 'name', width: 250, editable: false, stype: 'select', align: 'left'}
@@ -59,29 +72,21 @@ define (require)->
     {name: 'lastUpdateTime', index: 'lastUpdateTime', width: 150, align: 'left'}
     {name: 'status', index: 'status', width: 80, align: 'left', editable: false, edittype: 'select',
     editoptions: {value: "0:#{i18n.task.open};1:#{i18n.task.closed}"}, formatter: 'select'}
-    {name: 'actions', index: 'actions', width: 260, align: 'left'}
+    {name: 'actions', index: 'actions', width: 260, align: 'center',
+    formatter: (cellvalue, options, rowObject)->
+
+      $.map(handlers,
+        (value, index)->
+          return if '1' == rowObject[4] and index in ['Upload', 'Close']
+          return "<a id='upload_#{index}_#{options.rowId}'title='#{value.title}' ></a>" if index == 'Upload'
+          "<A id='action_#{index}_#{options.rowId}' style='color:blue' title='#{value.title}'href=# >#{index}</A>"
+      ).join('&nbsp;&nbsp;&nbsp;&nbsp;')
+    }
   ]
   beforeProcessing: (data, status, xhr)->
-  #   add actions
-    actIndex = $.inArray 'Actions', $(@).getGridParam('colNames')
-    --actIndex
-    --actIndex if $(@).getGridParam('multiselect')
-
-    actions = []
-    actions.push k for k,v of handlers
-
-    $(data.rows).each (index)->
-      rowData = @
-
-      @cell[actIndex] = '&nbsp;&nbsp;&nbsp;&nbsp;' + $(actions).map(
-        (index, action)->
-        #      test if task is closed
-          return if '1' == rowData.cell[actIndex - 1] and action in ['Upload', 'Close']
-          return "<a id='upload_#{@}_#{rowData.id}_#{actIndex}'></a>" if action == 'Upload'
-          "<a id='action_#{@}_#{rowData.id}_#{actIndex}' style='color:blue'title='#{@}' href=#  >#{@}</A>"
-      ).get().join('&nbsp;&nbsp;&nbsp;&nbsp;')
   gridComplete: ->
     grid = $(@)
+    handlers = grid.getGridParam 'cellactionhandlers'
 
     $('a[id^=action_]', @).click ()->
       [a, action, rowid, col]=@id.split('_')
@@ -89,7 +94,7 @@ define (require)->
       delete rowData.actions
       rowData.id = rowid
 
-      handlers[action] rowData
+      handlers[action].handler rowData
 
     ($("#progressbar").draggable({grid: [50, 20], opacity: 0.35}).css({
     'z-index': 100, width: 600, textAlign: 'center'
@@ -106,7 +111,7 @@ define (require)->
 
         #        modify the css of this button
 
-        fileInput = $("<input type='file' id='#{@id}_fileInput' name='upload' title='Upload task file'accept='application/zip' multiple/>").css({
+        fileInput = $("<input type='file' id='#{@id}_fileInput' name='upload' accept='application/zip' multiple/>").css({
         position: 'absolute', top: 0, right: 0, border: '1px solid', borderWidth: '10px 180px 40px 20px',
         opacity: 0, filter: 'alpha(opacity=0)', cursor: 'pointer'}).appendTo @
 
@@ -148,13 +153,4 @@ define (require)->
     taskGrid = $("#taskGrid")
     prop = "name,creator.name,createTime,lastUpdateTime,status"
     taskGrid.setGridParam(url: 'rest/tasks', postData: {prod: product.release.id, format: 'grid', prop: prop}).trigger "reloadGrid"
-
-
-
-
-
-
-
-
-
 

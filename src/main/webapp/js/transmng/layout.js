@@ -313,7 +313,7 @@
       return $('#productRelease').trigger('change');
     };
     createButtons = function(dialogs) {
-      $("#create").button().click(function() {
+      $("#create").button().attr('privilegeName', util.urlname2Action('task/create-task')).click(function() {
         var info;
         info = grid.getTotalSelectedRowInfo();
         if (!info.rowIds.length) {
@@ -330,7 +330,7 @@
       $(':radio[name=viewOption]').change(function() {
         return refreshGrid();
       });
-      return $("#exportTranslation").button().click(function() {
+      return $("#exportTranslation").button().attr('privilegeName', util.urlname2Action('trans/export-translation-details')).click(function() {
         var info;
         info = grid.getTotalSelectedRowInfo();
         if (!info.rowIds.length) {

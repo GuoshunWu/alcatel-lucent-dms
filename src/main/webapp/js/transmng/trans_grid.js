@@ -164,7 +164,7 @@
       postData: {},
       datatype: 'local',
       width: $(window).innerWidth() * 0.95,
-      height: 310,
+      height: 300,
       rownumbers: true,
       shrinkToFit: false,
       pager: '#transPager',
@@ -247,7 +247,24 @@
       }
     });
     transGrid.getGridParam('afterCreate')(transGrid);
-    ($("[id^=makeLabel]").button().click(function() {
+    $('#makeLabelTranslateStatus').attr('privilegeName', util.urlname2Action('trans/update-status')).button({
+      icons: {
+        primary: "ui-icon-triangle-1-n",
+        secondary: "ui-icon-gear"
+      }
+    }).click(function(e) {
+      var menu;
+      menu = $('#translationStatus').show().width($(this).width() - 3).position({
+        my: "left bottom",
+        at: "left top",
+        of: this
+      });
+      $(document).one("click", function() {
+        return menu.hide();
+      });
+      return false;
+    });
+    $('#translationStatus').menu().hide().find("li").on('click', function(e) {
       var selectedRowIds;
       transGrid = $("#transGrid");
       selectedRowIds = transGrid.getGridParam('selarrrow').join(',');
@@ -260,11 +277,13 @@
       $.blockUI();
       return $.post('trans/update-status', {
         type: getTableType(),
-        transStatus: this.value,
+        transStatus: e.target.name,
         id: selectedRowIds
       }, function(json) {
         if (json.status !== 0) {
-          alert(json.message);
+          $.msgBox(json.message, null, {
+            title: c18n.warning
+          });
           return;
         }
         $.unblockUI();
@@ -273,7 +292,7 @@
         });
         return transGrid.trigger('reloadGrid');
       });
-    })).parent().buttonset();
+    });
     return {
       productReleaseChanged: function(param) {
         var gridParam, isApp, postData, prop, searchoptions, searchvalue, summary, url;

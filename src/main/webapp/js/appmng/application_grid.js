@@ -14,6 +14,7 @@
       url: 'json/dummy.json',
       editurl: "app/create-or-add-application",
       cellurl: 'app/change-application-version',
+      cellactionurl: 'app/add-application',
       cellsubmit: 'remote',
       cellEdit: true,
       width: 700,
@@ -112,7 +113,9 @@
         jsonFromServer = eval("(" + response.responseText + ")");
         return [0 === jsonFromServer.status, jsonFromServer.message];
       }
-    }).navButtonAdd('#pager', {
+    });
+    appGrid.navButtonAdd('#pager', {
+      id: "custom_add_" + (appGrid.attr('id')),
       caption: "",
       buttonicon: "ui-icon-plus",
       position: "first",

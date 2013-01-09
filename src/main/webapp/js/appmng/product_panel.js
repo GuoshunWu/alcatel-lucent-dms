@@ -19,7 +19,7 @@
       icons: {
         primary: "ui-icon-plus"
       }
-    }).click(function() {
+    }).attr('privilegeName', util.urlname2Action('app/create-product-release')).click(function() {
       return dialogs.newProductVersion.dialog("open");
     });
     $("#removeVersion").button({
@@ -28,7 +28,7 @@
       icons: {
         primary: "ui-icon-minus"
       }
-    }).click(function() {
+    }).attr('privilegeName', util.urlname2Action('app/remove-product')).click(function() {
       var id;
       id = $("#selVersion").val();
       if (!id) {

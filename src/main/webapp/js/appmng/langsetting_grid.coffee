@@ -9,7 +9,8 @@ define (require)->
   url: 'json/dummy.json', mtype: 'post', datatype: 'local'
   width: 500, height: 230
   pager: '#langSettingPager'
-  editurl: ""
+  editurl: "app/add-dict-language"
+  cellactionurl:"app/remove-dict-language"
   rowNum: 10
   rowList: [10, 20, 30]
   sortname: 'language.name'
@@ -39,7 +40,7 @@ define (require)->
     [jsonfromServer.status == 0 , jsonfromServer.message, -1]
   }).setGridParam(datatype:'json')
   #  custom button for del language
-  .navButtonAdd('#langSettingPager', {caption: "", buttonicon: "ui-icon-trash", position: "first", onClickButton: ()->
+  langSettingGrid.navButtonAdd('#langSettingPager', {id: "custom_del_#{langSettingGrid.attr 'id'}",caption: "", buttonicon: "ui-icon-trash", position: "first", onClickButton: ()->
       if(rowIds = $(@).getGridParam('selarrrow')).length == 0
         $.msgBox (c18n.selrow.format c18n.language), null, {title: c18n.warning}
         return
@@ -47,7 +48,7 @@ define (require)->
         {zIndex: 2000, top: 250, left: 550, msg: (i18n.dialog.delete.delmsg.format c18n.language), url: 'app/remove-dict-language'}
     })
   #  custom button for add language
-  .navButtonAdd '#langSettingPager', {caption: "", buttonicon: "ui-icon-plus", position: "first"
+  langSettingGrid.navButtonAdd '#langSettingPager', {id: "custom_add_#{langSettingGrid.attr 'id'}",caption: "", buttonicon: "ui-icon-plus", position: "first"
   onClickButton: ()->
     $('#addLanguageDialog').data 'param', dicts: [$('#languageSettingGrid').getGridParam('postData').dict]
     $('#addLanguageDialog').dialog "open"

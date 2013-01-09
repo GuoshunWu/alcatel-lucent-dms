@@ -13,54 +13,70 @@
     require('jqupload');
     require('iframetransport');
     handlers = {
-      'Download': function(param) {
-        var filename;
-        filename = "" + ($('#productBase option:selected').text()) + "_" + ($('#productRelease option:selected').text()) + "_translation";
-        filename += "_" + (new Date().format('yyyyMMdd_hhmmss')) + ".zip";
-        $.blockUI();
-        return $.post('task/generate-task-files', {
-          id: param.id,
-          filename: filename
-        }, function(json) {
-          var downloadForm;
-          $.unblockUI();
-          if (json.status !== 0) {
-            $.msgBox(json.message, null, {
-              title: c18n.error
-            });
-            return;
-          }
-          downloadForm = $('#downloadTaskFiles');
-          $('#fileLoc', downloadForm).val(json.fileLoc);
-          return downloadForm.submit();
-        });
-      },
-      'View…': function(param) {
-        dialogs.transReport.data('param', {
-          id: param.id,
-          viewReport: true
-        });
-        return dialogs.transReport.dialog('open');
-      },
-      'Close': function(param) {
-        if (param.status === '1') {
-          return;
+      'Download': {
+        title: 'Download',
+        url: 'task/generate-task-files',
+        handler: function(param) {
+          var filename;
+          filename = "" + ($('#productBase option:selected').text()) + "_" + ($('#productRelease option:selected').text()) + "_translation";
+          filename += "_" + (new Date().format('yyyyMMdd_hhmmss')) + ".zip";
+          $.blockUI();
+          return $.post('task/generate-task-files', {
+            id: param.id,
+            filename: filename
+          }, function(json) {
+            var downloadForm;
+            $.unblockUI();
+            if (json.status !== 0) {
+              $.msgBox(json.message, null, {
+                title: c18n.error
+              });
+              return;
+            }
+            downloadForm = $('#downloadTaskFiles');
+            $('#fileLoc', downloadForm).val(json.fileLoc);
+            return downloadForm.submit();
+          });
         }
-        $.blockUI;
-        return $.post('task/close-task', {
-          id: param.id
-        }, function(json) {
-          $.unblockUI();
-          if (json.status !== 0) {
-            $.msgBox(json.message, null, {
-              title: c18n.error
-            });
+      },
+      'View…': {
+        title: 'View…',
+        url: '',
+        handler: function(param) {
+          dialogs.transReport.data('param', {
+            id: param.id,
+            viewReport: true
+          });
+          return dialogs.transReport.dialog('open');
+        }
+      },
+      'Close': {
+        title: 'Close',
+        url: 'task/close-task',
+        handler: function(param) {
+          if (param.status === '1') {
             return;
           }
-          return $("#taskGrid").trigger('reloadGrid');
-        });
+          $.blockUI;
+          return $.post('task/close-task', {
+            id: param.id
+          }, function(json) {
+            $.unblockUI();
+            if (json.status !== 0) {
+              $.msgBox(json.message, null, {
+                title: c18n.error
+              });
+              return;
+            }
+            return $("#taskGrid").trigger('reloadGrid');
+          });
+        }
       },
-      'Upload': (function(param) {})
+      'Upload': {
+        title: 'Upload',
+        url: 'task/receive-task-files',
+        handler: (function(param) {})
+      }
     };
     prop = "name,createTime,lastUpdateTime,status";
     taskGrid = $("#taskGrid").jqGrid({
@@ -70,6 +86,7 @@
       width: $(window).width() * 0.95,
       height: 400,
       shrinkToFit: false,
+      cellactionhandlers: handlers,
       rownumbers: true,
       loadonce: false,
       pager: '#taskPager',
@@ -81,7 +98,7 @@
       gridview: true,
       multiselect: false,
       cellEdit: true,
-      cellurl: 'http://127.0.0.1:2000',
+      cellurl: '',
       colNames: ['Task', 'Creator', 'Create time', 'Last upload time', 'Status', 'Actions'],
       colModel: [
         {
@@ -124,45 +141,32 @@
           name: 'actions',
           index: 'actions',
           width: 260,
-          align: 'left'
+          align: 'center',
+          formatter: function(cellvalue, options, rowObject) {
+            return $.map(handlers, function(value, index) {
+              if ('1' === rowObject[4] && (index === 'Upload' || index === 'Close')) {
+                return;
+              }
+              if (index === 'Upload') {
+                return "<a id='upload_" + index + "_" + options.rowId + "'title='" + value.title + "' ></a>";
+              }
+              return "<A id='action_" + index + "_" + options.rowId + "' style='color:blue' title='" + value.title + "'href=# >" + index + "</A>";
+            }).join('&nbsp;&nbsp;&nbsp;&nbsp;');
+          }
         }
       ],
-      beforeProcessing: function(data, status, xhr) {
-        var actIndex, actions, k, v;
-        actIndex = $.inArray('Actions', $(this).getGridParam('colNames'));
-        --actIndex;
-        if ($(this).getGridParam('multiselect')) {
-          --actIndex;
-        }
-        actions = [];
-        for (k in handlers) {
-          v = handlers[k];
-          actions.push(k);
-        }
-        return $(data.rows).each(function(index) {
-          var rowData;
-          rowData = this;
-          return this.cell[actIndex] = '&nbsp;&nbsp;&nbsp;&nbsp;' + $(actions).map(function(index, action) {
-            if ('1' === rowData.cell[actIndex - 1] && (action === 'Upload' || action === 'Close')) {
-              return;
-            }
-            if (action === 'Upload') {
-              return "<a id='upload_" + this + "_" + rowData.id + "_" + actIndex + "'></a>";
-            }
-            return "<a id='action_" + this + "_" + rowData.id + "_" + actIndex + "' style='color:blue'title='" + this + "' href=#  >" + this + "</A>";
-          }).get().join('&nbsp;&nbsp;&nbsp;&nbsp;');
-        });
-      },
+      beforeProcessing: function(data, status, xhr) {},
       gridComplete: function() {
         var grid;
         grid = $(this);
+        handlers = grid.getGridParam('cellactionhandlers');
         $('a[id^=action_]', this).click(function() {
           var a, action, col, rowData, rowid, _ref;
           _ref = this.id.split('_'), a = _ref[0], action = _ref[1], rowid = _ref[2], col = _ref[3];
           rowData = grid.getRowData(rowid);
           delete rowData.actions;
           rowData.id = rowid;
-          return handlers[action](rowData);
+          return handlers[action].handler(rowData);
         });
         ($("#progressbar").draggable({
           grid: [50, 20],
@@ -190,7 +194,7 @@
           create: function(e, ui) {
             var fileInput, rowid, _, _ref;
             _ref = this.id.split('_'), _ = _ref[0], _ = _ref[1], rowid = _ref[2];
-            fileInput = $("<input type='file' id='" + this.id + "_fileInput' name='upload' title='Upload task file'accept='application/zip' multiple/>").css({
+            fileInput = $("<input type='file' id='" + this.id + "_fileInput' name='upload' accept='application/zip' multiple/>").css({
               position: 'absolute',
               top: 0,
               right: 0,

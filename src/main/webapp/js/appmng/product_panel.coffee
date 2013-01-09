@@ -13,10 +13,14 @@ define (require)->
   }
 
 
-  $("#newVersion").button({text: false, label: '&nbsp;', icons: {primary: "ui-icon-plus"}}).click () =>
+  $("#newVersion").button(text: false, label: '&nbsp;', icons: {primary: "ui-icon-plus"}).
+  attr('privilegeName', util.urlname2Action 'app/create-product-release').
+  click () =>
     dialogs.newProductVersion.dialog("open")
 
-  $("#removeVersion").button({text: false, label: '&nbsp;', icons: {primary: "ui-icon-minus"}}).click () =>
+  $("#removeVersion").button(text: false, label: '&nbsp;', icons: {primary: "ui-icon-minus"}).
+  attr('privilegeName', util.urlname2Action 'app/remove-product').
+  click () =>
     id = $("#selVersion").val()
     return if !id
     $.post 'app/remove-product', {id: id}, (json)->

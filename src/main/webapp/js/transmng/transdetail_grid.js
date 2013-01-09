@@ -116,22 +116,42 @@
       }
     });
     transDetailGrid.getGridParam('afterCreate')(transDetailGrid);
-    ($("#translationDetailDialog [id^=detailTrans]").button().click(function() {
+    $('#makeDetailLabelTranslateStatus').button({
+      icons: {
+        primary: "ui-icon-triangle-1-n",
+        secondary: "ui-icon-gear"
+      }
+    }).attr('privilegeName', util.urlname2Action('trans/update-status')).click(function(e) {
+      var menu;
+      menu = $('#detailTranslationStatus').show().width($(this).width()).position({
+        my: "left bottom",
+        at: "left top",
+        of: this
+      });
+      $(document).one("click", function() {
+        return menu.hide();
+      });
+      return false;
+    });
+    $('#detailTranslationStatus').menu().hide().find("li").on('click', function(e) {
       var detailGrid, selectedRowIds;
       detailGrid = $("#transDetailGridList");
       selectedRowIds = detailGrid.getGridParam('selarrrow').join(',');
       return $.post('trans/update-status', {
         type: 'trans',
-        transStatus: this.value,
+        transStatus: e.target.name,
         id: selectedRowIds
       }, function(json) {
         if (json.status !== 0) {
-          alert(json.message);
+          $.msgBox(json.message, null, {
+            title: c18n.warning
+          });
           return;
         }
-        return detailGrid.trigger('reloadGrid');
+        detailGrid.trigger('reloadGrid');
+        return $("#transGrid").trigger('reloadGrid');
       });
-    })).parent().buttonset();
+    });
     return {
       languageChanged: function(param) {
         var options, prop, url;

@@ -138,7 +138,6 @@ define (require)->
 
     $('#loading-container').fadeOut 'slow', 'swing', ()->$(@).remove()
     util.afterInitilized(this)
-#    util.makeAllGridReadonly()
   getNodeInfo: getNodeInfo
 
 

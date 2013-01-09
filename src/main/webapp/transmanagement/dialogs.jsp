@@ -118,9 +118,12 @@
         </tr>
         <tr>
             <td>
-                <s:text name="transmng.summarypanel.makelabelas"/>&nbsp;&nbsp;
-                <button id='detailTransTranslated' value="2">T</button>
-                <button id='detailTransNotTranslated' value="0">N</button>
+                <ul id="detailTranslationStatus">
+                    <li><a name="2" href="#"><s:text name="status.translated"/></a></li>
+                    <li><a name="0" href="#"><s:text name="status.nottranslated"/></a></li>
+                </ul>
+                <button id='makeDetailLabelTranslateStatus'><s:text
+                        name="transmng.summarypanel.makelabelas"/></button>
             </td>
         </tr>
     </table>

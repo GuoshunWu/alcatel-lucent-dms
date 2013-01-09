@@ -146,7 +146,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   stringSettings = $('#stringSettingsDialog').dialog {
   autoOpen: false
   height: 'auto'
-  title: i18n.dialog.stringsettings.title, modal: true, zIndex: 900
+  title: i18n.dialog.stringsettings.title, modal: true
   create: (e, ui)->
   # set my width according to the string settings grid width
     $(@).dialog 'option', 'width', $('#stringSettingsGrid').getGridParam('width') + 40
@@ -170,23 +170,23 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   ]
   }
   #  buttons in string settings dialog
-  $('#setContexts').button(
-    icons: secondary: "ui-icon-triangle-1-s"
-  ).on('click', {dialog: stringSettings},
-    (e)->
-      menu = $('#setContextMenu').show()
-      .position {my: "right bottom", at: "right top", of: this}
-      $(document).one "click", ()->menu.hide()
-      false
-  )
+  $('#setContexts').attr('privilegeName', util.urlname2Action 'app/update-label').button(
+    icons:
+      primary: 'ui-icon-gear'
+      secondary: "ui-icon-triangle-1-n"
+  ).click (e)->
+    menu = $('#setContextMenu').show().width($(@).width()-3).position(my: "right bottom", at: "right top", of: @)
+    $(document).one "click", ()->menu.hide()
+    false
+
   setContextTo = (context = 'Default', labelids = $('#stringSettingsGrid').getGridParam('selarrrow'))->
     ($.msgBox(i18n.dialog.customcontext.labeltip, null, {title: c18n.warn});return) if labelids.length == 0
     $.post 'app/update-label', {id: labelids.join(','), context: context}, (json)->
       ($.msgBox json.message, null, {title: c18n.error}; return) if json.status != 0
       $('#stringSettingsGrid').trigger 'reloadGrid'
 
-  #   get dictionary info.
-  #    set context.
+  #  get dictionary info.
+  #  set context.
 
   $('#customContext').dialog { autoOpen: false, modal: true
   buttons: [
@@ -201,7 +201,6 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   ]
   }
   $('#setContextMenu').menu().hide().find("li").on 'click', (e)->
-    console?.log 'debug'
     if e.target.name != 'Custom'
       setContextTo(e.target.name)
       return

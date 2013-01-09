@@ -11,7 +11,8 @@ define (require, util, dialogs, i18n)->
   deleteOptions = {
   msg: i18n.dialog.delete.delmsg.format c18n.dict
   top: 250, left: 550
-  reloadAfterSubmit: false, url: 'app/remove-dict'
+  reloadAfterSubmit: false
+  #  url: 'app/remove-dict'
   beforeShowForm: (form)->
     permanent = $('#permanentDeleteSignId', form)
     #    make permanent sign default checked and hide
@@ -29,15 +30,19 @@ define (require, util, dialogs, i18n)->
 
   handlers =
     'String':
+      url: ''
       title: i18n.dialog.stringsettings.title, handler: (rowData)->
+      #        grid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
         dialogs.stringSettings.data "param", rowData
         dialogs.stringSettings.dialog 'open'
     'Language':
+      url: ''
       title: i18n.dialog.languagesettings.title, handler: (rowData)->
+      #        grid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
       #        dialogs.langSettings.data "param", rowData
         dialogs.langSettings.on 'dialogopen', {param: rowData}, $('#languageSettingsDialog').dialog('option', 'openEvent')
         dialogs.langSettings.dialog 'open'
-    'X': title: i18n.dialog.delete.title, handler: (rowData)->$('#dictionaryGridList').jqGrid 'delGridRow', rowData.id, deleteOptions
+  #    'X': title: i18n.dialog.delete.title, handler: (rowData)->$('#dictionaryGridList').jqGrid 'delGridRow', rowData.id, deleteOptions
 
   lastEditedCell = null
 
@@ -51,7 +56,15 @@ define (require, util, dialogs, i18n)->
     {name: 'encoding', index: 'base.encoding', width: 40, editable: true, edittype: 'select',
     editoptions: {value: 'ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE'}, align: 'left'}
     {name: 'labelNum', index: 'labelNum', width: 20, align: 'right'}
-    {name: 'action', index: 'action', width: 80, editable: false, align: 'center'}
+    {name: 'action', index: 'action', width: 70, editable: false, align: 'center',
+    formatter: (cellvalue, options, rowObject)->
+      $.map(handlers,
+        (value, index)->"<A id='action_#{index}_#{options.rowId}' style='color:blue' title='#{value.title}'href=# >#{index}</A>"
+      ).join('&nbsp;&nbsp;&nbsp;&nbsp;')
+    }
+    {name: 'cellaction', index: 'cellaction', width: 20, editable: false, align: 'center', formatter: 'actions'
+    formatoptions: {keys: true, delbutton: true, delOptions: deleteOptions, editbutton: false}
+    }
   ]
   $(colModel).each (index, colModel)->colModel.classes = 'editable-column' if colModel.editable
 
@@ -61,28 +74,19 @@ define (require, util, dialogs, i18n)->
   datatype: 'local'
   width: 1000
   height: 320
+  cellactionhandlers: handlers
   pager: '#dictPager'
   editurl: "app/create-or-add-application"
+  cellactionurl: 'app/remove-dict'
   rowNum: 999, loadonce: false
   sortname: 'base.name'
   sortorder: 'asc'
   viewrecords: true, cellEdit: true, cellurl: 'app/update-dict', ajaxCellOptions: {async: false}
   gridview: true, multiselect: true
   caption: 'Dictionary for Application'
-  colNames: ['LangRefCode', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels', 'Action']
+  colNames: ['LangRefCode', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels', 'Action', 'Del']
   colModel: colModel
   beforeProcessing: (data, status, xhr)->
-    actIndex = $.inArray('Action', $(@).getGridParam('colNames'))
-    --actIndex if $(@).getGridParam('multiselect')
-    actions = []
-    actions.push k for k,v of handlers
-
-    $(data.rows).each (index)->
-      rowData = @
-      @cell[actIndex] = $(actions).map(
-        ()->
-          "<A id='action_#{@}_#{rowData.id}_#{actIndex}'style='color:blue' title='#{handlers[@].title}' href=# >#{@}</A>"
-      ).get().join('&nbsp;&nbsp;&nbsp;&nbsp;')
   afterEditCell: (id, name, val, iRow, iCol)->
     lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
     grid = @
@@ -101,25 +105,31 @@ define (require, util, dialogs, i18n)->
 
   gridComplete: ->
     grid = $(@)
-
+    handlers = grid.getGridParam 'cellactionhandlers'
     $('a[id^=action_]', @).click ()->
-      [a, action, rowid, col]=@id.split('_')
+      [a, action, rowid]=@id.split('_')
       #      save grid edit before get data
       grid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
-
       rowData = grid.getRowData(rowid)
-
-      delete rowData.action
       rowData.id = rowid
+      delete rowData.action
+
       handlers[action].handler rowData
   }).jqGrid('navGrid', '#dictPager', {add: false, edit: false, search: false, del: false}, {}, {}, deleteOptions)
+  .setGridParam(datatype: 'json')
+  #  .setGroupHeaders(useColSpanStyle: true, groupHeaders: [
+  #      {startColumnName: "action", numberOfColumns: 2, titleText: 'Action'.bold()}
+  #    ])
+
+
   #  custom button for del dictionary
-  .navButtonAdd('#dictPager', {caption: "", buttonicon: "ui-icon-trash", position: "first", onClickButton: ()->
-      if(rowIds = $(@).getGridParam('selarrrow')).length == 0
-        $.msgBox (c18n.selrow.format c18n.dict), null, {title: c18n.warning}
-        return
-      $(@).jqGrid 'delGridRow', rowIds, deleteOptions
-    }).setGridParam(datatype: 'json')
+  #  unless util.urlname2Action('app/remove-dict') in param.forbiddenPrivileges
+  dicGrid.navButtonAdd('#dictPager', {id: "custom_del_#{dicGrid.attr 'id'}", caption: "", buttonicon: "ui-icon-trash", position: "first", onClickButton: ()->
+    if(rowIds = $(@).getGridParam('selarrrow')).length == 0
+      $.msgBox (c18n.selrow.format c18n.dict), null, {title: c18n.warning}
+      return
+    $(@).jqGrid 'delGridRow', rowIds, deleteOptions
+  })
 
 
   $('#generateDict').button().width(170).attr('privilegeName', util.urlname2Action 'app/deliver-app-dict').click ->
@@ -159,3 +169,4 @@ define (require, util, dialogs, i18n)->
     prop = "languageReferenceCode,base.name,version,base.format,base.encoding,labelNum"
     dicGrid.setGridParam(url: 'rest/dict', postData: {app: param.app.id, format: 'grid', prop: prop}).trigger "reloadGrid"
     dicGrid.setCaption "Dictionary for Application #{param.base.text} version #{param.app.version}"
+

@@ -11,3 +11,5 @@
 .language-group-border{
     border-left: solid #000000 1px
 }
+
+.ui-menu { position: absolute; width: 120px; }

@@ -11,8 +11,6 @@
             <table border="0" width="100%" style="border-color: red">
                 <tr>
                     <td style="width:18px;">
-                        <%--Base: <s:property value="productBases"/><br/>--%>
-                        <%--Product:<s:property value="products"/>--%>
                     </td>
                     <td style="width: 130px">
                         <button id="languageFilter"><s:text name="transmng.summarypanel.languagefilter"/></button>
@@ -79,20 +77,28 @@
             <table width="100%" border="0" style="border-color: blue">
                 <tr>
                     <td style="width: 15px"/>
-                    <td>
+                    <td style="width: 410px">
                         <button id="create"><s:text name="button.translationtask"/></button>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <button id="exportTranslation"><s:text name="button.exporttranslation"/></button>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <s:text name="transmng.summarypanel.makelabelas"/>&nbsp;&nbsp;
-                        <span>
-                            <button id='makeLabelTranslated' value="2">T</button>
-                            <button id="makeLabelNotTranslated" value="0">N</button>
-                        </span>
+                    </td>
+                    <td align="left">
+                        <ul id="translationStatus">
+                            <li><a name="2" href="#"><s:text name="status.translated"/></a></li>
+                            <li><a name="0" href="#"><s:text name="status.nottranslated"/></a></li>
+                        </ul>
+                        <button id='makeLabelTranslateStatus'><s:text
+                                name="transmng.summarypanel.makelabelas"/></button>
                     </td>
                     <td style="width: 15px"/>
                 </tr>
             </table>
+            <%--<ul id="translationStatus">--%>
+                <%--<li><a name="2" href="#"><s:text name="status.translated"/></a></li>--%>
+                <%--<li><a name="0" href="#"><s:text name="status.nottranslated"/></a></li>--%>
+            <%--</ul>--%>
+            <%--<button id='makeLabelTranslateStatus'><s:text--%>
+                    <%--name="transmng.summarypanel.makelabelas"/></button>--%>
         </td>
     </tr>
 </table>

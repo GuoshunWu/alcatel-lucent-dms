@@ -13,7 +13,7 @@ To change this template use File | Settings | File Templates.
   var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   define(["jquery", "jqueryui", "i18n!nls/common"], function($, ui, c18n) {
-    var changeAllGridReadonly, changeGridReadonly, formatJonString, newOption, pageNavi, sessionCheck, setCookie;
+    var checkAllGridPrivilege, checkGridPrivilege, formatJonString, newOption, pageNavi, sessionCheck, setCookie, urlname2Action;
     String.prototype.format = function() {
       var args;
       args = arguments;
@@ -230,29 +230,70 @@ To change this template use File | Settings | File Templates.
         }
       });
     };
-    changeGridReadonly = function(grid, readonly) {
-      var colModel;
-      if (readonly == null) {
-        readonly = true;
+    urlname2Action = function(urlname, suffix) {
+      if (urlname == null) {
+        urlname = '';
       }
+      if (suffix == null) {
+        suffix = 'Action';
+      }
+      return urlname.split('/').pop().capitalize().split('-').join('') + suffix;
+    };
+    checkGridPrivilege = function(grid) {
+      var forbiddenTab, gridParam, tmpHandlers, _ref, _ref1, _ref2;
       if (typeof console !== "undefined" && console !== null) {
-        console.log("Make grid '" + grid.id + "' readonly: " + readonly + ". ");
+        console.log("check the privilege of grid '" + grid.id + "'.");
       }
-      colModel = $(grid).jqGrid('getGridParam', 'colModel');
-      return $.each(colModel, function(idx, obj) {
-        if ($.isPlainObject(obj) && obj.name) {
-          if (readonly && obj.editable) {
+      gridParam = $(grid).jqGrid('getGridParam');
+      forbiddenTab = {
+        cellurl: (_ref = urlname2Action(gridParam.cellurl), __indexOf.call(param.forbiddenPrivileges, _ref) >= 0),
+        editurl: (_ref1 = urlname2Action(gridParam.editurl), __indexOf.call(param.forbiddenPrivileges, _ref1) >= 0),
+        cellactionurl: (_ref2 = urlname2Action(gridParam.cellactionurl), __indexOf.call(param.forbiddenPrivileges, _ref2) >= 0)
+      };
+      if (forbiddenTab.cellurl) {
+        $.each(gridParam.colModel, function(idx, obj) {
+          if ($.isPlainObject(obj) && obj.name && obj.editable) {
             obj.editable = false;
-            obj.classes = obj.classes.replace('editable-column', '');
-            return obj.changedforprivelege = true;
-          } else if (obj.changedforprivelege) {
-            obj.editable = true;
-            return obj.classes = "" + obj.classes + " editable-column";
+            return obj.classes = obj.classes.replace('editable-column', '');
           }
+        });
+      }
+      $.each(['add', 'edit', 'del'], function(index, value) {
+        var actButton;
+        actButton = $("#" + value + "_" + grid.id);
+        if (actButton.length > 0 && forbiddenTab.editurl) {
+          if (typeof console !== "undefined" && console !== null) {
+            console.log("Disable button " + (actButton.attr('id')) + " due to forbidden privilege.");
+          }
+          actButton.addClass('ui-state-disabled');
+        }
+        actButton = $("#custom_" + value + "_" + grid.id);
+        if (actButton.length > 0 && (forbiddenTab.editurl || forbiddenTab.cellactionurl)) {
+          if (typeof console !== "undefined" && console !== null) {
+            console.log("Disable button " + (actButton.attr('id')) + " due to forbidden privilege.");
+          }
+          return actButton.addClass('ui-state-disabled');
         }
       });
+      if (forbiddenTab.cellactionurl) {
+        $.each(gridParam.colModel, function(idx, obj) {
+          if ($.isPlainObject(obj) && obj.name === 'cellaction') {
+            obj.formatoptions.delbutton = false;
+            return obj.formatoptions.editbutton = false;
+          }
+        });
+      }
+      tmpHandlers = gridParam.cellactionhandlers;
+      if (tmpHandlers) {
+        return $.each(tmpHandlers, function(index, value) {
+          var _ref3;
+          if (_ref3 = urlname2Action(value.url), __indexOf.call(param.forbiddenPrivileges, _ref3) >= 0) {
+            return delete tmpHandlers[index];
+          }
+        });
+      }
     };
-    changeAllGridReadonly = function(grids, readonly) {
+    checkAllGridPrivilege = function(grids, readonly) {
       if (grids == null) {
         grids = $('.ui-jqgrid-btable');
       }
@@ -260,7 +301,7 @@ To change this template use File | Settings | File Templates.
         readonly = true;
       }
       return $.each(grids, function(idx, grid) {
-        return changeGridReadonly(grid, readonly);
+        return checkGridPrivilege(grid);
       });
     };
     pageNavi();
@@ -373,23 +414,15 @@ To change this template use File | Settings | File Templates.
         if (typeof console !== "undefined" && console !== null) {
           console.log("...Page " + ($('#pageNavigator').val()) + " privilege check...");
         }
-        return $('[role=button][privilegeName]').each(function(index, button) {
+        $('[role=button][privilegeName]').each(function(index, button) {
           var _ref;
           if (_ref = $(button).attr('privilegeName'), __indexOf.call(param.forbiddenPrivileges, _ref) >= 0) {
             return $(button).button('disable');
           }
         });
+        return checkAllGridPrivilege();
       },
-      changeGridReadonly: changeGridReadonly,
-      urlname2Action: function(urlname, suffix) {
-        if (urlname == null) {
-          urlname = '';
-        }
-        if (suffix == null) {
-          suffix = 'Action';
-        }
-        return urlname.split('/').pop().capitalize().split('-').join('') + suffix;
-      }
+      urlname2Action: urlname2Action
     };
   });
 
