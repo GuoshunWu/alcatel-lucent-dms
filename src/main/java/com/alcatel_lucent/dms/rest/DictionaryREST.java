@@ -126,7 +126,12 @@ public class DictionaryREST extends BaseREST {
 		// additional properties
     	String prop = requestMap.get("prop");
 		if (prop.indexOf(",s(") != -1) {	// has summary
-			Map<Long, Map<Long, int[]>> summary = translationService.getDictTranslationSummary(prodId);
+			Map<Long, Map<Long, int[]>> summary = new HashMap<Long, Map<Long, int[]>>();
+			if (appId != null) {
+				summary = translationService.getDictTranslationSummaryByApp(appId);
+			} else if (prodId != null) {
+				summary = translationService.getDictTranslationSummaryByProd(prodId);
+			}
 			Collection<Long> allLanguageId = dao.retrieve("select id from Language");
 			for(Dictionary dict : dictionaries) {
 				Map<Long, int[]> dictSummary = summary.get(dict.getId());
