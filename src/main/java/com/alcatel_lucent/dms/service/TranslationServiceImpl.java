@@ -2,6 +2,10 @@ package com.alcatel_lucent.dms.service;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,6 +22,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.hibernate.jdbc.Work;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -115,11 +120,11 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     }
 
 */ 
-    public Map<Long, Map<Long, int[]>> getDictTranslationSummary(Long prodId) {
+    public Map<Long, Map<Long, int[]>> getDictTranslationSummaryByProd(Long prodId) {
     	Map<Long, Map<Long, int[]>> result = new HashMap<Long, Map<Long, int[]>>();
     	
     	// count labels for each dictionary
-    	String hql = "select d.id,dl.language.id,count(*)" +
+    	String hql = "select d.id,dl.language.id,count(distinct dl.languageCode),count(*)" +
     			" from Product p join p.applications a join a.dictionaries d join d.labels l join d.dictLanguages dl" +
     			" where p.id=:prodId and dl.language.id<>1" +
     			" group by d.id,dl.language.id";
@@ -130,6 +135,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     	for (Object[] row : qr) {
     		Long dictId = ((Number) row[0]).longValue();
     		Long langId = ((Number) row[1]).longValue();
+    		int factor = ((Number) row[2]).intValue();	// number of lang codes for the same language, needed for division 
     		// initial empty langMap
     		Map<Long, int[]> langMap = result.get(dictId);
     		if (langMap == null) {
@@ -137,7 +143,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     			result.put(dictId, langMap);
     		}
     		langMap.put(langId, new int[] {0, 0, 0});
-    		labelCount.put(dictId, ((Number)row[2]).intValue());
+    		labelCount.put(dictId, ((Number)row[3]).intValue() / factor);
     	}
     	
     	// count untranslated and in progress translations for each dictionary
@@ -195,12 +201,142 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     	
     	return result;
     }
+    
+    /**
+     * JDBC version, not fast, unused
+     * @param prodId
+     * @return
+     */
+    public Map<Long, Map<Long, int[]>> getDictTranslationSummaryByProdJDBC(final Long prodId) {
+    	final Map<Long, Map<Long, int[]>> result = new HashMap<Long, Map<Long, int[]>>();
+    	dao.getSession().doWork(new Work() {
+    		public void execute(Connection connection)throws SQLException{
+    			String sql = 
+    					"SELECT D.ID,LANG.ID,COUNT(DISTINCT DL.LANGUAGE_CODE)," +
+    					" SUM(CASE WHEN LT.NEED_TRANSLATION=false OR CTX.NAME='[EXCLUSION]' OR CT.STATUS=" + Translation.STATUS_TRANSLATED + " THEN 1 ELSE 0 END) T," +
+    					" SUM(CASE WHEN (LT.ID IS NULL OR LT.NEED_TRANSLATION=true) AND CTX.NAME<>'[EXCLUSION]' AND (CT.ID IS NULL OR CT.STATUS=" + Translation.STATUS_UNTRANSLATED + ") THEN 1 ELSE 0 END) N," +
+    					" SUM(CASE WHEN (LT.ID IS NULL OR LT.NEED_TRANSLATION=true) AND CTX.NAME<>'[EXCLUSION]' AND (CT.STATUS=" + Translation.STATUS_IN_PROGRESS + ") THEN 1 ELSE 0 END) I" +
+    					" FROM dms.PRODUCT_APPLICATION PA" +
+    					" JOIN dms.APPLICATION APP ON PA.APPLICATION_ID=APP.ID" +
+    					" JOIN dms.APPLICATION_DICTIONARY AD ON AD.APPLICATION_ID=APP.ID" +
+    					" JOIN dms.DICTIONARY D ON AD.DICTIONARY_ID=D.ID" +
+    					" JOIN dms.DICTIONARY_LANGUAGE DL ON DL.DICTIONARY_ID = D.ID AND DL.LANGUAGE_ID <> 1" +
+    					" JOIN dms.LANGUAGE LANG ON LANG.ID = DL.LANGUAGE_ID" +
+    					" JOIN dms.LABEL L ON L.DICTIONARY_ID = D.ID" +
+    					" JOIN dms.CONTEXT CTX ON L.CONTEXT_ID=CTX.ID" +
+    					" LEFT JOIN dms.LABEL_TRANSLATION LT ON LT.LABEL_ID = L.ID AND LT.LANGUAGE_ID = LANG.ID" +
+    					" LEFT JOIN dms.TRANSLATION CT ON CT.TEXT_ID = L.TEXT_ID AND CT.LANGUAGE_ID = LANG.ID" +
+    					" WHERE PA.PRODUCT_ID=" + prodId +
+    					" GROUP BY D.ID,LANG.ID";
+    			Statement st = connection.createStatement();
+    			ResultSet rs = st.executeQuery(sql);
+    			while (rs.next()) {
+    				Long dictId = rs.getLong(1);
+    				Long langId = rs.getLong(2);
+    				int factor = rs.getInt(3);
+    				int t = rs.getInt(4) / factor;
+    				int n = rs.getInt(5) / factor;
+    				int i = rs.getInt(6) / factor;
+    				Map<Long, int[]> map = result.get(dictId);
+    				if (map == null) {
+    					map = new HashMap<Long, int[]>();
+    					result.put(dictId, map);
+    				}
+    				map.put(langId, new int[] {t, n, i});
+    			}
+    		}
+    	});
+    	return result;
+    }
+
+    public Map<Long, Map<Long, int[]>> getDictTranslationSummaryByApp(Long appId) {
+    	Map<Long, Map<Long, int[]>> result = new HashMap<Long, Map<Long, int[]>>();
+    	
+    	// count labels for each dictionary
+    	String hql = "select d.id,dl.language.id,count(distinct dl.languageCode),count(*)" +
+    			" from Application a join a.dictionaries d join d.labels l join d.dictLanguages dl" +
+    			" where a.id=:appId and dl.language.id<>1" +
+    			" group by d.id,dl.language.id";
+    	Map param = new HashMap();
+    	param.put("appId", appId);
+    	Collection<Object[]> qr = dao.retrieve(hql, param);
+    	Map<Long, Integer> labelCount = new HashMap<Long, Integer>();
+    	for (Object[] row : qr) {
+    		Long dictId = ((Number) row[0]).longValue();
+    		Long langId = ((Number) row[1]).longValue();
+    		int factor = ((Number) row[2]).intValue();	// number of lang codes for the same language, needed for division 
+    		// initial empty langMap
+    		Map<Long, int[]> langMap = result.get(dictId);
+    		if (langMap == null) {
+    			langMap = new HashMap<Long, int[]>();
+    			result.put(dictId, langMap);
+    		}
+    		langMap.put(langId, new int[] {0, 0, 0});
+    		labelCount.put(dictId, ((Number)row[3]).intValue() / factor);
+    	}
+    	
+    	// count untranslated and in progress translations for each dictionary
+    	hql = "select d.id,dl.language.id,count(distinct dl.languageCode)" +
+    			",sum(case when t.status=" + Translation.STATUS_UNTRANSLATED + " then 1 else 0 end) " +
+    			",sum(case when t.status=" + Translation.STATUS_IN_PROGRESS + " then 1 else 0 end) " +
+    			" from Application a join a.dictionaries d join d.dictLanguages dl" +
+    			" join d.labels l join l.text.translations t" +
+    			" where a.id=:appId and t.language=dl.language and dl.language.id<>1" +
+    			" and not exists(select lt from LabelTranslation lt where lt.language=dl.language and lt.label=l and lt.needTranslation=false)" +
+    			" and l.context.name<>:exclusion" +
+    			" group by d.id,dl.language.id";
+    	param.put("exclusion", Context.EXCLUSION);
+    	qr = dao.retrieve(hql, param);
+    	for (Object[] row : qr) {
+    		Long dictId = (Long) row[0];
+    		Long langId = (Long) row[1];
+    		int factor = ((Number) row[2]).intValue();	// number of lang codes for the same language, needed for division 
+    		Map<Long, int[]> langMap = result.get(dictId);
+    		if (langMap == null) {
+    			langMap = new HashMap<Long, int[]>();
+    			result.put(dictId, langMap);
+    		}
+    		langMap.put(langId, new int[] {0, ((Number)row[3]).intValue() / factor, ((Number)row[4]).intValue() / factor});
+    	}
+    	
+    	// in case of no Translation object associated
+    	// count as untranslated
+    	hql = "select d.id,dl.language.id,count(distinct dl.languageCode)" +
+    			",count(*) " +
+    			" from Application a join a.dictionaries d join d.dictLanguages dl join d.labels l" +
+    			" where a.id=:appId and dl.language.id<>1" +
+				" and not exists(select lt from LabelTranslation lt where lt.language=dl.language and lt.label=l and lt.needTranslation=false) " +
+				" and not exists(select ct from Translation ct where ct.text=l.text and ct.language=dl.language) " +
+    			" and l.context.name<>:exclusion" +
+    			" group by d.id,dl.language.id";
+    	qr = dao.retrieve(hql, param);
+    	for (Object[] row : qr) {
+    		Long dictId = (Long) row[0];
+    		Long langId = (Long) row[1];
+    		int factor = ((Number) row[2]).intValue();
+    		Map<Long, int[]> langMap = result.get(dictId);
+    		int[] values = langMap.get(langId);
+    		values[1] += ((Number) row[3]).intValue() / factor;
+    	}
+    	
+    	// set translated = total - untranslated - in process
+    	for (Long dictId : result.keySet()) {
+    		Map<Long, int[]> langMap = result.get(dictId);
+    		int total = labelCount.get(dictId);
+    		for (int[] values : langMap.values()) {
+    			values[0] = total - values[1] - values[2];
+    		}
+    	}
+    	
+    	return result;
+    }
+
 
     public Map<Long, Map<Long, int[]>> getAppTranslationSummary(Long prodId) {
     	Map<Long, Map<Long, int[]>> result = new HashMap<Long, Map<Long, int[]>>();
     	
     	// count labels for each app
-    	String hql = "select a.id,dl.language.id,count(*)" +
+    	String hql = "select a.id,dl.language.id,count(distinct dl.languageCode),count(*)" +
     			" from Product p join p.applications a join a.dictionaries d join d.labels l join d.dictLanguages dl" +
     			" where p.id=:prodId and dl.language.id<>1" +
     			" group by a.id,dl.language.id";
@@ -211,6 +347,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     	for (Object[] row : qr) {
     		Long appId = ((Number) row[0]).longValue();
     		Long langId = ((Number) row[1]).longValue();
+    		int factor = ((Number) row[2]).intValue();	// number of lang codes for the same language, needed for division 
     		// initial empty langMap
     		Map<Long, int[]> langMap = result.get(appId);
     		if (langMap == null) {
@@ -218,7 +355,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     			result.put(appId, langMap);
     		}
     		langMap.put(langId, new int[] {0, 0, 0});
-    		labelCount.put(appId, ((Number)row[2]).intValue());
+    		labelCount.put(appId, ((Number)row[3]).intValue() / factor);
     	}
     	
     	// count untranslated and in progress translations for each app
@@ -276,6 +413,54 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     	
     	return result;
     }
+    
+    /**
+     * JDBC version, but not fast, unused
+     * @param prodId
+     * @return
+     */
+    public Map<Long, Map<Long, int[]>> getAppTranslationSummaryJDBC(final Long prodId) {
+    	final Map<Long, Map<Long, int[]>> result = new HashMap<Long, Map<Long, int[]>>();
+    	dao.getSession().doWork(new Work() {
+    		public void execute(Connection connection)throws SQLException{
+    			String sql = 
+    					"SELECT APP.ID,LANG.ID,COUNT(DISTINCT DL.LANGUAGE_CODE)," +
+    					" SUM(CASE WHEN LT.NEED_TRANSLATION=false OR CTX.NAME='[EXCLUSION]' OR CT.STATUS=" + Translation.STATUS_TRANSLATED + " THEN 1 ELSE 0 END) T," +
+    					" SUM(CASE WHEN (LT.ID IS NULL OR LT.NEED_TRANSLATION=true) AND CTX.NAME<>'[EXCLUSION]' AND (CT.ID IS NULL OR CT.STATUS=" + Translation.STATUS_UNTRANSLATED + ") THEN 1 ELSE 0 END) N," +
+    					" SUM(CASE WHEN (LT.ID IS NULL OR LT.NEED_TRANSLATION=true) AND CTX.NAME<>'[EXCLUSION]' AND (CT.STATUS=" + Translation.STATUS_IN_PROGRESS + ") THEN 1 ELSE 0 END) I" +
+    					" FROM dms.PRODUCT_APPLICATION PA" +
+    					" JOIN dms.APPLICATION APP ON PA.APPLICATION_ID=APP.ID" +
+    					" JOIN dms.APPLICATION_DICTIONARY AD ON AD.APPLICATION_ID=APP.ID" +
+    					" JOIN dms.DICTIONARY D ON AD.DICTIONARY_ID=D.ID" +
+    					" JOIN dms.DICTIONARY_LANGUAGE DL ON DL.DICTIONARY_ID = D.ID AND DL.LANGUAGE_ID <> 1" +
+    					" JOIN dms.LANGUAGE LANG ON LANG.ID = DL.LANGUAGE_ID" +
+    					" JOIN dms.LABEL L ON L.DICTIONARY_ID = D.ID" +
+    					" JOIN dms.CONTEXT CTX ON L.CONTEXT_ID=CTX.ID" +
+    					" LEFT JOIN dms.LABEL_TRANSLATION LT ON LT.LABEL_ID = L.ID AND LT.LANGUAGE_ID = LANG.ID" +
+    					" LEFT JOIN dms.TRANSLATION CT ON CT.TEXT_ID = L.TEXT_ID AND CT.LANGUAGE_ID = LANG.ID" +
+    					" WHERE PA.PRODUCT_ID=" + prodId +
+    					" GROUP BY APP.ID,LANG.ID";
+    			Statement st = connection.createStatement();
+    			ResultSet rs = st.executeQuery(sql);
+    			while (rs.next()) {
+    				Long appId = rs.getLong(1);
+    				Long langId = rs.getLong(2);
+    				int factor = rs.getInt(3);
+    				int t = rs.getInt(4) / factor;
+    				int n = rs.getInt(5) / factor;
+    				int i = rs.getInt(6) / factor;
+    				Map<Long, int[]> map = result.get(appId);
+    				if (map == null) {
+    					map = new HashMap<Long, int[]>();
+    					result.put(appId, map);
+    				}
+    				map.put(langId, new int[] {t, n, i});
+    			}
+    		}
+    	});
+    	return result;
+    }
+
 
     @Override
     public Map<Long, int[]> getLabelTranslationSummary(Long dictId) {
@@ -339,7 +524,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 
 	@Override
 	public void generateDictTranslationReport(Long prodId, Collection<Long> langIds, OutputStream output) {
-		Map<Long, Map<Long, int[]>> data = getDictTranslationSummary(prodId);
+		Map<Long, Map<Long, int[]>> data = getDictTranslationSummaryByProd(prodId);
 		Collection<Language> languages = languageService.getLanguagesInProduct(prodId);
 		if (langIds != null) {
 			HashSet<Long> langIdSet = new HashSet<Long>(langIds);

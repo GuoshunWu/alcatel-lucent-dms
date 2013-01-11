@@ -197,36 +197,36 @@ public class DeliveryReport {
 	}
 	
 	public String toString() {
-		StringBuffer s = new StringBuffer();
+		StringBuffer s = new StringBuffer("DELIVERY REPORT\n\n");
 		s.append("Dictionaries: ").append(dictNum).append("\n");
 		s.append("Labels: ").append(labelNum).append("\n");
-		s.append("Total translations: ").append(translationNum).append(" (").append(translationWC).append(" in word)\n");
-		s.append("Distinct translations: ").append(distinctTranslationNum).append(" (").append(distinctTranslationWC).append(" in word)\n");
+		s.append("Total translations: ").append(translationNum).append(" (").append(translationWC).append(" in words)\n");
+		s.append("Distinct translations: ").append(distinctTranslationNum).append(" (").append(distinctTranslationWC).append(" in words)\n");
 		if (translationNum > 0 && translationWC > 0) {
 			s.append("Merge rate: ")
 					.append(Math.round((translationNum - distinctTranslationNum) * 10000.0 / translationNum) / 100.0)
 					.append("% (")
 					.append(Math.round((translationWC - distinctTranslationWC) * 10000.0 / translationWC) / 100.0)
-					.append("% in word)\n");
+					.append("% in words)\n");
 		}
 		s.append("\n");
-		s.append("Translated: ").append(translatedNum).append(" (").append(translatedWC).append(" in word)\n");
-		s.append("Not translated: ").append(untranslatedNum).append(" (").append(untranslatedWC).append(" in word)\n");
+		s.append("Translated: ").append(translatedNum).append(" (").append(translatedWC).append(" in words)\n");
+		s.append("Not translated: ").append(untranslatedNum).append(" (").append(untranslatedWC).append(" in words)\n");
 		if (distinctTranslationNum > 0 && distinctTranslationWC > 0) {
 			s.append("Translated rate: ")
 			.append(Math.round(translatedNum * 10000.0 / distinctTranslationNum) / 100.0)
 			.append("% (")
 			.append(Math.round(translatedWC * 10000.0 / distinctTranslationWC) / 100.0)
-			.append("% in word)\n");
+			.append("% in words)\n");
 		}
 		s.append("\n");
-		s.append("Matched translation: ").append(matchedNum).append(" (").append(matchedWC).append(" in word)\n");
+		s.append("Matched translation: ").append(matchedNum).append(" (").append(matchedWC).append(" in words)\n");
 		if (translationNum > 0 && translationWC > 0) {
 			s.append("Match rate: ")
 					.append(Math.round(matchedNum * 10000.0 / translationNum) / 100.0)
 					.append("% (")
 					.append(Math.round(matchedWC * 10000.0 / translationWC) / 100.0)
-					.append("% in word)\n");
+					.append("% in words)\n");
 		}
 		return s.toString();
 	}
