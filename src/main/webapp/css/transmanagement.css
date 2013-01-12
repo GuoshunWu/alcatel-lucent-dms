@@ -1,0 +1,20 @@
+@import "jqueryUI/themes/base/jquery.ui.all.css";
+@import "jqueryLayout/layout-default-latest.css";
+@import "jqgrid/ui.jqgrid.css";
+@import "jqgrid/ui.multiselect.css";
+@import "common.css";
+
+/*@import "jqselectlist/selectlist.css";*/
+
+.language-group-border {
+    border-left: solid #000000 1px
+}
+
+.ui-menu {
+    position: absolute;
+    width: 120px;
+}
+
+/*.ui-icon-custom-test {*/
+    /*background-image: url(images/icon_admin.png)!important;*/
+/*}*/
