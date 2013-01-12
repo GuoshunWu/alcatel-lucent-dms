@@ -99,14 +99,14 @@ public class EntryAction extends BaseAction {
             strPages.append(String.format("'%s':'%s'", pagePrefix + "mng.jsp", getText(pagePrefix + "mng.title")));
             isFirst = false;
         }
-
         if (UserContext.getInstance().getUser().getRole() == User.ROLE_ADMINISTRATOR) {
             strPages.append(String.format(", '%s':'%s'", "admin.jsp", getText("admin.title")));
         }
 
+
         strPages.append("}");
         Map<String, String> pagesMap = JSONObject.fromObject(strPages.toString());
-//        log.debug(pagesMap);
+
         return pagesMap;
     }
 
@@ -125,13 +125,14 @@ public class EntryAction extends BaseAction {
         return new ArrayList<Product>();
     }
 
+
     /**
      * For client parameters
      */
     public Map<String, String> getClientParams() {
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("locale", getLocale().toString());
-        params.put("forbiddenPrivileges", StringUtils.join(Privileges.getInstance().getForbiddenPrivileges().toArray(ArrayUtils.EMPTY_STRING_ARRAY), ","));
-        return params;
+        Map<String, String> clientParams = new HashMap<String, String>();
+        clientParams.put("locale", getLocale().toString());
+        clientParams.put("forbiddenPrivileges", StringUtils.join(Privileges.getInstance().getForbiddenPrivileges().toArray(ArrayUtils.EMPTY_STRING_ARRAY), ","));
+        return clientParams;
     }
 }

@@ -1,6 +1,5 @@
 define ['jqlayout', 'taskmng/task_grid', 'i18n!nls/common', 'taskmng/dialogs', 'util', 'require'], ($, grid, c18n, dialogs, util, require)->
   require 'jqueryui'
-  $("#optional-container").layout {resizable: true, closable: true}
 
   $('#productBase').change ()->
     $('#productRelease').empty()

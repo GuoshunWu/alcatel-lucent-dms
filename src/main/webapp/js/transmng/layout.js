@@ -2,21 +2,12 @@
 (function() {
 
   define(['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng', 'transmng/trans_grid', 'transmng/transdetail_grid', 'util', 'require'], function($, blockui, msgbox, c18n, i18n, grid, detailgrid, util) {
-    var createButtons, createDialogs, createSelects, dialogs, exportAppOrDicts, ids, initPage, pageLayout, refreshGrid;
+    var createButtons, createDialogs, createSelects, dialogs, exportAppOrDicts, ids, initPage, refreshGrid;
     util = require('util');
     ids = {
       languageFilterTableId: 'languageFilterTable',
       languageFilterDialogId: 'languageFilterDialog'
     };
-    pageLayout = $("#optional-container").layout({
-      resizable: true,
-      closable: true
-    });
-    $(".header-footer").hover((function() {
-      return $(this).addClass("ui-state-hover");
-    }), function() {
-      return $(this).removeClass("ui-state-hover");
-    });
     dialogs = null;
     refreshGrid = function() {
       var checkboxes, param;

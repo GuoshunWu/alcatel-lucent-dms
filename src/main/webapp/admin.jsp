@@ -41,21 +41,7 @@
 
 <div id="optional-container">
     <div class="ui-layout-north" style="text-align: left; bottom:0px">
-        <table width="100%" border="0">
-            <tr>
-                <td>
-                    <span style="font-family:Trebuchet MS,Verdana,Arial, Helvetica; font-size:14pt; font-style:normal; ">
-                        <s:text name="admin.title"/>
-                    </span>
-                </td>
-                <td>
-                    <div id="switcher"></div>
-                </td>
-                <td align="right">
-                    <%@include file="/common/pagenavigator.jsp" %>
-                </td>
-            </tr>
-        </table>
+        <%@include file="common/toppanel.jsp" %>
     </div>
     <s:select theme="simple" id="productBase" list="productBases" listKey="id" listValue="name"
               cssStyle="width:99%;display: none" headerKey="-1" headerValue="%{getText('product.select.head')}"

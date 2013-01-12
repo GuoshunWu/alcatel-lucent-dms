@@ -25,7 +25,7 @@
         //a separate file so after a build there are only 2 HTTP
         //requests instead of three.
 
-        require(['./js/config.js?bust='+new Date().getTime()],function(config){
+        require(['./js/config.js?bust=' + new Date().getTime()], function (config) {
             require(['appmng/navigatetree']);
         });
     </script>
@@ -35,24 +35,9 @@
 
 <%@include file="common/maskdiv.jsp" %>
 <div id="optional-container">
-    <div class="ui-layout-north" style="text-align: left; bottom:0px">
-        <table width="99%" border="0">
-            <tr>
-                <td>
-                    <span style="font-family:Trebuchet MS,Verdana,Arial, Helvetica; font-size:14pt; font-style:normal; ">
-                        <s:text name="appmng.title"/>
-                    </span>
-                </td>
-                <td align="right">
-                    <div id="switcher"></div>
-                </td>
-                <td align="right">
-                    <%@include file="common/pagenavigator.jsp" %>
-                </td>
-            </tr>
-        </table>
+    <div class="ui-layout-north">
+        <%@include file="common/toppanel.jsp" %>
     </div>
-
     <div id="ui_center" class="ui-layout-center">
         <%@include file="appmanagement/welcome_panel.jsp" %>
         <%@include file="appmanagement/product_panel.jsp" %>
@@ -60,10 +45,11 @@
     </div>
 
     <div class="ui-layout-west">
-        <p>&nbsp;</p>
-
-        <div id="appTree" style="background-color: transparent;"></div>
-        <p>&nbsp;</p>
+        <div class="header">Navigator Tree</div>
+        <div class="content">
+            <div id="appTree" style="background-color: transparent;"></div>
+        </div>
+        <div class="footer">Automatically positioned footer</div>
     </div>
 
     <%@include file="appmanagement/dialogs.jsp" %>

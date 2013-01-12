@@ -4,10 +4,6 @@
   define(['jqlayout', 'taskmng/task_grid', 'i18n!nls/common', 'taskmng/dialogs', 'util', 'require'], function($, grid, c18n, dialogs, util, require) {
     var taskFileUpload;
     require('jqueryui');
-    $("#optional-container").layout({
-      resizable: true,
-      closable: true
-    });
     $('#productBase').change(function() {
       $('#productRelease').empty();
       if (parseInt($('#productBase').val()) === -1) {

@@ -13,7 +13,7 @@ To change this template use File | Settings | File Templates.
   var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   define(["jquery", "jqueryui", "i18n!nls/common"], function($, ui, c18n) {
-    var checkAllGridPrivilege, checkGridPrivilege, formatJonString, newOption, pageNavi, sessionCheck, setCookie, urlname2Action;
+    var checkAllGridPrivilege, checkGridPrivilege, createLayoutManager, formatJonString, newOption, pageNavi, sessionCheck, setCookie, urlname2Action;
     String.prototype.format = function() {
       var args;
       args = arguments;
@@ -230,6 +230,62 @@ To change this template use File | Settings | File Templates.
         }
       });
     };
+    /*
+        Create layout manager in common/toppanel.jsp
+    */
+
+    createLayoutManager = function(page) {
+      var pageLayout;
+      pageLayout = $("#optional-container").layout({
+        defaults: {
+          size: 'auto',
+          minSize: 50,
+          paneClass: "pane",
+          buttonClass: "button",
+          togglerClass: "toggler",
+          resizerClass: "resizer",
+          contentSelector: ".content",
+          contentIgnoreSelector: "span",
+          togglerLength_open: 35,
+          togglerLength_closed: 35,
+          hideTogglerOnSlide: true,
+          togglerTip_open: "Close This Pane",
+          togglerTip_closed: "Open This Pane",
+          resizerTip: "Resize This Pane",
+          fxName: 'slide',
+          fxSpeed_open: 750,
+          fxSpeed_close: 1500,
+          fxSettings_open: {
+            easing: "easeInQuint"
+          },
+          fxSettings_close: {
+            easing: "easeOutQuint"
+          }
+        },
+        north: {
+          minSize: 37,
+          togglerLength_closed: -1,
+          resizable: false,
+          fxName: 'none'
+        },
+        west: {
+          size: 250,
+          spacing_closed: 21,
+          togglerLength_closed: 21,
+          togglerAlign_closed: "top",
+          togglerLength_open: 0,
+          togglerTip_open: "Close West Pane",
+          togglerTip_closed: "Open West Pane",
+          resizerTip_open: "Resize West Pane",
+          slideTrigger_open: "click",
+          initClosed: false,
+          fxSettings_open: {
+            easing: "easeOutBounce"
+          }
+        }
+      });
+      return pageLayout;
+    };
     urlname2Action = function(urlname, suffix) {
       if (urlname == null) {
         urlname = '';
@@ -411,8 +467,9 @@ To change this template use File | Settings | File Templates.
         }).get().join(sep);
       },
       afterInitilized: function(context) {
+        var pageLayout, westSelector;
         if (typeof console !== "undefined" && console !== null) {
-          console.log("...Page " + ($('#pageNavigator').val()) + " privilege check...");
+          console.log("...Page " + param.naviTo + " privilege check...");
         }
         $('[role=button][privilegeName]').each(function(index, button) {
           var _ref;
@@ -420,9 +477,28 @@ To change this template use File | Settings | File Templates.
             return $(button).button('disable');
           }
         });
-        return checkAllGridPrivilege();
+        checkAllGridPrivilege();
+        pageLayout = createLayoutManager();
+        if (param.naviTo === 'appmng.jsp') {
+          westSelector = "#optional-container > .ui-layout-west";
+          $("<span></span>").addClass("pin-button").prependTo(westSelector);
+          pageLayout.addPinBtn("" + westSelector + " .pin-button", "west");
+          $("<span></span>").attr("id", "west-closer").prependTo(westSelector);
+          pageLayout.addCloseBtn("#west-closer", "west");
+        }
+        return $('span[id$=Tab][id^=nav]').button().click(function(e) {
+          $('#pageNavigator').val($(this).attr('value'));
+          $(this).button('disable');
+          return $('#naviForm').submit();
+        }).parent().buttonset();
       },
-      urlname2Action: urlname2Action
+      urlname2Action: urlname2Action,
+      createLayoutManager: function(page) {
+        if (page == null) {
+          page = 'appmng.jsp';
+        }
+        return createLayoutManager(page);
+      }
     };
   });
 

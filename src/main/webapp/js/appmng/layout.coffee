@@ -15,15 +15,9 @@ define (require)->
     application: PANEL_PREFIX + "_applicationPanel"
     }
   }
-  pageLayout = $("##{ids.container.page}").layout {resizable: true, closable: true}
-  dmsPanels = $ "##{ids.container.center} div[id^=#{PANEL_PREFIX}]"
 
+  dmsPanels = $ "#ui_center > div[id^=#{PANEL_PREFIX}]"
 
-  dmsPanels.addClass "ui-layout-content ui-corner-bottom"
-  # ui-widget-content
-  dmsPanels.css {paddingBottom: '1em', borderTop: 0}
-
-  $(".header-footer").hover (->$(@).addClass "ui-state-hover"), -> $(@).removeClass "ui-state-hover"
 
   showCenterPanel = (panelId) -> dmsPanels.each (index, panel)->
     if panel.id == panelId

@@ -25,7 +25,7 @@
         //a separate file so after a build there are only 2 HTTP
         //requests instead of three.
 
-        require(['./js/config.js?bust='+new Date().getTime()],function(config){
+        require(['./js/config.js?bust=' + new Date().getTime()], function (config) {
             require(['transmng/layout']);
         }, function (err) {
             console.log("load module err: " + err);
@@ -36,26 +36,10 @@
 </head>
 <body>
 
-
 <%@include file="common/maskdiv.jsp" %>
-
 <div id="optional-container">
     <div class="ui-layout-north" style="text-align: left; bottom:0px">
-        <table width="99%" border="0">
-            <tr>
-                <td colspan="2">
-                    <span style="font-family:Trebuchet MS,Verdana,Arial, Helvetica; font-size:14pt; font-style:normal; ">
-                        <s:text name="transmng.title"/>
-                    </span>
-                </td>
-                <td align="right" colspan="2">
-                    <div id="switcher"></div>
-                </td>
-                <td align="right">
-                    <%@include file="/common/pagenavigator.jsp" %>
-                </td>
-            </tr>
-        </table>
+        <%@include file="common/toppanel.jsp" %>
     </div>
 
     <div id="ui_center" class="ui-layout-center">
@@ -64,7 +48,5 @@
 
     <%@include file="transmanagement/dialogs.jsp" %>
 </div>
-
-
 </body>
 </html>

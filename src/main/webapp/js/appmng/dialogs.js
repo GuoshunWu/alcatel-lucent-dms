@@ -386,9 +386,9 @@
                 return;
               }
               appInfo = "" + ($('#appDispAppName').text()) + " " + ($('#selAppVersion option:selected').text());
-              $.msgBox(i18n.dialog.dictlistpreview.success.format(appInfo, null, {
+              $.msgBox(i18n.dialog.dictlistpreview.success.format(appInfo, json.message), null, {
                 title: c18n.info
-              }));
+              });
               return $('#selAppVersion').trigger('change');
             });
           }

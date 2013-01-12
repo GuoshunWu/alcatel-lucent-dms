@@ -2,7 +2,7 @@
 (function() {
 
   define(function(require) {
-    var $, PANEL_PREFIX, dmsPanels, ids, pageLayout, showCenterPanel;
+    var $, PANEL_PREFIX, dmsPanels, ids, showCenterPanel;
     $ = require('jqlayout');
     PANEL_PREFIX = 'DMS';
     ids = {
@@ -16,21 +16,7 @@
         application: PANEL_PREFIX + "_applicationPanel"
       }
     };
-    pageLayout = $("#" + ids.container.page).layout({
-      resizable: true,
-      closable: true
-    });
-    dmsPanels = $("#" + ids.container.center + " div[id^=" + PANEL_PREFIX + "]");
-    dmsPanels.addClass("ui-layout-content ui-corner-bottom");
-    dmsPanels.css({
-      paddingBottom: '1em',
-      borderTop: 0
-    });
-    $(".header-footer").hover((function() {
-      return $(this).addClass("ui-state-hover");
-    }), function() {
-      return $(this).removeClass("ui-state-hover");
-    });
+    dmsPanels = $("#ui_center > div[id^=" + PANEL_PREFIX + "]");
     showCenterPanel = function(panelId) {
       return dmsPanels.each(function(index, panel) {
         if (panel.id === panelId) {

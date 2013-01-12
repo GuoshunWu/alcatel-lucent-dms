@@ -5,10 +5,6 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
   languageFilterDialogId: 'languageFilterDialog'
   }
 
-  pageLayout = $("#optional-container").layout {resizable: true, closable: true}
-
-  $(".header-footer").hover (->$(@).addClass "ui-state-hover"), -> $(@).removeClass "ui-state-hover"
-
   dialogs = null
 
   refreshGrid = ()->
