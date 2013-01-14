@@ -28,7 +28,7 @@
 .pane-center {
     /* show off the inner-layout inside the outer-center-pane*/
     background-color: #F6F6F6;
-    padding: 15px; /* for outer layout */
+    /*padding: 15px; *//* for outer layout */
 }
 
 /* inner divs inside Outer East/West panes */

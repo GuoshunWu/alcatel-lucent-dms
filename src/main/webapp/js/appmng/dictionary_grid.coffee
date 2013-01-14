@@ -12,7 +12,7 @@ define (require, util, dialogs, i18n)->
   msg: i18n.dialog.delete.delmsg.format c18n.dict
   top: 250, left: 550
   reloadAfterSubmit: false
-  #  url: 'app/remove-dict'
+  url: 'app/remove-dict'
   beforeShowForm: (form)->
     permanent = $('#permanentDeleteSignId', form)
     #    make permanent sign default checked and hide
@@ -39,8 +39,8 @@ define (require, util, dialogs, i18n)->
       url: ''
       title: i18n.dialog.languagesettings.title, handler: (rowData)->
       #        grid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
-      #        dialogs.langSettings.data "param", rowData
-        dialogs.langSettings.on 'dialogopen', {param: rowData}, $('#languageSettingsDialog').dialog('option', 'openEvent')
+#        dialogs.langSettings.on 'dialogopen', {param: rowData}, $('#languageSettingsDialog').dialog('option', 'openEvent')
+        dialogs.langSettings.data "param", rowData
         dialogs.langSettings.dialog 'open'
   #    'X': title: i18n.dialog.delete.title, handler: (rowData)->$('#dictionaryGridList').jqGrid 'delGridRow', rowData.id, deleteOptions
 

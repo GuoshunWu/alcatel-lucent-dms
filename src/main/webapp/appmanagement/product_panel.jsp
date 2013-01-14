@@ -2,7 +2,7 @@
 <%@ page contentType="text/html;charset=utf-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
-<div id="DMS_productPanel">
+<div id="DMS_productPanel" class="dms_appmng_panel">
 
     <table border="0">
         <tr>

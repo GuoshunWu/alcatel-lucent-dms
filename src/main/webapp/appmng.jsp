@@ -32,16 +32,17 @@
 
 </head>
 <body>
-
 <%@include file="common/maskdiv.jsp" %>
 <div id="optional-container">
     <div class="ui-layout-north">
         <%@include file="common/toppanel.jsp" %>
     </div>
     <div id="ui_center" class="ui-layout-center">
-        <%@include file="appmanagement/welcome_panel.jsp" %>
-        <%@include file="appmanagement/product_panel.jsp" %>
-        <%@include file="appmanagement/application_panel.jsp" %>
+        <div class="content">
+            <%@include file="appmanagement/welcome_panel.jsp" %>
+            <%@include file="appmanagement/product_panel.jsp" %>
+            <%@include file="appmanagement/application_panel.jsp" %>
+        </div>
     </div>
 
     <div class="ui-layout-west">
@@ -51,8 +52,7 @@
         </div>
         <div class="footer">Automatically positioned footer</div>
     </div>
-
-    <%@include file="appmanagement/dialogs.jsp" %>
 </div>
+<%@include file="appmanagement/dialogs.jsp" %>
 </body>
 </html>

@@ -15,6 +15,7 @@
       top: 250,
       left: 550,
       reloadAfterSubmit: false,
+      url: 'app/remove-dict',
       beforeShowForm: function(form) {
         var permanent;
         permanent = $('#permanentDeleteSignId', form);
@@ -47,9 +48,7 @@
         url: '',
         title: i18n.dialog.languagesettings.title,
         handler: function(rowData) {
-          dialogs.langSettings.on('dialogopen', {
-            param: rowData
-          }, $('#languageSettingsDialog').dialog('option', 'openEvent'));
+          dialogs.langSettings.data("param", rowData);
           return dialogs.langSettings.dialog('open');
         }
       }

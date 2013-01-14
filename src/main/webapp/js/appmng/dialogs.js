@@ -200,16 +200,9 @@
       resize: function(event, ui) {
         return $('#languageSettingGrid').setGridWidth(ui.size.width - 35, true).setGridHeight(ui.size.height - 180, true);
       },
-      /*
-            Customed option for dialog open
-            When user click the language action link in dictionary grid, the handler for that link will bind open event
-            for this dialog and pass the related parameters to it.
-            e.data will be the passed parameters
-      */
-
-      openEvent: function(e, ui) {
+      open: function(e, ui) {
         var param, postData;
-        param = e.data.param;
+        param = $(this).data("param");
         $('#refCode').val(param.langrefcode);
         postData = {
           dict: param.id,

@@ -13,7 +13,7 @@ To change this template use File | Settings | File Templates.
   var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   define(["jquery", "jqueryui", "i18n!nls/common"], function($, ui, c18n) {
-    var checkAllGridPrivilege, checkGridPrivilege, createLayoutManager, formatJonString, newOption, pageNavi, sessionCheck, setCookie, urlname2Action;
+    var PanelGroup, checkAllGridPrivilege, checkGridPrivilege, createLayoutManager, formatJonString, newOption, pageNavi, sessionCheck, setCookie, urlname2Action;
     String.prototype.format = function() {
       var args;
       args = arguments;
@@ -279,6 +279,7 @@ To change this template use File | Settings | File Templates.
           resizerTip_open: "Resize West Pane",
           slideTrigger_open: "click",
           initClosed: false,
+          resizable: true,
           fxSettings_open: {
             easing: "easeOutBounce"
           }
@@ -297,9 +298,6 @@ To change this template use File | Settings | File Templates.
     };
     checkGridPrivilege = function(grid) {
       var forbiddenTab, gridParam, tmpHandlers, _ref, _ref1, _ref2;
-      if (typeof console !== "undefined" && console !== null) {
-        console.log("check the privilege of grid '" + grid.id + "'.");
-      }
       gridParam = $(grid).jqGrid('getGridParam');
       forbiddenTab = {
         cellurl: (_ref = urlname2Action(gridParam.cellurl), __indexOf.call(param.forbiddenPrivileges, _ref) >= 0),
@@ -468,9 +466,6 @@ To change this template use File | Settings | File Templates.
       },
       afterInitilized: function(context) {
         var pageLayout, westSelector;
-        if (typeof console !== "undefined" && console !== null) {
-          console.log("...Page " + param.naviTo + " privilege check...");
-        }
         $('[role=button][privilegeName]').each(function(index, button) {
           var _ref;
           if (_ref = $(button).attr('privilegeName'), __indexOf.call(param.forbiddenPrivileges, _ref) >= 0) {
@@ -486,11 +481,12 @@ To change this template use File | Settings | File Templates.
           $("<span></span>").attr("id", "west-closer").prependTo(westSelector);
           pageLayout.addCloseBtn("#west-closer", "west");
         }
-        return $('span[id$=Tab][id^=nav]').button().click(function(e) {
+        $("span[id$='Tab'][id^='nav']").button().click(function(e) {
           $('#pageNavigator').val($(this).attr('value'));
           $(this).button('disable');
           return $('#naviForm').submit();
         }).parent().buttonset();
+        return $("span[id^='nav'][value='" + param.naviTo + "']").css('backgroundImage', 'url(css/jqueryLayout/images/80ade5_40x100_textures_04_highlight_hard_100.png)');
       },
       urlname2Action: urlname2Action,
       createLayoutManager: function(page) {
@@ -498,7 +494,30 @@ To change this template use File | Settings | File Templates.
           page = 'appmng.jsp';
         }
         return createLayoutManager(page);
-      }
+      },
+      PanelGroup: PanelGroup = (function() {
+
+        function PanelGroup(panels, currentPanel) {
+          this.panels = panels;
+          this.currentPanel = currentPanel;
+          this.panels = $(this.panels);
+        }
+
+        PanelGroup.prototype.switchTo = function(panelId) {
+          var _this = this;
+          return this.panels.each(function(index, panel) {
+            if (panel.id === panelId) {
+              $(panel).show();
+              return _this.currentPanel = panelId;
+            } else {
+              return $(panel).hide();
+            }
+          });
+        };
+
+        return PanelGroup;
+
+      })()
     };
   });
 
