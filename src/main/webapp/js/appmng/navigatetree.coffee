@@ -136,8 +136,10 @@ define (require)->
         data.inst.toggle_node data.rslt.obj
     )
 
-    $('#loading-container').fadeOut 'slow', 'swing', ()->$(@).remove()
     util.afterInitilized(this)
+    layout.showWelcomePanel()
+    $('#loading-container').fadeOut 'slow', 'swing', ()->$(@).remove()
+
   getNodeInfo: getNodeInfo
 
 

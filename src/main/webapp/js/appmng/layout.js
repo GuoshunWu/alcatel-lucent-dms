@@ -2,8 +2,9 @@
 (function() {
 
   define(function(require) {
-    var $, PANEL_PREFIX, dmsPanels, ids, showCenterPanel;
+    var $, PANEL_PREFIX, appmngPnlGroup, ids, util;
     $ = require('jqlayout');
+    util = require('util');
     PANEL_PREFIX = 'DMS';
     ids = {
       container: {
@@ -16,26 +17,16 @@
         application: PANEL_PREFIX + "_applicationPanel"
       }
     };
-    dmsPanels = $("#ui_center > div[id^=" + PANEL_PREFIX + "]");
-    showCenterPanel = function(panelId) {
-      return dmsPanels.each(function(index, panel) {
-        if (panel.id === panelId) {
-          return $(panel).show();
-        } else {
-          return $(panel).hide();
-        }
-      });
-    };
-    showCenterPanel(ids.panel.welcome);
+    appmngPnlGroup = new util.PanelGroup("#ui_center > div.content > div[id^=" + PANEL_PREFIX + "]", "DMS_welcomePanel");
     return {
       showProductPanel: function() {
-        return showCenterPanel(ids.panel.product);
+        return appmngPnlGroup.switchTo(ids.panel.product);
       },
       showApplicationPanel: function() {
-        return showCenterPanel(ids.panel.application);
+        return appmngPnlGroup.switchTo(ids.panel.application);
       },
       showWelcomePanel: function() {
-        return showCenterPanel(ids.panel.welcome);
+        return appmngPnlGroup.switchTo(ids.panel.welcome);
       }
     };
   });

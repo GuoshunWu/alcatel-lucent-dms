@@ -208,6 +208,7 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
         resizerTip_open: "Resize West Pane"
         slideTrigger_open: "click"   # default
         initClosed: false
+        resizable: true
         #      #	add 'bounce' option to default 'slide' effect
         fxSettings_open: { easing: "easeOutBounce" }
     )
@@ -224,7 +225,7 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
 
   urlname2Action = (urlname = '', suffix = 'Action')->urlname.split('/').pop().capitalize().split('-').join('') + suffix
   checkGridPrivilege = (grid)->
-    console?.log "check the privilege of grid '#{grid.id}'."
+    # console?.debug "check the privilege of grid '#{grid.id}'."
     gridParam = $(grid).jqGrid 'getGridParam'
     forbiddenTab =
       cellurl: urlname2Action(gridParam.cellurl) in param.forbiddenPrivileges
@@ -340,7 +341,7 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
     ).get().join(sep)
 
   afterInitilized: (context)->
-    console?.log "...Page #{param.naviTo} privilege check..."
+    # console?.debug "...Page #{param.naviTo} privilege check..."
     #    check all buttons' privilege
     $('[role=button][privilegeName]').each (index, button)->
     #    .attr('privilegeName', util.urlname2Action 'app/deliver-app-dict')
@@ -368,13 +369,28 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
       pageLayout.addCloseBtn("#west-closer", "west")
 
     #    update navigator.
-    $('span[id$=Tab][id^=nav]').button().click(
+    $("span[id$='Tab'][id^='nav']").button().click(
       (e)->
         $('#pageNavigator').val $(@).attr('value')
         $(@).button 'disable'
         $('#naviForm').submit()
     ).parent().buttonset()
+    $("span[id^='nav'][value='#{param.naviTo}']").css 'backgroundImage', 'url(css/jqueryLayout/images/80ade5_40x100_textures_04_highlight_hard_100.png)'
+
   urlname2Action: urlname2Action
   createLayoutManager: (page = 'appmng.jsp')->createLayoutManager(page)
+
+  PanelGroup:
+    class PanelGroup
+      constructor:(@panels, @currentPanel)->
+        @panels=$(@panels)
+      switchTo:(panelId)->
+        @panels.each (index, panel)=>
+          if panel.id == panelId
+            $(panel).show()
+            #console?.debug 'Switch to Panel '+panelId
+            @currentPanel = panelId
+          else
+            $(panel).hide()
 
 

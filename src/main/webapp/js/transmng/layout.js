@@ -35,7 +35,7 @@
         autoOpen: false,
         position: [23, 126],
         height: 'auto',
-        width: 1000,
+        width: 1100,
         show: {
           effect: 'slide',
           direction: "up"

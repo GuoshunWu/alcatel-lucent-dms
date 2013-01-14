@@ -17,7 +17,7 @@
     <meta http-equiv="Pragma" content="no-cache">
 
     <link rel="stylesheet" type="text/css" href="css/taskmanagement.css">
-    <%@include file="common/env.jsp"%>
+    <%@include file="common/env.jsp" %>
     <script type="text/javascript" src="js/lib/require.js"></script>
     <script type="text/javascript">
         //Load common code that includes config, then load the app
@@ -25,7 +25,7 @@
         //a separate file so after a build there are only 2 HTTP
         //requests instead of three.
 
-        require(['./js/config.js?bust='+new Date().getTime()],function(config){
+        require(['./js/config.js?bust=' + new Date().getTime()], function (config) {
             require(['taskmng/layout']);
         }, function (err) {
             console.log("load module err: " + err);
@@ -36,18 +36,20 @@
 </head>
 <body>
 
-<%@include file="common/maskdiv.jsp"%>
+<%@include file="common/maskdiv.jsp" %>
 
 <div id="optional-container">
-    <div class="ui-layout-north" style="text-align: left; bottom:0px">
+    <div class="ui-layout-north">
         <%@include file="common/toppanel.jsp" %>
     </div>
 
     <div id="ui_center" class="ui-layout-center">
-        <%@include file="taskmanagement/centerpanel.jsp"%>
+        <div class="content">
+            <%@include file="taskmanagement/centerpanel.jsp" %>
+        </div>
     </div>
 
-    <%@include file="taskmanagement/dialogs.jsp"%>
+    <%@include file="taskmanagement/dialogs.jsp" %>
 </div>
 </body>
 </html>

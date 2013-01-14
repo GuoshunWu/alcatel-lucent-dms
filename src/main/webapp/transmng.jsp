@@ -38,12 +38,14 @@
 
 <%@include file="common/maskdiv.jsp" %>
 <div id="optional-container">
-    <div class="ui-layout-north" style="text-align: left; bottom:0px">
+    <div class="ui-layout-north">
         <%@include file="common/toppanel.jsp" %>
     </div>
 
     <div id="ui_center" class="ui-layout-center">
-        <%@include file="transmanagement/summarypanel.jsp" %>
+        <div class="content">
+            <%@include file="transmanagement/summarypanel.jsp" %>
+        </div>
     </div>
 
     <%@include file="transmanagement/dialogs.jsp" %>

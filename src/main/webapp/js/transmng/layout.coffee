@@ -20,7 +20,7 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
   createDialogs = ->
   #dialog
     languageFilterDialog = $("<div title='#{i18n.select.languagefilter.title}' id='#{ids.languageFilterDialogId}'>").dialog {
-    autoOpen: false, position: [23, 126], height: 'auto', width: 1000
+    autoOpen: false, position: [23, 126], height: 'auto', width: 1100
     show: { effect: 'slide', direction: "up" }
     buttons: [
       { text: c18n.ok, click: ()->
