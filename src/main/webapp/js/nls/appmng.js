@@ -37,7 +37,7 @@ define({
                 title:'Dictionaries Preview',
                 "import":'Import',
                 check:'There are some errors need to be fixed before import!',
-                success:'Import dictionaries to {0} successful. <br/><br/>Delivery report:<br/><br/>{1}'
+                success:'Import dictionaries to {0} successful. <br/><br/>{1}'
             },
             dictpreviewstringsettings:{
                 title:'String settings'

@@ -14,7 +14,15 @@ public interface TranslationService {
      * @return composite map with dictionary id as 1st-level key and language id as 2nd-level key
      * 			value is {num_of_translated_labels, num_of_not_translated_labels, num_of_in_progress_labels }
      */
-    Map<Long, Map<Long, int[]>> getDictTranslationSummary(Long prodId);
+    Map<Long, Map<Long, int[]>> getDictTranslationSummaryByProd(Long prodId);
+    
+    /**
+     * Calculate translation summary in dictionary level
+     * @param appId application id
+     * @return composite map with dictionary id as 1st-level key and language id as 2nd-level key
+     * 			value is {num_of_translated_labels, num_of_not_translated_labels, num_of_in_progress_labels }
+     */
+    Map<Long, Map<Long, int[]>> getDictTranslationSummaryByApp(Long appId);
 
     /**
      * Calculate translation summary in application level

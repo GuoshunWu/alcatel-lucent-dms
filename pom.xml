@@ -641,6 +641,31 @@
                 <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
             </properties>
         </profile>
+        <profile>
+            <id>local-qa-db</id>
+            <properties>
+                <db.driver>org.postgresql.Driver</db.driver>
+                <db.url>jdbc\:postgresql\://172.24.190.236\:5432/dms_qa</db.url>
+                <db.user>dms</db.user>
+                <db.password>alcatel123</db.password>
+                <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
+                <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
+                <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
+            </properties>
+        </profile>
+        <profile>
+            <id>local-qa2-db</id>
+            <properties>
+                <db.driver>org.postgresql.Driver</db.driver>
+                <db.url>jdbc\:postgresql\://172.24.190.236\:5432/dms_qa2</db.url>
+                <db.user>dms</db.user>
+                <db.password>alcatel123</db.password>
+                <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
+                <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
+                <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
+            </properties>
+        </profile>
+        
 
         <profile>
             <id>dev</id>
@@ -674,7 +699,7 @@
         </profile>
 
         <profile>
-            <id>test</id>
+            <id>qa</id>
             <properties>
                 <httpPort>8888</httpPort>
                 <httpsPort>8443</httpsPort>
@@ -695,7 +720,28 @@
 
         </profile>
         <profile>
-            <id>test2</id>
+            <id>local-qa</id>
+            <properties>
+                <httpPort>8888</httpPort>
+                <httpsPort>8443</httpsPort>
+            </properties>
+            <build>
+                <defaultGoal>tomcat7:deploy</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.tomcat.maven</groupId>
+                        <artifactId>tomcat7-maven-plugin</artifactId>
+                        <version>2.0</version>
+                        <configuration>
+                            <url>http://172.24.190.236:8888/manager/text</url>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+
+        </profile>
+        <profile>
+            <id>local-qa2</id>
             <properties>
                 <httpPort>9999</httpPort>
                 <httpsPort>9443</httpsPort>
@@ -708,7 +754,7 @@
                         <artifactId>tomcat7-maven-plugin</artifactId>
                         <version>2.0</version>
                         <configuration>
-                            <url>http://135.117.177.136:9999/manager/text</url>
+                            <url>http://172.24.190.236:9999/manager/text</url>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -717,7 +763,7 @@
         </profile>
 
         <profile>
-            <id>test3</id>
+            <id>temp-qa</id>
             <properties>
                 <httpPort>7777</httpPort>
                 <httpsPort>7443</httpsPort>
