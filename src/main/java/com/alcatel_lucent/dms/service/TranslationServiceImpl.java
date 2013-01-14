@@ -666,10 +666,10 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 			createCell(headRow, 4, "Reference", null);
 			createCell(headRow, 5, "Translation", null);
 			createCell(headRow, 6, "Description", null);
+			int r = 1;
 			for (Long dictId : dictIds) {
 				Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
 				Collection<Label> labels = getLabelsWithTranslation(dictId, langId);
-				int r = 1;
 				for (Label label : labels) {
 					Row row = sheet.createRow(r++);
 					createCell(row, 0, dict.getName(), null);
