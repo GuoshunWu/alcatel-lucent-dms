@@ -54,9 +54,11 @@
             text: c18n["import"],
             click: function() {
               param = $(this).data('param');
+              $.blockUI;
               $.post('task/apply-task', {
                 id: param.id
               }, function(json) {
+                $.unblockUI();
                 if (json.status !== 0) {
                   $.msgBox(json.message, null, {
                     title: c18n.error
@@ -102,9 +104,6 @@
             });
           }
         });
-      },
-      resize: function(event, ui) {
-        return $("#reportGrid").setGridWidth(ui.size.width - 40, true).setGridHeight(ui.size.height - 190, true);
       }
     });
     $('#langChooser').button({}).click(function() {

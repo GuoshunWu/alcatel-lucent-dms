@@ -170,7 +170,7 @@
       pager: '#transPager',
       rowNum: 60,
       rowList: [10, 20, 30, 60, 120],
-      sortname: 'base.name',
+      sortname: 'app.base.name',
       sortorder: 'asc',
       multiselect: true,
       colNames: grid.dictionary.colNames,

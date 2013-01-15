@@ -22,18 +22,16 @@ define ['jqueryui', 'taskmng/taskreport_grid', 'taskmng/transdetail_grid', 'jqms
 
     buttons.unshift {text: c18n.import, click: ()->
       param = $(@).data 'param'
+      $.blockUI
       $.post 'task/apply-task', {id: param.id}, (json)->
-        if json.status != 0
-          $.msgBox json.message, null, {title: c18n.error}
-          return
+        $.unblockUI()
+        ($.msgBox json.message, null, {title: c18n.error};return) if json.status != 0
         $.msgBox i18n.task.confirmmsg, ((keyPressed)->
           if c18n.no == keyPressed
             $.blockUI
             $.post 'task/close-task', {id: param.id}, (json)->
               $.unblockUI()
-              if json.status != 0
-                $.msgBox json.message, null, {title: c18n.error}
-                return
+              ($.msgBox json.message, null, {title: c18n.error}; return)if json.status != 0
               $("#taskGrid").trigger 'reloadGrid'
         ), {title: c18n.confirm}, [c18n.yes, c18n.no]
       $(@).dialog "close"
@@ -41,7 +39,7 @@ define ['jqueryui', 'taskmng/taskreport_grid', 'taskmng/transdetail_grid', 'jqms
     $(@).dialog 'option', 'buttons', buttons
     $.ajax 'rest/languages', async: false, dataType: 'json', data: {task: param.id, prop: 'id,name'}, success: (languages)->
       reportgrid.regenerateGrid {id: param.id, languages: languages}
-  resize: (event, ui)->$("#reportGrid").setGridWidth(ui.size.width - 40, true).setGridHeight(ui.size.height - 190, true)
+  #  resize: (event, ui)->$("#reportGrid").setGridWidth(ui.size.width - 40, true).setGridHeight(ui.size.height - 190, true)
   }
 
 

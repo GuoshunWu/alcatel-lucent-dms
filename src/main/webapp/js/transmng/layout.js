@@ -58,7 +58,7 @@
       exportTranslationDialog = $('#ExportTranslationsDialog').dialog({
         autoOpen: false,
         modal: true,
-        width: 950,
+        width: 1100,
         height: 'auto',
         position: [25, 100],
         show: {
@@ -122,7 +122,7 @@
       taskDialog = $("#createTranslationTaskDialog").dialog({
         autoOpen: false,
         modal: true,
-        width: 950,
+        width: 1100,
         height: 'auto',
         position: [25, 100],
         show: {
