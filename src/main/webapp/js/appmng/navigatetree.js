@@ -183,8 +183,8 @@
         clearTimeout(timeFunName);
         return data.inst.toggle_node(data.rslt.obj);
       });
-      util.afterInitilized(this);
       layout.showWelcomePanel();
+      util.afterInitilized(this);
       return $('#loading-container').fadeOut('slow', 'swing', function() {
         return $(this).remove();
       });

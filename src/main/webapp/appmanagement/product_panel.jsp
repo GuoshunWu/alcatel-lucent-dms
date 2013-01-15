@@ -6,9 +6,10 @@
 
     <table border="0">
         <tr>
-            <td style="width:30px;" class="show-label"><s:text name="product"/></td>
-            <td><span class="show-label" id="dispProductName"></span>
-                &nbsp;&nbsp;&nbsp;&nbsp;
+            <td>
+                <span class="show-label"><s:text name="product"/></span>
+                <span class="show-label" id="dispProductName"></span>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <label class="show-label" for="selVersion"><s:text name="version"/></label>
                 <select id="selVersion"></select>
                 <button id="newVersion" title="<s:text name="appmng.newproduct"/> "></button>
@@ -19,7 +20,7 @@
         </tr>
 
         <tr>
-            <td valign="top" colspan="2">
+            <td valign="top">
                 <div id="applicationGrid">
                     <table id="applicationGridList">
                         <tr>

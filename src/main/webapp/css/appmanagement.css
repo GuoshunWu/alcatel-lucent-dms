@@ -5,6 +5,7 @@
 
 .show-label {
     font-size: medium;
+    vertical-align: middle;!important
 }
 
 input[readonly] {
