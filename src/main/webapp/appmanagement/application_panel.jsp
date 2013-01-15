@@ -12,8 +12,8 @@
                     <%--<td class="show-label" align="left"><span id="appDispProductName"></span></td>--%>
                     <%--</tr>--%>
                     <tr>
-                        <td style="width: 80px" align="left" class="show-label"><s:text name="application"/></td>
                         <td align="left">
+                            <span class="show-label"><s:text name="application"/></span>
                             <span class="show-label" id="appDispAppName"></span>
                             &nbsp;&nbsp;&nbsp;&nbsp;
                             <span class="show-label"><s:text name="version"/></span>
@@ -23,6 +23,7 @@
                             <button id="removeAppVersion" title="<s:text name="appmng.removeapp"/>"></button>
 
                         </td>
+                    </tr>
                 </table>
             </td>
         </tr>

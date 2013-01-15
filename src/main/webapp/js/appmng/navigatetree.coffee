@@ -136,8 +136,8 @@ define (require)->
         data.inst.toggle_node data.rslt.obj
     )
 
-    util.afterInitilized(this)
     layout.showWelcomePanel()
+    util.afterInitilized(this)
     $('#loading-container').fadeOut 'slow', 'swing', ()->$(@).remove()
 
   getNodeInfo: getNodeInfo
