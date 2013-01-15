@@ -30,7 +30,7 @@
                 <tbody>
                 <tr>
                     <td style="vertical-align: middle;">
-                        <img src="images/wait/7.gif" alt="gif" style="vertical-align: middle;"/>
+                        <img src="images/wait/4.gif" alt="gif" style="vertical-align: middle;"/>
                         <s:text name="loading"/>
                     </td>
                 </tr>

@@ -38,7 +38,7 @@
                                 name="transmng.summarypanel.viewoption.dictionarylevel"/></label>
                         </div>
                     </td>
-                    <td style="width: 240px"><s:text name="transmng.summarypanel.searchtext"/><input/></td>
+                    <td style="display: none;width: 240px"><s:text name="transmng.summarypanel.searchtext"/><input/></td>
                     <td><a id="exportExcel" href="#"><img src="images/excel.gif"/><s:text name="export"/></a></td>
                     <td><a style="display: none" id="exportPDF" href="#">PDF
                         <form id="exportForm" method="post" action="trans/export-translation-report">
@@ -52,9 +52,6 @@
                 </tr>
             </table>
         </td>
-    </tr>
-    <tr>
-        <td>&nbsp;</td>
     </tr>
     <tr>
         <td>
