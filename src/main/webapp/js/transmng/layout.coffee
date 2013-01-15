@@ -34,7 +34,7 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
     exportTranslationDialog = $('#ExportTranslationsDialog').dialog {
     autoOpen: false,
     modal: true
-    width: 950, height: 'auto', position: [25, 100], show: { effect: 'slide', direction: "down" }
+    width: 1100, height: 'auto', position: [25, 100], show: { effect: 'slide', direction: "down" }
     open: ->
       info = grid.getTotalSelectedRowInfo()
       #      tableType is app or dict
@@ -66,7 +66,7 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
     }
     taskDialog = $("#createTranslationTaskDialog").dialog {
     autoOpen: false, modal: true
-    width: 950, height: 'auto', position: [25, 100], show: { effect: 'slide', direction: "down" }
+    width: 1100, height: 'auto', position: [25, 100], show: { effect: 'slide', direction: "down" }
 
     open: ->
       info = grid.getTotalSelectedRowInfo()

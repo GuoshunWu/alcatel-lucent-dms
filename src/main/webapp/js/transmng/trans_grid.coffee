@@ -74,7 +74,7 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
   width: $(window).innerWidth() * 0.95, height: 300
   rownumbers: true, shrinkToFit: false
   pager: '#transPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
-  sortname: 'base.name', sortorder: 'asc', multiselect: true
+  sortname: 'app.base.name', sortorder: 'asc', multiselect: true
   colNames: grid.dictionary.colNames, colModel: grid.dictionary.colModel
 
   beforeProcessing: (data, status, xhr)->
