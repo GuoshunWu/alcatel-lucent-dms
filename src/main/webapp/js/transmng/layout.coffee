@@ -7,7 +7,7 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
 
   dialogs = null
 
-  refreshGrid = ()->
+  refreshGrid = (languageTrigger=false)->
     param = {
     release: {id: $('#productRelease').val(), version: $("#productRelease option:selected").text()}
     level: $("input:radio[name='viewOption'][checked]").val()
@@ -15,6 +15,7 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
     checkboxes = $("##{ids.languageFilterDialogId} input:checkbox[name='languages']")
     param.languages = checkboxes.map(
       ()-> return {id: @id, name: @value} if @checked).get()
+    param.languageTrigger = languageTrigger
     grid.productReleaseChanged param
 
   createDialogs = ->
@@ -25,7 +26,7 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
     buttons: [
       { text: c18n.ok, click: ()->
         $(@).dialog "close"
-        refreshGrid()
+        refreshGrid(true)
       }
       {text: c18n.cancel, click: ()->$(@).dialog "close"}
     ]
@@ -152,6 +153,9 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
     taskDialog: taskDialog, languageFilterDialog: languageFilterDialog,
     transDetailDialog: transDetailDialog, exportTranslationDialog: exportTranslationDialog
     }
+
+  debugIntervalHandler = ()->
+    console.log('Hello world.')
 
   createSelects = ->
   # selects on summary panel

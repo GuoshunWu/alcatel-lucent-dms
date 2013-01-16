@@ -170,7 +170,7 @@
       pager: '#transPager',
       rowNum: 60,
       rowList: [10, 20, 30, 60, 120],
-      sortname: 'app.base.name',
+      sortname: 'base.name',
       sortorder: 'asc',
       multiselect: true,
       colNames: grid.dictionary.colNames,
@@ -254,7 +254,7 @@
       }
     }).click(function(e) {
       var menu;
-      menu = $('#translationStatus').show().width($(this).width() - 3).position({
+      menu = $('#translationStatus').show().width($(this).width()(-3)).position({
         my: "left bottom",
         at: "left top",
         of: this
@@ -307,8 +307,6 @@
         gridParam = transGrid.getGridParam();
         isApp = param.level === "application";
         if (isApp) {
-          gridParam.colNames = grid.application.colNames;
-          gridParam.colModel = grid.application.colModel;
           url = 'rest/applications';
           prop = "id,id,base.name,version,labelNum," + summary;
           transGrid.setColProp('application', {
@@ -320,13 +318,15 @@
             format: 'grid',
             prop: prop
           };
+          gridParam.colNames = grid.application.colNames;
+          gridParam.colModel = grid.application.colModel;
           transGrid.updateTaskLanguage(param.languages);
           return transGrid.reloadAll(url, postData);
         } else {
-          gridParam.colNames = grid.dictionary.colNames;
-          gridParam.colModel = grid.dictionary.colModel;
           url = 'rest/dict';
           prop = "id,app.base.name,app.version,base.name,version,base.encoding,base.format,labelNum," + summary;
+          gridParam.colNames = grid.dictionary.colNames;
+          gridParam.colModel = grid.dictionary.colModel;
           searchoptions = transGrid.getColProp('application').searchoptions;
           $.ajax({
             url: "rest/applications?prod=" + param.release.id + "&prop=id,name",

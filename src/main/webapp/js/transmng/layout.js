@@ -2,15 +2,18 @@
 (function() {
 
   define(['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng', 'transmng/trans_grid', 'transmng/transdetail_grid', 'util', 'require'], function($, blockui, msgbox, c18n, i18n, grid, detailgrid, util) {
-    var createButtons, createDialogs, createSelects, dialogs, exportAppOrDicts, ids, initPage, refreshGrid;
+    var createButtons, createDialogs, createSelects, debugIntervalHandler, dialogs, exportAppOrDicts, ids, initPage, refreshGrid;
     util = require('util');
     ids = {
       languageFilterTableId: 'languageFilterTable',
       languageFilterDialogId: 'languageFilterDialog'
     };
     dialogs = null;
-    refreshGrid = function() {
+    refreshGrid = function(languageTrigger) {
       var checkboxes, param;
+      if (languageTrigger == null) {
+        languageTrigger = false;
+      }
       param = {
         release: {
           id: $('#productRelease').val(),
@@ -27,6 +30,7 @@
           };
         }
       }).get();
+      param.languageTrigger = languageTrigger;
       return grid.productReleaseChanged(param);
     };
     createDialogs = function() {
@@ -45,7 +49,7 @@
             text: c18n.ok,
             click: function() {
               $(this).dialog("close");
-              return refreshGrid();
+              return refreshGrid(true);
             }
           }, {
             text: c18n.cancel,
@@ -265,6 +269,9 @@
         transDetailDialog: transDetailDialog,
         exportTranslationDialog: exportTranslationDialog
       };
+    };
+    debugIntervalHandler = function() {
+      return console.log('Hello world.');
     };
     createSelects = function() {
       $('#productBase').change(function() {
