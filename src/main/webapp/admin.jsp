@@ -17,7 +17,7 @@
     <meta http-equiv="Pragma" content="no-cache">
 
 
-    <link rel="stylesheet" type="text/css" href="css/admin.css">
+    <link rel="stylesheet" type="text/css" href="css/admin.css?v=<s:property value="buildNumber"/>">
     <%@include file="common/env.jsp" %>
     <script type="text/javascript" src="js/lib/require.js"></script>
     <script type="text/javascript">
