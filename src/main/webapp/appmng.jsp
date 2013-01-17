@@ -16,7 +16,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta http-equiv="Pragma" content="no-cache"/>
 
-    <link rel="stylesheet" type="text/css" href="css/appmanagement.css"/>
+    <link rel="stylesheet" type="text/css" href="css/appmanagement.css?v=<s:property value="buildNumber"/>"/>
     <%@include file="common/env.jsp" %>
     <script type="text/javascript" src="js/lib/require.js"></script>
     <script type="text/javascript">
