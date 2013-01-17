@@ -120,7 +120,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     }
 
 */ 
-    public Map<Long, Map<Long, int[]>> getDictTranslationSummaryByProd(Long prodId) {
+    public Map<Long, Map<Long, int[]>> getDictTranslationSummaryByProdHQL(Long prodId) {
     	Map<Long, Map<Long, int[]>> result = new HashMap<Long, Map<Long, int[]>>();
     	
     	// count labels for each dictionary
@@ -207,7 +207,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
      * @param prodId
      * @return
      */
-    public Map<Long, Map<Long, int[]>> getDictTranslationSummaryByProdJDBC(final Long prodId) {
+    public Map<Long, Map<Long, int[]>> getDictTranslationSummaryByProd(final Long prodId) {
     	final Map<Long, Map<Long, int[]>> result = new HashMap<Long, Map<Long, int[]>>();
     	dao.getSession().doWork(new Work() {
     		public void execute(Connection connection)throws SQLException{
@@ -228,6 +228,8 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     					" LEFT JOIN dms.TRANSLATION CT ON CT.TEXT_ID = L.TEXT_ID AND CT.LANGUAGE_ID = LANG.ID" +
     					" WHERE PA.PRODUCT_ID=" + prodId +
     					" GROUP BY D.ID,LANG.ID";
+    			long ts1 = System.currentTimeMillis();
+    			log.info("[SQL] " + sql);
     			Statement st = connection.createStatement();
     			ResultSet rs = st.executeQuery(sql);
     			while (rs.next()) {
@@ -244,6 +246,8 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     				}
     				map.put(langId, new int[] {t, n, i});
     			}
+    			long ts2 = System.currentTimeMillis();
+    			log.info("Time used for query: " + (ts2 - ts1) + "ms");
     		}
     	});
     	return result;
