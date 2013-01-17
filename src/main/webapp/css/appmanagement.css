@@ -1,0 +1,18 @@
+@import "jqueryUI/themes/base/jquery.ui.all.css";
+@import "jqueryLayout/layout-default-latest.css";
+@import "jqgrid/ui.jqgrid.css";
+@import "common.css";
+
+.show-label {
+    font-size: medium;
+    vertical-align: middle;!important
+}
+
+input[readonly] {
+    border-style: none
+}
+
+.ui-menu {
+    position: absolute;
+    width: 100px;
+}
