@@ -1,0 +1,792 @@
+--?000 #CHECKSUM=2285104#
+
+--? ---------------------------------------------------------------
+--Dictionnaire de l'application Instant COmmmunicator pour le Kernel
+--------------------------------------------------------------------
+--Creation date : 13/02/2007
+--Last Modification Date :
+
+-- Supported languages
+
+LANGUAGES {CHK, GAE, FR0, EN0, DE0, IT0, PT0, ES0, US0, PL0, KO0, NO0, NL0, RU0, CH0, FI0, ES1, CS0, HU0, CH1, SV0, AR0, DA0, HE0}
+
+-- Structure of the dictionary:
+
+-- First, you can see commentary lines, precedeed by two minus signs "--". these comments are not
+-- interpreted by the dictionary tool.
+
+-- For each translation needed, you will find:
+-- An entry key string in upper case, followed by a colon ":".
+-- This key is used by the software to associate a text field in the application with a set of
+-- translations
+-- Each translation associated with this key enholds:
+-- - a language code (FR0 for French for instance)
+-- - a text between brackets for the translation
+-- - a comma to delimit the end of the translation for this language
+-- the comma is replaced by a semicolon ";" to end the list of translations for a specific key
+
+-- NOTA 1: The CHK (Czech) language is used for indicating the maximum width of a text field.
+-- This indication stands only if you visualize the present dictionary with the proper
+-- font (as used in the application). Then, whichever characters you are using
+-- (W can be wider than i) the translations in the different languages  must not exeed the text width
+-- (undependantly to the characters amount) indicated in the CHK field
+-- Texts that are to be displayed in a popup window (OK popup, yes-no popup...) can consist
+-- of more than one line:
+-- "This text will be displayed""on two lines"
+-- Each line must not exceed the width indicated in the CHK field
+-- Texts that are to be displayed in a temporised popup (also called timed popup) can consist of :
+-- One (long) line (with automatic wrap of text on the following 3 lines),
+-- Or several lines ("First line"Second line"...up to "Forth line")
+-- In any case, you are limited to 256 caracters.
+
+-- General syntax:
+-- WC_xxxx : Window caption (title of the window)
+-- ME_xxxx : element of a menu
+-- BU_xxxx : name of a button
+-- CB_xxxx : element of a combo-box
+-- TQ_xxxx : text of a question
+-- TI_xxxx : text of an information, a warning, a problem
+-- ST_xxxx : static text before a variable field or others....
+-- EN_xxxx : for enumered types
+-- TT_xxxx : tool tips
+
+-- General rules:
+-- the "%s" inserted in a string will be replaced by a text at execution;
+-- the "%d" inserted in a string will be replaced by a number;
+-- all the translation for a string including a %s or a %d must keep those key characters, or an error occurs.
+-- The translations being presented in two string ("like" "this") will be displayed on two lines;
+-- you are not allowed to translate on two lines a text which is in one line in the English translation.
+
+-- Text displayed if the translation is not found
+-- nota: Sometimes the default text is included in English in the source code, beginning with "?"
+
+-- --------------------------------------
+-- kernel
+-- --------------------------------------
+
+WC_UPDATE:
+  CHK "My Instant Communicator - Mise ?jour0123465789",
+  GAE "My Instant Communicator - Update",
+
+  EN0 "My Instant Communicator - Update",
+
+
+
+
+  US0 "My Instant Communicator - Updated", -- 
+
+
+
+
+
+  CH0 "我的即时通 - 更新",
+
+
+
+
+
+
+
+
+  HE0 "My Instant Communicator - Update"; --???
+
+APPLICATION_NAME_TITLE:
+  CHK "Alcatel-Lucent - My Instant Communicator1234",
+  GAE "Alcatel-Lucent - My Instant Communicator ",
+
+  EN0 "Alcatel-Lucent - My Instant Communicator ",
+
+
+
+
+  US0 "Alcatel-Lucent - My Instant Communicator ",
+
+
+
+
+
+  CH0 "阿尔卡特朗讯 - 我的即时通 ", 
+
+
+
+
+
+
+
+
+  HE0 "Alcatel-Lucent - My Instant Communicator "; --???
+
+TI_UPDATE_NO_REBOOT:
+  CHK "The update of My Instant Communicator is required to start the application.0123465789",
+  GAE "The update of My Instant Communicator is required to start the application.",
+
+  EN0 "The update of My Instant Communicator is required to start the application.",
+
+
+
+
+  US0 "An update of My Instant Communicator is required to start the application.", --!!! 
+
+
+
+
+
+  CH0 "需要升级 我的即时通 来启动应用程序.",
+
+
+
+
+
+
+
+
+  HE0 "The update of My Instant Communicator is required to start the application."; --???
+
+TQ_UPDATED_NEEDED:
+  CHK "Une mise ?jour de My Instant Communicator est n閏essaire. Voulez-vous proc閐er maintenant ?cette mise ?jour ?0123465789",
+  GAE "An update of My Instant Communicator is required. Do you want to perform this update now ?",
+
+  EN0 "An update of My Instant Communicator is required. Do you want to perform this update now ?",
+
+
+
+
+  US0 "An update of My Instant Communicator is required. Do you want to perform this update now?",
+
+
+
+
+
+  CH0 "需要升级新版本的 我的即时通. 您想现在就进行升级吗 ?",
+
+
+
+
+
+
+
+
+  HE0 "An update of My Instant Communicator is required. Do you want to perform this update now ?"; --???
+
+TI_UPDATE_NOSTART:
+  CHK "My Instant Communicator is not started.0123465789",
+  GAE "My Instant Communicator is not started.",
+
+  EN0 "My Instant Communicator is not started.",
+
+
+
+
+  US0 "My Instant Communicator did not start.", --!!! 
+
+
+
+
+
+  CH0 "我的即时通 没有启动.",
+
+
+
+
+
+
+
+
+  HE0 "My Instant Communicator is not started."; --???
+
+-- crms00141441 +
+
+TI_UPDATE_INCOMPATIBILITY:
+  CHK "Your version of My Instant Communicator is incompatible with the server.0123465789",
+  GAE "Your version of My Instant Communicator is incompatible with the server.",
+
+  EN0 "Your version of My Instant Communicator is incompatible with the server.",
+
+
+
+
+  US0 "Your version of My Instant Communicator is not compatible with the server.", --!!! 
+
+
+
+
+
+  CH0 "我的即时通版本与服务器不兼容。", 
+
+
+
+
+
+
+
+
+  HE0 "Your version of My Instant Communicator is incompatible with the server."; --???
+
+TQ_UPDATE_PROPOSAL:
+  CHK "Une nouvelle version de My Instant Communicator est disponible.0123465789012345678901234567890123"
+      "Voulez-vous proc閐er ?la mise ?jour ?0123465789",
+  GAE "A new version of My Instant Communicator is available."
+      "Do you want to proceed to the update ?",
+
+  EN0 "A new version of My Instant Communicator is available."
+      "Do you want to proceed to the update ?",
+
+
+
+
+  US0 "A new version of My Instant Communicator is available."
+      "Do you want to update now?",
+
+
+
+
+
+  CH0 "检测到新版本的 我的即时通."
+      "您想进行升级吗 ?",
+
+
+
+
+
+
+
+
+  HE0 "A new version of My Instant Communicator is available."
+      "Do you want to proceed to the update ?"; --???
+
+TQ_UPDATE_REBOOT:
+  CHK "To update My Instant Communicator, your personal computer must be restarted.0123465789012345678901234567890123"
+      "Do you want to restart now ?0123465789012345678901234567890123456789",
+  GAE "To update My Instant Communicator, your personal computer must be restarted."
+      "Do you want to restart now ?",
+
+  EN0 "To update My Instant Communicator, your personal computer must be restarted."
+      "Do you want to restart now ?",
+
+
+
+
+  US0 "To update My Instant Communicator, your computer must be restarted."
+      "Do you want to restart now?",
+
+
+
+
+
+  CH0 "要升级 我的即时通, 您的计算机必须重新启动."
+      "您想现在就重启吗 ?",
+
+
+
+
+
+
+
+
+  HE0 "To update My Instant Communicator, your personal computer must be restarted."
+      "Do you want to restart now ?"; --???
+
+-- crms00139200 +
+
+CONTACT_ADMIN:
+  CHK "Pour plus d'informations, merci de contacter votre administrateur.1234",
+  GAE "For more information, please contact your administrator.",
+
+  EN0 "For more information, please contact your administrator.",
+
+
+
+
+  US0 "For more information, please contact your administrator.",
+
+
+
+
+
+  CH0 "如需更多信息，请联系您的管理员.",
+
+
+
+
+
+
+
+
+  HE0 "For more information, please contact your administrator."; --???
+
+ERROR_CRITIC:
+  CHK "My Instant Communicator - Erreur critique0123465789",
+  GAE "My Instant Communicator - Critic error",
+
+  EN0 "My Instant Communicator - Critic error",
+
+
+
+
+  US0 "My Instant Communicator - Critical error", --!!! 
+
+
+
+
+
+  CH0 "我的即时通 - 严重错误", 
+
+
+
+
+
+
+
+
+  HE0 "My Instant Communicator - Critic error"; --???
+
+ERROR_LICENSE_REQUIRED:
+  CHK "Vous ne disposez pas des licences n閏essaires pour ex閏uter l'application.0123465789",
+  GAE "You don't have the licence required to execute the application.",
+
+  EN0 "You don't have the licence required to execute the application.",
+
+
+
+
+  US0 "You do not have the license required to execute the application.", --!!! 
+
+
+
+
+
+  CH0 "您不需要许可执行应用程序。", 
+
+
+
+
+
+
+
+
+  HE0 "You don't have the licence required to execute the application."; --???
+
+MYIC_STOPPED:
+  CHK "L'application va 阾re arr阾閑.0123465789",
+  GAE "The application will be stopped.",
+
+  EN0 "The application will be stopped.",
+
+
+
+
+  US0 "The application will be stopped.", --!!! 
+
+
+
+
+
+  CH0 "应用程序将不会停止。", 
+
+
+
+
+
+
+
+
+  HE0 "The application will be stopped."; --???
+
+ERR_API_BAD_FRAMEWORK_SESSION_IDENTIFIER:
+  CHK "Impossible de vous connecter sur le serveur.0123465789",
+  GAE "Impossible to connect you on the server.",
+
+  EN0 "Impossible to connect you on the server",
+
+
+
+
+  US0 "Unable to connect to the server.", --!!! 
+
+
+
+
+
+  CH0 "不能在服务器上连接您", 
+
+
+
+
+
+
+
+
+  HE0 "Impossible to connect you on the server"; --???
+
+-- crms00139200 -
+
+ERR_API_4980_ALREADY_RUNNING:
+  CHK "4980 Softphone is running."
+      " Please close this application before starting My Instant Communicator.012346578901234567890123456789012345678",
+  GAE "4980 Softphone is running."
+      " Please close this application before starting My Instant Communicator.",
+
+  EN0 "4980 Softphone is running."
+      " Please close this application before starting My Instant Communicator.",
+
+
+
+
+  US0 "4980 Softphone is running."
+      " Please close this application before starting My Instant Communicator.",
+
+
+
+
+
+  CH0 "4980 软电话正在运行。"
+      "启动我的即时通前，请关闭这个应用程序。", 
+
+
+
+
+
+
+
+
+  HE0 "4980 Softphone is running."
+      " Please close this application before starting My Instant Communicator."; --???
+
+APPLICATION_NAME:
+  CHK "My Instant Communicator1234",
+  GAE "My Instant Communicator",
+
+  EN0 "My Instant Communicator",
+
+
+
+
+  US0 "My Instant Communicator", --!!! 
+
+
+
+
+
+  CH0 "我的即时通",
+
+
+
+
+
+
+
+
+  HE0 "My Instant Communicator"; --???
+
+WC_CERT_TITLE:
+  CHK "Certificate Installation12345678901234567890",
+  GAE "Certificate installation",
+
+  EN0 "Certificate installation",
+
+
+
+
+  US0 "Certificate installation", --!!! 
+
+
+
+
+
+  CH0 "证书安装", 
+
+
+
+
+
+
+
+
+  HE0 "Certificate installation"; --???
+
+CALLBACK_REQUEST:
+  CHK "Callback request0123456789012345678",
+  GAE "Callback request",
+
+  EN0 "Callback request",
+
+
+
+
+  US0 "Callback request", --!!! 
+
+
+
+
+
+  CH0 "回叫请求", 
+
+
+
+
+
+
+
+
+  HE0 "Callback request"; --???
+
+TI_CERT_REQUEST:
+  CHK "The following certificate installation is requested :12345678901234567890",
+  GAE "The following certificate installation is requested :",
+
+  EN0 "The following certificate installation is requested :",
+
+
+
+
+  US0 "The following certificate installation is requested:", --!!! 
+
+
+
+
+
+  CH0 "需要以下证书安装:", 
+
+
+
+
+
+
+
+
+  HE0 "The following certificate installation is requested :"; --???
+
+TI_CERT_QUESTION1:
+  CHK "Do you accept to use and/or install this certificate ?12345678901234567890",
+  GAE "Do you accept to use and/or install this certificate ?",
+
+  EN0 "Do you accept to use and/or install this certificate ?",
+
+
+
+
+  US0 "Do you want to accept this certificate for installation and use?", --!!! 
+
+
+
+
+
+  CH0 "您接受使用和/或安装此证书吗 ?", 
+
+
+
+
+
+
+
+
+  HE0 "Do you accept to use and/or install this certificate ?"; --???
+
+TI_CERT_QUESTION2:
+  CHK "If not, the application will terminate immediately.12345678901234567890",
+  GAE "If not, the application will terminate immediately.",
+
+  EN0 "If not, the application will terminate immediately.",
+
+
+
+
+  US0 "If not, the application will terminate immediately.", --!!! 
+
+
+
+
+
+  CH0 "如果否，应用程序将立即中止。", 
+
+
+
+
+
+
+
+
+  HE0 "If not, the application will terminate immediately."; --???
+
+TI_CERT_DELIVERED_TO:
+  CHK "Delivered to  : .12345678901234567890",
+  GAE "Delivered to  : ", --???
+
+  EN0 "Delivered to : ",
+
+
+
+
+  US0 "Delivered to: ", --!!! 
+
+
+
+
+
+  CH0 "传送至：", 
+
+
+
+
+
+
+
+
+  HE0 "Delivered to : "; --???
+
+TI_CERT_DELIVERED_BY:
+  CHK "Delivered by : 12345678901234567890",
+  GAE "Delivered by : ", --???
+
+  EN0 "Delivered by : ",
+
+
+
+
+  US0 "Delivered by: ", --!!! 
+
+
+
+
+
+  CH0 "发件人： ", 
+
+
+
+
+
+
+
+
+  HE0 "Delivered by : "; --???
+
+TI_CERT_VALID_FROM:
+  CHK "Valid from : .12345678901234567890",
+  GAE "Valid from : ", --???
+
+  EN0 "Valid from : ",
+
+
+
+
+  US0 "Valid from: ", --!!! 
+
+
+
+
+
+  CH0 "有效期从： ", 
+
+
+
+
+
+
+
+
+  HE0 "Valid from : "; --???
+
+TI_CERT_VALID_TO:
+  CHK " until : 12345678901234567890",
+  GAE " until : ", --???
+
+  EN0 " until : ",
+
+
+
+
+  US0 " until: ", --!!! 
+
+
+
+
+
+  CH0 " 至：", 
+
+
+
+
+
+
+
+
+  HE0 " until : "; --???
+
+TI_CERT_NEEDS_INSTALL:
+  CHK "needs to be installed on your machine.12345678901234567890",
+  GAE "needs to be installed on your machine.", --???
+
+  EN0 "needs to be installed on your machine.",
+
+
+
+
+  US0 "must be installed on your machine.", --!!! 
+
+
+
+
+
+  CH0 "需要安装在您的机器上。", 
+
+
+
+
+
+
+
+
+  HE0 "needs to be installed on your machine."; --???
+
+TI_BADLICENSE:
+  CHK "Utilisateur non reconnu. 0123456789 0123456789 0123456789 0123456789 0123456789 0123456789 0123456789",
+  GAE "The licence associated with this user is not correct.",
+
+  EN0 "The licence associated with this user is not correct.",
+
+
+
+
+  US0 "The license associated with this user is not correct.", --!!! 
+
+
+
+
+
+  CH0 "与此用户相关联的认证不正确.",
+
+
+
+
+
+
+
+
+  HE0 "The licence associated with this user is not correct."; --???
+
+NO_CONFIG_FILE:
+  CHK "Erreur lors de l'acc鑣 au fichier 0123456789 0123456789 0123456789 0123456789 0123456789 0123456789 0123456789",
+  GAE "Impossible to access or read file",
+
+  EN0 "Impossible to access or read file",
+
+
+
+
+  US0 "Unable to access or read file.", --!!! 
+
+
+
+
+
+  CH0 "不能接入或读取文件", 
+
+
+
+
+
+
+
+
+  HE0 "Impossible to access or read file"; --???
+

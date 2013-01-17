@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.alcatel_lucent.dms.model">
+
+    <class name="ProductBase" table="PRODUCT_BASE">
+		<id name="id" column="ID">
+			<generator class="native">
+                <param name="sequence">ID_PRODUCT_BASE</param>
+			</generator>
+		</id>
+
+        <many-to-one name="owner" column="USER_ID" />
+		<property name="name" type="string" column="NAME" not-null="true" />
+
+	    <set name="products" inverse="true">
+            <key column="PRODUCT_BASE_ID" on-delete="cascade" />
+            <one-to-many class="Product" />
+        </set>
+
+        <set name="applicationBases" inverse="true" order-by="name">
+            <key column="PRODUCT_BASE_ID" on-delete="cascade" />
+            <one-to-many class="ApplicationBase" />
+        </set>
+
+	</class>
+</hibernate-mapping>
