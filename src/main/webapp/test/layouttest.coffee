@@ -7,10 +7,6 @@ jQuery ($)->
       console?.debug "switch to #{@panels}[id='#{panelId}']."
       $("#{@panels}[id='#{panelId}']").fadeIn "fast", ()-> callback() if $.isFunction callback
 
-
-  pg = new PanelGroup('div.panel', 'p1')
-  pg.switchTo 'p2'
-
   tDialog = $('#testDialog').dialog(
     autoOpen: false
     title: 'Test Dialog.'
@@ -28,6 +24,13 @@ jQuery ($)->
       console?.log ui
   )
 
+  pg = new PanelGroup('div.panel', 'p1')
+  pg.switchTo 'p2', ()->
+    #  init tab in p2
+    height = $("##{pg.currentPanel}").height()
+    tTabs.tabs 'option', 'height', height
+    $('div', tTabs).height(height - 70)
+
   $('#switchPanel').button().click (e)->
     if pg.currentPanel == 'p1'
       tDialog.dialog('close')
@@ -35,7 +38,8 @@ jQuery ($)->
         height = $("##{pg.currentPanel}").height()
         tTabs.tabs 'option', 'height', height
         console?.debug "parent height=#{height}."
-        $('#langAdmin').height(height - 70)
+#        $('#langAdmin').height(height - 70)
+        $('div', tTabs).height(height - 70)
     else
       pg.switchTo 'p1'
       tDialog.dialog('open')

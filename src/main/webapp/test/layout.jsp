@@ -2,6 +2,7 @@
 <%@ page contentType="text/html;charset=utf-8" %>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <%@ taglib prefix="s" uri="/struts-tags" %>
+<s:set var="base" value="'..'" scope="page" />
 
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
@@ -14,7 +15,7 @@
         }
 
         .header {
-            background: #80ade5 url(http://layout.jquery-dev.net/demos/img/80ade5_40x100_textures_04_highlight_hard_100.png) 0 50% repeat-x;
+            background: #80ade5 url(${base}/css/jqueryLayout/images/80ade5_40x100_textures_04_highlight_hard_100.png) 0 50% repeat-x;
             border-bottom: 1px solid #777;
             font-weight: bold;
             text-align: center;
@@ -24,7 +25,8 @@
         }
 
         .subhead, .footer {
-            background: #d6d6d6 url(http://layout.jquery-dev.net/demos/img/d6d6d6_40x100_textures_02_glass_80.png) 0 50% repeat-x;
+            /*background: #d6d6d6 url(http://layout.jquery-dev.net/demos/img/d6d6d6_40x100_textures_02_glass_80.png) 0 50% repeat-x;*/
+            background: #d6d6d6 url(${base}/css/jqueryLayout/images/d6d6d6_40x100_textures_02_glass_80.png) 0 50% repeat-x;
             padding: 3px 10px;
             font-size: 0.85em;
             position: relative;
@@ -56,16 +58,18 @@
         }
     </style>
 
-    <link href="../css/jqueryUI/themes/base/jquery.ui.all.css" rel="stylesheet" type="text/css"/>
-    <script type="text/javascript" src="../js/lib/jquery-1.7.2.min.js"></script>
-    <script type="text/javascript" src="../js/lib/jquery-ui-1.8.22.custom.min.js"></script>
-    <script type="text/javascript" src="../js/lib/jquery.layout-latest.min.js"></script>
+
+    <link href="${base}/css/jqueryUI/themes/base/jquery.ui.all.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="${base}/js/lib/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="${base}/js/lib/jquery-ui-1.8.22.custom.min.js"></script>
+    <script type="text/javascript" src="${base}/js/lib/jquery.layout-latest.min.js"></script>
     <script type="text/javascript" src="layouttest.js"></script>
 
 </head>
 <body>
 
-<div class='dialog' id="testDialog">This is a panel.</div>
+<div class='dialog' id="testDialog">This is a panel.${base}
+</div>
 
 
 <div id="layout-container">
