@@ -16,26 +16,15 @@ define (require)->
     application: PANEL_PREFIX + "_applicationPanel"
     }
   }
-  appmngPnlGroup=new util.PanelGroup("#ui_center > div.content > div[id^=#{PANEL_PREFIX}]", "DMS_welcomePanel")
+  appmngPnlGroup = new util.PanelGroup("#ui_center > div.content > div[id^=#{PANEL_PREFIX}]", "DMS_welcomePanel")
 
+  showProductPanel: ->appmngPnlGroup.switchTo ids.panel.product, ()->
+    parent = $('#applicationGrid_parent')
+    $('#applicationGridList').setGridWidth(parent.width() - 10).setGridHeight(parent.height() - 90)
 
-#  dmsPanels = $ "#ui_center > div[id^=#{PANEL_PREFIX}]"
-#  showCenterPanel = (panelId) -> dmsPanels.each (index, panel)->
-#    if panel.id == panelId
-#      $(panel).show()
-#    else
-#      $(panel).hide()
-#
-#  showCenterPanel ids.panel.welcome
-
-
-  #export the method for other module use
-#  showProductPanel: ->showCenterPanel ids.panel.product
-#  showApplicationPanel: ->showCenterPanel ids.panel.application
-#  showWelcomePanel: ->showCenterPanel ids.panel.welcome
-
-  showProductPanel: ->appmngPnlGroup.switchTo ids.panel.product
-  showApplicationPanel: ->appmngPnlGroup.switchTo ids.panel.application
+  showApplicationPanel: ->appmngPnlGroup.switchTo ids.panel.application, ()->
+    parent = $('#dictionaryGridList_parent')
+    $('#dictionaryGridList').setGridWidth(parent.width() - 10).setGridHeight(parent.height() - 90)
   showWelcomePanel: ->
     appmngPnlGroup.switchTo ids.panel.welcome
 

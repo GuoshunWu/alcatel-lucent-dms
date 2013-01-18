@@ -405,6 +405,22 @@ To change this template use File | Settings | File Templates.
           return callback(languages);
         });
       },
+      setCookie: setCookie,
+      getCookie: function(name) {
+        var c, cname, value, _i, _len, _ref, _ref1;
+        _ref = document.cookie.split("; ");
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          c = _ref[_i];
+          _ref1 = c.split('='), cname = _ref1[0], value = _ref1[1];
+          if (cname === name) {
+            return value;
+          }
+        }
+        return null;
+      },
+      delCookie: function(name) {
+        return document.cookie = "" + name + "=" + (escape('')) + "; expires=Fri, 31 Dec 1999 23:59:59 GMT;";
+      },
       getUrlParams: function(suffix) {
         var k, param, params, v, _i, _len, _ref, _ref1;
         if (suffix == null) {

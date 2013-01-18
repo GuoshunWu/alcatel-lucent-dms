@@ -244,6 +244,8 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
     $('#loading-container').fadeOut 'slow', ()->$(@).remove()
     util.afterInitilized(this)
     $('#optional-container').show()
+    gridParent = $('.transGrid_parent');
+    $('#transGrid').setGridWidth(gridParent.width() - 10).setGridHeight(gridParent.height() - 110);
 
   # initialize page
   initPage()
