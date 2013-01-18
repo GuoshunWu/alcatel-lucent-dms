@@ -46,11 +46,11 @@
     </div>
 
     <div class="ui-layout-west">
-        <div class="header">Navigator Tree</div>
+        <div class="header">Navigation Tree</div>
         <div class="content">
             <div id="appTree" style="background-color: transparent;"></div>
         </div>
-        <div class="footer">Automatically positioned footer</div>
+        <%--<div class="footer">Automatically positioned footer</div>--%>
     </div>
 </div>
 <%@include file="appmanagement/dialogs.jsp" %>

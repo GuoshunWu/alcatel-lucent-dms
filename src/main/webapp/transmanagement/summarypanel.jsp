@@ -2,11 +2,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@ page contentType="text/html;charset=utf-8" %>
 
-<table width="100%" border="0">
-    <tr>
+<table style="width: 100%; height:100%;" border="0">
+    <tr style="height: 20px">
         <td style="font-weight:bold;font-size: medium;"><s:text name="transmng.summarypanel.summary"/></td>
     </tr>
-    <tr>
+    <tr style="height:20px;">
         <td>
             <table border="0" width="100%" style="border-color: red">
                 <tr>
@@ -38,7 +38,8 @@
                                 name="transmng.summarypanel.viewoption.dictionarylevel"/></label>
                         </div>
                     </td>
-                    <td style="display: none;width: 240px"><s:text name="transmng.summarypanel.searchtext"/><input/></td>
+                    <td style="display: none;width: 240px"><s:text name="transmng.summarypanel.searchtext"/><input/>
+                    </td>
                     <td><a id="exportExcel" href="#"><img src="images/excel.gif"/><s:text name="export"/></a></td>
                     <td><a style="display: none" id="exportPDF" href="#">PDF
                         <form id="exportForm" method="post" action="trans/export-translation-report">
@@ -54,22 +55,16 @@
         </td>
     </tr>
     <tr>
-        <td>
-            <table width="100%" border="0" style="border-color: yellow">
+        <td valign="top" align="center" class="transGrid_parent">
+            <table id="transGrid">
                 <tr>
-                    <td align="center" colspan="9" style="width: 100%">
-                        <table id="transGrid">
-                            <tr>
-                                <td/>
-                            </tr>
-                        </table>
-                        <div id="transPager"/>
-                    </td>
+                    <td/>
                 </tr>
             </table>
+            <div id="transPager"/>
         </td>
     </tr>
-    <tr>
+    <tr style="height:20px;">
         <td>
             <table width="100%" border="0" style="border-color: blue">
                 <tr>
@@ -91,11 +86,11 @@
                 </tr>
             </table>
             <%--<ul id="translationStatus">--%>
-                <%--<li><a name="2" href="#"><s:text name="status.translated"/></a></li>--%>
-                <%--<li><a name="0" href="#"><s:text name="status.nottranslated"/></a></li>--%>
+            <%--<li><a name="2" href="#"><s:text name="status.translated"/></a></li>--%>
+            <%--<li><a name="0" href="#"><s:text name="status.nottranslated"/></a></li>--%>
             <%--</ul>--%>
             <%--<button id='makeLabelTranslateStatus'><s:text--%>
-                    <%--name="transmng.summarypanel.makelabelas"/></button>--%>
+            <%--name="transmng.summarypanel.makelabelas"/></button>--%>
         </td>
     </tr>
 </table>

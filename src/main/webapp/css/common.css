@@ -1,3 +1,6 @@
+@import "jqueryUI/themes/base/jquery.ui.all.css";
+@import "jqueryLayout/layout-default-latest.css";
+
 @import "jqueryLayout/dmslayout.css";
 
 /* Using an 'optional-container' instead of 'body', so need body to have a 'height' */
@@ -76,13 +79,11 @@ th {
     background-color: #EEE;
     padding: 4px 7px 5px;
     border-color: #666;
-    /*text-align: left;*/
 }
 
 td {
     padding: 2px 7px 3px;
     border-color: #666 #CCC;
-    /*vertical-align: top;*/
 }
 
 

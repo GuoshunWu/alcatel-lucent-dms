@@ -1,5 +1,6 @@
 package com.alcatel_lucent.dms;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -13,6 +14,7 @@ import java.util.Properties;
  * Time: 下午7:42
  * To change this template use File | Settings | File Templates.
  */
+@Ignore
 public class ProfileConfigTest {
     
     @Test
