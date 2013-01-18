@@ -1,11 +1,11 @@
 jQuery ($)->
   class PanelGroup
     constructor: (@panels, @currentPanel)->
-    switchTo: (panelId)->
+    switchTo: (panelId, callback)->
       $("#{@panels}").hide()
       @currentPanel = panelId
       console?.debug "switch to #{@panels}[id='#{panelId}']."
-      $("#{@panels}[id='#{panelId}']").fadeIn "fast",()->console.log "Hello, world."
+      $("#{@panels}[id='#{panelId}']").fadeIn "fast", ()-> callback() if $.isFunction callback
 
 
   pg = new PanelGroup('div.panel', 'p1')
@@ -22,20 +22,20 @@ jQuery ($)->
   )
 
   tTabs = $('#p2 > .testTabs').tabs(
-    heightStyle: "fill"
-    activate: (event, ui)->
+    show: (event, ui)->
       console?.log ui
-    load: (event, ui)->
+    select: (event, ui)->
       console?.log ui
-    create: (event, ui)->
-      console?.log ui
-    heightStyle: "fill"
   )
 
   $('#switchPanel').button().click (e)->
     if pg.currentPanel == 'p1'
       tDialog.dialog('close')
-      pg.switchTo 'p2'
+      pg.switchTo 'p2', ()->
+        height = $("##{pg.currentPanel}").height()
+        tTabs.tabs 'option', 'height', height
+        console?.debug "parent height=#{height}."
+        $('#langAdmin').height(height - 70)
     else
       pg.switchTo 'p1'
       tDialog.dialog('open')

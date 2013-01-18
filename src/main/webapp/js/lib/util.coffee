@@ -384,7 +384,7 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
     constructor: (@panels, @currentPanel)->
     switchTo: (panelId, callback)->
       $("#{@panels}").hide()
-      console?.debug "switch to #{@panels}[id='#{panelId}']."
+#      console?.debug "switch to #{@panels}[id='#{panelId}']."
       @currentPanel = panelId
       $("#{@panels}[id='#{panelId}']").fadeIn "fast", ()->callback() if $.isFunction(callback)
 

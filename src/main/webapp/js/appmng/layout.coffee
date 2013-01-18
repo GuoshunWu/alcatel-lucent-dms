@@ -20,12 +20,12 @@ define (require)->
 
   showProductPanel: ->appmngPnlGroup.switchTo ids.panel.product, ()->
     parent = $('#applicationGrid_parent')
-    console?.debug "parent.width=#{parent.width()}, parent.height=#{parent.height()}."
+#    console?.debug "parent.width=#{parent.width()}, parent.height=#{parent.height()}."
     $('#applicationGridList').setGridWidth(parent.width() - 10).setGridHeight(parent.height() - 80)
 
   showApplicationPanel: ->appmngPnlGroup.switchTo ids.panel.application, ()->
     parent = $('#dictionaryGridList_parent')
-    console?.debug "parent.width=#{parent.width()}, parent.height=#{parent.height()}."
+#    console?.debug "parent.width=#{parent.width()}, parent.height=#{parent.height()}."
     $('#dictionaryGridList').setGridWidth(parent.width() - 10).setGridHeight(parent.height() - 80)
   showWelcomePanel: ->
     appmngPnlGroup.switchTo ids.panel.welcome

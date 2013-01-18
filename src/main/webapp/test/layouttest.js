@@ -10,14 +10,16 @@
         this.currentPanel = currentPanel;
       }
 
-      PanelGroup.prototype.switchTo = function(panelId) {
+      PanelGroup.prototype.switchTo = function(panelId, callback) {
         $("" + this.panels).hide();
         this.currentPanel = panelId;
         if (typeof console !== "undefined" && console !== null) {
           console.debug("switch to " + this.panels + "[id='" + panelId + "'].");
         }
         return $("" + this.panels + "[id='" + panelId + "']").fadeIn("fast", function() {
-          return console.log("Hello, world.");
+          if ($.isFunction(callback)) {
+            return callback();
+          }
         });
       };
 
@@ -44,22 +46,25 @@
       ]
     });
     tTabs = $('#p2 > .testTabs').tabs({
-      heightStyle: "fill",
-      activate: function(event, ui) {
+      show: function(event, ui) {
         return typeof console !== "undefined" && console !== null ? console.log(ui) : void 0;
       },
-      load: function(event, ui) {
+      select: function(event, ui) {
         return typeof console !== "undefined" && console !== null ? console.log(ui) : void 0;
-      },
-      create: function(event, ui) {
-        return typeof console !== "undefined" && console !== null ? console.log(ui) : void 0;
-      },
-      heightStyle: "fill"
+      }
     });
     $('#switchPanel').button().click(function(e) {
       if (pg.currentPanel === 'p1') {
         tDialog.dialog('close');
-        return pg.switchTo('p2');
+        return pg.switchTo('p2', function() {
+          var height;
+          height = $("#" + pg.currentPanel).height();
+          tTabs.tabs('option', 'height', height);
+          if (typeof console !== "undefined" && console !== null) {
+            console.debug("parent height=" + height + ".");
+          }
+          return $('#langAdmin').height(height - 70);
+        });
       } else {
         pg.switchTo('p1');
         return tDialog.dialog('open');
