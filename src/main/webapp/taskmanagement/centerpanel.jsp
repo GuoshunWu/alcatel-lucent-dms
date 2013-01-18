@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@ page contentType="text/html;charset=utf-8" %>
 
-<table width="100%" border="0" style="border-color: black">
+<table border="0" style="border-color: black; height:100%; width: 100%;">
     <tr>
-        <td>
+        <td style="height:20px;">
             <table border="0" width="100%">
                 <tr>
                     <td align="right" style="width:80px"><s:text name="product"/></td>
@@ -26,27 +26,17 @@
         </td>
     </tr>
     <tr>
-        <td>
-            <table width="100%" border="0" style="border-color: yellow">
+        <td valign="top" align="center" class="taskGrid_parent">
+            <table id="taskGrid">
                 <tr>
-                    <td align="center" colspan="9" style="width: 100%">
-
-                        <table id="taskGrid">
-                            <tr>
-                                <td/>
-                            </tr>
-                        </table>
-                        <div id="taskPager"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <form id="downloadTaskFiles" action="app/download-app-dict" method="post">
-                            <input type="hidden" id="fileLoc" name="fileLoc"/>
-                        </form>
-                    </td>
+                    <td/>
                 </tr>
             </table>
+            <div id="taskPager"/>
+            <form id="downloadTaskFiles" action="app/download-app-dict" method="post">
+                <input type="hidden" id="fileLoc" name="fileLoc"/>
+            </form>
+
         </td>
     </tr>
 </table>
