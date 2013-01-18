@@ -4,8 +4,8 @@
 
 <div id="DMS_productPanel" class="dms_appmng_panel">
 
-    <table border="0">
-        <tr>
+    <table border="0" style="width: 100%; height: 100%">
+        <tr style="height:20px;">
             <td>
                 <span class="show-label"><s:text name="product"/></span>
                 <span class="show-label" id="dispProductName"></span>
@@ -20,7 +20,7 @@
         </tr>
 
         <tr>
-            <td valign="top">
+            <td valign="top" align="center" class="applicationGrid_parent">
                 <div id="applicationGrid">
                     <table id="applicationGridList">
                         <tr>
