@@ -21,16 +21,16 @@
     return {
       showProductPanel: function() {
         return appmngPnlGroup.switchTo(ids.panel.product, function() {
-          var gridParent;
-          gridParent = $('.applicationGrid_parent');
-          return $('#applicationGridList').setGridWidth(gridParent.width() - 10).setGridHeight(gridParent.height() - 90);
+          var parent;
+          parent = $('#applicationGrid_parent');
+          return $('#applicationGridList').setGridWidth(parent.width() - 10).setGridHeight(parent.height() - 90);
         });
       },
       showApplicationPanel: function() {
         return appmngPnlGroup.switchTo(ids.panel.application, function() {
-          var gridParent;
-          gridParent = $('.dictionaryGridList_parent');
-          return $('#dictionaryGridList').setGridWidth(gridParent.width() - 10).setGridHeight(gridParent.height() - 90);
+          var parent;
+          parent = $('#dictionaryGridList_parent');
+          return $('#dictionaryGridList').setGridWidth(parent.width() - 10).setGridHeight(parent.height() - 90);
         });
       },
       showWelcomePanel: function() {

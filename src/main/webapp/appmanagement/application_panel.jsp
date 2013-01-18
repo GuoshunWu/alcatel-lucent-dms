@@ -17,7 +17,7 @@
             </td>
         </tr>
         <tr>
-            <td class="dictionaryGridList_parent">
+            <td id="dictionaryGridList_parent">
                 <div id="dictionaryGrid">
                     <table id="dictionaryGridList">
                         <tr>

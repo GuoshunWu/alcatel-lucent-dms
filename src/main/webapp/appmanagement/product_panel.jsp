@@ -20,7 +20,7 @@
         </tr>
 
         <tr>
-            <td valign="top" align="center" class="applicationGrid_parent">
+            <td valign="top" align="center" id="applicationGrid_parent">
                 <div id="applicationGrid">
                     <table id="applicationGridList">
                         <tr>
