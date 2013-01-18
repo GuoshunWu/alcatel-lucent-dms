@@ -23,14 +23,20 @@
         return appmngPnlGroup.switchTo(ids.panel.product, function() {
           var parent;
           parent = $('#applicationGrid_parent');
-          return $('#applicationGridList').setGridWidth(parent.width() - 10).setGridHeight(parent.height() - 90);
+          if (typeof console !== "undefined" && console !== null) {
+            console.debug("parent.width=" + (parent.width()) + ", parent.height=" + (parent.height()) + ".");
+          }
+          return $('#applicationGridList').setGridWidth(parent.width() - 10).setGridHeight(parent.height() - 80);
         });
       },
       showApplicationPanel: function() {
         return appmngPnlGroup.switchTo(ids.panel.application, function() {
           var parent;
           parent = $('#dictionaryGridList_parent');
-          return $('#dictionaryGridList').setGridWidth(parent.width() - 10).setGridHeight(parent.height() - 90);
+          if (typeof console !== "undefined" && console !== null) {
+            console.debug("parent.width=" + (parent.width()) + ", parent.height=" + (parent.height()) + ".");
+          }
+          return $('#dictionaryGridList').setGridWidth(parent.width() - 10).setGridHeight(parent.height() - 80);
         });
       },
       showWelcomePanel: function() {

@@ -503,14 +503,15 @@ To change this template use File | Settings | File Templates.
         }
 
         PanelGroup.prototype.switchTo = function(panelId, callback) {
-          var _this = this;
-          return $("" + this.panels + "[id!='" + panelId + "']").fadeOut('fast', 'swing', function(e) {
-            return $("" + _this.panels + "[id='" + panelId + "']").fadeIn('fast', 'swing', function(e) {
-              _this.currentPanel = panelId;
-              if ($.isFunction(callback)) {
-                return callback(e);
-              }
-            });
+          $("" + this.panels).hide();
+          if (typeof console !== "undefined" && console !== null) {
+            console.debug("switch to " + this.panels + "[id='" + panelId + "'].");
+          }
+          this.currentPanel = panelId;
+          return $("" + this.panels + "[id='" + panelId + "']").fadeIn("fast", function() {
+            if ($.isFunction(callback)) {
+              return callback();
+            }
           });
         };
 

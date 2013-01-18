@@ -2,7 +2,7 @@
 (function() {
 
   define(['jqlayout', 'taskmng/task_grid', 'i18n!nls/common', 'taskmng/dialogs', 'util', 'require'], function($, grid, c18n, dialogs, util, require) {
-    var gridParent, taskFileUpload;
+    var taskFileUpload;
     require('jqueryui');
     $('#productBase').change(function() {
       $('#productRelease').empty();
@@ -73,9 +73,7 @@
       return $(this).remove();
     });
     util.afterInitilized(this);
-    $('#optional-container').show();
-    gridParent = $('.taskGrid_parent');
-    return $('#taskGrid').setGridWidth(gridParent.width() - 10).setGridHeight(gridParent.height() - 60);
+    return $('#optional-container').show();
   });
 
 }).call(this);
