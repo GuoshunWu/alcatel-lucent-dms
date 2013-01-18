@@ -383,14 +383,10 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
   PanelGroup:
     class PanelGroup
       constructor:(@panels, @currentPanel)->
-        @panels=$(@panels)
-      switchTo:(panelId)->
-        @panels.each (index, panel)=>
-          if panel.id == panelId
-            $(panel).show()
-            #console?.debug 'Switch to Panel '+panelId
+      switchTo:(panelId, callback)->
+        $("#{@panels}[id!='#{panelId}']").fadeOut 'fast', 'swing', (e)=>
+          $("#{@panels}[id='#{panelId}']").fadeIn 'fast', 'swing', (e)=>
             @currentPanel = panelId
-          else
-            $(panel).hide()
+            callback e if $.isFunction callback
 
 

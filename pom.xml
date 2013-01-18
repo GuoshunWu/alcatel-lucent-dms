@@ -126,9 +126,9 @@
         </dependency>
 
         <!--<dependency>-->
-            <!--<groupId>org.hibernate</groupId>-->
-            <!--<artifactId>hibernate-swarmcache</artifactId>-->
-            <!--<version>3.6.9.Final</version>-->
+        <!--<groupId>org.hibernate</groupId>-->
+        <!--<artifactId>hibernate-swarmcache</artifactId>-->
+        <!--<version>3.6.9.Final</version>-->
         <!--</dependency>-->
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -381,6 +381,8 @@
                     <verbose>false</verbose>
                 </configuration>
             </plugin>
+
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
@@ -396,7 +398,8 @@
                 <configuration>
                     <warSourceExcludes>**/*.coffee</warSourceExcludes>
                     <!--<warSourceExcludes>**/config.js</warSourceExcludes>-->
-                    <useCache>true</useCache>
+                    <!--<useCache>true</useCache>-->
+                    <!--<failOnMissingWebXml>false</failOnMissingWebXml>-->
                 </configuration>
             </plugin>
 
@@ -459,8 +462,8 @@
                         <argument>src/main/webapp/js/app.build.js</argument>
 
                         <argument>dir=${project.build.directory}/${project.build.finalName}</argument>
-                        <argument>keepBuildDir=true</argument>
-                        <argument>optimize=uglify</argument>
+                        <!--<argument>keepBuildDir=true</argument>-->
+                        <!--<argument>optimize=uglify</argument>-->
                     </arguments>
                 </configuration>
             </plugin>
@@ -518,16 +521,16 @@
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
             </resource>
-            <resource>
-                <directory>src/main/webapp/js</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>**/config.js</include>
-                </includes>
-                <targetPath>
-                    ${project.build.directory}/${project.build.finalName}/js/
-                </targetPath>
-            </resource>
+            <!--<resource>-->
+                <!--<directory>src/main/webapp/js</directory>-->
+                <!--<filtering>true</filtering>-->
+                <!--<includes>-->
+                    <!--<include>**/config.js</include>-->
+                <!--</includes>-->
+                <!--<targetPath>-->
+                    <!--${project.build.directory}/${project.build.finalName}/js/-->
+                <!--</targetPath>-->
+            <!--</resource>-->
         </resources>
 
     </build>
@@ -665,7 +668,7 @@
                 <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
             </properties>
         </profile>
-        
+
 
         <profile>
             <id>dev</id>
