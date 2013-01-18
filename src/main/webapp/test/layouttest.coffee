@@ -2,9 +2,11 @@ jQuery ($)->
   class PanelGroup
     constructor: (@panels, @currentPanel)->
     switchTo: (panelId)->
-      $("#{@panels}[id!='#{panelId}']").fadeOut 'fast', 'swing', (e)=>
-        $("#{@panels}[id='#{panelId}']").fadeIn 'fast', 'swing', (e)=>
-          @currentPanel = panelId
+      $("#{@panels}").hide()
+      @currentPanel = panelId
+      console?.debug "switch to #{@panels}[id='#{panelId}']."
+      $("#{@panels}[id='#{panelId}']").fadeIn "fast",()->console.log "Hello, world."
+
 
   pg = new PanelGroup('div.panel', 'p1')
   pg.switchTo 'p2'
@@ -22,7 +24,7 @@ jQuery ($)->
   tTabs = $('#p2 > .testTabs').tabs(
     heightStyle: "fill"
     activate: (event, ui)->
-        console?.log ui
+      console?.log ui
     load: (event, ui)->
       console?.log ui
     create: (event, ui)->

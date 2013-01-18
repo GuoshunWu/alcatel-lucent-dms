@@ -225,7 +225,7 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
 
   urlname2Action = (urlname = '', suffix = 'Action')->urlname.split('/').pop().capitalize().split('-').join('') + suffix
   checkGridPrivilege = (grid)->
-    # console?.debug "check the privilege of grid '#{grid.id}'."
+  # console?.debug "check the privilege of grid '#{grid.id}'."
     gridParam = $(grid).jqGrid 'getGridParam'
     forbiddenTab =
       cellurl: urlname2Action(gridParam.cellurl) in param.forbiddenPrivileges
@@ -341,8 +341,8 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
     ).get().join(sep)
 
   afterInitilized: (context)->
-    # console?.debug "...Page #{param.naviTo} privilege check..."
-    #    check all buttons' privilege
+  # console?.debug "...Page #{param.naviTo} privilege check..."
+  #    check all buttons' privilege
     $('[role=button][privilegeName]').each (index, button)->
     #    .attr('privilegeName', util.urlname2Action 'app/deliver-app-dict')
       $(button).button 'disable' if $(button).attr('privilegeName') in param.forbiddenPrivileges
@@ -380,13 +380,13 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
   urlname2Action: urlname2Action
   createLayoutManager: (page = 'appmng.jsp')->createLayoutManager(page)
 
-  PanelGroup:
-    class PanelGroup
-      constructor:(@panels, @currentPanel)->
-      switchTo:(panelId, callback)->
-        $("#{@panels}[id!='#{panelId}']").fadeOut 'fast', 'swing', (e)=>
-          $("#{@panels}[id='#{panelId}']").fadeIn 'fast', 'swing', (e)=>
-            @currentPanel = panelId
-            callback e if $.isFunction callback
+  PanelGroup: class PanelGroup
+    constructor: (@panels, @currentPanel)->
+    switchTo: (panelId, callback)->
+      $("#{@panels}").hide()
+      console?.debug "switch to #{@panels}[id='#{panelId}']."
+      @currentPanel = panelId
+      $("#{@panels}[id='#{panelId}']").fadeIn "fast", ()->callback() if $.isFunction(callback)
+
 
 

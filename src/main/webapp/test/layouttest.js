@@ -11,11 +11,13 @@
       }
 
       PanelGroup.prototype.switchTo = function(panelId) {
-        var _this = this;
-        return $("" + this.panels + "[id!='" + panelId + "']").fadeOut('fast', 'swing', function(e) {
-          return $("" + _this.panels + "[id='" + panelId + "']").fadeIn('fast', 'swing', function(e) {
-            return _this.currentPanel = panelId;
-          });
+        $("" + this.panels).hide();
+        this.currentPanel = panelId;
+        if (typeof console !== "undefined" && console !== null) {
+          console.debug("switch to " + this.panels + "[id='" + panelId + "'].");
+        }
+        return $("" + this.panels + "[id='" + panelId + "']").fadeIn("fast", function() {
+          return console.log("Hello, world.");
         });
       };
 

@@ -10,7 +10,6 @@
       app_grid: '#applicationGridList'
     };
     appGrid = $(localIds.app_grid).jqGrid({
-      autowidth: false,
       datatype: 'local',
       url: 'json/dummy.json',
       editurl: "app/create-or-add-application",
@@ -18,7 +17,7 @@
       cellactionurl: 'app/add-application',
       cellsubmit: 'remote',
       cellEdit: true,
-      width: 1000,
+      width: 700,
       height: 350,
       pager: '#pager',
       rowNum: 10,
