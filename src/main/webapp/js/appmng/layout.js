@@ -21,9 +21,10 @@
     return {
       showProductPanel: function() {
         return appmngPnlGroup.switchTo(ids.panel.product, function() {
-          var parent;
+          var grid, parent;
+          grid = $('#applicationGridList');
           parent = $('#applicationGrid_parent');
-          return $('#applicationGridList').setGridWidth(parent.width() - 10).setGridHeight(parent.height() - 80);
+          return grid.setGridWidth(parent.width() - 10).setGridHeight(parent.height() - 80);
         });
       },
       showApplicationPanel: function() {

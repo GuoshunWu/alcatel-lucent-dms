@@ -2,7 +2,7 @@
 (function() {
 
   define(function(require) {
-    var $, charsetgrid, languagegrid, util;
+    var $, charsetgrid, languagegrid, pheight, tabs, util;
     $ = require('jqgrid');
     require('jqlayout');
     util = require('util');
@@ -13,16 +13,21 @@
         var pheight, pwidth;
         pheight = $(ui.panel).height();
         pwidth = $(ui.panel).width();
-        if (typeof console !== "undefined" && console !== null) {
-          console.debug("height=" + pheight + ", width=" + pwidth + ".");
-        }
         return $('table.ui-jqgrid-btable', ui.panel).setGridHeight(pheight - 90).setGridWidth(pwidth - 20);
       }
     });
     $('#loading-container').fadeOut('slow', function() {
       return $(this).remove();
     });
-    return util.afterInitilized(this);
+    util.afterInitilized(this);
+    tabs = $('#adminTabs');
+    pheight = tabs.parent().height();
+    tabs.tabs('option', 'pheight', pheight);
+    if (typeof console !== "undefined" && console !== null) {
+      console.debug("init tabs height=" + pheight + ".");
+    }
+    $('div.ui-tabs-panel', tabs).height(pheight - 50);
+    return $('#languageGrid').setGridHeight('100%');
   });
 
 }).call(this);

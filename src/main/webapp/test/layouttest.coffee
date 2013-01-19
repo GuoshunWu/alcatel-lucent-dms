@@ -20,8 +20,8 @@ jQuery ($)->
   tTabs = $('#p2 > .testTabs').tabs(
     show: (event, ui)->
       console?.log ui
-    select: (event, ui)->
-      console?.log ui
+    show: (event, ui)->
+      console?.log "width: #{$(ui.panel).width()}, height: #{$(ui.panel).height()}."
   )
 
   pg = new PanelGroup('div.panel', 'p1')
@@ -38,7 +38,6 @@ jQuery ($)->
         height = $("##{pg.currentPanel}").height()
         tTabs.tabs 'option', 'height', height
         console?.debug "parent height=#{height}."
-#        $('#langAdmin').height(height - 70)
         $('div.ui-tabs-panel', tTabs).height(height - 65)
 
     else

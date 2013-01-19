@@ -68,7 +68,7 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
     taskDialog = $("#createTranslationTaskDialog").dialog {
     autoOpen: false, modal: true
     width: 1100, height: 'auto', position: [25, 100], show: { effect: 'slide', direction: "down" }
-
+    create: ->
     open: ->
       info = grid.getTotalSelectedRowInfo()
       taskname = "#{$('#productBase option:selected').text()}_#{$('#productRelease option:selected').text()}"
@@ -118,7 +118,6 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
             $.msgBox json.message, null, {title: c18n.error}
             return
           $.msgBox i18n.msgbox.createtranstask.confirm, ((keyPressed)->
-          #            window.location = "taskmng.jsp?productBase=#{escape $('#productBase').val()}&product=#{escape $('#productRelease').val()}" if c18n.yes == keyPressed
           #            navigate form is in common/pagenavigator.jsp
             if c18n.yes != keyPressed
               $("#transGrid").trigger 'reloadGrid'
@@ -134,8 +133,9 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
     }
     transDetailDialog = $('#translationDetailDialog').dialog {
     autoOpen: false, width: 860, height: 'auto', modal: true
-    resize: (event, ui)->$("#transDetailGridList").setGridWidth(ui.size.width - 48, true).setGridHeight(ui.size.height - 270, true)
     create: ()->
+      $(@).dialog 'option', 'width', $('#transDetailGridList').getGridParam('width') + 60
+
       $('#detailLanguageSwitcher').change ->
         param = $('#translationDetailDialog').data "param"
         language = {id: $(@).val(), name: $("option:selected", @).text()}

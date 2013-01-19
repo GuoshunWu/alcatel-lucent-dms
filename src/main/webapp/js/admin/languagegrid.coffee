@@ -16,7 +16,8 @@ define (require)->
       [jsonFromServer.status == 0, jsonFromServer.message]
     editurl: 'admin/language'
     loadtext: 'Loading, please wait...', caption: i18n.langgrid.caption
-    width: $(window).innerWidth() * 0.95, height: $(window).innerHeight() * 0.6
+    autowidth: true
+    height: '100%'
     colNames: ['Name', 'Default Charset']
     colModel: [
       {name: 'name', index: 'name', width: 100, classes: 'editable-column', editable: true, align: 'left', editrules: {required: true}

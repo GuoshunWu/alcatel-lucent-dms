@@ -133,6 +133,7 @@
           effect: 'slide',
           direction: "down"
         },
+        create: function() {},
         open: function() {
           var info, langFilterTableId, nums, postData, tableType, taskname,
             _this = this;
@@ -233,10 +234,8 @@
         width: 860,
         height: 'auto',
         modal: true,
-        resize: function(event, ui) {
-          return $("#transDetailGridList").setGridWidth(ui.size.width - 48, true).setGridHeight(ui.size.height - 270, true);
-        },
         create: function() {
+          $(this).dialog('option', 'width', $('#transDetailGridList').getGridParam('width') + 60);
           return $('#detailLanguageSwitcher').change(function() {
             var language, param;
             param = $('#translationDetailDialog').data("param");
