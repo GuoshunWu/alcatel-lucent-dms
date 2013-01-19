@@ -119,9 +119,10 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   langSettings = $('#languageSettingsDialog').dialog(
     autoOpen: false
     modal: true
-    width: 530, height: 'auto', title: i18n.dialog.languagesettings.title
-    resize: (event, ui)->$('#languageSettingGrid').setGridWidth(ui.size.width - 35, true).setGridHeight(ui.size.height - 180, true)
+    title: i18n.dialog.languagesettings.title
+    create: -> $(@).dialog 'option', 'width', $('#languageSettingGrid').getGridParam('width') + 40
     open: (e, ui)->
+
     # param must be attached to the dialog before the dialog open
       param = $(@).data "param"
       $('#refCode').val param.langrefcode
@@ -138,7 +139,6 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
 
   stringSettings = $('#stringSettingsDialog').dialog {
   autoOpen: false
-  height: 'auto'
   title: i18n.dialog.stringsettings.title, modal: true
   create: (e, ui)->
   # set my width according to the string settings grid width
@@ -156,7 +156,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
     postData = dict: param.id, format: 'grid', prop: "key,reference,t,n,i,maxLength,context.name,description"
     $('#stringSettingsGrid').setGridParam(url: 'rest/labels', page: 1, postData: postData).trigger "reloadGrid"
   close: (event, ui)->(require 'appmng/stringsettings_grid').saveLastEditedCell()
-  #  resize: (event, ui)->$('#stringSettingsGrid').setGridWidth(ui.size.width - 35, true).setGridHeight(ui.size.height - 210, true)
+  #  # resize: (event, ui)->$('#stringSettingsGrid').setGridWidth(ui.size.width - 35, true).setGridHeight(ui.size.height - 210, true)
   buttons: [
     text: c18n.close, click: ()->
       $(@).dialog 'close'
@@ -168,7 +168,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
       primary: 'ui-icon-gear'
       secondary: "ui-icon-triangle-1-n"
   ).click (e)->
-    menu = $('#setContextMenu').show().width($(@).width()-3).position(my: "right bottom", at: "right top", of: @)
+    menu = $('#setContextMenu').show().width($(@).width() -3).position(my: "right bottom", at: "right top", of: @)
     $(document).one "click", ()->menu.hide()
     false
 
@@ -203,9 +203,8 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   dictListPreview = $('#dictListPreviewDialog').dialog {
   autoOpen: false
   modal: true, zIndex: 900
-  height: 'auto', width: 1030, title: i18n.dialog.dictlistpreview.title
-  resize: (event, ui)->
-    $('#dictListPreviewGrid').setGridWidth(ui.size.width - 55, true).setGridHeight(ui.size.height - 165, true)
+  title: i18n.dialog.dictlistpreview.title
+  create: ->$(@).dialog 'option', 'width', $('#dictListPreviewGrid').getGridParam('width') + 40
   buttons: [
     {text: i18n.dialog.dictlistpreview.import, click: ()->
       param = dictListPreview.data "param"
@@ -241,8 +240,8 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   dictPreviewStringSettings = $('#dictPreviewStringSettingsDialog').dialog {
   autoOpen: false
   modal: true, zIndex: 920
-  height: 'auto', width: 730, title: i18n.dialog.dictpreviewstringsettings.title
-  resize: (event, ui)->$('#dictPreviewStringSettingsGrid').setGridWidth(ui.size.width - 35, true).setGridHeight(ui.size.height - 210, true)
+  title: i18n.dialog.dictpreviewstringsettings.title
+  create: ->$(@).dialog 'option', 'width', $('#dictPreviewStringSettingsGrid').getGridParam('width') + 40
   open: ->
     param = $(@).data 'param'
     return if !param
@@ -270,9 +269,9 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   dictPreviewLangSettings = $('#dictPreviewLanguageSettingsDialog').dialog {
   autoOpen: false
   modal: true, zIndex: 920
-  width: 530, height: 'auto', title: i18n.dialog.languagesettings.title
-  resize: (event, ui)->$('#previewLanguageSettingGrid').setGridWidth(ui.size.width - 35, true).setGridHeight(ui.size.height - 180, true)
+  title: i18n.dialog.languagesettings.title
   open: ->
+    $(@).dialog 'option', 'width', $('#previewLanguageSettingGrid').getGridParam('width') + 40
     param = $(@).data 'param'
     return if !param
 

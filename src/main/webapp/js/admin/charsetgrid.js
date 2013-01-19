@@ -25,8 +25,8 @@
       rowList: [15, 30, 60],
       loadtext: 'Loading, please wait...',
       caption: i18n.charsetgrid.caption,
-      width: $(window).innerWidth() * 0.95,
-      height: $(window).innerHeight() * 0.6,
+      autowidth: true,
+      height: '100%',
       cellurl: 'admin/charset',
       cellEdit: true,
       afterSubmitCell: function(serverresponse, rowid, cellname, value, iRow, iCol) {

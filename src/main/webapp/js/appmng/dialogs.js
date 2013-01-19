@@ -194,11 +194,9 @@
     langSettings = $('#languageSettingsDialog').dialog({
       autoOpen: false,
       modal: true,
-      width: 530,
-      height: 'auto',
       title: i18n.dialog.languagesettings.title,
-      resize: function(event, ui) {
-        return $('#languageSettingGrid').setGridWidth(ui.size.width - 35, true).setGridHeight(ui.size.height - 180, true);
+      create: function() {
+        return $(this).dialog('option', 'width', $('#languageSettingGrid').getGridParam('width') + 40);
       },
       open: function(e, ui) {
         var param, postData;
@@ -229,7 +227,6 @@
     });
     stringSettings = $('#stringSettingsDialog').dialog({
       autoOpen: false,
-      height: 'auto',
       title: i18n.dialog.stringsettings.title,
       modal: true,
       create: function(e, ui) {
@@ -275,7 +272,7 @@
       }
     }).click(function(e) {
       var menu;
-      menu = $('#setContextMenu').show().width($(this).width() - 3).position({
+      menu = $('#setContextMenu').show().width($(this).width()(-3)).position({
         my: "right bottom",
         at: "right top",
         of: this
@@ -345,11 +342,9 @@
       autoOpen: false,
       modal: true,
       zIndex: 900,
-      height: 'auto',
-      width: 1030,
       title: i18n.dialog.dictlistpreview.title,
-      resize: function(event, ui) {
-        return $('#dictListPreviewGrid').setGridWidth(ui.size.width - 55, true).setGridHeight(ui.size.height - 165, true);
+      create: function() {
+        return $(this).dialog('option', 'width', $('#dictListPreviewGrid').getGridParam('width') + 40);
       },
       buttons: [
         {
@@ -410,11 +405,9 @@
       autoOpen: false,
       modal: true,
       zIndex: 920,
-      height: 'auto',
-      width: 730,
       title: i18n.dialog.dictpreviewstringsettings.title,
-      resize: function(event, ui) {
-        return $('#dictPreviewStringSettingsGrid').setGridWidth(ui.size.width - 35, true).setGridHeight(ui.size.height - 210, true);
+      create: function() {
+        return $(this).dialog('option', 'width', $('#dictPreviewStringSettingsGrid').getGridParam('width') + 40);
       },
       open: function() {
         var param, postData;
@@ -454,14 +447,10 @@
       autoOpen: false,
       modal: true,
       zIndex: 920,
-      width: 530,
-      height: 'auto',
       title: i18n.dialog.languagesettings.title,
-      resize: function(event, ui) {
-        return $('#previewLanguageSettingGrid').setGridWidth(ui.size.width - 35, true).setGridHeight(ui.size.height - 180, true);
-      },
       open: function() {
         var param, postData;
+        $(this).dialog('option', 'width', $('#previewLanguageSettingGrid').getGridParam('width') + 40);
         param = $(this).data('param');
         if (!param) {
           return;

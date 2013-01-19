@@ -15,7 +15,9 @@ define ['jqgrid', 'i18n!nls/appmng', 'appmng/dialogs', 'util', 'require'], ($, i
     cellurl: 'app/change-application-version'
     cellactionurl: 'app/add-application'
     cellsubmit: 'remote', cellEdit: true
-    width: 700, height: 350
+#    autowidth: true
+    widht: 700
+    height: '100%'
     pager: '#pager', rowNum: 10, rowList: [10, 20, 30], multiselect: true
     sortname: 'name', sortorder: 'asc'
     viewrecords: true, gridview: true, altRows: true

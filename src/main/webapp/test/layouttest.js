@@ -47,28 +47,18 @@
       show: function(event, ui) {
         return typeof console !== "undefined" && console !== null ? console.log(ui) : void 0;
       },
-      select: function(event, ui) {
-        return typeof console !== "undefined" && console !== null ? console.log(ui) : void 0;
+      show: function(event, ui) {
+        return typeof console !== "undefined" && console !== null ? console.log("width: " + ($(ui.panel).width()) + ", height: " + ($(ui.panel).height()) + ".") : void 0;
       }
     });
     pg = new PanelGroup('div.panel', 'p1');
-    pg.switchTo('p2', function() {
-      var height;
-      height = $("#" + pg.currentPanel).height();
-      tTabs.tabs('option', 'height', height);
-      return $('div', tTabs).height(height - 70);
-    });
+    pg.switchTo('p2', function() {});
     $('#switchPanel').button().click(function(e) {
       if (pg.currentPanel === 'p1') {
         tDialog.dialog('close');
         return pg.switchTo('p2', function() {
           var height;
-          height = $("#" + pg.currentPanel).height();
-          tTabs.tabs('option', 'height', height);
-          if (typeof console !== "undefined" && console !== null) {
-            console.debug("parent height=" + height + ".");
-          }
-          return $('div', tTabs).height(height - 70);
+          return height = $("#" + pg.currentPanel).height();
         });
       } else {
         pg.switchTo('p1');

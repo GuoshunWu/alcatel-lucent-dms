@@ -19,9 +19,10 @@ define (require)->
   appmngPnlGroup = new util.PanelGroup("#ui_center > div.content > div[id^=#{PANEL_PREFIX}]", "DMS_welcomePanel")
 
   showProductPanel: ->appmngPnlGroup.switchTo ids.panel.product, ()->
+    grid = $('#applicationGridList')
     parent = $('#applicationGrid_parent')
 #    console?.debug "parent.width=#{parent.width()}, parent.height=#{parent.height()}."
-    $('#applicationGridList').setGridWidth(parent.width() - 10).setGridHeight(parent.height() - 80)
+    grid.setGridWidth(parent.width() - 10).setGridHeight(parent.height() - 80)
 
   showApplicationPanel: ->appmngPnlGroup.switchTo ids.panel.application, ()->
     parent = $('#dictionaryGridList_parent')
