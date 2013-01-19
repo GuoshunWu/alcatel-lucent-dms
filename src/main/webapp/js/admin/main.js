@@ -9,16 +9,15 @@
     charsetgrid = require('admin/charsetgrid');
     languagegrid = require('admin/languagegrid');
     $('#adminTabs').tabs({
-      activate: function(event, ui) {
-        return typeof console !== "undefined" && console !== null ? console.log(ui) : void 0;
-      },
-      load: function(event, ui) {
-        return typeof console !== "undefined" && console !== null ? console.log(ui) : void 0;
-      },
-      create: function(event, ui) {
-        return typeof console !== "undefined" && console !== null ? console.log(ui) : void 0;
-      },
-      heightStyle: "fill"
+      show: function(event, ui) {
+        var pheight, pwidth;
+        pheight = $(ui.panel).height();
+        pwidth = $(ui.panel).width();
+        if (typeof console !== "undefined" && console !== null) {
+          console.debug("height=" + pheight + ", width=" + pwidth + ".");
+        }
+        return $('table.ui-jqgrid-btable', ui.panel).setGridHeight(pheight - 90).setGridWidth(pwidth - 20);
+      }
     });
     $('#loading-container').fadeOut('slow', function() {
       return $(this).remove();

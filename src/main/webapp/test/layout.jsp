@@ -68,7 +68,7 @@
 </head>
 <body>
 
-<div class='dialog' id="testDialog">This is a panel.${base}
+<div class='dialog' id="testDialog">This is a panel.
 </div>
 
 
