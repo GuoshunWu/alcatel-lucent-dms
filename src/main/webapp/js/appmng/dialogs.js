@@ -2,7 +2,7 @@
 (function() {
 
   define(['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsettings_grid', 'appmng/previewlangsetting_grid'], function(require, grid, sgrid, lgrid) {
-    var $, addApplication, addLanguage, c18n, dictListPreview, dictPreviewLangSettings, dictPreviewStringSettings, i18n, langSettings, newAppVersion, newProductVersion, setContextTo, stringSettings, util;
+    var $, addApplication, addLanguage, c18n, dictListPreview, dictPreviewLangSettings, dictPreviewStringSettings, i18n, langSettings, newAppVersion, newProductVersion, setContextTo, stringSettings, stringSettingsTranslationDialog, util;
     $ = require('jqueryui');
     c18n = require('i18n!nls/common');
     i18n = require('i18n!nls/appmng');
@@ -563,6 +563,32 @@
         }
       ]
     });
+    stringSettingsTranslationDialog = $('#stringSettingsTranslationDialog').dialog({
+      autoOpen: false,
+      modal: true,
+      create: function() {
+        return $(this).dialog('option', 'width', $('#stringSettingsTranslationGrid').getGridParam('width') + 40);
+      },
+      open: function(event, ui) {
+        var param;
+        param = $(this).data('param');
+        if (!param) {
+          return;
+        }
+        return typeof console !== "undefined" && console !== null ? console.debug(param) : void 0;
+        /*TODO: implement backend.
+        */
+
+      },
+      buttons: [
+        {
+          text: c18n.close,
+          click: function(e) {
+            return $(this).dialog('close');
+          }
+        }
+      ]
+    });
     return {
       addLanguage: addLanguage,
       dictPreviewLangSettings: dictPreviewLangSettings,
@@ -572,7 +598,8 @@
       newProductVersion: newProductVersion,
       newAppVersion: newAppVersion,
       addApplication: addApplication,
-      langSettings: langSettings
+      langSettings: langSettings,
+      stringSettingsTranslationDialog: stringSettingsTranslationDialog
     };
   });
 

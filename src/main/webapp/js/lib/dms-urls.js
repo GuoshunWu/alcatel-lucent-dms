@@ -31,7 +31,7 @@ To change this template use File | Settings | File Templates.
       for (k in params) {
         v = params[k];
         if (!isFirst) {
-          url += '&&';
+          url += '&';
         }
         url += "" + k + "=" + (decodeURIComponent(v));
         isFirst = false;

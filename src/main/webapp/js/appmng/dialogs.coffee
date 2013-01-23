@@ -244,7 +244,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   create: ->$(@).dialog 'option', 'width', $('#dictPreviewStringSettingsGrid').getGridParam('width') + 40
   open: ->
     param = $(@).data 'param'
-    return if !param
+    return unless param
 
     $('#previewDictName', @).val(param.name)
     $('#previewDictVersion', @).val(param.version)
@@ -340,6 +340,23 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
     {text: 'Cancel', click: (e)->$(@).dialog 'close'}
   ]
   }
+
+  stringSettingsTranslationDialog = $('#stringSettingsTranslationDialog').dialog
+    autoOpen: false, modal: true
+    create: -> $(@).dialog 'option', 'width', $('#stringSettingsTranslationGrid').getGridParam('width') + 40
+    open: (event, ui)->
+      param = $(@).data('param')
+      return unless param
+      console?.debug param
+      ###TODO: implement backend. ###
+#      $('#stringSettingsTranslationGrid').setGridParam(url: 'rest/', postData: {id: param.id}).trigger "reloadGrid"
+
+    buttons: [
+      {text: c18n.close, click: (e)->
+        $(@).dialog 'close'
+      }
+    ]
+
   addLanguage: addLanguage
   dictPreviewLangSettings: dictPreviewLangSettings
   dictPreviewStringSettings: dictPreviewStringSettings
@@ -349,3 +366,4 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   newAppVersion: newAppVersion
   addApplication: addApplication
   langSettings: langSettings
+  stringSettingsTranslationDialog: stringSettingsTranslationDialog

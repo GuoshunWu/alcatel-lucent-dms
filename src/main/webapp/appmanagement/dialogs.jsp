@@ -131,6 +131,26 @@
     </table>
 </div>
 
+<div id="stringSettingsTranslationDialog" title="<s:text name="appmng.dialogs.labeltrans.title" />">
+    <table border="0" width="100%">
+        <tr>
+            <td>
+                &nbsp;
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table id="stringSettingsTranslationGrid">
+                    <tr>
+                        <td/>
+                    </tr>
+                </table>
+                <div id="stringSettingsTranslationPager"></div>
+            </td>
+        </tr>
+    </table>
+</div>
+
 <div id="customContext" title="<s:text name="context.custom.title"/>">
     <table border="0" style="width: 100%;height: 100%">
         <tr>
