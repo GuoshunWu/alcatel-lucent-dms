@@ -203,9 +203,7 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
         togglerLength_closed: 21      # make toggler 'square' - 21x21
         togglerAlign_closed: "top"    # align to top of resizer
         togglerLength_open: 0      # NONE - using custom togglers INSIDE west-pane
-        togglerTip_open: "Close West Pane"
-        togglerTip_closed: "Open West Pane"
-        resizerTip_open: "Resize West Pane"
+
         slideTrigger_open: "click"   # default
         initClosed: false
         resizable: true

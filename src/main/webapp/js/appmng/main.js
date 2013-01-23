@@ -12,35 +12,40 @@
       layout = $('#appmng-container').layout({
         name: 'appmnglayout',
         defaults: {
-          buttonClass: "button",
-          paneClass: "pane",
+          size: 'auto',
+          minSize: 50,
           resizerClass: "resizer",
           togglerClass: "toggler",
           buttonClass: "button",
           contentSelector: ".content",
           contentIgnoreSelector: "span",
-          size: 'auto',
+          togglerLength_open: 35,
+          togglerLength_closed: 35,
+          hideTogglerOnSlide: true,
+          togglerTip_open: "Close This Pane",
+          togglerTip_closed: "Open This Pane",
+          resizerTip: "Resize This Pane",
+          fxName: 'slide',
+          fxSpeed_open: 750,
+          fxSpeed_close: 1500,
           fxSettings_open: {
             easing: "easeInQuint"
           },
           fxSettings_close: {
             easing: "easeOutQuint"
-          },
-          west: {
-            size: 250,
-            spacing_closed: 21,
-            togglerLength_closed: 21,
-            togglerAlign_closed: "top",
-            togglerLength_open: 0,
-            togglerTip_open: "Close West Pane",
-            togglerTip_closed: "Open West Pane",
-            resizerTip_open: "Resize West Pane",
-            slideTrigger_open: "click",
-            initClosed: false,
-            resizable: true,
-            fxSettings_open: {
-              easing: "easeOutBounce"
-            }
+          }
+        },
+        west: {
+          size: 250,
+          spacing_closed: 21,
+          togglerLength_closed: 21,
+          togglerAlign_closed: "top",
+          togglerLength_open: 0,
+          slideTrigger_open: "click",
+          initClosed: false,
+          resizable: true,
+          fxSettings_open: {
+            easing: "easeOutBounce"
           }
         }
       });

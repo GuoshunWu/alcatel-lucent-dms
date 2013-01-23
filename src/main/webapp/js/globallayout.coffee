@@ -5,12 +5,11 @@ define (require)->
     console?.debug "global layout ready..."
 
   layout = $('#global-container').layout(
-    defaults:
-      size: 'auto'
-      north:
-        minSize: 37
-        togglerLength_closed: -1
-        resizable: false
+    defaults: {size: 'auto'}
+    north:
+      minSize: 34
+      togglerLength_closed: -1
+      resizable: false
   )
 
   ready()
