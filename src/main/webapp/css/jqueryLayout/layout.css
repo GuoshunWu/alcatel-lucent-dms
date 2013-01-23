@@ -44,6 +44,76 @@ The global container for layout
     background-color: #F6F6F6;
 }
 
+/*
+*	INNER LAYOUT RESIZERS & TOGGLERS
+*/
+
+.resizer-west-dragging, .resizer-west-open:hover {
+    background: url(images/resizable-w.gif) repeat-y center;
+}
+
+.resizer-west-open, .resizer-east-open {
+    background-color: #999;
+    opacity: 0.1;
+    filter: alpha(opacity = 10);
+}
+
+.resizer-west-open:hover, .resizer-east-open:hover {
+    opacity: 1;
+    filter: alpha(opacity = 100);
+}
+
+/*
+*	extJS-STYLE RESIZER/SLIDER-BAR (CLOSED)
+*/
+.resizer-west-closed, .resizer-east-closed {
+    background: #D1E6FC url(images/D1E6FC_40x100_textures_10_dots_medium_90.png) 0 0 repeat;
+    border-top: 1px solid #777;
+    border-bottom: 1px solid #777;
+}
+
+.resizer-west-closed:hover, .resizer-east-closed:hover {
+    background: #D1E6FC;
+}
+
+.resizer-dragging-limit {
+    background: #FF3300 !important;
+}
+
+
+
+/* IE6 * HACK - always show resizer graphics because IE6 cannot understand elem:hover */
+/** html .resizer-north		{ background: url(images/resizable-n.gif) repeat-x center !important; } */
+
+* html .resizer-west-open {
+    background: url(images/resizable-w.gif) repeat-y center !important;
+}
+
+/** html .resizer-north , */
+* html .resizer-south, * html .resizer-west-open, * html .resizer-east-open {
+    opacity: 0.1 !important;
+    filter: alpha(opacity = 10) !important;
+}
+
+/* STANDARD toggler-buttons - when the east/west panes are 'closed' */
+.toggler-west-closed {
+    background: url(images/go-rt-off.gif) no-repeat center;
+}
+
+.toggler-west-closed:hover {
+    background: url(images/go-rt-on.gif) no-repeat center;
+}
+
+/* CUSTOM close-buttons */
+span.button-close-west {
+    background: url(images/go-lt-off.gif) no-repeat center;
+}
+
+span.button-close-west:hover {
+    background: url(images/go-lt-on.gif) no-repeat center;
+}
+
+
 .content{
     padding: 10px;
 }

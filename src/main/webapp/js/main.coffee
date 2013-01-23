@@ -8,7 +8,7 @@ define (require)->
 
   ready = (param)->
     console?.debug "page ready..."
-    glayout.layout.resizeAll()
+#    glayout.layout.resizeAll()
     $('#loading-container').fadeOut 'slow', ()->$(@).remove()
 
   ################################################## Initilaize #####################################################

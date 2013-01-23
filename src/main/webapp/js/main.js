@@ -11,7 +11,6 @@
       if (typeof console !== "undefined" && console !== null) {
         console.debug("page ready...");
       }
-      glayout.layout.resizeAll();
       return $('#loading-container').fadeOut('slow', function() {
         return $(this).remove();
       });

@@ -4,12 +4,10 @@
   define({
     root: {
       langgrid: {
-        caption: 'Language List',
-        'dummy': ''
+        caption: 'Language List'
       },
       charsetgrid: {
-        caption: 'Charset List',
-        'dummy': ''
+        caption: 'Charset List'
       }
     },
     "zh-cn": true
