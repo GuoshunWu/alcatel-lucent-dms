@@ -1,9 +1,4 @@
 /**
- * Created by IntelliJ IDEA.
- * User: Administrator
- * Date: 12-9-28
- * Time: 下午10:09
- * command in current dir: r -o app.build.js
  *
  * java command line:
  set M2_REP=D:/MyDocuments/mavenRepository
@@ -16,12 +11,8 @@
  */
 
 ({
-//    baseUrl:'js/lib',
     appDir:'../',
-//    appDir:'${basedir}',
     mainConfigFile:'config.js',
-//    dir:'../../../../target/dms_build',
-//    dir:'D:/ProgramTools/apache-tomcat-7.0.30/webapps/dms',
 
     //How to optimize all the JS files in the build output directory.
     //Right now only the following values
@@ -33,20 +24,16 @@
     //- "closure.keepLines": Same as closure option, but keeps line returns
     //in the minified files.
     //- "none": no minification will be done.
-//    optimize:"none",
+    optimize:"uglify",
 
-    //When the optimizer copies files from the source location to the
-    //destination directory, it will skip directories and files that start
-    //with a ".". If you want to copy .directories or certain .files, for
-    //instance if you keep some packages in a .packages directory, or copy
-    //over .htaccess files, you can set this to null. If you want to change
-    //the exclusion rules, change it to a different regexp. If the regexp
-    //matches, it means the directory will be excluded. This used to be
-    //called dirExclusionRegExp before the 1.0.2 release.
-    //As of 1.0.3, this value can also be a string that is converted to a
-    //RegExp via new RegExp().
-//    fileExclusionRegExp:"/^\.|.*\.(?:coffee|properties|xml|sql)$/",
-    fileExclusionRegExp:"/^\.|.*\.(?:coffee|sql)$/",
+    fileExclusionRegExp:"/^\./",
+
+    optimizeCss: "standard.keepLines",
+    pragmasOnSave: {
+        excludeCoffeeScript: true
+    },
+    keepBuildDir:true,
+
     modules:[
         //First set up the common build layer.
         {
