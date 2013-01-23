@@ -26,7 +26,7 @@
         //a separate file so after a build there are only 2 HTTP
         //requests instead of three.
 
-        require(['./js/gconfig.js?bust=' + new Date().getTime()], function (config) {
+        require(['./js/config.js?bust=' + new Date().getTime()], function (config) {
             require(['admin/main']);
         }, function (err) {
             console.log("load module err: " + err);

@@ -14,7 +14,7 @@
     <%@include file="common/env.jsp" %>
     <script type="text/javascript" src="js/lib/require.js"></script>
     <script type="text/javascript">
-        require(['./js/gconfig.js?bust=' + new Date().getTime()], function (config) {
+        require(['./js/config.js?bust=' + new Date().getTime()], function (config) {
             require(['../main']);
         });
     </script>
