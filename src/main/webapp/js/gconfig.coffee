@@ -46,7 +46,7 @@ require.config
       deps: ['jquery']
       exports: 'jQuery'
     'jqgrid':
-      deps: ['jqueryui', if typeof param != "undefined" && param then param.i18ngridfile else 'i18n/grid.locale-en']
+      deps: ['jqueryui', if param? then param.i18ngridfile else 'i18n/grid.locale-en']
       exports: 'jQuery'
     'jqtree':
       deps: ['jquery']
@@ -66,7 +66,8 @@ require.config
 
   #Set the config for the i18n
   config:
-    i18n: locale: if typeof param != "undefined" && param then param.locale else 'en_us'
-  urlArgs: "bust=#{if typeof param != 'undefined' && param then param.buildNumber else '1'}"
-  #  urlArgs:"bust=" + new Date().getTime()
+    i18n:
+      locale: if param? then param.locale else 'en_us'
+  urlArgs: "bust=#{if param? then param.buildNumber else '1'}"
+
   waitSeconds: 60

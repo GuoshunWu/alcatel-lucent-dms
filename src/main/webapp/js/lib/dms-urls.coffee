@@ -14,7 +14,7 @@ define (require)->
     url = "#{url}?"
     isFirst = true
     for k, v of params
-      url += '&&' unless isFirst
+      url += '&' unless isFirst
       url += "#{k}=#{decodeURIComponent(v)}"
       isFirst = false
     url

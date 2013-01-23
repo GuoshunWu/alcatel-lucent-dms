@@ -56,7 +56,7 @@
         exports: 'jQuery'
       },
       'jqgrid': {
-        deps: ['jqueryui', typeof param !== "undefined" && param ? param.i18ngridfile : 'i18n/grid.locale-en'],
+        deps: ['jqueryui', typeof param !== "undefined" && param !== null ? param.i18ngridfile : 'i18n/grid.locale-en'],
         exports: 'jQuery'
       },
       'jqtree': {
@@ -82,10 +82,10 @@
     },
     config: {
       i18n: {
-        locale: typeof param !== "undefined" && param ? param.locale : 'en_us'
+        locale: typeof param !== "undefined" && param !== null ? param.locale : 'en_us'
       }
     },
-    urlArgs: "bust=" + (typeof param !== 'undefined' && param ? param.buildNumber : '1'),
+    urlArgs: "bust=" + (typeof param !== "undefined" && param !== null ? param.buildNumber : '1'),
     waitSeconds: 60
   });
 
