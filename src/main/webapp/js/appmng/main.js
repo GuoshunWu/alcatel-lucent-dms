@@ -2,37 +2,58 @@
 (function() {
 
   define(function(require) {
-    var $, layout, ready, tree, util, westSelector;
+    var $, init, ready, tree, util;
     $ = require('jqgrid');
     require('jqlayout');
     util = require('dms-util');
     tree = require('appmng/producttree');
-    layout = $('#appmng-container').layout({
-      defaults: {
-        size: 'auto',
-        west: {
-          size: 250,
-          spacing_closed: 21,
-          togglerLength_closed: 21,
-          togglerAlign_closed: "top",
-          togglerLength_open: 0,
-          togglerTip_open: "Close West Pane",
-          togglerTip_closed: "Open West Pane",
-          resizerTip_open: "Resize West Pane",
-          slideTrigger_open: "click",
-          initClosed: false,
-          resizable: true
+    init = function() {
+      var layout, westSelector;
+      layout = $('#appmng-container').layout({
+        name: 'appmnglayout',
+        defaults: {
+          buttonClass: "button",
+          paneClass: "pane",
+          resizerClass: "resizer",
+          togglerClass: "toggler",
+          buttonClass: "button",
+          contentSelector: ".content",
+          contentIgnoreSelector: "span",
+          size: 'auto',
+          fxSettings_open: {
+            easing: "easeInQuint"
+          },
+          fxSettings_close: {
+            easing: "easeOutQuint"
+          },
+          west: {
+            size: 250,
+            spacing_closed: 21,
+            togglerLength_closed: 21,
+            togglerAlign_closed: "top",
+            togglerLength_open: 0,
+            togglerTip_open: "Close West Pane",
+            togglerTip_closed: "Open West Pane",
+            resizerTip_open: "Resize West Pane",
+            slideTrigger_open: "click",
+            initClosed: false,
+            resizable: true,
+            fxSettings_open: {
+              easing: "easeOutBounce"
+            }
+          }
         }
-      }
-    });
-    westSelector = "#appmng-container > .ui-layout-west";
-    $("<span></span>").addClass("pin-button").prependTo(westSelector);
-    layout.addPinBtn("" + westSelector + " .pin-button", "west");
-    $("<span></span>").attr("id", "west-closer").prependTo(westSelector);
-    layout.addCloseBtn("#west-closer", "west");
+      });
+      westSelector = "#appmng-container > div.ui-layout-west";
+      $("<span></span>").addClass("pin-button").prependTo(westSelector);
+      layout.addPinBtn("" + westSelector + " .pin-button", "west");
+      $("<span></span>").attr("id", "west-closer").prependTo(westSelector);
+      return layout.addCloseBtn("#west-closer", "west");
+    };
     ready = function(param) {
       return typeof console !== "undefined" && console !== null ? console.debug("appmng panel ready...") : void 0;
     };
+    init();
     return ready();
   });
 

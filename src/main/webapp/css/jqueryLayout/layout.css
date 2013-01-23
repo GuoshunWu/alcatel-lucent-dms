@@ -27,7 +27,7 @@ The global container for layout
 /*
 *	OUTER-LAYOUT PANE FORMATTING
 */
-.ui-layout-pane-north, .ui-layout-pane-south, .ui-layout-pane-west, .ui-layout-pane-east {
+.ui-layout-pane-north, .ui-layout-pane-south, .ui-layout-pane-west, .ui-layout-pane-east, .pane-north, .pane-south, .pane-west, .pane-east {
     overflow: hidden;
 }
 
@@ -39,10 +39,13 @@ The global container for layout
     text-align: center;
 }
 
-.ui-layout-pane-center {
+.ui-layout-pane-center, pane-center {
     /* show off the inner-layout inside the outer-center-ui-layout-pane*/
     background-color: #F6F6F6;
-    /*padding: 15px; *//* for outer layout */
+}
+
+.content{
+    padding: 10px;
 }
 
 /*
@@ -55,6 +58,19 @@ The global container for layout
 
 .ui-layout-toggler-north-closed, .toggler-south-open {
     background: url(images/toggle-dn.gif) no-repeat center top;
+}
+
+
+
+/* CUSTOM pin/close buttons */
+span.button-pin, span.button-close {
+    position: absolute;
+    top: 0;
+    width: 20px;
+    height: 20px;
+    z-index: 2;
+    display: block;
+    cursor: pointer;
 }
 
 /* CUSTOM pin-buttons */
@@ -89,6 +105,14 @@ span.button-close-east {
 
 span.button-close-east:hover {
     background: url(images/go-rt-on.gif) no-repeat center;
+}
+
+span.button-close-west {
+    left: 0;
+}
+
+span.button-pin-west {
+    right: 1px;
 }
 
 .header {
