@@ -6,17 +6,17 @@
  */
 define({
     root:{
-        loadingpage: '<h1><img src="busy.gif" />Loading page, please wait...</h1>',
+        loadingpage:'<h1><img src="busy.gif" />Loading page, please wait...</h1>',
         all:'All',
         "import":'Import',
         ok:'OK',
-        cancel: 'Cancel',
+        cancel:'Cancel',
         "export":'Export',
         "yes":'Yes',
         no:'No',
         close:'Close',
         error:'Error',
-        warning: 'Warning',
+        warning:'Warning',
         confirm:'Confirm',
         message:'Message',
         create:'Create',

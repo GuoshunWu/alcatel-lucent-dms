@@ -58,13 +58,13 @@
                 alert(JSON.stringify(elem));
             }});
 
-            $("#getMyTestValue").button().click(function(e){
-                var val=$("#mytest").combobox("val");
-                alert("current combobox value="+jsonToString(val));
+            $("#getMyTestValue").button().click(function (e) {
+                var val = $("#mytest").combobox("val");
+                alert("current combobox value=" + jsonToString(val));
             });
 
-            $("#SetComboboxValue").button().click(function(e){
-                $("#mytest").combobox("val",$("#comboboxValue").val());
+            $("#SetComboboxValue").button().click(function (e) {
+                $("#mytest").combobox("val", $("#comboboxValue").val());
             });
 
             $("#autoTest").autocomplete({
@@ -105,11 +105,16 @@
                 {text:5.0, value:4 }
             ];
 
-            $("#ccc").append($(selectJson).map(function () {return this.value>2?new Option(this.text, this.value):null;}));
-            var t = $("#ccc").children("option").map(function(){return {value:$(this).val(), text:$(this).text()};}).get();
+            $("#ccc").append($(selectJson).map(function () {
+                return this.value > 2 ? new Option(this.text, this.value) : null;
+            }));
+            var t = $("#ccc").children("option").map(
+                    function () {
+                        return {value:$(this).val(), text:$(this).text()};
+                    }).get();
             log(t);
 
-            var module1=(function(){
+            var module1 = (function () {
                 alert('Hi');
                 return {
                     hello:'world'
@@ -138,19 +143,23 @@
                 <option value="4">444</option>
             </select>
         </td>
-        <td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button id="getMyTestValue">GetComboboxValue</button></td>
+        <td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button id="getMyTestValue">GetComboboxValue</button>
+        </td>
     </tr>
     <tr>
         <td>set combobox value:</td>
         <td><input id="comboboxValue"></td>
-        <td><button id="SetComboboxValue">SetComboboxValue</button></td>
+        <td>
+            <button id="SetComboboxValue">SetComboboxValue</button>
+        </td>
     </tr>
     <tr>
         <td>AutoCompleterTest:</td>
         <td><input id="autoTest"></td>
         <td></td>
     </tr>
-    
+
     <tr>
         <td>
             Select:

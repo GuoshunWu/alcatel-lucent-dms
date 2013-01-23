@@ -123,7 +123,7 @@
                     <li><a name="[DICT]" href="#"><s:text name="context.dict"/></a></li>
                     <li><a name="[APP]" href="#"><s:text name="context.app"/></a></li>
                     <li><a name="[PROD]" href="#"><s:text name="context.prod"/></a></li>
-                    <li><a  name="Custom" href="#"><s:text name="context.custom"/></a></li>
+                    <li><a name="Custom" href="#"><s:text name="context.custom"/></a></li>
                 </ul>
                 <button id="setContexts"><s:text name="appmng.dialogs.languagesettings.setcontext"/></button>
             </td>
@@ -142,7 +142,7 @@
                 <span id="customCtxErrorMsg" style="color: red"></span>
             </td>
         </tr>
-    </table>    
+    </table>
 </div>
 
 <div id="dictListPreviewDialog">

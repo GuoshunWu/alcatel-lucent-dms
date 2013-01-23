@@ -17,7 +17,7 @@
     <meta http-equiv="Pragma" content="no-cache">
 
     <link rel="stylesheet" type="text/css" href="css/taskmanagement.css?v=<s:property value="buildNumber"/>">
-    <%@include file="common/env.jsp"%>
+    <%@include file="common/env.jsp" %>
     <script type="text/javascript" src="js/lib/require.js"></script>
     <script type="text/javascript">
         //Load common code that includes config, then load the app
@@ -25,7 +25,7 @@
         //a separate file so after a build there are only 2 HTTP
         //requests instead of three.
 
-        require(['./js/config.js?bust=' + new Date().getTime()], function (config) {
+        require(['./js/gconfig.js?bust=' + new Date().getTime()], function (config) {
             require(['taskmng/layout']);
         }, function (err) {
             console.log("load module err: " + err);

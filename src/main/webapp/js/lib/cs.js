@@ -6,7 +6,7 @@
 
 /*jslint */
 /*global define, window, XMLHttpRequest, importScripts, Packages, java,
-  ActiveXObject, process, require */
+ ActiveXObject, process, require */
 
 define(['coffee-script'], function (CoffeeScript) {
     'use strict';
@@ -18,8 +18,8 @@ define(['coffee-script'], function (CoffeeScript) {
         buildMap = {};
 
     if (typeof process !== "undefined" &&
-               process.versions &&
-               !!process.versions.node) {
+        process.versions &&
+        !!process.versions.node) {
         //Using special require.nodeRequire, something added by r.js.
         fs = require.nodeRequire('fs');
         fetchText = function (path, callback) {
@@ -37,7 +37,8 @@ define(['coffee-script'], function (CoffeeScript) {
                     progId = progIds[i];
                     try {
                         xhr = new ActiveXObject(progId);
-                    } catch (e) {}
+                    } catch (e) {
+                    }
 
                     if (xhr) {
                         progIds = [progId];  // so faster next time
@@ -107,30 +108,30 @@ define(['coffee-script'], function (CoffeeScript) {
     }
 
     return {
-        get: function () {
+        get:function () {
             return CoffeeScript;
         },
 
-        write: function (pluginName, name, write) {
+        write:function (pluginName, name, write) {
             if (buildMap.hasOwnProperty(name)) {
                 var text = buildMap[name];
                 write.asModule(pluginName + "!" + name, text);
             }
         },
 
-        version: '0.4.2',
+        version:'0.4.2',
 
-        load: function (name, parentRequire, load, config) {
+        load:function (name, parentRequire, load, config) {
             var path = parentRequire.toUrl(name + '.coffee');
             fetchText(path, function (text) {
 
                 //Do CoffeeScript transform.
                 try {
-                  text = CoffeeScript.compile(text, config.CoffeeScript);
+                    text = CoffeeScript.compile(text, config.CoffeeScript);
                 }
                 catch (err) {
-                  err.message = "In " + path + ", " + err.message;
-                  throw(err);
+                    err.message = "In " + path + ", " + err.message;
+                    throw(err);
                 }
 
                 //Hold on to the transformed text if a build.

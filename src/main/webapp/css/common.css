@@ -1,6 +1,5 @@
 @import "jqueryUI/themes/base/jquery.ui.all.css";
 @import "jqueryLayout/layout-default-latest.css";
-
 @import "jqueryLayout/dmslayout.css";
 
 /* Using an 'optional-container' instead of 'body', so need body to have a 'height' */
@@ -9,7 +8,7 @@
 *	GENERAL COSMETICS
 */
 
-html, body{
+html, body {
     height: 100%;
     /*padding: 0 0 20px;*/
     margin: 0;
@@ -20,7 +19,6 @@ html, body{
 
     overflow: hidden !important;
 }
-
 
 h1 {
     font-size: 2em;
@@ -58,7 +56,6 @@ pre {
     margin: 1em 0 1em 1em;
 }
 
-
 ul {
     /* give whitespace at bottom for FF */
     padding: 0 0 20px;
@@ -86,8 +83,7 @@ td {
     border-color: #666 #CCC;
 }
 
-
-#optional-container{
+#optional-container {
     width: 100%;
     height: 100%;
 }
@@ -102,8 +98,7 @@ td {
     font-style: normal;
 }
 
-
-.dms_appmng_panel{
+.dms_appmng_panel {
     /*border: 1px solid red;*/
     /*text-align: left;*/
     vertical-align: middle;
@@ -111,10 +106,11 @@ td {
 }
 
 /* for navigator*/
-.navigator-bar{
+.navigator-bar {
 
 }
-.navigator-button{
+
+.navigator-button {
     width: 150px;
 }
 
@@ -124,12 +120,12 @@ td {
     vertical-align: middle;
 }
 
-.navigator-tab-title .navigator-tab-title-currentpage  {
+.navigator-tab-title .navigator-tab-title-currentpage {
     font-family: Trebuchet MS, Verdana, Arial, Helvetica;
     font-size: 12pt;
 }
 
 .navigator-tab-title-currentpage {
-    font-weight:bold;
+    font-weight: bold;
     color: purple;
 }

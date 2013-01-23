@@ -1,5 +1,6 @@
 define (require)->
   $ = require 'jqgrid'
+  require 'jqueryui'
   require 'jqlayout'
   util = require 'util'
   charsetgrid = require 'admin/charsetgrid'
@@ -9,7 +10,7 @@ define (require)->
     show: (event, ui)->
       pheight = $(ui.panel).height()
       pwidth = $(ui.panel).width()
-#      console?.debug "height=#{pheight}, width=#{pwidth}."
+      #      console?.debug "height=#{pheight}, width=#{pwidth}."
       $('table.ui-jqgrid-btable', ui.panel).setGridHeight(pheight - 90).setGridWidth(pwidth - 20)
   )
 
@@ -24,7 +25,7 @@ define (require)->
 
   $('div.ui-tabs-panel', tabs).height(pheight - 50)
   #  tabs.tabs 'select', 1
-#  console?.debug "language grid height=#{$('#languageGrid').getGridParam('height')}."
+  #  console?.debug "language grid height=#{$('#languageGrid').getGridParam('height')}."
   $('#languageGrid').setGridHeight('100%')
 
 

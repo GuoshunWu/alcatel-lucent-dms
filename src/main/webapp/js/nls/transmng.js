@@ -15,7 +15,7 @@ define({
         },
         msgbox:{
             createtranstask:{
-                confirm: 'Do you want to manage the task now?'
+                confirm:'Do you want to manage the task now?'
             },
             transstatus:{
                 msg:'Change translation status successful.'

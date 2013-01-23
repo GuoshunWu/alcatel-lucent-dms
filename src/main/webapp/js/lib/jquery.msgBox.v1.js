@@ -12,8 +12,8 @@
 //Written By: Sazzad Hossain, http://blog.sumon.net, @SazzadHossain
 //Version 1.1, Bug fix for confirmLink function to handle INPUT and A types
 //==========================================================================
-(function($) {
-    $.msgBox = $.fn.msgBox = function(msg, onDialogClosed, customOpt, buttons) {
+(function ($) {
+    $.msgBox = $.fn.msgBox = function (msg, onDialogClosed, customOpt, buttons) {
         var id = "#msgBoxHiddenDiv";
         var div = $(id);
 
@@ -25,15 +25,15 @@
             div = jQuery("<div id=\"msgBoxHiddenDiv\" title=\"Message\" style=\"font-size: 10pt;display:none\"><p id=\"msgBoxHiddenDivMsg\" style=\"font-size: 10pt; color: black; text-align: center\"></p></div>");
             div.appendTo(document.body);
             var dialogOpt = {
-                bgiframe: true,
-                autoOpen: false,
-                height: opts.height,
-                width: opts.width,
-                modal: opts.modal,
-                resizable: opts.resizable,
-                closeOnEscape: opts.closeOnEscape,
-                draggable: opts.draggable,
-                buttons: $.fn.msgBox.defaultButtons
+                bgiframe:true,
+                autoOpen:false,
+                height:opts.height,
+                width:opts.width,
+                modal:opts.modal,
+                resizable:opts.resizable,
+                closeOnEscape:opts.closeOnEscape,
+                draggable:opts.draggable,
+                buttons:$.fn.msgBox.defaultButtons
             };
             div.dialog(dialogOpt);
 
@@ -45,7 +45,7 @@
 
         if (buttons != null) {
             for (i = 0; i < buttons.length; i++) {
-                btns[buttons[i]] = function(e) {
+                btns[buttons[i]] = function (e) {
                     if (onDialogClosed) {
                         onDialogClosed($(e.currentTarget).text());
                     }
@@ -64,19 +64,19 @@
     $.fn.msgBox.defaults =
     {
 
-        height: 'auto',
-        width: 300,
+        height:'auto',
+        width:300,
 //        maxWidth:1200,
 //        maxHeight:600,
-        title: "Message",
-        modal: true,
-        resizable: true,
-        closeOnEscape: true
+        title:"Message",
+        modal:true,
+        resizable:true,
+        closeOnEscape:true
     };
 
     $.fn.msgBox.defaultButtons =
     {
-        'OK': function() {
+        'OK':function () {
             if ($.fn.msgBox.callBack) {
                 $.fn.msgBox.callBack(btnName);
             }
@@ -84,33 +84,34 @@
         }
     }
 
-    $.fn.msgBox.confirm = function(msg, onConfirm, yesNo) {
+    $.fn.msgBox.confirm = function (msg, onConfirm, yesNo) {
         var keys = ["Yes", "No"];
         if (yesNo == false) {
             keys = ["Ok", "Cancel"];
         }
-        $.msgBox(msg, function(keyPressed) {
+        $.msgBox(msg, function (keyPressed) {
             if (keyPressed == "Ok" || keyPressed == "Yes") {
                 onConfirm();
-            };
-        }, { title: "Confirm" }, keys);
+            }
+            ;
+        }, { title:"Confirm" }, keys);
     }
 
     $.fn.extend({
 
         //pass the options variable to the function
-        confirmLink: function(options) {
+        confirmLink:function (options) {
 
 
             //Set the default values, use comma to separate the settings, example:
             var defaults = {
-                msgFromRel: true,
-                defaultMsg: 'Are you sure?'
+                msgFromRel:true,
+                defaultMsg:'Are you sure?'
             }
 
             var options = $.extend(defaults, options);
 
-            return this.each(function() {
+            return this.each(function () {
 
                 var o = options;
                 var msg = o.defaultMsg;
@@ -122,10 +123,10 @@
                     }
                 }
 
-                obj.click(function(event) {
+                obj.click(function (event) {
 
                     event.preventDefault();
-                    $.msgBox.confirm(msg, function() {
+                    $.msgBox.confirm(msg, function () {
                         if (event.target.tagName == "INPUT") {
                             $(event.target).closest("form").submit();
                         } else if (event.target.tagName == "A") {

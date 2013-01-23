@@ -12,7 +12,7 @@ require.config({
     baseUrl:'js/lib',
 //    enforceDefine: true,
     paths:{
-        jquery: 'jquery-1.7.2.min',
+        jquery:'jquery-1.7.2.min',
 //        jquery:'jquery-1.8.3',
 //        jquery:'jquery-1.9.0.min',
         jqueryui:'jquery-ui-1.8.22.custom.min',
@@ -35,10 +35,7 @@ require.config({
         login:'../login',
         admin:'../admin',
 
-        nls:'../nls',
-//      for coffee script
-        cs:'../cs',
-        'coffee-script':'../coffee-script'
+        nls:'../nls'
     },
     shim:{
         'formvalidate':{

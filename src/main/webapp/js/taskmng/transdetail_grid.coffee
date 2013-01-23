@@ -1,5 +1,4 @@
 define ['jqgrid', 'util', 'require'], ($, util, require)->
-
   transDetailGrid = $("#viewDetailGrid").jqGrid {
   url: 'json/transdetailgrid.json'
   mtype: 'POST', postData: {}, editurl: "", datatype: 'json'
@@ -8,7 +7,7 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
   pager: '#ViewDetailPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
   sortname: 'labelKey', sortorder: 'asc', viewrecords: true, gridview: true, multiselect: false,
   cellEdit: true, cellurl: 'http://127.0.0.1:2000'
-  colNames: ['Label', 'Max len', 'Context', 'Reference language','Translation']
+  colNames: ['Label', 'Max len', 'Context', 'Reference language', 'Translation']
   colModel: [
     {name: 'label', index: 'labelKey', width: 100, editable: false, stype: 'select', align: 'left', frozen: true}
     {name: 'maxlen', index: 'maxLength', width: 90, editable: false, align: 'right', frozen: true, search: false}

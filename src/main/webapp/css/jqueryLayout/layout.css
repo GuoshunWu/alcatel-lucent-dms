@@ -1,0 +1,119 @@
+/**
+The global container for layout
+*/
+#global-container {
+    width: 100%;
+    height: 100%;
+}
+
+.dms-panel {
+    width: 100%;
+    height: 100%;
+    /*border: 1px solid red;*/
+}
+
+/*
+*	COMMON LAYOUT PANE FORMATTING
+*/
+/* outer pane class */ 
+.ui-layout-pane {
+    /* inner pane class */
+    background-color: #FFF;
+    border: 1px solid #777;
+    padding: 0; /* alignment & padding is on the inner-divs */
+    overflow: auto; /* will be auto-set to 'hidden' for any pane with a 'scrolling content div' */
+}
+
+/*
+*	OUTER-LAYOUT PANE FORMATTING
+*/
+.ui-layout-pane-north, .ui-layout-pane-south, .ui-layout-pane-west, .ui-layout-pane-east {
+    overflow: hidden;
+}
+
+.ui-layout-pane-north {
+    border-bottom: none;
+}
+
+.ui-layout-pane-north .content, .ui-layout-pane-south .content {
+    text-align: center;
+}
+
+.ui-layout-pane-center {
+    /* show off the inner-layout inside the outer-center-ui-layout-pane*/
+    background-color: #F6F6F6;
+    /*padding: 15px; *//* for outer layout */
+}
+
+/*
+*	SIMPLE TOGGLER BUTTONS (used on Outer Layout North/South only)
+*/
+
+.ui-layout-toggler-north-open, .toggler-south-closed {
+    background: url(images/toggle-up.gif) no-repeat center bottom;
+}
+
+.ui-layout-toggler-north-closed, .toggler-south-open {
+    background: url(images/toggle-dn.gif) no-repeat center top;
+}
+
+/* CUSTOM pin-buttons */
+span.button-pin-up {
+    background: url(images/pin-up-off.gif) no-repeat center;
+}
+
+span.button-pin-up:hover {
+    background: url(images/pin-up-on.gif) no-repeat center;
+}
+
+span.button-pin-down {
+    background: url(images/pin-dn-off.gif) no-repeat center;
+}
+
+span.button-pin-down:hover {
+    background: url(images/pin-dn-on.gif) no-repeat center;
+}
+
+/* CUSTOM close-buttons */
+span.button-close-west {
+    background: url(images/go-lt-off.gif) no-repeat center;
+}
+
+span.button-close-west:hover {
+    background: url(images/go-lt-on.gif) no-repeat center;
+}
+
+span.button-close-east {
+    background: url(images/go-rt-off.gif) no-repeat center;
+}
+
+span.button-close-east:hover {
+    background: url(images/go-rt-on.gif) no-repeat center;
+}
+
+.header {
+    background: #80ade5 url(images/80ade5_40x100_textures_04_highlight_hard_100.png) 0 50% repeat-x;
+    border-bottom: 1px solid #777;
+    font-weight: bold;
+    text-align: center;
+    padding: 2px 0 4px;
+    position: relative;
+    overflow: hidden;
+}
+
+.subhead, .footer {
+    background: #d6d6d6 url(images/d6d6d6_40x100_textures_02_glass_80.png) 0 50% repeat-x;
+    padding: 3px 10px;
+    font-size: 0.85em;
+    position: relative;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.subhead {
+    border-bottom: 1px solid #777;
+}
+
+.footer {
+    border-top: 1px solid #777;
+}

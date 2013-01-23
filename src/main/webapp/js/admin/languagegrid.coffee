@@ -36,6 +36,6 @@ define (require)->
     }, {
     #      paramDel
     mtype: 'post', afterSubmit: afterSubmit
-#    afterShowForm: (form)->$("#delhd#{@id}").position {my: 'center', at: 'center', of: window}
+    #    afterShowForm: (form)->$("#delhd#{@id}").position {my: 'center', at: 'center', of: window}
     }
   )

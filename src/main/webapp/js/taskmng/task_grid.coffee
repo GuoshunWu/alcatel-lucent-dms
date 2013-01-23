@@ -74,7 +74,6 @@ define (require)->
     editoptions: {value: "0:#{i18n.task.open};1:#{i18n.task.closed}"}, formatter: 'select'}
     {name: 'actions', index: 'actions', width: 260, align: 'center',
     formatter: (cellvalue, options, rowObject)->
-
       $.map(handlers,
         (value, index)->
           return if '1' == rowObject[4] and index in ['Upload', 'Close']

@@ -23,18 +23,19 @@
             <div class="navigator-bar">
                 <s:iterator value="naviPages">
                     <span class='navigator-button' id="navi<s:property value="key.split('\\\.')[0]"/>Tab"
-                          value="${key}"/>
-                    <img class="navigator-tab-image"
-                         src="images/navigator/icon_<s:property value="key.split('\\\.')[0].toLowerCase()"/>.png"
-                         alt="Loading...">
-                    <s:if test="naviTo==key">
-                        <s:set var="tmpClass" scope="page" value="'navigator-tab-title-currentpage'"/>
-                    </s:if>
-                    <s:else>
-                        <s:set var="tmpClass" scope="page" value="'navigator-tab-title'"/>
-                    </s:else>
-                    <span value="${key}" class="${tmpClass}"><s:property
-                            value="value.replace('Management', '').trim()"/></span>
+                          value="${key}">
+                        <img class="navigator-tab-image"
+                             src="images/navigator/icon_<s:property value="key.split('\\\.')[0].toLowerCase()"/>.png"
+                             alt="Loading...">
+                        <s:if test="naviTo==key">
+                            <s:set var="tmpClass" scope="page" value="'navigator-tab-title-currentpage'"/>
+                        </s:if>
+                        <s:else>
+                            <s:set var="tmpClass" scope="page" value="'navigator-tab-title'"/>
+                        </s:else>
+                        <span value="${key}" class="${tmpClass}">
+                            <s:property value="value.replace('Management', '').trim()"/>
+                        </span>
                     </span>
                 </s:iterator>
             </div>

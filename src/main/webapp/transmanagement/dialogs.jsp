@@ -3,16 +3,16 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
 
-
 <div id="createTranslationTaskDialog" title="<s:text name="transmng.dialogs.transtask.title"/>">
     <table width="100%" border="0">
-       <tr>
+        <tr>
             <td>
                 <table border="0" width="100%">
                     <tr>
                         <td style="width: 75px"><s:text name="transmng.dialogs.transtask.taskname"/></td>
                         <td><input size="45" id="taskName">
-                            <span id="transTaskErr" style="display: none;color: red">* <s:text name="transmng.dialogs.transtask.namerequired"/></span>
+                            <span id="transTaskErr" style="display: none;color: red">* <s:text
+                                    name="transmng.dialogs.transtask.namerequired"/></span>
                         </td>
                     </tr>
                 </table>

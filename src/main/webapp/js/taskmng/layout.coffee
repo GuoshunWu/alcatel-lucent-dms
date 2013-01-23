@@ -40,11 +40,13 @@ define ['jqlayout', 'taskmng/task_grid', 'i18n!nls/common', 'taskmng/dialogs', '
   opacity: 0, filter: 'alpha(opacity=0)', cursor: 'pointer'}
 
   #   show main page.
-  $('#loading-container').fadeOut 'slow','swing',()->$(@).remove()
+  $('#loading-container').fadeOut 'slow', 'swing', ()->$(@).remove()
   util.afterInitilized(this)
   $('#optional-container').show()
-  gridParent = $('.taskGrid_parent');
-  $('#taskGrid').setGridWidth(gridParent.width() - 10).setGridHeight(gridParent.height() - 60);
+  gridParent = $('.taskGrid_parent')
+  ;
+  $('#taskGrid').setGridWidth(gridParent.width() - 10).setGridHeight(gridParent.height() - 60)
+  ;
 
 #  $('#loading-container').slideUp 'slow', ()->$(@).remove()
 #  $('#loading-container').toggle { effect: "scale", direction: "both" }

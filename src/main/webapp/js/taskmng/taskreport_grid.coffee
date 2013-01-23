@@ -15,7 +15,7 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
   cellEdit: true, cellurl: ''
   colNames: colNames, colModel: colModel, groupHeaders: groupHeader
   gridComplete: ->
-#    console?.log "task id in report grid: #{$('#reportGrid').getGridParam('postData').task}"
+  #    console?.log "task id in report grid: #{$('#reportGrid').getGridParam('postData').task}"
     $('a', @).css('color', 'blue').click ()->
       param = {}
 
@@ -34,7 +34,7 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
       dialogs.viewDetail.dialog 'open'
 
   afterCreate: (grid)->
-#    console.log "After Create in task report grid: #{grid.getGridParam('postData').task}"
+  #    console.log "After Create in task report grid: #{grid.getGridParam('postData').task}"
     grid.setGroupHeaders {useColSpanStyle: true, groupHeaders: grid.getGridParam('groupHeaders')}
     grid.navGrid '#reportPager', {edit: false, add: false, del: false, search: false, view: false}
     grid.jqGrid 'setFrozenColumns'
@@ -45,7 +45,6 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
 
 
   regenerateGrid: (params)->
-
     gridId = '#reportGrid'
     gridParam = $(gridId).jqGrid 'getGridParam'
     $(gridId).GridUnload 'reportGrid'
@@ -70,7 +69,7 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
     ).get().join ','
     delete gridParam.selarrrow
 
-#    console?.log "before regenerate report grid task id: #{gridParam.postData.task}"
+    #    console?.log "before regenerate report grid task id: #{gridParam.postData.task}"
     newGrid = $(gridId).jqGrid gridParam
     gridParam.afterCreate newGrid
 

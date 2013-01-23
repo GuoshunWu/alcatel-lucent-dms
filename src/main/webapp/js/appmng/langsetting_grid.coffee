@@ -26,7 +26,7 @@ define (require)->
   ]
   afterEditCell: (rowid, cellname, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
   gridComplete: ()->
-#    console?.log $('#languageSettingGrid').getGridParam('postData').dict
+  #    console?.log $('#languageSettingGrid').getGridParam('postData').dict
   }).jqGrid('navGrid', '#langSettingPager', {edit: false, add: false, del: false, search: false}, {}, {
     #    prmAdd
     zIndex: 2000

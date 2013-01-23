@@ -44,22 +44,22 @@
         var text = '';
         files.forEach(function (file) {
             text += "(function () {\n" +
-                        "var exports = __MODULES['" + file + "'] = {};\n" +
-                        fs.readFileSync(csDir + file + '.js') +
-                        "return exports;\n" +
-                        "}());";
+                "var exports = __MODULES['" + file + "'] = {};\n" +
+                fs.readFileSync(csDir + file + '.js') +
+                "return exports;\n" +
+                "}());";
         });
 
         return text;
     }
 
     text = '//START COFFEESCRIPT\n' +
-           'CoffeeScript = (function () {\n' +
-           'var __MODULES = {}; function require(name) { return __MODULES[name.substring(2)]; };\n' +
-           wrapModules() +
-           "\nreturn __MODULES['coffee-script'];\n" +
-           '\n}());\n' +
-           '//END COFFEESCRIPT';
+        'CoffeeScript = (function () {\n' +
+        'var __MODULES = {}; function require(name) { return __MODULES[name.substring(2)]; };\n' +
+        wrapModules() +
+        "\nreturn __MODULES['coffee-script'];\n" +
+        '\n}());\n' +
+        '//END COFFEESCRIPT';
 
     //Find markers in the plugin file.
     startIndex = pluginContents.indexOf(injectionStart);
@@ -70,8 +70,8 @@
 
     //Inject CoffeeScript contents
     pluginContents = pluginContents.substring(0, startIndex) +
-                     text +
-                     pluginContents.substring(endIndex + injectionEnd.length, pluginContents.length);
+        text +
+        pluginContents.substring(endIndex + injectionEnd.length, pluginContents.length);
 
     fs.writeFileSync(pluginFile, pluginContents, 'utf8');
 }());

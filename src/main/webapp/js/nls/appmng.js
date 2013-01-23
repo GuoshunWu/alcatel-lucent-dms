@@ -31,7 +31,7 @@ define({
             },
             "delete":{
                 title:'Delete',
-                "delmsg": 'Delete selected {0}(s)?'
+                "delmsg":'Delete selected {0}(s)?'
             },
             dictlistpreview:{
                 title:'Dictionaries Preview',
@@ -46,7 +46,7 @@ define({
                 "languagetip":"Please select language",
                 "charsettip":"Please select charset",
                 "coderequired":"Code is required",
-                "successtip": "Add language {0} success"
+                "successtip":"Add language {0} success"
             },
             "customcontext":{
                 "namerequired":'Context name is required.',
@@ -54,7 +54,7 @@ define({
             }
         },
         browse:'Upload dictionaries',
-        generating: 'Generating...',
+        generating:'Generating...',
         choosefile:'Choose file',
         uploadingfile:'Uploading: ',
         uploadfinished:'upload finished.'
