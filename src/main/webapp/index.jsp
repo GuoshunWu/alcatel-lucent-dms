@@ -6,11 +6,11 @@
 </head>
 <body>
 <%
-System.out.println("Begin forward aaa...");
+    System.out.println("Begin forward aaa...");
 %>
 
 <jsp:forward page="entry.action">
-    <jsp:param name="naviTo" value="appmng.jsp"  />
+    <jsp:param name="naviTo" value="appmng.jsp"/>
 </jsp:forward>
 
 </body>

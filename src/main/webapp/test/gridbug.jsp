@@ -30,7 +30,7 @@
     <script type="text/javascript">
 
         $(function () {
-           var transGrid = $("#transGridList").jqGrid({
+            var transGrid = $("#transGridList").jqGrid({
                 url:'/json/gridbug.json',
                 mtype:'GET',
                 postData:{},
@@ -48,21 +48,21 @@
                 sortorder:'asc',
                 viewrecords:true,
                 gridview:true,
-                multiselect: true,
-                multikey: "ctrlKey",
+                multiselect:true,
+                multikey:"ctrlKey",
                 caption:'Translation Task List',
                 colNames:[
                     'A',
                     'B1', 'B2'
                 ],
                 colModel:[
-                    {name:'a', index:'a', width:80, hidden:false, align:'center',frozen:true} ,
+                    {name:'a', index:'a', width:80, hidden:false, align:'center', frozen:true} ,
                     {name:'b1', index:'b1', width:30, align:'center'},
                     {name:'b2', index:'b2', width:30, editable:true, align:'center'}
-                ] ,
-               ondblClickRow: function(rowid, iRow, iCol, e) {
-                   return alert("rowid:" + rowid + ", iCol:" + iCol + ", iRow: " + iRow + ", e," + e);
-               }
+                ],
+                ondblClickRow:function (rowid, iRow, iCol, e) {
+                    return alert("rowid:" + rowid + ", iCol:" + iCol + ", iRow: " + iRow + ", e," + e);
+                }
             });
             transGrid.navGrid('#taskPager', {edit:true, add:true, del:false, search:false, view:false});
             transGrid.navButtonAdd("#taskPager", {

@@ -159,7 +159,7 @@ td {
     padding: 10px;
 }
 
-#mainContent .ui-layout-north,#mainContent .ui-layout-south {
+#mainContent .ui-layout-north, #mainContent .ui-layout-south {
     text-align: center;
 }
 
@@ -233,7 +233,7 @@ td {
 }
 
 /** html .resizer-north , */
-* html .resizer-south,* html .resizer-west-open,* html .resizer-east-open {
+* html .resizer-south, * html .resizer-west-open, * html .resizer-east-open {
     opacity: 0.1 !important;
     filter: alpha(opacity = 10) !important;
 }

@@ -7,7 +7,7 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
 
   dialogs = null
 
-  refreshGrid = (languageTrigger=false)->
+  refreshGrid = (languageTrigger = false)->
     param = {
     release: {id: $('#productRelease').val(), version: $("#productRelease option:selected").text()}
     level: $("input:radio[name='viewOption'][checked]").val()
@@ -244,8 +244,10 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
     $('#loading-container').fadeOut 'slow', ()->$(@).remove()
     util.afterInitilized(this)
     $('#optional-container').show()
-    gridParent = $('.transGrid_parent');
-    $('#transGrid').setGridWidth(gridParent.width() - 10).setGridHeight(gridParent.height() - 110);
+    gridParent = $('.transGrid_parent')
+    ;
+    $('#transGrid').setGridWidth(gridParent.width() - 10).setGridHeight(gridParent.height() - 110)
+    ;
 
   # initialize page
   initPage()

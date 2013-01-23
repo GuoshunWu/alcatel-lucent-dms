@@ -4,9 +4,9 @@
 var Text = {
 
 <s:i18n name="js">
-<s:iterator value="keys" id="key">
-	<s:property value="key"/>: "<s:property value="getText(#key)"/>",
-</s:iterator>
-	"": ""
+    <s:iterator value="keys" id="key">
+        <s:property value="key"/>: "<s:property value="getText(#key)"/>",
+    </s:iterator>
+    "": ""
 </s:i18n>
 };

@@ -62,7 +62,7 @@
                     },
                     select:function (event, ui) {
 //                        log('in inner select: this.val=' + $(this).val());
-                        $(select).children('option[value='+ui.item.option.value+']').attr("selected",true);
+                        $(select).children('option[value=' + ui.item.option.value + ']').attr("selected", true);
                         self._trigger("selected", event, {value:ui.item.option.value, text:ui.item.option.text});
 //
                         self.valid = true;
@@ -84,7 +84,7 @@
                             }
                         });
 //                        log('valid=' + valid + ', in inner change: this.val=' + $(this).val());
-                        self._trigger("change",event, {value:null, text:$(this).val()});
+                        self._trigger("change", event, {value:null, text:$(this).val()});
 
                         if (!valid) {
                             // remove invalid value, as it didn't match anything
@@ -139,14 +139,13 @@
             if (value) {
                 this.input.val(value);
 //                select.find('option[text='+value+']').attr("selected",true);
-                select.children('option').each(function(index, option){
-                    if(option.text==value){
-                        option.selected=true;
+                select.children('option').each(function (index, option) {
+                    if (option.text == value) {
+                        option.selected = true;
                     }
                 });
                 return;
             }
-
 
 
             if (this.valid) {

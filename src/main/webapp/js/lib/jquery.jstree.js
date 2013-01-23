@@ -1511,10 +1511,12 @@
                     }
                     this.__callback({ "obj":obj });
                 },
-                dblclick_node: function(obj,check, e){
+                dblclick_node:function (obj, check, e) {
                     obj = this._get_node(obj);
-                    if (obj == -1 || !obj || !obj.length) { return false; }
-                    this.__callback({ "obj": obj });
+                    if (obj == -1 || !obj || !obj.length) {
+                        return false;
+                    }
+                    this.__callback({ "obj":obj });
                 },
                 select_node:function (obj, check, e) {
                     obj = this._get_node(obj);

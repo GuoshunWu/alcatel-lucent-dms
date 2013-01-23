@@ -26,7 +26,7 @@ jQuery ($)->
 
   pg = new PanelGroup('div.panel', 'p1')
   pg.switchTo 'p2', ()->
-    #  init tab in p2
+  #  init tab in p2
     height = $("##{pg.currentPanel}").height()
     tTabs.tabs 'option', 'height', height
     $('div', tTabs).height(height - 70)

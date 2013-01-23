@@ -2,7 +2,7 @@ define (require)->
   $ = require 'jqgrid'
   util = require 'util'
 
-  i18n= require 'i18n!nls/admin'
+  i18n = require 'i18n!nls/admin'
 
   afterSubmit = (response, postdata)->
     jsonFromServer = $.parseJSON response.responseText

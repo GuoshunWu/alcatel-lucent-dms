@@ -1,12 +1,12 @@
 {
 
-    "page": "1",
-    "total": 2,
-    "records": "5",
-    "rows": [
+    "page":"1",
+    "total":2,
+    "records":"5",
+    "rows":[
         {
-            "id": "3",
-            "cell": [
+            "id":"3",
+            "cell":[
                 "3",
                 "TestApp1",
                 "v1.0",
@@ -14,8 +14,8 @@
             ]
         },
         {
-            "id": "2",
-            "cell": [
+            "id":"2",
+            "cell":[
                 "2",
                 "TestApp2",
                 "v1.0",
@@ -24,8 +24,8 @@
 
         },
         {
-            "id": "1",
-            "cell": [
+            "id":"1",
+            "cell":[
                 "1",
                 "TestApp3",
                 "v1.0",
@@ -33,7 +33,7 @@
             ]
         }
     ],
-    "userData": {
+    "userData":{
 
     }
 }

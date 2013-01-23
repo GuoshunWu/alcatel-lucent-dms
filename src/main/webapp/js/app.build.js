@@ -6,11 +6,11 @@
  * command in current dir: r -o app.build.js
  *
  * java command line:
-       set M2_REP=D:/MyDocuments/mavenRepository
-      java -cp %M2_REP%/org/mozilla/rhino/1.7R3/rhino-1.7R3.jar;%M2_REP%/com/google/javascript/closure-compiler/r1352/closure-compiler-r1352.jar org.mozilla.javascript.tools.shell.Main ../tools/r.js -o app.build.js
+ set M2_REP=D:/MyDocuments/mavenRepository
+ java -cp %M2_REP%/org/mozilla/rhino/1.7R3/rhino-1.7R3.jar;%M2_REP%/com/google/javascript/closure-compiler/r1352/closure-compiler-r1352.jar org.mozilla.javascript.tools.shell.Main ../tools/r.js -o app.build.js
 
-    set LIBPATH=D:/360CloudyDisk\Programing\dmslib\jars
-    java -cp %LIBPATH%/js.jar;%LIBPATH%/compiler.jar org.mozilla.javascript.tools.shell.Main ../tools/r.js -o app.build.js
+ set LIBPATH=D:/360CloudyDisk\Programing\dmslib\jars
+ java -cp %LIBPATH%/js.jar;%LIBPATH%/compiler.jar org.mozilla.javascript.tools.shell.Main ../tools/r.js -o app.build.js
 
  * java -classpath path/to/rhino/js.jar;path/to/closure/compiler.jar org.mozilla.javascript.tools.shell.Main r.js -o path/to/buildconfig.js
  */

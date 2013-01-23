@@ -125,7 +125,7 @@
 }
 
 /** html .resizer-north , */
-* html .resizer-south,* html .resizer-west-open,* html .resizer-east-open {
+* html .resizer-south, * html .resizer-west-open, * html .resizer-east-open {
     opacity: 0.1 !important;
     filter: alpha(opacity = 10) !important;
 }
@@ -152,7 +152,7 @@
 /*
 *	extJS-STYLE RESIZER/SLIDER-BAR (CLOSED)
 */
-.resizer-west-closed,.resizer-east-closed {
+.resizer-west-closed, .resizer-east-closed {
     background: #D1E6FC url(images/D1E6FC_40x100_textures_10_dots_medium_90.png) 0 0 repeat;
     border-top: 1px solid #777;
     border-bottom: 1px solid #777;

@@ -9,7 +9,7 @@ define({
     ok:'确定',
     cancel:'取消',
     error:'错误',
-    warning: '警告',
+    warning:'警告',
     message:'消息',
     create:'创建',
     app:'应用',

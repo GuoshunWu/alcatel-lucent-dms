@@ -1,12 +1,12 @@
 {
 
-    "page": "2",
-    "total": 2,
-    "records": "5",
-    "rows": [
+    "page":"2",
+    "total":2,
+    "records":"5",
+    "rows":[
         {
-            "id": "4",
-            "cell": [
+            "id":"4",
+            "cell":[
                 "3",
                 "TestApp1",
                 "v1.0",
@@ -14,8 +14,8 @@
             ]
         },
         {
-            "id": "5",
-            "cell": [
+            "id":"5",
+            "cell":[
                 "2",
                 "TestApp2",
                 "v1.0",
@@ -24,7 +24,7 @@
 
         }
     ],
-    "userData": {
+    "userData":{
 
     }
 }

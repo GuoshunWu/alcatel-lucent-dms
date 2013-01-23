@@ -80,8 +80,8 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
   beforeProcessing: (data, status, xhr)->
   gridComplete: ->
     transGrid = $(@)
-#    console?.log "Data loading complete, clear the data loading counter."
-#    clearInterval(window.param.refreshCounter) if window.param.refreshCounter
+    #    console?.log "Data loading complete, clear the data loading counter."
+    #    clearInterval(window.param.refreshCounter) if window.param.refreshCounter
 
 
     #    console?.log 'Start render grid, setup the render counter...'
@@ -154,8 +154,8 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
     summary = ($(param.languages).map ->_this = @;($([0, 1, 2]).map ->"s(#{_this.id})[#{@}]").get().join(',')).get().join(',')
     gridParam = transGrid.getGridParam()
 
-#    console?.log 'Start loading data, setup the counter here...'
-#    window.param.refreshCounter = setInterval("console.log('tick');", 1000)
+    #    console?.log 'Start loading data, setup the counter here...'
+    #    window.param.refreshCounter = setInterval("console.log('tick');", 1000)
 
     isApp = (param.level == "application")
     if isApp
@@ -164,11 +164,11 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
       transGrid.setColProp 'application', {search: false, index: 'base.name'}
       postData = {prod: param.release.id, format: 'grid', prop: prop}
 
-#      unless param.languageTrigger
-#        console.log "versionTrigger ...."
-#        gridParam.postData = postData
-#        transGrid.trigger 'reloadGrid'
-#        return
+      #      unless param.languageTrigger
+      #        console.log "versionTrigger ...."
+      #        gridParam.postData = postData
+      #        transGrid.trigger 'reloadGrid'
+      #        return
 
       gridParam.colNames = grid.application.colNames
       gridParam.colModel = grid.application.colModel
@@ -176,7 +176,6 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
       transGrid.updateTaskLanguage param.languages
       transGrid.reloadAll url, postData
     else
-
       url = 'rest/dict'
       prop = "id,app.base.name,app.version,base.name,version,base.encoding,base.format,labelNum,#{summary}"
 
@@ -193,11 +192,11 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
       transGrid.setColProp('application', searchoptions: searchoptions, index: 'app.base.name')
       postData = {prod: param.release.id, format: 'grid', prop: prop}
 
-#      unless param.languageTrigger
-#        gridParam.postData = postData
-#        console.log "versionTrigger ...."
-#        transGrid.trigger 'reloadGrid'
-#        return
+      #      unless param.languageTrigger
+      #        gridParam.postData = postData
+      #        console.log "versionTrigger ...."
+      #        transGrid.trigger 'reloadGrid'
+      #        return
 
       transGrid.updateTaskLanguage param.languages
       # Use this for toolbar search restore.

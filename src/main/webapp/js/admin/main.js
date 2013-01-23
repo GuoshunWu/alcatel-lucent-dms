@@ -4,6 +4,7 @@
   define(function(require) {
     var $, charsetgrid, languagegrid, pheight, tabs, util;
     $ = require('jqgrid');
+    require('jqueryui');
     require('jqlayout');
     util = require('util');
     charsetgrid = require('admin/charsetgrid');

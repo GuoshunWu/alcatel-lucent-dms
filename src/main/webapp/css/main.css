@@ -1,0 +1,50 @@
+@import "jqueryUI/themes/base/jquery.ui.all.css";
+    /*@import "jqueryLayout/layout-default-latest.css";*/
+@import "jqueryLayout/layout.css";
+
+/*
+*	GENERAL COSMETICS
+*/
+
+html, body {
+    height: 100%;
+    /*padding: 0 0 20px;*/
+    margin: 0;
+    font-family: Lucida Grande, Lucida Sans, Arial, Helvetica, sans-serif, '宋体';
+    /*font-size: 100%;*/
+    font-size: 10px;
+    background-color: #EEE;
+
+    overflow: hidden !important;
+}
+
+/* north navigation table title */
+.page-title {
+    font-family: Trebuchet MS, Verdana, Arial, Helvetica;
+    font-size: 14pt;
+    font-style: normal;
+}
+
+.navigator-button {
+    width: 150px;
+}
+
+.navigator-button-currentpage {
+    background-image: url('jqueryLayout/images/80ade5_40x100_textures_04_highlight_hard_100.png');
+}
+
+.navigator-tab-image {
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+}
+
+.navigator-tab-title .navigator-tab-title-currentpage {
+    font-family: Trebuchet MS, Verdana, Arial, Helvetica;
+    font-size: 12pt;
+}
+
+.navigator-tab-title-currentpage {
+    font-weight: bold;
+    color: purple;
+}
