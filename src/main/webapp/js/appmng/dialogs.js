@@ -272,7 +272,7 @@
       }
     }).click(function(e) {
       var menu;
-      menu = $('#setContextMenu').show().width($(this).width()(-3)).position({
+      menu = $('#setContextMenu').show().width($(this).width() - 3).position({
         my: "right bottom",
         at: "right top",
         of: this
@@ -576,10 +576,10 @@
           return;
         }
         return typeof console !== "undefined" && console !== null ? console.debug(param) : void 0;
-        /*TODO: implement backend.
-        */
-
       },
+      /*TODO: implement backend.
+      */
+
       buttons: [
         {
           text: c18n.close,

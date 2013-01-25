@@ -13,22 +13,24 @@ define (require)->
   }
 
 
-  $("#newVersion").button(text: false, label: '&nbsp;', icons: {primary: "ui-icon-plus"}).
+  $("#newVersion").button(text: false, label: '&nbsp;', icons:
+    {primary: "ui-icon-plus"}).
   attr('privilegeName', util.urlname2Action 'app/create-product-release').
   click () =>
     dialogs.newProductVersion.dialog("open")
 
-  $("#removeVersion").button(text: false, label: '&nbsp;', icons: {primary: "ui-icon-minus"}).
-  attr('privilegeName', util.urlname2Action 'app/remove-product').
-  click () =>
+  $("#removeVersion").button(text: false, label: '&nbsp;', icons:
+    {primary: "ui-icon-minus"})
+  .attr('privilegeName', util.urlname2Action 'app/remove-product').click(()=>
     id = $("#selVersion").val()
     return if !id
     $.post 'app/remove-product', {id: id}, (json)->
       if json.status != 0
         $.msgBox json.message, null, {title: c18n.error}
         return
-      $("#selVersion option:selected").remove()
-      $('#selVersion').trigger 'change'
+    $("#selVersion option:selected").remove()
+    $('#selVersion').trigger 'change'
+  )
 
 
   productInfo = {}
@@ -40,15 +42,17 @@ define (require)->
     grid.productChanged productInfo
 
   refresh: (info)->
-  # info.id, info.text is productBase id and name
+    # info.id, info.text is productBase id and name
     productInfo.base = {id: info.id, text: info.text}
     $('#dispProductName').html productInfo.base.text
     $.getJSON URL.get_product_by_base_id, {base: productInfo.base.id, prop: 'id,version'}, (json)->
-    # update product version select
+      # update product version select
       $('#selVersion').empty().append(util.json2Options json)
       #      here use global var param from env.jsp
       $('#selVersion').val(param.currentSelected.productId) if(param.currentSelected.productId)
       $('#selVersion').trigger 'change'
+
+
 
   getSelectedProduct: -> {version: $("#selVersion option:selected").text(), id: $('#selVersion').val()}
   getProductSelectOptions: ->$('#selVersion').children('option').clone(true)

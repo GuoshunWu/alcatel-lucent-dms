@@ -25,7 +25,6 @@
         }
 
         .subhead, .footer {
-            /*background: #d6d6d6 url(http://layout.jquery-dev.net/demos/img/d6d6d6_40x100_textures_02_glass_80.png) 0 50% repeat-x;*/
             background: #d6d6d6 url(${base}/css/jqueryLayout/images/d6d6d6_40x100_textures_02_glass_80.png) 0 50% repeat-x;
             padding: 3px 10px;
             font-size: 0.85em;
@@ -78,15 +77,12 @@
             I am a header
         </div>
         <div class="ui-layout-content">
-            <div class='panel' id='p1'>
+            <div class='panel' id='p1' style="height:200%;">
                 <p>
                     I am the panel1.
                 </p>
             </div>
             <div class='panel' id='p2'>
-                <%--<p>--%>
-                <%--I am the panel2.--%>
-                <%--</p>--%>
                 <div class="testTabs">
                     <ul>
                         <li><a href="#langAdmin"><s:text name="admin.language.title"/></a></li>

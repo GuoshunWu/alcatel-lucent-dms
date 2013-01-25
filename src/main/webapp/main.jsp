@@ -10,7 +10,6 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta http-equiv="Pragma" content="no-cache"/>
     <link rel="stylesheet" type="text/css" href="${base}css/main.css?v=<s:property value="buildNumber"/>"/>
-
     <%@include file="common/env.jsp" %>
     <script type="text/javascript" src="js/lib/require.js"></script>
     <script type="text/javascript">
@@ -20,8 +19,8 @@
     </script>
 </head>
 <body>
-<%--<%@include file="common/maskdiv.jsp" %>--%>
 
+<%@include file="common/maskdiv.jsp" %>
 <div id="global-container">
     <div class="ui-layout-north">
         <%@include file="common/navigator.jsp" %>

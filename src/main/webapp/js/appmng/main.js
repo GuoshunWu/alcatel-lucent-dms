@@ -2,13 +2,16 @@
 (function() {
 
   define(function(require) {
-    var $, init, ready, tree, util;
+    var $, dialogs, init, layout, ready, tree, util;
     $ = require('jqgrid');
     require('jqlayout');
     util = require('dms-util');
+    require('blockui');
+    dialogs = require('appmng/dialogs');
+    layout = require('appmng/layout');
     tree = require('appmng/producttree');
     init = function() {
-      var layout, westSelector;
+      var westSelector;
       layout = $('#appmng-container').layout({
         name: 'appmnglayout',
         defaults: {

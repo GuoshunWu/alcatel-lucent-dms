@@ -24,9 +24,9 @@ define
         tip: 'Please select product'
         msg: 'Please select product'
         msgtitle: 'Select product'
-    release:
-      tip: 'Please select product release'
-      msg: 'Please select product release!'
-      msgtitle: 'Select product release'
+      release:
+        tip: 'Please select product release'
+        msg: 'Please select product release!'
+        msgtitle: 'Select product release'
 
   "zh-cn": true

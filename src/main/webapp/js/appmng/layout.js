@@ -24,14 +24,14 @@
           var grid, parent;
           grid = $('#applicationGridList');
           parent = $('#applicationGrid_parent');
-          return grid.setGridWidth(parent.width() - 10).setGridHeight(parent.height() - 80);
+          return grid.setGridWidth(parent.width() - 10).setGridHeight(parent.height() - 85);
         });
       },
       showApplicationPanel: function() {
         return appmngPnlGroup.switchTo(ids.panel.application, function() {
           var parent;
           parent = $('#dictionaryGridList_parent');
-          return $('#dictionaryGridList').setGridWidth(parent.width() - 10).setGridHeight(parent.height() - 80);
+          return $('#dictionaryGridList').setGridWidth(parent.width() - 10).setGridHeight(parent.height() - 85);
         });
       },
       showWelcomePanel: function() {

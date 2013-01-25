@@ -34,18 +34,17 @@
       if (!id) {
         return;
       }
-      return $.post('app/remove-product', {
+      $.post('app/remove-product', {
         id: id
       }, function(json) {
         if (json.status !== 0) {
           $.msgBox(json.message, null, {
             title: c18n.error
           });
-          return;
         }
-        $("#selVersion option:selected").remove();
-        return $('#selVersion').trigger('change');
       });
+      $("#selVersion option:selected").remove();
+      return $('#selVersion').trigger('change');
     });
     productInfo = {};
     $('#selVersion').change(function() {

@@ -132,7 +132,7 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
       secondary: "ui-icon-gear"
   )
   .click (e)->
-    menu = $('#translationStatus').show().width($(@).width() -3).position(my: "left bottom", at: "left top", of: @)
+    menu = $('#translationStatus').show().width($(@).width() - 3).position(my: "left bottom", at: "left top", of: @)
     $(document).one "click", ()->menu.hide()
     false
 

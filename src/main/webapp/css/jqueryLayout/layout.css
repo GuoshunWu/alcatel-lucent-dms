@@ -9,19 +9,37 @@ The global container for layout
 .dms-panel {
     width: 100%;
     height: 100%;
+    /*padding: 10px;*/
     /*border: 1px solid red;*/
+}
+
+.dms_appmng_panel {
+    /*border: 1px solid red;*/
+    /*text-align: left;*/
+    vertical-align: middle;
+    height: 99%;
 }
 
 /*
 *	COMMON LAYOUT PANE FORMATTING
 */
-/* outer pane class */ 
+/* outer pane class */
 .ui-layout-pane {
     /* inner pane class */
     background-color: #FFF;
     border: 1px solid #777;
-    padding: 0; /* alignment & padding is on the inner-divs */
+    padding: 0;
     overflow: auto; /* will be auto-set to 'hidden' for any pane with a 'scrolling content div' */
+}
+
+.ui-layout-content, .content {
+    /*position: relative; *//* contain floated or positioned elements */
+    overflow: auto; /* add scrolling to content-div */
+    /*border: 2px solid yellow;*/
+}
+
+.content{
+    padding: 10px;
 }
 
 /*
@@ -80,8 +98,6 @@ The global container for layout
     background: #FF3300 !important;
 }
 
-
-
 /* IE6 * HACK - always show resizer graphics because IE6 cannot understand elem:hover */
 /** html .resizer-north		{ background: url(images/resizable-n.gif) repeat-x center !important; } */
 
@@ -114,10 +130,6 @@ span.button-close-west:hover {
 }
 
 
-.content{
-    padding: 10px;
-}
-
 /*
 *	SIMPLE TOGGLER BUTTONS (used on Outer Layout North/South only)
 */
@@ -129,8 +141,6 @@ span.button-close-west:hover {
 .ui-layout-toggler-north-closed, .toggler-south-open {
     background: url(images/toggle-dn.gif) no-repeat center top;
 }
-
-
 
 /* CUSTOM pin/close buttons */
 span.button-pin, span.button-close {

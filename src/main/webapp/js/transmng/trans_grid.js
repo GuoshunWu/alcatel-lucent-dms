@@ -254,7 +254,7 @@
       }
     }).click(function(e) {
       var menu;
-      menu = $('#translationStatus').show().width($(this).width()(-3)).position({
+      menu = $('#translationStatus').show().width($(this).width() - 3).position({
         my: "left bottom",
         at: "left top",
         of: this

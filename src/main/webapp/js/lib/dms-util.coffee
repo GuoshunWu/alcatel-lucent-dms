@@ -7,7 +7,7 @@ To change this template use File | Settings | File Templates.
 ###
 define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
 
-#    prototype enhancement
+  #    prototype enhancement
   String:: format = -> args = arguments; @replace /\{(\d+)\}/g, (m, i) ->args[i]
 
   String:: endWith = (str) ->
@@ -119,7 +119,7 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
   $.ajaxSetup {timeout: 1000 * 60 * 30}
   $.ajaxPrefilter (options, originalOptions, jqXHR)->
 
-  #  for page navigator
+    #  for page navigator
   pageNavi = ()->
     $('#naviForm').bind 'submit', (e)->
       $("#curProductBaseId").val $("#productBase").val()
@@ -159,14 +159,14 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
     }
 
     $(document).on 'ajaxSuccess', (e, xhr, settings)->
-    #      console?.log "xhr.status=#{xhr.status}"
+      #      console?.log "xhr.status=#{xhr.status}"
       if 203 == xhr.status
         $('#sessionTimeoutDialog').dialog 'open'
   #        console?.log $.parseJSON(xhr.responseText)
 
   urlname2Action = (urlname = '', suffix = 'Action')->urlname.split('/').pop().capitalize().split('-').join('') + suffix
   checkGridPrivilege = (grid)->
-  # console?.debug "check the privilege of grid '#{grid.id}'."
+    # console?.debug "check the privilege of grid '#{grid.id}'."
     gridParam = $(grid).jqGrid 'getGridParam'
     forbiddenTab =
       cellurl: urlname2Action(gridParam.cellurl) in param.forbiddenPrivileges
@@ -182,7 +182,7 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
     #
     #    for the grid  navigatebar, ['view', 'search', 'refresh'] are readonly operation, enabled
     $.each ['add', 'edit', 'del'], (index, value)->
-    # for jqgrid predefined navigate buttons
+      # for jqgrid predefined navigate buttons
       actButton = $("##{value}_#{grid.id}")
 
       if actButton.length > 0 and forbiddenTab.editurl
@@ -262,16 +262,16 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
   json2Options: (json, selectedValue = false, textFieldName = "version", valueFieldName = "id", sep = '\n')->
     $(json).map(
       (index, elem)->
-      #        selected = if !selectedValue then index == json.length - 1 else (String selectedValue) == (String @[valueFieldName])
+        #        selected = if !selectedValue then index == json.length - 1 else (String selectedValue) == (String @[valueFieldName])
         selected = (String selectedValue) == (String @[valueFieldName])
         newOption @[textFieldName], @[valueFieldName], selected
     ).get().join(sep)
 
   afterInitilized: (context)->
-  # console?.debug "...Page #{param.naviTo} privilege check..."
-  #    check all buttons' privilege
+    # console?.debug "...Page #{param.naviTo} privilege check..."
+    #    check all buttons' privilege
     $('[role=button][privilegeName]').each (index, button)->
-    #    .attr('privilegeName', util.urlname2Action 'app/deliver-app-dict')
+      #    .attr('privilegeName', util.urlname2Action 'app/deliver-app-dict')
       $(button).button 'disable' if $(button).attr('privilegeName') in param.forbiddenPrivileges
     #   check all the grids' privilege
     checkAllGridPrivilege()
@@ -280,9 +280,9 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
     pageLayout = createLayoutManager()
 
     if(param.naviTo == 'appmng.jsp')
-    # save selector strings to vars so we don't have to repeat it
-    # must prefix paneClass with "#optional-container >" to target ONLY the Layout panes
-    # west pane
+      # save selector strings to vars so we don't have to repeat it
+      # must prefix paneClass with "#optional-container >" to target ONLY the Layout panes
+      # west pane
       westSelector = "#optional-container > .ui-layout-west"
 
       # CREATE SPANs for pin-buttons - using a generic class as identifiers
@@ -307,13 +307,22 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
   urlname2Action: urlname2Action
   createLayoutManager: (page = 'appmng.jsp')->createLayoutManager(page)
 
+
+  ###
+    @param panels: the panel group selector
+    @param currentPanel: the current panel selector
+    @param onSwitch: the handler on panel switch
+  ###
   PanelGroup: class PanelGroup
-    constructor: (@panels, @currentPanel)->
+    constructor: (@panels, @currentPanel, @onSwitch = (oldpnl, newpnl)->)->
     switchTo: (panelId, callback)->
       $("#{@panels}").hide()
       #      console?.debug "switch to #{@panels}[id='#{panelId}']."
+      oldPanel = @currentPanel
       @currentPanel = panelId
       $("#{@panels}[id='#{panelId}']").fadeIn "fast", ()->callback() if $.isFunction(callback)
+
+      @onSwitch oldPanel, @currentPanel if $.isFunction(@onSwitch) and oldPanel != @currentPanel
 
 
 

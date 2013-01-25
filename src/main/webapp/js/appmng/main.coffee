@@ -3,6 +3,14 @@ define (require)->
   require 'jqlayout'
 
   util = require 'dms-util'
+
+  ########## reference legency codes here ###########
+  require 'blockui'
+  dialogs = require 'appmng/dialogs'
+  layout = require 'appmng/layout'
+  #    initialize appmng panels
+  #  appmngPnlGroup = new util.PanelGroup("div.dms_appmng_panel", "DMS_welcomePanel")
+
   tree = require 'appmng/producttree'
 
   init = ()->
@@ -12,7 +20,7 @@ define (require)->
       defaults:
         size: 'auto'
         minSize: 50
-#        paneClass: "pane"               # default = 'ui-layout-pane'
+        #        paneClass: "pane"               # default = 'ui-layout-pane'
         resizerClass: "resizer"        # default = 'ui-layout-resizer'
         togglerClass: "toggler"        # default = 'ui-layout-toggler'
         buttonClass: "button"          # default = 'ui-layout-button'
@@ -60,7 +68,10 @@ define (require)->
   ################################################## Initilaized ####################################################
 
   ready = (param)->
+
     console?.debug "appmng panel ready..."
 
   init()
+
+
   ready()
