@@ -1,5 +1,5 @@
 @import "jqueryUI/themes/base/jquery.ui.all.css";
-    /*@import "jqueryLayout/layout-default-latest.css";*/
+@import "jqgrid/ui.jqgrid.css";
 @import "jqueryLayout/layout.css";
 
 /*
@@ -23,6 +23,21 @@ html, body {
     font-family: Trebuchet MS, Verdana, Arial, Helvetica;
     font-size: 14pt;
     font-style: normal;
+}
+
+.show-label {
+    font-size: medium;
+    vertical-align: middle;
+!important
+}
+
+input[readonly] {
+    border-style: none
+}
+
+.ui-menu {
+    position: absolute;
+    width: 100px;
 }
 
 .navigator-button {

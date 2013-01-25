@@ -9,8 +9,12 @@
         </div>
         <div id="ui_center" class="ui-layout-center" style="border-top: none">
             <div class="content">
-                center...
+                <%@include file="welcome_panel.jsp" %>
+                <%@include file="product_panel.jsp" %>
+                <%@include file="application_panel.jsp" %>
             </div>
         </div>
     </div>
+
+    <%@include file="dialogs.jsp" %>
 </div>

@@ -5,6 +5,7 @@ define (require)->
     console?.debug "global layout ready..."
 
   layout = $('#global-container').layout(
+    #    applyDefaultStyles: true
     defaults: {size: 'auto'}
     north:
       minSize: 34

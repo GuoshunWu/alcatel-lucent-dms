@@ -3,12 +3,15 @@
   var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   define(function(require) {
-    var appTree, c18n, getNodeInfo, nodeCtxMenu, removeNode, timeFunName, urls, util, _ref, _ref1, _ref2, _ref3;
+    var appTree, apppnl, c18n, getNodeInfo, layout, nodeCtxMenu, productpnl, removeNode, timeFunName, urls, util, _ref, _ref1, _ref2, _ref3;
     require('jqtree');
     require('jqmsgbox');
     util = require('dms-util');
     urls = require('dms-urls');
     c18n = require('i18n!nls/common');
+    productpnl = require('appmng/product_panel');
+    apppnl = require('appmng/application_panel');
+    layout = require('appmng/layout');
     appTree = null;
     getNodeInfo = function(node) {
       var info, parent, selectedNode;
@@ -122,7 +125,7 @@
         if ('app' === node.attr('type')) {
           pbId = appTree._get_parent(node).attr('id');
         }
-        return $.post(URL[node.attr('type')].create, {
+        return $.post(urls[node.attr('type')].create, {
           name: name,
           prod: pbId
         }, function(json) {
@@ -167,6 +170,7 @@
         return data.inst.toggle_node(data.rslt.obj);
       });
     });
+    layout.showWelcomePanel();
     return {
       getNodeInfo: getNodeInfo
     };

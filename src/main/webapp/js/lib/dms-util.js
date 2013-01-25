@@ -420,21 +420,33 @@ To change this template use File | Settings | File Templates.
         }
         return createLayoutManager(page);
       },
+      /*
+          @param panels: the panel group selector
+          @param currentPanel: the current panel selector
+          @param onSwitch: the handler on panel switch
+      */
+
       PanelGroup: PanelGroup = (function() {
 
-        function PanelGroup(panels, currentPanel) {
+        function PanelGroup(panels, currentPanel, onSwitch) {
           this.panels = panels;
           this.currentPanel = currentPanel;
+          this.onSwitch = onSwitch != null ? onSwitch : function(oldpnl, newpnl) {};
         }
 
         PanelGroup.prototype.switchTo = function(panelId, callback) {
+          var oldPanel;
           $("" + this.panels).hide();
+          oldPanel = this.currentPanel;
           this.currentPanel = panelId;
-          return $("" + this.panels + "[id='" + panelId + "']").fadeIn("fast", function() {
+          $("" + this.panels + "[id='" + panelId + "']").fadeIn("fast", function() {
             if ($.isFunction(callback)) {
               return callback();
             }
           });
+          if ($.isFunction(this.onSwitch) && oldPanel !== this.currentPanel) {
+            return this.onSwitch(oldPanel, this.currentPanel);
+          }
         };
 
         return PanelGroup;

@@ -7,6 +7,10 @@ define (require)->
   urls = require 'dms-urls'
   c18n = require 'i18n!nls/common'
 
+  productpnl = require 'appmng/product_panel'
+  apppnl = require 'appmng/application_panel'
+  layout = require 'appmng/layout'
+
   appTree = null
 
   getNodeInfo = (node)->
@@ -75,7 +79,7 @@ define (require)->
           return
         #         validation passed, ask server to create the product(application)
         pbId = appTree._get_parent(node).attr 'id'if 'app' == node.attr 'type'
-        $.post URL[node.attr('type')].create, {name: name, prod: pbId}, (json)->
+        $.post urls[node.attr('type')].create, {name: name, prod: pbId}, (json)->
           if json.status != 0
             $.msgBox json.message, null, {title: c18n.error, width: 300, height: 'auto'}
             $.jstree.rollback(data.rlbk)
@@ -115,11 +119,9 @@ define (require)->
         clearTimeout(timeFunName)
         data.inst.toggle_node data.rslt.obj
     )
-  #
-  #    layout.showWelcomePanel()
-  #    util.afterInitilized(this)
-  #    $('#loading-container').fadeOut 'slow', 'swing', ()->$(@).remove()
-  #
+
+  layout.showWelcomePanel()
+
   getNodeInfo: getNodeInfo
 
 

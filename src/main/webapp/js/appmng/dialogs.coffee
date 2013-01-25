@@ -168,7 +168,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
       primary: 'ui-icon-gear'
       secondary: "ui-icon-triangle-1-n"
   ).click (e)->
-    menu = $('#setContextMenu').show().width($(@).width() -3).position(my: "right bottom", at: "right top", of: @)
+    menu = $('#setContextMenu').show().width($(@).width() - 3).position(my: "right bottom", at: "right top", of: @)
     $(document).one "click", ()->menu.hide()
     false
 
@@ -348,8 +348,8 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
       param = $(@).data('param')
       return unless param
       console?.debug param
-      ###TODO: implement backend. ###
-#      $('#stringSettingsTranslationGrid').setGridParam(url: 'rest/', postData: {id: param.id}).trigger "reloadGrid"
+    ###TODO: implement backend. ###
+    #      $('#stringSettingsTranslationGrid').setGridParam(url: 'rest/', postData: {id: param.id}).trigger "reloadGrid"
 
     buttons: [
       {text: c18n.close, click: (e)->

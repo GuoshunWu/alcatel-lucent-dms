@@ -22,12 +22,12 @@ define (require)->
     grid = $('#applicationGridList')
     parent = $('#applicationGrid_parent')
     #    console?.debug "parent.width=#{parent.width()}, parent.height=#{parent.height()}."
-    grid.setGridWidth(parent.width() - 10).setGridHeight(parent.height() - 80)
+    grid.setGridWidth(parent.width() - 10).setGridHeight(parent.height() - 85)
 
   showApplicationPanel: ->appmngPnlGroup.switchTo ids.panel.application, ()->
     parent = $('#dictionaryGridList_parent')
     #    console?.debug "parent.width=#{parent.width()}, parent.height=#{parent.height()}."
-    $('#dictionaryGridList').setGridWidth(parent.width() - 10).setGridHeight(parent.height() - 80)
+    $('#dictionaryGridList').setGridWidth(parent.width() - 10).setGridHeight(parent.height() - 85)
   showWelcomePanel: ->
     appmngPnlGroup.switchTo ids.panel.welcome
 
