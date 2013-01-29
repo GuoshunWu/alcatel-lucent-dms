@@ -160,4 +160,27 @@ public class LabelTranslation extends BaseEntity {
         this.annotation2 = annotation2;
     }
 
+    
+	// transient variables
+    
+    private String translation;	// hold translation result for LabelTranslationREST
+    public String getTranslation() {
+		return translation;
+	}
+
+	public void setTranslation(String translation) {
+		this.translation = translation;
+	}
+	
+	private Integer status;	// hold translation status for LabelTranslationREST
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	
+
 }
