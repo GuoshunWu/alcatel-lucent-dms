@@ -5,6 +5,7 @@ import javax.naming.NamingEnumeration
 import org.junit.BeforeClass
 import org.junit.Test
 import javax.naming.directory.*
+import org.junit.Ignore
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,6 +14,7 @@ import javax.naming.directory.*
  * Time: 下午2:10
  * To change this template use File | Settings | File Templates.
  */
+@Ignore
 //@RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration(locations = ["/spring.xml"])
 //@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)

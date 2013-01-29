@@ -38,33 +38,36 @@
         }, {
           name: 't',
           index: 't',
-          formatter: 'showlink',
-          formatoptions: {
-            baseLinkUrl: '#'
-          },
           sortable: true,
           width: 15,
-          align: 'right'
+          align: 'right',
+          formatter: 'showlink',
+          formatoptions: {
+            baseLinkUrl: '#',
+            addParam: encodeURI("&status=2")
+          }
         }, {
           name: 'n',
           index: 'n',
           formatter: 'showlink',
-          formatoptions: {
-            baseLinkUrl: '#'
-          },
           sortable: true,
           width: 15,
-          align: 'right'
+          align: 'right',
+          formatoptions: {
+            baseLinkUrl: '#',
+            addParam: encodeURI("&status=0")
+          }
         }, {
           name: 'i',
           index: 'i',
           formatter: 'showlink',
-          formatoptions: {
-            baseLinkUrl: '#'
-          },
           sortable: true,
           width: 15,
-          align: 'right'
+          align: 'right',
+          formatoptions: {
+            baseLinkUrl: '#',
+            addParam: encodeURI("&status=1")
+          }
         }, {
           name: 'maxLength',
           index: 'maxLength',
@@ -75,13 +78,13 @@
         }, {
           name: 'context',
           index: 'context.name',
-          editrules: {
-            required: true
-          },
           width: 40,
           editable: true,
           classes: 'editable-column',
-          align: 'left'
+          align: 'left',
+          editrules: {
+            required: true
+          }
         }, {
           name: 'description',
           index: 'description',
@@ -100,8 +103,13 @@
           }
         });
         return $('a', this).css('color', 'blue').click(function() {
+          var param, rowData;
+          param = util.getUrlParams(this.href);
+          rowData = grid.getRowData(param.id);
+          param.key = rowData.key;
+          param.ref = rowData.reference;
           $('#stringSettingsTranslationDialog').data({
-            param: util.getUrlParams(this.href)
+            param: param
           });
           return $('#stringSettingsTranslationDialog').dialog('open');
         });

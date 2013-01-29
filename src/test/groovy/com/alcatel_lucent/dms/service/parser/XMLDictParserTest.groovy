@@ -11,6 +11,7 @@ import org.junit.runner.RunWith
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.beans.factory.annotation.Autowired
 import com.alcatel_lucent.dms.model.Dictionary
+import org.junit.Ignore
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,7 +21,7 @@ import com.alcatel_lucent.dms.model.Dictionary
  * To change this template use File | Settings | File Templates.
  */
 
-//@Ignore
+@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = ["/spring.xml"])
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)

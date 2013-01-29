@@ -15,6 +15,9 @@ define
       stringsettings:
         title: 'String settings'
         'dummy': ''
+      stringsettingstrans:
+        'caption': "Label key: '{0}', ref: '{1}' translations"
+        'dummy': ''
       languagesettings:
         title: 'Language settings'
         'dummy': ''

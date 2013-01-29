@@ -42,7 +42,7 @@ class GDictionaryServiceImplTest {
     @Autowired
     private DictionaryProp dictProp;
 
-    private static Logger log = Logger.getLogger(GDictionaryServiceImplTest.class)
+    private static Logger log = LoggerFactory.getLogger(GDictionaryServiceImplTest.class)
 
     public static Logger logDictDeliverSuccess
     public static Logger logDictDeliverFail

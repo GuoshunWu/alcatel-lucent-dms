@@ -54,7 +54,6 @@ public class PreferredCharsetREST extends BaseREST {
 
 	@Override
 	Class getEntityClass() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

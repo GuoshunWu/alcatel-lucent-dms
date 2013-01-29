@@ -217,7 +217,6 @@ public class DCTReader extends LineNumberReader {
                         langCode, key));
             }
 
-            //TODO: the language code will be checked in translation object, is this required?
 //            if (!isValidLangCode(langCode)) {
 //                exceptions.addNestedException(new BusinessException(
 //                        BusinessException.UNKNOWN_LANG_CODE, getLineNumber(),

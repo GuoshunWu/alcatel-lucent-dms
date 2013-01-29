@@ -1,5 +1,4 @@
-define ['jqgrid','appmng/langsetting_translation_grid', 'require'], ($,ltgrid, require)->
-
+define ['jqgrid', 'appmng/langsetting_translation_grid', 'require'], ($, ltgrid, require)->
   lastEditedCell = null
   util = require 'util'
 
@@ -16,18 +15,35 @@ define ['jqgrid','appmng/langsetting_translation_grid', 'require'], ($,ltgrid, r
     colModel: [
       {name: 'key', index: 'key', width: 100, editable: false, align: 'left'}
       {name: 'reference', index: 'reference', width: 200, editable: false, align: 'left'}
-      {name: 't', index: 't', formatter: 'showlink', formatoptions: {baseLinkUrl: '#'}, sortable: true, width: 15, align: 'right'}
-      {name: 'n', index: 'n', formatter: 'showlink', formatoptions: {baseLinkUrl: '#'}, sortable: true, width: 15, align: 'right'}
-      {name: 'i', index: 'i', formatter: 'showlink', formatoptions: {baseLinkUrl: '#'}, sortable: true, width: 15, align: 'right'}
+      {name: 't', index: 't', sortable: true, width: 15, align: 'right', formatter: 'showlink'
+      formatoptions:
+        baseLinkUrl: '#', addParam: encodeURI("&status=2")
+      }
+      {name: 'n', index: 'n', formatter: 'showlink', sortable: true, width: 15, align: 'right'
+      formatoptions:
+        baseLinkUrl: '#', addParam: encodeURI("&status=0")
+      }
+      {name: 'i', index: 'i', formatter: 'showlink', sortable: true, width: 15, align: 'right'
+      formatoptions:
+        baseLinkUrl: '#', addParam: encodeURI("&status=1")
+      }
       {name: 'maxLength', index: 'maxLength', width: 40, editable: true, classes: 'editable-column', align: 'right'}
-      {name: 'context', index: 'context.name', editrules: {required: true}, width: 40, editable: true, classes: 'editable-column', align: 'left'}
+      {name: 'context', index: 'context.name', width: 40, editable: true, classes: 'editable-column', align: 'left'
+      editrules:
+        required: true
+      }
       {name: 'description', index: 'description', width: 60, editable: true, classes: 'editable-column', align: 'left'}
     ]
     gridComplete: ->
       grid = $(@)
       $('a', @).each (index, a)->$(a).before(' ').remove() if '0' == $(a).text()
       $('a', @).css('color', 'blue').click ()->
-        $('#stringSettingsTranslationDialog').data param: util.getUrlParams(@href)
+        param = util.getUrlParams(@href)
+        rowData = grid.getRowData(param.id)
+        param.key = rowData.key
+        param.ref = rowData.reference
+
+        $('#stringSettingsTranslationDialog').data param: param
         $('#stringSettingsTranslationDialog').dialog 'open'
 
     afterEditCell: (rowid, cellname, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
@@ -35,8 +51,8 @@ define ['jqgrid','appmng/langsetting_translation_grid', 'require'], ($,ltgrid, r
   .jqGrid('navGrid', '#stringSettingsPager', {edit: false, add: false, del: false, search: false, view: false},
     {}, {}, {})
   .setGroupHeaders(useColSpanStyle: true, groupHeaders: [
-      {startColumnName: "t", numberOfColumns: 3, titleText: 'Status'}
-    ])
+    {startColumnName: "t", numberOfColumns: 3, titleText: 'Status'}
+  ])
 
 
   saveLastEditedCell: ()->dicGrid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell

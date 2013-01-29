@@ -24,7 +24,7 @@ import org.apache.commons.lang3.time.DurationFormatUtils;
  * Time: 上午11:14
  * To change this template use File | Settings | File Templates.
  */
-//@Ignore
+@Ignore
 public class UtilTest {
 //    @Test
     void testUnzip() throws Exception {

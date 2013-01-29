@@ -71,7 +71,8 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   # Add application to product dialog
   addApplication = $("#addApplicationDialog").dialog {
   autoOpen: false, height: 'auto', width: 300, modal: true, position: "center",
-  show: { effect: 'drop', direction: "up" }
+  show:
+    { effect: 'drop', direction: "up" }
   create: (event, ui)->
     $("select", @).css('width', "80px")
     $("#applicationName").change ->
@@ -104,7 +105,6 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
       }
       $.post url, params, (json)->
         ($.msgBox json.message, null, {title: c18n.error}; return) if json.status != 0
-        #        todo:Bug here, appBaseId should be -1, it is used in addNewApplicationBase
         if -1 == params.appBaseId
           params.appBaseId = json.appBaseId
           (require 'appmng/apptree').addNewApplicationBase(params)
@@ -123,7 +123,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
     create: -> $(@).dialog 'option', 'width', $('#languageSettingGrid').getGridParam('width') + 40
     open: (e, ui)->
 
-    # param must be attached to the dialog before the dialog open
+      # param must be attached to the dialog before the dialog open
       param = $(@).data "param"
       $('#refCode').val param.langrefcode
       postData = dict: param.id, format: 'grid', prop: 'languageCode,language.name,charset.name'
@@ -141,10 +141,10 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   autoOpen: false
   title: i18n.dialog.stringsettings.title, modal: true
   create: (e, ui)->
-  # set my width according to the string settings grid width
+    # set my width according to the string settings grid width
     $(@).dialog 'option', 'width', $('#stringSettingsGrid').getGridParam('width') + 40
   open: (e, ui)->
-  # param must be attached to the dialog before the dialog open
+    # param must be attached to the dialog before the dialog open
     param = $(@).data "param"
     return if !param
 
@@ -224,7 +224,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
     }
   ]
   open: ->
-  #    param need to be initilize before the dialog open
+    #    param need to be initilize before the dialog open
     param = $(@).data 'param'
     return if !param
 
@@ -292,7 +292,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
     $.getJSON 'rest/languages', {prop: 'id,name'}, (languages)=>$('#languageName', @)
     .append("<option value='-1'>#{c18n.selecttip}</option>")
     .append(util.json2Options languages, false, 'name').change (e)=>
-    #     send the selected dictionary list ids, langId to server, expect language code and charset id response from server
+      #     send the selected dictionary list ids, langId to server, expect language code and charset id response from server
       postData =
         prop: 'languageCode,charset.id'
         'language': $('#languageName', @).val()
@@ -307,14 +307,15 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
     .append(util.json2Options charsets, false, 'name')
 
   open: (event, ui)->
-  #    get selected dictionary ids
-  #    console?.log $(@).data('param').dicts
+    #    get selected dictionary ids
+    #    console?.log $(@).data('param').dicts
     $('#addLangCode', @).select()
     $('#charset', @).val '-1'
     $('#languageName', @).val '-1'
 
   buttons: [
-    {text: 'Add', icons: {primary: "ui-icon-locked"},
+    {text: 'Add', icons:
+      {primary: "ui-icon-locked"}
     click: (e)->
       postData =
         dicts: $('#addLanguageDialog').data('param').dicts.join(',')
@@ -347,10 +348,13 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
     open: (event, ui)->
       param = $(@).data('param')
       return unless param
-      console?.debug param
-    ###TODO: implement backend. ###
-    #      $('#stringSettingsTranslationGrid').setGridParam(url: 'rest/', postData: {id: param.id}).trigger "reloadGrid"
-
+#      console?.debug param
+      $('#stringSettingsTranslationGrid').setGridParam(
+        url: 'rest/label/translation'
+        postData:
+          {label: param.id, format: 'grid', status: param.status, prop: 'languageCode,language.name,translation'}
+      ).setCaption(i18n.dialog.stringsettingstrans.caption.format param.key, param.ref)
+      .trigger "reloadGrid"
     buttons: [
       {text: c18n.close, click: (e)->
         $(@).dialog 'close'
