@@ -11,11 +11,12 @@
       mtype: 'post',
       datatype: 'local',
       width: 800,
-      height: $(window).innerHeight() - 200,
+      height: 'auto',
       pager: '#stringSettingsTranslationPager',
       rowNum: 10,
       rowList: [10, 20, 30],
       sortname: 'language.name',
+      caption: 'Label Translation',
       sortorder: 'asc',
       viewrecords: true,
       gridview: true,
@@ -24,18 +25,18 @@
         {
           name: 'code',
           index: 'languageCode',
-          width: 40,
+          width: 20,
           editable: false,
           align: 'left'
         }, {
           name: 'language',
           index: 'language',
-          width: 50,
+          width: 40,
           align: 'left'
         }, {
           name: 'translation',
           index: 'translation',
-          width: 40,
+          width: 100,
           align: 'left'
         }
       ]

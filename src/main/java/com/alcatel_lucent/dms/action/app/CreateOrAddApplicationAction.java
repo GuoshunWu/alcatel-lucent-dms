@@ -23,7 +23,6 @@ import com.alcatel_lucent.dms.service.ProductService;
 @Result(type = "json", params = {"noCache", "true", "ignoreHierarchy", "false", "includeProperties", "appId,appBaseId,message,status"})
 
 public class CreateOrAddApplicationAction extends JSONAction {
-// todo: need to be refined.
     public void setDaoService(DaoService daoService) {
         this.daoService = daoService;
     }

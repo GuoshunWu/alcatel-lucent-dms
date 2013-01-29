@@ -575,11 +575,16 @@
         if (!param) {
           return;
         }
-        return typeof console !== "undefined" && console !== null ? console.debug(param) : void 0;
+        return $('#stringSettingsTranslationGrid').setGridParam({
+          url: 'rest/label/translation',
+          postData: {
+            label: param.id,
+            format: 'grid',
+            status: param.status,
+            prop: 'languageCode,language.name,translation'
+          }
+        }).setCaption(i18n.dialog.stringsettingstrans.caption.format(param.key, param.ref)).trigger("reloadGrid");
       },
-      /*TODO: implement backend.
-      */
-
       buttons: [
         {
           text: c18n.close,
