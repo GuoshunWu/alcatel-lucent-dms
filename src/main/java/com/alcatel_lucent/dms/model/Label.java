@@ -304,6 +304,21 @@ public class Label extends BaseEntity {
         }
         return reference;
     }
+    
+    public int getTranslationStatus(String langCode) {
+        DictionaryLanguage dl = this.getDictionary().getDictLanguage(langCode);
+        LabelTranslation lt = getOrigTranslation(langCode);
+        if (lt != null && (!lt.isNeedTranslation() || context.getName().equals(Context.EXCLUSION))) {
+            return Translation.STATUS_TRANSLATED;
+        } else {
+            for (Translation translation : getText().getTranslations()) {
+                if (translation.getLanguage().getId().equals(dl.getLanguage().getId())) {
+                    return translation.getStatus();
+                }
+            }
+        }
+        return Translation.STATUS_UNTRANSLATED;
+    }
 
     /**
      * The follow properties are used for xml dict parser and generator

@@ -2,9 +2,11 @@ package com.alcatel_lucent.dms.service;
 
 import java.io.OutputStream;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import com.alcatel_lucent.dms.model.Label;
+import com.alcatel_lucent.dms.model.LabelTranslation;
 
 public interface TranslationService {
 
@@ -70,5 +72,13 @@ public interface TranslationService {
      * @return collection of labels, translation information is contained in ct and ot properties.
      */
 	Collection<Label> getLabelsWithTranslation(Long dictId, Long langId);
+
+	/**
+	 * Retrieve label translations data for specified label.
+	 * @param labelId label id
+	 * @param status translation status filter, null indicating all status
+	 * @return collection of LabelTranslation objects
+	 */
+	List<LabelTranslation> getLabelTranslations(Long labelId, Integer status);
 
 }

@@ -6,11 +6,13 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -752,7 +754,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 				// duplicate an in-memory object to avoid database update
 				Translation ct = new Translation();
 				ct.setId(label.getCt().getId());
-				ct.setTranslation(label.getCt().getTranslation());
+				ct.setTranslation(label.getOt().getOrigTranslation());
 				ct.setStatus(Translation.STATUS_TRANSLATED);
 				label.setCt(ct);
 			}
@@ -773,6 +775,33 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 			cell.setCellStyle(style);
 		}
 		return cell;
+	}
+
+	@Override
+	public List<LabelTranslation> getLabelTranslations(Long labelId,
+			Integer status) {
+		Label label = (Label) dao.retrieve(Label.class, labelId);
+		Dictionary dict = label.getDictionary();
+		List<LabelTranslation> result = new ArrayList<LabelTranslation>();
+		if (dict.getDictLanguages() != null) {
+			for (DictionaryLanguage dl : dict.getDictLanguages()) {
+				if (dl.getLanguage().getId() == 1) continue;	// skip reference language
+				LabelTranslation lt = label.getOrigTranslation(dl.getLanguageCode());
+				if (lt == null) {
+					lt = new LabelTranslation();
+					lt.setLabel(label);
+					lt.setOrigTranslation(label.getReference());
+					lt.setNeedTranslation(true);
+					lt.setSortNo(dl.getSortNo());
+				}
+				lt.setTranslation(label.getTranslation(dl.getLanguageCode()));
+				lt.setStatus(label.getTranslationStatus(dl.getLanguageCode()));
+				if (status == null || lt.getStatus().intValue() == status.intValue()) {
+					result.add(lt);
+				}
+			}
+		}
+		return result;
 	}
 
 }

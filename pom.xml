@@ -621,7 +621,7 @@
             </properties>
         </profile>
         <profile>
-            <id>qa2-db</id>
+            <id>prod-db</id>
             <properties>
                 <db.driver>org.postgresql.Driver</db.driver>
                 <db.url>jdbc\:postgresql\://135.117.177.136\:5432/dms_qa2</db.url>
