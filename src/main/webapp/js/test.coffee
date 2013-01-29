@@ -1,16 +1,16 @@
 #Object:: isArray = -> Object.prototype.toString.call(@) == "[object Array]"
 
-String:: format = -> args = arguments; @replace /\{(\d+)\}/g, (m, i) ->args[i]
+String::format = -> args = arguments; @replace /\{(\d+)\}/g, (m, i) ->args[i]
 
-String:: endWith = (str) ->
+String::endWith = (str) ->
   return false  if !str or str.length > @length
   @substring(@length - str.length) is str
 
-String:: startWith = (str) ->
+String::startWith = (str) ->
   return false  if !str or str.length > @length
   @substr(0, str.length) is str
 
-Array:: insert = (pos, elem) ->
+Array::insert = (pos, elem) ->
   newarray = @slice(0, pos)
   if(elem.isArray())
     newarray = newarray.concat elem.slice 0
@@ -20,7 +20,7 @@ Array:: insert = (pos, elem) ->
   @length = 0
   @push(elem) for elem in newarray
 
-Array:: remove = (start, len) ->
+Array::remove = (start, len) ->
   len = 1 if !len
   newarray = @slice(0, start)
   newarray = newarray.concat(@slice(start + len, @length))
@@ -58,7 +58,7 @@ formatJonString = (jsonString) ->
     i++
   retval
 
-Date:: format = (format)->
+Date::format = (format)->
   o =
     'M+': @getMonth() + 1, #month
     "d+": @getDate(), #day
@@ -84,10 +84,12 @@ testArray = ()->
   for k,v of handlers
     action.push k
   console.log action
-
+testJSONP = () ->
+  console?.log 'Hi...'
 main = ()->
   console.log '==============Test start============='
-  testArray()
+  #  testArray()
+  testJSONP()
   console.log '==============Test end==============='
 
 main()

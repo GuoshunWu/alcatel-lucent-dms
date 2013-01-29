@@ -30,23 +30,32 @@ jQuery ($)->
     height = $("##{pg.currentPanel}").height()
     tTabs.tabs 'option', 'height', height
     $('div', tTabs).height(height - 70)
+  # Create layout.
+  layout = $('#layout-container').layout(
+    applyDefaultStyles: true
+  )
 
   $('#switchPanel').click((e)->
       if pg.currentPanel == 'p1'
-      #      tDialog.dialog('close')
+        tDialog.dialog('close')
+        layout.hide("west")
         pg.switchTo 'p2', ()->
           height = $("##{pg.currentPanel}").height()
           tTabs.tabs 'option', 'height', height
           console?.debug "parent height=#{height}."
           $('div.ui-tabs-panel', tTabs).height(height - 65)
       else
+        layout.show("west")
         pg.switchTo 'p1'
         tDialog.dialog('open')
   )
   .button()
+  genLink = ()->
+    obj = aa: 1, bb: 2
+    "<a href='javascript:alert((function(){return obj})(this));'>TestLink</a>"
+
+  $('#testButton').click(
+    (e)->$(genLink()).insertAfter @
+  ).button()
 
 
-  # Create layout.
-  layout = $('#layout-container').layout(
-    applyDefaultStyles: true
-  )

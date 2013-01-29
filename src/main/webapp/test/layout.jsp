@@ -8,10 +8,10 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <style type="text/css">
         html, body {
-            font-family: 'Verdana', '宋体';
+            font-family: 'Verdana', '宋体',serif;
             font-size: 10px;
             height: 99%;
-            margin: 0px;
+            margin: 0;
         }
 
         .header {
@@ -24,17 +24,13 @@
             overflow: hidden;
         }
 
-        .subhead, .footer {
+        .footer {
             background: #d6d6d6 url(${base}/css/jqueryLayout/images/d6d6d6_40x100_textures_02_glass_80.png) 0 50% repeat-x;
             padding: 3px 10px;
             font-size: 0.85em;
             position: relative;
             overflow: hidden;
             white-space: nowrap;
-        }
-
-        .subhead {
-            border-bottom: 1px solid #777;
         }
 
         .footer {
@@ -118,6 +114,7 @@
     </div>
     <div class="ui-layout-north">North
         <button id="switchPanel">SwitchPanel</button>
+        <button id="testButton">TestFunction</button>
     </div>
     <div class="ui-layout-east">East</div>
     <div class="ui-layout-west">West</div>
