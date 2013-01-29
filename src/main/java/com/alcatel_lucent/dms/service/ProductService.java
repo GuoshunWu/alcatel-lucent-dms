@@ -3,6 +3,7 @@ package com.alcatel_lucent.dms.service;
 import java.util.Collection;
 
 import com.alcatel_lucent.dms.BusinessException;
+import com.alcatel_lucent.dms.model.Application;
 
 /**
  * Created by IntelliJ IDEA.
@@ -71,7 +72,7 @@ public interface ProductService {
      * @return application id
      * @throws BusinessException
      */
-    Long createApplication(Long appBaseId, String version, Long inheritAppId) throws BusinessException;
+    Application createApplication(Long appBaseId, String version, Long inheritAppId) throws BusinessException;
     
     /**
      * Delete an application and remove it from products

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -154,7 +155,7 @@ public class ProductServiceImpl implements ProductService {
 		
 	}
 	
-	public Long createApplication(Long appBaseId, String version, Long inheritAppId) throws BusinessException {
+	public Application createApplication(Long appBaseId, String version, Long inheritAppId) throws BusinessException {
 		version = version.trim();
 		ApplicationBase appBase = (ApplicationBase) dao.retrieve(ApplicationBase.class, appBaseId);
 		Application app = findApplication(appBaseId, version);
@@ -171,7 +172,8 @@ public class ProductServiceImpl implements ProductService {
 				app.setDictionaries(new HashSet<Dictionary>(inheritApp.getDictionaries()));
 			}
 		}
-		return app.getId();
+		Hibernate.initialize(appBase.getProductBase().getProducts());
+		return app;
 	}
 
 	private Application findApplication(Long appBaseId, String version) {
