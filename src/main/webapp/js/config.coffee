@@ -15,6 +15,7 @@ require.config
     iframetransport: 'jsfileuploader/jquery.iframe-transport'
 
     globallayout: '../globallayout'
+    ptree: '../producttree'
     # modules
     appmng: '../appmng'
     transmng: '../transmng'
@@ -52,7 +53,7 @@ require.config
       deps: ['jquery']
       exports: 'jQuery'
     'jqlayout':
-      deps: ['jquery']
+      deps: ['jquery','jqueryui']
       exports: 'jQuery'
     'jqmsgbox':
       deps: ['jquery']

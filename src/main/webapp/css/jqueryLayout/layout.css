@@ -8,9 +8,8 @@ The global container for layout
 
 .dms-panel {
     width: 100%;
-    height: 100%;
-    /*padding: 10px;*/
-    /*border: 1px solid red;*/
+    height: 99.5%;
+    border: 2px solid red;
 }
 
 .dms_appmng_panel {
@@ -32,20 +31,18 @@ The global container for layout
     overflow: auto; /* will be auto-set to 'hidden' for any pane with a 'scrolling content div' */
 }
 
-.ui-layout-content, .content {
+.ui-layout-content{
     /*position: relative; *//* contain floated or positioned elements */
     overflow: auto; /* add scrolling to content-div */
-    /*border: 2px solid yellow;*/
+    padding: 10px;
+    border: 2px solid yellow;
 }
 
-.content{
-    padding: 10px;
-}
 
 /*
 *	OUTER-LAYOUT PANE FORMATTING
 */
-.ui-layout-pane-north, .ui-layout-pane-south, .ui-layout-pane-west, .ui-layout-pane-east, .pane-north, .pane-south, .pane-west, .pane-east {
+.ui-layout-pane-north, .ui-layout-pane-south, .ui-layout-pane-west, .ui-layout-pane-east {
     overflow: hidden;
 }
 
@@ -53,30 +50,30 @@ The global container for layout
     border-bottom: none;
 }
 
-.ui-layout-pane-north .content, .ui-layout-pane-south .content {
+.ui-layout-pane-north .content, .ui-layout-pane-south {
     text-align: center;
 }
 
-.ui-layout-pane-center, pane-center {
+.ui-layout-pane-center {
     /* show off the inner-layout inside the outer-center-ui-layout-pane*/
     background-color: #F6F6F6;
 }
 
 /*
-*	INNER LAYOUT RESIZERS & TOGGLERS
+*	LAYOUT RESIZERS & TOGGLERS
 */
 
-.resizer-west-dragging, .resizer-west-open:hover {
+.ui-layout-resizer-west-dragging, .ui-layout-resizer-west-open:hover {
     background: url(images/resizable-w.gif) repeat-y center;
 }
 
-.resizer-west-open, .resizer-east-open {
+.ui-layout-resizer-west-open, .ui-layout-resizer-east-open {
     background-color: #999;
     opacity: 0.1;
     filter: alpha(opacity = 10);
 }
 
-.resizer-west-open:hover, .resizer-east-open:hover {
+.ui-layout-resizer-west-open:hover, .ui-layout-resizer-east-open:hover {
     opacity: 1;
     filter: alpha(opacity = 100);
 }
@@ -84,29 +81,29 @@ The global container for layout
 /*
 *	extJS-STYLE RESIZER/SLIDER-BAR (CLOSED)
 */
-.resizer-west-closed, .resizer-east-closed {
+.ui-layout-resizer-west-closed, .ui-layout-resizer-east-closed {
     background: #D1E6FC url(images/D1E6FC_40x100_textures_10_dots_medium_90.png) 0 0 repeat;
     border-top: 1px solid #777;
     border-bottom: 1px solid #777;
 }
 
-.resizer-west-closed:hover, .resizer-east-closed:hover {
+.ui-layout-resizer-west-closed:hover, .ui-layout-resizer-east-closed:hover {
     background: #D1E6FC;
 }
 
-.resizer-dragging-limit {
+.ui-layout-resizer-dragging-limit {
     background: #FF3300 !important;
 }
 
 /* IE6 * HACK - always show resizer graphics because IE6 cannot understand elem:hover */
 /** html .resizer-north		{ background: url(images/resizable-n.gif) repeat-x center !important; } */
 
-* html .resizer-west-open {
+* html .ui-layout-resizer-west-open {
     background: url(images/resizable-w.gif) repeat-y center !important;
 }
 
 /** html .resizer-north , */
-* html .resizer-south, * html .resizer-west-open, * html .resizer-east-open {
+* html .ui-layout-resizer-south, * html .ui-layout-resizer-west-open, * html .ui-layout-resizer-east-open {
     opacity: 0.1 !important;
     filter: alpha(opacity = 10) !important;
 }
@@ -134,11 +131,11 @@ span.button-close-west:hover {
 *	SIMPLE TOGGLER BUTTONS (used on Outer Layout North/South only)
 */
 
-.ui-layout-toggler-north-open, .toggler-south-closed {
+.toggler-north-open, .toggler-south-closed {
     background: url(images/toggle-up.gif) no-repeat center bottom;
 }
 
-.ui-layout-toggler-north-closed, .toggler-south-open {
+.toggler-north-closed, .toggler-south-open {
     background: url(images/toggle-dn.gif) no-repeat center top;
 }
 

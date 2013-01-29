@@ -48,5 +48,5 @@ jQuery ($)->
 
   # Create layout.
   layout = $('#layout-container').layout(
-#    applyDefaultStyles: true
+    applyDefaultStyles: true
   )

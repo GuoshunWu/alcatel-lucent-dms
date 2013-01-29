@@ -17,6 +17,7 @@
       jqupload: 'jsfileuploader/jquery.fileupload',
       iframetransport: 'jsfileuploader/jquery.iframe-transport',
       globallayout: '../globallayout',
+      ptree: '../producttree',
       appmng: '../appmng',
       transmng: '../transmng',
       taskmng: '../taskmng',
@@ -64,7 +65,7 @@
         exports: 'jQuery'
       },
       'jqlayout': {
-        deps: ['jquery'],
+        deps: ['jquery', 'jqueryui'],
         exports: 'jQuery'
       },
       'jqmsgbox': {

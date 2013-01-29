@@ -124,5 +124,3 @@ define (require)->
 
   getNodeInfo: getNodeInfo
 
-
-
