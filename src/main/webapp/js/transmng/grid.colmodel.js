@@ -64,7 +64,7 @@
           if (level !== 'application') {
             model.formatter = 'showlink';
             model.formatoptions = {
-              baseLinkUrl: '#',
+              baseLinkUrl: "#",
               addParam: encodeURI("&languageId=" + language.id + "&languageName=" + model.name)
             };
           }
