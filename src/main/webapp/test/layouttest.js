@@ -74,7 +74,9 @@
         return tDialog.dialog('open');
       }
     }).button();
-    return layout = $('#layout-container').layout();
+    return layout = $('#layout-container').layout({
+      applyDefaultStyles: true
+    });
   });
 
 }).call(this);

@@ -9,14 +9,17 @@
     <title><s:text name="title"/></title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta http-equiv="Pragma" content="no-cache"/>
-    <link rel="stylesheet" type="text/css" href="${base}css/main.css?v=<s:property value="buildNumber"/>"/>
+
     <%@include file="common/env.jsp" %>
+    <link rel="stylesheet" type="text/css" href="${base}css/main.css?v=<s:property value="buildNumber"/>"/>
+
     <script type="text/javascript" src="js/lib/require.js"></script>
     <script type="text/javascript">
         require(['./js/config.js?bust=' + new Date().getTime()], function (config) {
             require(['../main']);
         });
     </script>
+
 </head>
 <body>
 
@@ -32,6 +35,13 @@
             <%@include file="taskmanagement/taskmng.jsp" %>
             <%@include file="admin/admin.jsp" %>
         </div>
+    </div>
+    <div class="ui-layout-west">
+        <div class="header">Navigation Tree</div>
+        <div class="ui-layout-content">
+            <div id="appTree" style="background-color: transparent;"></div>
+        </div>
+        <div class="footer">A test footer</div>
     </div>
 </div>
 </body>

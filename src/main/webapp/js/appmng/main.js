@@ -2,62 +2,10 @@
 (function() {
 
   define(function(require) {
-    var $, dialogs, init, layout, ready, tree, util;
+    var $, init, ready, util;
     $ = require('jqgrid');
-    require('jqlayout');
     util = require('dms-util');
-    require('blockui');
-    dialogs = require('appmng/dialogs');
-    layout = require('appmng/layout');
-    tree = require('appmng/producttree');
-    init = function() {
-      var westSelector;
-      layout = $('#appmng-container').layout({
-        name: 'appmnglayout',
-        defaults: {
-          size: 'auto',
-          minSize: 50,
-          resizerClass: "resizer",
-          togglerClass: "toggler",
-          buttonClass: "button",
-          contentSelector: ".content",
-          contentIgnoreSelector: "span",
-          togglerLength_open: 35,
-          togglerLength_closed: 35,
-          hideTogglerOnSlide: true,
-          togglerTip_open: "Close This Pane",
-          togglerTip_closed: "Open This Pane",
-          resizerTip: "Resize This Pane",
-          fxName: 'slide',
-          fxSpeed_open: 750,
-          fxSpeed_close: 1500,
-          fxSettings_open: {
-            easing: "easeInQuint"
-          },
-          fxSettings_close: {
-            easing: "easeOutQuint"
-          }
-        },
-        west: {
-          size: 250,
-          spacing_closed: 21,
-          togglerLength_closed: 21,
-          togglerAlign_closed: "top",
-          togglerLength_open: 0,
-          slideTrigger_open: "click",
-          initClosed: false,
-          resizable: true,
-          fxSettings_open: {
-            easing: "easeOutBounce"
-          }
-        }
-      });
-      westSelector = "#appmng-container > div.ui-layout-west";
-      $("<span></span>").addClass("pin-button").prependTo(westSelector);
-      layout.addPinBtn("" + westSelector + " .pin-button", "west");
-      $("<span></span>").attr("id", "west-closer").prependTo(westSelector);
-      return layout.addCloseBtn("#west-closer", "west");
-    };
+    init = function() {};
     ready = function(param) {
       return typeof console !== "undefined" && console !== null ? console.debug("appmng panel ready...") : void 0;
     };
