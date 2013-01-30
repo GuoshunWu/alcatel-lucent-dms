@@ -156,7 +156,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
     # set my width according to the string settings grid width
 #    $(@).dialog 'option', 'width', $('#stringSettingsGrid').getGridParam('width') + 40
   open: (e, ui)->
-#    $(@).dialog 'option', 'width', $('#stringSettingsGrid').getGridParam('width') + 40
+    $(@).dialog 'option', 'width', $('#stringSettingsGrid').getGridParam('width') + 40
     # param must be attached to the dialog before the dialog open
     param = $(@).data "param"
     return if !param
