@@ -1,0 +1,1621 @@
+--?000 #CHECKSUM=7127384#
+
+--? ?000 #CHECKSUM=4168879#
+
+-- ? ----------------------------------------------------------------------
+-- Dictionnaire de l'application Instant COmmmunicator pour la fen?re About
+-- -------------------------------------------------------------------------
+-- Creation date : 13/02/2007
+-- Last Modification Date :
+
+-- Supported languages
+
+LANGUAGES {CHK, GAE, FR0, EN0, DE0, IT0, PT0, ES0, US0, PL0, KO0, NO0, NL0, RU0, CH0, FI0, ES1, CS0, HU0, CH1, SV0, AR0, DA0, HE0}
+
+-- Structure of the dictionary:
+
+-- First, you can see commentary lines, precedeed by two minus signs "--". these comments are not
+-- interpreted by the dictionary tool.
+
+-- For each translation needed, you will find:
+-- An entry key string in upper case, followed by a colon ":".
+-- This key is used by the software to associate a text field in the application with a set of
+-- translations
+-- Each translation associated with this key enholds:
+-- - a language code (FR0 for French for instance)
+-- - a text between brackets for the translation
+-- - a comma to delimit the end of the translation for this language
+-- the comma is replaced by a semicolon ";" to end the list of translations for a specific key
+
+-- NOTA 1: The CHK (Czech) language is used for indicating the maximum width of a text field.
+-- This indication stands only if you visualize the present dictionary with the proper
+-- font (as used in the application). Then, whichever characters you are using
+-- (W can be wider than i) the translations in the different languages  must not exeed the text width
+-- (undependantly to the characters amount) indicated in the CHK field
+-- Texts that are to be displayed in a popup window (OK popup, yes-no popup...) can consist
+-- of more than one line:
+-- "This text will be displayed""on two lines"
+-- Each line must not exceed the width indicated in the CHK field
+-- Texts that are to be displayed in a temporised popup (also called timed popup) can consist of :
+-- One (long) line (with automatic wrap of text on the following 3 lines),
+-- Or several lines ("First line"Second line"...up to "Forth line")
+-- In any case, you are limited to 256 caracters.
+
+-- General syntax:
+-- WC_xxxx : Window caption (title of the window)
+-- ME_xxxx : element of a menu
+-- BU_xxxx : name of a button
+-- CB_xxxx : element of a combo-box
+-- TQ_xxxx : text of a question
+-- TI_xxxx : text of an information, a warning, a problem
+-- ST_xxxx : static text before a variable field or others....
+-- EN_xxxx : for enumered types
+-- TT_xxxx : tool tips
+
+-- General rules:
+-- the "%s" inserted in a string will be replaced by a text at execution;
+-- the "%d" inserted in a string will be replaced by a number;
+-- all the translation for a string including a %s or a %d must keep those key characters, or an error occurs.
+-- The translations being presented in two string ("like" "this") will be displayed on two lines;
+-- you are not allowed to translate on two lines a text which is in one line in the English translation.
+
+-- Text displayed if the translation is not found
+-- nota: Sometimes the default text is included in English in the source code, beginning with "?"
+
+-- --------------------------------------
+-- Options groups
+-- --------------------------------------
+
+CONTACT_ADMIN:
+  CHK "Pour plus d'informations, merci de contacter votre administrateur1234",
+  GAE "For more information, please contact your administrator",
+
+  EN0 "For more information, please contact your administrator",
+
+
+
+
+  US0 "For more information, please contact your administrator",
+
+
+
+
+
+  CH0 "如需更多信息，请联系您的管理员",
+
+
+
+
+
+
+
+
+  HE0 "For more information, please contact your administrator"; --???
+
+ERR_NO_IC_RIGHTS:
+  CHK "No right to My Instant Communicator 01234567890123456789012234567890123456789",
+  GAE "You don't have permission to access My Instant Communicator.",
+
+  EN0 "You don't have permission to access My Instant Communicator.",
+
+
+
+
+  US0 "You do not have permission to access My Instant Communicator.",
+
+
+
+
+
+  CH0 "您无权登录我的即时通",
+
+
+
+
+
+
+
+
+  HE0 "You don't have permission to access My Instant Communicator."; --???
+
+ERR_SERVER_EVENTS_KO:
+  CHK "Les notifications vers votre application sont temporairement indisponibles en raison d'un probl鑝e sur le serveur de communications.1234",
+  GAE "The notifications toward your application are temporarily unavailable due to a problem with the communications server.",
+
+  EN0 "The notifications toward your application are temporarily unavailable due to a problem with the communications server.",
+
+
+
+
+  US0 "The notifications to your application are temporarily unavailable due to a problem with the communications server.",
+
+
+
+
+
+  CH0 "由于通信服务器故障，目前暂时无法向您的应用程序发送通知。",
+
+
+
+
+
+
+
+
+  HE0 "The notifications toward your application are temporarily unavailable due to a problem with the communications server."; --???
+
+ERR_SERVER_EVENTS_OK:
+  CHK "Les notifications vers votre application sont ?nouveau disponibles.1234",
+  GAE "The notifications toward your application are now available.",
+
+  EN0 "The notifications toward your application are now available.",
+
+
+
+
+  US0 "The notifications to your application are now available.",
+
+
+
+
+
+  CH0 "现在可以向您的应用程序发送通知。",
+
+
+
+
+
+
+
+
+  HE0 "The notifications toward your application are now available."; --???
+
+ERR_SERVER_UC_KO:
+  CHK "La connexion ?votre serveur de communications a 閠?perdue. Les services sont temporairement indisponibles.012345",
+  GAE "The connection to your communications server has been lost. Services are temporarily unavailable.",
+
+  EN0 "The connection to your communications server has been lost. Services are temporarily unavailable.",
+
+
+
+
+  US0 "The connection to your communications server has been lost. Services are temporarily unavailable.",
+
+
+
+
+
+  CH0 "已与您的通信服务器断开连接。服务暂时不可用。",
+
+
+
+
+
+
+
+
+  HE0 "The connection to your communications server has been lost. Services are temporarily unavailable."; --???
+
+ERR_SERVER_UC_OK:
+  CHK "The connection to your communications server has been re-established.012345",
+  GAE "The connection to your communications server has been re-established.",
+
+  EN0 "The connection to your communications server has been re-established.",
+
+
+
+
+  US0 "The connection to your communications server has been re-established.",
+
+
+
+
+
+  CH0 "已与您的通信服务器重新建立了连接。",
+
+
+
+
+
+
+
+
+  HE0 "The connection to your communications server has been re-established."; --???
+
+ERR_SERVER_TEAMWORK_KO:
+  CHK "La connexion ?votre serveur de conf閞ence et de collaboration a 閠?perdue. Les services sont temporairement indisponibles.012345",
+  GAE "The connection to your conferencing and collaboration server has been lost. Services are temporarily unavailable.",
+
+  EN0 "The connection to your conferencing and collaboration server has been lost. Services are temporarily unavailable.",
+
+
+
+
+  US0 "The connection to your conferencing and collaboration server has been lost. Services are temporarily unavailable.",
+
+
+
+
+
+  CH0 "已与您的会议及协作服务器断开连接。服务暂时不可用。",
+
+
+
+
+
+
+
+
+  HE0 "The connection to your conferencing and collaboration server has been lost. Services are temporarily unavailable."; --???
+
+ERR_SERVER_TEAMWORK_OK:
+  CHK "The connection to your conferencing and collaboration server has been re-established.012345679",
+  GAE "The connection to your conferencing and collaboration server has been re-established.",
+
+  EN0 "The connection to your conferencing and collaboration server has been re-established.",
+
+
+
+
+  US0 "The connection to your conferencing and collaboration server has been re-established.",
+
+
+
+
+
+  CH0 "已与您的会议及协作服务器重新建立了连接。",
+
+
+
+
+
+
+
+
+  HE0 "The connection to your conferencing and collaboration server has been re-established."; --???
+
+ERR_SERVICE_OTS_KO:
+  CHK "Les services de t閘閜honie sont momentan閙ent indisponibles suite ?un probl鑝e sur le serveur de communications.01234567890123456789",
+  GAE "The telephony services are currently unavailable due to a problem with the communications server.",
+
+  EN0 "The telephony services are currently unavailable due to a problem with the communications server.",
+
+
+
+
+  US0 "The telephony services are currently unavailable due to a problem with the communications server.",
+
+
+
+
+
+  CH0 "由于通信服务器故障，电话服务目前不可用。",
+
+
+
+
+
+
+
+
+  HE0 "The telephony services are currently unavailable due to a problem with the communications server."; --???
+
+ERR_SERVICE_OTS_OK:
+  CHK "The telephony services have been re-established.01234567890123456789",
+  GAE "The telephony services have been re-established.",
+
+  EN0 "The telephony services have been re-established.",
+
+
+
+
+  US0 "The telephony services have been re-established.",
+
+
+
+
+
+  CH0 "电话服务已重新建立。",
+
+
+
+
+
+
+
+
+  HE0 "The telephony services have been re-established."; --???
+
+ERR_DATA_ACCESS_ERROR:
+  CHK "Il est impossible d'acc閐er aux bases de donn閑s du syst鑝e. Certains services peuvent 阾re indisponibles.01234567890123456789",
+  GAE "The database system cannot be acceded. Some services may not be permitted.",
+
+  EN0 "The database system cannot be acceded. Some services may not be permitted.",
+
+
+
+
+  US0 "The database system cannot be reached. Some services may not be permitted.",
+
+
+
+
+
+  CH0 "数据库系统不可达。某些服务可能不允许使用。",
+
+
+
+
+
+
+
+
+  HE0 "The database system cannot be acceded. Some services may not be permitted."; --???
+
+ERR_SERVICE_UNAVAILABLE:
+  CHK "Un ou plusieurs services sont temporairement indisponibles suite ?une erreur inattendue.01234567890123456789",
+  GAE "One or several services are temporarily unavailable due to an unexpected error.",
+
+  EN0 "One or several services are temporarily unavailable due to an unexpected error.",
+
+
+
+
+  US0 "One one several services are temporarily unavailable due to an unexpected error.",
+
+
+
+
+
+  CH0 "由于意外的错误，一种或多种服务暂时不可用。",
+
+
+
+
+
+
+
+
+  HE0 "One or several services are temporarily unavailable due to an unexpected error."; --???
+
+ERR_SERVICE_ERROR:
+  CHK "Une erreur inattendue est survenue pendant l'ex閏ution du service.01234567890123456789",
+  GAE "An unexpected error occured during the execution of the service.",
+
+  EN0 "An unexpected error occured during the execution of the service.",
+
+
+
+
+  US0 "An unexpected error occurred during the execution of the service.", --!!! 
+
+
+
+
+
+  CH0 "服务执行过程中发生意外错误。",
+
+
+
+
+
+
+
+
+  HE0 "An unexpected error occured during the execution of the service."; --???
+
+ERR_LICENSE:
+  CHK "Vous n'avez pas la license requise pour utiliser ce service.01234567890123456789",
+  GAE "You don't have the license required to use this service.",
+
+  EN0 "You don't have the license required to use this service.",
+
+
+
+
+  US0 "You do not have the license required to use this service.", --!!! 
+
+
+
+
+
+  CH0 "您没有使用该服务所需的许可证。",
+
+
+
+
+
+
+
+
+  HE0 "You don't have the license required to use this service."; --???
+
+ERR_UNKNOWN_LINE:
+  CHK "Votre compte de t閘閜honie n'est plus reconnu par le syst鑝e de communications. Vos services t閘閜honiques ne sont plus disponibles.01234567890123456789",
+  GAE "Your telephony account is no more recognized by the communications server. Your telephony services are no longer available.",
+
+  EN0 "Your telephony account is no more recognized by the communications server. Your telephony services are no longer available.",
+
+
+
+
+  US0 "Your telephone account is no longer recognized by the communications server. Your services are no longer available.", --!!! 
+
+
+
+
+
+  CH0 "通信服务器不能识别您的电话帐户。您的电话服务再也不可用。",
+
+
+
+
+
+
+
+
+  HE0 "Your telephony account is no more recognized by the communications server. Your telephony services are no longer available."; --???
+
+ERR_CONNECTION:
+  CHK "A connection error has occurred (network error, communications server has not been started or is down...).01234567890123456789",
+  GAE "A connection error has occurred (network error, communications server has not been started or is down...).",
+
+  EN0 "A connection error has occurred (network error, communications server has not been started or is down...).",
+
+
+
+
+  US0 "A connection error has occurred (network error, communications server has not been started or is down...).", --!!! 
+
+
+
+
+
+  CH0 "出现连接错误（网络错误、通信服务器没有启动或出现故障）",
+
+
+
+
+
+
+
+
+  HE0 "A connection error has occurred (network error, communications server has not been started or is down...)."; --???
+
+ERR_DNS:
+  CHK "Les serveurs DNS ne fonctionnent pas correctement ou vos param鑤res de serveur DNS sont incorrects et doivent 阾re v閞ifi閟 aupr鑣 de votre administrateur r閟eau.01234567890123456789",
+  GAE "The DNS servers do not work properly or your DNS server parameters are incorrect and should be ckecked by your network administrator.",
+
+  EN0 "The DNS servers do not work properly or your DNS server parameters are incorrect and should be ckecked by your network administrator.",
+
+
+
+
+  US0 "Either the DNS servers are not working properly or your DNS server parameters are incorrect and should be checked by your network administrator.", --!!! 
+
+
+
+
+
+  CH0 "DNS服务器运行不正常或您的DNS服务器参数不正确，应该由您的网络管理员进行检查。",
+
+
+
+
+
+
+
+
+  HE0 "The DNS servers do not work properly or your DNS server parameters are incorrect and should be ckecked by your network administrator."; --???
+
+ERR_INTERNAL:
+  CHK "Une erreur interne est survenue durant l'ex閏ution.01234567890123456789",
+  GAE "An internal error occurred during execution.",
+
+  EN0 "An internal error occurred during execution.",
+
+
+
+
+  US0 "An internal error occurred during execution.", --!!! 
+
+
+
+
+
+  CH0 "执行过程中发生内部错误。",
+
+
+
+
+
+
+
+
+  HE0 "An internal error occurred during execution."; --???
+
+ERR_CERTIFICATE:
+  CHK "There is a problem with the security certificate. We recommend that you contact your system administrator.01234567890123456789",
+  GAE "There is a problem with the security certificate. We recommend that you contact your system administrator.",
+
+  EN0 "There is a problem with the security certificate. We recommend that you contact your system administrator.",
+
+
+
+
+  US0 "There is a problem with the security certificate. We recommend that you contact your system administrator.", --!!! 
+
+
+
+
+
+  CH0 "安全证书验证出现问题。我们建议您联系您的系统管理员。",
+
+
+
+
+
+
+
+
+  HE0 "There is a problem with the security certificate. We recommend that you contact your system administrator."; --???
+
+ERR_PAGE_NOT_FOUND:
+  CHK "Web error: this page cannot be found or is temporarily unavailable.012345678901234567890123456789",
+  GAE "This Web page cannot be found or is temporarily unavailable.",
+
+  EN0 "This Web page cannot be found or is temporarily unavailable.",
+
+
+
+
+  US0 "Web error: this page cannot be found or is temporarily unavailable.", --!!! 
+
+
+
+
+
+  CH0 "页面出错：无法找到该页面或暂时不能访问",
+
+
+
+
+
+
+
+
+  HE0 "This Web page cannot be found or is temporarily unavailable."; --???
+
+ERR_PROXY_AUTHENTICATION:
+  CHK "Une authentification de proxy est requise pour acc閐er ?vos services. Vous devez d'abord vous connecter avec un serveur de proxy.0123456789",
+  GAE "A proxy authentication is required to access to your services.",
+
+  EN0 "A proxy authentication is required to access to your services.",
+
+
+
+
+  US0 "A proxy authentication is required to access your services. You must log in with a proxy server.", --!!! 
+
+
+
+
+
+  CH0 "访问服务需要代理认证。您首先必须通过代理服务器登录。",
+
+
+
+
+
+
+
+
+  HE0 "A proxy authentication is required to access to your services."; --???
+
+ERR_SECURE_CHANNEL:
+  CHK "An unexpected error has occurred when establishing a secure connection channel.0123456789012345678901234567890123456789",
+  GAE "An unexpected error has occurred when establishing a secure connection channel.",
+
+  EN0 "An unexpected error has occurred when establishing a secure connection channel.",
+
+
+
+
+  US0 "An unexpected error occurred while establishing a secure channel connection.", --!!! 
+
+
+
+
+
+  CH0 "建立安全连接时发生错误",
+
+
+
+
+
+
+
+
+  HE0 "An unexpected error has occurred when establishing a secure connection channel."; --???
+
+ERR_MAINTENANCE:
+  CHK "A maintenance operation is performed on the communication servers. Your services are temporarily unavailable.1234567890123456789",
+  GAE "A maintenance operation is performed on the communication servers. Your services are temporarily unavailable.",
+
+  EN0 "A maintenance operation is performed on the communication servers. Your services are temporarily unavailable.",
+
+
+
+
+  US0 "Maintenance operation is being performed on the communication servers. Your services are temporarily unavailable.", --!!! 
+
+
+
+
+
+  CH0 "通信服务器正在进行维护。您的服务暂时不可用。",
+
+
+
+
+
+
+
+
+  HE0 "A maintenance operation is performed on the communication servers. Your services are temporarily unavailable."; --???
+
+ERR_TIMEOUT:
+  CHK "Your request was not forwarded to the server or has failed during assigned time.0123456789",
+  GAE "Your request was not forwarded to the server or has failed during assigned time.",
+
+  EN0 "Your request was not forwarded to the server or has failed during assigned time.",
+
+
+
+
+  US0 "Your request was not forwarded to the server, or failed.", --!!! 
+
+
+
+
+
+  CH0 "您的请求在规定时间内没有发送到服务器上。",
+
+
+
+
+
+
+
+
+  HE0 "Your request was not forwarded to the server or has failed during assigned time."; --???
+
+ERR_NO_AVAILABLE_DIRECTORY:
+  CHK "No available directory to process your request.0123456789011",
+  GAE "No addressbook has been declared to process your request.",
+
+  EN0 "No addressbook has been declared to process your request.",
+
+
+
+
+  US0 "No available directory to process your request.", --!!! 
+
+
+
+
+
+  CH0 "无可用目录处理您的请求。",
+
+
+
+
+
+
+
+  HE0 "No addressbook has been declared to process your request."; --???
+
+BU_YES:
+  CHK "Oui 0123456",
+  GAE "Yes",
+
+  EN0 "Yes",
+
+
+
+
+  US0 "Yes",
+
+
+
+
+
+  CH0 "是",
+
+
+
+
+
+
+
+  HE0 "Yes"; --???
+
+BU_NO:
+  CHK "Non 0123456",
+  GAE "No",
+
+  EN0 "No",
+
+
+
+
+  US0 "No",
+
+
+
+
+
+  CH0 "否",
+
+
+
+
+
+
+
+  HE0 "No"; --???
+
+OK:
+  CHK "OK 01234567",
+  GAE "OK",
+
+  EN0 "OK",
+
+
+
+
+  US0 "OK",
+
+
+
+
+
+  CH0 "确定",
+
+
+
+
+
+
+
+
+  HE0 "OK"; --???
+
+CANCEL:
+  CHK "Annuler 012",
+  GAE "Cancel",
+
+  EN0 "Cancel",
+
+
+
+
+  US0 "Cancel",
+
+
+
+
+
+  CH0 "取消",
+
+
+
+
+
+
+
+
+  HE0 "Cancel"; --???
+
+SIGN_OUT:
+  CHK "Sign Out0123456789",
+  GAE "Sign Out",
+
+  EN0 "Sign Out",
+
+
+
+
+  US0 "Sign Out", --!!! 
+
+
+
+
+
+  CH0 "注销",
+
+
+
+
+
+
+
+
+  HE0 "Sign Out"; --???
+
+OPENED_CONVERSATION:
+  CHK "You are about to sign off. All instant messaging windows will be closed01234567890123456789012345678901234567890123456789",
+  GAE "You are about to sign off. All instant messaging windows will be closed.",
+
+  EN0 "You are about to sign off. All instant messaging windows will be closed.",
+
+
+
+
+  US0 "You are about to sign off. All instant messaging windows will be closed.",
+
+
+
+
+
+  CH0 "您将要注销。所有的即时消息聊天窗口将被关闭。",
+
+
+
+
+
+
+
+
+  HE0 "You are about to sign off. All instant messaging windows will be closed."; --???
+
+OPENED_COMMUNICATION:
+  CHK "You are about to sign off. Your voice call will be interrupted.01234567890123456789012345678901234567890123456789",
+  GAE "You are about to sign off. Your voice call will be interrupted.",
+
+  EN0 "You are about to sign off. Your voice call will be interrupted.",
+
+
+
+
+  US0 "You are about to sign off. Your voice call will be interrupted.",
+
+
+
+
+
+  CH0 "您将要注销。您的电话呼叫将被断开。",
+
+
+
+
+
+
+
+
+  HE0 "You are about to sign off. Your voice call will be interrupted."; --???
+
+-- CTA10/05/2010 CR crms00225543 +
+
+OPENED_COMMUNICATIONS:
+  CHK "You are about to sign off. All your communications (voice, IM) will be interrupted.01234567890123456789012345678901234567890123456789",
+  GAE "You are about to sign off. All your communications (voice, IM) will be interrupted.",
+
+  EN0 "You are about to sign off. All your communications (voice, IM) will be interrupted.",
+
+
+
+
+  US0 "You are about to sign off. All your communications (voice, IM) will be interrupted.",
+
+
+
+
+
+  CH0 "You are about to sign off. All your communications (voice, IM) will be interrupted.",
+
+
+
+
+
+
+
+
+  HE0 "You are about to sign off. All your communications (voice, IM) will be interrupted."; --???
+
+-- CTA 10/05/2010 CR crms00225543 -
+
+-- crms00139897 +
+
+ADDTOCONTACT_ERROR:
+  CHK "Impossible to add this person to your contacts. Verify that this person is a Sametime user.012345678901233",
+  GAE "Impossible to add this person to your contacts. Check if this person is a Sametime user.",
+
+  EN0 "Impossible to add this person to your contacts. Verify that this person is a Sametime user.",
+
+
+
+
+  US0 "Impossible to add this person to your contacts. Verify that this person is a Sametime user.", --!!! 
+
+
+
+
+
+  CH0 "不能添加此人给联系人。验证此人是一个 Sametime 用户。",
+
+
+
+
+
+
+
+
+  HE0 "Impossible to add this person to your contacts. Verify that this person is a Sametime user."; --???
+
+SIP_EMBEDDED:
+  CHK "Do you want to use the embedded SIP user agent ?01234567890123456789012345678901234567890123456789",
+  GAE "Do you want to use the embedded SIP user agent ?",
+
+  EN0 "Do you want to use the embedded SIP user agent ?",
+
+
+
+
+  US0 "Do you want to use the embedded SIP user agent?",
+
+
+
+
+
+  CH0 "您是否要使用嵌入式 SIP 用户座席？",
+
+
+
+
+
+
+
+
+  HE0 "Do you want to use the embedded SIP user agent ?"; --???
+
+SERVICE_START:
+  CHK "Service initialization01234567890123456789012345678901234567890123456789",
+  GAE "Service initialization...",
+
+  EN0 "Service initialization...",
+
+
+
+
+  US0 "Service initialization",
+
+
+
+
+
+  CH0 "服务初始化",
+
+
+
+
+
+
+
+
+  HE0 "Service initialization..."; --???
+
+TELEPHONY_START_ERROR:
+  CHK "Fail to initialize telephony service01234567890123456789012345678901234567890123456789",
+  GAE "Fail to initialize the telephony service",
+
+  EN0 "Fail to initialize the telephony service",
+
+
+
+
+  US0 "Fail to initialize telephony service",
+
+
+
+
+
+  CH0 "初始化电话服务失败",
+
+
+
+
+
+
+
+
+  HE0 "Fail to initialize the telephony service"; --???
+
+USER_CONFIGURATION_TYPE_CHANGE:
+  CHK "User configuration change01234567890123456789012345678901234567890123456789",
+  GAE "Changing the user configuration",
+
+  EN0 "Changing the user configuration",
+
+
+
+
+  US0 "User configuration change",
+
+
+
+
+
+  CH0 "用户配置更改",
+
+
+
+
+
+
+
+
+  HE0 "Changing the user configuration"; --???
+
+USER_CONFIGURATION_TYPE_CHANGE_WARNING:
+  CHK "Please, restart your application to validate your configuration modification.01234567890123456789012345678901234567890123456789",
+  GAE "Please restart your application to validate your configuration modification.",
+
+  EN0 "Please restart your application to validate your configuration modification.",
+
+
+
+
+  US0 "Please, restart your application to validate your configuration modification.",
+
+
+
+
+
+  CH0 "请重启您的应用程序，验证配置修改。",
+
+
+
+
+
+
+
+
+  HE0 "Please restart your application to validate your configuration modification."; --???
+
+ERROR_REGEXP:
+  CHK "The following fields are not valid:0123456789",
+  GAE "The following fields are not valid:",
+
+  EN0 "The following fields are not valid:",
+
+
+
+
+  US0 "The following fields are not valid:", --!!! 
+
+
+
+
+
+  CH0 "下列字段是无效的",
+
+
+
+
+
+
+
+
+  HE0 "The following fields are not valid:"; --???
+
+DELETE_ALL_ITEMS:
+  CHK "Do you really want to delete all items ?012345678901234567890123456789",
+  GAE "Do you really want to delete all items ?",
+
+  EN0 "Do you really want to delete all items ?",
+
+
+
+
+  US0 "Do you really want to delete all items?", --!!! 
+
+
+
+
+
+  CH0 "您确定要删除所有项目吗？",
+
+
+
+
+
+
+
+
+  HE0 "Do you really want to delete all items ?"; --???
+
+-- crms156869 +
+
+UPDATE_MANDATORY:
+  CHK "Your server had been touched up, you will have to update your client.012345678901234567890123456789000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  GAE "Your My Instant Communicator version is no longer compatible with your unified communications server. Please click OK to stop the application and then restart My Instant Communicator.",
+
+  EN0 "Your My Instant Communicator version is no longer compatible with your unified communications server. Please click OK to stop the application and then restart My Instant Communicator.",
+
+
+
+
+  US0 "Your server had an update. You need to update your client.", --!!! 
+  PL0 "Wersja My Instant Communicator jest niezgodna z serwerem. Kliknij OK, aby uruchomi?ponownie.", -- Too strict length limit.
+
+  NO0 "My Instant Communicator-vers. ikke lenger kompatibel. Klikk OK for ?stoppe prog. og start p?nytt.", --!!! Serious length limitation - needed to omit a lot of the content, otherwise the translation would be only one-letter abbreviation, completely unintelligible.
+
+
+  CH0 "您的服务器已经完成修改，您将必须要更新客户端。", 
+
+
+  CS0 "My Instant Communicator nen?kompat. se sjedn. komunik. serverem. Klepnut韒 na OK restart. aplik.", -- Again, the length limit is impossibly short. The meaning of the sentence is barely fathomable due to abbreviating.
+
+
+
+
+
+  HE0 "Your My Instant Communicator version is no longer compatible with your unified communications server. Please click OK to stop the application and then restart My Instant Communicator."; --???
+
+-- PHA crms00174516 +
+
+ERR_OVERFLOW_CONFIGURATION:
+--SIZECHAR 200;
+  CHK "The associate number and current phone have to be different",
+
+  GAE "The associate number and current phone have to be different",
+  EN0 "The associate number and current phone have to be different",
+  DE0 "Die Verbundenen Nummer und mein aktuelles Telefon m黶sen unterschiedlich sein", -- CTA crms00219753 -
+
+
+
+  US0 "The associate number and current phone have to be different", --!!! 
+
+
+
+
+
+  CH0 "关联号码与当前电话不能为同一号码", 
+
+
+
+
+
+  SV0 "Associerat nummer och aktuellt nummer f錼 inte vara samma", --!!! PHA crms00174516 -
+
+
+  HE0 "The associate number and current phone have to be different"; --???
+
+GENERAL_CONFIGURATION_SERVER_ERROR:
+  CHK "General configuration server error01234567890123456789012345678901234567890123456789",
+  GAE "General configuration server error",
+
+  EN0 "General configuration server error",
+
+
+
+
+  US0 "General configuration server error", --!!! 
+
+
+
+
+
+  CH0 "一般配置服务器错误", 
+
+
+
+
+
+
+
+
+  HE0 "General configuration server error"; --???
+
+GENERAL_CONFIGURATION_SERVER_ERROR_MESSAGE:
+  CHK "ICS servers parameters are incorrect, check your configuration and contact your system administrator.01234567890123456789012345678901234567890123456789",
+  GAE "Your server parameters are incorrect. Please check your configuration and contact your system administrator.",
+
+  EN0 "Your server parameters are incorrect. Please check your configuration and contact your system administrator.",
+
+
+
+
+  US0 "ICS servers parameters are incorrect; check your configuration and contact your system administrator.", --!!! 
+
+
+
+
+
+  CH0 "ICS 服务器参数不正确，检查您的配置并联系系统管理员。", 
+
+
+
+
+
+
+
+
+  HE0 "Your server parameters are incorrect. Please check your configuration and contact your system administrator."; --???
+
+-- crms00166222 +
+
+ERR_MOC_CALL:
+  CHK "My Instant Communicator - Error on Microsoft Office Communicator Call01234567890123456789012345678901234567890123456789",
+  GAE "My Instant Communicator - Error during call from Microsoft Office Communicator",
+
+  EN0 "My Instant Communicator - Error during call from Microsoft Office Communicator",
+
+
+
+
+  US0 "My Instant Communicator - Error during call from Microsoft Office Communicator", --!!! 
+
+
+
+
+
+  CH0 "我的即时通 - 从 Microsoft Office Communicator 呼叫过程中出错", 
+
+
+
+
+
+
+
+
+  HE0 "My Instant Communicator - Error during call from Microsoft Office Communicator"; --???
+
+ERR_LOGGED_OUT:
+  CHK "Vous n'阾es actuellement pas connect?"
+      "Merci de vous connecter afin de retenter l'op閞ation.01234567890123456789012345678901234567890123456789",
+  GAE "You are currently not logged in."
+      "Please log in to retry the operation.",
+
+  EN0 "You are currently not logged in."
+      "Please log in to retry the operation.",
+
+
+
+
+  US0 "You are not currently logged in. "
+      "Please log in to retry the operation.", --!!! 
+
+
+
+
+
+  CH0 "您目前没有登录。请登录重试操作。", 
+
+
+
+
+
+
+
+  HE0 "You are currently not logged in."
+      "Please log in to retry the operation."; --???
+
+ERR_VVM_NOT_FOUND:
+  CHK "01234567890123456789012345678901234567890123456789",
+  GAE "The requested Voicemail was not found.",
+
+  EN0 "The requested Voicemail was not found.", --???
+
+
+
+
+  US0 "The requested Voicemail was not found.", --???
+
+
+
+
+
+  CH0 "没有找到请求的语音邮件。", 
+
+
+
+
+
+
+
+
+  HE0 "The requested Voicemail was not found."; --???
+
+ERR_TELEPHONY_NOT_INITIALIZED:
+  CHK "Telephony services are not available. Please associate a business phone or change your current phone for using voice over IP or a PSTN phone. 01234567890123456789012345678901234567890123456789",
+  GAE "Telephony services are not available. Please associate a business phone or change your current phone for using voice over IP or a PSTN phone.",
+
+  EN0 "Telephony services are not available. Please associate a business phone or change your current phone for using voice over IP or a PSTN phone.",
+
+
+
+
+  US0 "Telephony services are not available. Please associate a business phone or change your current phone in order to use Voice over IP or a PSTN phone.", --!!! 
+
+
+
+
+
+  CH0 "电话服务不可用。请关联工作电话或更改当前电话，以使用 VoIP 或 PSTN 电话。", 
+
+
+
+
+
+
+
+
+  HE0 "Telephony services are not available. Please associate a business phone or change your current phone for using voice over IP or a PSTN phone."; --???
+
+ERR_RELEASE_CALL:
+  CHK "You should hang on your communication to release your office phone or change your current phone 01234567890123456789012345678901234567890123456789",
+  GAE "You should hang on your communication to release your office phone or change your current phone",
+
+  EN0 "You should hang on your communication to release your office phone or change your current phone",
+
+
+
+
+  US0 "You should hang up on your communication to release your office phone or change your current phone", --!!! 
+
+
+
+
+
+  CH0 "您应当挂断通信，释放办公电话或更改当前电话", 
+
+
+
+
+
+
+
+
+  HE0 "You should hang on your communication to release your office phone or change your current phone"; --???
+
+ERR_MINIUA_STARTING:
+  CHK "Your current phone could not be changed 01234567890123456789012345678901234567890123456789",
+  GAE "Your current phone could not be changed",
+
+  EN0 "Your current phone could not be changed",
+
+
+
+
+  US0 "Your current phone could not be changed", --!!! 
+
+
+
+
+
+  CH0 "无法更改当前电话", 
+
+
+
+
+
+
+
+
+  HE0 "Your current phone could not be changed"; --???
+
+CALLMANYCONTACTS_ERROR:
+--SIZECHAR 200;
+  CHK "Please select a single contact for making a call (multiple selection is not allowed)",
+  GAE "Please select a single contact for making a call (multiple selection is not allowed)",
+
+  EN0 "Please select a single contact for making a call (multiple selection is not allowed)",
+
+
+
+
+  US0 "Multiple selection is not allowed. Please select a single contact when making a call.", --!!! 
+
+
+
+
+
+  CH0 "请选择一个联系人进行呼叫（不允许多个选择）", 
+
+
+
+
+
+
+
+
+  HE0 "Please select a single contact for making a call (multiple selection is not allowed)"; --???
+
+ERR_MESSAGING_GENERAL:
+--SIZECHAR 200;
+  CHK "Unable to connect to the voicemail service",
+  GAE "Unable to connect to the voicemail service",
+
+  EN0 "Unable to connect to the voicemail service",
+
+
+
+
+  US0 "Unable to connect to the voicemail service", --???
+
+
+
+
+
+  CH0 "无法连接语音邮件服务", 
+
+
+
+
+
+
+
+
+  HE0 "Unable to connect to the voicemail service"; --???
+
+ERR_MESSAGING_BAD_LOGIN:
+--SIZECHAR 200;
+  CHK "Invalid password for connecting to the voicemail",
+  GAE "Invalid password for connecting to the voicemail",
+
+  EN0 "Invalid password for connecting to the voicemail",
+
+
+
+
+  US0 "Invalid password for voicemail access", --!!! 
+
+
+
+
+
+  CH0 "连接语音邮件的无效密码", 
+
+
+
+
+
+
+
+
+  HE0 "Invalid password for connecting to the voicemail"; --???
+
+ERR_INCOMPATIBLE_WITH_STATE:
+  CHK "The request cannot be performed because your current phone is unavailable 01234567890123456789012345678901234567890123456789",
+  GAE "The request cannot be performed because your current phone is unavailable",
+
+  EN0 "The request cannot be performed because your current phone is unavailable",
+
+
+
+
+  US0 "The request cannot be performed because your current phone is unavailable", --!!! 
+
+
+
+
+
+  CH0 "不能进行请求，因为您当前的电话不可用", 
+
+
+
+
+
+
+
+
+  HE0 "The request cannot be performed because your current phone is unavailable"; --???
+
+CALLCONTACT_ERROR:
+  CHK "Please select a contact before initiating a call 01234567890123456789012345678901234567890123456789",
+  GAE "Please select a contact before initiating a call",
+
+  EN0 "Please select a contact before initiating a call",
+
+
+
+
+  US0 "Please select a contact before initiating a call", --???
+
+
+
+
+
+  CH0 "初始化呼叫前，请选择一个联系人", 
+
+
+
+
+
+
+
+
+  HE0 "Please select a contact before initiating a call"; --???
+
+CALLCONTACT_NOPHONE_ERROR:
+--SIZECHAR 200;
+  CHK "Cannot call the selected contact (no business phone or mobile)",
+  GAE "Cannot call the selected contact (no business phone or mobile)",
+
+  EN0 "Cannot call the selected contact (no business phone or mobile)",
+
+
+
+
+  US0 "Cannot call the selected contact (no business phone or mobile)", --???
+
+
+
+
+
+  CH0 "无法呼叫所选的联系人（无工作电话或手机）", 
+
+
+
+
+
+
+
+
+  HE0 "Cannot call the selected contact (no business phone or mobile)"; --???
+
+DELETE_UNREAD_VOICEMAIL:
+  CHK "Do you really want to delete this unread item 012345678901234567890123456789",
+  GAE "Do you really want to delete this unread item ?",
+
+  EN0 "Do you really want to delete this unread item ?",
+
+
+
+
+  US0 "Do you really want to delete this unread item ?", --???
+
+
+
+
+
+  CH0 "您确定要删除该未读项目吗？", 
+
+
+
+
+
+
+
+
+  HE0 "Do you really want to delete this unread item ?"; --???
+
+-- Crms00332634 +
+LYNCCALLCONTACT_ERROR:
+  CHK "You must drag the contact to the Call button to launch the call 01234567890123456789012345678901234567890123456789",
+  GAE "You must drag the contact to the Call button to launch the call",
+
+  EN0 "You must drag the contact to the Call button to launch the call",
+
+
+
+
+  US0 "You must drag the contact to the Call button to launch the call", --???
+
+
+
+
+
+  CH0 "您必须将联系人拖放至 Call 按钮，进行呼叫", 
+
+
+
+
+
+
+
+
+  HE0 "You must drag the contact to the Call button to launch the call"; --???
+-- Crms00332634 -
