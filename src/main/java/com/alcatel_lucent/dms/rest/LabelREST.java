@@ -99,10 +99,10 @@ public class LabelREST extends BaseREST {
     	param.put("dictId", dictId);
     	countParam.put("dictId", dictId);
     	if (text != null) {
-    		hql += " and obj.reference like :text";
-    		countHql += " and reference like :text";
-    		param.put("text", "%" + text + "%");
-    		countParam.put("text", "%" + text + "%");
+    		hql += " and upper(obj.reference) like :text";
+    		countHql += " and upper(reference) like :text";
+    		param.put("text", "%" + text.toUpperCase() + "%");
+    		countParam.put("text", "%" + text.toUpperCase() + "%");
     	}
     	LabelSorter tniSorter = null;
 		if (!sidx.equals("t") && !sidx.equals("n") && !sidx.equals("i")) {
@@ -137,7 +137,7 @@ public class LabelREST extends BaseREST {
 			labels = translationService.getLabelsWithTranslation(dictId, langId);
         	Map<String, String> filters = getGridFilters(requestMap);
         	Integer statusFilter = null;
-        	if (filters != null) {
+        	if (filters != null) {	// filter by status
         		String statusParam = filters.get("ct.status");
         		if (statusParam != null && !statusParam.isEmpty()) {
         			statusFilter = Integer.valueOf(statusParam);
@@ -149,6 +149,17 @@ public class LabelREST extends BaseREST {
             				iter.remove();
             			}
             		}
+        		}
+        	}
+        	if (text != null) {	// filter by text
+        		text = text.toUpperCase();
+        		Iterator<Label> iter = labels.iterator();
+        		while (iter.hasNext()) {
+        			Label label = iter.next();
+        			if (label.getReference().toUpperCase().indexOf(text) == -1 &&
+        					label.getCt().getTranslation().toUpperCase().indexOf(text) == -1) {
+        				iter.remove();
+        			}
         		}
         	}
     		requestMap.put("records", "" + labels.size());
