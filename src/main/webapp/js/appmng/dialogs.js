@@ -2,7 +2,7 @@
 (function() {
 
   define(['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsettings_grid', 'appmng/previewlangsetting_grid'], function(require, grid, sgrid, lgrid) {
-    var $, addApplication, addLanguage, addNewApplicationVersionToProductVersion, c18n, dictListPreview, dictPreviewLangSettings, dictPreviewStringSettings, i18n, langSettings, newAppVersion, newProductVersion, setContextTo, stringSettings, stringSettingsTranslationDialog, util;
+    var $, addApplication, addLanguage, addNewApplicationVersionToProductVersion, c18n, dictListPreview, dictPreviewLangSettings, dictPreviewStringSettings, i18n, langSettings, newAppVersion, newProductVersion, setContextTo, stringSettings, stringSettingsTranslation, util;
     $ = require('jqueryui');
     c18n = require('i18n!nls/common');
     i18n = require('i18n!nls/appmng');
@@ -209,11 +209,10 @@
       autoOpen: false,
       modal: true,
       title: i18n.dialog.languagesettings.title,
-      create: function() {
-        return $(this).dialog('option', 'width', $('#languageSettingGrid').getGridParam('width') + 40);
-      },
+      create: function() {},
       open: function(e, ui) {
         var param, postData;
+        $(this).dialog('option', 'width', $('#languageSettingGrid').getGridParam('width') + 40);
         param = $(this).data("param");
         $('#refCode').val(param.langrefcode);
         postData = {
@@ -243,9 +242,7 @@
       autoOpen: false,
       title: i18n.dialog.stringsettings.title,
       modal: true,
-      create: function(e, ui) {
-        return $(this).dialog('option', 'width', $('#stringSettingsGrid').getGridParam('width') + 40);
-      },
+      create: function(e, ui) {},
       open: function(e, ui) {
         var param, postData;
         param = $(this).data("param");
@@ -362,7 +359,7 @@
       },
       buttons: [
         {
-          text: i18n.dialog.dictlistpreview["import"],
+          text: i18n.dialog.dictlistpreview['import'],
           click: function() {
             var param, postData;
             param = dictListPreview.data("param");
@@ -578,7 +575,7 @@
         }
       ]
     });
-    stringSettingsTranslationDialog = $('#stringSettingsTranslationDialog').dialog({
+    stringSettingsTranslation = $('#stringSettingsTranslationDialog').dialog({
       autoOpen: false,
       modal: true,
       create: function() {
@@ -589,9 +586,6 @@
         param = $(this).data('param');
         if (!param) {
           return;
-        }
-        if (typeof console !== "undefined" && console !== null) {
-          console.debug(param);
         }
         return $('#stringSettingsTranslationGrid').setGridParam({
           url: 'rest/label/translation',
@@ -622,7 +616,7 @@
       newAppVersion: newAppVersion,
       addApplication: addApplication,
       langSettings: langSettings,
-      stringSettingsTranslationDialog: stringSettingsTranslationDialog
+      stringSettingsTranslation: stringSettingsTranslation
     };
   });
 
