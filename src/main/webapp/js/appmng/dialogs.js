@@ -245,6 +245,7 @@
       create: function(e, ui) {},
       open: function(e, ui) {
         var param, postData;
+        $(this).dialog('option', 'width', $('#stringSettingsGrid').getGridParam('width') + 40);
         param = $(this).data("param");
         if (!param) {
           return;
