@@ -86,6 +86,7 @@ testArray = ()->
   console.log action
 testJSONP = () ->
   console?.log 'Hi...'
+#  require 'JQuery'
 main = ()->
   console.log '==============Test start============='
   #  testArray()

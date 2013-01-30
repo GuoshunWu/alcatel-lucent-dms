@@ -3,7 +3,6 @@ Created by IntelliJ IDEA.
 User: Guoshun Wu
 Date: -8-
 Time: 下午7:
-To change this template use File | Settings | File Templates.
 ###
 define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
 
@@ -247,9 +246,11 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
   # domain=domainname; Setting the domain of the cookie allows pages on a domain made up of more than one server to share cookie information.
   #  path=path;Setting a path for the cookie allows the current document to share cookie information with other pages within the same domain—that is, if the path is set to /thispathname, all pages in /thispathname and all pages in subfolders of /thispathname can access the same cookie information.
   #  secure; Setting a cookie as secure; means the stored cookie information can be accessed only from a secure environment.
-  getUrlParams: (suffix = window.location.search or window.location.hash)->
+  getUrlParams: (href = window.location.href)->
+    lastPos = unless href.endWith '#' then -1 else -2
+    suffix = href[href.lastIndexOf('?') + 1..lastPos]
     params = {}
-    ([k, v]=param.split('=');params[k] = decodeURIComponent(v) ) for param in suffix.split('?')[1].split('&') if suffix
+    ([k, v]=param.split('=');params[k] = decodeURIComponent(v) ) for param in suffix.split('&') if suffix
     params
   newOption: newOption
   ###

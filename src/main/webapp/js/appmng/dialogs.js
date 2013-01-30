@@ -2,7 +2,7 @@
 (function() {
 
   define(['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsettings_grid', 'appmng/previewlangsetting_grid'], function(require, grid, sgrid, lgrid) {
-    var $, addApplication, addLanguage, c18n, dictListPreview, dictPreviewLangSettings, dictPreviewStringSettings, i18n, langSettings, newAppVersion, newProductVersion, setContextTo, stringSettings, stringSettingsTranslationDialog, util;
+    var $, addApplication, addLanguage, addNewApplicationVersionToProductVersion, c18n, dictListPreview, dictPreviewLangSettings, dictPreviewStringSettings, i18n, langSettings, newAppVersion, newProductVersion, setContextTo, stringSettings, stringSettingsTranslationDialog, util;
     $ = require('jqueryui');
     c18n = require('i18n!nls/common');
     i18n = require('i18n!nls/appmng');
@@ -95,6 +95,14 @@
                 });
                 return;
               }
+              /*
+                          productBaseId: product base id
+                          productBaseName: product base name
+                          versions: product version list
+              
+                          如果productBaseId == null，则表示无productVersion，不需要提示。
+              */
+
               return (require('appmng/application_panel')).addNewApplication({
                 version: versionName,
                 id: json.id
@@ -115,6 +123,12 @@
       close: function(event, ui) {
         return $("#appErrInfo").hide();
       }
+    });
+    addNewApplicationVersionToProductVersion = $('#addNewApplicationVersionToProductVersionDialog').dialog({
+      autoOpen: false,
+      height: 200,
+      width: 500,
+      modal: true
     });
     addApplication = $("#addApplicationDialog").dialog({
       autoOpen: false,
@@ -487,24 +501,25 @@
         $.getJSON('rest/languages', {
           prop: 'id,name'
         }, function(languages) {
-          return $('#languageName', _this).append("<option value='-1'>" + c18n.selecttip + "</option>").append(util.json2Options(languages, false, 'name')).change(function(e) {
-            var postData;
-            postData = {
-              prop: 'languageCode,charset.id',
-              'language': $('#languageName', _this).val(),
-              dict: $(_this).data('param').dicts.join(',')
-            };
-            return $.post('rest/preferredCharset', postData, function(json) {
-              $('#addLangCode', _this).val(json.languageCode);
-              return $('#charset', _this).val(json['charset.id']);
-            });
+          return $('#languageName', _this).append("<option value='-1'>" + c18n.selecttip + "</option>").append(util.json2Options(languages, false, 'name')).change;
+        });
+        return function(e) {
+          var postData;
+          postData = {
+            prop: 'languageCode,charset.id',
+            'language': $('#languageName', _this).val(),
+            dict: $(_this).data('param').dicts.join(',')
+          };
+          $.post('rest/preferredCharset', postData, function(json) {
+            $('#addLangCode', _this).val(json.languageCode);
+            return $('#charset', _this).val(json['charset.id']);
           });
-        });
-        return $.getJSON('rest/charsets', {
-          prop: 'id,name'
-        }, function(charsets) {
-          return $('#charset', _this).append("<option value='-1'>" + c18n.selecttip + "</option>").append(util.json2Options(charsets, false, 'name'));
-        });
+          return $.getJSON('rest/charsets', {
+            prop: 'id,name'
+          }, function(charsets) {
+            return $('#charset', _this).append("<option value='-1'>" + c18n.selecttip + "</option>").append(util.json2Options(charsets, false, 'name'));
+          });
+        };
       },
       open: function(event, ui) {
         $('#addLangCode', this).select();
@@ -574,6 +589,9 @@
         param = $(this).data('param');
         if (!param) {
           return;
+        }
+        if (typeof console !== "undefined" && console !== null) {
+          console.debug(param);
         }
         return $('#stringSettingsTranslationGrid').setGridParam({
           url: 'rest/label/translation',

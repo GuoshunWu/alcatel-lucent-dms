@@ -43,6 +43,9 @@ define ['jqgrid', 'appmng/langsetting_translation_grid', 'require'], ($, ltgrid,
         param.key = rowData.key
         param.ref = rowData.reference
 
+        console?.debug "param="
+        console?.debug param
+
         $('#stringSettingsTranslationDialog').data param: param
         $('#stringSettingsTranslationDialog').dialog 'open'
 
