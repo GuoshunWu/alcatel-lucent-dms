@@ -209,9 +209,7 @@
       autoOpen: false,
       modal: true,
       title: i18n.dialog.languagesettings.title,
-      create: function() {
-        return $(this).dialog('option', 'width', $('#languageSettingGrid').getGridParam('width') + 40);
-      },
+      width: 540,
       open: function(e, ui) {
         var param, postData;
         param = $(this).data("param");
@@ -243,9 +241,8 @@
       autoOpen: false,
       title: i18n.dialog.stringsettings.title,
       modal: true,
-      create: function(e, ui) {
-        return $(this).dialog('option', 'width', $('#stringSettingsGrid').getGridParam('width') + 40);
-      },
+      width: 1140,
+      create: function(e, ui) {},
       open: function(e, ui) {
         var param, postData;
         param = $(this).data("param");
@@ -581,9 +578,7 @@
     stringSettingsTranslation = $('#stringSettingsTranslationDialog').dialog({
       autoOpen: false,
       modal: true,
-      create: function() {
-        return $(this).dialog('option', 'width', $('#stringSettingsTranslationGrid').getGridParam('width') + 40);
-      },
+      width: 840,
       open: function(event, ui) {
         var param;
         param = $(this).data('param');

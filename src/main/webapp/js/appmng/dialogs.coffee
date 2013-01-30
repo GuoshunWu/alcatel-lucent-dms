@@ -132,7 +132,8 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
     autoOpen: false
     modal: true
     title: i18n.dialog.languagesettings.title
-    create: ->$(@).dialog 'option', 'width', $('#languageSettingGrid').getGridParam('width') + 40
+    width: 540
+#    create: ->$(@).dialog 'option', 'width', $('#languageSettingGrid').getGridParam('width') + 40
     open: (e, ui)->
 
       # param must be attached to the dialog before the dialog open
@@ -152,9 +153,10 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   stringSettings = $('#stringSettingsDialog').dialog {
   autoOpen: false
   title: i18n.dialog.stringsettings.title, modal: true
+  width: 1140
   create: (e, ui)->
     # set my width according to the string settings grid width
-    $(@).dialog 'option', 'width', $('#stringSettingsGrid').getGridParam('width') + 40
+#    $(@).dialog 'option', 'width', $('#stringSettingsGrid').getGridParam('width') + 40
   open: (e, ui)->
     # param must be attached to the dialog before the dialog open
     param = $(@).data "param"
@@ -357,7 +359,8 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
 
   stringSettingsTranslation = $('#stringSettingsTranslationDialog').dialog
     autoOpen: false, modal: true
-    create: -> $(@).dialog 'option', 'width', $('#stringSettingsTranslationGrid').getGridParam('width') + 40
+    width: 840
+#    create: -> $(@).dialog 'option', 'width', $('#stringSettingsTranslationGrid').getGridParam('width') + 40
     open: (event, ui)->
       param = $(@).data('param')
       return unless param
