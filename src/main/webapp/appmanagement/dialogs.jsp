@@ -38,6 +38,25 @@
     </div>
 </div>
 
+<div id="addNewApplicationVersionToProductVersionDialog" title="<s:text name="appmng.newapp"/>">
+    <table>
+        <tr>
+            <td><s:text name="application.version"/></td>
+            <%--<td><input id="appVersionName" value="" type="text"/></td>--%>
+        </tr>
+        <tr>
+            <td><s:text name="appmng.newapp.duplicate"/></td>
+            <%--<td><select id="dupDictsVersion"></select></td>--%>
+        </tr>
+    </table>
+    <div style="display: none" id="addAppVerErr">
+        <br/>
+        <hr/>
+        <span style="color: red"><s:text name="appmng.newapp.required"/></span>
+    </div>
+</div>
+
+
 <div id="addApplicationDialog" title="<s:text name="appmng.addapp"/>">
     <table>
         <tr>

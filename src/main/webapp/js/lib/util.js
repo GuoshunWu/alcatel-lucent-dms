@@ -418,14 +418,16 @@ To change this template use File | Settings | File Templates.
       delCookie: function(name) {
         return document.cookie = "" + name + "=" + (escape('')) + "; expires=Fri, 31 Dec 1999 23:59:59 GMT;";
       },
-      getUrlParams: function(suffix) {
-        var k, param, params, v, _i, _len, _ref, _ref1;
-        if (suffix == null) {
-          suffix = window.location.search || window.location.hash;
+      getUrlParams: function(href) {
+        var k, lastPos, param, params, suffix, v, _i, _len, _ref, _ref1;
+        if (href == null) {
+          href = window.location.href;
         }
+        lastPos = !href.endWith('#') ? -1 : -2;
+        suffix = href.slice(href.lastIndexOf('?') + 1, +lastPos + 1 || 9e9);
         params = {};
         if (suffix) {
-          _ref = suffix.split('?')[1].split('&');
+          _ref = suffix.split('&');
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             param = _ref[_i];
             _ref1 = param.split('='), k = _ref1[0], v = _ref1[1];

@@ -92,7 +92,7 @@
           return !(__indexOf.call(cols, val) >= 0);
         });
         gridParam.colModel = $.grep(gridParam.colModel, function(val, key) {
-          return !/.+\.[TIN]/g.test(val.name);
+          return !(/.+\.[TIN]/g.test(val.name));
         });
         if ($.isArray(languages)) {
           $(languages).each(function(index, language) {

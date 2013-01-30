@@ -108,6 +108,12 @@
           rowData = grid.getRowData(param.id);
           param.key = rowData.key;
           param.ref = rowData.reference;
+          if (typeof console !== "undefined" && console !== null) {
+            console.debug("param=");
+          }
+          if (typeof console !== "undefined" && console !== null) {
+            console.debug(param);
+          }
           $('#stringSettingsTranslationDialog').data({
             param: param
           });
