@@ -5,6 +5,7 @@ import com.alcatel_lucent.dms.model.Dictionary
 import org.junit.After
 import org.junit.Before
 import org.junit.BeforeClass
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,7 +23,8 @@ import org.logicalcobwebs.proxool.ProxoolFacade
  * To change this template use File | Settings | File Templates.
  */
 
-//@Ignore
+
+@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = ["/spring.xml"])
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)

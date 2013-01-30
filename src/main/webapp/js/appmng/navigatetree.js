@@ -4,6 +4,7 @@
 
   define(function(require) {
     var $, URL, appTree, apppnl, c18n, getNodeInfo, ids, layout, nodeCtxMenu, productpnl, removeNode, timeFunName, util, _ref, _ref1, _ref2, _ref3;
+    $ = require('jqtree');
     $ = require('jqueryui');
     util = require('util');
     require('jqtree');
@@ -115,15 +116,14 @@
           data: treeInfo
         },
         ui: {
-          select_limit: 1
-        },
-        themes: {},
-        core: {
-          initially_open: ["-1"]
-        },
-        contextmenu: {
-          items: function(node) {
-            return nodeCtxMenu[node.attr('type')];
+          select_limit: 1,
+          core: {
+            initially_open: ["-1"],
+            contextmenu: {
+              items: function(node) {
+                return nodeCtxMenu[node.attr('type')];
+              }
+            }
           }
         },
         plugins: ["themes", "json_data", "ui", "core", "crrm", "contextmenu"]
@@ -183,11 +183,11 @@
         clearTimeout(timeFunName);
         return data.inst.toggle_node(data.rslt.obj);
       });
-      layout.showWelcomePanel();
-      util.afterInitilized(this);
-      return $('#loading-container').fadeOut('slow', 'swing', function() {
-        return $(this).remove();
-      });
+      return layout.showWelcomePanel();
+    });
+    util.afterInitilized(this);
+    $('#loading-container').fadeOut('slow', 'swing', function() {
+      return $(this).remove();
     });
     return {
       getNodeInfo: getNodeInfo

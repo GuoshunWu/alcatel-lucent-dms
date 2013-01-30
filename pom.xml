@@ -487,8 +487,6 @@
                         <argument>src/main/webapp/js/app.build.js</argument>
 
                         <argument>dir=${project.build.directory}/${project.build.finalName}</argument>
-                        <!-- <argument>keepBuildDir=true</argument>-->
-                        <!-- <argument>optimize=uglify</argument>-->
                     </arguments>
                 </configuration>
             </plugin>
