@@ -209,10 +209,11 @@
       autoOpen: false,
       modal: true,
       title: i18n.dialog.languagesettings.title,
-      create: function() {},
+      create: function() {
+        return $(this).dialog('option', 'width', $('#languageSettingGrid').getGridParam('width') + 40);
+      },
       open: function(e, ui) {
         var param, postData;
-        $(this).dialog('option', 'width', $('#languageSettingGrid').getGridParam('width') + 40);
         param = $(this).data("param");
         $('#refCode').val(param.langrefcode);
         postData = {
@@ -242,10 +243,11 @@
       autoOpen: false,
       title: i18n.dialog.stringsettings.title,
       modal: true,
-      create: function(e, ui) {},
+      create: function(e, ui) {
+        return $(this).dialog('option', 'width', $('#stringSettingsGrid').getGridParam('width') + 40);
+      },
       open: function(e, ui) {
         var param, postData;
-        $(this).dialog('option', 'width', $('#stringSettingsGrid').getGridParam('width') + 40);
         param = $(this).data("param");
         if (!param) {
           return;

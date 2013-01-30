@@ -4,7 +4,7 @@ define ['jqgrid', 'appmng/langsetting_translation_grid', 'require'], ($, ltgrid,
 
   dicGrid = $('#stringSettingsGrid').jqGrid(
     url: 'json/dummy.json', mtype: 'post', datatype: 'local'
-    width: $(window).innerWidth() * 0.8, height: 300
+    width: 1100, height: 300
     pager: '#stringSettingsPager'
     editurl: ""
     rowNum: 10, rowList: [10, 20, 30]

@@ -9,7 +9,7 @@
       url: 'json/dummy.json',
       mtype: 'post',
       datatype: 'local',
-      width: $(window).innerWidth() * 0.8,
+      width: 1100,
       height: 300,
       pager: '#stringSettingsPager',
       editurl: "",
