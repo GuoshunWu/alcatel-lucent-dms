@@ -793,6 +793,8 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 					lt.setOrigTranslation(label.getReference());
 					lt.setNeedTranslation(true);
 					lt.setSortNo(dl.getSortNo());
+					lt.setLanguageCode(dl.getLanguageCode());
+					lt.setLanguage(dl.getLanguage());
 				}
 				lt.setTranslation(label.getTranslation(dl.getLanguageCode()));
 				lt.setStatus(label.getTranslationStatus(dl.getLanguageCode()));

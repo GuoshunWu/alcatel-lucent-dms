@@ -75,6 +75,10 @@ public class LabelREST extends BaseREST {
     @Override
     protected String doGetOrPost(Map<String, String> requestMap) throws Exception {
     	Long dictId = Long.valueOf(requestMap.get("dict"));
+    	String text = requestMap.get("text");
+    	if (text != null && text.trim().isEmpty()) {
+    		text = null;
+    	}
     	String sidx = requestMap.get("sidx");
     	String sord = requestMap.get("sord");
     	if (sidx == null || sidx.trim().isEmpty()) {
@@ -88,13 +92,18 @@ public class LabelREST extends BaseREST {
 //    	}
     	
     	Long langId = requestMap.get("language") == null ? null : Long.valueOf(requestMap.get("language"));
-    	String hql;
-    	String countHql = "select labels.size from Dictionary where id=:dictId";
+		String hql = "select obj from Label obj where obj.dictionary.id=:dictId";
+    	String countHql = "select count(*) from Label where dictionary.id=:dictId";
     	Map param = new HashMap();
     	Map countParam = new HashMap();
     	param.put("dictId", dictId);
     	countParam.put("dictId", dictId);
-		hql = "select obj from Label obj where obj.dictionary.id=:dictId";
+    	if (text != null) {
+    		hql += " and obj.reference like :text";
+    		countHql += " and reference like :text";
+    		param.put("text", "%" + text + "%");
+    		countParam.put("text", "%" + text + "%");
+    	}
     	LabelSorter tniSorter = null;
 		if (!sidx.equals("t") && !sidx.equals("n") && !sidx.equals("i")) {
 			hql += " order by " + sidx + " " + sord;
