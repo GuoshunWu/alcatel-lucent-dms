@@ -33,7 +33,7 @@ public class AuthenticationServiceImpl extends BaseServiceImpl implements Authen
 				if (user == null) {
 					return null;
 				}
-				user.setRole(User.ROLE_ADMINISTRATOR);
+				user.setRole(User.ROLE_APPLICATION_OWNER | User.ROLE_TRANSLATION_MANAGER);
 				user.setStatus(User.ENABLED);
 				user = (User) dao.create(user);
 				log.info("Created new user " + user.getName() + "(" + user.getLoginName() + ")");

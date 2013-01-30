@@ -27,7 +27,7 @@ import com.alcatel_lucent.dms.service.TranslationService;
  *   status	(optional) status filter
  *   
  * Sort parameters:
- *   sidx		(optional) sort by, default is "sortNo"
+ *   sidx		(optional) sort by, default is "languageCode"
  *   sord		(optional) order, default is "ASC"
  *   
  * Format parameters:
@@ -68,7 +68,7 @@ public class LabelTranslationREST extends BaseREST {
     	String sidx = requestMap.get("sidx");
     	String sord = requestMap.get("sord");
     	if (sidx == null || sidx.trim().isEmpty()) {
-    		sidx = "sortNo";
+    		sidx = "languageCode";
     	}
     	if (sord == null) {
     		sord = "ASC";
@@ -95,7 +95,7 @@ class LabelTranslationSorter implements Comparator<LabelTranslation> {
 			return (sord.equalsIgnoreCase("ASC") ? 1 : -1 ) * (lt1.getSortNo() - lt2.getSortNo());
 		} else if (field.equals("languageCode")) {
 			return (sord.equalsIgnoreCase("ASC") ? 1 : -1 ) * (lt1.getLanguageCode().compareTo(lt2.getLanguageCode()));
-		} else if (field.equals("language.name")) {
+		} else if (field.equals("language.name") || field.equals("language")) {
 			return (sord.equalsIgnoreCase("ASC") ? 1 : -1 ) * (lt1.getLanguage().getName().compareTo(lt2.getLanguage().getName()));
 		} else if (field.equals("translation")) {
 			return (sord.equalsIgnoreCase("ASC") ? 1 : -1 ) * (lt1.getTranslation().compareTo(lt2.getTranslation()));
