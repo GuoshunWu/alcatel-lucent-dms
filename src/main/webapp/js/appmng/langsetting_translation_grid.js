@@ -11,7 +11,7 @@
       mtype: 'post',
       datatype: 'local',
       width: 800,
-      height: 'auto',
+      height: 270,
       pager: '#stringSettingsTranslationPager',
       rowNum: 10,
       rowList: [10, 20, 30],

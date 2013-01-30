@@ -7,7 +7,7 @@ define (require)->
 
   langSettingGrid = $('#stringSettingsTranslationGrid').jqGrid({
   mtype: 'post', datatype: 'local'
-  width: 800, height: 'auto'
+  width: 800, height: 270
 #  height: $(window).innerHeight() - 200
   pager: '#stringSettingsTranslationPager'
   rowNum: 10
