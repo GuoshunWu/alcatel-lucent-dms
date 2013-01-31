@@ -9,7 +9,7 @@ import groovy.xml.MarkupBuilder
 
 html.html() {
     head() {
-        title('Hello system groovlet')
+        title('Hello system Groovlet')
     }
     body() {
         p('Hello system groovlet')
@@ -22,9 +22,9 @@ html.html() {
                 td('Spring config parameter:')
                 td("${application.getInitParameter('contextConfigLocation')}")
             }
-            tr() {
-                td('Log4j config parameter:')
-                td("${application.getInitParameter('log4jConfigLocation')}")
+            tr(){
+                td("Asynchronous support: ")
+                td(request.asyncSupported)
             }
         }
     }

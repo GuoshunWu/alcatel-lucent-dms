@@ -58,7 +58,7 @@
     <script type="text/javascript" src="${base}/js/lib/jquery-1.7.2.min.js"></script>
     <script type="text/javascript" src="${base}/js/lib/jquery-ui-1.8.22.custom.min.js"></script>
     <script type="text/javascript" src="${base}/js/lib/jquery.layout-latest.min.js"></script>
-    <script type="text/javascript" src="layouttest.js"></script>
+    <script type="text/javascript" src="${base}/js/test/layouttest.js"></script>
 
 </head>
 <body>
