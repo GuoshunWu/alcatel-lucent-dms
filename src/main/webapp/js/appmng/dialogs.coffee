@@ -58,14 +58,9 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
             $.msgBox json.message, null, {title: c18n.error, width: 300, height: 'auto'}
             return
           (require 'appmng/application_panel').addNewApplication {version: versionName, id: json.id}
-          ###
-          productBaseId: product base id
-          productBaseName: product base name
-          versions: product version list
-
-          如果productBaseId == null，则表示无productVersion，不需要提示。
-          ###
-          console?.debug json
+          return unless json.productBaseId
+          addDialog = $('#addNewApplicationVersionToProductVersionDialog').data "param", json
+          addDialog.dialog  'open'
         $(@).dialog "close"
       }
       {text: c18n.cancel, click: -> $(@).dialog "close"}
@@ -77,10 +72,21 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   )
 
   addNewApplicationVersionToProductVersion = $('#addNewApplicationVersionToProductVersionDialog').dialog(
-    autoOpen: true
-    height: 250, width: 400, modal: true
+    autoOpen: false
+    width: 350, modal: true
+    open: ->
+      param = $(@).data 'param'
+      $('#productBaseName', @).text param.productBaseName
+      $('#productVersions', @).empty().append util.json2Options param.versions
     buttons: [
       {text: c18n.ok, click: ()->
+        url = 'app/add-application'
+        params =
+          productId: $('#productVersions', @).val()
+          appId: ($(@).data 'param').id
+
+        $.post url, params, (json)->
+          ($.msgBox json.message, null, {title: c18n.error}; return) if json.status != 0
         $(@).dialog 'close'
       }
       {text: c18n.cancel, click: ()->$(@).dialog 'close'}
@@ -117,10 +123,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
       url = 'app/add-application'
       params = {
       productId: parseInt($("#selVersion").val())
-      #      appBaseId: parseInt($('#applicationName').val())
       appId: parseInt($('#version').val())
-      #      appBaseName: $('#applicationName').data('myinput').val()
-      #      appVersion: $('#version').data('myinput').val()
       }
       $.post url, params, (json)->
         ($.msgBox json.message, null, {title: c18n.error}; return) if json.status != 0

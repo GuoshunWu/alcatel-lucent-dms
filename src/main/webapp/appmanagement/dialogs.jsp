@@ -39,7 +39,13 @@
 </div>
 
 <div id="addNewApplicationVersionToProductVersionDialog" title="<s:text name="appmng.addapp"/>">
-    <table border="1" width="100%">
+    <table border="0" width="100%">
+        <tr>
+            <td colspan="2">
+                <s:text name="appmng.addappto"/>
+                <br/>
+            </td>
+        </tr>
         <tr>
             <td><s:text name="product"/><span id="productBaseName"/></td>
             <td><s:text name="version"/><select id="productVersions"/></td>

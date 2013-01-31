@@ -87,6 +87,7 @@
               dupVersionId: dupVersionId,
               id: appBaseId
             }, function(json) {
+              var addDialog;
               if (json.status !== 0) {
                 $.msgBox(json.message, null, {
                   title: c18n.error,
@@ -99,15 +100,11 @@
                 version: versionName,
                 id: json.id
               });
-              /*
-                        productBaseId: product base id
-                        productBaseName: product base name
-                        versions: product version list
-              
-                        如果productBaseId == null，则表示无productVersion，不需要提示。
-              */
-
-              return typeof console !== "undefined" && console !== null ? console.debug(json) : void 0;
+              if (!json.productBaseId) {
+                return;
+              }
+              addDialog = $('#addNewApplicationVersionToProductVersionDialog').data("param", json);
+              return addDialog.dialog('open');
             });
             return $(this).dialog("close");
           }
@@ -126,14 +123,32 @@
       }
     });
     addNewApplicationVersionToProductVersion = $('#addNewApplicationVersionToProductVersionDialog').dialog({
-      autoOpen: true,
-      height: 250,
-      width: 400,
+      autoOpen: false,
+      width: 350,
       modal: true,
+      open: function() {
+        var param;
+        param = $(this).data('param');
+        $('#productBaseName', this).text(param.productBaseName);
+        return $('#productVersions', this).empty().append(util.json2Options(param.versions));
+      },
       buttons: [
         {
           text: c18n.ok,
           click: function() {
+            var params, url;
+            url = 'app/add-application';
+            params = {
+              productId: $('#productVersions', this).val(),
+              appId: ($(this).data('param')).id
+            };
+            $.post(url, params, function(json) {
+              if (json.status !== 0) {
+                $.msgBox(json.message, null, {
+                  title: c18n.error
+                });
+              }
+            });
             return $(this).dialog('close');
           }
         }, {
