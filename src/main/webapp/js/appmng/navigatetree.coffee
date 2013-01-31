@@ -1,6 +1,6 @@
 # Implement the navigation tree on the east
 define (require)->
-  $ = require 'jqtree'
+  #  $ = require 'jqtree'
   $ = require 'jqueryui'
   util = require 'util'
   require 'jqtree'
@@ -13,19 +13,14 @@ define (require)->
   ids = {
   navigateTree: 'appTree'
   }
-  URL = {
-  navigateTree: 'rest/products?format=tree'
-  product:
-    {
-    create: 'app/create-product'
-    del: 'app/remove-product-base'
-    }
-  app:
-    {
-    create: 'app/create-application-base'
-    del: 'app/remove-application-base'
-    }
-  }
+  URL =
+    navigateTree: 'rest/products?format=tree'
+    product:
+      create: 'app/create-product'
+      del: 'app/remove-product-base'
+    app:
+      create: 'app/create-application-base'
+      del: 'app/remove-application-base'
 
   appTree = null
 
@@ -55,15 +50,13 @@ define (require)->
       createproduct:
         label: 'New product'
         "_disabled": (util.urlname2Action URL.product.create) in param.forbiddenPrivileges
-        action: (node)->appTree?.create node, 'last', {data: 'NewProduct', attr:
-          {type: 'product', id: null}}, (->), false
+        action: (node)->appTree?.create node, 'last', {data: 'NewProduct', attr: {type: 'product', id: null}}, (->), false
         separator_before: true
     product:
       createapp:
         label: 'New application'
         "_disabled": (util.urlname2Action URL.app.create) in param.forbiddenPrivileges
-        action: (node)->appTree?.create node, 'last', {data: 'NewApp', attr:
-          {type: 'app', id: null}}, (->), false
+        action: (node)->appTree?.create node, 'last', {data: 'NewApp', attr: {type: 'app', id: null}}, (->), false
       del:
         label: 'Delete product'
         "_disabled": (util.urlname2Action URL.product.del) in param.forbiddenPrivileges
@@ -83,14 +76,8 @@ define (require)->
 
   $.getJSON URL.navigateTree, {}, (treeInfo) ->
     $("##{ids.navigateTree}").jstree(
-      json_data:
-        data: treeInfo
-      ui:
-        select_limit: 1
-        core:
-          initially_open: ["-1"]
-          contextmenu:
-            items: (node)->nodeCtxMenu[node.attr('type')]
+      json_data: {data: treeInfo}
+      ui: {select_limit: 1}, themes: {}, core: {initially_open: ["-1"]}, contextmenu: {items: (node)->nodeCtxMenu[node.attr('type')]}
       plugins: [ "themes", "json_data", "ui", "core", "crrm", "contextmenu"]
     ).bind('create.jstree',
     (event, data)->
@@ -145,8 +132,8 @@ define (require)->
     )
 
     layout.showWelcomePanel()
-  util.afterInitilized(this)
-  $('#loading-container').fadeOut 'slow', 'swing', ()->$(@).remove()
+    util.afterInitilized(this)
+    $('#loading-container').fadeOut 'slow', 'swing', ()->$(@).remove()
 
   getNodeInfo: getNodeInfo
 
