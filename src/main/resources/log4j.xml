@@ -118,9 +118,9 @@
     </logger>
 
 
-    <!--<logger name="com.alcatel_lucent.dms.service">-->
-        <!--<level value="INFO"/>-->
-    <!--</logger>-->
+    <logger name="com.alcatel_lucent.dms.filters.AuthenticationFilter">
+        <!--<level value="DEBUG"/>-->
+    </logger>
 
     <root>
         <level value="INFO"/>

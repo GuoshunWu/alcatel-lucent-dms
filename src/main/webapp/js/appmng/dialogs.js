@@ -95,18 +95,19 @@
                 });
                 return;
               }
-              /*
-                          productBaseId: product base id
-                          productBaseName: product base name
-                          versions: product version list
-              
-                          如果productBaseId == null，则表示无productVersion，不需要提示。
-              */
-
-              return (require('appmng/application_panel')).addNewApplication({
+              (require('appmng/application_panel')).addNewApplication({
                 version: versionName,
                 id: json.id
               });
+              /*
+                        productBaseId: product base id
+                        productBaseName: product base name
+                        versions: product version list
+              
+                        如果productBaseId == null，则表示无productVersion，不需要提示。
+              */
+
+              return typeof console !== "undefined" && console !== null ? console.debug(json) : void 0;
             });
             return $(this).dialog("close");
           }
@@ -125,10 +126,23 @@
       }
     });
     addNewApplicationVersionToProductVersion = $('#addNewApplicationVersionToProductVersionDialog').dialog({
-      autoOpen: false,
-      height: 200,
-      width: 500,
-      modal: true
+      autoOpen: true,
+      height: 250,
+      width: 400,
+      modal: true,
+      buttons: [
+        {
+          text: c18n.ok,
+          click: function() {
+            return $(this).dialog('close');
+          }
+        }, {
+          text: c18n.cancel,
+          click: function() {
+            return $(this).dialog('close');
+          }
+        }
+      ]
     });
     addApplication = $("#addApplicationDialog").dialog({
       autoOpen: false,
