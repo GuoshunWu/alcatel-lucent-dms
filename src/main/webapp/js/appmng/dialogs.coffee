@@ -57,14 +57,15 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
           if (json.status != 0)
             $.msgBox json.message, null, {title: c18n.error, width: 300, height: 'auto'}
             return
-          ###
-            productBaseId: product base id
-            productBaseName: product base name
-            versions: product version list
-
-            如果productBaseId == null，则表示无productVersion，不需要提示。
-          ###
           (require 'appmng/application_panel').addNewApplication {version: versionName, id: json.id}
+          ###
+          productBaseId: product base id
+          productBaseName: product base name
+          versions: product version list
+
+          如果productBaseId == null，则表示无productVersion，不需要提示。
+          ###
+          console?.debug json
         $(@).dialog "close"
       }
       {text: c18n.cancel, click: -> $(@).dialog "close"}
@@ -76,8 +77,14 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   )
 
   addNewApplicationVersionToProductVersion = $('#addNewApplicationVersionToProductVersionDialog').dialog(
-    autoOpen: false
-    height: 200, width: 500, modal: true
+    autoOpen: true
+    height: 250, width: 400, modal: true
+    buttons: [
+      {text: c18n.ok, click: ()->
+        $(@).dialog 'close'
+      }
+      {text: c18n.cancel, click: ()->$(@).dialog 'close'}
+    ]
   )
 
   # Add application to product dialog
@@ -133,7 +140,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
     modal: true
     title: i18n.dialog.languagesettings.title
     width: 540
-#    create: ->$(@).dialog 'option', 'width', $('#languageSettingGrid').getGridParam('width') + 40
+    #    create: ->$(@).dialog 'option', 'width', $('#languageSettingGrid').getGridParam('width') + 40
     open: (e, ui)->
 
       # param must be attached to the dialog before the dialog open
@@ -156,7 +163,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   width: 1140
   create: (e, ui)->
     # set my width according to the string settings grid width
-#    $(@).dialog 'option', 'width', $('#stringSettingsGrid').getGridParam('width') + 40
+    #    $(@).dialog 'option', 'width', $('#stringSettingsGrid').getGridParam('width') + 40
   open: (e, ui)->
     # param must be attached to the dialog before the dialog open
     param = $(@).data "param"
@@ -360,11 +367,11 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   stringSettingsTranslation = $('#stringSettingsTranslationDialog').dialog
     autoOpen: false, modal: true
     width: 840
-#    create: -> $(@).dialog 'option', 'width', $('#stringSettingsTranslationGrid').getGridParam('width') + 40
+    #    create: -> $(@).dialog 'option', 'width', $('#stringSettingsTranslationGrid').getGridParam('width') + 40
     open: (event, ui)->
       param = $(@).data('param')
       return unless param
-#      console?.debug param
+      #      console?.debug param
       $('#stringSettingsTranslationGrid').setGridParam(
         url: 'rest/label/translation'
         postData:

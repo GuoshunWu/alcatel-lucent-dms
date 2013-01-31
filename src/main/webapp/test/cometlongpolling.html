@@ -2,20 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Comet stream</title>
+    <title>Comet long polling</title>
     <script src="../js/lib/jquery-1.7.2.min.js"></script>
     <script>
         jQuery(function ($) {
-            var url= '../test/events';
-            url = '../test/cat-events';
-            $.getJSON(url, function(json){
-                $("#logs").append (json.msg);
-            });
+            var url = 'myevents';
+
+            function long_polling() {
+                $.getJSON(url, function (json) {
+                    if (console) {
+                        console.log(json);
+                    }
+                    if (json.status != 0) {
+                        $("#logs").append($('<span/>').html('Message: ' + json.msg + ' status: ' + json.status + "<br/>"));
+                        return;
+                    }
+                    $("#logs").append($('<span/>').html('Client: ' + json.client + ' got event: ' + json.msg + "<br/>"));
+                    long_polling();
+
+                });
+            }
+
+            long_polling();
         });
     </script>
 </head>
 <body>
 <h2 align="center">Comet long polling demo</h2>
+
 <div id="logs" style="font-family: monospace;"/>
 </body>
 </html>

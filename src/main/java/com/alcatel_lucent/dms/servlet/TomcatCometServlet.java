@@ -19,7 +19,7 @@ import java.util.Date;
  * Date: 13-1-28
  * Time: 下午9:45
  */
-@WebServlet(name = "events", urlPatterns = {"/test/cat-events"}, asyncSupported = true)
+//@WebServlet(name = "events", urlPatterns = {"/test/cat-events"}, asyncSupported = true)
 public class TomcatCometServlet extends HttpServlet implements CometProcessor {
     @Override
     public void event(CometEvent cometEvent) throws IOException, ServletException {
