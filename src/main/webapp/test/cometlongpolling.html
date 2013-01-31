@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Comet stream</title>
+    <script src="../js/lib/jquery-1.7.2.min.js"></script>
+    <script>
+        jQuery(function ($) {
+            var url= '../test/events';
+            url = '../test/cat-events';
+            $.getJSON(url, function(json){
+                $("#logs").append (json.msg);
+            });
+        });
+    </script>
+</head>
+<body>
+<h2 align="center">Comet long polling demo</h2>
+<div id="logs" style="font-family: monospace;"/>
+</body>
+</html>
