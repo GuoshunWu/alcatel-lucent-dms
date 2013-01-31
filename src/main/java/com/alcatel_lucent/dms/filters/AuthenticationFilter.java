@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.annotation.WebInitParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -20,9 +22,24 @@ import static com.alcatel_lucent.dms.util.Util.anyMatch;
  * User: guoshunw
  * Date: 12-11-12
  * Time: 下午2:23
- * To change this template use File | Settings | File Templates.
  */
-//@WebFilter(filterName = "authenticationFilter", urlPatterns = {"/*"})
+
+@WebFilter(filterName = "authenticationFilter", urlPatterns = {"/*"}, asyncSupported = true, initParams = {
+        @WebInitParam(description = "This parameter include the pattern list separated by comma, the uri in which will not be ignored by this filter.",
+                name = "excludePatterns",
+                value = "/entry\\.action\\?login\\.jsp,/login\\.action,\n" +
+                        "/login/forward-to-https,\n" +
+                        "/test/.*,/scripts/.*,/json/.*,/manual/.*,.*.js,.*.css,.*images.*,.*.ico"
+        ),
+        @WebInitParam(description = "This parameter include the pattern list separated by comma, the uri in which will send specific response to client",
+                name = "ajaxURIs",
+                value = "/test/.*,/rest/.*,/app/.*,/trans/.*,/task/.*,/admin/.*"
+        ),
+        @WebInitParam(name = "authURL",
+                value = "/login/forward-to-https",
+                description = "This parameter include the pattern list separated by comma, the uri in which will send specific response to client"
+        )}
+)
 public class AuthenticationFilter implements Filter {
     protected Logger log = LoggerFactory.getLogger(AuthenticationFilter.class);
     private List<String> excludePatterns;
@@ -68,6 +85,7 @@ public class AuthenticationFilter implements Filter {
     }
 
     public void init(FilterConfig config) throws ServletException {
+
         String strExcludePatterns = config.getInitParameter("excludePatterns");
         if (null != strExcludePatterns) {
             excludePatterns = Arrays.asList(strExcludePatterns.split("\\s*,\\s*"));

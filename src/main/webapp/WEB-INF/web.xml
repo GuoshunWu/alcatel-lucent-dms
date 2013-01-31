@@ -41,12 +41,24 @@
     <!--<param-value>10000</param-value>-->
     <!--</context-param>-->
 
+
+    <!--<filter>-->
+    <!--<filter-name>springSecurityFilterChain</filter-name>-->
+    <!--<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>-->
+    <!--</filter>-->
+
+    <!--<filter-mapping>-->
+    <!--<filter-name>springSecurityFilterChain</filter-name>-->
+    <!--<url-pattern>/*</url-pattern>-->
+    <!--</filter-mapping>-->
+
     <!--process request encoding -->
     <filter>
         <filter-name>encodingFilter</filter-name>
         <filter-class>
             org.springframework.web.filter.CharacterEncodingFilter
         </filter-class>
+        <async-supported>true</async-supported>
         <init-param>
             <param-name>encoding</param-name>
             <param-value>UTF-8</param-value>
@@ -67,7 +79,7 @@
     <filter>
         <filter-name>authenticationFilter</filter-name>
         <filter-class>com.alcatel_lucent.dms.filters.AuthenticationFilter</filter-class>
-
+        <async-supported>true</async-supported>
         <!-- exclude patterns URL, which are regular expression separated by comma-->
         <init-param>
             <description>
@@ -103,19 +115,10 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-    <!--<filter>-->
-    <!--<filter-name>springSecurityFilterChain</filter-name>-->
-    <!--<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>-->
-    <!--</filter>-->
-
-    <!--<filter-mapping>-->
-    <!--<filter-name>springSecurityFilterChain</filter-name>-->
-    <!--<url-pattern>/*</url-pattern>-->
-    <!--</filter-mapping>-->
-
     <filter>
         <filter-name>struts2</filter-name>
         <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
+        <async-supported>true</async-supported>
     </filter>
 
     <filter-mapping>
