@@ -1,0 +1,4 @@
+Issues need to be discussed.
+1. When I delete a dictionary in a specific application version, it will be deleted in other application version either.
+
+2. When I create a new application, it prompt me to add it to a product version. But when I add it, it complained that "The application already exists in the product."
