@@ -81,7 +81,7 @@
             <td>
                 <table border="0" width="100%" style="border-color: red">
                     <tr>
-                        <td style="width: 15px"/>
+
                         <td>
                             <select id="detailLanguageSwitcher">
                                 <option value="">
@@ -90,10 +90,13 @@
                             </select>
                         </td>
                         <td>&nbsp;</td>
-                        <td><s:text name="transmng.summarypanel.searchtext"/><input/></td>
+                        <td><s:text name="searchtext"/><input id="searchText"/>
+                            <button id="searchAction"/>
+                        </td>
                         <td>&nbsp;</td>
-
-                        <td style="width: 15px"/>
+                        <td>
+                            <input type="checkbox" id="transSameWithRef"/>&nbsp;<s:text name="transmng.dialogs.transdetail.sameref" />
+                        </td>
                     </tr>
                 </table>
             </td>
