@@ -167,7 +167,17 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   create: (e, ui)->
     # set my width according to the string settings grid width
     #    $(@).dialog 'option', 'width', $('#stringSettingsGrid').getGridParam('width') + 40
+    $('#searchText', @).keydown (e)=>$('#searchAction', @).trigger 'click' if e.which == 13
+
+    $('#searchAction', @).attr('title', 'Search').button(text: false, icons:{primary: "ui-icon-search"}).click(()=>
+      grid = $('#stringSettingsGrid')
+      grid.getGridParam('postData').text = $('#searchText', @).val()
+      grid.trigger 'reloadGrid'
+    ).height(20).width(20)
+
   open: (e, ui)->
+    $('#searchAction',@).position(my: 'left center', at: 'right center', of: '#searchText')
+
     # param must be attached to the dialog before the dialog open
     param = $(@).data "param"
     return if !param

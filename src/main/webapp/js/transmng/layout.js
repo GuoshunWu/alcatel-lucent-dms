@@ -88,7 +88,7 @@
         },
         buttons: [
           {
-            text: c18n["export"],
+            text: c18n['export'],
             click: function() {
               var dicts, langids, languages, me;
               me = $(this);
@@ -234,8 +234,40 @@
         width: 860,
         height: 'auto',
         modal: true,
+        open: function() {
+          return $('#searchAction', this).position({
+            my: 'left center',
+            at: 'right center',
+            of: '#searchText'
+          });
+        },
         create: function() {
+          var postData, transDetailGrid,
+            _this = this;
           $(this).dialog('option', 'width', $('#transDetailGridList').getGridParam('width') + 60);
+          transDetailGrid = $("#transDetailGridList");
+          postData = transDetailGrid.getGridParam('postData');
+          $('#searchText', this).keydown(function(e) {
+            if (e.which === 13) {
+              return $('#searchAction', _this).trigger('click');
+            }
+          });
+          $('#searchAction', this).attr('title', 'Search').button({
+            text: false,
+            icons: {
+              primary: "ui-icon-search"
+            }
+          }).click(function() {
+            postData.text = $('#searchText', _this).val();
+            return transDetailGrid.trigger('reloadGrid');
+          }).height(20).width(20);
+          $('#transSameWithRef', this).change(function(e) {
+            postData.nodiff = this.checked;
+            if (typeof console !== "undefined" && console !== null) {
+              console.debug(transDetailGrid.getGridParam('postData'));
+            }
+            return transDetailGrid.trigger('reloadGrid');
+          });
           return $('#detailLanguageSwitcher').change(function() {
             var language, param;
             param = $('#translationDetailDialog').data("param");

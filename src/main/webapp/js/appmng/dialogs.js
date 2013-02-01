@@ -271,9 +271,31 @@
       title: i18n.dialog.stringsettings.title,
       modal: true,
       width: 1140,
-      create: function(e, ui) {},
+      create: function(e, ui) {
+        var _this = this;
+        $('#searchText', this).keydown(function(e) {
+          if (e.which === 13) {
+            return $('#searchAction', _this).trigger('click');
+          }
+        });
+        return $('#searchAction', this).attr('title', 'Search').button({
+          text: false,
+          icons: {
+            primary: "ui-icon-search"
+          }
+        }).click(function() {
+          grid = $('#stringSettingsGrid');
+          grid.getGridParam('postData').text = $('#searchText', _this).val();
+          return grid.trigger('reloadGrid');
+        }).height(20).width(20);
+      },
       open: function(e, ui) {
         var param, postData;
+        $('#searchAction', this).position({
+          my: 'left center',
+          at: 'right center',
+          of: '#searchText'
+        });
         param = $(this).data("param");
         if (!param) {
           return;
