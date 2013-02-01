@@ -240,7 +240,7 @@
             at: 'right center',
             of: '#searchText'
           });
-          return $('#transSameWithRef', this).attr('checked', false);
+          return $('#detailLanguageSwitcher').trigger("change");
         },
         create: function() {
           var postData, transDetailGrid,
@@ -264,9 +264,6 @@
           }).height(20).width(20);
           $('#transSameWithRef', this).change(function(e) {
             postData.nodiff = this.checked;
-            if (typeof console !== "undefined" && console !== null) {
-              console.debug(transDetailGrid.getGridParam('postData'));
-            }
             return transDetailGrid.trigger('reloadGrid');
           });
           return $('#detailLanguageSwitcher').change(function() {
@@ -284,7 +281,13 @@
           });
         },
         close: function(event, ui) {
-          return detailgrid.saveLastEditedCell();
+          var postData;
+          detailgrid.saveLastEditedCell();
+          postData = $("#transDetailGridList").getGridParam('postData');
+          $('#transSameWithRef', this).attr('checked', false);
+          delete postData.nodiff;
+          $('#searchText', this).val("");
+          return delete postData.text;
         },
         buttons: [
           {
@@ -436,7 +439,6 @@
           dict: param.dict,
           searchStatus: map[status]
         });
-        $('#detailLanguageSwitcher').trigger("change");
         return dialogs.transDetailDialog.dialog("open");
       }
     };

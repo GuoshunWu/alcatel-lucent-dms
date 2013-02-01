@@ -136,7 +136,8 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
       autoOpen: false, width: 860, height: 'auto', modal: true
       open: ()->
         $('#searchAction',@).position(my: 'left center', at: 'right center', of: '#searchText')
-        $('#transSameWithRef', @).attr('checked', false)
+        $('#detailLanguageSwitcher').trigger "change"
+
       create: ()->
         $(@).dialog 'option', 'width', $('#transDetailGridList').getGridParam('width') + 60
         transDetailGrid = $("#transDetailGridList")
@@ -151,7 +152,7 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
 
         $('#transSameWithRef', @).change (e)->
           postData.nodiff = @checked
-          console?.debug transDetailGrid.getGridParam('postData')
+#          console?.debug transDetailGrid.getGridParam('postData')
           transDetailGrid.trigger 'reloadGrid'
 
         $('#detailLanguageSwitcher').change ->
@@ -160,6 +161,14 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
           detailgrid.languageChanged {language: language, dict: param.dict, searchStatus: param.searchStatus}
       close: (event, ui)->
         detailgrid.saveLastEditedCell()
+        postData = $("#transDetailGridList").getGridParam('postData')
+
+        $('#transSameWithRef', @).attr('checked', false)
+        delete postData.nodiff
+
+        $('#searchText', @).val("")
+        delete postData.text
+
       buttons: [
         {text: c18n.close, click: ()->
           $(@).dialog 'close'
@@ -283,6 +292,7 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
     status = param.language.name.split('.')[1]
 
     $('#translationDetailDialog').data 'param', {dict: param.dict, searchStatus: map[status]}
-    $('#detailLanguageSwitcher').trigger "change"
-
     dialogs.transDetailDialog.dialog "open"
+
+
+
