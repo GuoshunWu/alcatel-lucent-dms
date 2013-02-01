@@ -2,25 +2,19 @@ package com.alcatel_lucent.dms.action.login;
 
 import com.alcatel_lucent.dms.UserContext;
 import com.alcatel_lucent.dms.action.BaseAction;
-import com.alcatel_lucent.dms.action.JSONAction;
 import com.alcatel_lucent.dms.model.User;
 import com.alcatel_lucent.dms.service.AuthenticationService;
-import com.alcatel_lucent.dms.service.LDAPService;
-import com.opensymphony.xwork2.ActionSupport;
-import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
-import com.opensymphony.xwork2.validator.annotations.ValidatorType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.struts2.ServletActionContext;
-import org.apache.struts2.convention.annotation.*;
+import org.apache.struts2.convention.annotation.Action;
+import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.interceptor.SessionAware;
 import org.apache.struts2.interceptor.TokenInterceptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.servlet.http.HttpServletRequest;
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.Map;
 
 @SuppressWarnings("serial")
