@@ -11,17 +11,17 @@ public class RemoveDictAction extends JSONAction {
 	
 	private DictionaryService dictionaryService;
 	
-    private boolean permanent;
+    private boolean permanent;	// deprecated, it is auto determined if permanently delete dict
     private String id;
     private Long appId;
 
     public String performAction() throws Exception {
     	log.info("RemoveDictAction: id=" + id + ", appId=" + appId + ", permanent=" + permanent);
-    	if (permanent) {
-    		dictionaryService.deleteDictionary(toIdList(id));
-    	} else {
+//    	if (permanent) {
+//    		dictionaryService.deleteDictionary(toIdList(id));
+//    	} else {
     		dictionaryService.removeDictionaryFromApplication(appId, toIdList(id));
-    	}
+//    	}
     	setStatus(0);
     	setMessage(getText("message.success"));
     	return SUCCESS;

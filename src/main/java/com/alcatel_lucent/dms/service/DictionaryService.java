@@ -91,14 +91,16 @@ public interface DictionaryService {
     Dictionary findLatestDictionaryInApp(Long appId, String dictionaryName);
     
     /**
-     * Remove a dictionary from an application, without deleting it.
+     * Remove a dictionary from an application.
+     * If it isn't referred by any app, then delete it.
      * @param appId application id
      * @param dictId dictionary id
      */
     void removeDictionaryFromApplication(Long appId, Long dictId);
     
     /**
-     * Remove dictionaries from an application, without deleting them.
+     * Remove dictionaries from an application.
+     * If a dict isn't referred by any app, then delete it.
      * @param appId application id
      * @param idList list of dictionary id
      */
@@ -144,10 +146,9 @@ public interface DictionaryService {
 	/**
 	 * Change dictionary version in application
 	 * @param appId application id
-	 * @param oldDictId old dictionary version, must exist in the app
 	 * @param newDictId new dictionary version, must have same base with the old one
 	 */
-	void changeDictionaryInApp(Long appId, Long oldDictId, Long newDictId) throws BusinessException;
+	void changeDictionaryInApp(Long appId, Long newDictId) throws BusinessException;
 
 	/**
 	 * Add language to a dictionary
