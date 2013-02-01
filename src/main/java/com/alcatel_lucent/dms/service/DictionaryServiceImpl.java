@@ -397,23 +397,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             dbDict.setAnnotation2(dict.getAnnotation2());
             dbDict.setAnnotation3(dict.getAnnotation3());
             dbDict.setAnnotation4(dict.getAnnotation4());
-
-
-            Collection<Dictionary> dictionaries = app.getDictionaries();
-            if (null == dictionaries) {
-                dictionaries = new HashSet<Dictionary>();
-                app.setDictionaries(dictionaries);
-            }
-            Iterator<Dictionary> iter = dictionaries.iterator();
-            // remove previous dictionary version in the app
-            while (iter.hasNext()) {
-                Dictionary appDict = iter.next();
-                if (appDict.getBase().getId().equals(baseDBDict.getId())) {
-                    iter.remove();
-                }
-            }
-            dictionaries.add(dbDict);
-
             dbDict.setLocked(false);
             dbDict = (Dictionary) getDao().create(dbDict);
             if (mode == Constants.DELIVERY_MODE) {    // in case new dictionary version, compare with latest version
@@ -429,6 +412,21 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             }
         }
 
+        // make sure the dictionary is added to the application
+        Collection<Dictionary> dictionaries = app.getDictionaries();
+        if (null == dictionaries) {
+            dictionaries = new HashSet<Dictionary>();
+            app.setDictionaries(dictionaries);
+        }
+        Iterator<Dictionary> iter = dictionaries.iterator();
+        // remove previous dictionary version in the app
+        while (iter.hasNext()) {
+            Dictionary appDict = iter.next();
+            if (appDict.getBase().getId().equals(baseDBDict.getId())) {
+                iter.remove();
+            }
+        }
+        dictionaries.add(dbDict);
 
         // update dictionary languages in delivery mode
         if (mode == Constants.DELIVERY_MODE) {
@@ -736,6 +734,22 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     public void removeDictionaryFromApplication(Long appId, Long dictId) {
         Application app = (Application) dao.retrieve(Application.class, appId);
         app.removeDictionary(dictId);
+        
+        String hql = "select distinct a from Application a join a.dictionaries as d where d.id=:id";
+        Map param = new HashMap();
+        param.put("id", dictId);
+        Collection<Application> apps = dao.retrieve(hql, param);
+        if (apps.isEmpty()) {
+            Dictionary dictionary = (Dictionary) dao.retrieve(Dictionary.class, dictId);
+            DictionaryBase dictBase = dictionary.getBase();
+            dao.delete(Dictionary.class, dictId);
+
+            // delete dictBase if it doesn't contain other dictionary
+        	if (dictBase.getDictionaries() == null || dictBase.getDictionaries().size() == 0 ||
+        			dictBase.getDictionaries().size() == 1 && dictBase.getDictionaries().iterator().next().getId().equals(dictId)) {
+        		dao.delete(dictBase);
+        	}
+        }
     }
 
     public void removeDictionaryFromApplication(Long appId, Collection<Long> idList) {
@@ -757,13 +771,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         dao.delete(Dictionary.class, id);
 
         // delete dictBase if it doesn't contain other dictionary
-/*
     	if (dictBase.getDictionaries() == null || dictBase.getDictionaries().size() == 0 ||
     			dictBase.getDictionaries().size() == 1 && dictBase.getDictionaries().iterator().next().getId().equals(id)) {
     		dao.delete(dictBase);
     		return dictBase.getId();
     	}
-*/
         return null;
     }
 
@@ -801,20 +813,17 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         dict.setEncoding(encoding);
     }
 
-    public void changeDictionaryInApp(Long appId, Long oldDictId, Long newDictId) throws BusinessException {
+    public void changeDictionaryInApp(Long appId, Long newDictId) throws BusinessException {
         Application app = (Application) dao.retrieve(Application.class, appId);
-        Dictionary oldDict = (Dictionary) dao.retrieve(Dictionary.class, oldDictId);
         Dictionary newDict = (Dictionary) dao.retrieve(Dictionary.class, newDictId);
-        if (!oldDict.getBase().getId().equals(newDict.getBase().getId())) {
-            throw new BusinessException(BusinessException.DICTIONARIES_NOT_SAME_BASE);
-        }
+        Long baseDictId = newDict.getBase().getId();
         Collection<Dictionary> dictionaries = app.getDictionaries();
         boolean found = false;
         if (dictionaries != null) {
             Iterator<Dictionary> iterator = dictionaries.iterator();
             while (iterator.hasNext()) {
                 Dictionary dict = iterator.next();
-                if (dict.getId().equals(oldDictId)) {
+                if (dict.getBase().getId().equals(baseDictId)) {
                     iterator.remove();
                     found = true;
                     break;

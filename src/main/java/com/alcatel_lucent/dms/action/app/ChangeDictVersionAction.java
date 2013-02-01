@@ -12,7 +12,7 @@ public class ChangeDictVersionAction extends JSONAction {
 	private Long newDictId;
 	
 	protected String performAction() throws Exception {
-		dictionaryService.changeDictionaryInApp(appId, id, newDictId);
+		dictionaryService.changeDictionaryInApp(appId, newDictId);
 		return SUCCESS;
 	}
 
