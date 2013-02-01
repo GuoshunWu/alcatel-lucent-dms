@@ -100,7 +100,8 @@ public interface ProductService {
     
 
     /**
-     * Add an application to a product
+     * Add an application to a product.
+     * If there is another version of same appBase in the product, replace it.
      * @param productId
      * @param appId
      * @return new added Application ID or null if adding failed
