@@ -1,10 +1,8 @@
 package com.alcatel_lucent.dms.service
 
 import groovy.json.JsonBuilder
-import groovy.json.JsonOutput
 
 import java.util.concurrent.BlockingQueue
-import java.util.concurrent.LinkedBlockingQueue
 
 /**
  * Created with IntelliJ IDEA.
@@ -21,8 +19,8 @@ class Worker implements Runnable {
     }
 
 
-    private simulateProcess() {
-        Random r = new Random()
+    private simulateProcess() throws Exception{
+        Random r = new Random(System.currentTimeMillis())
         int fileSize = 10000
 
         int currentProgress = 0
@@ -39,33 +37,30 @@ class Worker implements Runnable {
     }
 
     @Override
-    void run() throws Exception {
-        println "Worker thread ${Thread.currentThread().getName()} start."
-        simulateProcess()
-        println "Worker thread ${Thread.currentThread().getName()} exit."
-    }
-
-    static void simulateServletResponse() {
-        BlockingQueue<String> events = new LinkedBlockingQueue<>();
-        new Thread(new Worker(events), "upload").start()
-
-        String msg = "start"
-        while (msg = events.take()) {
-            println "Got msg in thread ${Thread.currentThread().getName()}, msg: ${msg}"
-            if (msg.startsWith("done")) {
-                break
-            }
+    void run() {
+        println "Worker thread [${Thread.currentThread().getName()}] start."
+        try{
+            simulateProcess()
+        }catch(Exception e){
+            println e.message
         }
+
+        /**
+         * TODO: Maybe we should clear remove this event from session when this task is done.
+         * */
+        println "Worker thread [${Thread.currentThread().getName()}] exit."
     }
+
 
     static void main(String[] args) {
-        println "Servlet thread ${Thread.currentThread().getName()} start."
-//        simulateServletResponse()
-        println "Servlet thread ${Thread.currentThread().getName()} exit."
-
         def builder = new JsonBuilder()
+        String t="asdfsdfs"
+
         builder {
             msg 'zero'
+        }
+        builder{
+            test t
         }
         builder.content.bb='cc'
         println builder.toPrettyString()

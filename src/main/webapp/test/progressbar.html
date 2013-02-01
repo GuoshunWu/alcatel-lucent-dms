@@ -8,19 +8,18 @@
         jQuery(function ($) {
             var url = '../scripts/cp.groovy';
 
-            function long_polling(cmd) {
-                $.getJSON(url, {cmd: cmd}).done(function (data, textStatus, jqXHR) {
+            function long_polling(cmd, evtId) {
+                $.getJSON(url, {cmd: cmd, evtId: evtId}).done(function (data, textStatus, jqXHR) {
                     if (console) {
                         console.log(data);
                     }
                     $('#logs').append(data.msg + "<br/>");
+
                     if (/^done/.test(data.msg)) return;
 
                     setTimeout(function () {
-                        long_polling('process')
+                        long_polling('process', data.evtId)
                     }, 500);
-
-//                    long_polling('process');
                 });
             }
 
@@ -33,6 +32,6 @@
 <h2 align="center">Load...</h2>
 
 <div id="logs" style="font-family: monospace;"/>
-A simple test.
+A simple test. What about these changes?
 </body>
 </html>
