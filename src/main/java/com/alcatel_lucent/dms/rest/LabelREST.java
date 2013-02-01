@@ -21,16 +21,20 @@ import com.alcatel_lucent.dms.model.LabelTranslation;
 import com.alcatel_lucent.dms.model.Translation;
 import com.alcatel_lucent.dms.service.DictionaryService;
 import com.alcatel_lucent.dms.service.TranslationService;
+import com.alcatel_lucent.dms.util.ObjectComparator;
 
 /**
  * Label REST service.
  * URL: /rest/labels
  * Filter parameters:
  *   dict		(required) dictionary id
+ *   text		(optional) search text (case insensitive)
  *   language	(optional) language id
  *   	If language is supplied, relative LabelTranslation and Translation object can be accessed by
  *   	adding "ot" or "ct" prefix to the property name, e.g. ot.needTranslation,ct.translation
  *   	Otherwise, only label properties can be accessed. 
+ *   nodiff		(optional) default false, if true, return only labels of which translation is identical to reference text.
+ *   	The option only works when "language" parameter is specified.
  *   filters	(optional) jqGrid-style filter string, in json format, e.g.
  *   	{"groupOp":"AND","rules":[{"field":"status","op":"eq","data":"2"}]}
  *   NOTE: only support filter "ct.status" for the moment
@@ -79,6 +83,9 @@ public class LabelREST extends BaseREST {
     	if (text != null && text.trim().isEmpty()) {
     		text = null;
     	}
+    	if (text != null) {
+    		text = text.toUpperCase();
+    	}
     	String sidx = requestMap.get("sidx");
     	String sord = requestMap.get("sord");
     	if (sidx == null || sidx.trim().isEmpty()) {
@@ -101,19 +108,19 @@ public class LabelREST extends BaseREST {
     	if (text != null) {
     		hql += " and upper(obj.reference) like :text";
     		countHql += " and upper(reference) like :text";
-    		param.put("text", "%" + text.toUpperCase() + "%");
-    		countParam.put("text", "%" + text.toUpperCase() + "%");
+    		param.put("text", "%" + text + "%");
+    		countParam.put("text", "%" + text + "%");
     	}
-    	LabelSorter tniSorter = null;
+    	Comparator comparator = null;
 		if (!sidx.equals("t") && !sidx.equals("n") && !sidx.equals("i")) {
 			hql += " order by " + sidx + " " + sord;
 		} else {
-			tniSorter = new LabelSorter(sidx, sord);
+			comparator = new ObjectComparator<Label>(sidx, sord);
 		}
 		Collection<Label> labels; 
 		Map<Long, Label> labelMap = new HashMap<Long, Label>();
 		if (langId == null) {
-			if (tniSorter == null) {
+			if (comparator == null) {
 				labels  = retrieve(hql, param, countHql, countParam, requestMap);
 			} else {
 				labels = new ArrayList<Label>(dao.retrieve(hql, param, null));
@@ -127,14 +134,17 @@ public class LabelREST extends BaseREST {
 				label.setN(tni[1]);
 				label.setI(tni[2]);
 			}
-			if (tniSorter != null) {
-				Collections.sort((ArrayList<Label>)labels, tniSorter);
+			if (comparator != null) {
+				Collections.sort((ArrayList<Label>)labels, comparator);
 				labels = pageFilter(labels, requestMap);
 			}
 			
 		} else {
 		// add ot and ct information if a specific language was specified
-			labels = translationService.getLabelsWithTranslation(dictId, langId);
+			String nodiffStr = requestMap.get("nodiff");
+			boolean nodiff = nodiffStr != null && nodiffStr.equalsIgnoreCase("true");
+			labels = new ArrayList<Label>(translationService.getLabelsWithTranslation(dictId, langId));
+			Collections.sort((ArrayList<Label>)labels, new ObjectComparator<Label>(sidx, sord));
         	Map<String, String> filters = getGridFilters(requestMap);
         	Integer statusFilter = null;
         	if (filters != null) {	// filter by status
@@ -151,13 +161,15 @@ public class LabelREST extends BaseREST {
             		}
         		}
         	}
-        	if (text != null) {	// filter by text
-        		text = text.toUpperCase();
+        	if (text != null || nodiff) {	// filter by text and nodiff flag
         		Iterator<Label> iter = labels.iterator();
         		while (iter.hasNext()) {
         			Label label = iter.next();
-        			if (label.getReference().toUpperCase().indexOf(text) == -1 &&
-        					label.getCt().getTranslation().toUpperCase().indexOf(text) == -1) {
+        			if (text != null &&
+        					label.getReference().toUpperCase().indexOf(text) == -1 &&
+        					label.getCt().getTranslation().toUpperCase().indexOf(text) == -1 ||
+        				nodiff &&
+        					!label.getReference().equals(label.getCt().getTranslation())) {
         				iter.remove();
         			}
         		}
@@ -178,23 +190,4 @@ public class LabelREST extends BaseREST {
 		this.translationService = translationService;
 	}
 
-}
-
-class LabelSorter implements Comparator<Label> {
-	private String field, sord;
-	public LabelSorter(String field, String sord) {
-		this.field = field;
-		this.sord = sord;
-	}
-	@Override
-	public int compare(Label label1, Label label2) {
-		if (field.equals("t")) {
-			return (sord.equalsIgnoreCase("ASC") ? 1 : -1 ) * (label1.getT() - label2.getT());
-		} else if (field.equals("n")) {
-			return (sord.equalsIgnoreCase("ASC") ? 1 : -1 ) * (label1.getN() - label2.getN());
-		} else if (field.equals("i")) {
-			return (sord.equalsIgnoreCase("ASC") ? 1 : -1 ) * (label1.getI() - label2.getI());
-		}
-		return 0;
-	}
 }

@@ -18,6 +18,7 @@ import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.LabelTranslation;
 import com.alcatel_lucent.dms.service.DaoService;
 import com.alcatel_lucent.dms.service.TranslationService;
+import com.alcatel_lucent.dms.util.ObjectComparator;
 
 /**
  * LabelTranslation REST service.
@@ -77,29 +78,8 @@ public class LabelTranslationREST extends BaseREST {
     	Collection<LabelTranslation> result = new ArrayList<LabelTranslation>(
     			translationService.getLabelTranslations(labelId, status == null ? null : Integer.parseInt(status)));
     	requestMap.put("records", "" + result.size());
-    	Collections.sort((ArrayList<LabelTranslation>)result, new LabelTranslationSorter(sidx, sord));
+    	Collections.sort((ArrayList<LabelTranslation>)result, new ObjectComparator<LabelTranslation>(sidx, sord));
     	result = pageFilter(result, requestMap);
     	return toJSON(result, requestMap);
     }
-}
-
-class LabelTranslationSorter implements Comparator<LabelTranslation> {
-	private String field, sord;
-	public LabelTranslationSorter(String field, String sord) {
-		this.field = field;
-		this.sord = sord;
-	}
-	@Override
-	public int compare(LabelTranslation lt1, LabelTranslation lt2) {
-		if (field.equals("sortNo")) {
-			return (sord.equalsIgnoreCase("ASC") ? 1 : -1 ) * (lt1.getSortNo() - lt2.getSortNo());
-		} else if (field.equals("languageCode")) {
-			return (sord.equalsIgnoreCase("ASC") ? 1 : -1 ) * (lt1.getLanguageCode().compareTo(lt2.getLanguageCode()));
-		} else if (field.equals("language.name") || field.equals("language")) {
-			return (sord.equalsIgnoreCase("ASC") ? 1 : -1 ) * (lt1.getLanguage().getName().compareTo(lt2.getLanguage().getName()));
-		} else if (field.equals("translation")) {
-			return (sord.equalsIgnoreCase("ASC") ? 1 : -1 ) * (lt1.getTranslation().compareTo(lt2.getTranslation()));
-		}
-		return 0;
-	}
 }
