@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="103e1241-6e07-4743-8a7f-c9b14005e466" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/groovy/com/alcatel_lucent/dms/service/Worker.groovy" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/scripts/cp.groovy" afterPath="$PROJECT_DIR$/src/main/webapp/scripts/cp.groovy" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dms.ipr" afterPath="$PROJECT_DIR$/dms.ipr" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dms.iws" afterPath="$PROJECT_DIR$/dms.iws" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/test/progressbar.html" afterPath="$PROJECT_DIR$/src/main/webapp/test/progressbar.html" />
     </list>
@@ -12,7 +12,7 @@
     <file path="/Dummy.txt" changelist="103e1241-6e07-4743-8a7f-c9b14005e466" time="1359697809335" ignored="false" />
     <file path="/a.txt" changelist="103e1241-6e07-4743-8a7f-c9b14005e466" time="1359512745782" ignored="false" />
     <file path="/DummyFile.xpath" changelist="103e1241-6e07-4743-8a7f-c9b14005e466" time="1359512624361" ignored="false" />
-    <file path="/Groovy Console" changelist="103e1241-6e07-4743-8a7f-c9b14005e466" time="1359703135988" ignored="false" />
+    <file path="/Groovy Console" changelist="103e1241-6e07-4743-8a7f-c9b14005e466" time="1359713138098" ignored="false" />
     <file path="/test.coffee" changelist="103e1241-6e07-4743-8a7f-c9b14005e466" time="1359513303830" ignored="false" />
     <file path="/dialogs.jsp" changelist="103e1241-6e07-4743-8a7f-c9b14005e466" time="1359691261611" ignored="false" />
     <file path="/dialogs.coffee" changelist="103e1241-6e07-4743-8a7f-c9b14005e466" time="1359689231744" ignored="false" />
@@ -25,14 +25,16 @@
     <file path="/web.xml" changelist="103e1241-6e07-4743-8a7f-c9b14005e466" time="1359618925061" ignored="false" />
     <file path="/AuthenticationFilter.java" changelist="103e1241-6e07-4743-8a7f-c9b14005e466" time="1359619171526" ignored="false" />
     <file path="/commetpolling.groovy" changelist="103e1241-6e07-4743-8a7f-c9b14005e466" time="1359617170970" ignored="false" />
-    <file path="/cp.groovy" changelist="103e1241-6e07-4743-8a7f-c9b14005e466" time="1359706018240" ignored="false" />
+    <file path="/cp.groovy" changelist="103e1241-6e07-4743-8a7f-c9b14005e466" time="1359713151748" ignored="false" />
     <file path="/AuthorizationInterceptor.java" changelist="103e1241-6e07-4743-8a7f-c9b14005e466" time="1359618197796" ignored="false" />
     <file path="/fragment.java" changelist="103e1241-6e07-4743-8a7f-c9b14005e466" time="1359618487115" ignored="false" />
     <file path="/log4j.xml" changelist="103e1241-6e07-4743-8a7f-c9b14005e466" time="1359619099271" ignored="false" />
     <file path="/labels_en.properties" changelist="103e1241-6e07-4743-8a7f-c9b14005e466" time="1359691174482" ignored="false" />
-    <file path="/layout.coffee" changelist="103e1241-6e07-4743-8a7f-c9b14005e466" time="1359697639453" ignored="false" />
+    <file path="/layout.coffee" changelist="103e1241-6e07-4743-8a7f-c9b14005e466" time="1359707427909" ignored="false" />
     <file path="/Worker.groovy" changelist="103e1241-6e07-4743-8a7f-c9b14005e466" time="1359704400744" ignored="false" />
-    <file path="/progressbar.html" changelist="103e1241-6e07-4743-8a7f-c9b14005e466" time="1359705819063" ignored="false" />
+    <file path="/progressbar.html" changelist="103e1241-6e07-4743-8a7f-c9b14005e466" time="1359713030512" ignored="false" />
+    <file path="$PROJECT_DIR$/src/main/java/com/alcatel_lucent/dms/service/ProductServiceImpl.java" changelist="103e1241-6e07-4743-8a7f-c9b14005e466" time="1359706212077" ignored="false" />
+    <file path="$PROJECT_DIR$/src/main/java/com/alcatel_lucent/dms/service/DictionaryServiceImpl.java" changelist="103e1241-6e07-4743-8a7f-c9b14005e466" time="1359706212077" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -140,47 +142,27 @@
       <file leaf-file-name="VLEExcelDictParserTest.groovy" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/groovy/com/alcatel_lucent/dms/service/parser/VLEExcelDictParserTest.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="58" column="27" selection-start="1497" selection-end="1497" vertical-scroll-proportion="0.0">
+            <state line="61" column="25" selection-start="1659" selection-end="1659" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="cp.groovy" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/webapp/scripts/cp.groovy">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="26" column="41" selection-start="777" selection-end="777" vertical-scroll-proportion="0.47841728">
-              <folding>
-                <element signature="e#0#44#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="progressbar.html" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="progressbar.html" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/webapp/test/progressbar.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="20" column="51" selection-start="698" selection-end="698" vertical-scroll-proportion="-13.571428">
+            <state line="18" column="20" selection-start="604" selection-end="604" vertical-scroll-proportion="0.57096773">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="jsonpservice.groovy" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/webapp/scripts/jsonpservice.groovy">
+      <file leaf-file-name="cp.groovy" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/webapp/scripts/cp.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="40" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Worker.groovy" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/groovy/com/alcatel_lucent/dms/service/Worker.groovy">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="70" column="0" selection-start="1996" selection-end="1996" vertical-scroll-proportion="0.0">
+            <state line="22" column="55" selection-start="700" selection-end="700" vertical-scroll-proportion="0.0">
               <folding>
-                <element signature="e#40#70#0" expanded="true" />
+                <element signature="e#0#44#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -215,10 +197,10 @@
         <option value="$PROJECT_DIR$/src/main/webapp/appmanagement/dialogs.jsp" />
         <option value="$PROJECT_DIR$/src/main/resources/labels_en.properties" />
         <option value="$PROJECT_DIR$/src/main/webapp/transmanagement/dialogs.jsp" />
-        <option value="$PROJECT_DIR$/src/main/webapp/js/transmng/layout.coffee" />
         <option value="$PROJECT_DIR$/src/main/groovy/com/alcatel_lucent/dms/service/Worker.groovy" />
-        <option value="$PROJECT_DIR$/src/main/webapp/test/progressbar.html" />
+        <option value="$PROJECT_DIR$/src/main/webapp/js/transmng/layout.coffee" />
         <option value="$PROJECT_DIR$/src/main/webapp/scripts/cp.groovy" />
+        <option value="$PROJECT_DIR$/src/main/webapp/test/progressbar.html" />
       </list>
     </option>
   </component>
@@ -278,12 +260,8 @@
           <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$ProjectNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="Plugins" />
-          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$PluginsNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="tomcat7" />
-          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$PluginNode" />
+          <option name="myItemId" value="Lifecycle" />
+          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$LifecycleNode" />
         </PATH_ELEMENT>
       </PATH>
       <PATH>
@@ -555,149 +533,23 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="dms" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="implements" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="dms" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="implements" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="webapp" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="dms" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="implements" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="webapp" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="test" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="dms" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="implements" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="webapp" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="scripts" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="dms" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="implements" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="dms" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="implements" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="groovy" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
         </subPane>
       </pane>
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="project.structure.last.edited" value="Facets" />
+    <property name="project.structure.last.edited" value="Artifacts" />
     <property name="OverrideImplement.combined" value="false" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="options.splitter.main.proportions" value="0.3" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
     <property name="MemberChooser.sorted" value="false" />
     <property name="recentsLimit" value="5" />
     <property name="FileHistory.org.zmlx.hg4idea.provider.HgHistoryProvider_treeWidth1" value="123" />
     <property name="FileHistory.org.zmlx.hg4idea.provider.HgHistoryProvider_treeWidth2" value="122" />
     <property name="last_opened_file_path" value="$USER_HOME$/AppData/Roaming/npm/node_modules/coffee-script/bin/coffee" />
     <property name="FileHistory.org.zmlx.hg4idea.provider.HgHistoryProvider_treeWidth0" value="116" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
     <property name="GoToClass.includeJavaFiles" value="false" />
     <property name="FileHistory.org.zmlx.hg4idea.provider.HgHistoryProvider_treeOrder0" value="0" />
     <property name="FileHistory.org.zmlx.hg4idea.provider.HgHistoryProvider_treeOrder1" value="1" />
@@ -715,13 +567,16 @@
     <property name="FileHistory.org.zmlx.hg4idea.provider.HgHistoryProvider_flatWidth1" value="123" />
     <property name="FileHistory.org.zmlx.hg4idea.provider.HgHistoryProvider_flatWidth0" value="116" />
     <property name="options.lastSelected" value="preferences.applicationServers" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
     <property name="FileHistory.org.zmlx.hg4idea.provider.HgHistoryProvider_flatOrder1" value="1" />
     <property name="FileHistory.org.zmlx.hg4idea.provider.HgHistoryProvider_flatOrder0" value="0" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="FileHistory.org.zmlx.hg4idea.provider.HgHistoryProvider_flatOrder3" value="3" />
     <property name="MemberChooser.copyJavadoc" value="false" />
     <property name="FileHistory.org.zmlx.hg4idea.provider.HgHistoryProvider_flatOrder2" value="2" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
     <property name="restartRequiresConfirmation" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
     <property name="dynamic.classpath" value="false" />
     <property name="options.searchVisible" value="true" />
   </component>
@@ -743,7 +598,29 @@
       <recent name="D:\MyDocuments\Alcatel_LucentSBell\DMS\implements\src\main\webapp\test" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Worker">
+  <component name="RunManager" selected="Tomcat Server.Tomcat 7">
+    <configuration default="false" name="Worker" type="Application" factoryName="Application" temporary="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+        <pattern>
+          <option name="PATTERN" value="com.alcatel_lucent.dms.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="MAIN_CLASS_NAME" value="com.alcatel_lucent.dms.service.Worker" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="dms" />
+      <envs />
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method />
+    </configuration>
     <configuration default="false" name="VLEExcelDictParserTest" type="JUnit" factoryName="JUnit" temporary="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
@@ -768,28 +645,6 @@
       </option>
       <envs />
       <patterns />
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Run" />
-      <method />
-    </configuration>
-    <configuration default="false" name="Worker" type="Application" factoryName="Application" temporary="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
-        <pattern>
-          <option name="PATTERN" value="com.alcatel_lucent.dms.service.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="MAIN_CLASS_NAME" value="com.alcatel_lucent.dms.service.Worker" />
-      <option name="VM_PARAMETERS" />
-      <option name="PROGRAM_PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="ENABLE_SWING_INSPECTOR" value="false" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="dms" />
-      <envs />
       <RunnerSettings RunnerId="Run" />
       <ConfigurationWrapper RunnerId="Run" />
       <method />
@@ -895,6 +750,13 @@
       <option name="PASS_PARENT_ENVS" value="true" />
       <module name="" />
       <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="JavascriptDebugSession" factoryName="Remote" singleton="true">
+      <JSRemoteDebuggerConfigurationSettings>
+        <option name="engineId" />
+        <option name="fileUrl" />
+      </JSRemoteDebuggerConfigurationSettings>
       <method />
     </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit">
@@ -1051,87 +913,12 @@
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
-    <configuration default="false" name="Tomcat 7" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 7">
-      <option name="OPEN_IN_BROWSER_URL" value="http://localhost:8888/dms/test/cometlongpolling.html" />
-      <option name="UPDATING_POLICY" value="restart-server" />
-      <deployment>
-        <artifact name="dms:war exploded">
-          <settings>
-            <option name="CONTEXT_PATH" value="/dms" />
-          </settings>
-        </artifact>
-      </deployment>
-      <server-settings>
-        <option name="BASE_DIRECTORY_NAME" value="Unnamed_dms" />
-        <option name="HTTPS_PORT" value="8443" />
-      </server-settings>
-      <predefined_log_file id="Tomcat" enabled="true" />
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <RunnerSettings RunnerId="Cover" />
-      <RunnerSettings RunnerId="Debug">
-        <option name="DEBUG_PORT" value="54781" />
-        <option name="TRANSPORT" value="0" />
-        <option name="LOCAL" value="true" />
-      </RunnerSettings>
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Cover">
-        <option name="USE_ENV_VARIABLES" value="true" />
-        <STARTUP>
-          <option name="USE_DEFAULT" value="true" />
-          <option name="SCRIPT" value="" />
-          <option name="VM_PARAMETERS" value="" />
-          <option name="PROGRAM_PARAMETERS" value="" />
-        </STARTUP>
-        <SHUTDOWN>
-          <option name="USE_DEFAULT" value="true" />
-          <option name="SCRIPT" value="" />
-          <option name="VM_PARAMETERS" value="" />
-          <option name="PROGRAM_PARAMETERS" value="" />
-        </SHUTDOWN>
-      </ConfigurationWrapper>
-      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Debug">
-        <option name="USE_ENV_VARIABLES" value="true" />
-        <STARTUP>
-          <option name="USE_DEFAULT" value="true" />
-          <option name="SCRIPT" value="" />
-          <option name="VM_PARAMETERS" value="" />
-          <option name="PROGRAM_PARAMETERS" value="" />
-        </STARTUP>
-        <SHUTDOWN>
-          <option name="USE_DEFAULT" value="true" />
-          <option name="SCRIPT" value="" />
-          <option name="VM_PARAMETERS" value="" />
-          <option name="PROGRAM_PARAMETERS" value="" />
-        </SHUTDOWN>
-      </ConfigurationWrapper>
-      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Run">
-        <option name="USE_ENV_VARIABLES" value="true" />
-        <STARTUP>
-          <option name="USE_DEFAULT" value="true" />
-          <option name="SCRIPT" value="" />
-          <option name="VM_PARAMETERS" value="" />
-          <option name="PROGRAM_PARAMETERS" value="" />
-        </STARTUP>
-        <SHUTDOWN>
-          <option name="USE_DEFAULT" value="true" />
-          <option name="SCRIPT" value="" />
-          <option name="VM_PARAMETERS" value="" />
-          <option name="PROGRAM_PARAMETERS" value="" />
-        </SHUTDOWN>
-      </ConfigurationWrapper>
-      <method>
-        <option name="Make" enabled="true" />
-        <option name="BuildArtifacts" enabled="true">
-          <artifact name="dms:war exploded" />
-        </option>
-      </method>
-    </configuration>
     <list size="5">
-      <item index="0" class="java.lang.String" itemvalue="Maven.dms [org.apache.tomcat.maven:tomcat7-maven-plugin:2.0:run]" />
-      <item index="1" class="java.lang.String" itemvalue="Node.js.test.coffee" />
-      <item index="2" class="java.lang.String" itemvalue="Tomcat Server.Tomcat 7" />
-      <item index="3" class="java.lang.String" itemvalue="JUnit.VLEExcelDictParserTest" />
-      <item index="4" class="java.lang.String" itemvalue="Application.Worker" />
+      <item index="0" class="java.lang.String" itemvalue="Application.Worker" />
+      <item index="1" class="java.lang.String" itemvalue="JUnit.VLEExcelDictParserTest" />
+      <item index="2" class="java.lang.String" itemvalue="Maven.dms [org.apache.tomcat.maven:tomcat7-maven-plugin:2.0:run]" />
+      <item index="3" class="java.lang.String" itemvalue="Node.js.test.coffee" />
+      <item index="4" class="java.lang.String" itemvalue="Tomcat Server.Tomcat 7" />
     </list>
     <recent_temporary>
       <list size="2">
@@ -1175,29 +962,29 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="7" />
-    <editor active="true" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32933104" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32954547" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39965695" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32933104" sideWeight="0.49772727" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32933104" sideWeight="0.49772727" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.16818182" sideWeight="0.32307693" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32933104" sideWeight="0.4969697" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32933104" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.23636363" sideWeight="0.46312177" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32933104" sideWeight="0.4969697" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32933104" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.23636363" sideWeight="0.46312177" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.20833333" sideWeight="0.35506004" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.1530303" sideWeight="0.62564105" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1530303" sideWeight="0.62607205" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32933104" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20833333" sideWeight="0.62607205" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32933104" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19318181" sideWeight="0.62607205" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.37392795" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -1273,20 +1060,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/TODO.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="3" column="39" selection-start="190" selection-end="190" vertical-scroll-proportion="0.10458715">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/appmanagement/dialogs.jsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="132" column="62" selection-start="4795" selection-end="4795" vertical-scroll-proportion="0.5359849">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/webapp/js/appmng/dialogs.coffee">
       <provider selected="true" editor-type-id="text-editor">
         <state line="170" column="0" selection-start="6371" selection-end="6371" vertical-scroll-proportion="0.26618704">
@@ -1311,13 +1084,6 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/js/transmng/layout.coffee">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="146" column="51" selection-start="6149" selection-end="6149" vertical-scroll-proportion="0.10497238">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/webapp/transmanagement/dialogs.jsp">
       <provider selected="true" editor-type-id="text-editor">
         <state line="97" column="71" selection-start="3491" selection-end="3507" vertical-scroll-proportion="0.64772725">
@@ -1332,23 +1098,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/groovy/com/alcatel_lucent/dms/service/parser/VLEExcelDictParserTest.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="58" column="27" selection-start="1497" selection-end="1497" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/webapp/scripts/Hello.groovy">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-0.30755395">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/scripts/jsonpservice.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="40" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -1367,28 +1119,63 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/js/transmng/trans_grid.coffee">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="107" column="33" selection-start="5065" selection-end="5065" vertical-scroll-proportion="0.6199616">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/js/transmng/layout.coffee">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="298" column="49" selection-start="11377" selection-end="11377" vertical-scroll-proportion="0.45489442">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/groovy/com/alcatel_lucent/dms/service/Worker.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="70" column="0" selection-start="1996" selection-end="1996" vertical-scroll-proportion="0.0">
+        <state line="70" column="0" selection-start="1996" selection-end="1996" vertical-scroll-proportion="1.7661871">
           <folding>
             <element signature="e#40#70#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/test/progressbar.html">
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/scripts/jsonpservice.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="20" column="51" selection-start="698" selection-end="698" vertical-scroll-proportion="-13.571428">
+        <state line="0" column="0" selection-start="0" selection-end="40" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/js/transmng/transdetail_grid.coffee">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="56" column="2" selection-start="3231" selection-end="3231" vertical-scroll-proportion="0.31860036">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/groovy/com/alcatel_lucent/dms/service/parser/VLEExcelDictParserTest.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="61" column="25" selection-start="1659" selection-end="1659" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/webapp/scripts/cp.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="26" column="41" selection-start="777" selection-end="777" vertical-scroll-proportion="0.47841728">
+        <state line="22" column="55" selection-start="700" selection-end="700" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="e#0#44#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/test/progressbar.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="18" column="20" selection-start="604" selection-end="604" vertical-scroll-proportion="0.57096773">
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1398,12 +1185,11 @@
       <state key="ArtifactsStructureConfigurable.UI">
         <settings>
           <artifact-editor />
-          <last-edited>dms:war</last-edited>
+          <last-edited>dms:war exploded</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
                 <option value="0.2" />
-                <option value="0.5" />
               </list>
             </option>
           </splitter-proportions>
