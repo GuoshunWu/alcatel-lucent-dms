@@ -8,7 +8,8 @@ define (require)->
 
   refreshGrid = (languageTrigger = false, grid = grid)->
     param =
-      release: {id: $('#productRelease').val(), version: $("#productRelease option:selected").text()}
+      release:
+        {id: $('#productRelease').val(), version: $("#productRelease option:selected").text()}
       level: $("input:radio[name='viewOption'][checked]").val()
 
     checkboxes = $("#languageFilterDialog input:checkbox[name='languages']")
@@ -22,7 +23,8 @@ define (require)->
   ################################################ Create Dialogs #################################################
   languageFilterDialog = $("<div title='#{i18n.select.languagefilter.title}' id='languageFilterDialog'>").dialog(
     autoOpen: false, position: [23, 126], height: 'auto', width: 1100
-    show: { effect: 'slide', direction: "up" }
+    show:
+      { effect: 'slide', direction: "up" }
     buttons: [
       { text: c18n.ok, click: ()->
         $(@).dialog "close"
@@ -34,7 +36,8 @@ define (require)->
 
   exportTranslationDialog = $('#ExportTranslationsDialog').dialog(
     autoOpen: false, modal: true
-    width: 1100, height: 'auto', position: [25, 100], show: { effect: 'slide', direction: "down" }
+    width: 1100, height: 'auto', position: [25, 100], show:
+      { effect: 'slide', direction: "down" }
     open: ->
       info = grid.getTotalSelectedRowInfo()
       #      tableType is app or dict
@@ -67,7 +70,8 @@ define (require)->
 
   taskDialog = $("#createTranslationTaskDialog").dialog(
     autoOpen: false, modal: true
-    width: 1100, height: 'auto', position: [25, 100], show: { effect: 'slide', direction: "down" }
+    width: 1100, height: 'auto', position: [25, 100], show:
+      { effect: 'slide', direction: "down" }
     create: ->
     open: ->
       info = grid.getTotalSelectedRowInfo()
@@ -118,7 +122,7 @@ define (require)->
             $.msgBox json.message, null, {title: c18n.error}
             return
           $.msgBox i18n.msgbox.createtranstask.confirm, ((keyPressed)->
-          #            navigate form is in common/pagenavigator.jsp
+            #            navigate form is in common/pagenavigator.jsp
             if c18n.yes != keyPressed
               $("#transGrid").trigger 'reloadGrid'
               return
@@ -136,7 +140,6 @@ define (require)->
     autoOpen: false, width: 860, height: 'auto', modal: true
     create: ()->
       $(@).dialog 'option', 'width', $('#transDetailGridList').getGridParam('width') + 60
-
       $('#detailLanguageSwitcher').change ->
         param = $('#translationDetailDialog').data "param"
         language = {id: $(@).val(), name: $("option:selected", @).text()}
