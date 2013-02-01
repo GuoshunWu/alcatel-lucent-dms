@@ -7,10 +7,20 @@
     <script>
         jQuery(function ($) {
             var url = '../scripts/cp.groovy';
-            $('#logs').load(url, function (responseText, textStatus, xhr) {
-                        console.log('Load was performed.');
+
+            function long_polling(cmd) {
+                $.getJSON(url, {cmd: cmd}).done(function (data, textStatus, jqXHR) {
+                    if (console) {
+                        console.log(data);
                     }
-            );
+                    $('#logs').append(data.msg+"<br/>");
+                    if (!/^done/.test(data.msg)) {
+                        setTimeout(long_polling('process'), 1000);
+                    }
+                });
+            }
+
+            long_polling('start');
 
         });
     </script>
