@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.hibernate.Hibernate;
@@ -53,9 +54,11 @@ public class ProductServiceImpl implements ProductService {
         Long appBaseId = app.getBase().getId();
         Product product = (Product) dao.retrieve(Product.class, productId);
         if (product.getApplications() != null) {
-        	for (Application existApp : product.getApplications()) {
-        		if (existApp.getBase().getId() == appBaseId) {
-        			throw new BusinessException(BusinessException.APPLICATION_ALREADY_IN_PRODUCT);
+        	Iterator<Application> iter = product.getApplications().iterator();
+        	while (iter.hasNext()) {
+        		Application existApp = iter.next();
+        		if (existApp.getBase().getId().equals(appBaseId)) {
+        			iter.remove();
         		}
         	}
         }
