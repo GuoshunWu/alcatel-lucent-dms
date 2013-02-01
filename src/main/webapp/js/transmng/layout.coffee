@@ -134,7 +134,9 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
 
     transDetailDialog = $('#translationDetailDialog').dialog(
       autoOpen: false, width: 860, height: 'auto', modal: true
-      open: ()->$('#searchAction',@).position(my: 'left center', at: 'right center', of: '#searchText')
+      open: ()->
+        $('#searchAction',@).position(my: 'left center', at: 'right center', of: '#searchText')
+        $('#transSameWithRef', @).attr('checked', false)
       create: ()->
         $(@).dialog 'option', 'width', $('#transDetailGridList').getGridParam('width') + 60
         transDetailGrid = $("#transDetailGridList")

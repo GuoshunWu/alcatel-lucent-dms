@@ -235,11 +235,12 @@
         height: 'auto',
         modal: true,
         open: function() {
-          return $('#searchAction', this).position({
+          $('#searchAction', this).position({
             my: 'left center',
             at: 'right center',
             of: '#searchText'
           });
+          return $('#transSameWithRef', this).attr('checked', false);
         },
         create: function() {
           var postData, transDetailGrid,
