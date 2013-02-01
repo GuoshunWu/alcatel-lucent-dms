@@ -1,17 +1,17 @@
 define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng', 'transmng/trans_grid', 'transmng/transdetail_grid', 'util', 'require'], ($, blockui, msgbox, c18n, i18n, grid, detailgrid, util)->
   util = require 'util'
-  ids = {
-  languageFilterTableId: 'languageFilterTable'
-  languageFilterDialogId: 'languageFilterDialog'
-  }
+  ids =
+    languageFilterTableId: 'languageFilterTable'
+    languageFilterDialogId: 'languageFilterDialog'
+
 
   dialogs = null
 
   refreshGrid = (languageTrigger = false)->
-    param = {
-    release: {id: $('#productRelease').val(), version: $("#productRelease option:selected").text()}
-    level: $("input:radio[name='viewOption'][checked]").val()
-    }
+    param =
+      release: {id: $('#productRelease').val(), version: $("#productRelease option:selected").text()}
+      level: $("input:radio[name='viewOption'][checked]").val()
+
     checkboxes = $("##{ids.languageFilterDialogId} input:checkbox[name='languages']")
     param.languages = checkboxes.map(
       ()-> return {id: @id, name: @value} if @checked).get()
@@ -48,7 +48,7 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
 
       $.getJSON 'rest/languages', postData, (languages)=>$(@).append util.generateLanguageTable languages, langFilterTableId if languages.length > 0
     buttons: [
-      {text: c18n.export, click: ->
+      {text: c18n['export'], click: ->
         me = $(@)
         languages = ($(":checkbox[name='languages']", @).map -> {id: @id, name: @value} if @checked).get()
         if(languages.length == 0)
@@ -131,28 +131,44 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
       {text: c18n.cancel, click: -> $(@).dialog "close"}
     ]
     }
-    transDetailDialog = $('#translationDetailDialog').dialog {
-    autoOpen: false, width: 860, height: 'auto', modal: true
-    create: ()->
-      $(@).dialog 'option', 'width', $('#transDetailGridList').getGridParam('width') + 60
 
-      $('#detailLanguageSwitcher').change ->
-        param = $('#translationDetailDialog').data "param"
-        language = {id: $(@).val(), name: $("option:selected", @).text()}
-        detailgrid.languageChanged {language: language, dict: param.dict, searchStatus: param.searchStatus}
-    close: (event, ui)->
-      detailgrid.saveLastEditedCell()
-    buttons: [
-      {text: c18n.close, click: ()->
-        $(@).dialog 'close'
-      }
-    ]
-    }
+    transDetailDialog = $('#translationDetailDialog').dialog(
+      autoOpen: false, width: 860, height: 'auto', modal: true
+      open: ()->$('#searchAction',@).position(my: 'left center', at: 'right center', of: '#searchText')
+      create: ()->
+        $(@).dialog 'option', 'width', $('#transDetailGridList').getGridParam('width') + 60
+        transDetailGrid = $("#transDetailGridList")
+        postData = transDetailGrid.getGridParam('postData')
 
-    {
+        $('#searchText', @).keydown (e)=>$('#searchAction', @).trigger 'click' if e.which == 13
+        $('#searchAction', @).attr('title', 'Search').button(text: false, icons:{primary: "ui-icon-search"}).click(()=>
+          postData.text = $('#searchText', @).val()
+          transDetailGrid.trigger 'reloadGrid'
+        ).height(20).width(20)
+        #      .position(my:'center', at: 'center', of: '#searchText')
+
+        $('#transSameWithRef', @).change (e)->
+          postData.nodiff = @checked
+          console?.debug transDetailGrid.getGridParam('postData')
+          transDetailGrid.trigger 'reloadGrid'
+
+        $('#detailLanguageSwitcher').change ->
+          param = $('#translationDetailDialog').data "param"
+          language = {id: $(@).val(), name: $("option:selected", @).text()}
+          detailgrid.languageChanged {language: language, dict: param.dict, searchStatus: param.searchStatus}
+      close: (event, ui)->
+        detailgrid.saveLastEditedCell()
+      buttons: [
+        {text: c18n.close, click: ()->
+          $(@).dialog 'close'
+        }
+      ]
+    )
+
+
     taskDialog: taskDialog, languageFilterDialog: languageFilterDialog,
     transDetailDialog: transDetailDialog, exportTranslationDialog: exportTranslationDialog
-    }
+
 
   debugIntervalHandler = ()->
     console.log('Hello world.')
