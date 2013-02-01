@@ -13,10 +13,14 @@
                     if (console) {
                         console.log(data);
                     }
-                    $('#logs').append(data.msg+"<br/>");
-                    if (!/^done/.test(data.msg)) {
-                        setTimeout(long_polling('process'), 1000);
-                    }
+                    $('#logs').append(data.msg + "<br/>");
+                    if (/^done/.test(data.msg)) return;
+
+                    setTimeout(function () {
+                        long_polling('process')
+                    }, 500);
+
+//                    long_polling('process');
                 });
             }
 
@@ -29,5 +33,6 @@
 <h2 align="center">Load...</h2>
 
 <div id="logs" style="font-family: monospace;"/>
+A simple test.
 </body>
 </html>

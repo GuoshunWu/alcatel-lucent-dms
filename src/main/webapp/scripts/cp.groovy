@@ -15,6 +15,7 @@ if ('start' == params.cmd) {
         events = new LinkedBlockingQueue<String>();
         session.events = events
     }
+    events.clear()
     new Thread(new Worker(events), "Worker_${session.id}").start()
     builder.content.msg = "process"
 } else if ('process' == params.cmd) {
