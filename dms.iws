@@ -2,13 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="103e1241-6e07-4743-8a7f-c9b14005e466" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/js/appmng/dialogs.coffee" afterPath="$PROJECT_DIR$/src/main/webapp/js/appmng/dialogs.coffee" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/js/transmng/dialogs.coffee" afterPath="$PROJECT_DIR$/src/main/webapp/js/transmng/dialogs.coffee" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/js/appmng/dialogs.js" afterPath="$PROJECT_DIR$/src/main/webapp/js/appmng/dialogs.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/appmanagement/dialogs.jsp" afterPath="$PROJECT_DIR$/src/main/webapp/appmanagement/dialogs.jsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/transmanagement/dialogs.jsp" afterPath="$PROJECT_DIR$/src/main/webapp/transmanagement/dialogs.jsp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dms.iws" afterPath="$PROJECT_DIR$/dms.iws" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/labels_en.properties" afterPath="$PROJECT_DIR$/src/main/resources/labels_en.properties" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/js/transmng/layout.coffee" afterPath="$PROJECT_DIR$/src/main/webapp/js/transmng/layout.coffee" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/js/transmng/layout.js" afterPath="$PROJECT_DIR$/src/main/webapp/js/transmng/layout.js" />
     </list>
@@ -35,7 +29,7 @@
     <file path="/fragment.java" changelist="103e1241-6e07-4743-8a7f-c9b14005e466" time="1359618487115" ignored="false" />
     <file path="/log4j.xml" changelist="103e1241-6e07-4743-8a7f-c9b14005e466" time="1359619099271" ignored="false" />
     <file path="/labels_en.properties" changelist="103e1241-6e07-4743-8a7f-c9b14005e466" time="1359691174482" ignored="false" />
-    <file path="/layout.coffee" changelist="103e1241-6e07-4743-8a7f-c9b14005e466" time="1359691726235" ignored="false" />
+    <file path="/layout.coffee" changelist="103e1241-6e07-4743-8a7f-c9b14005e466" time="1359697639453" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -152,7 +146,7 @@
       <file leaf-file-name="layout.coffee" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/webapp/js/transmng/layout.coffee">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="151" column="66" selection-start="6383" selection-end="6383" vertical-scroll-proportion="0.59484345">
+            <state line="133" column="46" selection-start="5362" selection-end="5362" vertical-scroll-proportion="0.06998158">
               <folding />
             </state>
           </provider>
@@ -1166,7 +1160,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="7" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32933104" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -1189,7 +1183,7 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32933104" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20833333" sideWeight="0.6329331" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.37435898" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.37392795" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -1365,7 +1359,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/webapp/js/transmng/layout.coffee">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="151" column="66" selection-start="6383" selection-end="6383" vertical-scroll-proportion="0.59484345">
+        <state line="133" column="46" selection-start="5362" selection-end="5362" vertical-scroll-proportion="0.06998158">
           <folding />
         </state>
       </provider>
