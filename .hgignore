@@ -47,3 +47,5 @@ tmp
 atlassian-ide-plugin.xml
 src/main/webapp/js/test.js
 src/main/webapp/js/npm-debug.log
+dms.iws
+dms.ipr
