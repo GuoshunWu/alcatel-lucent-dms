@@ -3,35 +3,77 @@
 <head>
     <meta charset="utf-8">
     <title>Load...</title>
+
+    <link href="../css/jqueryUI/themes/base/jquery.ui.all.css" rel="stylesheet" type="text/css"/>
+    <style type='text/css'>
+        html, body {
+            font-family: 'Verdana', '宋体', serif;
+            font-size: 10px;
+            height: 99%;
+            /*margin: 0;*/
+        }
+
+    </style>
+
     <script src="../js/lib/jquery-1.7.2.min.js"></script>
+    <script src="../js/lib/jquery-ui-1.8.22.custom.min.js"></script>
+
     <script>
         jQuery(function ($) {
             var url = '../scripts/cp.groovy';
+
+            $("#progressbar").draggable({
+                grid: [50, 20],
+                opacity: 0.35
+            }).progressbar({
+                        max: 100,
+                        change: function (e, ui) {
+                            var value;
+                            value = ($(this).progressbar("value")).toPrecision(4) + '%';
+                            return $('#barvalue', this).html(value).position({my: 'center', at: 'center', of: this});
+                        },
+                        complete: function (e, ui) {
+                            $(this).hide().progressbar('value', 0);
+                            $('#startAction').button('enable').button('option', 'label', 'Start');
+                        }
+
+                    }).hide();
+
+            function progress(data) {
+                if (!$.isNumeric(data.msg)) return;
+                $('#progressbar').progressbar("value", parseFloat(data.msg));
+            }
 
             function long_polling(cmd, evtId) {
                 $.getJSON(url, {cmd: cmd, evtId: evtId}).done(function (data, textStatus, jqXHR) {
                     if (console) {
                         console.log(data);
                     }
-                    $('#logs').append(data.msg + "<br/>");
-
                     if (/^done/.test(data.msg)) return;
-
+                    progress(data);
                     setTimeout(function () {
                         long_polling('process', data.evtId)
                     }, 500);
                 });
             }
 
-            long_polling('start');
+            $('#startAction').button().click(function (e) {
+                $("#progressbar").show();
+                long_polling('start');
+                $(this).button('disable').button('option', 'label', 'In progress...');
+            });
 
         });
     </script>
 </head>
 <body>
 <h2 align="center">Load...</h2>
-
+<button id="startAction">Start</button>
 <div id="logs" style="font-family: monospace;"/>
-A simple test. What about these changes?
+
+<div id="progressbar" style="position: absolute;width: 600px; top: 45%;left: 30%; ">
+    <span id="barvalue" style="z-index: 1000;display:block;text-align:center;position: absolute;"/>
+</div>
+
 </body>
 </html>
