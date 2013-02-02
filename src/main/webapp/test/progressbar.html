@@ -10,8 +10,8 @@
             font-family: 'Verdana', '宋体', serif;
             font-size: 10px;
             height: 99%;
-            /*margin: 0;*/
         }
+
 
     </style>
 
@@ -27,6 +27,9 @@
                 opacity: 0.35
             }).progressbar({
                         max: 100,
+                        create: function (e, ui) {
+                            $('#barvalue', this).position({my: 'center', at: 'center', of: this});
+                        },
                         change: function (e, ui) {
                             var value;
                             value = ($(this).progressbar("value")).toPrecision(4) + '%';
@@ -39,27 +42,43 @@
 
                     }).hide();
 
-            function progress(data) {
-                if (!$.isNumeric(data.msg)) return;
-                $('#progressbar').progressbar("value", parseFloat(data.msg));
+            function progress(msg, sep) {
+                if (!sep) {
+                    sep = ';';
+                }
+                $(msg.split(sep)).each(function (index, elem) {
+                    if ($.isNumeric(elem)) {
+                        $('#progressbar').progressbar("value", parseFloat(elem));
+                    }
+                });
             }
 
             function long_polling(cmd, evtId) {
-                $.getJSON(url, {cmd: cmd, evtId: evtId}).done(function (data, textStatus, jqXHR) {
+                var postData = {cmd: cmd, evtId: evtId};
+                if (cmd == 'start') {
+                    postData.freq = $('#eFreq').val() ? parseInt($('#eFreq').val()) : 2000;
+                    postData.speed = $("#speed").val() ? parseInt($("#speed").val()) : 1000;
+                }
+
+                if (postData.freq < 2)postData.freq = 2
+                if (postData.speed < 2)postData.freq = 2
+
+                $.getJSON(url, postData).done(function (data, textStatus, jqXHR) {
                     if (console) {
                         console.log(data);
                     }
-                    if (/^done/.test(data.msg)) return;
-                    progress(data);
+                    progress(data.msg);
+                    if (/done/.test(data.msg)) return;
                     setTimeout(function () {
                         long_polling('process', data.evtId)
-                    }, 500);
+                    }, $("#pollingFreq").val() ? parseInt($("#pollingFreq").val()) : 1000);
                 });
             }
 
             $('#startAction').button().click(function (e) {
                 $("#progressbar").show();
-                long_polling('start');
+                $('#barvalue').position({my: 'center', at: 'center', of: '#progressbar'});
+                long_polling('start', -1);
                 $(this).button('disable').button('option', 'label', 'In progress...');
             });
 
@@ -67,8 +86,28 @@
     </script>
 </head>
 <body>
-<h2 align="center">Load...</h2>
-<button id="startAction">Start</button>
+<h2 align="center">Progress bar demo...</h2>
+<table border="0" align="center">
+    <tr>
+        <td>
+            <b>Total number: 10000</b>
+        </td>
+        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td>
+            Event generator frequency(ms): <input size="5" id="eFreq" value="2000"/>
+        </td>
+        <td>
+            Process speed: <input size="5" id="speed" value="1000"/>
+        </td>
+        <td>
+            Polling frequency(ms): <input size="5" id="pollingFreq" value="1000"/>
+        </td>
+        <td>
+            <button id="startAction">Start</button>
+        </td>
+    </tr>
+</table>
+
 <div id="logs" style="font-family: monospace;"/>
 
 <div id="progressbar" style="position: absolute;width: 600px; top: 45%;left: 30%; ">

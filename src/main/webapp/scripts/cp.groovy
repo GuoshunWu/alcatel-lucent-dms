@@ -16,21 +16,29 @@ if ('start' == params.cmd) {
     BlockingQueue<String> events = new LinkedBlockingQueue<>()
     log.info("Set an event queue [${eventId}] to session [${session.id}].")
     session[eventId] = events
-    new Thread(new Worker(events), "Worker_${session.id}_${eventId}").start()
+    new Thread(new Worker(events, Integer.parseInt(params.speed), Integer.parseInt(params.freq)), "Worker_${session.id}_${eventId}").start()
     builder {
         msg "process"
         evtId eventId
     }
 
 } else if ('process' == params.cmd) {
-    String event = session[params.evtId].take()
-    builder {
-        msg event
-        evtId params.evtId
+    StringBuilder buf = new StringBuilder()
+    String event
+    while (event = session[params.evtId].take()) {
+        buf.append(event)
+        if (event.startsWith('done')) {
+            log.info("Remove event queue [${params.evtId}] from session [${session.id}].")
+            session.removeAttribute params.evtId
+        }
+        if (!buf.toString().empty && (null == session[params.evtId] || session[params.evtId].empty)) {
+            break;
+        }
+        buf.append(';')
     }
-    if (event.startsWith('done')) {
-        log.info("Remove event queue [${params.evtId}] from session [${session.id}].")
-        session.removeAttribute params.evtId
+    builder {
+        msg buf.toString()
+        evtId params.evtId
     }
 } else {
     builder {
@@ -40,4 +48,5 @@ if ('start' == params.cmd) {
 }
 
 response.contentType = 'application/json'
+log.info("sent event: ${builder.toPrettyString()}")
 println builder.toPrettyString()

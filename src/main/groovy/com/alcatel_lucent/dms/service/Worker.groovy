@@ -12,14 +12,20 @@ import java.util.concurrent.BlockingQueue
  * To change this template use File | Settings | File Templates.
  */
 class Worker implements Runnable {
-    private BlockingQueue<String> events;
+    private BlockingQueue<String> events
+    //  The worker speed
+    private int speed
+    // The event generate frequency
+    private int frequency
 
-    Worker(BlockingQueue events) {
+    Worker(BlockingQueue events, int speed = 1000, int frequency = 2000) {
         this.events = events
+        this.speed = speed
+        this.frequency = frequency
     }
 
 
-    private simulateProcess() throws Exception{
+    private simulateProcess() throws Exception {
         Random r = new Random(System.currentTimeMillis())
         int fileSize = 10000
 
@@ -29,8 +35,8 @@ class Worker implements Runnable {
         while (currentProgress < fileSize) {
             percent = (float) currentProgress / fileSize * 100
             events.put String.format("%05.2f", percent)
-            currentProgress += r.nextInt(1000)
-            Thread.sleep(r.nextInt(2000))
+            currentProgress += r.nextInt(speed)
+            Thread.sleep(r.nextInt(frequency))
         }
         events.put String.format("%05.2f", 100f)
         events.put "done."
@@ -38,10 +44,10 @@ class Worker implements Runnable {
 
     @Override
     void run() {
-        println "Worker thread [${Thread.currentThread().getName()}] start."
-        try{
+        println "Worker thread [${Thread.currentThread().getName()}] start, speed=${speed}, frequency=${frequency}."
+        try {
             simulateProcess()
-        }catch(Exception e){
+        } catch (Exception e) {
             println e.message
         }
 
@@ -53,16 +59,18 @@ class Worker implements Runnable {
 
 
     static void main(String[] args) {
+
         def builder = new JsonBuilder()
-        String t="asdfsdfs"
+        String t = "asdfsdfs"
 
         builder {
             msg 'zero'
         }
-        builder{
+        builder {
             test t
         }
-        builder.content.bb='cc'
+        builder.content.bb = 'cc'
         println builder.toPrettyString()
+
     }
 }
