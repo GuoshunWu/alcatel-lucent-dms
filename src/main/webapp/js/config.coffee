@@ -16,6 +16,7 @@ require.config
 
     globallayout: '../globallayout'
     ptree: '../producttree'
+
     # modules
     appmng: '../appmng'
     transmng: '../transmng'
@@ -23,6 +24,8 @@ require.config
     login: '../login'
     admin: '../admin'
     nls: '../nls'
+#    test:'../test'
+
   shim:
     'formvalidate':
       deps: ['jquery']
