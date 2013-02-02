@@ -28,11 +28,11 @@ class Worker implements Runnable {
 
         while (currentProgress < fileSize) {
             percent = (float) currentProgress / fileSize * 100
-            events.put String.format("%05.2f%%", percent)
+            events.put String.format("%05.2f", percent)
             currentProgress += r.nextInt(1000)
             Thread.sleep(r.nextInt(2000))
         }
-        events.put String.format("%05.2f%%", 100f)
+        events.put String.format("%05.2f", 100f)
         events.put "done."
     }
 

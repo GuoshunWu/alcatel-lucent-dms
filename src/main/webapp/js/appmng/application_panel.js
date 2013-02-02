@@ -57,26 +57,20 @@
       };
       return grid.appChanged(appInfo);
     });
-    ($("#progressbar").draggable({
+    $("#progressbar").draggable({
       grid: [50, 20],
       opacity: 0.35
-    }).css({
-      'z-index': 100,
-      width: 600,
-      textAlign: 'center',
-      'position': 'absolute',
-      'top': '45%',
-      'left': '30%'
     }).progressbar({
       change: function(e, ui) {
         var value;
         value = ($(this).progressbar("value")).toPrecision(4) + '%';
-        return $('#barvalue', this).html(value).css({
-          "display": "block",
-          "textAlign": "center"
+        return $('#barvalue', this).html(value).position({
+          my: 'center',
+          at: 'center',
+          of: this
         });
       }
-    })).hide();
+    }).hide();
     dctFileUpload = 'dctFileUpload';
     $('#uploadBrower').button({
       label: i18n.browse

@@ -34,13 +34,11 @@ define (require)->
     appInfo.app = {version: $("option:selected", @).text(), id: if @value then @value else -1}
     grid.appChanged appInfo
 
-  ($("#progressbar").draggable({grid: [50, 20], opacity: 0.35}).css({
-  'z-index': 100, width: 600, textAlign: 'center'
-  'position': 'absolute', 'top': '45%', 'left': '30%'}).progressbar {
-  change: (e, ui)->
-    value = ($(@).progressbar "value").toPrecision(4) + '%'
-    $('#barvalue', @).html(value).css {"display": "block", "textAlign": "center"}
-  }).hide()
+  $("#progressbar").draggable(grid: [50, 20], opacity: 0.35).progressbar(
+    change: (e, ui)->
+      value = ($(@).progressbar "value").toPrecision(4) + '%'
+      $('#barvalue', @).html(value).position(my: 'center', at: 'center', of: @)
+  ).hide()
 
   dctFileUpload = 'dctFileUpload'
   #  create upload filebutton
