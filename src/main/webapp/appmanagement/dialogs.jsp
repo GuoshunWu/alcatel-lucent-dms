@@ -78,8 +78,8 @@
     </table>
 </div>
 
-<div id="progressbar" style="position: absolute;width: 600px; top: 45%;left: 30%; ">
-    <span id="barvalue" style="z-index: 1000;display:block;text-align:center;position: absolute;"></span>
+<div id="progressbar" class="progressbar">
+    <div class="progressbar-label"></div>
 </div>
 
 <div id="languageSettingsDialog">

@@ -187,13 +187,14 @@
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>GroovyTemplate</servlet-name>
+        <servlet-name>GSP</servlet-name>
         <servlet-class>groovy.servlet.TemplateServlet</servlet-class>
+        <!--<servlet-class>groovy.modules.pages.GroovyPages</servlet-class>-->
         <async-supported>true</async-supported>
     </servlet>
     
     <servlet-mapping>
-        <servlet-name>GroovyTemplate</servlet-name>
+        <servlet-name>GSP</servlet-name>
         <url-pattern>*.gsp</url-pattern>
     </servlet-mapping>
 

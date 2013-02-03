@@ -95,20 +95,20 @@ define (require)->
 
       handlers[action].handler rowData
 
-    ($("#progressbar").draggable({grid: [50, 20], opacity: 0.35}).css({
-    'z-index': 100, width: 600, textAlign: 'center'
-    'position': 'absolute', 'top': '45%', 'left': '30%'}).progressbar {
-    change: (e, ui)->
-      value = ($(@).progressbar "value").toPrecision(4) + '%'
-      $('#barvalue', @).html(value).css {"display": "block", "textAlign": "center"}
-    }).hide()
+    $("#progressbar").draggable(grid: [50, 20], opacity: 0.35).progressbar(
+      create: (e, ui) ->
+        @label = $('.progressbar-label', @)
+        $(@).position(my: 'center', at: 'center', of: window)
+      change: (e, ui)->
+        @label.html ($(this).progressbar("value").toPrecision(4)) + "%"
+    ).hide()
 
 
     $('a[id^=upload_]', @).button(label: 'Upload',
       create: (e, ui)->
         [_, _, rowid]=@id.split('_')
 
-        #        modify the css of this button
+        # modify the css of this button
 
         fileInput = $("<input type='file' id='#{@id}_fileInput' name='upload' accept='application/zip' multiple/>").css({
         position: 'absolute', top: 0, right: 0, border: '1px solid', borderWidth: '10px 180px 40px 20px',

@@ -115,7 +115,7 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
 
   newOption = (text, value, selected)->"<option #{if selected then 'selected ' else ''}value='#{value}'>#{text}</option>"
 
-  $.ajaxSetup {timeout: 1000 * 60 * 30}
+  $.ajaxSetup {timeout: 1000 * 60 * 30, cache: false}
   $.ajaxPrefilter (options, originalOptions, jqXHR)->
 
     #  for page navigator

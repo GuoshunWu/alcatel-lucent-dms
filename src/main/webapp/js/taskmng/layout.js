@@ -33,26 +33,22 @@
       $('#productRelease option:last').attr('selected', true);
     }
     $('#productRelease').trigger('change');
-    ($("#progressbar").draggable({
+    $("#progressbar").draggable({
       grid: [50, 20],
       opacity: 0.35
-    }).css({
-      'z-index': 100,
-      width: 600,
-      textAlign: 'center',
-      'position': 'absolute',
-      'top': '45%',
-      'left': '30%'
     }).progressbar({
-      change: function(e, ui) {
-        var value;
-        value = ($(this).progressbar("value")).toPrecision(4) + '%';
-        return $('#barvalue', this).html(value).css({
-          "display": "block",
-          "textAlign": "center"
+      create: function(e, ui) {
+        this.label = $('.progressbar-label', this);
+        return $(this).position({
+          my: 'center',
+          at: 'center',
+          of: window
         });
+      },
+      change: function(e, ui) {
+        return this.label.html(($(this).progressbar("value").toPrecision(4)) + "%");
       }
-    })).hide();
+    }).hide();
     taskFileUpload = 'taskFileUpload';
     $('#uploadTask').button({
       label: 'Upload'
