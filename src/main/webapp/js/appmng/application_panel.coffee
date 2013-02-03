@@ -35,9 +35,12 @@ define (require)->
     grid.appChanged appInfo
 
   $("#progressbar").draggable(grid: [50, 20], opacity: 0.35).progressbar(
+    create: (e, ui) ->
+      @label = $('.progressbar-label', @)
     change: (e, ui)->
-      value = ($(@).progressbar "value").toPrecision(4) + '%'
-      $('#barvalue', @).html(value).position(my: 'center', at: 'center', of: @)
+      @label.html ($(this).progressbar("value").toPrecision(4)) + "%"
+    complete: (e, ui) ->
+      $(@).progressbar("value", 0).hide()
   ).hide()
 
   dctFileUpload = 'dctFileUpload'
@@ -65,6 +68,7 @@ define (require)->
     ]
     data.submit()
     $("#progressbar").show() if !$.browser.msie
+
   progressall: (e, data) ->
     progress = data.loaded / data.total * 100
     $('#progressbar').progressbar "value", progress

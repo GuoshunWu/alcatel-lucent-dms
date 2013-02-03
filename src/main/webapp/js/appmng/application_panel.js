@@ -61,14 +61,14 @@
       grid: [50, 20],
       opacity: 0.35
     }).progressbar({
+      create: function(e, ui) {
+        return this.label = $('.progressbar-label', this);
+      },
       change: function(e, ui) {
-        var value;
-        value = ($(this).progressbar("value")).toPrecision(4) + '%';
-        return $('#barvalue', this).html(value).position({
-          my: 'center',
-          at: 'center',
-          of: this
-        });
+        return this.label.html(($(this).progressbar("value").toPrecision(4)) + "%");
+      },
+      complete: function(e, ui) {
+        return $(this).progressbar("value", 0).hide();
       }
     }).hide();
     dctFileUpload = 'dctFileUpload';

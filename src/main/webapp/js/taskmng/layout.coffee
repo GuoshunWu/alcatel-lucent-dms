@@ -23,13 +23,13 @@ define ['jqlayout', 'taskmng/task_grid', 'i18n!nls/common', 'taskmng/dialogs', '
   $('#productRelease').trigger 'change'
 
   # file uploader
-  ($("#progressbar").draggable({grid: [50, 20], opacity: 0.35}).css({
-  'z-index': 100, width: 600, textAlign: 'center'
-  'position': 'absolute', 'top': '45%', 'left': '30%'}).progressbar {
-  change: (e, ui)->
-    value = ($(@).progressbar "value").toPrecision(4) + '%'
-    $('#barvalue', @).html(value).css {"display": "block", "textAlign": "center"}
-  }).hide()
+  $("#progressbar").draggable(grid: [50, 20], opacity: 0.35).progressbar(
+    create: (e, ui) ->
+      @label = $('.progressbar-label', @)
+      $(@).position(my: 'center', at: 'center', of: window)
+    change: (e, ui)->
+      @label.html ($(this).progressbar("value").toPrecision(4)) + "%"
+  ).hide()
 
   taskFileUpload = 'taskFileUpload'
   #  create upload filebutton
@@ -44,9 +44,8 @@ define ['jqlayout', 'taskmng/task_grid', 'i18n!nls/common', 'taskmng/dialogs', '
   util.afterInitilized(this)
   $('#optional-container').show()
   gridParent = $('.taskGrid_parent')
-  ;
+
   $('#taskGrid').setGridWidth(gridParent.width() - 10).setGridHeight(gridParent.height() - 60)
-  ;
 
 #  $('#loading-container').slideUp 'slow', ()->$(@).remove()
 #  $('#loading-container').toggle { effect: "scale", direction: "both" }

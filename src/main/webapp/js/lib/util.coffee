@@ -116,7 +116,7 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
 
   newOption = (text, value, selected)->"<option #{if selected then 'selected ' else ''}value='#{value}'>#{text}</option>"
 
-  $.ajaxSetup {timeout: 1000 * 60 * 30}
+  $.ajaxSetup {timeout: 1000 * 60 * 30, cache: false}
   $.ajaxPrefilter (options, originalOptions, jqXHR)->
     #  for page navigator
   pageNavi = ()->
@@ -344,6 +344,8 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
     ).get().join(sep)
 
   afterInitilized: (context)->
+    # center progressbar
+    $('div.progressbar').position(my: 'center', at: 'center',of: window)
     # console?.debug "...Page #{param.naviTo} privilege check..."
     #    check all buttons' privilege
     $('[role=button][privilegeName]').each (index, button)->

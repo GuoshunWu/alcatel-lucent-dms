@@ -61,13 +61,10 @@ class Worker implements Runnable {
     static void main(String[] args) {
 
         def builder = new JsonBuilder()
-        String t = "asdfsdfs"
+
 
         builder {
-            msg 'zero'
-        }
-        builder {
-            test t
+            test 'sdfsdf'
         }
         builder.content.bb = 'cc'
         println builder.toPrettyString()

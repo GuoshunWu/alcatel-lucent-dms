@@ -9,7 +9,6 @@ import java.util.concurrent.LinkedBlockingQueue
 Logger log = LoggerFactory.getLogger(this.getClass())
 
 def builder = new JsonBuilder()
-builder { content.date = new Date().format("yyyy-MM-dd HH:mm:ss") }
 
 if ('start' == params.cmd) {
     String eventId = "event_${new Random(System.currentTimeMillis()).nextLong()}"
@@ -30,10 +29,9 @@ if ('start' == params.cmd) {
         if (event.startsWith('done')) {
             log.info("Remove event queue [${params.evtId}] from session [${session.id}].")
             session.removeAttribute params.evtId
+            break
         }
-        if (!buf.toString().empty && (null == session[params.evtId] || session[params.evtId].empty)) {
-            break;
-        }
+        if (session[params.evtId].empty) break
         buf.append(';')
     }
     builder {
@@ -48,5 +46,7 @@ if ('start' == params.cmd) {
 }
 
 response.contentType = 'application/json'
+
+builder.content.date = new Date().format("yyyy-MM-dd HH:mm:ss")
 log.info("sent event: ${builder.toPrettyString()}")
 println builder.toPrettyString()

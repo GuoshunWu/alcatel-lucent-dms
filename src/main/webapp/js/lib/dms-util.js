@@ -180,7 +180,8 @@ Time: 下午7:
       return "<option " + (selected ? 'selected ' : '') + "value='" + value + "'>" + text + "</option>";
     };
     $.ajaxSetup({
-      timeout: 1000 * 60 * 30
+      timeout: 1000 * 60 * 30,
+      cache: false
     });
     $.ajaxPrefilter(function(options, originalOptions, jqXHR) {});
     pageNavi = function() {

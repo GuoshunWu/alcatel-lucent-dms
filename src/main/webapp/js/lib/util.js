@@ -181,7 +181,8 @@ To change this template use File | Settings | File Templates.
       return "<option " + (selected ? 'selected ' : '') + "value='" + value + "'>" + text + "</option>";
     };
     $.ajaxSetup({
-      timeout: 1000 * 60 * 30
+      timeout: 1000 * 60 * 30,
+      cache: false
     });
     $.ajaxPrefilter(function(options, originalOptions, jqXHR) {});
     pageNavi = function() {
@@ -465,6 +466,11 @@ To change this template use File | Settings | File Templates.
       },
       afterInitilized: function(context) {
         var pageLayout, westSelector;
+        $('div.progressbar').position({
+          my: 'center',
+          at: 'center',
+          of: window
+        });
         $('[role=button][privilegeName]').each(function(index, button) {
           var _ref;
           if (_ref = $(button).attr('privilegeName'), __indexOf.call(param.forbiddenPrivileges, _ref) >= 0) {
