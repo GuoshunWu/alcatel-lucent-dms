@@ -17,6 +17,7 @@ jQuery ($) ->
     $.ajax(url,
       cache: false
       data: postData
+      type: 'post'
       dataType: "json"
     ).done (data, textStatus, jqXHR) ->
       console.log data  if console
@@ -45,7 +46,7 @@ jQuery ($) ->
   ).hide()
 
   $("#startAction").button().click (e) ->
-    $("#progressbar").show()
+    $("#progressbar").position(of: window).show()
 
     long_polling "start", -1
     $(this).button("disable").button "option", "label", "In progress..."
