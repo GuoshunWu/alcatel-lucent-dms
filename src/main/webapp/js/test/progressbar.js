@@ -73,9 +73,11 @@
       }
     }).hide();
     return $("#startAction").button().click(function(e) {
-      $("#progressbar").position({
+      $("#progressbar").show().position({
+        my: 'center',
+        at: 'center',
         of: window
-      }).show();
+      });
       long_polling("start", -1);
       return $(this).button("disable").button("option", "label", "In progress...");
     });
