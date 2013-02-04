@@ -32,6 +32,7 @@
       return $.ajax(url, {
         cache: false,
         data: postData,
+        type: 'post',
         dataType: "json"
       }).done(function(data, textStatus, jqXHR) {
         if (console) {
@@ -72,7 +73,9 @@
       }
     }).hide();
     return $("#startAction").button().click(function(e) {
-      $("#progressbar").show();
+      $("#progressbar").position({
+        of: window
+      }).show();
       long_polling("start", -1);
       return $(this).button("disable").button("option", "label", "In progress...");
     });
