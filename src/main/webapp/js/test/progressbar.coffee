@@ -46,7 +46,7 @@ jQuery ($) ->
   ).hide()
 
   $("#startAction").button().click (e) ->
-    $("#progressbar").position(of: window).show()
+    $("#progressbar").show().position(my: 'center', at: 'center', of: window)
 
     long_polling "start", -1
     $(this).button("disable").button "option", "label", "In progress..."
