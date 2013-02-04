@@ -20,7 +20,7 @@ jQuery ($) ->
       type: 'post'
       dataType: "json"
     ).done (data, textStatus, jqXHR) ->
-      console.log data  if console
+      console?.log data
       progress data.msg
       return  if /done/.test(data.msg)
       setTimeout (->

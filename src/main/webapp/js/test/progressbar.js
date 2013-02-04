@@ -35,7 +35,7 @@
         type: 'post',
         dataType: "json"
       }).done(function(data, textStatus, jqXHR) {
-        if (console) {
+        if (typeof console !== "undefined" && console !== null) {
           console.log(data);
         }
         progress(data.msg);
