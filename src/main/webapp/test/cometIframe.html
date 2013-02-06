@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSONP Test</title>
+
+    <script type="text/javascript" src="../js/lib/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript">
+
+        String.prototype.trim = function () {
+            return this.replace(/(^\s*)|(\s*$)/g, "");
+        }
+
+        // Load the script dynamically
+        function loadScript(src, doc, async, charset, flag) {
+            if (flag) {
+                console.log(flag + ", doc is defined?" + Boolean(doc));
+            }
+            if (!doc) doc = window.document;
+            if (!charset) charset = 'utf-8';
+            if (!async) async = true;
+
+            var head = doc.getElementsByTagName('head')[0];
+            var script = doc.createElement('script');
+
+            script.type = 'text/javascript';
+            script.charset = charset;
+            script.async = async;
+            script.src = src;
+            head.appendChild(script);
+        }
+
+        $(function () {
+            $("#accessIframe").click(function (e) {
+                if (frames.length == 0) {
+                    console.log("There is no frame in this page.");
+                    return false;
+                }
+                var iBody = frames[0].document;
+                console.log($(iBody).text().trim());
+            });
+
+            window.callback = function (data) {
+                console.log(data);
+                $('#content').text(data.stamp);
+            }
+
+            $("#pushSwitch").click(function (E) {
+                var pushForm = $('#pushForm');
+
+                if ('stop' == this.value) {
+                    <!--Start server push-->
+                    this.value = 'start';
+                    $(this).text("Stop server push");
+                    $("<input type='hidden' name='callback' value='callback'>").appendTo(pushForm);
+                    pushForm.submit();
+                } else {
+                    <!--Stop server push-->
+                    this.value = 'stop';
+                    $(this).text("Start server push");
+
+                    frames[0].location.href = "about:blank";
+                    <!--TODO: send a message to server to ask server stop push.-->
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+
+<h1>Comet IFrame for ever.</h1>
+
+<form id="pushForm" target="iframe-transport-1" method="post" action="../scripts/iframe.groovy">
+    <iframe src="javascript:false;" name="iframe-transport-1"></iframe>
+</form>
+
+<div id="content" style="border: 1px solid blue">The server time will be shown here.</div>
+<button id="accessIframe">Access frame content</button>
+<button id="pushSwitch" value="stop">Start server push</button>
+
+</body>
+</html>
