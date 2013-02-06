@@ -1,19 +1,19 @@
-/**
- * Following are the jsonp service
- * client call method:
- * $.getJSON('scripts/jsonpservice.groovy?callback=?').done(function(json, textStatus, jqXHR){})
- * */
+import groovy.json.JsonBuilder
 
-html.html() {
-    head() {
-        title('Hello push html.')
-        script(src:"../js/lib/jquery-1.7.2.min.js")
-        script("""
-        alert('Hello, world.');
-        console.log(\$('#content', document).get(0));
-       """)
+response.contentType = 'text/html'
+def builder = new JsonBuilder()
+
+while (true) {
+    Thread.sleep(1000)
+
+    builder {
+        stamp System.currentTimeMillis()
+        name 'Hello'
+        value 'World'
     }
-    body() {
-        h1("This is a test.")
+    html.html() {
+        body() {
+            script(type: 'text/javascript', """parent.${params.callback}(${builder.toPrettyString()});""")
+        }
     }
 }
