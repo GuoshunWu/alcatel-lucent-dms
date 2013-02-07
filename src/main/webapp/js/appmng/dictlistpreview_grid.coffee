@@ -28,10 +28,10 @@ define (require, util, i18n)->
     editrules: {required: true}
     }
     {name: 'format', index: 'base.format', width: 60, editable: true, edittype: 'select',
-    editoptions: {value: "DCT:DCT;Dictionary conf:Dictionary conf;Text properties:Text properties;XML labels:XML labels"},
+    editoptions: {value: c18n.dictformats},
     align: 'left'}
     {name: 'encoding', index: 'base.encoding', width: 40, editable: true, edittype: 'select',
-    editoptions: {value: 'ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE'}, align: 'left'}
+    editoptions: {value: c18n.dictencodings}, align: 'left'}
     {name: 'labelNum', index: 'labelNum', width: 20, align: 'right'}
     {name: 'errors', index: 'errorCount', width: 20, align: 'right'}
     {name: 'warnings', index: 'warningCount', width: 20, align: 'right'}

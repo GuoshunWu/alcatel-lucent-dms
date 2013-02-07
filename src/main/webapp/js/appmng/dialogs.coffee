@@ -333,8 +333,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
     create: (event, ui)->
       $.getJSON 'rest/languages', {prop: 'id,name'}, (languages)=>$('#languageName', @)
         .append("<option value='-1'>#{c18n.selecttip}</option>")
-        .append(util.json2Options languages, false, 'name').change
-        (e)=>
+        .append(util.json2Options languages, false, 'name').change (e)=>
           postData =
             prop: 'languageCode,charset.id'
             'language': $('#languageName', @).val()
