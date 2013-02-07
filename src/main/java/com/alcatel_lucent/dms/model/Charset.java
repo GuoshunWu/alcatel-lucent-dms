@@ -11,6 +11,13 @@ public class Charset extends BaseEntity {
 	private static final long serialVersionUID = -7987985981036760543L;
 
 
+    public Charset() {
+    }
+
+    public Charset(String name) {
+        this.name = name;
+    }
+
     @Id
     @GeneratedValue(generator = "SEQ_GEN")
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "ID_CHARSET", allocationSize = 20)

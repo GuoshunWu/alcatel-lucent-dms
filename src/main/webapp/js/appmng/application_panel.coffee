@@ -67,14 +67,16 @@ define (require)->
       {name: 'appId', value: $("#selAppVersion").val()}
     ]
     data.submit()
-    $("#progressbar").show() if !$.browser.msie
-
+    $("#progressbar").show() if !$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10
+    $('#uploadBrower').button 'disable'
   progressall: (e, data) ->
     progress = data.loaded / data.total * 100
     $('#progressbar').progressbar "value", progress
   done: (e, data)->
+    $('#uploadBrower').button 'enable'
+
     $.each data.files, (index, file) ->$('#uploadStatus').html "#{file.name} #{i18n.uploadfinished}"
-    $("#progressbar").hide() if !$.browser.msie
+    $("#progressbar").hide() if !$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10
     #    request handler
     jsonFromServer = data.result
 
@@ -84,6 +86,8 @@ define (require)->
 
     $('#dictListPreviewDialog').data 'param', {handler: jsonFromServer.filename, appId: $("#selAppVersion").val()}
     $('#dictListPreviewDialog').dialog 'open'
+
+
   }
 
   getApplicationSelectOptions: ()->$('#selAppVersion').children('option').clone(true)

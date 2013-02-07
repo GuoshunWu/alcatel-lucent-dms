@@ -59,7 +59,7 @@
             <%--<td valign="top" align="center" class="transGrid_parent">--%>
                 <%--<table id="transGrid">--%>
                     <%--<tr>--%>
-                        <%--<td/>--%>
+                        <%--<td></td>--%>
                     <%--</tr>--%>
                 <%--</table>--%>
                 <%--<div id="transPager"/>--%>

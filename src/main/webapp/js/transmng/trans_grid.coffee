@@ -23,8 +23,7 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
             $("#transGrid").jqGrid 'setGridParam', 'searchvalue', searchvalue
           }
         ]
-      }
-      {name: 'appVersion', index: 'version', width: 90, editable: false, align: 'left', frozen: true, search: false}
+      } {name: 'appVersion', index: 'version', width: 90, editable: false, align: 'left', frozen: true, search: false}
       {name: 'numOfString', index: 'labelNum', width: 80, align: 'right', frozen: true, search: false}
     ]
 
@@ -48,7 +47,7 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
         }
         {name: 'format', index: 'base.format', width: 90, editable: false, align: 'left', frozen: true
         stype: 'select', searchoptions:
-          value: ":All;DCT:DCT;Dictionary conf:Dictionary conf;Text properties:Text properties;XML labels:XML labels;XML properties:XML properties;XMLDict:XMLDict"
+          value: ":All;DCT:DCT;Dictionary conf:Dictionary conf;Text properties:Text properties;XML labels:XML labels;XML properties:XML properties;XMLDict:XMLDict;VLEExcel:VLEExcel"
           dataEvents: [
             {
             type: 'change', fn: (e)->
@@ -73,7 +72,7 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
   mtype: 'post', postData: {}, datatype: 'local'
   width: $(window).innerWidth() * 0.95, height: 300
   rownumbers: true, shrinkToFit: false
-  pager: '#transPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
+  pager: '#transPager', rowNum: 60, rowList: [20, 30, 60, 120, 500, 1000]
   sortname: 'app.base.name', sortorder: 'asc', multiselect: true
   colNames: grid.dictionary.colNames, colModel: grid.dictionary.colModel
 

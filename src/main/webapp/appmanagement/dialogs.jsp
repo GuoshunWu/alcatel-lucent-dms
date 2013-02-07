@@ -1,7 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<%@ page contentType="text/html;charset=utf-8" %>
-<%@ taglib prefix="s" uri="/struts-tags" %>
-
 <div id="newProductReleaseDialog" title="<s:text name="appmng.newproduct"/>">
     <table>
         <tr>
@@ -47,8 +43,8 @@
             </td>
         </tr>
         <tr>
-            <td><s:text name="product"/><span id="productBaseName"/></td>
-            <td><s:text name="version"/><select id="productVersions"/></td>
+            <td><s:text name="product"/><span id="productBaseName"></span></td>
+            <td><s:text name="version"/><select id="productVersions"></select></td>
         </tr>
     </table>
     <div style="display: none" id="addAppVerErr">
@@ -138,7 +134,7 @@
             <td>
                 <table id="stringSettingsGrid">
                     <tr>
-                        <td/>
+                        <td></td>
                     </tr>
                 </table>
                 <div id="stringSettingsPager"></div>
@@ -171,7 +167,7 @@
             <td>
                 <table id="stringSettingsTranslationGrid">
                     <tr>
-                        <td/>
+                        <td></td>
                     </tr>
                 </table>
                 <div id="stringSettingsTranslationPager"></div>
@@ -200,7 +196,7 @@
             <td>
                 <table id="dictListPreviewGrid">
                     <tr>
-                        <td/>
+                        <td></td>
                     </tr>
                 </table>
                 <div id="dictListPreviewPager"></div>
@@ -233,7 +229,7 @@
             <td>
                 <table id="dictPreviewStringSettingsGrid">
                     <tr>
-                        <td/>
+                        <td></td>
                     </tr>
                 </table>
                 <div id="dictPreviewStringSettingsPager"></div>

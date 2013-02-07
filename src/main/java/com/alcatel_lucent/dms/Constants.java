@@ -11,6 +11,7 @@ public class Constants {
 	public static final String DICT_FORMAT_XML_LABEL = "XML labels";
 	public static final String DICT_FORMAT_XML_PROP = "XML properties";
     public static final String DICT_FORMAT_XDCT = "XMLDict";
+    public static final String DICT_FORMAT_VLEExcel = "VLEExcel";
 
     public static final String DICT_FORMAT_TEXT_PROP = "Text properties";
 

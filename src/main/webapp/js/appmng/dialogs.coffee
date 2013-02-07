@@ -189,7 +189,15 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
 
     postData = dict: param.id, format: 'grid', prop: "key,reference,t,n,i,maxLength,context.name,description"
     $('#stringSettingsGrid').setGridParam(url: 'rest/labels', page: 1, postData: postData).trigger "reloadGrid"
-  close: (event, ui)->(require 'appmng/stringsettings_grid').saveLastEditedCell()
+  close: (event, ui)->
+    postData =  $('#stringSettingsGrid').getGridParam('postData')
+
+    $('#transSameWithRef', @).attr('checked', false)
+    delete postData.nodiff
+
+    $('#searchText', @).val("")
+    delete postData.text
+    (require 'appmng/stringsettings_grid').saveLastEditedCell()
   #  # resize: (event, ui)->$('#stringSettingsGrid').setGridWidth(ui.size.width - 35, true).setGridHeight(ui.size.height - 210, true)
   buttons: [
     text: c18n.close, click: ()->

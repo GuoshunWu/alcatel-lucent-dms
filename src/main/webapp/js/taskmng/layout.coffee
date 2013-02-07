@@ -31,14 +31,6 @@ define ['jqlayout', 'taskmng/task_grid', 'i18n!nls/common', 'taskmng/dialogs', '
       @label.html ($(this).progressbar("value").toPrecision(4)) + "%"
   ).hide()
 
-  taskFileUpload = 'taskFileUpload'
-  #  create upload filebutton
-  $('#uploadTask').button({label: 'Upload'}).css({overflow: 'hidden'}).append $(
-    "<input type='file' id='#{taskFileUpload}' name='upload' title='Choose file' multiple/>").css {
-  position: 'absolute', top: 0, right: 0, margin: 0,
-  border: '1px transparent', borderWidth: '0 0 40px 0px',
-  opacity: 0, filter: 'alpha(opacity=0)', cursor: 'pointer'}
-
   #   show main page.
   $('#loading-container').fadeOut 'slow', 'swing', ()->$(@).remove()
   util.afterInitilized(this)

@@ -44,8 +44,12 @@ public class BusinessException extends RuntimeException {
 	static public final int FAILED_TO_MKDIRS = 224;
 	static public final int PREVIEW_DICT_ERRORS = 225;
 	static public final int UNRECOGNIZED_DICT_FILE = 226;
-	
-	// application management
+
+    // VLEExcel error
+    static public final int INVALID_VLE_DICT_FILE = 240;
+
+
+    // application management
 	static public final int CHARSET_NOT_FOUND = 301;
 	static public final int INVALID_DICT_ENCODING = 302;
 	static public final int INVALID_DICT_FORMAT = 303;
@@ -83,6 +87,8 @@ public class BusinessException extends RuntimeException {
     static public final int LANGUAGE_IS_IN_USE = 602;
     static public final int CHARSET_ALREADY_EXISTS = 603;
     static public final int CHARSET_IS_IN_USE = 604;
+
+
 
 
     public BusinessException(int errorCode, Object... params) {

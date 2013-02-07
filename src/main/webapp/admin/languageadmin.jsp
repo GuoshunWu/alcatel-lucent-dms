@@ -7,7 +7,7 @@
         <td align="center" valign="middle">
             <table id="languageGrid">
                 <tr>
-                    <td/>
+                    <td></td>
                 </tr>
             </table>
             <div id="languagePager"/>
