@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
 
 <script type="text/javascript">
@@ -62,15 +61,3 @@
     }
     param.i18ngridfile = 'i18n/grid.locale-' + (gridI18NMap[param.locale] ? gridI18NMap[param.locale] : param.locale);
 </script>
-
-
-<div id="sessionTimeoutDialog" style="display: none" title="<s:text name="sessiontimout.title" />">
-    <table style="width: 100%;height: 100%">
-        <tr>
-            <td>&nbsp;</td>
-        </tr>
-        <tr>
-            <td align="center"><span id="timeOutMsg" style="color: red"><s:text name="sessiontimout.msg"/></span></td>
-        </tr>
-    </table>
-</div>

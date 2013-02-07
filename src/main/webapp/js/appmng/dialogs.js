@@ -316,6 +316,12 @@
         }).trigger("reloadGrid");
       },
       close: function(event, ui) {
+        var postData;
+        postData = $('#stringSettingsGrid').getGridParam('postData');
+        $('#transSameWithRef', this).attr('checked', false);
+        delete postData.nodiff;
+        $('#searchText', this).val("");
+        delete postData.text;
         return (require('appmng/stringsettings_grid')).saveLastEditedCell();
       },
       buttons: [

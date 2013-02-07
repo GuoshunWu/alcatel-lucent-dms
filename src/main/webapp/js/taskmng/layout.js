@@ -2,7 +2,7 @@
 (function() {
 
   define(['jqlayout', 'taskmng/task_grid', 'i18n!nls/common', 'taskmng/dialogs', 'util', 'require'], function($, grid, c18n, dialogs, util, require) {
-    var gridParent, taskFileUpload;
+    var gridParent;
     require('jqueryui');
     $('#productBase').change(function() {
       $('#productRelease').empty();
@@ -49,22 +49,6 @@
         return this.label.html(($(this).progressbar("value").toPrecision(4)) + "%");
       }
     }).hide();
-    taskFileUpload = 'taskFileUpload';
-    $('#uploadTask').button({
-      label: 'Upload'
-    }).css({
-      overflow: 'hidden'
-    }).append($("<input type='file' id='" + taskFileUpload + "' name='upload' title='Choose file' multiple/>").css({
-      position: 'absolute',
-      top: 0,
-      right: 0,
-      margin: 0,
-      border: '1px transparent',
-      borderWidth: '0 0 40px 0px',
-      opacity: 0,
-      filter: 'alpha(opacity=0)',
-      cursor: 'pointer'
-    }));
     $('#loading-container').fadeOut('slow', 'swing', function() {
       return $(this).remove();
     });

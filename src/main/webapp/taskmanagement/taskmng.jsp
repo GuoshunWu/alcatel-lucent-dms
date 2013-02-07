@@ -27,7 +27,7 @@
             <%--<td valign="top" align="center" class="taskGrid_parent">--%>
                 <%--<table id="taskGrid">--%>
                     <%--<tr>--%>
-                        <%--<td/>--%>
+                        <%--<td></td>--%>
                     <%--</tr>--%>
                 <%--</table>--%>
                 <%--<div id="taskPager"/>--%>

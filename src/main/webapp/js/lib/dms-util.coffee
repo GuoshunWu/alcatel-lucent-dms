@@ -230,7 +230,7 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
     languageCells.each (index)->
       if 0 == index % rowCount
         innerColTable = $("<table border='0'/>")
-        outerTableFirstRow.append $("<td/>").append innerColTable
+        outerTableFirstRow.append $("<td></td>").append innerColTable
       innerColTable.append $("<tr/>").append @
 
     checkedAll = $("<input type='checkbox'id='all_#{tableId}' checked><label for='all_#{tableId}'>All</label>").change ()->
