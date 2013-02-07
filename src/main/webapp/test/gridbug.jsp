@@ -90,7 +90,7 @@
 <h1 align="center"> example</h1>
 <table id="transGridList">
     <tr>
-        <td/>
+        <td></td>
     </tr>
 </table>
 <div id="taskPager"/>

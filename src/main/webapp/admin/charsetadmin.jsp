@@ -7,7 +7,7 @@
         <td align="center" valign="middle">
             <table id="charsetGrid">
                 <tr>
-                    <td/>
+                    <td></td>
                 </tr>
             </table>
             <div id="charsetPager"/>

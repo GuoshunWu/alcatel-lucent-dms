@@ -1,3 +1,0 @@
-Issues need to be discussed.
-1. There is a bug on text search function in string settings dialog when use IE.
-2. String settings text search not reset.

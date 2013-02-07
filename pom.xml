@@ -546,9 +546,28 @@
         </plugins>
 
         <resources>
+            <!--
+            Warning: Do not filter files with binary content like images! This will most likely result in corrupt output.
+            If you have both text files and binary files as resources, you need to declare two mutually exclusive resource sets.
+            The first resource set defines the files to be filtered and the other resource set defines the files to copy unaltered as illustrated below.
+            -->
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
+                <includes>
+                    <include>**/*.xml</include>
+                    <include>**/*.properties</include>
+                    <include>**/*.js</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>**/*.xml</exclude>
+                    <exclude>**/*.properties</exclude>
+                    <exclude>**/*.js</exclude>
+                </excludes>
             </resource>
             <!--<resource>-->
             <!--<directory>src/main/webapp/js</directory>-->

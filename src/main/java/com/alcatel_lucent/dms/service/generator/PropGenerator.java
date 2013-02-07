@@ -114,6 +114,7 @@ public class PropGenerator implements DictionaryGenerator {
 	 * @param text
 	 * @return escaped text
 	 * @see http://docs.oracle.com/javase/1.5.0/docs/api/java/util/Properties.html#store%28java.io.OutputStream,%20java.lang.String%29
+     * @see http://commons.apache.org/lang/api-release/index.html  StringEscapeUtils
 	 */
 	private String escape(String text, boolean isKey) {
 		StringBuffer result = new StringBuffer();
