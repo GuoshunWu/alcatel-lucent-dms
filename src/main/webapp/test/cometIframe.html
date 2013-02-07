@@ -2,81 +2,55 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSONP Test</title>
+    <title>IFrame Server push(comet)</title>
+    <link href="../css/jqueryUI/themes/base/jquery.ui.all.css" rel="stylesheet" type="text/css"/>
+    <link href="../css/common.css" rel="stylesheet" type="text/css"/>
 
-    <script type="text/javascript" src="../js/lib/jquery-1.7.2.min.js"></script>
-    <script type="text/javascript">
+    <script src="../js/lib/jquery-1.7.2.min.js" type="text/javascript"></script>
 
-        String.prototype.trim = function () {
-            return this.replace(/(^\s*)|(\s*$)/g, "");
-        }
+    <script src="../js/lib/jquery-ui-1.8.22.custom.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../js/test/cometiframe.js"></script>
 
-        // Load the script dynamically
-        function loadScript(src, doc, async, charset, flag) {
-            if (flag) {
-                console.log(flag + ", doc is defined?" + Boolean(doc));
-            }
-            if (!doc) doc = window.document;
-            if (!charset) charset = 'utf-8';
-            if (!async) async = true;
-
-            var head = doc.getElementsByTagName('head')[0];
-            var script = doc.createElement('script');
-
-            script.type = 'text/javascript';
-            script.charset = charset;
-            script.async = async;
-            script.src = src;
-            head.appendChild(script);
-        }
-
-        $(function () {
-            $("#accessIframe").click(function (e) {
-                if (frames.length == 0) {
-                    console.log("There is no frame in this page.");
-                    return false;
-                }
-                var iBody = frames[0].document;
-                console.log($(iBody).text().trim());
-            });
-
-            window.callback = function (data) {
-                console.log(data);
-                $('#content').text(data.stamp);
-            }
-
-            $("#pushSwitch").click(function (E) {
-                var pushForm = $('#pushForm');
-
-                if ('stop' == this.value) {
-                    <!--Start server push-->
-                    this.value = 'start';
-                    $(this).text("Stop server push");
-                    $("<input type='hidden' name='callback' value='callback'>").appendTo(pushForm);
-                    pushForm.submit();
-                } else {
-                    <!--Stop server push-->
-                    this.value = 'stop';
-                    $(this).text("Start server push");
-
-                    frames[0].location.href = "about:blank";
-                    <!--TODO: send a message to server to ask server stop push.-->
-                }
-            });
-        });
-    </script>
 </head>
 <body>
 
-<h1>Comet IFrame for ever.</h1>
+<h1 align='center'>Comet IFrame for ever.</h1>
 
 <form id="pushForm" target="iframe-transport-1" method="post" action="../scripts/iframe.groovy">
-    <iframe src="javascript:false;" name="iframe-transport-1"></iframe>
+    <table border="0" align="center">
+        <tr>
+            <td>
+                <b>Total number: 10000</b>
+            </td>
+            <td>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <iframe src="javascript:false;" style="display: none" name="iframe-transport-1"></iframe>
+            </td>
+            <td>
+                <input type="hidden" name="callback" value="callback"/>
+            </td>
+            <td>
+                Event generator frequency(ms): <input size="5" name="freq" id="freq" value="500"/>
+            </td>
+            <td>
+                Process speed: <input size="5" name="speed" id="speed" value="500"/>
+            </td>
+            <td>
+                <input type="submit" id="pushStart" value="Start server push"/>
+            </td>
+            <td>
+                <button id="accessIframe">Access frame content</button>
+            </td>
+        </tr>
+    </table>
 </form>
-
 <div id="content" style="border: 1px solid blue">The server time will be shown here.</div>
-<button id="accessIframe">Access frame content</button>
-<button id="pushSwitch" value="stop">Start server push</button>
+
+<div id="progressbar" class="progressbar">
+    <div class="progressbar-label">
+        Loading...
+    </div>
+</div>
 
 </body>
 </html>
