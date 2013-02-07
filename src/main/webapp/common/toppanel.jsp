@@ -1,6 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<%@ page contentType="text/html;charset=utf-8" %>
-
 <style type="text/css">
     .north-table {
         width: 100%;
@@ -11,6 +8,19 @@
         background: #D6D6D6 url(css/jqueryLayout/images/d6d6d6_40x100_textures_02_glass_80.png) 0 50% repeat-x;
     }
 </style>
+
+
+
+<div id="sessionTimeoutDialog" style="display: none" title="<s:text name="sessiontimout.title" />">
+    <table style="width: 100%;height: 100%">
+        <tr>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td align="center"><span id="timeOutMsg" style="color: red"><s:text name="sessiontimout.msg"/></span></td>
+        </tr>
+    </table>
+</div>
 
 <table class="north-table">
     <tr class="top-bar">
@@ -68,7 +78,6 @@
             </div>
         </td>
     </tr>
-    <tr/>
     <%-- a trial toolbar--%>
     <%--<tr>--%>
     <%--<td colspan="4" style="padding: 0;">--%>

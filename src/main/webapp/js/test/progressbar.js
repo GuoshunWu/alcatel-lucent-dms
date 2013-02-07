@@ -14,7 +14,7 @@
       });
     };
     long_polling = function(cmd, evtId) {
-      var postData;
+      var pollingInterval, postData, reTryAjax, timeout;
       postData = {
         cmd: cmd,
         evtId: evtId
@@ -29,23 +29,53 @@
       if (postData.speed < 2) {
         postData.speed = 2;
       }
-      return $.ajax(url, {
-        cache: false,
-        data: postData,
-        type: 'post',
-        dataType: "json"
-      }).done(function(data, textStatus, jqXHR) {
-        if (typeof console !== "undefined" && console !== null) {
-          console.log(data);
+      pollingInterval = $("#pollingFreq").val() ? parseInt($("#pollingFreq").val()) : 1000;
+      timeout = $("#timeout").val() ? parseInt($("#timeout").val()) : 5000;
+      reTryAjax = function(retryTimes, retryCounter) {
+        if (retryTimes == null) {
+          retryTimes = Number.MAX_VALUE;
         }
-        progress(data.msg);
-        if (/done/.test(data.msg)) {
-          return;
+        if (retryCounter == null) {
+          retryCounter = 0;
         }
-        return setTimeout((function() {
-          return long_polling("process", data.evtId);
-        }), ($("#pollingFreq").val() ? parseInt($("#pollingFreq").val()) : 1000));
-      });
+        return $.ajax(url, {
+          cache: false,
+          data: postData,
+          timeout: timeout,
+          type: 'post',
+          dataType: "json"
+        }).done(function(data, textStatus, jqXHR) {
+          if (typeof console !== "undefined" && console !== null) {
+            console.log(data);
+          }
+          progress(data.msg);
+          if (/done/.test(data.msg)) {
+            progress("100");
+            return;
+          }
+          return setTimeout((function() {
+            return long_polling("process", data.evtId);
+          }), pollingInterval);
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+          if ('timeout' !== textStatus) {
+            if (typeof console !== "undefined" && console !== null) {
+              console.log("error: " + textStatus);
+            }
+            return;
+          }
+          if (retryTimes > 0) {
+            if (typeof console !== "undefined" && console !== null) {
+              console.log("Request " + textStatus + ", I will retry in " + pollingInterval + " milliseconds.");
+            }
+            return setTimeout((function() {
+              return reTryAjax(--retryTimes, ++retryCounter);
+            }), pollingInterval);
+          } else {
+            return typeof console !== "undefined" && console !== null ? console.log("I have retried " + retryCounter + " times. There may be a network connection issue, please check network cable.") : void 0;
+          }
+        });
+      };
+      return reTryAjax(10);
     };
     url = "../scripts/cp.groovy";
     /* Initilize the page elements
@@ -68,12 +98,12 @@
         return this.label.html(($(this).progressbar("value").toPrecision(4)) + "%");
       },
       complete: function(e, ui) {
-        $(this).progressbar("value", 0).hide();
+        $(this).hide();
         return $("#startAction").button("enable").button("option", "label", "Start");
       }
     }).hide();
     return $("#startAction").button().click(function(e) {
-      $("#progressbar").show().position({
+      $("#progressbar").progressbar("value", 0).show().position({
         my: 'center',
         at: 'center',
         of: window

@@ -28,10 +28,11 @@ import org.logicalcobwebs.proxool.ProxoolFacade
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = ["/spring.xml"])
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
+
 public class VLEExcelDictParserTest {
 
     @Autowired
-    private XMLDictParser VLEExcelDictParser = new XMLDictParser();
+    private VLEExcelDictParser VLEExcelDictParser = new VLEExcelDictParser();
 
     @BeforeClass
     static void setUpBeforeClass() throws Exception {
@@ -40,7 +41,6 @@ public class VLEExcelDictParserTest {
 
     @AfterClass
     static void tearDownAfterClass() throws Exception {
-//        ProxoolFacade.shutdown(0)
     }
 
     @Before
@@ -50,17 +50,17 @@ public class VLEExcelDictParserTest {
 
     @After
     void tearDown() throws Exception {
-
+        ProxoolFacade.shutdown(0);
     }
 
-    @Test
+//    @Test
     void testParse() throws Exception {
-        File file = new File("D:/testxdct")
-        println "=" * 100
-//        ArrayList<Dictionary> dictionaries= xmlDictParser.parse('', file, [] as Collection<File>)
-//        dictionaries.each {dict->
-//            println dict
-//        }
-    }
+        File file = new File("D:/MyDocuments/Alcatel_LucentSBell/DMS/DMSFiles/VLEDict/test")
 
+        println "=" * 100
+        ArrayList<Dictionary> dictionaries = VLEExcelDictParser.parse('D:/MyDocuments/Alcatel_LucentSBell/DMS/DMSFiles/VLEDict/test', file, [] as Collection<File>)
+        dictionaries.each { dict ->
+            println dict
+        }
+    }
 }

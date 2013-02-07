@@ -64,6 +64,12 @@ public class LabelClosure implements Closure {
         if (null != map.get("gui_object")) xmlKey.addAttribute("gui_object", map.get("gui_object"));
         if (null != map.get("state")) xmlKey.addAttribute("state", map.get("state"));
 
+        /**
+         * TODO: We need iterate dictionary language to get all the additional added language after the
+         * dictionary had been imported to DMS.
+         *
+         * */
+
         Collection<LabelTranslation> labelTranslations = label.getOrigTranslations();
 //              write all the comment
         writeElement("COMMENT", map.get("comment"), xmlKey, labelTranslations, null);

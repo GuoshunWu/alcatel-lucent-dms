@@ -381,7 +381,7 @@ To change this template use File | Settings | File Templates.
         languageCells.each(function(index) {
           if (0 === index % rowCount) {
             innerColTable = $("<table border='0'/>");
-            outerTableFirstRow.append($("<td/>").append(innerColTable));
+            outerTableFirstRow.append($("<td></td>").append(innerColTable));
           }
           return innerColTable.append($("<tr/>").append(this));
         });

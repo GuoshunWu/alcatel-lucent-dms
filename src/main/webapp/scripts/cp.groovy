@@ -6,12 +6,14 @@ import org.slf4j.LoggerFactory
 import java.util.concurrent.BlockingQueue
 import java.util.concurrent.LinkedBlockingQueue
 
+import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric
+
 Logger log = LoggerFactory.getLogger(this.getClass())
 
 def builder = new JsonBuilder()
 
 if ('start' == params.cmd) {
-    String eventId = "event_${new Random(System.currentTimeMillis()).nextLong()}"
+    String eventId = "event_${randomAlphanumeric(10)}"
     BlockingQueue<String> events = new LinkedBlockingQueue<>()
     log.info("Set an event queue [${eventId}] to session [${session.id}].")
     session[eventId] = events
@@ -24,16 +26,20 @@ if ('start' == params.cmd) {
 } else if ('process' == params.cmd) {
     StringBuilder buf = new StringBuilder()
     String event
-    while (event = session[params.evtId].take()) {
-        buf.append(event)
-        if (event.startsWith('done')) {
-            log.info("Remove event queue [${params.evtId}] from session [${session.id}].")
-            session.removeAttribute params.evtId
-            break
+
+    if (null != session[params.evtId]) { // add the end sign to avoid it be lost when write to client
+        while (event = session[params.evtId].take()) {
+            buf.append(event)
+            if (event.startsWith('done')) {
+                log.info("Remove event queue [${params.evtId}] from session [${session.id}].")
+                session.removeAttribute params.evtId
+                break
+            }
+            if (session[params.evtId].empty) break
+            buf.append(';')
         }
-        if (session[params.evtId].empty) break
-        buf.append(';')
-    }
+    } else
+        buf.append('done.')
     builder {
         msg buf.toString()
         evtId params.evtId

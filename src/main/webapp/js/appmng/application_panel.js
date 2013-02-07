@@ -104,9 +104,10 @@
           }
         ]);
         data.submit();
-        if (!$.browser.msie) {
-          return $("#progressbar").show();
+        if (!$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10) {
+          $("#progressbar").show();
         }
+        return $('#uploadBrower').button('disable');
       },
       progressall: function(e, data) {
         var progress;
@@ -115,10 +116,11 @@
       },
       done: function(e, data) {
         var jsonFromServer;
+        $('#uploadBrower').button('enable');
         $.each(data.files, function(index, file) {
           return $('#uploadStatus').html("" + file.name + " " + i18n.uploadfinished);
         });
-        if (!$.browser.msie) {
+        if (!$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10) {
           $("#progressbar").hide();
         }
         jsonFromServer = data.result;
