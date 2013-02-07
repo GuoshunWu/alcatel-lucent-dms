@@ -24,7 +24,7 @@ import static org.apache.commons.io.FileUtils.copyFile
  */
 
 
-@Ignore
+//@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = ["/spring.xml"])
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
@@ -55,11 +55,11 @@ public class VLEExcelDictGeneratorTest {
         ProxoolFacade.shutdown(0);
     }
 
-//    @Test
+    @Test
     void testGenerateDict() throws Exception {
         println "=" * 100
 
-        File file = new File("D:/MyDocuments/Alcatel_LucentSBell/DMS/DMSFiles/VLEDict/test/all_lgs_3AK_29000_0095_DTZZA_11-13-2012.xls")
+        File file = new File("D:/MyDocuments/Alcatel_LucentSBell/DMS/DMSFiles/VLEDict/test")
         ArrayList<Dictionary> dictionaries = VLEExcelDictParser.parse('D:/MyDocuments/Alcatel_LucentSBell/DMS/DMSFiles/VLEDict/test', file, [] as Collection<File>)
         dictionaries.each { dict ->
             VLEExcelGenerator.generateDict(new File("E:/test"), dict)

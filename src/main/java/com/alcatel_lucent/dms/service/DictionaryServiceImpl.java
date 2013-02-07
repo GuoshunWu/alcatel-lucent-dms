@@ -5,9 +5,9 @@ import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.service.generator.*;
 import com.alcatel_lucent.dms.service.generator.xmldict.XMLDictGenerator;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -16,6 +16,8 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 
+import static org.apache.commons.io.FilenameUtils.normalize;
+
 @Service("dictionaryService")
 @Scope("singleton")
 @SuppressWarnings("unchecked")
@@ -23,17 +25,12 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         DictionaryService {
 
     private static Logger log = LoggerFactory.getLogger(DictionaryServiceImpl.class);
-
     @Autowired
     private TextService textService;
-
     @Autowired
     private LanguageService langService;
-
     @Autowired
     private com.alcatel_lucent.dms.service.parser.DictionaryParser[] parsers;
-
-
     private Map<String, DictionaryGenerator> generators = new HashMap<String, DictionaryGenerator>();
 
     public DictionaryServiceImpl() {
@@ -46,19 +43,22 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                                  MDCGenerator mdcGenerator,
                                  LabelXMLGenerator labelXMLGenerator,
                                  PropXMLGenerator propXMLGenerator,
-                                 PropGenerator propGenerator) {
+                                 PropGenerator propGenerator,
+                                 VLEExcelGenerator vleExcelGenerator) {
         generators.put(Constants.DICT_FORMAT_XDCT, xmlDictGenerator);
         generators.put(Constants.DICT_FORMAT_DCT, dctGenerator);
         generators.put(Constants.DICT_FORMAT_MDC, mdcGenerator);
         generators.put(Constants.DICT_FORMAT_XML_LABEL, labelXMLGenerator);
         generators.put(Constants.DICT_FORMAT_XML_PROP, propXMLGenerator);
         generators.put(Constants.DICT_FORMAT_TEXT_PROP, propGenerator);
+        generators.put(Constants.DICT_FORMAT_VLEExcel, vleExcelGenerator);
     }
 
     public Collection<Dictionary> previewDictionaries(String rootDir, File file, Long appId) throws BusinessException {
         Collection<Dictionary> result = new ArrayList<Dictionary>();
         BusinessException exceptions = new BusinessException(BusinessException.PREVIEW_DICT_ERRORS);
-        rootDir = rootDir.replace("\\", "/");
+//        rootDir = rootDir.replace("\\", "/");
+        rootDir = normalize(rootDir, true);
         long before = System.currentTimeMillis();
         HashSet<String> allAcceptedFiles = new HashSet<String>();
         for (com.alcatel_lucent.dms.service.parser.DictionaryParser parser : parsers) {
@@ -75,7 +75,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 }
             }
             for (File acceptedFile : acceptedFiles) {
-                String filename = acceptedFile.getAbsolutePath().replace("\\", "/");
+//                String filename = acceptedFile.getAbsolutePath().replace("\\", "/");
+                String filename = normalize(acceptedFile.getAbsolutePath(), true);
                 log.info("Accepted file: " + filename);
                 allAcceptedFiles.add(filename);
             }
@@ -249,7 +250,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         }
 
     }
-
 
     private Collection<String> getNotAcceptedFiles(File file,
                                                    HashSet<String> allAcceptedFiles) {
@@ -734,7 +734,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     public void removeDictionaryFromApplication(Long appId, Long dictId) {
         Application app = (Application) dao.retrieve(Application.class, appId);
         app.removeDictionary(dictId);
-        
+
         String hql = "select distinct a from Application a join a.dictionaries as d where d.id=:id";
         Map param = new HashMap();
         param.put("id", dictId);
@@ -745,10 +745,10 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             dao.delete(Dictionary.class, dictId);
 
             // delete dictBase if it doesn't contain other dictionary
-        	if (dictBase.getDictionaries() == null || dictBase.getDictionaries().size() == 0 ||
-        			dictBase.getDictionaries().size() == 1 && dictBase.getDictionaries().iterator().next().getId().equals(dictId)) {
-        		dao.delete(dictBase);
-        	}
+            if (dictBase.getDictionaries() == null || dictBase.getDictionaries().size() == 0 ||
+                    dictBase.getDictionaries().size() == 1 && dictBase.getDictionaries().iterator().next().getId().equals(dictId)) {
+                dao.delete(dictBase);
+            }
         }
     }
 
@@ -771,11 +771,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         dao.delete(Dictionary.class, id);
 
         // delete dictBase if it doesn't contain other dictionary
-    	if (dictBase.getDictionaries() == null || dictBase.getDictionaries().size() == 0 ||
-    			dictBase.getDictionaries().size() == 1 && dictBase.getDictionaries().iterator().next().getId().equals(id)) {
-    		dao.delete(dictBase);
-    		return dictBase.getId();
-    	}
+        if (dictBase.getDictionaries() == null || dictBase.getDictionaries().size() == 0 ||
+                dictBase.getDictionaries().size() == 1 && dictBase.getDictionaries().iterator().next().getId().equals(id)) {
+            dao.delete(dictBase);
+            return dictBase.getId();
+        }
         return null;
     }
 

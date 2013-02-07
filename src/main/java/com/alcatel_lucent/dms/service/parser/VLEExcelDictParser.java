@@ -6,8 +6,12 @@ import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.service.LanguageService;
 import org.apache.commons.collections.MapIterator;
 import org.apache.commons.collections.map.HashedMap;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.io.filefilter.OrFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.io.input.AutoCloseInputStream;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.poi.hssf.usermodel.HSSFDataFormatter;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
@@ -30,20 +34,21 @@ public class VLEExcelDictParser extends DictionaryParser {
     public static final String LABEL = "LABELS";
     public static final String MAX_LENGTH = "Max Length";
     public static final String REF_LANG_CODE = "English";
+    public static final String DEFAULT_ENCODING = "UTF-16LE";
     @Autowired
     private LanguageService languageService;
 
     @Override
     public ArrayList<Dictionary> parse(String rootDir, File file, Collection<File> acceptedFiles) throws BusinessException {
         ArrayList<Dictionary> deliveredDicts = new ArrayList<Dictionary>();
-        FileFilter excelFilter = new SuffixFileFilter(Arrays.asList(".xls", ".xlsx"));
+        FileFilter fileFilter = new OrFileFilter(new SuffixFileFilter(Arrays.asList(".xls", ".xlsx")), DirectoryFileFilter.INSTANCE);
         if (!file.exists()) return deliveredDicts;
         if (file.isFile()) {
             deliveredDicts.add(parseDictionary(rootDir, file, acceptedFiles));
         } else {
-            File[] subFiles = file.listFiles(excelFilter);
+            File[] subFiles = file.listFiles(fileFilter);
             for (File subFile : subFiles) {
-                deliveredDicts.add(parseDictionary(rootDir, subFile, acceptedFiles));
+                deliveredDicts.addAll(parse(rootDir, subFile, acceptedFiles));
             }
         }
         return deliveredDicts;
@@ -54,9 +59,16 @@ public class VLEExcelDictParser extends DictionaryParser {
         DictionaryBase dictBase = new DictionaryBase();
         Dictionary dictionary = null;
         try {
-            dictBase.setName(file.getCanonicalPath().replace(rootDir, rootDir));
-            dictBase.setPath(file.getCanonicalPath());
-            dictBase.setEncoding("UTF-8");
+
+            String dictPath = FilenameUtils.normalize(file.getAbsolutePath(), true);
+            String dictName = dictPath;
+            if (rootDir != null && dictName.startsWith(rootDir)) {
+                dictName = dictName.substring(rootDir.length() + 1);
+            }
+
+            dictBase.setName(dictName);
+            dictBase.setPath(dictPath);
+            dictBase.setEncoding(DEFAULT_ENCODING);
             dictBase.setFormat(Constants.DICT_FORMAT_VLEExcel);
 
             dictionary = new Dictionary();
@@ -202,7 +214,7 @@ public class VLEExcelDictParser extends DictionaryParser {
             dl.setSortNo(cell.getColumnIndex());
 
             dl.setLanguage(languageService.findLanguageByName(cellValue));
-            dl.setCharset(new Charset("UTF-16LE"));
+            dl.setCharset(new Charset(DEFAULT_ENCODING));
 
             dl.setDictionary(dict);
             dict.getDictLanguages().add(dl);

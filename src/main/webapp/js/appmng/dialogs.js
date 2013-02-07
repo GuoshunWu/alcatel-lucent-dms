@@ -552,28 +552,27 @@
       autoOpen: false,
       create: function(event, ui) {
         var _this = this;
-        $.getJSON('rest/languages', {
+        return $.getJSON('rest/languages', {
           prop: 'id,name'
         }, function(languages) {
-          return $('#languageName', _this).append("<option value='-1'>" + c18n.selecttip + "</option>").append(util.json2Options(languages, false, 'name')).change;
+          return $('#languageName', _this).append("<option value='-1'>" + c18n.selecttip + "</option>").append(util.json2Options(languages, false, 'name')).change(function(e) {
+            var postData;
+            postData = {
+              prop: 'languageCode,charset.id',
+              'language': $('#languageName', _this).val(),
+              dict: $(_this).data('param').dicts.join(',')
+            };
+            $.post('rest/preferredCharset', postData, function(json) {
+              $('#addLangCode', _this).val(json.languageCode);
+              return $('#charset', _this).val(json['charset.id']);
+            });
+            return $.getJSON('rest/charsets', {
+              prop: 'id,name'
+            }, function(charsets) {
+              return $('#charset', _this).append("<option value='-1'>" + c18n.selecttip + "</option>").append(util.json2Options(charsets, false, 'name'));
+            });
+          });
         });
-        return function(e) {
-          var postData;
-          postData = {
-            prop: 'languageCode,charset.id',
-            'language': $('#languageName', _this).val(),
-            dict: $(_this).data('param').dicts.join(',')
-          };
-          $.post('rest/preferredCharset', postData, function(json) {
-            $('#addLangCode', _this).val(json.languageCode);
-            return $('#charset', _this).val(json['charset.id']);
-          });
-          return $.getJSON('rest/charsets', {
-            prop: 'id,name'
-          }, function(charsets) {
-            return $('#charset', _this).append("<option value='-1'>" + c18n.selecttip + "</option>").append(util.json2Options(charsets, false, 'name'));
-          });
-        };
       },
       open: function(event, ui) {
         $('#addLangCode', this).select();

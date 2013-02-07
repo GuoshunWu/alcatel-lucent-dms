@@ -1,5 +1,6 @@
 package com.alcatel_lucent.dms.service.generator.xmldict;
 
+import com.alcatel_lucent.dms.model.DictionaryLanguage;
 import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.LabelTranslation;
 import com.alcatel_lucent.dms.service.DaoService;
@@ -67,8 +68,12 @@ public class LabelClosure implements Closure {
         /**
          * TODO: We need iterate dictionary language to get all the additional added language after the
          * dictionary had been imported to DMS.
-         *
          * */
+        Collection<DictionaryLanguage> dictionaryLanguages= label.getDictionary().getDictLanguages();
+        for(DictionaryLanguage dictionaryLanguage: dictionaryLanguages){
+
+        }
+
 
         Collection<LabelTranslation> labelTranslations = label.getOrigTranslations();
 //              write all the comment
