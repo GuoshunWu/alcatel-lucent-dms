@@ -96,7 +96,7 @@
             frozen: true,
             stype: 'select',
             searchoptions: {
-              value: ':All;ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE',
+              value: ":All;" + c18n.dictencodings,
               dataEvents: [
                 {
                   type: 'change',
@@ -118,7 +118,7 @@
             frozen: true,
             stype: 'select',
             searchoptions: {
-              value: ":All;DCT:DCT;Dictionary conf:Dictionary conf;Text properties:Text properties;XML labels:XML labels;XML properties:XML properties;XMLDict:XMLDict",
+              value: ":All;" + c18n.dictformats,
               dataEvents: [
                 {
                   type: 'change',
@@ -169,7 +169,7 @@
       shrinkToFit: false,
       pager: '#transPager',
       rowNum: 60,
-      rowList: [10, 20, 30, 60, 120],
+      rowList: [20, 30, 60, 120, 500, 1000],
       sortname: 'app.base.name',
       sortorder: 'asc',
       multiselect: true,

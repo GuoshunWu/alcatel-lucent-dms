@@ -12,7 +12,7 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
     colNames: ['ID', 'Application', 'Version', 'Num of String']
     colModel: [
       {name: 'id', index: 'id', width: 55, align: 'center', hidden: true, frozen: true}
-      {name: 'application', index: 'base.name', width: 100, editable: false, align: 'left', frozen: true, stype: 'select'
+      {name: 'application', index: 'base.name', width: 100, editable: false, align: 'left', frozen: true, stype: 'select',
       searchoptions:
         value: ":All"
         dataEvents: [
@@ -23,7 +23,8 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
             $("#transGrid").jqGrid 'setGridParam', 'searchvalue', searchvalue
           }
         ]
-      } {name: 'appVersion', index: 'version', width: 90, editable: false, align: 'left', frozen: true, search: false}
+      }
+      {name: 'appVersion', index: 'version', width: 90, editable: false, align: 'left', frozen: true, search: false}
       {name: 'numOfString', index: 'labelNum', width: 80, align: 'right', frozen: true, search: false}
     ]
 
@@ -35,7 +36,7 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
         {name: 'dictVersion', index: 'version', width: 90, editable: false, align: 'left', frozen: true, search: false}
         {name: 'encoding', index: 'base.encoding', width: 90, editable: false, align: 'left', frozen: true
         stype: 'select', searchoptions:
-          value: ':All;ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE'
+          value: ":All;#{c18n.dictencodings}"
           dataEvents: [
             {
             type: 'change', fn: (e)->
@@ -47,7 +48,7 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
         }
         {name: 'format', index: 'base.format', width: 90, editable: false, align: 'left', frozen: true
         stype: 'select', searchoptions:
-          value: ":All;DCT:DCT;Dictionary conf:Dictionary conf;Text properties:Text properties;XML labels:XML labels;XML properties:XML properties;XMLDict:XMLDict;VLEExcel:VLEExcel"
+          value: ":All;#{c18n.dictformats}"
           dataEvents: [
             {
             type: 'change', fn: (e)->
