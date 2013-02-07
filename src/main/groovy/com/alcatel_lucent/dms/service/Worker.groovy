@@ -51,9 +51,6 @@ class Worker implements Runnable {
             println e.message
         }
 
-        /**
-         * TODO: Maybe we should clear remove this event from session when this task is done.
-         * */
         println "Worker thread [${Thread.currentThread().getName()}] exit."
     }
 
