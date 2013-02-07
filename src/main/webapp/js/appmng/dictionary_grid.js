@@ -85,7 +85,7 @@
         editable: true,
         edittype: 'select',
         editoptions: {
-          value: "DCT:DCT;Dictionary conf:Dictionary conf;Text properties:Text properties;XML labels:XML labels"
+          value: c18n.dictformats
         },
         align: 'left'
       }, {
@@ -95,7 +95,7 @@
         editable: true,
         edittype: 'select',
         editoptions: {
-          value: 'ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE'
+          value: c18n.dictencodings
         },
         align: 'left'
       }, {

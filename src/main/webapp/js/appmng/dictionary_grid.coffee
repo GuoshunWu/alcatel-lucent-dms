@@ -51,10 +51,10 @@ define (require, util, dialogs, i18n)->
     {name: 'name', index: 'base.name', width: 200, editable: false, align: 'left'}
     {name: 'version', index: 'version', width: 25, editable: true, classes: 'editable-column', edittype: 'select', editoptions: {value: {}}, align: 'left'}
     {name: 'format', index: 'base.format', width: 60, editable: true, edittype: 'select',
-    editoptions: {value: "DCT:DCT;Dictionary conf:Dictionary conf;Text properties:Text properties;XML labels:XML labels"},
+    editoptions: {value: c18n.dictformats},
     align: 'left'}
     {name: 'encoding', index: 'base.encoding', width: 40, editable: true, edittype: 'select',
-    editoptions: {value: 'ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE'}, align: 'left'}
+    editoptions: {value: c18n.dictencodings}, align: 'left'}
     {name: 'labelNum', index: 'labelNum', width: 20, align: 'right'}
     {name: 'action', index: 'action', width: 70, editable: false, align: 'center',
     formatter: (cellvalue, options, rowObject)->
