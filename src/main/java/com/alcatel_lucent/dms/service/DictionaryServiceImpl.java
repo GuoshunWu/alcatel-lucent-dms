@@ -321,13 +321,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             Collection<String> dictLangCodes = dict.getAllLanguageCodes();
             List<String> listLangCodes = new ArrayList<String>(Arrays.asList(langCodes));
             listLangCodes.removeAll(dictLangCodes);
-            // TODO: restore here after parse 1 work done.
-            // if (!listLangCodes.isEmpty()) {
-            //
-            // throw new BusinessException(
-            // BusinessException.UNKNOWN_LANG_CODE,
-            // listLangCodes.get(0));
-            // }
         }
 
         // unified langCodeList

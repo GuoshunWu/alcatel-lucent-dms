@@ -127,7 +127,7 @@ public class XMLDictGenerator implements DictionaryGenerator {
         LanguageClosure ll = new LanguageClosure(xmlDict);
         CollectionUtils.forAllDo(dict.getDictLanguages(), ll);
 
-        LabelClosure lc = new LabelClosure(xmlDict, dict.getLabelNum(), dao);
+        LabelClosure lc = new LabelClosure(xmlDict, dict.getLabelNum());
 
         log.info(StringUtils.center("Start generating dictionary " + dict.getName() + " labels(total: " + dict.getLabelNum() + ").", 100, '='));
         CollectionUtils.forAllDo(dict.getLabels(), lc);
