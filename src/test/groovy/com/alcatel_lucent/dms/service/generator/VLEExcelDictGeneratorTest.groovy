@@ -32,9 +32,9 @@ import static org.apache.commons.io.FileUtils.copyFile
 public class VLEExcelDictGeneratorTest {
 
     @Autowired
-    private VLEExcelGenerator VLEExcelGenerator = new VLEExcelGenerator();
+    private VLEExcelGenerator VLEExcelGenerator;
     @Autowired
-    private VLEExcelDictParser VLEExcelDictParser = new VLEExcelDictParser();
+    private VLEExcelDictParser VLEExcelDictParser;
 
     @BeforeClass
     static void setUpBeforeClass() throws Exception {

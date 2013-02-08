@@ -17,20 +17,20 @@ import org.junit.Ignore;
  * Time: 下午4:29
  * To change this template use File | Settings | File Templates.
  */
-@Ignore
+//@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = ["/spring.xml"])
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 public class XMLDictGeneratorTest {
 
     @Autowired
-    private XMLDictParser xmlDictParser = new XMLDictParser();
+    private XMLDictParser xmlDictParser;
 
     @Autowired
-    private XMLDictGenerator xmlDictGenerator = new XMLDictGenerator();
+    private XMLDictGenerator xmlDictGenerator;
 
 
-    @Test
+//    @Test
     void testGenerateDict() throws Exception {
         File file = new File("D:/testxdct/xdct")
         file = new File("D:/testxdct/test")
@@ -38,10 +38,9 @@ public class XMLDictGeneratorTest {
 
 
         int i = 0
-        dictionaries.each {dict ->
+        dictionaries.each { dict ->
             xmlDictGenerator.generateDict(new File("D:/testxdct/test"), dict)
             ++i
         }
     }
-
 }

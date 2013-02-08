@@ -3,16 +3,14 @@ package com.alcatel_lucent.dms.service.generator.xmldict;
 import com.alcatel_lucent.dms.model.DictionaryLanguage;
 import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.LabelTranslation;
-import com.alcatel_lucent.dms.service.DaoService;
 import com.alcatel_lucent.dms.util.Util;
-import org.apache.commons.collections.*;
-import org.hibernate.FetchMode;
+import org.apache.commons.collections.Closure;
+import org.apache.commons.lang3.BooleanUtils;
+import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.dom4j.Element;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -20,27 +18,21 @@ import java.util.Set;
 import static org.apache.commons.lang3.StringUtils.center;
 
 /**
- * Created by IntelliJ IDEA.
- * User: guoshunw
+ * For populate each xml element that represent a label..
+ * User: Guoshun WU
  * Date: 12-12-25
  * Time: 下午2:29
- * To change this template use File | Settings | File Templates.
  */
 public class LabelClosure implements Closure {
 
     private static final Logger log = LoggerFactory.getLogger(LabelClosure.class);
-    private Element xmlDict;
-    private LabelTranslationClosure labelTranslationClosure = new LabelTranslationClosure();
-
-    private DaoService dao;
-
+    private final Element xmlDict;
+    private final int totalLabel;
     private int labelCounter = 0;
-    private int totalLabel;
 
-    public LabelClosure(Element xmlDict, int totalLabel, DaoService dao) {
+    public LabelClosure(Element xmlDict, int totalLabel) {
         this.xmlDict = xmlDict;
         this.totalLabel = totalLabel;
-        this.dao = dao;
     }
 
     public void execute(Object input) {
@@ -53,7 +45,6 @@ public class LabelClosure implements Closure {
             System.out.println(String.format("(%1$.2f%%)", (float) labelCounter * 100 / totalLabel));
         }
         final Element xmlKey = xmlDict.addElement("KEY");
-        labelTranslationClosure.setXmlKey(xmlKey);
 
         xmlKey.addAttribute("name", label.getKey());
         Map<String, String> map = Util.string2Map(label.getAnnotation1());
@@ -65,29 +56,19 @@ public class LabelClosure implements Closure {
         if (null != map.get("gui_object")) xmlKey.addAttribute("gui_object", map.get("gui_object"));
         if (null != map.get("state")) xmlKey.addAttribute("state", map.get("state"));
 
-        /**
-         * TODO: We need iterate dictionary language to get all the additional added language after the
-         * dictionary had been imported to DMS.
-         * */
-        Collection<DictionaryLanguage> dictionaryLanguages= label.getDictionary().getDictLanguages();
-        for(DictionaryLanguage dictionaryLanguage: dictionaryLanguages){
+        // write all the comment
+        writeElement("COMMENT", xmlKey, label);
+        writeElement("CONTEXT", xmlKey, label);
+        writeElement("HELP", xmlKey, label);
 
-        }
-
-
-        Collection<LabelTranslation> labelTranslations = label.getOrigTranslations();
-//              write all the comment
-        writeElement("COMMENT", map.get("comment"), xmlKey, labelTranslations, null);
-        writeElement("CONTEXT", map.get("context"), xmlKey, labelTranslations, null);
-        writeElement("HELP", map.get("help"), xmlKey, labelTranslations, map.get("follow_up"));
-
+        //      The PARAM does nothing to do with languages
         Set<Map.Entry<String, String>> params = label.getParams().entrySet();
         for (Map.Entry<String, String> param : params) {
             Element eParam = xmlKey.addElement("PARAM");
             eParam.addAttribute("name", param.getKey());
             eParam.addAttribute("value", param.getValue());
         }
-
+        //      The STATIC_TOKEN does nothing to do with languages
         String elemName = "STATIC_TOKEN";
         String value = label.getValueFromField("STATIC_TOKEN", Label.ANNOTATION2);
         if (null != value) {
@@ -97,30 +78,55 @@ public class LabelClosure implements Closure {
                 if (!st.isEmpty()) staticToken.addCDATA(st);
             }
         }
-
-        writeElement("TRANSLATION", label.getReference(), xmlKey, labelTranslations, map.get("follow_up"));
-
+        writeElement("TRANSLATION", xmlKey, label);
     }
 
     /**
      * Add the elements in xmlKey element, include those elements store in label and labelTranslations
      *
-     * @param elemName          The Element name
-     * @param value             The Element text value
-     * @param xmlKey            The parent Element
-     * @param labelTranslations the LabelTranslation in this label
-     * @param followUp          the follow_up attribute in HELP and TRANSLATION Element, null for others
+     * @param elemName The Element name
+     * @param xmlKey   The parent Element
+     * @param label    Current processed label
      */
-    private void writeElement(String elemName, String value, Element xmlKey, Collection<LabelTranslation> labelTranslations, String followUp) {
-        if (null != value) {
+    private void writeElement(String elemName, Element xmlKey, Label label) {
+        Collection<DictionaryLanguage> dictionaryLanguages = label.getDictionary().getDictLanguages();
+        Map<String, String> labelProp = Util.string2Map(label.getAnnotation1());
+        // write language elements
+        LabelTranslation lt;
+        for (DictionaryLanguage dictionaryLanguage : dictionaryLanguages) {
+            String langCode = dictionaryLanguage.getLanguageCode();
+            lt = label.getOrigTranslation(langCode);
+
+            // There is not LabelTranslation related this language. it is not required to ...
+            boolean hasLabelTrans = lt != null;
+
+            String xpath = "parent::*/LANGUAGE[@id='" + langCode + "']/@is_context";
+            boolean isContext = BooleanUtils.toBoolean(xmlKey.selectSingleNode(xpath).getStringValue());
+
+            // Get the element content from LabelTranslation.ANNOTATION1
+            String elemTextValue = hasLabelTrans ? lt.getValueFromField(elemName.toLowerCase(), LabelTranslation.ANNOTATION1) : null;
+            // Get reference language element content from label annotation1
+            if (isContext) elemTextValue = labelProp.get(elemName.toLowerCase());
+
+            if (elemName.equals("TRANSLATION"))
+                elemTextValue = label.getTranslation(dictionaryLanguage.getLanguageCode());
+            if (null == elemTextValue) continue;
+
+
+            if (elemName.equals("CONTEXT") && !isContext) continue;
+
             Element element = xmlKey.addElement(elemName);
-            if (followUp != null) {
+            if (!elemTextValue.isEmpty()) element.addCDATA(elemTextValue);
+
+            String followUp = labelProp.get("follow_up");
+            if (!isContext && hasLabelTrans) {
+                followUp = lt.getValueFromField("follow_up", LabelTranslation.ANNOTATION1);
+            }
+            if (null != followUp
+                    && Arrays.asList("HELP", "TRANSLATION").contains(elemName)) {
                 element.addAttribute("follow_up", followUp);
             }
-            element.addAttribute("language", "GAE");
-            if (!value.isEmpty()) element.addCDATA(value);
+            element.addAttribute("language", langCode);
         }
-        labelTranslationClosure.setName(elemName);
-        CollectionUtils.forAllDo(labelTranslations, labelTranslationClosure);
     }
 }
