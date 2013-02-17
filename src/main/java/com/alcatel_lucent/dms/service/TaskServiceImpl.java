@@ -32,6 +32,8 @@ import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.UserContext;
 import com.alcatel_lucent.dms.model.Context;
+import com.alcatel_lucent.dms.model.Dictionary;
+import com.alcatel_lucent.dms.model.DictionaryHistory;
 import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.Language;
 import com.alcatel_lucent.dms.model.Product;
@@ -50,6 +52,9 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 
 	@Autowired
 	private LanguageService langService;
+	
+	@Autowired
+	private HistoryService historyService;
 	
 	@Autowired
 	private TextService textService;
@@ -164,6 +169,8 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 			dao.create(trans);
 		}
 
+		// create log
+		historyService.logCreateTask(task);
 		return task;
 	}
 	
@@ -186,6 +193,9 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 				trans.setStatus(Translation.STATUS_UNTRANSLATED);
 			}
 		}
+		
+		// create log
+		historyService.logCloseTask(task);
 	}
 
 	@Override
@@ -412,6 +422,9 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 		}
 		task.setLastUpdateTime(new Date());
 		task.setLastUpdater(UserContext.getInstance().getUser());
+		
+		// create log
+		historyService.logReceiveTask(task, taskDir);
 		return task;
 	}
 	
@@ -509,6 +522,9 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 		}
 		task.setLastApplyTime(new Date());
 		log.info("" + count + " translation results were applied.");
+		
+		// create log
+		historyService.logImportTask(task);
 		return task;
 	}
 

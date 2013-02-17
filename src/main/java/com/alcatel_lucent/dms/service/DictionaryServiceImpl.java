@@ -30,6 +30,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     @Autowired
     private LanguageService langService;
     @Autowired
+    private HistoryService historyService;
+    @Autowired
     private com.alcatel_lucent.dms.service.parser.DictionaryParser[] parsers;
     private Map<String, DictionaryGenerator> generators = new HashMap<String, DictionaryGenerator>();
 
@@ -655,6 +657,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         if (nonBreakExceptions.hasNestedException()) {
             throw nonBreakExceptions;
         }
+        historyService.logDelivery(dbDict, dbDict.getPath());
         log.info("Import dictionary finish");
         return dbDict;
     }
