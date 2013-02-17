@@ -32,7 +32,7 @@ public class LDAPServiceImpl implements LDAPService {
     }
     
     private DirContext loginLDAP(String username, String password) {
-        log.info("Connecting to LDAP server...");
+        log.info("Connecting to LDAP server with " + username + "...");
         Hashtable<String, Object> env = new Hashtable<String, Object>();
         env.put(Context.INITIAL_CONTEXT_FACTORY, INITCTX);
         env.put(Context.PROVIDER_URL, ldapUrl);
@@ -72,6 +72,7 @@ public class LDAPServiceImpl implements LDAPService {
         try {
             ctx = loginLDAP("dms", "");
             if (ctx == null) return null;
+            log.info("Search CSL: " + csl );
             String filter = "(&(objectclass=person)(cslx500=" + csl + "))";
             NamingEnumeration enu = search(ctx, LDAP_DN, filter, new String[] {"cn", "cslx500", "mail"});
             if (enu != null) {
@@ -105,6 +106,7 @@ public class LDAPServiceImpl implements LDAPService {
             ctx = loginLDAP("dms", "");
             if (ctx == null) return null;
             String filter = "(&(objectclass=person)(cn=" + cil + "))";
+            log.info("Search CIL: " + cil);
             NamingEnumeration enu = search(ctx, LDAP_DN, filter, new String[] {"cn", "cslx500", "mail"});
             if (enu != null) {
                 User user = new User();
