@@ -17,7 +17,7 @@ import org.junit.Ignore;
  * Time: 下午4:29
  * To change this template use File | Settings | File Templates.
  */
-//@Ignore
+@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = ["/spring.xml"])
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
