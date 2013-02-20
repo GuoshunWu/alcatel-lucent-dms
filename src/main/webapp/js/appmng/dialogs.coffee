@@ -403,6 +403,24 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
         $(@).dialog 'close'
       }
     ]
+  historyDlg = $('#historyDialog').dialog
+    autoOpen: false, modal: true
+    width: 845
+    open: (event, ui)->
+      param = $(@).data('param')
+      return unless param
+
+      $('#historyGrid').setGridParam(
+        url: 'rest/dictHistory'
+        postData: {dict: param.id, format: 'grid', status: param.status, prop: 'operationTime,operationType,task.name,operator.name'}
+      ).setCaption(i18n.dialog.history.caption.format param.name).trigger "reloadGrid"
+
+    buttons: [
+      {text: c18n.close, click: (e)->
+        $(@).dialog 'close'
+      }
+    ]
+
 
   addLanguage: addLanguage
   dictPreviewLangSettings: dictPreviewLangSettings
@@ -414,3 +432,4 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   addApplication: addApplication
   langSettings: langSettings
   stringSettingsTranslation: stringSettingsTranslation
+  historyDlg:historyDlg

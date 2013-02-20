@@ -62,6 +62,9 @@ define (require, util, dialogs, i18n)->
         (value, index)->"<A id='action_#{index}_#{options.rowId}' style='color:blue' title='#{value.title}'href=# >#{index}</A>"
       ).join('&nbsp;&nbsp;&nbsp;&nbsp;')
     }
+    {name: 'history', index: 'history', width: 25, editable: false, align: 'center', formatter: (cellvalue, options, rowObject)->
+      "<img class='historyAct' id='hisact_#{options.rowId}'  src='images/history.png'>"
+    }
     {name: 'cellaction', index: 'cellaction', width: 20, editable: false, align: 'center', formatter: 'actions'
     formatoptions: {keys: true, delbutton: true, delOptions: deleteOptions, editbutton: false}
     }
@@ -84,7 +87,7 @@ define (require, util, dialogs, i18n)->
   viewrecords: true, cellEdit: true, cellurl: 'app/update-dict', ajaxCellOptions: {async: false}
   gridview: true, multiselect: true
   caption: 'Dictionary for Application'
-  colNames: ['LangRefCode', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels', 'Action', 'Del']
+  colNames: ['LangRefCode', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels', 'Action','History', 'Del']
   colModel: colModel
   beforeProcessing: (data, status, xhr)->
   afterEditCell: (id, name, val, iRow, iCol)->
@@ -115,6 +118,22 @@ define (require, util, dialogs, i18n)->
       delete rowData.action
 
       handlers[action].handler rowData
+
+    $('img.historyAct', @).click(()->
+      grid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
+      [_, rowid]=@id.split('_')
+      rowData = grid.getRowData(rowid)
+      rowData.id = rowid
+      delete rowData.action
+
+      dialogs.historyDlg.data 'param', rowData
+      dialogs.historyDlg.dialog 'open'
+    ).on('mouseover',()->
+      $(@).addClass('ui-state-hover')
+    ).on('mouseout', ()->
+      $(@).removeClass('ui-state-hover')
+    )
+
   }).jqGrid('navGrid', '#dictPager', {add: false, edit: false, search: false, del: false}, {}, {}, deleteOptions)
   .setGridParam(datatype: 'json')
   #  .setGroupHeaders(useColSpanStyle: true, groupHeaders: [

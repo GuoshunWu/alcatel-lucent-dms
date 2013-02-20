@@ -2,6 +2,7 @@ define (require)->
   $ = require 'jqueryui'
   require 'appmng/langsetting_grid'
   require 'appmng/stringsettings_grid'
+  require 'appmng/history_grid'
 
   require 'jqupload'
   require 'iframetransport'
