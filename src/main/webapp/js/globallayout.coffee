@@ -56,6 +56,6 @@ define (require)->
     layout
   glayout = init()
 
-  ready()
+  ready(@)
 
   layout: glayout

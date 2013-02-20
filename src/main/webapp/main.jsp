@@ -16,7 +16,7 @@
     <script type="text/javascript" src="js/lib/require.js"></script>
     <script type="text/javascript">
         require(['./js/config.js?bust=' + new Date().getTime()], function (config) {
-            require(['../main']);
+            require(['main']);
         });
     </script>
 
