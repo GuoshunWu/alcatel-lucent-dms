@@ -51,7 +51,7 @@
       return layout;
     };
     glayout = init();
-    ready();
+    ready(this);
     return {
       layout: glayout
     };

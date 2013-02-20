@@ -23,7 +23,8 @@
       taskmng: '../taskmng',
       login: '../login',
       admin: '../admin',
-      nls: '../nls'
+      nls: '../nls',
+      main: '../main'
     },
     shim: {
       'formvalidate': {

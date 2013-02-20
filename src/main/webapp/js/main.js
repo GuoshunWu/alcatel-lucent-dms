@@ -2,9 +2,10 @@
 (function() {
 
   define(function(require) {
-    var $, glayout, init, panelSwitchHandler, ready, util;
+    var $, glayout, init, panelSwitchHandler, ptree, ready, util;
     $ = require('jqlayout');
     glayout = require('globallayout');
+    ptree = require('ptree');
     util = require('dms-util');
     ready = function(param) {
       if (typeof console !== "undefined" && console !== null) {
@@ -64,7 +65,7 @@
       return $("span[id^='nav'][value='" + dmsPanels.currentPanel + "']").trigger('click');
     };
     init();
-    return ready();
+    return ready(this);
   });
 
 }).call(this);

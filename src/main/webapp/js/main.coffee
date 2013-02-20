@@ -1,7 +1,7 @@
 define (require)->
   $ = require 'jqlayout'
   glayout = require 'globallayout'
-#  ptree = require 'ptree'
+  ptree = require 'ptree'
   util = require 'dms-util'
 
   #  panels
@@ -68,7 +68,7 @@ define (require)->
 
     $("span[id^='nav'][value='#{dmsPanels.currentPanel}']").trigger 'click'
   ################################################## Initilaized #####################################################
-  init()
 
-  ready()
+  init()
+  ready(@)
 

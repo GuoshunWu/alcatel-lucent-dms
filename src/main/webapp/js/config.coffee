@@ -24,6 +24,7 @@ require.config
     login: '../login'
     admin: '../admin'
     nls: '../nls'
+    main: '../main'
 #    test:'../test'
 
   shim:
