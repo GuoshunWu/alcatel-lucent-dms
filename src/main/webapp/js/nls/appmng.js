@@ -32,6 +32,9 @@
           title: 'Language settings',
           'dummy': ''
         },
+        history: {
+          'caption': "History for dictionary '{0}'"
+        },
         "delete": {
           title: 'Delete',
           "delmsg": 'Delete selected {0}(s)?'

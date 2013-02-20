@@ -286,3 +286,18 @@
         </tr>
     </table>
 </div>
+
+<div id="historyDialog" title="<s:text name="appmng.dialogs.history.title"/> ">
+    <table border="0" width="100%">
+        <tr>
+            <td>
+                <table id="historyGrid">
+                    <tr>
+                        <td></td>
+                    </tr>
+                </table>
+                <div id="historyGridPager"></div>
+            </td>
+        </tr>
+    </table>
+</div>

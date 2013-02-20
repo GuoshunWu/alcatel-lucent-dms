@@ -115,6 +115,15 @@
           }).join('&nbsp;&nbsp;&nbsp;&nbsp;');
         }
       }, {
+        name: 'history',
+        index: 'history',
+        width: 25,
+        editable: false,
+        align: 'center',
+        formatter: function(cellvalue, options, rowObject) {
+          return "<img class='historyAct' id='hisact_" + options.rowId + "'  src='images/history.png'>";
+        }
+      }, {
         name: 'cellaction',
         index: 'cellaction',
         width: 20,
@@ -156,7 +165,7 @@
       gridview: true,
       multiselect: true,
       caption: 'Dictionary for Application',
-      colNames: ['LangRefCode', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels', 'Action', 'Del'],
+      colNames: ['LangRefCode', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels', 'Action', 'History', 'Del'],
       colModel: colModel,
       beforeProcessing: function(data, status, xhr) {},
       afterEditCell: function(id, name, val, iRow, iCol) {
@@ -203,7 +212,7 @@
         var grid;
         grid = $(this);
         handlers = grid.getGridParam('cellactionhandlers');
-        return $('a[id^=action_]', this).click(function() {
+        $('a[id^=action_]', this).click(function() {
           var a, action, rowData, rowid, _ref;
           _ref = this.id.split('_'), a = _ref[0], action = _ref[1], rowid = _ref[2];
           if (lastEditedCell) {
@@ -213,6 +222,22 @@
           rowData.id = rowid;
           delete rowData.action;
           return handlers[action].handler(rowData);
+        });
+        return $('img.historyAct', this).click(function() {
+          var rowData, rowid, _, _ref;
+          if (lastEditedCell) {
+            grid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol);
+          }
+          _ref = this.id.split('_'), _ = _ref[0], rowid = _ref[1];
+          rowData = grid.getRowData(rowid);
+          rowData.id = rowid;
+          delete rowData.action;
+          dialogs.historyDlg.data('param', rowData);
+          return dialogs.historyDlg.dialog('open');
+        }).on('mouseover', function() {
+          return $(this).addClass('ui-state-hover');
+        }).on('mouseout', function() {
+          return $(this).removeClass('ui-state-hover');
         });
       }
     }).jqGrid('navGrid', '#dictPager', {

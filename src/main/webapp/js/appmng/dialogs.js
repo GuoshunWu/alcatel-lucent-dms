@@ -2,7 +2,7 @@
 (function() {
 
   define(['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsettings_grid', 'appmng/previewlangsetting_grid'], function(require, grid, sgrid, lgrid) {
-    var $, addApplication, addLanguage, addNewApplicationVersionToProductVersion, c18n, dictListPreview, dictPreviewLangSettings, dictPreviewStringSettings, i18n, langSettings, newAppVersion, newProductVersion, setContextTo, stringSettings, stringSettingsTranslation, util;
+    var $, addApplication, addLanguage, addNewApplicationVersionToProductVersion, c18n, dictListPreview, dictPreviewLangSettings, dictPreviewStringSettings, historyDlg, i18n, langSettings, newAppVersion, newProductVersion, setContextTo, stringSettings, stringSettingsTranslation, util;
     $ = require('jqueryui');
     c18n = require('i18n!nls/common');
     i18n = require('i18n!nls/appmng');
@@ -660,6 +660,35 @@
         }
       ]
     });
+    historyDlg = $('#historyDialog').dialog({
+      autoOpen: false,
+      modal: true,
+      width: 845,
+      open: function(event, ui) {
+        var param;
+        param = $(this).data('param');
+        if (!param) {
+          return;
+        }
+        return $('#historyGrid').setGridParam({
+          url: 'rest/dictHistory',
+          postData: {
+            dict: param.id,
+            format: 'grid',
+            status: param.status,
+            prop: 'operationTime,operationType,task.name,operator.name'
+          }
+        }).setCaption(i18n.dialog.history.caption.format(param.name)).trigger("reloadGrid");
+      },
+      buttons: [
+        {
+          text: c18n.close,
+          click: function(e) {
+            return $(this).dialog('close');
+          }
+        }
+      ]
+    });
     return {
       addLanguage: addLanguage,
       dictPreviewLangSettings: dictPreviewLangSettings,
@@ -670,7 +699,8 @@
       newAppVersion: newAppVersion,
       addApplication: addApplication,
       langSettings: langSettings,
-      stringSettingsTranslation: stringSettingsTranslation
+      stringSettingsTranslation: stringSettingsTranslation,
+      historyDlg: historyDlg
     };
   });
 
