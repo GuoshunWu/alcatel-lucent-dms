@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+        "http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+
+    <package name="default" extends="struts-default">
+	    <interceptors>
+	    	<interceptor name="authorizationInterceptor"
+	    		class="com.alcatel_lucent.dms.interceptors.AuthorizationInterceptor"/>
+	
+		    <interceptor-stack name="dmsSecurityStack">
+			    <interceptor-ref name="authorizationInterceptor"/>
+		    	<interceptor-ref name="defaultStack"/>
+		    </interceptor-stack>
+	    </interceptors>
+    	<default-interceptor-ref name="dmsSecurityStack"/>
+	    <global-results>
+	    	<result name="denied">/common/access_denied.jsp</result>
+	    </global-results>
+    </package>
+
+    <package name="dms-json" extends="json-default">
+	    <interceptors>
+	    	<interceptor name="authorizationInterceptor"
+	    		class="com.alcatel_lucent.dms.interceptors.AuthorizationInterceptor"/>
+	
+		    <interceptor-stack name="dmsSecurityStack">
+			    <interceptor-ref name="authorizationInterceptor"/>
+		    	<interceptor-ref name="defaultStack"/>
+		    </interceptor-stack>
+	    </interceptors>
+    	<default-interceptor-ref name="dmsSecurityStack"/>
+	    <global-results>
+	    	<result name="denied">/json/access_denied.json</result>
+	    </global-results>
+    </package>
+
+	<constant name="struts.convention.default.parent.package" value="default"/>
+    <constant name="struts.locale" value="en_US"/>
+
+    <constant name="struts.action.excludePattern" value="/rest/.*"/>
+
+    <!-- integrate with spring here -->
+    <constant name="struts.objectFactory" value="org.apache.struts2.spring.StrutsSpringObjectFactory"/>
+    <!--<constant name="struts.objectFactory.spring.autoWire" value="name"/>-->
+
+    <constant name="struts.i18n.encoding" value="UTF-8"/>
+    <constant name="struts.custom.i18n.resources" value="messages,labels,errors,js"/>
+
+
+    <constant name="struts.multipart.maxSize" value="1073741824"/>
+    <constant name="struts.multipart.saveDir" value="tmp"/>
+
+    <constant name="struts.devMode" value="true"/>
+    <!--<constant name="struts.class.reloading.watchList" value="WEB-INF/classes, ../../../target/classes"/>-->
+    <!--<constant name="struts.class.reloading.acceptClasses" value="com\.alcatel_lucent\.dms\.action\..*"/>-->
+
+    <constant name="struts.configuration.xml.reload" value="true"/>
+    <constant name="struts.convention.classes.reload" value="true"/>
+
+    <constant name="struts.i18n.reload" value="true"/>
+
+</struts>
