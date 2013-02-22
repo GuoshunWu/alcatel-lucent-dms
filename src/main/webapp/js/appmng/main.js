@@ -2,15 +2,38 @@
 (function() {
 
   define(function(require) {
-    var $, init, ready, util;
+    var $, apppnl, dialogs, init, layout, nodeSelectHandler, onShow, productpnl, ready, util;
     $ = require('jqgrid');
     util = require('dms-util');
-    init = function() {};
+    productpnl = require('appmng/product_panel');
+    apppnl = require('appmng/application_panel');
+    layout = require('appmng/layout');
+    dialogs = require('appmng/dialogs');
+    nodeSelectHandler = function(node, nodeInfo) {
+      switch (node.attr('type')) {
+        case 'products':
+          return layout.showWelcomePanel();
+        case 'product':
+          productpnl.refresh(nodeInfo);
+          return layout.showProductPanel();
+        case 'app':
+          apppnl.refresh(nodeInfo);
+          return layout.showApplicationPanel();
+      }
+    };
+    onShow = function() {};
+    init = function() {
+      return layout.showWelcomePanel();
+    };
     ready = function(param) {
       return typeof console !== "undefined" && console !== null ? console.debug("appmng panel ready...") : void 0;
     };
     init();
-    return ready();
+    ready(this);
+    return {
+      onShow: onShow,
+      nodeSelect: nodeSelectHandler
+    };
   });
 
 }).call(this);

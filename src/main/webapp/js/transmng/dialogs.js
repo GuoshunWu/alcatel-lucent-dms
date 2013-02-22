@@ -8,19 +8,25 @@
     grid = require('transmng/trans_grid');
     util = require('dms-util');
     refreshGrid = function(languageTrigger, grid) {
-      var checkboxes, param;
+      var checkboxes, nodeInfo, param, type;
       if (languageTrigger == null) {
         languageTrigger = false;
       }
       if (grid == null) {
         grid = grid;
       }
+      nodeInfo = (require('ptree')).getNodeInfo();
+      type = nodeInfo.type;
+      if (type.startWith('prod')) {
+        type = type.slice(0, 4);
+      }
       param = {
         release: {
-          id: $('#productRelease').val(),
-          version: $("#productRelease option:selected").text()
+          id: $('#selVersion', "div[id='transmng']").val(),
+          version: $("#selVersion option:selected", "div[id='transmng']").text()
         },
-        level: $("input:radio[name='viewOption'][checked]").val()
+        level: $("input:radio[name='viewOption'][checked]").val(),
+        type: type
       };
       checkboxes = $("#languageFilterDialog input:checkbox[name='languages']");
       param.languages = checkboxes.map(function() {
@@ -32,7 +38,7 @@
         }
       }).get();
       param.languageTrigger = languageTrigger;
-      grid.productReleaseChanged(param);
+      grid.updateGrid(param);
       return typeof console !== "undefined" && console !== null ? console.debug("transmng panel dialogs init...") : void 0;
     };
     languageFilterDialog = $("<div title='" + i18n.select.languagefilter.title + "' id='languageFilterDialog'>").dialog({
@@ -235,7 +241,7 @@
       height: 'auto',
       modal: true,
       create: function() {
-        $(this).dialog('option', 'width', $('#transDetailGridList').getGridParam('width') + 60);
+        $(this).dialog('option', 'width', $('#transDetailGridList').getGridParam() + 60);
         return $('#detailLanguageSwitcher').change(function() {
           var language, param;
           param = $('#translationDetailDialog').data("param");

@@ -3,15 +3,12 @@
   var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   define(function(require) {
-    var appTree, apppnl, c18n, getNodeInfo, layout, nodeCtxMenu, productpnl, removeNode, timeFunName, urls, util, _ref, _ref1, _ref2, _ref3;
+    var appTree, c18n, getNodeInfo, nodeCtxMenu, removeNode, timeFunName, urls, util, _ref, _ref1, _ref2, _ref3;
     require('jqtree');
     require('jqmsgbox');
     util = require('dms-util');
     urls = require('dms-urls');
     c18n = require('i18n!nls/common');
-    productpnl = require('appmng/product_panel');
-    apppnl = require('appmng/application_panel');
-    layout = require('appmng/layout');
     appTree = null;
     getNodeInfo = function(node) {
       var info, parent, selectedNode;
@@ -150,27 +147,22 @@
       }).bind("select_node.jstree", function(event, data) {
         clearTimeout(timeFunName);
         return timeFunName = setTimeout(function() {
-          var node, nodeInfo;
+          var currentTab, module, node, nodeInfo;
           appTree = data.inst;
           node = data.rslt.obj;
           nodeInfo = getNodeInfo(node);
-          switch (node.attr('type')) {
-            case 'products':
-              return layout.showWelcomePanel();
-            case 'product':
-              productpnl.refresh(nodeInfo);
-              return layout.showProductPanel();
-            case 'app':
-              apppnl.refresh(nodeInfo);
-              return layout.showApplicationPanel();
+          currentTab = $("#pageNavigator").val();
+          if (typeof console !== "undefined" && console !== null) {
+            console.log("current tab= " + currentTab);
           }
+          module = require("" + (currentTab.split('.')[0]) + "/main");
+          return module != null ? typeof module.nodeSelect === "function" ? module.nodeSelect(node, nodeInfo) : void 0 : void 0;
         }, 300);
       }).bind('dblclick_node.jstree', function(event, data) {
         clearTimeout(timeFunName);
         return data.inst.toggle_node(data.rslt.obj);
       });
     });
-    layout.showWelcomePanel();
     return {
       getNodeInfo: getNodeInfo
     };

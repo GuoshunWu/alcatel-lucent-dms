@@ -2,12 +2,41 @@
 (function() {
 
   define(function(require) {
-    var c18n, dialogs, exportAppOrDicts, grid, i18n, init, ready, util;
+    var c18n, dialogs, exportAppOrDicts, grid, i18n, init, nodeSelectHandler, onShow, ready, urls, util;
     i18n = require('i18n!nls/transmng');
     c18n = require('i18n!nls/common');
     grid = require('transmng/trans_grid');
     dialogs = require('transmng/dialogs');
     util = require('dms-util');
+    urls = require('dms-urls');
+    nodeSelectHandler = function(node, nodeInfo) {
+      var type;
+      type = node.attr('type');
+      if ('products' === type) {
+        return;
+      }
+      $('#versionTypeLabel', "div[id='transmng']").text("" + nodeInfo.text);
+      if ('product' === type) {
+        if (typeof console !== "undefined" && console !== null) {
+          console.log("product handler.");
+        }
+        $.getJSON(urls.prod_versions, {
+          base: nodeInfo.id,
+          prop: 'id,version'
+        }, function(json) {
+          return $('#selVersion', "div[id='transmng']").empty().append(util.json2Options(json)).trigger('change');
+        });
+        return;
+      }
+      if ('app' === type) {
+        return typeof console !== "undefined" && console !== null ? console.log("app handler.") : void 0;
+      }
+    };
+    onShow = function() {
+      var gridParent;
+      gridParent = $('.transGrid_parent');
+      return $('#transGrid').setGridWidth(gridParent.width() - 10).setGridHeight(gridParent.height() - 110);
+    };
     exportAppOrDicts = function(ftype) {
       var checkboxes, id, languages, type;
       id = $('#productRelease').val();
@@ -39,31 +68,28 @@
       if (typeof console !== "undefined" && console !== null) {
         console.debug("transmng panel init...");
       }
-      $('#productBase').change(function() {
-        $('#productRelease').empty();
-        if (parseInt($('#productBase').val()) === -1) {
-          return false;
-        }
-        return $.getJSON("rest/products/version", {
-          base: $(this).val(),
-          prop: 'id,version'
-        }, function(json) {
-          $('#productRelease').append(util.newOption(c18n.select.release.tip, -1));
-          $('#productRelease').append(util.json2Options(json, json[json.length - 1].id));
-          return $('#productRelease').trigger("change");
-        });
-      });
-      $('#productRelease').change(function() {
-        if (-1 === parseInt(this.value)) {
+      $('#selVersion', "div[id='transmng']").change(function() {
+        var nodeInfo, postData, type;
+        if (!this.value || -1 === parseInt(this.value)) {
           return;
         }
+        alert('version changed.');
+        nodeInfo = (require('ptree')).getNodeInfo();
+        if (typeof console !== "undefined" && console !== null) {
+          console.log(nodeInfo);
+        }
+        type = nodeInfo.type;
+        if (type.startWith('prod')) {
+          type = type.slice(0, 4);
+        }
+        postData = {
+          prop: 'id,name'
+        };
+        postData[type] = this.value;
         $.ajax({
-          url: "rest/languages",
+          url: urls.languages,
           async: false,
-          data: {
-            prod: this.value,
-            prop: 'id,name'
-          },
+          data: postData,
           dataType: 'json',
           success: function(languages) {
             var langTable;
@@ -73,7 +99,6 @@
         });
         return dialogs.refreshGrid(false, grid);
       });
-      $('#productRelease').trigger('change');
       $("#create").button().attr('privilegeName', util.urlname2Action('task/create-task')).click(function() {
         var info;
         info = grid.getTotalSelectedRowInfo();
@@ -110,15 +135,15 @@
       });
     };
     ready = function() {
-      var gridParent;
-      if (typeof console !== "undefined" && console !== null) {
-        console.debug("transmng panel ready...");
-      }
-      gridParent = $('.transGrid_parent');
-      return $('#transGrid').setGridWidth(gridParent.width() - 10).setGridHeight(gridParent.height() - 110);
+      onShow();
+      return typeof console !== "undefined" && console !== null ? console.debug("transmng panel ready...") : void 0;
     };
     init();
-    return ready();
+    ready();
+    return {
+      onShow: onShow,
+      nodeSelect: nodeSelectHandler
+    };
   });
 
 }).call(this);

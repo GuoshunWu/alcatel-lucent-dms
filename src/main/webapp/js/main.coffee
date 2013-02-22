@@ -17,7 +17,7 @@ define (require)->
 
   ready = (param)->
     console?.debug "page ready..."
-#    util.afterInitilized(@)
+    util.afterInitilized(@)
     $('#loading-container').fadeOut 'slow', ()->$(@).remove()
 
   panelSwitchHandler = (oldpnl, newpnl)->
@@ -30,8 +30,7 @@ define (require)->
 
   ################################################## Initilaize #####################################################
   init = ()->
-    dmsPanels = new util.PanelGroup('div.dms-panel', 'appmng', panelSwitchHandler
-    )
+    dmsPanels = new util.PanelGroup('div.dms-panel', 'appmng', panelSwitchHandler)
     # Handler for north navigation bar button set
     $('span.navigator-button').button().click(
       ()->

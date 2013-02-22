@@ -2,7 +2,8 @@
 (function() {
 
   define(['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n!nls/transmng', 'i18n!nls/common', 'require'], function($, util, msgbox, gmodel, blockui, i18n, c18n, require) {
-    var common, getTableType, grid, restoreSearchToolBarValue, transGrid;
+    var common, getTableType, grid, restoreSearchToolBarValue, transGrid, urls;
+    urls = require('dms-urls');
     restoreSearchToolBarValue = function(column, value) {
       var searchOpts;
       if (typeof console !== "undefined" && console !== null) {
@@ -158,12 +159,12 @@
     /* Construct the grid with the column name(model) parameters above and other required parameters
     */
 
-    transGrid = $("#transGrid").jqGrid({
-      url: 'rest/dict',
+    return transGrid = $("#transGrid").jqGrid({
+      url: urls.dicts,
       mtype: 'post',
       postData: {},
       datatype: 'local',
-      width: $(window).innerWidth() * 0.95,
+      width: 1000,
       height: 300,
       rownumbers: true,
       shrinkToFit: false,
@@ -246,148 +247,6 @@
         return grid.setFrozenColumns();
       }
     });
-    transGrid.getGridParam('afterCreate')(transGrid);
-    $('#makeLabelTranslateStatus').attr('privilegeName', util.urlname2Action('trans/update-status')).button({
-      icons: {
-        primary: "ui-icon-triangle-1-n",
-        secondary: "ui-icon-gear"
-      }
-    }).click(function(e) {
-      var menu;
-      menu = $('#translationStatus').show().width($(this).width() - 3).position({
-        my: "left bottom",
-        at: "left top",
-        of: this
-      });
-      $(document).one("click", function() {
-        return menu.hide();
-      });
-      return false;
-    });
-    $('#translationStatus').menu().hide().find("li").on('click', function(e) {
-      var selectedRowIds;
-      transGrid = $("#transGrid");
-      selectedRowIds = transGrid.getGridParam('selarrrow').join(',');
-      if (!selectedRowIds) {
-        $.msgBox(c18n.selrow.format(c18n.dict), null, {
-          title: c18n.warning
-        });
-        return;
-      }
-      $.blockUI();
-      return $.post('trans/update-status', {
-        type: getTableType(),
-        transStatus: e.target.name,
-        id: selectedRowIds
-      }, function(json) {
-        if (json.status !== 0) {
-          $.msgBox(json.message, null, {
-            title: c18n.warning
-          });
-          return;
-        }
-        $.unblockUI();
-        $.msgBox(i18n.msgbox.transstatus.msg, null, {
-          title: c18n.message
-        });
-        return transGrid.trigger('reloadGrid');
-      });
-    });
-    return {
-      productReleaseChanged: function(param) {
-        var gridParam, isApp, postData, prop, searchoptions, searchvalue, summary, url;
-        transGrid = $("#transGrid");
-        summary = ($(param.languages).map(function() {
-          var _this;
-          _this = this;
-          return ($([0, 1, 2]).map(function() {
-            return "s(" + _this.id + ")[" + this + "]";
-          })).get().join(',');
-        })).get().join(',');
-        gridParam = transGrid.getGridParam();
-        isApp = param.level === "application";
-        if (isApp) {
-          url = 'rest/applications';
-          prop = "id,id,base.name,version,labelNum," + summary;
-          transGrid.setColProp('application', {
-            search: false,
-            index: 'base.name'
-          });
-          postData = {
-            prod: param.release.id,
-            format: 'grid',
-            prop: prop
-          };
-          gridParam.colNames = grid.application.colNames;
-          gridParam.colModel = grid.application.colModel;
-          transGrid.updateTaskLanguage(param.languages);
-          return transGrid.reloadAll(url, postData);
-        } else {
-          url = 'rest/dict';
-          prop = "id,app.base.name,app.version,base.name,version,base.encoding,base.format,labelNum," + summary;
-          gridParam.colNames = grid.dictionary.colNames;
-          gridParam.colModel = grid.dictionary.colModel;
-          searchoptions = transGrid.getColProp('application').searchoptions;
-          $.ajax({
-            url: "rest/applications?prod=" + param.release.id + "&prop=id,name",
-            async: false,
-            dataType: 'json',
-            success: function(json) {
-              var app;
-              app = ":All";
-              $(json).each(function() {
-                return app += ";" + this.name + ":" + this.name;
-              });
-              return searchoptions.value = app;
-            }
-          });
-          transGrid.setColProp('application', {
-            searchoptions: searchoptions,
-            index: 'app.base.name'
-          });
-          postData = {
-            prod: param.release.id,
-            format: 'grid',
-            prop: prop
-          };
-          transGrid.updateTaskLanguage(param.languages);
-          gridParam.datatype = 'local';
-          transGrid = transGrid.reloadAll(url, postData);
-          searchvalue = $("#transGrid").jqGrid('getGridParam', 'searchvalue');
-          if (searchvalue.app) {
-            restoreSearchToolBarValue('application', searchvalue.app);
-          }
-          if (searchvalue.encoding) {
-            restoreSearchToolBarValue('encoding', searchvalue.encoding);
-          }
-          if (searchvalue.format) {
-            restoreSearchToolBarValue('format', searchvalue.format);
-          }
-          transGrid.setGridParam('datatype', 'json');
-          if (searchvalue.app || searchvalue.encoding || searchvalue.format) {
-            return $("#transGrid")[0].triggerToolbar();
-          } else {
-            return transGrid.trigger('reloadGrid');
-          }
-        }
-      },
-      getTotalSelectedRowInfo: function() {
-        var count, selectedRowIds;
-        transGrid = $("#transGrid");
-        selectedRowIds = transGrid.getGridParam('selarrrow');
-        count = 0;
-        $(selectedRowIds).each(function() {
-          var row;
-          row = transGrid.getRowData(this);
-          return count += parseInt(row.numOfString);
-        });
-        return {
-          rowIds: selectedRowIds,
-          totalLabels: count
-        };
-      },
-      getTableType: getTableType
-    };
   });
 
 }).call(this);

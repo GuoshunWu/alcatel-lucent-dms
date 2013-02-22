@@ -10,8 +10,6 @@ define (require)->
   dialogs = require 'appmng/dialogs'
 
 
-  onShow = ()->
-
   nodeSelectHandler = (node, nodeInfo)->
     switch node.attr('type')
       when 'products'
@@ -23,10 +21,12 @@ define (require)->
         apppnl.refresh nodeInfo
         layout.showApplicationPanel()
 
+  onShow = ()->
+
   init = ()->
   ################################################## Initilaize #####################################################
     # initialize appmng panels
-
+    layout.showWelcomePanel()
   ################################################## Initilaized ####################################################
 
   ready = (param)->
