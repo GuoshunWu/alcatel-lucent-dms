@@ -6,7 +6,8 @@ define (require)->
   util = require 'dms-util'
   #  detailgrid = require 'transmng/transdetail_grid'
 
-  refreshGrid = (languageTrigger = false, grid = grid)->
+  transGrid = grid
+  refreshGrid = (languageTrigger = false, grid = transGrid)->
 
     nodeInfo=(require 'ptree').getNodeInfo()
 

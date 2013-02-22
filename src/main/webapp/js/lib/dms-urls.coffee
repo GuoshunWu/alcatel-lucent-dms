@@ -31,6 +31,9 @@ define (require)->
 
   #  rest urls
   prod_versions:getURL('products/version','rest/')
+  # application base id in the url, example: applications/apps/id
+  app_versions: getURL("applications/apps/",'rest/')
+
   apps: getURL('applications', 'rest/')
   dicts:getURL('dict', 'rest/')
   languages: getURL('languages','rest/')
