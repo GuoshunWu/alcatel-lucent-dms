@@ -24,8 +24,15 @@ define (require)->
   product:
     create: getURL('create-product', 'app/')
     del: getURL('remove-product-base', 'app/')
+    versions: getURL('products/version','rest/')
   app:
     create: getURL('create-application-base', 'app/')
     del: getURL('remove-application-base', 'app/')
+
+  #  rest urls
+  prod_versions:getURL('products/version','rest/')
+  apps: getURL('applications', 'rest/')
+  dicts:getURL('dict', 'rest/')
+  languages: getURL('languages','rest/')
 
 

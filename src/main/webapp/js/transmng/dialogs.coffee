@@ -7,16 +7,25 @@ define (require)->
   #  detailgrid = require 'transmng/transdetail_grid'
 
   refreshGrid = (languageTrigger = false, grid = grid)->
+
+    nodeInfo=(require 'ptree').getNodeInfo()
+
+    type = nodeInfo.type
+    type = type[..3] if type.startWith('prod')
+
     param =
       release:
-        {id: $('#productRelease').val(), version: $("#productRelease option:selected").text()}
+        {id: $('#selVersion', "div[id='transmng']").val(), version: $("#selVersion option:selected", "div[id='transmng']").text()}
       level: $("input:radio[name='viewOption'][checked]").val()
+      type: type
 
     checkboxes = $("#languageFilterDialog input:checkbox[name='languages']")
+
     param.languages = checkboxes.map(
       ()-> return {id: @id, name: @value} if @checked).get()
     param.languageTrigger = languageTrigger
-    grid.productReleaseChanged param
+
+    grid.updateGrid param
 
 
     console?.debug "transmng panel dialogs init..."
@@ -139,7 +148,7 @@ define (require)->
   transDetailDialog = $('#translationDetailDialog').dialog(
     autoOpen: false, width: 860, height: 'auto', modal: true
     create: ()->
-      $(@).dialog 'option', 'width', $('#transDetailGridList').getGridParam('width') + 60
+      $(@).dialog 'option', 'width', $('#transDetailGridList').getGridParam() + 60
       $('#detailLanguageSwitcher').change ->
         param = $('#translationDetailDialog').data "param"
         language = {id: $(@).val(), name: $("option:selected", @).text()}

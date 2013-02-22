@@ -7,10 +7,6 @@ define (require)->
   urls = require 'dms-urls'
   c18n = require 'i18n!nls/common'
 
-  productpnl = require 'appmng/product_panel'
-  apppnl = require 'appmng/application_panel'
-  layout = require 'appmng/layout'
-
   appTree = null
 
   getNodeInfo = (node)->
@@ -103,24 +99,16 @@ define (require)->
             node = data.rslt.obj
             nodeInfo = getNodeInfo node
 
-            switch node.attr('type')
-              when 'products'
-                layout.showWelcomePanel()
-              when 'product'
-                productpnl.refresh nodeInfo
-                layout.showProductPanel()
-              when 'app'
-                apppnl.refresh nodeInfo
-                layout.showApplicationPanel()
-          , 300)
+            currentTab=$("#pageNavigator").val()
+            console?.log "current tab= #{currentTab}"
+            module = require "#{currentTab.split('.')[0]}/main"
+            module?.nodeSelect?(node, nodeInfo)
+        , 300)
 
     ).bind('dblclick_node.jstree', (event, data)->
       #  Cancel the last time delay unexecuted method
         clearTimeout(timeFunName)
         data.inst.toggle_node data.rslt.obj
     )
-
-  layout.showWelcomePanel()
-
   getNodeInfo: getNodeInfo
 

@@ -145,23 +145,23 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
 
   #  Ajax event for all pages
   sessionCheck = ()->
-    $('#sessionTimeoutDialog').dialog {
-    width: 320, modal: true
-    autoOpen: false
-    buttons: [
-      {
-      text: c18n.ok, click: (e)->
-        $(@).dialog 'close'
-        window.location = 'login/forward-to-https'
-      }
-    ]
-    }
+    $('#sessionTimeoutDialog').dialog(
+      width: 320, modal: true
+      autoOpen: false
+      buttons: [
+        {
+        text: c18n.ok, click: (e)->
+          $(@).dialog 'close'
+          window.location = 'login/forward-to-https'
+        }
+      ]
+    )
 
     $(document).on 'ajaxSuccess', (e, xhr, settings)->
-      #      console?.log "xhr.status=#{xhr.status}"
+#      console?.log "xhr.status=#{xhr.status}"
       if 203 == xhr.status
         $('#sessionTimeoutDialog').dialog 'open'
-  #        console?.log $.parseJSON(xhr.responseText)
+#        console?.log $.parseJSON(xhr.responseText)
 
   urlname2Action = (urlname = '', suffix = 'Action')->urlname.split('/').pop().capitalize().split('-').join('') + suffix
   checkGridPrivilege = (grid)->
@@ -207,8 +207,8 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
       $.each tmpHandlers, (index, value)->delete tmpHandlers[index] if urlname2Action(value.url) in param.forbiddenPrivileges
 
   #    $(grid).trigger 'reloadGrid'
-  checkAllGridPrivilege = (grids = $('.ui-jqgrid-btable'), readonly = true)->$.each grids, (idx, grid)->checkGridPrivilege grid
-
+  checkAllGridPrivilege = (grids = $('table.ui-jqgrid-btable'), readonly = true)->$.each grids, (idx, grid)->checkGridPrivilege grid
+  sessionCheck()
 
   ###
   Test here.
@@ -269,6 +269,8 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
     ).get().join(sep)
 
   afterInitilized: (context)->
+    # center progressbar
+    $('div.progressbar').position(my: 'center', at: 'center',of: window)
     # console?.debug "...Page #{param.naviTo} privilege check..."
     #    check all buttons' privilege
     $('[role=button][privilegeName]').each (index, button)->
@@ -277,33 +279,7 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
     #   check all the grids' privilege
     checkAllGridPrivilege()
 
-    # create layout
-    pageLayout = createLayoutManager()
 
-    if(param.naviTo == 'appmng.jsp')
-      # save selector strings to vars so we don't have to repeat it
-      # must prefix paneClass with "#optional-container >" to target ONLY the Layout panes
-      # west pane
-      westSelector = "#optional-container > .ui-layout-west"
-
-      # CREATE SPANs for pin-buttons - using a generic class as identifiers
-      $("<span></span>").addClass("pin-button").prependTo(westSelector)
-      # BIND events to pin-buttons to make them functional
-      pageLayout.addPinBtn("#{westSelector} .pin-button", "west")
-
-      # CREATE SPANs for close-buttons - using unique IDs as identifiers
-      $("<span></span>").attr("id", "west-closer").prependTo(westSelector)
-      # BIND layout events to close-buttons to make them functional
-      pageLayout.addCloseBtn("#west-closer", "west")
-
-    #    update navigator.
-    $("span[id$='Tab'][id^='nav']").button().click(
-      (e)->
-        $('#pageNavigator').val $(@).attr('value')
-        $(@).button 'disable'
-        $('#naviForm').submit()
-    ).parent().buttonset()
-    $("span[id^='nav'][value='#{param.naviTo}']").css 'backgroundImage', 'url(css/jqueryLayout/images/80ade5_40x100_textures_04_highlight_hard_100.png)'
 
   urlname2Action: urlname2Action
   createLayoutManager: (page = 'appmng.jsp')->createLayoutManager(page)

@@ -4,9 +4,31 @@ define (require)->
   c18n = require 'i18n!nls/common'
 
   grid = require 'transmng/trans_grid'
-
   dialogs = require 'transmng/dialogs'
+
   util = require 'dms-util'
+  urls = require 'dms-urls'
+
+  nodeSelectHandler = (node, nodeInfo)->
+    type=node.attr('type')
+    return if 'products' == type
+
+    $('#versionTypeLabel',"div[id='transmng']").text "#{nodeInfo.text}"
+    if 'product' == type
+      console?.log "product handler."
+      $.getJSON urls.prod_versions, {base: nodeInfo.id, prop: 'id,version'}, (json)->
+        $('#selVersion',"div[id='transmng']").empty().append(util.json2Options(json)).trigger 'change'
+      return
+
+    if 'app' == type
+      console?.log "app handler."
+
+
+  onShow = ()->
+    gridParent = $('.transGrid_parent')
+    $('#transGrid').setGridWidth(gridParent.width() - 10).setGridHeight(gridParent.height() - 110)
+
+    # init product or application
 
   exportAppOrDicts = (ftype)->
     id = $('#productRelease').val()
@@ -31,27 +53,23 @@ define (require)->
 
   init = ()->
     console?.debug "transmng panel init..."
+    $('#selVersion', "div[id='transmng']").change ->
+      return if !@value or -1 == parseInt @value
+      alert 'version changed.'
+      nodeInfo=(require 'ptree').getNodeInfo()
+      console?.log nodeInfo
 
-    # selects on summary panel
-    #  load product in product base
-    $('#productBase').change ()->
-      $('#productRelease').empty()
-      return false if parseInt($('#productBase').val()) == -1
+      type = nodeInfo.type
+      type = type[..3] if type.startWith('prod')
 
-      $.getJSON "rest/products/version", {base: $(@).val(), prop: 'id,version'}, (json)->
-        $('#productRelease').append util.newOption(c18n.select.release.tip, -1)
-        $('#productRelease').append util.json2Options json, json[json.length - 1].id
-        $('#productRelease').trigger "change"
+      postData = {prop: 'id,name'}
+      postData[type] = @value
 
-
-    $('#productRelease').change ->
-      return if -1 == parseInt @value
-      $.ajax {url: "rest/languages", async: false, data: {prod: @value, prop: 'id,name'}, dataType: 'json', success: (languages)->
+      $.ajax {url: urls.languages, async: false, data: postData, dataType: 'json', success: (languages)->
         langTable = util.generateLanguageTable languages
         $("#languageFilterDialog").empty().append langTable
       }
       dialogs.refreshGrid(false, grid)
-    $('#productRelease').trigger 'change'
 
     # Create buttons
     $("#create").button()
@@ -81,10 +99,15 @@ define (require)->
     $("#exportPDF").click ()->exportAppOrDicts 'pdf'
 
 
+
   ready = ()->
+    onShow()
     console?.debug "transmng panel ready..."
-    gridParent = $('.transGrid_parent')
-    $('#transGrid').setGridWidth(gridParent.width() - 10).setGridHeight(gridParent.height() - 110)
 
   init()
   ready()
+
+  onShow: onShow
+  nodeSelect: nodeSelectHandler
+
+

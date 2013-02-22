@@ -4,45 +4,33 @@ define (require)->
   ptree = require 'ptree'
   util = require 'dms-util'
 
+ # TODO: need to be refined later
+  require 'util'
+
   #  panels
-  #  appmngPanel = require 'appmng/main'
+  appmngPanel = require 'appmng/main'
   #
-  #  transPanel = require 'transmng/main'
-  #  taskPanel = require 'taskmng/main'
-  #  adminPanel = require 'admin/main1'
+  transmngPanel = require 'transmng/main'
+  taskmngPanel = require 'taskmng/main'
+  adminPanel = require 'admin/main'
 
 
   ready = (param)->
     console?.debug "page ready..."
+#    util.afterInitilized(@)
     $('#loading-container').fadeOut 'slow', ()->$(@).remove()
 
   panelSwitchHandler = (oldpnl, newpnl)->
-    # we need keep the panels to be informed if current product base changed
-    # console?.debug "oldpnl= #{oldpnl}, newpnl= #{newpnl}."
-    return if 'admin.jsp' == oldpnl or 'admin.jsp' == newpnl
+#    we need keep the panels to be informed if current product base changed
+    console?.debug "oldpnl= #{oldpnl}, newpnl= #{newpnl}."
+    return if 'admin' == oldpnl or 'admin' == newpnl
 
     treeSelectedNode=$("#appTree").jstree 'get_selected'
     pbId =  $('#productBase', "div[id='#{oldpnl}']").val()
-    # get product base id from old panel
-    pbId = treeSelectedNode.attr('id') if oldpnl == 'appmng.jsp' and treeSelectedNode.length > 0 and treeSelectedNode.attr('type') == 'product'
-
-    return if !pbId or '-1' == pbId
-    # Trigger the new panel product stuff according to old panel product
-    if newpnl == 'appmng.jsp'
-      newPbId = treeSelectedNode.attr('id') if treeSelectedNode.length > 0 and treeSelectedNode.attr('type') == 'product'
-      # newPbId maybe null case selected node maybe the application node
-      return if newPbId and pbId == newPbId
-      $("#appTree").jstree 'deselect_node', $("#appTree li [id=#{newPbId}][type=product]")
-      $("#appTree").jstree 'select_node', $("#appTree li [id=#{pbId}][type=product]")
-    else
-      # Trigger the new panel product stuff according to old panel product
-      pbSel = $('#productBase', "div[id='#{newpnl}']")
-      pbSel.val(pbId).trigger 'change' if pbSel.val() != pbId
 
   ################################################## Initilaize #####################################################
   init = ()->
-    dmsPanels = new util.PanelGroup('div.dms-panel', 'appmng'
-      #      , panelSwitchHandler
+    dmsPanels = new util.PanelGroup('div.dms-panel', 'appmng', panelSwitchHandler
     )
     # Handler for north navigation bar button set
     $('span.navigator-button').button().click(
@@ -53,7 +41,9 @@ define (require)->
         else
           glayout.layout.show('west')
 
+        $("#pageNavigator").val "#{currentPanel}.jsp"
         $('span.page-title').text $("#pageNavigator>option[value='#{currentPanel}.jsp']").text()
+
         #    switch class
         $("span[id^='nav']").removeClass 'navigator-button-currentpage'
         $("span[id^='nav'][value='#{currentPanel}']").addClass 'navigator-button-currentpage'
@@ -62,10 +52,12 @@ define (require)->
         $("span[id^='nav'][value='#{currentPanel}'] > span.ui-button-text > span").addClass 'navigator-tab-title-currentpage'
 
         dmsPanels.switchTo currentPanel
-      #        glayout.layout.resizeAll()
-    ).parent().buttonset()
-    # appmng panel as the current page on init
+        eval("#{currentPanel}Panel")?.onShow?()
 
+      #     glayout.layout.resizeAll()
+    ).parent().buttonset()
+
+    # appmng panel as the current page on init
     $("span[id^='nav'][value='#{dmsPanels.currentPanel}']").trigger 'click'
   ################################################## Initilaized #####################################################
 
