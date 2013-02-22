@@ -4,7 +4,7 @@
   define(function(require) {
     var $, PANEL_PREFIX, appmngPnlGroup, ids, util;
     $ = require('jqlayout');
-    util = require('util');
+    util = require('dms-util');
     PANEL_PREFIX = 'DMS';
     ids = {
       container: {
@@ -17,7 +17,7 @@
         application: PANEL_PREFIX + "_applicationPanel"
       }
     };
-    appmngPnlGroup = new util.PanelGroup("#ui_center > div.content > div[id^=" + PANEL_PREFIX + "]", "DMS_welcomePanel");
+    appmngPnlGroup = new util.PanelGroup("div.dms_appmng_panel", "DMS_welcomePanel");
     return {
       showProductPanel: function() {
         return appmngPnlGroup.switchTo(ids.panel.product, function() {

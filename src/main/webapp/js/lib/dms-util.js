@@ -292,7 +292,7 @@ Time: 下午7:
     };
     checkAllGridPrivilege = function(grids, readonly) {
       if (grids == null) {
-        grids = $('.ui-jqgrid-btable');
+        grids = $('table.ui-jqgrid-btable');
       }
       if (readonly == null) {
         readonly = true;
@@ -301,6 +301,7 @@ Time: 下午7:
         return checkGridPrivilege(grid);
       });
     };
+    sessionCheck();
     return {
       /*
         Test here.
@@ -392,28 +393,18 @@ Time: 下午7:
         }).get().join(sep);
       },
       afterInitilized: function(context) {
-        var pageLayout, westSelector;
+        $('div.progressbar').position({
+          my: 'center',
+          at: 'center',
+          of: window
+        });
         $('[role=button][privilegeName]').each(function(index, button) {
           var _ref;
           if (_ref = $(button).attr('privilegeName'), __indexOf.call(param.forbiddenPrivileges, _ref) >= 0) {
             return $(button).button('disable');
           }
         });
-        checkAllGridPrivilege();
-        pageLayout = createLayoutManager();
-        if (param.naviTo === 'appmng.jsp') {
-          westSelector = "#optional-container > .ui-layout-west";
-          $("<span></span>").addClass("pin-button").prependTo(westSelector);
-          pageLayout.addPinBtn("" + westSelector + " .pin-button", "west");
-          $("<span></span>").attr("id", "west-closer").prependTo(westSelector);
-          pageLayout.addCloseBtn("#west-closer", "west");
-        }
-        $("span[id$='Tab'][id^='nav']").button().click(function(e) {
-          $('#pageNavigator').val($(this).attr('value'));
-          $(this).button('disable');
-          return $('#naviForm').submit();
-        }).parent().buttonset();
-        return $("span[id^='nav'][value='" + param.naviTo + "']").css('backgroundImage', 'url(css/jqueryLayout/images/80ade5_40x100_textures_04_highlight_hard_100.png)');
+        return checkAllGridPrivilege();
       },
       urlname2Action: urlname2Action,
       createLayoutManager: function(page) {

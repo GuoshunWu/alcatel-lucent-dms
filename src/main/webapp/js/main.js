@@ -2,65 +2,55 @@
 (function() {
 
   define(function(require) {
-    var $, glayout, init, panelSwitchHandler, ptree, ready, util;
+    var $, adminPanel, appmngPanel, glayout, init, panelSwitchHandler, ptree, ready, taskmngPanel, transmngPanel, util;
     $ = require('jqlayout');
     glayout = require('globallayout');
     ptree = require('ptree');
     util = require('dms-util');
+    require('util');
+    appmngPanel = require('appmng/main');
+    transmngPanel = require('transmng/main');
+    taskmngPanel = require('taskmng/main');
+    adminPanel = require('admin/main');
     ready = function(param) {
       if (typeof console !== "undefined" && console !== null) {
         console.debug("page ready...");
       }
+      util.afterInitilized(this);
       return $('#loading-container').fadeOut('slow', function() {
         return $(this).remove();
       });
     };
     panelSwitchHandler = function(oldpnl, newpnl) {
-      var newPbId, pbId, pbSel, treeSelectedNode;
-      if ('admin.jsp' === oldpnl || 'admin.jsp' === newpnl) {
+      var pbId, treeSelectedNode;
+      if (typeof console !== "undefined" && console !== null) {
+        console.debug("oldpnl= " + oldpnl + ", newpnl= " + newpnl + ".");
+      }
+      if ('admin' === oldpnl || 'admin' === newpnl) {
         return;
       }
       treeSelectedNode = $("#appTree").jstree('get_selected');
-      pbId = $('#productBase', "div[id='" + oldpnl + "']").val();
-      if (oldpnl === 'appmng.jsp' && treeSelectedNode.length > 0 && treeSelectedNode.attr('type') === 'product') {
-        pbId = treeSelectedNode.attr('id');
-      }
-      if (!pbId || '-1' === pbId) {
-        return;
-      }
-      if (newpnl === 'appmng.jsp') {
-        if (treeSelectedNode.length > 0 && treeSelectedNode.attr('type') === 'product') {
-          newPbId = treeSelectedNode.attr('id');
-        }
-        if (newPbId && pbId === newPbId) {
-          return;
-        }
-        $("#appTree").jstree('deselect_node', $("#appTree li [id=" + newPbId + "][type=product]"));
-        return $("#appTree").jstree('select_node', $("#appTree li [id=" + pbId + "][type=product]"));
-      } else {
-        pbSel = $('#productBase', "div[id='" + newpnl + "']");
-        if (pbSel.val() !== pbId) {
-          return pbSel.val(pbId).trigger('change');
-        }
-      }
+      return pbId = $('#productBase', "div[id='" + oldpnl + "']").val();
     };
     init = function() {
       var dmsPanels;
-      dmsPanels = new util.PanelGroup('div.dms-panel', 'appmng');
+      dmsPanels = new util.PanelGroup('div.dms-panel', 'appmng', panelSwitchHandler);
       $('span.navigator-button').button().click(function() {
-        var currentPanel;
+        var currentPanel, _ref;
         currentPanel = "" + ($(this).attr('value'));
         if ('admin' === currentPanel) {
           glayout.layout.hide('west');
         } else {
           glayout.layout.show('west');
         }
+        $("#pageNavigator").val("" + currentPanel + ".jsp");
         $('span.page-title').text($("#pageNavigator>option[value='" + currentPanel + ".jsp']").text());
         $("span[id^='nav']").removeClass('navigator-button-currentpage');
         $("span[id^='nav'][value='" + currentPanel + "']").addClass('navigator-button-currentpage');
         $("span[id^='nav'] > span.ui-button-text > span").removeClass('navigator-tab-title-currentpage');
         $("span[id^='nav'][value='" + currentPanel + "'] > span.ui-button-text > span").addClass('navigator-tab-title-currentpage');
-        return dmsPanels.switchTo(currentPanel);
+        dmsPanels.switchTo(currentPanel);
+        return (_ref = eval("" + currentPanel + "Panel")) != null ? typeof _ref.onShow === "function" ? _ref.onShow() : void 0 : void 0;
       }).parent().buttonset();
       return $("span[id^='nav'][value='" + dmsPanels.currentPanel + "']").trigger('click');
     };

@@ -2,12 +2,16 @@
 (function() {
 
   define(function(require) {
-    var init, ready;
+    var init, onShow, ready;
+    onShow = function() {};
     init = function() {
       return typeof console !== "undefined" && console !== null ? console.debug("transmng panel init...") : void 0;
     };
-    return ready = function() {
+    ready = function() {
       return typeof console !== "undefined" && console !== null ? console.debug("transmng panel ready...") : void 0;
+    };
+    return {
+      onShow: onShow
     };
   });
 
