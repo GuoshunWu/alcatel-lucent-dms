@@ -58,6 +58,7 @@ Time: 下午7:
         del: getURL('remove-application-base', 'app/')
       },
       prod_versions: getURL('products/version', 'rest/'),
+      app_versions: getURL("applications/apps/", 'rest/'),
       apps: getURL('applications', 'rest/'),
       dicts: getURL('dict', 'rest/'),
       languages: getURL('languages', 'rest/')

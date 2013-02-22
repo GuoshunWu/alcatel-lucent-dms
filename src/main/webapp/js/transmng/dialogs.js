@@ -2,18 +2,19 @@
 (function() {
 
   define(function(require) {
-    var c18n, exportTranslationDialog, grid, i18n, languageFilterDialog, ready, refreshGrid, taskDialog, transDetailDialog, util;
+    var c18n, exportTranslationDialog, grid, i18n, languageFilterDialog, ready, refreshGrid, taskDialog, transDetailDialog, transGrid, util;
     i18n = require('i18n!nls/transmng');
     c18n = require('i18n!nls/common');
     grid = require('transmng/trans_grid');
     util = require('dms-util');
+    transGrid = grid;
     refreshGrid = function(languageTrigger, grid) {
       var checkboxes, nodeInfo, param, type;
       if (languageTrigger == null) {
         languageTrigger = false;
       }
       if (grid == null) {
-        grid = grid;
+        grid = transGrid;
       }
       nodeInfo = (require('ptree')).getNodeInfo();
       type = nodeInfo.type;

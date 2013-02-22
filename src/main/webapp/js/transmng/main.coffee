@@ -15,13 +15,13 @@ define (require)->
 
     $('#versionTypeLabel',"div[id='transmng']").text "#{nodeInfo.text}"
     if 'product' == type
-      console?.log "product handler."
       $.getJSON urls.prod_versions, {base: nodeInfo.id, prop: 'id,version'}, (json)->
         $('#selVersion',"div[id='transmng']").empty().append(util.json2Options(json)).trigger 'change'
       return
 
     if 'app' == type
-      console?.log "app handler."
+      $.getJSON "#{urls.app_versions}#{nodeInfo.id}" , (json)->
+        $('#selVersion',"div[id='transmng']").empty().append(util.json2Options(json)).trigger 'change'
 
 
   onShow = ()->
@@ -55,9 +55,8 @@ define (require)->
     console?.debug "transmng panel init..."
     $('#selVersion', "div[id='transmng']").change ->
       return if !@value or -1 == parseInt @value
-      alert 'version changed.'
       nodeInfo=(require 'ptree').getNodeInfo()
-      console?.log nodeInfo
+#      console?.log nodeInfo
 
       type = nodeInfo.type
       type = type[..3] if type.startWith('prod')

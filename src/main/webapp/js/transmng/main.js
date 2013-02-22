@@ -17,9 +17,6 @@
       }
       $('#versionTypeLabel', "div[id='transmng']").text("" + nodeInfo.text);
       if ('product' === type) {
-        if (typeof console !== "undefined" && console !== null) {
-          console.log("product handler.");
-        }
         $.getJSON(urls.prod_versions, {
           base: nodeInfo.id,
           prop: 'id,version'
@@ -29,7 +26,9 @@
         return;
       }
       if ('app' === type) {
-        return typeof console !== "undefined" && console !== null ? console.log("app handler.") : void 0;
+        return $.getJSON("" + urls.app_versions + nodeInfo.id, function(json) {
+          return $('#selVersion', "div[id='transmng']").empty().append(util.json2Options(json)).trigger('change');
+        });
       }
     };
     onShow = function() {
@@ -73,11 +72,7 @@
         if (!this.value || -1 === parseInt(this.value)) {
           return;
         }
-        alert('version changed.');
         nodeInfo = (require('ptree')).getNodeInfo();
-        if (typeof console !== "undefined" && console !== null) {
-          console.log(nodeInfo);
-        }
         type = nodeInfo.type;
         if (type.startWith('prod')) {
           type = type.slice(0, 4);

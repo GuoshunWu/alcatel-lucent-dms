@@ -44,7 +44,9 @@
           editrules: {
             custom: true,
             custom_func: function(value, colname) {
-              if (!/^\d+(\s*,?\s*\d+\s*)*$/.test(value)) {
+              var valid;
+              valid = /^\d+(\s*,?\s*\d+\s*)*$/.test(value);
+              if (!valid) {
                 return [false, 'Invalid max length format.'];
               }
               return [true, ''];
