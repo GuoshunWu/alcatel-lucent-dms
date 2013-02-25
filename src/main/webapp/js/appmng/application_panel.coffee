@@ -100,4 +100,11 @@ define (require)->
 
     appInfo.base = {text: info.text, id: info.id}
 
-    $.getJSON "rest/applications/apps/#{info.id}", {}, (json)->$("#selAppVersion").empty().append(util.json2Options json).trigger "change"
+    $.getJSON "rest/applications/apps/#{info.id}", {}, (json)->$("#selAppVersion").empty().append(util.json2Options json)
+
+    console.log "application changed."
+    selAppVer=$('#selAppVersion', "div[id='appmng']")
+    if(param.currentSelected.appId and -1 != parseInt(param.currentSelected.appId))
+      selAppVer.val(param.currentSelected.appId)
+      param.currentSelected.appId=null
+    selAppVer.trigger "change"

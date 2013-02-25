@@ -2,11 +2,12 @@
 (function() {
 
   define(function(require) {
-    var c18n, exportTranslationDialog, grid, i18n, languageFilterDialog, ready, refreshGrid, taskDialog, transDetailDialog, transGrid, util;
+    var c18n, detailgrid, exportTranslationDialog, grid, i18n, languageFilterDialog, ready, refreshGrid, taskDialog, transDetailDialog, transGrid, util;
     i18n = require('i18n!nls/transmng');
     c18n = require('i18n!nls/common');
-    grid = require('transmng/trans_grid');
     util = require('dms-util');
+    grid = require('transmng/trans_grid');
+    detailgrid = require('transmng/transdetail_grid');
     transGrid = grid;
     refreshGrid = function(languageTrigger, grid) {
       var checkboxes, nodeInfo, param, type;
@@ -27,7 +28,8 @@
           version: $("#selVersion option:selected", "div[id='transmng']").text()
         },
         level: $("input:radio[name='viewOption'][checked]").val(),
-        type: type
+        type: type,
+        name: nodeInfo.text
       };
       checkboxes = $("#languageFilterDialog input:checkbox[name='languages']");
       param.languages = checkboxes.map(function() {
@@ -242,7 +244,7 @@
       height: 'auto',
       modal: true,
       create: function() {
-        $(this).dialog('option', 'width', $('#transDetailGridList').getGridParam() + 60);
+        $(this).dialog('option', 'width', $('#transDetailGridList').getGridParam('width') + 60);
         return $('#detailLanguageSwitcher').change(function() {
           var language, param;
           param = $('#translationDetailDialog').data("param");
@@ -278,7 +280,27 @@
       languageFilterDialog: languageFilterDialog,
       transDetailDialog: transDetailDialog,
       exportTranslationDialog: exportTranslationDialog,
-      refreshGrid: refreshGrid
+      refreshGrid: refreshGrid,
+      showTransDetailDialog: function(param) {
+        var map, status, transDetailGrid;
+        $('#dictionaryName', transDetailDialog).html(param.dict.name);
+        $('#detailLanguageSwitcher', transDetailDialog).empty().append(util.json2Options(param.languages, param.language.id, 'name'));
+        if (typeof console !== "undefined" && console !== null) {
+          console.log('show detail grid...');
+        }
+        transDetailGrid = $("#transDetailGridList", "#transmng");
+        map = {
+          'N': '0',
+          'I': '1',
+          'T': '2'
+        };
+        status = param.language.name.split('.')[1];
+        $('#translationDetailDialog').data('param', {
+          dict: param.dict,
+          searchStatus: map[status]
+        });
+        return transDetailDialog.dialog("open");
+      }
     };
   });
 

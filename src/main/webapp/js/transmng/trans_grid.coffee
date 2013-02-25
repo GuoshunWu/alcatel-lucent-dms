@@ -1,5 +1,17 @@
-define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n!nls/transmng', 'i18n!nls/common', 'require' ], ($, util, msgbox, gmodel, blockui, i18n, c18n, require)->
+define ( require)->
+
+  msgbox = require 'jqmsgbox'
+  blockui = require 'blockui'
+
+  $ = require 'jqgrid'
+  require 'transmng/grid.colmodel'
+
+  i18n = require 'i18n!nls/transmng'
+  c18n = require 'i18n!nls/common'
+
   urls = require 'dms-urls'
+  util = require 'dms-util'
+
 
   # prepare the grid column name and column model parameters for the grid.
   restoreSearchToolBarValue = (column, value)->
@@ -71,6 +83,7 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
   getTableType = ->if -1 == ($.inArray 'Dummy', $("#transGrid").getGridParam('colNames')) then  'dict' else 'app'
 
   ### Construct the grid with the column name(model) parameters above and other required parameters ###
+
   transGrid = $("#transGrid").jqGrid(
     url: urls.dicts
     mtype: 'post', postData:{}, datatype: 'local'
@@ -79,16 +92,12 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
     pager: '#transPager', rowNum: 60, rowList: [20, 30, 60, 120, 500, 1000]
     sortname: 'app.base.name', sortorder: 'asc', multiselect: true
     colNames: grid.dictionary.colNames, colModel: grid.dictionary.colModel
+    #  customed option for save the toolbar search value and group headers
+    searchvalue: {}, groupHeaders: []
 
     beforeProcessing: (data, status, xhr)->
     gridComplete: ->
       transGrid = $(@)
-      #    console?.log "Data loading complete, clear the data loading counter."
-      #    clearInterval(window.param.refreshCounter) if window.param.refreshCounter
-
-
-      #    console?.log 'Start render grid, setup the render counter...'
-      #    window.param.refreshCounter = setInterval("console.log('tick');", 1000)
 
       $('a', @).each (index, a)->$(a).before(' ').remove() if '0' == $(a).text()
 
@@ -107,14 +116,8 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
 
         (console?.log 'zero';return) if allZero
         util.getDictLanguagesByDictId rowid, (languages)=>
-          transLayout = require('transmng/layout')
-          transLayout.showTransDetailDialog {dict:{id: rowid, name: rowData.dictionary}, language: language, languages: languages}
-
-    #    console?.log "Grid render complete, clear the render counter."
-    #    clearInterval(window.param.refreshCounter) if window.param.refreshCounter
-
-    #  customed option for save the toolbar search value and group headers
-    searchvalue: {}, groupHeaders: []
+          dialogs = require('transmng/dialogs')
+          dialogs.showTransDetailDialog {dict:{id: rowid, name: rowData.dictionary}, language: language, languages: languages}
     #  customed method executed when the grid is created.
     afterCreate: (grid)->
       grid.setGridParam 'datatype': 'json'
@@ -183,11 +186,17 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
 
       # fill the search value dynamically for application
       searchoptions = transGrid.getColProp('application').searchoptions
-      $.ajax {url: urls.apps, data: {prod:param.release.id, prop: "id,name"}, async: false, dataType: 'json', success: (json)->
+
+      if 'prod' == param.type
         app = ":All"
-        $(json).each ->app += ";#{@name}:#{@name}"
-        searchoptions.value = app
-      }
+        $.ajax {url: urls.apps, data: {prod:param.release.id, prop: "id,name"}, async: false, dataType: 'json', success: (json)->
+          $(json).each ->app += ";#{@name}:#{@name}"
+        }
+      else
+        # application
+        app += "#{param.name}:#{param.name}"
+      searchoptions.value = app
+
       transGrid.setGridParam('sortname':'app.base.name')
       transGrid.setColProp('application', searchoptions: searchoptions, index: 'app.base.name')
       postData = {format: 'grid', prop: prop}

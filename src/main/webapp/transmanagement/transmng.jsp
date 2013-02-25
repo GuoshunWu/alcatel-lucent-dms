@@ -1,5 +1,5 @@
 <div class="dms-panel" id="transmng">
-    <table style="width: 100%; height:100%;padding: 10px;border: 2px solid red">
+    <table style="width: 100%; height:100%;padding: 10px;border: 0px solid red">
         <tr style="height: 20px">
             <td style="font-weight:bold;font-size: medium;"><s:text name="transmng.summarypanel.summary"/></td>
         </tr>
@@ -88,4 +88,6 @@
             </td>
         </tr>
     </table>
+    <%@include file="dialogs.jsp" %>
 </div>
+

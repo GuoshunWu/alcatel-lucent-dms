@@ -21,12 +21,36 @@ define (require)->
     $('#loading-container').fadeOut 'slow', ()->$(@).remove()
 
   panelSwitchHandler = (oldpnl, newpnl)->
-#    we need keep the panels to be informed if current product base changed
+  # we need keep the panels to be informed if current product base changed
     console?.debug "oldpnl= #{oldpnl}, newpnl= #{newpnl}."
     return if 'admin' == oldpnl or 'admin' == newpnl
 
     treeSelectedNode=$("#appTree").jstree 'get_selected'
-    pbId =  $('#productBase', "div[id='#{oldpnl}']").val()
+    return if 0 == treeSelectedNode.length or '-1' == treeSelectedNode.attr('id')
+
+
+    if 'appmng' == newpnl
+      console?.log 'from other to appmng panel'
+      #set global param
+      appmngLayout = require 'appmng/layout'
+      type = treeSelectedNode.attr('type')
+      isAppCurrentPnlSame = type if new RegExp("^DMS_#{type}.*Panel$").test(appmngLayout.layout.currentPanel)
+
+#      selector = if 'product' == type then '#selVersion' else '#selAppVersion'
+#      if isAppCurrentPnlSame
+#        $(selector,"div[id='#{newpnl}']").val($('#selVersion',"div[id='#{oldpnl}']").val()).trigger 'change'
+#        return
+      if 'product' == type
+        window.param.currentSelected.productId = $('#selVersion', "div[id='#{oldpnl}']").val()
+      else
+        window.param.currentSelected.appId = $('#selVersion', "div[id='#{oldpnl}']").val()
+      $("#appTree").jstree('select_node', $("#appTree").jstree('get_selected'), true)
+    else
+      options = $('#selVersion option',"div[id='#{oldpnl}']").clone()
+      value = $('#selVersion',"div[id='#{oldpnl}']").val()
+      options = $('#selAppVersion option',"div[id='#{oldpnl}']").clone() if 'appmng' == oldpnl and 'app' == treeSelectedNode.attr('type')
+      $('#versionTypeLabel',"div[id='#{newpnl}']").text $("#appTree").jstree('get_text',treeSelectedNode) if 'appmng' != oldpnl
+      $('#selVersion',"div[id='#{newpnl}']").empty().append(options).val(value).trigger 'change'
 
   ################################################## Initilaize #####################################################
   init = ()->

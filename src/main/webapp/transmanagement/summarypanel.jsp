@@ -81,12 +81,6 @@
                     <td style="width: 15px"/>
                 </tr>
             </table>
-            <%--<ul id="translationStatus">--%>
-            <%--<li><a name="2" href="#"><s:text name="status.translated"/></a></li>--%>
-            <%--<li><a name="0" href="#"><s:text name="status.nottranslated"/></a></li>--%>
-            <%--</ul>--%>
-            <%--<button id='makeLabelTranslateStatus'><s:text--%>
-            <%--name="transmng.summarypanel.makelabelas"/></button>--%>
         </td>
     </tr>
 </table>

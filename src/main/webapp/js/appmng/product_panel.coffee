@@ -47,12 +47,13 @@ define (require)->
     $('#dispProductName').html productInfo.base.text
     $.getJSON URL.get_product_by_base_id, {base: productInfo.base.id, prop: 'id,version'}, (json)->
       # update product version select
-      $('#selVersion').empty().append(util.json2Options json)
-      #      here use global var param from env.jsp
-      $('#selVersion').val(param.currentSelected.productId) if(param.currentSelected.productId)
-      $('#selVersion').trigger 'change'
-
-
+      selVer=$('#selVersion', "div[id='appmng']")
+      selVer.empty().append(util.json2Options json)
+      #  get the productId from previous panel
+      if(param.currentSelected.productId and parseInt(param.currentSelected.productId) != -1)
+        selVer.val(param.currentSelected.productId)
+        param.currentSelected.productId = null
+      selVer.trigger 'change'
 
   getSelectedProduct: -> {version: $("#selVersion option:selected").text(), id: $('#selVersion').val()}
   getProductSelectOptions: ->$('#selVersion').children('option').clone(true)

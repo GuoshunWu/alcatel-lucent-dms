@@ -148,15 +148,23 @@
         return $('#selAppVersion').append("<option value='" + app.id + "' selected>" + app.version + "</option>").trigger('change');
       },
       refresh: function(info) {
+        var selAppVer;
         $('#appDispProductName').html(info.parent.text);
         $('#appDispAppName').html(info.text);
         appInfo.base = {
           text: info.text,
           id: info.id
         };
-        return $.getJSON("rest/applications/apps/" + info.id, {}, function(json) {
-          return $("#selAppVersion").empty().append(util.json2Options(json)).trigger("change");
+        $.getJSON("rest/applications/apps/" + info.id, {}, function(json) {
+          return $("#selAppVersion").empty().append(util.json2Options(json));
         });
+        console.log("application changed.");
+        selAppVer = $('#selAppVersion', "div[id='appmng']");
+        if (param.currentSelected.appId && -1 !== parseInt(param.currentSelected.appId)) {
+          selAppVer.val(param.currentSelected.appId);
+          param.currentSelected.appId = null;
+        }
+        return selAppVer.trigger("change");
       }
     };
   });

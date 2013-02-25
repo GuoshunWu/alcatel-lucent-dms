@@ -1,4 +1,10 @@
-define ['jqgrid', 'util', 'require', 'i18n!nls/transmng', 'i18n!nls/common'], ($, util, require, i18n, c18n)->
+define (require)->
+  $ = require 'jqgrid'
+
+  util = require 'dms-util'
+  i18n = require 'i18n!nls/transmng'
+  c18n = require 'i18n!nls/common'
+
   lastEditedCell = null
 
   transDetailGrid = $("#transDetailGridList").jqGrid(
@@ -32,7 +38,7 @@ define ['jqgrid', 'util', 'require', 'i18n!nls/transmng', 'i18n!nls/common'], ($
       grid.navGrid '#transDetailsPager', {edit: false, add: false, del: false, search: false, view: false}
       grid.filterToolbar {stringResult: true, searchOnEnter: false}
   )
-  transDetailGrid.getGridParam('afterCreate') transDetailGrid
+  transDetailGrid.jqGrid('getGridParam','afterCreate') transDetailGrid
 
   $('#makeDetailLabelTranslateStatus').button(
     icons:
