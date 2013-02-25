@@ -2,11 +2,10 @@
 (function() {
 
   define(function(require) {
-    var c18n, dialogs, exportAppOrDicts, grid, i18n, init, nodeSelectHandler, onShow, ready, urls, util;
-    i18n = require('i18n!nls/transmng');
+    var c18n, dialogs, exportAppOrDicts, grid, init, nodeSelectHandler, onShow, ready, urls, util;
     c18n = require('i18n!nls/common');
-    grid = require('transmng/trans_grid');
     dialogs = require('transmng/dialogs');
+    grid = require('transmng/trans_grid');
     util = require('dms-util');
     urls = require('dms-urls');
     nodeSelectHandler = function(node, nodeInfo) {
@@ -61,7 +60,7 @@
       if (ftype) {
         $("#exportForm input[name='type']").val(ftype);
       }
-      return $("#exportForm").submit();
+      return $("#exportForm", "#transmng").submit();
     };
     init = function() {
       if (typeof console !== "undefined" && console !== null) {
@@ -94,7 +93,7 @@
         });
         return dialogs.refreshGrid(false, grid);
       });
-      $("#create").button().attr('privilegeName', util.urlname2Action('task/create-task')).click(function() {
+      $("#create", '#transmng').button().attr('privilegeName', util.urlname2Action('task/create-task')).click(function() {
         var info;
         info = grid.getTotalSelectedRowInfo();
         if (!info.rowIds.length) {
@@ -105,13 +104,13 @@
         }
         return dialogs.taskDialog.dialog("open");
       });
-      $('#languageFilter').button().click(function() {
+      $('#languageFilter', '#transmng').button().click(function() {
         return dialogs.languageFilterDialog.dialog("open");
       });
       $(':radio[name=viewOption]').change(function() {
         return dialogs.refreshGrid(false, grid);
       });
-      $("#exportTranslation").button().attr('privilegeName', util.urlname2Action('trans/export-translation-details')).click(function() {
+      $("#exportTranslation", '#transmng').button().attr('privilegeName', util.urlname2Action('trans/export-translation-details')).click(function() {
         var info;
         info = grid.getTotalSelectedRowInfo();
         if (!info.rowIds.length) {
@@ -122,10 +121,10 @@
         }
         return dialogs.exportTranslationDialog.dialog('open');
       });
-      $("#exportExcel").click(function() {
+      $("#exportExcel", '#transmng').click(function() {
         return exportAppOrDicts('excel');
       });
-      return $("#exportPDF").click(function() {
+      return $("#exportPDF", '#transmng').click(function() {
         return exportAppOrDicts('pdf');
       });
     };

@@ -22,7 +22,7 @@
       });
     };
     panelSwitchHandler = function(oldpnl, newpnl) {
-      var pbId, treeSelectedNode;
+      var appmngLayout, isAppCurrentPnlSame, options, treeSelectedNode, type, value;
       if (typeof console !== "undefined" && console !== null) {
         console.debug("oldpnl= " + oldpnl + ", newpnl= " + newpnl + ".");
       }
@@ -30,7 +30,35 @@
         return;
       }
       treeSelectedNode = $("#appTree").jstree('get_selected');
-      return pbId = $('#productBase', "div[id='" + oldpnl + "']").val();
+      if (0 === treeSelectedNode.length || '-1' === treeSelectedNode.attr('id')) {
+        return;
+      }
+      if ('appmng' === newpnl) {
+        if (typeof console !== "undefined" && console !== null) {
+          console.log('from other to appmng panel');
+        }
+        appmngLayout = require('appmng/layout');
+        type = treeSelectedNode.attr('type');
+        if (new RegExp("^DMS_" + type + ".*Panel$").test(appmngLayout.layout.currentPanel)) {
+          isAppCurrentPnlSame = type;
+        }
+        if ('product' === type) {
+          window.param.currentSelected.productId = $('#selVersion', "div[id='" + oldpnl + "']").val();
+        } else {
+          window.param.currentSelected.appId = $('#selVersion', "div[id='" + oldpnl + "']").val();
+        }
+        return $("#appTree").jstree('select_node', $("#appTree").jstree('get_selected'), true);
+      } else {
+        options = $('#selVersion option', "div[id='" + oldpnl + "']").clone();
+        value = $('#selVersion', "div[id='" + oldpnl + "']").val();
+        if ('appmng' === oldpnl && 'app' === treeSelectedNode.attr('type')) {
+          options = $('#selAppVersion option', "div[id='" + oldpnl + "']").clone();
+        }
+        if ('appmng' !== oldpnl) {
+          $('#versionTypeLabel', "div[id='" + newpnl + "']").text($("#appTree").jstree('get_text', treeSelectedNode));
+        }
+        return $('#selVersion', "div[id='" + newpnl + "']").empty().append(options).val(value).trigger('change');
+      }
     };
     init = function() {
       var dmsPanels;

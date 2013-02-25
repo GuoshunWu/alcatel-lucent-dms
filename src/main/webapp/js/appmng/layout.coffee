@@ -30,4 +30,5 @@ define (require)->
     $('#dictionaryGridList').setGridWidth(parent.width() - 10).setGridHeight(parent.height() - 85)
   showWelcomePanel: ->
     appmngPnlGroup.switchTo ids.panel.welcome
+  layout: appmngPnlGroup
 

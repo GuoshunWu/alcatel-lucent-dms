@@ -36,7 +36,8 @@
       },
       showWelcomePanel: function() {
         return appmngPnlGroup.switchTo(ids.panel.welcome);
-      }
+      },
+      layout: appmngPnlGroup
     };
   });
 

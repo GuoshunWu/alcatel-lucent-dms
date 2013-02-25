@@ -1,33 +1,30 @@
 define (require)->
+
   i18n = require 'i18n!nls/transmng'
   c18n = require 'i18n!nls/common'
-  grid = require 'transmng/trans_grid'
-
   util = require 'dms-util'
-  #  detailgrid = require 'transmng/transdetail_grid'
+
+  grid = require 'transmng/trans_grid'
+  detailgrid = require 'transmng/transdetail_grid'
 
   transGrid = grid
+
+
   refreshGrid = (languageTrigger = false, grid = transGrid)->
-
     nodeInfo=(require 'ptree').getNodeInfo()
-
     type = nodeInfo.type
     type = type[..3] if type.startWith('prod')
-
     param =
       release:
         {id: $('#selVersion', "div[id='transmng']").val(), version: $("#selVersion option:selected", "div[id='transmng']").text()}
       level: $("input:radio[name='viewOption'][checked]").val()
       type: type
-
+      name: nodeInfo.text
     checkboxes = $("#languageFilterDialog input:checkbox[name='languages']")
-
     param.languages = checkboxes.map(
       ()-> return {id: @id, name: @value} if @checked).get()
     param.languageTrigger = languageTrigger
-
     grid.updateGrid param
-
 
     console?.debug "transmng panel dialogs init..."
   ################################################ Create Dialogs #################################################
@@ -149,7 +146,7 @@ define (require)->
   transDetailDialog = $('#translationDetailDialog').dialog(
     autoOpen: false, width: 860, height: 'auto', modal: true
     create: ()->
-      $(@).dialog 'option', 'width', $('#transDetailGridList').getGridParam() + 60
+      $(@).dialog 'option', 'width', $('#transDetailGridList').getGridParam('width') + 60
       $('#detailLanguageSwitcher').change ->
         param = $('#translationDetailDialog').data "param"
         language = {id: $(@).val(), name: $("option:selected", @).text()}
@@ -174,3 +171,17 @@ define (require)->
   exportTranslationDialog: exportTranslationDialog
 
   refreshGrid: refreshGrid
+  showTransDetailDialog: (param)->
+    #    refresh dialog
+    $('#dictionaryName', transDetailDialog).html param.dict.name
+    $('#detailLanguageSwitcher', transDetailDialog).empty().append (util.json2Options param.languages, param.language.id, 'name')
+
+    console?.log 'show detail grid...'
+    #   set status toolbar search to selected column
+    transDetailGrid = $("#transDetailGridList", "#transmng")
+
+    map = 'N': '0', 'I': '1', 'T': '2'
+    status = param.language.name.split('.')[1]
+
+    $('#translationDetailDialog').data 'param', {dict: param.dict, searchStatus: map[status]}
+    transDetailDialog.dialog "open"

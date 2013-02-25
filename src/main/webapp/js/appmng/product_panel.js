@@ -70,11 +70,14 @@
           base: productInfo.base.id,
           prop: 'id,version'
         }, function(json) {
-          $('#selVersion').empty().append(util.json2Options(json));
-          if (param.currentSelected.productId) {
-            $('#selVersion').val(param.currentSelected.productId);
+          var selVer;
+          selVer = $('#selVersion', "div[id='appmng']");
+          selVer.empty().append(util.json2Options(json));
+          if (param.currentSelected.productId && parseInt(param.currentSelected.productId) !== -1) {
+            selVer.val(param.currentSelected.productId);
+            param.currentSelected.productId = null;
           }
-          return $('#selVersion').trigger('change');
+          return selVer.trigger('change');
         });
       },
       getSelectedProduct: function() {
