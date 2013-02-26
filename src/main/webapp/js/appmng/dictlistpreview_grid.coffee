@@ -1,6 +1,6 @@
 define (require, util, i18n)->
   $ = require 'jqgrid'
-  util = require 'util'
+  util = require 'dms-util'
   i18n = require 'i18n!nls/appmng'
   require('jqmsgbox')
   c18n = require 'i18n!nls/common'

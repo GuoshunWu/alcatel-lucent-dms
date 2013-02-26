@@ -5,7 +5,7 @@
   define(function(require) {
     var autoSizeGrids, glayout, init, ready;
     require('jqlayout');
-    autoSizeGrids = ['applicationGridList', 'dictionaryGridList', 'transGrid'];
+    autoSizeGrids = ['applicationGridList', 'dictionaryGridList', 'transGrid', 'taskGrid'];
     ready = function(param) {
       return typeof console !== "undefined" && console !== null ? console.debug("global layout ready...") : void 0;
     };

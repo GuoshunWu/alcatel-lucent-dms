@@ -14,7 +14,7 @@
     grid = require('appmng/dictionary_grid');
     i18n = require('i18n!nls/appmng');
     c18n = require('i18n!nls/appmng');
-    util = require('util');
+    util = require('dms-util');
     appInfo = {};
     $("#newAppVersion").button({
       text: false,
@@ -148,23 +148,22 @@
         return $('#selAppVersion').append("<option value='" + app.id + "' selected>" + app.version + "</option>").trigger('change');
       },
       refresh: function(info) {
-        var selAppVer;
         $('#appDispProductName').html(info.parent.text);
         $('#appDispAppName').html(info.text);
         appInfo.base = {
           text: info.text,
           id: info.id
         };
-        $.getJSON("rest/applications/apps/" + info.id, {}, function(json) {
-          return $("#selAppVersion").empty().append(util.json2Options(json));
+        return $.getJSON("rest/applications/apps/" + info.id, {}, function(json) {
+          var selAppVer;
+          selAppVer = $('#selAppVersion', "div[id='appmng']");
+          selAppVer.empty().append(util.json2Options(json));
+          if (param.currentSelected.appId && -1 !== parseInt(param.currentSelected.appId)) {
+            selAppVer.val(param.currentSelected.appId);
+            param.currentSelected.appId = null;
+          }
+          return selAppVer.trigger("change");
         });
-        console.log("application changed.");
-        selAppVer = $('#selAppVersion', "div[id='appmng']");
-        if (param.currentSelected.appId && -1 !== parseInt(param.currentSelected.appId)) {
-          selAppVer.val(param.currentSelected.appId);
-          param.currentSelected.appId = null;
-        }
-        return selAppVer.trigger("change");
       }
     };
   });

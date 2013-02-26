@@ -7,7 +7,6 @@
     glayout = require('globallayout');
     ptree = require('ptree');
     util = require('dms-util');
-    require('util');
     appmngPanel = require('appmng/main');
     transmngPanel = require('transmng/main');
     taskmngPanel = require('taskmng/main');
@@ -22,7 +21,7 @@
       });
     };
     panelSwitchHandler = function(oldpnl, newpnl) {
-      var appmngLayout, isAppCurrentPnlSame, options, treeSelectedNode, type, value;
+      var options, treeSelectedNode, type, value;
       if (typeof console !== "undefined" && console !== null) {
         console.debug("oldpnl= " + oldpnl + ", newpnl= " + newpnl + ".");
       }
@@ -34,14 +33,7 @@
         return;
       }
       if ('appmng' === newpnl) {
-        if (typeof console !== "undefined" && console !== null) {
-          console.log('from other to appmng panel');
-        }
-        appmngLayout = require('appmng/layout');
         type = treeSelectedNode.attr('type');
-        if (new RegExp("^DMS_" + type + ".*Panel$").test(appmngLayout.layout.currentPanel)) {
-          isAppCurrentPnlSame = type;
-        }
         if ('product' === type) {
           window.param.currentSelected.productId = $('#selVersion', "div[id='" + oldpnl + "']").val();
         } else {

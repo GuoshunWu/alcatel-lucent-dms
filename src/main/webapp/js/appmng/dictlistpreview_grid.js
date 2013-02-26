@@ -4,7 +4,7 @@
   define(function(require, util, i18n) {
     var $, c18n, colModel, dicGrid, handlers, infoDialog, lastEditedCell;
     $ = require('jqgrid');
-    util = require('util');
+    util = require('dms-util');
     i18n = require('i18n!nls/appmng');
     require('jqmsgbox');
     c18n = require('i18n!nls/common');

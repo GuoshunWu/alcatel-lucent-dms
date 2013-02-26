@@ -2,18 +2,7 @@
 (function() {
 
   define(function(require) {
-    var $, blockui, c18n, grid, i18n, ids, initPage, msgbox, util;
-    $ = require('jqlayout');
-    blockui = require('blockui');
-    msgbox = require('jqmsgbox');
-    grid = require('transmng/trans_grid');
-    c18n = require('i18n!nls/common');
-    i18n = require('i18n!nls/transmng');
-    util = require('dms-util');
-    ids = {
-      languageFilterTableId: 'languageFilterTable',
-      languageFilterDialogId: 'languageFilterDialog'
-    };
+    var initPage;
     initPage = function() {};
     return {
       name: 'layout'

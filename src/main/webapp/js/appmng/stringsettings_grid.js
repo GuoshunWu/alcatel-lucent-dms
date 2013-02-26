@@ -4,7 +4,7 @@
   define(['jqgrid', 'appmng/langsetting_translation_grid', 'require'], function($, ltgrid, require) {
     var dicGrid, lastEditedCell, util;
     lastEditedCell = null;
-    util = require('util');
+    util = require('dms-util');
     dicGrid = $('#stringSettingsGrid').jqGrid({
       url: 'json/dummy.json',
       mtype: 'post',

@@ -11,15 +11,17 @@ define (require)->
   grid = require 'appmng/dictionary_grid'
   i18n = require 'i18n!nls/appmng'
   c18n = require 'i18n!nls/appmng'
-  util = require 'util'
+  util = require 'dms-util'
 
   appInfo = {}
 
-  $("#newAppVersion").button({text: false, label: '&nbsp;', icons: {primary: "ui-icon-plus"}}).
+  $("#newAppVersion").button({text: false, label: '&nbsp;', icons:
+    {primary: "ui-icon-plus"}}).
   attr('privilegeName', util.urlname2Action 'app/create-application').
   click (e) =>dialogs.newAppVersion.dialog("open")
 
-  $("#removeAppVersion").button({text: false, label: '&nbsp;', icons: {primary: "ui-icon-minus"}}).
+  $("#removeAppVersion").button({text: false, label: '&nbsp;', icons:
+    {primary: "ui-icon-minus"}}).
   attr('privilegeName', util.urlname2Action 'app/remove-application').
   click (e) =>
     id = $("#selAppVersion").val()
@@ -100,11 +102,11 @@ define (require)->
 
     appInfo.base = {text: info.text, id: info.id}
 
-    $.getJSON "rest/applications/apps/#{info.id}", {}, (json)->$("#selAppVersion").empty().append(util.json2Options json)
+    $.getJSON "rest/applications/apps/#{info.id}", {}, (json)->
+      selAppVer=$('#selAppVersion', "div[id='appmng']")
 
-    console.log "application changed."
-    selAppVer=$('#selAppVersion', "div[id='appmng']")
-    if(param.currentSelected.appId and -1 != parseInt(param.currentSelected.appId))
-      selAppVer.val(param.currentSelected.appId)
-      param.currentSelected.appId=null
-    selAppVer.trigger "change"
+      selAppVer.empty().append(util.json2Options json)
+      if(param.currentSelected.appId and -1 != parseInt(param.currentSelected.appId))
+        selAppVer.val(param.currentSelected.appId)
+        param.currentSelected.appId=null
+      selAppVer.trigger "change"

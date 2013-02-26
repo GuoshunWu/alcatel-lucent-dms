@@ -4,7 +4,7 @@
   define(['jqgrid', 'require'], function($, require) {
     var grid, lastEditedCell, util;
     lastEditedCell = null;
-    util = require('util');
+    util = require('dms-util');
     grid = $('#historyGrid').jqGrid({
       url: 'json/dummy.json',
       mtype: 'post',

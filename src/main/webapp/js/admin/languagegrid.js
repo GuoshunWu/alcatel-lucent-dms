@@ -4,7 +4,7 @@
   define(function(require) {
     var $, afterSubmit, grid, i18n, util;
     $ = require('jqgrid');
-    util = require('util');
+    util = require('dms-util');
     i18n = require('i18n!nls/admin');
     afterSubmit = function(response, postdata) {
       var jsonFromServer;

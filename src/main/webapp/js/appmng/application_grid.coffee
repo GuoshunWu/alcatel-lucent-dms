@@ -1,4 +1,4 @@
-define ['jqgrid', 'i18n!nls/appmng', 'appmng/dialogs', 'util', 'require'], ($, i18n, dialogs, util, require)->
+define ['jqgrid', 'i18n!nls/appmng', 'appmng/dialogs', 'dms-util', 'require'], ($, i18n, dialogs, util, require)->
   URL = {
   # get application in product by product id
   get_application_by_product_id: 'rest/applications'

@@ -61,6 +61,7 @@ Time: 下午7:
       app_versions: getURL("applications/apps/", 'rest/'),
       apps: getURL('applications', 'rest/'),
       dicts: getURL('dict', 'rest/'),
+      tasks: getURL('tasks', 'rest/'),
       languages: getURL('languages', 'rest/')
     };
   });

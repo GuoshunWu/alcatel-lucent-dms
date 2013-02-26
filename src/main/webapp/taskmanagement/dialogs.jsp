@@ -34,7 +34,7 @@
     </table>
 </div>
 
-<div id="translationDetailDialog" title="<s:text name="taskmng.dialogs.viewdetail.title"/> ">
+<div id="taskDetailDialog" title="<s:text name="taskmng.dialogs.viewdetail.title"/> ">
     <table border="0" width="100%">
         <tr>
             <td>&nbsp;</td>

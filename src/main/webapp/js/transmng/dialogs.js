@@ -147,7 +147,7 @@
         var info, langFilterTableId, nums, postData, tableType, taskname,
           _this = this;
         info = grid.getTotalSelectedRowInfo();
-        taskname = "" + ($('#productBase option:selected').text()) + "_" + ($('#productRelease option:selected').text());
+        taskname = "" + ($('#versionTypeLabel', '#transmng').text()) + "_" + ($('#selVersion option:selected', '#transmng').text());
         taskname += "_" + (new Date().format('yyyyMMddhhmmss'));
         $('#taskName').val(taskname).select();
         tableType = grid.getTableType();
@@ -243,8 +243,38 @@
       width: 860,
       height: 'auto',
       modal: true,
+      open: function() {
+        $('#searchAction', this).position({
+          my: 'left center',
+          at: 'right center',
+          of: '#searchText'
+        });
+        return $('#detailLanguageSwitcher').trigger("change");
+      },
       create: function() {
+        var postData, transDetailGrid,
+          _this = this;
         $(this).dialog('option', 'width', $('#transDetailGridList').getGridParam('width') + 60);
+        transDetailGrid = $("#transDetailGridList");
+        postData = transDetailGrid.getGridParam('postData');
+        $('#transDetailSearchText', this).keydown(function(e) {
+          if (e.which === 13) {
+            return $('#transDetailSearchAction', _this).trigger('click');
+          }
+        });
+        $('#transDetailSearchAction', this).attr('title', 'Search').button({
+          text: false,
+          icons: {
+            primary: "ui-icon-search"
+          }
+        }).click(function() {
+          postData.text = $('#transDetailSearchText', _this).val();
+          return transDetailGrid.trigger('reloadGrid');
+        }).height(20).width(20);
+        $('#transSameWithRef', this).change(function(e) {
+          postData.nodiff = this.checked;
+          return transDetailGrid.trigger('reloadGrid');
+        });
         return $('#detailLanguageSwitcher').change(function() {
           var language, param;
           param = $('#translationDetailDialog').data("param");
@@ -260,7 +290,13 @@
         });
       },
       close: function(event, ui) {
-        return detailgrid.saveLastEditedCell();
+        var postData;
+        detailgrid.saveLastEditedCell();
+        postData = $("#transDetailGridList").getGridParam('postData');
+        $('#transSameWithRef', this).attr('checked', false);
+        delete postData.nodiff;
+        $('#searchText', this).val("");
+        return delete postData.text;
       },
       buttons: [
         {
@@ -282,13 +318,9 @@
       exportTranslationDialog: exportTranslationDialog,
       refreshGrid: refreshGrid,
       showTransDetailDialog: function(param) {
-        var map, status, transDetailGrid;
+        var map, status;
         $('#dictionaryName', transDetailDialog).html(param.dict.name);
         $('#detailLanguageSwitcher', transDetailDialog).empty().append(util.json2Options(param.languages, param.language.id, 'name'));
-        if (typeof console !== "undefined" && console !== null) {
-          console.log('show detail grid...');
-        }
-        transDetailGrid = $("#transDetailGridList", "#transmng");
         map = {
           'N': '0',
           'I': '1',

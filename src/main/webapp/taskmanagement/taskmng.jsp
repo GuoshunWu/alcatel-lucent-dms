@@ -5,12 +5,6 @@
                 <table border="0" width="100%">
                     <tr>
                         <td style="width: 80px" align="right"><span id="versionTypeLabel"><s:text name="context.prod"/></span></td>
-                        <%--<td style="width:160px">--%>
-                            <%--<s:select theme="simple" id="productBase" list="productBases" listKey="id" listValue="name"--%>
-                                      <%--cssStyle="width:99%;" headerKey="-1"--%>
-                                      <%--headerValue="%{getText('product.select.head')}"--%>
-                                      <%--value="curProductBaseId"/>--%>
-                        <%--</td>--%>
                         <td align="right" style="width: 100px"><s:text name="version"/></td>
                         <td style="width:200px">
                             <s:select theme="simple" id="selVersion" list="products" listKey="id"
