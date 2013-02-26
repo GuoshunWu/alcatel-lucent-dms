@@ -2,7 +2,7 @@
 define (require)->
   #  $ = require 'jqtree'
   $ = require 'jqueryui'
-  util = require 'util'
+  util = require 'dms-util'
   require 'jqtree'
   c18n = require 'i18n!nls/common'
   require 'jqmsgbox'

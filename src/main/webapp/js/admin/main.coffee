@@ -1,31 +1,39 @@
 define (require)->
-#  $ = require 'jqgrid'
-#  require 'jqueryui'
-#  require 'jqlayout'
-#  util = require 'util'
-#  charsetgrid = require 'admin/charsetgrid'
-#  languagegrid = require 'admin/languagegrid'
-#
-#  $('#adminTabs').tabs(
-#    show: (event, ui)->
-#      pheight = $(ui.panel).height()
-#      pwidth = $(ui.panel).width()
-#      #      console?.debug "height=#{pheight}, width=#{pwidth}."
-#      $('table.ui-jqgrid-btable', ui.panel).setGridHeight(pheight - 90).setGridWidth(pwidth - 20)
-#  )
-#
-#  $('#loading-container').fadeOut 'slow', ()->$(@).remove()
-#  util.afterInitilized(this)
-#
-#  tabs = $('#adminTabs')
-#  #
-#  pheight = tabs.parent().height()
-#  tabs.tabs 'option', 'pheight', pheight
-#  console?.debug "init tabs height=#{pheight}."
-#
-#  $('div.ui-tabs-panel', tabs).height(pheight - 50)
-#  #  tabs.tabs 'select', 1
-#  #  console?.debug "language grid height=#{$('#languageGrid').getGridParam('height')}."
-#  $('#languageGrid').setGridHeight('100%')
+  $ = require 'jqgrid'
+  require 'jqueryui'
+  util = require 'dms-util'
+  charsetgrid = require 'admin/charsetgrid'
+  languagegrid = require 'admin/languagegrid'
+
+
+  init = ()->
+    console?.debug "transmng panel init..."
+    $('#adminTabs').tabs(
+      show: (event, ui)->
+        pheight = $(ui.panel).height()
+        pwidth = $(ui.panel).width()
+        #      console?.debug "height=#{pheight}, width=#{pwidth}."
+        $('table.ui-jqgrid-btable', ui.panel).setGridHeight(pheight - 90).setGridWidth(pwidth - 20)
+    )
+
+    tabs = $('#adminTabs')
+    #
+    pheight = tabs.parent().height()
+    tabs.tabs 'option', 'pheight', pheight
+    console?.debug "init tabs height=#{pheight}."
+
+    $('div.ui-tabs-panel', tabs).height(pheight - 50)
+    #  tabs.tabs 'select', 1
+    #  console?.debug "language grid height=#{$('#languageGrid').getGridParam('height')}."
+    $('#languageGrid').setGridHeight('100%')
+
+  ready = ()->
+  console?.debug "transmng panel ready..."
+
+  init()
+  ready()
+
+
+
 
 

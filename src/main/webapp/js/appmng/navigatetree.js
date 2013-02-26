@@ -5,7 +5,7 @@
   define(function(require) {
     var $, URL, appTree, apppnl, c18n, getNodeInfo, ids, layout, nodeCtxMenu, productpnl, removeNode, timeFunName, util, _ref, _ref1, _ref2, _ref3;
     $ = require('jqueryui');
-    util = require('util');
+    util = require('dms-util');
     require('jqtree');
     c18n = require('i18n!nls/common');
     require('jqmsgbox');

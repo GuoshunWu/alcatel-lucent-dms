@@ -1,7 +1,7 @@
 define (require)->
   $ = require 'jquery'
   require 'jqmsgbox'
-  util = require 'util'
+  util = require 'dms-util'
   c18n = require 'i18n!nls/common'
   grid = require 'appmng/application_grid'
   dialogs = require 'appmng/dialogs'

@@ -8,7 +8,7 @@
     i18n = require('i18n!nls/appmng');
     require('blockui');
     require('jqmsgbox');
-    util = require('util');
+    util = require('dms-util');
     newProductVersion = $("#newProductReleaseDialog").dialog({
       autoOpen: false,
       height: 200,

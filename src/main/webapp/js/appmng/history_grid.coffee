@@ -1,6 +1,6 @@
 define ['jqgrid', 'require'], ($, require)->
   lastEditedCell = null
-  util = require 'util'
+  util = require 'dms-util'
 
   grid = $('#historyGrid').jqGrid(
     url: 'json/dummy.json', mtype: 'post', datatype: 'local'

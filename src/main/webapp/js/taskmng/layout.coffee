@@ -1,4 +1,4 @@
-define ['jqlayout', 'taskmng/task_grid', 'i18n!nls/common', 'taskmng/dialogs', 'util', 'require'], ($, grid, c18n, dialogs, util, require)->
+define ['jqlayout', 'taskmng/task_grid', 'i18n!nls/common', 'taskmng/dialogs', 'dms-util', 'require'], ($, grid, c18n, dialogs, util, require)->
   require 'jqueryui'
 
   $('#productBase').change ()->

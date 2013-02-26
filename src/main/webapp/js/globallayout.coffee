@@ -1,7 +1,7 @@
 define (require)->
   require 'jqlayout'
 
-  autoSizeGrids = ['applicationGridList', 'dictionaryGridList', 'transGrid']
+  autoSizeGrids = ['applicationGridList', 'dictionaryGridList', 'transGrid', 'taskGrid']
 
   ready = (param)->
     console?.debug "global layout ready..."
@@ -10,7 +10,8 @@ define (require)->
       onresize: (name, element, state, options, layoutname)->
         # auto size trans grid when resize
         $('table.ui-jqgrid-btable').each (index, grid)->
-          $(grid).setGridWidth(element.width() - 50, false) if 'center' == name and grid.id in autoSizeGrids
+          if 'center' == name and grid.id in autoSizeGrids
+            $(grid).setGridWidth(element.width() - 50, false)
 
       defaults:
         size: 'auto'

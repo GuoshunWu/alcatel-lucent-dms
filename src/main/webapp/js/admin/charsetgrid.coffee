@@ -1,6 +1,6 @@
 define (require)->
   $ = require 'jqgrid'
-  util = require 'util'
+  util = require 'dms-util'
 
   i18n = require 'i18n!nls/admin'
 

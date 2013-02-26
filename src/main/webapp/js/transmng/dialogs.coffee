@@ -82,7 +82,7 @@ define (require)->
     create: ->
     open: ->
       info = grid.getTotalSelectedRowInfo()
-      taskname = "#{$('#productBase option:selected').text()}_#{$('#productRelease option:selected').text()}"
+      taskname = "#{$('#versionTypeLabel', '#transmng').text()}_#{$('#selVersion option:selected', '#transmng').text()}"
       taskname += "_#{new Date().format('yyyyMMddhhmmss')}"
       $('#taskName').val(taskname).select()
       #      tableType is app or dict
@@ -145,14 +145,40 @@ define (require)->
 
   transDetailDialog = $('#translationDetailDialog').dialog(
     autoOpen: false, width: 860, height: 'auto', modal: true
+
+    open: ()->
+      $('#searchAction',@).position(my: 'left center', at: 'right center', of: '#searchText')
+      $('#detailLanguageSwitcher').trigger "change"
     create: ()->
       $(@).dialog 'option', 'width', $('#transDetailGridList').getGridParam('width') + 60
+      transDetailGrid = $("#transDetailGridList")
+      postData = transDetailGrid.getGridParam('postData')
+
+      $('#transDetailSearchText', @).keydown (e)=>$('#transDetailSearchAction', @).trigger 'click' if e.which == 13
+      $('#transDetailSearchAction', @).attr('title', 'Search').button(text: false, icons:{primary: "ui-icon-search"}).click(()=>
+        postData.text = $('#transDetailSearchText', @).val()
+        transDetailGrid.trigger 'reloadGrid'
+      ).height(20).width(20)
+#        .position({my:'left center', at: 'right center', of: '#transDetailSearchText'})
+
+      $('#transSameWithRef', @).change (e)->
+        postData.nodiff = @checked
+        #          console?.debug transDetailGrid.getGridParam('postData')
+        transDetailGrid.trigger 'reloadGrid'
+
       $('#detailLanguageSwitcher').change ->
         param = $('#translationDetailDialog').data "param"
         language = {id: $(@).val(), name: $("option:selected", @).text()}
         detailgrid.languageChanged {language: language, dict: param.dict, searchStatus: param.searchStatus}
     close: (event, ui)->
       detailgrid.saveLastEditedCell()
+      postData = $("#transDetailGridList").getGridParam('postData')
+
+      $('#transSameWithRef', @).attr('checked', false)
+      delete postData.nodiff
+
+      $('#searchText', @).val("")
+      delete postData.text
     buttons: [
       {text: c18n.close, click: ()->
         $(@).dialog 'close'
@@ -175,10 +201,6 @@ define (require)->
     #    refresh dialog
     $('#dictionaryName', transDetailDialog).html param.dict.name
     $('#detailLanguageSwitcher', transDetailDialog).empty().append (util.json2Options param.languages, param.language.id, 'name')
-
-    console?.log 'show detail grid...'
-    #   set status toolbar search to selected column
-    transDetailGrid = $("#transDetailGridList", "#transmng")
 
     map = 'N': '0', 'I': '1', 'T': '2'
     status = param.language.name.split('.')[1]

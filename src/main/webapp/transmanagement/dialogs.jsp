@@ -85,8 +85,8 @@
                             </select>
                         </td>
                         <td>&nbsp;</td>
-                        <td><s:text name="searchtext"/><input id="searchText"/>
-                            <button id="searchAction"/>
+                        <td><s:text name="searchtext"/><input id="transDetailSearchText"/>
+                            <button id="transDetailSearchAction"/>
                         </td>
                         <td>&nbsp;</td>
                         <td>

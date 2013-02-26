@@ -4,9 +4,6 @@ define (require)->
   ptree = require 'ptree'
   util = require 'dms-util'
 
- # TODO: need to be refined later
-  require 'util'
-
   #  panels
   appmngPanel = require 'appmng/main'
   #
@@ -28,18 +25,8 @@ define (require)->
     treeSelectedNode=$("#appTree").jstree 'get_selected'
     return if 0 == treeSelectedNode.length or '-1' == treeSelectedNode.attr('id')
 
-
     if 'appmng' == newpnl
-      console?.log 'from other to appmng panel'
-      #set global param
-      appmngLayout = require 'appmng/layout'
       type = treeSelectedNode.attr('type')
-      isAppCurrentPnlSame = type if new RegExp("^DMS_#{type}.*Panel$").test(appmngLayout.layout.currentPanel)
-
-#      selector = if 'product' == type then '#selVersion' else '#selAppVersion'
-#      if isAppCurrentPnlSame
-#        $(selector,"div[id='#{newpnl}']").val($('#selVersion',"div[id='#{oldpnl}']").val()).trigger 'change'
-#        return
       if 'product' == type
         window.param.currentSelected.productId = $('#selVersion', "div[id='#{oldpnl}']").val()
       else
@@ -50,6 +37,7 @@ define (require)->
       value = $('#selVersion',"div[id='#{oldpnl}']").val()
       options = $('#selAppVersion option',"div[id='#{oldpnl}']").clone() if 'appmng' == oldpnl and 'app' == treeSelectedNode.attr('type')
       $('#versionTypeLabel',"div[id='#{newpnl}']").text $("#appTree").jstree('get_text',treeSelectedNode) if 'appmng' != oldpnl
+
       $('#selVersion',"div[id='#{newpnl}']").empty().append(options).val(value).trigger 'change'
 
   ################################################## Initilaize #####################################################

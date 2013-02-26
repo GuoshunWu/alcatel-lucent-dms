@@ -4,7 +4,7 @@ define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsetti
   i18n = require 'i18n!nls/appmng'
   require 'blockui'
   require 'jqmsgbox'
-  util = require 'util'
+  util = require 'dms-util'
 
   #  Create new product release dialog
   newProductVersion = $("#newProductReleaseDialog").dialog {

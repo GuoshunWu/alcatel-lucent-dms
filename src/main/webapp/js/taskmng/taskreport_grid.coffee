@@ -1,4 +1,5 @@
-define ['jqgrid', 'util', 'require'], ($, util, require)->
+define ['jqgrid', 'dms-util', 'require'], ($, util, require)->
+
   colNames = ['Application', 'Total']
   colModel = [
     {name: 'name', index: 'dict', width: 240, editable: false, stype: 'select', align: 'left', frozen: true}

@@ -2,16 +2,17 @@
 (function() {
 
   define(function(require) {
-    var $, c18n, dialogs, handlers, i18n, prop, taskGrid, util;
+    var $, c18n, dialogs, handlers, i18n, prop, taskGrid, urls, util;
     $ = require('jqgrid');
-    util = require('util');
-    dialogs = require('taskmng/dialogs');
-    c18n = require('i18n!nls/common');
-    i18n = require('i18n!nls/taskmng');
     require('blockui');
     require('jqmsgbox');
     require('jqupload');
     require('iframetransport');
+    c18n = require('i18n!nls/common');
+    i18n = require('i18n!nls/taskmng');
+    util = require('dms-util');
+    urls = require('dms-urls');
+    dialogs = require('taskmng/dialogs');
     handlers = {
       'Download': {
         title: 'Download',
@@ -83,7 +84,7 @@
       mtype: 'POST',
       editurl: "",
       datatype: 'local',
-      width: $(window).width() * 0.95,
+      width: 'auto',
       height: 400,
       shrinkToFit: false,
       cellactionhandlers: handlers,
@@ -264,16 +265,18 @@
     });
     taskGrid.getGridParam('afterCreate')(taskGrid);
     return {
-      productVersionChanged: function(product) {
-        taskGrid = $("#taskGrid");
+      productVersionChanged: function(param) {
+        var postData;
+        taskGrid = $("#taskGrid", '#taskmng');
         prop = "name,creator.name,createTime,lastUpdateTime,status";
+        postData = {
+          format: 'grid',
+          prop: prop
+        };
+        postData[param.type] = param.release.id;
         return taskGrid.setGridParam({
-          url: 'rest/tasks',
-          postData: {
-            prod: product.release.id,
-            format: 'grid',
-            prop: prop
-          }
+          url: urls.tasks,
+          postData: postData
         }).trigger("reloadGrid");
       }
     };
