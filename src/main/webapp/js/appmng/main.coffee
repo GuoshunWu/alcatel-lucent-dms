@@ -1,14 +1,11 @@
-define (require)->
+define [],(require)->
   $ = require 'jqgrid'
   util = require 'dms-util'
 
+  require 'appmng/dialogs'
   productpnl = require 'appmng/product_panel'
   apppnl = require 'appmng/application_panel'
   layout = require 'appmng/layout'
-
-  ########## reference legency codes here ###########
-  dialogs = require 'appmng/dialogs'
-
 
   nodeSelectHandler = (node, nodeInfo)->
     switch node.attr('type')
@@ -31,7 +28,6 @@ define (require)->
 
   ready = (param)->
     console?.debug "appmng panel ready..."
-    #binds product tree actions for appmng.jsp panel
   init()
   ready(@)
 

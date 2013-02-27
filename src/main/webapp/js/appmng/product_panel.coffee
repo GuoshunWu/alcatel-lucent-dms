@@ -1,23 +1,15 @@
-define (require)->
+define ['dms-util', 'appmng/application_grid', 'require'],( util, grid, require)->
   $ = require 'jquery'
   require 'jqmsgbox'
-  util = require 'dms-util'
+
+  urls = require 'dms-urls'
   c18n = require 'i18n!nls/common'
-  grid = require 'appmng/application_grid'
-  dialogs = require 'appmng/dialogs'
-
-
-  URL = {
-  # get product by it id url, append product id to this url
-  get_product_by_base_id: 'rest/products/version'
-  }
-
 
   $("#newVersion").button(text: false, label: '&nbsp;', icons:
     {primary: "ui-icon-plus"}).
   attr('privilegeName', util.urlname2Action 'app/create-product-release').
   click () =>
-    dialogs.newProductVersion.dialog("open")
+    $("#newProductReleaseDialog").dialog("open")
 
   $("#removeVersion").button(text: false, label: '&nbsp;', icons:
     {primary: "ui-icon-minus"})
@@ -32,7 +24,6 @@ define (require)->
     $('#selVersion').trigger 'change'
   )
 
-
   productInfo = {}
   # initial product version select
   $('#selVersion').change ()->
@@ -45,7 +36,7 @@ define (require)->
     # info.id, info.text is productBase id and name
     productInfo.base = {id: info.id, text: info.text}
     $('#dispProductName').html productInfo.base.text
-    $.getJSON URL.get_product_by_base_id, {base: productInfo.base.id, prop: 'id,version'}, (json)->
+    $.getJSON urls.prod_versions, {base: productInfo.base.id, prop: 'id,version'}, (json)->
       # update product version select
       selVer=$('#selVersion', "div[id='appmng']")
       selVer.empty().append(util.json2Options json)

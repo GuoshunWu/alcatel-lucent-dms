@@ -24,10 +24,12 @@ define (require)->
   product:
     create: getURL('create-product', 'app/')
     del: getURL('remove-product-base', 'app/')
-    versions: getURL('products/version','rest/')
+    create_version: getURL('create-product-release', 'app/')
   app:
     create: getURL('create-application-base', 'app/')
     del: getURL('remove-application-base', 'app/')
+    create_version: getURL('create-application', 'app/')
+    remove_version: getURL('remove-application', 'app/')
 
   #  rest urls
   prod_versions:getURL('products/version','rest/')
@@ -39,5 +41,6 @@ define (require)->
   tasks: getURL('tasks', 'rest/')
 
   languages: getURL('languages','rest/')
+
 
 

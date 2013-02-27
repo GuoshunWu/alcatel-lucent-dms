@@ -4,7 +4,7 @@ User: Guoshun Wu
 Date: -8-
 Time: 下午7:
 ###
-define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
+define ["jquery",'jqueryui',"jqtree", "i18n!nls/common"], ($, ui, jqtree, c18n)->
 
   #    prototype enhancement
   String:: format = -> args = arguments; @replace /\{(\d+)\}/g, (m, i) ->args[i]
@@ -106,12 +106,16 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
       i++
     retval
 
-  setCookie = (name, value, expires, domain, path, secure)->
-    c = "#{name}=#{escape(value)}"
-    start = 2
-    for arg in ['expires', 'domain', 'path', 'secure']
-      c += ";#{arg}=#{arguments[start++]}" if arguments[start]
-    document.cookie = c
+  getTreeNodeInfo = (node, treeSelecotr = '#appTree')->
+    ptree=$.jstree._reference(treeSelecotr)
+    return null if !ptree
+    selectedNode = if node then node else ptree.get_selected()
+    parent = ptree._get_parent(selectedNode)
+
+    id: selectedNode.attr('id')
+    text: ptree.get_text(selectedNode)
+    type: selectedNode.attr('type')
+    parent: if parent != -1 then getTreeNodeInfo(parent) else parent
 
   newOption = (text, value, selected)->"<option #{if selected then 'selected ' else ''}value='#{value}'>#{text}</option>"
 
@@ -182,14 +186,16 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
     #    for the grid  navigatebar, ['view', 'search', 'refresh'] are readonly operation, enabled
     $.each ['add', 'edit', 'del'], (index, value)->
       # for jqgrid predefined navigate buttons
-      actButton = $("##{value}_#{grid.id}")
+      btnSelector = "##{value}_#{grid.id}"
+      actButton = $ btnSelector
 
       if actButton.length > 0 and forbiddenTab.editurl
         console?.log "Disable button #{actButton.attr('id')} due to forbidden privilege."
         actButton.addClass 'ui-state-disabled'
 
       # for custom buttons in navigate gird.
-      actButton = $("#custom_#{value}_#{grid.id}")
+      btnSelector = "#custom_#{value}_#{grid.id}"
+      actButton = $(btnSelector)
       if actButton.length > 0 and (forbiddenTab.editurl or forbiddenTab.cellactionurl)
         console?.log "Disable button #{actButton.attr('id')} due to forbidden privilege."
         actButton.addClass 'ui-state-disabled'
@@ -284,6 +290,7 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
   urlname2Action: urlname2Action
   createLayoutManager: (page = 'appmng.jsp')->createLayoutManager(page)
 
+  getProductTreeInfo: getTreeNodeInfo
 
   ###
     @param panels: the panel group selector
@@ -294,7 +301,7 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
     constructor: (@panels, @currentPanel, @onSwitch = (oldpnl, newpnl)->)->
     switchTo: (panelId, callback)->
       $("#{@panels}").hide()
-      #      console?.debug "switch to #{@panels}[id='#{panelId}']."
+#      console?.debug "switch to #{@panels}[id='#{panelId}']."
       oldPanel = @currentPanel
       @currentPanel = panelId
       $("#{@panels}[id='#{panelId}']").fadeIn "fast", ()->callback() if $.isFunction(callback)

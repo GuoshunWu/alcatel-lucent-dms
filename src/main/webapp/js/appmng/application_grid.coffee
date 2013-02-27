@@ -1,21 +1,16 @@
-define ['jqgrid', 'i18n!nls/appmng', 'appmng/dialogs', 'dms-util', 'require'], ($, i18n, dialogs, util, require)->
-  URL = {
-  # get application in product by product id
-  get_application_by_product_id: 'rest/applications'
-  }
+define (require)->
 
-  localIds = {
-  app_grid: '#applicationGridList'
-  }
+  $ = require 'jqgrid'
+  i18n = require 'i18n!nls/appmng'
+  util = require 'dms-util'
+  urls = require 'dms-urls'
 
-  appGrid = $(localIds.app_grid).jqGrid(
+  appGrid = $('#applicationGridList').jqGrid(
     datatype: 'local'
-    url: 'json/dummy.json'
     editurl: "app/create-or-add-application"
     cellurl: 'app/change-application-version'
     cellactionurl: 'app/add-application'
     cellsubmit: 'remote', cellEdit: true
-    #    autowidth: true
     widht: 700
     height: '100%'
     pager: '#pager', rowNum: 10, rowList: [10, 20, 30], multiselect: true
@@ -33,7 +28,7 @@ define ['jqgrid', 'i18n!nls/appmng', 'appmng/dialogs', 'dms-util', 'require'], (
     afterEditCell: (id, name, val, iRow, iCol)->
       if name == 'version'
         $.ajax {url: "rest/applications/appssamebase/#{id}", async: false, dataType: 'json', success: (json)->
-          $("##{iRow}_version", localIds.app_grid).append util.json2Options json, val
+          $("##{iRow}_version", '#applicationGridList').append util.json2Options json, val
         }
     beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
       prodpnl = require 'appmng/product_panel'
@@ -63,14 +58,12 @@ define ['jqgrid', 'i18n!nls/appmng', 'appmng/dialogs', 'dms-util', 'require'], (
     })
 
   appGrid.navButtonAdd('#pager', {id: "custom_add_#{appGrid.attr 'id'}", caption: "", buttonicon: "ui-icon-plus", position: "first", onClickButton: ()->
-    dialogs.addApplication.dialog "open"
+    $("#addApplicationDialog").dialog "open"
   })
 
-
-  id: localIds
   productChanged: (param)->
     appGrid.setCaption "Applications for Product #{param.base.text} version #{param.product.version}"
-    appGrid.setGridParam(url: URL.get_application_by_product_id, postData: {prod: param.product.id, format: 'grid', prop: 'id,name,version,dictNum'}
-    ).trigger("reloadGrid")
+    postData = {prod: param.product.id, format: 'grid', prop: 'id,name,version,dictNum'}
+    appGrid.setGridParam(url: urls.apps, postData: postData).trigger("reloadGrid")
 
 
