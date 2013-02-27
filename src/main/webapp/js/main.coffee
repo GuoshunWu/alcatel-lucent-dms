@@ -1,8 +1,9 @@
-define (require)->
+define [],(require)->
   $ = require 'jqlayout'
+  util = require 'dms-util'
+
   glayout = require 'globallayout'
   ptree = require 'ptree'
-  util = require 'dms-util'
 
   #  panels
   appmngPanel = require 'appmng/main'

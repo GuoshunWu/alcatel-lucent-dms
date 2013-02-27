@@ -1,32 +1,35 @@
 define (require)->
   $ = require 'jqueryui'
+
+  i18n = require 'i18n!nls/appmng'
+  c18n = require 'i18n!nls/appmng'
+  util = require 'dms-util'
+  urls = require 'dms-urls'
+
   require 'appmng/langsetting_grid'
   require 'appmng/stringsettings_grid'
   require 'appmng/history_grid'
 
   require 'jqupload'
   require 'iframetransport'
-  dialogs = require 'appmng/dialogs'
+
 
   grid = require 'appmng/dictionary_grid'
-  i18n = require 'i18n!nls/appmng'
-  c18n = require 'i18n!nls/appmng'
-  util = require 'dms-util'
 
   appInfo = {}
 
   $("#newAppVersion").button({text: false, label: '&nbsp;', icons:
     {primary: "ui-icon-plus"}}).
-  attr('privilegeName', util.urlname2Action 'app/create-application').
-  click (e) =>dialogs.newAppVersion.dialog("open")
+  attr('privilegeName', util.urlname2Action urls.app.create_version).
+  click (e) =>$("#newApplicationVersionDialog").dialog("open")
 
   $("#removeAppVersion").button({text: false, label: '&nbsp;', icons:
     {primary: "ui-icon-minus"}}).
-  attr('privilegeName', util.urlname2Action 'app/remove-application').
+  attr('privilegeName', util.urlname2Action urls.app.remove_version).
   click (e) =>
     id = $("#selAppVersion").val()
     return if !id
-    $.post 'app/remove-application', {id: id, permanent: 'true'}, (json)->
+    $.post urls.app.remove_version, {id: id, permanent: 'true'}, (json)->
       if json.status != 0
         $.msgBox json.message, null, {title: c18n.error}
         return
@@ -94,8 +97,6 @@ define (require)->
   }
 
   getApplicationSelectOptions: ()->$('#selAppVersion').children('option').clone(true)
-  addNewApplication: (app) ->
-    $('#selAppVersion').append("<option value='#{app.id}' selected>#{app.version}</option>").trigger 'change'
   refresh: (info)->
     $('#appDispProductName').html info.parent.text
     $('#appDispAppName').html info.text

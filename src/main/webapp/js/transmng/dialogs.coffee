@@ -47,7 +47,7 @@ define (require)->
       { effect: 'slide', direction: "down" }
     open: ->
       info = grid.getTotalSelectedRowInfo()
-      #      tableType is app or dict
+      # tableType is app or dict
       tableType = grid.getTableType()
 
       langFilterTableId = "languageFilter_#{$(@).attr('id')}"
@@ -57,7 +57,7 @@ define (require)->
 
       $.getJSON 'rest/languages', postData, (languages)=>$(@).append util.generateLanguageTable languages, langFilterTableId if languages.length > 0
     buttons: [
-      {text: c18n.export, click: ->
+      {text: c18n['export'], click: ->
         me = $(@)
         languages = ($(":checkbox[name='languages']", @).map -> {id: @id, name: @value} if @checked).get()
         if(languages.length == 0)
@@ -123,7 +123,7 @@ define (require)->
           ()->@).get().join(',')
 
         taskDialog.parent().block()
-        $.post 'task/create-task', {prod: $('#productRelease').val(), language: langids, dict: dicts, name: name }, (json)->
+        $.post 'task/create-task', {prod: $('#selVersion', '#transmng').val(), language: langids, dict: dicts, name: name }, (json)->
           taskDialog.parent().unblock()
           if(json.status != 0)
             $.msgBox json.message, null, {title: c18n.error}
@@ -133,8 +133,8 @@ define (require)->
             if c18n.yes != keyPressed
               $("#transGrid").trigger 'reloadGrid'
               return
-            $('#pageNavigator').val 'taskmng.jsp'
-            $('#naviForm').submit()
+
+            $("span[id^='nav'][value='taskmng']").trigger('click')
           ), {title: c18n.confirm}, [c18n.yes, c18n.no]
 
           taskDialog.dialog "close"

@@ -1,9 +1,11 @@
 define (require, util, i18n)->
   $ = require 'jqgrid'
-  util = require 'dms-util'
+  require 'jqmsgbox'
+
   i18n = require 'i18n!nls/appmng'
-  require('jqmsgbox')
   c18n = require 'i18n!nls/common'
+
+  util = require 'dms-util'
 
   infoDialog = $('<div>').dialog {
   autoOpen: false, height: 400, width: 800

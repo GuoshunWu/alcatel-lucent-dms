@@ -8,27 +8,13 @@ define (require)->
   c18n = require 'i18n!nls/common'
 
   appTree = null
-
-  getNodeInfo = (node)->
-    if !appTree
-      console.log "Error, appTree is null."
-      return null
-
-    selectedNode = if node then node else appTree.get_selected()
-    info = id: selectedNode.attr('id'), text: appTree.get_text(selectedNode), type: selectedNode.attr('type')
-
-    parent = appTree._get_parent(selectedNode)
-    return info if parent == -1
-    info.parent = getNodeInfo(parent)
-    info
-
+  getNodeInfo = util.getProductTreeInfo
   removeNode = (node)->
     $.post urls[node.attr('type')].del, {id: node.attr('id')}, (json)->
       if json.status != 0
         $.msgBox json.message, null, {title: c18n.error, width: 300, height: 'auto'}
         return false
       appTree?.remove node
-  #      console.log 'remove node ' + appTree.get_text(node)
 
   nodeCtxMenu =
     products:
@@ -70,7 +56,6 @@ define (require)->
         node = data.rslt.obj
         name = data.rslt.name
         if '' == name
-        #          console.log 'name is blank, rollback.'
           $.jstree.rollback(data.rlbk)
           return
         #         validation passed, ask server to create the product(application)
@@ -86,7 +71,7 @@ define (require)->
       (event, data)->
         appTree = data.inst
         #   productBase should be selected if param.currentSelected.productBaseId is not -1
-        if param.currentSelected.productBaseId
+        if window.param.currentSelected.productBaseId
           appTree.select_node $("#appTree li [id=#{param.currentSelected.productBaseId}][type=product]")
     ).bind("select_node.jstree",
       (event, data)->
@@ -100,7 +85,7 @@ define (require)->
             nodeInfo = getNodeInfo node
 
             currentTab=$("#pageNavigator").val()
-            console?.log "current tab= #{currentTab}"
+#            console?.log "current tab= #{currentTab}"
             module = require "#{currentTab.split('.')[0]}/main"
             module?.nodeSelect?(node, nodeInfo)
         , 300)
