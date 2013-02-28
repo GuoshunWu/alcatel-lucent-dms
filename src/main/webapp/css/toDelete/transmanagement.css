@@ -1,6 +1,6 @@
-@import "jqueryUI/themes/base/jquery.ui.all.css";
-@import "jqgrid/ui.jqgrid.css";
-@import "jqgrid/ui.multiselect.css";
+@import "../jqueryUI/themes/base/jquery.ui.all.css";
+@import "../jqgrid/ui.jqgrid.css";
+@import "../jqgrid/ui.multiselect.css";
 @import "common.css";
 
 /*@import "jqselectlist/selectlist.css";*/

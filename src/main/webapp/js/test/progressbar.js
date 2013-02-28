@@ -2,18 +2,27 @@
 (function() {
 
   jQuery(function($) {
-    var long_polling, progress, url;
-    progress = function(msg, sep) {
-      if (!sep) {
-        sep = ";";
+    var long_polling, randomStr;
+    randomStr = function(length, alphbet) {
+      var ch, rstr, _i, _len;
+      if (length == null) {
+        length = 10;
       }
-      return $(msg.split(sep)).each(function(index, elem) {
-        if ($.isNumeric(elem)) {
-          return $("#progressbar").progressbar("value", parseFloat(elem));
+      if (alphbet == null) {
+        alphbet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz';
+      }
+      rstr = '';
+      for (_i = 0, _len = alphbet.length; _i < _len; _i++) {
+        ch = alphbet[_i];
+        rstr += alphbet[Math.floor(Math.random() * alphbet.length)];
+        length--;
+        if (0 === length) {
+          break;
         }
-      });
+      }
+      return rstr;
     };
-    long_polling = function(cmd, evtId) {
+    long_polling = function(cmd, evtId, url, callback) {
       var pollingInterval, postData, reTryAjax, timeout;
       postData = {
         cmd: cmd,
@@ -45,16 +54,12 @@
           type: 'post',
           dataType: "json"
         }).done(function(data, textStatus, jqXHR) {
-          if (typeof console !== "undefined" && console !== null) {
-            console.log(data);
-          }
-          progress(data.msg);
+          callback(data.msg);
           if (/done/.test(data.msg)) {
-            progress("100");
             return;
           }
           return setTimeout((function() {
-            return long_polling("process", data.evtId);
+            return long_polling("process", data.evtId, url, callback);
           }), pollingInterval);
         }).fail(function(jqXHR, textStatus, errorThrown) {
           if ('timeout' !== textStatus) {
@@ -77,39 +82,56 @@
       };
       return reTryAjax(10);
     };
-    url = "../scripts/cp.groovy";
-    /* Initilize the page elements
+    /* create progress bar and update its progress if necessary.
     */
 
-    $("#progressbar").draggable({
-      grid: [50, 20],
-      opacity: 0.35
-    }).progressbar({
-      max: 100,
-      create: function(e, ui) {
-        this.label = $('div.progressbar-label', this);
-        return $(this).position({
-          my: 'center',
-          at: 'center',
-          of: window
-        });
-      },
-      change: function(e, ui) {
-        return this.label.html(($(this).progressbar("value").toPrecision(4)) + "%");
-      },
-      complete: function(e, ui) {
-        $(this).hide();
-        return $("#startAction").button("enable").button("option", "label", "Start");
-      }
-    }).hide();
-    return $("#startAction").button().click(function(e) {
-      $("#progressbar").progressbar("value", 0).show().position({
-        my: 'center',
-        at: 'center',
-        of: window
+    window.getProgressBar = function() {
+      return $("<div id=\"progressbar_" + (randomStr(5)) + "\" class=\"progressbar\">\n<div class=\"progressbar-label\">\nLoading...\n</div>\n</div>").appendTo(document.body).draggable({
+        grid: [50, 20],
+        opacity: 0.35
+      }).progressbar({
+        max: 100,
+        value: 0,
+        create: function(e, ui) {
+          this.label = $('div.progressbar-label', this);
+          return $(this).position({
+            my: 'center',
+            at: 'center'
+          });
+        },
+        change: function(e, ui) {
+          var value;
+          value = $(this).progressbar("value");
+          return this.label.html((value.toPrecision(4)) + "%");
+        },
+        complete: function(e, ui) {}
       });
-      long_polling("start", -1);
-      return $(this).button("disable").button("option", "label", "In progress...");
+    };
+    return $("#startAction").button().click(function(e) {
+      var callback, pb;
+      pb = getProgressBar();
+      callback = function(msg, sep) {
+        if (sep == null) {
+          sep = ";";
+        }
+        if (!pb) {
+          return;
+        }
+        if (typeof console !== "undefined" && console !== null) {
+          console.log(msg);
+        }
+        if (/done/.test(msg)) {
+          pb.remove();
+        }
+        return $(msg.split(sep)).each(function(index, elem) {
+          var percent;
+          if ($.isNumeric(elem)) {
+            percent = parseFloat(elem);
+          }
+          return pb.progressbar("value", percent);
+        });
+      };
+      return long_polling('start', null, '../scripts/cp.groovy', callback);
     });
   });
 

@@ -58,20 +58,6 @@
       };
       return grid.appChanged(appInfo);
     });
-    $("#progressbar").draggable({
-      grid: [50, 20],
-      opacity: 0.35
-    }).progressbar({
-      create: function(e, ui) {
-        return this.label = $('.progressbar-label', this);
-      },
-      change: function(e, ui) {
-        return this.label.html(($(this).progressbar("value").toPrecision(4)) + "%");
-      },
-      complete: function(e, ui) {
-        return $(this).progressbar("value", 0).hide();
-      }
-    }).hide();
     dctFileUpload = 'dctFileUpload';
     $('#uploadBrower').button({
       label: i18n.browse
@@ -106,14 +92,14 @@
         ]);
         data.submit();
         if (!$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10) {
-          $("#progressbar").show();
+          this.pb = util.genProgressBar();
         }
         return $('#uploadBrower').button('disable');
       },
       progressall: function(e, data) {
         var progress;
         progress = data.loaded / data.total * 100;
-        return $('#progressbar').progressbar("value", progress);
+        return this.pb.progressbar("value", progress);
       },
       done: function(e, data) {
         var jsonFromServer;
@@ -121,9 +107,6 @@
         $.each(data.files, function(index, file) {
           return $('#uploadStatus').html("" + file.name + " " + i18n.uploadfinished);
         });
-        if (!$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10) {
-          $("#progressbar").hide();
-        }
         jsonFromServer = data.result;
         if (0 !== jsonFromServer.status) {
           $.msgBox(jsonFromServer.message, null, {
@@ -155,9 +138,9 @@
           var selAppVer;
           selAppVer = $('#selAppVersion', "div[id='appmng']");
           selAppVer.empty().append(util.json2Options(json));
-          if (param.currentSelected.appId && -1 !== parseInt(param.currentSelected.appId)) {
+          if (window.param.currentSelected.appId && -1 !== parseInt(param.currentSelected.appId)) {
             selAppVer.val(param.currentSelected.appId);
-            param.currentSelected.appId = null;
+            window.param.currentSelected.appId = null;
           }
           return selAppVer.trigger("change");
         });

@@ -106,6 +106,83 @@ define ["jquery",'jqueryui',"jqtree", "i18n!nls/common"], ($, ui, jqtree, c18n)-
       i++
     retval
 
+
+  randomStr = (length = 10, alphbet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz')->
+    rstr = ''
+    for ch in alphbet
+      rstr += alphbet[Math.floor Math.random() * alphbet.length]
+      length--
+      break if 0 == length
+    rstr
+
+  ###
+    generate a progress bar
+  ###
+  genProgressBar = ()->
+    $("""
+      <div id="progressbar_#{randomStr(5)}" class="progressbar">
+      <div class="progressbar-label">
+      Loading...
+      </div>
+      </div>
+      """)
+      .appendTo(document.body)
+      .draggable(
+        grid: [50, 20]
+        opacity: 0.35
+      ).progressbar(
+        max: 100
+        value: 0
+        create: (e, ui) ->
+          @label = $('div.progressbar-label', @)
+          $(@).position(my: 'center', at: 'center')
+        change: (e, ui) ->
+          value = $(@).progressbar("value")
+          @label.html (value.toPrecision(4)) + "%"
+        complete: (e, ui) ->
+          # $(@).remove()
+      )
+
+  long_polling = (cmd, evtId, url, callback) ->
+    postData =
+      cmd: cmd
+      evtId: evtId
+
+    # initlize the test parameters
+    if cmd is "start"
+      postData.freq = (if $("#eFreq").val() then parseInt($("#eFreq").val()) else 2000)
+      postData.speed = (if $("#speed").val() then parseInt($("#speed").val()) else 1000)
+    postData.freq = 2  if postData.freq < 2
+    postData.speed = 2  if postData.speed < 2
+    pollingInterval = if $("#pollingFreq").val() then parseInt($("#pollingFreq").val()) else 1000
+    timeout = if $("#timeout").val() then parseInt($("#timeout").val()) else 5000
+
+    reTryAjax = (retryTimes = Number.MAX_VALUE, retryCounter = 0)->
+      $.ajax(url,
+        cache: false
+        data: postData
+        timeout: timeout
+        type: 'post'
+        dataType: "json"
+      ).done((data, textStatus, jqXHR) ->
+        callback data.msg if callback
+        return if /done/.test(data.msg)
+        setTimeout (->long_polling "process", data.evtId, url, callback), pollingInterval
+
+      ).fail((jqXHR, textStatus, errorThrown)->
+        if 'timeout' != textStatus
+          console?.log "error: #{textStatus}"
+          return
+
+        if(retryTimes > 0)
+          console?.log "Request #{textStatus}, I will retry in #{pollingInterval} milliseconds."
+          setTimeout (->reTryAjax(--retryTimes, ++retryCounter)), pollingInterval
+        else
+          console?.log "I have retried #{retryCounter} times. There may be a network connection issue, please check network cable."
+      )
+
+    reTryAjax(10)
+
   getTreeNodeInfo = (node, treeSelecotr = '#appTree')->
     ptree=$.jstree._reference(treeSelecotr)
     return null if !ptree
@@ -118,34 +195,10 @@ define ["jquery",'jqueryui',"jqtree", "i18n!nls/common"], ($, ui, jqtree, c18n)-
     parent: if parent != -1 then getTreeNodeInfo(parent) else parent
 
   newOption = (text, value, selected)->"<option #{if selected then 'selected ' else ''}value='#{value}'>#{text}</option>"
+  urlname2Action = (urlname = '', suffix = 'Action')->urlname.split('/').pop().capitalize().split('-').join('') + suffix
 
   $.ajaxSetup {timeout: 1000 * 60 * 30, cache: false}
   $.ajaxPrefilter (options, originalOptions, jqXHR)->
-
-    #  for page navigator
-  pageNavi = ()->
-    $('#naviForm').bind 'submit', (e)->
-      $("#curProductBaseId").val $("#productBase").val()
-      $("#curProductId").val $("#productRelease").val()
-
-      #    param is global var in /common/env.jsp
-      if (param.naviTo == 'appmng.jsp')
-        $("#curProductId").val(if $("#selVersion").val() then $("#selVersion").val() else -1)
-        appTree = $.jstree._reference("#appTree")
-        node = appTree.get_selected()
-
-        productBaseId = -1
-        #  -1 indicate that no node is selected
-        #      a node is selected
-        if node.length > 0
-          type = node.attr('type')
-          if type == 'product'
-            productBaseId = node.attr('id')
-          else if type == 'app'
-            productBaseId = appTree._get_parent(node).attr('id')
-        $("#curProductBaseId").val productBaseId
-
-    $('#pageNavigator').change (e)->$('#naviForm').submit()
 
   #  Ajax event for all pages
   sessionCheck = ()->
@@ -167,7 +220,6 @@ define ["jquery",'jqueryui',"jqtree", "i18n!nls/common"], ($, ui, jqtree, c18n)-
         $('#sessionTimeoutDialog').dialog 'open'
 #        console?.log $.parseJSON(xhr.responseText)
 
-  urlname2Action = (urlname = '', suffix = 'Action')->urlname.split('/').pop().capitalize().split('-').join('') + suffix
   checkGridPrivilege = (grid)->
     # console?.debug "check the privilege of grid '#{grid.id}'."
     gridParam = $(grid).jqGrid 'getGridParam'
@@ -291,6 +343,7 @@ define ["jquery",'jqueryui',"jqtree", "i18n!nls/common"], ($, ui, jqtree, c18n)-
   createLayoutManager: (page = 'appmng.jsp')->createLayoutManager(page)
 
   getProductTreeInfo: getTreeNodeInfo
+  genProgressBar:genProgressBar
 
   ###
     @param panels: the panel group selector
