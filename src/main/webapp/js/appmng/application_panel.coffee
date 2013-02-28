@@ -1,18 +1,4 @@
-define (require)->
-  $ = require 'jqueryui'
-  require 'appmng/langsetting_grid'
-  require 'appmng/stringsettings_grid'
-  require 'appmng/history_grid'
-
-  require 'jqupload'
-  require 'iframetransport'
-  dialogs = require 'appmng/dialogs'
-
-  grid = require 'appmng/dictionary_grid'
-  i18n = require 'i18n!nls/appmng'
-  c18n = require 'i18n!nls/appmng'
-  util = require 'util'
-
+define ['require','jqueryui', 'iframetransport','iframetransport','jqupload', 'i18n!nls/appmng', 'i18n!nls/common', 'util', 'appmng/dialogs', 'appmng/langsetting_grid','appmng/stringsettings_grid','appmng/history_grid','appmng/dictionary_grid' ],(require, $, ifrm, iftrans, jqupload, i18n, c18n, util, dialogs, lgrid, sgrid, hgrid, grid)->
   appInfo = {}
 
   $("#newAppVersion").button({text: false, label: '&nbsp;', icons: {primary: "ui-icon-plus"}}).

@@ -1,6 +1,4 @@
-define (require)->
-  $ = require('jqlayout')
-  util = require 'util'
+define ['util'],(util)->
 
   PANEL_PREFIX = 'DMS'
   ids = {
