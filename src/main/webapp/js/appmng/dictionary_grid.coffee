@@ -1,12 +1,4 @@
-define (require, util, dialogs, i18n)->
-  $ = require 'jqgrid'
-  util = require 'util'
-  dialogs = require 'appmng/dialogs'
-  i18n = require 'i18n!nls/appmng'
-  require('jqmsgbox')
-  c18n = require 'i18n!nls/common'
-  blockui = require 'blockui'
-
+define ['require','blockui', 'jqgrid', 'jqmsgbox', 'i18n!nls/appmng', 'i18n!nls/common' ,'util','appmng/dialogs'], (require, blockui, $, msgbox, i18n, c18n, util, dialogs )->
   #  for form edit delete option
   deleteOptions = {
   msg: i18n.dialog.delete.delmsg.format c18n.dict

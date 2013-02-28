@@ -1,9 +1,4 @@
-define (require, util, i18n)->
-  $ = require 'jqgrid'
-  util = require 'util'
-  i18n = require 'i18n!nls/appmng'
-  require('jqmsgbox')
-  c18n = require 'i18n!nls/common'
+define ['require', 'jqgrid', 'jqmsgbox', 'i18n!nls/appmng', 'i18n!nls/common', 'util'],(require, $, msgbox, i18n, c18n, util)->
 
   infoDialog = $('<div>').dialog {
   autoOpen: false, height: 400, width: 800

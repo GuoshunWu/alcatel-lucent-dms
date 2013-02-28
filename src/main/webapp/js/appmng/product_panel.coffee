@@ -1,12 +1,4 @@
-define (require)->
-  $ = require 'jquery'
-  require 'jqmsgbox'
-  util = require 'util'
-  c18n = require 'i18n!nls/common'
-  grid = require 'appmng/application_grid'
-  dialogs = require 'appmng/dialogs'
-
-
+define ['require', 'jqmsgbox', 'util',  'i18n!nls/common', 'appmng/application_grid', 'appmng/dialogs'], (require, msgbox, util, c18n, grid, dialogs)->
   URL = {
   # get product by it id url, append product id to this url
   get_product_by_base_id: 'rest/products/version'

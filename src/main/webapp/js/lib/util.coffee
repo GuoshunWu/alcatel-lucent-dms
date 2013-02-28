@@ -5,7 +5,7 @@ Date: -8-
 Time: 下午7:
 To change this template use File | Settings | File Templates.
 ###
-define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
+define ["jquery", "jqueryui", 'jqlayout', "i18n!nls/common"], ($, ui, layout, c18n) ->
 
   #    prototype enhancement
   String::format = -> args = arguments; @replace /\{(\d+)\}/g, (m, i) ->args[i]
