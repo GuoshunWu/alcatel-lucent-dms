@@ -542,7 +542,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                                     trans.getOrigTranslation(), charsetName, langCode,
                                     label.getKey()));
                             labelWarnings += BusinessWarning.INVALID_TEXT;
-                            invalidText = true;
+//                            invalidText = true;
                         }
 
                         // check length
@@ -580,7 +580,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     t.setLanguage(trans.getLanguage());
 
                     // determine translation status
-                    if (invalidText) {    // mark labels containing suspecious character as "Not translated"
+                    if (invalidText) {
                         t.setStatus(Translation.STATUS_UNTRANSLATED);
                     } else {
                         t.setStatus(populateTranslationStatus(trans));
@@ -664,7 +664,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
     private int populateTranslationStatus(LabelTranslation trans) {
         Label label = trans.getLabel();
-        if (label.getReference().trim().isEmpty()) {
+        if (trans.getStatus() != null) {	// status information is specified in dictionary
+        	return trans.getStatus();
+        } else if (label.getReference().trim().isEmpty()) {
             return Translation.STATUS_TRANSLATED;
 //        } else if (trans.getRequestTranslation() != null) {
 //        	t.setStatus(trans.getRequestTranslation() ? Translation.STATUS_UNTRANSLATED : Translation.STATUS_TRANSLATED);
