@@ -1,7 +1,4 @@
-define (require)->
-  $ = require 'jqgrid'
-  util = require 'util'
-  i18n = require 'i18n!nls/admin'
+define ['require', 'jqgrid','util','i18n!nls/admin' ],(require, jqgrid, util, i18n)->
 
   afterSubmit = (response, postdata)->
     jsonFromServer = $.parseJSON response.responseText

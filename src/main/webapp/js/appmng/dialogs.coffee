@@ -1,11 +1,4 @@
-define ['require', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsettings_grid', 'appmng/previewlangsetting_grid'], (require, grid, sgrid, lgrid)->
-  $ = require 'jqueryui'
-  c18n = require 'i18n!nls/common'
-  i18n = require 'i18n!nls/appmng'
-  require 'blockui'
-  require 'jqmsgbox'
-  util = require 'util'
-
+define ['require','jqueryui', 'blockui', 'jqmsgbox',  'i18n!nls/common',  'i18n!nls/appmng', 'util', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsettings_grid', 'appmng/previewlangsetting_grid'], (require,$, blockui, msgbox, c18n, i18n, util, grid, sgrid, lgrid)->
   #  Create new product release dialog
   newProductVersion = $("#newProductReleaseDialog").dialog {
   autoOpen: false
