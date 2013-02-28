@@ -3,6 +3,7 @@ package com.alcatel_lucent.dms.service;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,9 +28,9 @@ public class AuthenticationServiceImpl extends BaseServiceImpl implements Authen
 				ldapService.login("allany", password) ||
 				ldapService.login("guoshunw", password)) {	// login successfully
 			log.info("User " + username + " logged in.");
-			User user = (User) dao.retrieve(User.class, username);
+			User user = findUser(username);
 			if (user == null) {	// create a new user entry
-				user = ldapService.findUserByCSL(username);
+				user = ldapService.findUserByCIL(username);
 				if (user == null) {
 					return null;
 				}
@@ -38,6 +39,8 @@ public class AuthenticationServiceImpl extends BaseServiceImpl implements Authen
 				user.setStatus(User.ENABLED);
 				user = (User) dao.create(user);
 				log.info("Created new user " + user.getName() + "(" + user.getLoginName() + ")");
+			} else if (user.getStatus() == User.DISABLED) {
+				return null;
 			}
 			user.setLastLoginTime(new Timestamp(System.currentTimeMillis()));
 			return user;
@@ -61,5 +64,12 @@ public class AuthenticationServiceImpl extends BaseServiceImpl implements Authen
 		User user = tokenMap.get(token);
 		tokenMap.remove(token);
 		return user;
+	}
+	
+	public User findUser(String CSLOrCIL) {
+		String hql = "from User where loginName=:name or name=:name";
+		Map param = new HashMap();
+		param.put("name", CSLOrCIL);
+		return (User) dao.retrieveOne(hql, param);
 	}
 }
