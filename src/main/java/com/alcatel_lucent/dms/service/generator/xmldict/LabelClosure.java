@@ -1,8 +1,10 @@
 package com.alcatel_lucent.dms.service.generator.xmldict;
 
+import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.DictionaryLanguage;
 import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.LabelTranslation;
+import com.alcatel_lucent.dms.model.Translation;
 import com.alcatel_lucent.dms.util.Util;
 import org.apache.commons.collections.Closure;
 import org.apache.commons.lang3.BooleanUtils;
@@ -49,8 +51,19 @@ public class LabelClosure implements Closure {
         xmlKey.addAttribute("name", label.getKey());
         Map<String, String> map = Util.string2Map(label.getAnnotation1());
 
-        if (null != map.get("columns")) xmlKey.addAttribute("columns", map.get("columns"));
-        if (null != map.get("lines")) xmlKey.addAttribute("lines", map.get("lines"));
+//        if (null != map.get("columns")) xmlKey.addAttribute("columns", map.get("columns"));
+//        if (null != map.get("lines")) xmlKey.addAttribute("lines", map.get("lines"));
+        String lines = "1";
+        String columns = "-1";
+        if (label.getMaxLength() != null) {
+        	String[] s = label.getMaxLength().split("\\*");
+        	if (s.length == 2) {
+        		lines = s[0];
+        		columns = s[1];
+        	}
+        }
+        xmlKey.addAttribute("columns", columns);
+        xmlKey.addAttribute("lines", lines);
         if (null != map.get("message_category"))
             xmlKey.addAttribute("message_category", map.get("message_category"));
         if (null != map.get("gui_object")) xmlKey.addAttribute("gui_object", map.get("gui_object"));
@@ -120,7 +133,23 @@ public class LabelClosure implements Closure {
 
             String followUp = labelProp.get("follow_up");
             if (!isContext && hasLabelTrans) {
-                followUp = lt.getValueFromField("follow_up", LabelTranslation.ANNOTATION1);
+            	if (label.getContext().getName().equals(Context.EXCLUSION)) {
+            		followUp = "no_translate";
+            	} else {
+                	int translationStatus = label.getTranslationStatus(langCode);
+            		String origStatus = lt.getValueFromField("follow_up", LabelTranslation.ANNOTATION1);
+	            	if (translationStatus == Translation.STATUS_TRANSLATED) {	// "no_translate" or "validated"
+	            		followUp = "validated";
+	            		if (origStatus.equals("no_translate")) {
+	            			followUp = origStatus;
+	            		}
+	            	} else {	// "to_translate" or "to_validate" if not translated
+	        			followUp = "to_translate"; 
+	            		if (origStatus.equals("to_validate")) {
+	            			followUp = origStatus;
+	            		}
+	            	}
+            	}
             }
             if (null != followUp
                     && Arrays.asList("HELP", "TRANSLATION").contains(elemName)) {
