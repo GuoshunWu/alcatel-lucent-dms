@@ -12,7 +12,7 @@ Time: 下午7:
   var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   define(["jquery", 'jqueryui', "jqtree", "i18n!nls/common"], function($, ui, jqtree, c18n) {
-    var PanelGroup, checkAllGridPrivilege, checkGridPrivilege, formatJonString, getTreeNodeInfo, newOption, pageNavi, sessionCheck, urlname2Action;
+    var PanelGroup, checkAllGridPrivilege, checkGridPrivilege, formatJonString, genProgressBar, getTreeNodeInfo, long_polling, newOption, randomStr, sessionCheck, urlname2Action;
     String.prototype.format = function() {
       var args;
       args = arguments;
@@ -163,6 +163,113 @@ Time: 下午7:
       }
       return retval;
     };
+    randomStr = function(length, alphbet) {
+      var ch, rstr, _i, _len;
+      if (length == null) {
+        length = 10;
+      }
+      if (alphbet == null) {
+        alphbet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz';
+      }
+      rstr = '';
+      for (_i = 0, _len = alphbet.length; _i < _len; _i++) {
+        ch = alphbet[_i];
+        rstr += alphbet[Math.floor(Math.random() * alphbet.length)];
+        length--;
+        if (0 === length) {
+          break;
+        }
+      }
+      return rstr;
+    };
+    /*
+      generate a progress bar
+    */
+
+    genProgressBar = function() {
+      return $("<div id=\"progressbar_" + (randomStr(5)) + "\" class=\"progressbar\">\n<div class=\"progressbar-label\">\nLoading...\n</div>\n</div>").appendTo(document.body).draggable({
+        grid: [50, 20],
+        opacity: 0.35
+      }).progressbar({
+        max: 100,
+        value: 0,
+        create: function(e, ui) {
+          this.label = $('div.progressbar-label', this);
+          return $(this).position({
+            my: 'center',
+            at: 'center'
+          });
+        },
+        change: function(e, ui) {
+          var value;
+          value = $(this).progressbar("value");
+          return this.label.html((value.toPrecision(4)) + "%");
+        },
+        complete: function(e, ui) {}
+      });
+    };
+    long_polling = function(cmd, evtId, url, callback) {
+      var pollingInterval, postData, reTryAjax, timeout;
+      postData = {
+        cmd: cmd,
+        evtId: evtId
+      };
+      if (cmd === "start") {
+        postData.freq = ($("#eFreq").val() ? parseInt($("#eFreq").val()) : 2000);
+        postData.speed = ($("#speed").val() ? parseInt($("#speed").val()) : 1000);
+      }
+      if (postData.freq < 2) {
+        postData.freq = 2;
+      }
+      if (postData.speed < 2) {
+        postData.speed = 2;
+      }
+      pollingInterval = $("#pollingFreq").val() ? parseInt($("#pollingFreq").val()) : 1000;
+      timeout = $("#timeout").val() ? parseInt($("#timeout").val()) : 5000;
+      reTryAjax = function(retryTimes, retryCounter) {
+        if (retryTimes == null) {
+          retryTimes = Number.MAX_VALUE;
+        }
+        if (retryCounter == null) {
+          retryCounter = 0;
+        }
+        return $.ajax(url, {
+          cache: false,
+          data: postData,
+          timeout: timeout,
+          type: 'post',
+          dataType: "json"
+        }).done(function(data, textStatus, jqXHR) {
+          if (callback) {
+            callback(data.msg);
+          }
+          if (/done/.test(data.msg)) {
+            return;
+          }
+          return setTimeout((function() {
+            return long_polling("process", data.evtId, url, callback);
+          }), pollingInterval);
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+          if ('timeout' !== textStatus) {
+            if (typeof console !== "undefined" && console !== null) {
+              console.log("error: " + textStatus);
+            }
+            return;
+          }
+          if (retryTimes > 0) {
+            if (typeof console !== "undefined" && console !== null) {
+              console.log("Request " + textStatus + ", I will retry in " + pollingInterval + " milliseconds.");
+            }
+            return setTimeout((function() {
+              return reTryAjax(--retryTimes, ++retryCounter);
+            }), pollingInterval);
+          } else {
+            return typeof console !== "undefined" && console !== null ? console.log("I have retried " + retryCounter + " times. There may be a network connection issue, please check network cable.") : void 0;
+          }
+        });
+      };
+      return reTryAjax(10);
+    };
     getTreeNodeInfo = function(node, treeSelecotr) {
       var parent, ptree, selectedNode;
       if (treeSelecotr == null) {
@@ -184,36 +291,20 @@ Time: 下午7:
     newOption = function(text, value, selected) {
       return "<option " + (selected ? 'selected ' : '') + "value='" + value + "'>" + text + "</option>";
     };
+    urlname2Action = function(urlname, suffix) {
+      if (urlname == null) {
+        urlname = '';
+      }
+      if (suffix == null) {
+        suffix = 'Action';
+      }
+      return urlname.split('/').pop().capitalize().split('-').join('') + suffix;
+    };
     $.ajaxSetup({
       timeout: 1000 * 60 * 30,
       cache: false
     });
     $.ajaxPrefilter(function(options, originalOptions, jqXHR) {});
-    pageNavi = function() {
-      $('#naviForm').bind('submit', function(e) {
-        var appTree, node, productBaseId, type;
-        $("#curProductBaseId").val($("#productBase").val());
-        $("#curProductId").val($("#productRelease").val());
-        if (param.naviTo === 'appmng.jsp') {
-          $("#curProductId").val($("#selVersion").val() ? $("#selVersion").val() : -1);
-          appTree = $.jstree._reference("#appTree");
-          node = appTree.get_selected();
-          productBaseId = -1;
-          if (node.length > 0) {
-            type = node.attr('type');
-            if (type === 'product') {
-              productBaseId = node.attr('id');
-            } else if (type === 'app') {
-              productBaseId = appTree._get_parent(node).attr('id');
-            }
-          }
-          return $("#curProductBaseId").val(productBaseId);
-        }
-      });
-      return $('#pageNavigator').change(function(e) {
-        return $('#naviForm').submit();
-      });
-    };
     sessionCheck = function() {
       $('#sessionTimeoutDialog').dialog({
         width: 320,
@@ -234,15 +325,6 @@ Time: 下午7:
           return $('#sessionTimeoutDialog').dialog('open');
         }
       });
-    };
-    urlname2Action = function(urlname, suffix) {
-      if (urlname == null) {
-        urlname = '';
-      }
-      if (suffix == null) {
-        suffix = 'Action';
-      }
-      return urlname.split('/').pop().capitalize().split('-').join('') + suffix;
     };
     checkGridPrivilege = function(grid) {
       var forbiddenTab, gridParam, tmpHandlers, _ref, _ref1, _ref2;
@@ -421,6 +503,7 @@ Time: 下午7:
         return createLayoutManager(page);
       },
       getProductTreeInfo: getTreeNodeInfo,
+      genProgressBar: genProgressBar,
       /*
         @param panels: the panel group selector
         @param currentPanel: the current panel selector

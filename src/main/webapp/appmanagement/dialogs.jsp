@@ -73,11 +73,6 @@
         </tr>
     </table>
 </div>
-
-<div id="progressbar" class="progressbar">
-    <div class="progressbar-label"></div>
-</div>
-
 <div id="languageSettingsDialog">
     <table border="0" width="100%">
         <tr>

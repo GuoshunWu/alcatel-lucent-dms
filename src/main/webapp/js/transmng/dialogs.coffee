@@ -147,7 +147,7 @@ define (require)->
     autoOpen: false, width: 860, height: 'auto', modal: true
 
     open: ()->
-      $('#searchAction',@).position(my: 'left center', at: 'right center', of: '#searchText')
+      $('#transDetailSearchAction',@).position(my: 'left center', at: 'right center', of: '#transDetailSearchText')
       $('#detailLanguageSwitcher').trigger "change"
     create: ()->
       $(@).dialog 'option', 'width', $('#transDetailGridList').getGridParam('width') + 60

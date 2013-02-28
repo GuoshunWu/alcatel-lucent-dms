@@ -1,5 +1,5 @@
-@import "jqueryLayout/layout-default-latest.css";
-@import "jqueryLayout/dmslayout.css";
+@import "../jqueryLayout/layout-default-latest.css";
+@import "../jqueryLayout/dmslayout.css";
 
 /* Using an 'optional-container' instead of 'body', so need body to have a 'height' */
 

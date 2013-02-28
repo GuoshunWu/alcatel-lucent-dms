@@ -243,10 +243,10 @@
       height: 'auto',
       modal: true,
       open: function() {
-        $('#searchAction', this).position({
+        $('#transDetailSearchAction', this).position({
           my: 'left center',
           at: 'right center',
-          of: '#searchText'
+          of: '#transDetailSearchText'
         });
         return $('#detailLanguageSwitcher').trigger("change");
       },

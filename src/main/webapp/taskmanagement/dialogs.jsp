@@ -1,6 +1,6 @@
-<div id="progressbar" class="progressbar">
-    <div class="progressbar-label"></div>
-</div>
+<%--<div id="progressbar" class="progressbar">--%>
+    <%--<div class="progressbar-label"></div>--%>
+<%--</div>--%>
 
 <div id="translationReportDialog" title="<s:text name="taskmng.dialogs.transreport.title"/>">
     <table border="0" width="100%">

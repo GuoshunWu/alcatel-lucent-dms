@@ -40,30 +40,30 @@ define (require)->
     appInfo.app = {version: $("option:selected", @).text(), id: if @value then @value else -1}
     grid.appChanged appInfo
 
-  $("#progressbar").draggable(grid: [50, 20], opacity: 0.35).progressbar(
-    create: (e, ui) ->
-      @label = $('.progressbar-label', @)
-    change: (e, ui)->
-      @label.html ($(this).progressbar("value").toPrecision(4)) + "%"
-    complete: (e, ui) ->
-      $(@).progressbar("value", 0).hide()
-  ).hide()
+#  $("#progressbar").draggable(grid: [50, 20], opacity: 0.35).progressbar(
+#    create: (e, ui) ->
+#      @label = $('.progressbar-label', @)
+#    change: (e, ui)->
+#      @label.html ($(this).progressbar("value").toPrecision(4)) + "%"
+#    complete: (e, ui) ->
+#      $(@).progressbar("value", 0).hide()
+#  ).hide()
 
   dctFileUpload = 'dctFileUpload'
   #  create upload filebutton
   $('#uploadBrower').button(label: i18n.browse).attr('privilegeName', util.urlname2Action('app/deliver-app-dict')).css({overflow: 'hidden'}).append $(
-    "<input type='file' id='#{dctFileUpload}' name='upload' title='#{i18n.choosefile}' accept='application/zip' multiple/>").css {
-  position: 'absolute', top: -3, right: -3, border: '1px solid', borderWidth: '10px 180px 40px 20px',
-  opacity: 0, filter: 'alpha(opacity=0)',
-  cursor: 'pointer'
-  }
+    "<input type='file' id='#{dctFileUpload}' name='upload' title='#{i18n.choosefile}' accept='application/zip' multiple/>").css(
+    position: 'absolute', top: -3, right: -3, border: '1px solid', borderWidth: '10px 180px 40px 20px',
+    opacity: 0, filter: 'alpha(opacity=0)',
+    cursor: 'pointer'
+  )
+
 
   $("##{dctFileUpload}").fileupload {
   type: 'POST', dataType: 'json'
   url: "app/deliver-app-dict"
 
   #  forceIframeTransport:true
-
   add: (e, data)->
     $.each data.files, (index, file) ->
     #      $('#uploadStatus').html "#{i18n.uploadingfile}#{file.name}"
@@ -73,16 +73,16 @@ define (require)->
       {name: 'appId', value: $("#selAppVersion").val()}
     ]
     data.submit()
-    $("#progressbar").show() if !$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10
+    @pb=util.genProgressBar() if !$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10
     $('#uploadBrower').button 'disable'
   progressall: (e, data) ->
     progress = data.loaded / data.total * 100
-    $('#progressbar').progressbar "value", progress
+    @pb.progressbar "value", progress
   done: (e, data)->
     $('#uploadBrower').button 'enable'
 
     $.each data.files, (index, file) ->$('#uploadStatus').html "#{file.name} #{i18n.uploadfinished}"
-    $("#progressbar").hide() if !$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10
+#    @pb.remove() if !$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10
     #    request handler
     jsonFromServer = data.result
 
@@ -92,8 +92,6 @@ define (require)->
 
     $('#dictListPreviewDialog').data 'param', {handler: jsonFromServer.filename, appId: $("#selAppVersion").val()}
     $('#dictListPreviewDialog').dialog 'open'
-
-
   }
 
   getApplicationSelectOptions: ()->$('#selAppVersion').children('option').clone(true)
@@ -107,7 +105,7 @@ define (require)->
       selAppVer=$('#selAppVersion', "div[id='appmng']")
 
       selAppVer.empty().append(util.json2Options json)
-      if(param.currentSelected.appId and -1 != parseInt(param.currentSelected.appId))
+      if(window.param.currentSelected.appId and -1 != parseInt(param.currentSelected.appId))
         selAppVer.val(param.currentSelected.appId)
-        param.currentSelected.appId=null
+        window.param.currentSelected.appId=null
       selAppVer.trigger "change"
