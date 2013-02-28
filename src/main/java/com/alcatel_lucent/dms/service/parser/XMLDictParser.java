@@ -358,7 +358,8 @@ public class XMLDictParser extends DictionaryParser {
                 }
                 File xdctFile = null;
                 try {
-                    xdctFile = new File(file.getParent(), dict.getPath()).getCanonicalFile();
+                	String xdctFilepath = dict.getPath().replaceAll("\\\\", "/");
+                    xdctFile = new File(file.getParent(), xdctFilepath).getCanonicalFile();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
