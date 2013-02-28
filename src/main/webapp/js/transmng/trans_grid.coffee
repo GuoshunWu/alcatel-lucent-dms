@@ -162,6 +162,7 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
       url = 'rest/applications'
       prop = "id,id,base.name,version,labelNum,#{summary}"
       transGrid.setColProp 'application', {search: false, index: 'base.name'}
+      gridParam.sortname = 'base.name'
       postData = {prod: param.release.id, format: 'grid', prop: prop}
 
       #      unless param.languageTrigger
@@ -190,6 +191,7 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
         searchoptions.value = app
       }
       transGrid.setColProp('application', searchoptions: searchoptions, index: 'app.base.name')
+      gridParam.sortname = 'app.base.name'
       postData = {prod: param.release.id, format: 'grid', prop: prop}
 
       #      unless param.languageTrigger

@@ -1,6 +1,5 @@
-define ['jqgrid', 'appmng/langsetting_translation_grid', 'require'], ($, ltgrid, require)->
+define ['jqgrid', 'appmng/langsetting_translation_grid', 'util', 'require'], ($, ltgrid, util,require)->
   lastEditedCell = null
-  util = require 'util'
 
   dicGrid = $('#stringSettingsGrid').jqGrid(
     url: 'json/dummy.json', mtype: 'post', datatype: 'local'

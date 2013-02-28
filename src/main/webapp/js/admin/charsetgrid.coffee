@@ -1,6 +1,4 @@
-define (require)->
-  $ = require 'jqgrid'
-  util = require 'util'
+define ['require', 'jqgrid','util'],(require, jqgrid, util)->
 
   i18n = require 'i18n!nls/admin'
 

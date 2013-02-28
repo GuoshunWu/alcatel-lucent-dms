@@ -1,15 +1,5 @@
 # Implement the navigation tree on the east
-define (require)->
-  #  $ = require 'jqtree'
-  $ = require 'jqueryui'
-  util = require 'util'
-  require 'jqtree'
-  c18n = require 'i18n!nls/common'
-  require 'jqmsgbox'
-  layout = require 'appmng/layout'
-  productpnl = require 'appmng/product_panel'
-  apppnl = require 'appmng/application_panel'
-
+define ['require', 'jqueryui', 'jqtree', 'jqmsgbox','i18n!nls/common', 'util',  'appmng/layout', 'appmng/product_panel','appmng/application_panel'  ],(require, $, tree, msgbox, c18n, util, layout, productpnl, apppnl)->
   ids = {
   navigateTree: 'appTree'
   }
