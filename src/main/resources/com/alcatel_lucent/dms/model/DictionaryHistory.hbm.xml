@@ -15,6 +15,7 @@
         <property column="TEMP_PATH" name="tempPath" not-null="false" type="text"/>
 
         <many-to-one name="dictionary" column="DICTIONARY_ID"/>
+        <many-to-one name="task" column="TASK_ID"/>
         <many-to-one name="operator" column="OPERATOR"/>
     </class>
 </hibernate-mapping>
