@@ -2,13 +2,8 @@
 (function() {
   var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  define(function(require) {
-    var appTree, c18n, getNodeInfo, nodeCtxMenu, removeNode, timeFunName, urls, util, _ref, _ref1, _ref2, _ref3;
-    require('jqtree');
-    require('jqmsgbox');
-    util = require('dms-util');
-    urls = require('dms-urls');
-    c18n = require('i18n!nls/common');
+  define(['require', 'jqtree', 'jqmsgbox', 'dms-util', 'dms-urls', 'i18n!nls/common'], function(require, $, msgbox, util, urls, c18n) {
+    var appTree, getNodeInfo, nodeCtxMenu, removeNode, timeFunName, _ref, _ref1, _ref2, _ref3;
     appTree = null;
     getNodeInfo = util.getProductTreeInfo;
     removeNode = function(node) {

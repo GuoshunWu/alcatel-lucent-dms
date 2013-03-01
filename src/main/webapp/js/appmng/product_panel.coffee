@@ -1,9 +1,5 @@
-define ['dms-util', 'appmng/application_grid', 'require'],( util, grid, require)->
-  $ = require 'jquery'
-  require 'jqmsgbox'
-
-  urls = require 'dms-urls'
-  c18n = require 'i18n!nls/common'
+define ['jqmsgbox', 'i18n!nls/common', 'dms-urls', 'dms-util', 'appmng/application_grid'],($, c18n, urls, util, grid)->
+  console?.log "module appmng/product_panel loading."
 
   $("#newVersion").button(text: false, label: '&nbsp;', icons:
     {primary: "ui-icon-plus"}).

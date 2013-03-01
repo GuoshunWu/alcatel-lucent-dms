@@ -1,12 +1,15 @@
-define (require)->
-  $ = require 'jqueryui'
-  msgbox = require 'jqmsgbox'
+dependencies = [
+  'jqueryui'
+  'jqmsgbox'
 
-  c18n = require 'i18n!nls/common'
-  i18n = require 'i18n!nls/taskmng'
-  reportgrid = require 'taskmng/taskreport_grid'
-  detailgrid = require 'taskmng/transdetail_grid'
-  util = require 'dms-util'
+  'i18n!nls/common'
+  'i18n!nls/taskmng'
+  'dms-util'
+
+  'taskmng/taskreport_grid'
+  'taskmng/transdetail_grid'
+]
+define dependencies, ($, msgbox, c18n, i18n, util, reportgrid, detailgrid)->
 
   languageChooserDialog = $("<div title='Study' id='languageChooser'>").dialog {
   autoOpen: false, position: [23, 126], height: 'auto', width: 900, modal: true

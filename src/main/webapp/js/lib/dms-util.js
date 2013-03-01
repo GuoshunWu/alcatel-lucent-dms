@@ -3,15 +3,13 @@
 /*
 Created by IntelliJ IDEA.
 User: Guoshun Wu
-Date: -8-
-Time: 下午7:
 */
 
 
 (function() {
   var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  define(["jquery", 'jqueryui', "jqtree", "i18n!nls/common"], function($, ui, jqtree, c18n) {
+  define(['jqueryui', "jqtree", "i18n!nls/common"], function($, jqtree, c18n) {
     var PanelGroup, checkAllGridPrivilege, checkGridPrivilege, formatJonString, genProgressBar, getTreeNodeInfo, long_polling, newOption, randomStr, sessionCheck, urlname2Action;
     String.prototype.format = function() {
       var args;

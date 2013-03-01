@@ -1,13 +1,4 @@
-define (require)->
-  $ = require 'jqueryui'
-
-  i18n = require 'i18n!nls/common'
-  util = require 'dms-util'
-  urls = require 'dms-urls'
-
-#
-  grid = require 'taskmng/task_grid'
-  dialogs = 'taskmng/dialogs'
+define ['jqueryui', 'dms-util', 'dms-urls', 'taskmng/task_grid', 'taskmng/dialogs'], ($, util, urls, grid, dialogs)->
 
   nodeSelectHandler = (node, nodeInfo)->
     type=node.attr('type')

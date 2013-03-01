@@ -1,11 +1,8 @@
 ###
 Created by IntelliJ IDEA.
 User: Guoshun Wu
-Date: -8-
-Time: 下午7:
 ###
-define ["jquery",'jqueryui',"jqtree", "i18n!nls/common"], ($, ui, jqtree, c18n)->
-
+define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
   #    prototype enhancement
   String:: format = -> args = arguments; @replace /\{(\d+)\}/g, (m, i) ->args[i]
 

@@ -1,11 +1,13 @@
-define (require)->
+define ['dms-util'], (util)->
+  console?.log "module appmng/layout loading."
+
   PANEL_PREFIX = 'DMS'
   panel =
     welcome: "#{PANEL_PREFIX}_welcomePanel"
     product: "#{PANEL_PREFIX}_productPanel"
     application: "#{PANEL_PREFIX}_applicationPanel"
 
-  appmngPnlGroup = new (require 'dms-util').PanelGroup("div.dms_appmng_panel", "DMS_welcomePanel")
+  appmngPnlGroup = new util.PanelGroup("div.dms_appmng_panel", "DMS_welcomePanel")
 
   showProductPanel: ->appmngPnlGroup.switchTo panel.product, ()->
     grid = $('#applicationGridList')

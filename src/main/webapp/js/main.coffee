@@ -1,25 +1,22 @@
-define [],(require)->
-  $ = require 'jqlayout'
-  util = require 'dms-util'
+dependencies = [
+  'jqlayout'
+  'dms-util'
+  'globallayout'
+  'ptree'
 
-  glayout = require 'globallayout'
-  ptree = require 'ptree'
-
-  #  panels
-  appmngPanel = require 'appmng/main'
-  #
-  transmngPanel = require 'transmng/main'
-  taskmngPanel = require 'taskmng/main'
-  adminPanel = require 'admin/main'
-
-
+  'appmng/main'
+  'transmng/main'
+  'taskmng/main'
+  'admin/main'
+]
+define dependencies, ($, util, glayout, ptree, appmngPanel, transmngPanel, taskmngPanel, adminPanel)->
   ready = (param)->
     console?.debug "page ready..."
     util.afterInitilized(@)
     $('#loading-container').fadeOut 'slow', ()->$(@).remove()
 
   panelSwitchHandler = (oldpnl, newpnl)->
-  # we need keep the panels to be informed if current product base changed
+    # we need keep the panels to be informed if current product base changed
     console?.debug "oldpnl= #{oldpnl}, newpnl= #{newpnl}."
     return if 'admin' == oldpnl or 'admin' == newpnl
 
@@ -34,12 +31,12 @@ define [],(require)->
         window.param.currentSelected.appId = $('#selVersion', "div[id='#{oldpnl}']").val()
       $("#appTree").jstree('select_node', $("#appTree").jstree('get_selected'), true)
     else
-      options = $('#selVersion option',"div[id='#{oldpnl}']").clone()
-      value = $('#selVersion',"div[id='#{oldpnl}']").val()
-      options = $('#selAppVersion option',"div[id='#{oldpnl}']").clone() if 'appmng' == oldpnl and 'app' == treeSelectedNode.attr('type')
-      $('#versionTypeLabel',"div[id='#{newpnl}']").text $("#appTree").jstree('get_text',treeSelectedNode) if 'appmng' != oldpnl
+      options = $('#selVersion option', "div[id='#{oldpnl}']").clone()
+      value = $('#selVersion', "div[id='#{oldpnl}']").val()
+      options = $('#selAppVersion option', "div[id='#{oldpnl}']").clone() if 'appmng' == oldpnl and 'app' == treeSelectedNode.attr('type')
+      $('#versionTypeLabel', "div[id='#{newpnl}']").text $("#appTree").jstree('get_text', treeSelectedNode) if 'appmng' != oldpnl
 
-      $('#selVersion',"div[id='#{newpnl}']").empty().append(options).val(value).trigger 'change'
+      $('#selVersion', "div[id='#{newpnl}']").empty().append(options).val(value).trigger 'change'
 
   ################################################## Initilaize #####################################################
   init = ()->
@@ -75,4 +72,5 @@ define [],(require)->
 
   init()
   ready(@)
+
 

@@ -1,9 +1,6 @@
-define (require)->
+define ['jqgrid', 'i18n!nls/appmng', 'dms-urls', 'dms-util'],($, i18n, urls, util)->
 
-  $ = require 'jqgrid'
-  i18n = require 'i18n!nls/appmng'
-  util = require 'dms-util'
-  urls = require 'dms-urls'
+  console?.log "module appmng/application_grid loading."
 
   appGrid = $('#applicationGridList').jqGrid(
     datatype: 'local'

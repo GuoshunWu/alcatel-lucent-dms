@@ -1,11 +1,5 @@
 # Implement the navigation tree on the east
-define (require)->
-  require 'jqtree'
-  require 'jqmsgbox'
-
-  util = require 'dms-util'
-  urls = require 'dms-urls'
-  c18n = require 'i18n!nls/common'
+define ['require','jqtree', 'jqmsgbox', 'dms-util', 'dms-urls', 'i18n!nls/common'], (require , $, msgbox, util, urls, c18n)->
 
   appTree = null
   getNodeInfo = util.getProductTreeInfo

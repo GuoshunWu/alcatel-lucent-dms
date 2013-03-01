@@ -1,12 +1,13 @@
-define [],(require)->
-  $ = require 'jqgrid'
-  util = require 'dms-util'
+dependencies = [
+  'jqgrid'
+  'dms-util'
 
-  require 'appmng/dialogs'
-  productpnl = require 'appmng/product_panel'
-  apppnl = require 'appmng/application_panel'
-  layout = require 'appmng/layout'
+  'appmng/product_panel'
+  'appmng/application_panel'
+  'appmng/layout'
+]
 
+define dependencies, ($, util, productpnl, apppnl, layout)->
   nodeSelectHandler = (node, nodeInfo)->
     switch node.attr('type')
       when 'products'
