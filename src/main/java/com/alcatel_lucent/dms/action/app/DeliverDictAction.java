@@ -6,13 +6,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.struts2.convention.annotation.Result;
-import org.hibernate.Transaction;
-
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.Constants;
-import com.alcatel_lucent.dms.action.JSONAction;
+import com.alcatel_lucent.dms.action.ProgressAction;
+import com.alcatel_lucent.dms.action.ProgressQueue;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryLanguage;
 import com.alcatel_lucent.dms.service.DeliveringDictPool;
@@ -20,8 +18,7 @@ import com.alcatel_lucent.dms.service.DeliveryReport;
 import com.alcatel_lucent.dms.service.DictionaryService;
 
 @SuppressWarnings("serial")
-@Result(type="json", params={"noCache","true","ignoreHierarchy","false","includeProperties","status,message,warnings"})
-public class DeliverDictAction extends JSONAction {
+public class DeliverDictAction extends ProgressAction {
 	
 	private String handler;
 	private Long app;
@@ -47,6 +44,11 @@ public class DeliverDictAction extends JSONAction {
     private DeliveryReport importDictionaries(Long appId, Collection<Dictionary> dictList, int mode) throws BusinessException {
         DeliveryReport report = new DeliveryReport();
         Map<String, Collection<BusinessWarning>> warningMap = new TreeMap<String, Collection<BusinessWarning>>();
+        int total = 0;
+        int cur = 0;
+        for (Dictionary dict : dictList) {
+        	total += dict.getLabelNum();
+        }
         for (Dictionary dict : dictList) {
             Map<String, String> langCharset = new HashMap<String, String>();
             if (dict.getDictLanguages() != null) {
@@ -57,6 +59,9 @@ public class DeliverDictAction extends JSONAction {
             Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
             dictionaryService.importDictionary(appId, dict, dict.getVersion(), mode, null, langCharset, warnings, report);
             warningMap.put(dict.getName(), warnings);
+            cur += dict.getLabelNum();
+            int percent = (int) Math.round(cur * 100.0 / total + 0.5);
+            ProgressQueue.setProgress("Importing...", percent);
         }
         report.setWarningMap(warningMap);
         log.info(report.toString());
