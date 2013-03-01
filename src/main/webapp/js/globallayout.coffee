@@ -1,6 +1,4 @@
-define (require)->
-  require 'jqlayout'
-
+define ['jqlayout'], (jqlayout)->
   autoSizeGrids = ['applicationGridList', 'dictionaryGridList', 'transGrid', 'taskGrid']
 
   ready = (param)->

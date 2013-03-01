@@ -1,12 +1,18 @@
-define (require, util, dialogs, i18n)->
-  $ = require 'jqgrid'
-  util = require 'dms-util'
-  dialogs = require 'appmng/dialogs'
-  i18n = require 'i18n!nls/appmng'
-  require('jqmsgbox')
-  c18n = require 'i18n!nls/common'
-  blockui = require 'blockui'
+dependencies = [
+  'jqgrid'
+  'blockui'
+  'jqmsgbox'
 
+  'i18n!nls/appmng'
+  'i18n!nls/common'
+  'dms-util'
+
+  'appmng/dialogs'
+]
+
+define dependencies, ($, blockui, msgbox, i18n, c18n, util, dialogs)->
+
+  console?.log "module appmng/dictionary_grid loading."
   #  for form edit delete option
   deleteOptions = {
   msg: i18n.dialog.delete.delmsg.format c18n.dict

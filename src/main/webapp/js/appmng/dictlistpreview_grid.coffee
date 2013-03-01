@@ -1,11 +1,6 @@
-define (require, util, i18n)->
-  $ = require 'jqgrid'
-  require 'jqmsgbox'
+define ['jqgrid', 'jqmsgbox', 'i18n!nls/appmng', 'i18n!nls/common', 'appmng/dialogs'], ($, msgbox, i18n, c18n, dialogs)->
 
-  i18n = require 'i18n!nls/appmng'
-  c18n = require 'i18n!nls/common'
-
-  util = require 'dms-util'
+  console?.log "module appmng/dictlistpreview_grid loading."
 
   infoDialog = $('<div>').dialog {
   autoOpen: false, height: 400, width: 800
@@ -13,11 +8,11 @@ define (require, util, i18n)->
   }
   handlers =
     'String':
-      title: i18n.dialog.stringsettings.title, handler: (rowData, dialogs)->
+      title: i18n.dialog.stringsettings.title, handler: (rowData)->
         dialogs.dictPreviewStringSettings.data "param", rowData
         dialogs.dictPreviewStringSettings.dialog 'open'
     'Language':
-      title: i18n.dialog.languagesettings.title, handler: (rowData, dialogs)->
+      title: i18n.dialog.languagesettings.title, handler: (rowData)->
         dialogs.dictPreviewLangSettings.data "param", rowData
         dialogs.dictPreviewLangSettings.dialog 'open'
 
@@ -113,7 +108,7 @@ define (require, util, i18n)->
       delete rowData.action
       rowData.id = rowid
       rowData.handler = grid.getGridParam('postData').handler
-      handlers[action].handler rowData, require 'appmng/dialogs'
+      handlers[action].handler rowData
 
     $('a', @).css 'color', 'blue'
 

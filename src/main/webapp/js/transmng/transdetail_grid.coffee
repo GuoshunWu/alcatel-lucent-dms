@@ -1,9 +1,4 @@
-define (require)->
-  $ = require 'jqgrid'
-
-  util = require 'dms-util'
-  i18n = require 'i18n!nls/transmng'
-  c18n = require 'i18n!nls/common'
+define ['jqgrid', 'i18n!nls/transmng', 'i18n!nls/common', 'dms-util'], ($, i18n, c18n, util)->
 
   lastEditedCell = null
 

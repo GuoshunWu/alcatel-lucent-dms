@@ -1,18 +1,18 @@
-define (require)->
-  $ = require 'jqgrid'
-  require 'blockui'
-  require 'jqmsgbox'
-  require 'jqupload'
-  require 'iframetransport'
+dependencies = [
+  'jqgrid'
+  'blockui'
+  'jqmsgbox'
+  'jqupload'
+  'iframetransport'
 
-  c18n = require 'i18n!nls/common'
-  i18n = require 'i18n!nls/taskmng'
+  'i18n!nls/common'
+  'i18n!nls/taskmng'
+  'dms-util'
+  'dms-urls'
 
-  util = require 'dms-util'
-  urls = require 'dms-urls'
-
-  dialogs = require 'taskmng/dialogs'
-
+  'taskmng/dialogs'
+]
+define dependencies, ($, blockui, msgbox, upload, iframetrans, c18n, i18n, util, urls, dialogs)->
 
   handlers =
     'Download':

@@ -1,15 +1,6 @@
-define (require)->
-
-  i18n = require 'i18n!nls/transmng'
-  c18n = require 'i18n!nls/common'
-  util = require 'dms-util'
-
-  grid = require 'transmng/trans_grid'
-  detailgrid = require 'transmng/transdetail_grid'
+define ['i18n!nls/transmng', 'i18n!nls/common', 'dms-util', 'transmng/trans_grid', 'transmng/transdetail_grid'], (i18n, c18n, util, grid, detailgrid)->
 
   transGrid = grid
-
-
   refreshGrid = (languageTrigger = false, grid = transGrid)->
     nodeInfo=(require 'ptree').getNodeInfo()
     type = nodeInfo.type

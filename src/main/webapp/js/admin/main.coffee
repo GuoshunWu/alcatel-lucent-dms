@@ -1,11 +1,4 @@
-define (require)->
-  $ = require 'jqgrid'
-  require 'jqueryui'
-  util = require 'dms-util'
-  charsetgrid = require 'admin/charsetgrid'
-  languagegrid = require 'admin/languagegrid'
-
-
+define ['require','jqueryui', 'admin/languagegrid', 'admin/charsetgrid'], (require, $)->
   init = ()->
     console?.debug "transmng panel init..."
     $('#adminTabs').tabs(
@@ -28,7 +21,11 @@ define (require)->
 #    $('#languageGrid').setGridHeight('100%')
 
   ready = ()->
-  console?.debug "transmng panel ready..."
+    console?.debug "transmng panel ready..."
+
+#    require 'admin/charsetgrid'
+#    require 'admin/languagegrid'
+
 
   init()
   ready()

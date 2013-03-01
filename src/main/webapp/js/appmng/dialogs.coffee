@@ -1,13 +1,17 @@
-define (require)->
-  $ = require 'jqueryui'
-  require 'blockui'
-  require 'jqmsgbox'
+dependencies = [
+  'jqueryui'
+  'jqgrid'
+  'blockui'
+  'jqmsgbox'
 
-  c18n = require 'i18n!nls/common'
-  i18n = require 'i18n!nls/appmng'
-  urls = require 'dms-urls'
-  util = require 'dms-util'
+  'i18n!nls/common'
+  'i18n!nls/appmng'
+  'dms-urls'
+  'dms-util'
+]
+define dependencies, ($, jqgrid, blockui, msgbox, c18n, i18n, urls, util)->
 
+  console?.log "module appmng/dialogs loading."
   newProductVersion = $("#newProductReleaseDialog").dialog(
     autoOpen: false
     height: 200, width: 500, modal: true

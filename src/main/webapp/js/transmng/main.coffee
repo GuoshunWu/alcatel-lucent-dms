@@ -1,13 +1,4 @@
-define (require)->
-  c18n = require 'i18n!nls/common'
-
-  dialogs = require 'transmng/dialogs'
-
-  grid = require 'transmng/trans_grid'
-
-  util = require 'dms-util'
-  urls = require 'dms-urls'
-
+define ['i18n!nls/common', 'dms-util', 'dms-urls', 'transmng/trans_grid', 'transmng/dialogs', 'ptree'], (i18n, util, urls, grid, dialogs, ptree)->
   nodeSelectHandler = (node, nodeInfo)->
     type=node.attr('type')
     return if 'products' == type
@@ -52,7 +43,7 @@ define (require)->
     console?.debug "transmng panel init..."
     $('#selVersion', "div[id='transmng']").change ->
       return if !@value or -1 == parseInt @value
-      nodeInfo=(require 'ptree').getNodeInfo()
+      nodeInfo = ptree.getNodeInfo()
 #      console?.log nodeInfo
       type = nodeInfo.type
       type = type[..3] if type.startWith('prod')

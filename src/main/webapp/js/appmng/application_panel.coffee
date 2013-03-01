@@ -1,20 +1,28 @@
-define (require)->
-  $ = require 'jqueryui'
+dependencies = [
+  'jqueryui'
+  'jqupload'
+  'iframetransport'
 
-  i18n = require 'i18n!nls/appmng'
-  c18n = require 'i18n!nls/appmng'
-  util = require 'dms-util'
-  urls = require 'dms-urls'
+  'i18n!nls/appmng'
+  'i18n!nls/common'
+  'dms-util'
+  'dms-urls'
 
-  require 'appmng/langsetting_grid'
-  require 'appmng/stringsettings_grid'
-  require 'appmng/history_grid'
+  'appmng/dictionary_grid'
 
-  require 'jqupload'
-  require 'iframetransport'
+  # following dependency are not referenced directly.
+  'appmng/langsetting_grid'
+  'appmng/stringsettings_grid'
+  'appmng/history_grid'
 
+  'appmng/dictlistpreview_grid'
+  'appmng/dictpreviewstringsettings_grid'
+  'appmng/previewlangsetting_grid'
+]
 
-  grid = require 'appmng/dictionary_grid'
+define dependencies, ($, upload, iframetrans, i18n, c18n, util, urls, grid)->
+
+  console?.log "module appmng/application_panel loading."
 
   appInfo = {}
 

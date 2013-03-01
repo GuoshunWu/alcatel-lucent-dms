@@ -1,16 +1,16 @@
-define ( require)->
+dependencies = [
+  'jqgrid'
+  'jqmsgbox'
+  'blockui'
 
-  msgbox = require 'jqmsgbox'
-  blockui = require 'blockui'
+  'i18n!nls/transmng'
+  'i18n!nls/common'
+  'dms-urls'
+  'dms-util'
 
-  $ = require 'jqgrid'
-  require 'transmng/grid.colmodel'
-
-  i18n = require 'i18n!nls/transmng'
-  c18n = require 'i18n!nls/common'
-
-  urls = require 'dms-urls'
-  util = require 'dms-util'
+  'transmng/grid.colmodel'
+]
+define dependencies, ($, msgbox, blockui, i18n, c18n, urls, util, gmodel)->
 
 
   # prepare the grid column name and column model parameters for the grid.
