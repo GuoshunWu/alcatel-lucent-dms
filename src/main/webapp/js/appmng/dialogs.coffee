@@ -260,14 +260,16 @@ define ['require','jqueryui', 'blockui', 'jqmsgbox',  'i18n!nls/common',  'i18n!
 #     TODO:Implement progress bar version
       pb = util.genProgressBar()
       util.updateProgress('app/deliver-dict', postData, (event)->
-        return if event.percent is -1
+
         console?.log "in callback, event="
         console?.log event
 
         if event.cmd not in ['done', 'error']
-          pb.progressbar 'value', event.percent
+          pb.data 'msg',event.msg
+          pb.progressbar 'value', event.percent if event.percent isnt -1
           return
-        pb.remove()
+
+        pb.parent().remove()
         if 'error' == event.cmd
           $.msgBox event.msg, null, {title: c18n.error}
           return

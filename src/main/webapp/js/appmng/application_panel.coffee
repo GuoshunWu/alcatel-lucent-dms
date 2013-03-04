@@ -44,14 +44,14 @@ define ['require','jqueryui', 'iframetransport','iframetransport','jqupload', 'i
     data.submit()
     if !$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10
       @pb=util.genProgressBar()
-
     $('#uploadBrower').button 'disable'
   progressall: (e, data) ->
     progress = data.loaded / data.total * 100
+    @pb.data 'msg', 'Uploading'
     @pb.progressbar "value", progress
   done: (e, data)->
     $('#uploadBrower').button 'enable'
-    @pb.remove() if !$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10
+    @pb.parent().remove() if !$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10
     #    request handler
     jsonFromServer = data.result
 

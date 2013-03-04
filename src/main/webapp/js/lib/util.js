@@ -150,38 +150,44 @@ To change this template use File | Settings | File Templates.
     */
 
     genProgressBar = function(autoDispaly) {
-      var pb;
+      var pbContainer, randStr;
       if (autoDispaly == null) {
         autoDispaly = true;
       }
-      pb = $("<div id=\"progressbar_" + (randomStr(5)) + "\" class=\"progressbar\">\n<div class=\"progressbar-label\">\nLoading...\n</div>\n</div>").appendTo(document.body).draggable({
-        grid: [50, 20],
-        opacity: 0.35
-      }).progressbar({
-        max: 100,
-        value: 0,
-        create: function(e, ui) {
-          return this.label = $('div.progressbar-label', this);
-        },
-        change: function(e, ui) {
-          var value;
-          value = $(this).progressbar("value");
-          return this.label.html((value.toPrecision(4)) + "%");
-        },
-        complete: function(e, ui) {}
+      randStr = randomStr(5);
+      pbContainer = $("<div id=\"pb_container_" + randStr + "\"  class=\"progressbar-container\">\n<div class=\"progressbar-msg\">\nLoading...\n</div>\n<div id=\"progressbar_" + randStr + "\" class=\"progressbar\">\n<div class=\"progressbar-label\">0.00%</div>\n</div>\n</div>").appendTo(document.body).draggable({
+        create: function() {
+          return $("#progressbar_" + randStr, this).progressbar({
+            max: 100,
+            create: function(e, ui) {
+              this.label = $('div.progressbar-label', this);
+              this.msg = $('div.progressbar-msg', pbContainer);
+              return $(this).css('backgroundImage', "url(images/pbar-ani.gif)");
+            },
+            change: function(e, ui) {
+              var backgroundImg, _ref;
+              backgroundImg = '';
+              if ((_ref = $(this).progressbar('value')) === 0 || _ref === (-1)) {
+                backgroundImg = "images/pbar-ani.gif)";
+              }
+              $(this).css('backgroundImage', backgroundImg);
+              if ($(this).is(":data(msg)")) {
+                this.msg.html($(this).data('msg'));
+              }
+              return this.label.html("" + ($(this).progressbar('value').toPrecision(4)) + "%");
+            },
+            complete: function(e, ui) {}
+          });
+        }
       }).hide();
       if (autoDispaly) {
-        pb.show().position({
-          my: 'center',
-          at: 'center',
-          of: window
-        }).position({
+        pbContainer.show().position({
           my: 'center',
           at: 'center',
           of: window
         });
       }
-      return pb;
+      return $("#progressbar_" + randStr, pbContainer);
     };
     /* postData should not pass pqCmd parameter
     */
@@ -190,6 +196,12 @@ To change this template use File | Settings | File Templates.
       var pollingInterval, reTryAjax;
       if (!postData || !postData.pqCmd) {
         postData.pqCmd = 'start';
+      }
+      if (typeof console !== "undefined" && console !== null) {
+        console.log("postData=");
+      }
+      if (typeof console !== "undefined" && console !== null) {
+        console.log(postData);
       }
       pollingInterval = $("#pollingFreq").val() ? parseInt($("#pollingFreq").val()) : 1000;
       reTryAjax = function(retryTimes, retryCounter) {
