@@ -428,9 +428,6 @@
             pb = util.genProgressBar();
             return util.updateProgress('app/deliver-dict', postData, function(event) {
               var appInfo, _ref;
-              if (event.percent === -1) {
-                return;
-              }
               if (typeof console !== "undefined" && console !== null) {
                 console.log("in callback, event=");
               }
@@ -438,10 +435,13 @@
                 console.log(event);
               }
               if ((_ref = event.cmd) !== 'done' && _ref !== 'error') {
-                pb.progressbar('value', event.percent);
+                pb.data('msg', event.msg);
+                if (event.percent !== -1) {
+                  pb.progressbar('value', event.percent);
+                }
                 return;
               }
-              pb.remove();
+              pb.parent().remove();
               if ('error' === event.cmd) {
                 $.msgBox(event.msg, null, {
                   title: c18n.error

@@ -1,14 +1,57 @@
 jQuery ($) ->
-  progress = (msg, sep) ->
-    sep = ";"  unless sep
-    $(msg.split(sep)).each (index, elem) -> $("#progressbar").progressbar "value", parseFloat(elem)  if $.isNumeric(elem)
 
-  long_polling = (cmd, evtId) ->
-    postData =
-      cmd: cmd
-      evtId: evtId
+  base = '/dms'
 
-    if cmd is "start"
+  randomStr = (length = 10, alphbet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz')->
+    rstr = ''
+    for ch in alphbet
+      rstr += alphbet[Math.floor Math.random() * alphbet.length]
+      length--
+      break if 0 == length
+    rstr
+
+  ###
+    generate a progress bar
+  ###
+  window.genProgressBar = (autoDispaly = true)->
+    randStr = randomStr(5)
+    pbContainer=$("""
+                  <div id="pb_container_#{randStr}"  class="progressbar-container">
+                  <div class="progressbar-msg">
+                  Loading...
+                  </div>
+                  <div id="progressbar_#{randStr}" class="progressbar">
+                  <div class="progressbar-label">0.00%</div>
+                  </div>
+                  </div>
+                  """).appendTo(document.body)
+      .draggable(
+        create: ()->
+          $("#progressbar_#{randStr}", @).progressbar(
+            max: 100
+            create: (e, ui) ->
+              @label = $('div.progressbar-label', @)
+              @msg = $('div.progressbar-msg', pbContainer)
+              $(@).css('backgroundImage', "url(#{base}/images/pbar-ani.gif)")
+            change: (e, ui) ->
+              backgroundImg = ''
+              backgroundImg = "url(#{base}/images/pbar-ani.gif)" if $(@).progressbar('value') in [0, -1]
+              $(@).css('backgroundImage', backgroundImg)
+
+              @msg.html $(@).data('msg') if $(@).is(":data(msg)")
+              @label.html "#{$(@).progressbar('value').toPrecision(4)}%"
+            complete: (e, ui) ->
+              # $(@).remove()
+          )
+      ).hide()
+    pbContainer.show().position(my: 'center', at: 'center', of: window) if autoDispaly
+    $("#progressbar_#{randStr}", pbContainer)
+
+
+  long_polling = (url, postData, callback) ->
+    postData.pqCmd = 'start' if !postData || !postData.pqCmd
+
+    if postData.pqCmd is "start"
       postData.freq = (if $("#eFreq").val() then parseInt($("#eFreq").val()) else 2000)
       postData.speed = (if $("#speed").val() then parseInt($("#speed").val()) else 1000)
     postData.freq = 2  if postData.freq < 2
@@ -25,12 +68,10 @@ jQuery ($) ->
         type: 'post'
         dataType: "json"
       ).done((data, textStatus, jqXHR) ->
-        console?.log data
-        progress data.msg
-        if /done/.test(data.msg)
-          progress "100"
-          return
-        setTimeout (->long_polling "process", data.evtId), pollingInterval
+#        console?.log data
+        callback data.event if callback
+        return if data.event.cmd in ['done', 'error']
+        setTimeout (->long_polling url, {pqCmd: "process", pqId: data.pqId}, callback), pollingInterval
 
       ).fail((jqXHR, textStatus, errorThrown)->
         if 'timeout' != textStatus
@@ -46,28 +87,20 @@ jQuery ($) ->
 
     reTryAjax(10)
 
-
-  url = "../scripts/cp.groovy"
-  ### Initilize the page elements ###
-  $("#progressbar").draggable(
-    grid: [50, 20]
-    opacity: 0.35
-  ).progressbar(
-    max: 100
-    create: (e, ui) ->
-      @label = $('div.progressbar-label', @)
-      $(@).position(my: 'center', at: 'center', of: window)
-    change: (e, ui) ->
-      @label.html ($(this).progressbar("value").toPrecision(4)) + "%"
-    complete: (e, ui) ->
-      $(@).hide()
-      $("#startAction").button("enable").button "option", "label", "Start"
-  ).hide()
+#    .hide()
 
   $("#startAction").button().click (e) ->
-    $("#progressbar").progressbar("value", 0).show().position(my: 'center', at: 'center', of: window)
+    pb = genProgressBar()
+#    $(this).button("disable").button "option", "label", "In progress..."
 
-    long_polling "start", -1
-    $(this).button("disable").button "option", "label", "In progress..."
+    long_polling("../scripts/cp.groovy", {},(event)->
+      console.log event
+      if event.cmd in ['done', 'error']
+        pb.parent().remove()
+        return
+
+      pb.data 'msg', event.msg
+      pb.progressbar 'value', Number(event.percent)
+    )
 
 

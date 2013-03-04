@@ -2,24 +2,77 @@
 (function() {
 
   jQuery(function($) {
-    var long_polling, progress, url;
-    progress = function(msg, sep) {
-      if (!sep) {
-        sep = ";";
+    var base, long_polling, randomStr;
+    base = '/dms';
+    randomStr = function(length, alphbet) {
+      var ch, rstr, _i, _len;
+      if (length == null) {
+        length = 10;
       }
-      return $(msg.split(sep)).each(function(index, elem) {
-        if ($.isNumeric(elem)) {
-          return $("#progressbar").progressbar("value", parseFloat(elem));
+      if (alphbet == null) {
+        alphbet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz';
+      }
+      rstr = '';
+      for (_i = 0, _len = alphbet.length; _i < _len; _i++) {
+        ch = alphbet[_i];
+        rstr += alphbet[Math.floor(Math.random() * alphbet.length)];
+        length--;
+        if (0 === length) {
+          break;
         }
-      });
+      }
+      return rstr;
     };
-    long_polling = function(cmd, evtId) {
-      var pollingInterval, postData, reTryAjax, timeout;
-      postData = {
-        cmd: cmd,
-        evtId: evtId
-      };
-      if (cmd === "start") {
+    /*
+      generate a progress bar
+    */
+
+    window.genProgressBar = function(autoDispaly) {
+      var pbContainer, randStr;
+      if (autoDispaly == null) {
+        autoDispaly = true;
+      }
+      randStr = randomStr(5);
+      pbContainer = $("<div id=\"pb_container_" + randStr + "\"  class=\"progressbar-container\">\n<div class=\"progressbar-msg\">\nLoading...\n</div>\n<div id=\"progressbar_" + randStr + "\" class=\"progressbar\">\n<div class=\"progressbar-label\">0.00%</div>\n</div>\n</div>").appendTo(document.body).draggable({
+        create: function() {
+          return $("#progressbar_" + randStr, this).progressbar({
+            max: 100,
+            create: function(e, ui) {
+              this.label = $('div.progressbar-label', this);
+              this.msg = $('div.progressbar-msg', pbContainer);
+              return $(this).css('backgroundImage', "url(" + base + "/images/pbar-ani.gif)");
+            },
+            change: function(e, ui) {
+              var backgroundImg, _ref;
+              backgroundImg = '';
+              if ((_ref = $(this).progressbar('value')) === 0 || _ref === (-1)) {
+                backgroundImg = "url(" + base + "/images/pbar-ani.gif)";
+              }
+              $(this).css('backgroundImage', backgroundImg);
+              if ($(this).is(":data(msg)")) {
+                this.msg.html($(this).data('msg'));
+              }
+              return this.label.html("" + ($(this).progressbar('value').toPrecision(4)) + "%");
+            },
+            complete: function(e, ui) {}
+          });
+        }
+      }).hide();
+      if (autoDispaly) {
+        pbContainer.show().position({
+          my: 'center',
+          at: 'center',
+          of: window
+        });
+      }
+      return $("#progressbar_" + randStr, pbContainer);
+    };
+    long_polling = function(url, postData, callback) {
+      var pollingInterval, reTryAjax, timeout;
+      if (!postData || !postData.pqCmd) {
+        postData.pqCmd = 'start';
+      }
+      if (postData.pqCmd === "start") {
         postData.freq = ($("#eFreq").val() ? parseInt($("#eFreq").val()) : 2000);
         postData.speed = ($("#speed").val() ? parseInt($("#speed").val()) : 1000);
       }
@@ -45,16 +98,18 @@
           type: 'post',
           dataType: "json"
         }).done(function(data, textStatus, jqXHR) {
-          if (typeof console !== "undefined" && console !== null) {
-            console.log(data);
+          var _ref;
+          if (callback) {
+            callback(data.event);
           }
-          progress(data.msg);
-          if (/done/.test(data.msg)) {
-            progress("100");
+          if ((_ref = data.event.cmd) === 'done' || _ref === 'error') {
             return;
           }
           return setTimeout((function() {
-            return long_polling("process", data.evtId);
+            return long_polling(url, {
+              pqCmd: "process",
+              pqId: data.pqId
+            }, callback);
           }), pollingInterval);
         }).fail(function(jqXHR, textStatus, errorThrown) {
           if ('timeout' !== textStatus) {
@@ -77,39 +132,19 @@
       };
       return reTryAjax(10);
     };
-    url = "../scripts/cp.groovy";
-    /* Initilize the page elements
-    */
-
-    $("#progressbar").draggable({
-      grid: [50, 20],
-      opacity: 0.35
-    }).progressbar({
-      max: 100,
-      create: function(e, ui) {
-        this.label = $('div.progressbar-label', this);
-        return $(this).position({
-          my: 'center',
-          at: 'center',
-          of: window
-        });
-      },
-      change: function(e, ui) {
-        return this.label.html(($(this).progressbar("value").toPrecision(4)) + "%");
-      },
-      complete: function(e, ui) {
-        $(this).hide();
-        return $("#startAction").button("enable").button("option", "label", "Start");
-      }
-    }).hide();
     return $("#startAction").button().click(function(e) {
-      $("#progressbar").progressbar("value", 0).show().position({
-        my: 'center',
-        at: 'center',
-        of: window
+      var pb;
+      pb = genProgressBar();
+      return long_polling("../scripts/cp.groovy", {}, function(event) {
+        var _ref;
+        console.log(event);
+        if ((_ref = event.cmd) === 'done' || _ref === 'error') {
+          pb.parent().remove();
+          return;
+        }
+        pb.data('msg', event.msg);
+        return pb.progressbar('value', Number(event.percent));
       });
-      long_polling("start", -1);
-      return $(this).button("disable").button("option", "label", "In progress...");
     });
   });
 

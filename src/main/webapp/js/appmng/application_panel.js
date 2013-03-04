@@ -88,13 +88,14 @@
       progressall: function(e, data) {
         var progress;
         progress = data.loaded / data.total * 100;
+        this.pb.data('msg', 'Uploading');
         return this.pb.progressbar("value", progress);
       },
       done: function(e, data) {
         var jsonFromServer;
         $('#uploadBrower').button('enable');
         if (!$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10) {
-          this.pb.remove();
+          this.pb.parent().remove();
         }
         jsonFromServer = data.result;
         if (0 !== jsonFromServer.status) {

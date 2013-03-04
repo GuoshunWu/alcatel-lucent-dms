@@ -129,11 +129,13 @@ td {
     color: purple;
 }
 
+.progressbar-container {
+    width: 1000px;
+    height: 50px;
+    padding: 0.5em;
+}
 .progressbar {
-    position: absolute;
-    width: 800px;
-    top: 45%;
-    left: 30%;
+    width: 100%;
 }
 
 .progressbar-label {
