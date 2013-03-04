@@ -115,8 +115,8 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
   ###
     generate a progress bar
   ###
-  genProgressBar = ()->
-    $("""
+  genProgressBar = (autoDispaly = true)->
+    pb = $("""
       <div id="progressbar_#{randomStr(5)}" class="progressbar">
       <div class="progressbar-label">
       Loading...
@@ -132,13 +132,15 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
         value: 0
         create: (e, ui) ->
           @label = $('div.progressbar-label', @)
-          $(@).position(my: 'center', at: 'center')
         change: (e, ui) ->
           value = $(@).progressbar("value")
           @label.html (value.toPrecision(4)) + "%"
         complete: (e, ui) ->
           # $(@).remove()
-      )
+      ).hide()
+    pb.show().position(my: 'center', at: 'center', of: window).position(my: 'center', at: 'center', of: window) if autoDispaly
+    pb
+
 
   long_polling = (cmd, evtId, url, callback) ->
     postData =
@@ -350,6 +352,7 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
   PanelGroup: class PanelGroup
     constructor: (@panels, @currentPanel, @onSwitch = (oldpnl, newpnl)->)->
     switchTo: (panelId, callback)->
+      return if @currentPanel == panelId
       $("#{@panels}").hide()
 #      console?.debug "switch to #{@panels}[id='#{panelId}']."
       oldPanel = @currentPanel

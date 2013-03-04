@@ -8,8 +8,12 @@ dependencies = [
   'i18n!nls/appmng'
   'dms-urls'
   'dms-util'
+
+  'appmng/dictlistpreview_grid'
+  'appmng/dictpreviewstringsettings_grid'
+  'appmng/previewlangsetting_grid'
 ]
-define dependencies, ($, jqgrid, blockui, msgbox, c18n, i18n, urls, util)->
+define dependencies, ($, jqgrid, blockui, msgbox, c18n, i18n, urls, util, previewgrid)->
 
   console?.log "module appmng/dialogs loading."
   newProductVersion = $("#newProductReleaseDialog").dialog(
@@ -251,7 +255,7 @@ define dependencies, ($, jqgrid, blockui, msgbox, c18n, i18n, urls, util)->
       {text: i18n.dialog.dictlistpreview['import'], click: ()->
         param = dictListPreview.data "param"
         postData = handler: param.handler, app: $('#selAppVersion').val()
-        ($.msgBox i18n.dialog.dictlistpreview.check, null, {title: c18n.error};return) if grid.gridHasErrors()
+        ($.msgBox i18n.dialog.dictlistpreview.check, null, {title: c18n.error};return) if previewgrid.gridHasErrors()
         dictListPreview.dialog 'close'
 
         $.blockUI()

@@ -184,19 +184,19 @@ User: Guoshun Wu
       generate a progress bar
     */
 
-    genProgressBar = function() {
-      return $("<div id=\"progressbar_" + (randomStr(5)) + "\" class=\"progressbar\">\n<div class=\"progressbar-label\">\nLoading...\n</div>\n</div>").appendTo(document.body).draggable({
+    genProgressBar = function(autoDispaly) {
+      var pb;
+      if (autoDispaly == null) {
+        autoDispaly = true;
+      }
+      pb = $("<div id=\"progressbar_" + (randomStr(5)) + "\" class=\"progressbar\">\n<div class=\"progressbar-label\">\nLoading...\n</div>\n</div>").appendTo(document.body).draggable({
         grid: [50, 20],
         opacity: 0.35
       }).progressbar({
         max: 100,
         value: 0,
         create: function(e, ui) {
-          this.label = $('div.progressbar-label', this);
-          return $(this).position({
-            my: 'center',
-            at: 'center'
-          });
+          return this.label = $('div.progressbar-label', this);
         },
         change: function(e, ui) {
           var value;
@@ -204,7 +204,19 @@ User: Guoshun Wu
           return this.label.html((value.toPrecision(4)) + "%");
         },
         complete: function(e, ui) {}
-      });
+      }).hide();
+      if (autoDispaly) {
+        pb.show().position({
+          my: 'center',
+          at: 'center',
+          of: window
+        }).position({
+          my: 'center',
+          at: 'center',
+          of: window
+        });
+      }
+      return pb;
     };
     long_polling = function(cmd, evtId, url, callback) {
       var pollingInterval, postData, reTryAjax, timeout;
@@ -518,6 +530,9 @@ User: Guoshun Wu
 
         PanelGroup.prototype.switchTo = function(panelId, callback) {
           var oldPanel;
+          if (this.currentPanel === panelId) {
+            return;
+          }
           $("" + this.panels).hide();
           oldPanel = this.currentPanel;
           this.currentPanel = panelId;
