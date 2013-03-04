@@ -2,9 +2,9 @@
 (function() {
   var dependencies;
 
-  dependencies = ['jqueryui', 'jqupload', 'iframetransport', 'i18n!nls/appmng', 'i18n!nls/common', 'dms-util', 'dms-urls', 'appmng/dictionary_grid', 'appmng/langsetting_grid', 'appmng/stringsettings_grid', 'appmng/history_grid', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsettings_grid', 'appmng/previewlangsetting_grid'];
+  dependencies = ['jqueryui', 'jqupload', 'iframetransport', 'i18n!nls/appmng', 'i18n!nls/common', 'dms-util', 'dms-urls', 'appmng/dialogs', 'appmng/dictionary_grid'];
 
-  define(dependencies, function($, upload, iframetrans, i18n, c18n, util, urls, grid) {
+  define(dependencies, function($, upload, iframetrans, i18n, c18n, util, urls, dialogs, grid) {
     var appInfo, dctFileUpload,
       _this = this;
     if (typeof console !== "undefined" && console !== null) {
@@ -102,6 +102,9 @@
         $.each(data.files, function(index, file) {
           return $('#uploadStatus').html("" + file.name + " " + i18n.uploadfinished);
         });
+        if (!$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10) {
+          this.pb.remove();
+        }
         jsonFromServer = data.result;
         if (0 !== jsonFromServer.status) {
           $.msgBox(jsonFromServer.message, null, {

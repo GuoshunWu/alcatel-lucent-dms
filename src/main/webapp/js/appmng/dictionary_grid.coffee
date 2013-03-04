@@ -2,15 +2,19 @@ dependencies = [
   'jqgrid'
   'blockui'
   'jqmsgbox'
+  'jqueryui'
 
   'i18n!nls/appmng'
   'i18n!nls/common'
   'dms-util'
 
-  'appmng/dialogs'
+  # following dependency are not referenced directly.
+  'appmng/langsetting_grid'
+  'appmng/stringsettings_grid'
+  'appmng/history_grid'
 ]
 
-define dependencies, ($, blockui, msgbox, i18n, c18n, util, dialogs)->
+define dependencies, ($, blockui, msgbox,ui, i18n, c18n, util, dialogs)->
 
   console?.log "module appmng/dictionary_grid loading."
   #  for form edit delete option
@@ -39,13 +43,11 @@ define dependencies, ($, blockui, msgbox, i18n, c18n, util, dialogs)->
       url: ''
       title: i18n.dialog.stringsettings.title, handler: (rowData)->
       #        grid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
-        dialogs.stringSettings.data "param", rowData
-        dialogs.stringSettings.dialog 'open'
+        $('#stringSettingsDialog').data("param", rowData).dialog 'open'
     'Language':
       url: ''
       title: i18n.dialog.languagesettings.title, handler: (rowData)->
-        dialogs.langSettings.data "param", rowData
-        dialogs.langSettings.dialog 'open'
+        $('#languageSettingsDialog').data("param", rowData).dialog 'open'
 
   lastEditedCell = null
 

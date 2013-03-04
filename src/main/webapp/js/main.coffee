@@ -45,6 +45,7 @@ define dependencies, ($, util, glayout, ptree, appmngPanel, transmngPanel, taskm
     $('span.navigator-button').button().click(
       ()->
         currentPanel = "#{$(@).attr('value')}"
+
         if 'admin' == currentPanel
           glayout.layout.hide('west')
         else

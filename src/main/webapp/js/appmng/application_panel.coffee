@@ -8,19 +8,11 @@ dependencies = [
   'dms-util'
   'dms-urls'
 
+  'appmng/dialogs'
   'appmng/dictionary_grid'
-
-  # following dependency are not referenced directly.
-  'appmng/langsetting_grid'
-  'appmng/stringsettings_grid'
-  'appmng/history_grid'
-
-  'appmng/dictlistpreview_grid'
-  'appmng/dictpreviewstringsettings_grid'
-  'appmng/previewlangsetting_grid'
 ]
 
-define dependencies, ($, upload, iframetrans, i18n, c18n, util, urls, grid)->
+define dependencies, ($, upload, iframetrans, i18n, c18n, util, urls, dialogs, grid)->
 
   console?.log "module appmng/application_panel loading."
 
@@ -47,15 +39,6 @@ define dependencies, ($, upload, iframetrans, i18n, c18n, util, urls, grid)->
   $("#selAppVersion").change (e)->
     appInfo.app = {version: $("option:selected", @).text(), id: if @value then @value else -1}
     grid.appChanged appInfo
-
-#  $("#progressbar").draggable(grid: [50, 20], opacity: 0.35).progressbar(
-#    create: (e, ui) ->
-#      @label = $('.progressbar-label', @)
-#    change: (e, ui)->
-#      @label.html ($(this).progressbar("value").toPrecision(4)) + "%"
-#    complete: (e, ui) ->
-#      $(@).progressbar("value", 0).hide()
-#  ).hide()
 
   dctFileUpload = 'dctFileUpload'
   #  create upload filebutton
@@ -90,7 +73,7 @@ define dependencies, ($, upload, iframetrans, i18n, c18n, util, urls, grid)->
     $('#uploadBrower').button 'enable'
 
     $.each data.files, (index, file) ->$('#uploadStatus').html "#{file.name} #{i18n.uploadfinished}"
-#    @pb.remove() if !$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10
+    @pb.remove() if !$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10
     #    request handler
     jsonFromServer = data.result
 

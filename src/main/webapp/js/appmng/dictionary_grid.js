@@ -2,9 +2,9 @@
 (function() {
   var dependencies;
 
-  dependencies = ['jqgrid', 'blockui', 'jqmsgbox', 'i18n!nls/appmng', 'i18n!nls/common', 'dms-util', 'appmng/dialogs'];
+  dependencies = ['jqgrid', 'blockui', 'jqmsgbox', 'jqueryui', 'i18n!nls/appmng', 'i18n!nls/common', 'dms-util', 'appmng/langsetting_grid', 'appmng/stringsettings_grid', 'appmng/history_grid'];
 
-  define(dependencies, function($, blockui, msgbox, i18n, c18n, util, dialogs) {
+  define(dependencies, function($, blockui, msgbox, ui, i18n, c18n, util, dialogs) {
     var colModel, deleteOptions, dicGrid, handlers, lastEditedCell;
     if (typeof console !== "undefined" && console !== null) {
       console.log("module appmng/dictionary_grid loading.");
@@ -39,16 +39,14 @@
         url: '',
         title: i18n.dialog.stringsettings.title,
         handler: function(rowData) {
-          dialogs.stringSettings.data("param", rowData);
-          return dialogs.stringSettings.dialog('open');
+          return $('#stringSettingsDialog').data("param", rowData).dialog('open');
         }
       },
       'Language': {
         url: '',
         title: i18n.dialog.languagesettings.title,
         handler: function(rowData) {
-          dialogs.langSettings.data("param", rowData);
-          return dialogs.langSettings.dialog('open');
+          return $('#languageSettingsDialog').data("param", rowData).dialog('open');
         }
       }
     };

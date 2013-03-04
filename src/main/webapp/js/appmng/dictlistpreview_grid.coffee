@@ -1,4 +1,4 @@
-define ['jqgrid', 'jqmsgbox', 'i18n!nls/appmng', 'i18n!nls/common', 'appmng/dialogs'], ($, msgbox, i18n, c18n, dialogs)->
+define ['jqgrid', 'jqmsgbox', 'jqueryui', 'i18n!nls/appmng', 'i18n!nls/common'], ($, msgbox, ui, i18n, c18n)->
 
   console?.log "module appmng/dictlistpreview_grid loading."
 
@@ -9,12 +9,10 @@ define ['jqgrid', 'jqmsgbox', 'i18n!nls/appmng', 'i18n!nls/common', 'appmng/dial
   handlers =
     'String':
       title: i18n.dialog.stringsettings.title, handler: (rowData)->
-        dialogs.dictPreviewStringSettings.data "param", rowData
-        dialogs.dictPreviewStringSettings.dialog 'open'
+        $('#dictPreviewStringSettingsDialog').data("param", rowData).dialog 'open'
     'Language':
       title: i18n.dialog.languagesettings.title, handler: (rowData)->
-        dialogs.dictPreviewLangSettings.data "param", rowData
-        dialogs.dictPreviewLangSettings.dialog 'open'
+        $('#dictPreviewLanguageSettingsDialog').data("param", rowData).dialog 'open'
 
   lastEditedCell = null
 

@@ -2,9 +2,9 @@
 (function() {
   var dependencies;
 
-  dependencies = ['jqueryui', 'jqgrid', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/appmng', 'dms-urls', 'dms-util'];
+  dependencies = ['jqueryui', 'jqgrid', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/appmng', 'dms-urls', 'dms-util', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsettings_grid', 'appmng/previewlangsetting_grid'];
 
-  define(dependencies, function($, jqgrid, blockui, msgbox, c18n, i18n, urls, util) {
+  define(dependencies, function($, jqgrid, blockui, msgbox, c18n, i18n, urls, util, previewgrid) {
     var addApplication, addLanguage, addNewApplicationVersionToProductVersion, dictListPreview, dictPreviewLangSettings, dictPreviewStringSettings, historyDlg, langSettings, newAppVersion, newProductVersion, setContextTo, stringSettings, stringSettingsTranslation;
     if (typeof console !== "undefined" && console !== null) {
       console.log("module appmng/dialogs loading.");
@@ -408,7 +408,7 @@
               handler: param.handler,
               app: $('#selAppVersion').val()
             };
-            if (grid.gridHasErrors()) {
+            if (previewgrid.gridHasErrors()) {
               $.msgBox(i18n.dialog.dictlistpreview.check, null, {
                 title: c18n.error
               });
