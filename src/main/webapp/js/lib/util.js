@@ -13,7 +13,7 @@ To change this template use File | Settings | File Templates.
   var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   define(["jquery", "jqueryui", 'jqlayout', "i18n!nls/common"], function($, ui, layout, c18n) {
-    var PanelGroup, checkAllGridPrivilege, checkGridPrivilege, createLayoutManager, formatJonString, newOption, pageNavi, sessionCheck, setCookie, urlname2Action;
+    var PanelGroup, checkAllGridPrivilege, checkGridPrivilege, createLayoutManager, formatJonString, genProgressBar, long_polling, newOption, pageNavi, randomStr, sessionCheck, setCookie, urlname2Action;
     String.prototype.format = function() {
       var args;
       args = arguments;
@@ -125,6 +125,119 @@ To change this template use File | Settings | File Templates.
         this.push(elem);
       }
       return delElem;
+    };
+    randomStr = function(length, alphbet) {
+      var ch, rstr, _i, _len;
+      if (length == null) {
+        length = 10;
+      }
+      if (alphbet == null) {
+        alphbet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz';
+      }
+      rstr = '';
+      for (_i = 0, _len = alphbet.length; _i < _len; _i++) {
+        ch = alphbet[_i];
+        rstr += alphbet[Math.floor(Math.random() * alphbet.length)];
+        length--;
+        if (0 === length) {
+          break;
+        }
+      }
+      return rstr;
+    };
+    /*
+      generate a progress bar
+    */
+
+    genProgressBar = function(autoDispaly) {
+      var pb;
+      if (autoDispaly == null) {
+        autoDispaly = true;
+      }
+      pb = $("<div id=\"progressbar_" + (randomStr(5)) + "\" class=\"progressbar\">\n<div class=\"progressbar-label\">\nLoading...\n</div>\n</div>").appendTo(document.body).draggable({
+        grid: [50, 20],
+        opacity: 0.35
+      }).progressbar({
+        max: 100,
+        value: 0,
+        create: function(e, ui) {
+          return this.label = $('div.progressbar-label', this);
+        },
+        change: function(e, ui) {
+          var value;
+          value = $(this).progressbar("value");
+          return this.label.html((value.toPrecision(4)) + "%");
+        },
+        complete: function(e, ui) {}
+      }).hide();
+      if (autoDispaly) {
+        pb.show().position({
+          my: 'center',
+          at: 'center',
+          of: window
+        }).position({
+          my: 'center',
+          at: 'center',
+          of: window
+        });
+      }
+      return pb;
+    };
+    /* postData should not pass pqCmd parameter
+    */
+
+    long_polling = function(url, postData, callback) {
+      var pollingInterval, reTryAjax;
+      if (!postData || !postData.pqCmd) {
+        postData.pqCmd = 'start';
+      }
+      pollingInterval = $("#pollingFreq").val() ? parseInt($("#pollingFreq").val()) : 1000;
+      reTryAjax = function(retryTimes, retryCounter) {
+        if (retryTimes == null) {
+          retryTimes = Number.MAX_VALUE;
+        }
+        if (retryCounter == null) {
+          retryCounter = 0;
+        }
+        return $.ajax(url, {
+          cache: false,
+          data: postData,
+          type: 'post',
+          dataType: "json"
+        }).done(function(data, textStatus, jqXHR) {
+          var _ref;
+          if (callback) {
+            callback(data.event);
+          }
+          if ((_ref = data.event.cmd) === 'done' || _ref === 'error') {
+            return;
+          }
+          return setTimeout((function() {
+            return long_polling(url, {
+              pqCmd: 'process',
+              pqId: data.pqId
+            }, callback);
+          }), pollingInterval);
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+          if ('timeout' !== textStatus) {
+            if (typeof console !== "undefined" && console !== null) {
+              console.log("error: " + textStatus);
+            }
+            return;
+          }
+          if (retryTimes > 0) {
+            if (typeof console !== "undefined" && console !== null) {
+              console.log("Request " + textStatus + ", I will retry in " + pollingInterval + " milliseconds.");
+            }
+            return setTimeout((function() {
+              return reTryAjax(--retryTimes, ++retryCounter);
+            }), pollingInterval);
+          } else {
+            return typeof console !== "undefined" && console !== null ? console.log("I have retried " + retryCounter + " times. There may be a network connection issue, please check network cable.") : void 0;
+          }
+        });
+      };
+      return reTryAjax();
     };
     /*
     format json string to pretty.
@@ -500,6 +613,8 @@ To change this template use File | Settings | File Templates.
         }
         return createLayoutManager(page);
       },
+      genProgressBar: genProgressBar,
+      updateProgress: long_polling,
       PanelGroup: PanelGroup = (function() {
 
         function PanelGroup(panels, currentPanel) {

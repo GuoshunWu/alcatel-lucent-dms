@@ -21,15 +21,6 @@ define ['require','jqueryui', 'iframetransport','iframetransport','jqupload', 'i
     appInfo.app = {version: $("option:selected", @).text(), id: if @value then @value else -1}
     grid.appChanged appInfo
 
-  $("#progressbar").draggable(grid: [50, 20], opacity: 0.35).progressbar(
-    create: (e, ui) ->
-      @label = $('.progressbar-label', @)
-    change: (e, ui)->
-      @label.html ($(this).progressbar("value").toPrecision(4)) + "%"
-    complete: (e, ui) ->
-      $(@).progressbar("value", 0).hide()
-  ).hide()
-
   dctFileUpload = 'dctFileUpload'
   #  create upload filebutton
   $('#uploadBrower').button(label: i18n.browse).attr('privilegeName', util.urlname2Action('app/deliver-app-dict')).css({overflow: 'hidden'}).append $(
@@ -43,27 +34,24 @@ define ['require','jqueryui', 'iframetransport','iframetransport','jqupload', 'i
   type: 'POST', dataType: 'json'
   url: "app/deliver-app-dict"
 
-  #  forceIframeTransport:true
-
   add: (e, data)->
     $.each data.files, (index, file) ->
-    #      $('#uploadStatus').html "#{i18n.uploadingfile}#{file.name}"
     appId = $("#selAppVersion").val()
     return if !appId
     $(@).fileupload 'option', 'formData', [
       {name: 'appId', value: $("#selAppVersion").val()}
     ]
     data.submit()
-    $("#progressbar").show() if !$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10
+    if !$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10
+      @pb=util.genProgressBar()
+
     $('#uploadBrower').button 'disable'
   progressall: (e, data) ->
     progress = data.loaded / data.total * 100
-    $('#progressbar').progressbar "value", progress
+    @pb.progressbar "value", progress
   done: (e, data)->
     $('#uploadBrower').button 'enable'
-
-    $.each data.files, (index, file) ->$('#uploadStatus').html "#{file.name} #{i18n.uploadfinished}"
-    $("#progressbar").hide() if !$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10
+    @pb.remove() if !$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10
     #    request handler
     jsonFromServer = data.result
 
@@ -73,8 +61,6 @@ define ['require','jqueryui', 'iframetransport','iframetransport','jqupload', 'i
 
     $('#dictListPreviewDialog').data 'param', {handler: jsonFromServer.filename, appId: $("#selAppVersion").val()}
     $('#dictListPreviewDialog').dialog 'open'
-
-
   }
 
   getApplicationSelectOptions: ()->$('#selAppVersion').children('option').clone(true)

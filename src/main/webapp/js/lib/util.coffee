@@ -75,6 +75,78 @@ define ["jquery", "jqueryui", 'jqlayout', "i18n!nls/common"], ($, ui, layout, c1
     @push(elem) for elem in newarray
     delElem
 
+  randomStr = (length = 10, alphbet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz')->
+    rstr = ''
+    for ch in alphbet
+      rstr += alphbet[Math.floor Math.random() * alphbet.length]
+      length--
+      break if 0 == length
+    rstr
+
+  ###
+    generate a progress bar
+  ###
+  genProgressBar = (autoDispaly = true)->
+    pb = $("""
+           <div id="progressbar_#{randomStr(5)}" class="progressbar">
+           <div class="progressbar-label">
+           Loading...
+           </div>
+           </div>
+           """).appendTo(document.body)
+      .draggable(
+        grid: [50, 20]
+        opacity: 0.35
+      ).progressbar(
+        max: 100
+        value: 0
+        create: (e, ui) ->
+          @label = $('div.progressbar-label', @)
+        change: (e, ui) ->
+          value = $(@).progressbar("value")
+          @label.html (value.toPrecision(4)) + "%"
+        complete: (e, ui) ->
+          # $(@).remove()
+      ).hide()
+    pb.show().position(my: 'center', at: 'center', of: window).position(my: 'center', at: 'center', of: window) if autoDispaly
+    pb
+
+  ### postData should not pass pqCmd parameter ###
+  long_polling =(url, postData, callback)->
+    # call by terminal user
+    postData.pqCmd = 'start' if !postData || !postData.pqCmd
+#    console?.log "postData="
+#    console?.log postData
+
+    # initlize the test parameters
+    pollingInterval = if $("#pollingFreq").val() then parseInt($("#pollingFreq").val()) else 1000
+
+    reTryAjax = (retryTimes = Number.MAX_VALUE, retryCounter = 0)->
+      $.ajax(url,
+        cache: false
+        data: postData
+        type: 'post'
+        dataType: "json"
+      ).done((data, textStatus, jqXHR) ->
+#        console?.log data
+        callback data.event if callback
+        return if data.event.cmd in ['done', 'error']
+
+        setTimeout (->long_polling  url, {pqCmd: 'process', pqId: data.pqId}, callback), pollingInterval
+      ).fail((jqXHR, textStatus, errorThrown)->
+        if 'timeout' != textStatus
+          console?.log "error: #{textStatus}"
+          return
+
+        if(retryTimes > 0)
+          console?.log "Request #{textStatus}, I will retry in #{pollingInterval} milliseconds."
+          setTimeout (->reTryAjax(--retryTimes, ++retryCounter)), pollingInterval
+        else
+          console?.log "I have retried #{retryCounter} times. There may be a network connection issue, please check network cable."
+      )
+
+    reTryAjax()
+
   ###
   format json string to pretty.
   ###
@@ -384,7 +456,8 @@ define ["jquery", "jqueryui", 'jqlayout', "i18n!nls/common"], ($, ui, layout, c1
 
   urlname2Action: urlname2Action
   createLayoutManager: (page = 'appmng.jsp')->createLayoutManager(page)
-
+  genProgressBar:genProgressBar
+  updateProgress: long_polling
   PanelGroup: class PanelGroup
     constructor: (@panels, @currentPanel)->
     switchTo: (panelId, callback)->

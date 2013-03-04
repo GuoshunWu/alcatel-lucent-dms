@@ -148,7 +148,6 @@ define ['jqlayout', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/transmng
           postData.text = $('#searchText', @).val()
           transDetailGrid.trigger 'reloadGrid'
         ).height(20).width(20)
-        #      .position(my:'center', at: 'center', of: '#searchText')
 
         $('#transSameWithRef', @).change (e)->
           postData.nodiff = @checked
