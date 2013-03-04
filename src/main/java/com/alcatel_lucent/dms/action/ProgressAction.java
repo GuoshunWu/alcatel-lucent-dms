@@ -2,6 +2,7 @@ package com.alcatel_lucent.dms.action;
 
 import java.util.Map;
 
+import com.alcatel_lucent.dms.UserContext;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.interceptor.SessionAware;
@@ -22,7 +23,7 @@ import org.apache.struts2.interceptor.SessionAware;
  *
  */
 @ParentPackage("dms-json")
-@Result(type="json", params={"noCache","true","ignoreHierarchy","false","includeProperties","queueId,event,status,message"})
+@Result(type="json", params={"noCache","true","ignoreHierarchy","false","includeProperties","pqId,event.*"})
 @SuppressWarnings("serial")
 abstract public class ProgressAction extends JSONAction implements SessionAware {
 	public static final String CMD_START = "start";
@@ -50,15 +51,17 @@ abstract public class ProgressAction extends JSONAction implements SessionAware 
 	private Thread thread;
 
 	public String execute() {
-		if (pqCmd.equals(CMD_START)) {	// initialize progress queue and start job
-			pqId = "pq_" + System.currentTimeMillis();
-			final ProgressQueue queue = new ProgressQueue(pqId);
-			session.put(pqId, queue);
+		if (getPqCmd().equals(CMD_START)) {	// initialize progress queue and start job
+			setPqId("pq_" + System.currentTimeMillis());
+			final ProgressQueue queue = new ProgressQueue(getPqId());
+			session.put(getPqId(), queue);
+            final UserContext uc=UserContext.getInstance();
 			thread = new Thread(new Runnable() {
 				@Override
 				public void run() {
 					try {
 						ProgressQueue.setInstance(queue);
+                        UserContext.setUserContext(uc);
 						performAction();
 						if (status == 0) {
 							queue.put(new ProgressEvent(CMD_DONE, getMessage(), 100));
@@ -77,8 +80,8 @@ abstract public class ProgressAction extends JSONAction implements SessionAware 
 			});
 			thread.start();
 			event = new ProgressEvent(CMD_PROCESS, "", -1);
-		} else if (pqCmd.equals(CMD_PROCESS)) {	// wait for an event in the queue
-			ProgressQueue queue = (ProgressQueue) session.get(pqId);
+		} else if (getPqCmd().equals(CMD_PROCESS)) {	// wait for an event in the queue
+			ProgressQueue queue = (ProgressQueue) session.get(getPqId());
 			if (queue != null) {
 				do {
 					try {
@@ -89,15 +92,16 @@ abstract public class ProgressAction extends JSONAction implements SessionAware 
 				} while (!queue.isEmpty());
 				// destruct queue if finished
 				if (event.getCmd().equals(CMD_DONE) || event.getCmd().equals(CMD_ERROR)) {
-					session.remove(pqId);
+					session.remove(getPqId());
 				}
 			} else {
 				event = new ProgressEvent(CMD_DONE, "", 100);
 			}
+            log.info("event="+event);
 		} else {
-			event = new ProgressEvent(CMD_ERROR, "Unknown progress action cmd " + pqCmd + ".", -1);
+			event = new ProgressEvent(CMD_ERROR, "Unknown progress action cmd " + getPqCmd() + ".", -1);
 			setStatus(-1);
-			setMessage("Unknown progress action cmd: " + pqCmd);
+			setMessage("Unknown progress action cmd: " + getPqCmd());
 		}
 		return SUCCESS;
 	}
@@ -110,4 +114,19 @@ abstract public class ProgressAction extends JSONAction implements SessionAware 
 		this.event = event;
 	}
 
+    public String getPqCmd() {
+        return pqCmd;
+    }
+
+    public void setPqCmd(String pqCmd) {
+        this.pqCmd = pqCmd;
+    }
+
+    public String getPqId() {
+        return pqId;
+    }
+
+    public void setPqId(String pqId) {
+        this.pqId = pqId;
+    }
 }

@@ -30,4 +30,12 @@ public class ProgressEvent {
 		this.percent = percent;
 	}
 
+    @Override
+    public String toString() {
+        return "ProgressEvent{" +
+                "cmd='" + cmd + '\'' +
+                ", msg='" + msg + '\'' +
+                ", percent=" + percent +
+                '}';
+    }
 }

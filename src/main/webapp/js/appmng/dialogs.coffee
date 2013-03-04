@@ -247,15 +247,35 @@ define ['require','jqueryui', 'blockui', 'jqmsgbox',  'i18n!nls/common',  'i18n!
       ($.msgBox i18n.dialog.dictlistpreview.check, null, {title: c18n.error};return) if grid.gridHasErrors()
       dictListPreview.dialog 'close'
 
-      $.blockUI()
-      $.post 'app/deliver-dict', postData, (json)->
-        $.unblockUI()
-        if json.status != 0
-          $.msgBox json.message, null, {title: c18n.error}
+#      $.blockUI()
+#      $.post 'app/deliver-dict', postData, (json)->
+#        $.unblockUI()
+#        if json.status != 0
+#          $.msgBox json.message, null, {title: c18n.error}
+#          return
+#        appInfo = "#{$('#appDispAppName').text()} #{$('#selAppVersion option:selected').text()}"
+#        $.msgBox (i18n.dialog.dictlistpreview.success.format appInfo, json.message), null, {title: c18n.info}
+#        $('#selAppVersion').trigger 'change'
+
+#     TODO:Implement progress bar version
+      pb = util.genProgressBar()
+      util.updateProgress('app/deliver-dict', postData, (event)->
+        return if event.percent is -1
+        console?.log "in callback, event="
+        console?.log event
+
+        if event.cmd not in ['done', 'error']
+          pb.progressbar 'value', event.percent
           return
+        pb.remove()
+        if 'error' == event.cmd
+          $.msgBox event.msg, null, {title: c18n.error}
+          return
+
         appInfo = "#{$('#appDispAppName').text()} #{$('#selAppVersion option:selected').text()}"
-        $.msgBox (i18n.dialog.dictlistpreview.success.format appInfo, json.message), null, {title: c18n.info}
+        $.msgBox (i18n.dialog.dictlistpreview.success.format appInfo, event.msg), null, {title: c18n.info}
         $('#selAppVersion').trigger 'change'
+      )
     }
   ]
   open: ->

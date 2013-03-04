@@ -412,7 +412,7 @@
         {
           text: i18n.dialog.dictlistpreview['import'],
           click: function() {
-            var param, postData;
+            var param, pb, postData;
             param = dictListPreview.data("param");
             postData = {
               handler: param.handler,
@@ -425,18 +425,31 @@
               return;
             }
             dictListPreview.dialog('close');
-            $.blockUI();
-            return $.post('app/deliver-dict', postData, function(json) {
-              var appInfo;
-              $.unblockUI();
-              if (json.status !== 0) {
-                $.msgBox(json.message, null, {
+            pb = util.genProgressBar();
+            return util.updateProgress('app/deliver-dict', postData, function(event) {
+              var appInfo, _ref;
+              if (event.percent === -1) {
+                return;
+              }
+              if (typeof console !== "undefined" && console !== null) {
+                console.log("in callback, event=");
+              }
+              if (typeof console !== "undefined" && console !== null) {
+                console.log(event);
+              }
+              if ((_ref = event.cmd) !== 'done' && _ref !== 'error') {
+                pb.progressbar('value', event.percent);
+                return;
+              }
+              pb.remove();
+              if ('error' === event.cmd) {
+                $.msgBox(event.msg, null, {
                   title: c18n.error
                 });
                 return;
               }
               appInfo = "" + ($('#appDispAppName').text()) + " " + ($('#selAppVersion option:selected').text());
-              $.msgBox(i18n.dialog.dictlistpreview.success.format(appInfo, json.message), null, {
+              $.msgBox(i18n.dialog.dictlistpreview.success.format(appInfo, event.msg), null, {
                 title: c18n.info
               });
               return $('#selAppVersion').trigger('change');
