@@ -155,16 +155,26 @@ define ['require','blockui', 'jqgrid', 'jqmsgbox', 'i18n!nls/appmng', 'i18n!nls/
     $(@).button 'disable'
     oldLabel = $(@).button 'option', 'label'
     $(@).button 'option', 'label', i18n.generating
-    $.post 'app/generate-dict', {dicts: dicts.join(','), filename: filename}, (json)=>
-    #      $.unblockUI()
+
+    #    $.post 'app/generate-dict', {dicts: dicts.join(','), filename: filename}, (json)=>
+    #    #      $.unblockUI()
+    #      $(@).button 'option', 'label', oldLabel
+    #      $(@).button 'enable'
+    #
+    #      if(json.status != 0)
+    #        $.msgBox json.message, null, {title: c18n.error}
+    #        return
+
+    #    window.location.href = "app/download-app-dict.action?fileLoc=#{json.fileLoc}"
+    pb = util.genProgressBar()
+    util.updateProgress('app/generate-dict', {dicts: dicts.join(','), filename: filename}, (json)->
+      pb.parent().remove()
       $(@).button 'option', 'label', oldLabel
       $(@).button 'enable'
-
-      if(json.status != 0)
-        $.msgBox json.message, null, {title: c18n.error}
-        return
-
       window.location.href = "app/download-app-dict.action?fileLoc=#{json.fileLoc}"
+    , pb)
+
+
 
 
   $('#batchAddLanguage').button().attr('privilegeName', util.urlname2Action 'app/add-dict-language').click ->

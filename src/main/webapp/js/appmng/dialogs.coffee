@@ -248,23 +248,12 @@ define ['require','jqueryui', 'blockui', 'jqmsgbox',  'i18n!nls/common',  'i18n!
       dictListPreview.dialog 'close'
 
       pb = util.genProgressBar()
-      util.updateProgress('app/deliver-dict', postData, (event)->
-        console?.log event
-
-        if event.cmd not in ['done', 'error']
-          pb.data 'msg',event.msg
-          pb.progressbar 'value', event.percent if event.percent isnt -1
-          return
-
+      util.updateProgress('app/deliver-dict', postData, (json)->
         pb.parent().remove()
-        if 'error' == event.cmd
-          $.msgBox event.msg, null, {title: c18n.error}
-          return
-
         appInfo = "#{$('#appDispAppName').text()} #{$('#selAppVersion option:selected').text()}"
-        $.msgBox (i18n.dialog.dictlistpreview.success.format appInfo, event.msg), null, {title: c18n.info}
+        $.msgBox (i18n.dialog.dictlistpreview.success.format appInfo, json.event.msg), null, {title: c18n.info}
         $('#selAppVersion').trigger 'change'
-      )
+      , pb)
     }
   ]
   open: ->

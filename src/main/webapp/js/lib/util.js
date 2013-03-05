@@ -12,7 +12,7 @@ To change this template use File | Settings | File Templates.
 (function() {
   var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  define(["jquery", "jqueryui", 'jqlayout', "i18n!nls/common"], function($, ui, layout, c18n) {
+  define(["jquery", "jqueryui", 'jqmsgbox', 'jqlayout', "i18n!nls/common"], function($, ui, msgbox, layout, c18n) {
     var PanelGroup, checkAllGridPrivilege, checkGridPrivilege, createLayoutManager, formatJonString, genProgressBar, long_polling, newOption, pageNavi, randomStr, sessionCheck, setCookie, urlname2Action;
     String.prototype.format = function() {
       var args;
@@ -191,10 +191,13 @@ To change this template use File | Settings | File Templates.
       }
       return $("#progressbar_" + randStr, pbContainer);
     };
-    /* postData should not pass pqCmd parameter
+    /*
+      postData pqCmd should not be passed as a property
+      callback callback function
+      pb a jquey progressbar
     */
 
-    long_polling = function(url, postData, callback) {
+    long_polling = function(url, postData, callback, pb) {
       var pollingInterval, reTryAjax;
       if (!postData || !postData.pqCmd) {
         postData.pqCmd = 'start';
@@ -213,18 +216,34 @@ To change this template use File | Settings | File Templates.
           type: 'post',
           dataType: "json"
         }).done(function(data, textStatus, jqXHR) {
-          var _ref;
-          if (callback) {
-            callback(data.event);
+          if (typeof console !== "undefined" && console !== null) {
+            console.log(data);
           }
-          if ((_ref = data.event.cmd) === 'done' || _ref === 'error') {
+          if ('error' === data.event.cmd) {
+            $.msgBox(event.msg, null, {
+              title: c18n.error
+            });
             return;
+          }
+          if ('done' === data.event.cmd) {
+            if (typeof callback === "function") {
+              callback(data);
+            }
+            return;
+          }
+          if (pb) {
+            pb.data('msg', data.event.msg);
+            pb.progressbar('value', data.event.percent);
+          } else {
+            if (typeof callback === "function") {
+              callback(data);
+            }
           }
           return setTimeout((function() {
             return long_polling(url, {
               pqCmd: 'process',
               pqId: data.pqId
-            }, callback);
+            }, callback, pb);
           }), pollingInterval);
         }).fail(function(jqXHR, textStatus, errorThrown) {
           if ('timeout' !== textStatus) {
