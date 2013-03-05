@@ -13,14 +13,14 @@ jQuery ($) ->
   ###
     generate a progress bar
   ###
-  window.genProgressBar = (autoDispaly = true)->
+  window.genProgressBar = (autoDispaly = true, autoRemoveWhenCompleted=true)->
     randStr = randomStr(5)
     pbContainer=$("""
-                  <div id="pb_container_#{randStr}"  class="progressbar-container">
+                  <div id="pb_container_#{randStr}"  class="progressbar-container ui-widget-content">
                   <div class="progressbar-msg">
                   Loading...
                   </div>
-                  <div id="progressbar_#{randStr}" class="progressbar">
+                  <div id="progressbar_#{randStr}" class="progressbar progressbar-indeterminate">
                   <div class="progressbar-label">0.00%</div>
                   </div>
                   </div>
@@ -32,16 +32,12 @@ jQuery ($) ->
             create: (e, ui) ->
               @label = $('div.progressbar-label', @)
               @msg = $('div.progressbar-msg', pbContainer)
-              $(@).css('backgroundImage', "url(#{base}/images/pbar-ani.gif)")
             change: (e, ui) ->
-              backgroundImg = ''
-              backgroundImg = "url(#{base}/images/pbar-ani.gif)" if $(@).progressbar('value') in [0, -1]
-              $(@).css('backgroundImage', backgroundImg)
-
+              $(@).toggleClass('progressbar-indeterminate', $(@).progressbar('value') in [0, -1])
               @msg.html $(@).data('msg') if $(@).is(":data(msg)")
               @label.html "#{$(@).progressbar('value').toPrecision(4)}%"
             complete: (e, ui) ->
-              # $(@).remove()
+              pbContainer.remove() if autoRemoveWhenCompleted
           )
       ).hide()
     pbContainer.show().position(my: 'center', at: 'center', of: window) if autoDispaly
@@ -84,10 +80,8 @@ jQuery ($) ->
         else
           console?.log "I have retried #{retryCounter} times. There may be a network connection issue, please check network cable."
       )
-
     reTryAjax(10)
 
-#    .hide()
 
   $("#startAction").button().click (e) ->
     pb = genProgressBar()
@@ -96,7 +90,7 @@ jQuery ($) ->
     long_polling("../scripts/cp.groovy", {},(event)->
       console.log event
       if event.cmd in ['done', 'error']
-        pb.parent().remove()
+        pb.progressbar 'value', 100
         return
 
       pb.data 'msg', event.msg

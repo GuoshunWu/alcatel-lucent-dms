@@ -27,34 +27,36 @@
       generate a progress bar
     */
 
-    window.genProgressBar = function(autoDispaly) {
+    window.genProgressBar = function(autoDispaly, autoRemoveWhenCompleted) {
       var pbContainer, randStr;
       if (autoDispaly == null) {
         autoDispaly = true;
       }
+      if (autoRemoveWhenCompleted == null) {
+        autoRemoveWhenCompleted = true;
+      }
       randStr = randomStr(5);
-      pbContainer = $("<div id=\"pb_container_" + randStr + "\"  class=\"progressbar-container\">\n<div class=\"progressbar-msg\">\nLoading...\n</div>\n<div id=\"progressbar_" + randStr + "\" class=\"progressbar\">\n<div class=\"progressbar-label\">0.00%</div>\n</div>\n</div>").appendTo(document.body).draggable({
+      pbContainer = $("<div id=\"pb_container_" + randStr + "\"  class=\"progressbar-container ui-widget-content\">\n<div class=\"progressbar-msg\">\nLoading...\n</div>\n<div id=\"progressbar_" + randStr + "\" class=\"progressbar progressbar-indeterminate\">\n<div class=\"progressbar-label\">0.00%</div>\n</div>\n</div>").appendTo(document.body).draggable({
         create: function() {
           return $("#progressbar_" + randStr, this).progressbar({
             max: 100,
             create: function(e, ui) {
               this.label = $('div.progressbar-label', this);
-              this.msg = $('div.progressbar-msg', pbContainer);
-              return $(this).css('backgroundImage', "url(" + base + "/images/pbar-ani.gif)");
+              return this.msg = $('div.progressbar-msg', pbContainer);
             },
             change: function(e, ui) {
-              var backgroundImg, _ref;
-              backgroundImg = '';
-              if ((_ref = $(this).progressbar('value')) === 0 || _ref === (-1)) {
-                backgroundImg = "url(" + base + "/images/pbar-ani.gif)";
-              }
-              $(this).css('backgroundImage', backgroundImg);
+              var _ref;
+              $(this).toggleClass('progressbar-indeterminate', (_ref = $(this).progressbar('value')) === 0 || _ref === (-1));
               if ($(this).is(":data(msg)")) {
                 this.msg.html($(this).data('msg'));
               }
               return this.label.html("" + ($(this).progressbar('value').toPrecision(4)) + "%");
             },
-            complete: function(e, ui) {}
+            complete: function(e, ui) {
+              if (autoRemoveWhenCompleted) {
+                return pbContainer.remove();
+              }
+            }
           });
         }
       }).hide();
@@ -139,7 +141,7 @@
         var _ref;
         console.log(event);
         if ((_ref = event.cmd) === 'done' || _ref === 'error') {
-          pb.parent().remove();
+          pb.progressbar('value', 100);
           return;
         }
         pb.data('msg', event.msg);
