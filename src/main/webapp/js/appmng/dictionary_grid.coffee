@@ -156,16 +156,6 @@ define ['require','blockui', 'jqgrid', 'jqmsgbox', 'i18n!nls/appmng', 'i18n!nls/
     oldLabel = $(@).button 'option', 'label'
     $(@).button 'option', 'label', i18n.generating
 
-    #    $.post 'app/generate-dict', {dicts: dicts.join(','), filename: filename}, (json)=>
-    #    #      $.unblockUI()
-    #      $(@).button 'option', 'label', oldLabel
-    #      $(@).button 'enable'
-    #
-    #      if(json.status != 0)
-    #        $.msgBox json.message, null, {title: c18n.error}
-    #        return
-
-    #    window.location.href = "app/download-app-dict.action?fileLoc=#{json.fileLoc}"
     me=$(@)
     pb = util.genProgressBar()
     util.updateProgress('app/generate-dict', {dicts: dicts.join(','), filename: filename}, (json)->
