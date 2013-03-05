@@ -12,7 +12,7 @@ To change this template use File | Settings | File Templates.
 (function() {
   var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  define(["jquery", "jqueryui", 'jqlayout', "i18n!nls/common"], function($, ui, layout, c18n) {
+  define(["jquery", "jqueryui", 'jqmsgbox', 'jqlayout', "i18n!nls/common"], function($, ui, msgbox, layout, c18n) {
     var PanelGroup, checkAllGridPrivilege, checkGridPrivilege, createLayoutManager, formatJonString, genProgressBar, long_polling, newOption, pageNavi, randomStr, sessionCheck, setCookie, urlname2Action;
     String.prototype.format = function() {
       var args;
@@ -149,34 +149,36 @@ To change this template use File | Settings | File Templates.
       generate a progress bar
     */
 
-    genProgressBar = function(autoDispaly) {
+    genProgressBar = function(autoDispaly, autoRemoveWhenCompleted) {
       var pbContainer, randStr;
       if (autoDispaly == null) {
         autoDispaly = true;
       }
+      if (autoRemoveWhenCompleted == null) {
+        autoRemoveWhenCompleted = true;
+      }
       randStr = randomStr(5);
-      pbContainer = $("<div id=\"pb_container_" + randStr + "\"  class=\"progressbar-container\">\n<div class=\"progressbar-msg\">\nLoading...\n</div>\n<div id=\"progressbar_" + randStr + "\" class=\"progressbar\">\n<div class=\"progressbar-label\">0.00%</div>\n</div>\n</div>").appendTo(document.body).draggable({
+      pbContainer = $("<div id=\"pb_container_" + randStr + "\"  class=\"progressbar-container\">\n<div class=\"progressbar-msg\">\nLoading...\n</div>\n<div id=\"progressbar_" + randStr + "\" class=\"progressbar progressbar-indeterminate\">\n<div class=\"progressbar-label\">0.00%</div>\n</div>\n</div>").appendTo(document.body).draggable({
         create: function() {
           return $("#progressbar_" + randStr, this).progressbar({
             max: 100,
             create: function(e, ui) {
               this.label = $('div.progressbar-label', this);
-              this.msg = $('div.progressbar-msg', pbContainer);
-              return $(this).css('backgroundImage', "url(images/pbar-ani.gif)");
+              return this.msg = $('div.progressbar-msg', pbContainer);
             },
             change: function(e, ui) {
-              var backgroundImg, _ref;
-              backgroundImg = '';
-              if ((_ref = $(this).progressbar('value')) === 0 || _ref === (-1)) {
-                backgroundImg = "images/pbar-ani.gif)";
-              }
-              $(this).css('backgroundImage', backgroundImg);
+              var _ref;
+              $(this).toggleClass('progressbar-indeterminate', (_ref = $(this).progressbar('value')) === 0 || _ref === (-1));
               if ($(this).is(":data(msg)")) {
                 this.msg.html($(this).data('msg'));
               }
               return this.label.html("" + ($(this).progressbar('value').toPrecision(4)) + "%");
             },
-            complete: function(e, ui) {}
+            complete: function(e, ui) {
+              if (autoRemoveWhenCompleted) {
+                return pbContainer.remove();
+              }
+            }
           });
         }
       }).hide();
@@ -189,19 +191,16 @@ To change this template use File | Settings | File Templates.
       }
       return $("#progressbar_" + randStr, pbContainer);
     };
-    /* postData should not pass pqCmd parameter
+    /*
+      postData pqCmd should not be passed as a property
+      callback callback function
+      pb a jquey progressbar
     */
 
-    long_polling = function(url, postData, callback) {
+    long_polling = function(url, postData, callback, pb) {
       var pollingInterval, reTryAjax;
       if (!postData || !postData.pqCmd) {
         postData.pqCmd = 'start';
-      }
-      if (typeof console !== "undefined" && console !== null) {
-        console.log("postData=");
-      }
-      if (typeof console !== "undefined" && console !== null) {
-        console.log(postData);
       }
       pollingInterval = $("#pollingFreq").val() ? parseInt($("#pollingFreq").val()) : 1000;
       reTryAjax = function(retryTimes, retryCounter) {
@@ -217,18 +216,34 @@ To change this template use File | Settings | File Templates.
           type: 'post',
           dataType: "json"
         }).done(function(data, textStatus, jqXHR) {
-          var _ref;
-          if (callback) {
-            callback(data.event);
+          if (typeof console !== "undefined" && console !== null) {
+            console.log(data);
           }
-          if ((_ref = data.event.cmd) === 'done' || _ref === 'error') {
+          if ('error' === data.event.cmd) {
+            $.msgBox(event.msg, null, {
+              title: c18n.error
+            });
             return;
+          }
+          if ('done' === data.event.cmd) {
+            if (typeof callback === "function") {
+              callback(data);
+            }
+            return;
+          }
+          if (pb) {
+            pb.data('msg', data.event.msg);
+            pb.progressbar('value', data.event.percent);
+          } else {
+            if (typeof callback === "function") {
+              callback(data);
+            }
           }
           return setTimeout((function() {
             return long_polling(url, {
               pqCmd: 'process',
               pqId: data.pqId
-            }, callback);
+            }, callback, pb);
           }), pollingInterval);
         }).fail(function(jqXHR, textStatus, errorThrown) {
           if ('timeout' !== textStatus) {

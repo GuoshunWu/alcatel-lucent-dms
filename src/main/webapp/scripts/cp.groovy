@@ -56,7 +56,7 @@ if ('start' == params.pqCmd) {
         event {
             cmd "done."
             msg "none"
-            percent -1
+            percent Integer.valueOf(-1)
         }
     }
 }

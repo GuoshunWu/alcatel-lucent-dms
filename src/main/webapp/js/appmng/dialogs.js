@@ -426,34 +426,15 @@
             }
             dictListPreview.dialog('close');
             pb = util.genProgressBar();
-            return util.updateProgress('app/deliver-dict', postData, function(event) {
-              var appInfo, _ref;
-              if (typeof console !== "undefined" && console !== null) {
-                console.log("in callback, event=");
-              }
-              if (typeof console !== "undefined" && console !== null) {
-                console.log(event);
-              }
-              if ((_ref = event.cmd) !== 'done' && _ref !== 'error') {
-                pb.data('msg', event.msg);
-                if (event.percent !== -1) {
-                  pb.progressbar('value', event.percent);
-                }
-                return;
-              }
+            return util.updateProgress('app/deliver-dict', postData, function(json) {
+              var appInfo;
               pb.parent().remove();
-              if ('error' === event.cmd) {
-                $.msgBox(event.msg, null, {
-                  title: c18n.error
-                });
-                return;
-              }
               appInfo = "" + ($('#appDispAppName').text()) + " " + ($('#selAppVersion option:selected').text());
-              $.msgBox(i18n.dialog.dictlistpreview.success.format(appInfo, event.msg), null, {
+              $.msgBox(i18n.dialog.dictlistpreview.success.format(appInfo, json.event.msg), null, {
                 title: c18n.info
               });
               return $('#selAppVersion').trigger('change');
-            });
+            }, pb);
           }
         }
       ],
