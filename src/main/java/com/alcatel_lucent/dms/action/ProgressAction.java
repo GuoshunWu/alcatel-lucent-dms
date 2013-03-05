@@ -79,7 +79,7 @@ abstract public class ProgressAction extends JSONAction implements SessionAware 
 				}
 			});
 			thread.start();
-			event = new ProgressEvent(CMD_PROCESS, "", -1);
+			event = new ProgressEvent(CMD_PROCESS, "Please wait...", -1);
 		} else if (getPqCmd().equals(CMD_PROCESS)) {	// wait for an event in the queue
 			ProgressQueue queue = (ProgressQueue) session.get(getPqId());
 			if (queue != null) {
