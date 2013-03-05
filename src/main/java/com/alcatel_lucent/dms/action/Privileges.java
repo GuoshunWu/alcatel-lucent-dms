@@ -38,6 +38,7 @@ public class Privileges {
 		addPrivilege(ChangeDictVersionAction.class, User.ROLE_APPLICATION_OWNER | User.ROLE_TRANSLATION_MANAGER);
 		addPrivilege(CreateApplicationAction.class, User.ROLE_APPLICATION_OWNER | User.ROLE_TRANSLATION_MANAGER);
 		addPrivilege(CreateApplicationBaseAction.class, User.ROLE_APPLICATION_OWNER | User.ROLE_TRANSLATION_MANAGER);
+		addPrivilege(CreateOrAddApplicationAction.class, User.ROLE_APPLICATION_OWNER | User.ROLE_TRANSLATION_MANAGER);
 		addPrivilege(CreateProductAction.class, User.ROLE_APPLICATION_OWNER | User.ROLE_TRANSLATION_MANAGER);
 		addPrivilege(CreateProductReleaseAction.class, User.ROLE_APPLICATION_OWNER | User.ROLE_TRANSLATION_MANAGER);
 		addPrivilege(DeliverAppDictAction.class, User.ROLE_APPLICATION_OWNER);
@@ -50,6 +51,7 @@ public class Privileges {
 		addPrivilege(RemoveDictAction.class, User.ROLE_APPLICATION_OWNER);
 		addPrivilege(RemoveDictLanguageAction.class, User.ROLE_APPLICATION_OWNER);
 		addPrivilege(RemoveProductAction.class, User.ROLE_APPLICATION_OWNER | User.ROLE_TRANSLATION_MANAGER);
+		addPrivilege(RemoveProductBaseAction.class, User.ROLE_APPLICATION_OWNER | User.ROLE_TRANSLATION_MANAGER);
 		addPrivilege(UpdateDictAction.class, User.ROLE_APPLICATION_OWNER | User.ROLE_TRANSLATION_MANAGER);
 		addPrivilege(UpdateDictLanguageAction.class, User.ROLE_APPLICATION_OWNER | User.ROLE_TRANSLATION_MANAGER);
 		addPrivilege(UpdateLabelAction.class, User.ROLE_APPLICATION_OWNER | User.ROLE_TRANSLATION_MANAGER);

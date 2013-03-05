@@ -28,6 +28,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
@@ -459,10 +461,24 @@ public class Util {
         List<String[]> lstEntries = (List<String[]>) CollectionUtils.collect(Arrays.asList(str.split(entrySep)), new Transformer() {
             @Override
             public Object transform(Object input) {
-                return StringUtils.splitPreserveAllTokens((String) input, finalKeyValueSep);
+                String[] keyValues = StringUtils.splitPreserveAllTokens((String) input, finalKeyValueSep);
+                try {
+					keyValues[0] = URLDecoder.decode(keyValues[0], "UTF-8");
+	                keyValues[1] = URLDecoder.decode(keyValues[1], "UTF-8");
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+					throw new SystemError(e);
+				}
+                return keyValues;
             }
         });
+        try {
         return typedMap(toMap(lstEntries.toArray(new String[0][])), String.class, String.class);
+        } catch (Exception e) {
+        	log.error("Failed to save annotation: " + str);
+        	e.printStackTrace();
+        	throw new SystemError(e);
+        }
     }
 
     /**
@@ -489,11 +505,18 @@ public class Util {
                     @Override
                     public Object transform(Object input) {
                         Map.Entry entry = (Map.Entry) input;
-                        return entry.getKey() + finalKeyValueSep + entry.getValue();
+                        try {
+							return URLEncoder.encode(entry.getKey().toString(), "UTF-8") + 
+									finalKeyValueSep + 
+									URLEncoder.encode(entry.getValue().toString(), "UTF-8");
+						} catch (UnsupportedEncodingException e) {
+							e.printStackTrace();
+							throw new SystemError(e);
+						}
                     }
                 }), entrySep);
     }
-
+    
     /**
      * Convert a attribte list to a map
      */

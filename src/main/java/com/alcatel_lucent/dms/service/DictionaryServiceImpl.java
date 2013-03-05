@@ -1,6 +1,7 @@
 package com.alcatel_lucent.dms.service;
 
 import com.alcatel_lucent.dms.*;
+import com.alcatel_lucent.dms.action.ProgressQueue;
 import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.service.generator.*;
@@ -190,6 +191,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                         }
                         if (lt.getLanguage() != null && !lt.getOrigTranslation().equals(label.getReference())) {
                             Text text = textMap.get(label.getReference());
+//                        	Text text = textService.getText(dbDefaultCtx.getId(), label.getReference());
                             if (text != null) {
                                 Translation trans = text.getTranslation(lt.getLanguage().getId());
                                 if (trans != null) {    // compare converted label translation with context translation
@@ -218,36 +220,36 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
                 // temporarily add in-memory LabelTranslations to Default context text map
                 // to ensure no conflict translation in scope of current delivery are put into DEFAULT context
-                if (label.getContext().getName().equals(Context.DEFAULT)) {
-                    Text text = textMap.get(label.getReference());
-                    if (text == null) {
-                        text = new Text();
-                        text.setReference(label.getReference());
-                        textMap.put(label.getReference(), text);
-                    }
-                    if (label.getOrigTranslations() != null) {
-                        for (LabelTranslation lt : label.getOrigTranslations()) {
-                            if (lt.getLanguage() != null && !lt.getOrigTranslation().equals(label.getReference())) {
-                                Translation trans = text.getTranslation(lt.getLanguage().getId());
-                                if (trans == null) {
-                                    trans = new Translation();
-                                    String translation = lt.getOrigTranslation();
-                                    DictionaryLanguage dl = dict.getDictLanguage(lt.getLanguageCode());
-                                    if (dl != null && dl.getCharset() != null && dict.getEncoding() != null) {
-                                        try {
-                                            translation = new String(translation.getBytes(dict.getEncoding()), dl.getCharset().getName());
-                                        } catch (UnsupportedEncodingException e) {
-                                            log.error(e.toString());
-                                        }
-                                    }
-                                    trans.setLanguage(lt.getLanguage());
-                                    trans.setTranslation(translation);
-                                    text.addTranslation(trans);
-                                }
-                            }
-                        }
-                    }
-                }
+//                if (label.getContext().getName().equals(Context.DEFAULT)) {
+//                    Text text = textMap.get(label.getReference());
+//                    if (text == null) {
+//                        text = new Text();
+//                        text.setReference(label.getReference());
+//                        textMap.put(label.getReference(), text);
+//                    }
+//                    if (label.getOrigTranslations() != null) {
+//                        for (LabelTranslation lt : label.getOrigTranslations()) {
+//                            if (lt.getLanguage() != null && !lt.getOrigTranslation().equals(label.getReference())) {
+//                                Translation trans = text.getTranslation(lt.getLanguage().getId());
+//                                if (trans == null) {
+//                                    trans = new Translation();
+//                                    String translation = lt.getOrigTranslation();
+//                                    DictionaryLanguage dl = dict.getDictLanguage(lt.getLanguageCode());
+//                                    if (dl != null && dl.getCharset() != null && dict.getEncoding() != null) {
+//                                        try {
+//                                            translation = new String(translation.getBytes(dict.getEncoding()), dl.getCharset().getName());
+//                                        } catch (UnsupportedEncodingException e) {
+//                                            log.error(e.toString());
+//                                        }
+//                                    }
+//                                    trans.setLanguage(lt.getLanguage());
+//                                    trans.setTranslation(translation);
+//                                    text.addTranslation(trans);
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
             }
         }
 
@@ -278,6 +280,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
      * @param dtIds the collection of the id for dictionary to be generated.
      */
     public void generateDictFiles(String dir, Collection<Long> dtIds) {
+    	ProgressQueue.setProgress("Preparing data...", 0);
         if (dtIds.isEmpty()) return;
         File target = new File(dir);
         if (target.exists()) {
@@ -292,12 +295,21 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         String idList = dtIds.toString().replace("[", "(").replace("]", ")");
         String hsql = "from Dictionary where id in " + idList;
         Collection<Dictionary> dicts = (Collection<Dictionary>) getDao().retrieve(hsql);
-
+        int totalLabels = 0;
+        int curLabels = 0;
+        for (Dictionary dict : dicts) {
+        	totalLabels += dict.getLabelNum();
+        }
+        int cur = 1;
+        int total = dicts.size();
         for (Dictionary dict : dicts) {
             log.info("Generate dictionary: " + dict.getName());
+            int percent = (int) Math.round(curLabels * 60.0 / totalLabels + 0.5) + 30;
+            ProgressQueue.setProgress("[" + cur + "/" + total + "] Generating " + dict.getName(), percent);
             DictionaryGenerator generator = getGenerator(dict.getFormat());
-
             generator.generateDict(target, dict.getId());
+            curLabels += dict.getLabelNum();
+            cur++;
         }
     }
 
@@ -461,6 +473,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
         // prepare data for creation: textMap, labelMap indexed by context
         log.info("Prepare data to import");
+        ProgressQueue.setProgress(20);
         Map<String, Collection<Text>> textMap = new HashMap<String, Collection<Text>>();
         Map<String, Collection<Label>> labelMap = new HashMap<String, Collection<Label>>();
         Map<Long, String> langCodeMap = dict.getLangCodeMap();
@@ -542,7 +555,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                                     trans.getOrigTranslation(), charsetName, langCode,
                                     label.getKey()));
                             labelWarnings += BusinessWarning.INVALID_TEXT;
-                            invalidText = true;
+//                            invalidText = true;
                         }
 
                         // check length
@@ -580,7 +593,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     t.setLanguage(trans.getLanguage());
 
                     // determine translation status
-                    if (invalidText) {    // mark labels containing suspecious character as "Not translated"
+                    if (invalidText) {
                         t.setStatus(Translation.STATUS_UNTRANSLATED);
                     } else {
                         t.setStatus(populateTranslationStatus(trans));
@@ -590,6 +603,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             }
         }
 
+        ProgressQueue.setProgress(50);
         // for each context, insert or update label/text/translation data
         for (String contextName : textMap.keySet()) {
             log.info("Importing data into context " + contextName);
@@ -659,12 +673,15 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         }
         historyService.logDelivery(dbDict, dbDict.getPath());
         log.info("Import dictionary finish");
+        ProgressQueue.setProgress(80);
         return dbDict;
     }
 
     private int populateTranslationStatus(LabelTranslation trans) {
         Label label = trans.getLabel();
-        if (label.getReference().trim().isEmpty()) {
+        if (trans.getStatus() != null) {	// status information is specified in dictionary
+        	return trans.getStatus();
+        } else if (label.getReference().trim().isEmpty()) {
             return Translation.STATUS_TRANSLATED;
 //        } else if (trans.getRequestTranslation() != null) {
 //        	t.setStatus(trans.getRequestTranslation() ? Translation.STATUS_UNTRANSLATED : Translation.STATUS_TRANSLATED);

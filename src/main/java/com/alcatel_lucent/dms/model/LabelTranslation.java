@@ -172,7 +172,7 @@ public class LabelTranslation extends BaseEntity {
 		this.translation = translation;
 	}
 	
-	private Integer status;	// hold translation status for LabelTranslationREST
+	private Integer status;	// hold translation status for LabelTranslationREST, or delivery
 	public Integer getStatus() {
 		return status;
 	}

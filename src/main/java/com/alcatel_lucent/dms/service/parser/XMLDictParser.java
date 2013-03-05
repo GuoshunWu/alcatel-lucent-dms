@@ -112,8 +112,8 @@ public class XMLDictParser extends DictionaryParser {
 //        String sep = elemDict.attributeValue("separator");
 
         if (!name.equals(dict.getName())) {
-            log.error("The dictionary name " + name + " in" + xdctFile + " is not same with dictionary name' " + dict.getName() + "'");
-            return;
+            log.warn("The dictionary name " + name + " in " + xdctFile + " is not same with dictionary name' " + dict.getName() + "', use the one in dictionary.");
+            dict.setName(name);
         }
 //        save the related info in dict annotation1
 //        dict.setAnnotation1(String.format("name=%s;type=%s;appli=%s;separator=%s", name, type, appli, sep));
@@ -164,6 +164,7 @@ public class XMLDictParser extends DictionaryParser {
         }
 
         label.setDictionary(dict);
+        Context ctxExclusion = new Context(Context.EXCLUSION);
 
         /**
          * Indicates global state of translations of this element, this attribute is used in merge process
@@ -186,7 +187,7 @@ public class XMLDictParser extends DictionaryParser {
         label.putKeyValuePairToField("gui_object", guiObject, Label.ANNOTATION1);
         label.putKeyValuePairToField("message_category", msgCategory, Label.ANNOTATION1);
         label.putKeyValuePairToField("lines", lines, Label.ANNOTATION1);
-        label.putKeyValuePairToField("column", column, Label.ANNOTATION1);
+        label.putKeyValuePairToField("columns", column, Label.ANNOTATION1);
 
 //        Label
         label.setSortNo(-1);
@@ -288,6 +289,7 @@ public class XMLDictParser extends DictionaryParser {
          * */
         List<Element> elemTranslations = key.elements("TRANSLATION");
 
+        Boolean allExclusion = null;	// if all follow_up are "no translation", set the label to EXCLUSION context 
         for (Element elemTrans : elemTranslations) {
             String langCode = elemTrans.attributeValue("language").trim();
             if ("gae".equalsIgnoreCase(langCode)) {
@@ -299,6 +301,21 @@ public class XMLDictParser extends DictionaryParser {
             lt.setOrigTranslation(elemTrans.getStringValue());
             String followUp = elemTrans.attributeValue("follow_up");
             lt.putKeyValuePairToField("follow_up", followUp, BaseEntity.ANNOTATION1);
+            if (followUp != null) {	// set translation status
+            	if (followUp.equals("no_translate")) {
+            		if (allExclusion == null) allExclusion = true;
+            		lt.setStatus(Translation.STATUS_TRANSLATED);
+            	} else if (followUp.equals("validated")) {
+            		allExclusion = false;
+            		lt.setStatus(Translation.STATUS_TRANSLATED);
+            	} else {
+            		allExclusion = false;
+            		lt.setStatus(Translation.STATUS_UNTRANSLATED);
+            	}
+            }
+        }
+        if (allExclusion != null && allExclusion) {
+        	label.setContext(ctxExclusion);
         }
     }
 
@@ -341,7 +358,8 @@ public class XMLDictParser extends DictionaryParser {
                 }
                 File xdctFile = null;
                 try {
-                    xdctFile = new File(file.getParent(), dict.getPath()).getCanonicalFile();
+                	String xdctFilepath = dict.getPath().replaceAll("\\\\", "/");
+                    xdctFile = new File(file.getParent(), xdctFilepath).getCanonicalFile();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
