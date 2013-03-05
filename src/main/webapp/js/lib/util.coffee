@@ -86,14 +86,14 @@ define ["jquery", "jqueryui", 'jqlayout', "i18n!nls/common"], ($, ui, layout, c1
   ###
     generate a progress bar
   ###
-  genProgressBar = (autoDispaly = true)->
+  genProgressBar = (autoDispaly = true, autoRemoveWhenCompleted=true)->
     randStr = randomStr(5)
     pbContainer=$("""
                   <div id="pb_container_#{randStr}"  class="progressbar-container">
                   <div class="progressbar-msg">
                   Loading...
                   </div>
-                  <div id="progressbar_#{randStr}" class="progressbar">
+                  <div id="progressbar_#{randStr}" class="progressbar progressbar-indeterminate">
                   <div class="progressbar-label">0.00%</div>
                   </div>
                   </div>
@@ -105,16 +105,13 @@ define ["jquery", "jqueryui", 'jqlayout', "i18n!nls/common"], ($, ui, layout, c1
             create: (e, ui) ->
               @label = $('div.progressbar-label', @)
               @msg = $('div.progressbar-msg', pbContainer)
-              $(@).css('backgroundImage', "url(images/pbar-ani.gif)")
             change: (e, ui) ->
-              backgroundImg = ''
-              backgroundImg = "images/pbar-ani.gif)" if $(@).progressbar('value') in [0, -1]
-              $(@).css('backgroundImage', backgroundImg)
+              $(@).toggleClass('progressbar-indeterminate', $(@).progressbar('value') in [0, -1])
 
               @msg.html $(@).data('msg') if $(@).is(":data(msg)")
               @label.html "#{$(@).progressbar('value').toPrecision(4)}%"
             complete: (e, ui) ->
-              # $(@).remove()
+              pbContainer.remove() if autoRemoveWhenCompleted
           )
       ).hide()
     pbContainer.show().position(my: 'center', at: 'center', of: window) if autoDispaly
@@ -124,8 +121,8 @@ define ["jquery", "jqueryui", 'jqlayout', "i18n!nls/common"], ($, ui, layout, c1
   long_polling =(url, postData, callback)->
     # call by terminal user
     postData.pqCmd = 'start' if !postData || !postData.pqCmd
-    console?.log "postData="
-    console?.log postData
+#    console?.log "postData="
+#    console?.log postData
 
     # initlize the test parameters
     pollingInterval = if $("#pollingFreq").val() then parseInt($("#pollingFreq").val()) else 1000

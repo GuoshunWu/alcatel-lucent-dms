@@ -130,12 +130,20 @@ td {
 }
 
 .progressbar-container {
-    width: 1000px;
+    width: 700px;
     height: 50px;
-    padding: 0.5em;
+    padding: 1em 1em 0.5em 1em;
+    background: #eeeeee;
+    border: 1px dotted #000000;
+    /*opacity: 0.1;*/
 }
+
 .progressbar {
     width: 100%;
+}
+
+.progressbar-indeterminate {
+    background: #d3d3d3 url(../images/pbar-ani.gif);
 }
 
 .progressbar-label {
