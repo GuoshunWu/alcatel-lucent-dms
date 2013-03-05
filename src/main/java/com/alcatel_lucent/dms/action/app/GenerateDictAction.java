@@ -19,14 +19,12 @@ import java.util.Date;
  *
  * @author Guoshun Wu
  */
-@ParentPackage("dms-json")
-@Result(type="json", params={"noCache","true","ignoreHierarchy","false","includeProperties","pqId,event.*,fileLoc"})
 @SuppressWarnings("serial")
 public class GenerateDictAction extends ProgressAction {
 
     private String filename;
     private String dicts;
-    private String fileLoc;
+//    private String fileLoc;
 
 
     private DictionaryService dictionaryService;
@@ -58,13 +56,13 @@ public class GenerateDictAction extends ProgressAction {
         this.filename = filename;
     }
 
-    public String getFileLoc() {
-        return fileLoc;
-    }
-
-    public void setFileLoc(String fileLoc) {
-        this.fileLoc = fileLoc;
-    }
+//    public String getFileLoc() {
+//        return fileLoc;
+//    }
+//
+//    public void setFileLoc(String fileLoc) {
+//        this.fileLoc = fileLoc;
+//    }
 
     public String performAction() throws Exception {
         String downTmpPath = tmpDownload + File.separator + UserContext.getInstance().getUser().getName() +"_"+ dFmt.format(new Date());
@@ -80,9 +78,8 @@ public class GenerateDictAction extends ProgressAction {
         File zipFile = new File(tmpDownload, filename);
         Util.createZip(new File(downTmpPath).listFiles(), zipFile);
 
-        setFileLoc(zipFile.getAbsolutePath());
         setStatus(0);
-        setMessage(getText("message.success"));
+        setMessage(zipFile.getAbsolutePath());
         ProgressQueue.setProgress("Complete", 100);
         return SUCCESS;
     }
