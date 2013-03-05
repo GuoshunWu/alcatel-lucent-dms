@@ -280,6 +280,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
      * @param dtIds the collection of the id for dictionary to be generated.
      */
     public void generateDictFiles(String dir, Collection<Long> dtIds) {
+    	ProgressQueue.setProgress("Generating files...", 0);
         if (dtIds.isEmpty()) return;
         File target = new File(dir);
         if (target.exists()) {
@@ -294,12 +295,18 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         String idList = dtIds.toString().replace("[", "(").replace("]", ")");
         String hsql = "from Dictionary where id in " + idList;
         Collection<Dictionary> dicts = (Collection<Dictionary>) getDao().retrieve(hsql);
-
+        int totalLabels = 0;
+        int curLabels = 0;
+        for (Dictionary dict : dicts) {
+        	totalLabels += dict.getLabelNum();
+        }
         for (Dictionary dict : dicts) {
             log.info("Generate dictionary: " + dict.getName());
             DictionaryGenerator generator = getGenerator(dict.getFormat());
-
             generator.generateDict(target, dict.getId());
+            curLabels += dict.getLabelNum();
+            int percent = (int) Math.round(curLabels * 80.0 / totalLabels + 0.5);
+            ProgressQueue.setProgress(percent);
         }
     }
 

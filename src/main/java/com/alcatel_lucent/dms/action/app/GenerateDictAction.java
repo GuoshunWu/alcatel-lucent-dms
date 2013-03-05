@@ -2,6 +2,8 @@ package com.alcatel_lucent.dms.action.app;
 
 import com.alcatel_lucent.dms.UserContext;
 import com.alcatel_lucent.dms.action.JSONAction;
+import com.alcatel_lucent.dms.action.ProgressAction;
+import com.alcatel_lucent.dms.action.ProgressQueue;
 import com.alcatel_lucent.dms.service.DictionaryService;
 import com.alcatel_lucent.dms.util.Util;
 import org.apache.struts2.convention.annotation.ParentPackage;
@@ -17,10 +19,10 @@ import java.util.Date;
  *
  * @author Guoshun Wu
  */
-@SuppressWarnings("serial")
 @ParentPackage("dms-json")
-@Result(type = "json", params = {"noCache", "true", "ignoreHierarchy", "false", "includeProperties", "fileLoc,message,status"})
-public class GenerateDictAction extends JSONAction {
+@Result(type="json", params={"noCache","true","ignoreHierarchy","false","includeProperties","pqId,event.*,fileLoc"})
+@SuppressWarnings("serial")
+public class GenerateDictAction extends ProgressAction {
 
     private String filename;
     private String dicts;
@@ -67,7 +69,7 @@ public class GenerateDictAction extends JSONAction {
     public String performAction() throws Exception {
         String downTmpPath = tmpDownload + File.separator + UserContext.getInstance().getUser().getName() +"_"+ dFmt.format(new Date());
         dictionaryService.generateDictFiles(downTmpPath, toIdList(dicts));
-
+        ProgressQueue.setProgress("Compressing...", 80);
         File generatedTaskFiles = new File(downTmpPath);
         if (!generatedTaskFiles.exists()) {
             setStatus(-1);
@@ -81,6 +83,7 @@ public class GenerateDictAction extends JSONAction {
         setFileLoc(zipFile.getAbsolutePath());
         setStatus(0);
         setMessage(getText("message.success"));
+        ProgressQueue.setProgress("Complete", 100);
         return SUCCESS;
     }
 }
