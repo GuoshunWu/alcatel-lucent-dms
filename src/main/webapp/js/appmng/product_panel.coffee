@@ -1,15 +1,11 @@
-define ['require', 'jqmsgbox', 'util',  'i18n!nls/common', 'appmng/application_grid', 'appmng/dialogs'], (require, msgbox, util, c18n, grid, dialogs)->
-  URL = {
-  # get product by it id url, append product id to this url
-  get_product_by_base_id: 'rest/products/version'
-  }
-
+define ['jqmsgbox', 'i18n!nls/common', 'dms-urls', 'dms-util', 'appmng/application_grid'],($, c18n, urls, util, grid)->
+  console?.log "module appmng/product_panel loading."
 
   $("#newVersion").button(text: false, label: '&nbsp;', icons:
     {primary: "ui-icon-plus"}).
   attr('privilegeName', util.urlname2Action 'app/create-product-release').
   click () =>
-    dialogs.newProductVersion.dialog("open")
+    $("#newProductReleaseDialog").dialog("open")
 
   $("#removeVersion").button(text: false, label: '&nbsp;', icons:
     {primary: "ui-icon-minus"})
@@ -24,7 +20,6 @@ define ['require', 'jqmsgbox', 'util',  'i18n!nls/common', 'appmng/application_g
     $('#selVersion').trigger 'change'
   )
 
-
   productInfo = {}
   # initial product version select
   $('#selVersion').change ()->
@@ -37,14 +32,15 @@ define ['require', 'jqmsgbox', 'util',  'i18n!nls/common', 'appmng/application_g
     # info.id, info.text is productBase id and name
     productInfo.base = {id: info.id, text: info.text}
     $('#dispProductName').html productInfo.base.text
-    $.getJSON URL.get_product_by_base_id, {base: productInfo.base.id, prop: 'id,version'}, (json)->
+    $.getJSON urls.prod_versions, {base: productInfo.base.id, prop: 'id,version'}, (json)->
       # update product version select
-      $('#selVersion').empty().append(util.json2Options json)
-      #      here use global var param from env.jsp
-      $('#selVersion').val(param.currentSelected.productId) if(param.currentSelected.productId)
-      $('#selVersion').trigger 'change'
-
-
+      selVer=$('#selVersion', "div[id='appmng']")
+      selVer.empty().append(util.json2Options json)
+      #  get the productId from previous panel
+      if(param.currentSelected.productId and parseInt(param.currentSelected.productId) != -1)
+        selVer.val(param.currentSelected.productId)
+        param.currentSelected.productId = null
+      selVer.trigger 'change'
 
   getSelectedProduct: -> {version: $("#selVersion option:selected").text(), id: $('#selVersion').val()}
   getProductSelectOptions: ->$('#selVersion').children('option').clone(true)

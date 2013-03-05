@@ -33,7 +33,7 @@
 
 /* inner divs inside Outer East/West panes */
 .header {
-    background: #80ade5 url(images/80ade5_40x100_textures_04_highlight_hard_100.png) 0 50% repeat-x;
+    background: #80ade5 url(../jqueryLayout/images/80ade5_40x100_textures_04_highlight_hard_100.png) 0 50% repeat-x;
     border-bottom: 1px solid #777;
     font-weight: bold;
     text-align: center;
@@ -43,7 +43,7 @@
 }
 
 .subhead, .footer {
-    background: #d6d6d6 url(images/d6d6d6_40x100_textures_02_glass_80.png) 0 50% repeat-x;
+    background: #d6d6d6 url(../jqueryLayout/images/d6d6d6_40x100_textures_02_glass_80.png) 0 50% repeat-x;
     padding: 3px 10px;
     font-size: 0.85em;
     position: relative;
@@ -77,15 +77,15 @@
 .resizer-north-dragging ,
 .resizer-north:hover		{ background: url(images/resizable-n.gif) repeat-x center; }*/
 .resizer-south-dragging, .resizer-south:hover {
-    background: url(images/resizable-s.gif) repeat-x center;
+    background: url(../jqueryLayout/images/resizable-s.gif) repeat-x center;
 }
 
 .resizer-west-dragging, .resizer-west-open:hover {
-    background: url(images/resizable-w.gif) repeat-y center;
+    background: url(../jqueryLayout/images/resizable-w.gif) repeat-y center;
 }
 
 .resizer-east-dragging, .resizer-east-open:hover {
-    background: url(images/resizable-e.gif) repeat-y center;
+    background: url(../jqueryLayout/images/resizable-e.gif) repeat-y center;
 }
 
 .resizer-west-open, .resizer-east-open {
@@ -113,15 +113,15 @@
 /* IE6 * HACK - always show resizer graphics because IE6 cannot understand elem:hover */
 /** html .resizer-north		{ background: url(images/resizable-n.gif) repeat-x center !important; } */
 * html .resizer-south {
-    background: url(images/resizable-s.gif) repeat-x center !important;
+    background: url(../jqueryLayout/images/resizable-s.gif) repeat-x center !important;
 }
 
 * html .resizer-west-open {
-    background: url(images/resizable-w.gif) repeat-y center !important;
+    background: url(../jqueryLayout/images/resizable-w.gif) repeat-y center !important;
 }
 
 * html .resizer-east-open {
-    background: url(images/resizable-e.gif) repeat-y center !important;
+    background: url(../jqueryLayout/images/resizable-e.gif) repeat-y center !important;
 }
 
 /** html .resizer-north , */
@@ -135,11 +135,11 @@
 */
 
 .toggler-north-open, .toggler-south-closed {
-    background: url(images/toggle-up.gif) no-repeat center bottom;
+    background: url(../jqueryLayout/images/toggle-up.gif) no-repeat center bottom;
 }
 
 .toggler-north-closed, .toggler-south-open {
-    background: url(images/toggle-dn.gif) no-repeat center top;
+    background: url(../jqueryLayout/images/toggle-dn.gif) no-repeat center top;
 }
 
 /*
@@ -153,7 +153,7 @@
 *	extJS-STYLE RESIZER/SLIDER-BAR (CLOSED)
 */
 .resizer-west-closed, .resizer-east-closed {
-    background: #D1E6FC url(images/D1E6FC_40x100_textures_10_dots_medium_90.png) 0 0 repeat;
+    background: #D1E6FC url(../jqueryLayout/images/D1E6FC_40x100_textures_10_dots_medium_90.png) 0 0 repeat;
     border-top: 1px solid #777;
     border-bottom: 1px solid #777;
 }
@@ -175,7 +175,7 @@ ul.toolbar {
     width: 100%;
     list-style: none;
     text-align: left;
-    background: #D6D6D6 url(images/d6d6d6_40x100_textures_02_glass_80.png) 0 50% repeat-x;
+    background: #D6D6D6 url(../jqueryLayout/images/d6d6d6_40x100_textures_02_glass_80.png) 0 50% repeat-x;
     border-top: 1px solid #BBB;
     /*border: 1px solid red;*/
 }
@@ -193,7 +193,7 @@ ul.toolbar li {
 
 ul.toolbar li:hover {
     color: #005;
-    background: #EEE url(images/eeeeee_40x100_textures_02_glass_90.png) 0 50% repeat-x;
+    background: #EEE url(../jqueryLayout/images/eeeeee_40x100_textures_02_glass_90.png) 0 50% repeat-x;
     border-top-color: #BBB;
     border-bottom-color: #BBB;
 }
@@ -221,19 +221,19 @@ ul.toolbar li:hover span {
 }
 
 li.button-toggle-north span, li.button-open-south span {
-    background: url(images/go-up-on.gif) no-repeat center;
+    background: url(../jqueryLayout/images/go-up-on.gif) no-repeat center;
 }
 
 li.button-close-south span {
-    background: url(images/go-dn-on.gif) no-repeat center;
+    background: url(../jqueryLayout/images/go-dn-on.gif) no-repeat center;
 }
 
 li.button-pin-up span {
-    background: url(images/pin-up-on.gif) no-repeat center;
+    background: url(../jqueryLayout/images/pin-up-on.gif) no-repeat center;
 }
 
 li.button-pin-down span {
-    background: url(images/pin-dn-on.gif) no-repeat center;
+    background: url(../jqueryLayout/images/pin-dn-on.gif) no-repeat center;
 }
 
 /*
@@ -271,52 +271,52 @@ span.button-pin-east {
 
 /* CUSTOM pin-buttons */
 span.button-pin-up {
-    background: url(images/pin-up-off.gif) no-repeat center;
+    background: url(../jqueryLayout/images/pin-up-off.gif) no-repeat center;
 }
 
 span.button-pin-up:hover {
-    background: url(images/pin-up-on.gif) no-repeat center;
+    background: url(../jqueryLayout/images/pin-up-on.gif) no-repeat center;
 }
 
 span.button-pin-down {
-    background: url(images/pin-dn-off.gif) no-repeat center;
+    background: url(../jqueryLayout/images/pin-dn-off.gif) no-repeat center;
 }
 
 span.button-pin-down:hover {
-    background: url(images/pin-dn-on.gif) no-repeat center;
+    background: url(../jqueryLayout/images/pin-dn-on.gif) no-repeat center;
 }
 
 /* CUSTOM close-buttons */
 span.button-close-west {
-    background: url(images/go-lt-off.gif) no-repeat center;
+    background: url(../jqueryLayout/images/go-lt-off.gif) no-repeat center;
 }
 
 span.button-close-west:hover {
-    background: url(images/go-lt-on.gif) no-repeat center;
+    background: url(../jqueryLayout/images/go-lt-on.gif) no-repeat center;
 }
 
 span.button-close-east {
-    background: url(images/go-rt-off.gif) no-repeat center;
+    background: url(../jqueryLayout/images/go-rt-off.gif) no-repeat center;
 }
 
 span.button-close-east:hover {
-    background: url(images/go-rt-on.gif) no-repeat center;
+    background: url(../jqueryLayout/images/go-rt-on.gif) no-repeat center;
 }
 
 /* STANDARD toggler-buttons - when the east/west panes are 'closed' */
 .toggler-west-closed {
-    background: url(images/go-rt-off.gif) no-repeat center;
+    background: url(../jqueryLayout/images/go-rt-off.gif) no-repeat center;
 }
 
 .toggler-west-closed:hover {
-    background: url(images/go-rt-on.gif) no-repeat center;
+    background: url(../jqueryLayout/images/go-rt-on.gif) no-repeat center;
 }
 
 .toggler-east-closed {
-    background: url(images/go-lt-off.gif) no-repeat center;
+    background: url(../jqueryLayout/images/go-lt-off.gif) no-repeat center;
 }
 
 .toggler-east-closed:hover {
-    background: url(images/go-lt-on.gif) no-repeat center;
+    background: url(../jqueryLayout/images/go-lt-on.gif) no-repeat center;
 }
 

@@ -25,6 +25,7 @@
     //in the minified files.
     //- "none": no minification will be done.
     optimize:"uglify",
+//    optimize:"none",
 
     fileExclusionRegExp:"/^\./",
 
@@ -46,23 +47,11 @@
 //                'jquery',
             ]
         },
-        {
-            //module names are relative to baseUrl/paths config
-            name:'appmng/navigatetree',
-            exclude:['../config'],
-            include:['appmng/navigatetree']
-        },
+
         {
             //module names are relative to baseUrl
-            name:'transmng/layout',
-            exclude:['../config'],
-            include:['transmng/layout']
-        },
-        {
-            //module names are relative to baseUrl
-            name:'taskmng/layout',
-            exclude:['../config'],
-            include:['taskmng/layout']
+            name:'main',
+            exclude:['../config']
         },
         {
             //module names are relative to baseUrl

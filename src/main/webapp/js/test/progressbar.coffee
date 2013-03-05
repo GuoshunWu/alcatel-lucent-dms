@@ -16,11 +16,11 @@ jQuery ($) ->
   window.genProgressBar = (autoDispaly = true, autoRemoveWhenCompleted=true)->
     randStr = randomStr(5)
     pbContainer=$("""
-                  <div id="pb_container_#{randStr}"  class="progressbar-container ui-widget-content">
+                  <div id="pb_container_#{randStr}"  class="progressbar-container">
                   <div class="progressbar-msg">
                   Loading...
                   </div>
-                  <div id="progressbar_#{randStr}" class="progressbar progressbar-indeterminate">
+                  <div id="progressbar_#{randStr}" class="progressbar">
                   <div class="progressbar-label">0.00%</div>
                   </div>
                   </div>
@@ -33,7 +33,6 @@ jQuery ($) ->
               @label = $('div.progressbar-label', @)
               @msg = $('div.progressbar-msg', pbContainer)
             change: (e, ui) ->
-              $(@).toggleClass('progressbar-indeterminate', $(@).progressbar('value') in [0, -1])
               @msg.html $(@).data('msg') if $(@).is(":data(msg)")
               @label.html "#{$(@).progressbar('value').toPrecision(4)}%"
             complete: (e, ui) ->
@@ -44,31 +43,44 @@ jQuery ($) ->
     $("#progressbar_#{randStr}", pbContainer)
 
 
-  long_polling = (url, postData, callback) ->
+  long_polling =(url, postData, callback, pb)->
+    # call by terminal user
     postData.pqCmd = 'start' if !postData || !postData.pqCmd
+    #    console?.log "postData="
+    #    console?.log postData
 
+    # initlize the test parameters
     if postData.pqCmd is "start"
       postData.freq = (if $("#eFreq").val() then parseInt($("#eFreq").val()) else 2000)
       postData.speed = (if $("#speed").val() then parseInt($("#speed").val()) else 1000)
     postData.freq = 2  if postData.freq < 2
     postData.speed = 2  if postData.speed < 2
+
     pollingInterval = if $("#pollingFreq").val() then parseInt($("#pollingFreq").val()) else 1000
-
-    timeout = if $("#timeout").val() then parseInt($("#timeout").val()) else 5000
-
     reTryAjax = (retryTimes = Number.MAX_VALUE, retryCounter = 0)->
       $.ajax(url,
         cache: false
         data: postData
-        timeout: timeout
         type: 'post'
         dataType: "json"
       ).done((data, textStatus, jqXHR) ->
-#        console?.log data
-        callback data.event if callback
-        return if data.event.cmd in ['done', 'error']
-        setTimeout (->long_polling url, {pqCmd: "process", pqId: data.pqId}, callback), pollingInterval
+        #        console?.log data
+        if 'error' == data.event.cmd
+          $.msgBox event.msg, null, {title: c18n.error}
+          return
 
+        if 'done' == data.event.cmd
+          callback? data
+          return
+
+        if pb
+          pb.toggleClass('progressbar-indeterminate', -1 == data.event.percent)
+          pb.data 'msg', data.event.msg
+          pb.progressbar 'value', data.event.percent
+        else
+          callback? data
+
+        setTimeout (->long_polling  url, {pqCmd: 'process', pqId: data.pqId}, callback, pb), pollingInterval
       ).fail((jqXHR, textStatus, errorThrown)->
         if 'timeout' != textStatus
           console?.log "error: #{textStatus}"
@@ -80,21 +92,15 @@ jQuery ($) ->
         else
           console?.log "I have retried #{retryCounter} times. There may be a network connection issue, please check network cable."
       )
+
     reTryAjax(10)
 
 
   $("#startAction").button().click (e) ->
     pb = genProgressBar()
-#    $(this).button("disable").button "option", "label", "In progress..."
 
     long_polling("../scripts/cp.groovy", {},(event)->
-      console.log event
-      if event.cmd in ['done', 'error']
-        pb.progressbar 'value', 100
-        return
-
-      pb.data 'msg', event.msg
-      pb.progressbar 'value', Number(event.percent)
-    )
+      pb.parent().remove()
+    ,pb)
 
 

@@ -1,4 +1,4 @@
-define ['jqgrid', 'util', 'require'], ($, util, require)->
+define ['jqgrid'], ($)->
   transDetailGrid = $("#viewDetailGrid").jqGrid {
   url: 'json/transdetailgrid.json'
   mtype: 'POST', postData: {}, editurl: "", datatype: 'json'

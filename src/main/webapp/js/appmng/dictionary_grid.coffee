@@ -1,4 +1,22 @@
-define ['require','blockui', 'jqgrid', 'jqmsgbox', 'i18n!nls/appmng', 'i18n!nls/common' ,'util','appmng/dialogs'], (require, blockui, $, msgbox, i18n, c18n, util, dialogs )->
+dependencies = [
+  'jqgrid'
+  'blockui'
+  'jqmsgbox'
+  'jqueryui'
+
+  'i18n!nls/appmng'
+  'i18n!nls/common'
+  'dms-util'
+
+  # following dependency are not referenced directly.
+  'appmng/langsetting_grid'
+  'appmng/stringsettings_grid'
+  'appmng/history_grid'
+]
+
+define dependencies, ($, blockui, msgbox,ui, i18n, c18n, util, dialogs)->
+
+  console?.log "module appmng/dictionary_grid loading."
   #  for form edit delete option
   deleteOptions = {
   msg: i18n.dialog.delete.delmsg.format c18n.dict
@@ -25,16 +43,11 @@ define ['require','blockui', 'jqgrid', 'jqmsgbox', 'i18n!nls/appmng', 'i18n!nls/
       url: ''
       title: i18n.dialog.stringsettings.title, handler: (rowData)->
       #        grid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
-        dialogs.stringSettings.data "param", rowData
-        dialogs.stringSettings.dialog 'open'
+        $('#stringSettingsDialog').data("param", rowData).dialog 'open'
     'Language':
       url: ''
       title: i18n.dialog.languagesettings.title, handler: (rowData)->
-      #        grid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
-      #        dialogs.langSettings.on 'dialogopen', {param: rowData}, $('#languageSettingsDialog').dialog('option', 'openEvent')
-        dialogs.langSettings.data "param", rowData
-        dialogs.langSettings.dialog 'open'
-  #    'X': title: i18n.dialog.delete.title, handler: (rowData)->$('#dictionaryGridList').jqGrid 'delGridRow', rowData.id, deleteOptions
+        $('#languageSettingsDialog').data("param", rowData).dialog 'open'
 
   lastEditedCell = null
 
@@ -155,17 +168,16 @@ define ['require','blockui', 'jqgrid', 'jqmsgbox', 'i18n!nls/appmng', 'i18n!nls/
     $(@).button 'disable'
     oldLabel = $(@).button 'option', 'label'
     $(@).button 'option', 'label', i18n.generating
+    $.post 'app/generate-dict', {dicts: dicts.join(','), filename: filename}, (json)=>
+    #      $.unblockUI()
+      $(@).button 'option', 'label', oldLabel
+      $(@).button 'enable'
 
-    me=$(@)
-    pb = util.genProgressBar()
-    util.updateProgress('app/generate-dict', {dicts: dicts.join(','), filename: filename}, (json)->
-      pb.parent().remove()
-      me.button 'option', 'label', oldLabel
-      me.button 'enable'
-      window.location.href = "app/download-app-dict.action?fileLoc=#{json.event.msg}"
-    , pb)
+      if(json.status != 0)
+        $.msgBox json.message, null, {title: c18n.error}
+        return
 
-
+      window.location.href = "app/download-app-dict.action?fileLoc=#{json.fileLoc}"
 
 
   $('#batchAddLanguage').button().attr('privilegeName', util.urlname2Action 'app/add-dict-language').click ->

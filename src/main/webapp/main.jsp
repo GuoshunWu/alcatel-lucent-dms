@@ -12,7 +12,6 @@
 
     <%@include file="common/env.jsp" %>
     <link rel="stylesheet" type="text/css" href="${base}css/main.css?v=<s:property value="buildNumber"/>"/>
-
     <script type="text/javascript" src="js/lib/require.js"></script>
     <script type="text/javascript">
         require(['./js/config.js?bust=' + new Date().getTime()], function (config) {
