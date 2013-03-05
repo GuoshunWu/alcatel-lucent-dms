@@ -199,12 +199,6 @@ To change this template use File | Settings | File Templates.
       if (!postData || !postData.pqCmd) {
         postData.pqCmd = 'start';
       }
-      if (typeof console !== "undefined" && console !== null) {
-        console.log("postData=");
-      }
-      if (typeof console !== "undefined" && console !== null) {
-        console.log(postData);
-      }
       pollingInterval = $("#pollingFreq").val() ? parseInt($("#pollingFreq").val()) : 1000;
       reTryAjax = function(retryTimes, retryCounter) {
         if (retryTimes == null) {

@@ -121,8 +121,8 @@ define ["jquery", "jqueryui", 'jqlayout', "i18n!nls/common"], ($, ui, layout, c1
   long_polling =(url, postData, callback)->
     # call by terminal user
     postData.pqCmd = 'start' if !postData || !postData.pqCmd
-    console?.log "postData="
-    console?.log postData
+#    console?.log "postData="
+#    console?.log postData
 
     # initlize the test parameters
     pollingInterval = if $("#pollingFreq").val() then parseInt($("#pollingFreq").val()) else 1000
