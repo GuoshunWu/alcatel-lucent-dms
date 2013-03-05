@@ -62,6 +62,13 @@ public class DeliveringDictPool {
 		}
 	}
 	
+	public void removeHandler(String handler) {
+		synchronized (lifeMap) {
+			dictMap.remove(handler);
+			lifeMap.remove(handler);
+		}
+	}
+	
 	public Collection<Dictionary> getDictionaries(String handler) throws BusinessException {
 		synchronized (lifeMap) {
 			if (dictMap.containsKey(handler)) {
