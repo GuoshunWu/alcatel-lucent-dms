@@ -103,7 +103,7 @@
           return $('#uploadStatus').html("" + file.name + " " + i18n.uploadfinished);
         });
         if (!$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10) {
-          this.pb.remove();
+          this.pb.parent().remove();
         }
         jsonFromServer = data.result;
         if (0 !== jsonFromServer.status) {

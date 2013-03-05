@@ -2,7 +2,8 @@
 (function() {
 
   jQuery(function($) {
-    var long_polling, randomStr;
+    var base, long_polling, randomStr;
+    base = '/dms';
     randomStr = function(length, alphbet) {
       var ch, rstr, _i, _len;
       if (length == null) {
@@ -22,13 +23,56 @@
       }
       return rstr;
     };
-    long_polling = function(cmd, evtId, url, callback) {
-      var pollingInterval, postData, reTryAjax, timeout;
-      postData = {
-        cmd: cmd,
-        evtId: evtId
-      };
-      if (cmd === "start") {
+    /*
+      generate a progress bar
+    */
+
+    window.genProgressBar = function(autoDispaly, autoRemoveWhenCompleted) {
+      var pbContainer, randStr;
+      if (autoDispaly == null) {
+        autoDispaly = true;
+      }
+      if (autoRemoveWhenCompleted == null) {
+        autoRemoveWhenCompleted = true;
+      }
+      randStr = randomStr(5);
+      pbContainer = $("<div id=\"pb_container_" + randStr + "\"  class=\"progressbar-container\">\n<div class=\"progressbar-msg\">\nLoading...\n</div>\n<div id=\"progressbar_" + randStr + "\" class=\"progressbar\">\n<div class=\"progressbar-label\">0.00%</div>\n</div>\n</div>").appendTo(document.body).draggable({
+        create: function() {
+          return $("#progressbar_" + randStr, this).progressbar({
+            max: 100,
+            create: function(e, ui) {
+              this.label = $('div.progressbar-label', this);
+              return this.msg = $('div.progressbar-msg', pbContainer);
+            },
+            change: function(e, ui) {
+              if ($(this).is(":data(msg)")) {
+                this.msg.html($(this).data('msg'));
+              }
+              return this.label.html("" + ($(this).progressbar('value').toPrecision(4)) + "%");
+            },
+            complete: function(e, ui) {
+              if (autoRemoveWhenCompleted) {
+                return pbContainer.remove();
+              }
+            }
+          });
+        }
+      }).hide();
+      if (autoDispaly) {
+        pbContainer.show().position({
+          my: 'center',
+          at: 'center',
+          of: window
+        });
+      }
+      return $("#progressbar_" + randStr, pbContainer);
+    };
+    long_polling = function(url, postData, callback, pb) {
+      var pollingInterval, reTryAjax;
+      if (!postData || !postData.pqCmd) {
+        postData.pqCmd = 'start';
+      }
+      if (postData.pqCmd === "start") {
         postData.freq = ($("#eFreq").val() ? parseInt($("#eFreq").val()) : 2000);
         postData.speed = ($("#speed").val() ? parseInt($("#speed").val()) : 1000);
       }
@@ -39,7 +83,6 @@
         postData.speed = 2;
       }
       pollingInterval = $("#pollingFreq").val() ? parseInt($("#pollingFreq").val()) : 1000;
-      timeout = $("#timeout").val() ? parseInt($("#timeout").val()) : 5000;
       reTryAjax = function(retryTimes, retryCounter) {
         if (retryTimes == null) {
           retryTimes = Number.MAX_VALUE;
@@ -50,16 +93,35 @@
         return $.ajax(url, {
           cache: false,
           data: postData,
-          timeout: timeout,
           type: 'post',
           dataType: "json"
         }).done(function(data, textStatus, jqXHR) {
-          callback(data.msg);
-          if (/done/.test(data.msg)) {
+          if ('error' === data.event.cmd) {
+            $.msgBox(event.msg, null, {
+              title: c18n.error
+            });
             return;
           }
+          if ('done' === data.event.cmd) {
+            if (typeof callback === "function") {
+              callback(data);
+            }
+            return;
+          }
+          if (pb) {
+            pb.toggleClass('progressbar-indeterminate', -1 === data.event.percent);
+            pb.data('msg', data.event.msg);
+            pb.progressbar('value', data.event.percent);
+          } else {
+            if (typeof callback === "function") {
+              callback(data);
+            }
+          }
           return setTimeout((function() {
-            return long_polling("process", data.evtId, url, callback);
+            return long_polling(url, {
+              pqCmd: 'process',
+              pqId: data.pqId
+            }, callback, pb);
           }), pollingInterval);
         }).fail(function(jqXHR, textStatus, errorThrown) {
           if ('timeout' !== textStatus) {
@@ -82,56 +144,12 @@
       };
       return reTryAjax(10);
     };
-    /* create progress bar and update its progress if necessary.
-    */
-
-    window.getProgressBar = function() {
-      return $("<div id=\"progressbar_" + (randomStr(5)) + "\" class=\"progressbar\">\n<div class=\"progressbar-label\">\nLoading...\n</div>\n</div>").appendTo(document.body).draggable({
-        grid: [50, 20],
-        opacity: 0.35
-      }).progressbar({
-        max: 100,
-        value: 0,
-        create: function(e, ui) {
-          this.label = $('div.progressbar-label', this);
-          return $(this).position({
-            my: 'center',
-            at: 'center'
-          });
-        },
-        change: function(e, ui) {
-          var value;
-          value = $(this).progressbar("value");
-          return this.label.html((value.toPrecision(4)) + "%");
-        },
-        complete: function(e, ui) {}
-      });
-    };
     return $("#startAction").button().click(function(e) {
-      var callback, pb;
-      pb = getProgressBar();
-      callback = function(msg, sep) {
-        if (sep == null) {
-          sep = ";";
-        }
-        if (!pb) {
-          return;
-        }
-        if (typeof console !== "undefined" && console !== null) {
-          console.log(msg);
-        }
-        if (/done/.test(msg)) {
-          pb.remove();
-        }
-        return $(msg.split(sep)).each(function(index, elem) {
-          var percent;
-          if ($.isNumeric(elem)) {
-            percent = parseFloat(elem);
-          }
-          return pb.progressbar("value", percent);
-        });
-      };
-      return long_polling('start', null, '../scripts/cp.groovy', callback);
+      var pb;
+      pb = genProgressBar();
+      return long_polling("../scripts/cp.groovy", {}, function(event) {
+        return pb.parent().remove();
+      }, pb);
     });
   });
 

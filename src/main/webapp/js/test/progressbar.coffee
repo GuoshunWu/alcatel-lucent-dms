@@ -1,6 +1,8 @@
 jQuery ($) ->
 
-  randomStr = (length=10, alphbet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz')->
+  base = '/dms'
+
+  randomStr = (length = 10, alphbet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz')->
     rstr = ''
     for ch in alphbet
       rstr += alphbet[Math.floor Math.random() * alphbet.length]
@@ -8,32 +10,77 @@ jQuery ($) ->
       break if 0 == length
     rstr
 
+  ###
+    generate a progress bar
+  ###
+  window.genProgressBar = (autoDispaly = true, autoRemoveWhenCompleted=true)->
+    randStr = randomStr(5)
+    pbContainer=$("""
+                  <div id="pb_container_#{randStr}"  class="progressbar-container">
+                  <div class="progressbar-msg">
+                  Loading...
+                  </div>
+                  <div id="progressbar_#{randStr}" class="progressbar">
+                  <div class="progressbar-label">0.00%</div>
+                  </div>
+                  </div>
+                  """).appendTo(document.body)
+      .draggable(
+        create: ()->
+          $("#progressbar_#{randStr}", @).progressbar(
+            max: 100
+            create: (e, ui) ->
+              @label = $('div.progressbar-label', @)
+              @msg = $('div.progressbar-msg', pbContainer)
+            change: (e, ui) ->
+              @msg.html $(@).data('msg') if $(@).is(":data(msg)")
+              @label.html "#{$(@).progressbar('value').toPrecision(4)}%"
+            complete: (e, ui) ->
+              pbContainer.remove() if autoRemoveWhenCompleted
+          )
+      ).hide()
+    pbContainer.show().position(my: 'center', at: 'center', of: window) if autoDispaly
+    $("#progressbar_#{randStr}", pbContainer)
 
-  long_polling = (cmd, evtId, url, callback) ->
-    postData =
-      cmd: cmd
-      evtId: evtId
+
+  long_polling =(url, postData, callback, pb)->
+    # call by terminal user
+    postData.pqCmd = 'start' if !postData || !postData.pqCmd
+    #    console?.log "postData="
+    #    console?.log postData
 
     # initlize the test parameters
-    if cmd is "start"
+    if postData.pqCmd is "start"
       postData.freq = (if $("#eFreq").val() then parseInt($("#eFreq").val()) else 2000)
       postData.speed = (if $("#speed").val() then parseInt($("#speed").val()) else 1000)
     postData.freq = 2  if postData.freq < 2
     postData.speed = 2  if postData.speed < 2
-    pollingInterval = if $("#pollingFreq").val() then parseInt($("#pollingFreq").val()) else 1000
-    timeout = if $("#timeout").val() then parseInt($("#timeout").val()) else 5000
 
+    pollingInterval = if $("#pollingFreq").val() then parseInt($("#pollingFreq").val()) else 1000
     reTryAjax = (retryTimes = Number.MAX_VALUE, retryCounter = 0)->
       $.ajax(url,
         cache: false
         data: postData
-        timeout: timeout
         type: 'post'
         dataType: "json"
       ).done((data, textStatus, jqXHR) ->
-        callback data.msg
-        return if /done/.test(data.msg)
-        setTimeout (->long_polling "process", data.evtId, url, callback), pollingInterval
+        #        console?.log data
+        if 'error' == data.event.cmd
+          $.msgBox event.msg, null, {title: c18n.error}
+          return
+
+        if 'done' == data.event.cmd
+          callback? data
+          return
+
+        if pb
+          pb.toggleClass('progressbar-indeterminate', -1 == data.event.percent)
+          pb.data 'msg', data.event.msg
+          pb.progressbar 'value', data.event.percent
+        else
+          callback? data
+
+        setTimeout (->long_polling  url, {pqCmd: 'process', pqId: data.pqId}, callback, pb), pollingInterval
       ).fail((jqXHR, textStatus, errorThrown)->
         if 'timeout' != textStatus
           console?.log "error: #{textStatus}"
@@ -48,44 +95,12 @@ jQuery ($) ->
 
     reTryAjax(10)
 
-  ### create progress bar and update its progress if necessary. ###
-  window.getProgressBar = ()->
-    $("""
-      <div id="progressbar_#{randomStr(5)}" class="progressbar">
-      <div class="progressbar-label">
-      Loading...
-      </div>
-      </div>
-      """)
-      .appendTo(document.body)
-      .draggable(
-        grid: [50, 20]
-        opacity: 0.35
-      ).progressbar(
-        max: 100
-        value: 0
-        create: (e, ui) ->
-          @label = $('div.progressbar-label', @)
-          $(@).position(my: 'center', at: 'center')
-        change: (e, ui) ->
-          value = $(@).progressbar("value")
-          @label.html (value.toPrecision(4)) + "%"
-        complete: (e, ui) ->
-        # $(@).remove()
-      )
 
   $("#startAction").button().click (e) ->
-    pb = getProgressBar()
+    pb = genProgressBar()
 
-    callback = (msg, sep = ";")->
-      return if !pb
-      console?.log msg
-      pb.remove() if /done/.test(msg)
-      $(msg.split(sep)).each (index, elem)->
-        percent = parseFloat(elem) if $.isNumeric(elem)
-        pb.progressbar("value", percent)
-    long_polling('start', null , '../scripts/cp.groovy', callback)
-
-
+    long_polling("../scripts/cp.groovy", {},(event)->
+      pb.parent().remove()
+    ,pb)
 
 
