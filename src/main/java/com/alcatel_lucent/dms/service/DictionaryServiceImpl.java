@@ -280,7 +280,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
      * @param dtIds the collection of the id for dictionary to be generated.
      */
     public void generateDictFiles(String dir, Collection<Long> dtIds) {
-    	ProgressQueue.setProgress("Generating files...", 0);
+    	ProgressQueue.setProgress("Preparing data...", 0);
         if (dtIds.isEmpty()) return;
         File target = new File(dir);
         if (target.exists()) {
@@ -300,13 +300,16 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         for (Dictionary dict : dicts) {
         	totalLabels += dict.getLabelNum();
         }
+        int cur = 1;
+        int total = dicts.size();
         for (Dictionary dict : dicts) {
             log.info("Generate dictionary: " + dict.getName());
+            int percent = (int) Math.round(curLabels * 60.0 / totalLabels + 0.5) + 30;
+            ProgressQueue.setProgress("[" + cur + "/" + total + "] Generating " + dict.getName(), percent);
             DictionaryGenerator generator = getGenerator(dict.getFormat());
             generator.generateDict(target, dict.getId());
             curLabels += dict.getLabelNum();
-            int percent = (int) Math.round(curLabels * 80.0 / totalLabels + 0.5);
-            ProgressQueue.setProgress(percent);
+            cur++;
         }
     }
 
