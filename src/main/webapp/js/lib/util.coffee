@@ -106,8 +106,6 @@ define ["jquery", "jqueryui", 'jqmsgbox', 'jqlayout', "i18n!nls/common"], ($, ui
               @label = $('div.progressbar-label', @)
               @msg = $('div.progressbar-msg', pbContainer)
             change: (e, ui) ->
-              $(@).toggleClass('progressbar-indeterminate', -1 == $(@).progressbar('value'))
-
               @msg.html $(@).data('msg') if $(@).is(":data(msg)")
               @label.html "#{$(@).progressbar('value').toPrecision(4)}%"
             complete: (e, ui) ->
@@ -138,7 +136,7 @@ define ["jquery", "jqueryui", 'jqmsgbox', 'jqlayout', "i18n!nls/common"], ($, ui
         type: 'post'
         dataType: "json"
       ).done((data, textStatus, jqXHR) ->
-        console?.log data
+#        console?.log data
         if 'error' == data.event.cmd
           $.msgBox event.msg, null, {title: c18n.error}
           return
@@ -148,6 +146,7 @@ define ["jquery", "jqueryui", 'jqmsgbox', 'jqlayout', "i18n!nls/common"], ($, ui
           return
 
         if pb
+          pb.toggleClass('progressbar-indeterminate', -1 == data.event.percent)
           pb.data 'msg', data.event.msg
           pb.progressbar 'value', data.event.percent
         else

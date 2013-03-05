@@ -167,7 +167,6 @@ To change this template use File | Settings | File Templates.
               return this.msg = $('div.progressbar-msg', pbContainer);
             },
             change: function(e, ui) {
-              $(this).toggleClass('progressbar-indeterminate', -1 === $(this).progressbar('value'));
               if ($(this).is(":data(msg)")) {
                 this.msg.html($(this).data('msg'));
               }
@@ -215,9 +214,6 @@ To change this template use File | Settings | File Templates.
           type: 'post',
           dataType: "json"
         }).done(function(data, textStatus, jqXHR) {
-          if (typeof console !== "undefined" && console !== null) {
-            console.log(data);
-          }
           if ('error' === data.event.cmd) {
             $.msgBox(event.msg, null, {
               title: c18n.error
@@ -231,6 +227,7 @@ To change this template use File | Settings | File Templates.
             return;
           }
           if (pb) {
+            pb.toggleClass('progressbar-indeterminate', -1 === data.event.percent);
             pb.data('msg', data.event.msg);
             pb.progressbar('value', data.event.percent);
           } else {
