@@ -166,12 +166,13 @@ define ['require','blockui', 'jqgrid', 'jqmsgbox', 'i18n!nls/appmng', 'i18n!nls/
     #        return
 
     #    window.location.href = "app/download-app-dict.action?fileLoc=#{json.fileLoc}"
+    me=$(@)
     pb = util.genProgressBar()
     util.updateProgress('app/generate-dict', {dicts: dicts.join(','), filename: filename}, (json)->
       pb.parent().remove()
-      $(@).button 'option', 'label', oldLabel
-      $(@).button 'enable'
-      window.location.href = "app/download-app-dict.action?fileLoc=#{json.fileLoc}"
+      me.button 'option', 'label', oldLabel
+      me.button 'enable'
+      window.location.href = "app/download-app-dict.action?fileLoc=#{json.event.msg}"
     , pb)
 
 
