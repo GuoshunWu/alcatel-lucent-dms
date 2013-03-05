@@ -258,7 +258,7 @@
       }
     });
     $('#generateDict').button().width(170).attr('privilegeName', util.urlname2Action('app/deliver-app-dict')).click(function() {
-      var dicts, filename, oldLabel, pb;
+      var dicts, filename, me, oldLabel, pb;
       dicts = dicGrid.getGridParam('selarrrow');
       if (!dicts || dicts.length === 0) {
         $.msgBox(c18n.selrow.format(c18n.dict), null, {
@@ -270,15 +270,16 @@
       $(this).button('disable');
       oldLabel = $(this).button('option', 'label');
       $(this).button('option', 'label', i18n.generating);
+      me = $(this);
       pb = util.genProgressBar();
       return util.updateProgress('app/generate-dict', {
         dicts: dicts.join(','),
         filename: filename
       }, function(json) {
         pb.parent().remove();
-        $(this).button('option', 'label', oldLabel);
-        $(this).button('enable');
-        return window.location.href = "app/download-app-dict.action?fileLoc=" + json.fileLoc;
+        me.button('option', 'label', oldLabel);
+        me.button('enable');
+        return window.location.href = "app/download-app-dict.action?fileLoc=" + json.event.msg;
       }, pb);
     });
     $('#batchAddLanguage').button().attr('privilegeName', util.urlname2Action('app/add-dict-language')).click(function() {

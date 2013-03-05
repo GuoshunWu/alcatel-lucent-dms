@@ -158,7 +158,7 @@ To change this template use File | Settings | File Templates.
         autoRemoveWhenCompleted = true;
       }
       randStr = randomStr(5);
-      pbContainer = $("<div id=\"pb_container_" + randStr + "\"  class=\"progressbar-container\">\n<div class=\"progressbar-msg\">\nLoading...\n</div>\n<div id=\"progressbar_" + randStr + "\" class=\"progressbar progressbar-indeterminate\">\n<div class=\"progressbar-label\">0.00%</div>\n</div>\n</div>").appendTo(document.body).draggable({
+      pbContainer = $("<div id=\"pb_container_" + randStr + "\"  class=\"progressbar-container\">\n<div class=\"progressbar-msg\">\nLoading...\n</div>\n<div id=\"progressbar_" + randStr + "\" class=\"progressbar\">\n<div class=\"progressbar-label\">0.00%</div>\n</div>\n</div>").appendTo(document.body).draggable({
         create: function() {
           return $("#progressbar_" + randStr, this).progressbar({
             max: 100,
@@ -167,8 +167,7 @@ To change this template use File | Settings | File Templates.
               return this.msg = $('div.progressbar-msg', pbContainer);
             },
             change: function(e, ui) {
-              var _ref;
-              $(this).toggleClass('progressbar-indeterminate', (_ref = $(this).progressbar('value')) === 0 || _ref === (-1));
+              $(this).toggleClass('progressbar-indeterminate', -1 === $(this).progressbar('value'));
               if ($(this).is(":data(msg)")) {
                 this.msg.html($(this).data('msg'));
               }

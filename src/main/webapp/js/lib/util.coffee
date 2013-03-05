@@ -93,7 +93,7 @@ define ["jquery", "jqueryui", 'jqmsgbox', 'jqlayout', "i18n!nls/common"], ($, ui
                   <div class="progressbar-msg">
                   Loading...
                   </div>
-                  <div id="progressbar_#{randStr}" class="progressbar progressbar-indeterminate">
+                  <div id="progressbar_#{randStr}" class="progressbar">
                   <div class="progressbar-label">0.00%</div>
                   </div>
                   </div>
@@ -106,7 +106,7 @@ define ["jquery", "jqueryui", 'jqmsgbox', 'jqlayout', "i18n!nls/common"], ($, ui
               @label = $('div.progressbar-label', @)
               @msg = $('div.progressbar-msg', pbContainer)
             change: (e, ui) ->
-              $(@).toggleClass('progressbar-indeterminate', $(@).progressbar('value') in [0, -1])
+              $(@).toggleClass('progressbar-indeterminate', -1 == $(@).progressbar('value'))
 
               @msg.html $(@).data('msg') if $(@).is(":data(msg)")
               @label.html "#{$(@).progressbar('value').toPrecision(4)}%"
