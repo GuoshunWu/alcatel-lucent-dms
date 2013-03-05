@@ -429,9 +429,6 @@
             return util.updateProgress('app/deliver-dict', postData, function(event) {
               var appInfo, _ref;
               if (typeof console !== "undefined" && console !== null) {
-                console.log("in callback, event=");
-              }
-              if (typeof console !== "undefined" && console !== null) {
                 console.log(event);
               }
               if ((_ref = event.cmd) !== 'done' && _ref !== 'error') {
