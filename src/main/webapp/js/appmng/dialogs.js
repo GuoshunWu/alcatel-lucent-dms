@@ -402,7 +402,7 @@
         {
           text: i18n.dialog.dictlistpreview['import'],
           click: function() {
-            var param, postData;
+            var param, pb, postData;
             param = dictListPreview.data("param");
             postData = {
               handler: param.handler,
@@ -415,22 +415,16 @@
               return;
             }
             dictListPreview.dialog('close');
-            $.blockUI();
-            return $.post('app/deliver-dict', postData, function(json) {
+            pb = util.genProgressBar();
+            return util.updateProgress('app/deliver-dict', postData, function(json) {
               var appInfo;
-              $.unblockUI();
-              if (json.status !== 0) {
-                $.msgBox(json.message, null, {
-                  title: c18n.error
-                });
-                return;
-              }
+              pb.parent().remove();
               appInfo = "" + ($('#appDispAppName').text()) + " " + ($('#selAppVersion option:selected').text());
-              $.msgBox(i18n.dialog.dictlistpreview.success.format(appInfo, json.message), null, {
+              $.msgBox(i18n.dialog.dictlistpreview.success.format(appInfo, json.event.msg), null, {
                 title: c18n.info
               });
               return $('#selAppVersion').trigger('change');
-            });
+            }, pb);
           }
         }
       ],

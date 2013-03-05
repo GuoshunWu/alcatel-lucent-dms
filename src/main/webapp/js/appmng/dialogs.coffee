@@ -258,15 +258,13 @@ define dependencies, ($, jqgrid, blockui, msgbox, c18n, i18n, urls, util, previe
         ($.msgBox i18n.dialog.dictlistpreview.check, null, {title: c18n.error};return) if previewgrid.gridHasErrors()
         dictListPreview.dialog 'close'
 
-        $.blockUI()
-        $.post 'app/deliver-dict', postData, (json)->
-          $.unblockUI()
-          if json.status != 0
-            $.msgBox json.message, null, {title: c18n.error}
-            return
+        pb = util.genProgressBar()
+        util.updateProgress('app/deliver-dict', postData, (json)->
+          pb.parent().remove()
           appInfo = "#{$('#appDispAppName').text()} #{$('#selAppVersion option:selected').text()}"
-          $.msgBox (i18n.dialog.dictlistpreview.success.format appInfo, json.message), null, {title: c18n.info}
+          $.msgBox (i18n.dialog.dictlistpreview.success.format appInfo, json.event.msg), null, {title: c18n.info}
           $('#selAppVersion').trigger 'change'
+        , pb)
       }
     ]
     open: ->

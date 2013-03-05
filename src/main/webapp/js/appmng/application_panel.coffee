@@ -73,7 +73,7 @@ define dependencies, ($, upload, iframetrans, i18n, c18n, util, urls, dialogs, g
     $('#uploadBrower').button 'enable'
 
     $.each data.files, (index, file) ->$('#uploadStatus').html "#{file.name} #{i18n.uploadfinished}"
-    @pb.remove() if !$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10
+    @pb.parent().remove() if !$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10
     #    request handler
     jsonFromServer = data.result
 
