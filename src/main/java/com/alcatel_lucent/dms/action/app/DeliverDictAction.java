@@ -34,6 +34,7 @@ public class DeliverDictAction extends ProgressAction {
 			Collection<Dictionary> dictList = deliveringDictPool.getDictionaries(handler);
 			report = importDictionaries(app, dictList, Constants.DELIVERY_MODE);
 			setMessage(report.toHTML());
+			deliveringDictPool.removeHandler(handler);
 		} catch (BusinessException e) {
 			setMessage(e.toString());
 			setStatus(-1);
@@ -44,11 +45,8 @@ public class DeliverDictAction extends ProgressAction {
     private DeliveryReport importDictionaries(Long appId, Collection<Dictionary> dictList, int mode) throws BusinessException {
         DeliveryReport report = new DeliveryReport();
         Map<String, Collection<BusinessWarning>> warningMap = new TreeMap<String, Collection<BusinessWarning>>();
-        int total = 0;
-        int cur = 0;
-        for (Dictionary dict : dictList) {
-        	total += dict.getLabelNum();
-        }
+        int total = dictList.size();
+        int cur = 1;
         for (Dictionary dict : dictList) {
             Map<String, String> langCharset = new HashMap<String, String>();
             if (dict.getDictLanguages() != null) {
@@ -57,11 +55,10 @@ public class DeliverDictAction extends ProgressAction {
                 }
             }
             Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
+            ProgressQueue.setProgress("[" + cur + "/" + total + "] Importing " + dict.getName(), 0);
             dictionaryService.importDictionary(appId, dict, dict.getVersion(), mode, null, langCharset, warnings, report);
             warningMap.put(dict.getName(), warnings);
-            cur += dict.getLabelNum();
-            int percent = (int) Math.round(cur * 100.0 / total + 0.5);
-            ProgressQueue.setProgress("Importing...", percent);
+            cur++;
         }
         report.setWarningMap(warningMap);
         log.info(report.toString());
