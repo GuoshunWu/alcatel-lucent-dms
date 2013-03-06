@@ -87,6 +87,9 @@
       },
       progressall: function(e, data) {
         var progress;
+        if ($.browser.msie && parseInt($.browser.version.split('\.')[0]) < 10) {
+          return;
+        }
         progress = data.loaded / data.total * 100;
         this.pb.data('msg', 'Uploading');
         return this.pb.progressbar("value", progress);

@@ -46,6 +46,7 @@ define ['require','jqueryui', 'iframetransport','iframetransport','jqupload', 'i
       @pb=util.genProgressBar()
     $('#uploadBrower').button 'disable'
   progressall: (e, data) ->
+    return if $.browser.msie && parseInt($.browser.version.split('\.')[0]) < 10
     progress = data.loaded / data.total * 100
     @pb.data 'msg', 'Uploading'
     @pb.progressbar "value", progress
