@@ -754,6 +754,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         Collection<Application> apps = dao.retrieve(hql, param);
         if (apps.isEmpty()) {
             Dictionary dictionary = (Dictionary) dao.retrieve(Dictionary.class, dictId);
+            if (dictionary.getHistories() != null) {
+    	        for (DictionaryHistory his : dictionary.getHistories()) {
+    	        	dao.delete(his);
+    	        }
+            }
             DictionaryBase dictBase = dictionary.getBase();
             dao.delete(Dictionary.class, dictId);
 
@@ -780,6 +785,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             app.removeDictionary(id);
         }
         Dictionary dictionary = (Dictionary) dao.retrieve(Dictionary.class, id);
+        if (dictionary.getHistories() != null) {
+	        for (DictionaryHistory his : dictionary.getHistories()) {
+	        	dao.delete(his);
+	        }
+        }
         DictionaryBase dictBase = dictionary.getBase();
         dao.delete(Dictionary.class, id);
 

@@ -37,6 +37,10 @@ public class UserContext implements Serializable {
     public static void setUserContext(UserContext uc) {
         instance.set(uc);
     }
+    
+    public static void removeUserContext() {
+    	instance.remove();
+    }
 
     public Locale getLocale() {
         return locale;

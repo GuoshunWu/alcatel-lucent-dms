@@ -58,30 +58,33 @@ public class AuthenticationFilter implements Filter {
 
         UserContext uc = (UserContext) session.getAttribute(UserContext.SESSION_USER_CONTEXT);
         UserContext.setUserContext(uc);
-
-        uri = uri.replace(request.getContextPath(), "");
-        if (uri.endsWith("entry.action")) uri += '?' + request.getParameter("naviTo");
-        log.debug("uri=" + uri);
-        if (anyMatch(uri, excludePatterns)) {
-            log.debug("uri " + uri + " in the exclude pattern list, ignore.");
-            chain.doFilter(req, resp);
-            return;
+        try {
+	        uri = uri.replace(request.getContextPath(), "");
+	        if (uri.endsWith("entry.action")) uri += '?' + request.getParameter("naviTo");
+	        log.debug("uri=" + uri);
+	        if (anyMatch(uri, excludePatterns)) {
+	            log.debug("uri " + uri + " in the exclude pattern list, ignore.");
+	            chain.doFilter(req, resp);
+	            return;
+	        }
+	
+	        if (null != uc) {
+	            chain.doFilter(req, resp);
+	            return;
+	        }
+	
+	        if (anyMatch(uri, ajaxURIs)) {
+	            log.debug("uri " + uri + " in the ajax uri pattern list, response json.");
+	            ajaxResponse(response);
+	            return;
+	        }
+	
+	
+	//        Normal JSP response
+	        response.sendRedirect(request.getContextPath() + authURL);
+        } finally {
+        	UserContext.removeUserContext();
         }
-
-        if (null != uc) {
-            chain.doFilter(req, resp);
-            return;
-        }
-
-        if (anyMatch(uri, ajaxURIs)) {
-            log.debug("uri " + uri + " in the ajax uri pattern list, response json.");
-            ajaxResponse(response);
-            return;
-        }
-
-
-//        Normal JSP response
-        response.sendRedirect(request.getContextPath() + authURL);
     }
 
     public void init(FilterConfig config) throws ServletException {
