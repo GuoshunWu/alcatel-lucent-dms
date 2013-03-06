@@ -33,6 +33,7 @@ public class Dictionary extends BaseEntity {
 
     private Collection<DictionaryLanguage> dictLanguages;
     private Collection<Label> labels;
+    private Collection<DictionaryHistory> histories;
     private boolean locked;
     private DictionaryBase base;
     private String version;
@@ -537,4 +538,12 @@ public class Dictionary extends BaseEntity {
                 .append("version", version)
                 .toString();
     }
+
+	public Collection<DictionaryHistory> getHistories() {
+		return histories;
+	}
+
+	public void setHistories(Collection<DictionaryHistory> histories) {
+		this.histories = histories;
+	}
 }
