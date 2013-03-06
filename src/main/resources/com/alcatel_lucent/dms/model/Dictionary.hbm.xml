@@ -28,6 +28,11 @@
             <one-to-many class="Label"/>
         </set>
 
+        <set inverse="true" name="histories" order-by="OPERATION_TIME">
+            <key column="DICTIONARY_ID" on-delete="cascade" not-null="true"/>
+            <one-to-many class="DictionaryHistory"/>
+        </set>
+
         <property column="LOCKED" name="locked" type="boolean"/>
     </class>
 </hibernate-mapping>

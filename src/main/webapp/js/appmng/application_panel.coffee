@@ -67,6 +67,7 @@ define dependencies, ($, upload, iframetrans, i18n, c18n, util, urls, dialogs, g
     @pb=util.genProgressBar() if !$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10
     $('#uploadBrower').button 'disable'
   progressall: (e, data) ->
+    return if $.browser.msie && parseInt($.browser.version.split('\.')[0]) < 10
     progress = data.loaded / data.total * 100
     @pb.progressbar "value", progress
   done: (e, data)->
