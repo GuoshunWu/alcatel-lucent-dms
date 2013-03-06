@@ -17,7 +17,7 @@ define dependencies, ($, util, glayout, ptree, appmngPanel, transmngPanel, taskm
 
   panelSwitchHandler = (oldpnl, newpnl)->
     # we need keep the panels to be informed if current product base changed
-    console?.debug "oldpnl= #{oldpnl}, newpnl= #{newpnl}."
+#    console?.log "oldpnl= #{oldpnl}, newpnl= #{newpnl}."
     return if 'admin' == oldpnl or 'admin' == newpnl
 
     treeSelectedNode=$("#appTree").jstree 'get_selected'
@@ -40,11 +40,13 @@ define dependencies, ($, util, glayout, ptree, appmngPanel, transmngPanel, taskm
 
   ################################################## Initilaize #####################################################
   init = ()->
-    dmsPanels = new util.PanelGroup('div.dms-panel', 'appmng', panelSwitchHandler)
+    dmsPanels = new util.PanelGroup('div.dms-panel', 'none', panelSwitchHandler)
     # Handler for north navigation bar button set
     $('span.navigator-button').button().click(
       ()->
         currentPanel = "#{$(@).attr('value')}"
+#        console?.log "currentPanel=#{currentPanel}, dmsPanels.currentPanel=#{dmsPanels.currentPanel}."
+        return if currentPanel == dmsPanels.currentPanel
 
         if 'admin' == currentPanel
           glayout.layout.hide('west')
@@ -68,7 +70,7 @@ define dependencies, ($, util, glayout, ptree, appmngPanel, transmngPanel, taskm
     ).parent().buttonset()
 
     # appmng panel as the current page on init
-    $("span[id^='nav'][value='#{dmsPanels.currentPanel}']").trigger 'click'
+    $("span[id^='nav'][value='appmng']").trigger 'click'
   ################################################## Initilaized #####################################################
 
   init()

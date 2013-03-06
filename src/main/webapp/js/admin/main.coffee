@@ -10,7 +10,6 @@ define ['require','jqueryui', 'admin/languagegrid', 'admin/charsetgrid'], (requi
     )
 
     tabs = $('#adminTabs')
-    #
     pheight = tabs.parent().height()
     tabs.tabs 'option', 'pheight', pheight
 #    console?.debug "init tabs height=#{pheight}."
@@ -22,11 +21,6 @@ define ['require','jqueryui', 'admin/languagegrid', 'admin/charsetgrid'], (requi
 
   ready = ()->
     console?.debug "transmng panel ready..."
-
-#    require 'admin/charsetgrid'
-#    require 'admin/languagegrid'
-
-
   init()
   ready()
 

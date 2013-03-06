@@ -352,7 +352,7 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
 
   getProductTreeInfo: getTreeNodeInfo
   genProgressBar:genProgressBar
-
+  updateProgress: long_polling
   ###
     @param panels: the panel group selector
     @param currentPanel: the current panel selector
@@ -361,7 +361,7 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
   PanelGroup: class PanelGroup
     constructor: (@panels, @currentPanel, @onSwitch = (oldpnl, newpnl)->)->
     switchTo: (panelId, callback)->
-      return if @currentPanel == panelId
+
       $("#{@panels}").hide()
 #      console?.debug "switch to #{@panels}[id='#{panelId}']."
       oldPanel = @currentPanel
