@@ -16,6 +16,7 @@ define
     confirm: 'Confirm'
     message: 'Message'
     create: 'Create'
+    prod: 'product'
     app: 'application'
     dict: 'dictionary'
     language: 'language'

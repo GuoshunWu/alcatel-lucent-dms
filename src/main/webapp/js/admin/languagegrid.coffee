@@ -1,5 +1,4 @@
-define ['require', 'jqgrid','util','i18n!nls/admin' ],(require, jqgrid, util, i18n)->
-
+define ['jqgrid', 'dms-util', 'i18n!nls/admin'], ($, util, i18n)->
   afterSubmit = (response, postdata)->
     jsonFromServer = $.parseJSON response.responseText
     [jsonFromServer.status == 0, jsonFromServer.message]

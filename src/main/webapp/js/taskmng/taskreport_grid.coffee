@@ -1,4 +1,5 @@
-define ['jqgrid', 'util', 'require'], ($, util, require)->
+define ['jqgrid', 'taskmng/dialogs'], ($, dialogs)->
+
   colNames = ['Application', 'Total']
   colModel = [
     {name: 'name', index: 'dict', width: 240, editable: false, stype: 'select', align: 'left', frozen: true}
@@ -29,7 +30,6 @@ define ['jqgrid', 'util', 'require'], ($, util, require)->
         allZero = 0 == parseInt rowData["#{param.languaeName}.#{elem}"]
         allZero
       (console.log 'zero';return) if allZero
-      dialogs = require 'taskmng/dialogs'
       dialogs.viewDetail.data 'param', task: $('#reportGrid').getGridParam('postData').task, language: param.languageId, translated: Number(param.languaeName.split('.')[1] == 'T'), context: param.id
       dialogs.viewDetail.dialog 'open'
 

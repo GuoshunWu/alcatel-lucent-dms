@@ -1,12 +1,24 @@
-define (require)->
+define ['i18n!nls/common', 'dms-util', 'dms-urls', 'transmng/trans_grid', 'transmng/dialogs', 'ptree'], (i18n, util, urls, grid, dialogs, ptree)->
+  nodeSelectHandler = (node, nodeInfo)->
+    type=node.attr('type')
+    return if 'products' == type
 
-  i18n = require 'i18n!nls/transmng'
-  c18n = require 'i18n!nls/common'
+    $('#versionTypeLabel',"div[id='transmng']").text "#{nodeInfo.text}"
+    if 'product' == type
+      $.getJSON urls.prod_versions, {base: nodeInfo.id, prop: 'id,version'}, (json)->
+        $('#selVersion',"div[id='transmng']").empty().append(util.json2Options(json)).trigger 'change'
+      return
 
-  grid = require 'transmng/trans_grid'
+    if 'app' == type
+      $.getJSON "#{urls.app_versions}#{nodeInfo.id}" , (json)->
+        $('#selVersion',"div[id='transmng']").empty().append(util.json2Options(json)).trigger 'change'
 
-  dialogs = require 'transmng/dialogs'
-  util = require 'dms-util'
+
+  onShow = ()->
+    gridParent = $('.transGrid_parent')
+    $('#transGrid').setGridWidth(gridParent.width() - 10).setGridHeight(gridParent.height() - 110)
+
+    # init product or application
 
   exportAppOrDicts = (ftype)->
     id = $('#productRelease').val()
@@ -15,9 +27,7 @@ define (require)->
     return if -1 == id
 
     checkboxes = $("#languageFilterDialog input:checkbox[name='languages']:checked")
-    languages = checkboxes.map(
-      ()-> return @id
-    ).get().join(',')
+    languages = checkboxes.map(()-> return @id ).get().join(',')
 
     type = $("input:radio[name='viewOption'][checked]").val()
     type = type[..3]
@@ -27,64 +37,63 @@ define (require)->
     $("#exportForm input[name='language']").val languages
     $("#exportForm input[name='type']").val type
     $("#exportForm input[name='type']").val ftype if ftype
-    $("#exportForm").submit()
+    $("#exportForm", "#transmng").submit()
 
   init = ()->
     console?.debug "transmng panel init..."
+    $('#selVersion', "div[id='transmng']").change ->
+      return if !@value or -1 == parseInt @value
+      nodeInfo = ptree.getNodeInfo()
+#      console?.log nodeInfo
+      type = nodeInfo.type
+      type = type[..3] if type.startWith('prod')
 
-    # selects on summary panel
-    #  load product in product base
-    $('#productBase').change ()->
-      $('#productRelease').empty()
-      return false if parseInt($('#productBase').val()) == -1
+      postData = {prop: 'id,name'}
+      postData[type] = @value
 
-      $.getJSON "rest/products/version", {base: $(@).val(), prop: 'id,version'}, (json)->
-        $('#productRelease').append util.newOption(c18n.select.release.tip, -1)
-        $('#productRelease').append util.json2Options json, json[json.length - 1].id
-        $('#productRelease').trigger "change"
-
-
-    $('#productRelease').change ->
-      return if -1 == parseInt @value
-      $.ajax {url: "rest/languages", async: false, data: {prod: @value, prop: 'id,name'}, dataType: 'json', success: (languages)->
+      $.ajax {url: urls.languages, async: false, data: postData, dataType: 'json', success: (languages)->
         langTable = util.generateLanguageTable languages
         $("#languageFilterDialog").empty().append langTable
       }
       dialogs.refreshGrid(false, grid)
-    $('#productRelease').trigger 'change'
 
     # Create buttons
-    $("#create").button()
-    .attr('privilegeName', util.urlname2Action 'task/create-task')
-    .click ->
-      info = grid.getTotalSelectedRowInfo()
-      if !info.rowIds.length
-        $.msgBox (c18n.selrow.format c18n[grid.getTableType()]), null, title: c18n.warning
-        return
-      dialogs.taskDialog.dialog "open"
+    $("#create",'#transmng').button()
+      .attr('privilegeName', util.urlname2Action 'task/create-task')
+      .click ->
+        info = grid.getTotalSelectedRowInfo()
+        if !info.rowIds.length
+          $.msgBox (c18n.selrow.format c18n[grid.getTableType()]), null, title: c18n.warning
+          return
+        dialogs.taskDialog.dialog "open"
 
-    $('#languageFilter').button().click ()->dialogs.languageFilterDialog.dialog "open"
+    $('#languageFilter','#transmng').button().click ()->dialogs.languageFilterDialog.dialog "open"
     #    for view level
     $(':radio[name=viewOption]').change ->dialogs.refreshGrid(false, grid)
 
-    $("#exportTranslation").button()
-    .attr('privilegeName', util.urlname2Action 'trans/export-translation-details')
-    .click ->
-      info = grid.getTotalSelectedRowInfo()
-      if !info.rowIds.length
-        $.msgBox (c18n.selrow.format c18n[grid.getTableType()]), null, title: c18n.warning
-        return
-      dialogs.exportTranslationDialog.dialog 'open'
+    $("#exportTranslation",'#transmng').button()
+      .attr('privilegeName', util.urlname2Action 'trans/export-translation-details')
+      .click ->
+        info = grid.getTotalSelectedRowInfo()
+        if !info.rowIds.length
+          $.msgBox (c18n.selrow.format c18n[grid.getTableType()]), null, title: c18n.warning
+          return
+        dialogs.exportTranslationDialog.dialog 'open'
 
     #    add action for export
-    $("#exportExcel").click ()->exportAppOrDicts 'excel'
-    $("#exportPDF").click ()->exportAppOrDicts 'pdf'
+    $("#exportExcel", '#transmng').click ()->exportAppOrDicts 'excel'
+    $("#exportPDF", '#transmng').click ()->exportAppOrDicts 'pdf'
+
 
 
   ready = ()->
+    onShow()
     console?.debug "transmng panel ready..."
-    gridParent = $('.transGrid_parent')
-    $('#transGrid').setGridWidth(gridParent.width() - 10).setGridHeight(gridParent.height() - 110)
 
   init()
   ready()
+
+  onShow: onShow
+  nodeSelect: nodeSelectHandler
+
+

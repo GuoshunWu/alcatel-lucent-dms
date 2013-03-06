@@ -1,25 +1,38 @@
-define (require)->
-  $ = require 'jqgrid'
+dependencies = [
+  'jqgrid'
+  'dms-util'
 
-  util = require 'dms-util'
+  'appmng/product_panel'
+  'appmng/application_panel'
+  'appmng/layout'
+]
 
-  ########## reference legency codes here ###########
-#  dialogs = require 'appmng/dialogs'
-#  layout = require 'appmng/layout'
-  #    initialize appmng panels
-  #  appmngPnlGroup = new util.PanelGroup("div.dms_appmng_panel", "DMS_welcomePanel")
+define dependencies, ($, util, productpnl, apppnl, layout)->
+  nodeSelectHandler = (node, nodeInfo)->
+    switch node.attr('type')
+      when 'products'
+        layout.showWelcomePanel()
+      when 'product'
+        productpnl.refresh nodeInfo
+        layout.showProductPanel()
+      when 'app'
+        apppnl.refresh nodeInfo
+        layout.showApplicationPanel()
 
-#  tree = require 'appmng/producttree'
+  onShow = ()->
 
   init = ()->
   ################################################## Initilaize #####################################################
+    # initialize appmng panels
+    layout.showWelcomePanel()
   ################################################## Initilaized ####################################################
 
   ready = (param)->
-
     console?.debug "appmng panel ready..."
-
   init()
+  ready(@)
+
+  onShow: onShow
+  nodeSelect: nodeSelectHandler
 
 
-  ready()

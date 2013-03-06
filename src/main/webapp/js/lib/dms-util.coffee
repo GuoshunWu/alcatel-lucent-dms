@@ -1,11 +1,8 @@
 ###
 Created by IntelliJ IDEA.
 User: Guoshun Wu
-Date: -8-
-Time: 下午7:
 ###
-define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
-
+define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
   #    prototype enhancement
   String:: format = -> args = arguments; @replace /\{(\d+)\}/g, (m, i) ->args[i]
 
@@ -106,64 +103,131 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
       i++
     retval
 
-  setCookie = (name, value, expires, domain, path, secure)->
-    c = "#{name}=#{escape(value)}"
-    start = 2
-    for arg in ['expires', 'domain', 'path', 'secure']
-      c += ";#{arg}=#{arguments[start++]}" if arguments[start]
-    document.cookie = c
+
+  randomStr = (length = 10, alphbet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz')->
+    rstr = ''
+    for ch in alphbet
+      rstr += alphbet[Math.floor Math.random() * alphbet.length]
+      length--
+      break if 0 == length
+    rstr
+
+  ###
+    generate a progress bar
+  ###
+  genProgressBar = (autoDispaly = true, autoRemoveWhenCompleted=true)->
+    randStr = randomStr(5)
+    pbContainer=$("""
+                  <div id="pb_container_#{randStr}"  class="progressbar-container">
+                  <div class="progressbar-msg">
+                  Loading...
+                  </div>
+                  <div id="progressbar_#{randStr}" class="progressbar">
+                  <div class="progressbar-label">0.00%</div>
+                  </div>
+                  </div>
+                  """).appendTo(document.body)
+      .draggable(
+        create: ()->
+          $("#progressbar_#{randStr}", @).progressbar(
+            max: 100
+            create: (e, ui) ->
+              @label = $('div.progressbar-label', @)
+              @msg = $('div.progressbar-msg', pbContainer)
+            change: (e, ui) ->
+              @msg.html $(@).data('msg') if $(@).is(":data(msg)")
+              @label.html "#{$(@).progressbar('value').toPrecision(4)}%"
+            complete: (e, ui) ->
+              pbContainer.remove() if autoRemoveWhenCompleted
+          )
+      ).hide()
+    pbContainer.show().position(my: 'center', at: 'center', of: window) if autoDispaly
+    $("#progressbar_#{randStr}", pbContainer)
+
+
+  long_polling =(url, postData, callback, pb)->
+    # call by terminal user
+    postData.pqCmd = 'start' if !postData || !postData.pqCmd
+    console?.log "postData="
+    console?.log postData
+
+    # initlize the test parameters
+    pollingInterval = if $("#pollingFreq").val() then parseInt($("#pollingFreq").val()) else 1000
+    reTryAjax = (retryTimes = Number.MAX_VALUE, retryCounter = 0)->
+      $.ajax(url,
+        cache: false
+        data: postData
+        type: 'post'
+        dataType: "json"
+      ).done((data, textStatus, jqXHR) ->
+        #        console?.log data
+        if 'error' == data.event.cmd
+          $.msgBox event.msg, null, {title: c18n.error}
+          return
+
+        if 'done' == data.event.cmd
+          callback? data
+          return
+
+        if pb
+          pb.toggleClass('progressbar-indeterminate', -1 == data.event.percent)
+          pb.data 'msg', data.event.msg
+          pb.progressbar 'value', data.event.percent
+        else
+          callback? data
+
+        setTimeout (->long_polling  url, {pqCmd: 'process', pqId: data.pqId}, callback, pb), pollingInterval
+      ).fail((jqXHR, textStatus, errorThrown)->
+        if 'timeout' != textStatus
+          console?.log "error: #{textStatus}"
+          return
+
+        if(retryTimes > 0)
+          console?.log "Request #{textStatus}, I will retry in #{pollingInterval} milliseconds."
+          setTimeout (->reTryAjax(--retryTimes, ++retryCounter)), pollingInterval
+        else
+          console?.log "I have retried #{retryCounter} times. There may be a network connection issue, please check network cable."
+      )
+
+    reTryAjax()
+
+  getTreeNodeInfo = (node, treeSelecotr = '#appTree')->
+    ptree=$.jstree._reference(treeSelecotr)
+    return null if !ptree
+    selectedNode = if node then node else ptree.get_selected()
+    parent = ptree._get_parent(selectedNode)
+
+    id: selectedNode.attr('id')
+    text: ptree.get_text(selectedNode)
+    type: selectedNode.attr('type')
+    parent: if parent != -1 then getTreeNodeInfo(parent) else parent
 
   newOption = (text, value, selected)->"<option #{if selected then 'selected ' else ''}value='#{value}'>#{text}</option>"
+  urlname2Action = (urlname = '', suffix = 'Action')->urlname.split('/').pop().capitalize().split('-').join('') + suffix
 
   $.ajaxSetup {timeout: 1000 * 60 * 30, cache: false}
   $.ajaxPrefilter (options, originalOptions, jqXHR)->
 
-    #  for page navigator
-  pageNavi = ()->
-    $('#naviForm').bind 'submit', (e)->
-      $("#curProductBaseId").val $("#productBase").val()
-      $("#curProductId").val $("#productRelease").val()
-
-      #    param is global var in /common/env.jsp
-      if (param.naviTo == 'appmng.jsp')
-        $("#curProductId").val(if $("#selVersion").val() then $("#selVersion").val() else -1)
-        appTree = $.jstree._reference("#appTree")
-        node = appTree.get_selected()
-
-        productBaseId = -1
-        #  -1 indicate that no node is selected
-        #      a node is selected
-        if node.length > 0
-          type = node.attr('type')
-          if type == 'product'
-            productBaseId = node.attr('id')
-          else if type == 'app'
-            productBaseId = appTree._get_parent(node).attr('id')
-        $("#curProductBaseId").val productBaseId
-
-    $('#pageNavigator').change (e)->$('#naviForm').submit()
-
   #  Ajax event for all pages
   sessionCheck = ()->
-    $('#sessionTimeoutDialog').dialog {
-    width: 320, modal: true
-    autoOpen: false
-    buttons: [
-      {
-      text: c18n.ok, click: (e)->
-        $(@).dialog 'close'
-        window.location = 'login/forward-to-https'
-      }
-    ]
-    }
+    $('#sessionTimeoutDialog').dialog(
+      width: 320, modal: true
+      autoOpen: false
+      buttons: [
+        {
+        text: c18n.ok, click: (e)->
+          $(@).dialog 'close'
+          window.location = 'login/forward-to-https'
+        }
+      ]
+    )
 
     $(document).on 'ajaxSuccess', (e, xhr, settings)->
-      #      console?.log "xhr.status=#{xhr.status}"
+#      console?.log "xhr.status=#{xhr.status}"
       if 203 == xhr.status
         $('#sessionTimeoutDialog').dialog 'open'
-  #        console?.log $.parseJSON(xhr.responseText)
+#        console?.log $.parseJSON(xhr.responseText)
 
-  urlname2Action = (urlname = '', suffix = 'Action')->urlname.split('/').pop().capitalize().split('-').join('') + suffix
   checkGridPrivilege = (grid)->
     # console?.debug "check the privilege of grid '#{grid.id}'."
     gridParam = $(grid).jqGrid 'getGridParam'
@@ -182,14 +246,16 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
     #    for the grid  navigatebar, ['view', 'search', 'refresh'] are readonly operation, enabled
     $.each ['add', 'edit', 'del'], (index, value)->
       # for jqgrid predefined navigate buttons
-      actButton = $("##{value}_#{grid.id}")
+      btnSelector = "##{value}_#{grid.id}"
+      actButton = $ btnSelector
 
       if actButton.length > 0 and forbiddenTab.editurl
         console?.log "Disable button #{actButton.attr('id')} due to forbidden privilege."
         actButton.addClass 'ui-state-disabled'
 
       # for custom buttons in navigate gird.
-      actButton = $("#custom_#{value}_#{grid.id}")
+      btnSelector = "#custom_#{value}_#{grid.id}"
+      actButton = $(btnSelector)
       if actButton.length > 0 and (forbiddenTab.editurl or forbiddenTab.cellactionurl)
         console?.log "Disable button #{actButton.attr('id')} due to forbidden privilege."
         actButton.addClass 'ui-state-disabled'
@@ -207,8 +273,8 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
       $.each tmpHandlers, (index, value)->delete tmpHandlers[index] if urlname2Action(value.url) in param.forbiddenPrivileges
 
   #    $(grid).trigger 'reloadGrid'
-  checkAllGridPrivilege = (grids = $('.ui-jqgrid-btable'), readonly = true)->$.each grids, (idx, grid)->checkGridPrivilege grid
-
+  checkAllGridPrivilege = (grids = $('table.ui-jqgrid-btable'), readonly = true)->$.each grids, (idx, grid)->checkGridPrivilege grid
+  sessionCheck()
 
   ###
   Test here.
@@ -269,6 +335,8 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
     ).get().join(sep)
 
   afterInitilized: (context)->
+    # center progressbar
+    $('div.progressbar').position(my: 'center', at: 'center',of: window)
     # console?.debug "...Page #{param.naviTo} privilege check..."
     #    check all buttons' privilege
     $('[role=button][privilegeName]').each (index, button)->
@@ -277,38 +345,14 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
     #   check all the grids' privilege
     checkAllGridPrivilege()
 
-    # create layout
-    pageLayout = createLayoutManager()
 
-    if(param.naviTo == 'appmng.jsp')
-      # save selector strings to vars so we don't have to repeat it
-      # must prefix paneClass with "#optional-container >" to target ONLY the Layout panes
-      # west pane
-      westSelector = "#optional-container > .ui-layout-west"
-
-      # CREATE SPANs for pin-buttons - using a generic class as identifiers
-      $("<span></span>").addClass("pin-button").prependTo(westSelector)
-      # BIND events to pin-buttons to make them functional
-      pageLayout.addPinBtn("#{westSelector} .pin-button", "west")
-
-      # CREATE SPANs for close-buttons - using unique IDs as identifiers
-      $("<span></span>").attr("id", "west-closer").prependTo(westSelector)
-      # BIND layout events to close-buttons to make them functional
-      pageLayout.addCloseBtn("#west-closer", "west")
-
-    #    update navigator.
-    $("span[id$='Tab'][id^='nav']").button().click(
-      (e)->
-        $('#pageNavigator').val $(@).attr('value')
-        $(@).button 'disable'
-        $('#naviForm').submit()
-    ).parent().buttonset()
-    $("span[id^='nav'][value='#{param.naviTo}']").css 'backgroundImage', 'url(css/jqueryLayout/images/80ade5_40x100_textures_04_highlight_hard_100.png)'
 
   urlname2Action: urlname2Action
   createLayoutManager: (page = 'appmng.jsp')->createLayoutManager(page)
 
-
+  getProductTreeInfo: getTreeNodeInfo
+  genProgressBar:genProgressBar
+  updateProgress: long_polling
   ###
     @param panels: the panel group selector
     @param currentPanel: the current panel selector
@@ -317,8 +361,9 @@ define ["jquery", "jqueryui", "i18n!nls/common"], ($, ui, c18n) ->
   PanelGroup: class PanelGroup
     constructor: (@panels, @currentPanel, @onSwitch = (oldpnl, newpnl)->)->
     switchTo: (panelId, callback)->
+
       $("#{@panels}").hide()
-      #      console?.debug "switch to #{@panels}[id='#{panelId}']."
+#      console?.debug "switch to #{@panels}[id='#{panelId}']."
       oldPanel = @currentPanel
       @currentPanel = panelId
       $("#{@panels}[id='#{panelId}']").fadeIn "fast", ()->callback() if $.isFunction(callback)

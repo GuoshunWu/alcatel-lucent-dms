@@ -3,16 +3,14 @@
 /*
 Created by IntelliJ IDEA.
 User: Guoshun Wu
-Date: -8-
-Time: 下午7:
 */
 
 
 (function() {
   var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  define(["jquery", "jqueryui", "i18n!nls/common"], function($, ui, c18n) {
-    var PanelGroup, checkAllGridPrivilege, checkGridPrivilege, formatJonString, newOption, pageNavi, sessionCheck, setCookie, urlname2Action;
+  define(['jqueryui', "jqtree", "i18n!nls/common"], function($, jqtree, c18n) {
+    var PanelGroup, checkAllGridPrivilege, checkGridPrivilege, formatJonString, genProgressBar, getTreeNodeInfo, long_polling, newOption, randomStr, sessionCheck, urlname2Action;
     String.prototype.format = function() {
       var args;
       args = arguments;
@@ -163,52 +161,177 @@ Time: 下午7:
       }
       return retval;
     };
-    setCookie = function(name, value, expires, domain, path, secure) {
-      var arg, c, start, _i, _len, _ref;
-      c = "" + name + "=" + (escape(value));
-      start = 2;
-      _ref = ['expires', 'domain', 'path', 'secure'];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        arg = _ref[_i];
-        if (arguments[start]) {
-          c += ";" + arg + "=" + arguments[start++];
+    randomStr = function(length, alphbet) {
+      var ch, rstr, _i, _len;
+      if (length == null) {
+        length = 10;
+      }
+      if (alphbet == null) {
+        alphbet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz';
+      }
+      rstr = '';
+      for (_i = 0, _len = alphbet.length; _i < _len; _i++) {
+        ch = alphbet[_i];
+        rstr += alphbet[Math.floor(Math.random() * alphbet.length)];
+        length--;
+        if (0 === length) {
+          break;
         }
       }
-      return document.cookie = c;
+      return rstr;
+    };
+    /*
+      generate a progress bar
+    */
+
+    genProgressBar = function(autoDispaly, autoRemoveWhenCompleted) {
+      var pbContainer, randStr;
+      if (autoDispaly == null) {
+        autoDispaly = true;
+      }
+      if (autoRemoveWhenCompleted == null) {
+        autoRemoveWhenCompleted = true;
+      }
+      randStr = randomStr(5);
+      pbContainer = $("<div id=\"pb_container_" + randStr + "\"  class=\"progressbar-container\">\n<div class=\"progressbar-msg\">\nLoading...\n</div>\n<div id=\"progressbar_" + randStr + "\" class=\"progressbar\">\n<div class=\"progressbar-label\">0.00%</div>\n</div>\n</div>").appendTo(document.body).draggable({
+        create: function() {
+          return $("#progressbar_" + randStr, this).progressbar({
+            max: 100,
+            create: function(e, ui) {
+              this.label = $('div.progressbar-label', this);
+              return this.msg = $('div.progressbar-msg', pbContainer);
+            },
+            change: function(e, ui) {
+              if ($(this).is(":data(msg)")) {
+                this.msg.html($(this).data('msg'));
+              }
+              return this.label.html("" + ($(this).progressbar('value').toPrecision(4)) + "%");
+            },
+            complete: function(e, ui) {
+              if (autoRemoveWhenCompleted) {
+                return pbContainer.remove();
+              }
+            }
+          });
+        }
+      }).hide();
+      if (autoDispaly) {
+        pbContainer.show().position({
+          my: 'center',
+          at: 'center',
+          of: window
+        });
+      }
+      return $("#progressbar_" + randStr, pbContainer);
+    };
+    long_polling = function(url, postData, callback, pb) {
+      var pollingInterval, reTryAjax;
+      if (!postData || !postData.pqCmd) {
+        postData.pqCmd = 'start';
+      }
+      if (typeof console !== "undefined" && console !== null) {
+        console.log("postData=");
+      }
+      if (typeof console !== "undefined" && console !== null) {
+        console.log(postData);
+      }
+      pollingInterval = $("#pollingFreq").val() ? parseInt($("#pollingFreq").val()) : 1000;
+      reTryAjax = function(retryTimes, retryCounter) {
+        if (retryTimes == null) {
+          retryTimes = Number.MAX_VALUE;
+        }
+        if (retryCounter == null) {
+          retryCounter = 0;
+        }
+        return $.ajax(url, {
+          cache: false,
+          data: postData,
+          type: 'post',
+          dataType: "json"
+        }).done(function(data, textStatus, jqXHR) {
+          if ('error' === data.event.cmd) {
+            $.msgBox(event.msg, null, {
+              title: c18n.error
+            });
+            return;
+          }
+          if ('done' === data.event.cmd) {
+            if (typeof callback === "function") {
+              callback(data);
+            }
+            return;
+          }
+          if (pb) {
+            pb.toggleClass('progressbar-indeterminate', -1 === data.event.percent);
+            pb.data('msg', data.event.msg);
+            pb.progressbar('value', data.event.percent);
+          } else {
+            if (typeof callback === "function") {
+              callback(data);
+            }
+          }
+          return setTimeout((function() {
+            return long_polling(url, {
+              pqCmd: 'process',
+              pqId: data.pqId
+            }, callback, pb);
+          }), pollingInterval);
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+          if ('timeout' !== textStatus) {
+            if (typeof console !== "undefined" && console !== null) {
+              console.log("error: " + textStatus);
+            }
+            return;
+          }
+          if (retryTimes > 0) {
+            if (typeof console !== "undefined" && console !== null) {
+              console.log("Request " + textStatus + ", I will retry in " + pollingInterval + " milliseconds.");
+            }
+            return setTimeout((function() {
+              return reTryAjax(--retryTimes, ++retryCounter);
+            }), pollingInterval);
+          } else {
+            return typeof console !== "undefined" && console !== null ? console.log("I have retried " + retryCounter + " times. There may be a network connection issue, please check network cable.") : void 0;
+          }
+        });
+      };
+      return reTryAjax();
+    };
+    getTreeNodeInfo = function(node, treeSelecotr) {
+      var parent, ptree, selectedNode;
+      if (treeSelecotr == null) {
+        treeSelecotr = '#appTree';
+      }
+      ptree = $.jstree._reference(treeSelecotr);
+      if (!ptree) {
+        return null;
+      }
+      selectedNode = node ? node : ptree.get_selected();
+      parent = ptree._get_parent(selectedNode);
+      return {
+        id: selectedNode.attr('id'),
+        text: ptree.get_text(selectedNode),
+        type: selectedNode.attr('type'),
+        parent: parent !== -1 ? getTreeNodeInfo(parent) : parent
+      };
     };
     newOption = function(text, value, selected) {
       return "<option " + (selected ? 'selected ' : '') + "value='" + value + "'>" + text + "</option>";
+    };
+    urlname2Action = function(urlname, suffix) {
+      if (urlname == null) {
+        urlname = '';
+      }
+      if (suffix == null) {
+        suffix = 'Action';
+      }
+      return urlname.split('/').pop().capitalize().split('-').join('') + suffix;
     };
     $.ajaxSetup({
       timeout: 1000 * 60 * 30,
       cache: false
     });
     $.ajaxPrefilter(function(options, originalOptions, jqXHR) {});
-    pageNavi = function() {
-      $('#naviForm').bind('submit', function(e) {
-        var appTree, node, productBaseId, type;
-        $("#curProductBaseId").val($("#productBase").val());
-        $("#curProductId").val($("#productRelease").val());
-        if (param.naviTo === 'appmng.jsp') {
-          $("#curProductId").val($("#selVersion").val() ? $("#selVersion").val() : -1);
-          appTree = $.jstree._reference("#appTree");
-          node = appTree.get_selected();
-          productBaseId = -1;
-          if (node.length > 0) {
-            type = node.attr('type');
-            if (type === 'product') {
-              productBaseId = node.attr('id');
-            } else if (type === 'app') {
-              productBaseId = appTree._get_parent(node).attr('id');
-            }
-          }
-          return $("#curProductBaseId").val(productBaseId);
-        }
-      });
-      return $('#pageNavigator').change(function(e) {
-        return $('#naviForm').submit();
-      });
-    };
     sessionCheck = function() {
       $('#sessionTimeoutDialog').dialog({
         width: 320,
@@ -230,15 +353,6 @@ Time: 下午7:
         }
       });
     };
-    urlname2Action = function(urlname, suffix) {
-      if (urlname == null) {
-        urlname = '';
-      }
-      if (suffix == null) {
-        suffix = 'Action';
-      }
-      return urlname.split('/').pop().capitalize().split('-').join('') + suffix;
-    };
     checkGridPrivilege = function(grid) {
       var forbiddenTab, gridParam, tmpHandlers, _ref, _ref1, _ref2;
       gridParam = $(grid).jqGrid('getGridParam');
@@ -256,15 +370,17 @@ Time: 下午7:
         });
       }
       $.each(['add', 'edit', 'del'], function(index, value) {
-        var actButton;
-        actButton = $("#" + value + "_" + grid.id);
+        var actButton, btnSelector;
+        btnSelector = "#" + value + "_" + grid.id;
+        actButton = $(btnSelector);
         if (actButton.length > 0 && forbiddenTab.editurl) {
           if (typeof console !== "undefined" && console !== null) {
             console.log("Disable button " + (actButton.attr('id')) + " due to forbidden privilege.");
           }
           actButton.addClass('ui-state-disabled');
         }
-        actButton = $("#custom_" + value + "_" + grid.id);
+        btnSelector = "#custom_" + value + "_" + grid.id;
+        actButton = $(btnSelector);
         if (actButton.length > 0 && (forbiddenTab.editurl || forbiddenTab.cellactionurl)) {
           if (typeof console !== "undefined" && console !== null) {
             console.log("Disable button " + (actButton.attr('id')) + " due to forbidden privilege.");
@@ -292,7 +408,7 @@ Time: 下午7:
     };
     checkAllGridPrivilege = function(grids, readonly) {
       if (grids == null) {
-        grids = $('.ui-jqgrid-btable');
+        grids = $('table.ui-jqgrid-btable');
       }
       if (readonly == null) {
         readonly = true;
@@ -301,6 +417,7 @@ Time: 下午7:
         return checkGridPrivilege(grid);
       });
     };
+    sessionCheck();
     return {
       /*
       Test here.
@@ -392,28 +509,18 @@ Time: 下午7:
         }).get().join(sep);
       },
       afterInitilized: function(context) {
-        var pageLayout, westSelector;
+        $('div.progressbar').position({
+          my: 'center',
+          at: 'center',
+          of: window
+        });
         $('[role=button][privilegeName]').each(function(index, button) {
           var _ref;
           if (_ref = $(button).attr('privilegeName'), __indexOf.call(param.forbiddenPrivileges, _ref) >= 0) {
             return $(button).button('disable');
           }
         });
-        checkAllGridPrivilege();
-        pageLayout = createLayoutManager();
-        if (param.naviTo === 'appmng.jsp') {
-          westSelector = "#optional-container > .ui-layout-west";
-          $("<span></span>").addClass("pin-button").prependTo(westSelector);
-          pageLayout.addPinBtn("" + westSelector + " .pin-button", "west");
-          $("<span></span>").attr("id", "west-closer").prependTo(westSelector);
-          pageLayout.addCloseBtn("#west-closer", "west");
-        }
-        $("span[id$='Tab'][id^='nav']").button().click(function(e) {
-          $('#pageNavigator').val($(this).attr('value'));
-          $(this).button('disable');
-          return $('#naviForm').submit();
-        }).parent().buttonset();
-        return $("span[id^='nav'][value='" + param.naviTo + "']").css('backgroundImage', 'url(css/jqueryLayout/images/80ade5_40x100_textures_04_highlight_hard_100.png)');
+        return checkAllGridPrivilege();
       },
       urlname2Action: urlname2Action,
       createLayoutManager: function(page) {
@@ -422,6 +529,9 @@ Time: 下午7:
         }
         return createLayoutManager(page);
       },
+      getProductTreeInfo: getTreeNodeInfo,
+      genProgressBar: genProgressBar,
+      updateProgress: long_polling,
       /*
         @param panels: the panel group selector
         @param currentPanel: the current panel selector
