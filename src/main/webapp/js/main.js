@@ -17,9 +17,6 @@
     };
     panelSwitchHandler = function(oldpnl, newpnl) {
       var options, treeSelectedNode, type, value;
-      if (typeof console !== "undefined" && console !== null) {
-        console.debug("oldpnl= " + oldpnl + ", newpnl= " + newpnl + ".");
-      }
       if ('admin' === oldpnl || 'admin' === newpnl) {
         return;
       }
@@ -49,10 +46,13 @@
     };
     init = function() {
       var dmsPanels;
-      dmsPanels = new util.PanelGroup('div.dms-panel', 'appmng', panelSwitchHandler);
+      dmsPanels = new util.PanelGroup('div.dms-panel', 'none', panelSwitchHandler);
       $('span.navigator-button').button().click(function() {
         var currentPanel, _ref;
         currentPanel = "" + ($(this).attr('value'));
+        if (currentPanel === dmsPanels.currentPanel) {
+          return;
+        }
         if ('admin' === currentPanel) {
           glayout.layout.hide('west');
         } else {
@@ -67,7 +67,7 @@
         dmsPanels.switchTo(currentPanel);
         return (_ref = eval("" + currentPanel + "Panel")) != null ? typeof _ref.onShow === "function" ? _ref.onShow() : void 0 : void 0;
       }).parent().buttonset();
-      return $("span[id^='nav'][value='" + dmsPanels.currentPanel + "']").trigger('click');
+      return $("span[id^='nav'][value='appmng']").trigger('click');
     };
     init();
     return ready(this);

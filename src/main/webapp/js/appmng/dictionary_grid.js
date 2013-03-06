@@ -4,7 +4,7 @@
 
   dependencies = ['jqgrid', 'blockui', 'jqmsgbox', 'jqueryui', 'i18n!nls/appmng', 'i18n!nls/common', 'dms-util', 'appmng/langsetting_grid', 'appmng/stringsettings_grid', 'appmng/history_grid'];
 
-  define(dependencies, function($, blockui, msgbox, ui, i18n, c18n, util, dialogs) {
+  define(dependencies, function($, blockui, msgbox, ui, i18n, c18n, util) {
     var colModel, deleteOptions, dicGrid, handlers, lastEditedCell;
     if (typeof console !== "undefined" && console !== null) {
       console.log("module appmng/dictionary_grid loading.");
@@ -229,8 +229,7 @@
           rowData = grid.getRowData(rowid);
           rowData.id = rowid;
           delete rowData.action;
-          dialogs.historyDlg.data('param', rowData);
-          return dialogs.historyDlg.dialog('open');
+          return $('#historyDialog').data('param', rowData).dialog('open');
         }).on('mouseover', function() {
           return $(this).addClass('ui-state-hover');
         }).on('mouseout', function() {
@@ -262,8 +261,7 @@
       }
     });
     $('#generateDict').button().width(170).attr('privilegeName', util.urlname2Action('app/deliver-app-dict')).click(function() {
-      var dicts, filename, oldLabel,
-        _this = this;
+      var dicts, filename, me, oldLabel, pb;
       dicts = dicGrid.getGridParam('selarrrow');
       if (!dicts || dicts.length === 0) {
         $.msgBox(c18n.selrow.format(c18n.dict), null, {
@@ -275,20 +273,17 @@
       $(this).button('disable');
       oldLabel = $(this).button('option', 'label');
       $(this).button('option', 'label', i18n.generating);
-      return $.post('app/generate-dict', {
+      me = $(this);
+      pb = util.genProgressBar();
+      return util.updateProgress('app/generate-dict', {
         dicts: dicts.join(','),
         filename: filename
       }, function(json) {
-        $(_this).button('option', 'label', oldLabel);
-        $(_this).button('enable');
-        if (json.status !== 0) {
-          $.msgBox(json.message, null, {
-            title: c18n.error
-          });
-          return;
-        }
-        return window.location.href = "app/download-app-dict.action?fileLoc=" + json.fileLoc;
-      });
+        pb.parent().remove();
+        me.button('option', 'label', oldLabel);
+        me.button('enable');
+        return window.location.href = "app/download-app-dict.action?fileLoc=" + json.event.msg;
+      }, pb);
     });
     $('#batchAddLanguage').button().attr('privilegeName', util.urlname2Action('app/add-dict-language')).click(function() {
       var dicts;

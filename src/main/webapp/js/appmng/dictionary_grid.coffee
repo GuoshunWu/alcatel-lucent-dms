@@ -14,7 +14,7 @@ dependencies = [
   'appmng/history_grid'
 ]
 
-define dependencies, ($, blockui, msgbox,ui, i18n, c18n, util, dialogs)->
+define dependencies, ($, blockui, msgbox,ui, i18n, c18n, util)->
 
   console?.log "module appmng/dictionary_grid loading."
   #  for form edit delete option
@@ -130,9 +130,7 @@ define dependencies, ($, blockui, msgbox,ui, i18n, c18n, util, dialogs)->
       rowData = grid.getRowData(rowid)
       rowData.id = rowid
       delete rowData.action
-
-      dialogs.historyDlg.data 'param', rowData
-      dialogs.historyDlg.dialog 'open'
+      $('#historyDialog').data('param', rowData).dialog 'open'
     ).on('mouseover',()->
       $(@).addClass('ui-state-hover')
     ).on('mouseout', ()->
@@ -164,20 +162,19 @@ define dependencies, ($, blockui, msgbox,ui, i18n, c18n, util, dialogs)->
       return
 
     filename = "#{$('#appDispAppName').text()}_#{$('#selAppVersion option:selected').text()}_#{new Date().format 'yyyyMMdd_hhmmss'}.zip"
-    #    $.blockUI()
+
     $(@).button 'disable'
     oldLabel = $(@).button 'option', 'label'
     $(@).button 'option', 'label', i18n.generating
-    $.post 'app/generate-dict', {dicts: dicts.join(','), filename: filename}, (json)=>
-    #      $.unblockUI()
-      $(@).button 'option', 'label', oldLabel
-      $(@).button 'enable'
 
-      if(json.status != 0)
-        $.msgBox json.message, null, {title: c18n.error}
-        return
-
-      window.location.href = "app/download-app-dict.action?fileLoc=#{json.fileLoc}"
+    me=$(@)
+    pb = util.genProgressBar()
+    util.updateProgress('app/generate-dict', {dicts: dicts.join(','), filename: filename}, (json)->
+      pb.parent().remove()
+      me.button 'option', 'label', oldLabel
+      me.button 'enable'
+      window.location.href = "app/download-app-dict.action?fileLoc=#{json.event.msg}"
+    , pb)
 
 
   $('#batchAddLanguage').button().attr('privilegeName', util.urlname2Action 'app/add-dict-language').click ->

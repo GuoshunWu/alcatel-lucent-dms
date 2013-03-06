@@ -50,3 +50,4 @@ src/main/webapp/js/npm-debug.log
 dms.iws
 dms.ipr
 dms.ids
+*.log

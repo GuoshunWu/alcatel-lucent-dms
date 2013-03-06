@@ -531,6 +531,7 @@ User: Guoshun Wu
       },
       getProductTreeInfo: getTreeNodeInfo,
       genProgressBar: genProgressBar,
+      updateProgress: long_polling,
       /*
         @param panels: the panel group selector
         @param currentPanel: the current panel selector
@@ -547,9 +548,6 @@ User: Guoshun Wu
 
         PanelGroup.prototype.switchTo = function(panelId, callback) {
           var oldPanel;
-          if (this.currentPanel === panelId) {
-            return;
-          }
           $("" + this.panels).hide();
           oldPanel = this.currentPanel;
           this.currentPanel = panelId;
