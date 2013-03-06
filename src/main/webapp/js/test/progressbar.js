@@ -36,7 +36,7 @@
         autoRemoveWhenCompleted = true;
       }
       randStr = randomStr(5);
-      pbContainer = $("<div id=\"pb_container_" + randStr + "\"  class=\"progressbar-container ui-widget-content\">\n<div class=\"progressbar-msg\">\nLoading...\n</div>\n<div id=\"progressbar_" + randStr + "\" class=\"progressbar progressbar-indeterminate\">\n<div class=\"progressbar-label\">0.00%</div>\n</div>\n</div>").appendTo(document.body).draggable({
+      pbContainer = $("<div id=\"pb_container_" + randStr + "\"  class=\"progressbar-container\">\n<div class=\"progressbar-msg\">\nLoading...\n</div>\n<div id=\"progressbar_" + randStr + "\" class=\"progressbar\">\n<div class=\"progressbar-label\">0.00%</div>\n</div>\n</div>").appendTo(document.body).draggable({
         create: function() {
           return $("#progressbar_" + randStr, this).progressbar({
             max: 100,
@@ -45,8 +45,6 @@
               return this.msg = $('div.progressbar-msg', pbContainer);
             },
             change: function(e, ui) {
-              var _ref;
-              $(this).toggleClass('progressbar-indeterminate', (_ref = $(this).progressbar('value')) === 0 || _ref === (-1));
               if ($(this).is(":data(msg)")) {
                 this.msg.html($(this).data('msg'));
               }
@@ -69,8 +67,8 @@
       }
       return $("#progressbar_" + randStr, pbContainer);
     };
-    long_polling = function(url, postData, callback) {
-      var pollingInterval, reTryAjax, timeout;
+    long_polling = function(url, postData, callback, pb) {
+      var pollingInterval, reTryAjax;
       if (!postData || !postData.pqCmd) {
         postData.pqCmd = 'start';
       }
@@ -85,7 +83,6 @@
         postData.speed = 2;
       }
       pollingInterval = $("#pollingFreq").val() ? parseInt($("#pollingFreq").val()) : 1000;
-      timeout = $("#timeout").val() ? parseInt($("#timeout").val()) : 5000;
       reTryAjax = function(retryTimes, retryCounter) {
         if (retryTimes == null) {
           retryTimes = Number.MAX_VALUE;
@@ -96,22 +93,35 @@
         return $.ajax(url, {
           cache: false,
           data: postData,
-          timeout: timeout,
           type: 'post',
           dataType: "json"
         }).done(function(data, textStatus, jqXHR) {
-          var _ref;
-          if (callback) {
-            callback(data.event);
-          }
-          if ((_ref = data.event.cmd) === 'done' || _ref === 'error') {
+          if ('error' === data.event.cmd) {
+            $.msgBox(event.msg, null, {
+              title: c18n.error
+            });
             return;
+          }
+          if ('done' === data.event.cmd) {
+            if (typeof callback === "function") {
+              callback(data);
+            }
+            return;
+          }
+          if (pb) {
+            pb.toggleClass('progressbar-indeterminate', -1 === data.event.percent);
+            pb.data('msg', data.event.msg);
+            pb.progressbar('value', data.event.percent);
+          } else {
+            if (typeof callback === "function") {
+              callback(data);
+            }
           }
           return setTimeout((function() {
             return long_polling(url, {
-              pqCmd: "process",
+              pqCmd: 'process',
               pqId: data.pqId
-            }, callback);
+            }, callback, pb);
           }), pollingInterval);
         }).fail(function(jqXHR, textStatus, errorThrown) {
           if ('timeout' !== textStatus) {
@@ -138,15 +148,8 @@
       var pb;
       pb = genProgressBar();
       return long_polling("../scripts/cp.groovy", {}, function(event) {
-        var _ref;
-        console.log(event);
-        if ((_ref = event.cmd) === 'done' || _ref === 'error') {
-          pb.progressbar('value', 100);
-          return;
-        }
-        pb.data('msg', event.msg);
-        return pb.progressbar('value', Number(event.percent));
-      });
+        return pb.parent().remove();
+      }, pb);
     });
   });
 

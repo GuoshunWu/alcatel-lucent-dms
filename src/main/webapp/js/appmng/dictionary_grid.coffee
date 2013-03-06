@@ -151,7 +151,7 @@ define ['require','blockui', 'jqgrid', 'jqmsgbox', 'i18n!nls/appmng', 'i18n!nls/
       return
 
     filename = "#{$('#appDispAppName').text()}_#{$('#selAppVersion option:selected').text()}_#{new Date().format 'yyyyMMdd_hhmmss'}.zip"
-    #    $.blockUI()
+
     $(@).button 'disable'
     oldLabel = $(@).button 'option', 'label'
     $(@).button 'option', 'label', i18n.generating
@@ -164,8 +164,6 @@ define ['require','blockui', 'jqgrid', 'jqmsgbox', 'i18n!nls/appmng', 'i18n!nls/
       me.button 'enable'
       window.location.href = "app/download-app-dict.action?fileLoc=#{json.event.msg}"
     , pb)
-
-
 
 
   $('#batchAddLanguage').button().attr('privilegeName', util.urlname2Action 'app/add-dict-language').click ->
