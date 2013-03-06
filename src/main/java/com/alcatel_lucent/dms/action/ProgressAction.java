@@ -75,6 +75,9 @@ abstract public class ProgressAction extends JSONAction implements SessionAware 
 						} catch (InterruptedException e1) {
 							// dummy
 						}
+					} finally {
+						ProgressQueue.removeInstance();
+						UserContext.removeUserContext();
 					}
 				}
 			});

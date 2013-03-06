@@ -16,6 +16,11 @@ public class ProgressQueue extends LinkedBlockingQueue<ProgressEvent> {
 		instance.set(queue);
 	}
 	
+	public static void removeInstance() {
+		instance.remove();
+		currentMsg.remove();
+	}
+	
 	public static void setProgress(String message, int percent) {
 		ProgressQueue queue = instance.get();
 		if (queue != null) {
