@@ -17,6 +17,10 @@ html, body {
     overflow: hidden !important;
 }
 
+.editable-column {
+    background: #f0ffff
+}
+
 /* north navigation table title */
 .page-title {
     font-family: Trebuchet MS, Verdana, Arial, Helvetica;

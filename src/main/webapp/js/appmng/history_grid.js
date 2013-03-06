@@ -41,14 +41,12 @@
           index: 'task.name',
           width: 70,
           editable: true,
-          classes: 'editable-column',
           align: 'left'
         }, {
           name: 'operator.name',
           index: 'operator.name',
           width: 50,
           editable: true,
-          classes: 'editable-column',
           align: 'left'
         }
       ],

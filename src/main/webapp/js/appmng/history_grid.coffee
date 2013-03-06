@@ -17,8 +17,8 @@ define ['jqgrid', 'dms-util'], ($, util)->
     colModel: [
       {name: 'operationTime', index: 'operationTime', width: 50, editable: false, align: 'left'}
       {name: 'operationType', index: 'operationType', width: 40, editable: false, align: 'left'}
-      {name: 'task.name', index: 'task.name', width: 70, editable: true, classes: 'editable-column', align: 'left'}
-      {name: 'operator.name', index: 'operator.name', width: 50, editable: true, classes: 'editable-column', align: 'left'}
+      {name: 'task.name', index: 'task.name', width: 70, editable: true, align: 'left'}
+      {name: 'operator.name', index: 'operator.name', width: 50, editable: true, align: 'left'}
     ]
     gridComplete: ->
 
