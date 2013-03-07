@@ -41,7 +41,7 @@
     <div>
         <s:form id="loginForm" name="loginForm" validate="false" theme="simple" method="post" action='login'
                 namespace='/'>
-            <s:token/>
+            <%--<s:token/>--%>
             <table border="0" align='center'>
                 <tr>
                     <td align="right">

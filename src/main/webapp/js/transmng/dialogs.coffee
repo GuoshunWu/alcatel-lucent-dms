@@ -20,7 +20,7 @@ define ['i18n!nls/transmng', 'i18n!nls/common', 'dms-util', 'transmng/trans_grid
 
   ################################################ Create Dialogs #################################################
   languageFilterDialog = $("<div title='#{i18n.select.languagefilter.title}' id='languageFilterDialog'>").dialog(
-    autoOpen: false, position: [23, 126], height: 'auto', width: 1100
+    autoOpen: false, height: 'auto', width: 1100
     show:
       { effect: 'slide', direction: "up" }
     buttons: [
@@ -34,7 +34,7 @@ define ['i18n!nls/transmng', 'i18n!nls/common', 'dms-util', 'transmng/trans_grid
 
   exportTranslationDialog = $('#ExportTranslationsDialog').dialog(
     autoOpen: false, modal: true
-    width: 1100, height: 'auto', position: [25, 100], show:
+    width: 1100, height: 'auto', show:
       { effect: 'slide', direction: "down" }
     open: ->
       info = grid.getTotalSelectedRowInfo()
@@ -68,7 +68,7 @@ define ['i18n!nls/transmng', 'i18n!nls/common', 'dms-util', 'transmng/trans_grid
 
   taskDialog = $("#createTranslationTaskDialog").dialog(
     autoOpen: false, modal: true
-    width: 1100, height: 'auto', position: [25, 100], show:
+    width: 1100, height: 'auto', show:
       { effect: 'slide', direction: "down" }
     create: ->
     open: ->
@@ -150,7 +150,6 @@ define ['i18n!nls/transmng', 'i18n!nls/common', 'dms-util', 'transmng/trans_grid
         postData.text = $('#transDetailSearchText', @).val()
         transDetailGrid.trigger 'reloadGrid'
       ).height(20).width(20)
-#        .position({my:'left center', at: 'right center', of: '#transDetailSearchText'})
 
       $('#transSameWithRef', @).change (e)->
         postData.nodiff = @checked
