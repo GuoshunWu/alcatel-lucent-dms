@@ -61,7 +61,7 @@
         if (!param.release.id || parseInt(param.release.id) === -1) {
           return false;
         }
-        return grid.productVersionChanged(param);
+        return grid.versionChanged(param);
       });
     };
     init();

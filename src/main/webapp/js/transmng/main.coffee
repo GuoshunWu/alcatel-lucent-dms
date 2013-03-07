@@ -29,8 +29,8 @@ define [
     # init product or application
 
   exportAppOrDicts = (ftype)->
-    return if 'product'!= (info = util.getProductTreeInfo()).type
-    # todo: add application level support
+    info = util.getProductTreeInfo()
+
     id = $('#selVersion',"div[id='transmng']").val()
     return if !id
     id = parseInt(id)

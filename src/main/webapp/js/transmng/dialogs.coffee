@@ -1,5 +1,5 @@
 define ['i18n!nls/transmng', 'i18n!nls/common', 'dms-util', 'transmng/trans_grid', 'transmng/transdetail_grid'], (i18n, c18n, util, grid, detailgrid)->
-
+  console?.debug "transmng panel dialogs init..."
   transGrid = grid
   refreshGrid = (languageTrigger = false, grid = transGrid)->
     nodeInfo=(require 'ptree').getNodeInfo()
@@ -17,7 +17,7 @@ define ['i18n!nls/transmng', 'i18n!nls/common', 'dms-util', 'transmng/trans_grid
     param.languageTrigger = languageTrigger
     grid.updateGrid param
 
-    console?.debug "transmng panel dialogs init..."
+
   ################################################ Create Dialogs #################################################
   languageFilterDialog = $("<div title='#{i18n.select.languagefilter.title}' id='languageFilterDialog'>").dialog(
     autoOpen: false, position: [23, 126], height: 'auto', width: 1100

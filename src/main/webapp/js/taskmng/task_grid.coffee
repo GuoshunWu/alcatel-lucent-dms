@@ -149,11 +149,15 @@ define [
   )
   taskGrid.getGridParam('afterCreate') taskGrid
 
-  productVersionChanged: (param)->
+  versionChanged: (param)->
     taskGrid = $("#taskGrid", '#taskmng')
     prop = "name,creator.name,createTime,lastUpdateTime,status"
     postData = format: 'grid', prop: prop
     postData[param.type] = param.release.id
 
+    console?.log postData
+
+    # clear origianl grid post
+#    taskGrid.getGridParam('postData')
     taskGrid.setGridParam(url: urls.tasks, postData: postData).trigger "reloadGrid"
 
