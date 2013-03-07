@@ -1,4 +1,4 @@
-define ['jqueryui', 'dms-util', 'dms-urls', 'taskmng/task_grid', 'taskmng/dialogs'], ($, util, urls, grid, dialogs)->
+define ['jqueryui', 'dms-util', 'dms-urls', 'taskmng/task_grid', 'taskmng/dialogs'], ($, util, urls, grid)->
 
   nodeSelectHandler = (node, nodeInfo)->
     type=node.attr('type')

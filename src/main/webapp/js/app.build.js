@@ -50,14 +50,15 @@
 
         {
             //module names are relative to baseUrl
-            name:'main',
+            name:'entry',
             exclude:['../config']
-        },
-        {
-            //module names are relative to baseUrl
-            name:'login/main',
-            exclude:['../config'],
-            include:['login/main']
         }
+//        ,
+//        {
+//            //module names are relative to baseUrl
+//            name:'login/main',
+//            exclude:['../config'],
+//            include:['login/main']
+//        }
     ]
 })

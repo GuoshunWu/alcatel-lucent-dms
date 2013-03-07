@@ -1,4 +1,4 @@
-dependencies = [
+define [
   'jqgrid'
   'blockui'
   'jqmsgbox'
@@ -11,15 +11,15 @@ dependencies = [
   'dms-urls'
 
   'taskmng/dialogs'
-]
-define dependencies, ($, blockui, msgbox, upload, iframetrans, c18n, i18n, util, urls, dialogs)->
+], ($, blockui, msgbox, upload, iframetrans, c18n, i18n, util, urls, dialogs)->
 
   handlers =
     'Download':
       title: 'Download'
       url: 'task/generate-task-files'
       handler: (param)->
-        filename = "#{$('#productBase option:selected').text()}_#{$('#productRelease option:selected').text()}_translation"
+        filename = $('#versionTypeLabel',"div[id='taskmng']").text() + '_'
+        filename += $('#selVersion option:selected',"div[id='taskmng']").text() + '_translation'
         filename += "_#{new Date().format 'yyyyMMdd_hhmmss'}.zip"
 
         $.blockUI()
