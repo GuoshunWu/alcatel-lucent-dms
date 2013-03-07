@@ -32,7 +32,15 @@ public interface TranslationService {
      * @return composite map with application id as 1st-level key and language id as 2nd-level key
      * 			value is {num_of_translated_labels, num_of_not_translated_labels, num_of_in_progress_labels }
      */
-    Map<Long, Map<Long, int[]>> getAppTranslationSummary(Long prodId);
+    Map<Long, Map<Long, int[]>> getAppTranslationSummaryByProd(Long prodId);
+    
+    /**
+     * Calculate translation summary of application
+     * @param appId application id
+     * @return a map with language id as key 
+     * and the value is {num_of_translated_labels, num_of_not_translated_labels, num_of_in_progress_labels }
+     */
+    Map<Long, Map<Long, int[]>> getAppTranslationSummaryByApp(Long appId);
 	
     /**
      * Calculate translation summary in label level
@@ -47,7 +55,7 @@ public interface TranslationService {
      * @param langIds language filters, null in case of all languages
      * @param output output stream
      */
-    void generateDictTranslationReport(Long prodId, Collection<Long> langIds, OutputStream output);
+    void generateDictTranslationReportByProd(Long prodId, Collection<Long> langIds, OutputStream output);
     
     /**
      * Generate excel report of translation summary in application level
@@ -55,8 +63,24 @@ public interface TranslationService {
      * @param langIds language filters, null in case of all languages
      * @param output output stream
      */
-    void generateAppTranslationReport(Long prodId, Collection<Long> langIds, OutputStream output);
+    void generateAppTranslationReportByProd(Long prodId, Collection<Long> langIds, OutputStream output);
+
+	/**
+     * Generate excel report of translation summary in dictionary level
+     * @param appId application id
+     * @param langIds language filters, null in case of all languages
+     * @param output output stream
+     */
+    void generateDictTranslationReportByApp(Long appId, Collection<Long> langIds, OutputStream output);
     
+    /**
+     * Generate excel report of translation summary in application level
+     * @param appId application id
+     * @param langIds language filters, null in case of all languages
+     * @param output output stream
+     */
+    void generateAppTranslationReportByApp(Long appId, Collection<Long> langIds, OutputStream output);
+
     /**
      * Generat excel details of label translations
      * @param dictIds collection of dictionary id
