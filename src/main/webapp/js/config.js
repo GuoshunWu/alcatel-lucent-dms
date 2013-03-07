@@ -24,7 +24,7 @@
       login: '../login',
       admin: '../admin',
       nls: '../nls',
-      main: '../main'
+      entry: '../main'
     },
     shim: {
       'formvalidate': {

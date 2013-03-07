@@ -1,4 +1,4 @@
-dependencies = [
+define [
   'jqgrid'
   'jqmsgbox'
   'blockui'
@@ -9,8 +9,7 @@ dependencies = [
   'dms-util'
 
   'transmng/grid.colmodel'
-]
-define dependencies, ($, msgbox, blockui, i18n, c18n, urls, util, gmodel)->
+], ($, msgbox, blockui, i18n, c18n, urls, util, gmodel)->
 
 
   # prepare the grid column name and column model parameters for the grid.

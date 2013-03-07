@@ -1,4 +1,4 @@
-dependencies = [
+define [
   'jqueryui'
   'jqmsgbox'
 
@@ -8,13 +8,12 @@ dependencies = [
 
   'taskmng/taskreport_grid'
   'taskmng/transdetail_grid'
-]
-define dependencies, ($, msgbox, c18n, i18n, util, reportgrid, detailgrid)->
+], ($, msgbox, c18n, i18n, util, reportgrid, detailgrid)->
 
   languageChooserDialog = $("<div title='Study' id='languageChooser'>").dialog {
-  autoOpen: false, position: [23, 126], height: 'auto', width: 900, modal: true
+  autoOpen: false, height: 'auto', width: 900, modal: true
   show: { effect: 'slide', direction: "up" }
-  create: ->$.getJSON 'rest/languages?prop=id,name', {}, (languages)=>$(@).append(util.generateLanguageTable languages)
+  open: ->$.getJSON 'rest/languages?prop=id,name', {}, (languages)=>$(@).append(util.generateLanguageTable languages)
   buttons: [
     { text: c18n.ok, click: ()->
       $(@).dialog "close"

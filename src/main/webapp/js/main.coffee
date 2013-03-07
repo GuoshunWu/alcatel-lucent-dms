@@ -1,15 +1,13 @@
-dependencies = [
+define [
   'jqlayout'
   'dms-util'
   'globallayout'
   'ptree'
-
   'appmng/main'
   'transmng/main'
   'taskmng/main'
   'admin/main'
-]
-define dependencies, ($, util, glayout, ptree, appmngPanel, transmngPanel, taskmngPanel, adminPanel)->
+], ($, util, glayout, ptree, appmngPanel, transmngPanel, taskmngPanel, adminPanel)->
   ready = (param)->
     console?.debug "page ready..."
     util.afterInitilized(@)

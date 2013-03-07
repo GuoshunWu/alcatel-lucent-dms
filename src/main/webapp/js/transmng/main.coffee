@@ -1,4 +1,12 @@
-define ['i18n!nls/common', 'dms-util', 'dms-urls', 'transmng/trans_grid', 'transmng/dialogs', 'ptree'], (i18n, util, urls, grid, dialogs, ptree)->
+define [
+  'i18n!nls/common'
+  'dms-util'
+  'dms-urls'
+
+  'transmng/trans_grid'
+  'transmng/dialogs'
+  'ptree'
+], (c18n, util, urls, grid, dialogs, ptree)->
   nodeSelectHandler = (node, nodeInfo)->
     type=node.attr('type')
     return if 'products' == type
@@ -21,7 +29,9 @@ define ['i18n!nls/common', 'dms-util', 'dms-urls', 'transmng/trans_grid', 'trans
     # init product or application
 
   exportAppOrDicts = (ftype)->
-    id = $('#productRelease').val()
+    return if 'product'!= (info = util.getProductTreeInfo()).type
+    # todo: add application level support
+    id = $('#selVersion',"div[id='transmng']").val()
     return if !id
     id = parseInt(id)
     return if -1 == id
@@ -31,12 +41,15 @@ define ['i18n!nls/common', 'dms-util', 'dms-urls', 'transmng/trans_grid', 'trans
 
     type = $("input:radio[name='viewOption'][checked]").val()
     type = type[..3]
-    type = type[..2] if type[0] == 'a'
+    type = 'app' if type == 'appl'
 
-    $("#exportForm input[name='prod']").val id
+    level = info.type
+    level = 'prod' if 'product' == level
+
+    $("input[name='prod'], input[name='app']", '#exportForm').prop('name', level).val id
     $("#exportForm input[name='language']").val languages
     $("#exportForm input[name='type']").val type
-    $("#exportForm input[name='type']").val ftype if ftype
+    $("#exportForm input[name='ftype']").val ftype if ftype
     $("#exportForm", "#transmng").submit()
 
   init = ()->

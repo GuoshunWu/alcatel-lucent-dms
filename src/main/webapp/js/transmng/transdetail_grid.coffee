@@ -4,7 +4,7 @@ define ['jqgrid', 'i18n!nls/transmng', 'i18n!nls/common', 'dms-util'], ($, i18n,
 
   transDetailGrid = $("#transDetailGridList").jqGrid(
     url: 'json/transdetailgrid.json'
-    mtype: 'POST', postData: {}, editurl: "", datatype: 'json'
+    mtype: 'POST', postData: {}, editurl: "", datatype: 'local'
     width: 'auto', height: 200, shrinkToFit: false
     rownumbers: true, loadonce: false # for reload the colModel
     pager: '#transDetailsPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
@@ -30,6 +30,7 @@ define ['jqgrid', 'i18n!nls/transmng', 'i18n!nls/common', 'dms-util'], ($, i18n,
       [0 == jsonFromServer.status, jsonFromServer.message]
 
     afterCreate: (grid)->
+      grid.setGridParam('datatype':'json')
       grid.navGrid '#transDetailsPager', {edit: false, add: false, del: false, search: false, view: false}
       grid.filterToolbar {stringResult: true, searchOnEnter: false}
   )

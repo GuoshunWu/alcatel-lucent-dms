@@ -1,4 +1,4 @@
-dependencies = [
+define  [
   'jqueryui'
   'jqgrid'
   'blockui'
@@ -12,8 +12,7 @@ dependencies = [
   'appmng/dictlistpreview_grid'
   'appmng/dictpreviewstringsettings_grid'
   'appmng/previewlangsetting_grid'
-]
-define dependencies, ($, jqgrid, blockui, msgbox, c18n, i18n, urls, util, previewgrid)->
+], ($, jqgrid, blockui, msgbox, c18n, i18n, urls, util, previewgrid)->
 
   console?.log "module appmng/dialogs loading."
   newProductVersion = $("#newProductReleaseDialog").dialog(
@@ -333,24 +332,27 @@ define dependencies, ($, jqgrid, blockui, msgbox, c18n, i18n, urls, util, previe
   addLanguage = $('#addLanguageDialog').dialog(
     autoOpen: false
     create: (event, ui)->
-      $.getJSON 'rest/languages', {prop: 'id,name'}, (languages)=>$('#languageName', @)
-        .append("<option value='-1'>#{c18n.selecttip}</option>")
-        .append(util.json2Options languages, false, 'name').change (e)=>
-          postData =
-            prop: 'languageCode,charset.id'
-            'language': $('#languageName', @).val()
-            dict: $(@).data('param').dicts.join(',')
-          # send the selected dictionary list ids, langId to server, expect language code and charset id response from server
-          $.post 'rest/preferredCharset', postData, (json)=>
-            $('#addLangCode', @).val json.languageCode
-            $('#charset', @).val json['charset.id']
+      $('#languageName', @).change (e)=>
+        postData =
+          prop: 'languageCode,charset.id'
+          'language': $('#languageName', @).val()
+          dict: $(@).data('param').dicts.join(',')
+        # send the selected dictionary list ids, langId to server, expect language code and charset id response from server
+        $.post 'rest/preferredCharset', postData, (json)=>
+          $('#addLangCode', @).val json.languageCode
+          $('#charset', @).val json['charset.id']
 
-          $.getJSON 'rest/charsets', {prop: 'id,name'}, (charsets)=>$('#charset', @)
-            .append("<option value='-1'>#{c18n.selecttip}</option>")
-            .append(util.json2Options charsets, false, 'name')
+        $.getJSON 'rest/charsets', {prop: 'id,name'}, (charsets)=>$('#charset', @)
+          .append("<option value='-1'>#{c18n.selecttip}</option>")
+          .append(util.json2Options charsets, false, 'name')
 
 
     open: (event, ui)->
+      $.getJSON 'rest/languages', {prop: 'id,name'}, (languages)=>
+        $('#languageName', @)
+          .append("<option value='-1'>#{c18n.selecttip}</option>")
+          .append(util.json2Options languages, false, 'name').trigger 'change'
+
       #    get selected dictionary ids
       #    console?.log $(@).data('param').dicts
       $('#addLangCode', @).select()

@@ -59,7 +59,33 @@
           val: val
         };
       },
-      gridComplete: function() {}
+      gridComplete: function() {
+        if ('local' === $(this).getGridParam('datatype')) {
+          return;
+        }
+        $.getJSON('rest/languages', {
+          prop: 'id,name'
+        }, function(languages) {
+          return langSettingGrid.setColProp('languageId', {
+            editoptions: {
+              value: ($(languages).map(function() {
+                return "" + this.id + ":" + this.name;
+              })).get().join(';')
+            }
+          });
+        });
+        return $.getJSON('rest/charsets', {
+          prop: 'id,name'
+        }, function(charsets) {
+          return langSettingGrid.setColProp('charsetId', {
+            editoptions: {
+              value: ($(charsets).map(function() {
+                return "" + this.id + ":" + this.name;
+              })).get().join(';')
+            }
+          });
+        });
+      }
     }).jqGrid('navGrid', '#langSettingPager', {
       edit: false,
       add: false,
@@ -125,28 +151,6 @@
         });
         return $('#addLanguageDialog').dialog("open");
       }
-    });
-    $.getJSON('rest/languages', {
-      prop: 'id,name'
-    }, function(languages) {
-      return langSettingGrid.setColProp('languageId', {
-        editoptions: {
-          value: ($(languages).map(function() {
-            return "" + this.id + ":" + this.name;
-          })).get().join(';')
-        }
-      });
-    });
-    $.getJSON('rest/charsets', {
-      prop: 'id,name'
-    }, function(charsets) {
-      return langSettingGrid.setColProp('charsetId', {
-        editoptions: {
-          value: ($(charsets).map(function() {
-            return "" + this.id + ":" + this.name;
-          })).get().join(';')
-        }
-      });
     });
     return {
       saveLastEditedCell: function() {

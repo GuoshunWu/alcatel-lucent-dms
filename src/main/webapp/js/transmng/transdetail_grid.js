@@ -9,7 +9,7 @@
       mtype: 'POST',
       postData: {},
       editurl: "",
-      datatype: 'json',
+      datatype: 'local',
       width: 'auto',
       height: 200,
       shrinkToFit: false,
@@ -102,6 +102,9 @@
         return [0 === jsonFromServer.status, jsonFromServer.message];
       },
       afterCreate: function(grid) {
+        grid.setGridParam({
+          'datatype': 'json'
+        });
         grid.navGrid('#transDetailsPager', {
           edit: false,
           add: false,

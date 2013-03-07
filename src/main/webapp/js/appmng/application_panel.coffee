@@ -1,4 +1,4 @@
-dependencies = [
+define [
   'jqueryui'
   'jqupload'
   'iframetransport'
@@ -10,9 +10,7 @@ dependencies = [
 
   'appmng/dialogs'
   'appmng/dictionary_grid'
-]
-
-define dependencies, ($, upload, iframetrans, i18n, c18n, util, urls, dialogs, grid)->
+], ($, upload, iframetrans, i18n, c18n, util, urls, dialogs, grid)->
 
   console?.log "module appmng/application_panel loading."
 

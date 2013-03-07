@@ -1,4 +1,4 @@
-dependencies = [
+define [
   'jqgrid'
   'blockui'
   'jqmsgbox'
@@ -12,9 +12,7 @@ dependencies = [
   'appmng/langsetting_grid'
   'appmng/stringsettings_grid'
   'appmng/history_grid'
-]
-
-define dependencies, ($, blockui, msgbox,ui, i18n, c18n, util)->
+], ($, blockui, msgbox,ui, i18n, c18n, util)->
 
   console?.log "module appmng/dictionary_grid loading."
   #  for form edit delete option

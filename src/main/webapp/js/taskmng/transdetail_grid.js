@@ -8,7 +8,7 @@
       mtype: 'POST',
       postData: {},
       editurl: "",
-      datatype: 'json',
+      datatype: 'local',
       width: $(window).width() * 0.6,
       height: 200,
       shrinkToFit: false,
@@ -74,6 +74,8 @@
           view: false
         });
       }
+    }).setGridParam({
+      datatype: 'json'
     });
     return transDetailGrid.getGridParam('afterCreate')(transDetailGrid);
   });
