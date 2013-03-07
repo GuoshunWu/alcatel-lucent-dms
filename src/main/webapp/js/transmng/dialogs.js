@@ -43,7 +43,6 @@
     };
     languageFilterDialog = $("<div title='" + i18n.select.languagefilter.title + "' id='languageFilterDialog'>").dialog({
       autoOpen: false,
-      position: [23, 126],
       height: 'auto',
       width: 1100,
       show: {
@@ -70,7 +69,6 @@
       modal: true,
       width: 1100,
       height: 'auto',
-      position: [25, 100],
       show: {
         effect: 'slide',
         direction: "down"
@@ -134,7 +132,6 @@
       modal: true,
       width: 1100,
       height: 'auto',
-      position: [25, 100],
       show: {
         effect: 'slide',
         direction: "down"
