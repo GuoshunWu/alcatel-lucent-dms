@@ -39,7 +39,7 @@ class GTaskServiceImplTest {
 	void testCreateTask() {
 		List<Long> dictIds = [322l, 323l]
 		List<Long> languageIds = [6l, 8l]
-		taskService.createTask(1, "Test task", dictIds, languageIds)
+		taskService.createTask(1, null, "Test task", dictIds, languageIds)
 	}
 	
 	@Test

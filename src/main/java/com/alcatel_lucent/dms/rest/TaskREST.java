@@ -14,7 +14,9 @@ import com.alcatel_lucent.dms.model.Task;
  * Task REST service.
  * URL: /rest/tasks
  * Filter parameters:
- *   prod		(required) product id
+ *   prod		(optional) product id
+ *   app		(optional) application id
+ *   at last one of parameter "prod" and "app" must be specified
  *   
  * Sort parameters:
  *   sidx		(optional) sort by, default is "createTime"
@@ -40,20 +42,28 @@ public class TaskREST extends BaseREST {
 	@Override
 	String doGetOrPost(Map<String, String> requestMap) throws Exception {
 		String prod = requestMap.get("prod");
-		String hql = "from Task where product.id=:prodId";
-		String countHql = "select count(*) from Task where product.id=:prodId";
+		String app = requestMap.get("app");
+		String hql, countHql;
 		Map param = new HashMap();
-		param.put("prodId", Long.valueOf(prod));
+		if (app != null && !app.isEmpty()) {
+			hql = "select obj from Task obj where obj.application.id=:appId";
+			countHql = "select count(*) from Task obj where obj.application.id=:appId";
+			param.put("appId", Long.valueOf(app));
+		} else {
+			hql = "select obj from Task obj,Product p join p.applications a where p.id=:prodId and (obj.product=p or obj.application=a) ";
+			countHql = "select count(*) from Task obj,Product p join p.applications a where p.id=:prodId and (obj.product=p or obj.application=a)";
+			param.put("prodId", Long.valueOf(prod));
+		}
 		
     	String sidx = requestMap.get("sidx");
     	String sord = requestMap.get("sord");
     	if (sidx == null || sidx.trim().isEmpty()) {
-    		sidx = "createTime";
+    		sidx = "obj.createTime";
     	}
     	if (sord == null) {
     		sord = "ASC";
     	}
-    	hql += " order by " + sidx + " " + sord;
+    	hql += " order by obj." + sidx + " " + sord;
     	
 		Collection<Task> tasks = retrieve(hql, param, countHql, param, requestMap);
 		return toJSON(tasks, requestMap);
