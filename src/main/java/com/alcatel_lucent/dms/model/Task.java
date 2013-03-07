@@ -28,6 +28,7 @@ public class Task extends BaseEntity {
 
     private String name;
     private Product product;
+    private Application application;	// can be null if the task is in scope of product
     private Date createTime;
     private Date lastUpdateTime;
     private Date lastApplyTime;
@@ -129,4 +130,12 @@ public class Task extends BaseEntity {
     public void setCloseTime(Date closeTime) {
         this.closeTime = closeTime;
     }
+
+	public Application getApplication() {
+		return application;
+	}
+
+	public void setApplication(Application application) {
+		this.application = application;
+	}
 }
