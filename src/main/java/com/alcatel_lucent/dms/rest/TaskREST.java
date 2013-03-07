@@ -46,24 +46,24 @@ public class TaskREST extends BaseREST {
 		String hql, countHql;
 		Map param = new HashMap();
 		if (app != null && !app.isEmpty()) {
-			hql = "from Task where application.id=:appId";
-			countHql = "select count(*) from Task where application.id=:appId";
+			hql = "select obj from Task obj where obj.application.id=:appId";
+			countHql = "select count(*) from Task obj where obj.application.id=:appId";
 			param.put("appId", Long.valueOf(app));
 		} else {
-			hql = "from Task where product.id=:prodId";
-			countHql = "select count(*) from Task where product.id=:prodId";
+			hql = "select obj from Task obj,Product p join p.applications a where p.id=:prodId and (obj.product=p or obj.application=a) ";
+			countHql = "select count(*) from Task obj,Product p join p.applications a where p.id=:prodId and (obj.product=p or obj.application=a)";
 			param.put("prodId", Long.valueOf(prod));
 		}
 		
     	String sidx = requestMap.get("sidx");
     	String sord = requestMap.get("sord");
     	if (sidx == null || sidx.trim().isEmpty()) {
-    		sidx = "createTime";
+    		sidx = "obj.createTime";
     	}
     	if (sord == null) {
     		sord = "ASC";
     	}
-    	hql += " order by " + sidx + " " + sord;
+    	hql += " order by obj." + sidx + " " + sord;
     	
 		Collection<Task> tasks = retrieve(hql, param, countHql, param, requestMap);
 		return toJSON(tasks, requestMap);
