@@ -38,6 +38,13 @@ public interface LanguageService {
 	 * @return languages
 	 */
 	Collection<Language> getLanguagesInProduct(Long productId);
+	
+	/**
+	 * Get all languages included in an application.
+	 * @param appId application id
+	 * @return languages
+	 */
+	Collection<Language> getLanguagesInApplication(Long appId);
 
 	String getPreferredLanguageCode(Collection<Long> dictIdList, Long languageId);
 
