@@ -351,10 +351,9 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     			" group by dl.language.id";
     	Map param = new HashMap();
     	param.put("appId", appId);
-    	Collection<Object[]> qr = dao.retrieve(hql, param);
-    	for (Object[] row : qr) {
-    		Long langId = ((Number) row[0]).longValue();
-    		langMap.put(langId, new int[] {0, 0, 0});
+    	Collection<Number> qr1 = dao.retrieve(hql, param);
+    	for (Number langId : qr1) {
+    		langMap.put(langId.longValue(), new int[] {0, 0, 0});
     	}
     	
     	// count untranslated and in progress translations for each app
@@ -368,7 +367,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     			" and l.context.name<>:exclusion" +
     			" group by a.id,dl.language.id";
     	param.put("exclusion", Context.EXCLUSION);
-    	qr = dao.retrieve(hql, param);
+        Collection<Object[]> qr = dao.retrieve(hql, param);
     	for (Object[] row : qr) {
 //    		Long appId = (Long) row[0];
     		Long langId = (Long) row[1];

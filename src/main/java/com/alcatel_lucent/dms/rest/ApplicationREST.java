@@ -106,7 +106,7 @@ public class ApplicationREST extends BaseREST {
 		if (prop.indexOf(",s(") != -1) {	// has summary
 			Map<Long, Map<Long, int[]>> summary;
 			if (appId != null) {
-				summary = translationService.getAppTranslationSummaryByApp(prodId);
+				summary = translationService.getAppTranslationSummaryByApp(appId);
 			} else {
 				summary = translationService.getAppTranslationSummaryByProd(prodId);
 			}

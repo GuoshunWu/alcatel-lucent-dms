@@ -3,6 +3,9 @@
 
   define(['i18n!nls/transmng', 'i18n!nls/common', 'dms-util', 'transmng/trans_grid', 'transmng/transdetail_grid'], function(i18n, c18n, util, grid, detailgrid) {
     var exportTranslationDialog, languageFilterDialog, ready, refreshGrid, taskDialog, transDetailDialog, transGrid;
+    if (typeof console !== "undefined" && console !== null) {
+      console.debug("transmng panel dialogs init...");
+    }
     transGrid = grid;
     refreshGrid = function(languageTrigger, grid) {
       var checkboxes, nodeInfo, param, type;
@@ -36,8 +39,7 @@
         }
       }).get();
       param.languageTrigger = languageTrigger;
-      grid.updateGrid(param);
-      return typeof console !== "undefined" && console !== null ? console.debug("transmng panel dialogs init...") : void 0;
+      return grid.updateGrid(param);
     };
     languageFilterDialog = $("<div title='" + i18n.select.languagefilter.title + "' id='languageFilterDialog'>").dialog({
       autoOpen: false,

@@ -43,7 +43,7 @@ define ['jqueryui', 'dms-util', 'dms-urls', 'taskmng/task_grid', 'taskmng/dialog
 
       return false if !param.release.id || parseInt(param.release.id) == -1
 
-      grid.productVersionChanged param
+      grid.versionChanged param
 
 
   init()

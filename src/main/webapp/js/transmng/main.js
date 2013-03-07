@@ -32,9 +32,7 @@
     };
     exportAppOrDicts = function(ftype) {
       var checkboxes, id, info, languages, level, type;
-      if ('product' !== (info = util.getProductTreeInfo()).type) {
-        return;
-      }
+      info = util.getProductTreeInfo();
       id = $('#selVersion', "div[id='transmng']").val();
       if (!id) {
         return;

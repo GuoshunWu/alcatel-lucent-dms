@@ -77,7 +77,6 @@ define  [
       $("#appErrInfo").hide()
   )
 
-  #TODO: legency code
   addNewApplicationVersionToProductVersion = $('#addNewApplicationVersionToProductVersionDialog').dialog(
     autoOpen: false
     width: 350, modal: true
