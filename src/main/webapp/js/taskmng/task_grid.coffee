@@ -12,14 +12,13 @@ define [
 
   'taskmng/dialogs'
 ], ($, blockui, msgbox, upload, iframetrans, c18n, i18n, util, urls, dialogs)->
-
   handlers =
     'Download':
       title: 'Download'
       url: 'task/generate-task-files'
       handler: (param)->
-        filename = $('#versionTypeLabel',"div[id='taskmng']").text() + '_'
-        filename += $('#selVersion option:selected',"div[id='taskmng']").text() + '_translation'
+        filename = $('#versionTypeLabel', "div[id='taskmng']").text() + '_'
+        filename += $('#selVersion option:selected', "div[id='taskmng']").text() + '_translation'
         filename += "_#{new Date().format 'yyyyMMdd_hhmmss'}.zip"
 
         $.blockUI()
@@ -34,7 +33,7 @@ define [
       title: 'View…'
       url: ''
       handler: (param)->
-      #      dialogs.transReport.data 'param', {id: param.id, showImport: Boolean(param.lastUpdateTime)}
+        #      dialogs.transReport.data 'param', {id: param.id, showImport: Boolean(param.lastUpdateTime)}
         dialogs.transReport.data 'param', {id: param.id, viewReport: true}
         dialogs.transReport.dialog 'open'
     'Close':
@@ -151,13 +150,14 @@ define [
 
   versionChanged: (param)->
     taskGrid = $("#taskGrid", '#taskmng')
-    prop = "name,creator.name,createTime,lastUpdateTime,status"
-    postData = format: 'grid', prop: prop
+    postData = taskGrid.getGridParam('postData')
+    delete postData.prod
+    delete postData.app
+    postData.prop = "name,creator.name,createTime,lastUpdateTime,status"
+    postData.format = 'grid'
     postData[param.type] = param.release.id
 
-    console?.log postData
+#    console?.log taskGrid.getGridParam('postData')
 
-    # clear origianl grid post
-#    taskGrid.getGridParam('postData')
-    taskGrid.setGridParam(url: urls.tasks, postData: postData).trigger "reloadGrid"
+    taskGrid.setGridParam(url: urls.tasks).trigger "reloadGrid"
 

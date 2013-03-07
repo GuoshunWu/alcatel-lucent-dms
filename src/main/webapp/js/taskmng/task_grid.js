@@ -259,18 +259,14 @@
       versionChanged: function(param) {
         var postData;
         taskGrid = $("#taskGrid", '#taskmng');
-        prop = "name,creator.name,createTime,lastUpdateTime,status";
-        postData = {
-          format: 'grid',
-          prop: prop
-        };
+        postData = taskGrid.getGridParam('postData');
+        delete postData.prod;
+        delete postData.app;
+        postData.prop = "name,creator.name,createTime,lastUpdateTime,status";
+        postData.format = 'grid';
         postData[param.type] = param.release.id;
-        if (typeof console !== "undefined" && console !== null) {
-          console.log(postData);
-        }
         return taskGrid.setGridParam({
-          url: urls.tasks,
-          postData: postData
+          url: urls.tasks
         }).trigger("reloadGrid");
       }
     };
