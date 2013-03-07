@@ -337,31 +337,105 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     	return result;
     }
 
+    public Map<Long, Map<Long, int[]>> getAppTranslationSummaryByApp(Long appId) {
+    	Map<Long, int[]> langMap = new HashMap<Long, int[]>();
+    	
+    	// count labels
+    	Application application = (Application) dao.retrieve(Application.class, appId);
+    	int labelCount = application.getLabelNum();
+    	
+    	// init empty langMap
+    	String hql = "select dl.language.id" +
+    			" from Application a join a.dictionaries d join d.labels l join d.dictLanguages dl" +
+    			" where a.id=:appId and dl.language.id<>1" +
+    			" group by dl.language.id";
+    	Map param = new HashMap();
+    	param.put("appId", appId);
+    	Collection<Object[]> qr = dao.retrieve(hql, param);
+    	for (Object[] row : qr) {
+    		Long langId = ((Number) row[0]).longValue();
+    		langMap.put(langId, new int[] {0, 0, 0});
+    	}
+    	
+    	// count untranslated and in progress translations for each app
+    	hql = "select a.id,dl.language.id,count(distinct dl.languageCode)" +
+    			",sum(case when t.status=" + Translation.STATUS_UNTRANSLATED + " then 1 else 0 end) " +
+    			",sum(case when t.status=" + Translation.STATUS_IN_PROGRESS + " then 1 else 0 end) " +
+    			" from Application a join a.dictionaries d join d.dictLanguages dl" +
+    			" join d.labels l join l.text.translations t" +
+    			" where a.id=:appId and t.language=dl.language and dl.language.id<>1" +
+    			" and not exists(select lt from LabelTranslation lt where lt.language=dl.language and lt.label=l and lt.needTranslation=false)" +
+    			" and l.context.name<>:exclusion" +
+    			" group by a.id,dl.language.id";
+    	param.put("exclusion", Context.EXCLUSION);
+    	qr = dao.retrieve(hql, param);
+    	for (Object[] row : qr) {
+//    		Long appId = (Long) row[0];
+    		Long langId = (Long) row[1];
+    		int factor = ((Number) row[2]).intValue();	// number of lang codes for the same language, needed for division 
+    		langMap.put(langId, new int[] {0, ((Number)row[3]).intValue() / factor, ((Number)row[4]).intValue() / factor});
+    	}
+    	
+    	// in case of no Translation object associated
+    	// count as untranslated
+    	hql = "select a.id,dl.language.id,count(distinct dl.languageCode)" +
+    			",count(*) " +
+    			" from Application a join a.dictionaries d join d.dictLanguages dl join d.labels l" +
+    			" where a.id=:appId and dl.language.id<>1" +
+				" and not exists(select lt from LabelTranslation lt where lt.language=dl.language and lt.label=l and lt.needTranslation=false) " +
+				" and not exists(select ct from Translation ct where ct.text=l.text and ct.language=dl.language) " +
+    			" and l.context.name<>:exclusion" +
+    			" group by a.id,dl.language.id";
+    	qr = dao.retrieve(hql, param);
+    	for (Object[] row : qr) {
+//    		Long appId = (Long) row[0];
+    		Long langId = (Long) row[1];
+    		int factor = ((Number) row[2]).intValue();
+    		int[] values = langMap.get(langId);
+    		values[1] += ((Number) row[3]).intValue() / factor;
+    	}
+    	
+    	// set translated = total - untranslated - in process
+		for (int[] values : langMap.values()) {
+			values[0] = labelCount - values[1] - values[2];
+		}
+		Map<Long, Map<Long, int[]>> result = new HashMap<Long, Map<Long, int[]>>();
+		result.put(appId, langMap);
+    	return result;
+    }
 
-    public Map<Long, Map<Long, int[]>> getAppTranslationSummary(Long prodId) {
+    public Map<Long, Map<Long, int[]>> getAppTranslationSummaryByProd(Long prodId) {
     	Map<Long, Map<Long, int[]>> result = new HashMap<Long, Map<Long, int[]>>();
     	
     	// count labels for each app
-    	String hql = "select a.id,dl.language.id,count(distinct dl.languageCode),count(*)" +
-    			" from Product p join p.applications a join a.dictionaries d join d.labels l join d.dictLanguages dl" +
-    			" where p.id=:prodId and dl.language.id<>1" +
-    			" group by a.id,dl.language.id";
+    	String hql = "select a.id,count(*)" +
+    			" from Product p join p.applications a join a.dictionaries d join d.labels l" +
+    			" where p.id=:prodId" +
+    			" group by a.id";
     	Map param = new HashMap();
     	param.put("prodId", prodId);
     	Collection<Object[]> qr = dao.retrieve(hql, param);
     	Map<Long, Integer> labelCount = new HashMap<Long, Integer>();
     	for (Object[] row : qr) {
     		Long appId = ((Number) row[0]).longValue();
+    		labelCount.put(appId, ((Number)row[1]).intValue());
+    	}
+    	
+		// initial empty langMap
+    	hql = "select a.id,dl.language.id" +
+    			" from Product p join p.applications a join a.dictionaries d join d.labels l join d.dictLanguages dl" +
+    			" where p.id=:prodId and dl.language.id<>1" +
+    			" group by a.id,dl.language.id";
+    	qr = dao.retrieve(hql, param);
+    	for (Object[] row : qr) {
+    		Long appId = ((Number) row[0]).longValue();
     		Long langId = ((Number) row[1]).longValue();
-    		int factor = ((Number) row[2]).intValue();	// number of lang codes for the same language, needed for division 
-    		// initial empty langMap
     		Map<Long, int[]> langMap = result.get(appId);
     		if (langMap == null) {
     			langMap = new HashMap<Long, int[]>();
     			result.put(appId, langMap);
     		}
     		langMap.put(langId, new int[] {0, 0, 0});
-    		labelCount.put(appId, ((Number)row[3]).intValue() / factor);
     	}
     	
     	// count untranslated and in progress translations for each app
@@ -529,7 +603,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     }
 
 	@Override
-	public void generateDictTranslationReport(Long prodId, Collection<Long> langIds, OutputStream output) {
+	public void generateDictTranslationReportByProd(Long prodId, Collection<Long> langIds, OutputStream output) {
 		Map<Long, Map<Long, int[]>> data = getDictTranslationSummaryByProd(prodId);
 		Collection<Language> languages = languageService.getLanguagesInProduct(prodId);
 		if (langIds != null) {
@@ -541,6 +615,26 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 				}
 			}
 		}
+		generateDictTranslationReport(data, languages, output);
+	}
+	
+	@Override
+	public void generateDictTranslationReportByApp(Long appId, Collection<Long> langIds, OutputStream output) {
+		Map<Long, Map<Long, int[]>> data = getDictTranslationSummaryByApp(appId);
+		Collection<Language> languages = languageService.getLanguagesInApplication(appId);
+		if (langIds != null) {
+			HashSet<Long> langIdSet = new HashSet<Long>(langIds);
+			for (Iterator<Language> iter = languages.iterator(); iter.hasNext();) {
+				Language language = iter.next();
+				if (!langIdSet.contains(language.getId())) {
+					iter.remove();
+				}
+			}
+		}
+		generateDictTranslationReport(data, languages, output);
+	}
+	
+	private void generateDictTranslationReport(Map<Long, Map<Long, int[]>> data, Collection<Language> languages, OutputStream output) {
 		Workbook wb = new HSSFWorkbook();
 		Sheet sheet = wb.createSheet("Sheet1");
 		Row headRow1 = sheet.createRow(0);
@@ -600,8 +694,8 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 	}
 
 	@Override
-	public void generateAppTranslationReport(Long prodId, Collection<Long> langIds, OutputStream output) {
-		Map<Long, Map<Long, int[]>> data = getAppTranslationSummary(prodId);
+	public void generateAppTranslationReportByProd(Long prodId, Collection<Long> langIds, OutputStream output) {
+		Map<Long, Map<Long, int[]>> data = getAppTranslationSummaryByProd(prodId);
 		Collection<Language> languages = languageService.getLanguagesInProduct(prodId);
 		if (langIds != null) {
 			HashSet<Long> langIdSet = new HashSet<Long>(langIds);
@@ -612,6 +706,26 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 				}
 			}
 		}
+		generateAppTranslationReport(data, languages, output);
+	}
+
+	@Override
+	public void generateAppTranslationReportByApp(Long appId, Collection<Long> langIds, OutputStream output) {
+		Map<Long, Map<Long, int[]>> data = getAppTranslationSummaryByApp(appId);
+		Collection<Language> languages = languageService.getLanguagesInApplication(appId);
+		if (langIds != null) {
+			HashSet<Long> langIdSet = new HashSet<Long>(langIds);
+			for (Iterator<Language> iter = languages.iterator(); iter.hasNext();) {
+				Language language = iter.next();
+				if (!langIdSet.contains(language.getId())) {
+					iter.remove();
+				}
+			}
+		}
+		generateAppTranslationReport(data, languages, output);
+	}
+
+	private void generateAppTranslationReport(Map<Long, Map<Long, int[]>> data, Collection<Language> languages, OutputStream output) {
 		Workbook wb = new HSSFWorkbook();
 		Sheet sheet = wb.createSheet("Sheet1");
 		Row headRow1 = sheet.createRow(0);
