@@ -81,7 +81,9 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 			Collection<Long> dictIds, Collection<Long> languageIds) {
 		Task task = new Task();
 		task.setName(name);
-		task.setProduct((Product) dao.retrieve(Product.class, productId));
+		if (productId != null) {
+			task.setProduct((Product) dao.retrieve(Product.class, productId));
+		}
 		if (appId != null) {
 			task.setApplication((Application) dao.retrieve(Application.class, appId));
 		}
