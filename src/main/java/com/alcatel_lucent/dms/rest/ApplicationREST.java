@@ -19,7 +19,9 @@ import java.util.Map;
  * Application REST service.
  * URL: /rest/applications
  * Filter parameters:
- *   prod		(required) product id, in which product all dictionaries will be retrieved
+ *   prod		(optional) product id, in which product all dictionaries will be retrieved
+ *   app		(optional) app id
+ *   at least one of parameter "prod" and "app" must be specified
  *   
  * Sort parameters:
  *   sidx		(optional) sort by, default is "base.name"
@@ -55,13 +57,17 @@ public class ApplicationREST extends BaseREST {
 
     @Override
     protected String doGetOrPost(Map<String, String> requestMap) throws Exception {
-    	Long prodId = Long.valueOf(requestMap.get("prod"));
+    	Long prodId = null, appId = null;
+    	String prod = requestMap.get("prod");
+    	String app = requestMap.get("app");
+    	if (prod != null && !prod.isEmpty()) {
+    		prodId = Long.valueOf(prod);
+    	}
+    	if (app != null && !app.isEmpty()) {
+    		appId = Long.valueOf(app);
+    	}
     	String sidx = requestMap.get("sidx");
     	String sord = requestMap.get("sord");
-        Map<String, Long> params = new HashMap<String, Long>();
-        params.put("id", prodId);
-
-        String hSQL = "select app from Product p join p.applications app where p.id=:id";
         if (Arrays.asList("name", "dictNum").contains(sidx)) {
             sidx = sidx.equals("name") ? "base.name" : "dictionaries.size";
         }
@@ -71,29 +77,47 @@ public class ApplicationREST extends BaseREST {
     	if (sord == null) {
     		sord = "ASC";
     	}
-    	if (sidx.equals("labelNum")) {
-    		hSQL = "select app from Product p join p.applications app join app.dictionaries d where p.id=:id" +
-    				" group by app order by sum(d.labels.size) " + sord;
-    		
+    	String hSQL, countHSQL;
+    	Map<String, Long> params = new HashMap<String, Long>();
+    	if (appId != null) {
+    		if (sidx.equals("labelNum")) {
+    			hSQL = "select app from Application app join app.dictionaries d where app.id=:id" +
+    					" group by app order by sum(d.labels.size) " + sord;
+    		} else {
+    			hSQL = "select app from Application app where app.id=:id order by app." + sidx + " " + sord;
+    		}
+        	countHSQL = "select count(*) from Application where id=:id";
+	        params.put("id", appId);
     	} else {
-    		hSQL += " order by app." + sidx + " " + sord;
+    		if (sidx.equals("labelNum")) {
+    			hSQL = "select app from Product p join p.applications app join app.dictionaries d where p.id=:id" +
+    				" group by app order by sum(d.labels.size) " + sord;
+    		} else {
+    			hSQL = "select app from Product p join p.applications app where p.id=:id order by app." + sidx + " " + sord;
+    		}
+        	countHSQL = "select p.applications.size from Product p where p.id=:id";
+	        params.put("id", prodId);
     	}
 
-    	String countHSQL = "select p.applications.size from Product p where p.id=:id";
         Collection<Application> resultSet = retrieve(hSQL, params, countHSQL, params, requestMap);
         
 		// additional properties
     	String prop = requestMap.get("prop");
 		if (prop.indexOf(",s(") != -1) {	// has summary
-			Map<Long, Map<Long, int[]>> summary = translationService.getAppTranslationSummary(prodId);
+			Map<Long, Map<Long, int[]>> summary;
+			if (appId != null) {
+				summary = translationService.getAppTranslationSummaryByApp(prodId);
+			} else {
+				summary = translationService.getAppTranslationSummaryByProd(prodId);
+			}
 			Collection<Long> allLanguageId = dao.retrieve("select id from Language");
-			for(Application app : resultSet) {
-				Map<Long, int[]> appSummary = summary.get(app.getId());
+			for(Application appli : resultSet) {
+				Map<Long, int[]> appSummary = summary.get(appli.getId());
 				if (appSummary == null) {
 					appSummary = new HashMap<Long, int[]>();
 				}
 				fillZero(allLanguageId, appSummary);
-				app.setS(appSummary);
+				appli.setS(appSummary);
 			}
 		}
 

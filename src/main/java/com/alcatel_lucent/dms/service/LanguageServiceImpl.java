@@ -125,6 +125,15 @@ public class LanguageServiceImpl extends BaseServiceImpl implements LanguageServ
 		return dao.retrieve(hql, param);
 	}
 
+	public Collection<Language> getLanguagesInApplication(Long appId) {
+		String hql = "select distinct obj" +
+				" from Application a join a.dictionaries d join d.dictLanguages dl join dl.language obj" +
+				" where a.id=:appId order by obj.name";
+		Map param = new HashMap();
+		param.put("appId", appId);
+		return dao.retrieve(hql, param);
+	}
+
 	@Override
 	public String getPreferredLanguageCode(Collection<Long> dictIdList,
 			Long languageId) {
