@@ -31,6 +31,7 @@ import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.UserContext;
+import com.alcatel_lucent.dms.model.Application;
 import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryHistory;
@@ -76,11 +77,14 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
     
 	@SuppressWarnings("unchecked")
 	@Override
-	public Task createTask(Long productId, String name,
+	public Task createTask(Long productId, Long appId, String name,
 			Collection<Long> dictIds, Collection<Long> languageIds) {
 		Task task = new Task();
 		task.setName(name);
 		task.setProduct((Product) dao.retrieve(Product.class, productId));
+		if (appId != null) {
+			task.setApplication((Application) dao.retrieve(Application.class, appId));
+		}
 		task.setCreateTime(new Date());
 		task.setCreator(UserContext.getInstance().getUser());
 		task.setStatus(Task.STATUS_OPEN);

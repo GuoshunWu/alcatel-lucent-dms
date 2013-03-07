@@ -14,7 +14,9 @@ import com.alcatel_lucent.dms.model.Task;
  * Task REST service.
  * URL: /rest/tasks
  * Filter parameters:
- *   prod		(required) product id
+ *   prod		(optional) product id
+ *   app		(optional) application id
+ *   at last one of parameter "prod" and "app" must be specified
  *   
  * Sort parameters:
  *   sidx		(optional) sort by, default is "createTime"
@@ -40,10 +42,18 @@ public class TaskREST extends BaseREST {
 	@Override
 	String doGetOrPost(Map<String, String> requestMap) throws Exception {
 		String prod = requestMap.get("prod");
-		String hql = "from Task where product.id=:prodId";
-		String countHql = "select count(*) from Task where product.id=:prodId";
+		String app = requestMap.get("app");
+		String hql, countHql;
 		Map param = new HashMap();
-		param.put("prodId", Long.valueOf(prod));
+		if (app != null && !app.isEmpty()) {
+			hql = "from Task where application.id=:appId";
+			countHql = "select count(*) from Task where application.id=:appId";
+			param.put("appId", Long.valueOf(app));
+		} else {
+			hql = "from Task where product.id=:prodId";
+			countHql = "select count(*) from Task where product.id=:prodId";
+			param.put("prodId", Long.valueOf(prod));
+		}
 		
     	String sidx = requestMap.get("sidx");
     	String sord = requestMap.get("sord");

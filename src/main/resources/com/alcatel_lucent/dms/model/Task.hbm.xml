@@ -17,6 +17,7 @@
 		<property name="status" type="int" column="STATUS" />
 
         <many-to-one name="product" class="Product" column="PRODUCT_ID" />
+        <many-to-one name="application" class="Application" column="APPLICATION_ID" />
 		<many-to-one name="creator" column="CREATOR_ID"  />	
 		<many-to-one name="lastUpdater" column="LAST_UPDATER_ID"  />
 		<set inverse="true" name="details" order-by="ID">

@@ -9,14 +9,15 @@ public class CreateTaskAction extends JSONAction {
 	private TaskService taskService;
 	
 	private Long prod;
+	private Long app;
 	private String name;
 	private String dict;
 	private String language;
 	
 	@Override
 	protected String performAction() throws Exception {
-		log.info("CreateTaskAction: prod=" + prod + ", dict=" + dict + ", language=" + language);
-		taskService.createTask(prod, name, toIdList(dict), toIdList(language));
+		log.info("CreateTaskAction: prod=" + prod + ", app=" + app + ", dict=" + dict + ", language=" + language);
+		taskService.createTask(prod, app, name, toIdList(dict), toIdList(language));
 		setMessage(getText("message.success"));
 		return SUCCESS;
 	}
@@ -59,6 +60,14 @@ public class CreateTaskAction extends JSONAction {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Long getApp() {
+		return app;
+	}
+
+	public void setApp(Long app) {
+		this.app = app;
 	}
 
 }

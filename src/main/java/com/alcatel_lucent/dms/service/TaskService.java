@@ -13,12 +13,13 @@ public interface TaskService {
 	/**
 	 * Create a translation task.
 	 * @param productId product id
+	 * @param appId application id, null if the task is created on product level
 	 * @param name task name
 	 * @param dictIds list of dictionary id
 	 * @param languageIds list language id
 	 * @return Task object created
 	 */
-	Task createTask(Long productId, String name, Collection<Long> dictIds, Collection<Long> languageIds);
+	Task createTask(Long productId, Long appId, String name, Collection<Long> dictIds, Collection<Long> languageIds);
 	
 	/**
 	 * Close a task, all "In progress" translation will be replaced by "Not translated"
