@@ -38,7 +38,7 @@ public class ProductREST extends BaseREST {
 	        requestMap.put("idProps", "id,id,id");
 	        requestMap.put("dataProps", "data,name,name");
 	        requestMap.put("childrenProps", "products,applicationBases");
-	        requestMap.put("types", "products,product,app");
+	        requestMap.put("types", "prods,prod,app");
 			return toJSON(new Products(products), requestMap);
         } else {
         	return toJSON(products, requestMap);
