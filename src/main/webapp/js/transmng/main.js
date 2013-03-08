@@ -9,8 +9,12 @@
       if ('products' === type) {
         return;
       }
+      if (type === 'product') {
+        type = 'prod';
+      }
+      $('#typeLabel', "div[id='transmng']").text("" + (c18n[type].capitalize()) + ": ");
       $('#versionTypeLabel', "div[id='transmng']").text("" + nodeInfo.text);
-      if ('product' === type) {
+      if ('prod' === type) {
         $.getJSON(urls.prod_versions, {
           base: nodeInfo.id,
           prop: 'id,version'
@@ -46,10 +50,6 @@
         return this.id;
       }).get().join(',');
       type = $("input:radio[name='viewOption'][checked]").val();
-      type = type.slice(0, 4);
-      if (type === 'appl') {
-        type = 'app';
-      }
       level = info.type;
       if ('product' === level) {
         level = 'prod';
@@ -67,19 +67,15 @@
         console.debug("transmng panel init...");
       }
       $('#selVersion', "div[id='transmng']").change(function() {
-        var nodeInfo, postData, type;
+        var nodeInfo, postData;
         if (!this.value || -1 === parseInt(this.value)) {
           return;
         }
-        nodeInfo = ptree.getNodeInfo();
-        type = nodeInfo.type;
-        if (type.startWith('prod')) {
-          type = type.slice(0, 4);
-        }
+        nodeInfo = util.getProductTreeInfo();
         postData = {
           prop: 'id,name'
         };
-        postData[type] = this.value;
+        postData[nodeInfo.type] = this.value;
         $.ajax({
           url: urls.languages,
           async: false,

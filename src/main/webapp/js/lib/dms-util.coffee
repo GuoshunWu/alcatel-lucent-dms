@@ -172,6 +172,7 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
         if pb
           pb.toggleClass('progressbar-indeterminate', -1 == data.event.percent)
           pb.data 'msg', data.event.msg
+          pb.get(0).msg.html data.event.msg
           pb.progressbar 'value', data.event.percent
         else
           callback? data
@@ -195,11 +196,15 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
     ptree=$.jstree._reference(treeSelecotr)
     return null if !ptree
     selectedNode = if node then node else ptree.get_selected()
+    return null if 0 == selectedNode.length
     parent = ptree._get_parent(selectedNode)
+
+    type = selectedNode.attr('type')
+    type = 'prod' if type == 'product'
 
     id: selectedNode.attr('id')
     text: ptree.get_text(selectedNode)
-    type: selectedNode.attr('type')
+    type: type
     parent: if parent != -1 then getTreeNodeInfo(parent) else parent
 
   newOption = (text, value, selected)->"<option #{if selected then 'selected ' else ''}value='#{value}'>#{text}</option>"

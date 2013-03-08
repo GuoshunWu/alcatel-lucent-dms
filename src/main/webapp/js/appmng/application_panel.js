@@ -44,10 +44,17 @@
       });
     });
     $("#selAppVersion").change(function(e) {
+      var uploadBtn;
       appInfo.app = {
         version: $("option:selected", this).text(),
         id: this.value ? this.value : -1
       };
+      uploadBtn = $("#uploadBrower", '#appmng');
+      if ($('option', this).length > 0) {
+        uploadBtn.button('enable');
+      } else {
+        uploadBtn.button('disable');
+      }
       return grid.appChanged(appInfo);
     });
     dctFileUpload = 'dctFileUpload';

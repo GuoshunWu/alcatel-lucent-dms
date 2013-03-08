@@ -186,26 +186,21 @@ define [
       # fill the search value dynamically for application
       searchoptions = transGrid.getColProp('application').searchoptions
 
+      transGrid.setColProp('application', searchoptions: searchoptions, index: 'app.base.name')
       if 'prod' == param.type
         app = ":All"
         $.ajax {url: urls.apps, data: {prod:param.release.id, prop: "id,name"}, async: false, dataType: 'json', success: (json)->
           $(json).each ->app += ";#{@name}:#{@name}"
         }
+        transGrid.setGridParam('sortname':'app.base.name')
       else
         # application
-        app += "#{param.name}:#{param.name}"
+        app = "#{param.name}:#{param.name}"
+        transGrid.setGridParam('sortname':'base.name')
       searchoptions.value = app
 
-      transGrid.setGridParam('sortname':'app.base.name')
-      transGrid.setColProp('application', searchoptions: searchoptions, index: 'app.base.name')
       postData = {format: 'grid', prop: prop}
       postData[param.type] = param.release.id
-
-      #      unless param.languageTrigger
-      #        gridParam.postData = postData
-      #        console.log "versionTrigger ...."
-      #        transGrid.trigger 'reloadGrid'
-      #        return
 
       transGrid.updateTaskLanguage param.languages
       # Use this for toolbar search restore.

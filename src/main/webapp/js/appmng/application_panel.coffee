@@ -36,6 +36,13 @@ define [
 
   $("#selAppVersion").change (e)->
     appInfo.app = {version: $("option:selected", @).text(), id: if @value then @value else -1}
+    uploadBtn=$("#uploadBrower", '#appmng')
+
+    if $('option', @).length > 0
+      uploadBtn.button( 'enable' )
+    else
+      uploadBtn.button('disable')
+
     grid.appChanged appInfo
 
   dctFileUpload = 'dctFileUpload'
@@ -95,6 +102,7 @@ define [
       selAppVer=$('#selAppVersion', "div[id='appmng']")
 
       selAppVer.empty().append(util.json2Options json)
+
       if(window.param.currentSelected.appId and -1 != parseInt(param.currentSelected.appId))
         selAppVer.val(param.currentSelected.appId)
         window.param.currentSelected.appId=null

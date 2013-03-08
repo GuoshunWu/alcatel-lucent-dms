@@ -338,6 +338,10 @@
           gridParam.colNames = grid.dictionary.colNames;
           gridParam.colModel = grid.dictionary.colModel;
           searchoptions = transGrid.getColProp('application').searchoptions;
+          transGrid.setColProp('application', {
+            searchoptions: searchoptions,
+            index: 'app.base.name'
+          });
           if ('prod' === param.type) {
             app = ":All";
             $.ajax({
@@ -354,17 +358,16 @@
                 });
               }
             });
+            transGrid.setGridParam({
+              'sortname': 'app.base.name'
+            });
           } else {
-            app += "" + param.name + ":" + param.name;
+            app = "" + param.name + ":" + param.name;
+            transGrid.setGridParam({
+              'sortname': 'base.name'
+            });
           }
           searchoptions.value = app;
-          transGrid.setGridParam({
-            'sortname': 'app.base.name'
-          });
-          transGrid.setColProp('application', {
-            searchoptions: searchoptions,
-            index: 'app.base.name'
-          });
           postData = {
             format: 'grid',
             prop: prop

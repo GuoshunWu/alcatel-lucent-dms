@@ -2,7 +2,7 @@
 (function() {
 
   define(['jqueryui', 'jqgrid', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/appmng', 'dms-urls', 'dms-util', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsettings_grid', 'appmng/previewlangsetting_grid'], function($, jqgrid, blockui, msgbox, c18n, i18n, urls, util, previewgrid) {
-    var addApplication, addLanguage, addNewApplicationVersionToProductVersion, dictListPreview, dictPreviewLangSettings, dictPreviewStringSettings, historyDlg, langSettings, newAppVersion, newProductVersion, setContextTo, stringSettings, stringSettingsTranslation;
+    var addApplication, addLanguage, dictListPreview, dictPreviewLangSettings, dictPreviewStringSettings, historyDlg, langSettings, newAppVersion, newProductVersion, setContextTo, stringSettings, stringSettingsTranslation;
     if (typeof console !== "undefined" && console !== null) {
       console.log("module appmng/dialogs loading.");
     }
@@ -90,8 +90,8 @@
                   height: 'auto'
                 });
                 return;
-                $('#selAppVersion').append("<option value='" + json.id + "' selected>" + versionName + "</option>").trigger('change');
               }
+              $('#selAppVersion').append("<option value='" + json.id + "' selected>" + versionName + "</option>").trigger('change');
               if (!json.productBaseId) {
                 return;
               }
@@ -113,7 +113,7 @@
         return $("#appErrInfo").hide();
       }
     });
-    addNewApplicationVersionToProductVersion = $('#addNewApplicationVersionToProductVersionDialog').dialog({
+    $('#addNewApplicationVersionToProductVersionDialog').dialog({
       autoOpen: false,
       width: 350,
       modal: true,
@@ -385,7 +385,27 @@
           }
           return $(this).dialog('open');
         });
-      }
+      },
+      buttons: [
+        {
+          text: c18n.ok,
+          click: function() {
+            var context;
+            if (!(context = $('#contextName', this).val())) {
+              $('#customCtxErrorMsg').empty().html(i18n.dialog.customcontext.namerequired);
+              return;
+            }
+            setContextTo(context);
+            return $(this).dialog('close');
+          }
+        }, {
+          text: c18n.cancel,
+          click: function() {
+            return $(this).dialog('close');
+          }
+        }
+      ],
+      close: function() {}
     });
     dictListPreview = $('#dictListPreviewDialog').dialog({
       autoOpen: false,

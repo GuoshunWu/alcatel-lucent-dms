@@ -73,7 +73,7 @@ define [
       {name: 'lastUpdateTime', index: 'lastUpdateTime', width: 150, align: 'left'}
       {name: 'status', index: 'status', width: 80, align: 'left', editable: false, edittype: 'select',
       editoptions: {value: "0:#{i18n.task.open};1:#{i18n.task.closed}"}, formatter: 'select'}
-      {name: 'actions', index: 'actions', width: 260, align: 'center',
+      {name: 'actions', index: 'actions', width: 260, align: 'left',
       formatter: (cellvalue, options, rowObject)->
         $.map(handlers,
         (value, index)->
@@ -157,7 +157,8 @@ define [
     postData.format = 'grid'
     postData[param.type] = param.release.id
 
-#    console?.log taskGrid.getGridParam('postData')
 
     taskGrid.setGridParam(url: urls.tasks).trigger "reloadGrid"
+#    console?.log param
+    taskGrid.setCaption "Tasks for #{c18n[param.type].capitalize()} #{param.base} version #{param.release.version}"
 
