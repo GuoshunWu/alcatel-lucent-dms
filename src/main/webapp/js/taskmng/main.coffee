@@ -1,7 +1,13 @@
-define ['jqueryui', 'dms-util', 'dms-urls', 'taskmng/task_grid', 'taskmng/dialogs'], ($, util, urls, grid)->
+define [
+  'jqgrid'
+  'dms-util'
+  'dms-urls'
+  'taskmng/task_grid'
+  'taskmng/dialogs'
+], ($, util, urls, grid)->
 
   nodeSelectHandler = (node, nodeInfo)->
-    type=node.attr('type')
+    type = node.attr('type')
     return if 'products' == type
 
     $('#versionTypeLabel',"div[id='taskmng']").text "#{nodeInfo.text}"
