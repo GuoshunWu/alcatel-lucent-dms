@@ -308,7 +308,7 @@
             prop: prop
           }
         }).trigger("reloadGrid");
-        return dicGrid.setCaption("Dictionary for Application " + param.base.text + " version " + param.app.version);
+        return dicGrid.setCaption("Dictionaries for Application " + param.base.text + " version " + param.app.version);
       }
     };
   });

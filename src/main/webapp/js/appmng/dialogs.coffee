@@ -63,8 +63,7 @@ define  [
           if (json.status != 0)
             $.msgBox json.message, null, {title: c18n.error, width: 300, height: 'auto'}
             return
-
-            $('#selAppVersion').append("<option value='#{json.id}' selected>#{versionName}</option>").trigger 'change'
+          $('#selAppVersion').append("<option value='#{json.id}' selected>#{versionName}</option>").trigger 'change'
           return unless json.productBaseId
           $('#addNewApplicationVersionToProductVersionDialog').data("param", json).dialog  'open'
         $(@).dialog "close"
@@ -77,7 +76,7 @@ define  [
       $("#appErrInfo").hide()
   )
 
-  addNewApplicationVersionToProductVersion = $('#addNewApplicationVersionToProductVersionDialog').dialog(
+  $('#addNewApplicationVersionToProductVersionDialog').dialog(
     autoOpen: false
     width: 350, modal: true
     open: ->
@@ -212,6 +211,7 @@ define  [
   )
 
   setContextTo = (context = 'Default', labelids = $('#stringSettingsGrid').getGridParam('selarrrow'))->
+    # console?.log "context=#{context}, labelids =#{labelids}."
     ($.msgBox(i18n.dialog.customcontext.labeltip, null, {title: c18n.warn});return) if labelids.length == 0
     $.post 'app/update-label', {id: labelids.join(','), context: context}, (json)->
       ($.msgBox json.message, null, {title: c18n.error}; return) if json.status != 0
@@ -241,6 +241,20 @@ define  [
           setContextTo(e.target.name)
           return
         $(@).dialog 'open'
+
+    buttons: [
+      {
+      text: c18n.ok, click: ()->
+        if !(context = $('#contextName', @).val())
+          $('#customCtxErrorMsg').empty().html i18n.dialog.customcontext.namerequired
+          return
+        setContextTo(context)
+        $(@).dialog 'close'
+      }
+      {text: c18n.cancel, click: ()->$(@).dialog 'close'}
+    ]
+    close:()->
+
   )
 
 

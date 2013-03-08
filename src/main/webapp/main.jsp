@@ -40,7 +40,7 @@
         <div class="ui-layout-content">
             <div id="appTree" style="background-color: transparent;"></div>
         </div>
-        <div class="footer">A test footer</div>
+        <%--<div class="footer">A test footer</div>--%>
     </div>
 </div>
 </body>

@@ -2,9 +2,8 @@ define ['i18n!nls/transmng', 'i18n!nls/common', 'dms-util', 'transmng/trans_grid
   console?.debug "transmng panel dialogs init..."
   transGrid = grid
   refreshGrid = (languageTrigger = false, grid = transGrid)->
-    nodeInfo=(require 'ptree').getNodeInfo()
+    nodeInfo=util.getProductTreeInfo()
     type = nodeInfo.type
-    type = type[..3] if type.startWith('prod')
     param =
       release:
         {id: $('#selVersion', "div[id='transmng']").val(), version: $("#selVersion option:selected", "div[id='transmng']").text()}
@@ -113,8 +112,18 @@ define ['i18n!nls/transmng', 'i18n!nls/common', 'dms-util', 'transmng/trans_grid
         dicts = $(grid.getTotalSelectedRowInfo().rowIds).map(
           ()->@).get().join(',')
 
+
+        postData =
+          language: langids
+          dict: dicts
+          name: name
+
+        type = util.getProductTreeInfo().type
+        type = 'prod' if 'product' == type
+        postData[type] = $('#selVersion', '#transmng').val()
+
         taskDialog.parent().block()
-        $.post 'task/create-task', {prod: $('#selVersion', '#transmng').val(), language: langids, dict: dicts, name: name }, (json)->
+        $.post 'task/create-task', postData, (json)->
           taskDialog.parent().unblock()
           if(json.status != 0)
             $.msgBox json.message, null, {title: c18n.error}

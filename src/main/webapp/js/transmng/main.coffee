@@ -11,8 +11,12 @@ define [
     type=node.attr('type')
     return if 'products' == type
 
+    type = 'prod' if type == 'product'
+
+    $('#typeLabel',"div[id='transmng']").text "#{c18n[type].capitalize()}: "
     $('#versionTypeLabel',"div[id='transmng']").text "#{nodeInfo.text}"
-    if 'product' == type
+
+    if 'prod' == type
       $.getJSON urls.prod_versions, {base: nodeInfo.id, prop: 'id,version'}, (json)->
         $('#selVersion',"div[id='transmng']").empty().append(util.json2Options(json)).trigger 'change'
       return
@@ -40,8 +44,6 @@ define [
     languages = checkboxes.map(()-> return @id ).get().join(',')
 
     type = $("input:radio[name='viewOption'][checked]").val()
-    type = type[..3]
-    type = 'app' if type == 'appl'
 
     level = info.type
     level = 'prod' if 'product' == level
@@ -56,13 +58,10 @@ define [
     console?.debug "transmng panel init..."
     $('#selVersion', "div[id='transmng']").change ->
       return if !@value or -1 == parseInt @value
-      nodeInfo = ptree.getNodeInfo()
+      nodeInfo = util.getProductTreeInfo()
 #      console?.log nodeInfo
-      type = nodeInfo.type
-      type = type[..3] if type.startWith('prod')
-
       postData = {prop: 'id,name'}
-      postData[type] = @value
+      postData[nodeInfo.type] = @value
 
       $.ajax {url: urls.languages, async: false, data: postData, dataType: 'json', success: (languages)->
         langTable = util.generateLanguageTable languages

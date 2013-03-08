@@ -7,7 +7,8 @@ define [
   'transmng/main'
   'taskmng/main'
   'admin/main'
-], ($, util, glayout, ptree, appmngPanel, transmngPanel, taskmngPanel, adminPanel)->
+  'i18n!nls/common'
+], ($, util, glayout, ptree, appmngPanel, transmngPanel, taskmngPanel, adminPanel, c18n)->
   ready = (param)->
     console?.debug "page ready..."
     util.afterInitilized(@)
@@ -19,11 +20,12 @@ define [
     return if 'admin' == oldpnl or 'admin' == newpnl
 
     treeSelectedNode=$("#appTree").jstree 'get_selected'
-    return if 0 == treeSelectedNode.length or '-1' == treeSelectedNode.attr('id')
+    nodeInfo = util.getProductTreeInfo()
+    return if !nodeInfo or '-1' == nodeInfo.id
+    type = nodeInfo.type
 
     if 'appmng' == newpnl
-      type = treeSelectedNode.attr('type')
-      if 'product' == type
+      if 'prod' == type
         window.param.currentSelected.productId = $('#selVersion', "div[id='#{oldpnl}']").val()
       else
         window.param.currentSelected.appId = $('#selVersion', "div[id='#{oldpnl}']").val()
@@ -32,9 +34,14 @@ define [
       options = $('#selVersion option', "div[id='#{oldpnl}']").clone()
       value = $('#selVersion', "div[id='#{oldpnl}']").val()
       options = $('#selAppVersion option', "div[id='#{oldpnl}']").clone() if 'appmng' == oldpnl and 'app' == treeSelectedNode.attr('type')
-      $('#versionTypeLabel', "div[id='#{newpnl}']").text $("#appTree").jstree('get_text', treeSelectedNode) if 'appmng' != oldpnl
 
       $('#selVersion', "div[id='#{newpnl}']").empty().append(options).val(value).trigger 'change'
+
+      if newpnl in ['transmng', 'taskmng']
+        $('#versionTypeLabel', "div[id='#{newpnl}']").text nodeInfo.text
+        $('#typeLabel',"div[id='#{newpnl}']").text "#{c18n[type].capitalize()}: "
+
+
 
   ################################################## Initilaize #####################################################
   init = ()->

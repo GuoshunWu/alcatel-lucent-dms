@@ -133,7 +133,7 @@
           name: 'actions',
           index: 'actions',
           width: 260,
-          align: 'center',
+          align: 'left',
           formatter: function(cellvalue, options, rowObject) {
             return $.map(handlers, function(value, index) {
               if ('1' === rowObject[4] && (index === 'Upload' || index === 'Close')) {
@@ -265,9 +265,10 @@
         postData.prop = "name,creator.name,createTime,lastUpdateTime,status";
         postData.format = 'grid';
         postData[param.type] = param.release.id;
-        return taskGrid.setGridParam({
+        taskGrid.setGridParam({
           url: urls.tasks
         }).trigger("reloadGrid");
+        return taskGrid.setCaption("Tasks for " + (c18n[param.type].capitalize()) + " " + param.base + " version " + param.release.version);
       }
     };
   });

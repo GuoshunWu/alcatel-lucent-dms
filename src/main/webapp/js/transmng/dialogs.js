@@ -15,11 +15,8 @@
       if (grid == null) {
         grid = transGrid;
       }
-      nodeInfo = (require('ptree')).getNodeInfo();
+      nodeInfo = util.getProductTreeInfo();
       type = nodeInfo.type;
-      if (type.startWith('prod')) {
-        type = type.slice(0, 4);
-      }
       param = {
         release: {
           id: $('#selVersion', "div[id='transmng']").val(),
@@ -170,7 +167,7 @@
         {
           text: c18n.create,
           click: function() {
-            var dicts, langids, languages, name;
+            var dicts, langids, languages, name, postData, type;
             taskDialog = $(this);
             languages = ($(":checkbox[name='languages']", this).map(function() {
               if (this.checked) {
@@ -197,13 +194,18 @@
             dicts = $(grid.getTotalSelectedRowInfo().rowIds).map(function() {
               return this;
             }).get().join(',');
-            taskDialog.parent().block();
-            return $.post('task/create-task', {
-              prod: $('#selVersion', '#transmng').val(),
+            postData = {
               language: langids,
               dict: dicts,
               name: name
-            }, function(json) {
+            };
+            type = util.getProductTreeInfo().type;
+            if ('product' === type) {
+              type = 'prod';
+            }
+            postData[type] = $('#selVersion', '#transmng').val();
+            taskDialog.parent().block();
+            return $.post('task/create-task', postData, function(json) {
               taskDialog.parent().unblock();
               if (json.status !== 0) {
                 $.msgBox(json.message, null, {

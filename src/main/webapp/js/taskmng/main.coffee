@@ -1,17 +1,21 @@
 define [
   'jqgrid'
+  'i18n!nls/common'
   'dms-util'
   'dms-urls'
   'taskmng/task_grid'
   'taskmng/dialogs'
-], ($, util, urls, grid)->
+], ($, c18n, util, urls, grid)->
 
   nodeSelectHandler = (node, nodeInfo)->
     type = node.attr('type')
     return if 'products' == type
+    type = 'prod' if type == 'product'
 
     $('#versionTypeLabel',"div[id='taskmng']").text "#{nodeInfo.text}"
-    if 'product' == type
+    $('#typeLabel',"div[id='taskmng']").text "#{c18n[type].capitalize()}: "
+
+    if 'prod' == type
       $.getJSON urls.prod_versions, {base: nodeInfo.id, prop: 'id,version'}, (json)->
         $('#selVersion',"div[id='taskmng']").empty().append(util.json2Options(json)).trigger 'change'
       return
@@ -34,10 +38,9 @@ define [
     # initilize version selector
     $('#selVersion', '#taskmng').change ()->
       return if !@value or -1 == parseInt @value
-      nodeInfo=(require 'ptree').getNodeInfo()
+      nodeInfo=util.getProductTreeInfo()
       #      console?.log nodeInfo
       type = nodeInfo.type
-      type = type[..3] if type.startWith('prod')
 
       postData = {prop: 'id,name'}
       postData[type] = @value
@@ -45,6 +48,7 @@ define [
       param =
         release: {id: $(@).val()
         version: $(@).find("option:selected").text()}
+        base: nodeInfo.text
         type: type
 
       return false if !param.release.id || parseInt(param.release.id) == -1

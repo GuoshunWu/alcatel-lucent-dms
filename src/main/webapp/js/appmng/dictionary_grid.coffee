@@ -187,5 +187,5 @@ define [
   appChanged: (param)->
     prop = "languageReferenceCode,base.name,version,base.format,base.encoding,labelNum"
     dicGrid.setGridParam(url: 'rest/dict', postData: {app: param.app.id, format: 'grid', prop: prop}).trigger "reloadGrid"
-    dicGrid.setCaption "Dictionary for Application #{param.base.text} version #{param.app.version}"
+    dicGrid.setCaption "Dictionaries for Application #{param.base.text} version #{param.app.version}"
 

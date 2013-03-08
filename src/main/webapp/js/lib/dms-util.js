@@ -264,6 +264,7 @@ User: Guoshun Wu
           if (pb) {
             pb.toggleClass('progressbar-indeterminate', -1 === data.event.percent);
             pb.data('msg', data.event.msg);
+            pb.get(0).msg.html(data.event.msg);
             pb.progressbar('value', data.event.percent);
           } else {
             if (typeof callback === "function") {
@@ -298,7 +299,7 @@ User: Guoshun Wu
       return reTryAjax();
     };
     getTreeNodeInfo = function(node, treeSelecotr) {
-      var parent, ptree, selectedNode;
+      var parent, ptree, selectedNode, type;
       if (treeSelecotr == null) {
         treeSelecotr = '#appTree';
       }
@@ -307,11 +308,18 @@ User: Guoshun Wu
         return null;
       }
       selectedNode = node ? node : ptree.get_selected();
+      if (0 === selectedNode.length) {
+        return null;
+      }
       parent = ptree._get_parent(selectedNode);
+      type = selectedNode.attr('type');
+      if (type === 'product') {
+        type = 'prod';
+      }
       return {
         id: selectedNode.attr('id'),
         text: ptree.get_text(selectedNode),
-        type: selectedNode.attr('type'),
+        type: type,
         parent: parent !== -1 ? getTreeNodeInfo(parent) : parent
       };
     };
