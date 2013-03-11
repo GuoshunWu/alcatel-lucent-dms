@@ -42,7 +42,7 @@
         <s:form id="loginForm" name="loginForm" validate="false" theme="simple" method="post" action='login'
                 namespace='/'>
             <%--<s:token/>--%>
-            <table border="1" align='center'>
+            <table border="0" align='center'>
                 <tr>
                     <td align="right">
                         <label for="idLoginname"><s:text name="login.loginname"/></label></td>
