@@ -26,7 +26,7 @@ import com.alcatel_lucent.dms.model.Translation;
 import com.alcatel_lucent.dms.service.DaoService;
 
 @Component("MDCGenerator")
-public class MDCGenerator implements DictionaryGenerator {
+public class MDCGenerator extends DictionaryGenerator {
 	
 	private static Logger log = LoggerFactory.getLogger(MDCGenerator.class);
 	

@@ -67,7 +67,7 @@ public class GenerateDictAction extends ProgressAction {
     public String performAction() throws Exception {
         String downTmpPath = tmpDownload + File.separator + UserContext.getInstance().getUser().getName() +"_"+ dFmt.format(new Date());
         dictionaryService.generateDictFiles(downTmpPath, toIdList(dicts));
-        ProgressQueue.setProgress("Compressing...", 90);
+        ProgressQueue.setProgress("Compressing...", -1);
         File generatedTaskFiles = new File(downTmpPath);
         if (!generatedTaskFiles.exists()) {
             setStatus(-1);

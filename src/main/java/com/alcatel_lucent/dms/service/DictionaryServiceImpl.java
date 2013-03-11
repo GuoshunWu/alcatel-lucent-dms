@@ -156,7 +156,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     /**
      * Determine default context of labels which have no context info.
      * If the label was already assigned to a context, keep it;
-     * If any translation of the label is different than default context, take dictionary context;
+     * If any translation or its status of the label is different than default context, take dictionary context;
      * Otherwise, take default context.
      *
      * @param dictList
@@ -180,15 +180,15 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     continue;
                 }
 
-                // check for each language, if translation in any language is conflict 
+                // check for each language, if translation in any language is conflict (either translation or status)
                 // with Default context, set the label to dictionary context
                 if (label.getOrigTranslations() != null) {
                     for (LabelTranslation lt : label.getOrigTranslations()) {
-                        if (lt == null || lt.getOrigTranslation() == null) {
-                            System.out.println("label.key= " + label.getKey());
-                            System.out.println("label translation = " + lt);
-                            System.out.println("label translation original= " + lt.getOrigTranslation());
-                        }
+//                        if (lt == null || lt.getOrigTranslation() == null) {
+//                            System.out.println("label.key= " + label.getKey());
+//                            System.out.println("label translation = " + lt);
+//                            System.out.println("label translation original= " + lt.getOrigTranslation());
+//                        }
                         if (lt.getLanguage() != null && !lt.getOrigTranslation().equals(label.getReference())) {
                             Text text = textMap.get(label.getReference());
 //                        	Text text = textService.getText(dbDefaultCtx.getId(), label.getReference());
@@ -204,7 +204,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                                             log.error(e.toString());
                                         }
                                     }
-                                    if (!trans.getTranslation().equals(translation)) {
+                                    if (!trans.getTranslation().equals(translation) || 
+                                    		lt.getStatus() != null && lt.getStatus() != trans.getStatus()) {
                                         log.debug("Context conflict - Reference:" + label.getReference() + ", Translation:" + lt.getOrigTranslation() + ", ContextTranslation:" + trans.getTranslation());
                                         label.setContext(dictCtx);
                                         break;
@@ -280,7 +281,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
      * @param dtIds the collection of the id for dictionary to be generated.
      */
     public void generateDictFiles(String dir, Collection<Long> dtIds) {
-    	ProgressQueue.setProgress("Preparing data...", 0);
+    	ProgressQueue.setProgress("Preparing data...", -1);
         if (dtIds.isEmpty()) return;
         File target = new File(dir);
         if (target.exists()) {
@@ -294,22 +295,20 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         }
         String idList = dtIds.toString().replace("[", "(").replace("]", ")");
         String hsql = "from Dictionary where id in " + idList;
-        Collection<Dictionary> dicts = (Collection<Dictionary>) getDao().retrieve(hsql);
-        int totalLabels = 0;
-        int curLabels = 0;
-        for (Dictionary dict : dicts) {
-        	totalLabels += dict.getLabelNum();
+        Collection<Dictionary> allDicts = (Collection<Dictionary>) getDao().retrieve(hsql);
+        // group dictionaries by format
+        Map<String, Collection<Dictionary>> formatGroup = new HashMap<String, Collection<Dictionary>>();
+        for (Dictionary dict : allDicts) {
+        	Collection<Dictionary> dicts = formatGroup.get(dict.getFormat());
+        	if (dicts == null) {
+        		dicts = new ArrayList<Dictionary>();
+        		formatGroup.put(dict.getFormat(), dicts);
+        	}
+        	dicts.add(dict);
         }
-        int cur = 1;
-        int total = dicts.size();
-        for (Dictionary dict : dicts) {
-            log.info("Generate dictionary: " + dict.getName());
-            int percent = (int) Math.round(curLabels * 60.0 / totalLabels + 0.5) + 30;
-            ProgressQueue.setProgress("[" + cur + "/" + total + "] Generating " + dict.getName(), percent);
-            DictionaryGenerator generator = getGenerator(dict.getFormat());
-            generator.generateDict(target, dict.getId());
-            curLabels += dict.getLabelNum();
-            cur++;
+        for (String format : formatGroup.keySet()) {
+        	DictionaryGenerator generator = getGenerator(format);
+        	generator.generateDict(target, formatGroup.get(format));
         }
     }
 

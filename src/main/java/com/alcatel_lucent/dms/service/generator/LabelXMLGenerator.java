@@ -26,7 +26,7 @@ import com.alcatel_lucent.dms.model.Translation;
 import com.alcatel_lucent.dms.service.DaoService;
 
 @Component("LabelXMLGenerator")
-public class LabelXMLGenerator implements DictionaryGenerator {
+public class LabelXMLGenerator extends DictionaryGenerator {
 
 	private static Logger log = LoggerFactory.getLogger(LabelXMLGenerator.class);
 	

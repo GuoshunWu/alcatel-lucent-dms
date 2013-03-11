@@ -26,7 +26,7 @@ import com.alcatel_lucent.dms.model.Translation;
 import com.alcatel_lucent.dms.service.DaoService;
 
 @Component("PropXMLGenerator")
-public class PropXMLGenerator implements DictionaryGenerator {
+public class PropXMLGenerator extends DictionaryGenerator {
 	
 	private static Logger log = LoggerFactory.getLogger(PropXMLGenerator.class);
 

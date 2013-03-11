@@ -22,7 +22,7 @@ import com.alcatel_lucent.dms.model.Translation;
 import com.alcatel_lucent.dms.service.DaoService;
 
 @Component("PropGenerator")
-public class PropGenerator implements DictionaryGenerator {
+public class PropGenerator extends DictionaryGenerator {
 	
 	private Logger log = LoggerFactory.getLogger(PropGenerator.class);
 

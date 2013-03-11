@@ -2,7 +2,9 @@ package com.alcatel_lucent.dms.service.generator.xmldict;
 
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.SystemError;
+import com.alcatel_lucent.dms.action.ProgressQueue;
 import com.alcatel_lucent.dms.model.Dictionary;
+import com.alcatel_lucent.dms.model.DictionaryLanguage;
 import com.alcatel_lucent.dms.service.DaoService;
 import com.alcatel_lucent.dms.service.generator.DictionaryGenerator;
 import com.alcatel_lucent.dms.util.Util;
@@ -25,13 +27,16 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 
 import static org.apache.commons.lang3.StringUtils.center;
 
 @Component("XmlDictGenerator")
-public class XMLDictGenerator implements DictionaryGenerator {
+public class XMLDictGenerator extends DictionaryGenerator {
 
     private static Logger log = LoggerFactory.getLogger(XMLDictGenerator.class);
 
@@ -59,43 +64,63 @@ public class XMLDictGenerator implements DictionaryGenerator {
 
         generateDict(targetDir, dict);
     }
-
+    
     public void generateDict(File targetDir, Dictionary dict) throws BusinessException {
+    	try {
+	    	Map<String, Collection<String>> xdctGroup = getXdctGroup(targetDir, dict);
+	    	for (String xdctFileName : xdctGroup.keySet()) {
+	    		Collection<String> langCodes = xdctGroup.get(xdctFileName);
+	    		generateXdct(targetDir, dict, xdctFileName, langCodes);
+	    	}
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    		throw new SystemError(e);
+    	}
+    }    
+
+    private Map<String, Collection<String>> getXdctGroup(File targetDir, Dictionary dict) throws IOException {
+    	Map<String, Collection<String>> result = new HashMap<String, Collection<String>>();
+		if (dict.getDictLanguages() != null) {
+			for (DictionaryLanguage dl : dict.getDictLanguages()) {
+				String xdctFileName = dl.getAnnotation2();
+				if (xdctFileName == null) xdctFileName = dict.getName();
+				Collection<String> langCodes = result.get(xdctFileName);
+				if (langCodes == null) {
+					langCodes = new ArrayList<String>();
+					result.put(xdctFileName, langCodes);
+				}
+				langCodes.add(dl.getLanguageCode());
+			}
+		}
+		return result;
+    }
+    
+    public void generateXdct(File targetDir, Dictionary dict, String xdctFileName, Collection<String> langCodes) throws BusinessException,IOException {
         XMLWriter writer = null;
 
         try {
-            File file = new File(targetDir, dict.getName() + ".xdct");
-            if (!file.exists()) {
-                if (!file.getParentFile().exists()) {
-                    file.getParentFile().mkdirs();
-                }
-                file.createNewFile();
-            }
+            File file = createNewFile(targetDir, xdctFileName);
 
             OutputFormat format = OutputFormat.createPrettyPrint();
             format.setIndentSize(4);
             format.setXHTML(true);
 
-            log.info(center("Start generating dictionary " + dict.getName() + "...", 100, '='));
+            log.info(center("Start generating dictionary " + xdctFileName + "...", 100, '='));
             writer = new XMLWriter(new BufferedOutputStream(new FileOutputStream(file)), format);
 
             long begin = System.currentTimeMillis();
-            Document doc = generateDocument(dict);
+            Document doc = generateDocument(dict, langCodes);
             long end = System.currentTimeMillis();
             String timeStr = DurationFormatUtils.formatPeriod(begin, end, "mm 'minute(s)' ss 'second(s)'.");
-            log.info(center("Generating dictionary " + dict.getName() + " using a total of " + timeStr, 100, '*'));
+            log.info(center("Generating dictionary " + xdctFileName + " using a total of " + timeStr, 100, '*'));
 
 
             begin = System.currentTimeMillis();
-            log.info(center("Start writing dictionary " + dict.getName() + "...", 100, '='));
+            log.info(center("Start writing dictionary " + xdctFileName + "...", 100, '='));
             writer.write(doc);
             end = System.currentTimeMillis();
             timeStr = DurationFormatUtils.formatPeriod(begin, end, "mm 'minute(s)' ss 'second(s)'.");
-            log.info(center("Writing dictionary " + dict.getName() + " using a total of " + timeStr, 100, '*'));
-
-
-        } catch (IOException e) {
-            throw new SystemError(e.getMessage());
+            log.info(center("Writing dictionary " + xdctFileName + " using a total of " + timeStr, 100, '*'));
         } finally {
             try {
                 writer.close();
@@ -104,8 +129,19 @@ public class XMLDictGenerator implements DictionaryGenerator {
             }
         }
     }
+    
+    private File createNewFile(File targetDir, String filename) throws IOException {
+    	File file = new File(targetDir, filename);
+        if (!file.exists()) {
+            if (!file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
+            }
+            file.createNewFile();
+        }
+        return file;
+    }
 
-    public Document generateDocument(final Dictionary dict) {
+    public Document generateDocument(final Dictionary dict, Collection<String> langCodes) {
 
         Document doc = DocumentHelper.createDocument();
 
@@ -124,10 +160,24 @@ public class XMLDictGenerator implements DictionaryGenerator {
         xmlDict.addAttribute("appli", attributes.get("appli"));
         xmlDict.addAttribute("separator", attributes.get("separator"));
 
-        LanguageClosure ll = new LanguageClosure(xmlDict);
-        CollectionUtils.forAllDo(dict.getDictLanguages(), ll);
+        // filter languages
+        Collection<DictionaryLanguage> dictLanguages = new ArrayList<DictionaryLanguage>();
+        for (DictionaryLanguage dl : dict.getDictLanguages()) {
+        	if (langCodes.contains(dl.getLanguageCode())) {
+        		dictLanguages.add(dl);
+        	} else {
+        		Map<String, String> langAttrs = Util.string2Map(dl.getAnnotation1());
+        		String isReference = langAttrs.get("is_reference");
+        		if (isReference != null && isReference.equalsIgnoreCase("true")) {
+        			dictLanguages.add(dl);
+        		}
+        	}
+        }
 
-        LabelClosure lc = new LabelClosure(xmlDict, dict.getLabelNum());
+        LanguageClosure ll = new LanguageClosure(xmlDict);
+        CollectionUtils.forAllDo(dictLanguages, ll);
+
+        LabelClosure lc = new LabelClosure(xmlDict, dict.getLabelNum(), dictLanguages);
 
         log.info(StringUtils.center("Start generating dictionary " + dict.getName() + " labels(total: " + dict.getLabelNum() + ").", 100, '='));
         CollectionUtils.forAllDo(dict.getLabels(), lc);

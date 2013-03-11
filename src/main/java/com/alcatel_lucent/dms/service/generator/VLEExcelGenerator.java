@@ -29,7 +29,7 @@ import static com.alcatel_lucent.dms.service.parser.VLEExcelDictParser.MAX_LENGT
 import static com.alcatel_lucent.dms.service.parser.VLEExcelDictParser.REF_LANG_CODE;
 
 @Component("VLEExcelGenerator")
-public class VLEExcelGenerator implements DictionaryGenerator {
+public class VLEExcelGenerator extends DictionaryGenerator {
 
     private Logger log = LoggerFactory.getLogger(VLEExcelGenerator.class);
     @Autowired

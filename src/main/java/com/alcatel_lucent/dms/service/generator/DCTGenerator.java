@@ -23,7 +23,7 @@ import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.service.DaoService;
 
 @Component("DCTGenerator")
-public class DCTGenerator implements DictionaryGenerator {
+public class DCTGenerator extends DictionaryGenerator {
 	
 	private static Logger log = LoggerFactory.getLogger(DCTGenerator.class);
 	

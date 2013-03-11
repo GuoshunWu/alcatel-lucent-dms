@@ -2,6 +2,7 @@ package com.alcatel_lucent.dms.service.parser;
 
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.Constants;
+import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.service.LanguageService;
@@ -26,7 +27,6 @@ import java.util.*;
 
 import static org.apache.commons.lang3.BooleanUtils.toBoolean;
 import static org.apache.commons.lang3.StringUtils.center;
-import static org.apache.commons.lang3.StringUtils.defaultString;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 @Component("XmlDictParser")
@@ -44,7 +44,7 @@ public class XMLDictParser extends DictionaryParser {
         ArrayList<Dictionary> deliveredDicts = new ArrayList<Dictionary>();
         if (!file.exists()) return deliveredDicts;
 
-        Map<String, Collection<File>> propFiles = new HashMap<String, Collection<File>>();
+        Map<String, Collection<XDictionary>> propFiles = new HashMap<String, Collection<XDictionary>>();
         propFiles = groupDictionaries(file, propFiles, acceptedFiles);
 
         /*
@@ -52,7 +52,7 @@ public class XMLDictParser extends DictionaryParser {
         * */
 
         long begin = System.currentTimeMillis();
-        for (Map.Entry<String, Collection<File>> entry : propFiles.entrySet()) {
+        for (Map.Entry<String, Collection<XDictionary>> entry : propFiles.entrySet()) {
             deliveredDicts.add(processDictionary(entry, acceptedFiles));
         }
         long end = System.currentTimeMillis();
@@ -61,7 +61,7 @@ public class XMLDictParser extends DictionaryParser {
         return deliveredDicts;
     }
 
-    public Dictionary processDictionary(Map.Entry<String, Collection<File>> entry, Collection<File> acceptedFiles) {
+    public Dictionary processDictionary(Map.Entry<String, Collection<XDictionary>> entry, Collection<File> acceptedFiles) {
         log.info(center("Parsing dictionary '" + entry.getKey() + "' in " + entry.getValue(), 50, '='));
 
         DictionaryBase dictBase = new DictionaryBase();
@@ -76,14 +76,15 @@ public class XMLDictParser extends DictionaryParser {
 
         dictionary.setBase(dictBase);
 
-        for (File xdct : entry.getValue()) {
-            acceptedFiles.add(xdct);
+        for (XDictionary xdct : entry.getValue()) {
+            acceptedFiles.add(xdct.getFile());
             parseXdctFile(dictionary, xdct);
         }
         return dictionary;
     }
 
-    public void parseXdctFile(Dictionary dict, File xdctFile) {
+    public void parseXdctFile(Dictionary dict, XDictionary xdict) {
+    	File xdctFile = xdict.getFile();
         SAXReader saxReader = new SAXReader();
         saxReader.setEntityResolver(xdctdtdEntityResolver);
         Document document;
@@ -126,14 +127,14 @@ public class XMLDictParser extends DictionaryParser {
        * @see XLanguage comments
        * */
         Collection<XLanguage> languages = readLanguagesFromElementList(elemDict.elements("LANGUAGE"));
-        for (XLanguage language : languages) processLanguage(language, dict);
+        for (XLanguage language : languages) processLanguage(language, dict, xdict);
 
         List<Element> keys = elemDict.elements("KEY");
         for (Element key : keys) processKey(key, dict);
 
     }
 
-    private void processLanguage(XLanguage xLanguage, Dictionary dict) {
+    private void processLanguage(XLanguage xLanguage, Dictionary dict, XDictionary xdict) {
         DictionaryLanguage dictLanguage = dict.getDictLanguage(xLanguage.getId());
         if (null != dictLanguage) {
             log.debug("Language code '" + dictLanguage.getLanguageCode() + "' already added in dictionary " + dict.getName() + ", ignore.");
@@ -148,6 +149,7 @@ public class XMLDictParser extends DictionaryParser {
         dictLanguage.setCharset(languageService.getCharset(dict.getEncoding()));
 
         dictLanguage.setAnnotation1(String.format("is_reference=%s;is_context=%s", xLanguage.isIs_reference(), xLanguage.isIs_context()));
+        dictLanguage.setAnnotation2(xdict.getPath());
         dictLanguage.setSortNo(-1);
 
         dict.addDictLanguage(dictLanguage);
@@ -343,7 +345,7 @@ public class XMLDictParser extends DictionaryParser {
      * @return map which contained grouped dct files, the key is their name, and the value is a collection of this
      *         dictionary related File objects.
      */
-    public Map<String, Collection<File>> groupDictionaries(File file, Map<String, Collection<File>> propFiles, Collection<File> acceptedFiles) {
+    public Map<String, Collection<XDictionary>> groupDictionaries(File file, Map<String, Collection<XDictionary>> propFiles, Collection<File> acceptedFiles) {
         if (file.isFile()) {
             if (!Util.isXdcpFile(file)) return propFiles;
             /* Read the xdcp file and get the dictionary and their relative path information from it.*/
@@ -351,28 +353,21 @@ public class XMLDictParser extends DictionaryParser {
             acceptedFiles.add(file);
 
             for (XDictionary dict : xmlProject.getDictionaries()) {
-                Collection<File> dictFiles = propFiles.get(dict.getName());
+                Collection<XDictionary> dictFiles = propFiles.get(dict.getName());
                 if (null == dictFiles) {
-                    dictFiles = new ArrayList<File>();
+                    dictFiles = new ArrayList<XDictionary>();
                     propFiles.put(dict.getName(), dictFiles);
                 }
-                File xdctFile = null;
-                try {
-                	String xdctFilepath = dict.getPath().replaceAll("\\\\", "/");
-                    xdctFile = new File(file.getParent(), xdctFilepath).getCanonicalFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
+                File xdctFile = dict.getFile();
                 if (!xdctFile.exists()) {
                     log.warn("The file '" + xdctFile + "' referenced by '" + file + "' does not exist, ignore.");
                     continue;
                 }
-                if (dictFiles.contains(xdctFile)) {
+                if (dictFiles.contains(dict)) {
                     log.info("The file '" + xdctFile + "' referenced by '" + file + "' already in collection, ignore.");
                     continue;
                 }
-                dictFiles.add(xdctFile);
+                dictFiles.add(dict);
             }
             return propFiles;
         }
@@ -391,7 +386,6 @@ public class XMLDictParser extends DictionaryParser {
     }
 
     private XMLProject readXdcp(File xDcpFile) {
-        Collection<XDictionary> xDctFiles = new ArrayList<XDictionary>();
         SAXReader saxReader = new SAXReader();
         saxReader.setEntityResolver(xdcpdtdEntityResolver);
         Document document;
@@ -403,7 +397,7 @@ public class XMLDictParser extends DictionaryParser {
         }
 
         Element project = document.getRootElement();
-        XMLProject xmlProject = new XMLProject();
+        XMLProject xmlProject = new XMLProject(xDcpFile);
 
         xmlProject.setName(project.attributeValue("name"));
 
@@ -476,6 +470,7 @@ public class XMLDictParser extends DictionaryParser {
         public void setIs_context(boolean is_context) {
             this.is_context = is_context;
         }
+        
     }
 
     /**
@@ -487,6 +482,7 @@ public class XMLDictParser extends DictionaryParser {
     class XDictionary {
         private String name;
         private String path;
+        private File file;
 
         @Override
         public String toString() {
@@ -516,6 +512,20 @@ public class XMLDictParser extends DictionaryParser {
         public void setPath(String path) {
             this.path = path;
         }
+
+		public File getFile() {
+			return file;
+		}
+
+		public void setFile(File file) {
+			this.file = file;
+		}
+		
+        @Override
+        public boolean equals(Object o) {
+        	if (file == null || o == null || ((XDictionary)o).getFile() == null) return false;
+        	return file.equals(((XDictionary)o).getFile());
+        }
     }
 
     /**
@@ -523,6 +533,7 @@ public class XMLDictParser extends DictionaryParser {
      * Attribute 'name' is the name of this project
      */
     class XMLProject {
+    	private File xdcpFile;
         private String name;
         private Collection<XLanguage> languages = new ArrayList<XLanguage>();
         private Collection<XDictionary> dictionaries = new ArrayList<XDictionary>();
@@ -532,11 +543,20 @@ public class XMLDictParser extends DictionaryParser {
             return reflectionToString(this);
         }
 
-        XMLProject() {
+        XMLProject(File xdcpFile) {
+        	this.xdcpFile = xdcpFile;
         }
 
         public void addDict(XDictionary dict) {
-            this.dictionaries.add(dict);
+        	String path = dict.getPath().replaceAll("\\\\", "/");
+        	try {
+				File dctFile = new File(xdcpFile.getParent(), path).getCanonicalFile();
+				dict.setFile(dctFile);
+	            this.dictionaries.add(dict);
+			} catch (IOException e) {
+				e.printStackTrace();
+				throw new SystemError(e);
+			}
         }
 
         public void addLanguage(XLanguage language) {

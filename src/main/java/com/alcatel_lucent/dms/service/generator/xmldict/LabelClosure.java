@@ -30,11 +30,13 @@ public class LabelClosure implements Closure {
     private static final Logger log = LoggerFactory.getLogger(LabelClosure.class);
     private final Element xmlDict;
     private final int totalLabel;
+    private final Collection<DictionaryLanguage> dictLanguages;
     private int labelCounter = 0;
 
-    public LabelClosure(Element xmlDict, int totalLabel) {
+    public LabelClosure(Element xmlDict, int totalLabel, Collection<DictionaryLanguage> dictLanguages) {
         this.xmlDict = xmlDict;
         this.totalLabel = totalLabel;
+        this.dictLanguages = dictLanguages;
     }
 
     public void execute(Object input) {
@@ -102,11 +104,10 @@ public class LabelClosure implements Closure {
      * @param label    Current processed label
      */
     private void writeElement(String elemName, Element xmlKey, Label label) {
-        Collection<DictionaryLanguage> dictionaryLanguages = label.getDictionary().getDictLanguages();
         Map<String, String> labelProp = Util.string2Map(label.getAnnotation1());
         // write language elements
         LabelTranslation lt;
-        for (DictionaryLanguage dictionaryLanguage : dictionaryLanguages) {
+        for (DictionaryLanguage dictionaryLanguage : dictLanguages) {
             String langCode = dictionaryLanguage.getLanguageCode();
             lt = label.getOrigTranslation(langCode);
 
