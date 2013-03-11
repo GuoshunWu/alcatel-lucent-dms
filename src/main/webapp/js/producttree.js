@@ -124,12 +124,13 @@
       }).bind("select_node.jstree", function(event, data) {
         clearTimeout(timeFunName);
         return timeFunName = setTimeout(function() {
-          var currentTab, module, node, nodeInfo;
+          var currentModule, currentTab, module, node, nodeInfo;
           appTree = data.inst;
           node = data.rslt.obj;
           nodeInfo = getNodeInfo(node);
           currentTab = $("#pageNavigator").val();
-          module = require("" + (currentTab.split('.')[0]) + "/main");
+          currentModule = currentTab.split('.')[0];
+          module = require("" + currentModule + "/main");
           return module != null ? typeof module.nodeSelect === "function" ? module.nodeSelect(node, nodeInfo) : void 0 : void 0;
         }, 300);
       }).bind('dblclick_node.jstree', function(event, data) {

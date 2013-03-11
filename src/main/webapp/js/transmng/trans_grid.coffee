@@ -87,9 +87,10 @@ define [
     url: urls.dicts
     mtype: 'post', postData:{}, datatype: 'local'
     width: 1000, height: 300
+    viewrecords: true, gridview: true, multiselect: true
     rownumbers: true, shrinkToFit: false
     pager: '#transPager', rowNum: 60, rowList: [20, 30, 60, 120, 500, 1000]
-    sortname: 'app.base.name', sortorder: 'asc', multiselect: true
+    sortname: 'app.base.name', sortorder: 'asc'
     colNames: grid.dictionary.colNames, colModel: grid.dictionary.colModel
     #  customed option for save the toolbar search value and group headers
     searchvalue: {}, groupHeaders: []
