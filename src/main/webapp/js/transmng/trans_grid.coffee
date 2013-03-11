@@ -163,7 +163,7 @@ define [
     #    console?.log 'Start loading data, setup the counter here...'
     #    window.param.refreshCounter = setInterval("console.log('tick');", 1000)
 
-    isApp = (param.level == "application")
+    isApp = (param.level == "app")
     if isApp
       url = urls.apps
       prop = "id,id,base.name,version,labelNum,#{summary}"
