@@ -1,0 +1,706 @@
+--?000 #CHECKSUM=735984#
+
+--? ?000 #CHECKSUM=672523#
+
+-- ? 1000 #CHECKSUM=414286#
+
+-- 1 ---------------------------------------------------------------
+-- Dictionnaire de l'application Instant COmmmunicator pour le toast
+-- ------------------------------------------------------------------
+-- Creation date : 13/02/2007
+-- Last Modification Date :
+
+-- Supported languages
+
+LANGUAGES {CHK, GAE, FR0, EN0, DE0, IT0, PT0, ES0, US0, PL0, KO0, NO0, NL0, RU0, CH0, FI0, ES1, CS0, HU0, CH1, SV0, AR0, DA0, HE0}
+
+-- Structure of the dictionary:
+
+-- First, you can see commentary lines, precedeed by two minus signs "--". these comments are not
+-- interpreted by the dictionary tool.
+
+-- For each translation needed, you will find:
+-- An entry key string in upper case, followed by a colon ":".
+-- This key is used by the software to associate a text field in the application with a set of
+-- translations
+-- Each translation associated with this key enholds:
+-- - a language code (FR0 for French for instance)
+-- - a text between brackets for the translation
+-- - a comma to delimit the end of the translation for this language
+-- the comma is replaced by a semicolon ";" to end the list of translations for a specific key
+
+-- NOTA 1: The CHK (Czech) language is used for indicating the maximum width of a text field.
+-- This indication stands only if you visualize the present dictionary with the proper
+-- font (as used in the application). Then, whichever characters you are using
+-- (W can be wider than i) the translations in the different languages  must not exeed the text width
+-- (undependantly to the characters amount) indicated in the CHK field
+-- Texts that are to be displayed in a popup window (OK popup, yes-no popup...) can consist
+-- of more than one line:
+-- "This text will be displayed""on two lines"
+-- Each line must not exceed the width indicated in the CHK field
+-- Texts that are to be displayed in a temporised popup (also called timed popup) can consist of :
+-- One (long) line (with automatic wrap of text on the following 3 lines),
+-- Or several lines ("First line"Second line"...up to "Forth line")
+-- In any case, you are limited to 256 caracters.
+
+-- General syntax:
+-- WC_xxxx : Window caption (title of the window)
+-- ME_xxxx : element of a menu
+-- BU_xxxx : name of a button
+-- CB_xxxx : element of a combo-box
+-- TQ_xxxx : text of a question
+-- TI_xxxx : text of an information, a warning, a problem
+-- ST_xxxx : static text before a variable field or others....
+-- EN_xxxx : for enumered types
+-- TT_xxxx : tool tips
+
+-- General rules:
+-- the "%s" inserted in a string will be replaced by a text at execution;
+-- the "%d" inserted in a string will be replaced by a number;
+-- all the translation for a string including a %s or a %d must keep those key characters, or an error occurs.
+-- The translations being presented in two string ("like" "this") will be displayed on two lines;
+-- you are not allowed to translate on two lines a text which is in one line in the English translation.
+
+-- Text displayed if the translation is not found
+-- nota: Sometimes the default text is included in English in the source code, beginning with "?"
+
+-- --------------------------------------
+-- General
+-- --------------------------------------
+
+CALL_FROM:
+  CHK "Phone call from0123456789012345678",
+  GAE "Phone call from",
+
+  EN0 "Phone call from",
+
+
+
+
+  US0 "Take the phone call from", --!!! 
+
+
+
+
+
+  CH0 "呼叫来自",
+
+
+
+
+
+
+
+
+  HE0 "Phone call from"; --???
+
+TAKE_CALL:
+  CHK "Take call0123456789012345",
+  GAE "Take call",
+
+  EN0 "Take call",
+
+
+
+
+  US0 "Take call", --!!! 
+
+
+
+
+
+  CH0 "接听呼叫",
+
+
+
+
+
+
+
+
+  HE0 "Take call"; --???
+
+ANSWER_IM:
+  CHK "Answer with an IM0123456789",
+  GAE "Answer with an IM",
+
+  EN0 "Answer with an IM",
+
+
+
+
+  US0 "Answer with an IM", --!!! 
+
+
+
+
+
+  CH0 "用即时消息应答",
+
+
+
+
+
+
+
+
+  HE0 "Answer with an IM"; --???
+
+-- crms00097471 +
+
+JOIN_WEB_CONF:
+  CHK "Join the web conference0123456789",
+  GAE "Join the web conference",
+
+  EN0 "Join the web conference",
+
+
+
+
+  US0 "Join the web conference",
+
+
+
+
+
+  CH0 "加入web会议",
+
+
+
+
+
+
+
+
+  HE0 "Join the web conference"; --???
+
+JOIN_WEB_AUDIO_CONF:
+  CHK "Join the web and audio conference0123456789",
+  GAE "Join the web and audio conference",
+
+  EN0 "Join the web and audio conference",
+
+
+
+
+  US0 "Join the web and audio conference",
+
+
+
+
+
+  CH0 "加入web和电话会议",
+
+
+
+
+
+
+
+
+  HE0 "Join the web and audio conference"; --???
+
+-- crms00097471 -
+
+SEND_MAIL:
+  CHK "Answer with an email012345678",
+  GAE "Answer with an email",
+
+  EN0 "Answer with an email",
+
+
+
+
+  US0 "Answer with an email", --!!! 
+
+
+
+
+
+  CH0 "用电子邮件应答",
+
+
+
+
+
+
+
+
+  HE0 "Answer with an email"; --???
+
+CORDLESS_PHONE:
+  CHK "Transfer to voicemail 01234567890",
+  GAE "Transfer to wireless phone", -- 
+
+  EN0 "Transfer to wireless phone", -- 
+
+
+
+
+  US0 "Transfer to wireless", --!!! 
+
+
+
+
+
+  CH0 "转接至无线电话",
+
+
+
+
+
+
+
+
+  HE0 "Transfer to wireless phone"; --???
+
+-- crms00097471 +
+
+DIVERT_OTHER_NUMBER:
+  CHK "Transfer to other number0123456789",
+  GAE "Transfer to other number",
+
+  EN0 "Transfer to other number",
+
+
+
+
+  US0 "Transfer to other number",
+
+
+
+
+
+  CH0 "转接至其他号码",
+
+
+
+
+
+
+
+
+  HE0 "Transfer to other number"; --???
+
+-- crms00097471 -
+
+DEFLECT:
+  CHK "Transfer to number0123456789",
+  GAE "Transfer to number",
+
+  EN0 "Transfer to number",
+
+
+
+
+  US0 "Transfer to number",
+
+
+
+
+
+  CH0 "转接至其他号码",
+
+
+
+
+
+
+
+
+  HE0 "Transfer to number"; --???
+
+OVERFLOWTOVM:
+  CHK "Transfer to voicemail 0123456789",
+  GAE "Transfer to voicemail",
+
+  EN0 "Transfer to voicemail",
+
+
+
+
+  US0 "Transfer to voicemail", --!!! 
+
+
+
+
+
+  CH0 "转接至语音邮件",
+
+
+
+
+
+
+
+
+  HE0 "Transfer to voicemail"; --???
+
+IM_FROM:
+  CHK "Message instantan?de0123456789",
+  GAE "Answer the IM from",
+
+  EN0 "Instant message from",
+
+
+
+
+  US0 "Answer the IM from", --!!! 
+
+
+
+
+
+  CH0 "应答即时消息来自",
+
+
+
+
+
+
+
+
+  HE0 "Instant message from"; --???
+
+/SID:
+  CHK "<Secret identity>0123456789",
+  GAE "<Secret identity>",
+
+  EN0 "<Secret identity>", -- 
+
+
+
+
+  US0 "<Secret identity>", --!!! 
+
+
+
+
+
+  CH0 "<身份隐藏>",
+
+
+
+
+
+
+
+
+  HE0 "<Secret identity>"; --???
+
+MAKE_CALL:
+  CHK "Call0123456789",
+  GAE "Call",
+
+  EN0 "Call", -- 
+
+
+
+
+  US0 "Call", --!!! 
+
+
+
+
+
+  CH0 "呼叫",
+
+
+
+
+
+
+
+
+  HE0 "Call"; --???
+
+MAKE_CALL_CONFERENCE:
+  CHK "Call0123456789",
+  GAE "Call",
+
+  EN0 "Call", -- 
+
+
+
+
+  US0 "Call", --!!! 
+
+
+
+
+
+  CH0 "呼叫",
+
+
+
+
+
+
+
+
+  HE0 "Call"; --???
+
+SIGN_IN:
+  CHK "has signed in0123456789",
+  GAE "has signed in",
+
+  EN0 "has signed in", -- 
+
+
+
+
+  US0 "has signed in", --!!! 
+
+
+
+
+
+  CH0 "联系人已登录：",
+
+
+
+
+
+
+
+
+  HE0 "has signed in"; --???
+
+CONF_IS_STARTING:
+  CHK "est d閙arr閑01234",
+  GAE "is started",
+
+  EN0 "is started",
+
+
+
+
+  US0 "has started", --!!! 
+
+
+
+
+
+  CH0 "新会议开始",
+
+
+
+
+
+
+
+
+  HE0 "is started"; --???
+
+CONF_MINUTES:
+  CHK "minutes01234",
+  GAE "minutes",
+
+  EN0 "minutes",
+
+
+
+
+  US0 "minutes", --!!! 
+
+
+
+
+
+  CH0 "分钟",
+
+
+
+
+
+
+
+
+  HE0 "minutes"; --???
+
+CONFERENCE_NAME_DEFAULT:
+  CHK "conference012",
+  GAE "conference",
+
+  EN0 "conference",
+
+
+
+
+  US0 "conference", --!!! 
+
+
+
+
+
+  CH0 "会议",
+
+
+
+
+
+
+
+
+  HE0 "conference"; --???
+
+SOMEONE_JOIN_CONF:
+  CHK "has joined the conference01234",
+  GAE "has joined the conference",
+
+  EN0 "has joined the conference",
+
+
+
+
+  US0 "has joined the conference", --!!! 
+
+
+
+
+
+  CH0 "有人加入会议",
+
+
+
+
+
+
+
+
+  HE0 "has joined the conference"; --???
+
+COLLEAGUE_PHONE:
+  CHK "Transfer to colleague0123456789",
+  GAE "Transfer to colleague",
+
+  EN0 "Transfer to colleague ", -- 
+
+
+
+
+  US0 "Transfer to colleague", --!!! 
+
+
+
+
+
+  CH0 "转接至同事",
+
+
+
+
+
+
+
+
+  HE0 "Transfer to colleague "; --???
+
+-- crms00138414 +
+
+DEFLECT_MEVO:
+  CHK "Transfer to voicemail012",
+  GAE "Transfer to voicemail",
+
+  EN0 "Transfer to voicemail",
+
+
+
+
+  US0 "Transfer to voicemail",
+
+
+
+
+
+  CH0 "转接至语音邮件",
+
+
+
+
+
+
+
+
+  HE0 "Transfer to voicemail"; --???
+
+-- crms00138414 -
+
+SHARE_APP:
+  CHK "Presentation coming from01234",
+  GAE "Presentation coming from",
+
+  EN0 "Presentation coming from",
+
+
+
+
+  US0 "Presentation coming from", --!!! 
+
+
+
+
+
+  CH0 "演示来自", 
+
+
+
+
+
+
+
+
+  HE0 "Presentation coming from"; --???
+
+CALLBACK_REQUEST:
+  CHK "Callback request 01234",
+  GAE "Callback request",
+
+  EN0 "Callback request",
+
+
+
+
+  US0 "Callback request", --!!! 
+
+
+
+
+
+  CH0 "回叫请求",
+
+
+
+
+
+
+
+
+  HE0 "Callback request"; --???
+
+RELEASE:
+  CHK "Hang up 012345678",
+  GAE "Hang up",
+
+  EN0 "Hang up",
+
+
+
+
+  US0 "Hang up", --!!! 
+
+
+
+
+
+  CH0 "挂机",
+
+
+
+
+
+
+
+
+  HE0 "Hang up"; --???
+

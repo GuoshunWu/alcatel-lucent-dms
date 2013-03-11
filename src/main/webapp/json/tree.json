@@ -1,0 +1,27 @@
+[
+    {
+        "children":[
+            {
+                "children":[
+                    {
+                        "attr":{
+                            "id":1,
+                            "type":"app"
+                        },
+                        "data":"test"
+                    }
+                ],
+                "attr":{
+                    "id":1,
+                    "type":"product"
+                },
+                "data":"ISC"
+            }
+        ],
+        "attr":{
+            "id":-1,
+            "type":"products"
+        },
+        "data":"products"
+    }
+]

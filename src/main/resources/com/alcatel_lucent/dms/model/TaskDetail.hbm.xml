@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.alcatel_lucent.dms.model">
+
+	<class name="TaskDetail" table="TASK_DETAIL">
+		<id column="ID" name="id">
+			<generator class="hilo">
+                <param name="table">ID_TASK_DETAIL</param>
+                <param name="column">next_hi</param>
+                <param name="max_lo">100</param>
+        	</generator>
+		</id>
+
+		<property name="origTranslation" type="string" column="ORIG_TRANSLATION"
+			length="1024" />
+		<property name="newTranslation" type="string" column="NEW_TRANSLATION"
+			length="1024" />
+		<property name="labelKey" type="string" column="LABEL_KEY" />
+		<property name="maxLength" type="string" column="MAX_LENGTH" />
+		<property name="description" type="string" column="DESCRIPTION" />
+			
+		<many-to-one name="task" column="TASK_ID" not-null="true" />
+		<many-to-one name="text" column="TEXT_ID" lazy="false" not-null="true" />
+		<many-to-one name="language" column="LANGUAGE_ID" not-null="true" />
+		<many-to-one name="label" column="LABEL_ID" not-null="true" />
+
+	</class>
+
+</hibernate-mapping>
