@@ -314,7 +314,7 @@
           })).get().join(',');
         })).get().join(',');
         gridParam = transGrid.getGridParam();
-        isApp = param.level === "application";
+        isApp = param.level === "app";
         if (isApp) {
           url = urls.apps;
           prop = "id,id,base.name,version,labelNum," + summary;
