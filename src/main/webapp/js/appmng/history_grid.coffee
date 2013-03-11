@@ -1,4 +1,7 @@
-define ['jqgrid','util', 'require'], ($, util,  require)->
+define ['jqgrid', 'dms-util'], ($, util)->
+
+  console?.log "module appmng/history_grid loading."
+
   lastEditedCell = null
 
   grid = $('#historyGrid').jqGrid(

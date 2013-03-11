@@ -24,8 +24,23 @@ define (require)->
   product:
     create: getURL('create-product', 'app/')
     del: getURL('remove-product-base', 'app/')
+    create_version: getURL('create-product-release', 'app/')
   app:
     create: getURL('create-application-base', 'app/')
     del: getURL('remove-application-base', 'app/')
+    create_version: getURL('create-application', 'app/')
+    remove_version: getURL('remove-application', 'app/')
+
+  #  rest urls
+  prod_versions:getURL('products/version','rest/')
+  # application base id in the url, example: applications/apps/id
+  app_versions: getURL("applications/apps/",'rest/')
+
+  apps: getURL('applications', 'rest/')
+  dicts: getURL('dict', 'rest/')
+  tasks: getURL('tasks', 'rest/')
+
+  languages: getURL('languages','rest/')
+
 
 

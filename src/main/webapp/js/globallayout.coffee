@@ -1,10 +1,16 @@
-define (require)->
-  require 'jqlayout'
+define ['jqlayout'], (jqlayout)->
+  autoSizeGrids = ['applicationGridList', 'dictionaryGridList', 'transGrid', 'taskGrid']
 
   ready = (param)->
     console?.debug "global layout ready..."
   init = ()->
     layout = $('#global-container').layout(
+      onresize: (name, element, state, options, layoutname)->
+        # auto size trans grid when resize
+        $('table.ui-jqgrid-btable').each (index, grid)->
+          if 'center' == name and grid.id in autoSizeGrids
+            $(grid).setGridWidth(element.width() - 50, false)
+
       defaults:
         size: 'auto'
         minSize: 50
@@ -39,9 +45,8 @@ define (require)->
     )
 
     # save selector strings to vars so we don't have to repeat it
-    # must prefix paneClass with "#optional-container >" to target ONLY the Layout panes
     # west pane
-    westSelector = "#global-container > div.ui-layout-west"
+    westSelector = "#global-container div.ui-layout-west"
 
     # CREATE SPANs for pin-buttons - using a generic class as identifiers
     $("<span />").addClass("pin-button").prependTo(westSelector)

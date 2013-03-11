@@ -73,7 +73,6 @@
         </tr>
     </table>
 </div>
-
 <div id="languageSettingsDialog">
     <table border="0" width="100%">
         <tr>
@@ -111,10 +110,10 @@
                         <td><input id="dictVersion" readonly="readonly"/></td>
                     <tr>
                         <td style="width:35px;"><label for="dictFormat"><s:text name="dictionary.format"/></label></td>
-                        <td><input id="dictFormat" size="5" readonly="readonly"/></td>
+                        <td><input id="dictFormat" size="20" readonly="readonly"/></td>
                         <td style="width:35px;"><label for="dictEncoding"><s:text name="dictionary.encoding"/></label>
                         </td>
-                        <td><input id="dictEncoding" size="5" readonly="readonly"/></td>
+                        <td><input id="dictEncoding" size="10" readonly="readonly"/></td>
                     </tr>
 
                     <tr>

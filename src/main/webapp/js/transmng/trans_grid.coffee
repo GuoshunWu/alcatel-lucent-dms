@@ -1,8 +1,22 @@
-define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n!nls/transmng', 'i18n!nls/common', 'require' ], ($, util, msgbox, gmodel, blockui, i18n, c18n, require)->
-#prepare the grid column name and column model parameters for the grid.
+define [
+  'jqgrid'
+  'jqmsgbox'
+  'blockui'
+
+  'i18n!nls/transmng'
+  'i18n!nls/common'
+  'dms-urls'
+  'dms-util'
+
+  'transmng/grid.colmodel'
+], ($, msgbox, blockui, i18n, c18n, urls, util, gmodel)->
+
+
+  # prepare the grid column name and column model parameters for the grid.
   restoreSearchToolBarValue = (column, value)->
     console?.log "Set default value to #{value} for #{column}"
-    $("select[id=gs_#{column}]").each (idx, elem)-> elem.value = value
+    barSelector = "select[id=gs_#{column}]"
+    $(barSelector).each (idx, elem)-> elem.value = value
     searchOpts = ($("#transGrid").jqGrid 'getColProp', column).searchoptions
     searchOpts.defaultValue = value
 
@@ -20,7 +34,7 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
           type: 'change', fn: (e)->
             searchvalue = $("#transGrid").jqGrid 'getGridParam', 'searchvalue'
             searchvalue.app = e.target.value
-            $("#transGrid").jqGrid 'setGridParam', 'searchvalue', searchvalue
+            $("#transGrid").jqGrid('setGridParam', 'searchvalue':searchvalue)
           }
         ]
       }
@@ -42,7 +56,7 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
             type: 'change', fn: (e)->
               searchvalue = $("#transGrid").jqGrid 'getGridParam', 'searchvalue'
               searchvalue.encoding = e.target.value
-              $("#transGrid").jqGrid 'setGridParam', 'searchvalue', searchvalue
+              $("#transGrid").jqGrid 'setGridParam', 'searchvalue': searchvalue
             }
           ]
         }
@@ -54,7 +68,7 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
             type: 'change', fn: (e)->
               searchvalue = $("#transGrid").jqGrid 'getGridParam', 'searchvalue'
               searchvalue.format = e.target.value
-              $("#transGrid").jqGrid 'setGridParam', 'searchvalue', searchvalue
+              $("#transGrid").jqGrid 'setGridParam', 'searchvalue': searchvalue
             }
           ]
         }
@@ -68,60 +82,52 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
   getTableType = ->if -1 == ($.inArray 'Dummy', $("#transGrid").getGridParam('colNames')) then  'dict' else 'app'
 
   ### Construct the grid with the column name(model) parameters above and other required parameters ###
-  transGrid = $("#transGrid").jqGrid {
-  url: 'rest/dict'
-  mtype: 'post', postData: {}, datatype: 'local'
-  width: $(window).innerWidth() * 0.95, height: 300
-  rownumbers: true, shrinkToFit: false
-  pager: '#transPager', rowNum: 60, rowList: [20, 30, 60, 120, 500, 1000]
-  sortname: 'app.base.name', sortorder: 'asc', multiselect: true
-  colNames: grid.dictionary.colNames, colModel: grid.dictionary.colModel
 
-  beforeProcessing: (data, status, xhr)->
-  gridComplete: ->
-    transGrid = $(@)
-    #    console?.log "Data loading complete, clear the data loading counter."
-    #    clearInterval(window.param.refreshCounter) if window.param.refreshCounter
+  transGrid = $("#transGrid").jqGrid(
+    url: urls.dicts
+    mtype: 'post', postData:{}, datatype: 'local'
+    width: 1000, height: 300
+    viewrecords: true, gridview: true, multiselect: true
+    rownumbers: true, shrinkToFit: false
+    pager: '#transPager', rowNum: 60, rowList: [20, 30, 60, 120, 500, 1000]
+    sortname: 'app.base.name', sortorder: 'asc'
+    colNames: grid.dictionary.colNames, colModel: grid.dictionary.colModel
+    #  customed option for save the toolbar search value and group headers
+    searchvalue: {}, groupHeaders: []
 
+    beforeProcessing: (data, status, xhr)->
+    gridComplete: ->
+      transGrid = $(@)
 
-    #    console?.log 'Start render grid, setup the render counter...'
-    #    window.param.refreshCounter = setInterval("console.log('tick');", 1000)
+      $('a', @).each (index, a)->$(a).before(' ').remove() if '0' == $(a).text()
 
-    $('a', @).each (index, a)->$(a).before(' ').remove() if '0' == $(a).text()
+      $('a', @).css('color', 'blue').click ()->
+        pageParams = util.getUrlParams(@href)
+        #      console?.log pageParams
+        rowid = pageParams?.id
+        language = id: pageParams.languageId, name: pageParams.languageName
 
-    $('a', @).css('color', 'blue').click ()->
-      pageParams = util.getUrlParams(@href)
-      #      console?.log pageParams
-      rowid = pageParams?.id
-      language = id: pageParams.languageId, name: pageParams.languageName
+        rowData = transGrid.getRowData(rowid)
+        allZero = true
+        $(['T', 'N', 'I']).each (index, elem)->
+          num = parseInt rowData["#{language.name}.#{elem}"]
+          allZero = 0 == num
+          allZero
 
-      rowData = transGrid.getRowData(rowid)
-      allZero = true
-      $(['T', 'N', 'I']).each (index, elem)->
-        num = parseInt rowData["#{language.name}.#{elem}"]
-        allZero = 0 == num
-        allZero
+        (console?.log 'zero';return) if allZero
+        util.getDictLanguagesByDictId rowid, (languages)=>
+          dialogs = require('transmng/dialogs')
+          dialogs.showTransDetailDialog {dict:{id: rowid, name: rowData.dictionary}, language: language, languages: languages}
+    #  customed method executed when the grid is created.
+    afterCreate: (grid)->
+      grid.setGridParam 'datatype': 'json'
+      grid.setGroupHeaders {useColSpanStyle: true, groupHeaders: grid.getGridParam('groupHeaders')}
+      grid.filterToolbar {stringResult: true, searchOnEnter: false} if getTableType() == 'dict'
 
-      (console?.log 'zero';return) if allZero
-      util.getDictLanguagesByDictId rowid, (languages)=>
-        transLayout = require('transmng/layout')
-        transLayout.showTransDetailDialog {dict: {id: rowid, name: rowData.dictionary}, language: language, languages: languages}
-
-  #    console?.log "Grid render complete, clear the render counter."
-  #    clearInterval(window.param.refreshCounter) if window.param.refreshCounter
-
-  #  customed option for save the toolbar search value and group headers
-  searchvalue: {}, groupHeaders: []
-  #  customed method executed when the grid is created.
-  afterCreate: (grid)->
-    grid.setGridParam 'datatype': 'json'
-    grid.setGroupHeaders {useColSpanStyle: true, groupHeaders: grid.getGridParam 'groupHeaders'}
-    grid.filterToolbar {stringResult: true, searchOnEnter: false} if getTableType() == 'dict'
-
-    grid.navGrid '#transPager', {edit: false, add: false, del: false, search: false, view: false}
-    #    grid.navButtonAdd "#transPager", {caption: "Clear", title: "Clear Search", buttonicon: 'ui-icon-refresh', position: 'first', onClickButton: ()->grid[0].clearToolbar()}
-    grid.setFrozenColumns()
-  }
+      grid.navGrid '#transPager', {edit: false, add: false, del: false, search: false, view: false}
+      #    grid.navButtonAdd "#transPager", {caption: "Clear", title: "Clear Search", buttonicon: 'ui-icon-refresh', position: 'first', onClickButton: ()->grid[0].clearToolbar()}
+      grid.setFrozenColumns()
+  )
   transGrid.getGridParam('afterCreate') transGrid
 
   #  button for make all label as...
@@ -149,7 +155,7 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
       transGrid.trigger 'reloadGrid'
 
 
-  productReleaseChanged: (param) ->
+  updateGrid: (param) ->
     transGrid = $("#transGrid")
     summary = ($(param.languages).map ->_this = @;($([0, 1, 2]).map ->"s(#{_this.id})[#{@}]").get().join(',')).get().join(',')
     gridParam = transGrid.getGridParam()
@@ -159,17 +165,12 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
 
     isApp = (param.level == "application")
     if isApp
-      url = 'rest/applications'
+      url = urls.apps
       prop = "id,id,base.name,version,labelNum,#{summary}"
       transGrid.setColProp 'application', {search: false, index: 'base.name'}
-      gridParam.sortname = 'base.name'
-      postData = {prod: param.release.id, format: 'grid', prop: prop}
-
-      #      unless param.languageTrigger
-      #        console.log "versionTrigger ...."
-      #        gridParam.postData = postData
-      #        transGrid.trigger 'reloadGrid'
-      #        return
+      transGrid.setGridParam('sortname':'base.name')
+      postData = {format: 'grid', prop: prop}
+      postData[param.type] =  param.release.id
 
       gridParam.colNames = grid.application.colNames
       gridParam.colModel = grid.application.colModel
@@ -177,7 +178,7 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
       transGrid.updateTaskLanguage param.languages
       transGrid.reloadAll url, postData
     else
-      url = 'rest/dict'
+      url = urls.dicts
       prop = "id,app.base.name,app.version,base.name,version,base.encoding,base.format,labelNum,#{summary}"
 
       gridParam.colNames = grid.dictionary.colNames
@@ -185,20 +186,22 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
 
       # fill the search value dynamically for application
       searchoptions = transGrid.getColProp('application').searchoptions
-      $.ajax {url: "rest/applications?prod=#{param.release.id}&prop=id,name", async: false, dataType: 'json', success: (json)->
-        app = ":All"
-        $(json).each ->app += ";#{@name}:#{@name}"
-        searchoptions.value = app
-      }
-      transGrid.setColProp('application', searchoptions: searchoptions, index: 'app.base.name')
-      gridParam.sortname = 'app.base.name'
-      postData = {prod: param.release.id, format: 'grid', prop: prop}
 
-      #      unless param.languageTrigger
-      #        gridParam.postData = postData
-      #        console.log "versionTrigger ...."
-      #        transGrid.trigger 'reloadGrid'
-      #        return
+      transGrid.setColProp('application', searchoptions: searchoptions, index: 'app.base.name')
+      if 'prod' == param.type
+        app = ":All"
+        $.ajax {url: urls.apps, data: {prod:param.release.id, prop: "id,name"}, async: false, dataType: 'json', success: (json)->
+          $(json).each ->app += ";#{@name}:#{@name}"
+        }
+        transGrid.setGridParam('sortname':'app.base.name')
+      else
+        # application
+        app = "#{param.name}:#{param.name}"
+        transGrid.setGridParam('sortname':'base.name')
+      searchoptions.value = app
+
+      postData = {format: 'grid', prop: prop}
+      postData[param.type] = param.release.id
 
       transGrid.updateTaskLanguage param.languages
       # Use this for toolbar search restore.
@@ -211,7 +214,7 @@ define ['jqgrid', 'util', 'jqmsgbox', 'transmng/grid.colmodel', 'blockui', 'i18n
       restoreSearchToolBarValue 'encoding', searchvalue.encoding if searchvalue.encoding
       restoreSearchToolBarValue 'format', searchvalue.format if searchvalue.format
 
-      transGrid.setGridParam 'datatype', 'json'
+      transGrid.setGridParam('datatype': 'json')
 
       if searchvalue.app || searchvalue.encoding || searchvalue.format
         $("#transGrid")[0].triggerToolbar()

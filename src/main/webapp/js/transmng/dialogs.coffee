@@ -1,28 +1,25 @@
-define (require)->
-  i18n = require 'i18n!nls/transmng'
-  c18n = require 'i18n!nls/common'
-  grid = require 'transmng/trans_grid'
-
-  util = require 'dms-util'
-  #  detailgrid = require 'transmng/transdetail_grid'
-
-  refreshGrid = (languageTrigger = false, grid = grid)->
+define ['i18n!nls/transmng', 'i18n!nls/common', 'dms-util', 'transmng/trans_grid', 'transmng/transdetail_grid'], (i18n, c18n, util, grid, detailgrid)->
+  console?.debug "transmng panel dialogs init..."
+  transGrid = grid
+  refreshGrid = (languageTrigger = false, grid = transGrid)->
+    nodeInfo=util.getProductTreeInfo()
+    type = nodeInfo.type
     param =
       release:
-        {id: $('#productRelease').val(), version: $("#productRelease option:selected").text()}
+        {id: $('#selVersion', "div[id='transmng']").val(), version: $("#selVersion option:selected", "div[id='transmng']").text()}
       level: $("input:radio[name='viewOption'][checked]").val()
-
+      type: type
+      name: nodeInfo.text
     checkboxes = $("#languageFilterDialog input:checkbox[name='languages']")
     param.languages = checkboxes.map(
       ()-> return {id: @id, name: @value} if @checked).get()
     param.languageTrigger = languageTrigger
-    grid.productReleaseChanged param
+    grid.updateGrid param
 
 
-    console?.debug "transmng panel dialogs init..."
   ################################################ Create Dialogs #################################################
   languageFilterDialog = $("<div title='#{i18n.select.languagefilter.title}' id='languageFilterDialog'>").dialog(
-    autoOpen: false, position: [23, 126], height: 'auto', width: 1100
+    autoOpen: false, height: 'auto', width: 1100
     show:
       { effect: 'slide', direction: "up" }
     buttons: [
@@ -36,11 +33,11 @@ define (require)->
 
   exportTranslationDialog = $('#ExportTranslationsDialog').dialog(
     autoOpen: false, modal: true
-    width: 1100, height: 'auto', position: [25, 100], show:
+    width: 1100, height: 'auto', show:
       { effect: 'slide', direction: "down" }
     open: ->
       info = grid.getTotalSelectedRowInfo()
-      #      tableType is app or dict
+      # tableType is app or dict
       tableType = grid.getTableType()
 
       langFilterTableId = "languageFilter_#{$(@).attr('id')}"
@@ -50,7 +47,7 @@ define (require)->
 
       $.getJSON 'rest/languages', postData, (languages)=>$(@).append util.generateLanguageTable languages, langFilterTableId if languages.length > 0
     buttons: [
-      {text: c18n.export, click: ->
+      {text: c18n['export'], click: ->
         me = $(@)
         languages = ($(":checkbox[name='languages']", @).map -> {id: @id, name: @value} if @checked).get()
         if(languages.length == 0)
@@ -70,12 +67,12 @@ define (require)->
 
   taskDialog = $("#createTranslationTaskDialog").dialog(
     autoOpen: false, modal: true
-    width: 1100, height: 'auto', position: [25, 100], show:
+    width: 1100, height: 'auto', show:
       { effect: 'slide', direction: "down" }
     create: ->
     open: ->
       info = grid.getTotalSelectedRowInfo()
-      taskname = "#{$('#productBase option:selected').text()}_#{$('#productRelease option:selected').text()}"
+      taskname = "#{$('#versionTypeLabel', '#transmng').text()}_#{$('#selVersion option:selected', '#transmng').text()}"
       taskname += "_#{new Date().format('yyyyMMddhhmmss')}"
       $('#taskName').val(taskname).select()
       #      tableType is app or dict
@@ -115,8 +112,18 @@ define (require)->
         dicts = $(grid.getTotalSelectedRowInfo().rowIds).map(
           ()->@).get().join(',')
 
+
+        postData =
+          language: langids
+          dict: dicts
+          name: name
+
+        type = util.getProductTreeInfo().type
+        type = 'prod' if 'product' == type
+        postData[type] = $('#selVersion', '#transmng').val()
+
         taskDialog.parent().block()
-        $.post 'task/create-task', {prod: $('#productRelease').val(), language: langids, dict: dicts, name: name }, (json)->
+        $.post 'task/create-task', postData, (json)->
           taskDialog.parent().unblock()
           if(json.status != 0)
             $.msgBox json.message, null, {title: c18n.error}
@@ -126,8 +133,8 @@ define (require)->
             if c18n.yes != keyPressed
               $("#transGrid").trigger 'reloadGrid'
               return
-            $('#pageNavigator').val 'taskmng.jsp'
-            $('#naviForm').submit()
+
+            $("span[id^='nav'][value='taskmng']").trigger('click')
           ), {title: c18n.confirm}, [c18n.yes, c18n.no]
 
           taskDialog.dialog "close"
@@ -138,14 +145,39 @@ define (require)->
 
   transDetailDialog = $('#translationDetailDialog').dialog(
     autoOpen: false, width: 860, height: 'auto', modal: true
+
+    open: ()->
+      $('#transDetailSearchAction',@).position(my: 'left center', at: 'right center', of: '#transDetailSearchText')
+      $('#detailLanguageSwitcher').trigger "change"
     create: ()->
       $(@).dialog 'option', 'width', $('#transDetailGridList').getGridParam('width') + 60
+      transDetailGrid = $("#transDetailGridList")
+      postData = transDetailGrid.getGridParam('postData')
+
+      $('#transDetailSearchText', @).keydown (e)=>$('#transDetailSearchAction', @).trigger 'click' if e.which == 13
+      $('#transDetailSearchAction', @).attr('title', 'Search').button(text: false, icons:{primary: "ui-icon-search"}).click(()=>
+        postData.text = $('#transDetailSearchText', @).val()
+        transDetailGrid.trigger 'reloadGrid'
+      ).height(20).width(20)
+
+      $('#transSameWithRef', @).change (e)->
+        postData.nodiff = @checked
+        #          console?.debug transDetailGrid.getGridParam('postData')
+        transDetailGrid.trigger 'reloadGrid'
+
       $('#detailLanguageSwitcher').change ->
         param = $('#translationDetailDialog').data "param"
         language = {id: $(@).val(), name: $("option:selected", @).text()}
         detailgrid.languageChanged {language: language, dict: param.dict, searchStatus: param.searchStatus}
     close: (event, ui)->
       detailgrid.saveLastEditedCell()
+      postData = $("#transDetailGridList").getGridParam('postData')
+
+      $('#transSameWithRef', @).attr('checked', false)
+      delete postData.nodiff
+
+      $('#searchText', @).val("")
+      delete postData.text
     buttons: [
       {text: c18n.close, click: ()->
         $(@).dialog 'close'
@@ -164,3 +196,13 @@ define (require)->
   exportTranslationDialog: exportTranslationDialog
 
   refreshGrid: refreshGrid
+  showTransDetailDialog: (param)->
+    #    refresh dialog
+    $('#dictionaryName', transDetailDialog).html param.dict.name
+    $('#detailLanguageSwitcher', transDetailDialog).empty().append (util.json2Options param.languages, param.language.id, 'name')
+
+    map = 'N': '0', 'I': '1', 'T': '2'
+    status = param.language.name.split('.')[1]
+
+    $('#translationDetailDialog').data 'param', {dict: param.dict, searchStatus: map[status]}
+    transDetailDialog.dialog "open"

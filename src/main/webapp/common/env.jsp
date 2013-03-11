@@ -1,5 +1,4 @@
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
-
 <script type="text/javascript">
     var gridI18NMap = { 'zh-cn':'cn', 'en-us':'en'};
     function paramWarn(paramName, defaultVal) {
