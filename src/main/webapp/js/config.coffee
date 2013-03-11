@@ -25,7 +25,6 @@ require.config
     admin: '../admin'
     nls: '../nls'
     entry: '../main'
-#    test:'../test'
 
   shim:
     'formvalidate':

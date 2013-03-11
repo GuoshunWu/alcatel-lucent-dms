@@ -169,7 +169,7 @@ define  [
   stringSettings = $('#stringSettingsDialog').dialog(
     autoOpen: false
     title: i18n.dialog.stringsettings.title, modal: true
-    width: 1140
+    width: 900
     create: (e, ui)->
       $('#searchText', @).keydown (e)=>$('#searchAction', @).trigger 'click' if e.which == 13
 
