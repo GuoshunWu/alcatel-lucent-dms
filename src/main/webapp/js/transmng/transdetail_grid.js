@@ -14,7 +14,6 @@
       height: 200,
       shrinkToFit: false,
       rownumbers: true,
-      loadonce: false,
       pager: '#transDetailsPager',
       rowNum: 60,
       rowList: [10, 20, 30, 60, 120],
@@ -26,7 +25,7 @@
       ajaxCellOptions: {
         async: false
       },
-      colNames: ['Label', 'Max Length', 'Context', 'Reference language', 'Translation', 'Status'],
+      colNames: ['Label', 'Max Length', 'Context', 'Reference language', 'Translation', 'Status', 'TransId'],
       colModel: [
         {
           name: 'key',
@@ -81,6 +80,13 @@
           searchoptions: {
             value: ":" + c18n.all + ";0:" + i18n.trans.nottranslated + ";1:" + i18n.trans.inprogress + ";2:" + i18n.trans.translated
           }
+        }, {
+          name: 'transId',
+          index: 'ct.id',
+          width: 150,
+          align: 'left',
+          hidden: true,
+          search: false
         }
       ],
       afterEditCell: function(rowid, cellname, val, iRow, iCol) {
@@ -93,7 +99,8 @@
       },
       beforeSubmitCell: function(rowid, cellname, value, iRow, iCol) {
         return {
-          type: 'trans'
+          type: 'trans',
+          ctid: $(this).getRowData(rowid).transId
         };
       },
       afterSubmitCell: function(serverresponse, rowid, cellname, value, iRow, iCol) {
@@ -137,13 +144,17 @@
       return false;
     });
     $('#detailTranslationStatus').menu().hide().find("li").on('click', function(e) {
-      var detailGrid, selectedRowIds;
+      var ctIds, detailGrid, ids;
       detailGrid = $("#transDetailGridList");
-      selectedRowIds = detailGrid.getGridParam('selarrrow').join(',');
+      ids = detailGrid.getGridParam('selarrrow');
+      ctIds = $.map(ids, function(element, index) {
+        return detailGrid.getRowData(element).transId;
+      });
       return $.post('trans/update-status', {
         type: 'trans',
         transStatus: e.target.name,
-        id: selectedRowIds
+        ctid: ctIds.join(','),
+        id: ids.join(',')
       }, function(json) {
         if (json.status !== 0) {
           $.msgBox(json.message, null, {
@@ -160,7 +171,7 @@
         var options, prop, url;
         transDetailGrid = $("#transDetailGridList");
         url = "rest/labels";
-        prop = "key,maxLength,context.name,reference,ct.translation,ct.status";
+        prop = "key,maxLength,context.name,reference,ct.translation,ct.status,ct.id";
         transDetailGrid.setGridParam({
           url: url,
           datatype: "json",
@@ -168,8 +179,7 @@
             dict: param.dict.id,
             language: param.language.id,
             format: 'grid',
-            prop: prop,
-            idprop: 'ct.id'
+            prop: prop
           }
         });
         options = transDetailGrid.getColProp('transStatus').searchoptions;
