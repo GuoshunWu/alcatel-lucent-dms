@@ -42,7 +42,7 @@
         <s:form id="loginForm" name="loginForm" validate="false" theme="simple" method="post" action='login'
                 namespace='/'>
             <%--<s:token/>--%>
-            <table border="0" align='center'>
+            <table border="1" align='center'>
                 <tr>
                     <td align="right">
                         <label for="idLoginname"><s:text name="login.loginname"/></label></td>
@@ -93,14 +93,13 @@
                 src="<%=request.getContextPath()%>/images/help.png" alt="" style="border: 0"/>&nbsp;<b>User
             Guide</b></a>
         </div>
-        <div style="float: right; font-size: 13px; font-weight:bold; padding-right:5px">V1.0&nbsp;Build&nbsp;<span
-                id="buildNumber"></span></div>
+        <div style="float: right; font-size: 13px; font-weight:bold; padding-right:5px">
+            V1.0&nbsp;Build&nbsp;
+            <span id="buildNumber"></span>
+        </div>
     </div>
 
     <div id="testForDialog"></div>
 </div>
-<script type="text/javascript">
-    document.getElementById("buildNumber").innerHTML = param.buildNumber;
-</script>
 </body>
 </html>
