@@ -11,7 +11,7 @@
       url: 'json/dummy.json',
       mtype: 'post',
       datatype: 'local',
-      width: 1100,
+      width: 880,
       height: 300,
       pager: '#stringSettingsPager',
       editurl: "",

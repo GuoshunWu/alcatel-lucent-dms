@@ -260,7 +260,7 @@
       autoOpen: false,
       title: i18n.dialog.stringsettings.title,
       modal: true,
-      width: 1140,
+      width: 900,
       create: function(e, ui) {
         var _this = this;
         $('#searchText', this).keydown(function(e) {
