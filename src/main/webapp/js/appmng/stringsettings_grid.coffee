@@ -1,4 +1,5 @@
-define ['jqgrid', 'appmng/langsetting_translation_grid', 'util', 'require'], ($, ltgrid, util,require)->
+define ['jqgrid', 'dms-util', 'appmng/langsetting_translation_grid'], ($, util, ltgrid)->
+  console?.log "module appmng/stringsetting_grid loading."
   lastEditedCell = null
 
   dicGrid = $('#stringSettingsGrid').jqGrid(

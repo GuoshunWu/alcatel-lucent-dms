@@ -17,6 +17,10 @@ html, body {
     overflow: hidden !important;
 }
 
+.editable-column {
+    background: #f0ffff
+}
+
 /* north navigation table title */
 .page-title {
     font-family: Trebuchet MS, Verdana, Arial, Helvetica;
@@ -61,4 +65,29 @@ input[readonly] {
 .navigator-tab-title-currentpage {
     font-weight: bold;
     color: purple;
+}
+
+.progressbar-container {
+    width: 700px;
+    height: 50px;
+    padding: 1em 1em 0.5em 1em;
+    background: #eeeeee;
+    border: 1px dotted #000000;
+    /*opacity: 0.1;*/
+}
+
+.progressbar {
+    width: 100%;
+}
+
+.progressbar-indeterminate {
+    background: #d3d3d3 url(../images/pbar-ani.gif);
+}
+
+.progressbar-label {
+    float: left;
+    margin-left: 47%;
+    margin-top: 5px;
+    font-weight: bold;
+    text-shadow: 1px 1px 0 #fff;
 }

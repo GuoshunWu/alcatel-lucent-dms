@@ -1,7 +1,5 @@
-define (require)->
-  $ = require 'jqgrid'
-  i18n = require 'i18n!nls/appmng'
-  c18n = require 'i18n!nls/common'
+define ['jqgrid'], ($)->
+  console?.log "module appmng/langsetting_translation_grid loading."
 
   lastEditedCell = null
 
@@ -26,6 +24,8 @@ define (require)->
   ]
   }).jqGrid('navGrid', '#stringSettingsTranslationPager', {edit: false, add: false, del: false, search: false}).setGridParam(datatype: 'json')
   saveLastEditedCell: ()->langSettingGrid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
+
+
 
 
 

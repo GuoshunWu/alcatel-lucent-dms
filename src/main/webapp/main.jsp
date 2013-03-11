@@ -12,11 +12,10 @@
 
     <%@include file="common/env.jsp" %>
     <link rel="stylesheet" type="text/css" href="${base}css/main.css?v=<s:property value="buildNumber"/>"/>
-
     <script type="text/javascript" src="js/lib/require.js"></script>
     <script type="text/javascript">
         require(['./js/config.js?bust=' + new Date().getTime()], function (config) {
-            require(['main']);
+            require(['entry']);
         });
     </script>
 
@@ -41,7 +40,7 @@
         <div class="ui-layout-content">
             <div id="appTree" style="background-color: transparent;"></div>
         </div>
-        <div class="footer">A test footer</div>
+        <%--<div class="footer">A test footer</div>--%>
     </div>
 </div>
 </body>

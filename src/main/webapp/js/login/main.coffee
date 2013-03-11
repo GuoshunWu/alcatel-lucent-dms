@@ -1,6 +1,6 @@
-define (require)->
-  $ = require 'formvalidate'
-  i18n = require 'i18n!nls/login'
+define ['formvalidate', 'i18n!nls/login'],($, i18n)->
+
+  $("span#buildNumber").html window.param.buildNumber
 
   $.formValidator.initConfig(formID: "loginForm", autoTip: true, (onError: (msg)->
   #    alert(msg)
@@ -10,20 +10,11 @@ define (require)->
   $("#idPassword").formValidator(onShow: "", onFocus: "", onCorrect: "")
   .inputValidator(min: 1, max: 30, onError: i18n.pwderrtip)
 
-  $('#loginForm').bind 'submit', ()->$("#idSubmit").attr('disabled', true).css('color', 'grey') if $.formValidator.pageIsValid()
+  $('#loginForm').on 'submit', ()->
+    if $.formValidator.pageIsValid()
+      console?.log 'client validation passed, make button grey to avoid resubmit'
+      $("#idSubmit").attr('disabled', true).css('color', 'grey')
 
-#  test jqueryui dialog
-#  require 'jqueryui'
-#
-#  $('#testForDialog').dialog {
-#  autoOpen: true
-#  title: 'A test'
-#  width: 'auto'
-#  buttons: [
-#    {text: 'OK', click: ()-> alert 'OK'}
-#    {text: 'Cancel', click: ()-> alert 'Cancel'}
-#  ]
-#  }
 #  require 'jqform'
 #  require 'blockui'
 #

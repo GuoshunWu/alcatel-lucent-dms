@@ -50,12 +50,21 @@ Time: 下午7:
       }),
       product: {
         create: getURL('create-product', 'app/'),
-        del: getURL('remove-product-base', 'app/')
+        del: getURL('remove-product-base', 'app/'),
+        create_version: getURL('create-product-release', 'app/')
       },
       app: {
         create: getURL('create-application-base', 'app/'),
-        del: getURL('remove-application-base', 'app/')
-      }
+        del: getURL('remove-application-base', 'app/'),
+        create_version: getURL('create-application', 'app/'),
+        remove_version: getURL('remove-application', 'app/')
+      },
+      prod_versions: getURL('products/version', 'rest/'),
+      app_versions: getURL("applications/apps/", 'rest/'),
+      apps: getURL('applications', 'rest/'),
+      dicts: getURL('dict', 'rest/'),
+      tasks: getURL('tasks', 'rest/'),
+      languages: getURL('languages', 'rest/')
     };
   });
 
