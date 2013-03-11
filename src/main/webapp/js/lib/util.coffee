@@ -147,7 +147,8 @@ define ["jquery", "jqueryui", 'jqmsgbox', 'jqlayout', "i18n!nls/common"], ($, ui
 
         if pb
           pb.toggleClass('progressbar-indeterminate', -1 == data.event.percent)
-          pb.data 'msg', data.event.msg
+#          pb.data 'msg', data.event.msg
+          pb.get(0).msg.html data.event.msg
           pb.progressbar 'value', data.event.percent
         else
           callback? data
