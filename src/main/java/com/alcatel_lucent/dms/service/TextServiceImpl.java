@@ -3,11 +3,13 @@ package com.alcatel_lucent.dms.service;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import net.sf.json.JSONObject;
 
@@ -26,6 +28,7 @@ import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.Label;
+import com.alcatel_lucent.dms.model.LabelTranslation;
 import com.alcatel_lucent.dms.model.Language;
 import com.alcatel_lucent.dms.model.Text;
 import com.alcatel_lucent.dms.model.Translation;
@@ -400,5 +403,85 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 			exp = exp.substring(0, pos) + to + exp.substring(pos + from.length());
 		}
 		return exp;
+	}
+
+
+	@Override
+	public Collection<String> updateTranslation(Long labelId,
+			Long translationId, String translation, Boolean confirmAll) {
+		Label label = (Label) dao.retrieve(Label.class, labelId);
+		Translation trans;
+		if (translationId < 0) {	// proceed virtual id, create translation if necessary
+			translationId = -translationId;
+			Long langId = translationId % 1000;
+			trans = label.getText().getTranslation(langId);
+			if (trans == null) {
+				trans = new Translation();
+    			trans.setTranslation(label.getReference());
+    			trans.setLanguage((Language) dao.retrieve(Language.class, langId));
+    			trans.setStatus(Translation.STATUS_UNTRANSLATED);
+    			trans.setText(label.getText());
+    			trans = (Translation) dao.create(trans, true);
+			}
+		} else {
+			trans = (Translation) dao.retrieve(Translation.class, translationId);
+		}
+		Long langId = trans.getLanguage().getId();
+		if (label.getContext().getName().equals(Context.EXCLUSION)) {
+			throw new BusinessException(BusinessException.CANNOT_UPDATE_EXCLUSION);
+		}
+		if (!label.getText().getId().equals(trans.getText().getId())) {
+			throw new BusinessException(BusinessException.INCONSISTENT_DATA);
+		}
+		Collection<String> result = new TreeSet<String>();
+		if (confirmAll != null && confirmAll) {	// confirm to update translation for all reference
+			trans.setTranslation(translation);
+		} else if (confirmAll != null && !confirmAll) {	
+			// change context to DICT first
+			Context context = getContextByExpression(Context.DICT, label.getDictionary());
+			Text text = getText(context.getId(), label.getReference());
+			if (text == null) {
+				text = addText(context.getId(), label.getReference());
+			}
+			Translation newTrans = text.getTranslation(trans.getLanguage().getId());
+			if (newTrans == null) {
+				newTrans = new Translation();
+				newTrans.setLanguage(trans.getLanguage());
+				newTrans.setTranslation(translation);
+				newTrans.setStatus(trans.getStatus());
+				addTranslation(text, newTrans);
+			} else {
+				newTrans.setTranslation(translation);
+			}
+			label.setContext(context);
+			label.setText(text);
+		} else {	// no confirm
+			Dictionary dict = label.getDictionary();
+			String hql = "select distinct d from Dictionary d join d.labels l join d.dictLanguages dl" +
+					" where dl.language.id=:langId and l.text.id=:textId and l.context.name<>:exclusion and d.id<>:dictId";
+			Map param = new HashMap();
+			param.put("langId", trans.getLanguage().getId());
+			param.put("textId", label.getText().getId());
+			param.put("exclusion", Context.EXCLUSION);
+			param.put("dictId", dict.getId());
+			Collection<Dictionary> dictList = dao.retrieve(hql, param);
+			for (Dictionary otherDict : dictList) {
+				result.add(otherDict.getName());
+			}
+			if (result.isEmpty()) {	// no confirmation needed, update translation directly
+				trans.setTranslation(translation);
+			} else {
+				return result;
+			}
+		}
+		// set needTranslation to true if translation text is manually updated
+		if (label.getOrigTranslations() != null) {
+			for (LabelTranslation lt : label.getOrigTranslations()) {
+				if (lt.getLanguage().getId().equals(langId)) {
+					lt.setNeedTranslation(true);
+				}
+			}
+		}
+		return result;
 	}
 }
