@@ -3,20 +3,6 @@
         <tr>
             <td style="height:20px;">
                 <table border="0" width="100%">
-                    <%--<tr>--%>
-                    <%--<td style="width: 80px" align="right"><span id="versionTypeLabel"><s:text name="context.prod"/></span></td>--%>
-                    <%--<td align="right" style="width: 100px"><s:text name="version"/></td>--%>
-
-                    <%--<td style="width:200px">--%>
-                    <%--<s:select theme="simple" id="selVersion" list="products" listKey="id"--%>
-                    <%--listValue="version"--%>
-                    <%--cssStyle="width:99%;" headerKey="-1"--%>
-                    <%--headerValue="%{getText('product.version.select.head')}"--%>
-                    <%--value="curProductId"/>--%>
-                    <%--</td>--%>
-                    <%--<td>&nbsp;</td>--%>
-                    <%--</tr>--%>
-
                     <tr>
                         <td colspan="4">
                             <span class="show-label" id="typeLabel">
@@ -42,7 +28,7 @@
             </td>
         </tr>
         <tr >
-            <td valign="top" align="center" class="taskGrid_parent" style="padding-top: 10px">
+            <td valign="top" align="center" class="taskGrid_parent" >
                 <table id="taskGrid">
                     <tr>
                         <td></td>
