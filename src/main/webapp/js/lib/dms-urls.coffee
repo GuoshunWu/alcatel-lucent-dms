@@ -30,6 +30,9 @@ define (require)->
     del: getURL('remove-application-base', 'app/')
     create_version: getURL('create-application', 'app/')
     remove_version: getURL('remove-application', 'app/')
+  trans:
+    update_translation: getURL('update-translation', 'trans/')
+    update_status: getURL('update-status', 'trans/')
 
   #  rest urls
   prod_versions:getURL('products/version','rest/')

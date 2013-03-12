@@ -3,16 +3,15 @@ define
     select:
       languagefilter:
         title: 'Choose the languages you want to show'
-        'dummy': ''
 
     msgbox:
       createtranstask:
         confirm: 'Do you want to manage the task now?'
-        'dummy': ''
+      updatetranslation:
+        msg: 'The translation is also used by following dictionaries'
 
       transstatus:
         msg: 'Change translation status successful.'
-        'dummy': ''
 
     trans:
       nottranslated: 'Not translated',

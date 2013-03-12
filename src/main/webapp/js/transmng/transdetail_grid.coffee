@@ -1,4 +1,11 @@
-define ['jqgrid', 'i18n!nls/transmng', 'i18n!nls/common', 'dms-util'], ($, i18n, c18n, util)->
+define [
+  'jqgrid'
+  'jqmsgbox'
+  'i18n!nls/transmng'
+  'i18n!nls/common'
+  'dms-util'
+  'dms-urls'
+], ($, msgbox, i18n, c18n, util, urls)->
 
   lastEditedCell = null
 
@@ -9,14 +16,14 @@ define ['jqgrid', 'i18n!nls/transmng', 'i18n!nls/common', 'dms-util'], ($, i18n,
     rownumbers: true
     pager: '#transDetailsPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
     viewrecords: true, gridview: true, multiselect: true
-    cellEdit: true, cellurl: 'trans/update-status', ajaxCellOptions: {async: false}
+    cellEdit: true, cellurl: urls.trans.update_status, ajaxCellOptions: {async: false}
     colNames: ['Label', 'Max Length', 'Context', 'Reference language', 'Translation', 'Status','TransId']
     colModel: [
       {name: 'key', index: 'key', width: 100, editable: false, stype: 'select', align: 'left', frozen: true}
       {name: 'maxlen', index: 'maxLength', width: 90, editable: false, align: 'right', frozen: true, search: false}
       {name: 'context', index: 'context.name', width: 80, align: 'left', frozen: true, search: false}
       {name: 'reflang', index: 'reference', width: 150, align: 'left', frozen: true, search: false}
-      {name: 'trans', index: 'ct.translation', width: 150, align: 'left', search: false}
+      {name: 'translation', index: 'ct.translation', width: 150, align: 'left', editable:true, classes: 'editable-column', search: false}
       {name: 'transStatus', index: 'ct.status', width: 150, align: 'left', editable: true, classes: 'editable-column', search: true,
       edittype: 'select', editoptions: {value: "0:#{i18n.trans.nottranslated};1:#{i18n.trans.inprogress};2:#{i18n.trans.translated}"},
       formatter: 'select',
@@ -24,12 +31,30 @@ define ['jqgrid', 'i18n!nls/transmng', 'i18n!nls/common', 'dms-util'], ($, i18n,
       }
       {name: 'transId', index: 'ct.id', width: 150, align: 'left', hidden:true, search: false}
     ]
-    afterEditCell: (rowid, cellname, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
+    afterEditCell: (rowid, cellname, val, iRow, iCol)->
+      lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
     beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
 #      console?.log "rowid=#{rowid}, cellname=#{cellname}, value=#{value}, iRow=#{iRow}, iCol=#{iCol}"
-      {type: 'trans', ctid: $(@).getRowData(rowid).transId}
+      ctid = $(@).getRowData(rowid).transId
+
+      if 'transStatus' == cellname
+        $(@).setGridParam('cellurl': urls.trans.update_status)
+        return {type: 'trans', ctid: ctid}
+      if 'translation' == cellname
+        $(@).setGridParam('cellurl': urls.trans.update_translation)
+        {ctid: ctid}
     afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
-      jsonFromServer = eval('(' + serverresponse.responseText + ')')
+      console?.log serverresponse
+      json = eval("(#{serverresponse.responseText})")
+      # edit translation in cell is different from common cell editor
+      if 'translation' == cellname and 1 == json.status
+        $.msgBox i18n.msgbox.transstatus.msg, ((keyPressed)->
+#          if c18n.yes == keyPressed
+#          $.post urls.trans.update_translation, , (json)->
+          console?.log json
+        ), {title: c18n.confirm}, [c18n.yes, c18n.no]
+
+        return [true, jsonFromServer.message]
       [0 == jsonFromServer.status, jsonFromServer.message]
 
     afterCreate: (grid)->
