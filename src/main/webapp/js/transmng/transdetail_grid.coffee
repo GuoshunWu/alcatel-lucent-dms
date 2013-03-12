@@ -44,18 +44,27 @@ define [
         $(@).setGridParam('cellurl': urls.trans.update_translation)
         {ctid: ctid}
     afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
-      console?.log serverresponse
-      json = eval("(#{serverresponse.responseText})")
+      json = $.parseJSON(serverresponse.responseText)
       # edit translation in cell is different from common cell editor
       if 'translation' == cellname and 1 == json.status
-        $.msgBox i18n.msgbox.transstatus.msg, ((keyPressed)->
-#          if c18n.yes == keyPressed
-#          $.post urls.trans.update_translation, , (json)->
-          console?.log json
-        ), {title: c18n.confirm}, [c18n.yes, c18n.no]
+        dictList = "<ul>\n  <li>#{json.dicts.join('</li>\n  <li>')}</li>\n</ul>"
 
-        return [true, jsonFromServer.message]
-      [0 == jsonFromServer.status, jsonFromServer.message]
+
+        $.msgBox i18n.msgbox.updatetranslation.msg.format(dictList), ((keyPressed)->
+          postData = $.extend confirm: c18n.yes == keyPressed , json
+          delete postData.dicts
+          delete postData.message
+          delete postData.status
+#          console?.log postData
+          $.post urls.trans.update_translation, postData , (json1)->
+            unless json1.status == 0
+              $.msgBox(json1.message, null, title: c18n.error)
+              return
+            $("#transDetailGridList").trigger 'reloadGrid'
+        ), {title: c18n.confirm, width: 600}, [c18n.yes, c18n.no]
+
+        return [true, json.message]
+      [0 == json.status, json.message]
 
     afterCreate: (grid)->
       grid.setGridParam('datatype':'json')
