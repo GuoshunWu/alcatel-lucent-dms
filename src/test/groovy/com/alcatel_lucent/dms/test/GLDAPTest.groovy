@@ -25,13 +25,14 @@ class GLDAPTest {
 
     }
 
-//    @Test
+    @Test
     public void testAlcatelLDAP() throws Exception {
         String INITCTX = "com.sun.jndi.ldap.LdapCtxFactory"
         String ldapUrl = "ldap://ldap.sxb.bsf.alcatel.fr"
         String LDAP_DN = "o=alcatel"
 
         String username = "guoshunw"
+//        username = "cn=Guoshun WU"
         String password = ""
 
         Hashtable<String, Object> env = new Hashtable<String, Object>();
@@ -42,7 +43,8 @@ class GLDAPTest {
         env.put(Context.SECURITY_CREDENTIALS, password);
 
         DirContext ctx = new InitialDirContext(env)
-        def filter = "(&(objectclass=person)(cslx500=$username))"
+        assert ctx!= null
+        def filter = "(&(objectclass=person)(cn=$username))"
 //        filter = "(&(objectclass=person))"
         NamingEnumeration<SearchResult> results = ctx.search(LDAP_DN,
                 filter,
@@ -103,7 +105,7 @@ class GLDAPTest {
         ctx.close()
     }
 
-    @Test
+//    @Test
     void tempTest() {
         println org.apache.commons.lang3.StringUtils.removeEnd('abc', 'c')
     }
