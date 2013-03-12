@@ -75,6 +75,8 @@ public class BusinessException extends RuntimeException {
 	static public final int UNKNOWN_LANG_NAME = 402;
 	static public final int INVALID_TASK_FILE = 403;
 	static public final int EMPTY_TASK = 404;
+	static public final int CANNOT_UPDATE_EXCLUSION = 405;
+	static public final int INCONSISTENT_DATA = 406;
 	
 	static public final int APPLICATION_NOT_FOUND = 501;
 	static public final int DICTIONARY_NOT_FOUND = 502;
