@@ -120,4 +120,20 @@ public interface TextService {
      * @return Context instance
      */
 	Context getContextByExpression(String contextExp, Dictionary dict);
+
+	/**
+	 * Update one translation
+	 * Update translation result of a label.
+	 * If the translation is referred by other dictionaries:
+	 *   do nothing and return name of the dictionaries if confirmAll is empty
+	 *   update translation result if confirmAll is true
+	 *   change context of the label to [DICT] and update translation result if confirmAll is false
+	 * @param labelId label id
+	 * @param translationId translation id
+	 * @param translation translation result
+	 * @param confirmAll whether to apply same change to other dictionaries
+	 * @return other dictionaries in which the same translation is referred
+	 */
+	Collection<String> updateTranslation(Long labelId, Long translationId,
+			String translation, Boolean confirmAll);
 }
