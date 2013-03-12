@@ -121,20 +121,34 @@
         }
       },
       afterSubmitCell: function(serverresponse, rowid, cellname, value, iRow, iCol) {
-        var json;
-        if (typeof console !== "undefined" && console !== null) {
-          console.log(serverresponse);
-        }
-        json = eval("(" + serverresponse.responseText + ")");
+        var dictList, json;
+        json = $.parseJSON(serverresponse.responseText);
         if ('translation' === cellname && 1 === json.status) {
-          $.msgBox(i18n.msgbox.transstatus.msg, (function(keyPressed) {
-            return typeof console !== "undefined" && console !== null ? console.log(json) : void 0;
+          dictList = "<ul>\n  <li>" + (json.dicts.join('</li>\n  <li>')) + "</li>\n</ul>";
+          $.msgBox(i18n.msgbox.updatetranslation.msg.format(dictList), (function(keyPressed) {
+            var postData;
+            postData = $.extend({
+              confirm: c18n.yes === keyPressed
+            }, json);
+            delete postData.dicts;
+            delete postData.message;
+            delete postData.status;
+            return $.post(urls.trans.update_translation, postData, function(json1) {
+              if (json1.status !== 0) {
+                $.msgBox(json1.message, null, {
+                  title: c18n.error
+                });
+                return;
+              }
+              return $("#transDetailGridList").trigger('reloadGrid');
+            });
           }), {
-            title: c18n.confirm
+            title: c18n.confirm,
+            width: 600
           }, [c18n.yes, c18n.no]);
-          return [true, jsonFromServer.message];
+          return [true, json.message];
         }
-        return [0 === jsonFromServer.status, jsonFromServer.message];
+        return [0 === json.status, json.message];
       },
       afterCreate: function(grid) {
         grid.setGridParam({

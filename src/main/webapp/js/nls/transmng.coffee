@@ -8,8 +8,7 @@ define
       createtranstask:
         confirm: 'Do you want to manage the task now?'
       updatetranslation:
-        msg: 'The translation is also used by following dictionaries'
-
+        msg: '<div style="text-align:left"><p>The translation is also used by following dictionaries</p>\n{0}\n<p>Do you want to apply the same change to these dictionaries?</p></div>'
       transstatus:
         msg: 'Change translation status successful.'
 
