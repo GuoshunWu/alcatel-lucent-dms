@@ -50,8 +50,8 @@ public class TaskREST extends BaseREST {
 			countHql = "select count(*) from Task obj where obj.application.id=:appId";
 			param.put("appId", Long.valueOf(app));
 		} else {
-			hql = "select obj from Task obj,Product p join p.applications a where p.id=:prodId and (obj.product=p or obj.application=a) ";
-			countHql = "select count(*) from Task obj,Product p join p.applications a where p.id=:prodId and (obj.product=p or obj.application=a)";
+			hql = "select distinct obj from Task obj,Product p join p.applications a where p.id=:prodId and (obj.product=p or obj.application=a) ";
+			countHql = "select count(distinct obj) from Task obj,Product p join p.applications a where p.id=:prodId and (obj.product=p or obj.application=a)";
 			param.put("prodId", Long.valueOf(prod));
 		}
 		
