@@ -180,7 +180,7 @@ public class XMLDictGenerator extends DictionaryGenerator {
         LabelClosure lc = new LabelClosure(xmlDict, dict.getLabelNum(), dictLanguages);
 
         log.info(StringUtils.center("Start generating dictionary " + dict.getName() + " labels(total: " + dict.getLabelNum() + ").", 100, '='));
-        CollectionUtils.forAllDo(dict.getLabels(), lc);
+        CollectionUtils.forAllDo(dict.getAvailableLabels(), lc);
         System.out.println(" done(100%).");
 
         return doc;

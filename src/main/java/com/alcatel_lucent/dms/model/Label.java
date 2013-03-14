@@ -45,6 +45,7 @@ public class Label extends BaseEntity {
     private String maxLength;
     private Context context;
     private Text text;
+    private boolean removed;
 
     private String annotation1;
     private String annotation2;
@@ -340,4 +341,12 @@ public class Label extends BaseEntity {
     public void addParam(String key, String value) {
         params.put(key, value);
     }
+
+	public boolean isRemoved() {
+		return removed;
+	}
+
+	public void setRemoved(boolean removed) {
+		this.removed = removed;
+	}
 }

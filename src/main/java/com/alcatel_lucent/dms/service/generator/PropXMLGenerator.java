@@ -96,43 +96,41 @@ public class PropXMLGenerator extends DictionaryGenerator {
 				}
 			}
     	}
-    	if (dict.getLabels() != null) {
-	    	for (Label label : dict.getLabels()) {
-	    		String text = label.getReference();
-	    		String annotation1 = label.getAnnotation1();	// attributes
-	    		String annotation2 = label.getAnnotation2();	// leading comments
-	    		if (dl != null) {
-	    			LabelTranslation lt = label.getOrigTranslation(dl.getLanguageCode());
-	    			if (lt != null) {
-	    				annotation1 = lt.getAnnotation1();
-	    				annotation2 = lt.getAnnotation2();
-	    			}
-	    			text = label.getTranslation(dl.getLanguageCode());
-	    		}
-	    		// add leading comments
-	    		if (annotation2 != null) {
-	    			String[] comments = annotation2.split("\n");
-	    			for (String comment : comments) {
-	    				eleLabels.addComment(comment);
-	    			}
-	    		}
-	    		// create label
-	    		Element eleLabel = eleLabels.addElement("entry");
-	    		eleLabel.addAttribute("key", label.getKey());
-	    		if (annotation1 != null) {
-	    			String[] attributes = annotation1.split("\n");
-	    			for (String entry : attributes) {
-	    				String[] keyValue = entry.split("=", 2);
-	    				if (keyValue.length == 2) {
-	    					eleLabel.addAttribute(keyValue[0], keyValue[1]);
-	    				}
-	    			}
-	    		}
-	    		eleLabel.addText(text);
-	    		if (text.indexOf('\n') != -1) {	// preserve line breaks among the text
-		    		eleLabel.addAttribute(QName.get("space", Namespace.XML_NAMESPACE), "preserve");
-	    		}
-	    	}
+    	for (Label label : dict.getAvailableLabels()) {
+    		String text = label.getReference();
+    		String annotation1 = label.getAnnotation1();	// attributes
+    		String annotation2 = label.getAnnotation2();	// leading comments
+    		if (dl != null) {
+    			LabelTranslation lt = label.getOrigTranslation(dl.getLanguageCode());
+    			if (lt != null) {
+    				annotation1 = lt.getAnnotation1();
+    				annotation2 = lt.getAnnotation2();
+    			}
+    			text = label.getTranslation(dl.getLanguageCode());
+    		}
+    		// add leading comments
+    		if (annotation2 != null) {
+    			String[] comments = annotation2.split("\n");
+    			for (String comment : comments) {
+    				eleLabels.addComment(comment);
+    			}
+    		}
+    		// create label
+    		Element eleLabel = eleLabels.addElement("entry");
+    		eleLabel.addAttribute("key", label.getKey());
+    		if (annotation1 != null) {
+    			String[] attributes = annotation1.split("\n");
+    			for (String entry : attributes) {
+    				String[] keyValue = entry.split("=", 2);
+    				if (keyValue.length == 2) {
+    					eleLabel.addAttribute(keyValue[0], keyValue[1]);
+    				}
+    			}
+    		}
+    		eleLabel.addText(text);
+    		if (text.indexOf('\n') != -1) {	// preserve line breaks among the text
+	    		eleLabel.addAttribute(QName.get("space", Namespace.XML_NAMESPACE), "preserve");
+    		}
     	}
     	
     	// output

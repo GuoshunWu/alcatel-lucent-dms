@@ -239,7 +239,7 @@ public class Dictionary extends BaseEntity {
     public Label getLabel(String key) {
         if (labels != null) {
             for (Label label : labels) {
-                if (label.getKey().equals(key)) {
+                if (label.getKey().equals(key) && !label.isRemoved()) {
                     return label;
                 }
             }
@@ -545,5 +545,21 @@ public class Dictionary extends BaseEntity {
 
 	public void setHistories(Collection<DictionaryHistory> histories) {
 		this.histories = histories;
+	}
+	
+	/**
+	 * Get all labels excluding removed labels
+	 * @return
+	 */
+	public Collection<Label> getAvailableLabels() {
+		Collection<Label> result = new ArrayList<Label>();
+		if (labels != null) {
+			for (Label label : labels) {
+				if (!label.isRemoved()) {
+					result.add(label);
+				}
+			}
+		}
+		return result;
 	}
 }

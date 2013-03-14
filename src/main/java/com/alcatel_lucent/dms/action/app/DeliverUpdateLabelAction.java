@@ -23,7 +23,7 @@ public class DeliverUpdateLabelAction extends JSONAction {
 	
 	@Override
 	protected String performAction() throws Exception {
-		log.info("DeliverUpdateDictLanguageAction: handler=" + handler + ", dict=" + dict + ", id=" + id + 
+		log.info("DeliverUpdateLabelAction: handler=" + handler + ", dict=" + dict + ", id=" + id + 
 				", maxLength=" + maxLength + ", context=" + context);
 		try {
 			Dictionary dictionary = deliveringDictPool.getDictionary(handler, dict);

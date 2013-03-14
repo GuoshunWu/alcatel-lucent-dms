@@ -262,14 +262,14 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
     
 
     private Collection<Translation> findAllTranslationsByDict(Long dictId) {
-		String hql = "select t.translations from Label l join l.text t where l.dictionary.id=:dictId";
+		String hql = "select t.translations from Label l join l.text t where l.dictionary.id=:dictId and l.removed=false";
 		Map param = new HashMap();
 		param.put("dictId", dictId);
 		return dao.retrieve(hql, param);
 	}
     
     private Collection<Translation> findAllTranslationsByApp(Long appId) {
-		String hql = "select t.translations from Application a join a.dictionaries d join d.labels l join l.text t where a.id=:appId";
+		String hql = "select t.translations from Application a join a.dictionaries d join d.labels l join l.text t where a.id=:appId and l.removed=false";
 		Map param = new HashMap();
 		param.put("appId", appId);
 		return dao.retrieve(hql, param);

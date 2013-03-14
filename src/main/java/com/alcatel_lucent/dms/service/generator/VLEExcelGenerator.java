@@ -77,7 +77,7 @@ public class VLEExcelGenerator extends DictionaryGenerator {
 
 //          Write the labels
             i = 1;
-            Collection<Label> labels = dict.getLabels();
+            Collection<Label> labels = dict.getAvailableLabels();
             Row row = null;
             MapIterator itr = null;
             for (Label label : labels) {

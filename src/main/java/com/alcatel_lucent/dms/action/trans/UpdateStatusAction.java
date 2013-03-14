@@ -10,18 +10,19 @@ import com.alcatel_lucent.dms.service.TextService;
 public class UpdateStatusAction extends JSONAction {
 	
 	private TextService textService;
-	private String ctid;
+	private String id;	// dict id or app id
+	private String ctid;	// translation id
 	private Integer transStatus;
 	private String type;
 	
 	protected String performAction() throws Exception {
-		log.info("UpdateStatusAction: ctid=" + ctid + ", status=" + transStatus + ", type=" + type);
+		log.info("UpdateStatusAction: id=" + id + ", ctid=" + ctid + ", status=" + transStatus + ", type=" + type);
 		if (type.equals("trans")) {
 			textService.updateTranslationStatus(toIdList(ctid), transStatus);
 		} else if (type.equals("dict")) {
-			textService.updateTranslationStatusByDict(toIdList(ctid), transStatus);
+			textService.updateTranslationStatusByDict(toIdList(id), transStatus);
 		} else if (type.equals("app")) {
-			textService.updateTranslationStatusByApp(toIdList(ctid), transStatus);
+			textService.updateTranslationStatusByApp(toIdList(id), transStatus);
 		} else {
 			setStatus(-1);
 			return SUCCESS;
@@ -60,6 +61,14 @@ public class UpdateStatusAction extends JSONAction {
 
 	public void setCtid(String ctid) {
 		this.ctid = ctid;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 }
