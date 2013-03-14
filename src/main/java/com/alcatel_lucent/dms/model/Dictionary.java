@@ -100,7 +100,14 @@ public class Dictionary extends BaseEntity {
 
     @Transient
     public int getLabelNum() {
-        return labels == null ? 0 : labels.size();
+    	if (labels == null) {
+    		return 0;
+    	}
+    	int count = 0;
+    	for (Label label : labels) {
+    		if (!label.isRemoved()) count++;
+    	}
+        return count;
     }
 
     public void setBase(DictionaryBase base) {

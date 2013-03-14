@@ -809,7 +809,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     }
 
     public int getLabelNumByApp(Long appId) {
-        String hql = "select count(l) from Application app join app.dictionaries d join d.labels l where app.id=:appId";
+        String hql = "select count(l) from Application app join app.dictionaries d join d.labels l where app.id=:appId and l.removed=false";
         Map param = new HashMap();
         param.put("appId", appId);
         Number count = (Number) dao.retrieveOne(hql, param);
