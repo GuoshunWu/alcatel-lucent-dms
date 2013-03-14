@@ -983,4 +983,28 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     		label.setRemoved(true);
     	}
     }
+    
+    public Label addLabel(Long dictId, String key, String reference, String maxLength, String contextExp, String description) {
+    	Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
+    	if (dict.getLabel(key) != null) {
+    		throw new BusinessException(BusinessException.DUPLICATE_LABEL_KEY);
+    	}
+    	Context context = textService.getContextByExpression(contextExp, dict);
+    	Text text = textService.getText(context.getId(), reference);
+    	if (text == null) {
+    		text = textService.addText(context.getId(), reference);
+    	}
+    	Label label = new Label();
+    	label.setDictionary(dict);
+    	label.setKey(key);
+    	label.setReference(reference);
+    	label.setMaxLength(maxLength);
+    	label.setContext(context);
+    	label.setDescription(description);
+    	label.setText(text);
+    	label.setSortNo(dict.getMaxSortNo() + 1);
+    	label.setRemoved(false);
+    	label = (Label) dao.create(label);
+    	return label;
+    }
 }

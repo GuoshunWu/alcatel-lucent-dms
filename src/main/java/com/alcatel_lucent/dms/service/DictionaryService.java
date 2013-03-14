@@ -4,6 +4,7 @@ import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryLanguage;
+import com.alcatel_lucent.dms.model.Label;
 
 import java.io.File;
 import java.util.Collection;
@@ -208,6 +209,19 @@ public interface DictionaryService {
 	 * @param idList collection of label id
 	 */
 	void deleteLabels(Collection<Long> idList);
+
+	/**
+	 * Add a label to dictionary
+	 * @param dictId dictionary id
+	 * @param key label key
+	 * @param reference reference text
+	 * @param maxLength max length
+	 * @param context context
+	 * @param description description
+	 * @return
+	 */
+	Label addLabel(Long dictId, String key, String reference, String maxLength,
+			String context, String description);
 
     //Dictionary previewProp(String dictionaryName, Map<String, Collection<Properties>> propMap, Collection<BusinessWarning> warnings) throws BusinessException;
 }

@@ -115,7 +115,7 @@ public interface TextService {
 
     /**
      * Populate context name and get the Context instance, create one if not exists.
-     * @param contextExp context expression, supported variables: $DICT, $APP, $PROD
+     * @param contextExp context expression, supported variables: [DICT], [APP], [PROD]
      * @param dict Dictionary object, used to populate context value
      * @return Context instance
      */
