@@ -483,6 +483,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         int sortNo = 1;
         for (Label label : dict.getLabels()) {
             label.setSortNo(sortNo++);
+            label.setRemoved(false);
             String contextName = label.getContext().getName();
             Text text = new Text();
             text.setReference(label.getReference());
@@ -974,5 +975,12 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         for (Label label : labels) {
             label.setText(textMap.get(label.getReference()));
         }
+    }
+    
+    public void deleteLabels(Collection<Long> labelIds) {
+    	for (Long id : labelIds) {
+    		Label label = (Label) dao.retrieve(Label.class, id);
+    		label.setRemoved(true);
+    	}
     }
 }

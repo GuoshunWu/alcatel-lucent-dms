@@ -56,7 +56,7 @@ public class DCTGenerator extends DictionaryGenerator {
             	out.print(dict.getAnnotation1());
             }
             boolean hasCHK = false;
-            for (Label label : dict.getLabels()) {
+            for (Label label : dict.getAvailableLabels()) {
             	if (label.getMaxLength() != null) {
             		hasCHK = true;
             		break;
@@ -79,7 +79,7 @@ public class DCTGenerator extends DictionaryGenerator {
                     Label.REFERENCE_FIELD_NAME);
             int indentSize = checkFieldLangCodeString.length();
 
-            Label[] labels = dict.getLabels().toArray(new Label[0]);
+            Label[] labels = dict.getAvailableLabels().toArray(new Label[0]);
             for (int i = 0; i < labels.length; ++i) {
                 label = labels[i];
 

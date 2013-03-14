@@ -122,13 +122,13 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     }
 
 */ 
-    public Map<Long, Map<Long, int[]>> getDictTranslationSummaryByProdHQL(Long prodId) {
+    public Map<Long, Map<Long, int[]>> getDictTranslationSummaryByProd(Long prodId) {
     	Map<Long, Map<Long, int[]>> result = new HashMap<Long, Map<Long, int[]>>();
     	
     	// count labels for each dictionary
     	String hql = "select d.id,dl.language.id,count(distinct dl.languageCode),count(*)" +
     			" from Product p join p.applications a join a.dictionaries d join d.labels l join d.dictLanguages dl" +
-    			" where p.id=:prodId and dl.language.id<>1" +
+    			" where p.id=:prodId and dl.language.id<>1 and l.removed=false" +
     			" group by d.id,dl.language.id";
     	Map param = new HashMap();
     	param.put("prodId", prodId);
@@ -154,7 +154,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     			",sum(case when t.status=" + Translation.STATUS_IN_PROGRESS + " then 1 else 0 end) " +
     			" from Product p join p.applications a join a.dictionaries d join d.dictLanguages dl" +
     			" join d.labels l join l.text.translations t" +
-    			" where p.id=:prodId and t.language=dl.language and dl.language.id<>1" +
+    			" where p.id=:prodId and t.language=dl.language and dl.language.id<>1 and l.removed=false" +
     			" and not exists(select lt from LabelTranslation lt where lt.language=dl.language and lt.label=l and lt.needTranslation=false)" +
     			" and l.context.name<>:exclusion" +
     			" group by d.id,dl.language.id";
@@ -177,7 +177,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     	hql = "select d.id,dl.language.id,count(distinct dl.languageCode)" +
     			",count(*) " +
     			" from Product p join p.applications a join a.dictionaries d join d.dictLanguages dl join d.labels l" +
-    			" where p.id=:prodId and dl.language.id<>1" +
+    			" where p.id=:prodId and dl.language.id<>1 and l.removed=false" +
 				" and not exists(select lt from LabelTranslation lt where lt.language=dl.language and lt.label=l and lt.needTranslation=false) " +
 				" and not exists(select ct from Translation ct where ct.text=l.text and ct.language=dl.language) " +
     			" and l.context.name<>:exclusion" +
@@ -209,7 +209,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
      * @param prodId
      * @return
      */
-    public Map<Long, Map<Long, int[]>> getDictTranslationSummaryByProd(final Long prodId) {
+    public Map<Long, Map<Long, int[]>> getDictTranslationSummaryByProdJDBC(final Long prodId) {
     	final Map<Long, Map<Long, int[]>> result = new HashMap<Long, Map<Long, int[]>>();
     	dao.getSession().doWork(new Work() {
     		public void execute(Connection connection)throws SQLException{
@@ -224,7 +224,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     					" JOIN dms.DICTIONARY D ON AD.DICTIONARY_ID=D.ID" +
     					" JOIN dms.DICTIONARY_LANGUAGE DL ON DL.DICTIONARY_ID = D.ID AND DL.LANGUAGE_ID <> 1" +
     					" JOIN dms.LANGUAGE LANG ON LANG.ID = DL.LANGUAGE_ID" +
-    					" JOIN dms.LABEL L ON L.DICTIONARY_ID = D.ID" +
+    					" JOIN dms.LABEL L ON L.DICTIONARY_ID = D.ID AND L.REMOVED=false" +
     					" JOIN dms.CONTEXT CTX ON L.CONTEXT_ID=CTX.ID" +
     					" LEFT JOIN dms.LABEL_TRANSLATION LT ON LT.LABEL_ID = L.ID AND LT.LANGUAGE_ID = LANG.ID" +
     					" LEFT JOIN dms.TRANSLATION CT ON CT.TEXT_ID = L.TEXT_ID AND CT.LANGUAGE_ID = LANG.ID" +
@@ -261,7 +261,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     	// count labels for each dictionary
     	String hql = "select d.id,dl.language.id,count(distinct dl.languageCode),count(*)" +
     			" from Application a join a.dictionaries d join d.labels l join d.dictLanguages dl" +
-    			" where a.id=:appId and dl.language.id<>1" +
+    			" where a.id=:appId and dl.language.id<>1 and l.removed=false" +
     			" group by d.id,dl.language.id";
     	Map param = new HashMap();
     	param.put("appId", appId);
@@ -287,7 +287,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     			",sum(case when t.status=" + Translation.STATUS_IN_PROGRESS + " then 1 else 0 end) " +
     			" from Application a join a.dictionaries d join d.dictLanguages dl" +
     			" join d.labels l join l.text.translations t" +
-    			" where a.id=:appId and t.language=dl.language and dl.language.id<>1" +
+    			" where a.id=:appId and t.language=dl.language and dl.language.id<>1 and l.removed=false" +
     			" and not exists(select lt from LabelTranslation lt where lt.language=dl.language and lt.label=l and lt.needTranslation=false)" +
     			" and l.context.name<>:exclusion" +
     			" group by d.id,dl.language.id";
@@ -310,7 +310,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     	hql = "select d.id,dl.language.id,count(distinct dl.languageCode)" +
     			",count(*) " +
     			" from Application a join a.dictionaries d join d.dictLanguages dl join d.labels l" +
-    			" where a.id=:appId and dl.language.id<>1" +
+    			" where a.id=:appId and dl.language.id<>1 and l.removed=false" +
 				" and not exists(select lt from LabelTranslation lt where lt.language=dl.language and lt.label=l and lt.needTranslation=false) " +
 				" and not exists(select ct from Translation ct where ct.text=l.text and ct.language=dl.language) " +
     			" and l.context.name<>:exclusion" +
@@ -347,7 +347,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     	// init empty langMap
     	String hql = "select dl.language.id" +
     			" from Application a join a.dictionaries d join d.labels l join d.dictLanguages dl" +
-    			" where a.id=:appId and dl.language.id<>1" +
+    			" where a.id=:appId and dl.language.id<>1 and l.removed=false" +
     			" group by dl.language.id";
     	Map param = new HashMap();
     	param.put("appId", appId);
@@ -362,7 +362,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     			",sum(case when t.status=" + Translation.STATUS_IN_PROGRESS + " then 1 else 0 end) " +
     			" from Application a join a.dictionaries d join d.dictLanguages dl" +
     			" join d.labels l join l.text.translations t" +
-    			" where a.id=:appId and t.language=dl.language and dl.language.id<>1" +
+    			" where a.id=:appId and t.language=dl.language and dl.language.id<>1 and l.removed=false" +
     			" and not exists(select lt from LabelTranslation lt where lt.language=dl.language and lt.label=l and lt.needTranslation=false)" +
     			" and l.context.name<>:exclusion" +
     			" group by a.id,dl.language.id";
@@ -380,7 +380,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     	hql = "select a.id,dl.language.id,count(distinct dl.languageCode)" +
     			",count(*) " +
     			" from Application a join a.dictionaries d join d.dictLanguages dl join d.labels l" +
-    			" where a.id=:appId and dl.language.id<>1" +
+    			" where a.id=:appId and dl.language.id<>1 and l.removed=false" +
 				" and not exists(select lt from LabelTranslation lt where lt.language=dl.language and lt.label=l and lt.needTranslation=false) " +
 				" and not exists(select ct from Translation ct where ct.text=l.text and ct.language=dl.language) " +
     			" and l.context.name<>:exclusion" +
@@ -409,7 +409,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     	// count labels for each app
     	String hql = "select a.id,count(*)" +
     			" from Product p join p.applications a join a.dictionaries d join d.labels l" +
-    			" where p.id=:prodId" +
+    			" where p.id=:prodId and l.removed=false" +
     			" group by a.id";
     	Map param = new HashMap();
     	param.put("prodId", prodId);
@@ -423,7 +423,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 		// initial empty langMap
     	hql = "select a.id,dl.language.id" +
     			" from Product p join p.applications a join a.dictionaries d join d.labels l join d.dictLanguages dl" +
-    			" where p.id=:prodId and dl.language.id<>1" +
+    			" where p.id=:prodId and dl.language.id<>1 and l.removed=false" +
     			" group by a.id,dl.language.id";
     	qr = dao.retrieve(hql, param);
     	for (Object[] row : qr) {
@@ -443,7 +443,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     			",sum(case when t.status=" + Translation.STATUS_IN_PROGRESS + " then 1 else 0 end) " +
     			" from Product p join p.applications a join a.dictionaries d join d.dictLanguages dl" +
     			" join d.labels l join l.text.translations t" +
-    			" where p.id=:prodId and t.language=dl.language and dl.language.id<>1" +
+    			" where p.id=:prodId and t.language=dl.language and dl.language.id<>1 and l.removed=false" +
     			" and not exists(select lt from LabelTranslation lt where lt.language=dl.language and lt.label=l and lt.needTranslation=false)" +
     			" and l.context.name<>:exclusion" +
     			" group by a.id,dl.language.id";
@@ -466,7 +466,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     	hql = "select a.id,dl.language.id,count(distinct dl.languageCode)" +
     			",count(*) " +
     			" from Product p join p.applications a join a.dictionaries d join d.dictLanguages dl join d.labels l" +
-    			" where p.id=:prodId and dl.language.id<>1" +
+    			" where p.id=:prodId and dl.language.id<>1 and l.removed=false" +
 				" and not exists(select lt from LabelTranslation lt where lt.language=dl.language and lt.label=l and lt.needTranslation=false) " +
 				" and not exists(select ct from Translation ct where ct.text=l.text and ct.language=dl.language) " +
     			" and l.context.name<>:exclusion" +
@@ -513,7 +513,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     					" JOIN dms.DICTIONARY D ON AD.DICTIONARY_ID=D.ID" +
     					" JOIN dms.DICTIONARY_LANGUAGE DL ON DL.DICTIONARY_ID = D.ID AND DL.LANGUAGE_ID <> 1" +
     					" JOIN dms.LANGUAGE LANG ON LANG.ID = DL.LANGUAGE_ID" +
-    					" JOIN dms.LABEL L ON L.DICTIONARY_ID = D.ID" +
+    					" JOIN dms.LABEL L ON L.DICTIONARY_ID = D.ID AND L.REMOVED=FALSE" +
     					" JOIN dms.CONTEXT CTX ON L.CONTEXT_ID=CTX.ID" +
     					" LEFT JOIN dms.LABEL_TRANSLATION LT ON LT.LABEL_ID = L.ID AND LT.LANGUAGE_ID = LANG.ID" +
     					" LEFT JOIN dms.TRANSLATION CT ON CT.TEXT_ID = L.TEXT_ID AND CT.LANGUAGE_ID = LANG.ID" +
@@ -811,7 +811,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 	}
 	
 	public Collection<Label> getLabelsWithTranslation(Long dictId, Long langId) {
-		String hql = "select obj from Label obj where obj.dictionary.id=:dictId order by obj.sortNo";
+		String hql = "select obj from Label obj where obj.dictionary.id=:dictId and obj.removed=false order by obj.sortNo";
 		Map param = new HashMap();
 		param.put("dictId", dictId);
 		Collection<Label> labels = dao.retrieve(hql, param);

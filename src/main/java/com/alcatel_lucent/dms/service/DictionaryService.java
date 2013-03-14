@@ -202,5 +202,12 @@ public interface DictionaryService {
 	 */
 	void updateLabelReference(Long labelId, String reference);
 
+	/**
+	 * Delete labels.
+	 * The label is not physically deleted, insteadly the "removed" flag is set to true
+	 * @param idList collection of label id
+	 */
+	void deleteLabels(Collection<Long> idList);
+
     //Dictionary previewProp(String dictionaryName, Map<String, Collection<Properties>> propMap, Collection<BusinessWarning> warnings) throws BusinessException;
 }

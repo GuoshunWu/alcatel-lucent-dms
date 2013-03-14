@@ -21,6 +21,7 @@
         <property name="maxLength" type="string" column="MAX_LENGTH"/>
         <property name="annotation1" type="text" column="ANNOTATION1"/>
         <property name="annotation2" type="text" column="ANNOTATION2"/>
+        <property name="removed" type="boolean" column="REMOVED" not-null="true"/>
 
         <map name="params" table="LABEL_PARAMS" inverse="true" cascade="delete-orphan" order-by="name">
             <key column="LABEL_ID"/>

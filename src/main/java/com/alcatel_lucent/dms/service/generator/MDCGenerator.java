@@ -57,7 +57,7 @@ public class MDCGenerator extends DictionaryGenerator {
             }
         }
 
-        Collection<Label> labels = dict.getLabels();
+        Collection<Label> labels = dict.getAvailableLabels();
         Collection<Translation> translations = null;
 
         //generate xml

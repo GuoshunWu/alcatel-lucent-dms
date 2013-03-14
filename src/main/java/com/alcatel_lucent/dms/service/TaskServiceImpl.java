@@ -96,7 +96,8 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 		String hql = "select distinct dl.language,l,ct " +
 				"from Dictionary d join d.labels l join d.dictLanguages dl " +
 				"join l.text.translations ct " +
-				"where d.id in (:dictIds) and dl.language.id in (:langIds) and ct.language=dl.language and ct.status=:status " +
+				"where d.id in (:dictIds) and dl.language.id in (:langIds) and l.removed=false " +
+				"and ct.language=dl.language and ct.status=:status " +
 				"and not exists(select lt from LabelTranslation lt where lt.language=dl.language and lt.label=l and lt.needTranslation=false) " +
 				"and l.context.name<>:exclusion ";
 		Map param = new HashMap();
@@ -107,7 +108,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 		Collection<Object[]> resultSet = dao.retrieve(hql, param);
 		hql = "select distinct dl.language,l " +
 				"from Dictionary d join d.labels l join d.dictLanguages dl " +
-				"where d.id in (:dictIds) and dl.language.id in (:langIds) " +
+				"where d.id in (:dictIds) and dl.language.id in (:langIds) and l.removed=false " +
 				"and not exists(select lt from LabelTranslation lt where lt.language=dl.language and lt.label=l and lt.needTranslation=false) " +
 				"and l.context.name<>:exclusion " +
 				"and not exists(select ct from Translation ct where ct.text=l.text and ct.language=dl.language) ";

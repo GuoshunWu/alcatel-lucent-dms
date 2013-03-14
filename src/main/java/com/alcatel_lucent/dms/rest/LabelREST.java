@@ -99,8 +99,8 @@ public class LabelREST extends BaseREST {
 //    	}
     	
     	Long langId = requestMap.get("language") == null ? null : Long.valueOf(requestMap.get("language"));
-		String hql = "select obj from Label obj where obj.dictionary.id=:dictId";
-    	String countHql = "select count(*) from Label where dictionary.id=:dictId";
+		String hql = "select obj from Label obj where obj.dictionary.id=:dictId and obj.removed=false";
+    	String countHql = "select count(*) from Label where dictionary.id=:dictId and removed=false";
     	Map param = new HashMap();
     	Map countParam = new HashMap();
     	param.put("dictId", dictId);
