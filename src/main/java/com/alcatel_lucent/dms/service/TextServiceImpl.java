@@ -25,6 +25,7 @@ import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.SystemError;
+import com.alcatel_lucent.dms.model.Application;
 import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.Label;
@@ -243,35 +244,67 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
     }
     
     public void updateTranslationStatusByDict(Collection<Long> dictIds, int transStatus) {
+		String hql = "select dl.language,l.text from Dictionary d join d.dictLanguages dl join d.labels l" +
+				" where dl.language.id<>1 and l.removed=false" +
+				" and l.context.name<>:exclusion" +
+				" and not exists(select ct from Translation ct where ct.text=l.text and ct.language=dl.language)" +
+				" and d.id=:dictId";
+		Map param = new HashMap();
+		param.put("exclusion", Context.EXCLUSION);
     	for (Long dictId : dictIds) {
     		Collection<Translation> qr = findAllTranslationsByDict(dictId);
     		for (Translation trans : qr) {
     			trans.setStatus(transStatus);
+    		}
+    		// create missing Translation objects
+    		param.put("dictId", dictId);
+    		Collection<Object[]> rows = dao.retrieve(hql, param);
+    		for (Object[] row : rows) {
+    			Language language = (Language) row[0];
+    			Text text = (Text) row[1];
+    			Translation translation = new Translation();
+    			translation.setLanguage(language);
+    			translation.setText(text);
+    			translation.setTranslation(text.getReference());
+    			translation.setStatus(transStatus);
+    			dao.create(translation);
     		}
     	}
     }
     
     public void updateTranslationStatusByApp(Collection<Long> appIds, int status) {
     	for (Long appId: appIds) {
-    		Collection<Translation> qr = findAllTranslationsByApp(appId);
-    		for (Translation trans : qr) {
-    			trans.setStatus(status);
+//    		Collection<Translation> qr = findAllTranslationsByApp(appId);
+//    		for (Translation trans : qr) {
+//    			trans.setStatus(status);
+//    		}
+    		Application app = (Application) dao.retrieve(Application.class, appId);
+    		Collection<Long> dictIds = new ArrayList<Long>();
+    		for (Dictionary dict : app.getDictionaries()) {
+    			dictIds.add(dict.getId());
+    		}
+    		if (!dictIds.isEmpty()) {
+    			updateTranslationStatusByDict(dictIds, status);
     		}
     	}
     }
     
 
     private Collection<Translation> findAllTranslationsByDict(Long dictId) {
-		String hql = "select t.translations from Label l join l.text t where l.dictionary.id=:dictId and l.removed=false";
+		String hql = "select t.translations from Label l join l.text t" +
+				" where l.dictionary.id=:dictId and l.removed=false and l.context.name<>:exclusion";
 		Map param = new HashMap();
 		param.put("dictId", dictId);
+		param.put("exclusion", Context.EXCLUSION);
 		return dao.retrieve(hql, param);
 	}
     
     private Collection<Translation> findAllTranslationsByApp(Long appId) {
-		String hql = "select t.translations from Application a join a.dictionaries d join d.labels l join l.text t where a.id=:appId and l.removed=false";
+		String hql = "select t.translations from Application a join a.dictionaries d join d.labels l join l.text t" +
+				" where a.id=:appId and l.removed=false and l.context.name<>:exclusion";
 		Map param = new HashMap();
 		param.put("appId", appId);
+		param.put("exclusion", Context.EXCLUSION);
 		return dao.retrieve(hql, param);
 	}
 
