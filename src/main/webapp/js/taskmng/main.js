@@ -35,11 +35,11 @@
       return $('#taskGrid').setGridWidth(gridParent.width() - 10).setGridHeight(gridParent.height() - 110);
     };
     init = function() {
-      return typeof console !== "undefined" && console !== null ? console.debug("transmng panel init...") : void 0;
+      return typeof console !== "undefined" && console !== null ? console.log("transmng panel init...") : void 0;
     };
     ready = function(param) {
       if (typeof console !== "undefined" && console !== null) {
-        console.debug("transmng panel ready...");
+        console.log("transmng panel ready...");
       }
       return $('#selVersion', '#taskmng').change(function() {
         var nodeInfo, postData, type;

@@ -1,5 +1,13 @@
-define ['i18n!nls/transmng', 'i18n!nls/common', 'dms-util', 'transmng/trans_grid', 'transmng/transdetail_grid'], (i18n, c18n, util, grid, detailgrid)->
-  console?.debug "transmng panel dialogs init..."
+define [
+  'jqmsgbox'
+  'i18n!nls/transmng'
+  'i18n!nls/common'
+  'dms-util'
+  'dms-urls'
+  'transmng/trans_grid'
+  'transmng/transdetail_grid'
+], ($, i18n, c18n, util, urls, grid, detailgrid)->
+  console?.log "transmng panel dialogs init..."
   transGrid = grid
   refreshGrid = (languageTrigger = false, grid = transGrid)->
     nodeInfo=util.getProductTreeInfo()
@@ -162,7 +170,7 @@ define ['i18n!nls/transmng', 'i18n!nls/common', 'dms-util', 'transmng/trans_grid
 
       $('#transSameWithRef', @).change (e)->
         postData.nodiff = @checked
-        #          console?.debug transDetailGrid.getGridParam('postData')
+        #          console?.log transDetailGrid.getGridParam('postData')
         transDetailGrid.trigger 'reloadGrid'
 
       $('#detailLanguageSwitcher').change ->
@@ -185,8 +193,32 @@ define ['i18n!nls/transmng', 'i18n!nls/common', 'dms-util', 'transmng/trans_grid
     ]
   )
 
+
+  transUpdateDialog = $('#transmng_translation_update')
+  handler = (e)->
+    return if !e.clientX
+    param = transUpdateDialog.data('param')
+    postData = $.extend(confirm: c18n.yes == $(e.target).text() , param)
+#    console?.log postData
+
+    $.post urls.trans.update_translation, postData , (json)->
+      unless json.status == 0
+        $.msgBox(json.message, null, title: c18n.error)
+        return
+      $("#transDetailGridList").trigger 'reloadGrid'
+    transUpdateDialog.dialog 'close'
+
+  transUpdateDialog.dialog(
+    autoOpen: false, width: 800, title: c18n.confirm, modal: true
+
+    buttons:[
+      {text: c18n.yes, click: handler }
+      {text: c18n.no, click: handler }
+    ]
+  )
+
   ready = ()->
-    console?.debug "transmng panel dialogs ready..."
+    console?.log "transmng panel dialogs ready..."
 
   ready()
 

@@ -23,7 +23,8 @@ define [
       {name: 'maxlen', index: 'maxLength', width: 90, editable: false, align: 'right', frozen: true, search: false}
       {name: 'context', index: 'context.name', width: 80, align: 'left', frozen: true, search: false}
       {name: 'reflang', index: 'reference', width: 150, align: 'left', frozen: true, search: false}
-      {name: 'translation', index: 'ct.translation', width: 150, align: 'left', editable:true, classes: 'editable-column', search: false}
+      {name: 'translation', index: 'ct.translation', width: 150, align: 'left', edittype:'textarea',
+      editable:true, classes: 'editable-column', search: false}
       {name: 'transStatus', index: 'ct.status', width: 150, align: 'left', editable: true, classes: 'editable-column', search: true,
       edittype: 'select', editoptions: {value: "0:#{i18n.trans.nottranslated};1:#{i18n.trans.inprogress};2:#{i18n.trans.translated}"},
       formatter: 'select',
@@ -46,24 +47,17 @@ define [
     afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
       json = $.parseJSON(serverresponse.responseText)
       # edit translation in cell is different from common cell editor
+#      console?.log json
       if 'translation' == cellname and 1 == json.status
         dictList = "<ul>\n  <li>#{json.dicts.join('</li>\n  <li>')}</li>\n</ul>"
-
-
-        $.msgBox i18n.msgbox.updatetranslation.msg.format(dictList), ((keyPressed)->
-          postData = $.extend confirm: c18n.yes == keyPressed , json
-          delete postData.dicts
-          delete postData.message
-          delete postData.status
-#          console?.log postData
-          $.post urls.trans.update_translation, postData , (json1)->
-            unless json1.status == 0
-              $.msgBox(json1.message, null, title: c18n.error)
-              return
-            $("#transDetailGridList").trigger 'reloadGrid'
-        ), {title: c18n.confirm, width: 600}, [c18n.yes, c18n.no]
+        showMsg = i18n.msgbox.updatetranslation.msg.format dictList
+        delete json.dicts
+        delete json.message
+        delete json.status
+        $('#transmng_translation_update').html(showMsg).data('param', json).dialog 'open'
 
         return [true, json.message]
+
       [0 == json.status, json.message]
 
     afterCreate: (grid)->

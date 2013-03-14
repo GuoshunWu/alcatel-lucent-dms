@@ -1,6 +1,6 @@
 define ['require','jqueryui', 'admin/languagegrid', 'admin/charsetgrid'], (require, $)->
   init = ()->
-    console?.debug "transmng panel init..."
+    console?.log "transmng panel init..."
     $('#adminTabs').tabs(
       show: (event, ui)->
         pheight = $(ui.panel).height()
@@ -12,15 +12,15 @@ define ['require','jqueryui', 'admin/languagegrid', 'admin/charsetgrid'], (requi
     tabs = $('#adminTabs')
     pheight = tabs.parent().height()
     tabs.tabs 'option', 'pheight', pheight
-#    console?.debug "init tabs height=#{pheight}."
+#    console?.log "init tabs height=#{pheight}."
 
     $('div.ui-tabs-panel', tabs).height(pheight - 50)
     tabs.tabs 'select', 2
-    #  console?.debug "language grid height=#{$('#languageGrid').getGridParam('height')}."
+    #  console?.log "language grid height=#{$('#languageGrid').getGridParam('height')}."
 #    $('#languageGrid').setGridHeight('100%')
 
   ready = ()->
-    console?.debug "transmng panel ready..."
+    console?.log "transmng panel ready..."
   init()
   ready()
 

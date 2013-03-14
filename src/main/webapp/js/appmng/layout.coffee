@@ -12,12 +12,12 @@ define ['dms-util'], (util)->
   showProductPanel: ->appmngPnlGroup.switchTo panel.product, ()->
     grid = $('#applicationGridList')
     parent = $('#applicationGrid_parent')
-    #    console?.debug "parent.width=#{parent.width()}, parent.height=#{parent.height()}."
+    #    console?.log "parent.width=#{parent.width()}, parent.height=#{parent.height()}."
     grid.setGridWidth(parent.width() - 10).setGridHeight(parent.height() - 85)
 
   showApplicationPanel: ->appmngPnlGroup.switchTo panel.application, ()->
     parent = $('#dictionaryGridList_parent')
-    #    console?.debug "parent.width=#{parent.width()}, parent.height=#{parent.height()}."
+    #    console?.log "parent.width=#{parent.width()}, parent.height=#{parent.height()}."
     $('#dictionaryGridList').setGridWidth(parent.width() - 10).setGridHeight(parent.height() - 85)
   showWelcomePanel: ->
     appmngPnlGroup.switchTo panel.welcome

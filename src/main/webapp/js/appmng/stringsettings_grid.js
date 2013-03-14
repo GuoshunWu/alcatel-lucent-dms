@@ -35,6 +35,7 @@
           name: 'reference',
           index: 'reference',
           width: 200,
+          edittype: 'textarea',
           editable: false,
           align: 'left'
         }, {

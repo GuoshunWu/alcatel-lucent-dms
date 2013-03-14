@@ -14,7 +14,7 @@
         $("" + this.panels).hide();
         this.currentPanel = panelId;
         if (typeof console !== "undefined" && console !== null) {
-          console.debug("switch to " + this.panels + "[id='" + panelId + "'].");
+          console.log("switch to " + this.panels + "[id='" + panelId + "'].");
         }
         return $("" + this.panels + "[id='" + panelId + "']").fadeIn("fast", function() {
           if ($.isFunction(callback)) {
@@ -70,7 +70,7 @@
           height = $("#" + pg.currentPanel).height();
           tTabs.tabs('option', 'height', height);
           if (typeof console !== "undefined" && console !== null) {
-            console.debug("parent height=" + height + ".");
+            console.log("parent height=" + height + ".");
           }
           return $('div.ui-tabs-panel', tTabs).height(height - 65);
         });

@@ -234,7 +234,7 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
 #        console?.log $.parseJSON(xhr.responseText)
 
   checkGridPrivilege = (grid)->
-    # console?.debug "check the privilege of grid '#{grid.id}'."
+    # console?.log "check the privilege of grid '#{grid.id}'."
     gridParam = $(grid).jqGrid 'getGridParam'
     forbiddenTab =
       cellurl: urlname2Action(gridParam.cellurl) in param.forbiddenPrivileges
@@ -342,7 +342,7 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
   afterInitilized: (context)->
     # center progressbar
     $('div.progressbar').position(my: 'center', at: 'center',of: window)
-    # console?.debug "...Page #{param.naviTo} privilege check..."
+    # console?.log "...Page #{param.naviTo} privilege check..."
     #    check all buttons' privilege
     $('[role=button][privilegeName]').each (index, button)->
       #    .attr('privilegeName', util.urlname2Action 'app/deliver-app-dict')
@@ -368,7 +368,7 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
     switchTo: (panelId, callback)->
 
       $("#{@panels}").hide()
-#      console?.debug "switch to #{@panels}[id='#{panelId}']."
+#      console?.log "switch to #{@panels}[id='#{panelId}']."
       oldPanel = @currentPanel
       @currentPanel = panelId
       $("#{@panels}[id='#{panelId}']").fadeIn "fast", ()->callback() if $.isFunction(callback)

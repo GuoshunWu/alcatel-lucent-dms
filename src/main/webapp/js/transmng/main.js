@@ -64,7 +64,7 @@
     };
     init = function() {
       if (typeof console !== "undefined" && console !== null) {
-        console.debug("transmng panel init...");
+        console.log("transmng panel init...");
       }
       $('#selVersion', "div[id='transmng']").change(function() {
         var nodeInfo, postData;
@@ -126,7 +126,7 @@
     };
     ready = function() {
       onShow();
-      return typeof console !== "undefined" && console !== null ? console.debug("transmng panel ready...") : void 0;
+      return typeof console !== "undefined" && console !== null ? console.log("transmng panel ready...") : void 0;
     };
     init();
     ready();

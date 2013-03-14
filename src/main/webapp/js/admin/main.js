@@ -6,7 +6,7 @@
     init = function() {
       var pheight, tabs;
       if (typeof console !== "undefined" && console !== null) {
-        console.debug("transmng panel init...");
+        console.log("transmng panel init...");
       }
       $('#adminTabs').tabs({
         show: function(event, ui) {
@@ -23,7 +23,7 @@
       return tabs.tabs('select', 2);
     };
     ready = function() {
-      return typeof console !== "undefined" && console !== null ? console.debug("transmng panel ready...") : void 0;
+      return typeof console !== "undefined" && console !== null ? console.log("transmng panel ready...") : void 0;
     };
     init();
     return ready();

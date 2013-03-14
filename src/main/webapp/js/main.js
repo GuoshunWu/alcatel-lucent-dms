@@ -5,7 +5,7 @@
     var init, panelSwitchHandler, ready;
     ready = function(param) {
       if (typeof console !== "undefined" && console !== null) {
-        console.debug("page ready...");
+        console.log("page ready...");
       }
       util.afterInitilized(this);
       return $('#loading-container').fadeOut('slow', function() {

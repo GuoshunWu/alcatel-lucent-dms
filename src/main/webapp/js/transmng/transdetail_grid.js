@@ -62,6 +62,7 @@
           index: 'ct.translation',
           width: 150,
           align: 'left',
+          edittype: 'textarea',
           editable: true,
           classes: 'editable-column',
           search: false
@@ -121,31 +122,15 @@
         }
       },
       afterSubmitCell: function(serverresponse, rowid, cellname, value, iRow, iCol) {
-        var dictList, json;
+        var dictList, json, showMsg;
         json = $.parseJSON(serverresponse.responseText);
         if ('translation' === cellname && 1 === json.status) {
           dictList = "<ul>\n  <li>" + (json.dicts.join('</li>\n  <li>')) + "</li>\n</ul>";
-          $.msgBox(i18n.msgbox.updatetranslation.msg.format(dictList), (function(keyPressed) {
-            var postData;
-            postData = $.extend({
-              confirm: c18n.yes === keyPressed
-            }, json);
-            delete postData.dicts;
-            delete postData.message;
-            delete postData.status;
-            return $.post(urls.trans.update_translation, postData, function(json1) {
-              if (json1.status !== 0) {
-                $.msgBox(json1.message, null, {
-                  title: c18n.error
-                });
-                return;
-              }
-              return $("#transDetailGridList").trigger('reloadGrid');
-            });
-          }), {
-            title: c18n.confirm,
-            width: 600
-          }, [c18n.yes, c18n.no]);
+          showMsg = i18n.msgbox.updatetranslation.msg.format(dictList);
+          delete json.dicts;
+          delete json.message;
+          delete json.status;
+          $('#transmng_translation_update').html(showMsg).data('param', json).dialog('open');
           return [true, json.message];
         }
         return [0 === json.status, json.message];

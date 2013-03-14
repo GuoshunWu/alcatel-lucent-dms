@@ -6,7 +6,7 @@
     var autoSizeGrids, glayout, init, ready;
     autoSizeGrids = ['applicationGridList', 'dictionaryGridList', 'transGrid', 'taskGrid'];
     ready = function(param) {
-      return typeof console !== "undefined" && console !== null ? console.debug("global layout ready...") : void 0;
+      return typeof console !== "undefined" && console !== null ? console.log("global layout ready...") : void 0;
     };
     init = function() {
       var layout, westSelector;

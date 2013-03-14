@@ -408,7 +408,7 @@ define  [
     open: (event, ui)->
       param = $(@).data('param')
       return unless param
-      #      console?.debug param
+      #      console?.log param
       $('#stringSettingsTranslationGrid').setGridParam(
         url: 'rest/label/translation'
         postData:

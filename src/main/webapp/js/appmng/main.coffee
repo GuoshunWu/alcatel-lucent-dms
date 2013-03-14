@@ -26,7 +26,7 @@ define [
   ################################################## Initilaized ####################################################
 
   ready = (param)->
-    console?.debug "appmng panel ready..."
+    console?.log "appmng panel ready..."
   init()
   ready(@)
 
