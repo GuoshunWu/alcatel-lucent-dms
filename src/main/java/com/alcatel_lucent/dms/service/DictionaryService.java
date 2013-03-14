@@ -186,6 +186,21 @@ public interface DictionaryService {
 	 */
 	void updateLabels(Collection<Long> idList, String maxLength,
 			String description, String context);
+	
+	/**
+	 * Update a label key
+	 * @param labelId label id
+	 * @param key new key
+	 * @throws BusinessException throws exception when key is duplicate
+	 */
+	void updateLabelKey(Long labelId, String key) throws BusinessException;
+	
+	/**
+	 * Update a label reference.
+	 * @param labelId label id
+	 * @param reference new reference text
+	 */
+	void updateLabelReference(Long labelId, String reference);
 
     //Dictionary previewProp(String dictionaryName, Map<String, Collection<Properties>> propMap, Collection<BusinessWarning> warnings) throws BusinessException;
 }
