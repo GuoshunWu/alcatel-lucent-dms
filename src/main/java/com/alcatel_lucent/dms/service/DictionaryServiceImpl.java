@@ -893,6 +893,38 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             dao.delete(dl);
         }
     }
+    
+    public void updateLabelKey(Long labelId, String key) throws BusinessException {
+    	Label label = (Label) dao.retrieve(Label.class, labelId);
+    	if (label.getKey().equals(key)) return;
+    	Label existing = label.getDictionary().getLabel(key);
+    	if (existing != null) {
+    		throw new BusinessException(BusinessException.DUPLICATE_LABEL_KEY);
+    	}
+    	label.setKey(key);
+    }
+    
+    public void updateLabelReference(Long labelId, String reference) {
+    	Label label = (Label) dao.retrieve(Label.class, labelId);
+    	if (label.getReference().equals(reference)) return;
+    	label.setReference(reference);
+    	// re-associate text unless EXCLUSION context
+    	if (!label.getContext().getName().equals(Context.EXCLUSION)) {
+	    	Text text = textService.getText(label.getContext().getId(), reference);
+	    	if (text == null) {
+	            text = textService.addText(label.getContext().getId(), reference);
+	        }
+	    	label.setText(text);
+    	}
+    	// reset LabelTranslation objects
+    	if (label.getOrigTranslations() != null) {
+    		for (LabelTranslation lt : label.getOrigTranslations()) {
+    			lt.setOrigTranslation(reference);
+    			lt.setNeedTranslation(true);
+    			lt.setRequestTranslation(null);
+    		}
+    	}
+    }
 
     public void updateLabels(Collection<Long> idList, String maxLength,
                              String description, String contextExp) {

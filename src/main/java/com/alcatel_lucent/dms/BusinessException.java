@@ -69,6 +69,7 @@ public class BusinessException extends RuntimeException {
 	static public final int PRODUCT_CONTAINS_TASK = 317;
 	static public final int LACK_DICT_NAME = 318;
 	static public final int LACK_DICT_VERSION = 319;
+	static public final int DUPLICATE_LABEL_KEY = 320;
 	
 	// task management
 	static public final int INVALID_TASK_STATUS = 401;
