@@ -126,3 +126,5 @@
         </tr>
     </table>
 </div>
+
+<div id="transmng_translation_update"></div>

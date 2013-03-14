@@ -20,7 +20,7 @@
       return layout.showWelcomePanel();
     };
     ready = function(param) {
-      return typeof console !== "undefined" && console !== null ? console.debug("appmng panel ready...") : void 0;
+      return typeof console !== "undefined" && console !== null ? console.log("appmng panel ready...") : void 0;
     };
     init();
     ready(this);

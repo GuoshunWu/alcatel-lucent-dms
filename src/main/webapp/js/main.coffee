@@ -10,7 +10,7 @@ define [
   'i18n!nls/common'
 ], ($, util, glayout, ptree, appmngPanel, transmngPanel, taskmngPanel, adminPanel, c18n)->
   ready = (param)->
-    console?.debug "page ready..."
+    console?.log "page ready..."
     util.afterInitilized(@)
     $('#loading-container').fadeOut 'slow', ()->$(@).remove()
 

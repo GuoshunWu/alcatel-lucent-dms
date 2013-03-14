@@ -4,7 +4,7 @@ jQuery ($)->
     switchTo: (panelId, callback)->
       $("#{@panels}").hide()
       @currentPanel = panelId
-      console?.debug "switch to #{@panels}[id='#{panelId}']."
+      console?.log "switch to #{@panels}[id='#{panelId}']."
       $("#{@panels}[id='#{panelId}']").fadeIn "fast", ()-> callback() if $.isFunction callback
 
   tDialog = $('#testDialog').dialog(
@@ -42,7 +42,7 @@ jQuery ($)->
         pg.switchTo 'p2', ()->
           height = $("##{pg.currentPanel}").height()
           tTabs.tabs 'option', 'height', height
-          console?.debug "parent height=#{height}."
+          console?.log "parent height=#{height}."
           $('div.ui-tabs-panel', tTabs).height(height - 65)
       else
         layout.show("west")

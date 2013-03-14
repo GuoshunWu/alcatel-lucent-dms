@@ -55,7 +55,7 @@ define [
     $("#exportForm", "#transmng").submit()
 
   init = ()->
-    console?.debug "transmng panel init..."
+    console?.log "transmng panel init..."
     $('#selVersion', "div[id='transmng']").change ->
       return if !@value or -1 == parseInt @value
       nodeInfo = util.getProductTreeInfo()
@@ -100,7 +100,7 @@ define [
 
   ready = ()->
     onShow()
-    console?.debug "transmng panel ready..."
+    console?.log "transmng panel ready..."
 
   init()
   ready()

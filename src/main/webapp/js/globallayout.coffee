@@ -2,7 +2,7 @@ define ['jqlayout'], (jqlayout)->
   autoSizeGrids = ['applicationGridList', 'dictionaryGridList', 'transGrid', 'taskGrid']
 
   ready = (param)->
-    console?.debug "global layout ready..."
+    console?.log "global layout ready..."
   init = ()->
     layout = $('#global-container').layout(
       onresize: (name, element, state, options, layoutname)->

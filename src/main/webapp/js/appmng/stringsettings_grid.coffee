@@ -14,7 +14,7 @@ define ['jqgrid', 'dms-util', 'appmng/langsetting_translation_grid'], ($, util, 
     colNames: ['Label', 'Reference Language', 'T', 'N', 'I', 'Max Length', 'Context', 'Description', ]
     colModel: [
       {name: 'key', index: 'key', width: 100, editable: false, align: 'left'}
-      {name: 'reference', index: 'reference', width: 200, editable: false, align: 'left'}
+      {name: 'reference', index: 'reference', width: 200, edittype:'textarea', editable: false, align: 'left'}
       {name: 't', index: 't', sortable: true, width: 15, align: 'right', formatter: 'showlink'
       formatoptions:
         baseLinkUrl: '#', addParam: encodeURI("&status=2")
