@@ -3,9 +3,6 @@
 
   define(['dms-util'], function(util) {
     var PANEL_PREFIX, appmngPnlGroup, panel;
-    if (typeof console !== "undefined" && console !== null) {
-      console.log("module appmng/layout loading.");
-    }
     PANEL_PREFIX = 'DMS';
     panel = {
       welcome: "" + PANEL_PREFIX + "_welcomePanel",

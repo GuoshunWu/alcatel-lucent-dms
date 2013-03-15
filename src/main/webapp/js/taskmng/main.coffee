@@ -31,10 +31,10 @@ define [
 
   init = ()->
 #    console.log grid
-    console?.log "transmng panel init..."
+#    console?.log "transmng panel init..."
 
   ready = (param)->
-    console?.log "transmng panel ready..."
+#    console?.log "transmng panel ready..."
     # initilize version selector
     $('#selVersion', '#taskmng').change ()->
       return if !@value or -1 == parseInt @value

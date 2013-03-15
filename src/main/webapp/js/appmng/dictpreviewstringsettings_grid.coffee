@@ -1,7 +1,7 @@
 define ['jqgrid'], ($)->
   lastEditedCell = null
 
-  console?.log "module appmng/dictpreviewstringsettings_grid loading."
+#  console?.log "module appmng/dictpreviewstringsettings_grid loading."
 
   dicGrid = $('#dictPreviewStringSettingsGrid').jqGrid(
     url: 'json/dummy.json', mtype: 'post', datatype: 'local'

@@ -125,20 +125,14 @@
           }), pollingInterval);
         }).fail(function(jqXHR, textStatus, errorThrown) {
           if ('timeout' !== textStatus) {
-            if (typeof console !== "undefined" && console !== null) {
-              console.log("error: " + textStatus);
-            }
             return;
           }
           if (retryTimes > 0) {
-            if (typeof console !== "undefined" && console !== null) {
-              console.log("Request " + textStatus + ", I will retry in " + pollingInterval + " milliseconds.");
-            }
             return setTimeout((function() {
               return reTryAjax(--retryTimes, ++retryCounter);
             }), pollingInterval);
           } else {
-            return typeof console !== "undefined" && console !== null ? console.log("I have retried " + retryCounter + " times. There may be a network connection issue, please check network cable.") : void 0;
+
           }
         });
       };

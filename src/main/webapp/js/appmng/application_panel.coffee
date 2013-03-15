@@ -12,7 +12,7 @@ define [
   'appmng/dictionary_grid'
 ], ($, upload, iframetrans, i18n, c18n, util, urls, dialogs, grid)->
 
-  console?.log "module appmng/application_panel loading."
+#  console?.log "module appmng/application_panel loading."
 
   appInfo = {}
 

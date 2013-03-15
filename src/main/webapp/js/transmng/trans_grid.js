@@ -5,9 +5,6 @@
     var common, getTableType, grid, restoreSearchToolBarValue, transGrid;
     restoreSearchToolBarValue = function(column, value) {
       var barSelector, searchOpts;
-      if (typeof console !== "undefined" && console !== null) {
-        console.log("Set default value to " + value + " for " + column);
-      }
       barSelector = "select[id=gs_" + column + "]";
       $(barSelector).each(function(idx, elem) {
         return elem.value = value;

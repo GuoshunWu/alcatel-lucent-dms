@@ -2,6 +2,7 @@
 (function() {
 
   define(['formvalidate', 'i18n!nls/login'], function($, i18n) {
+    $("span#version").html(window.param.version);
     $("span#buildNumber").html(window.param.buildNumber);
     $.formValidator.initConfig({
       formID: "loginForm",
@@ -31,9 +32,6 @@
     });
     return $('#loginForm').on('submit', function() {
       if ($.formValidator.pageIsValid()) {
-        if (typeof console !== "undefined" && console !== null) {
-          console.log('client validation passed, make button grey to avoid resubmit');
-        }
         return $("#idSubmit").attr('disabled', true).css('color', 'grey');
       }
     });

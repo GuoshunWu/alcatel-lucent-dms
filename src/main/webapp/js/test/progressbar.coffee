@@ -83,14 +83,14 @@ jQuery ($) ->
         setTimeout (->long_polling  url, {pqCmd: 'process', pqId: data.pqId}, callback, pb), pollingInterval
       ).fail((jqXHR, textStatus, errorThrown)->
         if 'timeout' != textStatus
-          console?.log "error: #{textStatus}"
+#          console?.log "error: #{textStatus}"
           return
 
         if(retryTimes > 0)
-          console?.log "Request #{textStatus}, I will retry in #{pollingInterval} milliseconds."
+#          console?.log "Request #{textStatus}, I will retry in #{pollingInterval} milliseconds."
           setTimeout (->reTryAjax(--retryTimes, ++retryCounter)), pollingInterval
         else
-          console?.log "I have retried #{retryCounter} times. There may be a network connection issue, please check network cable."
+#          console?.log "I have retried #{retryCounter} times. There may be a network connection issue, please check network cable."
       )
 
     reTryAjax(10)

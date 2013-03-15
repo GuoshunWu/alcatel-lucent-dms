@@ -5,9 +5,6 @@
     var init, ready;
     init = function() {
       var pheight, tabs;
-      if (typeof console !== "undefined" && console !== null) {
-        console.log("transmng panel init...");
-      }
       $('#adminTabs').tabs({
         show: function(event, ui) {
           var pheight, pwidth;
@@ -22,9 +19,7 @@
       $('div.ui-tabs-panel', tabs).height(pheight - 50);
       return tabs.tabs('select', 2);
     };
-    ready = function() {
-      return typeof console !== "undefined" && console !== null ? console.log("transmng panel ready...") : void 0;
-    };
+    ready = function() {};
     init();
     return ready();
   });

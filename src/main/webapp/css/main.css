@@ -31,6 +31,11 @@ html, body {
 .err-message {
     color: red;
 }
+
+.form-label{
+    font-weight: bold;
+}
+
 .show-label {
     font-size: medium;
     vertical-align: middle;

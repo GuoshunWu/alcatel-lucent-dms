@@ -41,6 +41,17 @@ public class EntryAction extends BaseAction {
     @Value("${buildNumber}")
     private String buildNumber;
 
+    @Value("${version}")
+    private String version;
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
     private Long curProductId = -1L;
     private Long curProductBaseId = -1L;
 

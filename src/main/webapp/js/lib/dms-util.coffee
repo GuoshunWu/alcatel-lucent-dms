@@ -148,8 +148,8 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
   long_polling =(url, postData, callback, pb)->
     # call by terminal user
     postData.pqCmd = 'start' if !postData || !postData.pqCmd
-    console?.log "postData="
-    console?.log postData
+#    console?.log "postData="
+#    console?.log postData
 
     # initlize the test parameters
     pollingInterval = if $("#pollingFreq").val() then parseInt($("#pollingFreq").val()) else 1000
@@ -180,14 +180,14 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
         setTimeout (->long_polling  url, {pqCmd: 'process', pqId: data.pqId}, callback, pb), pollingInterval
       ).fail((jqXHR, textStatus, errorThrown)->
         if 'timeout' != textStatus
-          console?.log "error: #{textStatus}"
+#          console?.log "error: #{textStatus}"
           return
 
         if(retryTimes > 0)
-          console?.log "Request #{textStatus}, I will retry in #{pollingInterval} milliseconds."
+#          console?.log "Request #{textStatus}, I will retry in #{pollingInterval} milliseconds."
           setTimeout (->reTryAjax(--retryTimes, ++retryCounter)), pollingInterval
         else
-          console?.log "I have retried #{retryCounter} times. There may be a network connection issue, please check network cable."
+#          console?.log "I have retried #{retryCounter} times. There may be a network connection issue, please check network cable."
       )
 
     reTryAjax()
@@ -255,14 +255,14 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
       actButton = $ btnSelector
 
       if actButton.length > 0 and forbiddenTab.editurl
-        console?.log "Disable button #{actButton.attr('id')} due to forbidden privilege."
+#        console?.log "Disable button #{actButton.attr('id')} due to forbidden privilege."
         actButton.addClass 'ui-state-disabled'
 
       # for custom buttons in navigate gird.
       btnSelector = "#custom_#{value}_#{grid.id}"
       actButton = $(btnSelector)
       if actButton.length > 0 and (forbiddenTab.editurl or forbiddenTab.cellactionurl)
-        console?.log "Disable button #{actButton.attr('id')} due to forbidden privilege."
+#        console?.log "Disable button #{actButton.attr('id')} due to forbidden privilege."
         actButton.addClass 'ui-state-disabled'
 
 
@@ -342,11 +342,15 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
   afterInitilized: (context)->
     # center progressbar
     $('div.progressbar').position(my: 'center', at: 'center',of: window)
-    # console?.log "...Page #{param.naviTo} privilege check..."
     #    check all buttons' privilege
     $('[role=button][privilegeName]').each (index, button)->
-      #    .attr('privilegeName', util.urlname2Action 'app/deliver-app-dict')
-      $(button).button 'disable' if $(button).attr('privilegeName') in param.forbiddenPrivileges
+      if $(button).attr('privilegeName') in param.forbiddenPrivileges
+        $(button).button 'disable'
+#        console?.log "Button: #{button.id} which privilegeName=#{$(button).attr('privilegeName')} is disabled."
+#      else
+#        console?.warn "Button: #{button.id} which privilegeName=#{$(button).attr('privilegeName')} is not disabled."
+
+
     #   check all the grids' privilege
     checkAllGridPrivilege()
 

@@ -14,7 +14,7 @@ define [
 
   # prepare the grid column name and column model parameters for the grid.
   restoreSearchToolBarValue = (column, value)->
-    console?.log "Set default value to #{value} for #{column}"
+#    console?.log "Set default value to #{value} for #{column}"
     barSelector = "select[id=gs_#{column}]"
     $(barSelector).each (idx, elem)-> elem.value = value
     searchOpts = ($("#transGrid").jqGrid 'getColProp', column).searchoptions

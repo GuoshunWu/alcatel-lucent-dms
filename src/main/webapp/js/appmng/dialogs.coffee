@@ -14,7 +14,7 @@ define  [
   'appmng/previewlangsetting_grid'
 ], ($, jqgrid, blockui, msgbox, c18n, i18n, urls, util, previewgrid)->
 
-  console?.log "module appmng/dialogs loading."
+#  console?.log "module appmng/dialogs loading."
   newProductVersion = $("#newProductReleaseDialog").dialog(
     autoOpen: false
     height: 200, width: 500, modal: true
@@ -193,7 +193,7 @@ define  [
       $('#unlockLabels').button(
         label: i18n.dialog.stringsettings.unlocklabels
         icons: secondary: "ui-icon-locked"
-      ).on('click', ()->
+      ).attr('privilegeName', 'AddLabelAction').on('click', ()->
         # is locked
         isLocked = 'ui-icon-locked' == $(@).button('option', 'icons').secondary
         lockLabels(!isLocked)

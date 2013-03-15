@@ -1,5 +1,5 @@
 define ['jqgrid'], ($)->
-  console?.log "module appmng/langsetting_translation_grid loading."
+#  console?.log "module appmng/langsetting_translation_grid loading."
 
   lastEditedCell = null
 

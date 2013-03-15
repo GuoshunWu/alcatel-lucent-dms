@@ -1,6 +1,6 @@
 define ['jqgrid', 'i18n!nls/appmng', 'dms-urls', 'dms-util'],($, i18n, urls, util)->
 
-  console?.log "module appmng/application_grid loading."
+#  console?.log "module appmng/application_grid loading."
 
   appGrid = $('#applicationGridList').jqGrid(
     datatype: 'local'

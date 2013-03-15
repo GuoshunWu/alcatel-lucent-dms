@@ -4,9 +4,6 @@
   define(['jqgrid'], function($) {
     var dicGrid, lastEditedCell;
     lastEditedCell = null;
-    if (typeof console !== "undefined" && console !== null) {
-      console.log("module appmng/dictpreviewstringsettings_grid loading.");
-    }
     dicGrid = $('#dictPreviewStringSettingsGrid').jqGrid({
       url: 'json/dummy.json',
       mtype: 'post',

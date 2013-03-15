@@ -1,6 +1,6 @@
 define ['jqgrid', 'jqmsgbox', 'jqueryui', 'i18n!nls/appmng', 'i18n!nls/common'], ($, msgbox, ui, i18n, c18n)->
 
-  console?.log "module appmng/dictlistpreview_grid loading."
+#  console?.log "module appmng/dictlistpreview_grid loading."
 
   infoDialog = $('<div>').dialog {
   autoOpen: false, height: 400, width: 800

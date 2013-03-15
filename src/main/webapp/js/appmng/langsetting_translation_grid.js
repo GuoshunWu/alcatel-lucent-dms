@@ -3,9 +3,6 @@
 
   define(['jqgrid'], function($) {
     var langSettingGrid, lastEditedCell;
-    if (typeof console !== "undefined" && console !== null) {
-      console.log("module appmng/langsetting_translation_grid loading.");
-    }
     lastEditedCell = null;
     langSettingGrid = $('#stringSettingsTranslationGrid').jqGrid({
       mtype: 'post',

@@ -3,9 +3,6 @@
 
   define(['jqmsgbox', 'i18n!nls/transmng', 'i18n!nls/common', 'dms-util', 'dms-urls', 'transmng/trans_grid', 'transmng/transdetail_grid'], function($, i18n, c18n, util, urls, grid, detailgrid) {
     var exportTranslationDialog, handler, languageFilterDialog, ready, refreshGrid, taskDialog, transDetailDialog, transGrid, transUpdateDialog;
-    if (typeof console !== "undefined" && console !== null) {
-      console.log("transmng panel dialogs init...");
-    }
     transGrid = grid;
     refreshGrid = function(languageTrigger, grid) {
       var checkboxes, nodeInfo, param, type;
@@ -338,9 +335,7 @@
         }
       ]
     });
-    ready = function() {
-      return typeof console !== "undefined" && console !== null ? console.log("transmng panel dialogs ready...") : void 0;
-    };
+    ready = function() {};
     ready();
     return {
       taskDialog: taskDialog,

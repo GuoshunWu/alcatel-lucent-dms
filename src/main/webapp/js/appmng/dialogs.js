@@ -3,9 +3,6 @@
 
   define(['jqueryui', 'jqgrid', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/appmng', 'dms-urls', 'dms-util', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsettings_grid', 'appmng/previewlangsetting_grid'], function($, jqgrid, blockui, msgbox, c18n, i18n, urls, util, previewgrid) {
     var addApplication, addLanguage, dictListPreview, dictPreviewLangSettings, dictPreviewStringSettings, historyDlg, langSettings, lockLabels, newAppVersion, newProductVersion, setContextTo, stringSettings, stringSettingsTranslation;
-    if (typeof console !== "undefined" && console !== null) {
-      console.log("module appmng/dialogs loading.");
-    }
     newProductVersion = $("#newProductReleaseDialog").dialog({
       autoOpen: false,
       height: 200,
@@ -306,7 +303,7 @@
           icons: {
             secondary: "ui-icon-locked"
           }
-        }).on('click', function() {
+        }).attr('privilegeName', 'AddLabelAction').on('click', function() {
           var isLocked;
           isLocked = 'ui-icon-locked' === $(this).button('option', 'icons').secondary;
           lockLabels(!isLocked);
