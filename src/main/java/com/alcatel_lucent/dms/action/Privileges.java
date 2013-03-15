@@ -34,6 +34,7 @@ public class Privileges {
 		// dictionary management
 		addPrivilege(AddApplicationAction.class, User.ROLE_APPLICATION_OWNER | User.ROLE_TRANSLATION_MANAGER);
 		addPrivilege(AddDictLanguageAction.class, User.ROLE_APPLICATION_OWNER | User.ROLE_TRANSLATION_MANAGER);
+		addPrivilege(AddLabelAction.class, User.ROLE_APPLICATION_OWNER);
 		addPrivilege(ChangeApplicationVersionAction.class, User.ROLE_APPLICATION_OWNER | User.ROLE_TRANSLATION_MANAGER);
 		addPrivilege(ChangeDictVersionAction.class, User.ROLE_APPLICATION_OWNER | User.ROLE_TRANSLATION_MANAGER);
 		addPrivilege(CreateApplicationAction.class, User.ROLE_APPLICATION_OWNER | User.ROLE_TRANSLATION_MANAGER);
@@ -41,6 +42,7 @@ public class Privileges {
 		addPrivilege(CreateOrAddApplicationAction.class, User.ROLE_APPLICATION_OWNER | User.ROLE_TRANSLATION_MANAGER);
 		addPrivilege(CreateProductAction.class, User.ROLE_APPLICATION_OWNER | User.ROLE_TRANSLATION_MANAGER);
 		addPrivilege(CreateProductReleaseAction.class, User.ROLE_APPLICATION_OWNER | User.ROLE_TRANSLATION_MANAGER);
+		addPrivilege(DeleteLabelAction.class, User.ROLE_APPLICATION_OWNER);
 		addPrivilege(DeliverAppDictAction.class, User.ROLE_APPLICATION_OWNER);
 		addPrivilege(DeliverDictAction.class, User.ROLE_APPLICATION_OWNER);
 		addPrivilege(DeliverUpdateDictAction.class, User.ROLE_APPLICATION_OWNER);
@@ -58,6 +60,7 @@ public class Privileges {
 		
 		// translation management
 		addPrivilege(UpdateStatusAction.class, User.ROLE_APPLICATION_OWNER | User.ROLE_TRANSLATION_MANAGER);
+		addPrivilege(UpdateTranslationAction.class, User.ROLE_APPLICATION_OWNER | User.ROLE_TRANSLATION_MANAGER);
 		
 		// task management
 		addPrivilege(ApplyTaskAction.class, User.ROLE_TRANSLATION_MANAGER);
