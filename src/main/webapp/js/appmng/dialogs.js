@@ -2,7 +2,7 @@
 (function() {
 
   define(['jqueryui', 'jqgrid', 'blockui', 'jqmsgbox', 'i18n!nls/common', 'i18n!nls/appmng', 'dms-urls', 'dms-util', 'appmng/dictlistpreview_grid', 'appmng/dictpreviewstringsettings_grid', 'appmng/previewlangsetting_grid'], function($, jqgrid, blockui, msgbox, c18n, i18n, urls, util, previewgrid) {
-    var addApplication, addLanguage, dictListPreview, dictPreviewLangSettings, dictPreviewStringSettings, historyDlg, langSettings, newAppVersion, newProductVersion, setContextTo, stringSettings, stringSettingsTranslation;
+    var addApplication, addLanguage, dictListPreview, dictPreviewLangSettings, dictPreviewStringSettings, historyDlg, langSettings, lockLabels, newAppVersion, newProductVersion, setContextTo, stringSettings, stringSettingsTranslation;
     if (typeof console !== "undefined" && console !== null) {
       console.log("module appmng/dialogs loading.");
     }
@@ -256,6 +256,44 @@
         }
       ]
     });
+    lockLabels = function(lock) {
+      var grid, lockBtn;
+      if (lock == null) {
+        lock = true;
+      }
+      grid = $('#stringSettingsGrid');
+      lockBtn = $('#unlockLabels');
+      if (lock) {
+        lockBtn.button('option', {
+          icons: {
+            secondary: "ui-icon-locked"
+          },
+          label: i18n.dialog.stringsettings.unlocklabels
+        });
+        grid.setColProp('reference', {
+          editable: false,
+          classes: ''
+        }).setColProp('key', {
+          editable: false,
+          classes: ''
+        });
+      } else {
+        lockBtn.button('option', {
+          icons: {
+            secondary: "ui-icon-unlocked"
+          },
+          label: i18n.dialog.stringsettings.locklabels
+        });
+        grid.setColProp('reference', {
+          editable: true,
+          classes: 'editable-column'
+        }).setColProp('key', {
+          editable: true,
+          classes: 'editable-column'
+        });
+      }
+      return $('#custom_add_stringSettingsGrid, #custom_del_stringSettingsGrid').toggleClass('ui-state-disabled', lock);
+    };
     stringSettings = $('#stringSettingsDialog').dialog({
       autoOpen: false,
       title: i18n.dialog.stringsettings.title,
@@ -263,6 +301,17 @@
       width: 900,
       create: function(e, ui) {
         var _this = this;
+        $('#unlockLabels').button({
+          label: i18n.dialog.stringsettings.unlocklabels,
+          icons: {
+            secondary: "ui-icon-locked"
+          }
+        }).on('click', function() {
+          var isLocked;
+          isLocked = 'ui-icon-locked' === $(this).button('option', 'icons').secondary;
+          lockLabels(!isLocked);
+          return $('#stringSettingsGrid').trigger('reloadGrid');
+        }).width(130);
         $('#searchText', this).keydown(function(e) {
           if (e.which === 13) {
             return $('#searchAction', _this).trigger('click');
@@ -282,6 +331,7 @@
       },
       open: function(e, ui) {
         var param, postData;
+        lockLabels();
         $('#searchAction', this).position({
           my: 'left center',
           at: 'right center',
@@ -682,6 +732,69 @@
           text: c18n.close,
           click: function(e) {
             return $(this).dialog('close');
+          }
+        }
+      ]
+    });
+    $('#addLabelDialog').dialog({
+      autoOpen: false,
+      modal: true,
+      width: 500,
+      create: function() {
+        this.addHandler = function(me) {
+          var errMsg, postData, val, _i, _len, _ref;
+          postData = $(me).data('param');
+          errMsg = [];
+          _ref = ['key', 'reference', 'maxLength', 'context', 'description'];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            val = _ref[_i];
+            postData[val] = $("#" + val, me).val();
+            if (val === 'maxLength' || val === 'description') {
+              continue;
+            }
+            if (!$("#" + val, me).val()) {
+              errMsg.push(c18n.required.format($("label[for='" + val + "']", me).text().trim().slice(0, -1)));
+            }
+          }
+          if (errMsg.length > 0) {
+            $('#errMsg', me).html("<hr/><ul><li>" + (errMsg.join('</li><li>')) + "</li></ul>");
+            return false;
+          }
+          $.post(urls.label.create, postData, function(json) {
+            if (json.status !== 0) {
+              $.msgBox(json.message, null, {
+                title: c18n.error
+              });
+              return;
+            }
+            return $('#stringSettingsGrid').trigger("reloadGrid");
+          });
+          $('#errMsg', me).empty();
+          return $('#' + ['key', 'reference', 'maxLength', 'description'].join(', #'), me).val('');
+        };
+        return true;
+      },
+      open: function() {
+        $('#errMsg', this).empty();
+        return $('#' + ['key', 'reference', 'maxLength', 'description'].join(', #'), this).val('');
+      },
+      buttons: [
+        {
+          text: i18n.dialog.stringsettings.add,
+          click: function() {
+            return this.addHandler(this);
+          }
+        }, {
+          text: i18n.dialog.stringsettings.addandclose,
+          click: function() {
+            if (this.addHandler(this)) {
+              return $(this).dialog("close");
+            }
+          }
+        }, {
+          text: c18n.cancel,
+          click: function() {
+            return $(this).dialog("close");
           }
         }
       ]

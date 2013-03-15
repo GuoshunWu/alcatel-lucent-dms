@@ -59,6 +59,10 @@ Time: 下午7:
         create_version: getURL('create-application', 'app/'),
         remove_version: getURL('remove-application', 'app/')
       },
+      label: {
+        del: getURL('delete-label', 'app/'),
+        create: getURL('add-label', 'app/')
+      },
       trans: {
         update_translation: getURL('update-translation', 'trans/'),
         update_status: getURL('update-status', 'trans/')

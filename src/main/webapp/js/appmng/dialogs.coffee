@@ -166,11 +166,42 @@ define  [
     ]
   )
 
+  lockLabels = (lock=true)->
+    grid = $('#stringSettingsGrid')
+    lockBtn=$('#unlockLabels')
+#    console?.log "lock=#{lock}."
+
+
+    if lock
+      #lock label
+      lockBtn.button 'option', {icons:{secondary: "ui-icon-locked"}, label: i18n.dialog.stringsettings.unlocklabels}
+      grid.setColProp('reference', {editable: false, classes: ''})
+        .setColProp('key', {editable: false, classes: ''})
+    else
+      #unlock label
+      lockBtn.button 'option', {icons: {secondary: "ui-icon-unlocked"}, label: i18n.dialog.stringsettings.locklabels}
+      grid.setColProp('reference', {editable: true, classes: 'editable-column'})
+        .setColProp('key', {editable: true, classes: 'editable-column'})
+    $('#custom_add_stringSettingsGrid, #custom_del_stringSettingsGrid').toggleClass('ui-state-disabled', lock)
+
+
   stringSettings = $('#stringSettingsDialog').dialog(
     autoOpen: false
     title: i18n.dialog.stringsettings.title, modal: true
     width: 900
     create: (e, ui)->
+      $('#unlockLabels').button(
+        label: i18n.dialog.stringsettings.unlocklabels
+        icons: secondary: "ui-icon-locked"
+      ).on('click', ()->
+        # is locked
+        isLocked = 'ui-icon-locked' == $(@).button('option', 'icons').secondary
+        lockLabels(!isLocked)
+        $('#stringSettingsGrid').trigger 'reloadGrid'
+      ).width(130)
+
+
+
       $('#searchText', @).keydown (e)=>$('#searchAction', @).trigger 'click' if e.which == 13
 
       $('#searchAction', @).attr('title', 'Search').button(text: false, icons:
@@ -181,6 +212,7 @@ define  [
       ).height(20).width(20)
 
     open: (e, ui)->
+      lockLabels()
       $('#searchAction', @).position(my: 'left center', at: 'right center', of: '#searchText')
 
       # param must be attached to the dialog before the dialog open
@@ -438,6 +470,44 @@ define  [
       {text: c18n.close, click: (e)->
         $(@).dialog 'close'
       }
+    ]
+  )
+
+  $('#addLabelDialog').dialog(
+    autoOpen: false, modal: true
+    width: 500
+    create: ->
+      @.addHandler = (me)->
+        postData =$(me).data('param')
+        # validation
+        errMsg = []
+        for val in ['key','reference', 'maxLength', 'context', 'description']
+          postData[val] = $("##{val}", me).val()
+          continue if val in ['maxLength', 'description']
+          errMsg.push c18n.required.format $("label[for='#{val}']", me).text().trim()[..-2] unless $("##{val}", me).val()
+
+        #        console?.log postData
+        if errMsg.length>0
+          $('#errMsg', me).html "<hr/><ul><li>#{errMsg.join '</li><li>'}</li></ul>"
+          return false
+
+
+        $.post urls.label.create, postData, (json)->
+          ($.msgBox json.message, null, {title: c18n.error}; return) if json.status != 0
+          $('#stringSettingsGrid').trigger("reloadGrid")
+
+        $('#errMsg', me).empty()
+        $('#'+['key','reference', 'maxLength','description'].join(', #'), me).val('')
+      true
+    open: ()->
+      $('#errMsg', @).empty()
+      $('#'+['key','reference', 'maxLength','description'].join(', #'), @).val('')
+    buttons: [
+      {text: i18n.dialog.stringsettings.add, click: ->@addHandler(@)}
+      {text: i18n.dialog.stringsettings.addandclose, click: ->
+        $(@).dialog("close") if @addHandler(@)
+      }
+      {text: c18n.cancel, click: -> $(@).dialog "close"}
     ]
   )
 

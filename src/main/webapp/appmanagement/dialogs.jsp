@@ -117,9 +117,14 @@
                     </tr>
 
                     <tr>
-                        <td colspan="4"><label for="searchText"><s:text name="searchtext"/></label>
+                        <td colspan="2"><label for="searchText"><s:text name="searchtext"/></label>
                             <input id="searchText"/>
                             <button id="searchAction"/>
+                        </td>
+                        <td colspan="2">
+                            <div>
+                                <button id="unlockLabels"/>
+                            </div>
                         </td>
                     </tr>
                 </table>
@@ -293,6 +298,40 @@
                 </table>
                 <div id="historyGridPager"></div>
             </td>
+        </tr>
+    </table>
+</div>
+
+<div id="addLabelDialog" title="<s:text name="appmng.dialogs.addlabel.title"/>">
+    <table border="0" width="100%">
+        <tr>
+            <td><label for="key"><s:text name="appmng.dialogs.addlabel.key"/></label></td>
+            <td>
+                <input size="50" id="key" />
+            </td>
+        </tr>
+        <tr>
+            <td><label for="reference"><s:text name="appmng.dialogs.addlabel.reference"/></label></td>
+            <td><textarea cols="50" id="reference" ></textarea></td>
+        </tr>
+        <tr>
+            <td><label for="maxLength"><s:text name="appmng.dialogs.addlabel.maxlength"/></label></td>
+            <td><input size="50" id="maxLength" /></td>
+        </tr>
+        <tr>
+            <td><label for="context"><s:text name="appmng.dialogs.addlabel.context"/></label></td>
+            <td><input size="50" id="context" value="[DEFAULT]" /></td>
+        </tr>
+        <tr>
+            <td><label for="description"><s:text name="appmng.dialogs.addlabel.description"/></label></td>
+            <td><textarea cols="50" id="description" ></textarea></td>
+        </tr>
+
+        <tr>
+            <td colspan="2">
+                <div  id="errMsg" class="err-message" ></div>
+            </td>
+
         </tr>
     </table>
 </div>

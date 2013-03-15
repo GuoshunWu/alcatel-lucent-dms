@@ -28,6 +28,9 @@ html, body {
     font-style: normal;
 }
 
+.err-message {
+    color: red;
+}
 .show-label {
     font-size: medium;
     vertical-align: middle;

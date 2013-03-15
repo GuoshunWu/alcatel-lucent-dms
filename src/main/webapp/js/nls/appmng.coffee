@@ -14,6 +14,10 @@ define
         'dummy': ''
       stringsettings:
         title: 'String settings'
+        unlocklabels: 'Unlock Labels'
+        locklabels: 'Lock Labels'
+        add: 'Add'
+        addandclose: 'Add & Close'
         'dummy': ''
       stringsettingstrans:
         'caption': "Label key: '{0}'<br/>Ref text: '{1}'"
