@@ -10,7 +10,7 @@
       });
     };
     panelSwitchHandler = function(oldpnl, newpnl) {
-      var nodeInfo, options, treeSelectedNode, type, value;
+      var nodeInfo, options, tmp, treeSelectedNode, type, value;
       if ('admin' === oldpnl || 'admin' === newpnl) {
         return;
       }
@@ -20,18 +20,20 @@
         return;
       }
       type = nodeInfo.type;
+      tmp = type;
+      if ('prod' === tmp) {
+        tmp = 'product';
+      }
+      tmp += 'Id';
+      window.param.currentSelected[tmp] = $('#selVersion', "div[id='" + oldpnl + "']").val();
       if ('appmng' === newpnl) {
-        if ('prod' === type) {
-          window.param.currentSelected.productId = $('#selVersion', "div[id='" + oldpnl + "']").val();
-        } else {
-          window.param.currentSelected.appId = $('#selVersion', "div[id='" + oldpnl + "']").val();
-        }
         return $("#appTree").jstree('select_node', $("#appTree").jstree('get_selected'), true);
       } else {
         options = $('#selVersion option', "div[id='" + oldpnl + "']").clone();
         value = $('#selVersion', "div[id='" + oldpnl + "']").val();
         if ('appmng' === oldpnl && 'app' === treeSelectedNode.attr('type')) {
           options = $('#selAppVersion option', "div[id='" + oldpnl + "']").clone();
+          value = $('#selAppVersion', "div[id='" + oldpnl + "']").val();
         }
         $('#selVersion', "div[id='" + newpnl + "']").empty().append(options).val(value).trigger('change');
         if (newpnl === 'transmng' || newpnl === 'taskmng') {

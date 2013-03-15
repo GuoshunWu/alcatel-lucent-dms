@@ -24,20 +24,23 @@ define [
     return if !nodeInfo or '-1' == nodeInfo.id
     type = nodeInfo.type
 
+    tmp=type
+    tmp= 'product' if 'prod' == tmp
+    tmp+='Id'
+    window.param.currentSelected[tmp]= $('#selVersion', "div[id='#{oldpnl}']").val()
+
     if 'appmng' == newpnl
-      if 'prod' == type
-        window.param.currentSelected.productId = $('#selVersion', "div[id='#{oldpnl}']").val()
-      else
-        window.param.currentSelected.appId = $('#selVersion', "div[id='#{oldpnl}']").val()
       $("#appTree").jstree('select_node', $("#appTree").jstree('get_selected'), true)
     else
       options = $('#selVersion option', "div[id='#{oldpnl}']").clone()
       value = $('#selVersion', "div[id='#{oldpnl}']").val()
-      options = $('#selAppVersion option', "div[id='#{oldpnl}']").clone() if 'appmng' == oldpnl and 'app' == treeSelectedNode.attr('type')
-
+      if 'appmng' == oldpnl and 'app' == treeSelectedNode.attr('type')
+        options = $('#selAppVersion option', "div[id='#{oldpnl}']").clone()
+        value = $('#selAppVersion', "div[id='#{oldpnl}']").val()
       $('#selVersion', "div[id='#{newpnl}']").empty().append(options).val(value).trigger 'change'
 
       if newpnl in ['transmng', 'taskmng']
+
         $('#versionTypeLabel', "div[id='#{newpnl}']").text nodeInfo.text
         $('#typeLabel',"div[id='#{newpnl}']").text "#{c18n[type].capitalize()}: "
 
