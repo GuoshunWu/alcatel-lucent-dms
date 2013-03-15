@@ -331,13 +331,18 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
   selectedValue: default selected option value
 
 ###
-  json2Options: (json, selectedValue = false, textFieldName = "version", valueFieldName = "id", sep = '\n')->
+  json2Options: (json, selectedValue = ':last', textFieldName = "version", valueFieldName = "id", sep = '\n')->
     $(json).map(
       (index, elem)->
         #        selected = if !selectedValue then index == json.length - 1 else (String selectedValue) == (String @[valueFieldName])
+        # :last indicate that the last option need to be selected
+        selectedValue = json.slice(-1)[0][valueFieldName] if ':last' == selectedValue
+        selectedValue = json.slice(0)[0][valueFieldName] if ':first' == selectedValue
         selected = (String selectedValue) == (String @[valueFieldName])
         newOption @[textFieldName], @[valueFieldName], selected
     ).get().join(sep)
+
+#    if ':last' == selectedValue
 
   afterInitilized: (context)->
     # center progressbar

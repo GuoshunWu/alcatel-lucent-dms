@@ -481,7 +481,7 @@ User: Guoshun Wu
 
       json2Options: function(json, selectedValue, textFieldName, valueFieldName, sep) {
         if (selectedValue == null) {
-          selectedValue = false;
+          selectedValue = ':last';
         }
         if (textFieldName == null) {
           textFieldName = "version";
@@ -494,6 +494,12 @@ User: Guoshun Wu
         }
         return $(json).map(function(index, elem) {
           var selected;
+          if (':last' === selectedValue) {
+            selectedValue = json.slice(-1)[0][valueFieldName];
+          }
+          if (':first' === selectedValue) {
+            selectedValue = json.slice(0)[0][valueFieldName];
+          }
           selected = (String(selectedValue)) === (String(this[valueFieldName]));
           return newOption(this[textFieldName], this[valueFieldName], selected);
         }).get().join(sep);
