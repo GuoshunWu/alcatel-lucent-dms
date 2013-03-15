@@ -32,7 +32,7 @@ import org.logicalcobwebs.proxool.ProxoolFacade
 public class VLEExcelDictParserTest {
 
     @Autowired
-    private VLEExcelDictParser VLEExcelDictParser = new VLEExcelDictParser();
+    private StandardExcelDictParser VLEExcelDictParser = new StandardExcelDictParser();
 
     @BeforeClass
     static void setUpBeforeClass() throws Exception {

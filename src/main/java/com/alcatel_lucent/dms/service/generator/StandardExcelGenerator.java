@@ -24,14 +24,16 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Collection;
 
-import static com.alcatel_lucent.dms.service.parser.VLEExcelDictParser.LABEL;
-import static com.alcatel_lucent.dms.service.parser.VLEExcelDictParser.MAX_LENGTH;
-import static com.alcatel_lucent.dms.service.parser.VLEExcelDictParser.REF_LANG_CODE;
+import static com.alcatel_lucent.dms.service.parser.StandardExcelDictParser.LABEL;
+import static com.alcatel_lucent.dms.service.parser.StandardExcelDictParser.MAX_LENGTH;
+import static com.alcatel_lucent.dms.service.parser.StandardExcelDictParser.CONTEXT;
+import static com.alcatel_lucent.dms.service.parser.StandardExcelDictParser.DESCRIPTION;
+import static com.alcatel_lucent.dms.service.parser.StandardExcelDictParser.REF_LANG_CODE;
 
-@Component("VLEExcelGenerator")
-public class VLEExcelGenerator extends DictionaryGenerator {
+@Component("StandardExcelGenerator")
+public class StandardExcelGenerator extends DictionaryGenerator {
 
-    private Logger log = LoggerFactory.getLogger(VLEExcelGenerator.class);
+    private Logger log = LoggerFactory.getLogger(StandardExcelGenerator.class);
     @Autowired
     private DaoService dao;
 
@@ -44,7 +46,7 @@ public class VLEExcelGenerator extends DictionaryGenerator {
     public void generateDict(File targetDir, Dictionary dict) throws BusinessException {
         File targetFile = new File(targetDir, dict.getName());
         try {
-            IOUtils.copy(getClass().getResourceAsStream("VLEDictTemplate.xls"), FileUtils.openOutputStream(targetFile));
+            IOUtils.copy(getClass().getResourceAsStream("StandardExcelTemplate.xls"), FileUtils.openOutputStream(targetFile));
 
             Workbook wb = WorkbookFactory.create(new AutoCloseInputStream(new FileInputStream(targetFile)));
             Sheet sheet = wb.getSheetAt(0);
@@ -61,7 +63,9 @@ public class VLEExcelGenerator extends DictionaryGenerator {
             HashedMap colIndexes = new HashedMap();
             colIndexes.put(LABEL, 0);
             colIndexes.put(MAX_LENGTH, 1);
-            int i = 2;
+            colIndexes.put(CONTEXT, 2);
+            colIndexes.put(DESCRIPTION, 3);
+            int i = 4;
             String langCode;
             CellStyle style = titleRow.getCell(1).getCellStyle();
 
@@ -92,7 +96,11 @@ public class VLEExcelGenerator extends DictionaryGenerator {
                     if (colName.equals(LABEL)) {
                         cell.setCellValue(label.getKey());
                     } else if (colName.equals(MAX_LENGTH)) {
-                        cell.setCellValue(Integer.parseInt(label.getMaxLength()));
+                    	cell.setCellValue(label.getMaxLength());
+                    } else if (colName.equals(CONTEXT)) {
+                    	cell.setCellValue(label.getContext().getName());
+                    } else if (colName.equals(DESCRIPTION)) {
+                    	cell.setCellValue(label.getDescription());
                     } else if (colName.equals(REF_LANG_CODE)) {
                         cell.setCellValue(label.getReference());
                     } else { //All the other language translations
