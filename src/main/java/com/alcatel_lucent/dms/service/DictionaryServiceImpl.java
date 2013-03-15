@@ -47,14 +47,14 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                                  LabelXMLGenerator labelXMLGenerator,
                                  PropXMLGenerator propXMLGenerator,
                                  PropGenerator propGenerator,
-                                 VLEExcelGenerator vleExcelGenerator) {
+                                 StandardExcelGenerator stdExcelGenerator) {
         generators.put(Constants.DICT_FORMAT_XDCT, xmlDictGenerator);
         generators.put(Constants.DICT_FORMAT_DCT, dctGenerator);
         generators.put(Constants.DICT_FORMAT_MDC, mdcGenerator);
         generators.put(Constants.DICT_FORMAT_XML_LABEL, labelXMLGenerator);
         generators.put(Constants.DICT_FORMAT_XML_PROP, propXMLGenerator);
         generators.put(Constants.DICT_FORMAT_TEXT_PROP, propGenerator);
-        generators.put(Constants.DICT_FORMAT_VLEExcel, vleExcelGenerator);
+        generators.put(Constants.DICT_FORMAT_STD_EXCEL, stdExcelGenerator);
     }
 
     public Collection<Dictionary> previewDictionaries(String rootDir, File file, Long appId) throws BusinessException {

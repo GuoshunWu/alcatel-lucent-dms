@@ -2,7 +2,7 @@ package com.alcatel_lucent.dms.service.generator
 
 import com.alcatel_lucent.dms.model.Dictionary
 import com.alcatel_lucent.dms.model.DictionaryBase
-import com.alcatel_lucent.dms.service.parser.VLEExcelDictParser
+import com.alcatel_lucent.dms.service.parser.StandardExcelDictParser
 import org.apache.commons.collections.MapIterator
 import org.apache.commons.collections.map.HashedMap
 import org.junit.*
@@ -32,9 +32,9 @@ import static org.apache.commons.io.FileUtils.copyFile
 public class VLEExcelDictGeneratorTest {
 
     @Autowired
-    private VLEExcelGenerator VLEExcelGenerator;
+    private StandardExcelGenerator VLEExcelGenerator;
     @Autowired
-    private VLEExcelDictParser VLEExcelDictParser;
+    private StandardExcelDictParser VLEExcelDictParser;
 
     @BeforeClass
     static void setUpBeforeClass() throws Exception {

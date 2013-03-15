@@ -27,12 +27,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
 
-@Component("VLEExcelDictParser")
-@SuppressWarnings("unchecked")
-public class VLEExcelDictParser extends DictionaryParser {
+@Component("StandardExcelDictParser")
+public class StandardExcelDictParser extends DictionaryParser {
 
-    public static final String LABEL = "LABELS";
+    public static final String LABEL = "Labels";
     public static final String MAX_LENGTH = "Max Length";
+    public static final String CONTEXT = "Context";
+    public static final String DESCRIPTION = "Description";
     public static final String REF_LANG_CODE = "English";
     public static final String DEFAULT_ENCODING = "UTF-16LE";
     @Autowired
@@ -69,7 +70,7 @@ public class VLEExcelDictParser extends DictionaryParser {
             dictBase.setName(dictName);
             dictBase.setPath(dictPath);
             dictBase.setEncoding(DEFAULT_ENCODING);
-            dictBase.setFormat(Constants.DICT_FORMAT_VLEExcel);
+            dictBase.setFormat(Constants.DICT_FORMAT_STD_EXCEL);
 
             dictionary = new Dictionary();
             dictionary.setDictLanguages(new ArrayList<DictionaryLanguage>());
@@ -89,7 +90,8 @@ public class VLEExcelDictParser extends DictionaryParser {
                  * */
                 if (row.getRowNum() == sheet.getFirstRowNum()) {
                     colIndexes = readTitleRow(dictionary, row);
-                    if (!(colIndexes.containsKey(LABEL) && colIndexes.containsKey(MAX_LENGTH))) {
+                    if (!(colIndexes.containsKey(LABEL) && colIndexes.containsKey(MAX_LENGTH) && 
+                    		colIndexes.containsKey(CONTEXT) && colIndexes.containsKey(DESCRIPTION))) {
                         throw new BusinessException(BusinessException.INVALID_VLE_DICT_FILE);
                     }
                     continue;
@@ -136,14 +138,13 @@ public class VLEExcelDictParser extends DictionaryParser {
         label.setSortNo(row.getRowNum());
 
         label.setOrigTranslations(new ArrayList<LabelTranslation>());
-
         while (itr.hasNext()) {
             String colName = (String) itr.next();
             Integer index = (Integer) itr.getValue();
 
             cell = row.getCell(index);
             if (null == cell) {
-                log.warn("Row {} column {} has null value.", row.getRowNum(), colName);
+                log.debug("Row {} column {} has null value.", row.getRowNum(), colName);
                 continue;
             }
 
@@ -159,6 +160,13 @@ public class VLEExcelDictParser extends DictionaryParser {
                 label.setKey(cellContent);
             } else if (colName.equalsIgnoreCase(MAX_LENGTH)) {
                 label.setMaxLength(cellContent);
+            } else if (colName.equalsIgnoreCase(CONTEXT)) {
+            	if (!cellContent.trim().isEmpty()) {
+	            	Context ctx = new Context(cellContent);
+	            	label.setContext(ctx);
+            	}
+            } else if (colName.equalsIgnoreCase(DESCRIPTION)) {
+            	label.setDescription(cellContent);
             } else {//Language translations
                 if (colName.equals(REF_LANG_CODE)) {
                     label.setReference(cellContent);
@@ -207,7 +215,8 @@ public class VLEExcelDictParser extends DictionaryParser {
             String cellValue = cell.getStringCellValue().trim();
             if (cellValue.isEmpty()) continue;
             colIndexes.put(cellValue, cell.getColumnIndex());
-            if (LABEL.equalsIgnoreCase(cellValue) || MAX_LENGTH.equalsIgnoreCase(cellValue)) continue;
+            if (LABEL.equalsIgnoreCase(cellValue) || MAX_LENGTH.equalsIgnoreCase(cellValue) || 
+            		CONTEXT.equalsIgnoreCase(cellValue) || DESCRIPTION.equalsIgnoreCase(cellValue)) continue;
 
             DictionaryLanguage dl = new DictionaryLanguage();
             dl.setLanguageCode(cellValue);
