@@ -1,0 +1,9 @@
+V2.1.0
+ * New UI: all contents in a single AJAX page
+ * Product tree is also available for Translation and Task view
+ * New progress bar for delivering and generating dictionaries
+ * Allow to add/modify/delete labels in Dictionary view
+ * Allow to modify translation directly in Translation view
+ * New dictionary format: Standard Excel
+ * Keep original structure of XMLDict files
+ 
