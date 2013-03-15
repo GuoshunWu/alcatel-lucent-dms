@@ -3,9 +3,6 @@
 
   define(['jqgrid'], function($) {
     var langSettingGrid, lastEditedCell;
-    if (typeof console !== "undefined" && console !== null) {
-      console.log("module appmng/previewlangsetting_grid loading.");
-    }
     lastEditedCell = null;
     langSettingGrid = $('#previewLanguageSettingGrid').jqGrid({
       url: 'json/dummy.json',

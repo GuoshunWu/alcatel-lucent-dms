@@ -305,25 +305,25 @@
 <div id="addLabelDialog" title="<s:text name="appmng.dialogs.addlabel.title"/>">
     <table border="0" width="100%">
         <tr>
-            <td><label for="key"><s:text name="appmng.dialogs.addlabel.key"/></label></td>
+            <td><label class="form-label" for="key"><s:text name="appmng.dialogs.addlabel.key"/></label></td>
             <td>
-                <input size="50" id="key" />
+                <input size="50" id="key" /><span style="color: red">*</span>
             </td>
         </tr>
         <tr>
-            <td><label for="reference"><s:text name="appmng.dialogs.addlabel.reference"/></label></td>
-            <td><textarea cols="50" id="reference" ></textarea></td>
+            <td><label class="form-label" for="reference"><s:text name="appmng.dialogs.addlabel.reference"/></label></td>
+            <td><textarea cols="50" id="reference" ></textarea><span style="color: red">*</span></td>
         </tr>
         <tr>
-            <td><label for="maxLength"><s:text name="appmng.dialogs.addlabel.maxlength"/></label></td>
+            <td><label class="form-label" for="maxLength"><s:text name="appmng.dialogs.addlabel.maxlength"/></label></td>
             <td><input size="50" id="maxLength" /></td>
         </tr>
         <tr>
-            <td><label for="context"><s:text name="appmng.dialogs.addlabel.context"/></label></td>
-            <td><input size="50" id="context" value="[DEFAULT]" /></td>
+            <td><label class="form-label" for="context"><s:text name="appmng.dialogs.addlabel.context"/></label></td>
+            <td><input size="50" id="context" value="[DEFAULT]" /><span style="color: red">*</span></td>
         </tr>
         <tr>
-            <td><label for="description"><s:text name="appmng.dialogs.addlabel.description"/></label></td>
+            <td><label class="form-label" for="description"><s:text name="appmng.dialogs.addlabel.description"/></label></td>
             <td><textarea cols="50" id="description" ></textarea></td>
         </tr>
 

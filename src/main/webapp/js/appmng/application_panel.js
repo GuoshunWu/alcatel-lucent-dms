@@ -4,9 +4,6 @@
   define(['jqueryui', 'jqupload', 'iframetransport', 'i18n!nls/appmng', 'i18n!nls/common', 'dms-util', 'dms-urls', 'appmng/dialogs', 'appmng/dictionary_grid'], function($, upload, iframetrans, i18n, c18n, util, urls, dialogs, grid) {
     var appInfo, dctFileUpload,
       _this = this;
-    if (typeof console !== "undefined" && console !== null) {
-      console.log("module appmng/application_panel loading.");
-    }
     appInfo = {};
     $("#newAppVersion").button({
       text: false,

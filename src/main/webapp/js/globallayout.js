@@ -5,9 +5,7 @@
   define(['jqlayout'], function(jqlayout) {
     var autoSizeGrids, glayout, init, ready;
     autoSizeGrids = ['applicationGridList', 'dictionaryGridList', 'transGrid', 'taskGrid'];
-    ready = function(param) {
-      return typeof console !== "undefined" && console !== null ? console.log("global layout ready...") : void 0;
-    };
+    ready = function(param) {};
     init = function() {
       var layout, westSelector;
       layout = $('#global-container').layout({

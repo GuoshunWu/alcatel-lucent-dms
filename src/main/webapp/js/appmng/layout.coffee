@@ -1,5 +1,5 @@
 define ['dms-util'], (util)->
-  console?.log "module appmng/layout loading."
+#  console?.log "module appmng/layout loading."
 
   PANEL_PREFIX = 'DMS'
   panel =

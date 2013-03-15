@@ -5,7 +5,7 @@ define [
   'i18n!nls/common', 'i18n!nls/appmng'
   'appmng/langsetting_translation_grid'
 ], ($, util, urls, c18n, i18n, ltgrid)->
-  console?.log "module appmng/stringsetting_grid loading."
+#  console?.log "module appmng/stringsetting_grid loading."
   lastEditedCell = null
 
   dicGrid = $('#stringSettingsGrid').jqGrid(
@@ -53,6 +53,11 @@ define [
         $('#stringSettingsTranslationDialog').dialog 'open'
 
     afterEditCell: (rowid, cellname, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
+    afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
+      json = $.parseJSON(serverresponse.responseText)
+      $(@).trigger 'reloadGrid' if 'reference' == cellname and 0== json.status
+      [0 == json.status, json.message]
+    beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
   ).setGridParam(datatype: 'json').jqGrid('navGrid', '#stringSettingsPager', {edit: false, add: false, del: false, search: false, view: false},{}, {}, {})
 
   dicGrid.navButtonAdd('#stringSettingsPager', {

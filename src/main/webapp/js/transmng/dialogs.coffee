@@ -7,7 +7,7 @@ define [
   'transmng/trans_grid'
   'transmng/transdetail_grid'
 ], ($, i18n, c18n, util, urls, grid, detailgrid)->
-  console?.log "transmng panel dialogs init..."
+#  console?.log "transmng panel dialogs init..."
   transGrid = grid
   refreshGrid = (languageTrigger = false, grid = transGrid)->
     nodeInfo=util.getProductTreeInfo()
@@ -218,7 +218,7 @@ define [
   )
 
   ready = ()->
-    console?.log "transmng panel dialogs ready..."
+#    console?.log "transmng panel dialogs ready..."
 
   ready()
 

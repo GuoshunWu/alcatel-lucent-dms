@@ -1,5 +1,5 @@
 define ['jqmsgbox', 'i18n!nls/common', 'dms-urls', 'dms-util', 'appmng/application_grid'],($, c18n, urls, util, grid)->
-  console?.log "module appmng/product_panel loading."
+#  console?.log "module appmng/product_panel loading."
 
   $("#newVersion").button(text: false, label: '&nbsp;', icons:
     {primary: "ui-icon-plus"}).

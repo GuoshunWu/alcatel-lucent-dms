@@ -4,9 +4,6 @@
   define(['jqlayout', 'dms-util', 'globallayout', 'ptree', 'appmng/main', 'transmng/main', 'taskmng/main', 'admin/main', 'i18n!nls/common'], function($, util, glayout, ptree, appmngPanel, transmngPanel, taskmngPanel, adminPanel, c18n) {
     var init, panelSwitchHandler, ready;
     ready = function(param) {
-      if (typeof console !== "undefined" && console !== null) {
-        console.log("page ready...");
-      }
       util.afterInitilized(this);
       return $('#loading-container').fadeOut('slow', function() {
         return $(this).remove();

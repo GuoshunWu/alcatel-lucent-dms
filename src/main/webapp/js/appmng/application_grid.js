@@ -3,9 +3,6 @@
 
   define(['jqgrid', 'i18n!nls/appmng', 'dms-urls', 'dms-util'], function($, i18n, urls, util) {
     var appGrid;
-    if (typeof console !== "undefined" && console !== null) {
-      console.log("module appmng/application_grid loading.");
-    }
     appGrid = $('#applicationGridList').jqGrid({
       datatype: 'local',
       editurl: "app/create-or-add-application",

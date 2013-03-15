@@ -63,9 +63,6 @@
       return $("#exportForm", "#transmng").submit();
     };
     init = function() {
-      if (typeof console !== "undefined" && console !== null) {
-        console.log("transmng panel init...");
-      }
       $('#selVersion', "div[id='transmng']").change(function() {
         var nodeInfo, postData;
         if (!this.value || -1 === parseInt(this.value)) {
@@ -125,8 +122,7 @@
       });
     };
     ready = function() {
-      onShow();
-      return typeof console !== "undefined" && console !== null ? console.log("transmng panel ready...") : void 0;
+      return onShow();
     };
     init();
     ready();

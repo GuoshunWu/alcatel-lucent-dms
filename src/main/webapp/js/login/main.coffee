@@ -1,6 +1,8 @@
 define ['formvalidate', 'i18n!nls/login'],($, i18n)->
 
+  $("span#version").html window.param.version
   $("span#buildNumber").html window.param.buildNumber
+
 
   $.formValidator.initConfig(formID: "loginForm", autoTip: true, (onError: (msg)->
   #    alert(msg)
@@ -12,7 +14,7 @@ define ['formvalidate', 'i18n!nls/login'],($, i18n)->
 
   $('#loginForm').on 'submit', ()->
     if $.formValidator.pageIsValid()
-      console?.log 'client validation passed, make button grey to avoid resubmit'
+#      console?.log 'client validation passed, make button grey to avoid resubmit'
       $("#idSubmit").attr('disabled', true).css('color', 'grey')
 
 #  require 'jqform'

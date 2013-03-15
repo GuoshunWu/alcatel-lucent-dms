@@ -1,0 +1,17 @@
+DMS 1.0
+    Update since last time demo
+
+    Add some more dictionary format support such as 'XML Dict', 'Stardard Excel' etc.
+    Add progress bar on several long web operation such as upload dictionaries and generate dictionaries
+
+DMS 2.0 Release note
+
+What's New
+    NEW Implement pure Ajax user interface based on web 2.0 technology, improving response speed and user experience.
+        New Look&Feel.
+        Automatically adjust the main grid size according to the screen size.
+        Directly edit label in the grid.
+        Directly edit translation in the grid.
+    NEW
+Known Issues
+    UNRESOLVED

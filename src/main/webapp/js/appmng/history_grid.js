@@ -3,9 +3,6 @@
 
   define(['jqgrid', 'dms-util'], function($, util) {
     var grid, lastEditedCell;
-    if (typeof console !== "undefined" && console !== null) {
-      console.log("module appmng/history_grid loading.");
-    }
     lastEditedCell = null;
     grid = $('#historyGrid').jqGrid({
       url: 'json/dummy.json',

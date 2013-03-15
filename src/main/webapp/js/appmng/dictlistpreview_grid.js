@@ -3,9 +3,6 @@
 
   define(['jqgrid', 'jqmsgbox', 'jqueryui', 'i18n!nls/appmng', 'i18n!nls/common'], function($, msgbox, ui, i18n, c18n) {
     var colModel, dicGrid, handlers, infoDialog, lastEditedCell;
-    if (typeof console !== "undefined" && console !== null) {
-      console.log("module appmng/dictlistpreview_grid loading.");
-    }
     infoDialog = $('<div>').dialog({
       autoOpen: false,
       height: 400,

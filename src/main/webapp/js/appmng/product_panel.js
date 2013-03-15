@@ -4,9 +4,6 @@
   define(['jqmsgbox', 'i18n!nls/common', 'dms-urls', 'dms-util', 'appmng/application_grid'], function($, c18n, urls, util, grid) {
     var productInfo,
       _this = this;
-    if (typeof console !== "undefined" && console !== null) {
-      console.log("module appmng/product_panel loading.");
-    }
     $("#newVersion").button({
       text: false,
       label: '&nbsp;',

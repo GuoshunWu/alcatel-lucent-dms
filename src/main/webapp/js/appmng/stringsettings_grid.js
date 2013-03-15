@@ -3,9 +3,6 @@
 
   define(['jqgrid', 'dms-util', 'dms-urls', 'i18n!nls/common', 'i18n!nls/appmng', 'appmng/langsetting_translation_grid'], function($, util, urls, c18n, i18n, ltgrid) {
     var dicGrid, lastEditedCell;
-    if (typeof console !== "undefined" && console !== null) {
-      console.log("module appmng/stringsetting_grid loading.");
-    }
     lastEditedCell = null;
     dicGrid = $('#stringSettingsGrid').jqGrid({
       url: 'json/dummy.json',
@@ -125,7 +122,16 @@
           name: name,
           val: val
         };
-      }
+      },
+      afterSubmitCell: function(serverresponse, rowid, cellname, value, iRow, iCol) {
+        var json;
+        json = $.parseJSON(serverresponse.responseText);
+        if ('reference' === cellname && 0 === json.status) {
+          $(this).trigger('reloadGrid');
+        }
+        return [0 === json.status, json.message];
+      },
+      beforeSubmitCell: function(rowid, cellname, value, iRow, iCol) {}
     }).setGridParam({
       datatype: 'json'
     }).jqGrid('navGrid', '#stringSettingsPager', {

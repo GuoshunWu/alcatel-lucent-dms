@@ -94,7 +94,7 @@
             Guide</b></a>
         </div>
         <div style="float: right; font-size: 13px; font-weight:bold; padding-right:5px">
-            V1.0&nbsp;Build&nbsp;
+            <span id='version'></span>&nbsp;Build&nbsp;
             <span id="buildNumber"></span>
         </div>
     </div>

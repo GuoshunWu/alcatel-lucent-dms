@@ -3,9 +3,6 @@
 
   define(['jqgrid', 'blockui', 'jqmsgbox', 'jqueryui', 'i18n!nls/appmng', 'i18n!nls/common', 'dms-util', 'appmng/langsetting_grid', 'appmng/stringsettings_grid', 'appmng/history_grid'], function($, blockui, msgbox, ui, i18n, c18n, util) {
     var colModel, deleteOptions, dicGrid, handlers, lastEditedCell;
-    if (typeof console !== "undefined" && console !== null) {
-      console.log("module appmng/dictionary_grid loading.");
-    }
     deleteOptions = {
       msg: i18n.dialog["delete"].delmsg.format(c18n.dict),
       top: 250,

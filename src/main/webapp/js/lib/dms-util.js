@@ -229,12 +229,6 @@ User: Guoshun Wu
       if (!postData || !postData.pqCmd) {
         postData.pqCmd = 'start';
       }
-      if (typeof console !== "undefined" && console !== null) {
-        console.log("postData=");
-      }
-      if (typeof console !== "undefined" && console !== null) {
-        console.log(postData);
-      }
       pollingInterval = $("#pollingFreq").val() ? parseInt($("#pollingFreq").val()) : 1000;
       reTryAjax = function(retryTimes, retryCounter) {
         if (retryTimes == null) {
@@ -279,20 +273,14 @@ User: Guoshun Wu
           }), pollingInterval);
         }).fail(function(jqXHR, textStatus, errorThrown) {
           if ('timeout' !== textStatus) {
-            if (typeof console !== "undefined" && console !== null) {
-              console.log("error: " + textStatus);
-            }
             return;
           }
           if (retryTimes > 0) {
-            if (typeof console !== "undefined" && console !== null) {
-              console.log("Request " + textStatus + ", I will retry in " + pollingInterval + " milliseconds.");
-            }
             return setTimeout((function() {
               return reTryAjax(--retryTimes, ++retryCounter);
             }), pollingInterval);
           } else {
-            return typeof console !== "undefined" && console !== null ? console.log("I have retried " + retryCounter + " times. There may be a network connection issue, please check network cable.") : void 0;
+
           }
         });
       };
@@ -382,17 +370,11 @@ User: Guoshun Wu
         btnSelector = "#" + value + "_" + grid.id;
         actButton = $(btnSelector);
         if (actButton.length > 0 && forbiddenTab.editurl) {
-          if (typeof console !== "undefined" && console !== null) {
-            console.log("Disable button " + (actButton.attr('id')) + " due to forbidden privilege.");
-          }
           actButton.addClass('ui-state-disabled');
         }
         btnSelector = "#custom_" + value + "_" + grid.id;
         actButton = $(btnSelector);
         if (actButton.length > 0 && (forbiddenTab.editurl || forbiddenTab.cellactionurl)) {
-          if (typeof console !== "undefined" && console !== null) {
-            console.log("Disable button " + (actButton.attr('id')) + " due to forbidden privilege.");
-          }
           return actButton.addClass('ui-state-disabled');
         }
       });

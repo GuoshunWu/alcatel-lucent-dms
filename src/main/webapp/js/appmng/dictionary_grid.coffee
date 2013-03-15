@@ -14,7 +14,7 @@ define [
   'appmng/history_grid'
 ], ($, blockui, msgbox,ui, i18n, c18n, util)->
 
-  console?.log "module appmng/dictionary_grid loading."
+#  console?.log "module appmng/dictionary_grid loading."
   #  for form edit delete option
   deleteOptions = {
   msg: i18n.dialog.delete.delmsg.format c18n.dict
