@@ -254,7 +254,7 @@
         return $(this).jqGrid('delGridRow', rowIds, deleteOptions);
       }
     });
-    $('#generateDict').button().width(170).attr('privilegeName', util.urlname2Action('app/deliver-app-dict')).click(function() {
+    $('#generateDict').button().width(170).attr('privilegeName', util.urlname2Action('app/generate-dict')).click(function() {
       var dicts, filename, me, oldLabel, pb;
       dicts = dicGrid.getGridParam('selarrrow');
       if (!dicts || dicts.length === 0) {

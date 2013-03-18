@@ -152,7 +152,7 @@ define [
   })
 
 
-  $('#generateDict').button().width(170).attr('privilegeName', util.urlname2Action 'app/deliver-app-dict').click ->
+  $('#generateDict').button().width(170).attr('privilegeName', util.urlname2Action 'app/generate-dict').click ->
   #    Test
     dicts = dicGrid.getGridParam('selarrrow')
     if !dicts || dicts.length == 0

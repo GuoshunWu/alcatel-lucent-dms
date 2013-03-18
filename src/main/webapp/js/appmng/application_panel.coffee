@@ -38,10 +38,9 @@ define [
     appInfo.app = {version: $("option:selected", @).text(), id: if @value then @value else -1}
     uploadBtn=$("#uploadBrower", '#appmng')
 
-    if $('option', @).length > 0
-      uploadBtn.button( 'enable' )
-    else
-      uploadBtn.button('disable')
+    unless uploadBtn.attr('privilegeName') in window.param.forbiddenPrivileges
+      action = if $('option', @).length > 0 then 'enable' else 'disable'
+      uploadBtn.button(action)
 
     grid.appChanged appInfo
 
