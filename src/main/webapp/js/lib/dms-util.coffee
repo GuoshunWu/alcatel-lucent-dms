@@ -355,7 +355,6 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
 #      else
 #        console?.warn "Button: #{button.id} which privilegeName=#{$(button).attr('privilegeName')} is not disabled."
 
-
     #   check all the grids' privilege
     checkAllGridPrivilege()
 
