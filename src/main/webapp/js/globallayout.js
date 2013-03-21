@@ -50,7 +50,7 @@
           }
         }
       });
-      westSelector = "#global-container div.ui-layout-west";
+      westSelector = "#global-container > div.ui-layout-west";
       $("<span />").addClass("pin-button").prependTo(westSelector);
       layout.addPinBtn("" + westSelector + " .pin-button", "west");
       $("<span />").attr("id", "west-closer").prependTo(westSelector);

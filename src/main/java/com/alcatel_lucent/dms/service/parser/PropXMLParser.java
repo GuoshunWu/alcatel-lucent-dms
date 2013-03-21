@@ -16,7 +16,7 @@ public class PropXMLParser extends LabelXMLParser {
 	}
 	
 	protected String getFormat() {
-		return Constants.DICT_FORMAT_XML_PROP;
+		return Constants.DictionaryFormat.XML_PROP.toString();
 	}
 	
 	protected String getXPath() {

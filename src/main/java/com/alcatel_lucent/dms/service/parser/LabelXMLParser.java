@@ -50,7 +50,7 @@ public class LabelXMLParser extends DictionaryParser {
 	}
 	
 	protected String getFormat() {
-		return Constants.DICT_FORMAT_XML_LABEL;
+		return Constants.DictionaryFormat.XML_LABEL.toString();
 	}
 	
 	protected String getXPath() {

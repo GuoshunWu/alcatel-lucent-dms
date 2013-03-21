@@ -577,7 +577,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 			count++;
 		}
 		if (count > 0) {
-			textService.updateTranslations(context.getId(), textMap.values(), Constants.TRANSLATION_MODE);
+			textService.updateTranslations(context.getId(), textMap.values(), Constants.ImportingMode.TRANSLATION);
 		}
 		return count;
 	}

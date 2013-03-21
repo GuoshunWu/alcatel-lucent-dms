@@ -114,7 +114,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
         return text;
     }
 
-    public Map<String, Text> updateTranslations(Long ctxId, Collection<Text> texts, int mode) {
+    public Map<String, Text> updateTranslations(Long ctxId, Collection<Text> texts, Constants.ImportingMode mode) {
         Map<String, Text> result = new HashMap<String, Text>();
         Map<String, Text> dbTextMap = getTextsAsMap(ctxId);
         for (Text text : texts) {
@@ -138,7 +138,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 	                if (dbTrans == null) {
 						dbTrans = addTranslation(dbText, trans);
 						dbText.addTranslation(dbTrans);		// the dbText will be used in next invoke, so add translations in-memory
-	                } else if (mode == Constants.TRANSLATION_MODE) { // update translations in TRANSLATION_MODE
+	                } else if (mode == Constants.ImportingMode.TRANSLATION) { // update translations in TRANSLATION_MODE
 	                	if (trans.getTranslation() != null) {
 	                		dbTrans.setTranslation(trans.getTranslation());
 	                	}

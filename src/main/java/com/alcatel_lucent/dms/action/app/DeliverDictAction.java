@@ -32,7 +32,7 @@ public class DeliverDictAction extends ProgressAction {
 	protected String performAction() throws Exception {
 		try {
 			Collection<Dictionary> dictList = deliveringDictPool.getDictionaries(handler);
-			report = importDictionaries(app, dictList, Constants.DELIVERY_MODE);
+			report = importDictionaries(app, dictList, Constants.ImportingMode.DELIVERY);
 			setMessage(report.toHTML());
 			deliveringDictPool.removeHandler(handler);
 		} catch (BusinessException e) {
@@ -42,7 +42,7 @@ public class DeliverDictAction extends ProgressAction {
 		return SUCCESS;
 	}
 
-    private DeliveryReport importDictionaries(Long appId, Collection<Dictionary> dictList, int mode) throws BusinessException {
+    private DeliveryReport importDictionaries(Long appId, Collection<Dictionary> dictList, Constants.ImportingMode mode) throws BusinessException {
         DeliveryReport report = new DeliveryReport();
         Map<String, Collection<BusinessWarning>> warningMap = new TreeMap<String, Collection<BusinessWarning>>();
         int total = dictList.size();

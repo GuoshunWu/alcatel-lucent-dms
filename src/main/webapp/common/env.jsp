@@ -7,6 +7,7 @@
     var param = {
         naviTo:'<s:property value="naviTo"/>',
         locale:'<s:property value="clientParams.locale"/>'.replace('_', '-').toLocaleLowerCase(),
+        dictFormats: '<s:property value="clientParams.dictFormats"/>',
         version: '<s:property value="version"/>',
         forbiddenPrivileges:'<s:property value="clientParams.forbiddenPrivileges"/>'.split(','),
         buildNumber:<s:property value="buildNumber"/>,

@@ -6,6 +6,8 @@ import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.service.generator.*;
 import com.alcatel_lucent.dms.service.generator.xmldict.XMLDictGenerator;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +36,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     private HistoryService historyService;
     @Autowired
     private com.alcatel_lucent.dms.service.parser.DictionaryParser[] parsers;
-    private Map<String, DictionaryGenerator> generators = new HashMap<String, DictionaryGenerator>();
+    private Map<Constants.DictionaryFormat, DictionaryGenerator> generators = new HashMap<Constants.DictionaryFormat, DictionaryGenerator>();
 
     public DictionaryServiceImpl() {
         super();
@@ -47,14 +49,16 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                                  LabelXMLGenerator labelXMLGenerator,
                                  PropXMLGenerator propXMLGenerator,
                                  PropGenerator propGenerator,
-                                 StandardExcelGenerator stdExcelGenerator) {
-        generators.put(Constants.DICT_FORMAT_XDCT, xmlDictGenerator);
-        generators.put(Constants.DICT_FORMAT_DCT, dctGenerator);
-        generators.put(Constants.DICT_FORMAT_MDC, mdcGenerator);
-        generators.put(Constants.DICT_FORMAT_XML_LABEL, labelXMLGenerator);
-        generators.put(Constants.DICT_FORMAT_XML_PROP, propXMLGenerator);
-        generators.put(Constants.DICT_FORMAT_TEXT_PROP, propGenerator);
-        generators.put(Constants.DICT_FORMAT_STD_EXCEL, stdExcelGenerator);
+                                 StandardExcelGenerator stdExcelGenerator,
+                                 ICEJavaAlarmGenerator iceJavaAlarmGenerator) {
+        generators.put(Constants.DictionaryFormat.XDCT, xmlDictGenerator);
+        generators.put(Constants.DictionaryFormat.DCT, dctGenerator);
+        generators.put(Constants.DictionaryFormat.MDC, mdcGenerator);
+        generators.put(Constants.DictionaryFormat.XML_LABEL, labelXMLGenerator);
+        generators.put(Constants.DictionaryFormat.XML_PROP, propXMLGenerator);
+        generators.put(Constants.DictionaryFormat.TEXT_PROP, propGenerator);
+        generators.put(Constants.DictionaryFormat.STD_EXCEL, stdExcelGenerator);
+        generators.put(Constants.DictionaryFormat.ICE_JAVA_ALARM, iceJavaAlarmGenerator);
     }
 
     public Collection<Dictionary> previewDictionaries(String rootDir, File file, Long appId) throws BusinessException {
@@ -204,8 +208,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                                             log.error(e.toString());
                                         }
                                     }
-                                    if (!trans.getTranslation().equals(translation) || 
-                                    		lt.getStatus() != null && lt.getStatus() != trans.getStatus()) {
+                                    if (!trans.getTranslation().equals(translation) ||
+                                            lt.getStatus() != null && lt.getStatus() != trans.getStatus()) {
                                         log.debug("Context conflict - Reference:" + label.getReference() + ", Translation:" + lt.getOrigTranslation() + ", ContextTranslation:" + trans.getTranslation());
                                         label.setContext(dictCtx);
                                         break;
@@ -281,7 +285,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
      * @param dtIds the collection of the id for dictionary to be generated.
      */
     public void generateDictFiles(String dir, Collection<Long> dtIds) {
-    	ProgressQueue.setProgress("Preparing data...", -1);
+        ProgressQueue.setProgress("Preparing data...", -1);
         if (dtIds.isEmpty()) return;
         File target = new File(dir);
         if (target.exists()) {
@@ -299,30 +303,30 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         // group dictionaries by format
         Map<String, Collection<Dictionary>> formatGroup = new HashMap<String, Collection<Dictionary>>();
         for (Dictionary dict : allDicts) {
-        	Collection<Dictionary> dicts = formatGroup.get(dict.getFormat());
-        	if (dicts == null) {
-        		dicts = new ArrayList<Dictionary>();
-        		formatGroup.put(dict.getFormat(), dicts);
-        	}
-        	dicts.add(dict);
+            Collection<Dictionary> dicts = formatGroup.get(dict.getFormat());
+            if (dicts == null) {
+                dicts = new ArrayList<Dictionary>();
+                formatGroup.put(dict.getFormat(), dicts);
+            }
+            dicts.add(dict);
         }
         for (String format : formatGroup.keySet()) {
-        	DictionaryGenerator generator = getGenerator(format);
-        	generator.generateDict(target, formatGroup.get(format));
+            DictionaryGenerator generator = getGenerator(format);
+            generator.generateDict(target, formatGroup.get(format));
         }
     }
 
     private DictionaryGenerator getGenerator(String format) {
-        DictionaryGenerator generator = generators.get(format);
+        DictionaryGenerator generator = generators.get(Constants.DictionaryFormat.getEnum(format));
         if (null == generator) throw new SystemError("Unsupported dict format: " + format);
         return generator;
     }
 
     @Override
-    public Dictionary importDictionary(Long appId, Dictionary dict, String version, int mode, String[] langCodes,
+    public Dictionary importDictionary(Long appId, Dictionary dict, String version, Constants.ImportingMode mode, String[] langCodes,
                                        Map<String, String> langCharset,
                                        Collection<BusinessWarning> warnings, DeliveryReport report) {
-        log.info("Start importing dictionary in " + (mode == Constants.DELIVERY_MODE ? "DELIVERY" : "TRANSLATION") + " mode");
+        log.info("Start importing dictionary in " + mode + " mode");
         if (null == dict)
             return null;
 
@@ -362,7 +366,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         DictionaryBase baseDBDict = (DictionaryBase) getDao().retrieveOne(
                 "from DictionaryBase where name=:name and applicationBase.id=:appBaseId", param);
         if (null == baseDBDict) {
-            if (mode == Constants.TRANSLATION_MODE) {
+            if (mode == Constants.ImportingMode.TRANSLATION) {
                 throw new BusinessException(BusinessException.DICTIONARY_NOT_FOUND, dict.getName());
             }
             baseDBDict = new DictionaryBase();
@@ -374,7 +378,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             baseDBDict.setOwner(user);
             baseDBDict = (DictionaryBase) getDao().create(baseDBDict);
         } else {
-            if (mode == Constants.DELIVERY_MODE) {
+            if (mode == Constants.ImportingMode.DELIVERY) {
                 baseDBDict.setName(dict.getName());
                 baseDBDict.setFormat(dict.getFormat());
                 baseDBDict.setEncoding(dict.getEncoding());
@@ -390,7 +394,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 "from Dictionary where version=:version and base.id=:baseId", param);
         // create dictionary if not exists
         if (null == dbDict) {
-            if (mode == Constants.TRANSLATION_MODE) {
+            if (mode == Constants.ImportingMode.TRANSLATION) {
                 throw new BusinessException(BusinessException.DICTIONARY_NOT_FOUND, dict.getName() + " " + version);
             }
             // create dictionary
@@ -405,11 +409,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             dbDict.setAnnotation4(dict.getAnnotation4());
             dbDict.setLocked(false);
             dbDict = (Dictionary) getDao().create(dbDict);
-            if (mode == Constants.DELIVERY_MODE) {    // in case new dictionary version, compare with latest version
+            if (mode == Constants.ImportingMode.DELIVERY) {    // in case new dictionary version, compare with latest version
                 lastDict = getLatestDictionary(baseDBDict.getId(), dbDict.getId());
             }
         } else {
-            if (mode == Constants.DELIVERY_MODE) {    // in case existing dictionary version, compare with the same version
+            if (mode == Constants.ImportingMode.DELIVERY) {    // in case existing dictionary version, compare with the same version
                 lastDict = dbDict;
                 dbDict.setAnnotation1(dict.getAnnotation1());
                 dbDict.setAnnotation2(dict.getAnnotation2());
@@ -435,7 +439,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         dictionaries.add(dbDict);
 
         // update dictionary languages in delivery mode
-        if (mode == Constants.DELIVERY_MODE) {
+        if (mode == Constants.ImportingMode.DELIVERY) {
             if (dbDict.getDictLanguages() != null) {    //remove all existing dict languages
                 for (DictionaryLanguage dl : dbDict.getDictLanguages()) {
                     dao.delete(dl);
@@ -614,7 +618,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     context.getId(), texts, mode);
 
             // in TRANSLATION_MODE, no change to label
-            if (mode == Constants.TRANSLATION_MODE) {
+            if (mode == Constants.ImportingMode.TRANSLATION) {
                 continue;
             }
 
@@ -679,8 +683,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
     private int populateTranslationStatus(LabelTranslation trans) {
         Label label = trans.getLabel();
-        if (trans.getStatus() != null) {	// status information is specified in dictionary
-        	return trans.getStatus();
+        if (trans.getStatus() != null) {    // status information is specified in dictionary
+            return trans.getStatus();
         } else if (label.getReference().trim().isEmpty()) {
             return Translation.STATUS_TRANSLATED;
 //        } else if (trans.getRequestTranslation() != null) {
@@ -694,7 +698,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         }
     }
 
-    public DeliveryReport importDictionaries(Long appId, Collection<Dictionary> dictList, int mode) throws BusinessException {
+    public DeliveryReport importDictionaries(Long appId, Collection<Dictionary> dictList, Constants.ImportingMode mode) throws BusinessException {
         DeliveryReport report = new DeliveryReport();
         Map<String, Collection<BusinessWarning>> warningMap = new TreeMap<String, Collection<BusinessWarning>>();
         for (Dictionary dict : dictList) {
@@ -755,9 +759,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         if (apps.isEmpty()) {
             Dictionary dictionary = (Dictionary) dao.retrieve(Dictionary.class, dictId);
             if (dictionary.getHistories() != null) {
-    	        for (DictionaryHistory his : dictionary.getHistories()) {
-    	        	dao.delete(his);
-    	        }
+                for (DictionaryHistory his : dictionary.getHistories()) {
+                    dao.delete(his);
+                }
             }
             DictionaryBase dictBase = dictionary.getBase();
             dao.delete(Dictionary.class, dictId);
@@ -786,9 +790,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         }
         Dictionary dictionary = (Dictionary) dao.retrieve(Dictionary.class, id);
         if (dictionary.getHistories() != null) {
-	        for (DictionaryHistory his : dictionary.getHistories()) {
-	        	dao.delete(his);
-	        }
+            for (DictionaryHistory his : dictionary.getHistories()) {
+                dao.delete(his);
+            }
         }
         DictionaryBase dictBase = dictionary.getBase();
         dao.delete(Dictionary.class, id);
@@ -818,10 +822,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
     public void updateDictionaryFormat(Long id, String format) throws BusinessException {
         Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, id);
-        // TODO: update valid format list
-        String[] validFormats = {Constants.DICT_FORMAT_DCT, Constants.DICT_FORMAT_MDC, Constants.DICT_FORMAT_TEXT_PROP,
-                Constants.DICT_FORMAT_XML_LABEL, Constants.DICT_FORMAT_XML_PROP};
-        if (!Arrays.asList(validFormats).contains(format)) {
+        if (!Constants.DictionaryFormat.isValid(format)) {
             throw new BusinessException(BusinessException.INVALID_DICT_FORMAT, format);
         }
         dict.setFormat(format);
@@ -894,37 +895,37 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             dao.delete(dl);
         }
     }
-    
+
     public void updateLabelKey(Long labelId, String key) throws BusinessException {
-    	Label label = (Label) dao.retrieve(Label.class, labelId);
-    	if (label.getKey().equals(key)) return;
-    	Label existing = label.getDictionary().getLabel(key);
-    	if (existing != null) {
-    		throw new BusinessException(BusinessException.DUPLICATE_LABEL_KEY);
-    	}
-    	label.setKey(key);
+        Label label = (Label) dao.retrieve(Label.class, labelId);
+        if (label.getKey().equals(key)) return;
+        Label existing = label.getDictionary().getLabel(key);
+        if (existing != null) {
+            throw new BusinessException(BusinessException.DUPLICATE_LABEL_KEY);
+        }
+        label.setKey(key);
     }
-    
+
     public void updateLabelReference(Long labelId, String reference) {
-    	Label label = (Label) dao.retrieve(Label.class, labelId);
-    	if (label.getReference().equals(reference)) return;
-    	label.setReference(reference);
-    	// re-associate text unless EXCLUSION context
-    	if (!label.getContext().getName().equals(Context.EXCLUSION)) {
-	    	Text text = textService.getText(label.getContext().getId(), reference);
-	    	if (text == null) {
-	            text = textService.addText(label.getContext().getId(), reference);
-	        }
-	    	label.setText(text);
-    	}
-    	// reset LabelTranslation objects
-    	if (label.getOrigTranslations() != null) {
-    		for (LabelTranslation lt : label.getOrigTranslations()) {
-    			lt.setOrigTranslation(reference);
-    			lt.setNeedTranslation(true);
-    			lt.setRequestTranslation(null);
-    		}
-    	}
+        Label label = (Label) dao.retrieve(Label.class, labelId);
+        if (label.getReference().equals(reference)) return;
+        label.setReference(reference);
+        // re-associate text unless EXCLUSION context
+        if (!label.getContext().getName().equals(Context.EXCLUSION)) {
+            Text text = textService.getText(label.getContext().getId(), reference);
+            if (text == null) {
+                text = textService.addText(label.getContext().getId(), reference);
+            }
+            label.setText(text);
+        }
+        // reset LabelTranslation objects
+        if (label.getOrigTranslations() != null) {
+            for (LabelTranslation lt : label.getOrigTranslations()) {
+                lt.setOrigTranslation(reference);
+                lt.setNeedTranslation(true);
+                lt.setRequestTranslation(null);
+            }
+        }
     }
 
     public void updateLabels(Collection<Long> idList, String maxLength,
@@ -971,40 +972,40 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             }
             texts.add(text);
         }
-        Map<String, Text> textMap = textService.updateTranslations(context.getId(), texts, Constants.DELIVERY_MODE);
+        Map<String, Text> textMap = textService.updateTranslations(context.getId(), texts, Constants.ImportingMode.DELIVERY);
         for (Label label : labels) {
             label.setText(textMap.get(label.getReference()));
         }
     }
-    
+
     public void deleteLabels(Collection<Long> labelIds) {
-    	for (Long id : labelIds) {
-    		Label label = (Label) dao.retrieve(Label.class, id);
-    		label.setRemoved(true);
-    	}
+        for (Long id : labelIds) {
+            Label label = (Label) dao.retrieve(Label.class, id);
+            label.setRemoved(true);
+        }
     }
-    
+
     public Label addLabel(Long dictId, String key, String reference, String maxLength, String contextExp, String description) {
-    	Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
-    	if (dict.getLabel(key) != null) {
-    		throw new BusinessException(BusinessException.DUPLICATE_LABEL_KEY);
-    	}
-    	Context context = textService.getContextByExpression(contextExp, dict);
-    	Text text = textService.getText(context.getId(), reference);
-    	if (text == null) {
-    		text = textService.addText(context.getId(), reference);
-    	}
-    	Label label = new Label();
-    	label.setDictionary(dict);
-    	label.setKey(key);
-    	label.setReference(reference);
-    	label.setMaxLength(maxLength);
-    	label.setContext(context);
-    	label.setDescription(description);
-    	label.setText(text);
-    	label.setSortNo(dict.getMaxSortNo() + 1);
-    	label.setRemoved(false);
-    	label = (Label) dao.create(label);
-    	return label;
+        Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
+        if (dict.getLabel(key) != null) {
+            throw new BusinessException(BusinessException.DUPLICATE_LABEL_KEY);
+        }
+        Context context = textService.getContextByExpression(contextExp, dict);
+        Text text = textService.getText(context.getId(), reference);
+        if (text == null) {
+            text = textService.addText(context.getId(), reference);
+        }
+        Label label = new Label();
+        label.setDictionary(dict);
+        label.setKey(key);
+        label.setReference(reference);
+        label.setMaxLength(maxLength);
+        label.setContext(context);
+        label.setDescription(description);
+        label.setText(text);
+        label.setSortNo(dict.getMaxSortNo() + 1);
+        label.setRemoved(false);
+        label = (Label) dao.create(label);
+        return label;
     }
 }
