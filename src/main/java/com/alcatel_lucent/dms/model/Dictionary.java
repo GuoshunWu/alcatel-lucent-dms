@@ -17,6 +17,26 @@ import java.util.*;
 public class Dictionary extends BaseEntity {
 
     private static final long serialVersionUID = 4926531636839152201L;
+    private static Map<String, String> refCodes = JSONObject.fromObject("{'DCT':'GAE','Dictionary conf':'EN-UK','Text properties':'en','XML labels':'en'}");
+    private Collection<DictionaryLanguage> dictLanguages;
+    private Collection<Label> labels;
+    private Collection<DictionaryHistory> histories;
+    private boolean locked;
+    private DictionaryBase base;
+    private String version;
+    private String annotation1;
+    private String annotation2;
+    private String annotation3;
+    private String annotation4;
+    private Map<String, int[]> summaryCache;
+    private Application app;    // transient variable for REST service
+    private Collection<BusinessWarning> parseWarnings;        // transient variable for parse warnings information
+    private Collection<BusinessWarning> importWarnings;        // transient variable for import warnings information
+    private Collection<BusinessException> previewErrors;            // transient variable for errors information;
+
+    public Dictionary() {
+        super();
+    }
 
     @Id
     @GeneratedValue(generator = "SEQ_GEN")
@@ -31,25 +51,17 @@ public class Dictionary extends BaseEntity {
         return super.getId();
     }
 
-    private Collection<DictionaryLanguage> dictLanguages;
-    private Collection<Label> labels;
-    private Collection<DictionaryHistory> histories;
-    private boolean locked;
-    private DictionaryBase base;
-    private String version;
-
-    private String annotation1;
-    private String annotation2;
-    private String annotation3;
-    private String annotation4;
-
-    private static Map<String, String> refCodes = JSONObject.fromObject("{'DCT':'GAE','Dictionary conf':'EN-UK','Text properties':'en','XML labels':'en'}");
-
     public String getName() {
         return base.getName();
     }
 
+    public void setName(String name) {
+        base.setName(name);
+    }
+
     public void addDictLanguage(DictionaryLanguage dictionaryLanguage) {
+
+//        if (null != getDictLanguage(dictionaryLanguage.getLanguageCode())) return;
         this.dictLanguages.add(dictionaryLanguage);
     }
 
@@ -61,10 +73,6 @@ public class Dictionary extends BaseEntity {
     public String getLanguageReferenceCode() {
         String ref = refCodes.get(getFormat());
         return null == ref ? "en" : ref;
-    }
-
-    public void setName(String name) {
-        base.setName(name);
     }
 
     public String getFormat() {
@@ -98,20 +106,20 @@ public class Dictionary extends BaseEntity {
         return base;
     }
 
-    @Transient
-    public int getLabelNum() {
-    	if (labels == null) {
-    		return 0;
-    	}
-    	int count = 0;
-    	for (Label label : labels) {
-    		if (!label.isRemoved()) count++;
-    	}
-        return count;
-    }
-
     public void setBase(DictionaryBase base) {
         this.base = base;
+    }
+
+    @Transient
+    public int getLabelNum() {
+        if (labels == null) {
+            return 0;
+        }
+        int count = 0;
+        for (Label label : labels) {
+            if (!label.isRemoved()) count++;
+        }
+        return count;
     }
 
     @Column(name = "VERSION")
@@ -121,10 +129,6 @@ public class Dictionary extends BaseEntity {
 
     public void setVersion(String version) {
         this.version = version;
-    }
-
-    public Dictionary() {
-        super();
     }
 
     @OneToMany
@@ -242,7 +246,6 @@ public class Dictionary extends BaseEntity {
         return null;
     }
 
-
     public Label getLabel(String key) {
         if (labels != null) {
             for (Label label : labels) {
@@ -253,8 +256,6 @@ public class Dictionary extends BaseEntity {
         }
         return null;
     }
-
-    private Map<String, int[]> summaryCache;
 
     /**
      * Get translation status summary by language, used by front
@@ -274,20 +275,14 @@ public class Dictionary extends BaseEntity {
         }
     }
 
-    private Application app;    // transient variable for REST service
-
-    public void setApp(Application app) {
-        this.app = app;
-    }
-
     @Transient
     public Application getApp() {
         return app;
     }
 
-    private Collection<BusinessWarning> parseWarnings;        // transient variable for parse warnings information
-    private Collection<BusinessWarning> importWarnings;        // transient variable for import warnings information
-    private Collection<BusinessException> previewErrors;            // transient variable for errors information;
+    public void setApp(Application app) {
+        this.app = app;
+    }
 
     @Transient
     public Collection<BusinessWarning> getParseWarnings() {
@@ -326,7 +321,6 @@ public class Dictionary extends BaseEntity {
     public int getErrorCount() {
         return previewErrors == null ? 0 : previewErrors.size();
     }
-
 
     @Transient
     public Collection<String> getWarnings() {
@@ -546,27 +540,28 @@ public class Dictionary extends BaseEntity {
                 .toString();
     }
 
-	public Collection<DictionaryHistory> getHistories() {
-		return histories;
-	}
+    public Collection<DictionaryHistory> getHistories() {
+        return histories;
+    }
 
-	public void setHistories(Collection<DictionaryHistory> histories) {
-		this.histories = histories;
-	}
-	
-	/**
-	 * Get all labels excluding removed labels
-	 * @return
-	 */
-	public Collection<Label> getAvailableLabels() {
-		Collection<Label> result = new ArrayList<Label>();
-		if (labels != null) {
-			for (Label label : labels) {
-				if (!label.isRemoved()) {
-					result.add(label);
-				}
-			}
-		}
-		return result;
-	}
+    public void setHistories(Collection<DictionaryHistory> histories) {
+        this.histories = histories;
+    }
+
+    /**
+     * Get all labels excluding removed labels
+     *
+     * @return
+     */
+    public Collection<Label> getAvailableLabels() {
+        Collection<Label> result = new ArrayList<Label>();
+        if (labels != null) {
+            for (Label label : labels) {
+                if (!label.isRemoved()) {
+                    result.add(label);
+                }
+            }
+        }
+        return result;
+    }
 }

@@ -1,5 +1,6 @@
 package com.alcatel_lucent.dms.action;
 
+import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.UserContext;
 import com.alcatel_lucent.dms.model.Product;
 import com.alcatel_lucent.dms.model.ProductBase;
@@ -10,6 +11,9 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import net.sf.json.JSON;
 import net.sf.json.JSONObject;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.functors.InvokerTransformer;
+import org.apache.commons.lang.enums.EnumUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -26,13 +30,14 @@ import org.springframework.beans.factory.annotation.Value;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
+import static org.apache.commons.lang3.StringUtils.join;
+
 @SuppressWarnings("serial")
 @ResultPath("/")
 public class EntryAction extends BaseAction {
 
     private static Logger log = LoggerFactory.getLogger(EntryAction.class);
     private Map<String, Object> session;
-
     @Autowired
     private DaoService dao;
     //    The page navigate to
@@ -40,9 +45,10 @@ public class EntryAction extends BaseAction {
     //    build number for deploy
     @Value("${buildNumber}")
     private String buildNumber;
-
     @Value("${version}")
     private String version;
+    private Long curProductId = -1L;
+    private Long curProductBaseId = -1L;
 
     public String getVersion() {
         return version;
@@ -51,9 +57,6 @@ public class EntryAction extends BaseAction {
     public void setVersion(String version) {
         this.version = version;
     }
-
-    private Long curProductId = -1L;
-    private Long curProductBaseId = -1L;
 
     public Long getCurProductId() {
         return curProductId;
@@ -71,12 +74,12 @@ public class EntryAction extends BaseAction {
         this.curProductBaseId = curProductBaseId;
     }
 
-    public void setBuildNumber(String buildNumber) {
-        this.buildNumber = buildNumber;
-    }
-
     public String getBuildNumber() {
         return buildNumber;
+    }
+
+    public void setBuildNumber(String buildNumber) {
+        this.buildNumber = buildNumber;
     }
 
     public void setDao(DaoService dao) {
@@ -136,13 +139,13 @@ public class EntryAction extends BaseAction {
         return new ArrayList<Product>();
     }
 
-
     /**
      * For client parameters
      */
     public Map<String, String> getClientParams() {
         Map<String, String> clientParams = new HashMap<String, String>();
         clientParams.put("locale", getLocale().toString());
+        clientParams.put("dictFormats", join(CollectionUtils.collect(EnumSet.allOf(Constants.DictionaryFormat.class), InvokerTransformer.getInstance("doubleMe")), ";"));
         clientParams.put("forbiddenPrivileges", StringUtils.join(Privileges.getInstance().getForbiddenPrivileges().toArray(ArrayUtils.EMPTY_STRING_ARRAY), ","));
         return clientParams;
     }

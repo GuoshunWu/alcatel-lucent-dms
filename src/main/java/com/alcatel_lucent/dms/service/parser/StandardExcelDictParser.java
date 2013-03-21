@@ -70,7 +70,7 @@ public class StandardExcelDictParser extends DictionaryParser {
             dictBase.setName(dictName);
             dictBase.setPath(dictPath);
             dictBase.setEncoding(DEFAULT_ENCODING);
-            dictBase.setFormat(Constants.DICT_FORMAT_STD_EXCEL);
+            dictBase.setFormat(Constants.DictionaryFormat.STD_EXCEL.toString());
 
             dictionary = new Dictionary();
             dictionary.setDictLanguages(new ArrayList<DictionaryLanguage>());

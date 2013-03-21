@@ -138,7 +138,7 @@ public class LanguageServiceImpl extends BaseServiceImpl implements LanguageServ
 	public String getPreferredLanguageCode(Collection<Long> dictIdList,
 			Long languageId) {
 		Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, (Long) dictIdList.iterator().next());
-		if (dict.getFormat().equals(Constants.DICT_FORMAT_DCT)) {
+		if (dict.getFormat().equals(Constants.DictionaryFormat.DCT.toString())) {
 			AlcatelLanguageCode alCode = getDefaultAlcatelLanguageCode(languageId);
 			if (alCode != null) {
 				return alCode.getCode();
@@ -178,7 +178,7 @@ public class LanguageServiceImpl extends BaseServiceImpl implements LanguageServ
 	public Charset getPreferredCharset(Collection<Long> dictIdList,
 			Long languageId) {
 		Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, (Long) dictIdList.iterator().next());
-		if (dict.getFormat().equals(Constants.DICT_FORMAT_DCT)) {
+		if (dict.getFormat().equals(Constants.DictionaryFormat.DCT.toString())) {
 			if (dict.getEncoding().equals("ISO-8859-1")) {
 				Language language = (Language) dao.retrieve(Language.class, languageId);
 				return getCharset(language.getDefaultCharset());

@@ -68,7 +68,7 @@ public class XMLDictParser extends DictionaryParser {
         dictBase.setName(entry.getKey());
         dictBase.setPath(null);
         dictBase.setEncoding("UTF-8");
-        dictBase.setFormat(Constants.DICT_FORMAT_XDCT);
+        dictBase.setFormat(Constants.DictionaryFormat.XDCT.toString());
 
         Dictionary dictionary = new Dictionary();
         dictionary.setDictLanguages(new ArrayList<DictionaryLanguage>());
@@ -329,8 +329,7 @@ public class XMLDictParser extends DictionaryParser {
             lt.setLanguageCode(code);
             lt.setSortNo(-1);
             lt.setOrigTranslation("");
-            DictionaryLanguage dl = label.getDictionary().getDictLanguage(code);
-            lt.setLanguage(null == dl ? null : dl.getLanguage());
+            lt.setLanguage(label.getDictionary().getLanguageByCode(code));
             label.addLabelTranslation(lt);
         }
         return lt;

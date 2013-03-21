@@ -3,6 +3,7 @@ package com.alcatel_lucent.dms.service;
 import java.util.Collection;
 import java.util.Map;
 
+import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.Label;
@@ -74,7 +75,7 @@ public interface TextService {
 	 * @param mode importing mode, see DictionaryService.importDictionary()
 	 * @return map of persistent text objects indexed by reference.
 	 */
-	Map<String, Text> updateTranslations(Long ctxId, Collection<Text> texts, int mode);
+	Map<String, Text> updateTranslations(Long ctxId, Collection<Text> texts, Constants.ImportingMode mode);
 
     /**
      *  Receive the completed translation in a excel file.

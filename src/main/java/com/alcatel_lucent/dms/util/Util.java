@@ -525,7 +525,7 @@ public class Util {
             @Override
             public Object transform(Object input) {
                 Attribute attr = (Attribute) input;
-                return new String[]{attr.getName(), attr.getValue()};
+                return new String[]{attr.getQualifiedName(), attr.getValue()};
             }
         });
         return MapUtils.typedMap(ArrayUtils.toMap(attributesCollection.toArray(new String[0][])), String.class, String.class);

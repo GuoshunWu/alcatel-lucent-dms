@@ -127,7 +127,7 @@ public class MDCParser extends DictionaryParser {
         dictBase.setName(dictionaryName);
         dictBase.setPath(path);
         dictBase.setEncoding("UTF-8");
-        dictBase.setFormat(Constants.DICT_FORMAT_MDC);
+        dictBase.setFormat(Constants.DictionaryFormat.MDC.toString());
         
 		Dictionary dictionary = new Dictionary();
 		dictionary.setBase(dictBase);

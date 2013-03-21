@@ -46,7 +46,7 @@ define ['jqlayout'], (jqlayout)->
 
     # save selector strings to vars so we don't have to repeat it
     # west pane
-    westSelector = "#global-container div.ui-layout-west"
+    westSelector = "#global-container > div.ui-layout-west"
 
     # CREATE SPANs for pin-buttons - using a generic class as identifiers
     $("<span />").addClass("pin-button").prependTo(westSelector)

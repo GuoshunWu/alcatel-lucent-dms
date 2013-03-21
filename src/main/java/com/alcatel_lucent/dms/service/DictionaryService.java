@@ -2,6 +2,7 @@ package com.alcatel_lucent.dms.service;
 
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
+import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryLanguage;
 import com.alcatel_lucent.dms.model.Label;
@@ -54,7 +55,7 @@ public interface DictionaryService {
      * @param warnings    a collection to hold output warnings
      * @return persistent Dictionary object created
      */
-    Dictionary importDictionary(Long appId, Dictionary dict, String version, int mode, String[] langCodes,
+    Dictionary importDictionary(Long appId, Dictionary dict, String version, Constants.ImportingMode mode, String[] langCodes,
                          Map<String, String> langCharset,
                          Collection<BusinessWarning> warnings, DeliveryReport report);
     
@@ -66,7 +67,7 @@ public interface DictionaryService {
      * @return delivery report
      * @throws BusinessException
      */
-    DeliveryReport importDictionaries(Long appId, Collection<Dictionary> dictList, int mode) throws BusinessException;
+    DeliveryReport importDictionaries(Long appId, Collection<Dictionary> dictList, Constants.ImportingMode mode) throws BusinessException;
 
     /**
      * Generate dictionary files.
@@ -84,7 +85,7 @@ public interface DictionaryService {
     Dictionary getLatestDictionary(Long dictionaryBaseId, Long beforeDictionaryId);
     
     /**
-     * Find lastest dictionary by name in scope of application base
+     * Find latest dictionary by name in scope of application base
      * @param appId application id
      * @param dictionaryName dictionary name
      * @return null if not found
