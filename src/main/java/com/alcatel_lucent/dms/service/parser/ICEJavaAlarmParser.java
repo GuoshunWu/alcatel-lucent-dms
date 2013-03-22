@@ -5,6 +5,7 @@ import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.service.LanguageService;
+import com.alcatel_lucent.dms.util.NoOpLSResourceResolver;
 import com.alcatel_lucent.dms.util.Util;
 import com.alcatel_lucent.dms.util.XDCTDTDEntityResolver;
 import org.apache.commons.collections.CollectionUtils;
@@ -20,6 +21,8 @@ import org.dom4j.io.SAXReader;
 import org.dom4j.tree.DefaultText;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.w3c.dom.ls.LSInput;
+import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
@@ -31,6 +34,8 @@ import javax.xml.validation.Validator;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 import java.util.*;
 
 import static org.apache.commons.lang3.StringUtils.center;
@@ -54,6 +59,8 @@ public class ICEJavaAlarmParser extends DictionaryParser {
         try {
             schema = factory.newSchema(getClass().getResource("componentAlarmCatalog.xsd").toURI().toURL());
             iceJavaAlarmValidator = schema.newValidator();
+            // avoid downloading external DTD
+            iceJavaAlarmValidator.setResourceResolver(new NoOpLSResourceResolver());
         } catch (Exception e) {
             log.error("componentAlarmCatalog.xsd not found or incorrect!");
             e.printStackTrace();
@@ -77,13 +84,10 @@ public class ICEJavaAlarmParser extends DictionaryParser {
         Source source = new StreamSource(file);
         try {
             iceJavaAlarmValidator.validate(source);
-        } catch (SAXException ex) {
+        } catch (Exception ex) {
             log.error(file + " is not valid because {}", ex.getMessage());
             return deliveredDicts;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        } 
 
         String dictPath = FilenameUtils.normalize(file.getAbsolutePath(), true);
         rootDir = FilenameUtils.normalize(rootDir, true);
