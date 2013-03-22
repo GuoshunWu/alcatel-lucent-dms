@@ -1,6 +1,7 @@
 package com.alcatel_lucent.dms.service.generator;
 
 import com.alcatel_lucent.dms.BusinessException;
+import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryLanguage;
 import com.alcatel_lucent.dms.model.Label;
@@ -30,7 +31,7 @@ import static com.alcatel_lucent.dms.service.parser.StandardExcelDictParser.CONT
 import static com.alcatel_lucent.dms.service.parser.StandardExcelDictParser.DESCRIPTION;
 import static com.alcatel_lucent.dms.service.parser.StandardExcelDictParser.REF_LANG_CODE;
 
-@Component("StandardExcelGenerator")
+@Component(Constants.DICT_FORMAT_STD_EXCEL)
 public class StandardExcelGenerator extends DictionaryGenerator {
 
     private Logger log = LoggerFactory.getLogger(StandardExcelGenerator.class);

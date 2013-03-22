@@ -8,11 +8,27 @@ define [
 #  console?.log "module appmng/stringsetting_grid loading."
   lastEditedCell = null
 
+  lockLabels = (lock = true, grid=$('#stringSettingsGrid'), btn = $('#custom_lock_stringSettingsGrid > div.ui-pg-div'))->
+    if lock
+      icon = 'ui-icon-locked'
+      text  = 'unlocklabels'
+      grid.setColProp('reference', {editable: false, classes: ''})
+        .setColProp('key', {editable: false, classes: ''})
+    else
+      text = 'locklabels'
+      icon = 'ui-icon-unlocked'
+      grid.setColProp('reference', {editable: true, classes: 'editable-column'})
+        .setColProp('key', {editable: true, classes: 'editable-column'})
+    $('#custom_add_stringSettingsGrid, #custom_del_stringSettingsGrid').toggleClass('ui-state-disabled', lock)
+
+    text = i18n.dialog.stringsettings[text]
+    btn.html "<span class=\"ui-icon #{icon}\"></span>#{text}"
+
   dicGrid = $('#stringSettingsGrid').jqGrid(
     url: 'json/dummy.json', mtype: 'post', datatype: 'local'
     width: 880, height: 300
     pager: '#stringSettingsPager'
-    editurl: ""
+    editurl: "app/add-label"
     rowNum: 10, rowList: [10, 20, 30]
     sortorder: 'asc'
     viewrecords: true
@@ -75,6 +91,15 @@ define [
       return
     dicGrid.jqGrid 'delGridRow', rowIds, {msg: i18n.dialog.delete.delmsg.format(c18n.label), url: urls.label.del}
   }
+  ).navSeparatorAdd("#stringSettingsPager",{sepclass : "ui-separator",sepcontent: ''})
+  .navButtonAdd('#stringSettingsPager', {
+  id: "custom_lock_#{dicGrid.attr 'id'}"
+  caption: i18n.dialog.stringsettings.unlocklabels, buttonicon: "ui-icon-locked"
+  position: "last", onClickButton: (e)->
+    isLocked = $('span.ui-icon',e.target).hasClass('ui-icon-locked')
+    lockLabels !isLocked, $(@), $(e.target)
+    $(@).trigger 'reloadGrid'
+  }
   )
   .setGroupHeaders(useColSpanStyle: true, groupHeaders: [
     {startColumnName: "t", numberOfColumns: 3, titleText: 'Status'}
@@ -82,5 +107,7 @@ define [
 
 
   saveLastEditedCell: ()->dicGrid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
+
+  lockLabels: lockLabels
 
 

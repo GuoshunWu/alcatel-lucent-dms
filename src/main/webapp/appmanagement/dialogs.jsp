@@ -123,7 +123,7 @@
                         </td>
                         <td colspan="2">
                             <div>
-                                <button id="unlockLabels"/>
+                                <%--<button id="unlockLabels"/>--%>
                             </div>
                         </td>
                     </tr>

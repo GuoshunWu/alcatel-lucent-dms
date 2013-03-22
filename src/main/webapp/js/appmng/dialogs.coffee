@@ -9,10 +9,15 @@ define  [
   'dms-urls'
   'dms-util'
 
+
+
   'appmng/dictlistpreview_grid'
+  'appmng/stringsettings_grid'
+
   'appmng/dictpreviewstringsettings_grid'
   'appmng/previewlangsetting_grid'
-], ($, jqgrid, blockui, msgbox, c18n, i18n, urls, util, previewgrid)->
+
+], ($, jqgrid, blockui, msgbox, c18n, i18n, urls, util, previewgrid, stgrid)->
 
 #  console?.log "module appmng/dialogs loading."
   newProductVersion = $("#newProductReleaseDialog").dialog(
@@ -168,21 +173,8 @@ define  [
 
   lockLabels = (lock=true)->
     grid = $('#stringSettingsGrid')
-    lockBtn=$('#unlockLabels')
-#    console?.log "lock=#{lock}."
-
-
-    if lock
-      #lock label
-      lockBtn.button 'option', {icons:{secondary: "ui-icon-locked"}, label: i18n.dialog.stringsettings.unlocklabels}
-      grid.setColProp('reference', {editable: false, classes: ''})
-        .setColProp('key', {editable: false, classes: ''})
-    else
-      #unlock label
-      lockBtn.button 'option', {icons: {secondary: "ui-icon-unlocked"}, label: i18n.dialog.stringsettings.locklabels}
-      grid.setColProp('reference', {editable: true, classes: 'editable-column'})
-        .setColProp('key', {editable: true, classes: 'editable-column'})
-    $('#custom_add_stringSettingsGrid, #custom_del_stringSettingsGrid').toggleClass('ui-state-disabled', lock)
+    alert 'Hello'
+    return
 
 
   stringSettings = $('#stringSettingsDialog').dialog(
@@ -190,17 +182,6 @@ define  [
     title: i18n.dialog.stringsettings.title, modal: true
     width: 900
     create: (e, ui)->
-      $('#unlockLabels').button(
-        label: i18n.dialog.stringsettings.unlocklabels
-        icons: secondary: "ui-icon-locked"
-      ).attr('privilegeName', 'AddLabelAction').on('click', ()->
-        # is locked
-        isLocked = 'ui-icon-locked' == $(@).button('option', 'icons').secondary
-        lockLabels(!isLocked)
-        $('#stringSettingsGrid').trigger 'reloadGrid'
-      ).width(130)
-
-
 
       $('#searchText', @).keydown (e)=>$('#searchAction', @).trigger 'click' if e.which == 13
 
@@ -212,7 +193,7 @@ define  [
       ).height(20).width(20)
 
     open: (e, ui)->
-      lockLabels()
+      stgrid.lockLabels()
       $('#searchAction', @).position(my: 'left center', at: 'right center', of: '#searchText')
 
       # param must be attached to the dialog before the dialog open

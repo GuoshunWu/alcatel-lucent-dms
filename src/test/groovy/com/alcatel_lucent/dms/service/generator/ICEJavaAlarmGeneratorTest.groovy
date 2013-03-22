@@ -31,15 +31,37 @@ public class ICEJavaAlarmGeneratorTest {
     @Autowired
     private ICEJavaAlarmGenerator iceJavaAlarmGenerator;
 
-    @Test
+    @Autowired
+    private List<DictionaryGenerator> generators;
+
+    @Autowired
+    private Map<String, DictionaryGenerator> generatorMap;
+
+//    @Test
     void testGenerateDict() throws Exception {
         File file = new File("D:/MyDocuments/Alcatel_LucentSBell/DMS/DMSFiles/ICEJavaAlarm/catalog-builder-plugin-1.3.000.000-schemas/")
         ArrayList<Dictionary> dictionaries = iceJavaAlarmParser.parse(file.absolutePath, file, [] as Collection<File>)
 
         int i = 0
-        dictionaries.each { dict ->
-            iceJavaAlarmGenerator.generateDict(new File("D:/test/icejavaalarm"), dict)
-            ++i
+//        dictionaries.each { dict ->
+//            iceJavaAlarmGenerator.generateDict(new File("D:/test/icejavaalarm"), dict)
+//            ++i
+//        }
+    }
+
+    @Test
+    void testMe(){
+        println "Generator List".center(100, '=')
+        generators.each {generator->
+            println generator
         }
+        println "Generators List Ends".center(100, '=')
+
+        println "Generator Map".center(100, '=')
+        generatorMap.each {generator->
+            println generator
+        }
+        println "Generators List Map".center(100, '=')
+
     }
 }

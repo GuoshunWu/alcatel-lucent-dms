@@ -1,6 +1,7 @@
 package com.alcatel_lucent.dms.service.generator;
 
 import com.alcatel_lucent.dms.BusinessException;
+import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryLanguage;
 import com.alcatel_lucent.dms.model.Label;
@@ -32,9 +33,8 @@ import java.util.Map;
 import static org.apache.commons.lang3.StringUtils.center;
 import static org.apache.commons.lang3.StringUtils.substring;
 
-@Component("ICEJavaAlarmGenerator")
+@Component(Constants.DICT_FORMAT_ICE_JAVA_ALARM)
 public class ICEJavaAlarmGenerator extends DictionaryGenerator {
-
     private static Logger log = LoggerFactory.getLogger(ICEJavaAlarmGenerator.class);
     @Autowired
     private DaoService dao;
