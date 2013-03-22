@@ -22,8 +22,8 @@
         },
         stringsettings: {
           title: 'String settings',
-          unlocklabels: 'Unlock Labels',
-          locklabels: 'Lock Labels',
+          unlock: 'Unlock',
+          lock: 'Lock',
           add: 'Add',
           addandclose: 'Add & Close',
           'dummy': ''

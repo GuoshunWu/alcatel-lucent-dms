@@ -33,7 +33,7 @@ import java.util.Map;
 import static org.apache.commons.lang3.StringUtils.center;
 import static org.apache.commons.lang3.StringUtils.substring;
 
-@Component(Constants.DICT_FORMAT_ICE_JAVA_ALARM)
+@Component
 public class ICEJavaAlarmGenerator extends DictionaryGenerator {
     private static Logger log = LoggerFactory.getLogger(ICEJavaAlarmGenerator.class);
     @Autowired
@@ -59,6 +59,11 @@ public class ICEJavaAlarmGenerator extends DictionaryGenerator {
         log.info(center("Querying dictionary " + dict.getName() + " using a total of " + timeStr, 100, '*'));
 
         generateDict(targetDir, dict);
+    }
+
+    @Override
+    public Constants.DictionaryFormat getFormat() {
+        return Constants.DictionaryFormat.ICE_JAVA_ALARM;
     }
 
     public void generateDict(File targetDir, Dictionary dict) throws BusinessException {

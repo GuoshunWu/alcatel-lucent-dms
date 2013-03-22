@@ -13,26 +13,16 @@ public class Constants {
     }
 
     // dictionary format
-
-    public static final String DICT_FORMAT_DCT = "DCT";
-    public static final String DICT_FORMAT_MDC = "Dictionary conf";
-    public static final String DICT_FORMAT_XML_LABEL = "XML labels";
-    public static final String DICT_FORMAT_XML_PROP = "XML properties";
-    public static final String DICT_FORMAT_XDCT = "XMLDict";
-    public static final String DICT_FORMAT_STD_EXCEL = "Standard Excel";
-    public static final String DICT_FORMAT_ICE_JAVA_ALARM = "ICE Java Alarm";
-    public static final String DICT_FORMAT_TEXT_PROP = "Text properties";
-
     public enum DictionaryFormat {
 
-        DCT(DICT_FORMAT_DCT),
-        MDC(DICT_FORMAT_MDC),
-        XML_LABEL(DICT_FORMAT_XML_LABEL),
-        XML_PROP(DICT_FORMAT_XML_PROP),
-        XDCT(DICT_FORMAT_XDCT),
-        ICE_JAVA_ALARM(DICT_FORMAT_ICE_JAVA_ALARM),
-        STD_EXCEL(DICT_FORMAT_STD_EXCEL),
-        TEXT_PROP(DICT_FORMAT_TEXT_PROP);
+        DCT("DCT"),
+        MDC("Dictionary conf"),
+        XML_LABEL("XML labels"),
+        XML_PROP("XML properties"),
+        XDCT("XMLDict"),
+        ICE_JAVA_ALARM("ICE Java Alarm"),
+        STD_EXCEL("Standard Excel"),
+        TEXT_PROP("Text properties");
 
 
         private static Map<String, DictionaryFormat> valueEnumMap = new HashMap<String, DictionaryFormat>();

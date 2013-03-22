@@ -26,7 +26,7 @@ import com.alcatel_lucent.dms.model.Language;
 import com.alcatel_lucent.dms.model.Translation;
 import com.alcatel_lucent.dms.service.DaoService;
 
-@Component(Constants.DICT_FORMAT_MDC)
+@Component
 public class MDCGenerator extends DictionaryGenerator {
 	
 	private static Logger log = LoggerFactory.getLogger(MDCGenerator.class);
@@ -94,5 +94,10 @@ public class MDCGenerator extends DictionaryGenerator {
         }
 
 	}
+
+    @Override
+    public Constants.DictionaryFormat getFormat() {
+        return Constants.DictionaryFormat.MDC;
+    }
 
 }

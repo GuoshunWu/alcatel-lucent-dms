@@ -36,7 +36,7 @@ import java.util.Map;
 
 import static org.apache.commons.lang3.StringUtils.center;
 
-@Component(Constants.DICT_FORMAT_XDCT)
+@Component
 public class XMLDictGenerator extends DictionaryGenerator {
 
     private static Logger log = LoggerFactory.getLogger(XMLDictGenerator.class);
@@ -65,7 +65,12 @@ public class XMLDictGenerator extends DictionaryGenerator {
 
         generateDict(targetDir, dict);
     }
-    
+
+    @Override
+    public Constants.DictionaryFormat getFormat() {
+        return Constants.DictionaryFormat.XDCT;
+    }
+
     public void generateDict(File targetDir, Dictionary dict) throws BusinessException {
     	try {
 	    	Map<String, Collection<String>> xdctGroup = getXdctGroup(targetDir, dict);

@@ -28,6 +28,7 @@ gradle-app.*
 syntax: glob
 .myhibernatedata
 *.iml
+*.tmp
 rebel.xml
 #groovy files
 DumbTest.groovy

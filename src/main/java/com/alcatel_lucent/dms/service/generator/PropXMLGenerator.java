@@ -26,7 +26,7 @@ import com.alcatel_lucent.dms.model.LabelTranslation;
 import com.alcatel_lucent.dms.model.Translation;
 import com.alcatel_lucent.dms.service.DaoService;
 
-@Component(Constants.DICT_FORMAT_XML_PROP)
+@Component
 public class PropXMLGenerator extends DictionaryGenerator {
 	
 	private static Logger log = LoggerFactory.getLogger(PropXMLGenerator.class);
@@ -61,6 +61,11 @@ public class PropXMLGenerator extends DictionaryGenerator {
     			generatePropXML(target, dict, dl);
     		}
     	}
+    }
+
+    @Override
+    public Constants.DictionaryFormat getFormat() {
+        return Constants.DictionaryFormat.XML_PROP;
     }
 
     private void generatePropXML(File targetDir, Dictionary dict, DictionaryLanguage dl) {

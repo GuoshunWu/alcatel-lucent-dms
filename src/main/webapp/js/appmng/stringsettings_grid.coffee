@@ -9,19 +9,21 @@ define [
   lastEditedCell = null
 
   lockLabels = (lock = true, grid=$('#stringSettingsGrid'), btn = $('#custom_lock_stringSettingsGrid > div.ui-pg-div'))->
+
+    icon = 'ui-icon-'
+    text = unText = 'lock'
     if lock
-      icon = 'ui-icon-locked'
-      text  = 'unlocklabels'
+      unText = "un#{text}"
       grid.setColProp('reference', {editable: false, classes: ''})
         .setColProp('key', {editable: false, classes: ''})
     else
-      text = 'locklabels'
-      icon = 'ui-icon-unlocked'
+      text = "un#{text}"
       grid.setColProp('reference', {editable: true, classes: 'editable-column'})
         .setColProp('key', {editable: true, classes: 'editable-column'})
     $('#custom_add_stringSettingsGrid, #custom_del_stringSettingsGrid').toggleClass('ui-state-disabled', lock)
 
-    text = i18n.dialog.stringsettings[text]
+    icon += "#{text}ed"
+    text = i18n.dialog.stringsettings[unText]
     btn.html "<span class=\"ui-icon #{icon}\"></span>#{text}"
 
   dicGrid = $('#stringSettingsGrid').jqGrid(

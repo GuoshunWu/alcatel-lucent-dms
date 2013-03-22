@@ -44,17 +44,12 @@ define ['jqlayout'], (jqlayout)->
           { easing: "easeOutBounce" }
     )
 
-    # save selector strings to vars so we don't have to repeat it
-    # west pane
-    westSelector = "#global-container > div.ui-layout-west"
+    westPanel = $("div.ui-layout-west", "#global-container")
 
-    # CREATE SPANs for pin-buttons - using a generic class as identifiers
-    $("<span />").addClass("pin-button").prependTo(westSelector)
     # BIND events to pin-buttons to make them functional
-    layout.addPinBtn("#{westSelector} .pin-button", "west")
-    #
-    # CREATE SPANs for close-buttons - using unique IDs as identifiers
-    $("<span />").attr("id", "west-closer").prependTo(westSelector)
+#    console?.log $('#west-pin-button')
+
+    layout.addPinBtn("#west-pin-button", "west")
     # BIND layout events to close-buttons to make them functional
     layout.addCloseBtn("#west-closer", "west")
 

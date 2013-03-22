@@ -22,7 +22,7 @@ import com.alcatel_lucent.dms.model.LabelTranslation;
 import com.alcatel_lucent.dms.model.Translation;
 import com.alcatel_lucent.dms.service.DaoService;
 
-@Component(Constants.DICT_FORMAT_TEXT_PROP)
+@Component
 public class PropGenerator extends DictionaryGenerator {
 	
 	private Logger log = LoggerFactory.getLogger(PropGenerator.class);
@@ -45,7 +45,12 @@ public class PropGenerator extends DictionaryGenerator {
     	}
 	}
 
-	private void generateProp(File target, Dictionary dict, DictionaryLanguage dl) {
+    @Override
+    public Constants.DictionaryFormat getFormat() {
+        return Constants.DictionaryFormat.TEXT_PROP;
+    }
+
+    private void generateProp(File target, Dictionary dict, DictionaryLanguage dl) {
         PrintStream out = null;
         try {
         	String filename = dict.getName();

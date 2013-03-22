@@ -61,7 +61,7 @@
           if (elem === 'T') {
             model.classes = 'language-group-border';
           }
-          if (level !== 'application') {
+          if (level !== 'app') {
             model.formatter = 'showlink';
             model.formatoptions = {
               baseLinkUrl: "#",

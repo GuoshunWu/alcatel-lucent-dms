@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Collection;
 
 import com.alcatel_lucent.dms.BusinessException;
+import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.action.ProgressQueue;
 import com.alcatel_lucent.dms.model.Dictionary;
 
@@ -25,4 +26,6 @@ public abstract class DictionaryGenerator {
 		}
 	}
 	abstract public void generateDict(File target, Long dictId) throws BusinessException;
+
+    abstract public Constants.DictionaryFormat getFormat();
 }

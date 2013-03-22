@@ -7,7 +7,7 @@
     autoSizeGrids = ['applicationGridList', 'dictionaryGridList', 'transGrid', 'taskGrid'];
     ready = function(param) {};
     init = function() {
-      var layout, westSelector;
+      var layout, westPanel;
       layout = $('#global-container').layout({
         onresize: function(name, element, state, options, layoutname) {
           return $('table.ui-jqgrid-btable').each(function(index, grid) {
@@ -50,10 +50,8 @@
           }
         }
       });
-      westSelector = "#global-container > div.ui-layout-west";
-      $("<span />").addClass("pin-button").prependTo(westSelector);
-      layout.addPinBtn("" + westSelector + " .pin-button", "west");
-      $("<span />").attr("id", "west-closer").prependTo(westSelector);
+      westPanel = $("div.ui-layout-west", "#global-container");
+      layout.addPinBtn("#west-pin-button", "west");
       layout.addCloseBtn("#west-closer", "west");
       return layout;
     };

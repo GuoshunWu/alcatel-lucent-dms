@@ -40,7 +40,11 @@
         <div class="ui-layout-content">
             <div id="appTree" style="background-color: transparent;"></div>
         </div>
-        <%--<div class="footer">A test footer</div>--%>
+        <%-- pin-buttons --%>
+        <span id="west-pin-button"></span>
+        <span id="west-closer" ></span>
+
+    <%--<div class="footer">A test footer</div>--%>
     </div>
 </div>
 </body>

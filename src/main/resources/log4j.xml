@@ -118,12 +118,12 @@
     </logger>
 
 
-    <logger name="com.alcatel_lucent.dms.filters.AuthenticationFilter">
+    <logger name="com.alcatel_lucent.dms.service.generator.*">
         <!--<level value="DEBUG"/>-->
     </logger>
 
     <root>
-        <level value="INFO"/>
+        <level value="WARN"/>
         <appender-ref ref="CONSOLE"/>
         <!--<appender-ref ref="FILE"/>-->
         <!-- <appender-ref ref="ASYNC" /> -->

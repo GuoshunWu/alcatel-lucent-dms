@@ -31,7 +31,7 @@ import static com.alcatel_lucent.dms.service.parser.StandardExcelDictParser.CONT
 import static com.alcatel_lucent.dms.service.parser.StandardExcelDictParser.DESCRIPTION;
 import static com.alcatel_lucent.dms.service.parser.StandardExcelDictParser.REF_LANG_CODE;
 
-@Component(Constants.DICT_FORMAT_STD_EXCEL)
+@Component
 public class StandardExcelGenerator extends DictionaryGenerator {
 
     private Logger log = LoggerFactory.getLogger(StandardExcelGenerator.class);
@@ -42,6 +42,11 @@ public class StandardExcelGenerator extends DictionaryGenerator {
     public void generateDict(File targetDir, Long dictId) throws BusinessException {
         Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
         generateDict(targetDir, dict);
+    }
+
+    @Override
+    public Constants.DictionaryFormat getFormat() {
+        return Constants.DictionaryFormat.STD_EXCEL;
     }
 
     public void generateDict(File targetDir, Dictionary dict) throws BusinessException {

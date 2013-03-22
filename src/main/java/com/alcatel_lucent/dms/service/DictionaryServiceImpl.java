@@ -4,10 +4,9 @@ import com.alcatel_lucent.dms.*;
 import com.alcatel_lucent.dms.action.ProgressQueue;
 import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
-import com.alcatel_lucent.dms.service.generator.*;
-import com.alcatel_lucent.dms.service.generator.xmldict.XMLDictGenerator;
+import com.alcatel_lucent.dms.service.generator.DictionaryGenerator;
 import com.alcatel_lucent.dms.service.parser.DictionaryParser;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections.Transformer;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
@@ -35,15 +34,24 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     private LanguageService langService;
     @Autowired
     private HistoryService historyService;
-
     @Autowired
     private List<DictionaryParser> parsers;
-
-    @Autowired
-    private Map<String, DictionaryGenerator> generators = new HashMap<String, DictionaryGenerator>();
+    private Map<String, DictionaryGenerator> generators;
 
     public DictionaryServiceImpl() {
-        super();
+    }
+
+    @Autowired
+    public void setGenerators(Map<String, DictionaryGenerator> generators) {
+        this.generators = generators;
+
+        Map<String, DictionaryGenerator> tmpGeneratorMap = new HashMap<String, DictionaryGenerator>();
+
+        Collection<DictionaryGenerator> tmpGenerators = generators.values();
+        for (DictionaryGenerator generator : tmpGenerators) {
+            tmpGeneratorMap.put(generator.getFormat().toString(), generator);
+        }
+        this.generators = tmpGeneratorMap;
     }
 
     public Collection<Dictionary> previewDictionaries(String rootDir, File file, Long appId) throws BusinessException {

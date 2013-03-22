@@ -23,7 +23,7 @@ import com.alcatel_lucent.dms.model.DictionaryLanguage;
 import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.service.DaoService;
 
-@Component(Constants.DICT_FORMAT_DCT)
+@Component
 public class DCTGenerator extends DictionaryGenerator {
 	
 	private static Logger log = LoggerFactory.getLogger(DCTGenerator.class);
@@ -140,6 +140,11 @@ public class DCTGenerator extends DictionaryGenerator {
             }
         }
 	}
+
+    @Override
+    public Constants.DictionaryFormat getFormat() {
+        return Constants.DictionaryFormat.DCT;
+    }
 
     private String generateCHK(String maxLength, String reference) {
         if (null == maxLength) return null;

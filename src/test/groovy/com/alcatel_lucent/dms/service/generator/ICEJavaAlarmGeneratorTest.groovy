@@ -1,10 +1,11 @@
 package com.alcatel_lucent.dms.service.generator
 
 import com.alcatel_lucent.dms.model.Dictionary
-import com.alcatel_lucent.dms.service.generator.xmldict.XMLDictGenerator
 import com.alcatel_lucent.dms.service.parser.ICEJavaAlarmParser
-import com.alcatel_lucent.dms.service.parser.XMLDictParser
-import org.junit.Ignore
+import org.apache.commons.collections.MapUtils
+import org.apache.commons.collections.Transformer
+import org.apache.commons.collections.TransformerUtils
+import org.apache.commons.collections.map.TransformedMap
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,18 +25,28 @@ import org.springframework.test.context.transaction.TransactionConfiguration
 @ContextConfiguration(locations = ["/spring.xml"])
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 public class ICEJavaAlarmGeneratorTest {
+    @Autowired
+    private ICEJavaAlarmParser iceJavaAlarmParser
 
     @Autowired
-    private ICEJavaAlarmParser iceJavaAlarmParser;
+    private ICEJavaAlarmGenerator iceJavaAlarmGenerator
+
+
+    private Map<String, DictionaryGenerator> generators
 
     @Autowired
-    private ICEJavaAlarmGenerator iceJavaAlarmGenerator;
+    void setGenerators(Map<String, DictionaryGenerator> generators) {
+        this.generators = generators
 
-    @Autowired
-    private List<DictionaryGenerator> generators;
+        Map<String, DictionaryGenerator> tmpGeneratorMap= new HashMap<String, DictionaryGenerator>()
 
-    @Autowired
-    private Map<String, DictionaryGenerator> generatorMap;
+        Collection<DictionaryGenerator> tmpGenerators = generators.values()
+        tmpGenerators.each {generator->
+            tmpGeneratorMap.put generator.format,generator
+        }
+        this.generators.clear()
+        this.generators= tmpGeneratorMap
+    }
 
 //    @Test
     void testGenerateDict() throws Exception {
@@ -50,18 +61,7 @@ public class ICEJavaAlarmGeneratorTest {
     }
 
     @Test
-    void testMe(){
-        println "Generator List".center(100, '=')
-        generators.each {generator->
-            println generator
-        }
-        println "Generators List Ends".center(100, '=')
-
-        println "Generator Map".center(100, '=')
-        generatorMap.each {generator->
-            println generator
-        }
-        println "Generators List Map".center(100, '=')
-
+    void testMe() {
+        MapUtils.debugPrint(System.out, "Generator Map", generators)
     }
 }
