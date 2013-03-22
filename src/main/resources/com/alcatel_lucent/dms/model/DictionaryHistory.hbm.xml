@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.alcatel_lucent.dms.model">
+    <class name="DictionaryHistory" table="DICTIONARY_HISTORY">
+        <id column="ID" name="id">
+            <generator class="native">
+                <param name="sequence">ID_DICTIONARY_HISTORY</param>
+            </generator>
+        </id>
+
+        <property column="OPERATION_TYPE" name="operationType" not-null="false" type="text"/>
+        <property column="OPERATION_TIME" name="operationTime" not-null="false" type="timestamp"/>
+        <property column="TEMP_PATH" name="tempPath" not-null="false" type="text"/>
+
+        <many-to-one name="dictionary" column="DICTIONARY_ID"/>
+        <many-to-one name="task" column="TASK_ID"/>
+        <many-to-one name="operator" column="OPERATOR"/>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,101 @@
+@import "jqueryUI/themes/base/jquery.ui.all.css";
+@import "jqgrid/ui.jqgrid.css";
+@import "jqueryLayout/layout.css";
+/*
+*	GENERAL COSMETICS
+*/
+
+html, body {
+    height: 100%;
+    /*padding: 0 0 20px;*/
+    margin: 0;
+    font-family: Lucida Grande, Lucida Sans, Arial, Helvetica, sans-serif, '宋体';
+    /*font-size: 100%;*/
+    font-size: 10px;
+    background-color: #EEE;
+
+    overflow: hidden !important;
+}
+
+.editable-column {
+    background: #f0ffff
+}
+
+/* north navigation table title */
+.page-title {
+    font-family: Trebuchet MS, Verdana, Arial, Helvetica;
+    font-size: 14pt;
+    font-style: normal;
+}
+
+.err-message {
+    color: red;
+}
+
+.form-label{
+    font-weight: bold;
+}
+
+.show-label {
+    font-size: medium;
+    vertical-align: middle;
+!important
+}
+
+input[readonly] {
+    border-style: none
+}
+
+.ui-menu {
+    position: absolute;
+    width: 100px;
+}
+
+.navigator-button {
+    width: 125px;
+}
+
+.navigator-button-currentpage {
+    background-image: url('jqueryLayout/images/80ade5_40x100_textures_04_highlight_hard_100.png');
+}
+
+.navigator-tab-image {
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+}
+
+.navigator-tab-title .navigator-tab-title-currentpage {
+    font-family: Trebuchet MS, Verdana, Arial, Helvetica;
+    font-size: 12pt;
+}
+
+.navigator-tab-title-currentpage {
+    font-weight: bold;
+    color: purple;
+}
+
+.progressbar-container {
+    width: 700px;
+    height: 50px;
+    padding: 1em 1em 0.5em 1em;
+    background: #eeeeee;
+    border: 1px dotted #000000;
+    /*opacity: 0.1;*/
+}
+
+.progressbar {
+    width: 100%;
+}
+
+.progressbar-indeterminate {
+    background: #d3d3d3 url(../images/pbar-ani.gif);
+}
+
+.progressbar-label {
+    float: left;
+    margin-left: 47%;
+    margin-top: 5px;
+    font-weight: bold;
+    text-shadow: 1px 1px 0 #fff;
+}
