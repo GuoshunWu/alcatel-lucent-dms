@@ -365,7 +365,7 @@ User: Guoshun Wu
           }
         });
       }
-      $.each(['add', 'edit', 'del'], function(index, value) {
+      $.each(['add', 'edit', 'del', 'lock'], function(index, value) {
         var actButton, btnSelector;
         btnSelector = "#" + value + "_" + grid.id;
         actButton = $(btnSelector);

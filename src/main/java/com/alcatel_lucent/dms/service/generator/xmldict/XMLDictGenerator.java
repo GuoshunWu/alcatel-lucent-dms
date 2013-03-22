@@ -1,6 +1,7 @@
 package com.alcatel_lucent.dms.service.generator.xmldict;
 
 import com.alcatel_lucent.dms.BusinessException;
+import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.action.ProgressQueue;
 import com.alcatel_lucent.dms.model.Dictionary;
@@ -35,7 +36,7 @@ import java.util.Map;
 
 import static org.apache.commons.lang3.StringUtils.center;
 
-@Component("XmlDictGenerator")
+@Component(Constants.DICT_FORMAT_XDCT)
 public class XMLDictGenerator extends DictionaryGenerator {
 
     private static Logger log = LoggerFactory.getLogger(XMLDictGenerator.class);

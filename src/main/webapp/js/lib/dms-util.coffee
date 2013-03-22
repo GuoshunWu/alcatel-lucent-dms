@@ -249,7 +249,7 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
           obj.classes = obj.classes.replace('editable-column', '')
     #
     #    for the grid  navigatebar, ['view', 'search', 'refresh'] are readonly operation, enabled
-    $.each ['add', 'edit', 'del'], (index, value)->
+    $.each ['add', 'edit', 'del', 'lock'], (index, value)->
       # for jqgrid predefined navigate buttons
       btnSelector = "##{value}_#{grid.id}"
       actButton = $ btnSelector
@@ -261,6 +261,7 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
       # for custom buttons in navigate gird.
       btnSelector = "#custom_#{value}_#{grid.id}"
       actButton = $(btnSelector)
+
       if actButton.length > 0 and (forbiddenTab.editurl or forbiddenTab.cellactionurl)
 #        console?.log "Disable button #{actButton.attr('id')} due to forbidden privilege."
         actButton.addClass 'ui-state-disabled'

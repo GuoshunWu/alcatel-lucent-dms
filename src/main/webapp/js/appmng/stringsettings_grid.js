@@ -2,8 +2,44 @@
 (function() {
 
   define(['jqgrid', 'dms-util', 'dms-urls', 'i18n!nls/common', 'i18n!nls/appmng', 'appmng/langsetting_translation_grid'], function($, util, urls, c18n, i18n, ltgrid) {
-    var dicGrid, lastEditedCell;
+    var dicGrid, lastEditedCell, lockLabels;
     lastEditedCell = null;
+    lockLabels = function(lock, grid, btn) {
+      var icon, text;
+      if (lock == null) {
+        lock = true;
+      }
+      if (grid == null) {
+        grid = $('#stringSettingsGrid');
+      }
+      if (btn == null) {
+        btn = $('#custom_lock_stringSettingsGrid > div.ui-pg-div');
+      }
+      if (lock) {
+        icon = 'ui-icon-locked';
+        text = 'unlocklabels';
+        grid.setColProp('reference', {
+          editable: false,
+          classes: ''
+        }).setColProp('key', {
+          editable: false,
+          classes: ''
+        });
+      } else {
+        text = 'locklabels';
+        icon = 'ui-icon-unlocked';
+        grid.setColProp('reference', {
+          editable: true,
+          classes: 'editable-column'
+        }).setColProp('key', {
+          editable: true,
+          classes: 'editable-column'
+        });
+      }
+      $('#custom_add_stringSettingsGrid, #custom_del_stringSettingsGrid').toggleClass('ui-state-disabled', lock);
+      text = i18n.dialog.stringsettings[text];
+      return btn.html("<span class=\"ui-icon " + icon + "\"></span>" + text);
+    };
     dicGrid = $('#stringSettingsGrid').jqGrid({
       url: 'json/dummy.json',
       mtype: 'post',
@@ -11,7 +47,7 @@
       width: 880,
       height: 300,
       pager: '#stringSettingsPager',
-      editurl: "",
+      editurl: "app/add-label",
       rowNum: 10,
       rowList: [10, 20, 30],
       sortorder: 'asc',
@@ -169,6 +205,20 @@
           url: urls.label.del
         });
       }
+    }).navSeparatorAdd("#stringSettingsPager", {
+      sepclass: "ui-separator",
+      sepcontent: ''
+    }).navButtonAdd('#stringSettingsPager', {
+      id: "custom_lock_" + (dicGrid.attr('id')),
+      caption: i18n.dialog.stringsettings.unlocklabels,
+      buttonicon: "ui-icon-locked",
+      position: "last",
+      onClickButton: function(e) {
+        var isLocked;
+        isLocked = $('span.ui-icon', e.target).hasClass('ui-icon-locked');
+        lockLabels(!isLocked, $(this), $(e.target));
+        return $(this).trigger('reloadGrid');
+      }
     }).setGroupHeaders({
       useColSpanStyle: true,
       groupHeaders: [
@@ -184,7 +234,8 @@
         if (lastEditedCell) {
           return dicGrid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol);
         }
-      }
+      },
+      lockLabels: lockLabels
     };
   });
 

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashSet;
 
+import com.alcatel_lucent.dms.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ import com.alcatel_lucent.dms.model.LabelTranslation;
 import com.alcatel_lucent.dms.model.Translation;
 import com.alcatel_lucent.dms.service.DaoService;
 
-@Component("PropGenerator")
+@Component(Constants.DICT_FORMAT_TEXT_PROP)
 public class PropGenerator extends DictionaryGenerator {
 	
 	private Logger log = LoggerFactory.getLogger(PropGenerator.class);

@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
+import com.alcatel_lucent.dms.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ import com.alcatel_lucent.dms.model.DictionaryLanguage;
 import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.service.DaoService;
 
-@Component("DCTGenerator")
+@Component(Constants.DICT_FORMAT_DCT)
 public class DCTGenerator extends DictionaryGenerator {
 	
 	private static Logger log = LoggerFactory.getLogger(DCTGenerator.class);

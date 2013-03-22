@@ -6,6 +6,7 @@ import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.service.generator.*;
 import com.alcatel_lucent.dms.service.generator.xmldict.XMLDictGenerator;
+import com.alcatel_lucent.dms.service.parser.DictionaryParser;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.hibernate.Hibernate;
@@ -34,37 +35,20 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     private LanguageService langService;
     @Autowired
     private HistoryService historyService;
+
     @Autowired
-    private com.alcatel_lucent.dms.service.parser.DictionaryParser[] parsers;
-    private Map<Constants.DictionaryFormat, DictionaryGenerator> generators = new HashMap<Constants.DictionaryFormat, DictionaryGenerator>();
+    private List<DictionaryParser> parsers;
+
+    @Autowired
+    private Map<String, DictionaryGenerator> generators = new HashMap<String, DictionaryGenerator>();
 
     public DictionaryServiceImpl() {
         super();
     }
 
-    @Autowired
-    public DictionaryServiceImpl(XMLDictGenerator xmlDictGenerator,
-                                 DCTGenerator dctGenerator,
-                                 MDCGenerator mdcGenerator,
-                                 LabelXMLGenerator labelXMLGenerator,
-                                 PropXMLGenerator propXMLGenerator,
-                                 PropGenerator propGenerator,
-                                 StandardExcelGenerator stdExcelGenerator,
-                                 ICEJavaAlarmGenerator iceJavaAlarmGenerator) {
-        generators.put(Constants.DictionaryFormat.XDCT, xmlDictGenerator);
-        generators.put(Constants.DictionaryFormat.DCT, dctGenerator);
-        generators.put(Constants.DictionaryFormat.MDC, mdcGenerator);
-        generators.put(Constants.DictionaryFormat.XML_LABEL, labelXMLGenerator);
-        generators.put(Constants.DictionaryFormat.XML_PROP, propXMLGenerator);
-        generators.put(Constants.DictionaryFormat.TEXT_PROP, propGenerator);
-        generators.put(Constants.DictionaryFormat.STD_EXCEL, stdExcelGenerator);
-        generators.put(Constants.DictionaryFormat.ICE_JAVA_ALARM, iceJavaAlarmGenerator);
-    }
-
     public Collection<Dictionary> previewDictionaries(String rootDir, File file, Long appId) throws BusinessException {
         Collection<Dictionary> result = new ArrayList<Dictionary>();
         BusinessException exceptions = new BusinessException(BusinessException.PREVIEW_DICT_ERRORS);
-//        rootDir = rootDir.replace("\\", "/");
         rootDir = normalize(rootDir, true);
         long before = System.currentTimeMillis();
         HashSet<String> allAcceptedFiles = new HashSet<String>();
@@ -317,7 +301,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     }
 
     private DictionaryGenerator getGenerator(String format) {
-        DictionaryGenerator generator = generators.get(Constants.DictionaryFormat.getEnum(format));
+        DictionaryGenerator generator = generators.get(format);
         if (null == generator) throw new SystemError("Unsupported dict format: " + format);
         return generator;
     }

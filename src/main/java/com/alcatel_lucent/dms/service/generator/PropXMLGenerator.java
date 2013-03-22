@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.HashSet;
 
+import com.alcatel_lucent.dms.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.dom4j.Document;
@@ -25,7 +26,7 @@ import com.alcatel_lucent.dms.model.LabelTranslation;
 import com.alcatel_lucent.dms.model.Translation;
 import com.alcatel_lucent.dms.service.DaoService;
 
-@Component("PropXMLGenerator")
+@Component(Constants.DICT_FORMAT_XML_PROP)
 public class PropXMLGenerator extends DictionaryGenerator {
 	
 	private static Logger log = LoggerFactory.getLogger(PropXMLGenerator.class);
