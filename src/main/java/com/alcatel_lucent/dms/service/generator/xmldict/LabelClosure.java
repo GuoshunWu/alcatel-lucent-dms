@@ -9,6 +9,7 @@ import com.alcatel_lucent.dms.util.Util;
 import org.apache.commons.collections.Closure;
 import org.apache.commons.lang3.BooleanUtils;
 import org.dom4j.Element;
+import org.dom4j.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,7 +116,8 @@ public class LabelClosure implements Closure {
             boolean hasLabelTrans = lt != null;
 
             String xpath = "parent::*/LANGUAGE[@id='" + langCode + "']/@is_context";
-            boolean isContext = BooleanUtils.toBoolean(xmlKey.selectSingleNode(xpath).getStringValue());
+            Node node = xmlKey.selectSingleNode(xpath);
+            boolean isContext = node == null ? false : BooleanUtils.toBoolean(node.getStringValue());
 
             // Get the element content from LabelTranslation.ANNOTATION1
             String elemTextValue = hasLabelTrans ? lt.getValueFromField(elemName.toLowerCase(), LabelTranslation.ANNOTATION1) : null;

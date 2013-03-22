@@ -20,6 +20,7 @@ import org.dom4j.Namespace;
 import org.dom4j.Node;
 import org.dom4j.ProcessingInstruction;
 import org.dom4j.io.DOMReader;
+import org.dom4j.io.SAXReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -33,6 +34,7 @@ import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.LabelTranslation;
 import com.alcatel_lucent.dms.model.Language;
 import com.alcatel_lucent.dms.service.LanguageService;
+import com.alcatel_lucent.dms.util.NoOpEntityResolver;
 import com.alcatel_lucent.dms.util.Util;
 
 @Component("labelXMLParser")
@@ -211,16 +213,18 @@ public class LabelXMLParser extends DictionaryParser {
 	
 	private Collection<Label> readLabels(File file, Dictionary dict, DictionaryLanguage dl, Collection<BusinessWarning> warnings, BusinessException exceptions) {
 		Collection<Label> result = new ArrayList<Label>();
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		DocumentBuilder db;
-		org.w3c.dom.Document doc;
+//		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+//		DocumentBuilder db;
+//		org.w3c.dom.Document doc;
 		Document document;
 		Element root;
 		try {
-			db = dbf.newDocumentBuilder();
-			doc = db.parse(file);
-			DOMReader domReader = new DOMReader();
-			document = domReader.read(doc);
+//			db = dbf.newDocumentBuilder();
+//			doc = db.parse(file);
+			SAXReader domReader = new SAXReader();
+			// avoid downloading external DTD
+			domReader.setEntityResolver(new NoOpEntityResolver());
+			document = domReader.read(file);
 		} catch (Exception e1) {
 			log.error("Error parsing " + file.getName(), e1);
 			throw new BusinessException(BusinessException.INVALID_XML_FILE, file.getName());
