@@ -38,8 +38,8 @@
     ready = function(param) {
       return $('#selVersion', '#taskmng').change(function() {
         var nodeInfo, postData, type;
-        if (!this.value || -1 === parseInt(this.value)) {
-          return;
+        if (typeof console !== "undefined" && console !== null) {
+          console.log("value=" + this.value);
         }
         nodeInfo = util.getProductTreeInfo();
         type = nodeInfo.type;
@@ -49,7 +49,7 @@
         postData[type] = this.value;
         param = {
           release: {
-            id: $(this).val(),
+            id: $(this).val() ? $(this).val() : -1,
             version: $(this).find("option:selected").text()
           },
           base: nodeInfo.text,
