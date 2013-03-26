@@ -77,7 +77,7 @@ public class ACSTextDictParser extends DictionaryParser {
                 refFile = refTextFiles.get(baseName);
                 deliveredDicts.add(parseProp(rootDir, baseName, textFiles.get(baseName), refTextFiles.get(baseName)));
             } catch (BusinessException e) {
-                exceptions.addNestedException(e);
+            log.error(file + " is not valid because {}", ex.getMessage());
             }
             acceptedFiles.add(refFile);
             if (null != textFiles.get(baseName)) {

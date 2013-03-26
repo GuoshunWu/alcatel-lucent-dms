@@ -1,3 +1,8 @@
+V2.1.1
+ * New dictionary format: ICE Java Alarm (XML)
+ * Adjust XML Properties adaptor to support CMS XML dictionaries
+ * UI improvement of String Settings
+
 V2.1.0
  * New UI: all contents in a single AJAX page
  * Product tree is also available for Translation and Task view

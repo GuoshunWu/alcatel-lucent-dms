@@ -13,6 +13,7 @@ public class Constants {
     }
 
     // dictionary format
+
     public enum DictionaryFormat {
 
         DCT("DCT"),

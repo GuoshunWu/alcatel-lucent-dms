@@ -199,8 +199,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                                             log.error(e.toString());
                                         }
                                     }
-                                    if (!trans.getTranslation().equals(translation) ||
-                                            lt.getStatus() != null && lt.getStatus() != trans.getStatus()) {
+                                    if ((!trans.getTranslation().equals(translation) || 
+                                    				lt.getStatus() != null && lt.getStatus() != trans.getStatus()) && trans.getStatus() == Translation.STATUS_TRANSLATED) {
                                         log.debug("Context conflict - Reference:" + label.getReference() + ", Translation:" + lt.getOrigTranslation() + ", ContextTranslation:" + trans.getTranslation());
                                         label.setContext(dictCtx);
                                         break;

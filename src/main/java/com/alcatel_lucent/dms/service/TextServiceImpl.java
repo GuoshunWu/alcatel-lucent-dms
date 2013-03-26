@@ -19,6 +19,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.alcatel_lucent.dms.BusinessException;
@@ -38,6 +40,7 @@ import com.alcatel_lucent.dms.model.Translation;
 @SuppressWarnings("unchecked")
 public class TextServiceImpl extends BaseServiceImpl implements TextService {
 
+	private Logger log = LoggerFactory.getLogger(TextServiceImpl.class);
     enum ExcelFileHeader{
         DICTIONARY,LABEL, MAX_LEN,REFERENCE,TRANSLATION
     }
@@ -136,6 +139,18 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 	                }
 	                Translation dbTrans = dbText.getTranslation(trans.getLanguage().getId());
 	                if (dbTrans == null) {
+	                	// In delivery mode, try to translate automatically
+	                	// by searching existing translation from other contexts
+	                	if (mode == Constants.ImportingMode.DELIVERY && 
+	                			trans.getStatus() == Translation.STATUS_UNTRANSLATED &&
+	                			trans.getTranslation().equals(text.getReference())) {
+	                		String suggestedTranslation = getSuggestedTranslation(trans.getLanguage().getId(), text.getReference());
+	                		if (suggestedTranslation != null) {
+	                			log.info("Auto translate \"" + text.getReference() + "\" to \"" + suggestedTranslation + "\" in " + trans.getLanguage().getName() + ".");
+	                			trans.setTranslation(suggestedTranslation);
+	                			trans.setStatus(Translation.STATUS_TRANSLATED);
+	                		}
+	                	}
 						dbTrans = addTranslation(dbText, trans);
 						dbText.addTranslation(dbTrans);		// the dbText will be used in next invoke, so add translations in-memory
 	                } else if (mode == Constants.ImportingMode.TRANSLATION) { // update translations in TRANSLATION_MODE
@@ -167,7 +182,29 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
         return result;
     }
 
-    @Override
+    /**
+     * Search translation in all contexts to find suggested translation
+     * @param languageId
+     * @param reference
+     * @return
+     */
+    private String getSuggestedTranslation(Long languageId, String reference) {
+		String hql = "from Translation where text.reference=:reference and language.id=:languageId and status=:status order by text.context.id";
+		Map param = new HashMap();
+		param.put("reference", reference);
+		param.put("languageId", languageId);
+		param.put("status", Translation.STATUS_TRANSLATED);
+		Collection<Translation> qr = dao.retrieve(hql, param);
+		for (Translation trans : qr) {
+			if (!trans.getText().getContext().getName().equals(Context.EXCLUSION)) {
+				return trans.getTranslation();
+			}
+		}
+		return null;
+	}
+
+
+	@Override
     public int receiveTranslation(String fileName, Long languageId) {
         //file is excel file
         FileInputStream inp = null;
