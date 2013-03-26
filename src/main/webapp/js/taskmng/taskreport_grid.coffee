@@ -17,6 +17,7 @@ define ['jqgrid'], ($)->
     colNames: colNames, colModel: colModel, groupHeaders: groupHeader
     gridComplete: ->
       #    console?.log "task id in report grid: #{$('#reportGrid').getGridParam('postData').task}"
+      $('a', @).each (index, a)->$(a).before(' ').remove() if '0' == $(a).text()
       $('a', @).css('color', 'blue').click ()->
         param = {}
 

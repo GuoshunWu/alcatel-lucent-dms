@@ -13,7 +13,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring.version>3.1.1.RELEASE</spring.version>
-        <hibernate.version>3.6.9.Final</hibernate.version>
+        <hibernate.version>3.6.10.Final</hibernate.version>
+        <!--<hibernate.version>4.1.6.Final</hibernate.version>-->
         <gmavenVersion>1.4</gmavenVersion>
         <jerseyVersion>1.13</jerseyVersion>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
@@ -111,6 +112,7 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-proxool</artifactId>
             <version>${hibernate.version}</version>
+            <!--<version>4.0.0.Final</version>-->
         </dependency>
 
         <dependency>
@@ -125,11 +127,6 @@
             <version>4.3.0.Final</version>
         </dependency>
 
-        <!--<dependency>-->
-        <!--<groupId>org.hibernate</groupId>-->
-        <!--<artifactId>hibernate-swarmcache</artifactId>-->
-        <!--<version>3.6.9.Final</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-oscache</artifactId>

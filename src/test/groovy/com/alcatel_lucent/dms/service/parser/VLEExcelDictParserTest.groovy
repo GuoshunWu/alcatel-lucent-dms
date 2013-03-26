@@ -53,7 +53,7 @@ public class VLEExcelDictParserTest {
         ProxoolFacade.shutdown(0);
     }
 
-//    @Test
+    @Test
     void testParse() throws Exception {
         File file = new File("D:/MyDocuments/Alcatel_LucentSBell/DMS/DMSFiles/VLEDict/test")
 
