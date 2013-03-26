@@ -45,6 +45,11 @@
       colModel: colModel,
       groupHeaders: groupHeader,
       gridComplete: function() {
+        $('a', this).each(function(index, a) {
+          if ('0' === $(a).text()) {
+            return $(a).before(' ').remove();
+          }
+        });
         return $('a', this).css('color', 'blue').click(function() {
           var allZero, param, rowData;
           param = {};

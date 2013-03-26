@@ -2,9 +2,16 @@ package com.alcatel_lucent.dms.service
 
 import com.alcatel_lucent.dms.model.Dictionary
 import com.alcatel_lucent.dms.service.generator.StandardExcelGenerator
+import com.alcatel_lucent.dms.service.parser.ACSTextDictParser
 import com.alcatel_lucent.dms.service.parser.StandardExcelDictParser
+import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.collections.MapIterator
+import org.apache.commons.collections.Predicate
+import org.apache.commons.collections.PredicateUtils
 import org.apache.commons.collections.map.HashedMap
+import org.apache.commons.io.IOUtils
+import org.apache.commons.io.input.BOMInputStream
+import org.apache.commons.lang3.ClassUtils
 import org.junit.*
 import org.junit.runner.RunWith
 import org.logicalcobwebs.proxool.ProxoolFacade
@@ -21,8 +28,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration
  * To change this template use File | Settings | File Templates.
  */
 
-
-//@Ignore
+@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = ["/spring.xml"])
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
@@ -30,7 +36,10 @@ import org.springframework.test.context.transaction.TransactionConfiguration
 public class DictionaryServiceTest {
 
     @Autowired
-    private DictionaryService dictionaryService;
+    private DictionaryService dictionaryService
+
+    @Autowired
+    private ACSTextDictParser acsTextDictParser
 
 
     @BeforeClass
@@ -49,12 +58,32 @@ public class DictionaryServiceTest {
 
     @After
     void tearDown() throws Exception {
-        ProxoolFacade.shutdown(0);
+        ProxoolFacade.shutdown(0)
+    }
+
+//    @Test
+    void testGenerateDictForACSText() throws Exception {
+        File f = new File("D:/MyDocuments/Alcatel_LucentSBell/DMS/DMSFiles/ACSTextDict")
+        Collection<File> acceptedFiles = [] as Collection<File>
+        println "Dictionaies List".center(100, '=')
+        acsTextDictParser.parse(f.absolutePath, f, acceptedFiles).each { dict ->
+            println dict
+        }
+
+        println "Accepted Files: ".center(100, '=')
+        acceptedFiles.each { aFile ->
+            println aFile
+        }
     }
 
     @Test
-    void testGenerateDictForICEJavaAlarm() throws Exception {
-        File file = new File("D:/MyDocuments/Alcatel_LucentSBell/DMS/DMSFiles/ICEJavaAlarm/catalog-builder-plugin-1.3.000.000-schemas/")
-
+    void testBOM(){
+        File f = new File("D:/MyDocuments/Alcatel_LucentSBell/DMS/DMSFiles/ACSTextDict/dictionary.en.txt")
+        List<String> lines = IOUtils.readLines(new BOMInputStream(new FileInputStream(f)), "UTF-8")
+        println lines[0]
+//        lines.each {line->
+//            println line
+//            return
+//        }
     }
 }

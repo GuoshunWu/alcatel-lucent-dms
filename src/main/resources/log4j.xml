@@ -118,10 +118,6 @@
     </logger>
 
 
-    <logger name="com.alcatel_lucent.dms.service.generator.*">
-        <!--<level value="DEBUG"/>-->
-    </logger>
-
     <root>
         <level value="WARN"/>
         <appender-ref ref="CONSOLE"/>

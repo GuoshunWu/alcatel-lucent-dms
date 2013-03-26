@@ -1,21 +1,14 @@
-package com.alcatel_lucent.dms.util;
+package com.alcatel_lucent.dms.util
 
-import org.junit.Ignore;
-import org.junit.Test;
-
-import java.io.File
-import org.apache.commons.collections.PredicateUtils
-import org.apache.commons.collections.ClosureUtils
-import org.apache.commons.collections.CollectionUtils
-import org.apache.commons.collections.list.PredicatedList
-import org.apache.commons.collections.functors.NotNullPredicate
-import org.apache.commons.collections.ListUtils
-import org.apache.commons.collections.Transformer
-import org.apache.commons.collections.Predicate
+import org.apache.commons.collections.*
 import org.apache.commons.collections.functors.EqualPredicate
-import org.apache.commons.collections.MapUtils
-import com.alcatel_lucent.dms.model.Label
-import org.apache.commons.lang3.time.DurationFormatUtils;
+import org.apache.commons.io.ByteOrderMark
+import org.apache.commons.io.IOUtils
+import org.apache.commons.io.input.AutoCloseInputStream
+import org.apache.commons.io.input.BOMInputStream
+import org.apache.commons.lang3.time.DurationFormatUtils
+import org.junit.Ignore
+import org.junit.Test
 
 /**
  * Created by IntelliJ IDEA.
@@ -89,10 +82,34 @@ public class UtilTest {
         println Util.map2String(Util.string2Map("a=b;c=d;e=f"))
     }
 
-
     @Test
     void testLabelFieldAccess() {
-        println DurationFormatUtils.formatDuration(65450000l,"HH 'hour(s)' mm 'minute(s)' ss 'second(s)'")
+//        println DurationFormatUtils.formatDuration(65450000l, "HH 'hour(s)' mm 'minute(s)' ss 'second(s)'")
+        StringWriter temp= new StringWriter()
+        PrintWriter pw= new PrintWriter(temp)
+        pw.println("Hello, world")
+        pw.println("What")
+        temp = new StringWriter()
+        pw.close()
+        pw = new PrintWriter(temp)
+        pw.println("ABC")
+        println temp
+
+    }
+
+//    @Test
+    void testFileFormat() {
+        File file = new File("D:/MyDocuments/Alcatel_LucentSBell/DMS/DMSFiles/ACSTextDict/MyTest.txt")
+        String encoding = Util.detectEncoding(file)
+        InputStream is = new AutoCloseInputStream(new FileInputStream(file));
+        println "encoding=${encoding}"
+        if (Arrays.asList("UTF-8", "UTF-LE", "UTF-BE").contains(encoding)) {
+            is = new BOMInputStream(is)
+        }
+        ArrayList<String> lines = IOUtils.readLines(is, encoding)
+        lines.each { line ->
+            println line
+        }
     }
 
 }

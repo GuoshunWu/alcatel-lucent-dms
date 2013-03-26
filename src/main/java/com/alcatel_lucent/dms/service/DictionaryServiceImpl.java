@@ -74,7 +74,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 }
             }
             for (File acceptedFile : acceptedFiles) {
-//                String filename = acceptedFile.getAbsolutePath().replace("\\", "/");
                 String filename = normalize(acceptedFile.getAbsolutePath(), true);
                 log.info("Accepted file: " + filename);
                 allAcceptedFiles.add(filename);

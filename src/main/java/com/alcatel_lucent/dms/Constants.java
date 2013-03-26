@@ -22,7 +22,9 @@ public class Constants {
         XDCT("XMLDict"),
         ICE_JAVA_ALARM("ICE Java Alarm"),
         STD_EXCEL("Standard Excel"),
-        TEXT_PROP("Text properties");
+        TEXT_PROP("Text properties"),
+        ACS_TEXT("ACS text");
+
 
 
         private static Map<String, DictionaryFormat> valueEnumMap = new HashMap<String, DictionaryFormat>();

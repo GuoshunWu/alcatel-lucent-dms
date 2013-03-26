@@ -14,8 +14,11 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.HashedMap;
+import org.apache.commons.io.ByteOrderMark;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.input.AutoCloseInputStream;
+import org.apache.commons.io.input.BOMInputStream;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Attribute;
@@ -48,14 +51,9 @@ import static org.apache.commons.lang3.ArrayUtils.toMap;
  */
 public class Util {
 
-    public static final int UTF8_BOM_LENGTH = 3;
-    public static final int UTF16_BOM_LENGTH = 2;
-
     private static String dctFileExtsPattern = ".di?ct?";
     private static String zipFileExtsPattern = ".(?:zip)|(?:jar)";
     private static String mdcFileExtsPattern = ".conf";
-
-
     private static Logger log = LoggerFactory.getLogger(Util.class);
 
     /**
@@ -115,11 +113,14 @@ public class Util {
      * @author Guoshun.Wu Date: 2012-07-01
      */
     public static String detectEncoding(File file) throws IOException {
-        InputStream is = new FileInputStream(file);
-        byte[] buf = new byte[UTF8_BOM_LENGTH];
-        is.read(buf);
-        is.close();
-        return detectEncoding(buf);
+        BOMInputStream bomInputStream = new BOMInputStream(new AutoCloseInputStream(new FileInputStream(file)),
+                ByteOrderMark.UTF_16LE, ByteOrderMark.UTF_16BE, ByteOrderMark.UTF_8);
+        String encoding = "ISO-8859-1";
+        if (bomInputStream.hasBOM()) {
+            encoding = bomInputStream.getBOM().getCharsetName();
+        }
+        IOUtils.closeQuietly(bomInputStream);
+        return encoding;
     }
 
     /**
@@ -159,22 +160,6 @@ public class Util {
             encoding.append("ISO-8859-1");
         }
         return encoding.toString();
-    }
-
-    public static String detectEncoding(byte[] bom) {
-        byte[] utf8BOM = new byte[]{(byte) 0xef, (byte) 0xbb, (byte) 0xbf,};
-        byte[] utf16LEBOM = new byte[]{(byte) 0xff, (byte) 0xfe};
-        byte[] utf16BEBOM = new byte[]{(byte) 0xfe, (byte) 0xff};
-
-        if (Arrays.equals(utf8BOM, bom)) {
-            return "UTF-8";
-        }
-        if (Arrays.equals(utf16LEBOM, Arrays.copyOf(bom, UTF16_BOM_LENGTH))
-                || Arrays.equals(utf16BEBOM,
-                Arrays.copyOf(bom, UTF16_BOM_LENGTH))) {
-            return "UTF-16LE";
-        }
-        return "ISO-8859-1";
     }
 
     /**
@@ -430,13 +415,6 @@ public class Util {
                 return str.matches((String) object);
             }
         });
-//        for (String pattern : patterns) {
-//            if (str.matches(pattern)) {
-//                log.debug(str + " match pattern " + pattern);
-//                return true;
-//            }
-//        }
-//        return false;
     }
 
     /**
@@ -463,21 +441,21 @@ public class Util {
             public Object transform(Object input) {
                 String[] keyValues = StringUtils.splitPreserveAllTokens((String) input, finalKeyValueSep);
                 try {
-					keyValues[0] = URLDecoder.decode(keyValues[0], "UTF-8");
-	                keyValues[1] = URLDecoder.decode(keyValues[1], "UTF-8");
-				} catch (UnsupportedEncodingException e) {
-					e.printStackTrace();
-					throw new SystemError(e);
-				}
+                    keyValues[0] = URLDecoder.decode(keyValues[0], "UTF-8");
+                    keyValues[1] = URLDecoder.decode(keyValues[1], "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                    throw new SystemError(e);
+                }
                 return keyValues;
             }
         });
         try {
-        return typedMap(toMap(lstEntries.toArray(new String[0][])), String.class, String.class);
+            return typedMap(toMap(lstEntries.toArray(new String[0][])), String.class, String.class);
         } catch (Exception e) {
-        	log.error("Failed to save annotation: " + str);
-        	e.printStackTrace();
-        	throw new SystemError(e);
+            log.error("Failed to save annotation: " + str);
+            e.printStackTrace();
+            throw new SystemError(e);
         }
     }
 
@@ -506,17 +484,17 @@ public class Util {
                     public Object transform(Object input) {
                         Map.Entry entry = (Map.Entry) input;
                         try {
-							return URLEncoder.encode(entry.getKey().toString(), "UTF-8") + 
-									finalKeyValueSep + 
-									URLEncoder.encode(entry.getValue().toString(), "UTF-8");
-						} catch (UnsupportedEncodingException e) {
-							e.printStackTrace();
-							throw new SystemError(e);
-						}
+                            return URLEncoder.encode(entry.getKey().toString(), "UTF-8") +
+                                    finalKeyValueSep +
+                                    URLEncoder.encode(entry.getValue().toString(), "UTF-8");
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                            throw new SystemError(e);
+                        }
                     }
                 }), entrySep);
     }
-    
+
     /**
      * Convert a attribte list to a map
      */

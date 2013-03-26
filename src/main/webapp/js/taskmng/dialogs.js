@@ -116,14 +116,14 @@
       open: function() {
         var param, postData;
         param = $(this).data('param');
-        console.log(param);
         postData = $.extend(param, {
           format: 'grid',
           prop: 'labelKey,maxLength,text.context.name,text.reference,newTranslation'
         });
         return detailgrid.setGridParam({
           url: 'rest/task/details',
-          postData: postData
+          postData: postData,
+          page: 1
         }).trigger('reloadGrid');
       },
       buttons: [

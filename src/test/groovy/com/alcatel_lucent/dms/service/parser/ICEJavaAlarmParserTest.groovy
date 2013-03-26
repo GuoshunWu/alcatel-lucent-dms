@@ -48,7 +48,7 @@ public class ICEJavaAlarmParserTest {
 
     @After
     void tearDown() throws Exception {
-        ProxoolFacade.shutdown(0);
+//        ProxoolFacade.shutdown(0);
     }
 
     @Test
