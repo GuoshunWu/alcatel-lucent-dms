@@ -12,8 +12,14 @@ public class Constants {
         DELIVERY, TRANSLATION
     }
 
-    // dictionary format
-
+    /* Dictionary format definitions
+     * To add a new dictionary format:
+     * 1. Define a new constant string as the format name
+     * 2. Add the constant to DictionaryFormat enumeration
+     * 3. Write a parser class extending DictionaryParser for delivery.
+     * 4. Write a generator class extending DictionaryGenerator for generation
+     *    The generator class must take the format name constant as its Spring component name.
+     */
     public static final String DICT_FORMAT_DCT = "DCT";
     public static final String DICT_FORMAT_MDC = "Dictionary conf";
     public static final String DICT_FORMAT_XML_LABEL = "XML labels";
