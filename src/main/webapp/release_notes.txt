@@ -2,6 +2,9 @@ V2.1.1
  * New dictionary format: ICE Java Alarm (XML)
  * Adjust XML Properties adaptor to support CMS XML dictionaries
  * UI improvement of String Settings
+ * Adjust delivery algorithm to match existing translation in scope all contexts
+ * Bug fix of task detal view
+ * Bug fix of session timed out issue
 
 V2.1.0
  * New UI: all contents in a single AJAX page
