@@ -1,17 +1,9 @@
 package com.alcatel_lucent.dms.service
 
-import com.alcatel_lucent.dms.model.Dictionary
-import com.alcatel_lucent.dms.service.generator.StandardExcelGenerator
 import com.alcatel_lucent.dms.service.parser.ACSTextDictParser
-import com.alcatel_lucent.dms.service.parser.StandardExcelDictParser
-import org.apache.commons.collections.CollectionUtils
-import org.apache.commons.collections.MapIterator
-import org.apache.commons.collections.Predicate
-import org.apache.commons.collections.PredicateUtils
-import org.apache.commons.collections.map.HashedMap
+import org.apache.commons.io.ByteOrderMark
 import org.apache.commons.io.IOUtils
 import org.apache.commons.io.input.BOMInputStream
-import org.apache.commons.lang3.ClassUtils
 import org.junit.*
 import org.junit.runner.RunWith
 import org.logicalcobwebs.proxool.ProxoolFacade
@@ -78,12 +70,15 @@ public class DictionaryServiceTest {
 
     @Test
     void testBOM(){
-        File f = new File("D:/MyDocuments/Alcatel_LucentSBell/DMS/DMSFiles/ACSTextDict/dictionary.en.txt")
-        List<String> lines = IOUtils.readLines(new BOMInputStream(new FileInputStream(f)), "UTF-8")
-        println lines[0]
-//        lines.each {line->
-//            println line
-//            return
-//        }
+        File f = new File("D:/MyDocuments/Alcatel_LucentSBell/DMS/DMSFiles/ACSTextDict/MyTest.txt")
+        FileInputStream fis = new FileInputStream(f)
+        BOMInputStream bis = new BOMInputStream(fis, true, ByteOrderMark.UTF_8, ByteOrderMark.UTF_16BE, ByteOrderMark.UTF_16LE)
+        List<String> lines = IOUtils.readLines(bis, bis.getBOMCharsetName())
+        lines.each {line->
+            println line
+            return
+        }
+
+        IOUtils.closeQuietly(bis)
     }
 }

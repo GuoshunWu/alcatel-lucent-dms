@@ -494,6 +494,9 @@ User: Guoshun Wu
         }
         return $(json).map(function(index, elem) {
           var selected;
+          if (!jQuery.isArray(json)) {
+            return false;
+          }
           if (':last' === selectedValue) {
             selectedValue = json.slice(-1)[0][valueFieldName];
           }

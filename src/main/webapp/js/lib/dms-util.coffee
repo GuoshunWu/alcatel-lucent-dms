@@ -228,7 +228,6 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
     )
 
     $(document).on 'ajaxSuccess', (e, xhr, settings)->
-#      console?.log "xhr.status=#{xhr.status}"
       if 203 == xhr.status
         $('#sessionTimeoutDialog').dialog 'open'
 #        console?.log $.parseJSON(xhr.responseText)
@@ -337,6 +336,7 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
       (index, elem)->
         #        selected = if !selectedValue then index == json.length - 1 else (String selectedValue) == (String @[valueFieldName])
         # :last indicate that the last option need to be selected
+        return false unless jQuery.isArray(json)
         selectedValue = json.slice(-1)[0][valueFieldName] if ':last' == selectedValue
         selectedValue = json.slice(0)[0][valueFieldName] if ':first' == selectedValue
         selected = (String selectedValue) == (String @[valueFieldName])
