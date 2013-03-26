@@ -37,7 +37,8 @@ define [
 #    console?.log "transmng panel ready..."
     # initilize version selector
     $('#selVersion', '#taskmng').change ()->
-      return if !@value or -1 == parseInt @value
+      console?.log "value=#{@value}"
+#      return if !@value or -1 == parseInt @value
       nodeInfo=util.getProductTreeInfo()
       #      console?.log nodeInfo
       type = nodeInfo.type
@@ -46,7 +47,7 @@ define [
       postData[type] = @value
 
       param =
-        release: {id: $(@).val()
+        release: {id: if $(@).val() then $(@).val() else -1
         version: $(@).find("option:selected").text()}
         base: nodeInfo.text
         type: type
