@@ -211,7 +211,7 @@ public class LabelXMLParser extends DictionaryParser {
         return dictionary;
 	}
 	
-	private Collection<Label> readLabels(File file, Dictionary dict, DictionaryLanguage dl, Collection<BusinessWarning> warnings, BusinessException exceptions) {
+	protected Collection<Label> readLabels(File file, Dictionary dict, DictionaryLanguage dl, Collection<BusinessWarning> warnings, BusinessException exceptions) {
 		Collection<Label> result = new ArrayList<Label>();
 //		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 //		DocumentBuilder db;

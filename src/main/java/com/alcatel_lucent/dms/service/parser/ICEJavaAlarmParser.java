@@ -85,7 +85,7 @@ public class ICEJavaAlarmParser extends DictionaryParser {
         try {
             iceJavaAlarmValidator.validate(source);
         } catch (Exception ex) {
-            log.error(file + " is not valid because {}", ex.getMessage());
+            log.info(file + " is not a valid ICE Java Alarm file because {}", ex.getMessage());
             return deliveredDicts;
         } 
 

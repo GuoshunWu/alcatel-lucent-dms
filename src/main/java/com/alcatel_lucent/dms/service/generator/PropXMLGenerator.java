@@ -132,6 +132,21 @@ public class PropXMLGenerator extends DictionaryGenerator {
     		if (text.indexOf('\n') != -1) {	// preserve line breaks among the text
 	    		eleLabel.addAttribute(QName.get("space", Namespace.XML_NAMESPACE), "preserve");
     		}
+    		
+    		// proceed CMS specific case
+    		// if label ends with "$LABEL" or "$HELP", append context description as another label
+    		if (label.getDescription() != null && !label.getDescription().trim().isEmpty() && 
+    				(label.getKey().endsWith("$LABEL") || label.getKey().endsWith("$HELP"))) {
+    			String contextKey;
+    			if (label.getKey().endsWith("$LABEL")) {
+    				contextKey = label.getKey().substring(0, label.getKey().length() - 6) + "$CONTEXTLABEL";
+    			} else {
+    				contextKey = label.getKey().substring(0, label.getKey().length() - 5) + "$CONTEXTHELP";
+    			}
+    			Element eleContext = eleLabels.addElement("entry");
+    			eleContext.addAttribute("key", contextKey);
+    			eleContext.addText(label.getDescription());
+    		}
     	}
     	
     	// output
