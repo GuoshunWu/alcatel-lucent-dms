@@ -39,7 +39,7 @@ define ['jqgrid'], ($)->
       grid.navGrid '#reportPager', {edit: false, add: false, del: false, search: false, view: false}
       grid.jqGrid 'setFrozenColumns'
   ).setGridParam(datatype: 'json')
-  grid.getGridParam('afterCreate')(grid)
+  grid.getGridParam('afterCreate')(grid) if grid.getGridParam('afterCreate')
 
 
   regenerateGrid: (params)->

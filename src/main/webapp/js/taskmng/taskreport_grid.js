@@ -95,7 +95,9 @@
     }).setGridParam({
       datatype: 'json'
     });
-    grid.getGridParam('afterCreate')(grid);
+    if (grid.getGridParam('afterCreate')) {
+      grid.getGridParam('afterCreate')(grid);
+    }
     return {
       regenerateGrid: function(params) {
         var cols, gridId, gridParam, newGrid;

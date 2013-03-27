@@ -18,7 +18,8 @@ define ['jqgrid'], ($)->
     afterCreate: (grid)->
       grid.navGrid '#ViewDetailPager', {edit: false, add: false, del: false, search: false, view: false}
   ).setGridParam(datatype:'json')
-  transDetailGrid.getGridParam('afterCreate') transDetailGrid
+  afterCreate = transDetailGrid.getGridParam('afterCreate')
+  afterCreate transDetailGrid if afterCreate
 
 
 
