@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -292,14 +294,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         String hsql = "from Dictionary where id in " + idList;
         Collection<Dictionary> allDicts = (Collection<Dictionary>) getDao().retrieve(hsql);
         // group dictionaries by format
-        Map<String, Collection<Dictionary>> formatGroup = new HashMap<String, Collection<Dictionary>>();
+        MultiValueMap<String, Dictionary> formatGroup = new LinkedMultiValueMap<String, Dictionary>();
         for (Dictionary dict : allDicts) {
-            Collection<Dictionary> dicts = formatGroup.get(dict.getFormat());
-            if (dicts == null) {
-                dicts = new ArrayList<Dictionary>();
-                formatGroup.put(dict.getFormat(), dicts);
-            }
-            dicts.add(dict);
+            formatGroup.add(dict.getFormat(), dict);
         }
         for (String format : formatGroup.keySet()) {
             DictionaryGenerator generator = getGenerator(format);

@@ -20,7 +20,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration
  * To change this template use File | Settings | File Templates.
  */
 
-@Ignore
+//@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = ["/spring.xml"])
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
@@ -53,27 +53,42 @@ public class DictionaryServiceTest {
         ProxoolFacade.shutdown(0)
     }
 
-//    @Test
+    @Test
     void testGenerateDictForACSText() throws Exception {
         File f = new File("D:/MyDocuments/Alcatel_LucentSBell/DMS/DMSFiles/ACSTextDict")
+//        parse
         Collection<File> acceptedFiles = [] as Collection<File>
         println "Dictionaies List".center(100, '=')
         acsTextDictParser.parse(f.absolutePath, f, acceptedFiles).each { dict ->
-            println dict
+            println "Dictionary ${dict.name}, format: ${dict.format}"
+            dict.getLabels().each {label->
+                println "${label.key}: ${label.reference}"
+            }
         }
 
         println "Accepted Files: ".center(100, '=')
         acceptedFiles.each { aFile ->
             println aFile
         }
+
+//        generate
+
     }
 
-    @Test
+
+
+
+//    @Test
     void testBOM(){
         File f = new File("D:/MyDocuments/Alcatel_LucentSBell/DMS/DMSFiles/ACSTextDict/MyTest.txt")
         FileInputStream fis = new FileInputStream(f)
-        BOMInputStream bis = new BOMInputStream(fis, true, ByteOrderMark.UTF_8, ByteOrderMark.UTF_16BE, ByteOrderMark.UTF_16LE)
-        List<String> lines = IOUtils.readLines(bis, bis.getBOMCharsetName())
+        BOMInputStream bis = new BOMInputStream(fis, ByteOrderMark.UTF_8, ByteOrderMark.UTF_16BE, ByteOrderMark.UTF_16LE)
+        String encoding = bis.BOMCharsetName
+        while(bis.hasBOM()){
+            bis = new BOMInputStream(bis, ByteOrderMark.UTF_8, ByteOrderMark.UTF_16BE, ByteOrderMark.UTF_16LE)
+        }
+        println "encoding=${encoding}"
+        List<String> lines = IOUtils.readLines(bis, encoding)
         lines.each {line->
             println line
             return

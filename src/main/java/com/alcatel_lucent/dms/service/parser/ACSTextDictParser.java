@@ -9,6 +9,7 @@ import com.alcatel_lucent.dms.service.LanguageService;
 import com.alcatel_lucent.dms.util.Util;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.PredicateUtils;
+import org.apache.commons.io.ByteOrderMark;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.OrFileFilter;
@@ -110,7 +111,7 @@ public class ACSTextDictParser extends DictionaryParser {
         dictBase.setName(dictName);
         dictBase.setPath(normalize(refFile.getAbsolutePath()));
         dictBase.setEncoding("UTF-8");
-        dictBase.setFormat(Constants.DictionaryFormat.TEXT_PROP.toString());
+        dictBase.setFormat(Constants.DictionaryFormat.ACS_TEXT.toString());
 
         Dictionary dictionary = new Dictionary();
         dictionary.setBase(dictBase);
@@ -124,6 +125,7 @@ public class ACSTextDictParser extends DictionaryParser {
         refDl.setLanguageCode(refLangCode);
         refDl.setSortNo(sortNo++);
         Language language = languageService.getLanguage(refLangCode);
+        refDl.setCharset(languageService.getCharset(dictionary.getEncoding()));
         refDl.setLanguage(language);
         dictLanguages.add(refDl);
 
@@ -166,7 +168,9 @@ public class ACSTextDictParser extends DictionaryParser {
             in = new AutoCloseInputStream(new FileInputStream(file));
             String encoding = Util.detectEncoding(file);
             if (encoding.startsWith("UTF-")) {
-                in = new BOMInputStream(in);
+                do{
+                    in = new BOMInputStream(in, ByteOrderMark.UTF_8, ByteOrderMark.UTF_16BE, ByteOrderMark.UTF_16LE);
+                }while(((BOMInputStream)in).hasBOM());
             } else {
 //                encoding is ISO-8859-1
                 encoding = languageService.getLanguage(encoding).getDefaultCharset();
@@ -187,7 +191,7 @@ public class ACSTextDictParser extends DictionaryParser {
                     pComments.println(line);
                     continue;
                 }
-                String[] keyElement = line.split("\\s+");
+                String[] keyElement = line.split("\\s+", 2);
 
                 if (keys.contains(keyElement[0])) {
                     warnings.add(new BusinessWarning(
@@ -201,8 +205,8 @@ public class ACSTextDictParser extends DictionaryParser {
                     if (comments.toString().length() > 0) {
                         label.setAnnotation1(comments.toString());
                     }
-                    label.setKey(keyElement[0]);
-                    label.setReference(keyElement[1]);
+                    label.setKey(keyElement[0].trim());
+                    label.setReference(keyElement[1].trim());
                     label.setSortNo(sortNo++);
                     label.setDictionary(dict);
 
