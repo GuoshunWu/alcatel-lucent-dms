@@ -128,7 +128,8 @@ define [
       #    grid.navButtonAdd "#transPager", {caption: "Clear", title: "Clear Search", buttonicon: 'ui-icon-refresh', position: 'first', onClickButton: ()->grid[0].clearToolbar()}
       grid.setFrozenColumns()
   )
-  transGrid.getGridParam('afterCreate') transGrid
+  afterCreate = transGrid.getGridParam('afterCreate')
+  afterCreate(transGrid) if afterCreate
 
   #  button for make all label as...
   $('#makeLabelTranslateStatus').attr('privilegeName', util.urlname2Action 'trans/update-status')

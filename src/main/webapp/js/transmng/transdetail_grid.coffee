@@ -65,7 +65,8 @@ define [
       grid.navGrid '#transDetailsPager', {edit: false, add: false, del: false, search: false, view: false}
       grid.filterToolbar {stringResult: true, searchOnEnter: false}
   )
-  transDetailGrid.jqGrid('getGridParam','afterCreate') transDetailGrid
+  afterCreate = transDetailGrid.jqGrid('getGridParam','afterCreate')
+  afterCreate(transDetailGrid) if afterCreate
 
   $('#makeDetailLabelTranslateStatus').button(
     icons:

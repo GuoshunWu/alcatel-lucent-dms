@@ -1,4 +1,4 @@
-define ['jqlayout'], (jqlayout)->
+define ['domReady','jqlayout'], (domReady, $)->
   autoSizeGrids = ['applicationGridList', 'dictionaryGridList', 'transGrid', 'taskGrid']
 
   ready = (param)->
@@ -47,15 +47,16 @@ define ['jqlayout'], (jqlayout)->
     westPanel = $("div.ui-layout-west", "#global-container")
 
     # BIND events to pin-buttons to make them functional
-#    console?.log $('#west-pin-button')
-
-    layout.addPinBtn("#west-pin-button", "west")
-    # BIND layout events to close-buttons to make them functional
-    layout.addCloseBtn("#west-closer", "west")
+    westPanel.prepend $("<span id='dms-west-pin-button'></span>")
+    layout.addPinBtn("#dms-west-pin-button", "west")
+#
+#    # BIND layout events to close-buttons to make them functional
+    westPanel.prepend $("<span id='dms-west-closer'></span>")
+    layout.addCloseBtn("#dms-west-closer", "west")
 
     layout
-  glayout = init()
-
-  ready(@)
-
+  glayout = null
+  domReady ()->
+    glayout = init()
+    ready(@)
   layout: glayout

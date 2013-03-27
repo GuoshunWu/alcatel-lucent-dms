@@ -2,7 +2,7 @@
 (function() {
   var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  define(['jqlayout'], function(jqlayout) {
+  define(['domReady', 'jqlayout'], function(domReady, $) {
     var autoSizeGrids, glayout, init, ready;
 
     autoSizeGrids = ['applicationGridList', 'dictionaryGridList', 'transGrid', 'taskGrid'];
@@ -54,12 +54,17 @@
         }
       });
       westPanel = $("div.ui-layout-west", "#global-container");
-      layout.addPinBtn("#west-pin-button", "west");
-      layout.addCloseBtn("#west-closer", "west");
+      westPanel.prepend($("<span id='dms-west-pin-button'></span>"));
+      layout.addPinBtn("#dms-west-pin-button", "west");
+      westPanel.prepend($("<span id='dms-west-closer'></span>"));
+      layout.addCloseBtn("#dms-west-closer", "west");
       return layout;
     };
-    glayout = init();
-    ready(this);
+    glayout = null;
+    domReady(function() {
+      glayout = init();
+      return ready(this);
+    });
     return {
       layout: glayout
     };

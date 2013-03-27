@@ -146,7 +146,8 @@ define [
       grid.setGridParam 'datatype': 'json'
       grid.navGrid '#taskPager', {edit: false, add: false, del: false, search: false, view: false}
   )
-  taskGrid.getGridParam('afterCreate') taskGrid
+  afterCreate = taskGrid.getGridParam('afterCreate')
+  afterCreate taskGrid if afterCreate
 
   versionChanged: (param)->
     taskGrid = $("#taskGrid", '#taskmng')

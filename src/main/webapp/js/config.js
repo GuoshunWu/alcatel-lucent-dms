@@ -10,7 +10,7 @@
       jqform: 'jquery.form',
       jqgrid: 'jquery.jqGrid.min',
       jqtree: 'jquery.jstree',
-      jqlayout: 'jquery.layout-latest.min',
+      jqlayout: 'jquery.layout-1.2.0',
       jqmsgbox: 'jquery.msgBox.v1',
       blockui: 'jquery.blockUI',
       jqupload: 'jsfileuploader/jquery.fileupload',
