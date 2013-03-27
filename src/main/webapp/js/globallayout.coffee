@@ -6,7 +6,7 @@ define ['jqlayout'], (jqlayout)->
   init = ()->
     layout = $('#global-container').layout(
       onresize: (name, element, state, options, layoutname)->
-        # auto size trans grid when resize
+#        auto size trans grid when resize
         $('table.ui-jqgrid-btable').each (index, grid)->
           if 'center' == name and grid.id in autoSizeGrids
             $(grid).setGridWidth(element.width() - 50, false)
@@ -19,7 +19,6 @@ define ['jqlayout'], (jqlayout)->
         togglerLength_open: 35
         togglerLength_closed: 35
         hideTogglerOnSlide: true
-        resizable: true
       north:
         minSize: 35
         togglerLength_closed: -1
@@ -30,6 +29,7 @@ define ['jqlayout'], (jqlayout)->
         togglerLength_closed: 21      # make toggler 'square' - 21x21
         togglerAlign_closed: "top"    # align to top of resizer
         togglerLength_open: 0      # NONE - using custom togglers INSIDE west-pane
+        resizable: true
 
         slideTrigger_open: "click"   # default
         togglerTip_open: "Close This Pane"

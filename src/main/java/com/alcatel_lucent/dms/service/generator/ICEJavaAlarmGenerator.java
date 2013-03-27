@@ -8,6 +8,7 @@ import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.service.DaoService;
 import com.alcatel_lucent.dms.service.parser.ICEJavaAlarmParser;
 import com.alcatel_lucent.dms.util.Util;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.dom4j.Document;
@@ -25,13 +26,12 @@ import org.springframework.stereotype.Component;
 import javax.xml.XMLConstants;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Map;
 
 import static org.apache.commons.lang3.StringUtils.center;
-import static org.apache.commons.lang3.StringUtils.substring;
 
 @Component
 public class ICEJavaAlarmGenerator extends DictionaryGenerator {
@@ -69,13 +69,13 @@ public class ICEJavaAlarmGenerator extends DictionaryGenerator {
     public void generateDict(File targetDir, Dictionary dict) throws BusinessException {
         XMLWriter writer = null;
         try {
-            File file = createNewFile(targetDir, dict.getName());
+            OutputStream fos = FileUtils.openOutputStream(new File(targetDir, dict.getName()));
             OutputFormat format = OutputFormat.createPrettyPrint();
             format.setIndentSize(4);
             format.setXHTML(true);
 
             log.info(center("Start generating dictionary " + dict.getName() + "...", 100, '='));
-            writer = new XMLWriter(new BufferedOutputStream(new FileOutputStream(file)), format);
+            writer = new XMLWriter(new BufferedOutputStream(fos), format);
             writer.write(generateDocument(dict));
 
         } catch (IOException e) {
@@ -90,17 +90,6 @@ public class ICEJavaAlarmGenerator extends DictionaryGenerator {
             }
         }
 
-    }
-
-    private File createNewFile(File targetDir, String filename) throws IOException {
-        File file = new File(targetDir, filename);
-        if (!file.exists()) {
-            if (!file.getParentFile().exists()) {
-                file.getParentFile().mkdirs();
-            }
-            file.createNewFile();
-        }
-        return file;
     }
 
     public Document generateDocument(final Dictionary dict) {
