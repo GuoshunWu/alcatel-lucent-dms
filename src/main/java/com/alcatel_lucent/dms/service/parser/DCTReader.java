@@ -360,7 +360,7 @@ public class DCTReader extends LineNumberReader {
         	// try to remove BOM
         	String rawLine = line;
             if (firstLine) {
-            	if (line.length() >= 1 && line.charAt(0) == 0xfffe) {
+            	if (line.length() >= 1 && (line.charAt(0) == 0xfffe || line.charAt(0) == 0xfeff)) {
             		line = line.substring(1);
             	} else if (line.length() >= 2 && line.charAt(0) == 0xff && line.charAt(1) == 0xfe) {
             		line = line.substring(2);
