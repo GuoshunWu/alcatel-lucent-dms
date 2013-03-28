@@ -22,7 +22,7 @@ import org.xml.sax.SAXException
  * To change this template use File | Settings | File Templates.
  */
 
-//@Ignore
+@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = ["/spring.xml"])
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
@@ -51,7 +51,7 @@ public class ICEJavaAlarmParserTest {
 //        ProxoolFacade.shutdown(0);
     }
 
-    @Test
+//    @Test
     void testParse() throws Exception {
         File file = new File("D:/MyDocuments/Alcatel_LucentSBell/DMS/DMSFiles/ICEJavaAlarm/catalog-builder-plugin-1.3.000.000-schemas/")
 
