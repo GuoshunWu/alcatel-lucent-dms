@@ -6,6 +6,7 @@ import org.apache.commons.collections.MapUtils
 import org.apache.commons.collections.Transformer
 import org.apache.commons.collections.TransformerUtils
 import org.apache.commons.collections.map.TransformedMap
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,7 +21,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration
  * Time: 下午4:29
  * To change this template use File | Settings | File Templates.
  */
-//@Ignore
+@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = ["/spring.xml"])
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
@@ -60,7 +61,7 @@ public class ICEJavaAlarmGeneratorTest {
 //        }
     }
 
-    @Test
+//    @Test
     void testMe() {
         MapUtils.debugPrint(System.out, "Generator Map", generators)
     }

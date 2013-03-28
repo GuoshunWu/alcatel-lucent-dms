@@ -20,7 +20,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration
  * To change this template use File | Settings | File Templates.
  */
 
-//@Ignore
+@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = ["/spring.xml"])
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
@@ -53,7 +53,7 @@ public class DictionaryServiceTest {
         ProxoolFacade.shutdown(0)
     }
 
-    @Test
+//    @Test
     void testGenerateDictForACSText() throws Exception {
         File f = new File("D:/MyDocuments/Alcatel_LucentSBell/DMS/DMSFiles/ACSTextDict")
 //        parse
