@@ -1,4 +1,4 @@
-define ['domReady','jqlayout'], (domReady, $)->
+define ['jqlayout'], ($)->
   autoSizeGrids = ['applicationGridList', 'dictionaryGridList', 'transGrid', 'taskGrid']
 
   ready = (param)->
@@ -55,8 +55,7 @@ define ['domReady','jqlayout'], (domReady, $)->
     layout.addCloseBtn("#dms-west-closer", "west")
 
     layout
-  glayout = null
-  domReady ()->
-    glayout = init()
-    ready(@)
+
+  glayout = init()
+  ready(@)
   layout: glayout

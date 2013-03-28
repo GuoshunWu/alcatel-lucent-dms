@@ -57,11 +57,10 @@ define [
   init = ()->
 #    console?.log "transmng panel init..."
     $('#selVersion', "div[id='transmng']").change ->
-      return if !@value or -1 == parseInt @value
       nodeInfo = util.getProductTreeInfo()
 #      console?.log nodeInfo
       postData = {prop: 'id,name'}
-      postData[nodeInfo.type] = @value
+      postData[nodeInfo.type] = if @value then @value else -1
 
       $.ajax {url: urls.languages, async: false, data: postData, dataType: 'json', success: (languages)->
         langTable = util.generateLanguageTable languages

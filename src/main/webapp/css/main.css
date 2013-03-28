@@ -81,6 +81,7 @@ input[readonly] {
     padding: 1em 1em 0.5em 1em;
     background: #eeeeee;
     border: 1px dotted #000000;
+    z-index: 2000;
     /*opacity: 0.1;*/
 }
 
