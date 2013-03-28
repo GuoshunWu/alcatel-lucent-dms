@@ -22,6 +22,7 @@ define [
     param.languages = checkboxes.map(
       ()-> return {id: @id, name: @value} if @checked).get()
     param.languageTrigger = languageTrigger
+    param.release.id = -1 unless param.release.id
     grid.updateGrid param
 
 

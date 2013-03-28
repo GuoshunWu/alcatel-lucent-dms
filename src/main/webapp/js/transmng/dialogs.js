@@ -34,6 +34,9 @@
         }
       }).get();
       param.languageTrigger = languageTrigger;
+      if (!param.release.id) {
+        param.release.id = -1;
+      }
       return grid.updateGrid(param);
     };
     languageFilterDialog = $("<div title='" + i18n.select.languagefilter.title + "' id='languageFilterDialog'>").dialog({

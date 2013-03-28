@@ -69,14 +69,11 @@
       $('#selVersion', "div[id='transmng']").change(function() {
         var nodeInfo, postData;
 
-        if (!this.value || -1 === parseInt(this.value)) {
-          return;
-        }
         nodeInfo = util.getProductTreeInfo();
         postData = {
           prop: 'id,name'
         };
-        postData[nodeInfo.type] = this.value;
+        postData[nodeInfo.type] = this.value ? this.value : -1;
         $.ajax({
           url: urls.languages,
           async: false,
