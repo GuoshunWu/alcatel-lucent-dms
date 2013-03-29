@@ -16,7 +16,6 @@ import org.apache.commons.io.filefilter.OrFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.io.input.AutoCloseInputStream;
 import org.apache.commons.io.input.BOMInputStream;
-import org.apache.commons.lang3.ClassUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -78,6 +77,7 @@ public class ACSTextDictParser extends DictionaryParser {
                 refFile = refTextFiles.get(baseName);
                 deliveredDicts.add(parseProp(rootDir, baseName, textFiles.get(baseName), refTextFiles.get(baseName)));
             } catch (BusinessException e) {
+                e.addNestedException(exceptions);
             	log.info(file + " is not a ACSText because {}", e.getMessage());
             }
             acceptedFiles.add(refFile);
@@ -197,6 +197,9 @@ public class ACSTextDictParser extends DictionaryParser {
                     warnings.add(new BusinessWarning(
                             BusinessWarning.DUPLICATE_LABEL_KEY, lineNo,
                             keyElement[0]));
+                    continue;
+                }
+                if(2 != keyElement.length){
                     continue;
                 }
                 keys.add(keyElement[0]);

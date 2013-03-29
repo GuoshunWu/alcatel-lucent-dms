@@ -24,7 +24,8 @@ public class Constants {
         ICE_JAVA_ALARM("ICE Java Alarm"),
         STD_EXCEL("Standard Excel"),
         TEXT_PROP("Text properties"),
-        ACS_TEXT("ACS text");
+        ACS_TEXT("ACS text"),
+        OTC_PC("OTC PC");
 
 
 

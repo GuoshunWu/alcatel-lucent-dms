@@ -11,9 +11,7 @@ import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.OrFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.io.input.AutoCloseInputStream;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.poi.hssf.usermodel.HSSFDataFormatter;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,11 +19,12 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
+
+import static org.apache.commons.io.FilenameUtils.normalize;
 
 @Component("StandardExcelDictParser")
 public class StandardExcelDictParser extends DictionaryParser {
@@ -49,7 +48,15 @@ public class StandardExcelDictParser extends DictionaryParser {
         } else {
             File[] subFiles = file.listFiles(fileFilter);
             for (File subFile : subFiles) {
-                deliveredDicts.addAll(parse(rootDir, subFile, acceptedFiles));
+
+                try{
+                    deliveredDicts.addAll(parse(normalize(rootDir, true), subFile, acceptedFiles));
+                }catch (BusinessException e){
+                    // Ignore INVALID_OTC_PC_DICT_FILE error because the file can be another type of excel dictionary.
+                    if (e.getErrorCode() != BusinessException.INVALID_VLE_DICT_FILE) {
+                        throw e;
+                    }
+                }
             }
         }
         return deliveredDicts;
@@ -59,60 +66,58 @@ public class StandardExcelDictParser extends DictionaryParser {
 
         DictionaryBase dictBase = new DictionaryBase();
         Dictionary dictionary = null;
-        try {
 
-            String dictPath = FilenameUtils.normalize(file.getAbsolutePath(), true);
-            String dictName = dictPath;
-            if (rootDir != null && dictName.startsWith(rootDir)) {
-                dictName = dictName.substring(rootDir.length() + 1);
-            }
-
-            dictBase.setName(dictName);
-            dictBase.setPath(dictPath);
-            dictBase.setEncoding(DEFAULT_ENCODING);
-            dictBase.setFormat(Constants.DictionaryFormat.STD_EXCEL.toString());
-
-            dictionary = new Dictionary();
-            dictionary.setDictLanguages(new ArrayList<DictionaryLanguage>());
-            dictionary.setLabels(new ArrayList<Label>());
-
-            dictionary.setBase(dictBase);
-
-
-            Workbook wb = WorkbookFactory.create(new AutoCloseInputStream(new FileInputStream(file)));
-            Sheet sheet = wb.getSheetAt(0);
-            CreationHelper helper = wb.getCreationHelper();
-
-            HashedMap colIndexes = null;
-            for (Row row : sheet) {
-                /**
-                 * We suppose that the first row is the title, which determine how to correlate their content in the following rows
-                 * */
-                if (row.getRowNum() == sheet.getFirstRowNum()) {
-                    colIndexes = readTitleRow(dictionary, row);
-                    if (!(colIndexes.containsKey(LABEL) && colIndexes.containsKey(MAX_LENGTH) && 
-                    		colIndexes.containsKey(CONTEXT) && colIndexes.containsKey(DESCRIPTION))) {
-                        throw new BusinessException(BusinessException.INVALID_VLE_DICT_FILE);
-                    }
-                    continue;
-                }
-                assert colIndexes != null;
-
-                /**
-                 * We skip the row without label key
-                 * */
-                if (null == row.getCell((Integer) colIndexes.get(LABEL))) continue;
-                dictionary.getLabels().add(readLabelFromRow(dictionary, row, colIndexes, helper));
-            }
-            acceptedFiles.add(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InvalidFormatException e) {
-            log.warn(new BusinessException(BusinessException.INVALID_EXCEL_FILE).getMessage());
-        } catch (BusinessException e) {
-            log.warn(e.getMessage());
+        String dictPath = FilenameUtils.normalize(file.getAbsolutePath(), true);
+        String dictName = dictPath;
+        if (rootDir != null && dictName.startsWith(rootDir)) {
+            dictName = dictName.substring(rootDir.length() + 1);
         }
 
+        dictBase.setName(dictName);
+        dictBase.setPath(dictPath);
+        dictBase.setEncoding(DEFAULT_ENCODING);
+        dictBase.setFormat(Constants.DictionaryFormat.STD_EXCEL.toString());
+
+        dictionary = new Dictionary();
+        dictionary.setDictLanguages(new ArrayList<DictionaryLanguage>());
+        dictionary.setLabels(new ArrayList<Label>());
+
+        dictionary.setBase(dictBase);
+
+
+        Workbook wb = null;
+        try {
+            wb = WorkbookFactory.create(new AutoCloseInputStream(new FileInputStream(file)));
+        } catch (Exception e1) {
+            BusinessException exception = new BusinessException(BusinessException.INVALID_EXCEL_FILE);
+            log.error(exception.getMessage());
+            throw exception;
+        }
+
+        Sheet sheet = wb.getSheetAt(0);
+        CreationHelper helper = wb.getCreationHelper();
+
+        HashedMap colIndexes = null;
+        for (Row row : sheet) {
+            /**
+             * We suppose that the first row is the title, which determine how to correlate their content in the following rows
+             * */
+            if (row.getRowNum() == sheet.getFirstRowNum()) {
+                colIndexes = readTitleRow(dictionary, row);
+                if (!(colIndexes.containsKey(LABEL) && colIndexes.containsKey(MAX_LENGTH) &&
+                        colIndexes.containsKey(CONTEXT) && colIndexes.containsKey(DESCRIPTION))) {
+                    throw new BusinessException(BusinessException.INVALID_VLE_DICT_FILE, file.getName());
+                }
+                continue;
+            }
+
+            /**
+             * We skip the row without label key
+             * */
+            if (null == row.getCell((Integer) colIndexes.get(LABEL))) continue;
+            dictionary.getLabels().add(readLabelFromRow(dictionary, row, colIndexes, helper));
+        }
+        acceptedFiles.add(file);
         return dictionary;
     }
 
@@ -161,12 +166,12 @@ public class StandardExcelDictParser extends DictionaryParser {
             } else if (colName.equalsIgnoreCase(MAX_LENGTH)) {
                 label.setMaxLength(cellContent);
             } else if (colName.equalsIgnoreCase(CONTEXT)) {
-            	if (!cellContent.trim().isEmpty()) {
-	            	Context ctx = new Context(cellContent);
-	            	label.setContext(ctx);
-            	}
+                if (!cellContent.trim().isEmpty()) {
+                    Context ctx = new Context(cellContent);
+                    label.setContext(ctx);
+                }
             } else if (colName.equalsIgnoreCase(DESCRIPTION)) {
-            	label.setDescription(cellContent);
+                label.setDescription(cellContent);
             } else {//Language translations
                 if (colName.equals(REF_LANG_CODE)) {
                     label.setReference(cellContent);
@@ -215,8 +220,8 @@ public class StandardExcelDictParser extends DictionaryParser {
             String cellValue = cell.getStringCellValue().trim();
             if (cellValue.isEmpty()) continue;
             colIndexes.put(cellValue, cell.getColumnIndex());
-            if (LABEL.equalsIgnoreCase(cellValue) || MAX_LENGTH.equalsIgnoreCase(cellValue) || 
-            		CONTEXT.equalsIgnoreCase(cellValue) || DESCRIPTION.equalsIgnoreCase(cellValue)) continue;
+            if (LABEL.equalsIgnoreCase(cellValue) || MAX_LENGTH.equalsIgnoreCase(cellValue) ||
+                    CONTEXT.equalsIgnoreCase(cellValue) || DESCRIPTION.equalsIgnoreCase(cellValue)) continue;
 
             DictionaryLanguage dl = new DictionaryLanguage();
             dl.setLanguageCode(cellValue);

@@ -33,11 +33,10 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 @SuppressWarnings("unchecked")
 public class XMLDictParser extends DictionaryParser {
 
-    @Autowired
-    private LanguageService languageService;
-
     private static final XDCPDTDEntityResolver xdcpdtdEntityResolver = new XDCPDTDEntityResolver();
     private static final XDCTDTDEntityResolver xdctdtdEntityResolver = new XDCTDTDEntityResolver();
+    @Autowired
+    private LanguageService languageService;
 
     @Override
     public ArrayList<Dictionary> parse(String rootDir, File file, Collection<File> acceptedFiles) throws BusinessException {
@@ -77,14 +76,14 @@ public class XMLDictParser extends DictionaryParser {
         dictionary.setBase(dictBase);
 
         for (XDictionary xdct : entry.getValue()) {
-            acceptedFiles.add(xdct.getFile());
             parseXdctFile(dictionary, xdct);
+            acceptedFiles.add(xdct.getFile());
         }
         return dictionary;
     }
 
     public void parseXdctFile(Dictionary dict, XDictionary xdict) {
-    	File xdctFile = xdict.getFile();
+        File xdctFile = xdict.getFile();
         SAXReader saxReader = new SAXReader();
         saxReader.setEntityResolver(xdctdtdEntityResolver);
         Document document;
@@ -291,7 +290,7 @@ public class XMLDictParser extends DictionaryParser {
          * */
         List<Element> elemTranslations = key.elements("TRANSLATION");
 
-        Boolean allExclusion = null;	// if all follow_up are "no translation", set the label to EXCLUSION context 
+        Boolean allExclusion = null;    // if all follow_up are "no translation", set the label to EXCLUSION context
         for (Element elemTrans : elemTranslations) {
             String langCode = elemTrans.attributeValue("language").trim();
             if ("gae".equalsIgnoreCase(langCode)) {
@@ -303,21 +302,21 @@ public class XMLDictParser extends DictionaryParser {
             lt.setOrigTranslation(elemTrans.getStringValue());
             String followUp = elemTrans.attributeValue("follow_up");
             lt.putKeyValuePairToField("follow_up", followUp, BaseEntity.ANNOTATION1);
-            if (followUp != null) {	// set translation status
-            	if (followUp.equals("no_translate")) {
-            		if (allExclusion == null) allExclusion = true;
-            		lt.setStatus(Translation.STATUS_TRANSLATED);
-            	} else if (followUp.equals("validated")) {
-            		allExclusion = false;
-            		lt.setStatus(Translation.STATUS_TRANSLATED);
-            	} else {
-            		allExclusion = false;
-            		lt.setStatus(Translation.STATUS_UNTRANSLATED);
-            	}
+            if (followUp != null) {    // set translation status
+                if (followUp.equals("no_translate")) {
+                    if (allExclusion == null) allExclusion = true;
+                    lt.setStatus(Translation.STATUS_TRANSLATED);
+                } else if (followUp.equals("validated")) {
+                    allExclusion = false;
+                    lt.setStatus(Translation.STATUS_TRANSLATED);
+                } else {
+                    allExclusion = false;
+                    lt.setStatus(Translation.STATUS_UNTRANSLATED);
+                }
             }
         }
         if (allExclusion != null && allExclusion) {
-        	label.setContext(ctxExclusion);
+            label.setContext(ctxExclusion);
         }
     }
 
@@ -432,11 +431,6 @@ public class XMLDictParser extends DictionaryParser {
         private boolean is_reference;
         private boolean is_context;
 
-        @Override
-        public String toString() {
-            return reflectionToString(this);
-        }
-
         XLanguage() {
         }
 
@@ -444,6 +438,11 @@ public class XMLDictParser extends DictionaryParser {
             this.id = id;
             this.is_reference = is_reference;
             this.is_context = is_context;
+        }
+
+        @Override
+        public String toString() {
+            return reflectionToString(this);
         }
 
         public String getId() {
@@ -469,7 +468,7 @@ public class XMLDictParser extends DictionaryParser {
         public void setIs_context(boolean is_context) {
             this.is_context = is_context;
         }
-        
+
     }
 
     /**
@@ -483,17 +482,17 @@ public class XMLDictParser extends DictionaryParser {
         private String path;
         private File file;
 
-        @Override
-        public String toString() {
-            return reflectionToString(this);
-        }
-
         XDictionary() {
         }
 
         XDictionary(String name, String path) {
             this.name = name;
             this.path = path;
+        }
+
+        @Override
+        public String toString() {
+            return reflectionToString(this);
         }
 
         public String getName() {
@@ -512,18 +511,18 @@ public class XMLDictParser extends DictionaryParser {
             this.path = path;
         }
 
-		public File getFile() {
-			return file;
-		}
+        public File getFile() {
+            return file;
+        }
 
-		public void setFile(File file) {
-			this.file = file;
-		}
-		
+        public void setFile(File file) {
+            this.file = file;
+        }
+
         @Override
         public boolean equals(Object o) {
-        	if (file == null || o == null || ((XDictionary)o).getFile() == null) return false;
-        	return file.equals(((XDictionary)o).getFile());
+            if (file == null || o == null || ((XDictionary) o).getFile() == null) return false;
+            return file.equals(((XDictionary) o).getFile());
         }
     }
 
@@ -532,30 +531,30 @@ public class XMLDictParser extends DictionaryParser {
      * Attribute 'name' is the name of this project
      */
     class XMLProject {
-    	private File xdcpFile;
+        private File xdcpFile;
         private String name;
         private Collection<XLanguage> languages = new ArrayList<XLanguage>();
         private Collection<XDictionary> dictionaries = new ArrayList<XDictionary>();
+
+        XMLProject(File xdcpFile) {
+            this.xdcpFile = xdcpFile;
+        }
 
         @Override
         public String toString() {
             return reflectionToString(this);
         }
 
-        XMLProject(File xdcpFile) {
-        	this.xdcpFile = xdcpFile;
-        }
-
         public void addDict(XDictionary dict) {
-        	String path = dict.getPath().replaceAll("\\\\", "/");
-        	try {
-				File dctFile = new File(xdcpFile.getParent(), path).getCanonicalFile();
-				dict.setFile(dctFile);
-	            this.dictionaries.add(dict);
-			} catch (IOException e) {
-				e.printStackTrace();
-				throw new SystemError(e);
-			}
+            String path = dict.getPath().replaceAll("\\\\", "/");
+            try {
+                File dctFile = new File(xdcpFile.getParent(), path).getCanonicalFile();
+                dict.setFile(dctFile);
+                this.dictionaries.add(dict);
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new SystemError(e);
+            }
         }
 
         public void addLanguage(XLanguage language) {

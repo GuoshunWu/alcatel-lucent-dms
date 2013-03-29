@@ -54,6 +54,8 @@ public class AuthenticationFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) resp;
 
         HttpSession session = request.getSession();
+        log.debug("session.id="+session.getId());
+
         String uri = request.getRequestURI();
 
         UserContext uc = (UserContext) session.getAttribute(UserContext.SESSION_USER_CONTEXT);

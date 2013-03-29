@@ -211,13 +211,13 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
   urlname2Action = (urlname = '', suffix = 'Action')->urlname.split('/').pop().capitalize().split('-').join('') + suffix
 
   $.ajaxSetup {timeout: 1000 * 60 * 30, cache: false}
-  $.ajaxPrefilter (options, originalOptions, jqXHR)->
 
   #  Ajax event for all pages
   sessionCheck = ()->
     $('#sessionTimeoutDialog').dialog(
       width: 320, modal: true
       autoOpen: false
+      zIndex: 3999
       buttons: [
         {
         text: c18n.ok, click: (e)->
@@ -226,11 +226,22 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
         }
       ]
     )
+    $.ajaxSetup(
+      converters :
+        "text json": (jsonText)->
+          json = jQuery.parseJSON(jsonText)
+          $('#sessionTimeoutDialog').dialog 'open' if json.status and 203 == json.status
+          json
 
-    $(document).on 'ajaxSuccess', (e, xhr, settings)->
-      if 203 == xhr.status
-        $('#sessionTimeoutDialog').dialog 'open'
-#        console?.log $.parseJSON(xhr.responseText)
+#      statusCode:
+#        203: ()->
+#          console?.log "session expired."
+#          $('#sessionTimeoutDialog').dialog 'open'
+    )
+#    $(document).on 'ajaxComplete', (e, xhr, settings)->
+#    if 203 == xhr.status
+#      $('#sessionTimeoutDialog').dialog 'open'
+
 
   checkGridPrivilege = (grid)->
     # console?.log "check the privilege of grid '#{grid.id}'."

@@ -21,18 +21,14 @@ import org.springframework.test.context.transaction.TransactionConfiguration
  */
 
 @Ignore
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = ["/spring.xml"])
-@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(locations = ["/spring.xml"])
+//@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 
 public class DictionaryServiceTest {
 
     @Autowired
     private DictionaryService dictionaryService
-
-    @Autowired
-    private ACSTextDictParser acsTextDictParser
-
 
     @BeforeClass
     static void setUpBeforeClass() throws Exception {
@@ -51,6 +47,11 @@ public class DictionaryServiceTest {
     @After
     void tearDown() throws Exception {
         ProxoolFacade.shutdown(0)
+    }
+
+//    @Test
+    void testGenerateDictForOTCPC(){
+        dictionaryService.generateDictFiles("D:/test/", [51])
     }
 
 //    @Test

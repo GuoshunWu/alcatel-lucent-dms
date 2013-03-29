@@ -22,7 +22,7 @@ abstract public class DictionaryParser {
 	 * @param acceptedFiles output parameter, holder of accepted files list
 	 * @return list of Dictionary objects
 	 * @throws BusinessException fatal errors, multiple exceptions can be put into a NESTED_ERROR exception.
-	 * It's suggested to go through all files before throw a fatel error, so that user can get as more as possible
+	 * It's suggested to go through all files before throw a fatal error, so that user can get as more as possible
 	 * information about errors.
 	 */
 	abstract public ArrayList<Dictionary> parse(String rootDir, File file, Collection<File> acceptedFiles) throws BusinessException;

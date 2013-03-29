@@ -63,7 +63,7 @@ public class MDCGenerator extends DictionaryGenerator {
 
         //generate xml
         Document document = DocumentHelper.createDocument();
-        document.addComment("Created by DMS");
+        document.addComment(getDMSGenSign());
 
         Element dictionaryElement = document.addElement("dictionary");
         Element messageStringElement = dictionaryElement.addElement("messageString");

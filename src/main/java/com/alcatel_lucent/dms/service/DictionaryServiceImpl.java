@@ -62,7 +62,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         rootDir = normalize(rootDir, true);
         long before = System.currentTimeMillis();
         HashSet<String> allAcceptedFiles = new HashSet<String>();
-        for (com.alcatel_lucent.dms.service.parser.DictionaryParser parser : parsers) {
+        for (DictionaryParser parser : parsers) {
             Collection<File> acceptedFiles = new ArrayList<File>();
             try {
                 result.addAll(parser.parse(rootDir, file, acceptedFiles));
