@@ -40,6 +40,10 @@ public class BusinessException extends RuntimeException {
     static public final int UNRECOGNIZED_DICT_FILE = 226;
     // VLEExcel error
     static public final int INVALID_VLE_DICT_FILE = 240;
+
+    // OTC PC  error
+    static public final int INVALID_OTC_PC_DICT_FILE = 241;
+
     // application management
     static public final int CHARSET_NOT_FOUND = 301;
     static public final int INVALID_DICT_ENCODING = 302;

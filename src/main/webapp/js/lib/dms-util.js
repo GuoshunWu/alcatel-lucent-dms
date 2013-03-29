@@ -338,12 +338,12 @@ User: Guoshun Wu
       timeout: 1000 * 60 * 30,
       cache: false
     });
-    $.ajaxPrefilter(function(options, originalOptions, jqXHR) {});
     sessionCheck = function() {
       $('#sessionTimeoutDialog').dialog({
         width: 320,
         modal: true,
         autoOpen: false,
+        zIndex: 3999,
         buttons: [
           {
             text: c18n.ok,
@@ -354,9 +354,17 @@ User: Guoshun Wu
           }
         ]
       });
-      return $(document).on('ajaxSuccess', function(e, xhr, settings) {
-        if (203 === xhr.status) {
-          return $('#sessionTimeoutDialog').dialog('open');
+      return $.ajaxSetup({
+        converters: {
+          "text json": function(jsonText) {
+            var json;
+
+            json = jQuery.parseJSON(jsonText);
+            if (json.status && 203 === json.status) {
+              $('#sessionTimeoutDialog').dialog('open');
+            }
+            return json;
+          }
         }
       });
     };

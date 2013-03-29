@@ -1,4 +1,6 @@
 import groovy.xml.MarkupBuilder
+import org.apache.commons.io.HexDump
+
 /**
  * Created by IntelliJ IDEA.
  * User: guoshunw
@@ -26,6 +28,17 @@ html.html() {
                 td("Asynchronous support: ")
                 td(request.asyncSupported)
             }
+            tr(){
+                td("Params: ")
+                td(params.p1)
+            }
         }
     }
+}
+p=params.p1
+System.out.println "Parameter p1= $p"
+if (null!=p){
+//    System.out.println(Integer.toHexString((int)p.charAt(0))+", "+ Integer.toHexString((int)p.charAt(1)))
+    p = new String(p.getBytes("iso-8859-1"))
+    System.out.println(p)
 }

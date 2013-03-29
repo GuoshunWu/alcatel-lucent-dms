@@ -1,3 +1,24 @@
+V2.2.0(Apr. 1st 2013)
+ What's new in DMS 2.2.0
+    * Major Highlights
+       New dictionary format support: ACS dictionary (txt)
+       New dictionary format support: OTC PC(excel)
+    * Improvements
+
+    * Changes
+      	 Adjust label edit(lock labels) UI.
+    * Fixes
+      	Translation detail grid page did not initialized correctly when "View translation detail" open
+      If there is not a product/application version exist, task grid will not auto-refresh when you switch node on the tree
+      	West panel scroll bar would disappear if you adjust its width
+      	Make sure DOM and java script files load in correct order to keep page layout correct(it was disorder occasionally)
+       XML property file name incorrect when change other dictionary format to xml prop.
+
+
+ Known Issues
+ Troubleshooting
+ Frequently Asked Questions
+
 V2.1.1
  * New dictionary format: ICE Java Alarm (XML)
  * Adjust XML Properties adaptor to support CMS XML dictionaries
