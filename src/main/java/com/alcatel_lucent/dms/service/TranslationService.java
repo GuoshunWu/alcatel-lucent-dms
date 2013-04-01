@@ -48,6 +48,13 @@ public interface TranslationService {
      * @return map data map, key is label is, value is {num_of_translated_languages, num_of_not_translated_languages, num_of_in_progress_languages}
      */
 	Map<Long, int[]> getLabelTranslationSummary(Long dictId);
+	
+	/**
+	 * Calculate translation summary for a single label
+	 * @param labelId label id
+	 * @return array of {num_of_translated_languages, num_of_not_translated_languages, num_of_in_progress_languages}
+	 */
+	int[] getLabelTranslationSummaryByLabel(Long labelId);
 
 	/**
      * Generate excel report of translation summary in dictionary level

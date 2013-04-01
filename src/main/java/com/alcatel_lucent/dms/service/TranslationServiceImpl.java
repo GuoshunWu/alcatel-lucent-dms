@@ -600,6 +600,40 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 		}
 		return result;
     }
+    
+    public int[] getLabelTranslationSummaryByLabel(Long labelId) {
+    	Label label = (Label) dao.retrieve(Label.class, labelId);
+    	Dictionary dict = label.getDictionary();
+    	int total = 0;
+    	if (dict.getDictLanguages() != null) {
+	    	for (DictionaryLanguage dl : dict.getDictLanguages()) {
+	    		if (dl.getLanguage().getId() != 1L) {
+	    			total++;
+	    		}
+	    	}
+    	}
+    	if (label.getContext().getName().equals(Context.EXCLUSION)) {
+    		return new int[] {total, 0, 0};
+    	}
+    	int countN = 0, countI = 0;
+    	
+    	// count untranslated and in progress translations
+    	if (dict.getDictLanguages() != null) {
+	    	for (DictionaryLanguage dl : dict.getDictLanguages()) {
+	    		if (dl.getLanguage().getId() == 1L) continue;
+	    		LabelTranslation lt = label.getOrigTranslation(dl.getLanguageCode());
+	    		if (lt != null && !lt.isNeedTranslation()) continue;
+	    		Translation trans = label.getText().getTranslation(dl.getLanguage().getId());
+	    		if (trans == null || trans.getStatus() == Translation.STATUS_UNTRANSLATED) {
+	    			countN++;
+	    		} else if (trans.getStatus() == Translation.STATUS_IN_PROGRESS) {
+	    			countI++;
+	    		}
+	    	}
+    	}
+    	return new int[] {total - countN - countI, countN, countI};
+    }
+
 
 	@Override
 	public void generateDictTranslationReportByProd(Long prodId, Collection<Long> langIds, OutputStream output) {
