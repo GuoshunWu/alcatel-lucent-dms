@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -907,6 +908,149 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 			}
 		}
 		return labels;
+	}
+	
+	public Collection<Label> searchLabelsWithTranslation(Long prodId,
+			Long appId, Long dictId, Long langId, String text) {
+		text = text.toUpperCase();
+		String hql;
+		Map param = new HashMap();
+		
+		// search text in reference
+    	if (dictId != null) {
+    		hql = "select obj,0,0 from Label obj where obj.dictionary.id=:dictId and obj.removed=false";
+        	param.put("dictId", dictId);
+    	} else if (appId != null) {
+    		hql = "select obj,0,a from Application a join a.dictionaries d join d.labels obj where a.id=:appId and obj.removed=false";
+        	param.put("appId", appId);
+    	} else if (prodId != null) {
+    		hql = "select obj,0,a from Product p join p.applications a join a.dictionaries d join d.labels obj where p.id=:prodId and obj.removed=false";
+        	param.put("prodId", prodId);
+    	} else {
+    		hql = "select obj,0,a from Application a join a.dictionaries d join d.labels obj where obj.removed=false";
+    	}
+		hql += " and upper(obj.reference) like :text";
+		param.put("text", "%" + text + "%");
+		Collection<Object[]> result1 = dao.retrieve(hql, param);
+		
+		// search text in original translation
+		param = new HashMap();
+		param.put("languageId", langId);
+		param.put("exclusion", Context.EXCLUSION);
+    	if (dictId != null) {
+    		hql = "select obj,lt,0 from Label obj join obj.origTranslations lt where obj.dictionary.id=:dictId and lt.language.id=:languageId and obj.removed=false and obj.context.name<>:exclusion";
+        	param.put("dictId", dictId);
+    	} else if (appId != null) {
+    		hql = "select obj,lt,a from Application a join a.dictionaries d join d.labels obj join obj.origTranslations lt where a.id=:appId and lt.language.id=:languageId and obj.removed=false and obj.context.name<>:exclusion";
+        	param.put("appId", appId);
+    	} else if (prodId != null) {
+    		hql = "select obj,lt,a from Product p join p.applications a join a.dictionaries d join d.labels obj join obj.origTranslations lt where p.id=:prodId and lt.language.id=:languageId and obj.removed=false and obj.context.name<>:exclusion";
+        	param.put("prodId", prodId);
+    	} else {
+    		hql = "select obj,lt,a from Application a join a.dictionaries d join d.labels obj join obj.origTranslation lt where lt.language.id=:languageId and obj.removed=false and obj.context.name<>:exclusion";
+    	}
+		hql += " and lt.needTranslation=true and upper(lt.origTranslation) like :text";
+		param.put("text", "%" + text + "%");
+		Collection<Object[]> result2 = dao.retrieve(hql, param);
+		
+		
+		// search text in translation
+		param = new HashMap();
+		param.put("languageId", langId);
+		param.put("exclusion", Context.EXCLUSION);
+    	if (dictId != null) {
+    		hql = "select obj,t,0 from Label obj,Translation t where obj.dictionary.id=:dictId and obj.text=t.text and t.language.id=:languageId and obj.removed=false and obj.context.name<>:exclusion";
+        	param.put("dictId", dictId);
+    	} else if (appId != null) {
+    		hql = "select obj,t,a from Application a join a.dictionaries d join d.labels obj,Translation t where a.id=:appId and obj.text=t.text and t.language.id=:languageId and obj.removed=false and obj.context.name<>:exclusion";
+        	param.put("appId", appId);
+    	} else if (prodId != null) {
+    		hql = "select obj,t,a from Product p join p.applications a join a.dictionaries d join d.labels obj,Translation t where p.id=:prodId and obj.text=t.text and t.language.id=:languageId and obj.removed=false and obj.context.name<>:exclusion";
+        	param.put("prodId", prodId);
+    	} else {
+    		hql = "select obj,t,a from Application a join a.dictionaries d join d.labels obj,Translation t where obj.text=t.text and t.language.id=:languageId and obj.removed=false and obj.context.name<>:exclusion";
+    	}
+		hql += " and upper(t.translation) like :text";
+		param.put("text", "%" + text + "%");
+		Collection<Object[]> result3 = dao.retrieve(hql, param);
+		// filter out those needTranslation==false
+		for (Iterator<Object[]> iter = result3.iterator(); iter.hasNext(); ) {
+			Object[] row = iter.next();
+			Label label = (Label) row[0];
+			boolean needTranslation = false;
+			boolean foundLt = false;
+			if (label.getOrigTranslations() != null) {
+				for (LabelTranslation lt : label.getOrigTranslations()) {
+					if (lt.getLanguage().getId().equals(langId)) {
+						foundLt = true;
+						if (lt.isNeedTranslation()) {
+							needTranslation = true;
+						}
+					}
+				}
+			}
+			if (foundLt && !needTranslation) {	// all found label translation don't need translation
+				iter.remove();
+			}
+		}
+		
+		// merge results
+		TreeMap<String, Label> sortMap = new TreeMap<String, Label>();
+		Collection<Object[]> results = new ArrayList<Object[]>();
+		results.addAll(result2);
+		results.addAll(result3);
+		results.addAll(result1);
+		for (Object[] row : results) {
+			Label label = (Label) row[0];
+			LabelTranslation ot = row[1] instanceof LabelTranslation ? (LabelTranslation) row[1] : null;
+			Translation ct = row[1] instanceof Translation ? (Translation) row[1] : null;
+			Application app = row[2] instanceof Application ? (Application) row[2] : null;
+			String sortKey = (app == null ? "" : app.getName() + " " + app.getVersion()) 
+					+ " " + label.getDictionary().getName() + " " + label.getDictionary().getVersion() + " " 
+					+ label.getSortNo() + " " + label.getId();
+			if (ot != null) {	// found in origTranslation which doesn't need translation
+				ct = new Translation();
+				ct.setTranslation(ot.getOrigTranslation());
+				ct.setStatus(Translation.STATUS_TRANSLATED);
+				label.setCt(ct);
+			} else if (ct != null) {	// found in translation
+				label.setCt(ct);
+			} else {	// found in reference
+				ct = new Translation();
+				if (label.getContext().getName().equals(Context.EXCLUSION)) {
+					ct.setTranslation(label.getReference());
+					ct.setStatus(Translation.STATUS_TRANSLATED);
+				} else {
+					if (label.getOrigTranslations() != null) {
+						for (LabelTranslation lt : label.getOrigTranslations()) {
+							if (lt.getLanguage().getId().equals(langId)) {
+								ot = lt;
+								break;
+							}
+						}
+					}
+					if (ot != null && !ot.isNeedTranslation()) {
+						ct.setTranslation(label.getReference());
+						ct.setStatus(Translation.STATUS_TRANSLATED);
+					} else {
+						Translation trans = label.getText().getTranslation(langId);
+						if (trans != null) {
+							ct.setTranslation(trans.getTranslation());
+							ct.setStatus(trans.getStatus());
+						} else {
+							ct.setTranslation(label.getReference());
+							ct.setStatus(Translation.STATUS_UNTRANSLATED);
+						}
+					}
+				}
+				label.setCt(ct);
+			}
+			label.setApp(app);
+			if (!sortMap.containsKey(sortKey)) {
+				sortMap.put(sortKey, label);
+			}
+		}
+		return sortMap.values();
 	}
 	
 	private Cell createCell(Row row, int column, Object value, CellStyle style) {

@@ -242,6 +242,8 @@ public class Label extends BaseEntity {
     private Integer t;
     private Integer n;
     private Integer i;
+    private Application app;
+    private Product prod;
 
     @Transient
     public LabelTranslation getOt() {
@@ -320,7 +322,7 @@ public class Label extends BaseEntity {
         }
         return Translation.STATUS_UNTRANSLATED;
     }
-
+    
     /**
      * The follow properties are used for xml dict parser and generator
      */
@@ -348,5 +350,21 @@ public class Label extends BaseEntity {
 
 	public void setRemoved(boolean removed) {
 		this.removed = removed;
+	}
+
+	public Application getApp() {
+		return app;
+	}
+
+	public void setApp(Application app) {
+		this.app = app;
+	}
+
+	public Product getProd() {
+		return prod;
+	}
+
+	public void setProd(Product prod) {
+		this.prod = prod;
 	}
 }
