@@ -7,6 +7,7 @@ V2.2.0(Apr. 1st 2013)
 
     * Changes
       Adjust label edit(lock labels) UI.
+      Generate xdcp file for XMLDict generation
     * Fixes
       Translation detail grid page did not initialized correctly when "View translation detail" open
       If there is not a product/application version exist, task grid will not auto-refresh when you switch node on the tree
