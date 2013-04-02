@@ -183,7 +183,10 @@ define [
     title: i18n.dialog.stringsettings.title, modal: true
     width: 900
     create: (e, ui)->
-      $('#searchText', @).keydown (e)=>$('#searchAction', @).trigger 'click' if e.which == 13
+      $('#searchText', @).keydown (e)=>
+        return true if e.which != 13
+        $('#searchAction', @).trigger 'click'
+        false
 
       $('#searchAction', @).attr('title', 'Search').button(text: false, icons:
         {primary: "ui-icon-search"}).click(()=>

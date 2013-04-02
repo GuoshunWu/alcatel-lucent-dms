@@ -164,7 +164,11 @@ define [
       transDetailGrid = $("#transDetailGridList")
       postData = transDetailGrid.getGridParam('postData')
 
-      $('#transDetailSearchText', @).keydown (e)=>$('#transDetailSearchAction', @).trigger 'click' if e.which == 13
+      $('#transDetailSearchText', @).keydown (e)=>
+        return true if e.which != 13
+        $('#transDetailSearchAction', @).trigger 'click'
+        false
+
       $('#transDetailSearchAction', @).attr('title', 'Search').button(text: false, icons:{primary: "ui-icon-search"}).click(()=>
         postData.text = $('#transDetailSearchText', @).val()
         transDetailGrid.trigger 'reloadGrid'

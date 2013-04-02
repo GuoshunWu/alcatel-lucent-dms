@@ -259,9 +259,11 @@
         transDetailGrid = $("#transDetailGridList");
         postData = transDetailGrid.getGridParam('postData');
         $('#transDetailSearchText', this).keydown(function(e) {
-          if (e.which === 13) {
-            return $('#transDetailSearchAction', _this).trigger('click');
+          if (e.which !== 13) {
+            return true;
           }
+          $('#transDetailSearchAction', _this).trigger('click');
+          return false;
         });
         $('#transDetailSearchAction', this).attr('title', 'Search').button({
           text: false,
