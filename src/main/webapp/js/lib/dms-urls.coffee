@@ -33,6 +33,7 @@ define (require)->
   label:
     del: getURL('delete-label', 'app/')
     create: getURL('add-label', 'app/')
+
   trans:
     update_translation: getURL('update-translation', 'trans/')
     update_status: getURL('update-status', 'trans/')
@@ -45,6 +46,8 @@ define (require)->
   apps: getURL('applications', 'rest/')
   dicts: getURL('dict', 'rest/')
   tasks: getURL('tasks', 'rest/')
+
+  labels: getURL('labels', 'rest/')
 
   languages: getURL('languages','rest/')
 

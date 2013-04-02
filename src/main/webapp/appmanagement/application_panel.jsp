@@ -12,9 +12,16 @@
                 &nbsp;&nbsp;
                 <button id="removeAppVersion" title="<s:text name="appmng.removeapp"/>"></button>
             </td>
+
+            <td align ="right">
+                <label for="appSearchText"><s:text name="searchtext"/></label>
+                <input id="appSearchText" />
+                <button id="appSearchAction"></button>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </td>
         </tr>
         <tr>
-            <td id="dictionaryGridList_parent">
+            <td colspan="2" id="dictionaryGridList_parent">
                 <div id="dictionaryGrid">
                     <table id="dictionaryGridList">
                         <tr>
@@ -26,7 +33,7 @@
             </td>
         </tr>
         <tr style="height: 20px">
-            <td>
+            <td colspan="2">
                 <table border="0" width="100%">
                     <tr>
                         <td style="width: 165px">
