@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.struts2.convention.annotation.ParentPackage;
+import org.apache.struts2.convention.annotation.Result;
+
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.Constants;
@@ -16,6 +19,8 @@ import com.alcatel_lucent.dms.model.DictionaryLanguage;
 import com.alcatel_lucent.dms.service.DeliveringDictPool;
 import com.alcatel_lucent.dms.service.DeliveryReport;
 import com.alcatel_lucent.dms.service.DictionaryService;
+import com.alcatel_lucent.dms.service.JSONService;
+import com.google.gson.JsonObject;
 
 @SuppressWarnings("serial")
 public class DeliverDictAction extends ProgressAction {
@@ -25,6 +30,7 @@ public class DeliverDictAction extends ProgressAction {
 	
 	private DeliveringDictPool deliveringDictPool;
 	private DictionaryService dictionaryService;
+	private JSONService jsonService;
 	
 	private DeliveryReport report;
 
@@ -33,7 +39,12 @@ public class DeliverDictAction extends ProgressAction {
 		try {
 			Collection<Dictionary> dictList = deliveringDictPool.getDictionaries(handler);
 			report = importDictionaries(app, dictList, Constants.ImportingMode.DELIVERY);
-			setMessage(report.toHTML());
+			String json = jsonService.toJSONString(report, 
+					"dictNum,labelNum,translationNum,translationWC" +
+					",distinctTranslationNum,distinctTranslationWC" +
+					",untranslatedNum,untranslatedWC,translatedNum,translatedWC" +
+					",matchedNum,matchedWC");
+			setMessage(json);
 			deliveringDictPool.removeHandler(handler);
 		} catch (BusinessException e) {
 			setMessage(e.toString());
@@ -103,6 +114,14 @@ public class DeliverDictAction extends ProgressAction {
 
 	public void setReport(DeliveryReport report) {
 		this.report = report;
+	}
+
+	public JSONService getJsonService() {
+		return jsonService;
+	}
+
+	public void setJsonService(JSONService jsonService) {
+		this.jsonService = jsonService;
 	}
 
 }
