@@ -72,6 +72,7 @@ Time: 下午7:
       apps: getURL('applications', 'rest/'),
       dicts: getURL('dict', 'rest/'),
       tasks: getURL('tasks', 'rest/'),
+      labels: getURL('label', 'rest/'),
       languages: getURL('languages', 'rest/')
     };
   });

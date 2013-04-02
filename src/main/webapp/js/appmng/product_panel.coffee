@@ -1,4 +1,10 @@
-define ['jqmsgbox', 'i18n!nls/common', 'dms-urls', 'dms-util', 'appmng/application_grid'],($, c18n, urls, util, grid)->
+define [
+  'jqmsgbox'
+  'i18n!nls/common'
+  'dms-urls', 'dms-util'
+  'appmng/application_grid'
+  'appmng/dialogs'
+], ($, c18n, urls, util, grid, dialogs)->
 #  console?.log "module appmng/product_panel loading."
 
   $("#newVersion").button(text: false, label: '&nbsp;', icons:
@@ -19,6 +25,21 @@ define ['jqmsgbox', 'i18n!nls/common', 'dms-urls', 'dms-util', 'appmng/applicati
     $("#selVersion option:selected").remove()
     $('#selVersion').trigger 'change'
   )
+
+  searchActionBtn = $('#prodSearchAction', '#appmng').attr('title', 'Search').button(text: false, icons:
+    {primary: "ui-icon-search"})
+    .height(20).width(20).position(my: 'left center', at: 'right center', of: '#prodSearchText')
+    .click((e)=>
+      selVer=$("#selVersion", '#DMS_productPanel')
+
+      dialogs.showSearchResult(
+        text: $('#prodSearchText', '#appmng').val()
+        version: selVer.val()
+        versionText: $("option:selected", selVer).text()
+      )
+    )
+
+  $('#prodSearchText', '#appmng').keydown (e)=>searchActionBtn.trigger 'click' if e.which == 13
 
   productInfo = {}
   # initial product version select

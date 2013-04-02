@@ -12,11 +12,17 @@
                 &nbsp;&nbsp;
                 <button id="removeVersion" title="<s:text name="appmng.removeproduct"/>"></button>
             </td>
+            <td  align ="right">
+                <label for="prodSearchText"><s:text name="searchtext"/></label>
+                <input id="prodSearchText" />
+                <button id="prodSearchAction"></button>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </td>
 
         </tr>
 
         <tr>
-            <td valign="top" align="center" id="applicationGrid_parent">
+            <td colspan="2" id="applicationGrid_parent">
                 <div id="applicationGrid">
                     <table id="applicationGridList">
                         <tr>

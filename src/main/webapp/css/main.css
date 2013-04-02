@@ -100,3 +100,8 @@ input[readonly] {
     font-weight: bold;
     text-shadow: 1px 1px 0 #fff;
 }
+
+.translation-search-text{
+    /*border: 1px rgb(0, 82, 255) dashed;*/
+    /*background-color: gainsboro;*/
+}
