@@ -16,6 +16,7 @@ define  [
 
   'appmng/dictpreviewstringsettings_grid'
   'appmng/previewlangsetting_grid'
+  'appmng/searchtext_grid'
 
 ], ($, jqgrid, blockui, msgbox, c18n, i18n, urls, util, previewgrid, stgrid)->
 
@@ -492,6 +493,37 @@ define  [
     ]
   )
 
+  searchResult=$('#searchTextDialog').dialog(
+    autoOpen: false, modal: true
+    width: 910
+    open:->
+      params = $(@).data 'params'
+      node=util.getProductTreeInfo()
+      typeText = if 'prod' == node.type then 'product' else 'application'
+      grid = $('#searchTextGrid')
+        .setColProp('app', hidden: 'app' == node.type)
+        .setCaption "Text \"#{params.text}\" found in #{typeText} #{node.text} version #{params.versionText}"
+
+      console?.log params
+      console?.log node.type
+#      prod=xxx&text=xxx&format=grid&prop=id,dictionary.app.name,dictionary.name,key,reference,…,s[0],s[1],s[2]
+      $.post urls.labels, {
+        format: 'grid'
+        text: params.text
+
+      }, (json)->
+
+
+
+    buttons: [
+      {text: c18n.close, click: -> $(@).dialog "close"}
+    ]
+  )
+
+  showSearchResult = (params)->searchResult.data('params', params).dialog 'open'
+
+
+
   addLanguage: addLanguage
   dictPreviewLangSettings: dictPreviewLangSettings
   dictPreviewStringSettings: dictPreviewStringSettings
@@ -503,4 +535,6 @@ define  [
   langSettings: langSettings
   stringSettingsTranslation: stringSettingsTranslation
   historyDlg:historyDlg
+
+  showSearchResult: showSearchResult
 

@@ -66,6 +66,9 @@
       return $("#exportForm", "#transmng").submit();
     };
     init = function() {
+      var searchActionBtn,
+        _this = this;
+
       $('#selVersion', "div[id='transmng']").change(function() {
         var nodeInfo, postData;
 
@@ -83,10 +86,32 @@
             var langTable;
 
             langTable = util.generateLanguageTable(languages);
-            return $("#languageFilterDialog").empty().append(langTable);
+            $("#languageFilterDialog").empty().append(langTable);
+            languages.unshift({
+              id: -1,
+              name: 'Reference'
+            });
+            return $('#transSearchTextLanguage', "#transmng").empty().append(util.json2Options(languages, false, "name"));
           }
         });
         return dialogs.refreshGrid(false, grid);
+      });
+      searchActionBtn = $('#transSearchAction', '#transmng').attr('title', 'Search').button({
+        text: false,
+        icons: {
+          primary: "ui-icon-search"
+        }
+      }).click(function() {
+        return alert('To be implemented.');
+      }).height(20).width(20).position({
+        my: 'left center',
+        at: 'right center',
+        of: '#transSearchTextLanguage'
+      });
+      $('#transSearchText', '#transmng').keydown(function(e) {
+        if (e.which === 13) {
+          return searchActionBtn.trigger('click');
+        }
       });
       $("#create", '#transmng').button().attr('privilegeName', util.urlname2Action('task/create-task')).click(function() {
         var info;

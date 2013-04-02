@@ -16,6 +16,18 @@ define [
 
   appInfo = {}
 
+  searchActionBtn = $('#appSearchAction', '#appmng').attr('title', 'Search').button(text: false, icons:{primary: "ui-icon-search"})
+  .height(20).width(20).position(my: 'left center', at: 'right center', of: '#appSearchText').click(()=>
+    selVer=$("#selAppVersion", '#DMS_applicationPanel')
+    dialogs.showSearchResult(
+      text: $('#appSearchText', '#appmng').val()
+      version: selVer.val()
+      versionText:  $("option:selected", selVer).text()
+    )
+  )
+
+  $('#appSearchText', '#appmng').keydown (e)=>searchActionBtn.trigger 'click' if e.which == 13
+
   $("#newAppVersion").button({text: false, label: '&nbsp;', icons:
     {primary: "ui-icon-plus"}}).
   attr('privilegeName', util.urlname2Action urls.app.create_version).
