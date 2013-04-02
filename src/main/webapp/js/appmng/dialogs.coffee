@@ -1,4 +1,4 @@
-define  [
+define [
   'jqueryui'
   'jqgrid'
   'blockui'
@@ -20,7 +20,7 @@ define  [
 
 ], ($, jqgrid, blockui, msgbox, c18n, i18n, urls, util, previewgrid, stgrid)->
 
-#  console?.log "module appmng/dialogs loading."
+  #  console?.log "module appmng/dialogs loading."
   newProductVersion = $("#newProductReleaseDialog").dialog(
     autoOpen: false
     height: 200, width: 500, modal: true
@@ -71,7 +71,7 @@ define  [
             return
           $('#selAppVersion').append("<option value='#{json.id}' selected>#{versionName}</option>").trigger 'change'
           return unless json.productBaseId
-          $('#addNewApplicationVersionToProductVersionDialog').data("param", json).dialog  'open'
+          $('#addNewApplicationVersionToProductVersionDialog').data("param", json).dialog 'open'
         $(@).dialog "close"
       }
       {text: c18n.cancel, click: -> $(@).dialog "close"}
@@ -141,7 +141,7 @@ define  [
           # TODO: analysis here, what is this doing?
           if -1 == params.appBaseId
             params.appBaseId = json.appBaseId
-#            (require 'appmng/apptree').addNewApplicationBase(params)
+          #            (require 'appmng/apptree').addNewApplicationBase(params)
           $("#applicationGridList").trigger("reloadGrid")
 
         $(@).dialog("close")
@@ -172,7 +172,7 @@ define  [
     ]
   )
 
-  lockLabels = (lock=true)->
+  lockLabels = (lock = true)->
     grid = $('#stringSettingsGrid')
     alert 'Hello'
     return
@@ -183,7 +183,6 @@ define  [
     title: i18n.dialog.stringsettings.title, modal: true
     width: 900
     create: (e, ui)->
-
       $('#searchText', @).keydown (e)=>$('#searchAction', @).trigger 'click' if e.which == 13
 
       $('#searchAction', @).attr('title', 'Search').button(text: false, icons:
@@ -267,7 +266,7 @@ define  [
       }
       {text: c18n.cancel, click: ()->$(@).dialog 'close'}
     ]
-    close:()->
+    close: ()->
 
   )
 
@@ -445,7 +444,8 @@ define  [
 
       $('#historyGrid').setGridParam(
         url: 'rest/dictHistory'
-        postData: {dict: param.id, format: 'grid', status: param.status, prop: 'operationTime,operationType,task.name,operator.name'}
+        postData:
+          {dict: param.id, format: 'grid', status: param.status, prop: 'operationTime,operationType,task.name,operator.name'}
       ).setCaption(i18n.dialog.history.caption.format param.name).trigger "reloadGrid"
 
     buttons: [
@@ -463,13 +463,13 @@ define  [
         postData =$(me).data('param')
         # validation
         errMsg = []
-        for val in ['key','reference', 'maxLength', 'context', 'description']
+        for val in ['key', 'reference', 'maxLength', 'context', 'description']
           postData[val] = $("##{val}", me).val()
           continue if val in ['maxLength', 'description']
           errMsg.push c18n.required.format $("label[for='#{val}']", me).text().trim()[..-2] unless $("##{val}", me).val()
 
         #        console?.log postData
-        if errMsg.length>0
+        if errMsg.length > 0
           $('#errMsg', me).html "<hr/><ul><li>#{errMsg.join '</li><li>'}</li></ul>"
           return false
 
@@ -479,11 +479,11 @@ define  [
           $('#stringSettingsGrid').trigger("reloadGrid")
 
         $('#errMsg', me).empty()
-        $('#'+['key','reference', 'maxLength','description'].join(', #'), me).val('')
+        $('#' + ['key', 'reference', 'maxLength', 'description'].join(', #'), me).val('')
       true
     open: ()->
       $('#errMsg', @).empty()
-      $('#'+['key','reference', 'maxLength','description'].join(', #'), @).val('')
+      $('#' + ['key', 'reference', 'maxLength', 'description'].join(', #'), @).val('')
     buttons: [
       {text: i18n.dialog.stringsettings.add, click: ->@addHandler(@)}
       {text: i18n.dialog.stringsettings.addandclose, click: ->
@@ -496,7 +496,7 @@ define  [
   searchResult=$('#searchTextDialog').dialog(
     autoOpen: false, modal: true
     width: 910
-    open:->
+    open: ->
       params = $(@).data 'params'
       node=util.getProductTreeInfo()
       typeText = if 'prod' == node.type then 'product' else 'application'
@@ -505,15 +505,15 @@ define  [
         .setCaption "Text \"#{params.text}\" found in #{typeText} #{node.text} version #{params.versionText}"
 
       console?.log params
-      console?.log node.type
-#      prod=xxx&text=xxx&format=grid&prop=id,dictionary.app.name,dictionary.name,key,reference,…,s[0],s[1],s[2]
-      $.post urls.labels, {
+      console?.log node
+
+      postData =
         format: 'grid'
         text: params.text
+        prop: 'id,app.name,dictionary.name,key,reference,maxLength,context,t,n,i'
+      postData[node.type] = node.id
 
-      }, (json)->
-
-
+      grid.setGridParam(url: urls.labels, postData: postData).trigger 'reloadGrid'
 
     buttons: [
       {text: c18n.close, click: -> $(@).dialog "close"}
@@ -521,7 +521,6 @@ define  [
   )
 
   showSearchResult = (params)->searchResult.data('params', params).dialog 'open'
-
 
 
   addLanguage: addLanguage
@@ -534,7 +533,7 @@ define  [
   addApplication: addApplication
   langSettings: langSettings
   stringSettingsTranslation: stringSettingsTranslation
-  historyDlg:historyDlg
+  historyDlg: historyDlg
 
   showSearchResult: showSearchResult
 
