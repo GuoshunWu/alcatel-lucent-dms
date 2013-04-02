@@ -495,18 +495,19 @@ define [
 
   searchResult=$('#searchTextDialog').dialog(
     autoOpen: false, modal: true
-    width: 910
+    width: 920
     open: ->
       params = $(@).data 'params'
       node=util.getProductTreeInfo()
       typeText = if 'prod' == node.type then 'product' else 'application'
 
       grid = $('#searchTextGrid')
-#        .setColProp('app', hidden: 'app' == node.type)
-        .setCaption "Text \"#{params.text}\" found in #{typeText} #{node.text} version #{params.versionText}"
 
-      console?.log params
-      console?.log node
+#      if 'app' == node.type
+#        grid.hideCol('app')
+#      else
+#        grid.showCol('app')
+
 
       postData =
         format: 'grid'
@@ -514,7 +515,8 @@ define [
         prop: 'app.name,dictionary.name,key,reference,maxLength,context.name,t,n,i'
       postData[node.type] = node.id
 
-      grid.setGridParam(url: urls.labels, postData: postData).trigger 'reloadGrid'
+      grid.setCaption(i18n.dialog.searchtext.caption.format params.text, typeText, node.text, params.versionText)
+        .setGridParam(url: urls.labels, postData: postData).trigger 'reloadGrid'
 
     buttons: [
       {text: c18n.close, click: -> $(@).dialog "close"}

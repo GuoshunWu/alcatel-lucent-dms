@@ -6,7 +6,8 @@ define [
   'dms-urls'
   'transmng/trans_grid'
   'transmng/transdetail_grid'
-], ($, i18n, c18n, util, urls, grid, detailgrid)->
+  'transmng/trans_searchtext_grid'
+], ($, i18n, c18n, util, urls, grid, detailgrid, searchgrid)->
 #  console?.log "transmng panel dialogs init..."
   transGrid = grid
   refreshGrid = (languageTrigger = false, grid = transGrid)->
@@ -195,7 +196,7 @@ define [
   )
 
 
-  transUpdateDialog = $('#transmng_translation_update')
+  transUpdateDialog = $('#transmngTranslationUpdate')
   handler = (e)->
     return if !e.clientX
     param = transUpdateDialog.data('param')
@@ -218,6 +219,39 @@ define [
     ]
   )
 
+  transSearchText = $('#transmngSearchTextDialog').dialog(
+    autoOpen: false, width: 1020, height: 'auto', modal: true
+    open: ()->
+      params = $(@).data 'params'
+      grid =  $("#transSearchTextGrid")
+      node=util.getProductTreeInfo()
+      typeText = if 'prod' == node.type then 'product' else 'application'
+
+
+      postData =
+        format: 'grid'
+        text: params.text
+        prop: 'app.name,dictionary.name,key,reference,maxLength,context.name,t,n,i'
+      postData[node.type] = node.id
+
+#      TODO: integreat with backend.
+      console?.log postData
+      console?.log params
+
+      grid.setCaption(i18n.searchtext.caption.format params.text, typeText, node.text, params.version.text, params.language.text)
+#        .setGridParam(url: urls.labels, postData: postData).trigger 'reloadGrid'
+
+    buttons: [
+      {text: c18n.close, click: ()->
+        $(@).dialog 'close'
+      }
+    ]
+  )
+
+  showSearchResult = (params)->transSearchText.data('params', params).dialog 'open'
+
+
+
   ready = ()->
 #    console?.log "transmng panel dialogs ready..."
 
@@ -239,3 +273,4 @@ define [
 
     $('#translationDetailDialog').data 'param', {dict: param.dict, searchStatus: map[status]}
     transDetailDialog.dialog "open"
+  showSearchResult: showSearchResult

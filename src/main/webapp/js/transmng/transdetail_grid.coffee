@@ -54,7 +54,7 @@ define [
         delete json.dicts
         delete json.message
         delete json.status
-        $('#transmng_translation_update').html(showMsg).data('param', json).dialog 'open'
+        $('#transmngTranslationUpdate').html(showMsg).data('param', json).dialog 'open'
 
         return [true, json.message]
 

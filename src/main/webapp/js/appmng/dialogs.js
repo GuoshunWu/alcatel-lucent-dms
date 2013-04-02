@@ -787,27 +787,21 @@
     searchResult = $('#searchTextDialog').dialog({
       autoOpen: false,
       modal: true,
-      width: 910,
+      width: 920,
       open: function() {
         var grid, node, params, postData, typeText;
 
         params = $(this).data('params');
         node = util.getProductTreeInfo();
         typeText = 'prod' === node.type ? 'product' : 'application';
-        grid = $('#searchTextGrid').setCaption("Text \"" + params.text + "\" found in " + typeText + " " + node.text + " version " + params.versionText);
-        if (typeof console !== "undefined" && console !== null) {
-          console.log(params);
-        }
-        if (typeof console !== "undefined" && console !== null) {
-          console.log(node);
-        }
+        grid = $('#searchTextGrid');
         postData = {
           format: 'grid',
           text: params.text,
           prop: 'app.name,dictionary.name,key,reference,maxLength,context.name,t,n,i'
         };
         postData[node.type] = node.id;
-        return grid.setGridParam({
+        return grid.setCaption(i18n.dialog.searchtext.caption.format(params.text, typeText, node.text, params.versionText)).setGridParam({
           url: urls.labels,
           postData: postData
         }).trigger('reloadGrid');

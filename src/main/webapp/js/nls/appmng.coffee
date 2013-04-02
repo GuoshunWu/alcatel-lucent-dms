@@ -25,6 +25,8 @@ define
       languagesettings:
         title: 'Language settings'
         'dummy': ''
+      searchtext:
+        caption: 'Text "{0}" found in {1} {2} version {3}'
       history:
         'caption': "History for dictionary '{0}'"
       "delete":

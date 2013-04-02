@@ -102,7 +102,21 @@
           primary: "ui-icon-search"
         }
       }).click(function() {
-        return alert('To be implemented.');
+        var selLang, selVer;
+
+        selVer = $('#selVersion', '#transmng');
+        selLang = $('#transSearchTextLanguage', '#transmng');
+        return dialogs.showSearchResult({
+          text: $('#transSearchText', '#transmng').val(),
+          version: {
+            id: selVer.val(),
+            text: $("option:selected", selVer).text()
+          },
+          language: {
+            id: selLang.val(),
+            text: $("option:selected", selLang).text()
+          }
+        });
       }).height(20).width(20).position({
         my: 'left center',
         at: 'right center',

@@ -90,7 +90,8 @@
                         </td>
                         <td>&nbsp;</td>
                         <td>
-                            <input type="checkbox" id="transSameWithRef"/>&nbsp;<s:text name="transmng.dialogs.transdetail.sameref" />
+                            <input type="checkbox" id="transSameWithRef"/>&nbsp;<s:text
+                                name="transmng.dialogs.transdetail.sameref"/>
                         </td>
                     </tr>
                 </table>
@@ -127,4 +128,19 @@
     </table>
 </div>
 
-<div id="transmng_translation_update"></div>
+<div id="transmngTranslationUpdate"></div>
+
+<div id="transmngSearchTextDialog" title="<s:text name="searchtext.title"/>">
+    <table border="0" width="100%">
+        <tr>
+            <td>
+                <table width="100%" id="transSearchTextGrid">
+                    <tr>
+                        <td></td>
+                    </tr>
+                </table>
+                <div id="transSearchTextGridPager"/>
+            </td>
+        </tr>
+    </table>
+</div>
