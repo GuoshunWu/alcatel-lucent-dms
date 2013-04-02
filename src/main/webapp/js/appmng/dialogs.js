@@ -281,9 +281,11 @@
         var _this = this;
 
         $('#searchText', this).keydown(function(e) {
-          if (e.which === 13) {
-            return $('#searchAction', _this).trigger('click');
+          if (e.which !== 13) {
+            return true;
           }
+          $('#searchAction', _this).trigger('click');
+          return false;
         });
         return $('#searchAction', this).attr('title', 'Search').button({
           text: false,

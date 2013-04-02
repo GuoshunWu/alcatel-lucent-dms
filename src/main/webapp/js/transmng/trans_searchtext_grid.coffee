@@ -17,13 +17,13 @@ define [
     caption: 'result'
     colNames: ['Application','Dictionary','Label', 'Max Length', 'Context', 'Reference language', 'Translation', 'Status','TransId']
     colModel: [
-      {name: 'app', index: 'app.name', width: 100, editable: false, stype: 'select', align: 'left', frozen: true}
-      {name: 'dict', index: 'dictionary.base.name', width: 100, editable: false, align: 'right', frozen: true, search: false}
-      {name: 'key', index: 'key', width: 100, editable: false, stype: 'select', align: 'left', frozen: true}
-      {name: 'maxlen', index: 'maxLength', width: 80, editable: false, align: 'right', frozen: true, search: false}
+      {name: 'app', index: 'app.name', width: 50, editable: false, stype: 'select', align: 'left', frozen: true}
+      {name: 'dict', index: 'dictionary.base.name', width: 150, editable: false, align: 'left', frozen: true, search: false}
+      {name: 'key', index: 'key', width: 150, editable: false, stype: 'select', align: 'left', frozen: true}
+      {name: 'maxlen', index: 'maxLength', width: 70, editable: false, align: 'right', frozen: true, search: false}
       {name: 'context', index: 'context.name', width: 80, align: 'left', frozen: true, search: false}
-      {name: 'reference', index: 'reference', width: 100, align: 'left', frozen: true, search: false}
-      {name: 'translation', index: 'ct.translation', width: 150, align: 'left', edittype:'textarea', search: false}
+      {name: 'reference', index: 'reference', width: 160, align: 'left', frozen: true, search: false}
+      {name: 'translation', index: 'ct.translation', width: 160, align: 'left', edittype:'textarea', search: false}
       {name: 'transStatus', index: 'ct.status', width: 100, align: 'left', editable: false,search: true,
       edittype: 'select', editoptions: {value: "0:#{i18n.trans.nottranslated};1:#{i18n.trans.inprogress};2:#{i18n.trans.translated}"},
       formatter: 'select',

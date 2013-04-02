@@ -21,7 +21,7 @@
         {
           name: 'app',
           index: 'app.name',
-          width: 100,
+          width: 50,
           editable: false,
           stype: 'select',
           align: 'left',
@@ -29,15 +29,15 @@
         }, {
           name: 'dict',
           index: 'dictionary.base.name',
-          width: 100,
+          width: 150,
           editable: false,
-          align: 'right',
+          align: 'left',
           frozen: true,
           search: false
         }, {
           name: 'key',
           index: 'key',
-          width: 100,
+          width: 150,
           editable: false,
           stype: 'select',
           align: 'left',
@@ -45,7 +45,7 @@
         }, {
           name: 'maxlen',
           index: 'maxLength',
-          width: 80,
+          width: 70,
           editable: false,
           align: 'right',
           frozen: true,
@@ -60,14 +60,14 @@
         }, {
           name: 'reference',
           index: 'reference',
-          width: 100,
+          width: 160,
           align: 'left',
           frozen: true,
           search: false
         }, {
           name: 'translation',
           index: 'ct.translation',
-          width: 150,
+          width: 160,
           align: 'left',
           edittype: 'textarea',
           search: false
