@@ -794,9 +794,7 @@
         params = $(this).data('params');
         node = util.getProductTreeInfo();
         typeText = 'prod' === node.type ? 'product' : 'application';
-        grid = $('#searchTextGrid').setColProp('app', {
-          hidden: 'app' === node.type
-        }).setCaption("Text \"" + params.text + "\" found in " + typeText + " " + node.text + " version " + params.versionText);
+        grid = $('#searchTextGrid').setCaption("Text \"" + params.text + "\" found in " + typeText + " " + node.text + " version " + params.versionText);
         if (typeof console !== "undefined" && console !== null) {
           console.log(params);
         }
@@ -806,7 +804,7 @@
         postData = {
           format: 'grid',
           text: params.text,
-          prop: 'id,app.name,dictionary.name,key,reference,maxLength,context,t,n,i'
+          prop: 'app.name,dictionary.name,key,reference,maxLength,context.name,t,n,i'
         };
         postData[node.type] = node.id;
         return grid.setGridParam({
