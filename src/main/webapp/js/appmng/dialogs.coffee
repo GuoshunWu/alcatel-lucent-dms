@@ -500,8 +500,9 @@ define [
       params = $(@).data 'params'
       node=util.getProductTreeInfo()
       typeText = if 'prod' == node.type then 'product' else 'application'
+
       grid = $('#searchTextGrid')
-        .setColProp('app', hidden: 'app' == node.type)
+#        .setColProp('app', hidden: 'app' == node.type)
         .setCaption "Text \"#{params.text}\" found in #{typeText} #{node.text} version #{params.versionText}"
 
       console?.log params
@@ -510,7 +511,7 @@ define [
       postData =
         format: 'grid'
         text: params.text
-        prop: 'id,app.name,dictionary.name,key,reference,maxLength,context,t,n,i'
+        prop: 'app.name,dictionary.name,key,reference,maxLength,context.name,t,n,i'
       postData[node.type] = node.id
 
       grid.setGridParam(url: urls.labels, postData: postData).trigger 'reloadGrid'

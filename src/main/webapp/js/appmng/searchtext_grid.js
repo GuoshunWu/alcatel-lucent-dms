@@ -15,9 +15,9 @@
       sortorder: 'asc',
       viewrecords: true,
       gridview: true,
-      multiselect: true,
+      multiselect: false,
       cellEdit: false,
-      colNames: ['Application', 'Dictionary', 'Label', 'Reference Language', 'Max Length', 'Context', 'Description', 'T', 'N', 'I'],
+      colNames: ['Application', 'Dictionary', 'Label', 'Reference Language', 'Max Length', 'Context', 'T', 'N', 'I'],
       colModel: [
         {
           name: 'app',
@@ -56,12 +56,6 @@
           editable: false,
           align: 'left'
         }, {
-          name: 'desc',
-          index: 'desc',
-          width: 100,
-          editable: false,
-          align: 'left'
-        }, {
           name: 't',
           index: 't',
           sortable: true,
@@ -95,7 +89,25 @@
             addParam: encodeURI("&status=1")
           }
         }
-      ]
+      ],
+      gridComplete: function() {
+        grid = $(this);
+        $('a', this).each(function(index, a) {
+          if ('0' === $(a).text()) {
+            return $(a).before(' ').remove();
+          }
+        });
+        return $('a', this).css('color', 'blue').click(function() {
+          var param, rowData;
+
+          param = util.getUrlParams(this.href);
+          rowData = grid.getRowData(param.id);
+          if (typeof console !== "undefined" && console !== null) {
+            console.log(rowData);
+          }
+          return typeof console !== "undefined" && console !== null ? console.log(param) : void 0;
+        });
+      }
     }).setGridParam({
       datatype: 'json'
     }).jqGrid('navGrid', pagerId, {
