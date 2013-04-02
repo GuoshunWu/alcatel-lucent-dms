@@ -236,7 +236,7 @@ define [
       postData.format = 'grid'
       postData.text = params.text
       postData.language = params.language.id
-      postData.prop = 'app.name,dictionary.name,key,maxLength,context.name,reference,ct.translation,ct.ct.status,ct.id'
+      postData.prop = 'app.name,dictionary.name,key,maxLength,context.name,reference,ct.translation,ct.status,ct.id'
 
       delete postData.app
       delete postData.prod
