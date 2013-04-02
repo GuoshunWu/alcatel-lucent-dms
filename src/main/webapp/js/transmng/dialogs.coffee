@@ -231,15 +231,19 @@ define [
       node=util.getProductTreeInfo()
       typeText = if 'prod' == node.type then 'product' else 'application'
 
-      postData =
-        format: 'grid'
-        text: params.text
-        language: params.language.id
-        prop: 'app.name,dictionary.name,key,maxLength,context.name,reference,ct.translation,ct.ct.status,ct.id'
-      postData[node.type] = node.id
+      postData = grid.getGridParam('postData')
 
+      postData.format = 'grid'
+      postData.text = params.text
+      postData.language = params.language.id
+      postData.prop = 'app.name,dictionary.name,key,maxLength,context.name,reference,ct.translation,ct.ct.status,ct.id'
+
+      delete postData.app
+      delete postData.prod
+
+      postData[node.type] = params.version.id
       grid.setCaption(i18n.searchtext.caption.format params.text, typeText, node.text, params.version.text, params.language.text)
-        .setGridParam(url: urls.labels, postData: postData).trigger 'reloadGrid'
+        .setGridParam(url: urls.labels).trigger 'reloadGrid'
 
     buttons: [
       {text: c18n.close, click: ()->

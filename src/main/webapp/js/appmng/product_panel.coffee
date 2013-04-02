@@ -34,8 +34,9 @@ define [
 
       dialogs.showSearchResult(
         text: $('#prodSearchText', '#appmng').val()
-        version: selVer.val()
-        versionText: $("option:selected", selVer).text()
+        version:
+          id: selVer.val()
+          text: $("option:selected", selVer).text()
       )
     )
 

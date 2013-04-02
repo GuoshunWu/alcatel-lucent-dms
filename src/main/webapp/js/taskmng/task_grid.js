@@ -210,6 +210,9 @@
               acceptFileTypes: /zip$/i,
               add: function(e, data) {
                 data.submit();
+                if (!$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10) {
+                  this.pb = util.genProgressBar();
+                }
                 if (!$.browser.msie) {
                   return $("#progressbar").show();
                 }
@@ -217,16 +220,22 @@
               progressall: function(e, data) {
                 var progress;
 
+                if ($.browser.msie && parseInt($.browser.version.split('\.')[0]) < 10) {
+                  return;
+                }
                 progress = data.loaded / data.total * 100;
-                return $('#progressbar').progressbar("value", progress);
+                return this.pb.progressbar("value", progress);
               },
               done: function(e, data) {
                 var jsonFromServer;
 
-                if (!$.browser.msie) {
-                  $("#progressbar").hide();
+                if (!$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10) {
+                  this.pb.parent().remove();
                 }
                 jsonFromServer = data.result;
+                if (typeof console !== "undefined" && console !== null) {
+                  console.log(jsonFromServer);
+                }
                 if (0 !== jsonFromServer.status) {
                   $.msgBox(jsonFromServer.message, null, {
                     title: c18n.error

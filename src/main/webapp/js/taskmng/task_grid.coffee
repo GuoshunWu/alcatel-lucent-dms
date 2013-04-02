@@ -124,15 +124,17 @@ define [
           acceptFileTypes: /zip$/i
           add: (e, data)->
             data.submit()
+            @pb=util.genProgressBar() if !$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10
             $("#progressbar").show() if !$.browser.msie
           progressall: (e, data)->
+            return if $.browser.msie && parseInt($.browser.version.split('\.')[0]) < 10
             progress = data.loaded / data.total * 100
-            $('#progressbar').progressbar "value", progress
+            @pb.progressbar "value", progress
           done: (e, data)->
-            $("#progressbar").hide() if !$.browser.msie
+            @pb.parent().remove() if !$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10
             #    request handler
             jsonFromServer = data.result
-
+            console?.log jsonFromServer
             if(0 != jsonFromServer.status)
               $.msgBox jsonFromServer.message, null, {title: c18n.error}
               return
