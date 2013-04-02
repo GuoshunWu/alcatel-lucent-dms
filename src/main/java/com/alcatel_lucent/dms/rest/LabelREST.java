@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.alcatel_lucent.dms.model.Application;
 import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.LabelTranslation;
@@ -27,8 +28,12 @@ import com.alcatel_lucent.dms.util.ObjectComparator;
  * Label REST service.
  * URL: /rest/labels
  * Filter parameters:
- *   dict		(required) dictionary id
+ *   prod		(optional) product id
+ *   app		(optional) application id
+ *   dict		(optional) dictionary id
  *   text		(optional) search text (case insensitive)
+ *   NOTE: at least one of the parameter "dict" and "text" should be provided
+ *   
  *   language	(optional) language id
  *   	If language is supplied, relative LabelTranslation and Translation object can be accessed by
  *   	adding "ot" or "ct" prefix to the property name, e.g. ot.needTranslation,ct.translation
@@ -78,7 +83,9 @@ public class LabelREST extends BaseREST {
     
     @Override
     protected String doGetOrPost(Map<String, String> requestMap) throws Exception {
-    	Long dictId = Long.valueOf(requestMap.get("dict"));
+    	Long prodId = requestMap.get("prod") == null ? null : Long.valueOf(requestMap.get("prod"));
+    	Long appId = requestMap.get("app") == null ? null : Long.valueOf(requestMap.get("app"));
+    	Long dictId = requestMap.get("dict") == null ? null : Long.valueOf(requestMap.get("dict"));
     	String text = requestMap.get("text");
     	if (text != null && text.trim().isEmpty()) {
     		text = null;
@@ -99,41 +106,77 @@ public class LabelREST extends BaseREST {
 //    	}
     	
     	Long langId = requestMap.get("language") == null ? null : Long.valueOf(requestMap.get("language"));
-		String hql = "select obj from Label obj where obj.dictionary.id=:dictId and obj.removed=false";
-    	String countHql = "select count(*) from Label where dictionary.id=:dictId and removed=false";
-    	Map param = new HashMap();
-    	Map countParam = new HashMap();
-    	param.put("dictId", dictId);
-    	countParam.put("dictId", dictId);
-    	if (text != null) {
-    		hql += " and upper(obj.reference) like :text";
-    		countHql += " and upper(reference) like :text";
-    		param.put("text", "%" + text + "%");
-    		countParam.put("text", "%" + text + "%");
-    	}
-    	Comparator comparator = null;
-		if (!sidx.equals("t") && !sidx.equals("n") && !sidx.equals("i")) {
-			hql += " order by " + sidx + " " + sord;
-		} else {
-			comparator = new ObjectComparator<Label>(sidx, sord);
-		}
 		Collection<Label> labels; 
-		Map<Long, Label> labelMap = new HashMap<Long, Label>();
 		if (langId == null) {
-			if (comparator == null) {
-				labels  = retrieve(hql, param, countHql, countParam, requestMap);
-			} else {
-				labels = new ArrayList<Label>(dao.retrieve(hql, param, null));
-				requestMap.put("records", "" + labels.size());
+	    	String hql, countHql;
+	    	Map param = new HashMap();
+	    	Map countParam = new HashMap();
+	    	if (dictId != null) {
+	    		hql = "select obj from Label obj where obj.dictionary.id=:dictId and obj.removed=false";
+	    		countHql = "select count(*) from Label where dictionary.id=:dictId and removed=false";
+	        	param.put("dictId", dictId);
+	        	countParam.put("dictId", dictId);
+	    	} else if (appId != null) {
+	    		hql = "select obj,a from Application app join a.dictionaries d join d.labels obj where a.id=:appId and obj.removed=false";
+	    		countHql = "select count(*) from Application a join a.dictionaries d join d.labels obj where a.id=:appId and obj.removed=false";
+	        	param.put("appId", appId);
+	        	countParam.put("appId", appId);
+	    	} else if (prodId != null) {
+	    		hql = "select obj,a from Product p join p.applications a join a.dictionaries d join d.labels obj where p.id=:prodId and obj.removed=false";
+	    		countHql = "select count(*) from Product p join p.applications a join a.dictionaries d join d.labels obj where p.id=:prodId and obj.removed=false";
+	        	param.put("prodId", prodId);
+	        	countParam.put("prodId", prodId);
+	    	} else {
+	    		hql = "select obj,a from Application app join a.dictionaries d join d.labels obj where obj.removed=false";
+	    		countHql = "select count(*) from Label obj where obj.removed=false";
+	    	}
+	    	if (text != null) {
+	    		hql += " and upper(obj.reference) like :text";
+	    		countHql += " and upper(reference) like :text";
+	    		param.put("text", "%" + text + "%");
+	    		countParam.put("text", "%" + text + "%");
+	    	}
+	    	Comparator<Label> comparator = null;
+	    	Collection result;
+			if (!sidx.equals("t") && !sidx.equals("n") && !sidx.equals("i")) {
+				hql += " order by obj." + sidx + " " + sord;
+				result = retrieve(hql, param, countHql, countParam, requestMap);
+			} else {	// sort and page the results out of hql
+				comparator = new ObjectComparator<Label>(sidx, sord);
+				result = dao.retrieve(hql, param, null);
+				requestMap.put("records", "" + result.size());
 			}
+			if (dictId != null) {
+				labels = result;
+			} else {	// if prod and app parameter is specified, add app information to dictionary.app
+				labels = new ArrayList<Label>();
+				for (Object[] row : (Collection<Object[]>) result) {
+					Label label = (Label) row[0];
+					Application app = (Application) row[1];
+					labels.add(label);
+					label.setApp(app);
+				}
+			}
+
 			// add T/N/I information if no language was specified
-			Map<Long, int[]> summary = translationService.getLabelTranslationSummary(dictId);
-			for (Label label : labels) {
-				int[] tni = summary.get(label.getId());
-				label.setT(tni[0]);
-				label.setN(tni[1]);
-				label.setI(tni[2]);
+			if (text == null && dictId != null) {
+				Map<Long, int[]> summary = translationService.getLabelTranslationSummary(dictId);
+				for (Label label : labels) {
+					int[] tni = summary.get(label.getId());
+					label.setT(tni[0]);
+					label.setN(tni[1]);
+					label.setI(tni[2]);
+				}
+			} else if (text != null) {
+				for (Label label : labels) {
+					int[] tni = translationService.getLabelTranslationSummaryByLabel(label.getId());
+					label.setT(tni[0]);
+					label.setN(tni[1]);
+					label.setI(tni[2]);
+				}
 			}
+			
+			// sort labels by comparator
 			if (comparator != null) {
 				Collections.sort((ArrayList<Label>)labels, comparator);
 				labels = pageFilter(labels, requestMap);
@@ -141,9 +184,11 @@ public class LabelREST extends BaseREST {
 			
 		} else {
 		// add ot and ct information if a specific language was specified
-			String nodiffStr = requestMap.get("nodiff");
-			boolean nodiff = nodiffStr != null && nodiffStr.equalsIgnoreCase("true");
-			labels = new ArrayList<Label>(translationService.getLabelsWithTranslation(dictId, langId));
+			if (text == null && dictId != null) {
+				labels = new ArrayList<Label>(translationService.getLabelsWithTranslation(dictId, langId));
+			} else {
+				labels = new ArrayList<Label>(translationService.searchLabelsWithTranslation(prodId, appId, dictId, langId, text));
+			}
 			Collections.sort((ArrayList<Label>)labels, new ObjectComparator<Label>(sidx, sord));
         	Map<String, String> filters = getGridFilters(requestMap);
         	Integer statusFilter = null;
@@ -161,15 +206,15 @@ public class LabelREST extends BaseREST {
             		}
         		}
         	}
-        	if (text != null || nodiff) {	// filter by text and nodiff flag
+        	
+        	// filter by nodiff flag
+			String nodiffStr = requestMap.get("nodiff");
+			boolean nodiff = nodiffStr != null && nodiffStr.equalsIgnoreCase("true");
+        	if (nodiff) {	
         		Iterator<Label> iter = labels.iterator();
         		while (iter.hasNext()) {
         			Label label = iter.next();
-        			if (text != null &&
-        					label.getReference().toUpperCase().indexOf(text) == -1 &&
-        					label.getCt().getTranslation().toUpperCase().indexOf(text) == -1 ||
-        				nodiff &&
-        					!label.getReference().equals(label.getCt().getTranslation())) {
+        			if (!label.getReference().equals(label.getCt().getTranslation())) {
         				iter.remove();
         			}
         		}
