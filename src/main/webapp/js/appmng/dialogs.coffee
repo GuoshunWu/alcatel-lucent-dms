@@ -512,14 +512,21 @@ define [
 #        grid.showCol('app')
 
 
-      postData =
-        format: 'grid'
-        text: params.text
-        prop: 'app.name,dictionary.base.name,key,reference,maxLength,context.name,t,n,i'
-      postData[node.type] = node.id
+      postData = grid.getGridParam('postData')
+
+      postData.format = 'grid'
+      postData.text = params.text
+      postData.prop = 'app.name,dictionary.base.name,key,reference,maxLength,context.name,t,n,i'
+
+      delete postData.app
+      delete postData.prod
+
+      postData[node.type] = params.version.id
+
+
 
       grid.setCaption(i18n.dialog.searchtext.caption.format params.text, typeText, node.text, params.versionText)
-        .setGridParam(url: urls.labels, postData: postData).trigger 'reloadGrid'
+        .setGridParam(url: urls.labels).trigger 'reloadGrid'
 
     buttons: [
       {text: c18n.close, click: -> $(@).dialog "close"}

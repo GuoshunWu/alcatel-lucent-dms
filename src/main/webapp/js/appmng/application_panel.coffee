@@ -21,8 +21,9 @@ define [
     selVer=$("#selAppVersion", '#DMS_applicationPanel')
     dialogs.showSearchResult(
       text: $('#appSearchText', '#appmng').val()
-      version: selVer.val()
-      versionText:  $("option:selected", selVer).text()
+      version:
+        id: selVer.val()
+        text:  $("option:selected", selVer).text()
     )
   )
 
