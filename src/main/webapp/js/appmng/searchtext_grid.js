@@ -28,7 +28,7 @@
           align: 'left'
         }, {
           name: 'dict',
-          index: 'dictionary.name',
+          index: 'dictionary.base.name',
           width: 300,
           editable: false,
           align: 'left'

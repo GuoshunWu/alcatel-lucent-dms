@@ -20,7 +20,7 @@
       colModel: [
         {
           name: 'app',
-          index: 'application',
+          index: 'app.name',
           width: 100,
           editable: false,
           stype: 'select',
@@ -28,7 +28,7 @@
           frozen: true
         }, {
           name: 'dict',
-          index: 'dictionary',
+          index: 'dictionary.base.name',
           width: 100,
           editable: false,
           align: 'right',
@@ -70,8 +70,6 @@
           width: 150,
           align: 'left',
           edittype: 'textarea',
-          editable: true,
-          classes: 'editable-column',
           search: false
         }, {
           name: 'transStatus',

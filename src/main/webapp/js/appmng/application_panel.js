@@ -27,9 +27,11 @@
       });
     });
     $('#appSearchText', '#appmng').keydown(function(e) {
-      if (e.which === 13) {
-        return searchActionBtn.trigger('click');
+      if (e.which !== 13) {
+        return true;
       }
+      searchActionBtn.trigger('click');
+      return false;
     });
     $("#newAppVersion").button({
       text: false,

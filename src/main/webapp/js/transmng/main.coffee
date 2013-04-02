@@ -69,7 +69,7 @@ define [
         $("#languageFilterDialog").empty().append langTable
 
         # for search text
-        languages.unshift(id: -1, name: 'Reference')
+        languages.unshift(id: 1, name: 'Reference')
         $('#transSearchTextLanguage', "#transmng").empty().append util.json2Options(languages, false, "name")
 
       }
@@ -92,7 +92,10 @@ define [
     ).height(20).width(20).position(my: 'left center', at: 'right center', of: '#transSearchTextLanguage')
 
 
-    $('#transSearchText', '#transmng').keydown (e)=>searchActionBtn.trigger 'click' if e.which == 13
+    $('#transSearchText', '#transmng').keydown (e)=>
+      return true if e.which != 13
+      searchActionBtn.trigger 'click'
+      false
 
     # Create buttons
     $("#create",'#transmng').button()

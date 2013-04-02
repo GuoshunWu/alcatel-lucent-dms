@@ -39,7 +39,10 @@ define [
       )
     )
 
-  $('#prodSearchText', '#appmng').keydown (e)=>searchActionBtn.trigger 'click' if e.which == 13
+  $('#prodSearchText', '#appmng').keydown (e)=>
+    return true  if e.which != 13
+    searchActionBtn.trigger 'click'
+    false
 
   productInfo = {}
   # initial product version select

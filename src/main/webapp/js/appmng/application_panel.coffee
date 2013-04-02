@@ -26,7 +26,11 @@ define [
     )
   )
 
-  $('#appSearchText', '#appmng').keydown (e)=>searchActionBtn.trigger 'click' if e.which == 13
+  $('#appSearchText', '#appmng').keydown (e)->
+    return true if e.which != 13
+    searchActionBtn.trigger 'click'
+    false
+
 
   $("#newAppVersion").button({text: false, label: '&nbsp;', icons:
     {primary: "ui-icon-plus"}}).
