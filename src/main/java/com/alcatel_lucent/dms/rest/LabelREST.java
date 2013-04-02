@@ -117,7 +117,7 @@ public class LabelREST extends BaseREST {
 	        	param.put("dictId", dictId);
 	        	countParam.put("dictId", dictId);
 	    	} else if (appId != null) {
-	    		hql = "select obj,a from Application app join a.dictionaries d join d.labels obj where a.id=:appId and obj.removed=false";
+	    		hql = "select obj,a from Application a join a.dictionaries d join d.labels obj where a.id=:appId and obj.removed=false";
 	    		countHql = "select count(*) from Application a join a.dictionaries d join d.labels obj where a.id=:appId and obj.removed=false";
 	        	param.put("appId", appId);
 	        	countParam.put("appId", appId);
@@ -127,7 +127,7 @@ public class LabelREST extends BaseREST {
 	        	param.put("prodId", prodId);
 	        	countParam.put("prodId", prodId);
 	    	} else {
-	    		hql = "select obj,a from Application app join a.dictionaries d join d.labels obj where obj.removed=false";
+	    		hql = "select obj,a from Application a join a.dictionaries d join d.labels obj where obj.removed=false";
 	    		countHql = "select count(*) from Label obj where obj.removed=false";
 	    	}
 	    	if (text != null) {
