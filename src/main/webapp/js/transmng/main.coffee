@@ -65,8 +65,21 @@ define [
       $.ajax {url: urls.languages, async: false, data: postData, dataType: 'json', success: (languages)->
         langTable = util.generateLanguageTable languages
         $("#languageFilterDialog").empty().append langTable
+
+        # for search text
+        languages.unshift(id: -1, name: 'Reference')
+        $('#transSearchTextLanguage', "#transmng").empty().append util.json2Options(languages, false, "name")
+
       }
       dialogs.refreshGrid(false, grid)
+
+    searchActionBtn = $('#transSearchAction','#transmng').attr('title', 'Search').button(text: false, icons:
+      {primary: "ui-icon-search"}).click(()=>
+      alert 'To be implemented.'
+    ).height(20).width(20).position(my: 'left center', at: 'right center', of: '#transSearchTextLanguage')
+
+
+    $('#transSearchText', '#transmng').keydown (e)=>searchActionBtn.trigger 'click' if e.which == 13
 
     # Create buttons
     $("#create",'#transmng').button()

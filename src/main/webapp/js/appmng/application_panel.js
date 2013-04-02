@@ -3,10 +3,34 @@
   var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   define(['jqueryui', 'jqupload', 'iframetransport', 'i18n!nls/appmng', 'i18n!nls/common', 'dms-util', 'dms-urls', 'appmng/dialogs', 'appmng/dictionary_grid'], function($, upload, iframetrans, i18n, c18n, util, urls, dialogs, grid) {
-    var appInfo, dctFileUpload,
+    var appInfo, dctFileUpload, searchActionBtn,
       _this = this;
 
     appInfo = {};
+    searchActionBtn = $('#appSearchAction', '#appmng').attr('title', 'Search').button({
+      text: false,
+      icons: {
+        primary: "ui-icon-search"
+      }
+    }).height(20).width(20).position({
+      my: 'left center',
+      at: 'right center',
+      of: '#appSearchText'
+    }).click(function() {
+      var selVer;
+
+      selVer = $("#selAppVersion", '#DMS_applicationPanel');
+      return dialogs.showSearchResult({
+        text: $('#appSearchText', '#appmng').val(),
+        version: selVer.val(),
+        versionText: $("option:selected", selVer).text()
+      });
+    });
+    $('#appSearchText', '#appmng').keydown(function(e) {
+      if (e.which === 13) {
+        return searchActionBtn.trigger('click');
+      }
+    });
     $("#newAppVersion").button({
       text: false,
       label: '&nbsp;',

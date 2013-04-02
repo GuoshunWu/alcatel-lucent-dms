@@ -4,7 +4,7 @@
             <td>
                 <table border="0" width="100%">
                     <tr>
-                        <td colspan="4">
+                        <td colspan="5">
                             <span class="show-label" id="typeLabel">
                                 <s:text name="product"/>
                             </span>
@@ -22,6 +22,20 @@
                                       cssStyle="width:200px" headerKey="-1"
                                       headerValue="%{getText('product.version.select.head')}"
                                       value="curProductId"/>
+                        </td>
+                        <td rowspan="2" align="right">
+                            <span class="translation-search-text">
+                                <label for="transSearchText"><s:text name="searchtext"/></label>
+                                <input id="transSearchText"/>
+                                <s:text name="transmng.in"/>
+                                <select id="transSearchTextLanguage" style="width:160px;">
+                                    <option value="-1">
+                                        <s:text name="transmng.ref"/>
+                                    </option>
+                                </select>
+                                <button id="transSearchAction"></button>
+                            </span>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         </td>
                     </tr>
                     <tr>

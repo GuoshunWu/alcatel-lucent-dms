@@ -35,7 +35,7 @@
                 <prop key="hibernate.dialect">${db.dialect}</prop>
 
                 <prop key="hibernate.proxool.existing_pool">false</prop>
-                <prop key="hibernate.connection.provider_class">org.hibernate.connection.ProxoolConnectionProvider</prop>
+                <prop key="hibernate.connection.provider_class">com.alcatel_lucent.dms.util.DMSProxoolConnectionProvider</prop>
                 
                 <prop key="hibernate.connection.release_mode">auto</prop>
                 <!-- connection.pool_size is used to configure the number of connections in Hibernate's built-in connection pool. -->
