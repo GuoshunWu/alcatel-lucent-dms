@@ -789,7 +789,7 @@
       modal: true,
       width: 910,
       open: function() {
-        var grid, node, params, typeText;
+        var grid, node, params, postData, typeText;
 
         params = $(this).data('params');
         node = util.getProductTreeInfo();
@@ -801,12 +801,18 @@
           console.log(params);
         }
         if (typeof console !== "undefined" && console !== null) {
-          console.log(node.type);
+          console.log(node);
         }
-        return $.post(urls.labels, {
+        postData = {
           format: 'grid',
-          text: params.text
-        }, function(json) {});
+          text: params.text,
+          prop: 'id,app.name,dictionary.name,key,reference,maxLength,context,t,n,i'
+        };
+        postData[node.type] = node.id;
+        return grid.setGridParam({
+          url: urls.labels,
+          postData: postData
+        }).trigger('reloadGrid');
       },
       buttons: [
         {

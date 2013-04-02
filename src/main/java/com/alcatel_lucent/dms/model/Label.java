@@ -352,6 +352,7 @@ public class Label extends BaseEntity {
 		this.removed = removed;
 	}
 
+    @Transient
 	public Application getApp() {
 		return app;
 	}
@@ -360,6 +361,7 @@ public class Label extends BaseEntity {
 		this.app = app;
 	}
 
+    @Transient
 	public Product getProd() {
 		return prod;
 	}
