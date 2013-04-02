@@ -6,6 +6,7 @@ define [
   'appmng/application_panel'
   'appmng/layout'
 ], ($, util, productpnl, apppnl, layout)->
+
   nodeSelectHandler = (node, nodeInfo)->
     switch node.attr('type')
       when 'products'

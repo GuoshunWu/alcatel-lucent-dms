@@ -307,31 +307,50 @@
         <tr>
             <td><label class="form-label" for="key"><s:text name="appmng.dialogs.addlabel.key"/></label></td>
             <td>
-                <input size="50" id="key" /><span style="color: red">*</span>
+                <input size="50" id="key"/><span style="color: red">*</span>
             </td>
         </tr>
         <tr>
-            <td><label class="form-label" for="reference"><s:text name="appmng.dialogs.addlabel.reference"/></label></td>
-            <td><textarea cols="50" id="reference" ></textarea><span style="color: red">*</span></td>
+            <td><label class="form-label" for="reference"><s:text name="appmng.dialogs.addlabel.reference"/></label>
+            </td>
+            <td><textarea cols="50" id="reference"></textarea><span style="color: red">*</span></td>
         </tr>
         <tr>
-            <td><label class="form-label" for="maxLength"><s:text name="appmng.dialogs.addlabel.maxlength"/></label></td>
-            <td><input size="50" id="maxLength" /></td>
+            <td><label class="form-label" for="maxLength"><s:text name="appmng.dialogs.addlabel.maxlength"/></label>
+            </td>
+            <td><input size="50" id="maxLength"/></td>
         </tr>
         <tr>
             <td><label class="form-label" for="context"><s:text name="appmng.dialogs.addlabel.context"/></label></td>
-            <td><input size="50" id="context" value="[DEFAULT]" /><span style="color: red">*</span></td>
+            <td><input size="50" id="context" value="[DEFAULT]"/><span style="color: red">*</span></td>
         </tr>
         <tr>
-            <td><label class="form-label" for="description"><s:text name="appmng.dialogs.addlabel.description"/></label></td>
-            <td><textarea cols="50" id="description" ></textarea></td>
+            <td><label class="form-label" for="description"><s:text name="appmng.dialogs.addlabel.description"/></label>
+            </td>
+            <td><textarea cols="50" id="description"></textarea></td>
         </tr>
 
         <tr>
             <td colspan="2">
-                <div  id="errMsg" class="err-message" ></div>
+                <div id="errMsg" class="err-message"></div>
             </td>
 
+        </tr>
+    </table>
+</div>
+
+
+<div id="searchTextDialog" title="<s:text name="appmng.dialogs.searchtext.title"/>">
+    <table>
+        <tr>
+            <td>
+                <table id="searchTextGrid">
+                    <tr>
+                        <td></td>
+                    </tr>
+                </table>
+                <div id="searchTextGridPager"></div>
+            </td>
         </tr>
     </table>
 </div>

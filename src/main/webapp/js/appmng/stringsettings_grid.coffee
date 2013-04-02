@@ -3,7 +3,7 @@ define [
   'dms-util'
   'dms-urls'
   'i18n!nls/common', 'i18n!nls/appmng'
-  'appmng/langsetting_translation_grid'
+  'appmng/stringsettings_translation_grid'
 ], ($, util, urls, c18n, i18n, ltgrid)->
 #  console?.log "module appmng/stringsetting_grid loading."
   lastEditedCell = null
