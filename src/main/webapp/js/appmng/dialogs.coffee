@@ -512,7 +512,7 @@ define [
       postData =
         format: 'grid'
         text: params.text
-        prop: 'app.name,dictionary.name,key,reference,maxLength,context.name,t,n,i'
+        prop: 'app.name,dictionary.base.name,key,reference,maxLength,context.name,t,n,i'
       postData[node.type] = node.id
 
       grid.setCaption(i18n.dialog.searchtext.caption.format params.text, typeText, node.text, params.versionText)

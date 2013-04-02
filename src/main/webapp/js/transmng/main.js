@@ -88,7 +88,7 @@
             langTable = util.generateLanguageTable(languages);
             $("#languageFilterDialog").empty().append(langTable);
             languages.unshift({
-              id: -1,
+              id: 1,
               name: 'Reference'
             });
             return $('#transSearchTextLanguage', "#transmng").empty().append(util.json2Options(languages, false, "name"));
@@ -123,9 +123,11 @@
         of: '#transSearchTextLanguage'
       });
       $('#transSearchText', '#transmng').keydown(function(e) {
-        if (e.which === 13) {
-          return searchActionBtn.trigger('click');
+        if (e.which !== 13) {
+          return true;
         }
+        searchActionBtn.trigger('click');
+        return false;
       });
       $("#create", '#transmng').button().attr('privilegeName', util.urlname2Action('task/create-task')).click(function() {
         var info;

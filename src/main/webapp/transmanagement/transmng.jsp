@@ -29,7 +29,7 @@
                                 <input id="transSearchText"/>
                                 <s:text name="transmng.in"/>
                                 <select id="transSearchTextLanguage" style="width:160px;">
-                                    <option value="-1">
+                                    <option value="1">
                                         <s:text name="transmng.ref"/>
                                     </option>
                                 </select>

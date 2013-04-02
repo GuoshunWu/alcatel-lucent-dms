@@ -20,7 +20,7 @@ define [
     colNames: ['Application', 'Dictionary', 'Label', 'Reference Language', 'Max Length', 'Context', 'T', 'N', 'I']
     colModel: [
       {name: 'app', index: 'app.name', width: 50, editable: false, align: 'left'}
-      {name: 'dict', index: 'dictionary.name', width: 300, editable: false, align: 'left'}
+      {name: 'dict', index: 'dictionary.base.name', width: 300, editable: false, align: 'left'}
       {name: 'key', index: 'key', width: 100, editable: false, align: 'left'}
       {name: 'reference', index: 'reference', width: 300, editable: false, align: 'left'}
       {name: 'maxlen', index: 'maxLength', width: 100, editable: false, align: 'left'}

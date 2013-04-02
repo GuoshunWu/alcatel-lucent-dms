@@ -362,16 +362,14 @@
         postData = {
           format: 'grid',
           text: params.text,
-          prop: 'app.name,dictionary.name,key,reference,maxLength,context.name,t,n,i'
+          language: params.language.id,
+          prop: 'app.name,dictionary.name,key,maxLength,context.name,reference,ct.translation,ct.ct.status,ct.id'
         };
         postData[node.type] = node.id;
-        if (typeof console !== "undefined" && console !== null) {
-          console.log(postData);
-        }
-        if (typeof console !== "undefined" && console !== null) {
-          console.log(params);
-        }
-        return grid.setCaption(i18n.searchtext.caption.format(params.text, typeText, node.text, params.version.text, params.language.text));
+        return grid.setCaption(i18n.searchtext.caption.format(params.text, typeText, node.text, params.version.text, params.language.text)).setGridParam({
+          url: urls.labels,
+          postData: postData
+        }).trigger('reloadGrid');
       },
       buttons: [
         {
