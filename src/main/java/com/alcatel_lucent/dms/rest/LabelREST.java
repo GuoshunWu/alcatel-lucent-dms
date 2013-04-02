@@ -138,7 +138,7 @@ public class LabelREST extends BaseREST {
 	    	}
 	    	Comparator<Label> comparator = null;
 	    	Collection result;
-			if (!sidx.equals("t") && !sidx.equals("n") && !sidx.equals("i")) {
+			if (!sidx.equals("t") && !sidx.equals("n") && !sidx.equals("i") && !sidx.startsWith("app.")) {
 				hql += " order by obj." + sidx + " " + sord;
 				result = retrieve(hql, param, countHql, countParam, requestMap);
 			} else {	// sort and page the results out of hql
