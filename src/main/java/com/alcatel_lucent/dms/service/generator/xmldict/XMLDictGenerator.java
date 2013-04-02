@@ -42,8 +42,21 @@ public class XMLDictGenerator extends DictionaryGenerator {
     private static Logger log = LoggerFactory.getLogger(XMLDictGenerator.class);
     @Autowired
     private DaoService dao;
-
+    
     @Override
+    public void generateDict(File target, Collection<Dictionary> dictList) throws BusinessException {
+    	// generate xdcp file
+    	try {
+			generateXdcp(target, dictList);
+		} catch (IOException e) {
+			e.printStackTrace();
+			log.error(e.getMessage());
+			throw new SystemError(e);
+		}
+    	super.generateDict(target, dictList);
+    }
+
+	@Override
     public void generateDict(File targetDir, Long dictId) throws BusinessException {
 //        Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
 //        Improving performance
@@ -88,7 +101,7 @@ public class XMLDictGenerator extends DictionaryGenerator {
         if (dict.getDictLanguages() != null) {
             for (DictionaryLanguage dl : dict.getDictLanguages()) {
                 String xdctFileName = dl.getAnnotation2();
-                if (xdctFileName == null) xdctFileName = dict.getName();
+                if (xdctFileName == null) xdctFileName = dict.getName() + ".xdct";
                 Collection<String> langCodes = result.get(xdctFileName);
                 if (langCodes == null) {
                     langCodes = new ArrayList<String>();
@@ -99,6 +112,50 @@ public class XMLDictGenerator extends DictionaryGenerator {
         }
         return result;
     }
+
+    public void generateXdcp(File target, Collection<Dictionary> dictList) throws IOException {
+    	Map<String, String> fileMap = new HashMap<String, String>();
+    	String appName = null;
+    	for (Dictionary dict : dictList) {
+    		if (appName == null) {
+    			appName = dict.getBase().getApplicationBase().getName();
+    		}
+			Map<String, Collection<String>> xdctGroup = getXdctGroup(target, dict);
+			for (String fileName : xdctGroup.keySet()) {
+				fileMap.put(fileName, dict.getName());
+			}
+		}
+    	String xdcpFileName = appName + ".xdcp";
+        log.info("Generating " + xdcpFileName);
+        
+    	File file = createNewFile(target, xdcpFileName);
+    	OutputFormat format = OutputFormat.createPrettyPrint();
+        format.setIndentSize(4);
+        format.setXHTML(true);
+
+        XMLWriter writer = null;
+        try {
+	        writer = new XMLWriter(new BufferedOutputStream(new FileOutputStream(file)), format);
+	        Document doc = DocumentHelper.createDocument();
+	        doc.setXMLEncoding("UTF-8");
+	        doc.addDocType("PROJECT", "", "XMLPROJECT.dtd");
+	        Element xmlProj = doc.addElement("PROJECT");
+	        xmlProj.addAttribute("name", appName);
+	        for (String fileName : fileMap.keySet()) {
+	        	String dictName = fileMap.get(fileName);
+	        	Element xmlDict = xmlProj.addElement("DICTIONARY");
+	        	xmlDict.addAttribute("name", dictName);
+	        	xmlDict.addAttribute("path", fileName);
+	        }
+	        writer.write(doc);
+        } finally {
+            try {
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+	}
 
     public void generateXdct(File targetDir, Dictionary dict, String xdctFileName, Collection<String> langCodes) throws BusinessException, IOException {
         XMLWriter writer = null;
