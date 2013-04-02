@@ -53,7 +53,6 @@
                                     name="transmng.summarypanel.viewoption.dictionarylevel"/></label>
                             </div>
                         </td>
-                        <td style="display: none;width: 240px"><s:text name="transmng.summarypanel.searchtext"/><input/>
                         </td>
                         <td><a id="exportExcel" href="#"><img src="images/excel.gif"/><s:text name="export"/></a></td>
                         <td>

@@ -56,6 +56,8 @@ define [
 
   init = ()->
 #    console?.log "transmng panel init..."
+
+
     $('#selVersion', "div[id='transmng']").change ->
       nodeInfo = util.getProductTreeInfo()
 #      console?.log nodeInfo
@@ -75,7 +77,18 @@ define [
 
     searchActionBtn = $('#transSearchAction','#transmng').attr('title', 'Search').button(text: false, icons:
       {primary: "ui-icon-search"}).click(()=>
-      alert 'To be implemented.'
+
+      selVer = $('#selVersion', '#transmng')
+      selLang = $('#transSearchTextLanguage', '#transmng')
+      dialogs.showSearchResult(
+          text: $('#transSearchText', '#transmng').val()
+          version:
+            id: selVer.val()
+            text: $("option:selected", selVer).text()
+          language:
+            id: selLang.val()
+            text: $("option:selected", selLang).text()
+        )
     ).height(20).width(20).position(my: 'left center', at: 'right center', of: '#transSearchTextLanguage')
 
 

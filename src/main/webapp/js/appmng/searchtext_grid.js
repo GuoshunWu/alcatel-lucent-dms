@@ -13,6 +13,7 @@
       rowNum: 10,
       rowList: [10, 20, 30],
       sortorder: 'asc',
+      caption: 'result',
       viewrecords: true,
       gridview: true,
       multiselect: false,
@@ -21,37 +22,37 @@
       colModel: [
         {
           name: 'app',
-          index: 'app',
-          width: 100,
+          index: 'app.name',
+          width: 50,
           editable: false,
           align: 'left'
         }, {
           name: 'dict',
-          index: 'dict',
+          index: 'dictionary.name',
+          width: 300,
+          editable: false,
+          align: 'left'
+        }, {
+          name: 'key',
+          index: 'key',
           width: 100,
           editable: false,
           align: 'left'
         }, {
-          name: 'label',
-          index: 'label',
-          width: 100,
-          editable: false,
-          align: 'left'
-        }, {
-          name: 'ref',
-          index: 'ref',
-          width: 100,
+          name: 'reference',
+          index: 'reference',
+          width: 300,
           editable: false,
           align: 'left'
         }, {
           name: 'maxlen',
-          index: 'maxlen',
+          index: 'maxLength',
           width: 100,
           editable: false,
           align: 'left'
         }, {
           name: 'ctx',
-          index: 'ctx',
+          index: 'context.name',
           width: 100,
           editable: false,
           align: 'left'
@@ -59,7 +60,7 @@
           name: 't',
           index: 't',
           sortable: true,
-          width: 15,
+          width: 18,
           align: 'right',
           formatter: 'showlink',
           formatoptions: {
@@ -71,7 +72,7 @@
           index: 'n',
           formatter: 'showlink',
           sortable: true,
-          width: 15,
+          width: 18,
           align: 'right',
           formatoptions: {
             baseLinkUrl: '#',
@@ -82,7 +83,7 @@
           index: 'i',
           formatter: 'showlink',
           sortable: true,
-          width: 15,
+          width: 18,
           align: 'right',
           formatoptions: {
             baseLinkUrl: '#',
@@ -102,10 +103,12 @@
 
           param = util.getUrlParams(this.href);
           rowData = grid.getRowData(param.id);
-          if (typeof console !== "undefined" && console !== null) {
-            console.log(rowData);
-          }
-          return typeof console !== "undefined" && console !== null ? console.log(param) : void 0;
+          param.key = rowData.key;
+          param.ref = rowData.reference;
+          $('#stringSettingsTranslationDialog').data({
+            param: param
+          });
+          return $('#stringSettingsTranslationDialog').dialog('open');
         });
       }
     }).setGridParam({

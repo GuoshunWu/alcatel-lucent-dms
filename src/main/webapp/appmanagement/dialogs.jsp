@@ -340,7 +340,7 @@
 </div>
 
 
-<div id="searchTextDialog" title="<s:text name="appmng.dialogs.searchtext.title"/>">
+<div id="searchTextDialog" title="<s:text name="searchtext.title"/>">
     <table>
         <tr>
             <td>
