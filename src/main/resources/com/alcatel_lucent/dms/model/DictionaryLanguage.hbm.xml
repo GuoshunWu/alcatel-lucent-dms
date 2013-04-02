@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.alcatel_lucent.dms.model">
+    <class name="DictionaryLanguage" table="DICTIONARY_LANGUAGE">
+        <id column="ID" name="id">
+            <generator class="native">
+                <param name="sequence">ID_DICTIONARY_LANGUAGE</param>
+            </generator>
+        </id>
+
+        <property name="languageCode" type="string" column="LANGUAGE_CODE"/>
+		<property name="sortNo" type="integer" column="SORT_NO"/>
+        <property name="annotation1" type="text" column="ANNOTATION1"/>
+        <property name="annotation2" type="text" column="ANNOTATION2"/>
+        <property name="annotation3" type="text" column="ANNOTATION3"/>
+        <property name="annotation4" type="text" column="ANNOTATION4"/>
+
+        <many-to-one name="dictionary">
+            <column name="DICTIONARY_ID"/>
+        </many-to-one>
+
+        <many-to-one name="language" column="LANGUAGE_ID" lazy="false" />
+        <many-to-one name="charset" column="CHARSET_ID" lazy="false" />
+
+    </class>
+
+</hibernate-mapping>
