@@ -13,6 +13,8 @@ require.config
     blockui: 'jquery.blockUI'
     jqupload: 'jsfileuploader/jquery.fileupload'
     iframetransport: 'jsfileuploader/jquery.iframe-transport'
+    hchart: 'highcharts'
+    hchart_exp: 'exporting'
 
     globallayout: '../globallayout'
     ptree: '../producttree'
@@ -27,6 +29,12 @@ require.config
     main: '../main'
 
   shim:
+    'hchart':
+      deps: ['jquery']
+      exports: 'jQuery'
+    'hchart_exp':
+      deps: ['hchart']
+      exports: 'jQuery'
     'formvalidate':
       deps: ['jquery']
       exports: 'jQuery'

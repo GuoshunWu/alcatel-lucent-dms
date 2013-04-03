@@ -93,8 +93,6 @@ define [
     @pb.progressbar "value", progress
   done: (e, data)->
     $('#uploadBrower').button 'enable'
-
-    $.each data.files, (index, file) ->$('#uploadStatus').html "#{file.name} #{i18n.uploadfinished}"
     @pb.parent().remove() if !$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10
     #    request handler
     jsonFromServer = data.result

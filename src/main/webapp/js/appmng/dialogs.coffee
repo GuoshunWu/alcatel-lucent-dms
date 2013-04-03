@@ -9,16 +9,15 @@ define [
   'dms-urls'
   'dms-util'
 
-
-
   'appmng/dictlistpreview_grid'
   'appmng/stringsettings_grid'
+  'appmng/report_chart'
 
   'appmng/dictpreviewstringsettings_grid'
   'appmng/previewlangsetting_grid'
   'appmng/searchtext_grid'
 
-], ($, jqgrid, blockui, msgbox, c18n, i18n, urls, util, previewgrid, stgrid)->
+], ($, jqgrid, blockui, msgbox, c18n, i18n, urls, util, previewgrid, stgrid, chart)->
 
   #  console?.log "module appmng/dialogs loading."
   newProductVersion = $("#newProductReleaseDialog").dialog(
@@ -511,7 +510,6 @@ define [
 #      else
 #        grid.showCol('app')
 
-
       postData = grid.getGridParam('postData')
 
       postData.format = 'grid'
@@ -533,8 +531,40 @@ define [
     ]
   )
 
-  showSearchResult = (params)->searchResult.data('params', params).dialog 'open'
+  importReport = $('#importReportDialog').dialog(
+    autoOpen: true, modal: true
+    width: 850
+    open:()->
+      msg = """
+            {
+              "dictNum": 5,
+              "labelNum": 247,
+              "translationNum": 5435,
+              "translationWC": 34141,
+              "distinctTranslationNum": 4503,
+              "distinctTranslationWC": 30813,
+              "untranslatedNum": 299,
+              "untranslatedWC": 1301,
+              "translatedNum": 4204,
+              "translatedWC": 29512,
+              "matchedNum": 391,
+              "matchedWC": 2656
+            }
+            """
+      json = $.parseJSON(msg)
+      appInfo = "#{$('#appDispAppName').text()} #{$('#selAppVersion option:selected').text()}".trim()
+      appInfo = 'Demo version 1.0' if !appInfo
+      chart.showChart(
+        i18n.dialog.dictlistpreview.success.format json.labelNum, json.dictNum, appInfo
+        json
+      )
 
+    buttons: [
+      {text: c18n.ok, click: -> $(@).dialog "close"}
+    ]
+  )
+
+  showSearchResult = (params)->searchResult.data('params', params).dialog 'open'
 
   addLanguage: addLanguage
   dictPreviewLangSettings: dictPreviewLangSettings

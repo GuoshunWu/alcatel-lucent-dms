@@ -137,9 +137,6 @@
         var jsonFromServer;
 
         $('#uploadBrower').button('enable');
-        $.each(data.files, function(index, file) {
-          return $('#uploadStatus').html("" + file.name + " " + i18n.uploadfinished);
-        });
         if (!$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10) {
           this.pb.parent().remove();
         }

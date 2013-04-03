@@ -49,7 +49,7 @@
           title: 'Dictionaries Preview',
           "import": 'Import',
           check: 'There are some errors need to be fixed before import!',
-          success: 'Import dictionaries to {0} successful. <br/><br/>{1}'
+          success: 'Import {0} label(s) in {1} dictionaries to {2} successful.'
         },
         dictpreviewstringsettings: {
           title: 'String settings',
