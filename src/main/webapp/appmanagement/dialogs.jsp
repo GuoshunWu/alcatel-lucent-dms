@@ -354,3 +354,19 @@
         </tr>
     </table>
 </div>
+
+<div id="importReportDialog" title="<s:text name="appmng.dialogs.importreport.title"/>">
+    <table border="0" width="100%">
+        <%--<caption>--%>
+        <%--<div>--%>
+        <%--<span class="ui-icon ui-icon-circle-check" style="float: left; margin: 0 7px 20px 0;">Why</span>--%>
+        <%--<span id="headMsg"></span>--%>
+        <%--</div>--%>
+        <%--</caption>--%>
+        <tr>
+            <td>
+                <div id="chartContainer" style="width: 800px; height: 500px; margin: 0 auto"></div>
+            </td>
+        </tr>
+    </table>
+</div>
