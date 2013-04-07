@@ -4,92 +4,61 @@ define [
   options =
     chart:
       type: 'pie'
-      renderTo: 'chartContainer'
-    title:
-      text: 'MyTest Title'
-    subtitle:
-      text: 'My test subtitle'
-    yAxis:
-      title:
-        text: 'Total percent market share'
+#      plotBackgroundColor: 'pink'
+      plotBorderWidth: null
+      plotShadow: false
     tooltip:
-      valueSuffix: '%'
+      enabled: false
+    title:
+      text: ''
+    legend:
+      align: 'right'
+      layout: 'vertical'
+      verticalAlign: 'middle'
+      width: 100
+      style: 'font-size: 8px'
+
     plotOptions:
       pie:
-        shadow: false
-        center: ['50%', '50%']
+        showInLegend: true
+        allowPointSelect: true
+        cursor: 'pointer'
+        size: '80%'
+        dataLabels:
+          enabled: false
     series: [
-      {
-      name: 'Total Translations'
-      size: '60%'
-      dataLabels:
-        color: 'white'
-        distance: -30
-        formatter: ()->
-          return @point.name if @y > 5
-          null
-      }
-      {
-      name: 'Distinct translations'
-      size: '80%'
-      innerSize: '60%'
-      dataLabels:
-        formatter: ()->
-          return "<b>#{@point.name}: </b> #{@y}" if @y > 1
-          return null
-      }
+      name: 'Total translations'
     ]
 
-  reportChart = null
+  colors = Highcharts.getOptions().colors
 
 
-  showChart=(title, json, chart = Highcharts.charts[0])->
+  showChart=(title, json)->
     return if !json
-    console?.log json
+#    console?.log json
+#    options.title.text = title
+#    options.subtitle.text = "Translation number: #{json.translationNum}"
 
-    options.title.text = title
-    options.subtitle.text = "Translation number: #{json.translationNum}"
-
-    options.series[0].data = []
-
-    name = 'MSIE'
-    options.series[0].data.push
-      name: name
-      y: 55.11
-
-    name = 'Firefox'
-    options.series[0].data.push
-      name: name
-      y: 21.63
-
-    name = 'Chrome'
-    options.series[0].data.push
-      name: name
-      y: 11.94
-
-    name = 'Safari'
-    options.series[0].data.push
-      name: name
-      y: 7.15
-
-    name = 'Opera'
-    options.series[0].data.push
-      name: name
-      y: 2.14
-
-
-
-    options.series[0].data.push ['Duplicated translations', json.translationNum - json.distinctTranslationNum]
-
-
-    options.series[1].data = [
-      ['Translated', json.translatedNum]
-      ['Untranslated', json.untranslatedNum]
+    options.series[0].data = [
+      {name: 'Duplicated', y: json.distinctTranslationNum}
+      {name: 'Distinct', y: json.translationNum - json.distinctTranslationNum, color: colors[3]}
     ]
-    reportChart = new Highcharts.Chart options
+    $('#dupContainer').highcharts(options)
+
+    options.series[0].name = 'Distinct Translations'
+    options.series[0].data = [
+      ['Translated', json.translatedNum]
+      {name: 'Untranslated', y:json.untranslatedNum, color: colors[3]}
+    ]
+    $('#transContainer').highcharts(options)
+
+    options.series[0].data = [
+      ['Auto trans', json.matchedNum]
+      {name: 'Not auto trans', y: json.distinctTranslationNum - json.matchedNum, color: colors[3]}
+    ]
+    $('#autoTransContainer').highcharts(options)
 
   showChart: showChart
-  reportChart: reportChart
 
 
 

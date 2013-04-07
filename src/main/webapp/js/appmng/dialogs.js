@@ -460,13 +460,11 @@
             dictListPreview.dialog('close');
             pb = util.genProgressBar();
             return util.updateProgress('app/deliver-dict', postData, function(json) {
-              var appInfo;
+              var retJson;
 
               pb.parent().remove();
-              appInfo = "" + ($('#appDispAppName').text()) + " " + ($('#selAppVersion option:selected').text());
-              $.msgBox(i18n.dialog.dictlistpreview.success.format(appInfo, json.event.msg), null, {
-                title: c18n.info
-              });
+              retJson = $.parseJSON(json.event.msg);
+              $('#importReportDialog').data('params', retJson).dialog('open');
               return $('#selAppVersion').trigger('change');
             }, pb);
           }
@@ -818,19 +816,39 @@
       ]
     });
     importReport = $('#importReportDialog').dialog({
-      autoOpen: true,
+      autoOpen: false,
       modal: true,
-      width: 850,
+      width: 600,
       open: function() {
-        var appInfo, json, msg;
+        var appInfo, json, msg, statisticsTabId, title;
 
-        msg = "{\n  \"dictNum\": 5,\n  \"labelNum\": 247,\n  \"translationNum\": 5435,\n  \"translationWC\": 34141,\n  \"distinctTranslationNum\": 4503,\n  \"distinctTranslationWC\": 30813,\n  \"untranslatedNum\": 299,\n  \"untranslatedWC\": 1301,\n  \"translatedNum\": 4204,\n  \"translatedWC\": 29512,\n  \"matchedNum\": 391,\n  \"matchedWC\": 2656\n}";
+        msg = "{\n\"dictNum\": 5,\n\"labelNum\": 247,\n\"translationNum\": 5435,\n\"translationWC\": 34141,\n\"distinctTranslationNum\": 4503,\n\"distinctTranslationWC\": 30813,\n\"untranslatedNum\": 299,\n\"untranslatedWC\": 1301,\n\"translatedNum\": 4204,\n\"translatedWC\": 29512,\n\"matchedNum\": 391,\n\"matchedWC\": 2656\n}";
         json = $.parseJSON(msg);
+        json = $(this).data('params');
+        console.log(json);
         appInfo = ("" + ($('#appDispAppName').text()) + " " + ($('#selAppVersion option:selected').text())).trim();
         if (!appInfo) {
           appInfo = 'Demo version 1.0';
         }
-        return chart.showChart(i18n.dialog.dictlistpreview.success.format(json.labelNum, json.dictNum, appInfo), json);
+        statisticsTabId = '#importReportStatistics';
+        $('#dicts', statisticsTabId).html(json.dictNum);
+        $('#labels', statisticsTabId).html(json.labelNum);
+        $('#dupTrans', statisticsTabId).html(json.translationNum - json.distinctTranslationNum).parent().next().children('span').html("" + (json.translationWC - json.distinctTranslationWC));
+        $('#totalTrans', statisticsTabId).html(json.translationNum).parent().next().children('span').html("" + json.translationWC);
+        $('#dupRatio', statisticsTabId).html(((1 - json.distinctTranslationNum / json.translationNum) * 100).toFixed(2) + '%').parent().next().children('span').html("" + (((1 - json.distinctTranslationWC / json.translationWC) * 100).toFixed(2)) + "%");
+        $('#translated', statisticsTabId).html(json.translatedNum).parent().next().children('span').html("" + json.translatedWC);
+        $('#untranslated', statisticsTabId).html(json.untranslatedNum).parent().next().children('span').html("" + json.untranslatedWC);
+        $('#transRatio', statisticsTabId).html((json.translatedNum / json.distinctTranslationNum * 100).toFixed(2) + '%').parent().next().children('span').html("" + ((json.translatedWC / json.distinctTranslationWC * 100).toFixed(2)) + "%");
+        $('#autoTrans', statisticsTabId).html(json.matchedNum).parent().next().children('span').html("" + json.matchedWC);
+        $('#distinctTrans', statisticsTabId).html(json.distinctTranslationNum).parent().next().children('span').html("" + json.distinctTranslationWC);
+        $('#autoRatio', statisticsTabId).html((json.matchedNum / json.distinctTranslationNum * 100).toFixed(2) + '%').parent().next().children('span').html("" + ((json.matchedWC / json.distinctTranslationWC * 100).toFixed(2)) + "%");
+        appInfo = ("" + ($('#appDispAppName').text()) + " " + ($('#selAppVersion option:selected').text())).trim();
+        if (!appInfo) {
+          appInfo = 'Demo version 1.0';
+        }
+        title = i18n.dialog.dictlistpreview.success.format(json.labelNum, json.dictNum, appInfo);
+        $('#title', this).html(title);
+        return chart.showChart(title, json);
       },
       buttons: [
         {
