@@ -356,17 +356,108 @@
 </div>
 
 <div id="importReportDialog" title="<s:text name="appmng.dialogs.importreport.title"/>">
-    <table border="0" width="100%">
-        <%--<caption>--%>
-        <%--<div>--%>
-        <%--<span class="ui-icon ui-icon-circle-check" style="float: left; margin: 0 7px 20px 0;">Why</span>--%>
-        <%--<span id="headMsg"></span>--%>
-        <%--</div>--%>
-        <%--</caption>--%>
+    <table id="importReportStatistics" width="100%" border="0" style="border: 1px solid">
+        <caption>
+            <label id="title" class="import-report-title"></label>
+        </caption>
+        <%-- Header --%>
         <tr>
-            <td>
-                <div id="chartContainer" style="width: 800px; height: 500px; margin: 0 auto"></div>
+            <td class="import-report-label import-report-group-right import-report-header"><label>Total
+                Dictionaries: </label></td>
+            <td class="import-report-number import-report-group-right">
+                <span id="dicts"></span>
             </td>
+            <td class="import-report-group-right"></td>
+            <td rowspan="2" class="import-report-group"></td>
+        </tr>
+        <tr>
+            <td class="import-report-label import-report-group import-report-group-right import-report-header"><label>Labels: </label>
+            </td>
+            <td class="import-report-number import-report-group import-report-group-right">
+                <span id="labels"></span>
+            </td>
+            <td align='right' class="import-report-group import-report-group-right">In words</td>
+        </tr>
+
+        <%-- Duplication Translations --%>
+        <tr>
+            <td class="import-report-label import-report-group-right"><label>Duplicated Translations: </label></td>
+            <td class="import-report-number import-report-group-right">
+                <span id="dupTrans"></span>
+            </td>
+            <td class="import-report-number import-report-group-right"><span></span></td>
+            <td rowspan="3" class="import-report-group">
+                <div id="dupContainer" class="import-report-chart-container"></div>
+            </td>
+        </tr>
+        <tr>
+            <td class="import-report-label import-report-group-right"><label>Total Translations: </label></td>
+            <td class="import-report-number import-report-group-right">
+                <span id="totalTrans"></span>
+            </td>
+            <td class="import-report-number import-report-group-right"><span></span></td>
+        </tr>
+        <tr>
+            <td class="import-report-label import-report-group import-report-group-right"><label>Duplicate
+                ratio: </label></td>
+            <td class="import-report-number import-report-group import-report-group-right">
+                <span id="dupRatio"></span>
+            </td>
+            <td class="import-report-number import-report-group import-report-group-right"><span></span></td>
+
+        </tr>
+
+        <%-- Translated--%>
+        <tr>
+            <td class="import-report-label import-report-group-right"><label>Translated: </label></td>
+            <td class="import-report-number import-report-group-right">
+                <span id="translated"></span>
+            </td>
+            <td class="import-report-number import-report-group-right"><span></span></td>
+            <td rowspan="3" class="import-report-group">
+                <div id="transContainer" class="import-report-chart-container"></div>
+            </td>
+        </tr>
+        <tr>
+            <td class="import-report-label import-report-group-right"><label>Untranslated: </label></td>
+            <td class="import-report-number import-report-group-right">
+                <span id="untranslated"></span>
+            </td>
+            <td class="import-report-number import-report-group-right"><span></span></td>
+        </tr>
+        <tr>
+            <td class="import-report-label import-report-group import-report-group-right"><label>Trans ratio: </label>
+            </td>
+            <td class="import-report-number import-report-group import-report-group-right">
+                <span id="transRatio"></span>
+            </td>
+            <td class="import-report-number import-report-group import-report-group-right"><span></span></td>
+        </tr>
+
+        <%-- Auto Trans--%>
+        <tr>
+            <td class="import-report-label import-report-group-right"><label>Auto trans: </label></td>
+            <td class="import-report-number import-report-group-right">
+                <span id="autoTrans"></span>
+            </td>
+            <td class="import-report-number import-report-group-right"><span></span></td>
+            <td rowspan="3">
+                <div id="autoTransContainer" class="import-report-chart-container"></div>
+            </td>
+        </tr>
+        <tr>
+            <td class="import-report-label import-report-group-right"><label>Distinct Translations: </label></td>
+            <td class="import-report-number import-report-group-right">
+                <span id="distinctTrans"></span>
+            </td>
+            <td class="import-report-number import-report-group-right"><span></span></td>
+        </tr>
+        <tr>
+            <td class="import-report-label import-report-group-right"><label>Auto ratio: </label></td>
+            <td class="import-report-number import-report-group-right">
+                <span id="autoRatio"></span>
+            </td>
+            <td class="import-report-number import-report-group-right"><span></span></td>
         </tr>
     </table>
 </div>

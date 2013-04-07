@@ -288,8 +288,10 @@ define [
         pb = util.genProgressBar()
         util.updateProgress('app/deliver-dict', postData, (json)->
           pb.parent().remove()
-          appInfo = "#{$('#appDispAppName').text()} #{$('#selAppVersion option:selected').text()}"
-          $.msgBox (i18n.dialog.dictlistpreview.success.format appInfo, json.event.msg), null, {title: c18n.info}
+#          appInfo = "#{$('#appDispAppName').text()} #{$('#selAppVersion option:selected').text()}"
+#          $.msgBox (i18n.dialog.dictlistpreview.success.format appInfo, json.event.msg), null, {title: c18n.info}
+          retJson = $.parseJSON(json.event.msg)
+          $('#importReportDialog').data('params', retJson).dialog 'open'
           $('#selAppVersion').trigger 'change'
         , pb)
       }
@@ -505,10 +507,10 @@ define [
 
       grid = $('#searchTextGrid')
 
-#      if 'app' == node.type
-#        grid.hideCol('app')
-#      else
-#        grid.showCol('app')
+      #      if 'app' == node.type
+      #        grid.hideCol('app')
+      #      else
+      #        grid.showCol('app')
 
       postData = grid.getGridParam('postData')
 
@@ -522,7 +524,6 @@ define [
       postData[node.type] = params.version.id
 
 
-
       grid.setCaption(i18n.dialog.searchtext.caption.format params.text, typeText, node.text, params.versionText)
         .setGridParam(url: urls.labels).trigger 'reloadGrid'
 
@@ -532,32 +533,62 @@ define [
   )
 
   importReport = $('#importReportDialog').dialog(
-    autoOpen: true, modal: true
-    width: 850
-    open:()->
+    autoOpen: false, modal: true
+    width: 600
+    open: ()->
       msg = """
             {
-              "dictNum": 5,
-              "labelNum": 247,
-              "translationNum": 5435,
-              "translationWC": 34141,
-              "distinctTranslationNum": 4503,
-              "distinctTranslationWC": 30813,
-              "untranslatedNum": 299,
-              "untranslatedWC": 1301,
-              "translatedNum": 4204,
-              "translatedWC": 29512,
-              "matchedNum": 391,
-              "matchedWC": 2656
+            "dictNum": 5,
+            "labelNum": 247,
+            "translationNum": 5435,
+            "translationWC": 34141,
+            "distinctTranslationNum": 4503,
+            "distinctTranslationWC": 30813,
+            "untranslatedNum": 299,
+            "untranslatedWC": 1301,
+            "translatedNum": 4204,
+            "translatedWC": 29512,
+            "matchedNum": 391,
+            "matchedWC": 2656
             }
             """
       json = $.parseJSON(msg)
+      json = $(@).data 'params'
+      console.log json
       appInfo = "#{$('#appDispAppName').text()} #{$('#selAppVersion option:selected').text()}".trim()
       appInfo = 'Demo version 1.0' if !appInfo
-      chart.showChart(
-        i18n.dialog.dictlistpreview.success.format json.labelNum, json.dictNum, appInfo
-        json
-      )
+
+      statisticsTabId = '#importReportStatistics'
+      $('#dicts', statisticsTabId).html(json.dictNum)
+      $('#labels', statisticsTabId).html(json.labelNum)
+
+      $('#dupTrans', statisticsTabId).html(json.translationNum - json.distinctTranslationNum)
+        .parent().next().children('span').html("#{json.translationWC- json.distinctTranslationWC}")
+      $('#totalTrans', statisticsTabId).html(json.translationNum)
+        .parent().next().children('span').html("#{json.translationWC}")
+      $('#dupRatio', statisticsTabId).html(((1 - json.distinctTranslationNum/json.translationNum)*100).toFixed(2) + '%')
+        .parent().next().children('span').html("#{((1 - json.distinctTranslationWC/json.translationWC)*100).toFixed(2)}%")
+
+      $('#translated', statisticsTabId).html(json.translatedNum)
+        .parent().next().children('span').html("#{json.translatedWC}")
+      $('#untranslated', statisticsTabId).html(json.untranslatedNum)
+        .parent().next().children('span').html("#{json.untranslatedWC}")
+      $('#transRatio', statisticsTabId).html((json.translatedNum/json.distinctTranslationNum*100).toFixed(2) + '%')
+        .parent().next().children('span').html("#{(json.translatedWC/json.distinctTranslationWC*100).toFixed(2)}%")
+
+      $('#autoTrans', statisticsTabId).html(json.matchedNum)
+        .parent().next().children('span').html("#{json.matchedWC}")
+      $('#distinctTrans', statisticsTabId).html(json.distinctTranslationNum)
+        .parent().next().children('span').html("#{json.distinctTranslationWC}")
+      $('#autoRatio', statisticsTabId).html((json.matchedNum/json.distinctTranslationNum*100).toFixed(2)+ '%')
+        .parent().next().children('span').html("#{(json.matchedWC/json.distinctTranslationWC*100).toFixed(2)}%")
+
+      appInfo = "#{$('#appDispAppName').text()} #{$('#selAppVersion option:selected').text()}".trim()
+      appInfo = 'Demo version 1.0' if !appInfo
+      title = i18n.dialog.dictlistpreview.success.format json.labelNum, json.dictNum, appInfo
+
+      $('#title', @).html(title)
+      chart.showChart(title, json)
 
     buttons: [
       {text: c18n.ok, click: -> $(@).dialog "close"}
