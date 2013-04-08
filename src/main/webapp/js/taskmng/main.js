@@ -41,9 +41,6 @@
       return $('#selVersion', '#taskmng').change(function() {
         var nodeInfo, postData, type;
 
-        if (typeof console !== "undefined" && console !== null) {
-          console.log("value=" + this.value);
-        }
         nodeInfo = util.getProductTreeInfo();
         type = nodeInfo.type;
         postData = {

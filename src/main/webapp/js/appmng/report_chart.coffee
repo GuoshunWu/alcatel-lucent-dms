@@ -1,6 +1,4 @@
-define [
-  'hchart'
-], ($)->
+define [ 'hchart'], ($)->
   options =
     chart:
       type: 'pie'
@@ -8,7 +6,9 @@ define [
       plotBorderWidth: null
       plotShadow: false
     tooltip:
-      enabled: false
+#      enabled: false
+      shared: true
+      formatter: ()->"<span style='color:#{@series.color}'>#{@point.name}</span>: <br/><b>#{@point.y}(#{@.point.percentage.toFixed(2)}%)</b><br/>"
     title:
       text: ''
     legend:
@@ -57,6 +57,9 @@ define [
       {name: 'No match', y: json.distinctTranslationNum - json.matchedNum, color: colors[3]}
     ]
     $('#autoTransContainer').highcharts(options)
+
+    # remove Highchars logo
+    $("tspan:contains('Highcharts.com')").remove()
 
   showChart: showChart
 

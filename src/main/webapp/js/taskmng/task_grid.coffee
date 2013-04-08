@@ -134,7 +134,7 @@ define [
             @pb.parent().remove() if !$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10
             #    request handler
             jsonFromServer = data.result
-            console?.log jsonFromServer
+#            console?.log jsonFromServer
             if(0 != jsonFromServer.status)
               $.msgBox jsonFromServer.message, null, {title: c18n.error}
               return

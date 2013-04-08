@@ -53,7 +53,7 @@ define
         "namerequired": 'Context name is required.'
         "labeltip": 'Please select label(s)'
 
-    browse: 'Upload dictionaries'
+    browse: 'Import dictionaries'
     generating: 'Generating...'
     choosefile: 'Choose file'
     uploadingfile: 'Uploading: '

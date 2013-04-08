@@ -43,6 +43,8 @@ public class BusinessException extends RuntimeException {
 
     // OTC PC  error
     static public final int INVALID_OTC_PC_DICT_FILE = 241;
+    // OTC　Web error
+    static public final int INVALID_OTC_WEB_DICT_FILE = 242;
 
     // application management
     static public final int CHARSET_NOT_FOUND = 301;
