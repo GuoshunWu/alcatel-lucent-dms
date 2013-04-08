@@ -554,13 +554,11 @@ define [
             """
       json = $.parseJSON(msg)
       json = $(@).data 'params'
-      console.log json
+#      console?.log json
       appInfo = "#{$('#appDispAppName').text()} #{$('#selAppVersion option:selected').text()}".trim()
-      appInfo = 'Demo version 1.0' if !appInfo
+      appInfo = 'Demo 1.0' if !appInfo
 
       statisticsTabId = '#importReportStatistics'
-      $('#dicts', statisticsTabId).html(json.dictNum)
-      $('#labels', statisticsTabId).html(json.labelNum)
 
       $('#dupTrans', statisticsTabId).html(json.translationNum - json.distinctTranslationNum)
         .parent().next().children('span').html("#{json.translationWC- json.distinctTranslationWC}")
@@ -584,7 +582,7 @@ define [
         .parent().next().children('span').html("#{(json.matchedWC/json.distinctTranslationWC*100).toFixed(2)}%")
 
       appInfo = "#{$('#appDispAppName').text()} #{$('#selAppVersion option:selected').text()}".trim()
-      appInfo = 'Demo version 1.0' if !appInfo
+      appInfo = 'Demo 1.0' if !appInfo
       title = i18n.dialog.dictlistpreview.success.format json.labelNum, json.dictNum, appInfo
 
       $('#title', @).html(title)

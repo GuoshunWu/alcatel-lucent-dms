@@ -356,34 +356,30 @@
 </div>
 
 <div id="importReportDialog" title="<s:text name="appmng.dialogs.importreport.title"/>">
-    <table id="importReportStatistics" width="100%" border="0" style="border: 1px solid">
-        <caption>
-            <label id="title" class="import-report-title"></label>
+    <table id="importReportStatistics" width="100%" border="0" style="border: 2px solid;" cellspacing="0">
+        <caption style="padding-bottom: 10px">
+            <span id="title" class="import-report-title"></span>
         </caption>
+
         <%-- Header --%>
         <tr>
-            <td class="import-report-label import-report-group-right import-report-header"><label>Total
-                Dictionaries: </label></td>
-            <td class="import-report-number import-report-group-right">
-                <span id="dicts"></span>
-            </td>
-            <td class="import-report-group-right"></td>
-            <td rowspan="2" class="import-report-group"></td>
-        </tr>
-        <tr>
-            <td class="import-report-label import-report-group import-report-group-right import-report-header"><label>Labels: </label>
-            </td>
-            <td class="import-report-number import-report-group import-report-group-right">
-                <span id="labels"></span>
-            </td>
-            <td align='right' class="import-report-group import-report-group-right">In words</td>
+            <th class="import-report-group import-report-group-right import-report-header">
+                <label>
+                    <s:text name="appmng.dialogs.importreport.category"/>
+                </label>
+            </th>
+            <th class="import-report-number import-report-group import-report-group-right">
+                <s:text name="appmng.dialogs.importreport.instrings"/>
+            </th>
+            <th class="import-report-group import-report-group-right"><s:text name="appmng.dialogs.importreport.inwords"/></th>
+            <th class="import-report-group"><s:text name="appmng.dialogs.importreport.chart"/></th>
         </tr>
 
         <%-- Duplication Translations --%>
         <tr>
-            <td class="import-report-label import-report-group-right"><label>Duplicated Translations: </label></td>
+            <td class="import-report-label import-report-group-right"><label><s:text name="appmng.dialogs.importreport.toltrans"/></label></td>
             <td class="import-report-number import-report-group-right">
-                <span id="dupTrans"></span>
+                <span id="totalTrans"></span>
             </td>
             <td class="import-report-number import-report-group-right"><span></span></td>
             <td rowspan="3" class="import-report-group">
@@ -391,15 +387,17 @@
             </td>
         </tr>
         <tr>
-            <td class="import-report-label import-report-group-right"><label>Total Translations: </label></td>
+            <td class="import-report-label import-report-group-right"><label><s:text name="appmng.dialogs.importreport.duptrans"/></label></td>
             <td class="import-report-number import-report-group-right">
-                <span id="totalTrans"></span>
+                <span id="dupTrans"></span>
             </td>
             <td class="import-report-number import-report-group-right"><span></span></td>
         </tr>
+
         <tr>
-            <td class="import-report-label import-report-group import-report-group-right"><label>Duplicate
-                ratio: </label></td>
+            <td class="import-report-label import-report-group import-report-group-right">
+                <label><s:text name="appmng.dialogs.importreport.dupratio"/></label>
+            </td>
             <td class="import-report-number import-report-group import-report-group-right">
                 <span id="dupRatio"></span>
             </td>
@@ -409,7 +407,7 @@
 
         <%-- Translated--%>
         <tr>
-            <td class="import-report-label import-report-group-right"><label>Translated: </label></td>
+            <td class="import-report-label import-report-group-right"><label><s:text name="appmng.dialogs.importreport.translated"/></label></td>
             <td class="import-report-number import-report-group-right">
                 <span id="translated"></span>
             </td>
@@ -419,14 +417,14 @@
             </td>
         </tr>
         <tr>
-            <td class="import-report-label import-report-group-right"><label>Untranslated: </label></td>
+            <td class="import-report-label import-report-group-right"><label><s:text name="appmng.dialogs.importreport.untranslated"/></label></td>
             <td class="import-report-number import-report-group-right">
                 <span id="untranslated"></span>
             </td>
             <td class="import-report-number import-report-group-right"><span></span></td>
         </tr>
         <tr>
-            <td class="import-report-label import-report-group import-report-group-right"><label>Trans ratio: </label>
+            <td class="import-report-label import-report-group import-report-group-right"><label><s:text name="appmng.dialogs.importreport.transratio"/></label>
             </td>
             <td class="import-report-number import-report-group import-report-group-right">
                 <span id="transRatio"></span>
@@ -436,9 +434,9 @@
 
         <%-- Auto Trans--%>
         <tr>
-            <td class="import-report-label import-report-group-right"><label>Auto trans: </label></td>
+            <td class="import-report-label import-report-group-right"><label><s:text name="appmng.dialogs.importreport.disttrans"/></label></td>
             <td class="import-report-number import-report-group-right">
-                <span id="autoTrans"></span>
+                <span id="distinctTrans"></span>
             </td>
             <td class="import-report-number import-report-group-right"><span></span></td>
             <td rowspan="3">
@@ -446,14 +444,15 @@
             </td>
         </tr>
         <tr>
-            <td class="import-report-label import-report-group-right"><label>Distinct Translations: </label></td>
+            <td class="import-report-label import-report-group-right"><label><s:text name="appmng.dialogs.importreport.autotrans"/></label></td>
             <td class="import-report-number import-report-group-right">
-                <span id="distinctTrans"></span>
+                <span id="autoTrans"></span>
             </td>
             <td class="import-report-number import-report-group-right"><span></span></td>
         </tr>
+
         <tr>
-            <td class="import-report-label import-report-group-right"><label>Auto ratio: </label></td>
+            <td class="import-report-label import-report-group-right"><label><s:text name="appmng.dialogs.importreport.autotransratio"/></label></td>
             <td class="import-report-number import-report-group-right">
                 <span id="autoRatio"></span>
             </td>

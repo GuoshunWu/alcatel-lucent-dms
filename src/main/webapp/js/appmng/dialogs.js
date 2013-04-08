@@ -825,14 +825,11 @@
         msg = "{\n\"dictNum\": 5,\n\"labelNum\": 247,\n\"translationNum\": 5435,\n\"translationWC\": 34141,\n\"distinctTranslationNum\": 4503,\n\"distinctTranslationWC\": 30813,\n\"untranslatedNum\": 299,\n\"untranslatedWC\": 1301,\n\"translatedNum\": 4204,\n\"translatedWC\": 29512,\n\"matchedNum\": 391,\n\"matchedWC\": 2656\n}";
         json = $.parseJSON(msg);
         json = $(this).data('params');
-        console.log(json);
         appInfo = ("" + ($('#appDispAppName').text()) + " " + ($('#selAppVersion option:selected').text())).trim();
         if (!appInfo) {
-          appInfo = 'Demo version 1.0';
+          appInfo = 'Demo 1.0';
         }
         statisticsTabId = '#importReportStatistics';
-        $('#dicts', statisticsTabId).html(json.dictNum);
-        $('#labels', statisticsTabId).html(json.labelNum);
         $('#dupTrans', statisticsTabId).html(json.translationNum - json.distinctTranslationNum).parent().next().children('span').html("" + (json.translationWC - json.distinctTranslationWC));
         $('#totalTrans', statisticsTabId).html(json.translationNum).parent().next().children('span').html("" + json.translationWC);
         $('#dupRatio', statisticsTabId).html(((1 - json.distinctTranslationNum / json.translationNum) * 100).toFixed(2) + '%').parent().next().children('span').html("" + (((1 - json.distinctTranslationWC / json.translationWC) * 100).toFixed(2)) + "%");
@@ -844,7 +841,7 @@
         $('#autoRatio', statisticsTabId).html((json.matchedNum / json.distinctTranslationNum * 100).toFixed(2) + '%').parent().next().children('span').html("" + ((json.matchedWC / json.distinctTranslationWC * 100).toFixed(2)) + "%");
         appInfo = ("" + ($('#appDispAppName').text()) + " " + ($('#selAppVersion option:selected').text())).trim();
         if (!appInfo) {
-          appInfo = 'Demo version 1.0';
+          appInfo = 'Demo 1.0';
         }
         title = i18n.dialog.dictlistpreview.success.format(json.labelNum, json.dictNum, appInfo);
         $('#title', this).html(title);

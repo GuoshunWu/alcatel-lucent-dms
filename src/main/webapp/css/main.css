@@ -118,15 +118,15 @@ input[readonly] {
 
 .import-report-number{
     text-align: right;
-    width: 60px;
+    width: 75px;
 }
 
 .import-report-group{
-    border-bottom: 1px dashed #000000;
+    border-bottom: 1px solid #000000;
 }
 
 .import-report-group-right{
-    border-right: 1px dashed #000000;
+    border-right: 1px solid #000000;
 }
 
 .import-report-chart-container{
