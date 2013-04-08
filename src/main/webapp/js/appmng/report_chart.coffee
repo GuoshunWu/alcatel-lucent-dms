@@ -40,8 +40,8 @@ define [
 #    options.subtitle.text = "Translation number: #{json.translationNum}"
 
     options.series[0].data = [
-      {name: 'Duplicated', y: json.distinctTranslationNum}
-      {name: 'Distinct', y: json.translationNum - json.distinctTranslationNum, color: colors[3]}
+      {name: 'Duplicated', y: json.translationNum - json.distinctTranslationNum}
+      {name: 'Distinct', y: json.distinctTranslationNum, color: colors[3]}
     ]
     $('#dupContainer').highcharts(options)
 
@@ -54,7 +54,7 @@ define [
 
     options.series[0].data = [
       ['Auto trans', json.matchedNum]
-      {name: 'Not auto trans', y: json.distinctTranslationNum - json.matchedNum, color: colors[3]}
+      {name: 'No match', y: json.distinctTranslationNum - json.matchedNum, color: colors[3]}
     ]
     $('#autoTransContainer').highcharts(options)
 

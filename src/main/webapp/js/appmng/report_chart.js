@@ -47,10 +47,10 @@
       options.series[0].data = [
         {
           name: 'Duplicated',
-          y: json.distinctTranslationNum
+          y: json.translationNum - json.distinctTranslationNum
         }, {
           name: 'Distinct',
-          y: json.translationNum - json.distinctTranslationNum,
+          y: json.distinctTranslationNum,
           color: colors[3]
         }
       ];
@@ -66,7 +66,7 @@
       $('#transContainer').highcharts(options);
       options.series[0].data = [
         ['Auto trans', json.matchedNum], {
-          name: 'Not auto trans',
+          name: 'No match',
           y: json.distinctTranslationNum - json.matchedNum,
           color: colors[3]
         }
