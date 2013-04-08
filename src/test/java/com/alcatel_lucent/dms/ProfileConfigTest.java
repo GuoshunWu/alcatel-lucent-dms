@@ -8,6 +8,10 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,9 +26,9 @@ import java.util.Properties;
  * Time: 下午7:42
  * To change this template use File | Settings | File Templates.
  */
-//@Ignore
+@Ignore
 public class ProfileConfigTest {
-    
+
 //    @Test
     public void testConfig() throws IOException {
         InputStream in = ClassLoader.getSystemResourceAsStream("proxool.properties");
@@ -42,9 +46,9 @@ public class ProfileConfigTest {
         System.out.println(dbpassword);
     }
 
-//    @Test
-    public void testMultiMap(){
-        MultiValueMap<String,String> test= new LinkedMultiValueMap<String,String>();
+    //    @Test
+    public void testMultiMap() {
+        MultiValueMap<String, String> test = new LinkedMultiValueMap<String, String>();
         test.add("AA", "BB");
 //        test.add("AA", "AB");
 //        test.add("AA", "AB");
@@ -55,14 +59,24 @@ public class ProfileConfigTest {
 
     }
 
-    @Test
-    public void testIOUtil(){
-        File f=new File("D:\\360CloudUI\\Cache\\45698397\\Documents");
-        Collection<File> files= FileUtils.listFiles(f, null, true);
+//    @Test
+    public void testJSEngine() throws Exception {
+        ScriptEngine engine = new ScriptEngineManager().getEngineByName("JavaScript");
+        System.out.println("Test begin...");
+        testUsingJDKClasses(engine);//演示脚本语言如何使用JDK平台下的类
+    }
 
-        for(File file: files){
-            System.out.println(file);
-        }
-
+    private void testUsingJDKClasses(ScriptEngine engine) throws ScriptException, NoSuchMethodException {
+        //Packages是脚本语言里的一个全局变量,专用于访问JDK的package
+        String js = "function doSwing(t){" +
+                "   var f=new Packages.javax.swing.JFrame(t);" +
+                "       f.setSize(400,300);" +
+                "       f.setVisible(true);" +
+                "}";
+        engine.eval(js);
+        //Invocable 接口: 允许java平台调用脚本程序中的函数或方法
+        Invocable inv = (Invocable) engine;
+        //invokeFunction()中的第一个参数就是被调用的脚本程序中的函数，第二个参数是传递给被调用函数的参数；
+        inv.invokeFunction("doSwing", "Scripting Swing");
     }
 }

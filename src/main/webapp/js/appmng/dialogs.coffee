@@ -286,10 +286,8 @@ define [
         dictListPreview.dialog 'close'
 
         pb = util.genProgressBar()
-        util.updateProgress('app/deliver-dict', postData, (json)->
+        util.updateProgress(urls.app.deliver_dict, postData, (json)->
           pb.parent().remove()
-#          appInfo = "#{$('#appDispAppName').text()} #{$('#selAppVersion option:selected').text()}"
-#          $.msgBox (i18n.dialog.dictlistpreview.success.format appInfo, json.event.msg), null, {title: c18n.info}
           retJson = $.parseJSON(json.event.msg)
           $('#importReportDialog').data('params', retJson).dialog 'open'
           $('#selAppVersion').trigger 'change'

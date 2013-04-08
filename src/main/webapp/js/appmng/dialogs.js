@@ -459,7 +459,7 @@
             }
             dictListPreview.dialog('close');
             pb = util.genProgressBar();
-            return util.updateProgress('app/deliver-dict', postData, function(json) {
+            return util.updateProgress(urls.app.deliver_dict, postData, function(json) {
               var retJson;
 
               pb.parent().remove();

@@ -10,7 +10,10 @@
         plotShadow: false
       },
       tooltip: {
-        enabled: false
+        shared: true,
+        formatter: function() {
+          return "<span style='color:" + this.series.color + "'>" + this.point.name + "</span>: <br/><b>" + this.point.y + "(" + (this.point.percentage.toFixed(2)) + "%)</b><br/>";
+        }
       },
       title: {
         text: ''
@@ -71,7 +74,8 @@
           color: colors[3]
         }
       ];
-      return $('#autoTransContainer').highcharts(options);
+      $('#autoTransContainer').highcharts(options);
+      return $("tspan:contains('Highcharts.com')").remove();
     };
     return {
       showChart: showChart

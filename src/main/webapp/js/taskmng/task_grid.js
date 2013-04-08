@@ -233,9 +233,6 @@
                   this.pb.parent().remove();
                 }
                 jsonFromServer = data.result;
-                if (typeof console !== "undefined" && console !== null) {
-                  console.log(jsonFromServer);
-                }
                 if (0 !== jsonFromServer.status) {
                   $.msgBox(jsonFromServer.message, null, {
                     title: c18n.error

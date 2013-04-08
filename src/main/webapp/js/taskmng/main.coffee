@@ -37,7 +37,7 @@ define [
 #    console?.log "transmng panel ready..."
     # initilize version selector
     $('#selVersion', '#taskmng').change ()->
-      console?.log "value=#{@value}"
+#      console?.log "value=#{@value}"
 #      return if !@value or -1 == parseInt @value
       nodeInfo=util.getProductTreeInfo()
       #      console?.log nodeInfo

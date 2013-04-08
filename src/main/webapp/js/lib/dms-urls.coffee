@@ -30,13 +30,18 @@ define (require)->
     del: getURL('remove-application-base', 'app/')
     create_version: getURL('create-application', 'app/')
     remove_version: getURL('remove-application', 'app/')
+    deliver_dict: getURL('deliver-dict', 'app/')
   label:
     del: getURL('delete-label', 'app/')
     create: getURL('add-label', 'app/')
+  task:
+    apply:  getURL('apply-task', 'task/')
+    close:  getURL('close-task', 'task/')
 
   trans:
     update_translation: getURL('update-translation', 'trans/')
     update_status: getURL('update-status', 'trans/')
+
 
   #  rest urls
   prod_versions:getURL('products/version','rest/')

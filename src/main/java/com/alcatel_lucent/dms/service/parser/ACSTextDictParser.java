@@ -78,7 +78,7 @@ public class ACSTextDictParser extends DictionaryParser {
                 deliveredDicts.add(parseProp(rootDir, baseName, textFiles.get(baseName), refTextFiles.get(baseName)));
             } catch (BusinessException e) {
                 e.addNestedException(exceptions);
-            	log.info(file + " is not a ACSText because {}", e.getMessage());
+                log.info(file + " is not a ACSText because {}", e.getMessage());
             }
             acceptedFiles.add(refFile);
             if (null != textFiles.get(baseName)) {
@@ -168,12 +168,12 @@ public class ACSTextDictParser extends DictionaryParser {
             in = new AutoCloseInputStream(new FileInputStream(file));
             String encoding = Util.detectEncoding(file);
             if (encoding.startsWith("UTF-")) {
-                do{
+                do {
                     in = new BOMInputStream(in, ByteOrderMark.UTF_8, ByteOrderMark.UTF_16BE, ByteOrderMark.UTF_16LE);
-                }while(((BOMInputStream)in).hasBOM());
-            } else {
+                } while (((BOMInputStream) in).hasBOM());
+            } else if (!isRef) {
 //                encoding is ISO-8859-1
-                encoding = languageService.getLanguage(encoding).getDefaultCharset();
+                encoding = languageService.getLanguage(splitFileName(file.getName())[2]).getDefaultCharset();
             }
             List<String> lines = IOUtils.readLines(in, encoding);
 
@@ -199,7 +199,7 @@ public class ACSTextDictParser extends DictionaryParser {
                             keyElement[0]));
                     continue;
                 }
-                if(2 != keyElement.length){
+                if (2 != keyElement.length) {
                     continue;
                 }
                 keys.add(keyElement[0]);
@@ -240,9 +240,7 @@ public class ACSTextDictParser extends DictionaryParser {
             e.printStackTrace();
             exceptions.addNestedException(new BusinessException(e.toString()));
         } finally {
-            if (null != in) {
-                IOUtils.closeQuietly(in);
-            }
+            IOUtils.closeQuietly(in);
         }
         return result;
     }

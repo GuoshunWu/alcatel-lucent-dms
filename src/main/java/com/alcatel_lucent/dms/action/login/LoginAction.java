@@ -14,7 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 @SuppressWarnings("serial")
@@ -63,12 +65,13 @@ public class LoginAction extends BaseAction implements SessionAware {
     @Override
     public void setSession(Map<String, Object> session) {
         this.session = session;
+        log.info("In login action, requested session id="+request.getRequestedSessionId());
+        log.info("In login action, session id=" + request.getSession().getId());
     }
 
     @Action(value = "/login", results = {
             @Result(type = "redirect", location = "${location}"),
-            @Result(name = INPUT, location = "/login.jsp"),
-            @Result(name = TokenInterceptor.INVALID_TOKEN_CODE, location = "/login.jsp")
+            @Result(name = INPUT, location = "/login.jsp")
     })
     public String execute() throws Exception {
         User user = authenticationService.login(loginname, password);
@@ -76,6 +79,12 @@ public class LoginAction extends BaseAction implements SessionAware {
             session.put(UserContext.SESSION_USER_CONTEXT, new UserContext(getLocale(), user));
             log.debug("user: " + user);
             log.debug("redirect to " + getLocation());
+
+//          Tomcat will create new session id if there is no JSESSIONID cookie when https jump to http
+            HttpServletResponse response=ServletActionContext.getResponse();
+            Cookie cookie = new Cookie("JSESSIONID", request.getSession().getId());
+            response.addCookie(cookie);
+
             return SUCCESS;
         }
         addActionError(getText("message.loginfail"));

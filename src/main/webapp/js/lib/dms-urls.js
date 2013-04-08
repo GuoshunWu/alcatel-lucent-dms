@@ -57,11 +57,16 @@ Time: 下午7:
         create: getURL('create-application-base', 'app/'),
         del: getURL('remove-application-base', 'app/'),
         create_version: getURL('create-application', 'app/'),
-        remove_version: getURL('remove-application', 'app/')
+        remove_version: getURL('remove-application', 'app/'),
+        deliver_dict: getURL('deliver-dict', 'app/')
       },
       label: {
         del: getURL('delete-label', 'app/'),
         create: getURL('add-label', 'app/')
+      },
+      task: {
+        apply: getURL('apply-task', 'task/'),
+        close: getURL('close-task', 'task/')
       },
       trans: {
         update_translation: getURL('update-translation', 'trans/'),

@@ -5,10 +5,11 @@ define [
   'i18n!nls/common'
   'i18n!nls/taskmng'
   'dms-util'
+  'dms-urls'
 
   'taskmng/taskreport_grid'
   'taskmng/transdetail_grid'
-], ($, msgbox, c18n, i18n, util, reportgrid, detailgrid)->
+], ($, msgbox, c18n, i18n, util, urls, reportgrid, detailgrid)->
 
   languageChooserDialog = $("<div title='Study' id='languageChooser'>").dialog {
   autoOpen: false, height: 'auto', width: 900, modal: true
@@ -31,20 +32,40 @@ define [
       {text: c18n.close, click: ()-> $(@).dialog "close"}
     ]
 
-    buttons.unshift {text: c18n.import, click: ()->
+    buttons.unshift {text: c18n['import'], click: ()->
       param = $(@).data 'param'
-      $.blockUI
-      $.post 'task/apply-task', {id: param.id}, (json)->
+
+      # waiting for progress bar update service...
+#      pb = util.genProgressBar()
+#      util.updateProgress(urls.task.apply, {id: param.id}, (json)->
+#        pb.parent().remove()
+#        retJson = $.parseJSON(json.event.msg)
+#        ($.msgBox json.message, null, {title: c18n.error};return) if retJson.status != 0
+#
+#        $.msgBox i18n.task.confirmmsg, ((keyPressed)->
+#          if c18n.no == keyPressed
+#            $.blockUI()
+#            $.post urls.task.close, {id: param.id}, (json)->
+#              $.unblockUI()
+#              ($.msgBox json.message, null, {title: c18n.error}; return)if json.status != 0
+#              $("#taskGrid").trigger 'reloadGrid'
+#        ), {title: c18n.confirm}, [c18n.yes, c18n.no]
+#      , pb)
+
+      $.blockUI()
+      $.post(urls.task.apply, {id: param.id}, (json)->
         $.unblockUI()
         ($.msgBox json.message, null, {title: c18n.error};return) if json.status != 0
+
         $.msgBox i18n.task.confirmmsg, ((keyPressed)->
           if c18n.no == keyPressed
-            $.blockUI
-            $.post 'task/close-task', {id: param.id}, (json)->
+            $.blockUI()
+            $.post urls.task.close, {id: param.id}, (json)->
               $.unblockUI()
               ($.msgBox json.message, null, {title: c18n.error}; return)if json.status != 0
               $("#taskGrid").trigger 'reloadGrid'
         ), {title: c18n.confirm}, [c18n.yes, c18n.no]
+      )
       $(@).dialog "close"
     } unless param.viewReport
     $(@).dialog 'option', 'buttons', buttons

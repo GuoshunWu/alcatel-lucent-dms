@@ -117,9 +117,8 @@
         <appender-ref ref="FILE_DIC_DELIVER_WARNING"/>
     </logger>
 
-
     <root>
-        <level value="INFO"/>
+        <level value="WARN"/>
         <appender-ref ref="CONSOLE"/>
         <!--<appender-ref ref="FILE"/>-->
         <!-- <appender-ref ref="ASYNC" /> -->
