@@ -464,7 +464,7 @@
             <td class="import-report-number import-report-group-right"><span></span></td>
         </tr>
         <tr>
-            <td class="import-report-label import-report-group-right"><label>No Match</label></td>
+            <td class="import-report-label import-report-group-right"><label><s:text name="appmng.dialogs.importreport.nomatch"/></label></td>
             <td class="import-report-number import-report-group-right">
                 <span id="noMatch"></span>
             </td>
