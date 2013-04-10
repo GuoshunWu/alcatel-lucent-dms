@@ -118,7 +118,7 @@
     </logger>
 
     <root>
-        <level value="WARN"/>
+        <level value="INFO"/>
         <appender-ref ref="CONSOLE"/>
         <!--<appender-ref ref="FILE"/>-->
         <!-- <appender-ref ref="ASYNC" /> -->
