@@ -1,6 +1,8 @@
-V2.2.0(Apr. 1st 2013)
+V2.2.0 (Apr. 10, 2013)
  What's new in DMS 2.2.0
     * Major Highlights
+      Graphical delivery report after importing dictionaries
+      Full text search on product/application level
       New dictionary format support: ACS dictionary (txt)
       New dictionary format support: OTC PC(excel)
     * Improvements
