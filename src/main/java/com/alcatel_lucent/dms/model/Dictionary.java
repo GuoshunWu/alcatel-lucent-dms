@@ -48,6 +48,43 @@ public class Dictionary extends BaseEntity {
     @Column(name = "ID")
     @Override
     public Long getId() {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         return super.getId();
     }
 

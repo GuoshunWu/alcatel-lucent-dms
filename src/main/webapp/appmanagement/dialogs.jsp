@@ -382,7 +382,7 @@
                 <span id="totalTrans"></span>
             </td>
             <td class="import-report-number import-report-group-right"><span></span></td>
-            <td rowspan="3" class="import-report-group">
+            <td rowspan="4" class="import-report-group">
                 <div id="dupContainer" class="import-report-chart-container"></div>
             </td>
         </tr>
@@ -393,7 +393,13 @@
             </td>
             <td class="import-report-number import-report-group-right"><span></span></td>
         </tr>
-
+        <tr>
+            <td class="import-report-label import-report-group-right"><label><s:text name="appmng.dialogs.importreport.disttrans"/></label></td>
+            <td class="import-report-number import-report-group-right">
+                <span id="distinctTrans1"></span>
+            </td>
+            <td class="import-report-number import-report-group-right"><span></span></td>
+        </tr>
         <tr>
             <td class="import-report-label import-report-group import-report-group-right">
                 <label><s:text name="appmng.dialogs.importreport.dupratio"/></label>
@@ -407,15 +413,22 @@
 
         <%-- Translated--%>
         <tr>
+            <td class="import-report-label import-report-group-right"><label><s:text name="appmng.dialogs.importreport.disttrans"/></label></td>
+            <td class="import-report-number import-report-group-right">
+                <span id="distinctTrans2"></span>
+            </td>
+            <td class="import-report-number import-report-group-right"><span></span></td>
+            <td rowspan="4" class="import-report-group">
+                <div id="transContainer" class="import-report-chart-container"></div>
+            </td>
+        </tr>
+        <tr>
             <td class="import-report-label import-report-group-right"><label><s:text name="appmng.dialogs.importreport.translated"/></label></td>
             <td class="import-report-number import-report-group-right">
                 <span id="translated"></span>
             </td>
             <td class="import-report-number import-report-group-right"><span></span></td>
-            <td rowspan="3" class="import-report-group">
-                <div id="transContainer" class="import-report-chart-container"></div>
-            </td>
-        </tr>
+       </tr>
         <tr>
             <td class="import-report-label import-report-group-right"><label><s:text name="appmng.dialogs.importreport.untranslated"/></label></td>
             <td class="import-report-number import-report-group-right">
@@ -434,12 +447,12 @@
 
         <%-- Auto Trans--%>
         <tr>
-            <td class="import-report-label import-report-group-right"><label><s:text name="appmng.dialogs.importreport.disttrans"/></label></td>
+            <td class="import-report-label import-report-group-right"><label><s:text name="appmng.dialogs.importreport.untranslated"/></label></td>
             <td class="import-report-number import-report-group-right">
-                <span id="distinctTrans"></span>
+                <span id="untranslated1"></span>
             </td>
             <td class="import-report-number import-report-group-right"><span></span></td>
-            <td rowspan="3">
+            <td rowspan="4">
                 <div id="autoTransContainer" class="import-report-chart-container"></div>
             </td>
         </tr>
@@ -450,7 +463,14 @@
             </td>
             <td class="import-report-number import-report-group-right"><span></span></td>
         </tr>
+        <tr>
+            <td class="import-report-label import-report-group-right"><label>No Match</label></td>
+            <td class="import-report-number import-report-group-right">
+                <span id="noMatch"></span>
+            </td>
+            <td class="import-report-number import-report-group-right"><span></span></td>
 
+        </tr>
         <tr>
             <td class="import-report-label import-report-group-right"><label><s:text name="appmng.dialogs.importreport.autotransratio"/></label></td>
             <td class="import-report-number import-report-group-right">

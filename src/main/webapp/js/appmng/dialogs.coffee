@@ -531,8 +531,9 @@ define [
   )
 
   importReport = $('#importReportDialog').dialog(
-    autoOpen: false, modal: true
-    width: 600
+    autoOpen: false
+    width: 600, modal: true
+
     open: ()->
       msg = """
             {
@@ -552,19 +553,32 @@ define [
             """
       json = $.parseJSON(msg)
       json = $(@).data 'params'
-#      console?.log json
+
       appInfo = "#{$('#appDispAppName').text()} #{$('#selAppVersion option:selected').text()}".trim()
       appInfo = 'Demo 1.0' if !appInfo
 
       statisticsTabId = '#importReportStatistics'
 
+      # number ajdust
+      json.translatedNum -= json.matchedNum
+      json.translatedWC -= json.matchedWC
+
+      json.untranslatedNum +=json.matchedNum
+      json.untranslatedWC +=json.matchedWC
+
+      #console?.log json
+
       $('#dupTrans', statisticsTabId).html(json.translationNum - json.distinctTranslationNum)
         .parent().next().children('span').html("#{json.translationWC- json.distinctTranslationWC}")
+      $('#distinctTrans1', statisticsTabId).html(json.distinctTranslationNum)
+        .parent().next().children('span').html("#{json.distinctTranslationWC}")
       $('#totalTrans', statisticsTabId).html(json.translationNum)
         .parent().next().children('span').html("#{json.translationWC}")
       $('#dupRatio', statisticsTabId).html(((1 - json.distinctTranslationNum/json.translationNum)*100).toFixed(2) + '%')
         .parent().next().children('span').html("#{((1 - json.distinctTranslationWC/json.translationWC)*100).toFixed(2)}%")
 
+      $('#distinctTrans2', statisticsTabId).html(json.distinctTranslationNum)
+        .parent().next().children('span').html("#{json.distinctTranslationWC}")
       $('#translated', statisticsTabId).html(json.translatedNum)
         .parent().next().children('span').html("#{json.translatedWC}")
       $('#untranslated', statisticsTabId).html(json.untranslatedNum)
@@ -572,12 +586,14 @@ define [
       $('#transRatio', statisticsTabId).html((json.translatedNum/json.distinctTranslationNum*100).toFixed(2) + '%')
         .parent().next().children('span').html("#{(json.translatedWC/json.distinctTranslationWC*100).toFixed(2)}%")
 
+      $('#untranslated1', statisticsTabId).html(json.untranslatedNum)
+        .parent().next().children('span').html("#{json.untranslatedWC}")
       $('#autoTrans', statisticsTabId).html(json.matchedNum)
         .parent().next().children('span').html("#{json.matchedWC}")
-      $('#distinctTrans', statisticsTabId).html(json.distinctTranslationNum)
-        .parent().next().children('span').html("#{json.distinctTranslationWC}")
-      $('#autoRatio', statisticsTabId).html((json.matchedNum/json.distinctTranslationNum*100).toFixed(2)+ '%')
-        .parent().next().children('span').html("#{(json.matchedWC/json.distinctTranslationWC*100).toFixed(2)}%")
+      $('#noMatch', statisticsTabId).html(json.untranslatedNum - json.matchedNum)
+        .parent().next().children('span').html("#{json.untranslatedWC - json.matchedWC}")
+      $('#autoRatio', statisticsTabId).html((json.matchedNum/json.untranslatedNum*100).toFixed(2)+ '%')
+        .parent().next().children('span').html("#{(json.matchedWC/json.untranslatedWC*100).toFixed(2)}%")
 
       appInfo = "#{$('#appDispAppName').text()} #{$('#selAppVersion option:selected').text()}".trim()
       appInfo = 'Demo 1.0' if !appInfo
