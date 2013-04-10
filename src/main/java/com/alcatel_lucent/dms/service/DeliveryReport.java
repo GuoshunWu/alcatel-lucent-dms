@@ -162,9 +162,15 @@ public class DeliveryReport {
 				if (dl.getLanguage().getId() == 1) continue;	// ignore English
 				LabelTranslation lt = label.getOrigTranslation(dl.getLanguageCode());
 				Translation trans = text.getTranslation(dl.getLanguage().getId());
+				String key = label.getContext().getKey() + "~~" + dl.getLanguage().getId() + "~~" + label.getReference();
 				if (!label.getContext().getName().equals(Context.EXCLUSION) &&
-						(lt == null || lt.getOrigTranslation().equals(label.getReference()) && lt.isNeedTranslation()) && 
-						trans != null && trans.getStatus() == Translation.STATUS_TRANSLATED) {
+						(lt == null || lt.isNeedTranslation() && 
+							(lt.getStatus() == null || lt.getStatus() != Translation.STATUS_TRANSLATED) &&
+							(lt.getStatus() != null && lt.getStatus() != Translation.STATUS_TRANSLATED || 
+							lt.getOrigTranslation().equals(label.getReference()))
+						) && 
+						trans != null && trans.getStatus() == Translation.STATUS_TRANSLATED &&
+						!translatedSet.contains(key)) {
 					matchedNum++;
 					matchedWC += labelWC;
 				}
@@ -172,7 +178,6 @@ public class DeliveryReport {
 					translatedNum++;
 					translatedWC += labelWC;
 				} else {
-					String key = label.getContext().getKey() + "~~" + dl.getLanguage().getId() + "~~" + label.getReference();
 					boolean translated = !label.getContext().getName().equals(Context.EXCLUSION) &&
 							trans != null && trans.getStatus() == Translation.STATUS_TRANSLATED;
 					if (translated && !translatedSet.contains(key)) {
