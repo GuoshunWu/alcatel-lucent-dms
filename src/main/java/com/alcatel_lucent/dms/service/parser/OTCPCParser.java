@@ -107,7 +107,7 @@ public class OTCPCParser extends DictionaryParser {
         dl.setLanguageCode(langCode);
         dl.setSortNo(index);
 
-        dl.setLanguage(languageService.findLanguageByName(langCode));
+        dl.setLanguage(languageService.getLanguage(langCode));
         dl.setCharset(new Charset(DEFAULT_ENCODING));
 
         dl.setDictionary(dict);
