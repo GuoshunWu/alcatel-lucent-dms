@@ -1,0 +1,40 @@
+V2.2.0 (Apr. 10, 2013)
+ What's new in DMS 2.2.0
+    * Major Highlights
+      Graphical delivery report after importing dictionaries
+      Full text search on product/application level
+      New dictionary format support: ACS dictionary (txt)
+      New dictionary format support: OTC PC(excel)
+    * Improvements
+
+    * Changes
+      Adjust label edit(lock labels) UI.
+      Generate xdcp file for XMLDict generation
+    * Fixes
+      Translation detail grid page did not initialized correctly when "View translation detail" open
+      If there is not a product/application version exist, task grid will not auto-refresh when you switch node on the tree
+      West panel scroll bar would disappear if you adjust its width
+      Make sure DOM and java script files load in correct order to keep page layout correct(it was disorder occasionally)
+      XML property file name incorrect when change other dictionary format to xml prop.
+
+ Known Issues
+ Troubleshooting
+ Frequently Asked Questions
+
+V2.1.1
+ * New dictionary format: ICE Java Alarm (XML)
+ * Adjust XML Properties adaptor to support CMS XML dictionaries
+ * UI improvement of String Settings
+ * Adjust delivery algorithm to match existing translation in scope all contexts
+ * Bug fix of task detal view
+ * Bug fix of session timed out issue
+
+V2.1.0
+ * New UI: all contents in a single AJAX page
+ * Product tree is also available for Translation and Task view
+ * New progress bar for delivering and generating dictionaries
+ * Allow to add/modify/delete labels in Dictionary view
+ * Allow to modify translation directly in Translation view
+ * New dictionary format: Standard Excel
+ * Keep original structure of XMLDict files
+ 
