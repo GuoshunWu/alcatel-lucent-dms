@@ -26,8 +26,9 @@ public class Constants {
         TEXT_PROP("Text properties"),
         ACS_TEXT("ACS text"),
         OTC_PC("OTC PC"),
-        OTC_ANDROID_IPHONE("OTC Android/iPhone"),
-        OTC_WEB("OTC Web");
+//        OTC_ANDROID_IPHONE("OTC Android/iPhone"),
+//        OTC_WEB("OTC Web"),
+        VOICE_APP("Voice App");
 
 
         private static Map<String, DictionaryFormat> valueEnumMap = new HashMap<String, DictionaryFormat>();

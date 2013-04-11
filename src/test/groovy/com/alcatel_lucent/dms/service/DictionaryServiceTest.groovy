@@ -3,12 +3,15 @@ package com.alcatel_lucent.dms.service
 import com.alcatel_lucent.dms.Constants
 import com.alcatel_lucent.dms.UserContext
 import com.alcatel_lucent.dms.model.User
+import com.alcatel_lucent.dms.util.Util
 import org.apache.commons.io.ByteOrderMark
 import org.apache.commons.io.IOUtils
 import org.apache.commons.io.input.BOMInputStream
 import org.junit.*
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.orm.hibernate3.SessionFactoryUtils
+import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.test.context.transaction.TransactionConfiguration
@@ -38,6 +41,9 @@ public class DictionaryServiceTest {
     @Resource
     private DaoService daoService
 
+
+    private String testFileRoot = 'D:/MyDocuments/Alcatel_LucentSBell/DMS/DMSFiles'
+
     @BeforeClass
     static void setUpBeforeClass() throws Exception {
 
@@ -57,24 +63,28 @@ public class DictionaryServiceTest {
     }
 
     @Test
-    void testParserForOTCWeb() {
-        String destDir = "D:/test/dictgenerate/"
-        File f = new File('D:/MyDocuments/Alcatel_LucentSBell/DMS/DMSFiles/OTC_Web')
-        f = new File('D:/MyDocuments/Alcatel_LucentSBell/DMS/DMSFiles/ACSTextDict')
+//    @Rollback(false)
+    void testDictionaryProcess() {
+        String targetDir = "D:/test/dictgenerate/"
+
+        String srcPath = 'OTC_Web'
+        srcPath = 'ACSTextDict'
+        srcPath = 'VoiceApp/test'
+
+        File f = new File("${testFileRoot}/${srcPath}")
+
+        UserContext.userContext = new UserContext(Locale.ENGLISH, new User('guoshunw', "Guoshun WU", 'Guoshun.Wu@alcatel-sbell.com.cn'))
 
         Collection<com.alcatel_lucent.dms.model.Dictionary> dicts = dictionaryService.previewDictionaries(f.absolutePath, f, 1)
         println "About to import dicts: ${dicts}".center(100, '=')
 
-        UserContext.userContext=new UserContext(Locale.ENGLISH, new User('guoshunw', "Guoshun WU", 'Guoshun.Wu@alcatel-sbell.com.cn'))
-
         dictionaryService.importDictionaries(1, dicts, Constants.ImportingMode.DELIVERY)
-        com.alcatel_lucent.dms.model.Dictionary dbDict = null
-        for (com.alcatel_lucent.dms.model.Dictionary dict : dicts) {
-            dbDict = daoService.retrieveOne('from Dictionary where base.name=:name', ['name': dict.name])
-            dictionaryService.generateDictFiles(destDir, [dbDict.id])
-        }
 
-//        dictionaryService.generateDictFiles()
+        daoService.session.clear()
+
+        // There may be dictionaries errors need to be adjust manually here
+        Collection<Long> dbIds=daoService.retrieve('select id from Dictionary where base.name in :names', ['names': Util.getObjectProperiesList(dicts, 'name')])
+        dictionaryService.generateDictFiles(targetDir, dbIds)
 
     }
 
@@ -85,10 +95,6 @@ public class DictionaryServiceTest {
         println daoService.retrieve("from User where loginName = 'test'")
     }
 
-//    @Test
-    void testGenerateDictForOTCPC() {
-        dictionaryService.generateDictFiles("D:/test/", [51])
-    }
 
 //    @Test
     void testBOM() {

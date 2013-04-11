@@ -21,7 +21,7 @@ import java.util.*;
 
 import static org.apache.commons.io.FilenameUtils.normalize;
 
-@Component
+//@Component
 public class OTCAndoridOrIPhoneParser extends DictionaryParser {
 
     public static final String TITLE_ID = "ID";
