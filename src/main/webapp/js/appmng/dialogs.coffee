@@ -521,8 +521,7 @@ define [
 
       postData[node.type] = params.version.id
 
-
-      grid.setCaption(i18n.dialog.searchtext.caption.format params.text, typeText, node.text, params.versionText)
+      grid.setCaption(i18n.dialog.searchtext.caption.format params.text, typeText, node.text, params.version.text)
         .setGridParam(url: urls.labels).trigger 'reloadGrid'
 
     buttons: [

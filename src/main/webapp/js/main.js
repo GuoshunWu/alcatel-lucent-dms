@@ -13,6 +13,7 @@
       var nodeInfo, options, tmp, treeSelectedNode, type, value;
 
       if ('admin' === oldpnl || 'admin' === newpnl) {
+        $('#adminTabs').tabs('select', 2);
         return;
       }
       treeSelectedNode = $("#appTree").jstree('get_selected');

@@ -17,7 +17,9 @@ define [
   panelSwitchHandler = (oldpnl, newpnl)->
     # we need keep the panels to be informed if current product base changed
 #    console?.log "oldpnl= #{oldpnl}, newpnl= #{newpnl}."
-    return if 'admin' == oldpnl or 'admin' == newpnl
+    if 'admin' == oldpnl or 'admin' == newpnl
+      $('#adminTabs').tabs 'select', 2
+      return
 
     treeSelectedNode=$("#appTree").jstree 'get_selected'
     nodeInfo = util.getProductTreeInfo()

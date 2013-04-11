@@ -7,6 +7,9 @@
       },
       charsetgrid: {
         caption: 'Charset List'
+      },
+      usergrid: {
+        caption: 'User List'
       }
     },
     "zh-cn": true

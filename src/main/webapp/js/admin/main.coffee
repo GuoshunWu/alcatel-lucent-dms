@@ -1,4 +1,11 @@
-define ['require','jqueryui', 'admin/languagegrid', 'admin/charsetgrid'], (require, $)->
+define [
+  'require'
+  'jqueryui'
+
+  'admin/languagegrid'
+  'admin/charsetgrid'
+  'admin/usergrid'
+], (require, $)->
   init = ()->
 #    console?.log "transmng panel init..."
     $('#adminTabs').tabs(
@@ -15,7 +22,6 @@ define ['require','jqueryui', 'admin/languagegrid', 'admin/charsetgrid'], (requi
 #    console?.log "init tabs height=#{pheight}."
 
     $('div.ui-tabs-panel', tabs).height(pheight - 50)
-    tabs.tabs 'select', 2
     #  console?.log "language grid height=#{$('#languageGrid').getGridParam('height')}."
 #    $('#languageGrid').setGridHeight('100%')
 
