@@ -27,7 +27,7 @@ import static org.apache.commons.io.FilenameUtils.normalize;
 import static org.apache.commons.lang3.StringUtils.stripEnd;
 import static org.apache.commons.lang3.StringUtils.stripStart;
 
-@Component
+//@Component
 public class OTCWebParser extends DictionaryParser {
 
     public static final String DEFAULT_ENCODING = "UTF-8";
