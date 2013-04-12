@@ -2,15 +2,15 @@ define [
   'jqgrid'
   'dms-util'
   'i18n!nls/admin'
-], ($, util, i18n)->
+  'i18n!nls/common'
+], ($, util, i18n, c18n)->
 
   afterSubmit = (response, postdata)->
     jsonFromServer = $.parseJSON response.responseText
     [jsonFromServer.status == 0, jsonFromServer.message]
 
   grid = $('#userGrid').jqGrid(
-#    url: 'rest/users'
-    url: 'json/usergrid.json'
+    url: 'rest/users'
     datatype: 'json', mtype: 'post'
     postData: {prop: 'loginName,name,email,lastLoginTime, status, role', format: 'grid'}
     pager: '#userGridPager', rowNum: 30, rowList: [15, 30, 60]
@@ -32,9 +32,12 @@ define [
       edittype: 'select' , editoptions: {value: "0:Disabled;1:Enabled"}, formatter: 'select'
       }
       {name: 'role', index: 'role', width: 200, align: 'left',editable:true, classes: 'editable-column', edittype: 'select'
-      editoptions: {value: "0:GUEST;1:APPLICATION_OWNER;2:TRANSLATION_MANAGER;3:APPLICATION_OWNER + TRANSLATION_MANAGER;4:ADMINISTRATOR"}
+      editoptions: {value: i18n.usergrid.roleeditoptions}
       formatter: 'select'
       }
     ]
-  ).jqGrid('navGrid', '#userGridPager', {search: false, edit: false, add: false, view: false}
-  )
+  ).jqGrid('navGrid', '#userGridPager', {search: false, edit: false, add: false, view: false, del: false})
+
+  grid.navButtonAdd('#userGridPager', {id: "custom_add_#{grid.attr 'id'}", caption: "", buttonicon: "ui-icon-plus", position: "first", onClickButton: ()->
+    $('#addUserDialog').dialog('open')
+  })
