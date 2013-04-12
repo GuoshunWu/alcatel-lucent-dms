@@ -34,6 +34,7 @@ html, body {
 
 .form-label{
     font-weight: bold;
+    text-align: right;
 }
 
 .show-label {
@@ -137,4 +138,6 @@ input[readonly] {
 .import-report-title{
     font-weight: bold;
 }
+
+
 

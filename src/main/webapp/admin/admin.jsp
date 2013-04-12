@@ -24,3 +24,63 @@
         </div>
     </div>
 </div>
+
+<div id="addUserDialog" title="Add new user">
+    <table width='100%' border="0">
+        <tr>
+            <td align='center'>
+                <form id="addUserForm" method="post">
+                    <table border="0">
+                        <tr>
+                            <td class="form-label">
+                                <label for="loginName">Login name: </label>
+                            </td>
+                            <td>
+                                <input id="loginName" name="loginName" /><span style="color: red">*</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="form-label">
+                                <label for="name">Name: </label>
+                            </td>
+                            <td>
+                                <input readonly="true" name="name" id="name"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="form-label">
+                                <label for="email">Email: </label>
+                            </td>
+                            <td>
+                                <input readonly="true" name="email" id="email"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="form-label">
+                                <label for="enabled">Enabled: </label>
+                            </td>
+                            <td>
+                                <input type="checkbox" name="enable" value="true" checked="true" id="enabled"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="form-label">
+                                <label for="role">Role: </label>
+                            </td>
+                            <td>
+                                <select id="role"></select>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="2" align='center'>
+                                <span style="color: red" id="errMsg"></span>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </td>
+        </tr>
+    </table>
+
+</div>
