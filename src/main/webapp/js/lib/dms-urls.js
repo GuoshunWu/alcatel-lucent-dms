@@ -72,6 +72,9 @@ Time: 下午7:
         update_translation: getURL('update-translation', 'trans/'),
         update_status: getURL('update-status', 'trans/')
       },
+      user: {
+        update: getURL('user', 'admin/')
+      },
       prod_versions: getURL('products/version', 'rest/'),
       app_versions: getURL("applications/apps/", 'rest/'),
       apps: getURL('applications', 'rest/'),

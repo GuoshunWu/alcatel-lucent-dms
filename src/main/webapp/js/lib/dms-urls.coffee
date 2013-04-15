@@ -41,6 +41,8 @@ define (require)->
   trans:
     update_translation: getURL('update-translation', 'trans/')
     update_status: getURL('update-status', 'trans/')
+  user:
+    update: getURL('user', 'admin/')
 
 
   #  rest urls

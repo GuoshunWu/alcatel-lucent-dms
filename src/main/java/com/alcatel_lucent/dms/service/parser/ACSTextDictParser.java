@@ -45,7 +45,7 @@ public class ACSTextDictParser extends DictionaryParser {
 
     public ArrayList<Dictionary> parse(String rootDir, File file, Collection<File> acceptedFiles, BusinessException exceptions) throws BusinessException {
         ArrayList<Dictionary> deliveredDicts = new ArrayList<Dictionary>();
-        if (!file.exists()) return deliveredDicts;
+        if (!file.exists() || file.isFile()) return deliveredDicts;
         rootDir = normalize(rootDir, true);
 
 

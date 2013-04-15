@@ -32,7 +32,7 @@ import static org.apache.commons.lang3.StringUtils.center;
 public class VoiceAppParser extends DictionaryParser {
 
     public static final String REFERENCE_LANG_CODE = "en_US";
-    public static final String[] extensions = new String[]{"xml", "XML", "Xml"};
+    public static final String[] extensions = new String[]{"xml"};
     public static final String DEFAULT_ENCODING = "UTF-8";
     private Validator iceJavaAlarmValidator;
     @Autowired
@@ -62,10 +62,7 @@ public class VoiceAppParser extends DictionaryParser {
         if (null == file || !file.exists()) return deliveredDicts;
 
         if (file.isFile()) {
-            if (!FilenameUtils.isExtension(file.getName(), extensions) || !isVoiceAppFile(file)) {
-                return deliveredDicts;
-            } else {
-
+            if (FilenameUtils.isExtension(file.getName().toLowerCase(), extensions) && isVoiceAppFile(file)) {
                 //parse single file
                 String dictPath = FilenameUtils.normalize(file.getAbsolutePath(), true);
                 rootDir = FilenameUtils.normalize(rootDir, true);
@@ -76,6 +73,7 @@ public class VoiceAppParser extends DictionaryParser {
                 deliveredDicts.add(parseVoiceApp(dictName, dictPath, file));
                 acceptedFiles.add(file);
             }
+            return deliveredDicts;
         }
 
         // file is a directory
@@ -156,7 +154,7 @@ public class VoiceAppParser extends DictionaryParser {
 
         List<Element> alarms = catalog.elements("entry");
         for (Element alarm : alarms) {
-            parseAlarm(dictionary, alarm);
+            parseEntry(dictionary, alarm);
         }
         return dictionary;
     }
@@ -164,7 +162,7 @@ public class VoiceAppParser extends DictionaryParser {
     /**
      * Parse a single alarm into a dictionary.
      */
-    private void parseAlarm(Dictionary dict, Element entry) {
+    private void parseEntry(Dictionary dict, Element entry) {
 
         Element elemKey = entry.element("key");
 
@@ -202,7 +200,7 @@ public class VoiceAppParser extends DictionaryParser {
         Attribute doNotTrans = message.attribute("doNotTranslate");
 
         String langCode = message.attribute("lang").getValue();
-        String text = elemPhrase.getTextTrim();
+
 
         Map<String, String> attributes = new HashMap<String, String>();
 
@@ -228,7 +226,9 @@ public class VoiceAppParser extends DictionaryParser {
         }
 
         if (REFERENCE_LANG_CODE.equals(langCode)) {
-            label.setReference(text);
+            if(null!=elemPhrase){
+                label.setReference(elemPhrase.getTextTrim());
+            }
             Map<String, String> origAttributes = Util.string2Map(label.getAnnotation2());
             origAttributes.putAll(attributes);
             label.setAnnotation2(Util.map2String(origAttributes));
@@ -239,7 +239,15 @@ public class VoiceAppParser extends DictionaryParser {
             lt.setLanguageCode(langCode);
             lt.setSortNo(-1);
             lt.setLanguage(dict.getLanguageByCode(langCode));
-            lt.setOrigTranslation(text);
+
+            if(null!=elemPhrase){
+                lt.setOrigTranslation(elemPhrase.getTextTrim());
+            }
+            if(null!=doNotTrans && Boolean.getBoolean(doNotTrans.getValue())){
+                lt.setStatus(Translation.STATUS_TRANSLATED);
+            }else{
+                lt.setStatus(Translation.STATUS_UNTRANSLATED);
+            }
             label.addLabelTranslation(lt);
             lt.setAnnotation1(Util.map2String(attributes));
         }
