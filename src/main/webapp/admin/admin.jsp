@@ -60,7 +60,7 @@
                                 <label for="enabled">Enabled: </label>
                             </td>
                             <td>
-                                <input type="checkbox" name="enable" value="true" checked="true" id="enabled"/>
+                                <input type="checkbox" name="userStatus" value="1" checked="true" id="enabled"/>
                             </td>
                         </tr>
                         <tr>

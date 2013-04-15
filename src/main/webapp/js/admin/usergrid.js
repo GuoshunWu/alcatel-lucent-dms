@@ -29,7 +29,7 @@
         jsonFromServer = $.parseJSON(serverresponse.responseText);
         return [jsonFromServer.status === 0, jsonFromServer.message];
       },
-      editurl: 'admin/user',
+      editurl: urls.user.update,
       loadtext: 'Loading, please wait...',
       caption: i18n.usergrid.caption,
       autowidth: true,
@@ -57,7 +57,7 @@
           width: 150,
           align: 'left'
         }, {
-          name: 'enabled',
+          name: 'userStatus',
           index: 'status',
           width: 50,
           align: 'left',
@@ -81,7 +81,18 @@
           },
           formatter: 'select'
         }
-      ]
+      ],
+      beforeSubmitCell: function(rowid, celname, value, iRow, iCol) {
+        return {
+          'loginName': rowid
+        };
+      },
+      afterSubmitCell: function(serverresponse, rowid, cellname, value, iRow, iCol) {
+        var json;
+
+        json = $.parseJSON(serverresponse.responseText);
+        return [json.status === 0, json.message];
+      }
     }).jqGrid('navGrid', '#userGridPager', {
       search: false,
       edit: false,
