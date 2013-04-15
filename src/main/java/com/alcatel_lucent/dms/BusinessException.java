@@ -84,6 +84,10 @@ public class BusinessException extends RuntimeException {
     static public final int LANGUAGE_IS_IN_USE = 602;
     static public final int CHARSET_ALREADY_EXISTS = 603;
     static public final int CHARSET_IS_IN_USE = 604;
+    public static final int USER_ALREADY_EXISTS = 605;
+    public static final int USER_NOT_FOUND = 606;
+    
+    
     private int errorCode;
     private String errorMessage;
     private Object[] parameters;
