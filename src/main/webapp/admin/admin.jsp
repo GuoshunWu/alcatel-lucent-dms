@@ -44,7 +44,7 @@
                                 <label for="name">Name: </label>
                             </td>
                             <td>
-                                <input readonly="true" name="name" id="name"/>
+                                <input size="60" readonly="true" name="name" id="name"/>
                             </td>
                         </tr>
                         <tr>
@@ -52,7 +52,7 @@
                                 <label for="email">Email: </label>
                             </td>
                             <td>
-                                <input readonly="true" name="email" id="email"/>
+                                <input size="60" readonly="true" name="email" id="email"/>
                             </td>
                         </tr>
                         <tr>

@@ -78,7 +78,9 @@ Time: 下午7:
       dicts: getURL('dict', 'rest/'),
       tasks: getURL('tasks', 'rest/'),
       labels: getURL('labels', 'rest/'),
-      languages: getURL('languages', 'rest/')
+      languages: getURL('languages', 'rest/'),
+      users: getURL('users', 'rest/'),
+      ldapuser: getURL('users/ldapUser', 'rest/')
     };
   });
 

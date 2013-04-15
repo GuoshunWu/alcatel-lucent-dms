@@ -16,6 +16,7 @@ public interface LDAPService {
      * @param csl
      * @return null if CSL doesn't exist
      */
+    @Deprecated
     User findUserByCSL(String csl);
     
     /**

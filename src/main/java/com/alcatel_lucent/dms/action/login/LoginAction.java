@@ -65,8 +65,8 @@ public class LoginAction extends BaseAction implements SessionAware {
     @Override
     public void setSession(Map<String, Object> session) {
         this.session = session;
-        log.info("In login action, requested session id="+request.getRequestedSessionId());
-        log.info("In login action, session id=" + request.getSession().getId());
+//        log.info("In login action, requested session id="+request.getRequestedSessionId());
+//        log.info("In login action, session id=" + request.getSession().getId());
     }
 
     @Action(value = "/login", results = {

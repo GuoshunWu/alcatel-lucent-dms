@@ -8,6 +8,7 @@
       charsetgrid: {
         caption: 'Charset List'
       },
+      usernotfound: "{0} \"{1}\" could not be found in system.",
       usergrid: {
         caption: 'User List',
         roleeditoptions: '0:GUEST;1:APPLICATION_OWNER;2:TRANSLATION_MANAGER;3:APPLICATION_OWNER + TRANSLATION_MANAGER;4:ADMINISTRATOR'

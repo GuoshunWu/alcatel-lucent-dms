@@ -1,9 +1,11 @@
 define [
   'jqgrid'
   'dms-util'
+  'dms-urls'
+
   'i18n!nls/admin'
   'i18n!nls/common'
-], ($, util, i18n, c18n)->
+], ($, util, urls, i18n, c18n)->
 
   afterSubmit = (response, postdata)->
     jsonFromServer = $.parseJSON response.responseText
@@ -15,7 +17,7 @@ define [
     postData: {prop: 'loginName,name,email,lastLoginTime, status, role', format: 'grid'}
     pager: '#userGridPager', rowNum: 30, rowList: [15, 30, 60]
     multiselect: true
-    cellEdit: true, cellurl: 'admin/user', afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
+    cellEdit: true, cellurl: urls.users, afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
       jsonFromServer = $.parseJSON serverresponse.responseText
       [jsonFromServer.status == 0, jsonFromServer.message]
     editurl: 'admin/user'

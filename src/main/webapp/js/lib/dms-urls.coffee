@@ -56,5 +56,8 @@ define (require)->
 
   languages: getURL('languages','rest/')
 
+  users: getURL('users', 'rest/')
+  ldapuser: getURL('users/ldapUser', 'rest/')
+
 
 

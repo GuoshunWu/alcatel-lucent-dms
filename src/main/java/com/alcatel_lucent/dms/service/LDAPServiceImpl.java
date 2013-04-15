@@ -70,6 +70,7 @@ public class LDAPServiceImpl implements LDAPService {
     /**
      * @deprecated use findUserByCIL instead, which also accept CSL as input and have better performance
      */
+    @Deprecated
     public User findUserByCSL(String csl) {
         DirContext ctx = null;
         try {
