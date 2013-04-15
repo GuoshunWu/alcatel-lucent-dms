@@ -19,6 +19,7 @@ import java.util.Date;
  */
 
 
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "USER")
 public class User implements Serializable {
@@ -34,7 +35,7 @@ public class User implements Serializable {
     private String loginName;
     private String name;
     private String email;
-    private Timestamp lastLoginTime = new Timestamp(new Date().getTime());
+    private Timestamp lastLoginTime;
 
     private int role = ROLE_GUEST;
     private int status = ENABLED;
