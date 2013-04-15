@@ -53,11 +53,14 @@ define [
               $('#errMsg', me).html("<br/><hr/>#{i18n.usernotfound.format(loginNameInput.name.bold(), loginName)}")
               $('input#name', me).val('')
               $('input#email', me).val('')
+              me.isValid = false
               return
 
             json = $.parseJSON(json)
             $('input#name', me).val(json.name)
             $('input#email', me).val(json.email)
+
+            me.isValid=true
           )
 
       open: ()->
@@ -69,9 +72,21 @@ define [
 
       buttons: [
         {text: c18n.add, click: ()->
-          data = $('#addUserForm', @).serializeArray()
-          # add the user
-          $("#userGrid").trigger 'reloadGrid'
+          return if(!@isValid)
+          postData =
+            oper: 'add'
+            loginName: $('input#loginName', @).val()
+            name: $('input#name', @).val()
+            email: $('input#email', @).val()
+            userStatus: Number(Boolean($('input#enabled', @).attr('checked')))
+            role: $('select#role', @).val()
+
+          console?.log postData
+          $.post urls.user.update, postData, (json)->
+            if(json.status !=0 )
+              $.msgBox json.message, null, {title: c18n.error, width: 300, height: 'auto'}
+              return
+            $("#userGrid").trigger 'reloadGrid'
           $(@).dialog 'close'
         }
         {

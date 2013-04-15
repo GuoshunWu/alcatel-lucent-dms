@@ -53,11 +53,13 @@
                   $('#errMsg', me).html("<br/><hr/>" + (i18n.usernotfound.format(loginNameInput.name.bold(), loginName)));
                   $('input#name', me).val('');
                   $('input#email', me).val('');
+                  me.isValid = false;
                   return;
                 }
                 json = $.parseJSON(json);
                 $('input#name', me).val(json.name);
-                return $('input#email', me).val(json.email);
+                $('input#email', me).val(json.email);
+                return me.isValid = true;
               }
             });
           });
@@ -72,10 +74,33 @@
           {
             text: c18n.add,
             click: function() {
-              var data;
+              var postData;
 
-              data = $('#addUserForm', this).serializeArray();
-              $("#userGrid").trigger('reloadGrid');
+              if (!this.isValid) {
+                return;
+              }
+              postData = {
+                oper: 'add',
+                loginName: $('input#loginName', this).val(),
+                name: $('input#name', this).val(),
+                email: $('input#email', this).val(),
+                userStatus: Number(Boolean($('input#enabled', this).attr('checked'))),
+                role: $('select#role', this).val()
+              };
+              if (typeof console !== "undefined" && console !== null) {
+                console.log(postData);
+              }
+              $.post(urls.user.update, postData, function(json) {
+                if (json.status !== 0) {
+                  $.msgBox(json.message, null, {
+                    title: c18n.error,
+                    width: 300,
+                    height: 'auto'
+                  });
+                  return;
+                }
+                return $("#userGrid").trigger('reloadGrid');
+              });
               return $(this).dialog('close');
             }
           }, {

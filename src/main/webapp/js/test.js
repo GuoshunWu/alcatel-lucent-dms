@@ -18,8 +18,6 @@
     return this.substring(this.length - str.length) === str;
   };
 
-  $.ajax(url: urls.ldapuser}+"/guoshunw", success: function(json){console.log(json);})
-
   String.prototype.startWith = function(str) {
     if (!str || str.length > this.length) {
       return false;
