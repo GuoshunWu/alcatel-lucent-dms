@@ -71,6 +71,8 @@ public class DictionaryServiceTest {
         srcPath = 'ACSTextDict'
         srcPath = 'VoiceApp/test'
 
+
+
         File f = new File("${testFileRoot}/${srcPath}")
 
         UserContext.userContext = new UserContext(Locale.ENGLISH, new User('guoshunw', "Guoshun WU", 'Guoshun.Wu@alcatel-sbell.com.cn'))

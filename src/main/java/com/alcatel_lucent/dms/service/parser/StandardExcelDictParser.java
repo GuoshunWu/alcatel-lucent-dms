@@ -3,6 +3,7 @@ package com.alcatel_lucent.dms.service.parser;
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.model.*;
+import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.service.LanguageService;
 import org.apache.commons.collections.MapIterator;
 import org.apache.commons.collections.map.HashedMap;
@@ -19,10 +20,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Locale;
+import java.util.*;
 
 import static org.apache.commons.io.FilenameUtils.normalize;
 
@@ -35,6 +33,7 @@ public class StandardExcelDictParser extends DictionaryParser {
     public static final String DESCRIPTION = "Description";
     public static final String REF_LANG_CODE = "English";
     public static final String DEFAULT_ENCODING = "UTF-16LE";
+    public static final List<String> EXTENSION = Arrays.asList(".xls", ".xlsx");
     @Autowired
     private LanguageService languageService;
 
@@ -44,14 +43,23 @@ public class StandardExcelDictParser extends DictionaryParser {
         FileFilter fileFilter = new OrFileFilter(new SuffixFileFilter(Arrays.asList(".xls", ".xlsx")), DirectoryFileFilter.INSTANCE);
         if (!file.exists()) return deliveredDicts;
         if (file.isFile()) {
-            deliveredDicts.add(parseDictionary(rootDir, file, acceptedFiles));
+            if (FilenameUtils.isExtension(file.getName(), EXTENSION)) {
+                try{
+                    deliveredDicts.add(parseDictionary(rootDir, file, acceptedFiles));
+                } catch (BusinessException e) {
+                    // Ignore INVALID_OTC_PC_DICT_FILE error because the file can be another type of excel dictionary.
+                    if (e.getErrorCode() != BusinessException.INVALID_VLE_DICT_FILE) {
+                        throw e;
+                    }
+                }
+            }
         } else {
             File[] subFiles = file.listFiles(fileFilter);
             for (File subFile : subFiles) {
 
-                try{
+                try {
                     deliveredDicts.addAll(parse(normalize(rootDir, true), subFile, acceptedFiles));
-                }catch (BusinessException e){
+                } catch (BusinessException e) {
                     // Ignore INVALID_OTC_PC_DICT_FILE error because the file can be another type of excel dictionary.
                     if (e.getErrorCode() != BusinessException.INVALID_VLE_DICT_FILE) {
                         throw e;

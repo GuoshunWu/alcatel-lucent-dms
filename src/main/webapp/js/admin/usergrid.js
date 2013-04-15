@@ -10,7 +10,7 @@
       return [jsonFromServer.status === 0, jsonFromServer.message];
     };
     grid = $('#userGrid').jqGrid({
-      url: 'rest/users',
+      url: urls.users,
       datatype: 'json',
       mtype: 'post',
       postData: {
@@ -22,7 +22,7 @@
       rowList: [15, 30, 60],
       multiselect: true,
       cellEdit: true,
-      cellurl: urls.users,
+      cellurl: urls.user.update,
       afterSubmitCell: function(serverresponse, rowid, cellname, value, iRow, iCol) {
         var jsonFromServer;
 

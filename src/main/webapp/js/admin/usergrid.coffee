@@ -12,12 +12,12 @@ define [
     [jsonFromServer.status == 0, jsonFromServer.message]
 
   grid = $('#userGrid').jqGrid(
-    url: 'rest/users'
+    url: urls.users
     datatype: 'json', mtype: 'post'
     postData: {prop: 'loginName,name,email,lastLoginTime, status, role', format: 'grid'}
     pager: '#userGridPager', rowNum: 30, rowList: [15, 30, 60]
     multiselect: true
-    cellEdit: true, cellurl: urls.users, afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
+    cellEdit: true, cellurl: urls.user.update, afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
       jsonFromServer = $.parseJSON serverresponse.responseText
       [jsonFromServer.status == 0, jsonFromServer.message]
     editurl: 'admin/user'
