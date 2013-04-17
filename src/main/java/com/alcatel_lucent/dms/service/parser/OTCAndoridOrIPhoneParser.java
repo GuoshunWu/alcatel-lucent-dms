@@ -35,16 +35,28 @@ public class OTCAndoridOrIPhoneParser extends DictionaryParser {
     @Override
     public ArrayList<Dictionary> parse(String rootDir, File file, Collection<File> acceptedFiles) throws BusinessException {
         ArrayList<Dictionary> deliveredDicts = new ArrayList<Dictionary>();
-        if (null == file
-                || !file.exists()
-                || file.isFile() && !FilenameUtils.isExtension(file.getName(), extensions)
-                ) return deliveredDicts;
+        if (null == file || !file.exists()) return deliveredDicts;
+
+        if (file.isFile()) {
+            if (!FilenameUtils.isExtension(file.getName(), extensions)) {
+                try {
+                    deliveredDicts.add(parseDictionary(normalize(rootDir, true), file, acceptedFiles));
+                } catch (BusinessException e) {
+                    // Ignore INVALID_OTC_PC_DICT_FILE error because the file can be another type of excel dictionary.
+                    if (e.getErrorCode() != BusinessException.INVALID_OTC_PC_DICT_FILE) {
+                        throw e;
+                    }
+                }
+            }
+            return deliveredDicts;
+        }
+
         // It is a directory
         Collection<File> OTCFiles = FileUtils.listFiles(file, extensions, true);
         for (File OTCFile : OTCFiles) {
-            try{
+            try {
                 deliveredDicts.add(parseDictionary(normalize(rootDir, true), OTCFile, acceptedFiles));
-            }catch (BusinessException e){
+            } catch (BusinessException e) {
                 // Ignore INVALID_OTC_PC_DICT_FILE error because the file can be another type of excel dictionary.
                 if (e.getErrorCode() != BusinessException.INVALID_OTC_PC_DICT_FILE) {
                     throw e;
@@ -99,6 +111,10 @@ public class OTCAndoridOrIPhoneParser extends DictionaryParser {
      * Each sheet store a separate language translations
      */
     private void readTranslationsInSheet(Sheet sheet, int index, Dictionary dict) {
+        List<String> otherSheets = Arrays.asList("Informations", "Languages", "Context", "default");
+        if (otherSheets.contains(sheet.getSheetName().trim())) {
+            return;
+        }
         String langCode = sheet.getSheetName().trim();
 
         DictionaryLanguage dl = new DictionaryLanguage();
@@ -118,9 +134,9 @@ public class OTCAndoridOrIPhoneParser extends DictionaryParser {
              * */
             if (row.getRowNum() == sheet.getFirstRowNum()) {
                 colIndexes = readTitleRow(row);
-                if (!(CollectionUtils.isSubCollection(Arrays.asList(TITLE_ID, TITLE_DEFAULT, TITLE_VALUE), colIndexes.keySet()))) {
-                    throw new BusinessException(BusinessException.INVALID_OTC_PC_DICT_FILE);
-                }
+//                if (!(CollectionUtils.isSubCollection(Arrays.asList(TITLE_ID, TITLE_DEFAULT, TITLE_VALUE), colIndexes.keySet()))) {
+//                    throw new BusinessException(BusinessException.INVALID_OTC_PC_DICT_FILE);
+//                }
                 continue;
             }
 

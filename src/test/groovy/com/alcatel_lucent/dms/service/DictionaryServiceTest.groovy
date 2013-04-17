@@ -3,6 +3,7 @@ package com.alcatel_lucent.dms.service
 import com.alcatel_lucent.dms.Constants
 import com.alcatel_lucent.dms.UserContext
 import com.alcatel_lucent.dms.model.User
+import com.alcatel_lucent.dms.service.parser.OTCAndoridOrIPhoneParser
 import com.alcatel_lucent.dms.util.Util
 import org.apache.commons.io.ByteOrderMark
 import org.apache.commons.io.IOUtils
@@ -41,6 +42,8 @@ public class DictionaryServiceTest {
     @Resource
     private DaoService daoService
 
+//    @Resource
+//    private OTCAndoridOrIPhoneParser otcAndoridOrIPhoneParser
 
     private String testFileRoot = 'D:/MyDocuments/Alcatel_LucentSBell/DMS/DMSFiles'
 
@@ -60,6 +63,15 @@ public class DictionaryServiceTest {
 
     @After
     void tearDown() throws Exception {
+    }
+
+
+//    @Test
+    void testSample(){
+        String srcPath = 'OTC_Andriod_iPhone'
+        File f = new File("${testFileRoot}/${srcPath}")
+
+        println otcAndoridOrIPhoneParser.parse(f.absolutePath, f, [])
     }
 
     @Test
