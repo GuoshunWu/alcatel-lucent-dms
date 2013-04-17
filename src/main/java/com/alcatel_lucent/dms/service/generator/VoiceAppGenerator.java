@@ -77,6 +77,7 @@ public class VoiceAppGenerator extends DictionaryGenerator {
             format.setIndentSize(4);
             format.setXHTML(true);
 
+
             log.info(center("Start generating dictionary " + dict.getName() + "...", 100, '='));
             writer = new XMLWriter(new BufferedOutputStream(fos), format);
             writer.write(generateDocument(dict));
@@ -98,6 +99,7 @@ public class VoiceAppGenerator extends DictionaryGenerator {
     public Document generateDocument(final Dictionary dict) {
         Document doc = DocumentHelper.createDocument();
         doc.setXMLEncoding(dict.getEncoding());
+
         if (null == dict) return doc;
 
         doc.addComment(StringUtils.center(getDMSGenSign(), 50, '='));

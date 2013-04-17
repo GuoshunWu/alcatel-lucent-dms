@@ -9,6 +9,11 @@ import com.alcatel_lucent.dms.util.NoOpLSResourceResolver;
 import com.alcatel_lucent.dms.util.Util;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOCase;
+import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.commons.io.filefilter.SuffixFileFilter;
+import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -31,8 +36,11 @@ import static org.apache.commons.lang3.StringUtils.center;
 @SuppressWarnings("unchecked")
 public class VoiceAppParser extends DictionaryParser {
 
-    public static final String REFERENCE_LANG_CODE = "en_US";
+    public static final String REFERENCE_LANG_CODE = "en_GB";
     public static final String[] extensions = new String[]{"xml"};
+
+    private SuffixFileFilter xmlFilter=new SuffixFileFilter(extensions, IOCase.INSENSITIVE);
+
     public static final String DEFAULT_ENCODING = "UTF-8";
     private Validator iceJavaAlarmValidator;
     @Autowired
@@ -77,7 +85,7 @@ public class VoiceAppParser extends DictionaryParser {
         }
 
         // file is a directory
-        Collection<File> files = FileUtils.listFiles(file, extensions, true);
+        Collection<File> files = FileUtils.listFiles(file, xmlFilter, TrueFileFilter.INSTANCE);
 
         for (File xmlFile : files) {
             try {
@@ -225,10 +233,9 @@ public class VoiceAppParser extends DictionaryParser {
             dict.getDictLanguages().add(dl);
         }
 
+        String text = null != elemPhrase ? elemPhrase.getTextTrim() : StringUtils.EMPTY;
         if (REFERENCE_LANG_CODE.equals(langCode)) {
-            if(null!=elemPhrase){
-                label.setReference(elemPhrase.getTextTrim());
-            }
+            label.setReference(text);
             Map<String, String> origAttributes = Util.string2Map(label.getAnnotation2());
             origAttributes.putAll(attributes);
             label.setAnnotation2(Util.map2String(origAttributes));
@@ -240,14 +247,12 @@ public class VoiceAppParser extends DictionaryParser {
             lt.setSortNo(-1);
             lt.setLanguage(dict.getLanguageByCode(langCode));
 
-            if(null!=elemPhrase){
-                lt.setOrigTranslation(elemPhrase.getTextTrim());
+            lt.setOrigTranslation(text);
+
+            if (null != doNotTrans) {
+                lt.setNeedTranslation(!Boolean.valueOf(doNotTrans.getValue()));
             }
-            if(null!=doNotTrans && Boolean.getBoolean(doNotTrans.getValue())){
-                lt.setStatus(Translation.STATUS_TRANSLATED);
-            }else{
-                lt.setStatus(Translation.STATUS_UNTRANSLATED);
-            }
+
             label.addLabelTranslation(lt);
             lt.setAnnotation1(Util.map2String(attributes));
         }
