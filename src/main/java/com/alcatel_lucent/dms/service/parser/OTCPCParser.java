@@ -130,7 +130,7 @@ public class OTCPCParser extends DictionaryParser {
              * */
             Cell cell = row.getCell(colIndexes.get(TITLE_ID));
             if (null == cell || getStringCellValue(cell).isEmpty()) continue;
-            dict.getLabels().add(readLabelTrans(dict, row, colIndexes));
+            readLabelTrans(dict, row, colIndexes);
         }
 
     }
@@ -145,7 +145,7 @@ public class OTCPCParser extends DictionaryParser {
 
     private Label readLabelTrans(Dictionary dict, Row row, Map<String, Integer> colIndex) {
         Cell cell = row.getCell(colIndex.get(TITLE_ID));
-        String cellContent = getStringCellValue(cell);
+        String cellContent = getStringCellValue(cell).trim();
 
         Label label = dict.getLabel(cellContent);
         if (null == label) {
@@ -158,6 +158,7 @@ public class OTCPCParser extends DictionaryParser {
                     cellContent,
                     getStringCellValue(cell)
             );
+            dict.addLabel(label);
         }
 
         cell = row.getCell(colIndex.get(TITLE_VALUE));
@@ -173,8 +174,9 @@ public class OTCPCParser extends DictionaryParser {
         lbTranslation.setLabel(label);
         lbTranslation.setLanguageCode(langCode);
 
-        DictionaryLanguage dl = label.getDictionary().getDictLanguage(langCode);
+        DictionaryLanguage dl =dict.getDictLanguage(langCode);
         lbTranslation.setLanguage(null == dl ? null : dl.getLanguage());
+
         lbTranslation.setOrigTranslation(cellContent);
         label.getOrigTranslations().add(lbTranslation);
 
