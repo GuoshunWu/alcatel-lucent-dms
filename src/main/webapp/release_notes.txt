@@ -1,3 +1,9 @@
+V2.3.0 (Apr. 18, 2013)
+	* User management (Admin only)
+	* New dictionary format support: VoiceApp XML
+	* Allow to adjust format of translation task file (Excel), only content is locked
+	* Bug fix of some dictionary parsers (OTC PC, ACS text, Standard Excel)
+
 V2.2.0 (Apr. 10, 2013)
  What's new in DMS 2.2.0
     * Major Highlights
