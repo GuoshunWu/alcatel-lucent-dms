@@ -145,7 +145,7 @@ public class OTCAndoridOrIPhoneParser extends DictionaryParser {
              * */
             Cell cell = row.getCell(colIndexes.get(TITLE_ID));
             if (null == cell || getStringCellValue(cell).isEmpty()) continue;
-            dict.getLabels().add(readLabelTrans(dict, row, colIndexes));
+            readLabelTrans(dict, row, colIndexes);
         }
 
     }
@@ -173,6 +173,7 @@ public class OTCAndoridOrIPhoneParser extends DictionaryParser {
                     cellContent,
                     getStringCellValue(cell)
             );
+            dict.addLabel(label);
         }
 
         cell = row.getCell(colIndex.get(TITLE_VALUE));
