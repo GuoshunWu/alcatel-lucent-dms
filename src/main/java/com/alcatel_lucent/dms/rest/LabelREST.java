@@ -19,6 +19,7 @@ import com.alcatel_lucent.dms.model.Application;
 import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.LabelTranslation;
+import com.alcatel_lucent.dms.model.Product;
 import com.alcatel_lucent.dms.model.Translation;
 import com.alcatel_lucent.dms.service.DictionaryService;
 import com.alcatel_lucent.dms.service.TranslationService;
@@ -127,7 +128,7 @@ public class LabelREST extends BaseREST {
 	        	param.put("prodId", prodId);
 	        	countParam.put("prodId", prodId);
 	    	} else {
-	    		hql = "select obj,a from Application a join a.dictionaries d join d.labels obj where obj.removed=false";
+	    		hql = "select obj,a,p from Product p join p.applications a join a.dictionaries d join d.labels obj where obj.removed=false";
 	    		countHql = "select count(*) from Label obj where obj.removed=false";
 	    	}
 	    	if (text != null) {
@@ -153,8 +154,12 @@ public class LabelREST extends BaseREST {
 				for (Object[] row : (Collection<Object[]>) result) {
 					Label label = (Label) row[0];
 					Application app = (Application) row[1];
-					labels.add(label);
 					label.setApp(app);
+					if (row.length >= 3) {
+						Product prod = (Product) row[2];
+						label.setProd(prod);
+					}
+					labels.add(label);
 				}
 			}
 
