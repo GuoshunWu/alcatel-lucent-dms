@@ -7,7 +7,8 @@
     panel = {
       welcome: "" + PANEL_PREFIX + "_welcomePanel",
       product: "" + PANEL_PREFIX + "_productPanel",
-      application: "" + PANEL_PREFIX + "_applicationPanel"
+      application: "" + PANEL_PREFIX + "_applicationPanel",
+      search: "" + PANEL_PREFIX + "_searchPanel"
     };
     appmngPnlGroup = new util.PanelGroup("div.dms_appmng_panel", "DMS_welcomePanel");
     return {
@@ -30,6 +31,14 @@
       },
       showWelcomePanel: function() {
         return appmngPnlGroup.switchTo(panel.welcome);
+      },
+      showSearchPanel: function() {
+        return appmngPnlGroup.switchTo(panel.search, function() {
+          var parent;
+
+          parent = $('#globalSearchResultGrid_parent');
+          return $('#globalSearchResultGrid').setGridWidth(parent.width() - 10).setGridHeight(parent.height() - 90);
+        });
       },
       layout: appmngPnlGroup
     };

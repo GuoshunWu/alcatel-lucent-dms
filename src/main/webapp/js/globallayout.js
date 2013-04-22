@@ -5,7 +5,7 @@
   define(['jqlayout'], function($) {
     var autoSizeGrids, glayout, init, ready;
 
-    autoSizeGrids = ['applicationGridList', 'dictionaryGridList', 'transGrid', 'taskGrid'];
+    autoSizeGrids = ['applicationGridList', 'dictionaryGridList', 'transGrid', 'taskGrid', 'globalSearchResultGrid'];
     ready = function(param) {};
     init = function() {
       var layout, westPanel;
@@ -16,7 +16,7 @@
             var _ref;
 
             if ('center' === name && (_ref = grid.id, __indexOf.call(autoSizeGrids, _ref) >= 0)) {
-              return $(grid).setGridWidth(element.width() - 50, false);
+              return $(grid).setGridWidth(element.width() - 50, 'globalSearchResultGrid' === grid.id);
             }
           });
         },
