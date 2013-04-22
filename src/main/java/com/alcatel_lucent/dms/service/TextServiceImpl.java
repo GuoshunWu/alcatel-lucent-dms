@@ -120,6 +120,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
     public Map<String, Text> updateTranslations(Long ctxId, Collection<Text> texts, Constants.ImportingMode mode) {
         Map<String, Text> result = new HashMap<String, Text>();
         Map<String, Text> dbTextMap = getTextsAsMap(ctxId);
+        Context context = (Context) dao.retrieve(Context.class, ctxId);
         for (Text text : texts) {
             if (result.containsKey(text.getReference())) {
                 // ignore same reference
@@ -139,9 +140,10 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 	                }
 	                Translation dbTrans = dbText.getTranslation(trans.getLanguage().getId());
 	                if (dbTrans == null) {
-	                	// In delivery mode, try to translate automatically
+	                	// In delivery mode, try to translate labels in context "DEFAULT" and "DICT" automatically
 	                	// by searching existing translation from other contexts
 	                	if (mode == Constants.ImportingMode.DELIVERY && 
+	                			(context.getName().equals(Context.DEFAULT) || context.getName().equals(Context.DICT)) &&
 	                			trans.getStatus() == Translation.STATUS_UNTRANSLATED &&
 	                			trans.getTranslation().equals(text.getReference())) {
 	                		String suggestedTranslation = getSuggestedTranslation(trans.getLanguage().getId(), text.getReference());
