@@ -38,10 +38,8 @@ public class VoiceAppParser extends DictionaryParser {
 
     public static final String REFERENCE_LANG_CODE = "en_GB";
     public static final String[] extensions = new String[]{"xml"};
-
-    private SuffixFileFilter xmlFilter=new SuffixFileFilter(extensions, IOCase.INSENSITIVE);
-
     public static final String DEFAULT_ENCODING = "UTF-8";
+    private SuffixFileFilter xmlFilter = new SuffixFileFilter(extensions, IOCase.INSENSITIVE);
     private Validator iceJavaAlarmValidator;
     @Autowired
     private LanguageService languageService;
@@ -184,6 +182,10 @@ public class VoiceAppParser extends DictionaryParser {
 
         // store element key attributes
         label.setAnnotation1(Util.map2String(Util.attributeList2Map(elemKey.attributes())));
+        Attribute attrContext = elemKey.attribute("context");
+        if (null != attrContext) {
+            label.setContext(new Context(attrContext.getValue().trim()));
+        }
 
         Element elemUsage = entry.element("usage");
         if (null != elemUsage) {

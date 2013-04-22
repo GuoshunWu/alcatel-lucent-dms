@@ -36,7 +36,8 @@
           'dummy': ''
         },
         searchtext: {
-          caption: 'Text "{0}" found in {1} {2} version {3}'
+          caption: 'Text "{0}" found in {1} {2} version {3}',
+          globalcaption: 'Text "{0}" found'
         },
         history: {
           'caption': "History for dictionary '{0}'"
