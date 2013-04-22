@@ -48,7 +48,7 @@ public class VoiceAppParser extends DictionaryParser {
 
         SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         Schema schema = null;
-        String schemaFile = "TUI.xsd";
+        String schemaFile = "TUI.XSD";
         try {
             schema = factory.newSchema(getClass().getResource(schemaFile).toURI().toURL());
             iceJavaAlarmValidator = schema.newValidator();
@@ -69,6 +69,7 @@ public class VoiceAppParser extends DictionaryParser {
 
         if (file.isFile()) {
             if (FilenameUtils.isExtension(file.getName().toLowerCase(), extensions) && isVoiceAppFile(file)) {
+            	log.info("Parsing VoiceApp XML " + file.getName());
                 //parse single file
                 String dictPath = FilenameUtils.normalize(file.getAbsolutePath(), true);
                 rootDir = FilenameUtils.normalize(rootDir, true);
@@ -111,6 +112,7 @@ public class VoiceAppParser extends DictionaryParser {
         try {
             iceJavaAlarmValidator.validate(source);
         } catch (Exception ex) {
+        	log.info("XML file '" + file.getName() + "' is not a VoiceApp XML: " + ex);
             return false;
         }
         return true;
