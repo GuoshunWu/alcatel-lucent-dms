@@ -14,8 +14,8 @@
 
                     <tr>
                         <td>
-                            <s:text name="searchtext"/>
-                            <input size="80" id="globalSearch" name="globalSearch"/><button id="globalSearchAction"/>
+                            <%--<s:text name="searchtext"/>--%>
+                            <input size="80" style="display: none" id="globalSearch" name="globalSearch"/><button style="display: none" id="globalSearchAction"/>
                         </td>
                     </tr>
                     <tr>
