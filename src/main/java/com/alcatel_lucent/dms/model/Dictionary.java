@@ -2,6 +2,8 @@ package com.alcatel_lucent.dms.model;
 
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
+import com.alcatel_lucent.dms.Constants;
+
 import net.sf.json.JSONObject;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.annotations.*;
@@ -17,7 +19,6 @@ import java.util.*;
 public class Dictionary extends BaseEntity {
 
     private static final long serialVersionUID = 4926531636839152201L;
-    private static Map<String, String> refCodes = JSONObject.fromObject("{'DCT':'GAE','Dictionary conf':'EN-UK','Text properties':'en','XML labels':'en'}");
     private Collection<DictionaryLanguage> dictLanguages;
     private Collection<Label> labels;
     private Collection<DictionaryHistory> histories;
@@ -48,43 +49,6 @@ public class Dictionary extends BaseEntity {
     @Column(name = "ID")
     @Override
     public Long getId() {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         return super.getId();
     }
 
@@ -108,8 +72,17 @@ public class Dictionary extends BaseEntity {
 
     @Transient
     public String getLanguageReferenceCode() {
-        String ref = refCodes.get(getFormat());
-        return null == ref ? "en" : ref;
+    	if (getFormat().equals(Constants.DictionaryFormat.ICE_JAVA_ALARM)) {
+    		return "i-alu";
+    	} else if (getFormat().equals(Constants.DictionaryFormat.XML_LABEL) || 
+    			getFormat().equals(Constants.DictionaryFormat.XML_PROP)) {
+    		return getDictLanguage("GAE") == null ? "en" : "GAE";
+    	} else if (dictLanguages != null) {
+        	for (DictionaryLanguage dl : dictLanguages) {
+        		if (dl.getLanguage().getId() == 1L) return dl.getLanguageCode();
+        	}
+        }
+        return "en";
     }
 
     public String getFormat() {
