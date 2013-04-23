@@ -144,6 +144,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 	                	// by searching existing translation from other contexts
 	                	if (mode == Constants.ImportingMode.DELIVERY && 
 	                			(context.getName().equals(Context.DEFAULT) || context.getName().equals(Context.DICT)) &&
+	                			trans.getLanguage().getId() != 1L &&
 	                			trans.getStatus() == Translation.STATUS_UNTRANSLATED &&
 	                			trans.getTranslation().equals(text.getReference())) {
 	                		String suggestedTranslation = getSuggestedTranslation(trans.getLanguage().getId(), text.getReference());

@@ -57,6 +57,9 @@ public abstract class DictionaryGenerator {
         String baseName = FilenameUtils.removeExtension(originalName);
         if (null == dl) return baseName + FilenameUtils.EXTENSION_SEPARATOR + targetExt;
         int pos = baseName.lastIndexOf("en");
+        if (pos == -1) {
+        	pos = baseName.lastIndexOf("GAE");
+        }
         String name = -1 != pos ? originalName.substring(0, pos) : originalName + "_";
         name += dl.getLanguageCode() + FilenameUtils.EXTENSION_SEPARATOR + targetExt;
         return name;
