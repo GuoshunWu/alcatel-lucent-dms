@@ -126,15 +126,15 @@ public class LabelXMLParser extends DictionaryParser {
 		for (File file : files) {
 			String[] nameParts = splitFileName(file.getName());
 			String langCode = nameParts[2];
-			// reference file must end with "en.xml"
-			if (langCode.equalsIgnoreCase("EN")) {
+			// reference file must end with "GAE.xml" or "en.xml"
+			// if both of them exist, take "GAE" as reference
+			if (langCode.equalsIgnoreCase("GAE") || refLangCode == null && langCode.equalsIgnoreCase("EN")) {
 				refLangCode = langCode;
 				refFile = file;
 				dictName = refFile.getAbsolutePath().replace("\\", "/");
 				if (rootDir != null && dictName.startsWith(rootDir)) {
 					dictName = dictName.substring(rootDir.length() + 1);
 				}
-				break;
 			}
 		}
 		if (refLangCode == null) {
@@ -155,6 +155,13 @@ public class LabelXMLParser extends DictionaryParser {
 		int sortNo = 1;
 		Collection<DictionaryLanguage> dictLanguages = new ArrayList<DictionaryLanguage>();
 		dictionary.setDictLanguages(dictLanguages);
+		// add reference dictLanguage object
+		DictionaryLanguage refDictLanguage = new DictionaryLanguage();
+		refDictLanguage.setLanguageCode(refLangCode);
+		refDictLanguage.setSortNo(0);
+		refDictLanguage.setLanguage(languageService.getLanguage("en"));
+		refDictLanguage.setCharset(languageService.getCharset("UTF-8"));
+		dictLanguages.add(refDictLanguage);
 		dictionary.setLabels(readLabels(refFile, dictionary, null, warnings, refFileExceptions));
 		if (refFileExceptions.hasNestedException()) {
 			dictExceptions.addNestedException(refFileExceptions);
@@ -163,7 +170,7 @@ public class LabelXMLParser extends DictionaryParser {
 			String[] nameParts = splitFileName(file.getName());
 			String langCode = nameParts[2];
 			BusinessException fileExceptions = new BusinessException(BusinessException.NESTED_LABEL_XML_FILE_ERROR, file.getName());
-			if (langCode.equalsIgnoreCase("EN")) {	// skip reference language
+			if (langCode.equals(refLangCode)) {	// skip reference language
 				continue;
 			}
 			DictionaryLanguage dictLanguage = new DictionaryLanguage();

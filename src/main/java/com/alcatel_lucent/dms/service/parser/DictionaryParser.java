@@ -46,9 +46,17 @@ abstract public class DictionaryParser {
 				sep = "_";
 				langCode = filename.substring(length - 5);
 			} else if (length >= 3 && filename.charAt(length - 3) == '_') {
-				baseName =filename.substring(0, length - 3);
+				baseName = filename.substring(0, length - 3);
 				sep = "_";
 				langCode = filename.substring(length - 2);
+			} else if (length >= 4 && filename.charAt(length - 4) == '.') {
+				baseName = filename.substring(0, length - 4);
+				sep = ".";
+				langCode = filename.substring(length - 3);
+			} else if (length >= 4 && filename.charAt(length - 4) == '_') {
+				baseName = filename.substring(0, length - 4);
+				sep = "_";
+				langCode = filename.substring(length - 3);
 			}
 			if (baseName != null) {
 				return new String[] {baseName, sep, langCode};
