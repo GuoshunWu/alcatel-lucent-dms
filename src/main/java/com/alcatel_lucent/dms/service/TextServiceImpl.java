@@ -3,6 +3,7 @@ package com.alcatel_lucent.dms.service;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -142,6 +143,9 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 	                if (dbTrans == null) {
 	                	// In delivery mode, try to translate labels in context "DEFAULT" and "DICT" automatically
 	                	// by searching existing translation from other contexts
+	                	if (trans.getStatus() == Translation.STATUS_TRANSLATED) {
+	                		trans.setTranslationType(Translation.TYPE_DICT);
+	                	}
 	                	if (mode == Constants.ImportingMode.DELIVERY && 
 	                			(context.getName().equals(Context.DEFAULT) || context.getName().equals(Context.DICT)) &&
 	                			trans.getLanguage().getId() != 1L &&
@@ -152,8 +156,10 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 	                			log.info("Auto translate \"" + text.getReference() + "\" to \"" + suggestedTranslation + "\" in " + trans.getLanguage().getName() + ".");
 	                			trans.setTranslation(suggestedTranslation);
 	                			trans.setStatus(Translation.STATUS_TRANSLATED);
+	                			trans.setTranslationType(Translation.TYPE_AUTO);
 	                		}
 	                	}
+            			trans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
 						dbTrans = addTranslation(dbText, trans);
 						dbText.addTranslation(dbTrans);		// the dbText will be used in next invoke, so add translations in-memory
 	                } else if (mode == Constants.ImportingMode.TRANSLATION) { // update translations in TRANSLATION_MODE
@@ -161,6 +167,8 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 	                		dbTrans.setTranslation(trans.getTranslation());
 	                	}
 						dbTrans.setStatus(trans.getStatus());
+						dbTrans.setTranslationType(Translation.TYPE_TASK);
+						dbTrans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
 	                } else {
 	                	// in DELIVERY_MODE, set status to UNTRANSLATED if translation is explicitly requested 
 //	                	if (dbTrans.getTranslation().equals(trans.getTranslation()) && 
@@ -175,6 +183,8 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 	                			!trans.getTranslation().equals(text.getReference())) {
 	                		dbTrans.setTranslation(trans.getTranslation());
 	                		dbTrans.setStatus(Translation.STATUS_TRANSLATED);
+	                		dbTrans.setTranslationType(Translation.TYPE_DICT);
+	                		dbTrans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
 	                	}
 	                }
 	                langSet.add(trans.getLanguage().getId());
@@ -509,6 +519,8 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 		Collection<String> result = new TreeSet<String>();
 		if (confirmAll != null && confirmAll) {	// confirm to update translation for all reference
 			trans.setTranslation(translation);
+			trans.setTranslationType(Translation.TYPE_MANUAL);
+			trans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
 		} else if (confirmAll != null && !confirmAll) {	
 			// change context to DICT first
 			Context context = getContextByExpression(Context.DICT, label.getDictionary());
@@ -522,9 +534,13 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 				newTrans.setLanguage(trans.getLanguage());
 				newTrans.setTranslation(translation);
 				newTrans.setStatus(trans.getStatus());
+				newTrans.setTranslationType(Translation.TYPE_MANUAL);
+				newTrans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
 				addTranslation(text, newTrans);
 			} else {
 				newTrans.setTranslation(translation);
+				newTrans.setTranslationType(Translation.TYPE_MANUAL);
+				newTrans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
 			}
 			label.setContext(context);
 			label.setText(text);
@@ -543,6 +559,8 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 			}
 			if (result.isEmpty()) {	// no confirmation needed, update translation directly
 				trans.setTranslation(translation);
+    			trans.setTranslationType(Translation.TYPE_MANUAL);
+    			trans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
 			} else {
 				return result;
 			}
