@@ -147,15 +147,6 @@
       del: false,
       search: false,
       view: false
-    }).setGroupHeaders({
-      useColSpanStyle: true,
-      groupHeaders: [
-        {
-          startColumnName: "t",
-          numberOfColumns: 3,
-          titleText: 'Status'
-        }
-      ]
     });
   });
 

@@ -19,6 +19,13 @@ define [
   searchActionBtn = $('#appSearchAction', '#appmng').attr('title', 'Search').button(text: false, icons:{primary: "ui-icon-search"})
   .height(20).width(20).position(my: 'left center', at: 'right center', of: '#appSearchText').click(()=>
     selVer=$("#selAppVersion", '#DMS_applicationPanel')
+
+    if !selVer.val() || -1 == selVer.val()
+      node=util.getProductTreeInfo()
+      $.msgBox c18n.noversion 'Application', node.text
+
+      return
+
     dialogs.showSearchResult(
       text: $('#appSearchText', '#appmng').val()
       version:

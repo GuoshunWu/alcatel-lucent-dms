@@ -46,7 +46,7 @@ import static org.apache.commons.lang3.StringUtils.join;
 public class ICEJavaAlarmParser extends DictionaryParser {
 
     public static final String REFERENCE_LANG_CODE = "i-alu";
-    public static final String ALARM_LABEL_GROUP_SEPARATOR = "\\.";
+    public static final String ALARM_LABEL_GROUP_SEPARATOR = ".";
     private FileFilter xmlFilter = new OrFileFilter(new SuffixFileFilter(Arrays.asList(".xml")), DirectoryFileFilter.INSTANCE);
     private Validator iceJavaAlarmValidator;
     @Autowired

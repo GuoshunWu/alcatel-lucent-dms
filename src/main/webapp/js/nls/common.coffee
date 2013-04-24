@@ -26,6 +26,7 @@ define
     language: 'language'
     selrow: 'Please select {0} first'
     'selecttip': 'Please select'
+    noversion: '{0} \"{1}\" has no version.'
     select:
       product:
         tip: 'Please select product'

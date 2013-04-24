@@ -32,6 +32,12 @@ define [
     .click((e)=>
       selVer=$("#selVersion", '#DMS_productPanel')
 
+
+      if !selVer.val() || -1 == selVer.val()
+        node=util.getProductTreeInfo()
+        $.msgBox c18n.noversion 'Product', node.text
+        return
+
       dialogs.showSearchResult(
         text: $('#prodSearchText', '#appmng').val()
         version:

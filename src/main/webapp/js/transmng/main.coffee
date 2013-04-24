@@ -77,9 +77,20 @@ define [
 
     searchActionBtn = $('#transSearchAction','#transmng').attr('title', 'Search').button(text: false, icons:
       {primary: "ui-icon-search"}).click(()=>
-
       selVer = $('#selVersion', '#transmng')
       selLang = $('#transSearchTextLanguage', '#transmng')
+
+      nodeInfo = util.getProductTreeInfo()
+
+      if -1 == nodeInfo.parent
+        $.msgBox 'Please select product or application.'
+        return
+
+      unless selVer.val()
+        typeText = if 'prod' == nodeInfo.type then 'Product' else 'Application'
+        $.msgBox "#{typeText.capitalize()} \"#{nodeInfo.text}\" has no version."
+        return
+
       dialogs.showSearchResult(
           text: $('#transSearchText', '#transmng').val()
           version:

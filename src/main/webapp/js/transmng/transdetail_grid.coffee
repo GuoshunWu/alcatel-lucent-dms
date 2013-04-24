@@ -17,7 +17,7 @@ define [
     pager: '#transDetailsPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
     viewrecords: true, gridview: true, multiselect: true
     cellEdit: true, cellurl: urls.trans.update_status, ajaxCellOptions: {async: false}
-    colNames: ['Label', 'Max Length', 'Context', 'Reference language', 'Translation', 'Status','TransId']
+    colNames: ['Label', 'Max Length', 'Context', 'Reference language', 'Translation', 'Status','TransId', 'Trasn type', 'Last updated']
     colModel: [
       {name: 'key', index: 'key', width: 100, editable: false, stype: 'select', align: 'left', frozen: true}
       {name: 'maxlen', index: 'maxLength', width: 90, editable: false, align: 'right', frozen: true, search: false}
@@ -31,6 +31,8 @@ define [
       stype: 'select', searchoptions: {value: ":#{c18n.all};0:#{i18n.trans.nottranslated};1:#{i18n.trans.inprogress};2:#{i18n.trans.translated}"}
       }
       {name: 'transId', index: 'ct.id', width: 150, align: 'left', hidden:true, search: false}
+      {name: 'transtype', index: 'transtype', width: 150, align: 'left', search: false}
+      {name: 'lastupdated', index: 'lastupdated', width: 150, align: 'left',search: false}
     ]
     afterEditCell: (rowid, cellname, val, iRow, iCol)->
       lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}

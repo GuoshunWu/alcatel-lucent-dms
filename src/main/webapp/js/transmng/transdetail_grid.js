@@ -25,7 +25,7 @@
       ajaxCellOptions: {
         async: false
       },
-      colNames: ['Label', 'Max Length', 'Context', 'Reference language', 'Translation', 'Status', 'TransId'],
+      colNames: ['Label', 'Max Length', 'Context', 'Reference language', 'Translation', 'Status', 'TransId', 'Trasn type', 'Last updated'],
       colModel: [
         {
           name: 'key',
@@ -89,6 +89,18 @@
           width: 150,
           align: 'left',
           hidden: true,
+          search: false
+        }, {
+          name: 'transtype',
+          index: 'transtype',
+          width: 150,
+          align: 'left',
+          search: false
+        }, {
+          name: 'lastupdated',
+          index: 'lastupdated',
+          width: 150,
+          align: 'left',
           search: false
         }
       ],

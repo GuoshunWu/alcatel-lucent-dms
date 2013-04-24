@@ -20,8 +20,9 @@
                             <s:select theme="simple" id="selVersion" list="products" listKey="id"
                                       listValue="version"
                                       cssStyle="width:200px" headerKey="-1"
-                                      headerValue="%{getText('product.version.select.head')}"
                                       value="curProductId"/>
+                            <%--headerValue="%{getText('product.version.select.head')}"--%>
+
                         </td>
                         <td rowspan="2" align="right">
                             <span class="translation-search-text">
