@@ -355,7 +355,7 @@
       height: 'auto',
       modal: true,
       open: function() {
-        var node, params, postData, typeText;
+        var name, node, params, postData, typeText;
 
         params = $(this).data('params');
         grid = $("#transSearchTextGrid");
@@ -369,7 +369,8 @@
         delete postData.app;
         delete postData.prod;
         postData[node.type] = params.version.id;
-        return grid.setCaption(i18n.searchtext.caption.format(params.text, typeText, node.text, params.version.text, params.language.text)).setGridParam({
+        name = -1 !== node.parent ? node.text : $('#versionTypeLabel').text();
+        return grid.setCaption(i18n.searchtext.caption.format(params.text, typeText, name, params.version.text, params.language.text)).setGridParam({
           url: urls.labels
         }).trigger('reloadGrid');
       },

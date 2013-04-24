@@ -17,9 +17,14 @@
       at: 'right center',
       of: '#appSearchText'
     }).click(function() {
-      var selVer;
+      var node, selVer;
 
       selVer = $("#selAppVersion", '#DMS_applicationPanel');
+      if (!selVer.val() || -1 === selVer.val()) {
+        node = util.getProductTreeInfo();
+        $.msgBox(c18n.noversion('Application', node.text));
+        return;
+      }
       return dialogs.showSearchResult({
         text: $('#appSearchText', '#appmng').val(),
         version: {

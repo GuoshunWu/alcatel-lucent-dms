@@ -242,7 +242,8 @@ define [
       delete postData.prod
 
       postData[node.type] = params.version.id
-      grid.setCaption(i18n.searchtext.caption.format params.text, typeText, node.text, params.version.text, params.language.text)
+      name = unless -1 == node.parent then node.text else $('#versionTypeLabel').text()
+      grid.setCaption(i18n.searchtext.caption.format params.text, typeText, name, params.version.text, params.language.text)
         .setGridParam(url: urls.labels).trigger 'reloadGrid'
 
     buttons: [

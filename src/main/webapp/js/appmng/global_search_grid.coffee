@@ -60,8 +60,8 @@ define ['jqgrid', 'dms-util'], ($, util)->
 
   )
     .setGridParam(datatype: 'json').jqGrid('navGrid', pagerId, {edit: false, add: false, del: false, search: false, view: false})
-    .setGroupHeaders(useColSpanStyle: true, groupHeaders: [
-      {startColumnName: "t", numberOfColumns: 3, titleText: 'Status'}
-    ])
+#    .setGroupHeaders(useColSpanStyle: true, groupHeaders: [
+#      {startColumnName: "t", numberOfColumns: 3, titleText: 'Status'}
+#    ])
 
 

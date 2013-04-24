@@ -102,10 +102,20 @@
           primary: "ui-icon-search"
         }
       }).click(function() {
-        var selLang, selVer;
+        var nodeInfo, selLang, selVer, typeText;
 
         selVer = $('#selVersion', '#transmng');
         selLang = $('#transSearchTextLanguage', '#transmng');
+        nodeInfo = util.getProductTreeInfo();
+        if (-1 === nodeInfo.parent) {
+          $.msgBox('Please select product or application.');
+          return;
+        }
+        if (!selVer.val()) {
+          typeText = 'prod' === nodeInfo.type ? 'Product' : 'Application';
+          $.msgBox("" + (typeText.capitalize()) + " \"" + nodeInfo.text + "\" has no version.");
+          return;
+        }
         return dialogs.showSearchResult({
           text: $('#transSearchText', '#transmng').val(),
           version: {
