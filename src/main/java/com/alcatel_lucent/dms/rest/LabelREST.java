@@ -43,7 +43,7 @@ import com.alcatel_lucent.dms.util.ObjectComparator;
  *   	The option only works when "language" parameter is specified.
  *   filters	(optional) jqGrid-style filter string, in json format, e.g.
  *   	{"groupOp":"AND","rules":[{"field":"status","op":"eq","data":"2"}]}
- *   NOTE: only support filter "ct.status" for the moment
+ *   NOTE: only support filter "ct.status" and "ct.translationType" for the moment
  *   
  * Sort parameters:
  *   sidx		(optional) sort by, default is "sortNo"
@@ -197,6 +197,7 @@ public class LabelREST extends BaseREST {
 			Collections.sort((ArrayList<Label>)labels, new ObjectComparator<Label>(sidx, sord));
         	Map<String, String> filters = getGridFilters(requestMap);
         	Integer statusFilter = null;
+        	Integer typeFilter = null;
         	if (filters != null) {	// filter by status
         		String statusParam = filters.get("ct.status");
         		if (statusParam != null && !statusParam.isEmpty()) {
@@ -206,6 +207,18 @@ public class LabelREST extends BaseREST {
             		while (iter.hasNext()) {
             			Label label = iter.next();
             			if (statusFilter != label.getCt().getStatus()) {
+            				iter.remove();
+            			}
+            		}
+        		}
+        		String typeParam = filters.get("ct.translationType");
+        		if (typeParam != null && !typeParam.isEmpty()) {
+        			typeFilter = Integer.valueOf(typeParam);
+                	// apply type filter
+            		Iterator<Label> iter = labels.iterator();
+            		while (iter.hasNext()) {
+            			Label label = iter.next();
+            			if (typeFilter != label.getCt().getTranslationType()) {
             				iter.remove();
             			}
             		}

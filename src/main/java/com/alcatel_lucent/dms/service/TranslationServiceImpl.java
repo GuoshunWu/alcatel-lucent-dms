@@ -1037,6 +1037,8 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 						if (trans != null) {
 							ct.setTranslation(trans.getTranslation());
 							ct.setStatus(trans.getStatus());
+							ct.setTranslationType(trans.getTranslationType());
+							ct.setLastUpdateTime(trans.getLastUpdateTime());
 						} else {
 							ct.setTranslation(label.getReference());
 							ct.setStatus(Translation.STATUS_UNTRANSLATED);
