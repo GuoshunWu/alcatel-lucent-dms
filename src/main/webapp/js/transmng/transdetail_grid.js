@@ -25,7 +25,7 @@
       ajaxCellOptions: {
         async: false
       },
-      colNames: ['Label', 'Max Length', 'Context', 'Reference language', 'Translation', 'Status', 'TransId', 'Trasn type', 'Last updated'],
+      colNames: ['Label', 'Max Length', 'Context', 'Reference language', 'Translation', 'Status', 'TransId', 'Traslation type', 'Last updated'],
       colModel: [
         {
           name: 'key',
@@ -92,13 +92,17 @@
           search: false
         }, {
           name: 'transtype',
-          index: 'transtype',
-          width: 150,
+          index: 'ct.translationType',
+          width: 100,
           align: 'left',
-          search: false
+          search: true,
+          stype: 'select',
+          searchoptions: {
+            value: i18n.trans.typefilter
+          }
         }, {
-          name: 'lastupdated',
-          index: 'lastupdated',
+          name: 'lastUpdate',
+          index: 'ct.lastUpdateTime',
           width: 150,
           align: 'left',
           search: false
@@ -218,7 +222,7 @@
 
         transDetailGrid = $("#transDetailGridList");
         url = "rest/labels";
-        prop = "key,maxLength,context.name,reference,ct.translation,ct.status,ct.id";
+        prop = "key,maxLength,context.name,reference,ct.translation,ct.status,ct.id,ct.translationType,ct.lastUpdateTime";
         transDetailGrid.setGridParam({
           url: url,
           datatype: "json",
