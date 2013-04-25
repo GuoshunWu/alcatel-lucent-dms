@@ -405,11 +405,10 @@
           'T': '2'
         };
         status = param.language.name.split('.')[1];
-        $('#translationDetailDialog').data('param', {
+        return transDetailDialog.data('param', {
           dict: param.dict,
           searchStatus: map[status]
-        });
-        return transDetailDialog.dialog("open");
+        }).dialog("open");
       },
       showSearchResult: showSearchResult
     };

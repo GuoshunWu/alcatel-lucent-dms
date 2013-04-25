@@ -276,6 +276,6 @@ define [
     map = 'N': '0', 'I': '1', 'T': '2'
     status = param.language.name.split('.')[1]
 
-    $('#translationDetailDialog').data 'param', {dict: param.dict, searchStatus: map[status]}
-    transDetailDialog.dialog "open"
+    transDetailDialog.data('param', {dict: param.dict, searchStatus: map[status]}).dialog "open"
+
   showSearchResult: showSearchResult

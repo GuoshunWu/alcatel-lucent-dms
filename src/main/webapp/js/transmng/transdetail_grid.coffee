@@ -17,7 +17,7 @@ define [
     pager: '#transDetailsPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
     viewrecords: true, gridview: true, multiselect: true
     cellEdit: true, cellurl: urls.trans.update_status, ajaxCellOptions: {async: false}
-    colNames: ['Label', 'Max Length', 'Context', 'Reference language', 'Translation', 'Status','TransId', 'Trasn type', 'Last updated']
+    colNames: ['Label', 'Max Length', 'Context', 'Reference language', 'Translation', 'Status','TransId', 'Traslation type', 'Last updated']
     colModel: [
       {name: 'key', index: 'key', width: 100, editable: false, stype: 'select', align: 'left', frozen: true}
       {name: 'maxlen', index: 'maxLength', width: 90, editable: false, align: 'right', frozen: true, search: false}
@@ -31,8 +31,9 @@ define [
       stype: 'select', searchoptions: {value: ":#{c18n.all};0:#{i18n.trans.nottranslated};1:#{i18n.trans.inprogress};2:#{i18n.trans.translated}"}
       }
       {name: 'transId', index: 'ct.id', width: 150, align: 'left', hidden:true, search: false}
-      {name: 'transtype', index: 'transtype', width: 150, align: 'left', search: false}
-      {name: 'lastupdated', index: 'lastupdated', width: 150, align: 'left',search: false}
+      {name: 'transtype', index: 'ct.translationType', width: 100, align: 'left', search: true
+      stype: 'select', searchoptions: {value: i18n.trans.typefilter}}
+      {name: 'lastUpdate', index: 'ct.lastUpdateTime', width: 150, align: 'left',search: false}
     ]
     afterEditCell: (rowid, cellname, val, iRow, iCol)->
       lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
@@ -94,7 +95,7 @@ define [
   languageChanged: (param)->
     transDetailGrid = $("#transDetailGridList")
     url = "rest/labels"
-    prop = "key,maxLength,context.name,reference,ct.translation,ct.status,ct.id"
+    prop = "key,maxLength,context.name,reference,ct.translation,ct.status,ct.id,ct.translationType,ct.lastUpdateTime"
 #    idprop: 'ct.id'
     transDetailGrid.setGridParam url: url, datatype: "json", postData: {dict: param.dict.id, language: param.language.id, format: 'grid', prop: prop}
 
