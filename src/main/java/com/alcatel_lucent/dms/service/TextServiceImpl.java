@@ -228,7 +228,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 		Collection<Translation> qr = dao.retrieve(hql, param);
 		Map<Long, String> result = new HashMap<Long, String>();
 		for (Translation trans : qr) {
-			if (result.containsKey(trans.getLanguage().getId()) && 
+			if (!result.containsKey(trans.getLanguage().getId()) && 
 					!trans.getText().getContext().getName().equals(Context.EXCLUSION)) {
 				result.put(trans.getLanguage().getId(), trans.getTranslation());
 			}
