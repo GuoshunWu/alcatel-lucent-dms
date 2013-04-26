@@ -1,0 +1,31 @@
+{
+
+    "page":"1",
+    "total":2,
+    "records":"50",
+    "rows":[
+        {
+            "id":"1",
+            "cell":[
+                "CANCEL",
+                "20",
+                "Dictionary",
+                "Cancel",
+                "取消"
+            ]
+        },
+        {
+            "id":"2",
+            "cell":[
+                "COPYRIGHT",
+                "120;200",
+                "Dictionary",
+                "Copyright 2007-2011 by Alcatel-Lucent",
+                "Alcatel-Lucent 版权所有 2007-2011."
+            ]
+        }
+    ],
+    "userData":{
+
+    }
+}
