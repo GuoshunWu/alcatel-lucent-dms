@@ -1,0 +1,79 @@
+<!-- ***************************************************************************** -->
+<!-- Copyright (c) Alcatel-Business-Systems - All Rights Reserved                  -->
+<!-- Project NMC 5.0                                                               -->
+<!-- ***************************************************************************** -->
+<!-- MODULE : XMLHelp Tools                                                        -->
+<!-- ***************************************************************************** -->
+<!-- DESCRIPTION :                                                                 -->
+<!-- 	This file is the Document Type Definition of xhlp files.                   -->
+<!-- ***************************************************************************** -->
+<!--                                                                               -->
+<!-- $Modtime$                                                                     -->
+<!-- $Log$                                                                         -->
+<!--                                                                               -->
+<!--                                                                               -->
+<!-- ***************************************************************************** -->
+<!-- INFO        : Fev 16, 2006 - W. ZHU                                           -->
+<!-- ***************************************************************************** -->
+
+<!-- Element 'HELP_DOCUMENT' is the root element of this XML Model -->
+<!-- Attribute 'name' is the name of this help_document -->
+<!ELEMENT HELP_DOCUMENT (LANGUAGE*,LANGUAGE_REF,ITEM*)>
+<!ATTLIST HELP_DOCUMENT 
+	name CDATA #REQUIRED>
+
+
+	<!-- Element 'LANGUAGE' defines one of languages to be translated -->
+	<!-- Attribute 'id' is a locale code. It advise to use language code ISO-639 and country code ISO-3166 -->
+	<!-- Example 1 : id="fr_CA" for Canada French -->
+	<!-- Example 2 : id="fr" for French without country information -->
+	<!ELEMENT LANGUAGE EMPTY>
+	<!ATTLIST LANGUAGE
+		id ID #REQUIRED>
+	
+	
+	<!-- Element 'LANGUAGE_REF' defines the language which will be used as reference of translations -->
+	<!-- Example for OmniVista 4760 : id="GEA" is our reference id. It means Generic English of Alcatel -->
+	<!ELEMENT LANGUAGE_REF EMPTY>
+	<!ATTLIST LANGUAGE_REF
+		id ID #REQUIRED>
+
+
+	<!-- Element 'ITEM' is the element associated to a collection of TRANSLATION -->
+	<!-- An element 'ITEM' can content a list of sub element 'ITEM' -->
+	<!-- Attribute 'name' is ITEM's name -->
+	<!-- Attribute 'category' classifies category of 'ITEM' -->
+	<!-- Attribute 'context' contains some descriptions about 'ITEM' -->
+	<!-- Attribute 'status' indicates global status of this ITEM. This attribute is used in merge process -->
+	<!-- Value 'new' indicates that it's a new created ITEM -->
+	<!-- Value 'modified' indicates the element ITEM was modified since last translation -->
+	<!-- Value 'unmodified' indicates the element ITEM has been unmodified since last translation -->
+	<!ELEMENT ITEM (TRANSLATION*,ITEM*)>
+	<!ATTLIST ITEM
+		name CDATA #REQUIRED
+		category (class|identifier|action|attribute) #REQUIRED
+		context CDATA ""
+		status (new|modified|unmodified) #REQUIRED>
+		
+		
+		<!-- Element 'TRANSLATION' is a block made up of 3 elements LABEL, HELP and COMMENT. -->
+		<!-- Content of each sub elements is written in the same language -->
+		<!-- Attribute 'language' references the LANGUAGE of block -->
+		<!-- Attribute 'comment' is a comment wrote by translator about TRANSLATION -->
+		<!-- It may be a question to programmer or it may be a proposition about reference TRANSLATION -->
+		<!-- Attribute 'follow_up' indicates status of this TRANSLATION. This attribute is used to follow up the progress of translation -->
+		<!-- Value 'no_translate' means this block don't need to translate -->
+		<!-- Value 'to_translate' means this block have to translate -->
+		<!-- Value 'to_validate' means this block have to validate -->
+		<!-- Value 'validated' means this block is validated -->
+		<!ELEMENT TRANSLATION (LABEL,HELP)>
+		<!ATTLIST TRANSLATION
+			language IDREF #REQUIRED
+			comment CDATA ""
+			follow_up (no_translate|to_translate|to_validate|validated) #REQUIRED>
+			
+			<!-- Element 'LABEL' is the label of this ITEM -->
+			<!ELEMENT LABEL (#PCDATA)>
+	
+			<!-- Element 'HELP' is a text help wrote about this ITEM -->
+			<!ELEMENT HELP (#PCDATA)>
