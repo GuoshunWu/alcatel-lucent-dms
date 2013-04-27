@@ -132,6 +132,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
             if (dbText == null) {
                 dbText = addText(ctxId, text.getReference());
             }
+            Map<Long, String> suggestedTranslations = null;
             HashSet<Long> langSet = new HashSet<Long>();
             if (text.getTranslations() != null) {
 	            for (Translation trans : text.getTranslations()) {
@@ -151,7 +152,10 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 	                			trans.getLanguage().getId() != 1L &&
 	                			trans.getStatus() == Translation.STATUS_UNTRANSLATED &&
 	                			trans.getTranslation().equals(text.getReference())) {
-	                		String suggestedTranslation = getSuggestedTranslation(trans.getLanguage().getId(), text.getReference());
+	                		if (suggestedTranslations == null) {
+	                			suggestedTranslations = getSuggestedTranslations(text.getReference());
+	                		}
+	                		String suggestedTranslation = suggestedTranslations.get(trans.getLanguage().getId());
 	                		if (suggestedTranslation != null) {
 	                			log.info("Auto translate \"" + text.getReference() + "\" to \"" + suggestedTranslation + "\" in " + trans.getLanguage().getName() + ".");
 	                			trans.setTranslation(suggestedTranslation);
@@ -215,6 +219,22 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 		}
 		return null;
 	}
+    
+    private Map<Long, String> getSuggestedTranslations(String reference) {
+		String hql = "from Translation where text.reference=:reference and status=:status order by text.context.id";
+		Map param = new HashMap();
+		param.put("reference", reference);
+		param.put("status", Translation.STATUS_TRANSLATED);
+		Collection<Translation> qr = dao.retrieve(hql, param);
+		Map<Long, String> result = new HashMap<Long, String>();
+		for (Translation trans : qr) {
+			if (!result.containsKey(trans.getLanguage().getId()) && 
+					!trans.getText().getContext().getName().equals(Context.EXCLUSION)) {
+				result.put(trans.getLanguage().getId(), trans.getTranslation());
+			}
+		}
+		return result;
+    }
 
 
 	@Override

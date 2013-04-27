@@ -17,23 +17,27 @@ define [
     pager: '#transDetailsPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
     viewrecords: true, gridview: true, multiselect: true
     cellEdit: true, cellurl: urls.trans.update_status, ajaxCellOptions: {async: false}
-    colNames: ['Label', 'Max Length', 'Context', 'Reference language', 'Translation', 'Status','TransId', 'Traslation type', 'Last updated']
+    colNames: ['Label', 'Max Len.', 'Context', 'Reference language', 'Translation', 'Status','TransId', 'Translation type', 'Last updated']
     colModel: [
-      {name: 'key', index: 'key', width: 100, editable: false, stype: 'select', align: 'left', frozen: true}
-      {name: 'maxlen', index: 'maxLength', width: 90, editable: false, align: 'right', frozen: true, search: false}
+      {name: 'key', index: 'key', width: 120, editable: false, stype: 'select', align: 'left', frozen: true}
+      {name: 'maxlen', index: 'maxLength', width: 60, editable: false, align: 'right', frozen: true, search: false}
       {name: 'context', index: 'context.name', width: 80, align: 'left', frozen: true, search: false}
-      {name: 'reflang', index: 'reference', width: 150, align: 'left', frozen: true, search: false}
-      {name: 'translation', index: 'ct.translation', width: 150, align: 'left', edittype:'textarea',
+      {name: 'reflang', index: 'reference', width: 200, align: 'left', frozen: true, search: false}
+      {name: 'translation', index: 'ct.translation', width: 200, align: 'left', edittype:'textarea',
       editable:true, classes: 'editable-column', search: false}
-      {name: 'transStatus', index: 'ct.status', width: 150, align: 'left', editable: true, classes: 'editable-column', search: true,
+      {name: 'transStatus', index: 'ct.status', width: 100, align: 'left', editable: true, classes: 'editable-column', search: true,
       edittype: 'select', editoptions: {value: "0:#{i18n.trans.nottranslated};1:#{i18n.trans.inprogress};2:#{i18n.trans.translated}"},
       formatter: 'select',
       stype: 'select', searchoptions: {value: ":#{c18n.all};0:#{i18n.trans.nottranslated};1:#{i18n.trans.inprogress};2:#{i18n.trans.translated}"}
       }
-      {name: 'transId', index: 'ct.id', width: 150, align: 'left', hidden:true, search: false}
-      {name: 'transtype', index: 'ct.translationType', width: 100, align: 'left', search: true
-      stype: 'select', searchoptions: {value: i18n.trans.typefilter}}
-      {name: 'lastUpdate', index: 'ct.lastUpdateTime', width: 150, align: 'left',search: false}
+      {name: 'transId', index: 'ct.id', width: 50, align: 'left', hidden:true, search: false}
+      {name: 'transtype', index: 'ct.translationType', width: 70, align: 'left',
+      formatter: 'select', editoptions: {value: i18n.trans.typefilter}
+      search: true, stype: 'select', searchoptions: {value: i18n.trans.typefilter}
+      }
+      {name: 'lastUpdate', index: 'ct.lastUpdateTime', width: 100, align: 'left',search: false
+      formatter: 'date', formatoptions:{srcformat:'ISO8601Long', newformat: 'Y-m-d H:i'}
+      }
     ]
     afterEditCell: (rowid, cellname, val, iRow, iCol)->
       lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}

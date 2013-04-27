@@ -10,6 +10,10 @@
     <description>
         Dictionary Management System
     </description>
+    
+    <session-config>
+    	<session-timeout>60</session-timeout>
+    </session-config>
     <!--
     The Spring plugin can be configured to automatically reload classes that change in the file system.
     This feature will enable code changes to be "hot deployed" without having to restart the web container.

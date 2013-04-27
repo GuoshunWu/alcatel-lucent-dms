@@ -33,6 +33,7 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -81,13 +82,19 @@ public class ICEJavaAlarmParser extends DictionaryParser {
             return deliveredDicts;
         }
         // Validate if it is a valid ICEJavaAlarm dictionary.
-        Source source = new StreamSource(file);
+        FileInputStream is = null;
         try {
+            is = new FileInputStream(file);
+            Source source = new StreamSource(is);
             iceJavaAlarmValidator.validate(source);
         } catch (Exception ex) {
             log.info(file + " is not a valid ICE Java Alarm file because {}", ex.getMessage());
             return deliveredDicts;
-        } 
+        } finally {
+        	if (is != null) {
+        		try {is.close();} catch (Exception e) {}
+        	}
+        }
 
         String dictPath = FilenameUtils.normalize(file.getAbsolutePath(), true);
         rootDir = FilenameUtils.normalize(rootDir, true);
