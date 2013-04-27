@@ -14,7 +14,7 @@ import javax.persistence.Table;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 
-@Entity
+//@Entity
 @Table(name = "DICTIONARY")
 public class Dictionary extends BaseEntity {
 

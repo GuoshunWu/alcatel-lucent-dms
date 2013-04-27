@@ -6,7 +6,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*;
 import java.util.Collection;
 
-@Entity
+//@Entity
 @Table(name = "DICTIONARY_BASE")
 public class DictionaryBase extends BaseEntity {
 	/**

@@ -9,7 +9,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
-@Entity
+//@Entity
 @Table(name = "TRANSLATION")
 public class Translation extends BaseEntity {
     /**

@@ -7,7 +7,7 @@ import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-@Entity
+//@Entity
 @Table(name = "LABEL_TRANSLATION")
 @org.hibernate.annotations.Table(appliesTo = "LABEL_TRANSLATION",
         indexes = {@Index(name = "I_LABEL_TRANSLATION_LABEL_LANG", columnNames = {
