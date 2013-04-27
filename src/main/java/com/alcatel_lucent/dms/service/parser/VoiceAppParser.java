@@ -28,6 +28,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.*;
 
 import static org.apache.commons.lang3.StringUtils.center;
@@ -108,12 +109,18 @@ public class VoiceAppParser extends DictionaryParser {
 
     private boolean isVoiceAppFile(File file) {
         // Validate if it is a valid ICEJavaAlarm dictionary.
-        Source source = new StreamSource(file);
+    	FileInputStream is = null;
         try {
+        	is = new FileInputStream(file);
+        	Source source = new StreamSource(is);
             iceJavaAlarmValidator.validate(source);
         } catch (Exception ex) {
         	log.info("XML file '" + file.getName() + "' is not a VoiceApp XML: " + ex);
             return false;
+        } finally {
+        	if (is != null) {
+        		try {is.close();} catch (Exception e) {}
+        	}
         }
         return true;
     }

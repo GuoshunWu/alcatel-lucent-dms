@@ -5,7 +5,7 @@
 
     <groupId>com.alcatel_lucent.dms</groupId>
     <artifactId>dms</artifactId>
-    <version>2.3.1</version>
+    <version>2.3.2</version>
     <packaging>war</packaging>
     <name>Dictionary Management System</name>
     <url>http://localhost:8080/dms</url>
@@ -666,7 +666,7 @@
             <id>qa-db</id>
             <properties>
                 <db.driver>org.postgresql.Driver</db.driver>
-                <db.url>jdbc:postgresql://135.117.177.136:5432/dms_qa</db.url>
+                <db.url>jdbc:postgresql://135.117.180.160:5432/dms_qa</db.url>
                 <db.user>dms</db.user>
                 <db.password>alcatel123</db.password>
                 <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
