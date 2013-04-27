@@ -2,7 +2,7 @@ package com.alcatel_lucent.dms.model;
 
 import javax.persistence.*;
 
-@Entity
+//@Entity
 @Table(name = "CHARSET")
 public class Charset extends BaseEntity {
 	/**

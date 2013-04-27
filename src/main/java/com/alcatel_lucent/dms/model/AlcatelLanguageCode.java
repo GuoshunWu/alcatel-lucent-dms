@@ -5,7 +5,7 @@ import javax.validation.constraints.NotNull;
 
 import java.io.Serializable;
 
-@Entity
+//@Entity
 @Table(name = "ALCATEL_LANGUAGE_CODE")
 public class AlcatelLanguageCode implements Serializable, LanguageCode {
 

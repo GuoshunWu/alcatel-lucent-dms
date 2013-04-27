@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.Collection;
 
 
-@Entity
+//@Entity
 @Table(name = "LANGUAGE")
 public class Language extends BaseEntity {
 
