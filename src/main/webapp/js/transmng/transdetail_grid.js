@@ -25,12 +25,12 @@
       ajaxCellOptions: {
         async: false
       },
-      colNames: ['Label', 'Max Length', 'Context', 'Reference language', 'Translation', 'Status', 'TransId', 'Traslation type', 'Last updated'],
+      colNames: ['Label', 'Max Len.', 'Context', 'Reference language', 'Translation', 'Status', 'TransId', 'Translation type', 'Last updated'],
       colModel: [
         {
           name: 'key',
           index: 'key',
-          width: 100,
+          width: 120,
           editable: false,
           stype: 'select',
           align: 'left',
@@ -38,7 +38,7 @@
         }, {
           name: 'maxlen',
           index: 'maxLength',
-          width: 90,
+          width: 60,
           editable: false,
           align: 'right',
           frozen: true,
@@ -53,14 +53,14 @@
         }, {
           name: 'reflang',
           index: 'reference',
-          width: 150,
+          width: 200,
           align: 'left',
           frozen: true,
           search: false
         }, {
           name: 'translation',
           index: 'ct.translation',
-          width: 150,
+          width: 200,
           align: 'left',
           edittype: 'textarea',
           editable: true,
@@ -69,7 +69,7 @@
         }, {
           name: 'transStatus',
           index: 'ct.status',
-          width: 150,
+          width: 100,
           align: 'left',
           editable: true,
           classes: 'editable-column',
@@ -86,15 +86,19 @@
         }, {
           name: 'transId',
           index: 'ct.id',
-          width: 150,
+          width: 50,
           align: 'left',
           hidden: true,
           search: false
         }, {
           name: 'transtype',
           index: 'ct.translationType',
-          width: 100,
+          width: 70,
           align: 'left',
+          formatter: 'select',
+          editoptions: {
+            value: i18n.trans.typefilter
+          },
           search: true,
           stype: 'select',
           searchoptions: {
@@ -103,9 +107,14 @@
         }, {
           name: 'lastUpdate',
           index: 'ct.lastUpdateTime',
-          width: 150,
+          width: 100,
           align: 'left',
-          search: false
+          search: false,
+          formatter: 'date',
+          formatoptions: {
+            srcformat: 'ISO8601Long',
+            newformat: 'Y-m-d H:i'
+          }
         }
       ],
       afterEditCell: function(rowid, cellname, val, iRow, iCol) {
