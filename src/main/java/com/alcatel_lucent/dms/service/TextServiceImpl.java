@@ -313,7 +313,8 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
     	}
     }
     
-    public void updateTranslationStatusByDict(Collection<Long> dictIds, int transStatus) {
+    public void updateTranslationStatusByDict(Collection<Long> dictIds, Collection<Long> langIds, int transStatus) {
+    	if (langIds != null && langIds.isEmpty()) return;
 		String hql = "select dl.language,l.text from Dictionary d join d.dictLanguages dl join d.labels l" +
 				" where dl.language.id<>1 and l.removed=false" +
 				" and l.context.name<>:exclusion" +
@@ -321,8 +322,12 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 				" and d.id=:dictId";
 		Map param = new HashMap();
 		param.put("exclusion", Context.EXCLUSION);
+		if (langIds != null) {
+			hql += " and dl.language.id in (:langIds)";
+			param.put("langIds", langIds);
+		}
     	for (Long dictId : dictIds) {
-    		Collection<Translation> qr = findAllTranslationsByDict(dictId);
+    		Collection<Translation> qr = findAllTranslationsByDictAndLanguage(dictId, langIds);
     		for (Translation trans : qr) {
     			trans.setStatus(transStatus);
     		}
@@ -342,7 +347,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
     	}
     }
     
-    public void updateTranslationStatusByApp(Collection<Long> appIds, int status) {
+    public void updateTranslationStatusByApp(Collection<Long> appIds, Collection<Long> langIds, int status) {
     	for (Long appId: appIds) {
 //    		Collection<Translation> qr = findAllTranslationsByApp(appId);
 //    		for (Translation trans : qr) {
@@ -354,18 +359,22 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
     			dictIds.add(dict.getId());
     		}
     		if (!dictIds.isEmpty()) {
-    			updateTranslationStatusByDict(dictIds, status);
+    			updateTranslationStatusByDict(dictIds, langIds, status);
     		}
     	}
     }
     
 
-    private Collection<Translation> findAllTranslationsByDict(Long dictId) {
-		String hql = "select t.translations from Label l join l.text t" +
+    private Collection<Translation> findAllTranslationsByDictAndLanguage(Long dictId, Collection<Long> langIds) {
+		String hql = "select s from Label l join l.text t join t.translations s" +
 				" where l.dictionary.id=:dictId and l.removed=false and l.context.name<>:exclusion";
 		Map param = new HashMap();
 		param.put("dictId", dictId);
 		param.put("exclusion", Context.EXCLUSION);
+		if (langIds != null) {
+			hql += " and s.language.id in (:langIds)";
+			param.put("langIds", langIds);
+		}
 		return dao.retrieve(hql, param);
 	}
     

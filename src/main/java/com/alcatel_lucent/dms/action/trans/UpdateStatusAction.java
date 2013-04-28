@@ -1,8 +1,5 @@
 package com.alcatel_lucent.dms.action.trans;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import com.alcatel_lucent.dms.action.JSONAction;
 import com.alcatel_lucent.dms.service.TextService;
 
@@ -12,17 +9,18 @@ public class UpdateStatusAction extends JSONAction {
 	private TextService textService;
 	private String id;	// dict id or app id
 	private String ctid;	// translation id
+	private String lang;	// language id (optional, only available when type is 'dict' or 'app')
 	private Integer transStatus;
 	private String type;
 	
 	protected String performAction() throws Exception {
-		log.info("UpdateStatusAction: id=" + id + ", ctid=" + ctid + ", status=" + transStatus + ", type=" + type);
+		log.info("UpdateStatusAction: id=" + id + ", ctid=" + ctid + ", status=" + transStatus + ", type=" + type + ", lang=" + lang);
 		if (type.equals("trans")) {
 			textService.updateTranslationStatus(toIdList(ctid), transStatus);
 		} else if (type.equals("dict")) {
-			textService.updateTranslationStatusByDict(toIdList(id), transStatus);
+			textService.updateTranslationStatusByDict(toIdList(id), lang == null ? null : toIdList(lang), transStatus);
 		} else if (type.equals("app")) {
-			textService.updateTranslationStatusByApp(toIdList(id), transStatus);
+			textService.updateTranslationStatusByApp(toIdList(id), lang == null ? null : toIdList(lang), transStatus);
 		} else {
 			setStatus(-1);
 			return SUCCESS;
@@ -69,6 +67,14 @@ public class UpdateStatusAction extends JSONAction {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getLang() {
+		return lang;
+	}
+
+	public void setLang(String lang) {
+		this.lang = lang;
 	}
 
 }
