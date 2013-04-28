@@ -263,7 +263,7 @@
     if (afterCreate) {
       afterCreate(transGrid);
     }
-    $('#makeLabelTranslateStatus').attr('privilegeName', util.urlname2Action('trans/update-status')).button({
+    $('#makeLabelTranslateStatus').attr('privilegeName', util.urlname2Action(urls.trans.update_status)).button({
       icons: {
         primary: "ui-icon-triangle-1-n",
         secondary: "ui-icon-gear"
@@ -282,7 +282,7 @@
       return false;
     });
     $('#translationStatus').menu().hide().find("li").on('click', function(e) {
-      var selectedRowIds;
+      var postData, selectedRowIds;
 
       transGrid = $("#transGrid");
       selectedRowIds = transGrid.getGridParam('selarrrow').join(',');
@@ -292,12 +292,16 @@
         });
         return;
       }
-      $.blockUI();
-      return $.post('trans/update-status', {
+      postData = {
         type: getTableType(),
         transStatus: e.target.name,
-        id: selectedRowIds
-      }, function(json) {
+        id: selectedRowIds,
+        lang: $("#languageFilterDialog input:checkbox[name='languages']:checked").map(function() {
+          return this.id;
+        }).get().join(',')
+      };
+      $.blockUI();
+      return $.post(urls.trans.update_status, postData, function(json) {
         if (json.status !== 0) {
           $.msgBox(json.message, null, {
             title: c18n.warning

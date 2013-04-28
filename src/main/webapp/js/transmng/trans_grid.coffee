@@ -132,7 +132,7 @@ define [
   afterCreate(transGrid) if afterCreate
 
   #  button for make all label as...
-  $('#makeLabelTranslateStatus').attr('privilegeName', util.urlname2Action 'trans/update-status')
+  $('#makeLabelTranslateStatus').attr('privilegeName', util.urlname2Action urls.trans.update_status)
   .button(
     icons:
       primary: "ui-icon-triangle-1-n"
@@ -148,8 +148,14 @@ define [
     selectedRowIds = transGrid.getGridParam('selarrrow').join(',')
     ($.msgBox (c18n.selrow.format c18n.dict), null, title: c18n.warning; return) unless selectedRowIds
 
+    postData =
+      type: getTableType()
+      transStatus: e.target.name
+      id: selectedRowIds
+      lang: $("#languageFilterDialog input:checkbox[name='languages']:checked").map(->@id).get().join(',')
+
     $.blockUI()
-    $.post 'trans/update-status', {type: getTableType(), transStatus: e.target.name, id: selectedRowIds}, (json)->
+    $.post urls.trans.update_status, postData, (json)->
       ($.msgBox json.message, null, title: c18n.warning; return) unless json.status == 0
       $.unblockUI()
       $.msgBox i18n.msgbox.transstatus.msg, null, title: c18n.message
