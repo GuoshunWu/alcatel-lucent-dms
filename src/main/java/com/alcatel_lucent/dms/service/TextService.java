@@ -96,16 +96,18 @@ public interface TextService {
     /**
      * Update translation status by dictionaries
      * @param dictIds dictionary id list
+     * @param langIds language id list, a null value identifies all languages
      * @param transStatus new translation status
      */
-    void updateTranslationStatusByDict(Collection<Long> dictIds, int transStatus);
+    void updateTranslationStatusByDict(Collection<Long> dictIds, Collection<Long> langIds, int transStatus);
     
     /**
      * Update translation status by applications
      * @param appIds application id list
+     * @param langIds language id list, a null value identifies all languages
      * @param transStatus new translation status
      */
-    void updateTranslationStatusByApp(Collection<Long> appIds, int transStatus);
+    void updateTranslationStatusByApp(Collection<Long> appIds, Collection<Long> langIds, int transStatus);
 
     /**
      * Get translation details by context
