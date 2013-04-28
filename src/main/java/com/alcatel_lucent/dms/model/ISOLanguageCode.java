@@ -3,7 +3,7 @@ package com.alcatel_lucent.dms.model;
 import javax.persistence.*;
 import java.io.Serializable;
 
-@Entity
+//@Entity
 @Table(name = "ISO_LANGUAGE_CODE")
 public class ISOLanguageCode implements Serializable, LanguageCode {
 

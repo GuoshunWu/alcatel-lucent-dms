@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-@Entity
+//@Entity
 @Table(name = "PRODUCT_BASE")
 @XmlRootElement
 public class ProductBase extends BaseEntity {

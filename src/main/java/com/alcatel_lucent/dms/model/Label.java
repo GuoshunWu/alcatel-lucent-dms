@@ -15,7 +15,7 @@ import java.util.Map;
 
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
-@Entity
+//@Entity
 @Table(name = "LABEL")
 public class Label extends BaseEntity {
     /**

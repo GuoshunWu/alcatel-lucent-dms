@@ -9,7 +9,7 @@ import java.util.Date;
 
 @SuppressWarnings("serial")
 
-@Entity
+//@Entity
 @Table(name = "TASK")
 public class Task extends BaseEntity {
 
