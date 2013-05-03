@@ -145,11 +145,21 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
     $("#progressbar_#{randStr}", pbContainer)
 
 
+  ###
+  Long polling to update progress bar.
+
+
+  @param url the url to get update informatin.
+  @param postData data to be posted to server
+  @callback callback when the progress complete.
+  @pb the progress bar, if not null it will be auto updated until the progress complete and then invoke callback
+     else callback will be invoked every time
+
+  ###
   long_polling =(url, postData, callback, pb)->
     # call by terminal user
     postData.pqCmd = 'start' if !postData || !postData.pqCmd
 #    console?.log "postData="
-#    console?.log postData
 
     # initlize the test parameters
     pollingInterval = if $("#pollingFreq").val() then parseInt($("#pollingFreq").val()) else 1000
@@ -187,7 +197,7 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
 #          console?.log "Request #{textStatus}, I will retry in #{pollingInterval} milliseconds."
           setTimeout (->reTryAjax(--retryTimes, ++retryCounter)), pollingInterval
         else
-#          console?.log "I have retried #{retryCounter} times. There may be a network connection issue, please check network cable."
+          console?.log "I have retried #{retryCounter} times. There may be a network connection issue, please check network cable."
       )
 
     reTryAjax()

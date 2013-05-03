@@ -7,7 +7,7 @@ import javax.persistence.*;
 
 @SuppressWarnings("serial")
 
-@Entity
+//@Entity
 @Table(name = "TASK_DETAIL")
 public class TaskDetail extends BaseEntity {
 

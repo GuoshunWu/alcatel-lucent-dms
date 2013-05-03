@@ -3,16 +3,16 @@ syntax:glob
 *~
 *.orig
 *.rej
-.hgignore
+
 # Java
 *.class
 target/
 *.bak
-Main.java
-SimpleTest.java
-AuthenticationServiceImpl.java
+
 # idea files
 .idea/
+
+hibernate.cfg.xml
 
 #gradle files
 .gradle
@@ -36,7 +36,7 @@ GroovyTest.groovy
 
 #other files
 log4j.dtd
-dms.uml
+*.uml
 temp.sql
 jettyStart.cmd
 
@@ -48,7 +48,7 @@ tmp
 atlassian-ide-plugin.xml
 src/main/webapp/js/test.js
 src/main/webapp/js/npm-debug.log
-dms.iws
-dms.ipr
-dms.ids
+*.iws
+*.ipr
+*.ids
 *.log

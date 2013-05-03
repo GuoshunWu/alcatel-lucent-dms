@@ -15,7 +15,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-@Entity
+//@Entity
 @Table(name = "APPLICATION")
 public class Application extends BaseEntity {
 
