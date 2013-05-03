@@ -55,6 +55,8 @@ define [
     searchActionBtn.trigger 'click'
     false
 
-  $('#goBackToWelcome').button().click ()->layout.showWelcomePanel()
+  $('#goBackToWelcome').button().click ()->
+    $('#globalSearchResultGrid').clearGridData()
+    layout.showWelcomePanel()
 
 

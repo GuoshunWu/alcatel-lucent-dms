@@ -10,10 +10,12 @@ import com.alcatel_lucent.dms.util.Util;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -70,15 +72,10 @@ public class VoiceAppParser extends DictionaryParser {
 
         if (file.isFile()) {
             if (FilenameUtils.isExtension(file.getName().toLowerCase(), extensions) && isVoiceAppFile(file)) {
-            	log.info("Parsing VoiceApp XML " + file.getName());
+                log.info("Parsing VoiceApp XML " + file.getName());
                 //parse single file
-                String dictPath = FilenameUtils.normalize(file.getAbsolutePath(), true);
-                rootDir = FilenameUtils.normalize(rootDir, true);
-                String dictName = dictPath;
-                if (rootDir != null && dictName.startsWith(rootDir)) {
-                    dictName = dictName.substring(rootDir.length() + 1);
-                }
-                deliveredDicts.add(parseVoiceApp(dictName, dictPath, file));
+                Pair<String, String> namePair = getDictNamePair(rootDir, file);
+                deliveredDicts.add(parseVoiceApp(namePair.getLeft(), namePair.getRight(), file));
                 acceptedFiles.add(file);
             }
             return deliveredDicts;
@@ -90,14 +87,8 @@ public class VoiceAppParser extends DictionaryParser {
         for (File xmlFile : files) {
             try {
                 if (!isVoiceAppFile(xmlFile)) continue;
-
-                String dictPath = FilenameUtils.normalize(xmlFile.getAbsolutePath(), true);
-                rootDir = FilenameUtils.normalize(rootDir, true);
-                String dictName = dictPath;
-                if (rootDir != null && dictName.startsWith(rootDir)) {
-                    dictName = dictName.substring(rootDir.length() + 1);
-                }
-                deliveredDicts.add(parseVoiceApp(dictName, dictPath, xmlFile));
+                Pair<String, String> namePair = getDictNamePair(rootDir, xmlFile);
+                deliveredDicts.add(parseVoiceApp(namePair.getLeft(), namePair.getRight(), xmlFile));
                 acceptedFiles.add(xmlFile);
 
             } catch (BusinessException e) {
@@ -109,18 +100,16 @@ public class VoiceAppParser extends DictionaryParser {
 
     private boolean isVoiceAppFile(File file) {
         // Validate if it is a valid ICEJavaAlarm dictionary.
-    	FileInputStream is = null;
+        FileInputStream is = null;
         try {
-        	is = new FileInputStream(file);
-        	Source source = new StreamSource(is);
+            is = new FileInputStream(file);
+            Source source = new StreamSource(is);
             iceJavaAlarmValidator.validate(source);
         } catch (Exception ex) {
-        	log.info("XML file '" + file.getName() + "' is not a VoiceApp XML: " + ex);
+            log.info("XML file '" + file.getName() + "' is not a VoiceApp XML: " + ex);
             return false;
         } finally {
-        	if (is != null) {
-        		try {is.close();} catch (Exception e) {}
-        	}
+            IOUtils.closeQuietly(is);
         }
         return true;
     }

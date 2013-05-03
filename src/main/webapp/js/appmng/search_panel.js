@@ -62,6 +62,7 @@
       return false;
     });
     return $('#goBackToWelcome').button().click(function() {
+      $('#globalSearchResultGrid').clearGridData();
       return layout.showWelcomePanel();
     });
   });
