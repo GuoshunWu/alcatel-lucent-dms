@@ -8,6 +8,8 @@ import com.alcatel_lucent.dms.util.Util
 import org.apache.commons.io.ByteOrderMark
 import org.apache.commons.io.IOUtils
 import org.apache.commons.io.input.BOMInputStream
+import org.dom4j.Document
+import org.dom4j.io.SAXReader
 import org.junit.*
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,6 +19,8 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.test.context.transaction.TransactionConfiguration
 import org.springframework.transaction.annotation.Transactional
+import org.xml.sax.EntityResolver
+import org.xml.sax.InputSource
 
 import javax.annotation.Resource
 
@@ -28,7 +32,7 @@ import javax.annotation.Resource
  * To change this template use File | Settings | File Templates.
  */
 
-@Ignore
+//@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = ["/spring.xml"])
 @Transactional //Important, or the transaction control will be invalid
@@ -45,7 +49,7 @@ public class DictionaryServiceTest {
 //    @Resource
 //    private OTCAndoridOrIPhoneParser otcAndoridOrIPhoneParser
 
-    private String testFileRoot = 'D:/MyDocuments/Alcatel_LucentSBell/DMS/DMSFiles'
+    private String testFileRoot = 'D:/Documents/Alcatel_Lucent/DMS/exampleFiles'
 
     @BeforeClass
     static void setUpBeforeClass() throws Exception {
@@ -65,25 +69,22 @@ public class DictionaryServiceTest {
     void tearDown() throws Exception {
     }
 
-
 //    @Test
-    void testSample(){
-        String srcPath = 'OTC_Andriod_iPhone'
-        File f = new File("${testFileRoot}/${srcPath}")
+    void tempTest() {
+        SAXReader saxReader = new SAXReader(true)
 
-        println otcAndoridOrIPhoneParser.parse(f.absolutePath, f, [])
+        saxReader.entityResolver = { String publicId, String systemId ->
+            new InputSource(getClass().getResourceAsStream("/dtds/XmlHelp.dtd"))
+        } as EntityResolver
+
+        Document doc = saxReader.read(new File("D:\\Documents\\Alcatel_Lucent\\DMS\\exampleFiles\\XMLHelp\\test\\help-example.xhlp"))
+        println doc
     }
 
-//    @Test
-//    @Rollback(false)
+    @Test
     void testDictionaryProcess() {
         String targetDir = "D:/test/dictgenerate/"
-
-        String srcPath = 'OTC_Web'
-        srcPath = 'ACSTextDict'
-        srcPath = 'VoiceApp/test'
-
-
+        String srcPath = 'XMLHelp/test'
 
         File f = new File("${testFileRoot}/${srcPath}")
 
@@ -97,7 +98,7 @@ public class DictionaryServiceTest {
         daoService.session.clear()
 
         // There may be dictionaries errors need to be adjust manually here
-        Collection<Long> dbIds=daoService.retrieve('select id from Dictionary where base.name in :names', ['names': Util.getObjectProperiesList(dicts, 'name')])
+        Collection<Long> dbIds = daoService.retrieve('select id from Dictionary where base.name in :names', ['names': Util.getObjectProperiesList(dicts, 'name')])
         dictionaryService.generateDictFiles(targetDir, dbIds)
 
     }
@@ -108,7 +109,6 @@ public class DictionaryServiceTest {
         daoService.create(new User('test', 'Test', 'Test@alcatel-lucent.com'))
         println daoService.retrieve("from User where loginName = 'test'")
     }
-
 
 //    @Test
     void testBOM() {

@@ -33,6 +33,13 @@ public class Label extends BaseEntity {
         return super.getId();
     }
 
+    public Label() {
+    }
+
+    public Label(String key) {
+        this.key = key;
+    }
+
     public static final String CHECK_FIELD_NAME = "CHK";
     public static final String REFERENCE_FIELD_NAME = "GAE";
 

@@ -7,10 +7,11 @@ import com.alcatel_lucent.dms.model.DictionaryLanguage;
 import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.LabelTranslation;
 import com.alcatel_lucent.dms.service.DaoService;
-import com.alcatel_lucent.dms.service.parser.ICEJavaAlarmParser;
 import com.alcatel_lucent.dms.service.parser.VoiceAppParser;
+import com.alcatel_lucent.dms.service.parser.XMLHelpParser;
 import com.alcatel_lucent.dms.util.Util;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.dom4j.Document;
@@ -35,10 +36,11 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.apache.commons.lang3.StringUtils.center;
+import static org.apache.commons.lang3.StringUtils.split;
 
 @Component
-public class VoiceAppGenerator extends DictionaryGenerator {
-    private static Logger log = LoggerFactory.getLogger(VoiceAppGenerator.class);
+public class XmlHelpGenerator extends DictionaryGenerator {
+    private static Logger log = LoggerFactory.getLogger(XmlHelpGenerator.class);
     @Autowired
     private DaoService dao;
 
@@ -66,17 +68,18 @@ public class VoiceAppGenerator extends DictionaryGenerator {
 
     @Override
     public Constants.DictionaryFormat getFormat() {
-        return Constants.DictionaryFormat.VOICE_APP;
+        return Constants.DictionaryFormat.XML_Help;
     }
 
     public void generateDict(File targetDir, Dictionary dict) throws BusinessException {
         XMLWriter writer = null;
         try {
-            OutputStream fos = FileUtils.openOutputStream(new File(targetDir, dict.getName()));
+            String fileName = Util.string2Map(dict.getAnnotation1()).get("filename");
+            OutputStream fos = FileUtils.openOutputStream(new File(targetDir, fileName));
             OutputFormat format = OutputFormat.createPrettyPrint();
             format.setIndentSize(4);
             format.setXHTML(true);
-
+            format.setExpandEmptyElements(false);
 
             log.info(center("Start generating dictionary " + dict.getName() + "...", 100, '='));
             writer = new XMLWriter(new BufferedOutputStream(fos), format);
@@ -96,6 +99,21 @@ public class VoiceAppGenerator extends DictionaryGenerator {
 
     }
 
+    /**
+     * Get parent element of specific label key
+     */
+    private Element getParent(String key, Element root) {
+        String[] keyToken = split(key, XMLHelpParser.KEY_SEPARATOR);
+        if (1 == keyToken.length) return root;
+
+        int index = 0;
+        StringBuilder sb = new StringBuilder("ITEM[@name='" + keyToken[index++] + "']");
+        for (; index < keyToken.length - 1; index++) {
+            sb.append("/ITEM[@name='" + keyToken[index] + "']");
+        }
+        return (Element) root.selectSingleNode(sb.toString());
+    }
+
     public Document generateDocument(final Dictionary dict) {
         Document doc = DocumentHelper.createDocument();
         doc.setXMLEncoding(dict.getEncoding());
@@ -104,79 +122,57 @@ public class VoiceAppGenerator extends DictionaryGenerator {
 
         doc.addComment(StringUtils.center(getDMSGenSign(), 50, '='));
 
+        doc.addDocType("HELP_DOCUMENT", "", "XmlHelp.dtd");
+        final Element xmlDict = doc.addElement("HELP_DOCUMENT");
+        xmlDict.addAttribute("name", dict.getName());
 
-        final Element xmlDict = doc.addElement("catalog");
-        xmlDict.addNamespace("xsi", XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
-        // catalog attributes
-        Map<String, String> attributes = Util.string2Map(dict.getAnnotation1());
-        for (Map.Entry<String, String> entry : attributes.entrySet()) {
-            xmlDict.addAttribute(entry.getKey(), entry.getValue());
+        //add languages and language ref
+        Collection<DictionaryLanguage> dictionaryLanguages = dict.getDictLanguages();
+        for (DictionaryLanguage dictionaryLanguage : dictionaryLanguages) {
+            String elemName = "LANGUAGE";
+            if (dictionaryLanguage.getLanguageCode().equals(dict.getReferenceLanguage())) {
+                elemName += "_REF";
+            }
+            Element elemLang = xmlDict.addElement(elemName);
+            elemLang.addAttribute("id", dictionaryLanguage.getLanguageCode());
         }
-
 
         // all the entries
         Collection<Label> availableLabels = dict.getAvailableLabels();
         for (Label label : availableLabels) {
-            Element elemEntry = xmlDict.addElement("entry");
-
-            Element elemKey = elemEntry.addElement("key");
-            elemKey.setText(label.getKey());
-            Map<String, String> keyAttires = Util.string2Map(label.getAnnotation1());
-            Set<Map.Entry<String, String>> attiresEntries = keyAttires.entrySet();
-            for (Map.Entry<String, String> aEntry : attiresEntries) {
-                elemKey.addAttribute(aEntry.getKey(), aEntry.getValue());
-            }
-
-            //restore usage element
-            String annotation2 = label.getAnnotation2();
-            String usage;
-            if (StringUtils.isNotEmpty(annotation2) && StringUtils.isNotEmpty(usage = Util.string2Map(annotation2).get("usage"))) {
-                elemEntry.addElement("usage").setText(usage);
-            }
-
-            //restore message element
-            Collection<DictionaryLanguage> dictionaryLanguages = dict.getDictLanguages();
-            String langCode;
+            Element elemParent = getParent(label.getKey(), xmlDict);
+//            // elemParent may haven't created yet
+            Element elemItem = elemParent.addElement("ITEM");
+            addAttributes(elemItem, Util.string2Map(label.getAnnotation1()));
 
             for (DictionaryLanguage dictionaryLanguage : dictionaryLanguages) {
-                Element elemMsg = elemEntry.addElement("message");
-                langCode = dictionaryLanguage.getLanguageCode();
-                Map<String, String> annotationMap = null;
+                Element elemTrans = elemItem.addElement("TRANSLATION");
+                String langCode = dictionaryLanguage.getLanguageCode();
+                boolean isRef = langCode.equals(dict.getReferenceLanguage());
 
-                elemMsg.addAttribute("lang", langCode);
-                LabelTranslation labelTranslation = null;
-                String translation = null;
-                if (VoiceAppParser.REFERENCE_LANG_CODE.equals(langCode)) {
-                    annotationMap = Util.string2Map(label.getAnnotation2());
-                    translation = label.getReference();
-                } else if (null != (labelTranslation = label.getOrigTranslation(langCode))) {
-                    annotationMap = Util.string2Map(labelTranslation.getAnnotation1());
-                    translation = label.getTranslation(langCode);
-                }
-                if (null == annotationMap) continue;
+                Map<String, String> annotationMap = Util.string2Map(isRef ?
+                        label.getAnnotation2() : label.getOrigTranslation(langCode).getAnnotation1());
+                String help = annotationMap.get("HELP");
+                String text =isRef?label.getReference(): label.getTranslation(langCode);
+                annotationMap.remove("HELP");
 
-                String notTrans = annotationMap.get("doNotTranslate");
-                if (StringUtils.isNotEmpty(notTrans)) {
-                    elemMsg.addAttribute("doNotTranslate", notTrans);
-                }
-                String comment = annotationMap.get("comment");
-                if (StringUtils.isNotEmpty(comment)) {
-                    elemMsg.addElement("comment").setText(comment);
-                }
+                addAttributes(elemTrans, annotationMap);
 
-                if (StringUtils.isNotEmpty(translation)) {
-                    elemMsg.addElement("phrase").setText(translation);
+                elemTrans.addElement("LABEL").addCDATA(text);
+                Element elemHelp = elemTrans.addElement("HELP");
+                if(!StringUtils.isEmpty(help)){
+                    elemHelp.addCDATA(help);
                 }
             }
-
         }
-        String annotation2 = dict.getAnnotation2();
-        String comment;
-        if (StringUtils.isNotEmpty(annotation2) && null != (comment = Util.string2Map(annotation2).get("comment"))) {
-            xmlDict.addElement("comment").setText(comment);
-        }
-
         return doc;
+    }
+
+    private void addAttributes(Element element, Map<String, String> annotationMap) {
+        Set<Map.Entry<String, String>> entries = annotationMap.entrySet();
+        for (Map.Entry<String, String> entry : entries) {
+            element.addAttribute(entry.getKey(), entry.getValue());
+        }
     }
 
 }

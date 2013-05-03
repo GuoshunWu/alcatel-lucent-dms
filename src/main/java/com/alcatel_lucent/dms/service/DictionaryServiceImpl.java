@@ -396,6 +396,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             dbDict.setAnnotation3(dict.getAnnotation3());
             dbDict.setAnnotation4(dict.getAnnotation4());
             dbDict.setLocked(false);
+            dbDict.setReferenceLanguage(dict.getReferenceLanguage());
             dbDict = (Dictionary) getDao().create(dbDict);
             if (mode == Constants.ImportingMode.DELIVERY) {    // in case new dictionary version, compare with latest version
                 lastDict = getLatestDictionary(baseDBDict.getId(), dbDict.getId());
@@ -407,6 +408,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 dbDict.setAnnotation2(dict.getAnnotation2());
                 dbDict.setAnnotation3(dict.getAnnotation3());
                 dbDict.setAnnotation4(dict.getAnnotation4());
+                dbDict.setReferenceLanguage(dict.getReferenceLanguage());
             }
         }
 

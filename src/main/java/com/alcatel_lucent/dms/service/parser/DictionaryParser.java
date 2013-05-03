@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,4 +68,21 @@ abstract public class DictionaryParser {
 	}
 
 
+    /**
+     * Obtain pair of dictionary name and dictionary path from root dir and file object.
+     * @param rootDir  root directory.
+     * @param file  dictionary file object.
+     * @return pair object, left object is dictionary name and right object is dictionary path.
+     * */
+    protected Pair<String,String> getDictNamePair(String rootDir, File file){
+
+        String dictPath = FilenameUtils.normalize(file.getAbsolutePath(), true);
+        rootDir = FilenameUtils.normalize(rootDir, true);
+        String dictName = dictPath;
+        if (rootDir != null && dictName.startsWith(rootDir)) {
+            dictName = dictName.substring(rootDir.length() + 1);
+        }
+        return Pair.of(dictName, dictPath);
+
+    }
 }
