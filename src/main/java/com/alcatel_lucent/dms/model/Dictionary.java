@@ -29,6 +29,17 @@ public class Dictionary extends BaseEntity {
     private String annotation2;
     private String annotation3;
     private String annotation4;
+
+    public String getReferenceLanguage() {
+        return referenceLanguage;
+    }
+
+    public void setReferenceLanguage(String referenceLanguage) {
+        this.referenceLanguage = referenceLanguage;
+    }
+
+    private String referenceLanguage;
+
     private Map<String, int[]> summaryCache;
     private Application app;    // transient variable for REST service
     private Collection<BusinessWarning> parseWarnings;        // transient variable for parse warnings information

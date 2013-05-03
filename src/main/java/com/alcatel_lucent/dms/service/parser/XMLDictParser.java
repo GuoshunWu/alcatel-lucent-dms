@@ -84,7 +84,7 @@ public class XMLDictParser extends DictionaryParser {
 
     public void parseXdctFile(Dictionary dict, XDictionary xdict) {
         File xdctFile = xdict.getFile();
-        SAXReader saxReader = new SAXReader();
+        SAXReader saxReader = new SAXReader(true);
         saxReader.setEntityResolver(xdctdtdEntityResolver);
         Document document;
 
@@ -165,7 +165,7 @@ public class XMLDictParser extends DictionaryParser {
         }
 
         label.setDictionary(dict);
-        Context ctxExclusion = new Context(Context.EXCLUSION);
+
 
         /**
          * Indicates global state of translations of this element, this attribute is used in merge process
@@ -290,7 +290,6 @@ public class XMLDictParser extends DictionaryParser {
          * */
         List<Element> elemTranslations = key.elements("TRANSLATION");
 
-        Boolean allExclusion = null;    // if all follow_up are "no translation", set the label to EXCLUSION context
         for (Element elemTrans : elemTranslations) {
             String langCode = elemTrans.attributeValue("language").trim();
             if ("gae".equalsIgnoreCase(langCode)) {
@@ -303,20 +302,15 @@ public class XMLDictParser extends DictionaryParser {
             String followUp = elemTrans.attributeValue("follow_up");
             lt.putKeyValuePairToField("follow_up", followUp, BaseEntity.ANNOTATION1);
             if (followUp != null) {    // set translation status
-                if (followUp.equals("no_translate")) {
-                    if (allExclusion == null) allExclusion = true;
+                boolean needNotTrans = followUp.equals("no_translate") || followUp.equals("validated");
+                lt.setNeedTranslation(!needNotTrans);
+                if (needNotTrans) {
                     lt.setStatus(Translation.STATUS_TRANSLATED);
-                } else if (followUp.equals("validated")) {
-                    allExclusion = false;
-                    lt.setStatus(Translation.STATUS_TRANSLATED);
+//                    label.setContext(new Context(Context.EXCLUSION));
                 } else {
-                    allExclusion = false;
                     lt.setStatus(Translation.STATUS_UNTRANSLATED);
                 }
             }
-        }
-        if (allExclusion != null && allExclusion) {
-            label.setContext(ctxExclusion);
         }
     }
 

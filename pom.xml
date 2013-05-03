@@ -666,7 +666,7 @@
             <id>qa-db</id>
             <properties>
                 <db.driver>org.postgresql.Driver</db.driver>
-                <db.url>jdbc:postgresql://135.117.180.160:5432/dms_qa</db.url>
+                <db.url>jdbc:postgresql://135.117.180.165:5432/dms_qa</db.url>
                 <db.user>dms</db.user>
                 <db.password>alcatel123</db.password>
                 <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
@@ -678,8 +678,8 @@
             <id>prod-db</id>
             <properties>
                 <db.driver>org.postgresql.Driver</db.driver>
-<!--            <db.url>jdbc:postgresql://135.117.177.136:5432/dms_qa2</db.url>-->
-                <db.url>jdbc:postgresql://172.24.190.236:5432/dms_prod</db.url>
+            	<db.url>jdbc:postgresql://135.117.180.165:5432/dms_prod</db.url>
+<!--                <db.url>jdbc:postgresql://172.24.190.236:5432/dms_prod</db.url>-->
                 <db.user>dms</db.user>
                 <db.password>alcatel123</db.password>
                 <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
@@ -770,7 +770,7 @@
                         <artifactId>tomcat7-maven-plugin</artifactId>
                         <version>2.0</version>
                         <configuration>
-                            <url>http://135.117.177.136:8888/manager/text</url>
+                            <url>http://135.117.180.165:8888/manager/text</url>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -855,8 +855,8 @@
                         <artifactId>tomcat7-maven-plugin</artifactId>
                         <version>2.0</version>
                         <configuration>
-                            <!-- <url>http://135.117.177.136:9999/manager/text</url>-->
-                            <url>http://172.24.190.236:8080/manager/text</url>
+                            <url>http://135.117.180.165:9999/manager/text</url>
+                            <!-- <url>http://172.24.190.236:8080/manager/text</url>-->
                         </configuration>
                     </plugin>
                 </plugins>
