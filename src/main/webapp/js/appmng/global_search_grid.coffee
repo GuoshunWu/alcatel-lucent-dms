@@ -16,15 +16,20 @@ define ['jqgrid', 'dms-util'], ($, util)->
     caption: 'result'
     viewrecords: true
     gridview: true, multiselect: false, cellEdit: false
-
+    grouping: true
+    groupingView: {
+      groupField: ['prod.base.name'
+      , 'app.name', 'dictionary.base.name'
+      ]
+    }
     colNames: ['Prod', 'Prod ver', 'Application', 'App ver', 'Dictionary', 'Dict ver', 'Label', 'Reference Language', 'Max Length', 'Context', 'T', 'N', 'I']
     colModel: [
-      {name: 'prod', index: 'app.name', width: 50, editable: false, align: 'left'}
-      {name: 'prod.version', index: 'app.version', width: 50, editable: false, align: 'left'}
+      {name: 'prod.base.name', index: 'prod.base.name', width: 50, editable: false, align: 'left'}
+      {name: 'prod.version', index: 'prod.version', width: 50, editable: false, align: 'left'}
 
-      {name: 'app', index: 'app.name', width: 50, editable: false, align: 'left'}
+      {name: 'app.name', index: 'app.name', width: 50, editable: false, align: 'left'}
       {name: 'app.version', index: 'app.version', width: 50, editable: false, align: 'left'}
-      {name: 'dict', index: 'dictionary.base.name', width: 300, editable: false, align: 'left'}
+      {name: 'dictionary.base.name', index: 'dictionary.base.name', width: 300, editable: false, align: 'left'}
       {name: 'dict.version', index: 'dictionary.version', width: 50, editable: false, align: 'left'}
       {name: 'key', index: 'key', width: 100, editable: false, align: 'left'}
       {name: 'reference', index: 'reference', width: 300, editable: false, align: 'left'}
