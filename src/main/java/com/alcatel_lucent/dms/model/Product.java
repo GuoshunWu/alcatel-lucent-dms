@@ -68,7 +68,8 @@ public class Product extends BaseEntity {
 	public String getName() {
 		return base == null ? null : base.getName();
 	}
-	
+
+    @Transient
 	public String getNameVersion() {
 		return base == null ? null : base.getName() + " " + version;
 	}

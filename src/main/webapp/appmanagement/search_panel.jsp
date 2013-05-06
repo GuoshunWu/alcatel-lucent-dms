@@ -6,10 +6,14 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <s:text name="searchtext"/>
                 <input size="80" id="globalSearchInResultPanel" name="globalSearch"/><button id="globalSearchInResultPanelAction"/>
+
+            </td>
+            <td>
+                <button id="groupingToggle">Grouping toggle</button>
             </td>
         </tr>
         <tr>
-            <td style="vertical-align:middle;" id="globalSearchResultGrid_parent">
+            <td colspan="2" style="vertical-align:middle;" id="globalSearchResultGrid_parent">
                 <div>
                     <table id="globalSearchResultGrid">
                         <tr>
