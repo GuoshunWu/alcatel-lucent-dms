@@ -1,16 +1,12 @@
 package com.alcatel_lucent.dms.test
 
-import com.alcatel_lucent.dms.model.Application
-import com.alcatel_lucent.dms.model.ApplicationBase
-import com.alcatel_lucent.dms.model.ProductBase
+import com.alcatel_lucent.dms.model.Label
 import com.alcatel_lucent.dms.model.test.Book
-import com.alcatel_lucent.dms.rest.ApplicationREST
 import com.alcatel_lucent.dms.service.DaoService
 import org.hibernate.search.FullTextSession
 import org.hibernate.search.Search
 import org.hibernate.search.query.dsl.QueryBuilder
 import org.junit.BeforeClass
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -41,7 +37,7 @@ class HibernateSearchTest {
 
     }
 
-    @Test
+//    @Test
     void testExample() {
         FullTextSession fullTextSession = Search.getFullTextSession(dao.getSession())
 //        fullTextSession.createIndexer().startAndWait()
@@ -60,6 +56,27 @@ class HibernateSearchTest {
         List result = hibQuery.list()
 
         print "${'*'* 100}\n${result}\n"
+
+    }
+
+    @Test
+    void testLabelRest(){
+        FullTextSession fullTextSession = Search.getFullTextSession(dao.getSession())
+//        fullTextSession.createIndexer().startAndWait()
+        QueryBuilder qb = fullTextSession.searchFactory.buildQueryBuilder().forEntity(Label.class).get()
+
+        org.apache.lucene.search.Query query = qb
+                .keyword()
+                .onField("reference")
+                .matching('what')
+                .createQuery()
+        // wrap Lucene query in a org.hibernate.Query
+        org.hibernate.Query hibQuery = fullTextSession.createFullTextQuery(query, Label.class)
+
+        //execute search
+        hibQuery.list().each {label->
+            print "${'*'* 100}\n${label.id}, ${label.key}, ${label.reference}\n"
+        }
 
     }
 }
