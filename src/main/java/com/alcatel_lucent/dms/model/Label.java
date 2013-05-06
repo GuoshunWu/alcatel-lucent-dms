@@ -2,9 +2,14 @@ package com.alcatel_lucent.dms.model;
 
 import com.alcatel_lucent.dms.SystemError;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.annotations.Index;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.Type;
+import org.hibernate.search.annotations.DocumentId;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.Store;
 
 import javax.persistence.*;
 import java.io.UnsupportedEncodingException;
@@ -17,6 +22,7 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 
 //@Entity
 @Table(name = "LABEL")
+@Indexed
 public class Label extends BaseEntity {
     /**
      *
@@ -29,6 +35,7 @@ public class Label extends BaseEntity {
             valueColumnName = "next_hi")
     @Column(name = "ID")
     @Override
+    @DocumentId
     public Long getId() {
         return super.getId();
     }
@@ -44,9 +51,12 @@ public class Label extends BaseEntity {
     public static final String REFERENCE_FIELD_NAME = "GAE";
 
 
+
     private Dictionary dictionary;
     private String key;
     private int sortNo;
+
+
     private String reference;
     private String description;
     private String maxLength;
@@ -105,6 +115,7 @@ public class Label extends BaseEntity {
         this.key = key;
     }
 
+    @Field(store = Store.YES)
     @Column(name = "REFERENCE", nullable = false, length = 1024)
     public String getReference() {
         return reference;

@@ -19,7 +19,7 @@ import java.util.Set;
  */
 
 @Entity
-@Indexed
+//@Indexed
 public class Book {
 
     @Id
