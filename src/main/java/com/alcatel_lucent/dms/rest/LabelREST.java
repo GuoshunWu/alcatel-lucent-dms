@@ -148,8 +148,9 @@ public class LabelREST extends BaseREST {
 				String[] orders = sidx.split(",");
 				comparator = new ComparatorChain();
 				for (String order : orders) {
-					if (order.trim().isEmpty()) continue;
-					String[] idxOrd = order.split(" ");
+					order = order.trim();
+					if (order.isEmpty()) continue;
+					String[] idxOrd = order.split("\\s");
 					sidx = idxOrd[0];
 					sord = idxOrd.length < 2 ? sord : idxOrd[1];
 					comparator.addComparator(new ObjectComparator<Label>(sidx, sord));
@@ -207,8 +208,9 @@ public class LabelREST extends BaseREST {
 			ComparatorChain comparator = new ComparatorChain();
 			String[] orders = sidx.split(",");
 			for (String order : orders) {
-				if (order.trim().isEmpty()) continue;
-				String[] idxOrd = order.split(" ");
+				order = order.trim();
+				if (order.isEmpty()) continue;
+				String[] idxOrd = order.split("\\s");
 				sidx = idxOrd[0];
 				sord = idxOrd.length < 2 ? sord : idxOrd[1];
 				comparator.addComparator(new ObjectComparator<Label>(sidx, sord));
