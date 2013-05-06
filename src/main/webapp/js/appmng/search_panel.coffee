@@ -17,7 +17,7 @@ define [
 
     postData.format = 'grid'
     postData.text = text
-    postData.prop = 'prod.base.name,prod.version, app.name,app.version, dictionary.base.name, dictionary.version, key,reference,maxLength,context.name,t,n,i'
+    postData.prop = 'prod.nameVersion, app.nameVersion, dictionary.nameVersion, key,reference,maxLength,context.name,t,n,i'
 
     delete postData.app
     delete postData.prod
@@ -58,5 +58,14 @@ define [
   $('#goBackToWelcome').button().click ()->
     $('#globalSearchResultGrid').clearGridData()
     layout.showWelcomePanel()
+
+  # add a button for collapse group
+
+  $('#groupingToggle').button().click ()->
+    grid = $('#globalSearchResultGrid')
+    $("[id^='globalSearchResultGridghead_2_']").each (index, elem)->
+#      console.log elem.id
+      grid.groupingToggle(elem.id)
+      true
 
 

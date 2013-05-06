@@ -18,20 +18,27 @@ define ['jqgrid', 'dms-util'], ($, util)->
     gridview: true, multiselect: false, cellEdit: false
     grouping: true
     groupingView: {
-      groupField: ['prod.base.name'
-      , 'app.name', 'dictionary.base.name'
-      ]
+      groupField: ['prod.nameVersion', 'app.nameVersion', 'dictionary.nameVersion']
+      groupColumnShow: [false, false, false]
+      groupText : ['<b>{0} - {1} Item(s)</b>', '<b style="color:blue">{0} - {1} Item(s)</b>', '<b style="color:green">{0} - {1} Item(s)</b>']
+      groupCollapse : true
+#      groupSummary: [true, true, true]
+#      showSummaryOnHide: true
+      groupOrder: ['asc', 'asc', 'asc']
     }
-    colNames: ['Prod', 'Prod ver', 'Application', 'App ver', 'Dictionary', 'Dict ver', 'Label', 'Reference Language', 'Max Length', 'Context', 'T', 'N', 'I']
+    colNames: ['Prod', 'Application', 'Dictionary', 'Label', 'Reference Language', 'Max Length', 'Context', 'T', 'N', 'I']
     colModel: [
-      {name: 'prod.base.name', index: 'prod.base.name', width: 50, editable: false, align: 'left'}
-      {name: 'prod.version', index: 'prod.version', width: 50, editable: false, align: 'left'}
+      {name: 'prod.nameVersion', index: 'prod.nameVersion', width: 50, editable: false, align: 'left'}
+#      {name: 'prod.version', index: 'prod.version', width: 50, editable: false, align: 'left'}
 
-      {name: 'app.name', index: 'app.name', width: 50, editable: false, align: 'left'}
-      {name: 'app.version', index: 'app.version', width: 50, editable: false, align: 'left'}
-      {name: 'dictionary.base.name', index: 'dictionary.base.name', width: 300, editable: false, align: 'left'}
-      {name: 'dict.version', index: 'dictionary.version', width: 50, editable: false, align: 'left'}
-      {name: 'key', index: 'key', width: 100, editable: false, align: 'left'}
+      {name: 'app.nameVersion', index: 'app.nameVersion', width: 50, editable: false, align: 'left'}
+#      {name: 'app.version', index: 'app.version', width: 50, editable: false, align: 'left'}
+      {name: 'dictionary.nameVersion', index: 'dictionary.nameVersion', width: 300, editable: false, align: 'left'}
+#      {name: 'dict.version', index: 'dictionary.version', width: 50, editable: false, align: 'left'}
+      {name: 'key', index: 'key', width: 100, editable: false, align: 'left'
+      formatter: (cellvalue, options, rowObject)->'&nbsp;'.repeat(7) + cellvalue
+#      unformat: (cellvalue, options)->cellvalue
+      }
       {name: 'reference', index: 'reference', width: 300, editable: false, align: 'left'}
       {name: 'maxlen', index: 'maxLength', width: 50, editable: false, align: 'left'}
       {name: 'ctx', index: 'context.name', width: 100, editable: false, align: 'left'}
