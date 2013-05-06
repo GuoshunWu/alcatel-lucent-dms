@@ -10,7 +10,7 @@
       postData = grid.getGridParam('postData');
       postData.format = 'grid';
       postData.text = text;
-      postData.prop = 'prod.base.name,prod.version, app.name,app.version, dictionary.base.name, dictionary.version, key,reference,maxLength,context.name,t,n,i';
+      postData.prop = 'prod.nameVersion, app.nameVersion, dictionary.nameVersion, key,reference,maxLength,context.name,t,n,i';
       delete postData.app;
       delete postData.prod;
       return grid.setCaption(i18n.dialog.searchtext.globalcaption.format(text)).setGridParam({
@@ -61,9 +61,18 @@
       searchActionBtn.trigger('click');
       return false;
     });
-    return $('#goBackToWelcome').button().click(function() {
+    $('#goBackToWelcome').button().click(function() {
       $('#globalSearchResultGrid').clearGridData();
       return layout.showWelcomePanel();
+    });
+    return $('#groupingToggle').button().click(function() {
+      var grid;
+
+      grid = $('#globalSearchResultGrid');
+      return $("[id^='globalSearchResultGridghead_2_']").each(function(index, elem) {
+        grid.groupingToggle(elem.id);
+        return true;
+      });
     });
   });
 

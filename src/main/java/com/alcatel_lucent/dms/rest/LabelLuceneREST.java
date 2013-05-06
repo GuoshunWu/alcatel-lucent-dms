@@ -1,5 +1,6 @@
 package com.alcatel_lucent.dms.rest;
 
+import org.apache.commons.collections.comparators.ComparatorChain;
 import com.alcatel_lucent.dms.model.Application;
 import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.Product;
@@ -126,13 +127,23 @@ public class LabelLuceneREST extends BaseREST {
 	    		param.put("text", "%" + text + "%");
 	    		countParam.put("text", "%" + text + "%");
 	    	}
-	    	Comparator<Label> comparator = null;
+	    	ComparatorChain comparator = null;
 	    	Collection result;
-			if (!sidx.equals("t") && !sidx.equals("n") && !sidx.equals("i") && !sidx.startsWith("app.")) {
+			if (sidx.indexOf(",") == -1 && !sidx.equals("t") && !sidx.equals("n") && !sidx.equals("i") && 
+					!sidx.startsWith("app.") && !sidx.startsWith("prod.")) {
 				hql += " order by obj." + sidx + " " + sord;
 				result = retrieve(hql, param, countHql, countParam, requestMap);
 			} else {	// sort and page the results out of hql
-				comparator = new ObjectComparator<Label>(sidx, sord);
+				String[] orders = sidx.split(",");
+				comparator = new ComparatorChain();
+				for (String order : orders) {
+					order = order.trim();
+					if (order.isEmpty()) continue;
+					String[] idxOrd = order.split("\\s");
+					sidx = idxOrd[0];
+					sord = idxOrd.length < 2 ? sord : idxOrd[1];
+					comparator.addComparator(new ObjectComparator<Label>(sidx, sord));
+				}
 				result = dao.retrieve(hql, param, null);
 				requestMap.put("records", "" + result.size());
 			}
@@ -183,7 +194,17 @@ public class LabelLuceneREST extends BaseREST {
 			} else {
 				labels = new ArrayList<Label>(translationService.searchLabelsWithTranslation(prodId, appId, dictId, langId, text));
 			}
-			Collections.sort((ArrayList<Label>)labels, new ObjectComparator<Label>(sidx, sord));
+			ComparatorChain comparator = new ComparatorChain();
+			String[] orders = sidx.split(",");
+			for (String order : orders) {
+				order = order.trim();
+				if (order.isEmpty()) continue;
+				String[] idxOrd = order.split("\\s");
+				sidx = idxOrd[0];
+				sord = idxOrd.length < 2 ? sord : idxOrd[1];
+				comparator.addComparator(new ObjectComparator<Label>(sidx, sord));
+			}
+			Collections.sort((ArrayList<Label>)labels, comparator);
         	Map<String, String> filters = getGridFilters(requestMap);
         	Integer statusFilter = null;
         	Integer typeFilter = null;
