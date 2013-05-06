@@ -22,42 +22,32 @@
       gridview: true,
       multiselect: false,
       cellEdit: false,
-      colNames: ['Prod', 'Prod ver', 'Application', 'App ver', 'Dictionary', 'Dict ver', 'Label', 'Reference Language', 'Max Length', 'Context', 'T', 'N', 'I'],
+      grouping: true,
+      groupingView: {
+        groupField: ['prod.nameVersion', 'app.nameVersion', 'dictionary.nameVersion'],
+        groupColumnShow: [false, false, false],
+        groupText: ['<b>{0} - {1} Item(s)</b>', '<b style="color:blue">{0} - {1} Item(s)</b>', '<b style="color:green">{0} - {1} Item(s)</b>'],
+        groupCollapse: true,
+        groupOrder: ['asc', 'asc', 'asc']
+      },
+      colNames: ['Prod', 'Application', 'Dictionary', 'Label', 'Reference Language', 'Max Length', 'Context', 'T', 'N', 'I'],
       colModel: [
         {
-          name: 'prod',
-          index: 'app.name',
+          name: 'prod.nameVersion',
+          index: 'prod.nameVersion',
           width: 50,
           editable: false,
           align: 'left'
         }, {
-          name: 'prod.version',
-          index: 'app.version',
+          name: 'app.nameVersion',
+          index: 'app.nameVersion',
           width: 50,
           editable: false,
           align: 'left'
         }, {
-          name: 'app',
-          index: 'app.name',
-          width: 50,
-          editable: false,
-          align: 'left'
-        }, {
-          name: 'app.version',
-          index: 'app.version',
-          width: 50,
-          editable: false,
-          align: 'left'
-        }, {
-          name: 'dict',
-          index: 'dictionary.base.name',
+          name: 'dictionary.nameVersion',
+          index: 'dictionary.nameVersion',
           width: 300,
-          editable: false,
-          align: 'left'
-        }, {
-          name: 'dict.version',
-          index: 'dictionary.version',
-          width: 50,
           editable: false,
           align: 'left'
         }, {
@@ -65,7 +55,10 @@
           index: 'key',
           width: 100,
           editable: false,
-          align: 'left'
+          align: 'left',
+          formatter: function(cellvalue, options, rowObject) {
+            return '&nbsp;'.repeat(7) + cellvalue;
+          }
         }, {
           name: 'reference',
           index: 'reference',

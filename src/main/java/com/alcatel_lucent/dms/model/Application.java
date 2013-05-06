@@ -125,4 +125,9 @@ public class Application extends BaseEntity {
 
     private Map<String, int[]> summaryCache;
 
+    @Transient
+    public String getNameVersion() {
+    	return base == null ? null : base.getName() + " " + version;
+    }
+
 }

@@ -585,4 +585,8 @@ public class Dictionary extends BaseEntity {
         }
         return result;
     }
+    
+    public String getNameVersion() {
+    	return base == null ? null : base.getName() + " " + version;
+    }
 }
