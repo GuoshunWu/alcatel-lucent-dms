@@ -68,5 +68,9 @@ public class Product extends BaseEntity {
 	public String getName() {
 		return base == null ? null : base.getName();
 	}
+	
+	public String getNameVersion() {
+		return base == null ? null : base.getName() + " " + version;
+	}
 
 }
