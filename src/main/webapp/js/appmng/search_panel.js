@@ -13,7 +13,7 @@
       postData.prop = 'prod.nameVersion, app.nameVersion, dictionary.nameVersion, key,reference,maxLength,context.name,t,n,i';
       delete postData.app;
       delete postData.prod;
-      return grid.setCaption(i18n.dialog.searchtext.globalcaption.format(text)).setGridParam({
+      return grid.setGridParam({
         url: urls.labels
       }).trigger('reloadGrid');
     };
