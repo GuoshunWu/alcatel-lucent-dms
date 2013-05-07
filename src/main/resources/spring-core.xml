@@ -28,6 +28,12 @@
 
         <property name="hibernateProperties">
             <props>
+                
+                <!-- for hibernate search -->
+                <prop key="hibernate.search.default.directory_provider">filesystem</prop>
+                <prop key="hibernate.search.default.indexBase">d:/var/lucene/indexes</prop>
+
+
                 <prop key="hibernate.proxool.properties">proxool.properties</prop>
                 <prop key="hibernate.hbm2ddl.auto">${db.hbm2ddl.auto}</prop>
 
@@ -76,7 +82,7 @@
             </props>
         </property>
 
-        <!--<property name="packagesToScan" value="com.alcatel_lucent.dms.model"/>-->
+        <property name="packagesToScan" value="com.alcatel_lucent.dms.model.test"/>
         <property name="mappingDirectoryLocations">
             <list>
                 <value>classpath:com/alcatel_lucent/dms/model</value>

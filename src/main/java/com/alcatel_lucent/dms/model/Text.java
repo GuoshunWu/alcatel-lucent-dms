@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
-@Entity
+//@Entity
 @Table(name = "TEXT")
 public class Text extends BaseEntity {
     /**

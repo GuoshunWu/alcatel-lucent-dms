@@ -2,9 +2,14 @@ package com.alcatel_lucent.dms.model;
 
 import com.alcatel_lucent.dms.SystemError;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.lucene.analysis.standard.StandardTokenizer;
+import org.apache.solr.analysis.*;
+import org.hibernate.annotations.Index;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.Type;
+import org.hibernate.search.annotations.*;
+import org.hibernate.search.annotations.Parameter;
 
 import javax.persistence.*;
 import java.io.UnsupportedEncodingException;
@@ -15,8 +20,26 @@ import java.util.Map;
 
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
-@Entity
+
+@AnalyzerDef(name = "ngram",
+        tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
+        filters = {
+                @TokenFilterDef(factory = StandardFilterFactory.class),
+                @TokenFilterDef(factory = LowerCaseFilterFactory.class),
+                @TokenFilterDef(factory = StopFilterFactory.class),
+                @TokenFilterDef(factory = NGramFilterFactory.class,
+                        params = {
+                                @Parameter(name = "minGramSize", value = "3"),
+                                @Parameter(name = "maxGramSize", value = "3")
+                        }
+                ),
+
+        }
+)
+
+//@Entity
 @Table(name = "LABEL")
+@Indexed
 public class Label extends BaseEntity {
     /**
      *
@@ -29,6 +52,7 @@ public class Label extends BaseEntity {
             valueColumnName = "next_hi")
     @Column(name = "ID")
     @Override
+    @DocumentId
     public Long getId() {
         return super.getId();
     }
@@ -47,6 +71,8 @@ public class Label extends BaseEntity {
     private Dictionary dictionary;
     private String key;
     private int sortNo;
+
+
     private String reference;
     private String description;
     private String maxLength;
@@ -87,6 +113,7 @@ public class Label extends BaseEntity {
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "DICTIONARY_ID")
+    @IndexedEmbedded
     public Dictionary getDictionary() {
         return dictionary;
     }
@@ -105,6 +132,8 @@ public class Label extends BaseEntity {
         this.key = key;
     }
 
+//    @Field(store = Store.YES, analyzer = @Analyzer(definition = "ngram"))
+    @Field(store = Store.YES)
     @Column(name = "REFERENCE", nullable = false, length = 1024)
     public String getReference() {
         return reference;
@@ -314,7 +343,7 @@ public class Label extends BaseEntity {
         }
         return reference;
     }
-    
+
     public int getTranslationStatus(String langCode) {
         DictionaryLanguage dl = this.getDictionary().getDictLanguage(langCode);
         LabelTranslation lt = getOrigTranslation(langCode);
@@ -329,7 +358,7 @@ public class Label extends BaseEntity {
         }
         return Translation.STATUS_UNTRANSLATED;
     }
-    
+
     /**
      * The follow properties are used for xml dict parser and generator
      */
@@ -351,29 +380,30 @@ public class Label extends BaseEntity {
         params.put(key, value);
     }
 
-	public boolean isRemoved() {
-		return removed;
-	}
+    @Field
+    public boolean isRemoved() {
+        return removed;
+    }
 
-	public void setRemoved(boolean removed) {
-		this.removed = removed;
-	}
-
-    @Transient
-	public Application getApp() {
-		return app;
-	}
-
-	public void setApp(Application app) {
-		this.app = app;
-	}
+    public void setRemoved(boolean removed) {
+        this.removed = removed;
+    }
 
     @Transient
-	public Product getProd() {
-		return prod;
-	}
+    public Application getApp() {
+        return app;
+    }
 
-	public void setProd(Product prod) {
-		this.prod = prod;
-	}
+    public void setApp(Application app) {
+        this.app = app;
+    }
+
+    @Transient
+    public Product getProd() {
+        return prod;
+    }
+
+    public void setProd(Product prod) {
+        this.prod = prod;
+    }
 }

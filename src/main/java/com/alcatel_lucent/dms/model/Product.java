@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.util.Collection;
 import java.util.Iterator;
 
-@Entity
+//@Entity
 @Table(name = "PRODUCT")
 public class Product extends BaseEntity {
 

@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import java.util.Collection;
 
 
-@Entity
+//@Entity
 @Table(name = "APPLICATION_BASE")
 @XmlRootElement
 public class ApplicationBase extends BaseEntity {
