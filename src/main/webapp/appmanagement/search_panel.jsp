@@ -2,14 +2,14 @@
     <table style="height:100%;width: 100%; " border="0">
         <tr style="height:30px;">
             <td>
-                <button id="goBackToWelcome">Back to welcome</button>
+                <button id="goBackToWelcome"><s:text name="button.back2welcome"/></button>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <s:text name="searchtext"/>
                 <input size="80" id="globalSearchInResultPanel" name="globalSearch"/><button id="globalSearchInResultPanelAction"/>
 
             </td>
             <td>
-                <button id="groupingToggle">Grouping toggle</button>
+                <button id="groupingToggle"><s:text name="button.grptoggle"/></button>
             </td>
         </tr>
         <tr>
@@ -17,7 +17,7 @@
                 <div>
                     <table id="globalSearchResultGrid">
                         <tr>
-                            <td>Search result</td>
+                            <td></td>
                         </tr>
                     </table>
                     <div id="globalSearchResultGridPager"></div>

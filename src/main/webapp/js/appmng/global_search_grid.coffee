@@ -1,4 +1,4 @@
-define ['jqgrid', 'dms-util'], ($, util)->
+define ['jqgrid',   'i18n!nls/appmng', 'dms-util'], ($, i18n, util)->
 
   pagerId = "#globalSearchResultGridPager"
 
@@ -10,7 +10,7 @@ define ['jqgrid', 'dms-util'], ($, util)->
     width: 800, height: 300
     pager: pagerId
     editurl: ""
-    rowNum: 40, rowList: [20, 40, 80, 160]
+    rowNum: 500, rowList: [500, 1000, 2000]
     sortorder: 'asc'
     viewrecords: true
     caption: 'result'
@@ -20,7 +20,7 @@ define ['jqgrid', 'dms-util'], ($, util)->
     groupingView: {
       groupField: ['prod.nameVersion', 'app.nameVersion', 'dictionary.nameVersion']
       groupColumnShow: [false, false, false]
-      groupText : ['<b>{0} - {1} Item(s)</b>', '<b style="color:blue">{0} - {1} Item(s)</b>', '<b style="color:green">{0} - {1} Item(s)</b>']
+      groupText : ['<b>{0} - {1} Item(s)</b>', '<b style="color:blue">{0} - {1} Item(s)</b>', '<b style="color:#1b4f6e">{0} - {1} Item(s)</b>']
       groupCollapse : true
 #      groupSummary: [true, true, true]
 #      showSummaryOnHide: true
@@ -59,6 +59,8 @@ define ['jqgrid', 'dms-util'], ($, util)->
     ]
     gridComplete: ->
       grid = $(@)
+      grid.setCaption(i18n.dialog.searchtext.globalcaption.format grid.getRowData().length, grid.getGridParam('postData').text)
+
       $('a', @).each (index, a)->$(a).before(' ').remove() if '0' == $(a).text()
       $('a', @).css('color', 'blue').click ()->
         param = util.getUrlParams(@href)
