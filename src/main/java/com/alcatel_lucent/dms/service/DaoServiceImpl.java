@@ -1,26 +1,20 @@
 package com.alcatel_lucent.dms.service;
 
+import com.alcatel_lucent.dms.SystemError;
+import com.alcatel_lucent.dms.model.BaseEntity;
+import org.apache.commons.beanutils.PropertyUtils;
+import org.hibernate.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate3.SessionFactoryUtils;
+import org.springframework.stereotype.Repository;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.commons.beanutils.PropertyUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.hibernate.Hibernate;
-import org.hibernate.HibernateException;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.SessionFactoryUtils;
-import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
-
-import com.alcatel_lucent.dms.SystemError;
-import com.alcatel_lucent.dms.model.BaseEntity;
 
 /**
  * Author: Allan YANG
@@ -133,12 +127,14 @@ public class DaoServiceImpl implements DaoService {
                 }
             }
         }
+
         if (firstResult != 0) {
             query.setFirstResult(firstResult);
         }
         if (maxResults >= 0) {
             query.setMaxResults(maxResults);
         }
+
         long ts1 = System.currentTimeMillis();
         List results = query.list();
         long ts2 = System.currentTimeMillis();

@@ -3,6 +3,8 @@ package com.alcatel_lucent.dms.test
 import com.alcatel_lucent.dms.model.Label
 import com.alcatel_lucent.dms.model.test.Book
 import com.alcatel_lucent.dms.service.DaoService
+import org.hibernate.Query
+import org.hibernate.search.FullTextQuery
 import org.hibernate.search.FullTextSession
 import org.hibernate.search.Search
 import org.hibernate.search.query.dsl.QueryBuilder
@@ -55,28 +57,57 @@ class HibernateSearchTest {
         //execute search
         List result = hibQuery.list()
 
-        print "${'*'* 100}\n${result}\n"
+        print "${'*' * 100}\n${result}\n"
 
     }
 
     @Test
-    void testLabelRest(){
+    void testLabelRest() {
         FullTextSession fullTextSession = Search.getFullTextSession(dao.getSession())
 //        fullTextSession.createIndexer().startAndWait()
-        QueryBuilder qb = fullTextSession.searchFactory.buildQueryBuilder().forEntity(Label.class).get()
+//        return
 
+        QueryBuilder qb = fullTextSession.searchFactory.buildQueryBuilder().forEntity(Label.class).get()
+/*
+Lucene search syntax: +reference: what + removed: false +dictionary.id:110
+* */
         org.apache.lucene.search.Query query = qb
-                .keyword()
-                .onField("reference")
-                .matching('what')
+                .bool()
+                .must(qb.keyword().onField('reference').matching('what').createQuery())
+                .must(qb.keyword().onField('removed').matching(false).createQuery())
+                .must(qb.keyword().onField('dictionary.id').matching(313).createQuery())
                 .createQuery()
+
         // wrap Lucene query in a org.hibernate.Query
-        org.hibernate.Query hibQuery = fullTextSession.createFullTextQuery(query, Label.class)
+        List<Label> list
+        long start = System.nanoTime()
+        FullTextQuery hibQuery = fullTextSession.createFullTextQuery(query, Label.class)
+
+//        total result size
+        int pageNumber = 1  //http parameter page
+        int pageSize = 5    //http parameter rows
+        println "Page number: ${pageNumber}, page size: ${pageSize}, total records: ${hibQuery.resultSize}"
+
+        hibQuery.firstResult = (pageNumber - 1) * pageSize
+        hibQuery.maxResults = pageSize
+
+        list = hibQuery.list()
+//        list = dao.retrieve('from Label where reference like :ref and removed=:removed and dictionary.id =:dictId', [ref: '%What%' , removed: false, dictId: 313L] as Map)
+        long end = System.nanoTime()
+        long duration = end - start
+
+        long ms = duration / 1000000
+        long us = duration % 1000000 / 1000
+
+        println(ms + " ms, " + us + "us.")
+
+//        DurationFormatUtils.formatPeriod(start, end, "SS 'minisecond(s)'")
 
         //execute search
-        hibQuery.list().each {label->
-            print "${'*'* 100}\n${label.id}, ${label.key}, ${label.reference}\n"
+        println 'Querying result: '
+        list.each { label ->
+            println "${'*' * 100}\n${label.id}, ${label.key}, ${label.reference}, ${label.dictionary.base.name}"
         }
-
+        println "Total ${list.size()} record(s).".center(100, '-')
     }
 }
