@@ -207,11 +207,16 @@ public class Util {
     public static boolean isXmlFile(File file) {
         return isSpecificFile(file.getName(), ".xml");
     }
+    
+    public static boolean isPOFile(File file) {
+    	return isSpecificFile(file.getName(), ".po");
+    }
 
     private static boolean isSpecificFile(String fileName, String fileExtPattern) {
         Pattern pattern = Pattern.compile(fileExtPattern,
                 Pattern.CASE_INSENSITIVE);
         int dotPos = fileName.lastIndexOf('.');
+        if (dotPos == -1) return false;
         String fileExt = fileName.substring(dotPos);
         return pattern.matcher(fileExt).matches();
     }
