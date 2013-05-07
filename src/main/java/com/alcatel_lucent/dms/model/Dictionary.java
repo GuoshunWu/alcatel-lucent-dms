@@ -7,6 +7,9 @@ import com.alcatel_lucent.dms.Constants;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.annotations.*;
+import org.hibernate.search.annotations.ContainedIn;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
@@ -15,6 +18,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 //@Entity
+//@Indexed
 @Table(name = "DICTIONARY")
 public class Dictionary extends BaseEntity {
 
@@ -120,6 +124,8 @@ public class Dictionary extends BaseEntity {
         base.setPath(path);
     }
 
+
+    @IndexedEmbedded(depth = 1)
     @ManyToOne
     @JoinColumn(name = "DICTIONARY_BASE_ID")
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -161,6 +167,7 @@ public class Dictionary extends BaseEntity {
         this.dictLanguages = dictLanguages;
     }
 
+    @ContainedIn
     @OneToMany
     public Collection<Label> getLabels() {
         return labels;
