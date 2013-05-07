@@ -22,8 +22,7 @@ define [
     delete postData.app
     delete postData.prod
 
-    grid.setCaption(i18n.dialog.searchtext.globalcaption.format text)
-      .setGridParam(url: urls.labels).trigger 'reloadGrid'
+    grid.setGridParam(url: urls.labels).trigger 'reloadGrid'
 
 
   searchResultActionBtn = $('#globalSearchInResultPanelAction', '#appmng').attr('title', 'Search').button(
