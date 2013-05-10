@@ -77,6 +77,15 @@ public interface TextService {
 	 */
 	Map<String, Text> updateTranslations(Long ctxId, Collection<Text> texts, Constants.ImportingMode mode);
 
+	/**
+	 * Update translation for a new label.
+	 * The method is invoked when a new label was added or reference text of a label is changed.
+	 * An auto-match of translation action will be performed.
+	 * @param label new label or the label whose reference text was changed
+	 * @return text object linked to the label
+	 */
+	Text updateTranslations(Label label);
+
     /**
      *  Receive the completed translation in a excel file.
      *  Insert or update translation for a given  languageId in excel file,
@@ -139,4 +148,5 @@ public interface TextService {
 	 */
 	Collection<String> updateTranslation(Long labelId, Long translationId,
 			String translation, Boolean confirmAll);
+
 }

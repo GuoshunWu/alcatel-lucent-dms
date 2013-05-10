@@ -856,13 +856,41 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         if (dict.getDictLanguage(code) != null) {
             throw new BusinessException(BusinessException.DUPLICATE_LANG_CODE, dict.getName(), code);
         }
+        
+        // simulate a delivery activity in order to benefit from auto-match of other contexts
+        // construct texts parameter
+        Map<Long, Collection<Text>> ctxMap = new HashMap<Long, Collection<Text>>();
+        if (dict.getLabels() != null) {
+	        for (Label label : dict.getLabels()) {
+	        	Collection<Text> texts = ctxMap.get(label.getContext().getId());
+	        	if (texts == null) {
+	        		texts = new ArrayList<Text>();
+	        		ctxMap.put(label.getContext().getId(), texts);
+	        	}
+	        	Text text = new Text();
+	        	text.setReference(label.getReference());
+	        	Translation trans = new Translation();
+	        	trans.setTranslation(label.getReference());
+	        	trans.setLanguage((Language) dao.retrieve(Language.class, languageId));
+	        	trans.setStatus(Translation.STATUS_UNTRANSLATED);
+	        	text.addTranslation(trans);
+	        	texts.add(text);
+	        }
+        }
+        for (Long ctxId : ctxMap.keySet()) {
+        	Collection<Text> texts = ctxMap.get(ctxId);
+        	textService.updateTranslations(ctxId, texts, Constants.ImportingMode.DELIVERY);
+        }
+        // add dictLanguage
         DictionaryLanguage dl = new DictionaryLanguage();
         dl.setDictionary(dict);
         dl.setLanguageCode(code);
         dl.setLanguage((Language) dao.retrieve(Language.class, languageId));
         dl.setCharset((Charset) dao.retrieve(Charset.class, charsetId));
-        dl.setSortNo(dict.getMaxSortNo());
-        return (DictionaryLanguage) dao.create(dl);
+        dl.setSortNo(dict.getMaxDictLanguageSortNo());
+        dl = (DictionaryLanguage) dao.create(dl);
+        
+        return dl;
     }
 
     public DictionaryLanguage updateDictionaryLanguage(Long id, String code, Long languageId, Long charsetId) {
@@ -902,10 +930,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         label.setReference(reference);
         // re-associate text unless EXCLUSION context
         if (!label.getContext().getName().equals(Context.EXCLUSION)) {
-            Text text = textService.getText(label.getContext().getId(), reference);
-            if (text == null) {
-                text = textService.addText(label.getContext().getId(), reference);
-            }
+        	Text text = textService.updateTranslations(label);
             label.setText(text);
         }
         // reset LabelTranslation objects
@@ -981,10 +1006,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             throw new BusinessException(BusinessException.DUPLICATE_LABEL_KEY);
         }
         Context context = textService.getContextByExpression(contextExp, dict);
-        Text text = textService.getText(context.getId(), reference);
-        if (text == null) {
-            text = textService.addText(context.getId(), reference);
-        }
         Label label = new Label();
         label.setDictionary(dict);
         label.setKey(key);
@@ -992,9 +1013,12 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         label.setMaxLength(maxLength);
         label.setContext(context);
         label.setDescription(description);
-        label.setText(text);
-        label.setSortNo(dict.getMaxSortNo() + 1);
+//        label.setText(text);
+        label.setSortNo(dict.getMaxLabelSortNo() + 1);
         label.setRemoved(false);
+        
+        Text text = textService.updateTranslations(label);
+        label.setText(text);
         label = (Label) dao.create(label);
         return label;
     }
