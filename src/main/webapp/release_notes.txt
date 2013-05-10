@@ -1,3 +1,13 @@
+V2.5.0 (May. 10, 2013)
+	* New dictionary format support: PO
+	* New dictionary format support: XMLHelp
+	* Group text search results by their parent product/application/dictionary
+	* Take into account language filters when updating translation status in a batch
+	* Allows to import XMLDict dictionaries without project file (.xdcp)
+	* Perform auto match of translation when adding new language/labels to a dictionary
+	* Optimized performance of auto matching translations
+	* Bug fix of incorrect order of new labels added manually
+
 V2.3.2 (Apr. 26, 2013)
     * Added "Translation type" and "Last updated" information in Translation details
     * Bug fix of file not closed issue during importing
