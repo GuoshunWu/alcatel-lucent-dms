@@ -96,6 +96,15 @@ public class XMLDictGenerator extends DictionaryGenerator {
         }
     }
 
+    /**
+     * Group languages by xdct filename.
+     * A single dictionary can consist of severl xdct files, each of the file consists of several languages.
+     * The xdct filename is stored in annotation2, if not specified, all languages are generated in a single xdct file.
+     * @param targetDir
+     * @param dict
+     * @return
+     * @throws IOException
+     */
     private Map<String, Collection<String>> getXdctGroup(File targetDir, Dictionary dict) throws IOException {
         Map<String, Collection<String>> result = new HashMap<String, Collection<String>>();
         if (dict.getDictLanguages() != null) {
