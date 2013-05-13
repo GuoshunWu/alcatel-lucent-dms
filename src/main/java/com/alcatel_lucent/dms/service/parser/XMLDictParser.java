@@ -11,6 +11,7 @@ import com.alcatel_lucent.dms.util.XDCPDTDEntityResolver;
 import com.alcatel_lucent.dms.util.XDCTDTDEntityResolver;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
@@ -44,7 +45,11 @@ public class XMLDictParser extends DictionaryParser {
         if (!file.exists()) return deliveredDicts;
 
         Map<String, Collection<XDictionary>> propFiles = new HashMap<String, Collection<XDictionary>>();
+        // add xdct files referred by an xdcp file
         propFiles = groupDictionaries(file, propFiles, acceptedFiles);
+        
+        // add other xdct files which is not referred by any xdcp file
+        propFiles = addDictionariesWithoutXdcp(rootDir, file, propFiles);
 
         /*
         * after grouped, each entry in the propFiles map is a dictionary
@@ -377,6 +382,42 @@ public class XMLDictParser extends DictionaryParser {
         return propFiles;
     }
 
+    /**
+     * Pick all single xdct files which is not referred in any xdcp file.
+     * Each of such xdct file is regarded as a separate dictionary
+     * @param file a xdct file or a directory containing xdct files
+     * @param propFiles xdct files group (output)
+     * @return xdct files group
+     */
+    public Map<String, Collection<XDictionary>> addDictionariesWithoutXdcp(String rootDir, File file, Map<String, Collection<XDictionary>> propFiles) {
+    	if (file.isFile()) {
+    		String dictName = FilenameUtils.normalize(file.getAbsolutePath(), true);
+            if (rootDir != null && dictName.startsWith(rootDir)) {
+                dictName = dictName.substring(rootDir.length() + 1);
+            }
+            dictName = dictName.substring(0, dictName.length() - 5);	// remove ".xdct"
+    		XDictionary xdct = new XDictionary();
+    		xdct.setFile(file);
+    		xdct.setName(dictName);
+    		xdct.setPath(null);
+    		Collection<XDictionary> xdctFiles = new ArrayList<XDictionary>();
+    		xdctFiles.add(xdct);
+    		propFiles.put(dictName, xdctFiles);
+    	} else if (file.isDirectory()) {
+            File[] xDctFileOrDirs = file.listFiles(new FileFilter() {
+                @Override
+                public boolean accept(File pathName) {
+                    return pathName.isDirectory() || Util.isXdctFile(pathName);
+                }
+            });
+
+            for (File subFile : xDctFileOrDirs) {
+                propFiles.putAll(addDictionariesWithoutXdcp(rootDir, subFile, propFiles));
+            }
+    	}
+    	return propFiles;
+    }
+    
     private XMLProject readXdcp(File xDcpFile) {
         SAXReader saxReader = new SAXReader();
         saxReader.setEntityResolver(xdcpdtdEntityResolver);

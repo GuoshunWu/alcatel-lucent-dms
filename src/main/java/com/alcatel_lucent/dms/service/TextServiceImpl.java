@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -31,6 +32,7 @@ import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.model.Application;
 import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Dictionary;
+import com.alcatel_lucent.dms.model.DictionaryLanguage;
 import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.LabelTranslation;
 import com.alcatel_lucent.dms.model.Language;
@@ -120,8 +122,15 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 
     public Map<String, Text> updateTranslations(Long ctxId, Collection<Text> texts, Constants.ImportingMode mode) {
         Map<String, Text> result = new HashMap<String, Text>();
-        Map<String, Text> dbTextMap = getTextsAsMap(ctxId);
+        Map<String, Text> dbTextMap = getTextsAsMap(ctxId, texts);
         Context context = (Context) dao.retrieve(Context.class, ctxId);
+    	log.info("Updating translations in context " + context.getName());
+    	// In delivery mode, try to translate labels in context "DEFAULT" and "DICT" automatically
+    	// by searching existing translation from other contexts
+    	if (mode == Constants.ImportingMode.DELIVERY && 
+    			(context.getName().equals(Context.DEFAULT) || context.getName().equals(Context.DICT))) {
+    		suggestTranslations(ctxId, texts, dbTextMap);
+    	}
         for (Text text : texts) {
             if (result.containsKey(text.getReference())) {
                 // ignore same reference
@@ -132,7 +141,6 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
             if (dbText == null) {
                 dbText = addText(ctxId, text.getReference());
             }
-            Map<Long, String> suggestedTranslations = null;
             HashSet<Long> langSet = new HashSet<Long>();
             if (text.getTranslations() != null) {
 	            for (Translation trans : text.getTranslations()) {
@@ -142,26 +150,8 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 	                }
 	                Translation dbTrans = dbText.getTranslation(trans.getLanguage().getId());
 	                if (dbTrans == null) {
-	                	// In delivery mode, try to translate labels in context "DEFAULT" and "DICT" automatically
-	                	// by searching existing translation from other contexts
-	                	if (trans.getStatus() == Translation.STATUS_TRANSLATED) {
+	                	if (trans.getTranslationType() == null && trans.getStatus() == Translation.STATUS_TRANSLATED) {
 	                		trans.setTranslationType(Translation.TYPE_DICT);
-	                	}
-	                	if (mode == Constants.ImportingMode.DELIVERY && 
-	                			(context.getName().equals(Context.DEFAULT) || context.getName().equals(Context.DICT)) &&
-	                			trans.getLanguage().getId() != 1L &&
-	                			trans.getStatus() == Translation.STATUS_UNTRANSLATED &&
-	                			trans.getTranslation().equals(text.getReference())) {
-	                		if (suggestedTranslations == null) {
-	                			suggestedTranslations = getSuggestedTranslations(text.getReference());
-	                		}
-	                		String suggestedTranslation = suggestedTranslations.get(trans.getLanguage().getId());
-	                		if (suggestedTranslation != null) {
-	                			log.info("Auto translate \"" + text.getReference() + "\" to \"" + suggestedTranslation + "\" in " + trans.getLanguage().getName() + ".");
-	                			trans.setTranslation(suggestedTranslation);
-	                			trans.setStatus(Translation.STATUS_TRANSLATED);
-	                			trans.setTranslationType(Translation.TYPE_AUTO);
-	                		}
 	                	}
             			trans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
 						dbTrans = addTranslation(dbText, trans);
@@ -200,31 +190,51 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
     }
 
     /**
-     * Search translation in all contexts to find suggested translation
-     * @param languageId
+     * For new un-translated translation entries, try to match existing translation by searching text across all contexts
+     * If matched, set status to T, translation type to "Auto" and translation text to the matched result
+     * @param texts
+     * @param dbTextMap
+     */
+    private void suggestTranslations(Long ctxId, Collection<Text> texts, Map<String, Text> dbTextMap) {
+    	for (Text text : texts) {
+    		Text dbText = dbTextMap.get(text.getReference());
+            Map<Long, String> suggestedTranslations = null;
+            if (text.getTranslations() != null) {
+	            for (Translation trans : text.getTranslations()) {
+	            	Translation dbTrans = dbText == null ? null : dbText.getTranslation(trans.getLanguage().getId());
+	            	if (dbTrans == null) {
+	                	if (trans.getLanguage().getId() != 1L &&
+	                			trans.getStatus() == Translation.STATUS_UNTRANSLATED &&
+	                			trans.getTranslation().equals(text.getReference())) {
+	                		if (suggestedTranslations == null) {
+	                			suggestedTranslations = getSuggestedTranslations(text.getReference(), ctxId);
+	                		}
+	                		String suggestedTranslation = suggestedTranslations.get(trans.getLanguage().getId());
+	                		if (suggestedTranslation != null) {
+	                			log.info("Auto translate \"" + text.getReference() + "\" to \"" + suggestedTranslation + "\" in " + trans.getLanguage().getName() + ".");
+	                			trans.setTranslation(suggestedTranslation);
+	                			trans.setStatus(Translation.STATUS_TRANSLATED);
+	                			trans.setTranslationType(Translation.TYPE_AUTO);
+	                		}
+	                	}
+	            		
+	            	}
+	            }
+            }
+    	}
+	}
+
+    /**
+     * Search text having translation by reference for all languages
      * @param reference
      * @return
      */
-    private String getSuggestedTranslation(Long languageId, String reference) {
-		String hql = "from Translation where text.reference=:reference and language.id=:languageId and status=:status order by text.context.id";
-		Map param = new HashMap();
-		param.put("reference", reference);
-		param.put("languageId", languageId);
-		param.put("status", Translation.STATUS_TRANSLATED);
-		Collection<Translation> qr = dao.retrieve(hql, param);
-		for (Translation trans : qr) {
-			if (!trans.getText().getContext().getName().equals(Context.EXCLUSION)) {
-				return trans.getTranslation();
-			}
-		}
-		return null;
-	}
-    
-    private Map<Long, String> getSuggestedTranslations(String reference) {
-		String hql = "from Translation where text.reference=:reference and status=:status order by text.context.id";
+    private Map<Long, String> getSuggestedTranslations(String reference, Long excludedCtxId) {
+		String hql = "from Translation where text.reference=:reference and status=:status and text.context.id<>:excludedCtxId order by text.context.id";
 		Map param = new HashMap();
 		param.put("reference", reference);
 		param.put("status", Translation.STATUS_TRANSLATED);
+		param.put("excludedCtxId", excludedCtxId);
 		Collection<Translation> qr = dao.retrieve(hql, param);
 		Map<Long, String> result = new HashMap<Long, String>();
 		for (Translation trans : qr) {
@@ -486,6 +496,33 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
         return result;
     }
 
+    /**
+     * Get all text objects of specified texts in a context as map, indexed by reference.
+     * @param ctxId context id
+     * @param texts transient text objects
+     * @return
+     */
+    public Map<String, Text> getTextsAsMap(Long ctxId, Collection<Text> texts) {
+        Map<String, Text> result = new HashMap<String, Text>();
+    	Collection<String> refs = new ArrayList<String>();
+    	for (Iterator<Text> iter = texts.iterator(); iter.hasNext();) {
+    		Text text = iter.next();
+    		refs.add(text.getReference());
+    		if (refs.size() >= 100 || !iter.hasNext()) {	// execute query every 100 texts
+    	        String hql = "from Text where context.id=:ctxId and reference in (:refs)";
+    	        Map param = new HashMap();
+    	        param.put("ctxId", ctxId);
+    	        param.put("refs", refs);
+    	        Collection<Text> qr = dao.retrieve(hql, param);
+    	        for (Text t : qr) {
+    	            result.put(t.getReference(), t);
+    	        }
+    			refs.clear();
+    		}
+    	}
+        return result;
+    }
+
 
 	@Override
 	public Context getContextByExpression(String contextExp, Dictionary dict) {
@@ -603,5 +640,25 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 			}
 		}
 		return result;
+	}
+
+
+	@Override
+	public Text updateTranslations(Label label) {
+    	Collection<Text> texts = new ArrayList<Text>();
+    	Text text = new Text();
+    	text.setReference(label.getReference());
+    	texts.add(text);
+        if (label.getDictionary().getDictLanguages() != null) {
+	        for (DictionaryLanguage dl : label.getDictionary().getDictLanguages()) {
+	        	Translation trans = new Translation();
+	        	trans.setTranslation(label.getReference());
+	        	trans.setLanguage(dl.getLanguage());
+	        	trans.setStatus(Translation.STATUS_UNTRANSLATED);
+	        	text.addTranslation(trans);
+	        }
+        }
+        Map<String, Text> textMap = updateTranslations(label.getContext().getId(), texts, Constants.ImportingMode.DELIVERY);
+        return textMap.get(label.getReference());
 	}
 }

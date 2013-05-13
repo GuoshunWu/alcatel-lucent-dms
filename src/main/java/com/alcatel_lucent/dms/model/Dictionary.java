@@ -485,7 +485,7 @@ public class Dictionary extends BaseEntity {
     }
 
     @Transient
-    public int getMaxSortNo() {
+    public int getMaxDictLanguageSortNo() {
         if (dictLanguages == null) {
             return 0;
         }
@@ -497,7 +497,22 @@ public class Dictionary extends BaseEntity {
         }
         return max;
     }
+    
+    @Transient
+    public int getMaxLabelSortNo() {
+        if (labels == null) {
+            return 0;
+        }
+        int max = 0;
+        for (Label label : labels) {
+            if (label.getSortNo() > max) {
+                max = label.getSortNo();
+            }
+        }
+        return max;
+    }
 
+    
     @Column(name = "ANNOTATION1")
     @Type(type = "text")
     public String getAnnotation1() {
