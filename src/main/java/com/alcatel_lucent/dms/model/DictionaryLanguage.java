@@ -7,7 +7,7 @@ import org.hibernate.util.EqualsHelper;
 
 import javax.persistence.*;
 
-@Entity
+//@Entity
 @Table(name = "DICTIONARY_LANGUAGE")
 public class DictionaryLanguage extends BaseEntity {
     /**
