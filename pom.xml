@@ -680,10 +680,10 @@
             </properties>
         </profile>
         <profile>
-            <id>qa3-db</id>
+            <id>local-qa3-db</id>
             <properties>
                 <db.driver>org.postgresql.Driver</db.driver>
-                <db.url>jdbc:postgresql://135.117.177.136:5432/dms_qa3</db.url>
+                <db.url>jdbc:postgresql://172.24.190.236:5432/dms_qa3</db.url>
                 <db.user>dms</db.user>
                 <db.password>alcatel123</db.password>
                 <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
