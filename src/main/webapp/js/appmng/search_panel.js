@@ -10,7 +10,7 @@
       postData = grid.getGridParam('postData');
       postData.format = 'grid';
       postData.text = text;
-      postData.prop = 'prod.nameVersion, app.nameVersion, dictionary.nameVersion, key,reference,maxLength,context.name,t,n,i';
+      postData.prop = 'dictionary.base.applicationBase.productBase.name, dictionary.base.applicationBase.name, dictionary.nameVersion, key,reference,maxLength,context.name,t,n,i';
       delete postData.app;
       delete postData.prod;
       return grid.setGridParam({

@@ -24,7 +24,7 @@
       cellEdit: false,
       grouping: true,
       groupingView: {
-        groupField: ['prod.nameVersion', 'app.nameVersion', 'dictionary.nameVersion'],
+        groupField: ['dictionary.base.applicationBase.productBase.name', 'dictionary.base.applicationBase.name', 'dictionary.nameVersion'],
         groupColumnShow: [false, false, false],
         groupText: ['<b>{0} - {1} Item(s)</b>', '<b style="color:blue">{0} - {1} Item(s)</b>', '<b style="color:#1b4f6e">{0} - {1} Item(s)</b>'],
         groupCollapse: true,
@@ -33,14 +33,14 @@
       colNames: ['Prod', 'Application', 'Dictionary', 'Label', 'Reference Language', 'Max Length', 'Context', 'T', 'N', 'I'],
       colModel: [
         {
-          name: 'prod.nameVersion',
-          index: 'prod.nameVersion',
+          name: 'dictionary.base.applicationBase.productBase.name',
+          index: 'dictionary.base.applicationBase.productBase.name',
           width: 50,
           editable: false,
           align: 'left'
         }, {
-          name: 'app.nameVersion',
-          index: 'app.nameVersion',
+          name: 'dictionary.base.applicationBase.name',
+          index: 'dictionary.base.applicationBase.name',
           width: 50,
           editable: false,
           align: 'left'
@@ -58,6 +58,9 @@
           align: 'left',
           formatter: function(cellvalue, options, rowObject) {
             return '&nbsp;'.repeat(7) + cellvalue;
+          },
+          unformat: function(cellvalue, options) {
+            return cellvalue.replace(/(&nbsp;)+/, '');
           }
         }, {
           name: 'reference',

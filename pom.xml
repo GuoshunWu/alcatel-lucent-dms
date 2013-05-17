@@ -26,6 +26,11 @@
         <dms.generate.dir>/dms/generate</dms.generate.dir>
         <dms.send.dir>/dms/send</dms.send.dir>
         <dms.receive.dir>/dms/receive</dms.receive.dir>
+
+        <dms.temp></dms.temp>
+        <dms.luceneindex.dir>/dms/lucene/indexes</dms.luceneindex.dir>
+
+
     </properties>
 
 
@@ -644,6 +649,7 @@
                 <db.dialect>org.hibernate.dialect.H2Dialect</db.dialect>
                 <!-- none, create, create-drop, update, validate -->
                 <db.hbm2ddl.auto>none</db.hbm2ddl.auto>
+                <dms.luceneindex.dir>${dms.temp}/lucene/indexes/h2</dms.luceneindex.dir>
             </properties>
         </profile>
         <profile>
@@ -660,6 +666,7 @@
                 <db.dialect>org.hibernate.dialect.MySQL5InnoDBDialect</db.dialect>
                 <!-- none, create, create-drop, update, validate -->
                 <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
+                <dms.luceneindex.dir>${dms.temp}/lucene/indexes/MySQL199</dms.luceneindex.dir>
             </properties>
         </profile>
         <profile>
@@ -672,6 +679,7 @@
                 <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
                 <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
                 <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
+                <dms.luceneindex.dir>${dms.temp}/lucene/indexes/qa_db</dms.luceneindex.dir>
             </properties>
         </profile>
         <profile>
@@ -685,6 +693,7 @@
                 <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
                 <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
                 <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
+                <dms.luceneindex.dir>${dms.temp}/lucene/indexes/prod_db</dms.luceneindex.dir>
             </properties>
         </profile>
         <profile>
@@ -697,6 +706,7 @@
                 <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
                 <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
                 <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
+                <dms.luceneindex.dir>${dms.temp}/lucene/indexes/qa3_db</dms.luceneindex.dir>
             </properties>
         </profile>
         <profile>
@@ -709,6 +719,7 @@
                 <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
                 <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
                 <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
+                <dms.luceneindex.dir>${dms.temp}/lucene/indexes/local_qa_db</dms.luceneindex.dir>
             </properties>
         </profile>
         <profile>
@@ -721,6 +732,7 @@
                 <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
                 <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
                 <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
+                <dms.luceneindex.dir>${dms.temp}/lucene/indexes/local_qa2_db</dms.luceneindex.dir>
             </properties>
         </profile>
 
@@ -731,10 +743,11 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <dms.deliver.dir>D:/tmp/dms/deliver</dms.deliver.dir>
+                <dms.deliver.dir>D:/tmp/dms/deliver/</dms.deliver.dir>
                 <dms.generate.dir>D:/tmp/dms/generate</dms.generate.dir>
                 <dms.send.dir>D:/tmp/dms/send</dms.send.dir>
                 <dms.receive.dir>D:/tmp/dms/receive</dms.receive.dir>
+                <dms.temp>D:/tmp</dms.temp>
                 <httpPort>8888</httpPort>
                 <httpsPort>8443</httpsPort>
 

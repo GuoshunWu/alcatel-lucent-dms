@@ -2,6 +2,8 @@ package com.alcatel_lucent.dms.model;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
 
 import java.util.Collection;
 
@@ -42,6 +44,7 @@ public class ProductBase extends BaseEntity {
 
     private Collection<ApplicationBase> applicationBases;
 
+    @Field(index = Index.UN_TOKENIZED)
     @Column(name = "NAME", nullable = false)
     public String getName() {
         return name;

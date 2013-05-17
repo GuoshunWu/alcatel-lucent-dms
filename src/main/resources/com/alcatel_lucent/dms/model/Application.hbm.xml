@@ -18,6 +18,11 @@
             <many-to-many column="DICTIONARY_ID" class="Dictionary"/>
         </set>
 
+        <set name="products" table="PRODUCT_APPLICATION">
+            <key column="APPLICATION_ID" />
+            <many-to-many column="PRODUCT_ID" class="Product" />
+        </set>
+
 	</class>
 	
 </hibernate-mapping>

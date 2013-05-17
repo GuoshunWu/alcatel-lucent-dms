@@ -426,6 +426,7 @@ define [
       #      console?.log param
       $('#stringSettingsTranslationGrid').setGridParam(
         url: 'rest/label/translation'
+        page: 1
         postData:
           {label: param.id, format: 'grid', status: param.status, prop: 'languageCode,language.name,translation'}
       ).setCaption(i18n.dialog.stringsettingstrans.caption.format param.key, param.ref)
@@ -446,6 +447,7 @@ define [
 
       $('#historyGrid').setGridParam(
         url: 'rest/dictHistory'
+        page: 1
         postData:
           {dict: param.id, format: 'grid', status: param.status, prop: 'operationTime,operationType,task.name,operator.name'}
       ).setCaption(i18n.dialog.history.caption.format param.name).trigger "reloadGrid"
@@ -514,7 +516,7 @@ define [
 
       postData.format = 'grid'
       postData.text = params.text
-      postData.prop = 'app.name,dictionary.base.name,key,reference,maxLength,context.name,t,n,i'
+      postData.prop = 'dictionary.base.applicationBase.name,dictionary.base.name,key,reference,maxLength,context.name,t,n,i'
 
       delete postData.app
       delete postData.prod

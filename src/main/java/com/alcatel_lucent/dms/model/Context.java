@@ -1,5 +1,8 @@
 package com.alcatel_lucent.dms.model;
 
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+
 import javax.persistence.*;
 
 //@Entity
@@ -35,6 +38,7 @@ public class Context extends BaseEntity {
         this.name = name;
     }
 
+    @Field(index = Index.UN_TOKENIZED)
     @Column(name = "NAME")
     public String getName() {
         return name;

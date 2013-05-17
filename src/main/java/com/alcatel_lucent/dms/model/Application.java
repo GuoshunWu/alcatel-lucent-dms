@@ -9,6 +9,10 @@ import java.util.Map;
 import com.alcatel_lucent.dms.SpringContext;
 import com.alcatel_lucent.dms.service.DictionaryService;
 import org.hibernate.annotations.*;
+import org.hibernate.search.annotations.ContainedIn;
+import org.hibernate.search.annotations.DocumentId;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
@@ -17,6 +21,7 @@ import javax.validation.constraints.NotNull;
 
 //@Entity
 @Table(name = "APPLICATION")
+//@Indexed
 public class Application extends BaseEntity {
 
     private static final long serialVersionUID = 7168527218137875020L;
@@ -27,6 +32,18 @@ public class Application extends BaseEntity {
 
     @Fetch(FetchMode.JOIN)
     private Collection<Dictionary> dictionaries;
+
+
+    private Collection<Product> products;
+
+    @IndexedEmbedded
+    public Collection<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(Collection<Product> products) {
+        this.products = products;
+    }
 
     @Id
     @GeneratedValue(generator = "SEQ_GEN")

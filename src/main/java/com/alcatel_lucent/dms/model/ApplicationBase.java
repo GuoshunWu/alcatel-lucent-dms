@@ -2,6 +2,9 @@ package com.alcatel_lucent.dms.model;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -30,11 +33,10 @@ public class ApplicationBase extends BaseEntity {
 
     @Column(name = "NAME")
     private String name;
-    @XmlTransient
+
+
     private ProductBase productBase;
-    @XmlTransient
     private Collection<Application> applications;
-    @XmlTransient
     private Collection<DictionaryBase> dictionaryBases;
 
     private User owner;
@@ -49,7 +51,7 @@ public class ApplicationBase extends BaseEntity {
         this.owner = owner;
     }
 
-
+    @Field(index = Index.UN_TOKENIZED)
 	public String getName() {
 		return name;
 	}
@@ -61,6 +63,7 @@ public class ApplicationBase extends BaseEntity {
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "PRODUCT_BASE_ID")
+    @IndexedEmbedded
     public ProductBase getProductBase() {
         return productBase;
     }
