@@ -54,7 +54,8 @@ define (require)->
   dicts: getURL('dict', 'rest/')
   tasks: getURL('tasks', 'rest/')
 
-  labels: getURL('labels', 'rest/')
+#  labels: getURL('labels', 'rest/')
+  labels: getURL('luceneLabels', 'rest/')
 
   languages: getURL('languages','rest/')
 

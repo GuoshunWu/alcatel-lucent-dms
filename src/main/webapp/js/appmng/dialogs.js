@@ -673,6 +673,7 @@
         }
         return $('#stringSettingsTranslationGrid').setGridParam({
           url: 'rest/label/translation',
+          page: 1,
           postData: {
             label: param.id,
             format: 'grid',
@@ -703,6 +704,7 @@
         }
         return $('#historyGrid').setGridParam({
           url: 'rest/dictHistory',
+          page: 1,
           postData: {
             dict: param.id,
             format: 'grid',
@@ -798,7 +800,7 @@
         postData = grid.getGridParam('postData');
         postData.format = 'grid';
         postData.text = params.text;
-        postData.prop = 'app.name,dictionary.base.name,key,reference,maxLength,context.name,t,n,i';
+        postData.prop = 'dictionary.base.applicationBase.name,dictionary.base.name,key,reference,maxLength,context.name,t,n,i';
         delete postData.app;
         delete postData.prod;
         postData[node.type] = params.version.id;

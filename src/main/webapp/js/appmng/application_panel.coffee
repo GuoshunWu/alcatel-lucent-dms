@@ -25,7 +25,6 @@ define [
       $.msgBox c18n.noversion 'Application', node.text
 
       return
-
     dialogs.showSearchResult(
       text: $('#appSearchText', '#appmng').val()
       version:

@@ -18,7 +18,7 @@ define ['jqgrid',   'i18n!nls/appmng', 'dms-util'], ($, i18n, util)->
     gridview: true, multiselect: false, cellEdit: false
     grouping: true
     groupingView: {
-      groupField: ['prod.nameVersion', 'app.nameVersion', 'dictionary.nameVersion']
+      groupField: ['dictionary.base.applicationBase.productBase.name', 'dictionary.base.applicationBase.name', 'dictionary.nameVersion']
       groupColumnShow: [false, false, false]
       groupText : ['<b>{0} - {1} Item(s)</b>', '<b style="color:blue">{0} - {1} Item(s)</b>', '<b style="color:#1b4f6e">{0} - {1} Item(s)</b>']
       groupCollapse : true
@@ -28,16 +28,12 @@ define ['jqgrid',   'i18n!nls/appmng', 'dms-util'], ($, i18n, util)->
     }
     colNames: ['Prod', 'Application', 'Dictionary', 'Label', 'Reference Language', 'Max Length', 'Context', 'T', 'N', 'I']
     colModel: [
-      {name: 'prod.nameVersion', index: 'prod.nameVersion', width: 50, editable: false, align: 'left'}
-#      {name: 'prod.version', index: 'prod.version', width: 50, editable: false, align: 'left'}
-
-      {name: 'app.nameVersion', index: 'app.nameVersion', width: 50, editable: false, align: 'left'}
-#      {name: 'app.version', index: 'app.version', width: 50, editable: false, align: 'left'}
+      {name: 'dictionary.base.applicationBase.productBase.name', index: 'dictionary.base.applicationBase.productBase.name', width: 50, editable: false, align: 'left'}
+      {name: 'dictionary.base.applicationBase.name', index: 'dictionary.base.applicationBase.name', width: 50, editable: false, align: 'left'}
       {name: 'dictionary.nameVersion', index: 'dictionary.nameVersion', width: 300, editable: false, align: 'left'}
-#      {name: 'dict.version', index: 'dictionary.version', width: 50, editable: false, align: 'left'}
       {name: 'key', index: 'key', width: 100, editable: false, align: 'left'
       formatter: (cellvalue, options, rowObject)->'&nbsp;'.repeat(7) + cellvalue
-#      unformat: (cellvalue, options)->cellvalue
+      unformat: (cellvalue, options)->cellvalue.replace(/(&nbsp;)+/,'')
       }
       {name: 'reference', index: 'reference', width: 300, editable: false, align: 'left'}
       {name: 'maxlen', index: 'maxLength', width: 50, editable: false, align: 'left'}

@@ -40,7 +40,7 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 //@Entity
 @Table(name = "LABEL")
 @Indexed
-public class Label extends BaseEntity {
+public class Label extends BaseEntity implements Cloneable {
     /**
      *
      */
@@ -122,6 +122,7 @@ public class Label extends BaseEntity {
         this.dictionary = dictionary;
     }
 
+    @Field(index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
     @Column(name = "LABEL_KEY", nullable = false)
     public String getKey() {
         return key;
@@ -132,8 +133,11 @@ public class Label extends BaseEntity {
         this.key = key;
     }
 
-//    @Field(store = Store.YES, analyzer = @Analyzer(definition = "ngram"))
-    @Field(store = Store.YES)
+    //    @Field(store = Store.YES, analyzer = @Analyzer(definition = "ngram"))
+    @Fields({
+            @Field(store = Store.YES),
+            @Field(name="reference_forSort", index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
+    })
     @Column(name = "REFERENCE", nullable = false, length = 1024)
     public String getReference() {
         return reference;
@@ -152,6 +156,7 @@ public class Label extends BaseEntity {
         this.description = description;
     }
 
+    @Field(index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
     @Column(name = "MAX_LENGTH")
     public String getMaxLength() {
         return maxLength;
@@ -161,6 +166,7 @@ public class Label extends BaseEntity {
         this.maxLength = maxLength;
     }
 
+    @IndexedEmbedded
     @ManyToOne
     @JoinColumn(name = "CONTEXT_ID", nullable = false)
     public Context getContext() {
@@ -240,6 +246,7 @@ public class Label extends BaseEntity {
         this.sortNo = sortNo;
     }
 
+    @Field(index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
     @Column(name = "SORT_NO")
     public int getSortNo() {
         return sortNo;

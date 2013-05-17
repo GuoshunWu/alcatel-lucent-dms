@@ -136,6 +136,8 @@ public abstract class BaseREST {
     		throw new RESTException("Unknown format '" + format + "'");
     	}
     }
+
+
     
     protected Collection retrieve(String hql, Map<?,?> param, String countHql, Map<?,?> countParam, Map<String, String> requestMap) {
     	String rows = requestMap.get("rows");

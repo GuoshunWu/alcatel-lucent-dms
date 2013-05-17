@@ -3,7 +3,15 @@ package com.alcatel_lucent.dms.service;
 import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.model.BaseEntity;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
 import org.hibernate.*;
+import org.hibernate.search.FullTextQuery;
+import org.hibernate.search.FullTextSession;
+import org.hibernate.search.Search;
+import org.hibernate.search.query.dsl.BooleanJunction;
+import org.hibernate.search.query.dsl.QueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +52,7 @@ public class DaoServiceImpl implements DaoService {
 
     public Session getSession() {
 //        return sessionFactory.getCurrentSession();
-         return SessionFactoryUtils.getSession(sessionFactory, false);
+        return SessionFactoryUtils.getSession(sessionFactory, false);
     }
 
     public Object retrieve(Class clazz, Serializable id) {
@@ -85,6 +93,36 @@ public class DaoServiceImpl implements DaoService {
 
     public List retrieve(String hql, Map paramMap, String[] initProps) {
         return retrieve(hql, paramMap, 0, -1, initProps);
+    }
+
+    @Override
+    public Pair<Integer, List> hibSearchRetrieve(Class cls, Map<String, Object> keywords, Integer firstResult, Integer maxResults, Sort sort) {
+        FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+        QueryBuilder qb = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(cls).get();
+
+        /*
+        * Lucene search syntax: +reference: what + removed: false +dictionary.id:110
+        * */
+
+        BooleanJunction bj = qb.bool();
+        Set<Map.Entry<String, Object>> keywordEntries = keywords.entrySet();
+        for (Map.Entry<String, Object> entry : keywordEntries) {
+            bj = bj.must(qb.keyword().onField(entry.getKey()).matching(entry.getValue()).createQuery());
+        }
+        org.apache.lucene.search.Query query = bj.createQuery();
+        log.info("Lucene search string: \"{}\", firstResult={}, maxResult={}", new Object[]{query.toString(), firstResult, maxResults});
+
+        FullTextQuery hibQuery = fullTextSession.createFullTextQuery(query, cls);
+        int resultSize = hibQuery.getResultSize();
+        if (null != firstResult && null != maxResults) {
+            hibQuery.setFirstResult(firstResult.intValue());
+            hibQuery.setMaxResults(maxResults.intValue());
+        }
+        if (null != sort) {
+            log.info("sort={}", sort.toString());
+            hibQuery.setSort(sort);
+        }
+        return Pair.of(resultSize, hibQuery.list());
     }
 
     public Object retrieveOne(String hql) {

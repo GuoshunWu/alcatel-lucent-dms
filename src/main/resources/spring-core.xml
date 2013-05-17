@@ -31,7 +31,7 @@
                 
                 <!-- for hibernate search -->
                 <prop key="hibernate.search.default.directory_provider">filesystem</prop>
-                <prop key="hibernate.search.default.indexBase">d:/var/lucene/indexes</prop>
+                <prop key="hibernate.search.default.indexBase">${dms.luceneindex.dir}</prop>
 
 
                 <prop key="hibernate.proxool.properties">proxool.properties</prop>

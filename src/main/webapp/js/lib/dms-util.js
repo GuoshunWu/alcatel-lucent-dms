@@ -233,6 +233,17 @@ User: Guoshun Wu
       }
       return $("#progressbar_" + randStr, pbContainer);
     };
+    /*
+    Long polling to update progress bar.
+    
+    
+    @param url the url to get update informatin.
+    @param postData data to be posted to server
+    @callback callback when the progress complete.
+    @pb the progress bar, if not null it will be auto updated until the progress complete and then invoke callback
+       else callback will be invoked every time
+    */
+
     long_polling = function(url, postData, callback, pb) {
       var pollingInterval, reTryAjax;
 
@@ -290,7 +301,7 @@ User: Guoshun Wu
               return reTryAjax(--retryTimes, ++retryCounter);
             }), pollingInterval);
           } else {
-
+            return typeof console !== "undefined" && console !== null ? console.log("I have retried " + retryCounter + " times. There may be a network connection issue, please check network cable.") : void 0;
           }
         });
       };

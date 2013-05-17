@@ -7,9 +7,9 @@ import com.alcatel_lucent.dms.Constants;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.annotations.*;
-import org.hibernate.search.annotations.ContainedIn;
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.annotations.Parameter;
+import org.hibernate.search.annotations.*;
+import org.hibernate.search.annotations.Index;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
@@ -18,7 +18,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 //@Entity
-//@Indexed
 @Table(name = "DICTIONARY")
 public class Dictionary extends BaseEntity {
 
@@ -33,6 +32,17 @@ public class Dictionary extends BaseEntity {
     private String annotation2;
     private String annotation3;
     private String annotation4;
+
+    @IndexedEmbedded
+    public Collection<Application> getApplications() {
+        return applications;
+    }
+
+    public void setApplications(Collection<Application> applications) {
+        this.applications = applications;
+    }
+
+    private Collection<Application> applications;
 
     public String getReferenceLanguage() {
         return referenceLanguage;
@@ -125,7 +135,7 @@ public class Dictionary extends BaseEntity {
     }
 
 
-    @IndexedEmbedded(depth = 1)
+    @IndexedEmbedded
     @ManyToOne
     @JoinColumn(name = "DICTIONARY_BASE_ID")
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -607,7 +617,8 @@ public class Dictionary extends BaseEntity {
         }
         return result;
     }
-    
+
+    @Field(index = Index.UN_TOKENIZED)
     public String getNameVersion() {
     	return base == null ? null : base.getName() + " " + version;
     }

@@ -4,7 +4,9 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
+import org.hibernate.search.cfg.IndexEmbeddedMapping;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -49,7 +51,6 @@ public class DictionaryBase extends BaseEntity {
         this.owner = owner;
     }
 
-//    @ContainedIn
     @OneToMany(mappedBy = "base")
     public Collection<Dictionary> getDictionaries() {
         return dictionaries;
@@ -63,7 +64,7 @@ public class DictionaryBase extends BaseEntity {
 		super();
 	}
 
-    @Field(store = Store.YES)
+//    @Field(store = Store.YES)
     @Column(name = "NAME", nullable = false)
 	public String getName() {
 		return name;
@@ -100,6 +101,7 @@ public class DictionaryBase extends BaseEntity {
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "APPLICATION_BASE_ID")
+    @IndexedEmbedded
 	public ApplicationBase getApplicationBase() {
 		return applicationBase;
 	}
