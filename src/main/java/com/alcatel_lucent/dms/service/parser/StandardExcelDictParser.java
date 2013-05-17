@@ -33,7 +33,7 @@ public class StandardExcelDictParser extends DictionaryParser {
     public static final String DESCRIPTION = "Description";
     public static final String REF_LANG_CODE = "English";
     public static final String DEFAULT_ENCODING = "UTF-16LE";
-    public static final List<String> EXTENSION = Arrays.asList(".xls", ".xlsx");
+    public static final List<String> EXTENSION = Arrays.asList("xls", "xlsx");
     @Autowired
     private LanguageService languageService;
 
@@ -71,7 +71,7 @@ public class StandardExcelDictParser extends DictionaryParser {
     }
 
     public Dictionary parseDictionary(String rootDir, File file, Collection<File> acceptedFiles) {
-
+    	log.info("Parsing excel file " + file.getName());
         DictionaryBase dictBase = new DictionaryBase();
         Dictionary dictionary = null;
 
@@ -114,6 +114,7 @@ public class StandardExcelDictParser extends DictionaryParser {
                 colIndexes = readTitleRow(dictionary, row);
                 if (!(colIndexes.containsKey(LABEL) && colIndexes.containsKey(MAX_LENGTH) &&
                         colIndexes.containsKey(CONTEXT) && colIndexes.containsKey(DESCRIPTION))) {
+                	log.info(file.getName() + " is not a DMS standard excel dictionary.");
                     throw new BusinessException(BusinessException.INVALID_VLE_DICT_FILE, file.getName());
                 }
                 continue;
@@ -126,6 +127,7 @@ public class StandardExcelDictParser extends DictionaryParser {
             dictionary.getLabels().add(readLabelFromRow(dictionary, row, colIndexes, helper));
         }
         acceptedFiles.add(file);
+        log.info("Accepted excel file " + file.getName());
         return dictionary;
     }
 
