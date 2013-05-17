@@ -1,3 +1,8 @@
+V2.5.1 (May. 17, 2013)
+	* Updated User Manual
+	* Bug fix of Standard Excel dictionary parser
+	* Corrected some language names
+
 V2.5.0 (May. 10, 2013)
 	* New dictionary format support: PO
 	* New dictionary format support: XMLHelp
