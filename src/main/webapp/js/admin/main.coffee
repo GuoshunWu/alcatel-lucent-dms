@@ -1,6 +1,8 @@
 define [
   'require'
   'jqueryui'
+  'blockui'
+  'jqmsgbox'
 
   'i18n!nls/admin'
   'i18n!nls/common'
@@ -11,7 +13,7 @@ define [
   'admin/charsetgrid'
   'admin/usergrid'
 
-], (require, $, i18n, c18n, urls)->
+], (require, $, blockui,jqmsgbox, i18n, c18n, urls)->
   init = ()->
     #    console?.log "transmng panel init..."
     $('#adminTabs').tabs(
@@ -28,6 +30,15 @@ define [
 
     $('div.ui-tabs-panel', tabs).height(pheight - 50)
     # console?.log "language grid height=#{$('#languageGrid').getGridParam('height')}."
+
+    $('#buildLuceneIndex').button().click (e)->
+      $.blockUI()
+      $.post urls.config.create_index, (json)->
+        $.unblockUI()
+        if json.status != 0
+          $.msgBox json.message, null, {title: c18n.error, width: 300, height: 'auto'}
+          return false
+        $.msgBox json.message, null, {title: c18n.info, width: 300, height: 'auto'}
 
     # init dialogs
     $('#addUserDialog').dialog(

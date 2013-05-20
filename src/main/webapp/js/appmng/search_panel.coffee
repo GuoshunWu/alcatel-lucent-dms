@@ -55,7 +55,6 @@ define [
     false
 
   $('#goBackToWelcome').button().click ()->
-    $('#globalSearchResultGrid').clearGridData()
     layout.showWelcomePanel()
 
   # add a button for collapse group

@@ -383,6 +383,9 @@ User: Guoshun Wu
       var forbiddenTab, gridParam, tmpHandlers, _ref, _ref1, _ref2;
 
       gridParam = $(grid).jqGrid('getGridParam');
+      gridParam.beforeRequest = function() {
+        return $(this).clearGridData();
+      };
       forbiddenTab = {
         cellurl: (_ref = urlname2Action(gridParam.cellurl), __indexOf.call(param.forbiddenPrivileges, _ref) >= 0),
         editurl: (_ref1 = urlname2Action(gridParam.editurl), __indexOf.call(param.forbiddenPrivileges, _ref1) >= 0),

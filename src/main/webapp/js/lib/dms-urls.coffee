@@ -43,6 +43,8 @@ define (require)->
     update_status: getURL('update-status', 'trans/')
   user:
     update: getURL('user', 'admin/')
+  config:
+    create_index: getURL('config','admin/')
 
 
   #  rest urls

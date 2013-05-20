@@ -75,6 +75,9 @@ Time: 下午7:
       user: {
         update: getURL('user', 'admin/')
       },
+      config: {
+        create_index: getURL('config', 'admin/')
+      },
       prod_versions: getURL('products/version', 'rest/'),
       app_versions: getURL("applications/apps/", 'rest/'),
       apps: getURL('applications', 'rest/'),

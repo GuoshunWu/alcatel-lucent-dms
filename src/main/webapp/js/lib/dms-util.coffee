@@ -256,6 +256,10 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
   checkGridPrivilege = (grid)->
     # console?.log "check the privilege of grid '#{grid.id}'."
     gridParam = $(grid).jqGrid 'getGridParam'
+    # add event
+    gridParam.beforeRequest=()->
+      #console?.log "#{@id} before load...."
+      $(@).clearGridData()
     forbiddenTab =
       cellurl: urlname2Action(gridParam.cellurl) in param.forbiddenPrivileges
       editurl: urlname2Action(gridParam.editurl) in param.forbiddenPrivileges
