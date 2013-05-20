@@ -10,7 +10,7 @@ define ['jqgrid', 'i18n!nls/appmng', 'dms-urls', 'dms-util'],($, i18n, urls, uti
     cellsubmit: 'remote', cellEdit: true
     widht: 700
     height: '100%'
-    pager: '#pager', rowNum: 10, rowList: [10, 20, 30], multiselect: true
+    pager: '#pager', rowNum: 20, rowList: [10, 20, 30], multiselect: true
     sortname: 'name', sortorder: 'asc'
     viewrecords: true, gridview: true, altRows: true
     caption: 'Applications for Product'

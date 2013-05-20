@@ -98,7 +98,7 @@ public class LabelLuceneREST extends BaseREST {
 
         if (text != null) {
             text = text.trim();
-            text = text.isEmpty()?null: text.toUpperCase();
+            text = text.isEmpty() ? null : text.toUpperCase();
         }
 
         String sidx = requestMap.get("sidx");
@@ -112,8 +112,9 @@ public class LabelLuceneREST extends BaseREST {
 
         Long langId = requestMap.get("language") == null ? null : Long.valueOf(requestMap.get("language"));
         Collection<Label> labels;
-        if (langId == null) {
+        String[] orders = sidx.split("\\s*,\\s*");
 
+        if (langId == null) {
             Map<String, Object> keywords = new HashMap<String, Object>();
             keywords.put("removed", false);
 
@@ -129,90 +130,146 @@ public class LabelLuceneREST extends BaseREST {
                 keywords.put("reference", text);
             }
 
-            String[] orders = sidx.split("\\s*,\\s*");
+
             boolean containComputeOrder = isContainComputeOrder(orders);
             Pair<Integer, List> result;
-            if (!containComputeOrder) {
-                List<SortField> sortFields = new ArrayList<SortField>();
-                for (String order : orders) {
-                    String[] idxOrder = order.split("\\s+");
-                    sidx = idxOrder[0];
-                    if ("reference".equals(sidx)) sidx += "_forSort";
-                    String tmpOrd = idxOrder.length > 1 ? idxOrder[1] : sord;
-                    sortFields.add(new SortField(sidx, SortField.STRING, tmpOrd.equalsIgnoreCase("asc")));
-                }
-                Sort sort = new Sort(sortFields.toArray(new SortField[0]));
-                result = dao.hibSearchRetrieve(Label.class, keywords, firstResult, maxResult, sort);
-                labels = result.getRight();
-            } else {
-                // disable page
+            Sort sort = orders2Sort(orders, sord);
+            if (containComputeOrder) {
                 firstResult = maxResult = null;
-
-                Sort sort = null;
-                result = dao.hibSearchRetrieve(Label.class, keywords, firstResult, maxResult, sort);
-                labels = result.getRight();
+                sord = null;
             }
+            result = dao.hibSearchRetrieve(Label.class, keywords, firstResult, maxResult, sort);
+            labels = result.getRight();
+
             int resultSize = result.getLeft();
             if (null != firstResult) {// paged
                 requestMap.put("records", resultSize + "");
             }
-
             // add T/N/I information if no language was specified
-            if (text == null && dictId != null) {
-                Map<Long, int[]> summary = translationService.getLabelTranslationSummary(dictId);
-                for (Label label : labels) {
-                    int[] tni = summary.get(label.getId());
-                    label.setT(tni[0]);
-                    label.setN(tni[1]);
-                    label.setI(tni[2]);
-                }
-            } else if (text != null) {
-                for (Label label : labels) {
-                    int[] tni = translationService.getLabelTranslationSummaryByLabel(label.getId());
-                    label.setT(tni[0]);
-                    label.setN(tni[1]);
-                    label.setI(tni[2]);
-                }
-            }
+            fillTNI(text, dictId, labels);
 
-            if(containComputeOrder){
+            if (containComputeOrder) {
                 //order fields with object comparators
-                ComparatorChain comparator = new ComparatorChain();
-                for (String order : orders) {
-                    String[] idxOrder = order.split("\\s+");
-                    sidx = idxOrder[0];
-                    if ("reference".equals(sidx)) sidx += "_forSort";
-                    String tmpOrd = idxOrder.length > 1 ? idxOrder[1] : sord;
-                    comparator.addComparator(new ObjectComparator(sidx, tmpOrd));
-                }
-                Collections.sort((ArrayList<Label>) labels, comparator);
+                Collections.sort((ArrayList<Label>) labels, orders2Comparator(orders, sord));
                 // filter by page
                 labels = pageFilter(labels, requestMap);
             }
 
-
         } else {
-            // for search text and translation in Translation view, not implemented yet.
-            log.error("This function is not implement yet.");
-            labels = new ArrayList();
+            // add ot and ct information if a specific language was specified
+            labels = (text == null && dictId != null) ?
+                    new ArrayList<Label>(translationService.getLabelsWithTranslation(dictId, langId)) :
+                    new ArrayList<Label>(translationService.searchLabelsWithTranslation(prodId, appId, dictId, langId, text));
+            Collections.sort((ArrayList<Label>) labels, orders2Comparator(orders, sord));
 
+            Map<String, String> filters = getGridFilters(requestMap);
+            Integer statusFilter = null;
+            Integer typeFilter = null;
+            if (filters != null) {    // filter by status
+                String statusParam = filters.get("ct.status");
+                if (statusParam != null && !statusParam.isEmpty()) {
+                    statusFilter = Integer.valueOf(statusParam);
+                    // apply status filter
+                    Iterator<Label> iter = labels.iterator();
+                    while (iter.hasNext()) {
+                        Label label = iter.next();
+                        if (statusFilter != label.getCt().getStatus()) {
+                            iter.remove();
+                        }
+                    }
+                }
+                String typeParam = filters.get("ct.translationType");
+                if (typeParam != null && !typeParam.isEmpty()) {
+                    typeFilter = Integer.valueOf(typeParam);
+                    // apply type filter
+                    Iterator<Label> iter = labels.iterator();
+                    while (iter.hasNext()) {
+                        Label label = iter.next();
+                        if (typeFilter != label.getCt().getTranslationType()) {
+                            iter.remove();
+                        }
+                    }
+                }
+            }
+
+            // filter by nodiff flag
+            String nodiffStr = requestMap.get("nodiff");
+            boolean nodiff = nodiffStr != null && nodiffStr.equalsIgnoreCase("true");
+            if (nodiff) {
+                Iterator<Label> iter = labels.iterator();
+                while (iter.hasNext()) {
+                    Label label = iter.next();
+                    if (!label.getReference().equals(label.getCt().getTranslation())) {
+                        iter.remove();
+                    }
+                }
+            }
+            requestMap.put("records", "" + labels.size());
+            // filter by page
+            labels = pageFilter(labels, requestMap);
         }
 
         return toJSON(labels, requestMap);
     }
 
 
-
     /**
      * return true if orders contained compute order
-     * */
+     */
     private boolean isContainComputeOrder(String[] orders) {
         List<String> computeField = Arrays.asList("t", "n", "i");
         for (String order : orders) {
             if (computeField.contains(order.split("\\s+")[0])) return true;
         }
         return false;
+
     }
+
+    private void fillTNI(String text, Long dictId, Collection<Label> labels) {
+        if (text == null && dictId != null) {
+            Map<Long, int[]> summary = translationService.getLabelTranslationSummary(dictId);
+            for (Label label : labels) {
+                int[] tni = summary.get(label.getId());
+                label.setT(tni[0]);
+                label.setN(tni[1]);
+                label.setI(tni[2]);
+            }
+        } else if (text != null) {
+            for (Label label : labels) {
+                int[] tni = translationService.getLabelTranslationSummaryByLabel(label.getId());
+                label.setT(tni[0]);
+                label.setN(tni[1]);
+                label.setI(tni[2]);
+            }
+        }
+    }
+
+    private Sort orders2Sort(String[] orders, String sord) {
+        String sidx;
+        List<SortField> sortFields = new ArrayList<SortField>();
+        for (String order : orders) {
+            String[] idxOrder = order.split("\\s+");
+            sidx = idxOrder[0];
+            if ("reference".equals(sidx)) sidx += "_forSort";
+            String tmpOrd = idxOrder.length > 1 ? idxOrder[1] : sord;
+            sortFields.add(new SortField(sidx, SortField.STRING, tmpOrd.equalsIgnoreCase("asc")));
+        }
+        return new Sort(sortFields.toArray(new SortField[0]));
+    }
+
+    private ComparatorChain orders2Comparator(String[] orders, String sord) {
+        ComparatorChain comparator = new ComparatorChain();
+        String sidx;
+        for (String order : orders) {
+            String[] idxOrder = order.split("\\s+");
+            sidx = idxOrder[0];
+            if ("reference".equals(sidx)) sidx += "_forSort";
+            String tmpOrd = idxOrder.length > 1 ? idxOrder[1] : sord;
+            comparator.addComparator(new ObjectComparator(sidx, tmpOrd));
+        }
+        return comparator;
+    }
+
 
     public TranslationService getTranslationService() {
         return translationService;
