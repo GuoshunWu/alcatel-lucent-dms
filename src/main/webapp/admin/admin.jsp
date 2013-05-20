@@ -11,6 +11,7 @@
             <li><a href="#langAdmin"><s:text name="admin.language.title"/></a></li>
             <li><a href="#charsetAdmin"><s:text name="admin.charset.title"/></a></li>
             <li><a href="#userAdmin"><s:text name="admin.user.title"/></a></li>
+            <li><a href="#sysConfig">System configuration</a></li>
         </ul>
 
         <div id="langAdmin">
@@ -21,6 +22,9 @@
         </div>
         <div id="userAdmin">
             <jsp:include page="admin/useradmin.jsp"/>
+        </div>
+        <div id="sysConfig">
+            <button id="buildLuceneIndex">(Re)build lucene index</button>
         </div>
     </div>
 </div>

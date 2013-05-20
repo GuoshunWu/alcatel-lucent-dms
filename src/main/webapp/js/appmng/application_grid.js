@@ -13,7 +13,7 @@
       widht: 700,
       height: '100%',
       pager: '#pager',
-      rowNum: 10,
+      rowNum: 20,
       rowList: [10, 20, 30],
       multiselect: true,
       sortname: 'name',

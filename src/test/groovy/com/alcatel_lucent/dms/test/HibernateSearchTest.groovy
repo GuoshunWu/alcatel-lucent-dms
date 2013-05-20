@@ -111,8 +111,8 @@ class HibernateSearchTest {
     @Test
     void testLabelRest() {
         FullTextSession fullTextSession = Search.getFullTextSession(dao.getSession())
-//        fullTextSession.createIndexer().startAndWait()
-//        return
+        fullTextSession.createIndexer().startAndWait()
+        return
 
         QueryBuilder qb = fullTextSession.searchFactory.buildQueryBuilder().forEntity(Label.class).get()
         /*
