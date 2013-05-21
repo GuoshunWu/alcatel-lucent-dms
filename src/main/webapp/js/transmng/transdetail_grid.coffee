@@ -9,6 +9,12 @@ define [
 
   lastEditedCell = null
 
+  ###
+    find the labels which reference resemblant to the text and display in a modal dialog
+  ###
+  matchAction = (text) ->
+    alert text
+
   transDetailGrid = $("#transDetailGridList").jqGrid(
     url: 'json/transdetailgrid.json'
     mtype: 'POST', postData: {}, editurl: "", datatype: 'local'
@@ -17,7 +23,7 @@ define [
     pager: '#transDetailsPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
     viewrecords: true, gridview: true, multiselect: true
     cellEdit: true, cellurl: urls.trans.update_status, ajaxCellOptions: {async: false}
-    colNames: ['Label', 'Max Len.', 'Context', 'Reference language', 'Translation', 'Status','TransId', 'Translation type', 'Last updated']
+    colNames: ['Label', 'Max Len.', 'Context', 'Reference language', 'Translation', 'Status','TransId', 'Trans.src', 'Last updated','Match']
     colModel: [
       {name: 'key', index: 'key', width: 120, editable: false, stype: 'select', align: 'left', frozen: true}
       {name: 'maxlen', index: 'maxLength', width: 60, editable: false, align: 'right', frozen: true, search: false}
@@ -38,7 +44,23 @@ define [
       {name: 'lastUpdate', index: 'ct.lastUpdateTime', width: 100, align: 'left',search: false
       formatter: 'date', formatoptions:{srcformat:'ISO8601Long', newformat: 'Y-m-d H:i'}
       }
+      {name: 'action', index: 'action', width: 50, align:'center', search: false
+      formatter: (cellvalue, options, rowObject)->
+        "<img class='historyAct' id='matchAct_#{rowObject[3]}' src='images/history.png'>"
+      unformat:(cellvalue, options)->""
+      }
     ]
+    gridComplete: ->
+      grid = $(@)
+      $('img[id^=matchAct]', @).click(()->
+        [_, ref]=@id.split('_')
+        matchAction(ref)
+      ).on('mouseover',()->
+        $(@).addClass('ui-state-hover')
+      ).on('mouseout', ()->
+        $(@).removeClass('ui-state-hover')
+      )
+
     afterEditCell: (rowid, cellname, val, iRow, iCol)->
       lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
     beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
@@ -80,7 +102,7 @@ define [
       primary: "ui-icon-triangle-1-n"
       secondary: "ui-icon-gear"
   )
-  .attr('privilegeName', util.urlname2Action 'trans/update-status')
+  .attr('privilegeName', util.urlname2Action urls.trans.update_status)
   .click (e)->
     menu = $('#detailTranslationStatus').show().width($(@).width()).position(my: "left bottom", at: "left top", of: @)
     $(document).one "click", ()->menu.hide()
@@ -90,7 +112,7 @@ define [
     detailGrid = $("#transDetailGridList")
     ids = detailGrid.getGridParam('selarrrow')
     ctIds = $.map(ids, (element, index)->detailGrid.getRowData(element).transId)
-    $.post 'trans/update-status', {type: 'trans', transStatus: e.target.name, ctid: ctIds.join(','), id: ids.join(',')}, (json)->
+    $.post urls.trans.update_status, {type: 'trans', transStatus: e.target.name, ctid: ctIds.join(','), id: ids.join(',')}, (json)->
       ($.msgBox json.message, null, title: c18n.warning; return) unless json.status == 0
       detailGrid.trigger 'reloadGrid'
       $("#transGrid").trigger 'reloadGrid'

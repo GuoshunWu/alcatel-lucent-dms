@@ -58,7 +58,8 @@ Time: 下午7:
         del: getURL('remove-application-base', 'app/'),
         create_version: getURL('create-application', 'app/'),
         remove_version: getURL('remove-application', 'app/'),
-        deliver_dict: getURL('deliver-dict', 'app/')
+        deliver_dict: getURL('deliver-dict', 'app/'),
+        update_label_status: getURL('update-label-status', 'app/')
       },
       label: {
         del: getURL('delete-label', 'app/'),

@@ -69,18 +69,18 @@ class HibernateSearchTest {
                 .createQuery()
         FullTextQuery hibQuery = fullTextSession.createFullTextQuery(query, Label.class)
         List<Label> result = []
-        hibQuery.list().each {Label label->
+        hibQuery.list().each { Label label ->
             List detailingLabels = detailingLabel(label, dictMap)
             result.addAll(detailingLabels)
         }
 
     }
 
-    private List<Label> detailingLabel(Label label, HashMap<Long, com.alcatel_lucent.dms.model.Dictionary> dictMap){
-        List<Label> labels=[]
+    private List<Label> detailingLabel(Label label, HashMap<Long, com.alcatel_lucent.dms.model.Dictionary> dictMap) {
+        List<Label> labels = []
         com.alcatel_lucent.dms.model.Dictionary dict = dictMap[label.dictionary.id]
-        dict.applications.each {Application app->
-            app.products.each {Product product->
+        dict.applications.each { Application app ->
+            app.products.each { Product product ->
                 Label tmpLabel = label.clone()
                 tmpLabel.dictionary = dict
 
@@ -111,8 +111,8 @@ class HibernateSearchTest {
     @Test
     void testLabelRest() {
         FullTextSession fullTextSession = Search.getFullTextSession(dao.getSession())
-        fullTextSession.createIndexer().startAndWait()
-        return
+//        fullTextSession.createIndexer().startAndWait()
+//        return
 
         QueryBuilder qb = fullTextSession.searchFactory.buildQueryBuilder().forEntity(Label.class).get()
         /*
@@ -120,10 +120,10 @@ class HibernateSearchTest {
         * */
 
         org.apache.lucene.search.Query query = qb
-                .bool()
-                .must(qb.keyword().onField('reference').matching('starting').createQuery())
-                .must(qb.keyword().onField('removed').matching(false).createQuery())
-//                .must(qb.keyword().onField('dictionary.applications.products.id').matching(2).createQuery())
+                .phrase()
+                .withSlop(2)
+        .onField("reference_forSort")
+        .matching('JSC is starting')
                 .createQuery()
         println "Query string: ${query.toString()}".center(100, '=')
 
@@ -160,7 +160,7 @@ class HibernateSearchTest {
         println 'Querying result: '
         Map<String, Integer> fieldMap = null
         list.each { label ->
-           println "${'*' * 100}\n${label.id}, ${label.key}, ${label.reference}, ${label.dictionary.base.name}"
+            println "${'*' * 100}\n${label.id}, ${label.key}, ${label.reference}, ${label.dictionary.base.name}"
         }
         println "Page ${list.size()} record(s).".center(100, '=')
     }

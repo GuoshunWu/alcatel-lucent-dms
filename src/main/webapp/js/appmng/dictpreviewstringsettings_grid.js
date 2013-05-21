@@ -64,6 +64,7 @@
           name: 'description',
           index: 'description',
           width: 40,
+          edittype: 'textarea',
           classes: 'editable-column',
           editable: true,
           align: 'left'

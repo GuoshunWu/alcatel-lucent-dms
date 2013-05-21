@@ -26,7 +26,7 @@ define ['jqgrid'], ($)->
         }
       }
       {name: 'context', index: 'context.name', width: 25, classes: 'editable-column', editable: true, align: 'left'}
-      {name: 'description', index: 'description', width: 40, classes: 'editable-column', editable: true, align: 'left'}
+      {name: 'description', index: 'description', width: 40,  edittype:'textarea', classes: 'editable-column', editable: true, align: 'left'}
     ]
 
     afterEditCell: (rowid, cellname, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}

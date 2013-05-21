@@ -276,7 +276,8 @@
       autoOpen: false,
       title: i18n.dialog.stringsettings.title,
       modal: true,
-      width: 900,
+      width: 910,
+      height: 605,
       create: function(e, ui) {
         var _this = this;
 
@@ -287,7 +288,7 @@
           $('#searchAction', _this).trigger('click');
           return false;
         });
-        return $('#searchAction', this).attr('title', 'Search').button({
+        $('#searchAction', this).attr('title', 'Search').button({
           text: false,
           icons: {
             primary: "ui-icon-search"
@@ -299,6 +300,43 @@
           grid.getGridParam('postData').text = $('#searchText', _this).val();
           return grid.trigger('reloadGrid');
         }).height(20).width(20);
+        $('#makeStringSettingsLabelTranslateStatus').button({
+          icons: {
+            primary: "ui-icon-triangle-1-n",
+            secondary: "ui-icon-gear"
+          }
+        }).attr('privilegeName', util.urlname2Action(urls.app.update_label_status)).click(function(e) {
+          var menu;
+
+          menu = $('#stringSettingsTranslationStatus').show().width($(this).width()).position({
+            my: "left bottom",
+            at: "left top",
+            of: this
+          });
+          $(document).one("click", function() {
+            return menu.hide();
+          });
+          return false;
+        });
+        return $('#stringSettingsTranslationStatus').menu().hide().find("li").on('click', function(e) {
+          var grid, ids;
+
+          grid = $("#stringSettingsGrid");
+          ids = grid.getGridParam('selarrrow');
+          return $.post(urls.app.update_label_status, {
+            type: 'trans',
+            transStatus: e.target.name,
+            id: ids.join(',')
+          }, function(json) {
+            if (json.status !== 0) {
+              $.msgBox(json.message, null, {
+                title: c18n.warning
+              });
+              return;
+            }
+            return grid.trigger('reloadGrid');
+          });
+        });
       },
       open: function(e, ui) {
         var param, postData;
@@ -459,9 +497,13 @@
             }
             dictListPreview.dialog('close');
             pb = util.genProgressBar();
+            $.blockUI({
+              message: ''
+            });
             return util.updateProgress(urls.app.deliver_dict, postData, function(json) {
               var retJson;
 
+              $.unblockUI();
               pb.parent().remove();
               retJson = $.parseJSON(json.event.msg);
               $('#importReportDialog').data('params', retJson).dialog('open');

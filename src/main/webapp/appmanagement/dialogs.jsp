@@ -151,6 +151,13 @@
                     <li><a name="Custom" href="#"><s:text name="context.custom"/></a></li>
                 </ul>
                 <button id="setContexts"><s:text name="appmng.dialogs.languagesettings.setcontext"/></button>
+                &nbsp; &nbsp; &nbsp; &nbsp;
+                <ul id="stringSettingsTranslationStatus">
+                    <li><a name="2" href="#"><s:text name="status.translated"/></a></li>
+                    <li><a name="0" href="#"><s:text name="status.nottranslated"/></a></li>
+                </ul>
+                <button id='makeStringSettingsLabelTranslateStatus'><s:text
+                        name="transmng.summarypanel.makelabelas"/></button>
             </td>
         </tr>
     </table>

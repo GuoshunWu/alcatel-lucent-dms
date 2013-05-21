@@ -180,8 +180,10 @@ define [
   stringSettings = $('#stringSettingsDialog').dialog(
     autoOpen: false
     title: i18n.dialog.stringsettings.title, modal: true
-    width: 900
+    width: 910,
+    height: 605
     create: (e, ui)->
+      # create search text component
       $('#searchText', @).keydown (e)=>
         return true if e.which != 13
         $('#searchAction', @).trigger 'click'
@@ -193,6 +195,26 @@ define [
         grid.getGridParam('postData').text = $('#searchText', @).val()
         grid.trigger 'reloadGrid'
       ).height(20).width(20)
+
+      # create set translation status component
+      $('#makeStringSettingsLabelTranslateStatus').button(
+        icons:
+          primary: "ui-icon-triangle-1-n"
+          secondary: "ui-icon-gear"
+      )
+      .attr('privilegeName', util.urlname2Action urls.app.update_label_status)
+      .click (e)->
+        menu = $('#stringSettingsTranslationStatus').show().width($(@).width()).position(my: "left bottom", at: "left top", of: @)
+        $(document).one "click", ()->menu.hide()
+        false
+
+      $('#stringSettingsTranslationStatus').menu().hide().find("li").on 'click', (e)->
+        grid = $("#stringSettingsGrid")
+        ids = grid.getGridParam('selarrrow')
+        $.post urls.app.update_label_status, {type: 'trans', transStatus: e.target.name, id: ids.join(',')}, (json)->
+          ($.msgBox json.message, null, title: c18n.warning; return) unless json.status == 0
+          grid.trigger 'reloadGrid'
+
 
     open: (e, ui)->
       stgrid.lockLabels()
@@ -286,7 +308,9 @@ define [
         dictListPreview.dialog 'close'
 
         pb = util.genProgressBar()
+        $.blockUI(message: '')
         util.updateProgress(urls.app.deliver_dict, postData, (json)->
+          $.unblockUI()
           pb.parent().remove()
           retJson = $.parseJSON(json.event.msg)
           $('#importReportDialog').data('params', retJson).dialog 'open'
