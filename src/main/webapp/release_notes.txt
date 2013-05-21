@@ -1,3 +1,6 @@
+V2.5.2 (coming soon)
+	* Take empty translation as "Not translated" when importing dictionary
+
 V2.5.1 (May. 17, 2013)
 	* Updated User Manual
 	* Bug fix of Standard Excel dictionary parser
