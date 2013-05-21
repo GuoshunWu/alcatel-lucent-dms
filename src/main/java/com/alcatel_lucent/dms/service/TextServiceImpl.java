@@ -374,7 +374,38 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
     	}
     }
     
-
+    public void updateTranslationStatusByLabel(Collection<Long> labelIds, int transStatus) {
+    	for (Long labelId: labelIds) {
+    		Label label = (Label) dao.retrieve(Label.class, labelId);
+    		if (label.getContext().getName().equals(Context.EXCLUSION)) {
+    			continue;
+    		}
+    		if (label.getDictionary().getDictLanguages() != null) {
+        		Text text = label.getText();
+	    		for (DictionaryLanguage dl : label.getDictionary().getDictLanguages()) {
+	    			if (dl.getLanguage().getId() == 1L) {
+	    				continue;
+	    			}
+	    			LabelTranslation lt = label.getOrigTranslation(dl.getLanguageCode());
+	    			if (lt != null && !lt.isNeedTranslation()) continue;
+	    			Translation trans = text.getTranslation(dl.getLanguage().getId());
+	    			if (trans == null) {
+	    				// create missing translation
+	    				trans = new Translation();
+	    				trans.setLanguage(dl.getLanguage());
+	    				trans.setText(text);
+	    				trans.setTranslation(text.getReference());
+	    				trans.setStatus(transStatus);
+	        			dao.create(trans);
+	    			} else {
+	    				trans.setStatus(transStatus);
+	    			}
+	    		}
+    		}
+    		
+    	}
+    }
+    
     private Collection<Translation> findAllTranslationsByDictAndLanguage(Long dictId, Collection<Long> langIds) {
 		String hql = "select s from Label l join l.text t join t.translations s" +
 				" where l.dictionary.id=:dictId and l.removed=false and l.context.name<>:exclusion";

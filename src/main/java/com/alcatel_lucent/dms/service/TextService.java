@@ -119,6 +119,13 @@ public interface TextService {
     void updateTranslationStatusByApp(Collection<Long> appIds, Collection<Long> langIds, int transStatus);
 
     /**
+     * Update translation status by labels
+     * @param labelIds label id list
+     * @param transStatus new translation status
+     */
+	void updateTranslationStatusByLabel(Collection<Long> labelIds, int transStatus);
+
+    /**
      * Get translation details by context
      * @param ctxId context id
      * @return map of text objects indexed by reference.
