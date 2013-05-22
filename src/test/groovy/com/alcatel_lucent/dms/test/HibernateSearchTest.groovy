@@ -5,16 +5,22 @@ import com.alcatel_lucent.dms.model.Label
 import com.alcatel_lucent.dms.model.Product
 import com.alcatel_lucent.dms.service.DaoService
 import org.apache.commons.lang3.tuple.Pair
+import org.apache.lucene.analysis.standard.StandardAnalyzer
 import org.apache.lucene.document.Document
 import org.apache.lucene.document.Field
 import org.apache.lucene.document.Fieldable
+import org.apache.lucene.queryParser.QueryParser
+import org.apache.lucene.search.Query
 import org.apache.lucene.search.Sort
+import org.apache.lucene.util.Version
 import org.hibernate.Criteria
 import org.hibernate.search.FullTextQuery
 import org.hibernate.search.FullTextSession
 import org.hibernate.search.Search
 import org.hibernate.search.query.dsl.QueryBuilder
+import org.junit.Assert
 import org.junit.BeforeClass
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,7 +38,7 @@ import org.springframework.util.MultiValueMap
  * Time: 下午10:03
  * To change this template use File | Settings | File Templates.
  */
-//@Ignore
+@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = ["/spring.xml"])
 @Transactional //Important, or the transaction control will be invalid
@@ -109,6 +115,15 @@ class HibernateSearchTest {
     }
 
     @Test
+    void testQueryParser(){
+
+        String queryString = " The Story of the Day"
+        QueryParser parser = new QueryParser(Version.LUCENE_31,"title", new StandardAnalyzer(Version.LUCENE_31))
+        Query query = parser.parse(queryString)
+        Assert.assertEquals("title:story title:day", query.toString())
+    }
+
+//    @Test
     void testLabelRest() {
         FullTextSession fullTextSession = Search.getFullTextSession(dao.getSession())
 //        fullTextSession.createIndexer().startAndWait()
@@ -119,11 +134,11 @@ class HibernateSearchTest {
         Lucene search syntax: +reference:starting + removed:false
         * */
 
-        org.apache.lucene.search.Query query = qb
+        Query query = qb
                 .phrase()
                 .withSlop(2)
         .onField("reference_forSort")
-        .matching('JSC is starting')
+        .sentence('JSC is starting')
                 .createQuery()
         println "Query string: ${query.toString()}".center(100, '=')
 
@@ -133,6 +148,7 @@ class HibernateSearchTest {
         List list
         long start = System.nanoTime()
         Criteria criteria = fullTextSession.createCriteria(Label.class)
+
         FullTextQuery hibQuery = fullTextSession.createFullTextQuery(query).setCriteriaQuery(criteria)
 
 //        total result size
