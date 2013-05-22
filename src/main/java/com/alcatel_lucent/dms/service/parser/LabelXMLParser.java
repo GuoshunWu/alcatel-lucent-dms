@@ -27,6 +27,7 @@ import org.springframework.stereotype.Component;
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.Constants;
+import com.alcatel_lucent.dms.Constants.DictionaryFormat;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryBase;
 import com.alcatel_lucent.dms.model.DictionaryLanguage;
@@ -51,10 +52,6 @@ public class LabelXMLParser extends DictionaryParser {
 		return "LABEL";
 	}
 	
-	protected String getFormat() {
-		return Constants.DictionaryFormat.XML_LABEL.toString();
-	}
-	
 	protected String getXPath() {
 		return "/LABELS/LABEL";
 	}
@@ -63,6 +60,11 @@ public class LabelXMLParser extends DictionaryParser {
 		return "label_id";
 	}
 
+	@Override
+	public DictionaryFormat getFormat() {
+		return Constants.DictionaryFormat.XML_LABEL;
+	}
+	
 	@Override
 	public ArrayList<Dictionary> parse(String rootDir, File file, Collection<File> acceptedFiles) throws BusinessException {
 		BusinessException exceptions = new BusinessException(BusinessException.NESTED_ERROR);
@@ -145,7 +147,7 @@ public class LabelXMLParser extends DictionaryParser {
         dictBase.setName(dictName);
         dictBase.setPath(refFile.getAbsolutePath());
         dictBase.setEncoding("UTF-8");
-        dictBase.setFormat(getFormat());
+        dictBase.setFormat(getFormat().toString());
         
 		Dictionary dictionary = new Dictionary();
 		dictionary.setBase(dictBase);

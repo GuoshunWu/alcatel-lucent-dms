@@ -63,6 +63,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         long before = System.currentTimeMillis();
         HashSet<String> allAcceptedFiles = new HashSet<String>();
         for (DictionaryParser parser : parsers) {
+        	ProgressQueue.setProgress("" + allAcceptedFiles.size() + " file(s) were accepted. Scanning for " + parser.getFormat().toString() + "...", -1);
             Collection<File> acceptedFiles = new ArrayList<File>();
             try {
                 result.addAll(parser.parse(rootDir, file, acceptedFiles));
