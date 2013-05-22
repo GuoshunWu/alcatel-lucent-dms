@@ -27,6 +27,7 @@ import org.springframework.stereotype.Component;
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.Constants;
+import com.alcatel_lucent.dms.Constants.DictionaryFormat;
 import com.alcatel_lucent.dms.model.Charset;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryBase;
@@ -45,6 +46,11 @@ public class MDCParser extends DictionaryParser {
 
 	private Logger log = LoggerFactory.getLogger(MDCParser.class);
     
+	@Override
+	public DictionaryFormat getFormat() {
+		return Constants.DictionaryFormat.MDC;
+	}
+	
 	@Override
 	public ArrayList<Dictionary> parse(String rootDir, File file, Collection<File> acceptedFiles) throws BusinessException {
 		BusinessException exceptions = new BusinessException(BusinessException.NESTED_ERROR);

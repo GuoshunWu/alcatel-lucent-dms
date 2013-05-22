@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.Constants;
+import com.alcatel_lucent.dms.Constants.DictionaryFormat;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryBase;
 import com.alcatel_lucent.dms.model.DictionaryLanguage;
@@ -36,6 +37,11 @@ public class PropParser extends DictionaryParser {
     @Autowired
     private LanguageService languageService;
 
+	@Override
+	public DictionaryFormat getFormat() {
+		return Constants.DictionaryFormat.TEXT_PROP;
+	}
+	
     @Override
     public ArrayList<Dictionary> parse(String rootDir, File file, Collection<File> acceptedFiles) throws BusinessException {
         BusinessException exceptions = new BusinessException(BusinessException.NESTED_ERROR);

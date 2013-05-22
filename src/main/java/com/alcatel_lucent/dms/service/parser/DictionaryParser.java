@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
+import com.alcatel_lucent.dms.Constants.DictionaryFormat;
 import com.alcatel_lucent.dms.model.Dictionary;
 
 abstract public class DictionaryParser {
@@ -28,6 +29,12 @@ abstract public class DictionaryParser {
 	 * information about errors.
 	 */
 	abstract public ArrayList<Dictionary> parse(String rootDir, File file, Collection<File> acceptedFiles) throws BusinessException;
+	
+	/**
+	 * Return the dictionary format the parser accepts.
+	 * @return
+	 */
+	abstract public DictionaryFormat getFormat();
 	
 	protected String[] splitFileName(String filename) {
 		int dotPos = filename.lastIndexOf(".");
