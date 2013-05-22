@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.Constants;
+import com.alcatel_lucent.dms.Constants.DictionaryFormat;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryBase;
 import com.alcatel_lucent.dms.service.DictionaryProp;
@@ -31,7 +32,12 @@ public class DCTParser extends DictionaryParser {
     @Autowired
     private DictionaryProp dictProp;
 
-    @Override
+	@Override
+	public DictionaryFormat getFormat() {
+		return Constants.DictionaryFormat.DCT;
+	}
+
+	@Override
     public ArrayList<Dictionary> parse(String rootDir, File file, Collection<File> acceptedFiles) throws BusinessException {
         BusinessException exceptions = new BusinessException(BusinessException.NESTED_ERROR);
         ArrayList<Dictionary> result = parse(rootDir, file, acceptedFiles, exceptions);

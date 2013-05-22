@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.Constants;
+import com.alcatel_lucent.dms.Constants.DictionaryFormat;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryBase;
 import com.alcatel_lucent.dms.model.DictionaryLanguage;
@@ -36,6 +37,11 @@ public class POParser extends DictionaryParser {
     private LanguageService languageService;
 	
 	private static Pattern charsetPattern = Pattern.compile(".*Content-Type:.*;\\s*charset=([^\\\\]*)\\\\n.*");
+	
+	@Override
+	public DictionaryFormat getFormat() {
+		return Constants.DictionaryFormat.PO;
+	}
 	
 	@Override
 	public ArrayList<Dictionary> parse(String rootDir, File file,

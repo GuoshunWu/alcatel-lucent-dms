@@ -2,6 +2,7 @@ package com.alcatel_lucent.dms.service.parser;
 
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.Constants;
+import com.alcatel_lucent.dms.Constants.DictionaryFormat;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.service.LanguageService;
@@ -53,6 +54,11 @@ public class ICEJavaAlarmParser extends DictionaryParser {
     @Autowired
     private LanguageService languageService;
 
+	@Override
+	public DictionaryFormat getFormat() {
+		return Constants.DictionaryFormat.ICE_JAVA_ALARM;
+	}
+	
     public ICEJavaAlarmParser() {
 
         SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);

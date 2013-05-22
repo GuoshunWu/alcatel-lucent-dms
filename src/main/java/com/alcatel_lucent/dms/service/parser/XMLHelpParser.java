@@ -3,6 +3,7 @@ package com.alcatel_lucent.dms.service.parser;
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.SystemError;
+import com.alcatel_lucent.dms.Constants.DictionaryFormat;
 import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.service.LanguageService;
@@ -55,6 +56,11 @@ public class XMLHelpParser extends DictionaryParser {
     @Autowired
     private LanguageService languageService;
 
+	@Override
+	public DictionaryFormat getFormat() {
+		return Constants.DictionaryFormat.XML_Help;
+	}
+	
     @Override
     public ArrayList<Dictionary> parse(String rootDir, File file, Collection<File> acceptedFiles) throws BusinessException {
         ArrayList<Dictionary> deliveredDicts = new ArrayList<Dictionary>();

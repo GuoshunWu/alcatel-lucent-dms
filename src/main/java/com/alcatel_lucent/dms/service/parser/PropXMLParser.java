@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.Constants;
+import com.alcatel_lucent.dms.Constants.DictionaryFormat;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryLanguage;
 import com.alcatel_lucent.dms.model.Label;
@@ -18,16 +19,17 @@ import com.alcatel_lucent.dms.model.Label;
 @Component("propXMLParser")
 public class PropXMLParser extends LabelXMLParser {
 	
+	@Override
+	public DictionaryFormat getFormat() {
+		return Constants.DictionaryFormat.XML_PROP;
+	}
+	
 	protected String getRootName() {
 		return "properties";
 	}
 	
 	protected String getSecondNodeName() {
 		return "entry";
-	}
-	
-	protected String getFormat() {
-		return Constants.DictionaryFormat.XML_PROP.toString();
 	}
 	
 	protected String getXPath() {
