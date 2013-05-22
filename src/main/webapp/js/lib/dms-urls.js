@@ -59,6 +59,8 @@ Time: 下午7:
         create_version: getURL('create-application', 'app/'),
         remove_version: getURL('remove-application', 'app/'),
         deliver_dict: getURL('deliver-dict', 'app/'),
+        deliver_app_dict: getURL('deliver-app-dict', 'app/'),
+        process_dict: getURL('process-dict', 'app/'),
         update_label_status: getURL('update-label-status', 'app/')
       },
       label: {

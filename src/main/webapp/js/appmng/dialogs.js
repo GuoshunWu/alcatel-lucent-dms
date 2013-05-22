@@ -874,22 +874,10 @@
           appInfo = 'Demo 1.0';
         }
         statisticsTabId = '#importReportStatistics';
-        if (typeof console !== "undefined" && console !== null) {
-          console.log("original data");
-        }
-        if (typeof console !== "undefined" && console !== null) {
-          console.log(json);
-        }
         json.translatedNum -= json.matchedNum;
         json.translatedWC -= json.matchedWC;
         json.untranslatedNum += json.matchedNum;
         json.untranslatedWC += json.matchedWC;
-        if (typeof console !== "undefined" && console !== null) {
-          console.log("after adjust data:");
-        }
-        if (typeof console !== "undefined" && console !== null) {
-          console.log(json);
-        }
         $('#dupTrans', statisticsTabId).html(json.translationNum - json.distinctTranslationNum).parent().next().children('span').html("" + (json.translationWC - json.distinctTranslationWC));
         $('#distinctTrans1', statisticsTabId).html(json.distinctTranslationNum).parent().next().children('span').html("" + json.distinctTranslationWC);
         $('#totalTrans', statisticsTabId).html(json.translationNum).parent().next().children('span').html("" + json.translationWC);

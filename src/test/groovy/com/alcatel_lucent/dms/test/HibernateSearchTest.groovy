@@ -10,6 +10,7 @@ import org.apache.lucene.document.Document
 import org.apache.lucene.document.Field
 import org.apache.lucene.document.Fieldable
 import org.apache.lucene.queryParser.QueryParser
+import org.apache.lucene.queryParser.complexPhrase.ComplexPhraseQueryParser
 import org.apache.lucene.search.Query
 import org.apache.lucene.search.Sort
 import org.apache.lucene.util.Version
@@ -117,9 +118,11 @@ class HibernateSearchTest {
     @Test
     void testQueryParser(){
 
-        String queryString = " The Story of the Day"
+        String queryString = "\"(The AND Story AND Day)\"~4"
         QueryParser parser = new QueryParser(Version.LUCENE_31,"title", new StandardAnalyzer(Version.LUCENE_31))
+//        parser = new ComplexPhraseQueryParser(Version.LUCENE_31, "title", new StandardAnalyzer(Version.LUCENE_31))
         Query query = parser.parse(queryString)
+
         Assert.assertEquals("title:story title:day", query.toString())
     }
 

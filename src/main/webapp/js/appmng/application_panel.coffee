@@ -69,7 +69,7 @@ define [
 
   dctFileUpload = 'dctFileUpload'
   #  create upload filebutton
-  $('#uploadBrower').button(label: i18n.browse).attr('privilegeName', util.urlname2Action('app/deliver-app-dict')).css({overflow: 'hidden'}).append $(
+  $('#uploadBrower').button(label: i18n.browse).attr('privilegeName', urls.app.deliver_dict).css({overflow: 'hidden'}).append $(
     "<input type='file' id='#{dctFileUpload}' name='upload' title='#{i18n.choosefile}' accept='application/zip' multiple/>").css(
     position: 'absolute', top: -3, right: -3, border: '1px solid', borderWidth: '10px 180px 40px 20px',
     opacity: 0, filter: 'alpha(opacity=0)',
@@ -79,7 +79,7 @@ define [
 
   $("##{dctFileUpload}").fileupload {
   type: 'POST', dataType: 'json'
-  url: "app/deliver-app-dict"
+  url: urls.app.deliver_app_dict
 
   #  forceIframeTransport:true
   add: (e, data)->
@@ -106,9 +106,16 @@ define [
     if(0 != jsonFromServer.status)
       $.msgBox jsonFromServer.message, null, {title: c18n.error, height: 600, width: 800}
       return
+    delete jsonFromServer.message
+    delete jsonFromServer.status
 
-    $('#dictListPreviewDialog').data 'param', {handler: jsonFromServer.filename, appId: $("#selAppVersion").val()}
-    $('#dictListPreviewDialog').dialog 'open'
+    pb = util.genProgressBar()
+    util.updateProgress(urls.app.process_dict, jsonFromServer, (json)->
+      pb.parent().remove()
+      filename = json.event.msg
+      $('#dictListPreviewDialog').data 'param', {handler: filename, appId: $("#selAppVersion").val()}
+      $('#dictListPreviewDialog').dialog 'open'
+    , pb)
   }
 
   getApplicationSelectOptions: ()->$('#selAppVersion').children('option').clone(true)
