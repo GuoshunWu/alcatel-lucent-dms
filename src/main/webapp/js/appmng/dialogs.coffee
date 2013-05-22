@@ -583,8 +583,8 @@ define [
       appInfo = 'Demo 1.0' if !appInfo
 
       statisticsTabId = '#importReportStatistics'
-      console?.log "original data"
-      console?.log json
+#      console?.log "original data"
+#      console?.log json
 
       # number ajdust
       json.translatedNum -= json.matchedNum
@@ -593,8 +593,8 @@ define [
       json.untranslatedNum +=json.matchedNum
       json.untranslatedWC +=json.matchedWC
 
-      console?.log "after adjust data:"
-      console?.log json
+#      console?.log "after adjust data:"
+#      console?.log json
 
 
       $('#dupTrans', statisticsTabId).html(json.translationNum - json.distinctTranslationNum)

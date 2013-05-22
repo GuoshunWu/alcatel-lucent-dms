@@ -93,7 +93,7 @@
     dctFileUpload = 'dctFileUpload';
     $('#uploadBrower').button({
       label: i18n.browse
-    }).attr('privilegeName', util.urlname2Action('app/deliver-app-dict')).css({
+    }).attr('privilegeName', urls.app.deliver_dict).css({
       overflow: 'hidden'
     }).append($("<input type='file' id='" + dctFileUpload + "' name='upload' title='" + i18n.choosefile + "' accept='application/zip' multiple/>").css({
       position: 'absolute',
@@ -108,7 +108,7 @@
     $("#" + dctFileUpload).fileupload({
       type: 'POST',
       dataType: 'json',
-      url: "app/deliver-app-dict",
+      url: urls.app.deliver_app_dict,
       add: function(e, data) {
         var appId;
 
@@ -139,7 +139,7 @@
         return this.pb.progressbar("value", progress);
       },
       done: function(e, data) {
-        var jsonFromServer;
+        var jsonFromServer, pb;
 
         $('#uploadBrower').button('enable');
         if (!$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10) {
@@ -154,11 +154,20 @@
           });
           return;
         }
-        $('#dictListPreviewDialog').data('param', {
-          handler: jsonFromServer.filename,
-          appId: $("#selAppVersion").val()
-        });
-        return $('#dictListPreviewDialog').dialog('open');
+        delete jsonFromServer.message;
+        delete jsonFromServer.status;
+        pb = util.genProgressBar();
+        return util.updateProgress(urls.app.process_dict, jsonFromServer, function(json) {
+          var filename;
+
+          pb.parent().remove();
+          filename = json.event.msg;
+          $('#dictListPreviewDialog').data('param', {
+            handler: filename,
+            appId: $("#selAppVersion").val()
+          });
+          return $('#dictListPreviewDialog').dialog('open');
+        }, pb);
       }
     });
     return {
