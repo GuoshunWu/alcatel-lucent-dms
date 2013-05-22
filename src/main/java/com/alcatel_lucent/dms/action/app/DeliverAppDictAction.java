@@ -1,7 +1,8 @@
 package com.alcatel_lucent.dms.action.app;
 
 import com.alcatel_lucent.dms.UserContext;
-import com.alcatel_lucent.dms.action.JSONAction;
+import com.alcatel_lucent.dms.action.ProgressAction;
+import com.alcatel_lucent.dms.action.ProgressQueue;
 import com.alcatel_lucent.dms.service.DeliveringDictPool;
 import com.alcatel_lucent.dms.util.Util;
 import org.slf4j.Logger;
@@ -23,7 +24,7 @@ import java.util.Date;
 @Result(type = "json", params = {"noCache", "true", "contentType", "text/html", "ignoreHierarchy", "false",
         "includeProperties", "message,status,filename"})
 
-public class DeliverAppDictAction extends JSONAction {
+public class DeliverAppDictAction extends ProgressAction {
 
     private static Logger log = LoggerFactory.getLogger(DeliverAppDictAction.class);
 
@@ -71,6 +72,7 @@ public class DeliverAppDictAction extends JSONAction {
         boolean fileCreateSuccess = true;
         if (Util.isZipFile(filename)) {
             log.info("decompress file " + upload + " to " + dir.getAbsolutePath());
+            ProgressQueue.setProgress("Decompressing zip package...", -1);
             Util.unzip(upload, dir.getAbsolutePath());
 
         } else {
