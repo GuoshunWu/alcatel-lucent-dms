@@ -6,11 +6,15 @@ import com.alcatel_lucent.dms.util.CharsetUtil;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import javax.persistence.*;
 
 //@Entity
 @Table(name = "TRANSLATION")
+@Indexed
 public class Translation extends BaseEntity {
     /**
      *
@@ -49,6 +53,7 @@ public class Translation extends BaseEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "TEXT_ID", nullable = false)
     @Index(name = "I_TRANSLATION_TEXT_LAN")
+    @IndexedEmbedded
     public Text getText() {
         return text;
     }
@@ -60,6 +65,7 @@ public class Translation extends BaseEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "LANGUAGE_ID", nullable = false)
     @Index(name = "I_TRANSLATION_TEXT_LAN")
+    @IndexedEmbedded
     public Language getLanguage() {
         return language;
     }
@@ -69,6 +75,7 @@ public class Translation extends BaseEntity {
     }
 
     @Column(name = "TRANSLATION", length = 1024)
+    @Field
     public String getTranslation() {
         return translation;
     }
@@ -97,6 +104,7 @@ public class Translation extends BaseEntity {
     }
 
     @Column(name = "STATUS")
+    @Field
     public int getStatus() {
         return status;
     }

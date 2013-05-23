@@ -2,6 +2,7 @@ package com.alcatel_lucent.dms.model;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.search.annotations.Field;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ public class Text extends BaseEntity {
     }
 
     @Column(name = "REFERENCE", length = 1024)
+    @Field
     public String getReference() {
         return reference;
     }
