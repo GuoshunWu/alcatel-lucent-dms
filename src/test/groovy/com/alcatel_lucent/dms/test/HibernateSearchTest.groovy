@@ -39,7 +39,7 @@ import org.springframework.util.MultiValueMap
  * Time: 下午10:03
  * To change this template use File | Settings | File Templates.
  */
-@Ignore
+//@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = ["/spring.xml"])
 @Transactional //Important, or the transaction control will be invalid
@@ -115,18 +115,18 @@ class HibernateSearchTest {
         println "Page ${labels.size()} record(s).".center(100, '-')
     }
 
-    @Test
-    void testQueryParser(){
+//    @Test
+    void testQueryParser() {
 
         String queryString = "\"(The AND Story AND Day)\"~4"
-        QueryParser parser = new QueryParser(Version.LUCENE_31,"title", new StandardAnalyzer(Version.LUCENE_31))
+        QueryParser parser = new QueryParser(Version.LUCENE_31, "title", new StandardAnalyzer(Version.LUCENE_31))
 //        parser = new ComplexPhraseQueryParser(Version.LUCENE_31, "title", new StandardAnalyzer(Version.LUCENE_31))
         Query query = parser.parse(queryString)
 
         Assert.assertEquals("title:story title:day", query.toString())
     }
 
-//    @Test
+    @Test
     void testLabelRest() {
         FullTextSession fullTextSession = Search.getFullTextSession(dao.getSession())
 //        fullTextSession.createIndexer().startAndWait()
@@ -137,12 +137,14 @@ class HibernateSearchTest {
         Lucene search syntax: +reference:starting + removed:false
         * */
 
-        Query query = qb
-                .phrase()
-                .withSlop(2)
-        .onField("reference_forSort")
-        .sentence('JSC is starting')
-                .createQuery()
+        Query query = qb.bool()
+                .must(
+                qb.keyword().fuzzy().withThreshold(0.8).onField("reference").matching('starting').createQuery()
+        ).must(
+                qb.keyword().fuzzy().withThreshold(0.8).onField("reference").matching('abc').createQuery()
+        ).createQuery()
+
+//        Query query = qb.keyword().onField("reference").matching('the').createQuery()
         println "Query string: ${query.toString()}".center(100, '=')
 
 //        String searchString = "reference:starting"
@@ -150,9 +152,8 @@ class HibernateSearchTest {
         // wrap Lucene query in a org.hibernate.Query
         List list
         long start = System.nanoTime()
-        Criteria criteria = fullTextSession.createCriteria(Label.class)
-
-        FullTextQuery hibQuery = fullTextSession.createFullTextQuery(query).setCriteriaQuery(criteria)
+        return
+        FullTextQuery hibQuery = fullTextSession.createFullTextQuery(query, Label.class)
 
 //        total result size
         int pageNumber = 1  //http parameter page
