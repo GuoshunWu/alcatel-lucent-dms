@@ -30,7 +30,7 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
         tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
         filters = {
                 @TokenFilterDef(factory = StandardFilterFactory.class),
-                @TokenFilterDef(factory = LowerCaseFilterFactory.class),
+                @TokenFilterDef(factory = LowerCaseFilterFactory.class)
 //                @TokenFilterDef(factory = StopFilterFactory.class)
         }
 )

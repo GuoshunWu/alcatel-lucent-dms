@@ -1,4 +1,4 @@
-V2.5.2 (coming soon)
+V2.5.2 (May. 24, 2013)
 	* Introduced Apache Lucene as text search engine.
 	* Added a "System config" tab in Admin view for re-building Lucene index.
 	* Allows to change translation status of selected labels for all languages in "String settings" view.
@@ -9,7 +9,7 @@ V2.5.2 (coming soon)
 	* Update "description" column to textarea in String settings view of "import preview dialog"
 	* Bug fix of missing languages in Label translation view
 	* Bug fix of initial translation status of empty translation
-	* Rename "Translation Type" to "Trans.src" in Translation Detail view
+	* Rename "Translation Type" to "Trans.src" in Translation Detail view	
 
 
 V2.5.1 (May. 17, 2013)

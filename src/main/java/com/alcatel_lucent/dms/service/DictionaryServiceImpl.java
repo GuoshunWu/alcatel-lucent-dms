@@ -100,6 +100,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             throw exceptions;
         }
 
+        ProgressQueue.setProgress("Initializing...", -1);
         // set id, version for preview process
         // if dictionary already exists, get language/charset/label information from existing one
         Application app = (Application) dao.retrieve(Application.class, appId);
