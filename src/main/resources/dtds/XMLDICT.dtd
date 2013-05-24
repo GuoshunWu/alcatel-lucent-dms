@@ -1,0 +1,95 @@
+<!-- Element 'DICTIONARY' is the root element of this XML Model -->
+<!-- Attribute 'name' is the name of this dictionary -->
+<!-- Attribute 'appli' indicates the application which uses this dictionary -->
+<!-- Example 'appli' : '4760' or 'OXE' -->
+<!-- Attribute 'type' indicates use type of this dictionary. -->
+<!-- Value 'dictionary' : a simple dictionary -->
+<!-- Value 'help' : generated help text from this dictionary -->
+<!-- Attribute 'separator' to cut help's key. This attribute is used if only type is 'help'. -->
+<!ELEMENT DICTIONARY (LANGUAGE*,KEY*)>
+<!ATTLIST DICTIONARY 
+	name CDATA #REQUIRED
+	appli CDATA #REQUIRED
+	type (dictionary|help) #REQUIRED
+	separator CDATA #IMPLIED>
+
+
+	<!-- Element 'LANGUAGE' defines one allowed language -->
+	<!-- Attribute 'id' is a locale code made up of language code ISO-639 and country code ISO-3166 -->
+	<!-- Example 'id' : 'fr_CA' for Canada French or 'fr' for French without country information -->
+	<!-- Attribute 'is_reference' : true if this language is a reference for translator, false overwise -->
+	<!-- Attribute 'is_context' : true if this language is allowed to have a context description, false overwise -->
+	<!ELEMENT LANGUAGE EMPTY>
+	<!ATTLIST LANGUAGE
+		id ID #REQUIRED
+		is_reference (true|false) "false"
+		is_context (true|false) "false">
+	
+	
+	<!-- Element 'KEY' is the element associated to a collection of translations -->
+	<!-- Attribute 'name' is KEY's name -->
+	<!-- Attribute 'state' indicates global state of translations of this element, this attribute is used in merge process -->
+	<!-- Value 'new' indicates that it's a new created KEY, it must translate in each languages -->
+	<!-- Value 'modified' indicates the element KEY is modified, so it need translate one more time -->
+	<!-- Value 'unmodified' indicates the element KEY is unmodified, so it need not translate one more time -->
+	<!-- Attribute 'gui_object' is an information field about graphic object which is used this KEY, 'other' indicates no specific graphic zone -->
+	<!-- Attribute 'message_category' is an information field about category of this 'KEY' -->
+	<!-- Attribute 'lines' controls maxi lines number of each translation, allowed values are number or "unlimited" -->
+	<!-- Attribute 'colums' controls maxi columns number of each line, allowed values are number or "unlimited" -->
+	<!ELEMENT KEY (COMMENT*,CONTEXT*,HELP*,PARAM*,STATIC_TOKEN*,TRANSLATION*)>
+	<!ATTLIST KEY
+		name CDATA #REQUIRED
+		state (new|modified|unmodified) #REQUIRED
+		gui_object (tree|grid|menu|button|other) "other"
+		message_category (label|error|warning|information|question) "label"
+		lines CDATA "1"
+		columns CDATA "-1">
+		
+		<!-- Element 'PARAM' is a generic element which is used to define a specific parameter for a application -->
+		<!-- Attribute 'name' defines name of this parameter -->
+		<!-- Attribute 'value' defines value of this parameter -->
+		<!-- Example : a parameter indiques the type of a KEY : name='type' value ='class' or 'attribute' -->
+		<!ELEMENT PARAM EMPTY>
+		<!ATTLIST PARAM
+			name CDATA #REQUIRED
+			value CDATA #REQUIRED>
+
+		<!-- Element 'STATIC_TOKEN' is a string don't need to translate, so this strings must find again unchanged in each translation. -->
+		<!-- Example : Alcatel or OmniVista 4760 -->
+		<!ELEMENT STATIC_TOKEN (#PCDATA)>
+		
+		<!-- Element 'CONTEXT' contains some context descriptions about 'KEY' -->
+		<!-- Attribute 'language' references an existing element LANGUAGE -->
+		<!ELEMENT CONTEXT (#PCDATA)>
+		<!ATTLIST CONTEXT
+			language IDREF #REQUIRED>
+			
+		<!-- Element 'TRANSLATION' is a translation writted in specified language associated to 'KEY'. It's made up of string, image and table. -->
+		<!-- Attribute 'language' references an existing element LANGUAGE -->
+		<!-- Attribute 'follow_up' indicates state of this translation, this attribute is used in merge process -->
+		<!-- Value 'not_to_translate' means don't need to translate -->
+		<!-- Value 'to_translate' means to translate -->
+		<!-- Value 'to_validate' means to validate -->
+		<!-- Value 'validated' means this translation is validated -->
+		<!ELEMENT TRANSLATION (#PCDATA)>
+		<!ATTLIST TRANSLATION
+			language IDREF #REQUIRED
+			follow_up (no_translate|to_translate|to_validate|validated) #REQUIRED>
+
+		<!-- Element 'HELP' is a text help writted in specified language associated to 'KEY'. It's made up of string, image and table as translation -->
+		<!-- Attribute 'language' references an existing element LANGUAGE -->
+		<!-- Value 'no_translate' means don't need to translate -->
+		<!-- Value 'to_translate' means to translate -->
+		<!-- Value 'to_validate' means to validate -->
+		<!-- Value 'validated' means this translation is validated -->
+		<!ELEMENT HELP (#PCDATA)>
+		<!ATTLIST HELP
+			language IDREF #REQUIRED
+			follow_up (no_translate|to_translate|to_validate|validated) #REQUIRED>
+
+			
+		<!-- Element 'COMMENT' is a comment from translator to programmer about translation -->
+		<!-- Attribute 'language' references an existing element LANGUAGE -->
+		<!ELEMENT COMMENT (#PCDATA)>
+		<!ATTLIST COMMENT
+			language IDREF #REQUIRED>
