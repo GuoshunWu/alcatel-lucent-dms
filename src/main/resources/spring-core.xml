@@ -32,6 +32,8 @@
                 <!-- for hibernate search -->
                 <prop key="hibernate.search.default.directory_provider">filesystem</prop>
                 <prop key="hibernate.search.default.indexBase">${dms.luceneindex.dir}</prop>
+                <prop key="hibernate.search.analyzer">org.apache.lucene.analysis.standard.StandardAnalyzer</prop>
+                <!--<prop key="hibernate.search.analyzer">org.apache.lucene.analysis.en.EnglishAnalyzer</prop>-->
 
 
                 <prop key="hibernate.proxool.properties">proxool.properties</prop>

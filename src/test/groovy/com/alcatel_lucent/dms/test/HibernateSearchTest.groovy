@@ -18,6 +18,8 @@ import org.hibernate.Criteria
 import org.hibernate.search.FullTextQuery
 import org.hibernate.search.FullTextSession
 import org.hibernate.search.Search
+import org.hibernate.search.batchindexing.MassIndexerProgressMonitor
+import org.hibernate.search.impl.SimpleIndexingProgressMonitor
 import org.hibernate.search.query.dsl.QueryBuilder
 import org.junit.Assert
 import org.junit.BeforeClass
@@ -129,22 +131,23 @@ class HibernateSearchTest {
     @Test
     void testLabelRest() {
         FullTextSession fullTextSession = Search.getFullTextSession(dao.getSession())
-//        fullTextSession.createIndexer().startAndWait()
-//        return
+        fullTextSession.createIndexer()
+                .startAndWait()
+        return
 
         QueryBuilder qb = fullTextSession.searchFactory.buildQueryBuilder().forEntity(Label.class).get()
         /*
         Lucene search syntax: +reference:starting + removed:false
         * */
 
-        Query query = qb.bool()
-                .must(
-                qb.keyword().fuzzy().withThreshold(0.8).onField("reference").matching('starting').createQuery()
-        ).must(
-                qb.keyword().fuzzy().withThreshold(0.8).onField("reference").matching('abc').createQuery()
-        ).createQuery()
+//        Query query = qb.bool()
+//                .must(
+//                qb.keyword().fuzzy().withThreshold(0.8).onField("reference").matching('starting').createQuery()
+//        ).must(
+//                qb.keyword().fuzzy().withThreshold(0.8).onField("reference").matching('abc').createQuery()
+//        ).createQuery()
 
-//        Query query = qb.keyword().onField("reference").matching('the').createQuery()
+        Query query = qb.keyword().fuzzy().withThreshold(0.8f).onField("reference").matching('a').createQuery()
         println "Query string: ${query.toString()}".center(100, '=')
 
 //        String searchString = "reference:starting"
