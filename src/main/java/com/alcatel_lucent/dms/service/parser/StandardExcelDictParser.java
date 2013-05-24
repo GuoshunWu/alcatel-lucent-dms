@@ -94,6 +94,7 @@ public class StandardExcelDictParser extends DictionaryParser {
 
         dictionary = new Dictionary();
         dictionary.setDictLanguages(new ArrayList<DictionaryLanguage>());
+        dictionary.setReferenceLanguage(REF_LANG_CODE);
         dictionary.setLabels(new ArrayList<Label>());
 
         dictionary.setBase(dictBase);

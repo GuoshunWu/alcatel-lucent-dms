@@ -131,6 +131,7 @@ public class PropParser extends DictionaryParser {
         int sortNo = 1;
         Collection<DictionaryLanguage> dictLanguages = new ArrayList<DictionaryLanguage>();
         dictionary.setDictLanguages(dictLanguages);
+        dictionary.setReferenceLanguage(refLangCode);
         DictionaryLanguage refDl = new DictionaryLanguage();
         refDl.setLanguageCode(refLangCode);
         refDl.setSortNo(sortNo++);

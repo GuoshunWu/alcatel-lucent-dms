@@ -143,6 +143,7 @@ public class MDCParser extends DictionaryParser {
 
 		dictionary.setDictLanguages(readLanguages(document, dictionary,
 				nonBreakExceptions));
+		dictionary.setReferenceLanguage("en-GB");
 		List nodes = document.selectNodes("/dictionary/messageString/*");
 		Label label = null;
 		Collection<Label> labels = new ArrayList<Label>();

@@ -326,7 +326,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
     public void updateTranslationStatusByDict(Collection<Long> dictIds, Collection<Long> langIds, int transStatus) {
     	if (langIds != null && langIds.isEmpty()) return;
 		String hql = "select dl.language,l.text from Dictionary d join d.dictLanguages dl join d.labels l" +
-				" where dl.language.id<>1 and l.removed=false" +
+				" where dl.languageCode<>d.referenceLanguage and l.removed=false" +
 				" and l.context.name<>:exclusion" +
 				" and not exists(select ct from Translation ct where ct.text=l.text and ct.language=dl.language)" +
 				" and d.id=:dictId";

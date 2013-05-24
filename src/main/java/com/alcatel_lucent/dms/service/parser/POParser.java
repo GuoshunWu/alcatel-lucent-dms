@@ -164,6 +164,7 @@ public class POParser extends DictionaryParser {
         int sortNo = 1;
         Collection<DictionaryLanguage> dictLanguages = new ArrayList<DictionaryLanguage>();
         dictionary.setDictLanguages(dictLanguages);
+        dictionary.setReferenceLanguage(refLangCode);
         DictionaryLanguage refDl = new DictionaryLanguage();
         refDl.setLanguageCode(refLangCode);
         // charset is decided by "Context-Type" meta in the file header

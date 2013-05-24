@@ -15,7 +15,7 @@
         <property column="ANNOTATION2" name="annotation2" not-null="false" type="text"/>
         <property column="ANNOTATION3" name="annotation3" not-null="false" type="text"/>
         <property column="ANNOTATION4" name="annotation4" not-null="false" type="text"/>
-        <property column="REFERENCE_LANGUAGE" name="referenceLanguage" type="text"/>
+        <property column="REFERENCE_LANGUAGE" name="referenceLanguage" type="string" length="100"/>
 
         <many-to-one name="base" column="DICTIONARY_BASE_ID"/>
 

@@ -126,6 +126,7 @@ public class ACSTextDictParser extends DictionaryParser {
 
         Collection<DictionaryLanguage> dictLanguages = new ArrayList<DictionaryLanguage>();
         dictionary.setDictLanguages(dictLanguages);
+        dictionary.setReferenceLanguage(refLangCode);
         // add reference language in dictionary language
         DictionaryLanguage refDl = new DictionaryLanguage();
         refDl.setLanguageCode(refLangCode);

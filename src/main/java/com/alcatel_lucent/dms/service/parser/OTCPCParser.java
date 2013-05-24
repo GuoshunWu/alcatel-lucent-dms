@@ -80,6 +80,7 @@ public class OTCPCParser extends DictionaryParser {
 
         dictionary = new Dictionary();
         dictionary.setDictLanguages(new ArrayList<DictionaryLanguage>());
+        dictionary.setReferenceLanguage("en");	//TODO: to be confirmed
         dictionary.setLabels(new ArrayList<Label>());
 
         dictionary.setBase(dictBase);
