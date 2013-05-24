@@ -97,17 +97,7 @@ public class Dictionary extends BaseEntity {
 
     @Transient
     public String getLanguageReferenceCode() {
-    	if (getFormat().equals(Constants.DictionaryFormat.ICE_JAVA_ALARM)) {
-    		return "i-alu";
-    	} else if (getFormat().equals(Constants.DictionaryFormat.XML_LABEL) || 
-    			getFormat().equals(Constants.DictionaryFormat.XML_PROP)) {
-    		return getDictLanguage("GAE") == null ? "en" : "GAE";
-    	} else if (dictLanguages != null) {
-        	for (DictionaryLanguage dl : dictLanguages) {
-        		if (dl.getLanguage().getId() == 1L) return dl.getLanguageCode();
-        	}
-        }
-        return "en";
+        return referenceLanguage;	// same as referenceLanguage field
     }
 
     public String getFormat() {
