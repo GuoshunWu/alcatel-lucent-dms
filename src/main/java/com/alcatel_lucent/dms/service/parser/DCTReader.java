@@ -115,6 +115,7 @@ public class DCTReader extends LineNumberReader {
 
         dictionary.setDictLanguages(dictLanguages);
         dictionary.setAnnotation1(getCommentLines());
+        dictionary.setReferenceLanguage("GAE");
 
         // readLabels
         Label label = null;

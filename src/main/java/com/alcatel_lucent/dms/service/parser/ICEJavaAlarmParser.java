@@ -142,6 +142,7 @@ public class ICEJavaAlarmParser extends DictionaryParser {
         dictionary.setDictLanguages(new ArrayList<DictionaryLanguage>());
         dictionary.setLabels(new ArrayList<Label>());
         dictionary.setBase(dictBase);
+        dictionary.setReferenceLanguage(REFERENCE_LANG_CODE);
 
         log.info(center("Parsing '" + file + "' for dictionary '" + dictBase.getName() + "'", 50, '='));
 

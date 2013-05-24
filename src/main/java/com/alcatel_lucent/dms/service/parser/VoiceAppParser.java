@@ -146,6 +146,7 @@ public class VoiceAppParser extends DictionaryParser {
 
         Dictionary dictionary = new Dictionary();
         dictionary.setDictLanguages(new ArrayList<DictionaryLanguage>());
+        dictionary.setReferenceLanguage(REFERENCE_LANG_CODE);
         dictionary.setLabels(new ArrayList<Label>());
         dictionary.setBase(dictBase);
 

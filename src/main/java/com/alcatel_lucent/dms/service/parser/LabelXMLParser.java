@@ -157,6 +157,7 @@ public class LabelXMLParser extends DictionaryParser {
 		int sortNo = 1;
 		Collection<DictionaryLanguage> dictLanguages = new ArrayList<DictionaryLanguage>();
 		dictionary.setDictLanguages(dictLanguages);
+		dictionary.setReferenceLanguage(refLangCode);
 		// add reference dictLanguage object
 		DictionaryLanguage refDictLanguage = new DictionaryLanguage();
 		refDictLanguage.setLanguageCode(refLangCode);
