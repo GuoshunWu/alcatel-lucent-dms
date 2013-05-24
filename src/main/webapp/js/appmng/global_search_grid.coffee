@@ -20,7 +20,7 @@ define ['jqgrid',   'i18n!nls/appmng', 'dms-util'], ($, i18n, util)->
     groupingView: {
       groupField: ['dictionary.base.applicationBase.productBase.name', 'dictionary.base.applicationBase.name', 'dictionary.nameVersion']
       groupColumnShow: [false, false, false]
-      groupText : ['<b>{0} - {1} Item(s)</b>', '<b style="color:blue">{0} - {1} Item(s)</b>', '<b style="color:#1b4f6e">{0} - {1} Item(s)</b>']
+      groupText : ['<b style="color:blue">{0} - {1} Item(s)</b>', '<b style="color:darkblue">{0} - {1} Item(s)</b>', '<b style="color:black">{0} - {1} Item(s)</b>']
       groupCollapse : true
 #      groupSummary: [true, true, true]
 #      showSummaryOnHide: true

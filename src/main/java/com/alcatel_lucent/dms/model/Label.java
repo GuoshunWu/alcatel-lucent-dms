@@ -21,25 +21,24 @@ import java.util.Map;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 
-@AnalyzerDef(name = "ngram",
+@AnalyzerDef(name = "dmsAnalyzer",
+//        charFilters = {
+//                @CharFilterDef(factory = MappingCharFilterFactory.class, params = {
+//                        @Parameter(name = "mapping", value = "")
+//                })
+//        },
         tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
         filters = {
                 @TokenFilterDef(factory = StandardFilterFactory.class),
                 @TokenFilterDef(factory = LowerCaseFilterFactory.class),
-                @TokenFilterDef(factory = StopFilterFactory.class),
-                @TokenFilterDef(factory = NGramFilterFactory.class,
-                        params = {
-                                @Parameter(name = "minGramSize", value = "3"),
-                                @Parameter(name = "maxGramSize", value = "3")
-                        }
-                ),
-
+//                @TokenFilterDef(factory = StopFilterFactory.class)
         }
 )
 
 //@Entity
 @Table(name = "LABEL")
 @Indexed
+//@Analyzer(definition = "dmsAnalyzer")
 public class Label extends BaseEntity implements Cloneable {
     /**
      *

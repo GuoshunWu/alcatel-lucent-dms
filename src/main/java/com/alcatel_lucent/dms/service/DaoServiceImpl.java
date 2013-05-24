@@ -4,6 +4,7 @@ import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.model.BaseEntity;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.hibernate.*;
@@ -103,7 +104,6 @@ public class DaoServiceImpl implements DaoService {
         /*
         * Lucene search syntax: +reference: what + removed: false +dictionary.id:110
         * */
-
         BooleanJunction bj = qb.bool();
         Set<Map.Entry<String, Object>> keywordEntries = keywords.entrySet();
         for (Map.Entry<String, Object> entry : keywordEntries) {

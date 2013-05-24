@@ -1,12 +1,16 @@
 V2.5.2 (coming soon)
-	* Introduced Apache Lucene as fuzzy text search engine.
+	* Introduced Apache Lucene as text search engine.
 	* Added a "System config" tab in Admin view for re-building Lucene index.
 	* Allows to change translation status of selected labels for all languages in "String settings" view.
 	* Show progress bar when parsing uploaded dictionary files
+	* Block current page when import dictionaries.
 	* Change associated language of "GAE" from "English" to "General Alcatel English"
 	* It becomes possible that "English" is not reference language.
+	* Update "description" column to textarea in String settings view of "import preview dialog"
 	* Bug fix of missing languages in Label translation view
 	* Bug fix of initial translation status of empty translation
+	* Rename "Translation Type" to "Trans.src" in Translation Detail view
+
 
 V2.5.1 (May. 17, 2013)
 	* Updated User Manual
