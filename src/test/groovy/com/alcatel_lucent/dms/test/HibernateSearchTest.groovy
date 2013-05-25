@@ -9,21 +9,21 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer
 import org.apache.lucene.document.Document
 import org.apache.lucene.document.Field
 import org.apache.lucene.document.Fieldable
+import org.apache.lucene.index.Term
 import org.apache.lucene.queryParser.QueryParser
-import org.apache.lucene.queryParser.complexPhrase.ComplexPhraseQueryParser
+import org.apache.lucene.search.BooleanClause
+import org.apache.lucene.search.BooleanQuery
+import org.apache.lucene.search.FuzzyQuery
 import org.apache.lucene.search.Query
 import org.apache.lucene.search.Sort
 import org.apache.lucene.util.Version
-import org.hibernate.Criteria
 import org.hibernate.search.FullTextQuery
 import org.hibernate.search.FullTextSession
 import org.hibernate.search.Search
-import org.hibernate.search.batchindexing.MassIndexerProgressMonitor
-import org.hibernate.search.impl.SimpleIndexingProgressMonitor
 import org.hibernate.search.query.dsl.QueryBuilder
+import org.hibernate.search.query.dsl.impl.Helper
 import org.junit.Assert
 import org.junit.BeforeClass
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -131,31 +131,31 @@ class HibernateSearchTest {
     @Test
     void testLabelRest() {
         FullTextSession fullTextSession = Search.getFullTextSession(dao.getSession())
-        fullTextSession.createIndexer()
-                .startAndWait()
-        return
+//        fullTextSession.createIndexer()
+//                .startAndWait()
+//        return
 
         QueryBuilder qb = fullTextSession.searchFactory.buildQueryBuilder().forEntity(Label.class).get()
         /*
         Lucene search syntax: +reference:starting + removed:false
         * */
 
-//        Query query = qb.bool()
-//                .must(
-//                qb.keyword().fuzzy().withThreshold(0.8).onField("reference").matching('starting').createQuery()
-//        ).must(
-//                qb.keyword().fuzzy().withThreshold(0.8).onField("reference").matching('abc').createQuery()
-//        ).createQuery()
 
-        Query query = qb.keyword().fuzzy().withThreshold(0.8f).onField("reference").matching('a').createQuery()
+        Query query = qb.bool()
+                .must(
+                qb.keyword().fuzzy().withThreshold(0.8).onField("reference").matching('starting test').createQuery()
+        ).must(
+                qb.keyword().fuzzy().withThreshold(0.8).onField("removed").matching('false').createQuery()
+        ).createQuery()
+
         println "Query string: ${query.toString()}".center(100, '=')
-
+        return
 //        String searchString = "reference:starting"
 
         // wrap Lucene query in a org.hibernate.Query
         List list
         long start = System.nanoTime()
-        return
+
         FullTextQuery hibQuery = fullTextSession.createFullTextQuery(query, Label.class)
 
 //        total result size
