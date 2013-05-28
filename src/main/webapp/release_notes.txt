@@ -1,3 +1,7 @@
+V2.6
+	* Add columns "Translation Source" and "Last Updated" to exported translation (Excel).
+	* Bug fix of incorrect summary of Label translation view.
+
 V2.5.2 (May. 24, 2013)
 	* Introduced Apache Lucene as text search engine.
 	* Added a "System config" tab in Admin view for re-building Lucene index.

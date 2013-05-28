@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -18,6 +19,7 @@ import java.util.TreeMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -809,6 +811,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 	
 	public void exportTranslations(Collection<Long> dictIds, Collection<Long> langIds, OutputStream output) {
 		Workbook wb = new HSSFWorkbook();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		for (Long langId : langIds) {
 			Language language = (Language) dao.retrieve(Language.class, langId);
 			Sheet sheet = wb.createSheet(language.getName());
@@ -820,6 +823,8 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 			createCell(headRow, 4, "Reference", null);
 			createCell(headRow, 5, "Translation", null);
 			createCell(headRow, 6, "Description", null);
+			createCell(headRow, 7, "Translation Source", null);
+			createCell(headRow, 8, "Last Updated", null);
 			int r = 1;
 			for (Long dictId : dictIds) {
 				Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
@@ -833,6 +838,12 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 					createCell(row, 4, label.getReference(), null);
 					createCell(row, 5, label.getCt().getTranslation(), null);
 					createCell(row, 6, label.getDescription(), null);
+					if (label.getCt().getTranslationType() != null) {
+						createCell(row, 7, getTranslationTypeLabel(label.getCt().getTranslationType()), null);
+					}
+					if (label.getCt().getLastUpdateTime() != null) {
+						createCell(row, 8, sdf.format(label.getCt().getLastUpdateTime()), null);
+					}
 				}
 			}
 		}
@@ -845,6 +856,20 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 		}
 	}
 	
+	private String getTranslationTypeLabel(int translationType) {
+		switch (translationType) {
+		case Translation.TYPE_DICT:
+			return "From dict";
+		case Translation.TYPE_TASK:
+			return "From task";
+		case Translation.TYPE_MANUAL:
+			return "Manual";
+		case Translation.TYPE_AUTO:
+			return "Auto";
+		}
+		return null;
+	}
+
 	public Collection<Label> getLabelsWithTranslation(Long dictId, Long langId) {
 		String hql = "select obj from Label obj where obj.dictionary.id=:dictId and obj.removed=false order by obj.sortNo";
 		Map param = new HashMap();
