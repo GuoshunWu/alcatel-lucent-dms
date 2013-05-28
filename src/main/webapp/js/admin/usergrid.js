@@ -36,7 +36,7 @@
       viewrecords: true,
       gridview: true,
       multiselect: true,
-      sortname: 'loginName',
+      sortname: 'lastLoginTime',
       sortorder: 'desc',
       height: '100%',
       colNames: ['Login name', 'Name', 'Email', 'Last login time', 'Enabled', 'Role'],
