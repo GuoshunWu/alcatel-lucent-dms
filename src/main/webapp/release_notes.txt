@@ -1,6 +1,8 @@
-V2.6
-	* Add columns "Translation Source" and "Last Updated" to exported translation (Excel).
-	* Bug fix of incorrect summary of Label translation view.
+V2.6.0 (May. 28, 2013)
+	* Add "Fuzzy" option for text search (default is exact match)
+	* Add columns "Translation Source" and "Last Updated" in exported excel of translations.
+	* Bug fix of incorrect T/N/I number in Label translation view.
+	* Bug fix of XMLHelp dict
 
 V2.5.2 (May. 24, 2013)
 	* Introduced Apache Lucene as text search engine.
