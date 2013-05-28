@@ -51,16 +51,17 @@ public class XMLHelpParser extends DictionaryParser {
     public static final String[] extensions = new String[]{"xhlp"};
     public static final String DEFAULT_ENCODING = "UTF-8";
     public static final String KEY_SEPARATOR = ".";
+    public static final String KEY_HELP_SIGN = "!HELP";
     private SuffixFileFilter xHelpFilter = new SuffixFileFilter(extensions, IOCase.INSENSITIVE);
 
     @Autowired
     private LanguageService languageService;
 
-	@Override
-	public DictionaryFormat getFormat() {
-		return Constants.DictionaryFormat.XML_Help;
-	}
-	
+    @Override
+    public DictionaryFormat getFormat() {
+        return Constants.DictionaryFormat.XML_Help;
+    }
+
     @Override
     public ArrayList<Dictionary> parse(String rootDir, File file, Collection<File> acceptedFiles) throws BusinessException {
         ArrayList<Dictionary> deliveredDicts = new ArrayList<Dictionary>();
@@ -210,25 +211,46 @@ public class XMLHelpParser extends DictionaryParser {
      */
     private void parseTranslationElement(Element elemTrans, Label label, String refCode) {
         Map<String, String> attrMap = Util.attributeList2Map(elemTrans.attributes());
-        attrMap.put("HELP", elemTrans.element("HELP").getTextTrim());
-        String text = elemTrans.element("LABEL").getTextTrim();
         String langCode = attrMap.get("language");
-        if(langCode.equals(refCode)){
+        String help = elemTrans.element("HELP").getTextTrim();
+        String followUp = attrMap.get("follow_up");
+        if (StringUtils.isNotEmpty(help)) {
+            Label helpLabel = null;
+            if (langCode.equals(refCode)) {
+                // create new label for this help text
+                helpLabel = new Label(label.getKey() + KEY_HELP_SIGN);
+                helpLabel.setDictionary(label.getDictionary());
+                helpLabel.setOrigTranslations(new ArrayList<LabelTranslation>());
+                label.getDictionary().addLabel(helpLabel);
+                helpLabel.setReference(help);
+            } else {
+                helpLabel =  label.getDictionary().getLabel(label.getKey() + KEY_HELP_SIGN);
+                LabelTranslation lt = createTranslation(langCode, helpLabel, help);
+                setLabelTranslationStatus(lt, followUp);
+            }
+        }
+//        attrMap.put("HELP", help);
+        String text = elemTrans.element("LABEL").getTextTrim();
+        if (langCode.equals(refCode)) {
             label.setReference(text);
             label.setAnnotation2(Util.map2String(attrMap));
             return;
         }
         LabelTranslation lt = createTranslation(langCode, label, text);
-
         lt.setAnnotation1(Util.map2String(attrMap));
         // set translation status
-        String followUp = attrMap.get("follow_up");
-        boolean needNotTrans = followUp.equals("no_translate") || followUp.equals("validated");
-        lt.setNeedTranslation(!needNotTrans);
-        if (needNotTrans) {
-            lt.setStatus(Translation.STATUS_TRANSLATED);
-        } else {
-            lt.setStatus(Translation.STATUS_UNTRANSLATED);
+        setLabelTranslationStatus(lt, followUp);
+    }
+
+    private void setLabelTranslationStatus(LabelTranslation lt, String followUp){
+        boolean needTrans = !followUp.equals("no_translate");
+        lt.setNeedTranslation(needTrans);
+        if (needTrans) {
+            if("to_translate".equals(followUp) || "to_validate".equals(followUp)){
+                lt.setStatus(Translation.STATUS_UNTRANSLATED);
+            }else{
+                lt.setStatus(Translation.STATUS_TRANSLATED);
+            }
         }
     }
 

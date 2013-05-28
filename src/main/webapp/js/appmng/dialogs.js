@@ -322,11 +322,17 @@
           var grid, ids;
 
           grid = $("#stringSettingsGrid");
-          ids = grid.getGridParam('selarrrow');
+          ids = grid.getGridParam('selarrrow').join(",");
+          if (!ids) {
+            $.msgBox(c18n.selrow.format(c18n.label), null, {
+              title: c18n.warning
+            });
+            return;
+          }
           return $.post(urls.app.update_label_status, {
             type: 'trans',
             transStatus: e.target.name,
-            id: ids.join(',')
+            id: ids
           }, function(json) {
             if (json.status !== 0) {
               $.msgBox(json.message, null, {

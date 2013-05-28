@@ -140,6 +140,9 @@ public class XmlHelpGenerator extends DictionaryGenerator {
         // all the entries
         Collection<Label> availableLabels = dict.getAvailableLabels();
         for (Label label : availableLabels) {
+            // it is a help label
+            boolean isHelpLabel = label.getKey().endsWith(XMLHelpParser.KEY_HELP_SIGN);
+            if (isHelpLabel) continue;
             Element elemParent = getParent(label.getKey(), xmlDict);
 //            // elemParent may haven't created yet
             Element elemItem = elemParent.addElement("ITEM");
@@ -152,16 +155,22 @@ public class XmlHelpGenerator extends DictionaryGenerator {
 
                 Map<String, String> annotationMap = Util.string2Map(isRef ?
                         label.getAnnotation2() : label.getOrigTranslation(langCode).getAnnotation1());
-                String help = annotationMap.get("HELP");
-                String text =isRef?label.getReference(): label.getTranslation(langCode);
-                annotationMap.remove("HELP");
 
+                String text = isRef ? label.getReference() : label.getTranslation(langCode);
+//                annotationMap.remove("HELP");
                 addAttributes(elemTrans, annotationMap);
 
                 elemTrans.addElement("LABEL").addCDATA(text);
                 Element elemHelp = elemTrans.addElement("HELP");
-                if(!StringUtils.isEmpty(help)){
-                    elemHelp.addCDATA(help);
+
+//                String help = annotationMap.get("HELP");
+//                if (!StringUtils.isEmpty(help)) {
+//                    elemHelp.addCDATA(help);
+//                }
+
+                Label keyLabel = dict.getLabel(label.getKey() + XMLHelpParser.KEY_HELP_SIGN);
+                if (null != keyLabel) {
+                    elemHelp.addCDATA(keyLabel.getTranslation(langCode));
                 }
             }
         }
