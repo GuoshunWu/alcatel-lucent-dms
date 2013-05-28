@@ -101,12 +101,12 @@ class HibernateSearchTest {
         return labels
     }
 
-//    @Test
+    @Test
     void testHibSearch() {
         //        total result size
         int pageNumber = 1  //http parameter page
         int pageSize = 500    //http parameter rows
-        Pair<Integer, List> result = dao.hibSearchRetrieve(Label.class, [reference: 'starting', removed: false] as Map<String, Object>, (pageNumber - 1) * pageSize, pageSize, new Sort())
+        Pair<Integer, List> result = dao.hibSearchRetrieve(Label.class, [removed: false], [reference: 'a is good'], 0.999f, (pageNumber - 1) * pageSize, pageSize, new Sort())
         println "Page number: ${pageNumber}, page size: ${pageSize}, total records: ${result.left}"
 
         List<Label> labels = result.right
@@ -128,7 +128,7 @@ class HibernateSearchTest {
         Assert.assertEquals("title:story title:day", query.toString())
     }
 
-    @Test
+//    @Test
     void testLabelRest() {
         FullTextSession fullTextSession = Search.getFullTextSession(dao.getSession())
 //        fullTextSession.createIndexer()
@@ -147,7 +147,6 @@ class HibernateSearchTest {
         ).must(
                 qb.keyword().fuzzy().withThreshold(0.8).onField("removed").matching('false').createQuery()
         ).createQuery()
-
         println "Query string: ${query.toString()}".center(100, '=')
         return
 //        String searchString = "reference:starting"
