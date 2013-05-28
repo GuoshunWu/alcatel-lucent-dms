@@ -1,0 +1,90 @@
+V2.6.0 (May. 28, 2013)
+	* Add "Fuzzy" option for text search (default is exact match)
+	* Add columns "Translation Source" and "Last Updated" in exported excel of translations.
+	* Bug fix of incorrect T/N/I number in Label translation view.
+	* Bug fix of XMLHelp dict
+
+V2.5.2 (May. 24, 2013)
+	* Introduced Apache Lucene as text search engine.
+	* Added a "System config" tab in Admin view for re-building Lucene index.
+	* Allows to change translation status of selected labels for all languages in "String settings" view.
+	* Show progress bar when parsing uploaded dictionary files
+	* Block current page when import dictionaries.
+	* Change associated language of "GAE" from "English" to "General Alcatel English"
+	* It becomes possible that "English" is not reference language.
+	* Update "description" column to textarea in String settings view of "import preview dialog"
+	* Bug fix of missing languages in Label translation view
+	* Bug fix of initial translation status of empty translation
+	* Rename "Translation Type" to "Trans.src" in Translation Detail view	
+
+
+V2.5.1 (May. 17, 2013)
+	* Updated User Manual
+	* Bug fix of Standard Excel dictionary parser
+	* Corrected some language names
+
+V2.5.0 (May. 10, 2013)
+	* New dictionary format support: PO
+	* New dictionary format support: XMLHelp
+	* Group text search results by their parent product/application/dictionary
+	* Take into account language filters when updating translation status in a batch
+	* Allows to import XMLDict dictionaries without project file (.xdcp)
+	* Perform auto match of translation when adding new language/labels to a dictionary
+	* Optimized performance of auto matching translations
+	* Bug fix of incorrect order of new labels added manually
+
+V2.3.2 (Apr. 26, 2013)
+    * Added "Translation type" and "Last updated" information in Translation details
+    * Bug fix of file not closed issue during importing
+
+V2.3.1 (Apr. 23, 2013)
+	* Take "GAE" (if exists) as reference for CMS XML dictionary
+	* Read context information from VoiceApp XML dictionary and disable auto-translation for specific contexts
+	* Bug fix of reference code display for some dict formats
+
+V2.3.0 (Apr. 18, 2013)
+	* User management (Admin only)
+	* New dictionary format support: VoiceApp XML
+	* Allow to adjust format of translation task file (Excel), only content is locked
+	* Bug fix of some dictionary parsers (OTC PC, ACS text, Standard Excel)
+
+V2.2.0 (Apr. 10, 2013)
+ What's new in DMS 2.2.0
+    * Major Highlights
+      Graphical delivery report after importing dictionaries
+      Full text search on product/application level
+      New dictionary format support: ACS dictionary (txt)
+      New dictionary format support: OTC PC(excel)
+    * Improvements
+
+    * Changes
+      Adjust label edit(lock labels) UI.
+      Generate xdcp file for XMLDict generation
+    * Fixes
+      Translation detail grid page did not initialized correctly when "View translation detail" open
+      If there is not a product/application version exist, task grid will not auto-refresh when you switch node on the tree
+      West panel scroll bar would disappear if you adjust its width
+      Make sure DOM and java script files load in correct order to keep page layout correct(it was disorder occasionally)
+      XML property file name incorrect when change other dictionary format to xml prop.
+
+ Known Issues
+ Troubleshooting
+ Frequently Asked Questions
+
+V2.1.1
+ * New dictionary format: ICE Java Alarm (XML)
+ * Adjust XML Properties adaptor to support CMS XML dictionaries
+ * UI improvement of String Settings
+ * Adjust delivery algorithm to match existing translation in scope all contexts
+ * Bug fix of task detal view
+ * Bug fix of session timed out issue
+
+V2.1.0
+ * New UI: all contents in a single AJAX page
+ * Product tree is also available for Translation and Task view
+ * New progress bar for delivering and generating dictionaries
+ * Allow to add/modify/delete labels in Dictionary view
+ * Allow to modify translation directly in Translation view
+ * New dictionary format: Standard Excel
+ * Keep original structure of XMLDict files
+ 
