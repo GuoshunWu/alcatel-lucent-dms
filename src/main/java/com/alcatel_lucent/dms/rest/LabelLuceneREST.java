@@ -9,6 +9,7 @@ import org.apache.commons.collections.PredicateUtils;
 import org.apache.commons.collections.comparators.ComparatorChain;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.lucene.analysis.StopAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -116,9 +117,11 @@ public class LabelLuceneREST extends BaseREST {
         Long langId = requestMap.get("language") == null ? null : Long.valueOf(requestMap.get("language"));
         Collection<Label> labels;
         String[] orders = sidx.split("\\s*,\\s*");
+        boolean isFuzzy = true;
 
         if (langId == null) {
             Map<String, Object> keywords = new HashMap<String, Object>();
+            Map<String, String> fuzzyKeywords = new HashMap<String, String>();
             keywords.put("removed", false);
 
             if (dictId != null) {
@@ -128,9 +131,9 @@ public class LabelLuceneREST extends BaseREST {
             } else if (prodId != null) {
                 keywords.put("dictionary.applications.products.id", prodId);
             }
-
-            if (text != null) {
-                keywords.put("reference", text);
+            float minimumSimilarity = isFuzzy ? 0.8f : 0.999f;
+            if (StringUtils.isNotEmpty(text)) {
+                fuzzyKeywords.put("reference", text);
             }
 
 
@@ -141,7 +144,7 @@ public class LabelLuceneREST extends BaseREST {
                 firstResult = maxResult = null;
                 sord = null;
             }
-            result = dao.hibSearchRetrieve(Label.class, keywords, firstResult, maxResult, sort);
+            result = dao.hibSearchRetrieve(Label.class, keywords, fuzzyKeywords, minimumSimilarity, firstResult, maxResult, sort);
             labels = result.getRight();
 
             int resultSize = result.getLeft();

@@ -33,6 +33,11 @@
       loadtext: 'Loading, please wait...',
       caption: i18n.usergrid.caption,
       autowidth: true,
+      viewrecords: true,
+      gridview: true,
+      multiselect: true,
+      sortname: 'loginName',
+      sortorder: 'desc',
       height: '100%',
       colNames: ['Login name', 'Name', 'Email', 'Last login time', 'Enabled', 'Role'],
       colModel: [

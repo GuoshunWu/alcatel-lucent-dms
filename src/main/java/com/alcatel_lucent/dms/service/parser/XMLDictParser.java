@@ -316,13 +316,14 @@ public class XMLDictParser extends DictionaryParser {
             String followUp = elemTrans.attributeValue("follow_up");
             lt.putKeyValuePairToField("follow_up", followUp, BaseEntity.ANNOTATION1);
             if (followUp != null) {    // set translation status
-                boolean needNotTrans = followUp.equals("no_translate") || followUp.equals("validated");
-                lt.setNeedTranslation(!needNotTrans);
-                if (needNotTrans) {
-                    lt.setStatus(Translation.STATUS_TRANSLATED);
-//                    label.setContext(new Context(Context.EXCLUSION));
-                } else {
-                    lt.setStatus(Translation.STATUS_UNTRANSLATED);
+                boolean needTrans = !followUp.equals("no_translate");
+                lt.setNeedTranslation(needTrans);
+                if (needTrans) {
+                    if("to_translate".equals(followUp) || "to_validate".equals(followUp)){
+                        lt.setStatus(Translation.STATUS_UNTRANSLATED);
+                    }else{
+                        lt.setStatus(Translation.STATUS_TRANSLATED);
+                    }
                 }
             }
         }

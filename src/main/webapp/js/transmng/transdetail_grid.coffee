@@ -46,13 +46,16 @@ define [
       }
       {name: 'action', index: 'action', width: 50, align:'center', search: false
       formatter: (cellvalue, options, rowObject)->
-        "<img class='historyAct' id='matchAct_#{rowObject[3]}' src='images/history.png'>"
+        #"<img class='historyAct' id='matchAct_#{rowObject[3]}' src='images/history.png'>"
+        ret ="<div id='matchAct_#{rowObject[3]}' style='display:inline-block' title=\"Match\" class=\"ui-state-default ui-corner-all\">"
+        ret +="<span class=\"ui-icon ui-icon-search\"></span></div>"
+        ret
       unformat:(cellvalue, options)->""
       }
     ]
     gridComplete: ->
       grid = $(@)
-      $('img[id^=matchAct]', @).click(()->
+      $('div[id^=matchAct]', @).click(()->
         [_, ref]=@id.split('_')
         matchAction(ref)
       ).on('mouseover',()->
@@ -110,9 +113,11 @@ define [
 
   $('#detailTranslationStatus').menu().hide().find("li").on 'click', (e)->
     detailGrid = $("#transDetailGridList")
-    ids = detailGrid.getGridParam('selarrrow')
+    ids = detailGrid.getGridParam('selarrrow').join(',')
     ctIds = $.map(ids, (element, index)->detailGrid.getRowData(element).transId)
-    $.post urls.trans.update_status, {type: 'trans', transStatus: e.target.name, ctid: ctIds.join(','), id: ids.join(',')}, (json)->
+    ($.msgBox (c18n.selrow.format c18n.label), null, title: c18n.warning; return) unless ids
+
+    $.post urls.trans.update_status, {type: 'trans', transStatus: e.target.name, ctid: ctIds.join(','), id: ids}, (json)->
       ($.msgBox json.message, null, title: c18n.warning; return) unless json.status == 0
       detailGrid.trigger 'reloadGrid'
       $("#transGrid").trigger 'reloadGrid'
