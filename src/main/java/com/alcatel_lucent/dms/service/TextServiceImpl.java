@@ -203,7 +203,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 	            for (Translation trans : text.getTranslations()) {
 	            	Translation dbTrans = dbText == null ? null : dbText.getTranslation(trans.getLanguage().getId());
 	            	if (dbTrans == null) {
-	                	if (trans.getLanguage().getId() != 1L &&
+	                	if (trans.getLanguage().getId() != 0 && trans.getLanguage().getId() != 1L &&
 	                			trans.getStatus() == Translation.STATUS_UNTRANSLATED &&
 	                			trans.getTranslation().equals(text.getReference())) {
 	                		if (suggestedTranslations == null) {
