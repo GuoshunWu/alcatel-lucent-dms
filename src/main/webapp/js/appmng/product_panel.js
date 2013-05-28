@@ -62,7 +62,7 @@
           id: selVer.val(),
           text: $("option:selected", selVer).text()
         },
-        distinct: Boolean($('#prodSearchText_distinct').attr('checked'))
+        fuzzy: Boolean($('#prodSearchText_fuzzy').attr('checked'))
       });
     });
     $('#prodSearchText', '#appmng').keydown(function(e) {

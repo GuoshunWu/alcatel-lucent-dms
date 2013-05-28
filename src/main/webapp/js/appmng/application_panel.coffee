@@ -30,7 +30,7 @@ define [
       version:
         id: selVer.val()
         text:  $("option:selected", selVer).text()
-      distinct: Boolean($('#appSearchText_distinct').attr('checked'))
+      fuzzy: Boolean($('#appSearchText_fuzzy').attr('checked'))
     )
   )
 

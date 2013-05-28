@@ -18,7 +18,7 @@
                 <input id="appSearchText" />
                 <button id="appSearchAction"></button>
                 &nbsp;&nbsp;
-                <s:text name="distinct"/> <input type="checkbox" id="appSearchText_distinct"/>
+                <s:text name="fuzzy"/> <input type="checkbox" id="appSearchText_fuzzy"/>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </td>
         </tr>

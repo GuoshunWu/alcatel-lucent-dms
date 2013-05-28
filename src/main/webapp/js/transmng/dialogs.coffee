@@ -7,7 +7,8 @@ define [
   'transmng/trans_grid'
   'transmng/transdetail_grid'
   'transmng/trans_searchtext_grid'
-], ($, i18n, c18n, util, urls, grid, detailgrid, searchgrid)->
+  'transmng/trans_matchtext_grid'
+], ($, i18n, c18n, util, urls, grid, detailgrid, searchgrid, matchgrid)->
 #  console?.log "transmng panel dialogs init..."
   transGrid = grid
   refreshGrid = (languageTrigger = false, grid = transGrid)->
@@ -255,6 +256,16 @@ define [
 
   showSearchResult = (params)->transSearchText.data('params', params).dialog 'open'
 
+  transSearchText = $('#transmngMatchTextDialog').dialog(
+    autoOpen: false
+    width: 800, height: 'auto', modal: true
+
+    buttons: [
+      {text: c18n.ok, click: ()->
+        $(@).dialog 'close'
+      }
+    ]
+  )
 
 
   ready = ()->

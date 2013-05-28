@@ -91,7 +91,7 @@ public class LabelLuceneREST extends BaseREST {
         Long prodId = requestMap.get("prod") == null ? null : Long.valueOf(requestMap.get("prod"));
         Long appId = requestMap.get("app") == null ? null : Long.valueOf(requestMap.get("app"));
         Long dictId = requestMap.get("dict") == null ? null : Long.valueOf(requestMap.get("dict"));
-        Boolean distinct = null == requestMap.get("distinct") ? false : Boolean.valueOf(requestMap.get("distinct"));
+        Boolean fuzzy = Boolean.valueOf(requestMap.get("fuzzy"));
         String text = requestMap.get("text");
 
         Integer firstResult = null;
@@ -130,7 +130,7 @@ public class LabelLuceneREST extends BaseREST {
             } else if (prodId != null) {
                 keywords.put("dictionary.applications.products.id", prodId);
             }
-            float minimumSimilarity = distinct ? 0.99f : 0.8f;
+            float minimumSimilarity = fuzzy ?  0.8f :0.99f;
             if (StringUtils.isNotEmpty(text)) {
                 fuzzyKeywords.put("reference", text);
             }

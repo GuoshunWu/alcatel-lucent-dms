@@ -13,8 +13,14 @@ define [
     find the labels which reference resemblant to the text and display in a modal dialog
   ###
   matchAction = (refText) ->
-    languageId = $('#detailLanguageSwitcher').val()
     # +_hibernate_class:com.alcatel_lucent.dms.model.Translation +text.reference:text~0.8 + status:2 + language.id:46
+    languageId = $('#detailLanguageSwitcher').val()
+
+    $('#transmngMatchTextDialog').dialog('open')
+    grid = $("#transMatchTextGrid")
+    postData = grid.getGridParam('postData')
+    console?.log postData
+#    grid.setGridParam().trigger 'reloadGrid'
 
   transDetailGrid = $("#transDetailGridList").jqGrid(
     url: 'json/transdetailgrid.json'
@@ -24,7 +30,7 @@ define [
     pager: '#transDetailsPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
     viewrecords: true, gridview: true, multiselect: true
     cellEdit: true, cellurl: urls.trans.update_status, ajaxCellOptions: {async: false}
-    colNames: ['Label', 'Max Len.', 'Context', 'Reference language', 'Translation', 'Status','TransId', 'Trans.src', 'Last updated','Match']
+    colNames: ['Label', 'Max Len.', 'Context', 'Reference language', 'Translation', 'Status','TransId', 'Trans.Src', 'Last updated','Match']
     colModel: [
       {name: 'key', index: 'key', width: 120, editable: false, stype: 'select', align: 'left', frozen: true}
       {name: 'maxlen', index: 'maxLength', width: 60, editable: false, align: 'right', frozen: true, search: false}
@@ -45,7 +51,7 @@ define [
       {name: 'lastUpdate', index: 'ct.lastUpdateTime', width: 100, align: 'left',search: false
       formatter: 'date', formatoptions:{srcformat:'ISO8601Long', newformat: 'Y-m-d H:i'}
       }
-      {name: 'action', index: 'action', width: 50, align:'center', search: false
+      {name: 'action', index: 'action', width: 50, align:'center', search: false, hidden: true
       formatter: (cellvalue, options, rowObject)->
         #"<img class='historyAct' id='matchAct_#{rowObject[3]}' src='images/history.png'>"
         ret ="<div id='matchAct_#{rowObject[3]}' style='display:inline-block' title=\"Match\" class=\"ui-state-default ui-corner-all\">"

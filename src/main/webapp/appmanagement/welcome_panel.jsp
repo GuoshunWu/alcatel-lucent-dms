@@ -16,7 +16,7 @@
                         <td>
                             <input size="80" id="globalSearch" name="globalSearch"/><button id="globalSearchAction"></button>
                             &nbsp;&nbsp;
-                            <s:text name="distinct"/> <input type="checkbox" id="globalSearch_distinct"/>
+                            <s:text name="fuzzy"/> <input type="checkbox" id="globalSearch_fuzzy"/>
                         </td>
                     </tr>
                     <tr>

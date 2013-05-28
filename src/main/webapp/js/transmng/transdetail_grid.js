@@ -9,9 +9,13 @@
     */
 
     matchAction = function(refText) {
-      var languageId;
+      var grid, languageId, postData;
 
-      return languageId = $('#detailLanguageSwitcher').val();
+      languageId = $('#detailLanguageSwitcher').val();
+      $('#transmngMatchTextDialog').dialog('open');
+      grid = $("#transMatchTextGrid");
+      postData = grid.getGridParam('postData');
+      return typeof console !== "undefined" && console !== null ? console.log(postData) : void 0;
     };
     transDetailGrid = $("#transDetailGridList").jqGrid({
       url: 'json/transdetailgrid.json',
@@ -34,7 +38,7 @@
       ajaxCellOptions: {
         async: false
       },
-      colNames: ['Label', 'Max Len.', 'Context', 'Reference language', 'Translation', 'Status', 'TransId', 'Trans.src', 'Last updated', 'Match'],
+      colNames: ['Label', 'Max Len.', 'Context', 'Reference language', 'Translation', 'Status', 'TransId', 'Trans.Src', 'Last updated', 'Match'],
       colModel: [
         {
           name: 'key',
@@ -130,6 +134,7 @@
           width: 50,
           align: 'center',
           search: false,
+          hidden: true,
           formatter: function(cellvalue, options, rowObject) {
             var ret;
 

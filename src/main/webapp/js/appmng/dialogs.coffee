@@ -538,7 +538,7 @@ define [
       #        grid.showCol('app')
 
       postData = grid.getGridParam('postData')
-      postData.distinct = params.distinct
+      postData.fuzzy = params.fuzzy
       postData.format = 'grid'
       postData.text = params.text
       postData.prop = 'dictionary.base.applicationBase.name,dictionary.base.name,key,reference,maxLength,context.name,t,n,i'
@@ -549,7 +549,7 @@ define [
       postData[node.type] = params.version.id
 
       grid.setCaption(i18n.dialog.searchtext.caption.format params.text, typeText, node.text, params.version.text)
-        .setGridParam(url: if postData.distinct then urls.labels_normal else urls.labels).trigger 'reloadGrid'
+        .setGridParam(url: (if postData.fuzzy then urls.labels else urls.labels_normal), page: 1).trigger 'reloadGrid'
 
     buttons: [
       {text: c18n.close, click: -> $(@).dialog "close"}
