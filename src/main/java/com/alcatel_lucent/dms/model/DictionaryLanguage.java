@@ -136,5 +136,9 @@ public class DictionaryLanguage extends BaseEntity {
     public void setAnnotation4(String annotation4) {
         this.annotation4 = annotation4;
     }
+    
+    public boolean isReference() {
+    	return getDictionary().getReferenceLanguage().equals(languageCode);
+    }
 
 }
