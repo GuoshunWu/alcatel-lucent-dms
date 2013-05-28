@@ -3,22 +3,26 @@
   define(['jqueryui', 'i18n!nls/appmng', 'i18n!nls/common', 'dms-util', 'dms-urls', 'appmng/layout', 'appmng/global_search_grid'], function($, i18n, c18n, util, urls, layout, sgrid) {
     var globalSearchInResultPanel, globalSearchInResultPanelDistinct, searchActionBtn, searchResultActionBtn, searchText;
 
-    searchText = function(text, distinct) {
+    searchText = function(text, fuzzy) {
       var grid, postData;
 
-      if (distinct == null) {
-        distinct = false;
+      if (fuzzy == null) {
+        fuzzy = false;
       }
       grid = $('#globalSearchResultGrid');
       postData = grid.getGridParam('postData');
       postData.format = 'grid';
       postData.text = text;
-      postData.distinct = distinct;
+      postData.fuzzy = fuzzy;
       postData.prop = 'dictionary.base.applicationBase.productBase.name, dictionary.base.applicationBase.name, dictionary.nameVersion, key,reference,maxLength,context.name,t,n,i';
       delete postData.app;
       delete postData.prod;
+      if (typeof console !== "undefined" && console !== null) {
+        console.log(postData);
+      }
       return grid.setGridParam({
-        url: distinct ? urls.labels_normal : urls.labels
+        url: (fuzzy ? urls.labels : urls.labels_normal),
+        page: 1
       }).trigger('reloadGrid');
     };
     searchResultActionBtn = $('#globalSearchInResultPanelAction', '#appmng').attr('title', 'Search').button({
@@ -31,7 +35,7 @@
       at: 'right center',
       of: '#globalSearchInResultPanel'
     });
-    globalSearchInResultPanelDistinct = $('#globalSearchInResultPanel_distinct');
+    globalSearchInResultPanelDistinct = $('#globalSearchInResultPanel_fuzzy');
     searchResultActionBtn.click(function() {
       return searchText($('#globalSearchInResultPanel', '#appmng').val(), Boolean(globalSearchInResultPanelDistinct.attr('checked')));
     });
@@ -52,14 +56,14 @@
       at: 'right center',
       of: '#globalSearch'
     }).click(function() {
-      var distinct, searchValue;
+      var fuzzy, searchValue;
 
       searchValue = $('#globalSearch', '#appmng').val();
-      distinct = Boolean($('#globalSearch_distinct').attr('checked'));
+      fuzzy = Boolean($('#globalSearch_fuzzy').attr('checked'));
       globalSearchInResultPanel.val(searchValue);
-      globalSearchInResultPanelDistinct.attr('checked', distinct);
+      globalSearchInResultPanelDistinct.attr('checked', fuzzy);
       layout.showSearchPanel();
-      return searchText(searchValue, distinct);
+      return searchText(searchValue, fuzzy);
     });
     $('#globalSearch', '#appmng').keydown(function(e) {
       if (e.which !== 13) {

@@ -7,7 +7,7 @@
                 <s:text name="searchtext"/>
                 <input size="80" id="globalSearchInResultPanel" name="globalSearch"/><button id="globalSearchInResultPanelAction"></button>
                 &nbsp;&nbsp;
-                <s:text name="distinct"/> <input type="checkbox" id="globalSearchInResultPanel_distinct"/>
+                <s:text name="fuzzy"/> <input type="checkbox" id="globalSearchInResultPanel_fuzzy"/>
             </td>
             <td>
                 <button id="groupingToggle"><s:text name="button.grptoggle"/></button>

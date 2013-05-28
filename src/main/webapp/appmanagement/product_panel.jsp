@@ -17,7 +17,7 @@
                 <input id="prodSearchText" />
                 <button id="prodSearchAction"></button>
                 &nbsp;&nbsp;
-                <s:text name="distinct"/> <input type="checkbox" id="prodSearchText_distinct"/>
+                <s:text name="fuzzy"/> <input type="checkbox" id="prodSearchText_fuzzy"/>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </td>
 

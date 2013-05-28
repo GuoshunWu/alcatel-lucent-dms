@@ -144,3 +144,18 @@
         </tr>
     </table>
 </div>
+
+<div id="transmngMatchTextDialog" title="<s:text name="matchedtext"/>">
+    <table border="0" width="100%">
+        <tr>
+            <td>
+                <table width="100%" id="transMatchTextGrid">
+                    <tr>
+                        <td></td>
+                    </tr>
+                </table>
+                <div id="transMatchTextGridPager"/>
+            </td>
+        </tr>
+    </table>
+</div>
