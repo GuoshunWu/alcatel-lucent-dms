@@ -159,7 +159,7 @@ public class DeliveryReport {
 			int labelWC = Util.countWords(label.getReference());
 			translationWC += labelWC * languageNum;
 			for (DictionaryLanguage dl : dict.getDictLanguages()) {
-				if (dl.getLanguage().getId() == 1) continue;	// ignore English
+				if (dl.isReference()) continue;	// ignore reference language
 				LabelTranslation lt = label.getOrigTranslation(dl.getLanguageCode());
 				Translation trans = text.getTranslation(dl.getLanguage().getId());
 				String key = label.getContext().getKey() + "~~" + dl.getLanguage().getId() + "~~" + label.getReference();

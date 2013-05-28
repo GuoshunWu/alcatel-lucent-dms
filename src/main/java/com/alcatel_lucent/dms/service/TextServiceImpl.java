@@ -383,7 +383,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
     		if (label.getDictionary().getDictLanguages() != null) {
         		Text text = label.getText();
 	    		for (DictionaryLanguage dl : label.getDictionary().getDictLanguages()) {
-	    			if (dl.getLanguage().getId() == 1L) {
+	    			if (dl.isReference()) {
 	    				continue;
 	    			}
 	    			LabelTranslation lt = label.getOrigTranslation(dl.getLanguageCode());

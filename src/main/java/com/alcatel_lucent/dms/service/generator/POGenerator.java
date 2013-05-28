@@ -39,7 +39,7 @@ public class POGenerator extends DictionaryGenerator {
 
 	private void generatePO(File target, Dictionary dict, DictionaryLanguage dl) {
 		int pos = dict.getName().lastIndexOf("/*/");
-		boolean isRefLang = dl.getLanguage().getId() == 1L;
+		boolean isRefLang = dl.isReference();
 		String parentFolder = null;
 		String filename = null;
 		if (pos != -1) {
