@@ -591,7 +591,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     	int total = 0;
     	if (dict.getDictLanguages() != null) {
 	    	for (DictionaryLanguage dl : dict.getDictLanguages()) {
-	    		if (dl.getLanguage().getId() != 1L) {
+	    		if (!dl.isReference()) {
 	    			total++;
 	    		}
 	    	}
@@ -608,7 +608,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     	int total = 0;
     	if (dict.getDictLanguages() != null) {
 	    	for (DictionaryLanguage dl : dict.getDictLanguages()) {
-	    		if (dl.getLanguage().getId() != 1L) {
+	    		if (!dl.isReference()) {
 	    			total++;
 	    		}
 	    	}

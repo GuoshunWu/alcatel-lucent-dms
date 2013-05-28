@@ -151,7 +151,7 @@ public class DeliveryReport {
 		if (dict.getDictLanguages() == null || dict.getDictLanguages().isEmpty()) return;
 		int languageNum = 0;
 		for (DictionaryLanguage dl : dict.getDictLanguages()) {
-			if (dl.getLanguage().getId() != 1) languageNum++;
+			if (!dl.isReference()) languageNum++;
 		}
 		translationNum += labels.size() * languageNum;
 		for (Label label : labels) {
