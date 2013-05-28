@@ -5,8 +5,9 @@
                 <button id="goBackToWelcome"><s:text name="button.back2welcome"/></button>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <s:text name="searchtext"/>
-                <input size="80" id="globalSearchInResultPanel" name="globalSearch"/><button id="globalSearchInResultPanelAction"/>
-
+                <input size="80" id="globalSearchInResultPanel" name="globalSearch"/><button id="globalSearchInResultPanelAction"></button>
+                &nbsp;&nbsp;
+                <s:text name="distinct"/> <input type="checkbox" id="globalSearchInResultPanel_distinct"/>
             </td>
             <td>
                 <button id="groupingToggle"><s:text name="button.grptoggle"/></button>

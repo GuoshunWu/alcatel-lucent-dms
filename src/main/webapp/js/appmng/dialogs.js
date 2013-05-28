@@ -846,6 +846,7 @@
         typeText = 'prod' === node.type ? 'product' : 'application';
         grid = $('#searchTextGrid');
         postData = grid.getGridParam('postData');
+        postData.distinct = params.distinct;
         postData.format = 'grid';
         postData.text = params.text;
         postData.prop = 'dictionary.base.applicationBase.name,dictionary.base.name,key,reference,maxLength,context.name,t,n,i';
@@ -853,7 +854,7 @@
         delete postData.prod;
         postData[node.type] = params.version.id;
         return grid.setCaption(i18n.dialog.searchtext.caption.format(params.text, typeText, node.text, params.version.text)).setGridParam({
-          url: urls.labels
+          url: postData.distinct ? urls.labels_normal : urls.labels
         }).trigger('reloadGrid');
       },
       buttons: [

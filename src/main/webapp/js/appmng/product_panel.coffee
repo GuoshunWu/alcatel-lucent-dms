@@ -43,6 +43,7 @@ define [
         version:
           id: selVer.val()
           text: $("option:selected", selVer).text()
+        distinct: Boolean($('#prodSearchText_distinct').attr('checked'))
       )
     )
 

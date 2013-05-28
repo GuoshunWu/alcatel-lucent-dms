@@ -10,28 +10,28 @@ define [
   'appmng/global_search_grid'
 ], ($, i18n, c18n, util, urls, layout, sgrid)->
 
-  searchText = (text)->
+  searchText = (text, distinct = false)->
     grid = $('#globalSearchResultGrid')
-
     postData = grid.getGridParam('postData')
 
     postData.format = 'grid'
     postData.text = text
+    postData.distinct = distinct
     postData.prop = 'dictionary.base.applicationBase.productBase.name, dictionary.base.applicationBase.name, dictionary.nameVersion, key,reference,maxLength,context.name,t,n,i'
 
     delete postData.app
     delete postData.prod
 
-    grid.setGridParam(url: urls.labels).trigger 'reloadGrid'
+    grid.setGridParam(url: if distinct then urls.labels_normal else urls.labels).trigger 'reloadGrid'
 
 
   searchResultActionBtn = $('#globalSearchInResultPanelAction', '#appmng').attr('title', 'Search').button(
     text: false, icons:{primary: "ui-icon-search"})
     .height(20).width(20)
     .position(my: 'left center', at: 'right center', of: '#globalSearchInResultPanel')
+  globalSearchInResultPanelDistinct = $('#globalSearchInResultPanel_distinct')
 
-  searchResultActionBtn.click ()->searchText $('#globalSearchInResultPanel', '#appmng').val()
-
+  searchResultActionBtn.click ()->searchText $('#globalSearchInResultPanel', '#appmng').val(), Boolean(globalSearchInResultPanelDistinct.attr('checked'))
 
   globalSearchInResultPanel =  $('#globalSearchInResultPanel', '#appmng').keydown (e)->
     return true if e.which != 13
@@ -41,11 +41,15 @@ define [
   #  search button in welcome panel
   searchActionBtn = $('#globalSearchAction', '#appmng').attr('title', 'Search').button(text: false, icons:
     {primary: "ui-icon-search"})
-    .height(20).width(20).position(my: 'left center', at: 'right center', of: '#globalSearch').click(()->
+    .height(20).width(20).position(my: 'left center', at: 'right center', of: '#globalSearch')
+    .click(()->
       searchValue = $('#globalSearch', '#appmng').val()
+      distinct = Boolean($('#globalSearch_distinct').attr('checked') )
+
       globalSearchInResultPanel.val(searchValue)
+      globalSearchInResultPanelDistinct.attr('checked', distinct)
       layout.showSearchPanel()
-      searchText(searchValue)
+      searchText(searchValue, distinct)
     )
 
 

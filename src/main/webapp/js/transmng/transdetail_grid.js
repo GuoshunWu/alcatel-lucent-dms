@@ -8,8 +8,10 @@
       find the labels which reference resemblant to the text and display in a modal dialog
     */
 
-    matchAction = function(text) {
-      return alert(text);
+    matchAction = function(refText) {
+      var languageId;
+
+      return languageId = $('#detailLanguageSwitcher').val();
     };
     transDetailGrid = $("#transDetailGridList").jqGrid({
       url: 'json/transdetailgrid.json',

@@ -86,6 +86,7 @@ Time: 下午7:
       apps: getURL('applications', 'rest/'),
       dicts: getURL('dict', 'rest/'),
       tasks: getURL('tasks', 'rest/'),
+      labels_normal: getURL('labels', 'rest/'),
       labels: getURL('luceneLabels', 'rest/'),
       languages: getURL('languages', 'rest/'),
       users: getURL('users', 'rest/'),

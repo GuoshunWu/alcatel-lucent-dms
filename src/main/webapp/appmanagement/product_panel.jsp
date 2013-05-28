@@ -16,6 +16,8 @@
                 <label for="prodSearchText"><s:text name="searchtext"/></label>
                 <input id="prodSearchText" />
                 <button id="prodSearchAction"></button>
+                &nbsp;&nbsp;
+                <s:text name="distinct"/> <input type="checkbox" id="prodSearchText_distinct"/>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </td>
 

@@ -101,7 +101,7 @@ class HibernateSearchTest {
         return labels
     }
 
-    @Test
+//    @Test
     void testHibSearch() {
         //        total result size
         int pageNumber = 1  //http parameter page
@@ -128,7 +128,7 @@ class HibernateSearchTest {
         Assert.assertEquals("title:story title:day", query.toString())
     }
 
-//    @Test
+    @Test
     void testLabelRest() {
         FullTextSession fullTextSession = Search.getFullTextSession(dao.getSession())
 //        fullTextSession.createIndexer()
@@ -141,12 +141,13 @@ class HibernateSearchTest {
         * */
 
 
-        Query query = qb.bool()
-                .must(
-                qb.keyword().fuzzy().withThreshold(0.8).onField("reference").matching('starting test').createQuery()
-        ).must(
-                qb.keyword().fuzzy().withThreshold(0.8).onField("removed").matching('false').createQuery()
-        ).createQuery()
+//        Query query = qb.bool()
+//                .must(
+//                qb.keyword().fuzzy().withThreshold(0.8).onField("reference").matching('starting test').createQuery()
+//        ).must(
+//                qb.keyword().fuzzy().withThreshold(0.8).onField("removed").matching('false').createQuery()
+//        ).createQuery()
+        Query query = qb.phrase().onField("reference_forSort").sentence("This is a test.").createQuery()
         println "Query string: ${query.toString()}".center(100, '=')
         return
 //        String searchString = "reference:starting"
