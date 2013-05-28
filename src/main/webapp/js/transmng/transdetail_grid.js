@@ -129,7 +129,11 @@
           align: 'center',
           search: false,
           formatter: function(cellvalue, options, rowObject) {
-            return "<img class='historyAct' id='matchAct_" + rowObject[3] + "' src='images/history.png'>";
+            var ret;
+
+            ret = "<div id='matchAct_" + rowObject[3] + "' style='display:inline-block' title=\"Match\" class=\"ui-state-default ui-corner-all\">";
+            ret += "<span class=\"ui-icon ui-icon-search\"></span></div>";
+            return ret;
           },
           unformat: function(cellvalue, options) {
             return "";
@@ -140,7 +144,7 @@
         var grid;
 
         grid = $(this);
-        return $('img[id^=matchAct]', this).click(function() {
+        return $('div[id^=matchAct]', this).click(function() {
           var ref, _, _ref;
 
           _ref = this.id.split('_'), _ = _ref[0], ref = _ref[1];
@@ -239,15 +243,21 @@
       var ctIds, detailGrid, ids;
 
       detailGrid = $("#transDetailGridList");
-      ids = detailGrid.getGridParam('selarrrow');
+      ids = detailGrid.getGridParam('selarrrow').join(',');
       ctIds = $.map(ids, function(element, index) {
         return detailGrid.getRowData(element).transId;
       });
+      if (!ids) {
+        $.msgBox(c18n.selrow.format(c18n.label), null, {
+          title: c18n.warning
+        });
+        return;
+      }
       return $.post(urls.trans.update_status, {
         type: 'trans',
         transStatus: e.target.name,
         ctid: ctIds.join(','),
-        id: ids.join(',')
+        id: ids
       }, function(json) {
         if (json.status !== 0) {
           $.msgBox(json.message, null, {

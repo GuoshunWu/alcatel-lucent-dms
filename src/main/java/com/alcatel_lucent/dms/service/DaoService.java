@@ -32,12 +32,14 @@ public interface DaoService {
      * @param cls the class object of the entity
      * @param keywords the keywords which must match, key is the field name and value is the value to match.
      *                 All key-value mappings are joined by AND operator
+     * @param fuzzyKeywords like keywords, but for fuzzy query
+     * @param minimumSimilarity the similarity of the fuzzy query
      * @param firstResult index of record to be retrieved from, 0 identifies the beginning
      * @param maxResults max number of records to be retrieved, -1 identifies no limit
      * @param sort Encapsulates sort criteria for returned hits.
      * @return query results is a Pair, which left is result size and the right is a list of objects in one page.
      */
-    Pair<Integer, List> hibSearchRetrieve(Class cls, Map<String, Object> keywords, Integer firstResult, Integer maxResults, Sort sort);
+    Pair<Integer, List> hibSearchRetrieve(Class cls, Map<String, Object> keywords, Map<String,String> fuzzyKeywords, float minimumSimilarity, Integer firstResult, Integer maxResults, Sort sort);
 
     /**
      * Query entities.

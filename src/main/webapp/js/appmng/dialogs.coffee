@@ -210,8 +210,9 @@ define [
 
       $('#stringSettingsTranslationStatus').menu().hide().find("li").on 'click', (e)->
         grid = $("#stringSettingsGrid")
-        ids = grid.getGridParam('selarrrow')
-        $.post urls.app.update_label_status, {type: 'trans', transStatus: e.target.name, id: ids.join(',')}, (json)->
+        ids = grid.getGridParam('selarrrow').join(",")
+        ($.msgBox (c18n.selrow.format c18n.label), null, title: c18n.warning; return) unless ids
+        $.post urls.app.update_label_status, {type: 'trans', transStatus: e.target.name, id: ids}, (json)->
           ($.msgBox json.message, null, title: c18n.warning; return) unless json.status == 0
           grid.trigger 'reloadGrid'
 

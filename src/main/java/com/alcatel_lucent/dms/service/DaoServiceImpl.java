@@ -5,12 +5,18 @@ import com.alcatel_lucent.dms.model.BaseEntity;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.FuzzyQuery;
 import org.apache.lucene.search.Sort;
-import org.apache.lucene.search.SortField;
 import org.hibernate.*;
 import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
+import org.hibernate.search.SearchException;
 import org.hibernate.search.query.dsl.BooleanJunction;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.slf4j.Logger;
@@ -19,11 +25,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.SessionFactoryUtils;
 import org.springframework.stereotype.Repository;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.io.StringReader;
+import java.util.*;
 
 /**
  * Author: Allan YANG
@@ -96,10 +102,38 @@ public class DaoServiceImpl implements DaoService {
         return retrieve(hql, paramMap, 0, -1, initProps);
     }
 
+    private List<String> getAllTermsFromText(String fieldName, String localText, Analyzer analyzer) throws IOException {
+        List<String> terms = new ArrayList<String>();
+
+        // Can't deal with null at this point. Likely returned by some FieldBridge not recognizing the type.
+        if (localText == null) {
+            throw new SearchException("Search parameter on field " + fieldName + " could not be converted. " +
+                    "Are the parameter and the field of the same type?" +
+                    "Alternatively, apply the ignoreFieldBridge() option to " +
+                    "pass String parameters");
+        }
+        Reader reader = new StringReader(localText);
+        TokenStream stream = analyzer.reusableTokenStream(fieldName, reader);
+
+        CharTermAttribute attribute = stream.addAttribute(CharTermAttribute.class);
+        stream.reset();
+
+        while (stream.incrementToken()) {
+            if (attribute.length() > 0) {
+                terms.add(attribute.toString());
+            }
+        }
+        stream.end();
+        stream.close();
+        return terms;
+    }
+
     @Override
-    public Pair<Integer, List> hibSearchRetrieve(Class cls, Map<String, Object> keywords, Integer firstResult, Integer maxResults, Sort sort) {
+    public Pair<Integer, List> hibSearchRetrieve(Class cls, Map<String, Object> keywords, Map<String, String> fuzzyKeywords, float minimumSimilarity, Integer firstResult, Integer maxResults, Sort sort) {
         FullTextSession fullTextSession = Search.getFullTextSession(getSession());
         QueryBuilder qb = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(cls).get();
+
+        Analyzer analyzer = fullTextSession.getSearchFactory().getAnalyzer(cls);
 
         /*
         * Lucene search syntax: +reference: what + removed: false +dictionary.id:110
@@ -109,8 +143,29 @@ public class DaoServiceImpl implements DaoService {
         for (Map.Entry<String, Object> entry : keywordEntries) {
             bj = bj.must(qb.keyword().onField(entry.getKey()).matching(entry.getValue()).createQuery());
         }
+
+        BooleanQuery bQuery = new BooleanQuery();
+        if (null != fuzzyKeywords && !fuzzyKeywords.isEmpty()) {
+            Set<Map.Entry<String, String>> fuzzyKeywordEntries = fuzzyKeywords.entrySet();
+            for (Map.Entry<String, String> fuzzyKeywordEntry : fuzzyKeywordEntries) {
+                List<String> terms = null;
+                try {
+                    terms = getAllTermsFromText(fuzzyKeywordEntry.getKey(), fuzzyKeywordEntry.getValue(), analyzer);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if(!terms.isEmpty()){
+                    for(String term:terms){
+                        bQuery.add(new FuzzyQuery(new Term(fuzzyKeywordEntry.getKey(), term), minimumSimilarity), BooleanClause.Occur.MUST);
+                    }
+
+                }
+            }
+        }
+        bj.must(bQuery);
         org.apache.lucene.search.Query query = bj.createQuery();
-        log.info("Lucene search string: \"{}\", firstResult={}, maxResult={}", new Object[]{query.toString(), firstResult, maxResults});
+
+        log.info("Lucene search string: \"{}\", firstResult={}, maxResult={}", new Object[]{query, firstResult, maxResults});
 
         FullTextQuery hibQuery = fullTextSession.createFullTextQuery(query, cls);
         int resultSize = hibQuery.getResultSize();
