@@ -17,6 +17,8 @@
                 <label for="appSearchText"><s:text name="searchtext"/></label>
                 <input id="appSearchText" />
                 <button id="appSearchAction"></button>
+                &nbsp;&nbsp;
+                <s:text name="distinct"/> <input type="checkbox" id="appSearchText_distinct"/>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </td>
         </tr>

@@ -14,8 +14,9 @@
 
                     <tr>
                         <td>
-                            <%--<s:text name="searchtext"/>--%>
-                            <input size="80" id="globalSearch" name="globalSearch"/><button id="globalSearchAction"/>
+                            <input size="80" id="globalSearch" name="globalSearch"/><button id="globalSearchAction"></button>
+                            &nbsp;&nbsp;
+                            <s:text name="distinct"/> <input type="checkbox" id="globalSearch_distinct"/>
                         </td>
                     </tr>
                     <tr>

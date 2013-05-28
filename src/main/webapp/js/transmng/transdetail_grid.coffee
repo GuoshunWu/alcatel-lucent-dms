@@ -12,8 +12,9 @@ define [
   ###
     find the labels which reference resemblant to the text and display in a modal dialog
   ###
-  matchAction = (text) ->
-    alert text
+  matchAction = (refText) ->
+    languageId = $('#detailLanguageSwitcher').val()
+    # +_hibernate_class:com.alcatel_lucent.dms.model.Translation +text.reference:text~0.8 + status:2 + language.id:46
 
   transDetailGrid = $("#transDetailGridList").jqGrid(
     url: 'json/transdetailgrid.json'

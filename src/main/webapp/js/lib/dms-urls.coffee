@@ -59,7 +59,8 @@ define (require)->
   dicts: getURL('dict', 'rest/')
   tasks: getURL('tasks', 'rest/')
 
-#  labels: getURL('labels', 'rest/')
+  labels_normal: getURL('labels', 'rest/')
+  # lucene query
   labels: getURL('luceneLabels', 'rest/')
 
   languages: getURL('languages','rest/')
