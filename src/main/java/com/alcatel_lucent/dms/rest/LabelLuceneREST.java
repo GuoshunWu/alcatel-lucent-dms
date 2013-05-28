@@ -168,12 +168,10 @@ public class LabelLuceneREST extends BaseREST {
             Collections.sort((ArrayList<Label>) labels, orders2Comparator(orders, sord));
 
             Map<String, String> filters = getGridFilters(requestMap);
-            Integer statusFilter = null;
-            Integer typeFilter = null;
             if (filters != null) {    // filter by status
                 String statusParam = filters.get("ct.status");
                 if (statusParam != null && !statusParam.isEmpty()) {
-                    statusFilter = Integer.valueOf(statusParam);
+                    int statusFilter = Integer.parseInt(statusParam);
                     // apply status filter
                     Iterator<Label> iter = labels.iterator();
                     while (iter.hasNext()) {
@@ -185,7 +183,7 @@ public class LabelLuceneREST extends BaseREST {
                 }
                 String typeParam = filters.get("ct.translationType");
                 if (typeParam != null && !typeParam.isEmpty()) {
-                    typeFilter = Integer.valueOf(typeParam);
+                    int typeFilter = Integer.parseInt(typeParam);
                     // apply type filter
                     Iterator<Label> iter = labels.iterator();
                     while (iter.hasNext()) {
