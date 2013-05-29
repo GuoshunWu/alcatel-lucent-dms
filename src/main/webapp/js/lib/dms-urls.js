@@ -89,6 +89,7 @@ Time: 下午7:
       labels_normal: getURL('labels', 'rest/'),
       labels: getURL('luceneLabels', 'rest/'),
       languages: getURL('languages', 'rest/'),
+      translations: getURL('luceneTranslations', 'rest/'),
       users: getURL('users', 'rest/'),
       ldapuser: getURL('users/ldapUser', 'rest/')
     };
