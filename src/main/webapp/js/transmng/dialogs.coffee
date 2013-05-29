@@ -258,10 +258,17 @@ define [
 
   transSearchText = $('#transmngMatchTextDialog').dialog(
     autoOpen: false
-    width: 800, height: 'auto', modal: true
+    width: 1000, height: 'auto', modal: true
 
     buttons: [
       {text: c18n.ok, click: ()->
+        grid = $("#transMatchTextGrid")
+        selId = grid.getGridParam('selrow')
+        if grid.getRowData().length > 0 and not selId
+          $.msgBox('Please select translation to apply.', null, title: c18n.error)
+          return
+        #TODO: apply translation
+        console.log "Selected: translation id: " + selId
         $(@).dialog 'close'
       }
     ]
