@@ -1,4 +1,4 @@
-V2.6.0 (May. 28, 2013)
+V2.6.0 (May. 29, 2013)
 	* Add "Fuzzy" option for text search (default is exact match)
 	* Add columns "Translation Source" and "Last Updated" in exported excel of translations.
 	* Bug fix of incorrect T/N/I number in Label translation view.

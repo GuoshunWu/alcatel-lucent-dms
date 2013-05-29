@@ -119,17 +119,17 @@ public class LabelREST extends BaseREST {
 	        	param.put("dictId", dictId);
 	        	countParam.put("dictId", dictId);
 	    	} else if (appId != null) {
-	    		hql = "select obj,a from Application a join a.dictionaries d join d.labels obj where a.id=:appId and obj.removed=false";
+	    		hql = "select obj from Application a join a.dictionaries d join d.labels obj where a.id=:appId and obj.removed=false";
 	    		countHql = "select count(*) from Application a join a.dictionaries d join d.labels obj where a.id=:appId and obj.removed=false";
 	        	param.put("appId", appId);
 	        	countParam.put("appId", appId);
 	    	} else if (prodId != null) {
-	    		hql = "select obj,a from Product p join p.applications a join a.dictionaries d join d.labels obj where p.id=:prodId and obj.removed=false";
+	    		hql = "select obj from Product p join p.applications a join a.dictionaries d join d.labels obj where p.id=:prodId and obj.removed=false";
 	    		countHql = "select count(*) from Product p join p.applications a join a.dictionaries d join d.labels obj where p.id=:prodId and obj.removed=false";
 	        	param.put("prodId", prodId);
 	        	countParam.put("prodId", prodId);
 	    	} else {
-	    		hql = "select obj,a,p from Product p join p.applications a join a.dictionaries d join d.labels obj where obj.removed=false";
+	    		hql = "select obj from Label obj where obj.removed=false";
 	    		countHql = "select count(*) from Label obj where obj.removed=false";
 	    	}
 	    	if (text != null) {
@@ -139,11 +139,10 @@ public class LabelREST extends BaseREST {
 	    		countParam.put("text", "%" + text + "%");
 	    	}
 	    	ComparatorChain comparator = null;
-	    	Collection result;
 			if (sidx.indexOf(",") == -1 && !sidx.equals("t") && !sidx.equals("n") && !sidx.equals("i") && 
 					!sidx.startsWith("app.") && !sidx.startsWith("prod.")) {
 				hql += " order by obj." + sidx + " " + sord;
-				result = retrieve(hql, param, countHql, countParam, requestMap);
+				labels = retrieve(hql, param, countHql, countParam, requestMap);
 			} else {	// sort and page the results out of hql
 				String[] orders = sidx.split(",");
 				comparator = new ComparatorChain();
@@ -155,23 +154,8 @@ public class LabelREST extends BaseREST {
 					sord = idxOrd.length < 2 ? sord : idxOrd[1];
 					comparator.addComparator(new ObjectComparator<Label>(sidx, sord));
 				}
-				result = dao.retrieve(hql, param, null);
-				requestMap.put("records", "" + result.size());
-			}
-			if (dictId != null) {
-				labels = result;
-			} else {	// if prod and app parameter is specified, add app information to dictionary.app
-				labels = new ArrayList<Label>();
-				for (Object[] row : (Collection<Object[]>) result) {
-					Label label = (Label) row[0];
-					Application app = (Application) row[1];
-					label.setApp(app);
-					if (row.length >= 3) {
-						Product prod = (Product) row[2];
-						label.setProd(prod);
-					}
-					labels.add(label);
-				}
+				labels = dao.retrieve(hql, param, null);
+				requestMap.put("records", "" + labels.size());
 			}
 
 			// add T/N/I information if no language was specified
