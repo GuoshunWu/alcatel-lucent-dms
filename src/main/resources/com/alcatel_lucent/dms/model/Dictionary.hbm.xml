@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.alcatel_lucent.dms.model">
+    <class name="Dictionary" table="DICTIONARY">
+        <id column="ID" name="id">
+            <generator class="native">
+                <param name="sequence">ID_DICTIONARY</param>
+            </generator>
+        </id>
+        <property column="VERSION" name="version" not-null="true" type="string"/>
+
+        <property column="ANNOTATION1" name="annotation1" not-null="false" type="text"/>
+        <property column="ANNOTATION2" name="annotation2" not-null="false" type="text"/>
+        <property column="ANNOTATION3" name="annotation3" not-null="false" type="text"/>
+        <property column="ANNOTATION4" name="annotation4" not-null="false" type="text"/>
+        <property column="REFERENCE_LANGUAGE" name="referenceLanguage" type="string" length="100"/>
+
+        <many-to-one name="base" column="DICTIONARY_BASE_ID"/>
+
+        <set inverse="true" name="dictLanguages" order-by="SORT_NO">
+            <key column="DICTIONARY_ID" on-delete="cascade" not-null="true"/>
+            <one-to-many class="DictionaryLanguage"/>
+        </set>
+
+        <set inverse="true" name="labels" order-by="SORT_NO">
+            <key column="DICTIONARY_ID" on-delete="cascade" not-null="true"/>
+            <one-to-many class="Label"/>
+        </set>
+
+        <set name="applications" table="APPLICATION_DICTIONARY">
+            <key column="DICTIONARY_ID" />
+            <many-to-many column="APPLICATION_ID" class="Application"/>
+        </set>
+
+        <set inverse="true" name="histories" order-by="OPERATION_TIME">
+            <key column="DICTIONARY_ID" on-delete="cascade" not-null="true"/>
+            <one-to-many class="DictionaryHistory"/>
+        </set>
+
+        <property column="LOCKED" name="locked" type="boolean"/>
+    </class>
+</hibernate-mapping>
