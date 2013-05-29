@@ -388,13 +388,24 @@
     };
     transSearchText = $('#transmngMatchTextDialog').dialog({
       autoOpen: false,
-      width: 800,
+      width: 1000,
       height: 'auto',
       modal: true,
       buttons: [
         {
           text: c18n.ok,
           click: function() {
+            var selId;
+
+            grid = $("#transMatchTextGrid");
+            selId = grid.getGridParam('selrow');
+            if (grid.getRowData().length > 0 && !selId) {
+              $.msgBox('Please select translation to apply.', null, {
+                title: c18n.error
+              });
+              return;
+            }
+            console.log("Selected: translation id: " + selId);
             return $(this).dialog('close');
           }
         }

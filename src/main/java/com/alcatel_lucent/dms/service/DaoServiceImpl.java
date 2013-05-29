@@ -129,7 +129,11 @@ public class DaoServiceImpl implements DaoService {
     }
 
     @Override
-    public Pair<Integer, List> hibSearchRetrieve(Class cls, Map<String, Object> keywords, Map<String, String> fuzzyKeywords, float minimumSimilarity, Integer firstResult, Integer maxResults, Sort sort) {
+    public Pair<Integer, List> hibSearchRetrieve(Class cls, Map<String, Object> keywords,
+                                                 Map<String, String> fuzzyKeywords, float minimumSimilarity,
+                                                 Integer firstResult, Integer maxResults,
+                                                 Sort sort,
+                                                 String... projection) {
         FullTextSession fullTextSession = Search.getFullTextSession(getSession());
         QueryBuilder qb = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(cls).get();
 
@@ -154,8 +158,8 @@ public class DaoServiceImpl implements DaoService {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                if(!terms.isEmpty()){
-                    for(String term:terms){
+                if (!terms.isEmpty()) {
+                    for (String term : terms) {
                         bQuery.add(new FuzzyQuery(new Term(fuzzyKeywordEntry.getKey(), term), minimumSimilarity), BooleanClause.Occur.MUST);
                     }
 
@@ -176,6 +180,9 @@ public class DaoServiceImpl implements DaoService {
         if (null != sort) {
             log.info("sort={}", sort.toString());
             hibQuery.setSort(sort);
+        }
+        if (projection.length > 0) {
+            hibQuery.setProjection(projection);
         }
         return Pair.of(resultSize, hibQuery.list());
     }
