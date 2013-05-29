@@ -3,6 +3,7 @@ package com.alcatel_lucent.dms.test
 import com.alcatel_lucent.dms.model.Application
 import com.alcatel_lucent.dms.model.Label
 import com.alcatel_lucent.dms.model.Product
+import com.alcatel_lucent.dms.model.Translation
 import com.alcatel_lucent.dms.service.DaoService
 import org.apache.commons.lang3.tuple.Pair
 import org.apache.lucene.analysis.standard.StandardAnalyzer
@@ -16,7 +17,9 @@ import org.apache.lucene.search.BooleanQuery
 import org.apache.lucene.search.FuzzyQuery
 import org.apache.lucene.search.Query
 import org.apache.lucene.search.Sort
+import org.apache.lucene.search.SortField
 import org.apache.lucene.util.Version
+import org.apache.solr.handler.component.TermsComponent
 import org.hibernate.search.FullTextQuery
 import org.hibernate.search.FullTextSession
 import org.hibernate.search.Search
@@ -101,20 +104,30 @@ class HibernateSearchTest {
         return labels
     }
 
-//    @Test
+    @Test
     void testHibSearch() {
         //        total result size
         int pageNumber = 1  //http parameter page
-        int pageSize = 500    //http parameter rows
-        Pair<Integer, List> result = dao.hibSearchRetrieve(Label.class, [removed: false], [reference: 'a is good'], 0.999f, (pageNumber - 1) * pageSize, pageSize, new Sort())
+        int pageSize = 200    //http parameter rows
+        Pair<Integer, List> result = dao.hibSearchRetrieve(
+                Translation.class,
+                [status: 2, 'language.id': 21],
+                ['text.reference': 'Patch No.'], 0.8f,
+                (pageNumber - 1) * pageSize, pageSize,
+                new Sort(new SortField(null, SortField.SCORE, true)),
+                FullTextQuery.SCORE,
+                FullTextQuery.THIS
+        )
         println "Page number: ${pageNumber}, page size: ${pageSize}, total records: ${result.left}"
 
-        List<Label> labels = result.right
+        List<Object[]> list = result.right
         println 'Querying result: '
-        labels.each { label ->
-            println "${'*' * 100}\n${label.id}, ${label.key}, ${label.reference}, ${label.dictionary.base.name}"
+        list.each {entry ->
+            Float score = entry[0]
+            Translation trans = entry[1]
+            println "${'*' * 100}\n${score}, ${trans.id}, ${trans.text.reference}, ${trans.translation}"
         }
-        println "Page ${labels.size()} record(s).".center(100, '-')
+        println "Page ${list.size()} record(s).".center(100, '=')
     }
 
 //    @Test
@@ -128,36 +141,37 @@ class HibernateSearchTest {
         Assert.assertEquals("title:story title:day", query.toString())
     }
 
-    @Test
+//    @Test
     void testLabelRest() {
         FullTextSession fullTextSession = Search.getFullTextSession(dao.getSession())
 //        fullTextSession.createIndexer()
 //                .startAndWait()
 //        return
 
-        QueryBuilder qb = fullTextSession.searchFactory.buildQueryBuilder().forEntity(Label.class).get()
+        QueryBuilder qb = fullTextSession.searchFactory.buildQueryBuilder().forEntity(Translation.class).get()
         /*
-        Lucene search syntax: +reference:starting + removed:false
+        Lucene search syntax: +_hibernate_class:com.alcatel_lucent.dms.model.Translation +text.reference:text~0.8 + status:2 + language.id:46
         * */
 
 
-//        Query query = qb.bool()
-//                .must(
-//                qb.keyword().fuzzy().withThreshold(0.8).onField("reference").matching('starting test').createQuery()
-//        ).must(
-//                qb.keyword().fuzzy().withThreshold(0.8).onField("removed").matching('false').createQuery()
-//        ).createQuery()
-        Query query = qb.phrase().onField("reference_forSort").sentence("This is a test.").createQuery()
+        Query query = qb.bool()
+                .must(qb.keyword().fuzzy().withThreshold(0.8).onField("text.reference").matching('starting').createQuery()
+        ).must(qb.keyword().onField("status").matching(2).createQuery()
+        ).must(qb.keyword().onField("language.id").matching(46).createQuery()
+        ).createQuery()
+//        Query query = qb.phrase().onField("reference_forSort").sentence("This is a test.").createQuery()
         println "Query string: ${query.toString()}".center(100, '=')
-        return
-//        String searchString = "reference:starting"
+
+//        return
 
         // wrap Lucene query in a org.hibernate.Query
         List list
         long start = System.nanoTime()
 
-        FullTextQuery hibQuery = fullTextSession.createFullTextQuery(query, Label.class)
+        FullTextQuery hibQuery = fullTextSession.createFullTextQuery(query, Translation.class)
 
+        hibQuery.setProjection(FullTextQuery.SCORE, FullTextQuery.THIS)
+        hibQuery.sort = new Sort(new SortField(null, SortField.SCORE, true))
 //        total result size
         int pageNumber = 1  //http parameter page
         int pageSize = 400    //http parameter rows
@@ -181,43 +195,12 @@ class HibernateSearchTest {
 
         //execute search
         println 'Querying result: '
-        Map<String, Integer> fieldMap = null
-        list.each { label ->
-            println "${'*' * 100}\n${label.id}, ${label.key}, ${label.reference}, ${label.dictionary.base.name}"
+        list.each {entry ->
+            Float score = entry[0]
+            Translation trans = entry[1]
+            println "${'*' * 100}\n${score}, ${trans.id}, ${trans.text.reference}, ${trans.translation}"
         }
         println "Page ${list.size()} record(s).".center(100, '=')
     }
 
-    private List<Label> filledLabels(List originalLabels) {
-        List<Label> results = []
-
-        Map<String, Integer> fieldMap = null
-        originalLabels.each { obj ->
-            Label label = obj[0]
-            List<Field> fields = (obj[1] as Document).fields
-            fieldMap = getFieldIndexMap(fields, 'dictionary.applications.id', 'dictionary.applications.products.id')
-
-            fieldMap['dictionary.applications.id'].each { Field field ->
-                Application app = dao.retrieve(Application.class, Long.parseLong(field.stringValue()))
-                Label cloneLabel = label.clone()
-                cloneLabel.setApp(app)
-                results.add(cloneLabel)
-            }
-
-
-        }
-        return results
-    }
-
-    private MultiValueMap<String, Field> getFieldIndexMap(List<Fieldable> fields, String... fieldNames) {
-        MultiValueMap<String, Integer> fieldMap = new LinkedMultiValueMap<String, Integer>()
-        fieldNames.each { String fieldName ->
-            fields.each { Field field ->
-                if (field.name().equals(fieldName)) {
-                    fieldMap.add(fieldName, field)
-                }
-            }
-        }
-        return fieldMap
-    }
 }

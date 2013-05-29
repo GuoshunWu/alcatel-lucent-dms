@@ -19,8 +19,14 @@ define [
     $('#transmngMatchTextDialog').dialog('open')
     grid = $("#transMatchTextGrid")
     postData = grid.getGridParam('postData')
-    console?.log postData
-#    grid.setGridParam().trigger 'reloadGrid'
+    postData.language = languageId
+    postData.text = refText
+    postData.format = 'grid'
+    postData.fuzzy = true
+    postData.prop = 'reference, translation, score'
+
+#    console?.log postData
+    grid.setGridParam(url: urls.translations, page: 1).trigger 'reloadGrid'
 
   transDetailGrid = $("#transDetailGridList").jqGrid(
     url: 'json/transdetailgrid.json'
@@ -51,7 +57,8 @@ define [
       {name: 'lastUpdate', index: 'ct.lastUpdateTime', width: 100, align: 'left',search: false
       formatter: 'date', formatoptions:{srcformat:'ISO8601Long', newformat: 'Y-m-d H:i'}
       }
-      {name: 'action', index: 'action', width: 50, align:'center', search: false, hidden: true
+      {name: 'action', index: 'action', width: 50, align:'center', search: false
+      hidden: true
       formatter: (cellvalue, options, rowObject)->
         #"<img class='historyAct' id='matchAct_#{rowObject[3]}' src='images/history.png'>"
         ret ="<div id='matchAct_#{rowObject[3]}' style='display:inline-block' title=\"Match\" class=\"ui-state-default ui-corner-all\">"

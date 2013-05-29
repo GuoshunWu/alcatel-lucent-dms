@@ -15,7 +15,15 @@
       $('#transmngMatchTextDialog').dialog('open');
       grid = $("#transMatchTextGrid");
       postData = grid.getGridParam('postData');
-      return typeof console !== "undefined" && console !== null ? console.log(postData) : void 0;
+      postData.language = languageId;
+      postData.text = refText;
+      postData.format = 'grid';
+      postData.fuzzy = true;
+      postData.prop = 'reference, translation, score';
+      return grid.setGridParam({
+        url: urls.translations,
+        page: 1
+      }).trigger('reloadGrid');
     };
     transDetailGrid = $("#transDetailGridList").jqGrid({
       url: 'json/transdetailgrid.json',
