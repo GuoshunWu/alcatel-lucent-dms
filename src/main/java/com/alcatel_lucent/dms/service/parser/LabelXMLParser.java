@@ -162,7 +162,7 @@ public class LabelXMLParser extends DictionaryParser {
 		DictionaryLanguage refDictLanguage = new DictionaryLanguage();
 		refDictLanguage.setLanguageCode(refLangCode);
 		refDictLanguage.setSortNo(0);
-		refDictLanguage.setLanguage(languageService.getLanguage("en"));
+		refDictLanguage.setLanguage(languageService.getLanguage(refLangCode));
 		refDictLanguage.setCharset(languageService.getCharset("UTF-8"));
 		dictLanguages.add(refDictLanguage);
 		dictionary.setLabels(readLabels(refFile, dictionary, null, warnings, refFileExceptions));
