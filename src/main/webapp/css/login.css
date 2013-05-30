@@ -1,0 +1,118 @@
+body {
+    /*background: #3E2782;*/
+    margin: 0 auto;
+    padding: 0;
+    font-size: 14px;
+    font-family: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif;
+
+    text-align: center;
+    vertical-align: middle;
+}
+
+#login_area {
+    width: 572px;
+    /*height:516px;*/
+    margin: 45px auto;
+    border: solid 1px;
+    padding: 0;
+    background-color: #FCFEFC;
+}
+
+label {
+    float: left;
+    margin: 10px;
+    color: #000000;
+    font-weight: bold;
+}
+
+br {
+    clear: left;
+}
+
+input {
+    font-size: 14px;
+    border: #666666 1px solid;
+    background: #FFFFFF;
+    margin: 5px;
+    width: 140px;
+}
+
+input.button {
+    background-image: url(../images/login/bar_alcatel.gif);
+    background-color: #CFCBDF;
+    width: 70px;
+    PADDING-RIGHT: 5px;
+    PADDING-LEFT: 5px;
+    FONT-SIZE: 12px;
+    font-weight: bold;
+    CURSOR: pointer;
+    COLOR: white;
+    PADDING-TOP: 1px;
+    border: #3E2782 outset 1px;
+    *border-left: #CFCBDF solid 1px;
+    *border-top: #CFCBDF solid 1px;
+}
+
+input.disabledbutton {
+    background: gray url(../images/login/bar_alcatel.gif);
+    width: 70px;
+    PADDING-RIGHT: 5px;
+    PADDING-LEFT: 5px;
+    FONT-SIZE: 12px;
+    font-weight: bold;
+    CURSOR: pointer;
+    COLOR: white;
+    PADDING-TOP: 1px;
+    border: #3E2782 outset 1px;
+    *border-left: #CFCBDF solid 1px;
+    *border-top: #CFCBDF solid 1px;
+}
+
+/* ------------------------------------------------------------------*/
+/* WebWork2 CSS Classes                                              */
+/* ------------------------------------------------------------------*/
+
+.errorMessage {
+    color: red;
+}
+
+.errorLabel {
+    font-size: 11px;
+    font-family: Verdana, Sans-Serif;
+    font-weight: normal;
+    padding-left: 10px;
+    padding-right: 10px;
+    color: #0000ff;
+}
+
+* {
+    font-family: Verdana;
+    font-size: 96%;
+}
+
+label {
+    float: left;
+}
+
+label.error {
+    float: none;
+    color: red;
+    /*padding-left: .5em;*/
+    vertical-align: middle;
+}
+
+p {
+    clear: both;
+}
+
+.submit {
+    margin-left: 12em;
+}
+
+em {
+    font-weight: bold;
+    padding-right: 1em;
+    vertical-align: top;
+}
+
+/*@import "jqformvalidator/validator.css";*/
