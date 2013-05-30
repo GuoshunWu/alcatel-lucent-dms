@@ -666,7 +666,7 @@
                 <db.url>jdbc:postgresql://127.0.0.1:5432/dms</db.url>
                 <db.user>dms</db.user>
                 <db.password>alcatel123</db.password>
-                <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
+                <db.house-keeping-test-sql>select CURRENT_DATE</db.house-keeping-test-sql>
                 <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
                 <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
                 <dms.luceneindex.dir>${dms.temp}/dms/lucene/indexes/Local_PostGreSQL</dms.luceneindex.dir>
@@ -697,7 +697,7 @@
                 <db.url>jdbc:postgresql://135.117.180.165:5432/dms_qa</db.url>
                 <db.user>dms</db.user>
                 <db.password>alcatel123</db.password>
-                <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
+                <db.house-keeping-test-sql>select CURRENT_DATE</db.house-keeping-test-sql>
                 <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
                 <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
                 <dms.luceneindex.dir>${dms.temp}/dms/lucene/indexes/qa_db</dms.luceneindex.dir>
@@ -711,7 +711,7 @@
                 <!--                <db.url>jdbc:postgresql://172.24.190.236:5432/dms_prod</db.url>-->
                 <db.user>dms</db.user>
                 <db.password>alcatel123</db.password>
-                <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
+                <db.house-keeping-test-sql>select CURRENT_DATE</db.house-keeping-test-sql>
                 <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
                 <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
                 <dms.luceneindex.dir>${dms.temp}/dms/lucene/indexes/prod_db</dms.luceneindex.dir>
@@ -724,7 +724,7 @@
                 <db.url>jdbc:postgresql://172.24.190.236:5432/dms_qa3</db.url>
                 <db.user>dms</db.user>
                 <db.password>alcatel123</db.password>
-                <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
+                <db.house-keeping-test-sql>select CURRENT_DATE</db.house-keeping-test-sql>
                 <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
                 <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
                 <dms.luceneindex.dir>${dms.temp}/dms/lucene/indexes/qa3_db</dms.luceneindex.dir>
@@ -737,7 +737,7 @@
                 <db.url>jdbc:postgresql://172.24.190.236:5432/dms_qa</db.url>
                 <db.user>dms</db.user>
                 <db.password>alcatel123</db.password>
-                <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
+                <db.house-keeping-test-sql>select CURRENT_DATE</db.house-keeping-test-sql>
                 <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
                 <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
                 <dms.luceneindex.dir>${dms.temp}/dms/lucene/indexes/local_qa_db</dms.luceneindex.dir>
@@ -750,7 +750,7 @@
                 <db.url>jdbc:postgresql://172.24.190.236:5432/dms_qa2</db.url>
                 <db.user>dms</db.user>
                 <db.password>alcatel123</db.password>
-                <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
+                <db.house-keeping-test-sql>select CURRENT_DATE</db.house-keeping-test-sql>
                 <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
                 <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
                 <dms.luceneindex.dir>${dms.temp}/dms/lucene/indexes/local_qa2_db</dms.luceneindex.dir>
