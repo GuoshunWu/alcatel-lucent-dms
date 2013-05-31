@@ -35,7 +35,7 @@ public class OTCAndoridOrIPhoneParser extends DictionaryParser {
 
 	@Override
 	public DictionaryFormat getFormat() {
-		return Constants.DictionaryFormat.OTC_PC;
+		return Constants.DictionaryFormat.OTC_EXCEL;
 	}
 	
     @Override
@@ -49,7 +49,7 @@ public class OTCAndoridOrIPhoneParser extends DictionaryParser {
                     deliveredDicts.add(parseDictionary(normalize(rootDir, true), file, acceptedFiles));
                 } catch (BusinessException e) {
                     // Ignore INVALID_OTC_PC_DICT_FILE error because the file can be another type of excel dictionary.
-                    if (e.getErrorCode() != BusinessException.INVALID_OTC_PC_DICT_FILE) {
+                    if (e.getErrorCode() != BusinessException.INVALID_OTC_EXCEL_DICT_FILE) {
                         throw e;
                     }
                 }
@@ -64,7 +64,7 @@ public class OTCAndoridOrIPhoneParser extends DictionaryParser {
                 deliveredDicts.add(parseDictionary(normalize(rootDir, true), OTCFile, acceptedFiles));
             } catch (BusinessException e) {
                 // Ignore INVALID_OTC_PC_DICT_FILE error because the file can be another type of excel dictionary.
-                if (e.getErrorCode() != BusinessException.INVALID_OTC_PC_DICT_FILE) {
+                if (e.getErrorCode() != BusinessException.INVALID_OTC_EXCEL_DICT_FILE) {
                     throw e;
                 }
             }
@@ -87,7 +87,7 @@ public class OTCAndoridOrIPhoneParser extends DictionaryParser {
         dictBase.setName(dictName);
         dictBase.setPath(dictPath);
         dictBase.setEncoding(DEFAULT_ENCODING);
-        dictBase.setFormat(Constants.DictionaryFormat.OTC_PC.toString());
+        dictBase.setFormat(Constants.DictionaryFormat.OTC_EXCEL.toString());
 
         dictionary = new Dictionary();
         dictionary.setDictLanguages(new ArrayList<DictionaryLanguage>());

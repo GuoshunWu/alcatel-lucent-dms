@@ -25,10 +25,10 @@ public class OTCPCGenerator extends DictionaryGenerator {
     private static Logger log = LoggerFactory.getLogger(OTCPCGenerator.class);
     @Autowired
     private DaoService dao;
-
+    
     @Override
     public Constants.DictionaryFormat getFormat() {
-        return Constants.DictionaryFormat.OTC_PC;
+        return Constants.DictionaryFormat.OTC_EXCEL;
     }
 
     @Override
@@ -56,17 +56,41 @@ public class OTCPCGenerator extends DictionaryGenerator {
         font.setBoldweight(Font.BOLDWEIGHT_BOLD);
         CellStyle style = wb.createCellStyle();
         style.setFont(font);
+        
+        // generate "default" sheet
+        int rowNum = 0;
+        Sheet refSheet = wb.createSheet(OTCPCParser.SHEET_REF);
+        Row row = refSheet.createRow(rowNum++);
+        refSheet.setColumnWidth(0, defaultColWidth);
+        Cell cell = row.createCell(0, Cell.CELL_TYPE_STRING);
+        cell.setCellValue(OTCPCParser.TITLE_ID);
+        cell.setCellStyle(style);
 
+        refSheet.setColumnWidth(1, defaultColWidth);
+        cell = row.createCell(1, Cell.CELL_TYPE_STRING);
+        cell.setCellValue(OTCPCParser.TITLE_VALUE);
+        cell.setCellStyle(style);
+        
+        Collection<Label> labels = dict.getAvailableLabels();
+        for (Label label : labels) {
+            row = refSheet.createRow(rowNum++);
+            cell = row.createCell(0);
+            cell.setCellValue(label.getKey());
+            cell = row.createCell(1);
+            cell.setCellValue(label.getReference());
+        }
+        
+        // generate a sheet for each language
         for (DictionaryLanguage dictionaryLanguage : dictionaryLanguageCollection) {
             Sheet langSheet = wb.createSheet(dictionaryLanguage.getLanguageCode());
 
             int colIndex = 0;
-            int rowNum = 0;
+            rowNum = 0;
             //Title row
-            Row row = langSheet.createRow(rowNum++);
+            row = langSheet.createRow(rowNum++);
 
             langSheet.setColumnWidth(colIndex, defaultColWidth);
-            Cell cell = row.createCell(colIndex++, Cell.CELL_TYPE_STRING);
+            cell = row.createCell(colIndex++, Cell.CELL_TYPE_STRING);
             cell.setCellValue(OTCPCParser.TITLE_ID);
             cell.setCellStyle(style);
 
@@ -81,8 +105,6 @@ public class OTCPCGenerator extends DictionaryGenerator {
             cell.setCellStyle(style);
 
             //Translation row
-            Collection<Label> labels = dict.getAvailableLabels();
-
             for (Label label : labels) {
                 row = langSheet.createRow(rowNum++);
                 colIndex = 0;
