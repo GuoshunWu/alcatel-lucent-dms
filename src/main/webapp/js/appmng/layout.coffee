@@ -18,7 +18,7 @@ define ['dms-util'], (util)->
 
   showApplicationPanel: ->appmngPnlGroup.switchTo panel.application, ()->
     parent = $('#dictionaryGridList_parent')
-    #    console?.log "parent.width=#{parent.width()}, parent.height=#{parent.height()}."
+#    console?.log "parent.width=#{parent.width()}, parent.height=#{parent.height()}."
     $('#dictionaryGridList').setGridWidth(parent.width() - 10).setGridHeight(parent.height() - 85)
 
   showWelcomePanel: ->

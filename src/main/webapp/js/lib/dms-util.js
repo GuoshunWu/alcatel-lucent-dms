@@ -300,6 +300,9 @@ User: Guoshun Wu
             if (pb) {
               pb.parent().remove();
             }
+            $.msgBox(textStatus, null, {
+              title: c18n.error
+            });
             if (typeof console !== "undefined" && console !== null) {
               console.log("error: " + textStatus);
             }
@@ -600,7 +603,7 @@ User: Guoshun Wu
           $("" + this.panels).hide();
           oldPanel = this.currentPanel;
           this.currentPanel = panelId;
-          $("" + this.panels + "[id='" + panelId + "']").fadeIn("fast", function() {
+          $("" + this.panels + "[id='" + panelId + "']").show(0, function() {
             if ($.isFunction(callback)) {
               return callback();
             }

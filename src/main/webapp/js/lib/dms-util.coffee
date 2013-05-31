@@ -192,6 +192,7 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
       ).fail((jqXHR, textStatus, errorThrown)->
         if 'timeout' != textStatus
           pb.parent().remove() if pb
+          $.msgBox textStatus, null, {title: c18n.error}
           console?.log "error: #{textStatus}"
           return
 
@@ -407,7 +408,8 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
 #      console?.log "switch to #{@panels}[id='#{panelId}']."
       oldPanel = @currentPanel
       @currentPanel = panelId
-      $("#{@panels}[id='#{panelId}']").fadeIn "fast", ()->callback() if $.isFunction(callback)
+#      $("#{@panels}[id='#{panelId}']").fadeIn "slow", ()->callback() if $.isFunction(callback)
+      $("#{@panels}[id='#{panelId}']").show 0, ()->callback() if $.isFunction(callback)
 
       @onSwitch oldPanel, @currentPanel if $.isFunction(@onSwitch) and oldPanel != @currentPanel
 
