@@ -265,7 +265,7 @@ User: Guoshun Wu
           dataType: "json"
         }).done(function(data, textStatus, jqXHR) {
           if ('error' === data.event.cmd) {
-            $.msgBox(event.msg, null, {
+            $.msgBox(data.event.msg, null, {
               title: c18n.error
             });
             if (pb) {
@@ -297,6 +297,9 @@ User: Guoshun Wu
           }), pollingInterval);
         }).fail(function(jqXHR, textStatus, errorThrown) {
           if ('timeout' !== textStatus) {
+            if (pb) {
+              pb.parent().remove();
+            }
             if (typeof console !== "undefined" && console !== null) {
               console.log("error: " + textStatus);
             }
