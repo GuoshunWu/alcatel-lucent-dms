@@ -172,7 +172,7 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
       ).done((data, textStatus, jqXHR) ->
         #        console?.log data
         if 'error' == data.event.cmd
-          $.msgBox event.msg, null, {title: c18n.error}
+          $.msgBox data.event.msg, null, {title: c18n.error}
           pb.parent().remove() if pb
           return
 
@@ -191,6 +191,7 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
         setTimeout (->long_polling  url, {pqCmd: 'process', pqId: data.pqId}, callback, pb), pollingInterval
       ).fail((jqXHR, textStatus, errorThrown)->
         if 'timeout' != textStatus
+          pb.parent().remove() if pb
           console?.log "error: #{textStatus}"
           return
 
