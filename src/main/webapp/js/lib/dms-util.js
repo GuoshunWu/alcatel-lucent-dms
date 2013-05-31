@@ -268,6 +268,9 @@ User: Guoshun Wu
             $.msgBox(event.msg, null, {
               title: c18n.error
             });
+            if (pb) {
+              pb.parent().remove();
+            }
             return;
           }
           if ('done' === data.event.cmd) {
@@ -294,6 +297,9 @@ User: Guoshun Wu
           }), pollingInterval);
         }).fail(function(jqXHR, textStatus, errorThrown) {
           if ('timeout' !== textStatus) {
+            if (typeof console !== "undefined" && console !== null) {
+              console.log("error: " + textStatus);
+            }
             return;
           }
           if (retryTimes > 0) {

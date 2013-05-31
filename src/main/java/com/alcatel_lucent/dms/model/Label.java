@@ -2,9 +2,7 @@ package com.alcatel_lucent.dms.model;
 
 import com.alcatel_lucent.dms.SystemError;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.solr.analysis.*;
-import org.hibernate.annotations.Index;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.Type;
@@ -21,7 +19,7 @@ import java.util.Map;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 
-@AnalyzerDef(name = "dmsAnalyzer",
+@AnalyzerDef(name = "englishSnowBallAnalyzer",
 //        charFilters = {
 //                @CharFilterDef(factory = MappingCharFilterFactory.class, params = {
 //                        @Parameter(name = "mapping", value = "")
@@ -30,15 +28,18 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
         tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
         filters = {
                 @TokenFilterDef(factory = StandardFilterFactory.class),
-                @TokenFilterDef(factory = LowerCaseFilterFactory.class)
-//                @TokenFilterDef(factory = StopFilterFactory.class)
+                @TokenFilterDef(factory = LowerCaseFilterFactory.class),
+                @TokenFilterDef(factory = StopFilterFactory.class),
+//                @TokenFilterDef(factory = SnowballPorterFilterFactory.class,
+//                        params = @Parameter(name = "language", value = "english")
+//                )
         }
 )
 
 //@Entity
 @Table(name = "LABEL")
 @Indexed
-//@Analyzer(definition = "dmsAnalyzer")
+//@Analyzer(definition = "englishSnowBallAnalyzer")
 public class Label extends BaseEntity implements Cloneable {
     /**
      *
@@ -135,7 +136,7 @@ public class Label extends BaseEntity implements Cloneable {
     //    @Field(store = Store.YES, analyzer = @Analyzer(definition = "ngram"))
     @Fields({
             @Field(store = Store.YES),
-            @Field(name="reference_forSort", index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
+            @Field(name = "reference_forSort", index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
     })
     @Column(name = "REFERENCE", nullable = false, length = 1024)
     public String getReference() {
