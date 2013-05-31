@@ -38,7 +38,7 @@ public class OTCWebParser extends DictionaryParser {
 
 	@Override
 	public DictionaryFormat getFormat() {
-		return Constants.DictionaryFormat.OTC_PC;
+		return Constants.DictionaryFormat.OTC_EXCEL;
 	}
 	
     @Override
@@ -77,7 +77,7 @@ public class OTCWebParser extends DictionaryParser {
         dictBase.setName(dictName);
         dictBase.setPath(dictPath);
         dictBase.setEncoding(DEFAULT_ENCODING);
-        dictBase.setFormat(Constants.DictionaryFormat.OTC_PC.toString());
+        dictBase.setFormat(Constants.DictionaryFormat.OTC_EXCEL.toString());
 
         dictionary = new Dictionary();
         dictionary.setDictLanguages(new ArrayList<DictionaryLanguage>());

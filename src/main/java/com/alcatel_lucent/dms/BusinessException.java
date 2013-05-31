@@ -42,7 +42,7 @@ public class BusinessException extends RuntimeException {
     static public final int INVALID_VLE_DICT_FILE = 240;
 
     // OTC PC  error
-    static public final int INVALID_OTC_PC_DICT_FILE = 241;
+    static public final int INVALID_OTC_EXCEL_DICT_FILE = 241;
     // OTC　Web error
     static public final int INVALID_OTC_WEB_DICT_FILE = 242;
     static public final int INVALID_PO_SYNTAX = 243;

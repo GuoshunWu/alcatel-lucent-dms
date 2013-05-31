@@ -29,7 +29,7 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
         filters = {
                 @TokenFilterDef(factory = StandardFilterFactory.class),
                 @TokenFilterDef(factory = LowerCaseFilterFactory.class),
-                @TokenFilterDef(factory = StopFilterFactory.class),
+                @TokenFilterDef(factory = StopFilterFactory.class)
 //                @TokenFilterDef(factory = SnowballPorterFilterFactory.class,
 //                        params = @Parameter(name = "language", value = "english")
 //                )

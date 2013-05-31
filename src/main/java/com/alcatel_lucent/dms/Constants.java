@@ -26,7 +26,7 @@ public class Constants {
         STD_EXCEL("Standard Excel"),
         TEXT_PROP("Text properties"),
         ACS_TEXT("ACS text"),
-        OTC_PC("OTC PC"),
+        OTC_EXCEL("OTC Excel"),
 //        OTC_ANDROID_IPHONE("OTC Android/iPhone"),
 //        OTC_WEB("OTC Web"),
         VOICE_APP("Voice App"),

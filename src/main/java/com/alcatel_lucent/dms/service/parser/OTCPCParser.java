@@ -28,8 +28,12 @@ import static org.apache.commons.io.FilenameUtils.normalize;
 public class OTCPCParser extends DictionaryParser {
 
     public static final String TITLE_ID = "ID";
-    public static final String TITLE_DEFAULT = "Default";
+    public static final String TITLE_DEFAULT = "Value_default";
     public static final String TITLE_VALUE = "Value";
+    public static final String SHEET_INFO = "Informations";
+    public static final String SHEET_LANG = "Languages";
+    public static final String SHEET_CTX = "Context";
+    public static final String SHEET_REF = "default";
     public static final String DEFAULT_ENCODING = "UTF-16LE";
     public static final String[] extensions = new String[]{"xls", "xlsx"};
     @Autowired
@@ -37,7 +41,7 @@ public class OTCPCParser extends DictionaryParser {
 
 	@Override
 	public DictionaryFormat getFormat() {
-		return Constants.DictionaryFormat.OTC_PC;
+		return Constants.DictionaryFormat.OTC_EXCEL;
 	}
 	
     @Override
@@ -53,7 +57,7 @@ public class OTCPCParser extends DictionaryParser {
                 deliveredDicts.add(parseDictionary(normalize(rootDir, true), OTCFile, acceptedFiles));
             } catch (BusinessException e) {
                 // Ignore INVALID_OTC_PC_DICT_FILE error because the file can be another type of excel dictionary.
-                if (e.getErrorCode() != BusinessException.INVALID_OTC_PC_DICT_FILE) {
+                if (e.getErrorCode() != BusinessException.INVALID_OTC_EXCEL_DICT_FILE) {
                     throw e;
                 }
             }
@@ -76,11 +80,11 @@ public class OTCPCParser extends DictionaryParser {
         dictBase.setName(dictName);
         dictBase.setPath(dictPath);
         dictBase.setEncoding(DEFAULT_ENCODING);
-        dictBase.setFormat(Constants.DictionaryFormat.OTC_PC.toString());
+        dictBase.setFormat(Constants.DictionaryFormat.OTC_EXCEL.toString());
 
         dictionary = new Dictionary();
         dictionary.setDictLanguages(new ArrayList<DictionaryLanguage>());
-        dictionary.setReferenceLanguage("en");	//TODO: to be confirmed
+        dictionary.setReferenceLanguage("en");
         dictionary.setLabels(new ArrayList<Label>());
 
         dictionary.setBase(dictBase);
@@ -108,6 +112,11 @@ public class OTCPCParser extends DictionaryParser {
      */
     private void readTranslationsInSheet(Sheet sheet, int index, Dictionary dict) {
         String langCode = sheet.getSheetName().trim();
+        if (langCode.equalsIgnoreCase(SHEET_INFO) || 
+        		langCode.equalsIgnoreCase(SHEET_LANG) || 
+        		langCode.equalsIgnoreCase(SHEET_CTX) ||
+        		langCode.equalsIgnoreCase(SHEET_REF))
+        	return;		// ignore other sheets for the moment
 
         DictionaryLanguage dl = new DictionaryLanguage();
         dl.setLanguageCode(langCode);
@@ -127,7 +136,7 @@ public class OTCPCParser extends DictionaryParser {
             if (row.getRowNum() == sheet.getFirstRowNum()) {
                 colIndexes = readTitleRow(row);
                 if (!(CollectionUtils.isSubCollection(Arrays.asList(TITLE_ID, TITLE_DEFAULT, TITLE_VALUE), colIndexes.keySet()))) {
-                    throw new BusinessException(BusinessException.INVALID_OTC_PC_DICT_FILE);
+                    throw new BusinessException(BusinessException.INVALID_OTC_EXCEL_DICT_FILE);
                 }
                 continue;
             }
@@ -209,9 +218,14 @@ public class OTCPCParser extends DictionaryParser {
     private String getStringCellValue(Cell cell) {
         if (null == cell) return StringUtils.EMPTY;
         DataFormatter formatter = new HSSFDataFormatter(Locale.ENGLISH);
-        FormulaEvaluator evaluator = cell.getRow().getSheet().getWorkbook().getCreationHelper().createFormulaEvaluator();
         if (Cell.CELL_TYPE_FORMULA == cell.getCellType()) {
-            return formatter.formatCellValue(cell, evaluator);
+            FormulaEvaluator evaluator = cell.getRow().getSheet().getWorkbook().getCreationHelper().createFormulaEvaluator();
+            try {
+            	return formatter.formatCellValue(cell, evaluator);
+            } catch (Exception e) {
+            	log.warn("Invalid formula at row " + cell.getRowIndex() + " col " + cell.getColumnIndex() + " of sheet " + cell.getSheet().getSheetName());
+            	return StringUtils.EMPTY;
+            }
         }
         return formatter.formatCellValue(cell);
     }
