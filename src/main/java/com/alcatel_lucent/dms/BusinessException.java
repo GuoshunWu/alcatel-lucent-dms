@@ -168,4 +168,9 @@ public class BusinessException extends RuntimeException {
     public void setNested(Collection<BusinessException> nested) {
         this.nested = nested;
     }
+    
+    @Override
+    public String getMessage() {
+    	return toString();
+    }
 }
