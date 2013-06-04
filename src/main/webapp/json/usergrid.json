@@ -1,0 +1,10 @@
+{"page": 1, "total": 1, "records": 2, "rows": [
+    {
+        "id": 1,
+        "cell": ["guoshunw", "Guoshun WU", "Guoshun.Wu@alcatel-sbell.com.cn", "Thu, 11 Apr 2013 08:30:44 GMT", 1, 4]
+    },
+    {
+        "id": 2,
+        "cell": ["allan", "Allan YANG", "Allan.Yang@alcatel-lucent.com", "Thu, 12 Apr 2013 08:30:44 GMT", 0, 3]
+    }
+]}
