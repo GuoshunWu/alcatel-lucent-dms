@@ -1,3 +1,7 @@
+V2.6.2 (Jun. 4, 2013)
+	* Fixed problem of truncated filename in generated dictionaries
+	* Fixed screen flash issue when switching between applications
+
 V2.6.1 (May. 31, 2013)
 	* Rename dict format "OTC PC" to "OTC Excel" and adjust dictioanry parser
 	* Bug fix of endless progress bar
