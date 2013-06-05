@@ -1,6 +1,9 @@
 package com.alcatel_lucent.dms.rest;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.GET;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.service.DeliveringDictPool;
+import com.alcatel_lucent.dms.util.ObjectComparator;
 
 @Path("/delivery/dict")
 @Component("PreviewDictREST")
@@ -30,7 +34,16 @@ public class PreviewDictREST extends BaseREST {
 	@Override
 	String doGetOrPost(Map<String, String> requestMap) throws Exception {
 		String handler = requestMap.get("handler");
-		Collection<Dictionary> dictList = pool.getDictionaries(handler);
+		Collection<Dictionary> dictList = new ArrayList<Dictionary>(pool.getDictionaries(handler));
+    	String sidx = requestMap.get("sidx");
+    	String sord = requestMap.get("sord");
+    	if (sidx == null || sidx.trim().isEmpty()) {
+    		sidx = "name";
+    	}
+    	if (sord == null) {
+    		sord = "ASC";
+    	}
+		Collections.sort((ArrayList<Dictionary>) dictList, new ObjectComparator(sidx, sord));
 		requestMap.put("records", "" + dictList.size());
 		return toJSON(dictList, requestMap);
 	}

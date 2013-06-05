@@ -2,6 +2,8 @@ package com.alcatel_lucent.dms.rest;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.Path;
@@ -13,6 +15,7 @@ import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryLanguage;
 import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.service.DeliveringDictPool;
+import com.alcatel_lucent.dms.util.ObjectComparator;
 
 @Path("/delivery/labels")
 @Component("PreviewDictLabelREST")
@@ -34,7 +37,17 @@ public class PreviewDictLabelREST extends BaseREST {
 		if (dict.getLabels() == null) {
 			return "";
 		}
-		Collection<Label> labels = pageFilter(dict.getLabels(), requestMap);
+    	String sidx = requestMap.get("sidx");
+    	String sord = requestMap.get("sord");
+    	if (sidx == null || sidx.trim().isEmpty()) {
+    		sidx = "sortNo";
+    	}
+    	if (sord == null) {
+    		sord = "ASC";
+    	}
+		Collection<Label> labels = new ArrayList<Label>(dict.getLabels());
+		Collections.sort((ArrayList<Label>) labels, new ObjectComparator(sidx, sord));
+		labels = pageFilter(labels, requestMap);
 		return toJSON(labels, requestMap);
 	}
 
