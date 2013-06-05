@@ -15,7 +15,7 @@ import com.alcatel_lucent.dms.model.TaskDetail;
  * URL: /rest/task/details
  * Filter parameters:
  *   task		(required) task id
- *   context	(required) context id
+ *   context	(required) application id
  *   language	(required) language id
  *   translated (required) "1" or "0" indicating translated details or not translated details
  *   

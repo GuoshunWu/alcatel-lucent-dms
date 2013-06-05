@@ -1,3 +1,6 @@
+V2.6.3 (coming soon)
+	* Merge same reference texts of context DEFAULT and DICT into one translation in translation tasks
+
 V2.6.2 (Jun. 4, 2013)
 	* Fixed problem of truncated filename in generated dictionaries
 	* Fixed screen flash issue when switching between applications
