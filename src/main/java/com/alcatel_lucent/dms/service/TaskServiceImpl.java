@@ -217,25 +217,42 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
         int labelCount = 0, wordCount = 0;
         Map<String, Integer> labelCountMap = new TreeMap<String, Integer>();
         Map<String, Integer> wordCountMap = new TreeMap<String, Integer>();
+        HashSet<String> defaultReferences = new HashSet<String>();
         for (TaskDetail td : task.getDetails()) {
             String languageName = td.getLanguage().getName();
             String appName = td.getLabel().getDictionary().getBase().getApplicationBase().getName();
             if ((currentLanguage != null && !currentLanguage.equals(languageName)) ||
-                    (currentApp != null && !currentApp.equals(appName))) {
-                generateTaskFile(targetDir, currentLanguage, currentApp, currentDetails, existingFilenames);
-                currentDetails.clear();
-                if (currentLanguage != null && !currentLanguage.equals(languageName)) {
+                    (currentApp != null && !currentApp.equals(appName))) {	// change to next file
+            	if (currentDetails.size() > 0) {
+	                generateTaskFile(targetDir, currentLanguage, currentApp, currentDetails, existingFilenames);
+	                currentDetails.clear();
+            	}
+                if (currentLanguage != null && !currentLanguage.equals(languageName)) {	// change to next language
                     labelCountMap.put(currentLanguage, labelCount);
                     wordCountMap.put(currentLanguage, wordCount);
                     labelCount = wordCount = 0;
                     existingFilenames.clear();
+                    defaultReferences.clear();
                 }
             }
             currentLanguage = languageName;
             currentApp = appName;
-            currentDetails.add(td);
-            labelCount++;
-            wordCount += Util.countWords(td.getText().getReference());
+            
+            // skip same reference text in [DEFAULT] AND [DICT] context
+            Context ctx = td.getText().getContext();
+            boolean skip = false;
+            if (ctx.getName().equals(Context.DEFAULT) || ctx.getName().equals(Context.DICT)) {
+            	if (defaultReferences.contains(td.getText().getReference())) {
+            		skip = true;
+            	} else {
+    	            defaultReferences.add(td.getText().getReference());
+            	}
+            }
+            if (!skip) {
+	            currentDetails.add(td);
+	            labelCount++;
+	            wordCount += Util.countWords(td.getText().getReference());
+            }
         }
         if (currentDetails.size() > 0) {
             generateTaskFile(targetDir, currentLanguage, currentApp, currentDetails, existingFilenames);
@@ -306,7 +323,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
         createCell(row, 4, headerMap.get(ExcelFileHeader.REFERENCE), styleHead);
         createCell(row, 5, headerMap.get(ExcelFileHeader.TRANSLATION), styleHead);
         createCell(row, 6, headerMap.get(ExcelFileHeader.REMARKS), styleHead);
-        sheet.setColumnWidth(1, 0);
+//        sheet.setColumnWidth(1, 0);
         sheet.setColumnWidth(4, 40 * 256);
         sheet.setColumnWidth(5, 40 * 256);
         sheet.setColumnWidth(6, 20 * 256);
@@ -314,7 +331,10 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
         for (TaskDetail td : taskDetails) {
             row = sheet.createRow(rowNo++);
             createCell(row, 0, td.getLabelKey(), styleBody);
-            createCell(row, 1, td.getText().getContext().getKey(), styleBody);
+            Context context = td.getText().getContext();
+            // display only special contexts
+            String contextStr = context.getName().equals(Context.DEFAULT) || context.getName().equals(Context.DICT) ? "" : context.getKey();
+            createCell(row, 1, contextStr, styleBody);
             if (td.getMaxLength() != null) {
                 createCell(row, 2, td.getMaxLength(), styleBody);
             }
@@ -469,11 +489,18 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
     private void updateTaskDetails(Task task, Language language, String contextKey,
                                    Map<String, String> translationMap) {
         String hql = "from TaskDetail where task.id=:taskId" +
-                " and language.id=:languageId and text.context.key=:contextKey";
+                " and language.id=:languageId";
         Map param = new HashMap();
         param.put("taskId", task.getId());
         param.put("languageId", language.getId());
-        param.put("contextKey", contextKey);
+        if (contextKey.isEmpty()) {
+        	hql += " and text.context.name in(:ctxDefault,:ctxDict)";
+        	param.put("ctxDefault", Context.DEFAULT);
+        	param.put("ctxDict", Context.DICT);
+        } else {
+        	hql += " and text.context.key=:contextKey";
+        	param.put("contextKey", contextKey);
+        }
         Collection<TaskDetail> details = dao.retrieve(hql, param);
         for (TaskDetail td : details) {
             if (translationMap.containsKey(td.getText().getReference())) {
@@ -520,7 +547,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
                 String context = formatter.formatCellValue(row.getCell(cellIndexMap.get(headerMap.get(ExcelFileHeader.CONTEXT))));
                 String reference = formatter.formatCellValue(row.getCell(cellIndexMap.get(headerMap.get(ExcelFileHeader.REFERENCE))));
                 String translation = formatter.formatCellValue(row.getCell(cellIndexMap.get(headerMap.get(ExcelFileHeader.TRANSLATION))));
-                if (context == null || context.isEmpty() || reference == null) {
+                if (reference == null) {
                     throw new BusinessException(BusinessException.INVALID_TASK_FILE, language.getName() + "/" + taskFile.getName());
                 }
                 Map<String, String> transMap = result.get(context);
@@ -531,6 +558,8 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
                 transMap.put(reference, translation);
             }
             return result;
+        } catch (BusinessException e) {
+        	throw e;
         } catch (Exception e) {
             e.printStackTrace();
             log.error(e.toString());
@@ -613,7 +642,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 
     @Override
     public Map<Long, Map<Long, int[]>> getTaskSummary(Long taskId) {
-        String hql = "select td.label.dictionary.base.applicationBase.id,td.language.id," +
+/*        String hql = "select td.label.dictionary.base.applicationBase.id,td.language.id," +
                 "sum(case when td.newTranslation<>td.text.reference then 1 else 0 end)," +
                 "sum(case when td.newTranslation is null or td.newTranslation='' or td.newTranslation=td.text.reference then 1 else 0 end) " +
                 "from TaskDetail td " +
@@ -635,6 +664,45 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
                 result.put(appBaseId, langMap);
             }
             langMap.put(languageId, value);
+        }
+*/        
+        Map<Long, Map<Long, int[]>> result = new HashMap<Long, Map<Long, int[]>>();
+    	Task task = (Task) dao.retrieve(Task.class, taskId);
+        HashSet<String> uniqueReferences = new HashSet<String>();
+        Long currentLangId = null;
+        for (TaskDetail td : task.getDetails()) {
+        	Long appBaseId = td.getLabel().getDictionary().getBase().getApplicationBase().getId();
+        	Long languageId = td.getLanguage().getId();
+        	if (currentLangId == null || !currentLangId.equals(languageId)) {
+        		currentLangId = languageId;
+        		uniqueReferences.clear();
+        	}
+        	// skip duplicate reference text of context DEFAULT and DICT
+        	String contextName = td.getLabel().getText().getContext().getName();
+        	if (contextName.equals(Context.DEFAULT) || contextName.equals(Context.DICT)) {
+        		if (uniqueReferences.contains(td.getText().getReference())) {
+        			continue;
+        		} else {
+        			uniqueReferences.add(td.getText().getReference());
+        		}
+        	}
+        	// add count
+        	Map<Long, int[]> langMap = result.get(appBaseId);
+        	if (langMap == null) {
+        		langMap = new HashMap<Long, int[]>();
+                result.put(appBaseId, langMap);
+        	}
+        	int[] value = langMap.get(languageId);
+        	if (value == null) {
+        		value = new int[] {0, 0};
+        		langMap.put(languageId, value);
+        	}
+        	if (td.getNewTranslation() == null || td.getNewTranslation().isEmpty() || 
+        			td.getNewTranslation().equals(td.getText().getReference())) {
+        		value[1]++;
+        	} else {
+        		value[0]++;
+        	}
         }
         return result;
     }
