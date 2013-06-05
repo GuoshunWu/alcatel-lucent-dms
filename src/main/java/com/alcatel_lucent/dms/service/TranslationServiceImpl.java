@@ -1033,8 +1033,10 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 			String sortKey = (app == null ? "" : app.getName() + " " + app.getVersion()) 
 					+ " " + label.getDictionary().getName() + " " + label.getDictionary().getVersion() + " " 
 					+ label.getSortNo() + " " + label.getId();
+			Long virtualId = (-(label.getId() * 1000 + langId));	// virtual tid < 0, indicating a non-existing ct object
 			if (ot != null) {	// found in origTranslation which doesn't need translation
 				ct = new Translation();
+				ct.setId(virtualId);
 				ct.setTranslation(ot.getOrigTranslation());
 				ct.setStatus(Translation.STATUS_TRANSLATED);
 				label.setCt(ct);
@@ -1042,6 +1044,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 				label.setCt(ct);
 			} else {	// found in reference
 				ct = new Translation();
+				ct.setId(virtualId);
 				if (label.getContext().getName().equals(Context.EXCLUSION)) {
 					ct.setTranslation(label.getReference());
 					ct.setStatus(Translation.STATUS_TRANSLATED);
@@ -1060,6 +1063,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 					} else {
 						Translation trans = label.getText().getTranslation(langId);
 						if (trans != null) {
+							ct.setId(trans.getId());
 							ct.setTranslation(trans.getTranslation());
 							ct.setStatus(trans.getStatus());
 							ct.setTranslationType(trans.getTranslationType());
