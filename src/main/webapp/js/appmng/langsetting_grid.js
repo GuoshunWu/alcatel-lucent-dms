@@ -15,7 +15,7 @@
       cellactionurl: "app/remove-dict-language",
       rowNum: 10,
       rowList: [10, 20, 30],
-      sortname: 'language.name',
+      sortname: 'languageCode',
       sortorder: 'asc',
       viewrecords: true,
       gridview: true,

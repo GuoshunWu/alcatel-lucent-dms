@@ -9,7 +9,7 @@ define ['jqgrid'], ($)->
     pager: '#previewLangSettingPager'
     editurl: ""
     rowNum: 100
-    sortname: 'language.name'
+    sortname: 'languageCode'
     sortorder: 'asc'
     viewrecords: true
     gridview: true, cellEdit: true, cellurl: 'app/deliver-update-dict-language'

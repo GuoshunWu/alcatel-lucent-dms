@@ -11,7 +11,7 @@ define ['jqgrid', 'i18n!nls/appmng', 'i18n!nls/common'], ($, i18n, c18n)->
     cellactionurl: "app/remove-dict-language"
     rowNum: 10
     rowList: [10, 20, 30]
-    sortname: 'language.name'
+    sortname: 'languageCode'
     sortorder: 'asc'
     viewrecords: true
     #  ajaxGridOptions:{async:false}
