@@ -1,4 +1,4 @@
-V2.6.3 (coming soon)
+V2.6.3 (Jun. 6, 2013)
 	* Merge same reference texts of context DEFAULT and DICT into one translation in translation tasks
 	* Preview grid of imported dictionaries is now sortable
 	* Fixed problem of manually updating translation in text search results
