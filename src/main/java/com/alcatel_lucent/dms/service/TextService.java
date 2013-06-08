@@ -70,6 +70,7 @@ public interface TextService {
 	/**
 	 * Update text and translation in a context.
 	 * Insert or update text and translation entities in a batch.
+	 * The method is invoked for importing dictionaries, receiving tasks and updating reference of labels.
 	 * @param ctxId context id
 	 * @param texts texts with their translations to update in the context
 	 * @param mode importing mode, see DictionaryService.importDictionary()

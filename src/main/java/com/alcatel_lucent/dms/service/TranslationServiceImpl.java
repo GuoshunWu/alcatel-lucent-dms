@@ -1107,7 +1107,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 		List<LabelTranslation> result = new ArrayList<LabelTranslation>();
 		if (dict.getDictLanguages() != null) {
 			for (DictionaryLanguage dl : dict.getDictLanguages()) {
-				if (dl.getLanguage().getId() == 0) continue;	// skip reference language
+				if (dl.isReference()) continue;	// skip reference language
 				LabelTranslation lt = label.getOrigTranslation(dl.getLanguageCode());
 				if (lt == null) {
 					lt = new LabelTranslation();
