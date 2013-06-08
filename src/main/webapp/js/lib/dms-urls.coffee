@@ -29,17 +29,21 @@ define (require)->
     create: getURL('create-application-base', 'app/')
     del: getURL('remove-application-base', 'app/')
     create_version: getURL('create-application', 'app/')
+    generate_dict: getURL('generate-dict','app/')
     remove_version: getURL('remove-application', 'app/')
     deliver_dict: getURL('deliver-dict', 'app/')
     deliver_app_dict: getURL('deliver-app-dict', 'app/')
     process_dict: getURL('process-dict', 'app/')
     update_label_status: getURL('update-label-status', 'app/')
+    download_app_dict: getURL('download-app-dict', 'app/')
   label:
     del: getURL('delete-label', 'app/')
     create: getURL('add-label', 'app/')
   task:
     apply:  getURL('apply-task', 'task/')
     close:  getURL('close-task', 'task/')
+    generate_task_files: getURL('generate-task-files', 'task/')
+    receive_task_files: getURL('receive-task-files', 'task/')
 
   trans:
     update_translation: getURL('update-translation', 'trans/')
@@ -69,6 +73,8 @@ define (require)->
 
   users: getURL('users', 'rest/')
   ldapuser: getURL('users/ldapUser', 'rest/')
+
+  getURL: getURL
 
 
 

@@ -14,7 +14,7 @@ public class BusinessWarning {
     static public final int DUPLICATE_LABEL_KEY = 206;
     static public final int DUPLICATE_LANG_CODE = 207;
     public static final int DUPLICATE_REFERENCE = 208;
-
+    public static final int LABEL_KEY_BLANK = 209;
 
     private int warningCode;
     private Object[] parameters;

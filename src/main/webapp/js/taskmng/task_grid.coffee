@@ -15,20 +15,21 @@ define [
   handlers =
     'Download':
       title: 'Download'
-      url: 'task/generate-task-files'
+      url: urls.task.generate_task_files
       handler: (param)->
-        filename = $('#versionTypeLabel', "div[id='taskmng']").text() + '_'
-        filename += $('#selVersion option:selected', "div[id='taskmng']").text() + '_translation'
-        filename += "_#{new Date().format 'yyyyMMdd_hhmmss'}.zip"
+#        filename = $('#versionTypeLabel', "div[id='taskmng']").text() + '_'
+#        filename += $('#selVersion option:selected', "div[id='taskmng']").text() + '_translation'
+#        filename += "_#{new Date().format 'yyyyMMdd_hhmmss'}.zip"
 
+        filename = "#{param.name}.zip"
         $.blockUI()
-        $.post 'task/generate-task-files', {id: param.id, filename: filename}, (json)->
+        $.post @url, {id: param.id, filename: filename}, (json)->
           $.unblockUI()
           ($.msgBox json.message, null, {title: c18n.error};return) if json.status != 0
-
-          downloadForm = $('#downloadTaskFiles')
-          $('#fileLoc', downloadForm).val json.fileLoc
-          downloadForm.submit()
+          window.location= urls.getURL(urls.app.download_app_dict, '', {fileLoc: json.fileLoc, filename: filename})
+#          downloadForm = $('#downloadTaskFiles')
+#          $('#fileLoc', downloadForm).val json.fileLoc
+#          downloadForm.submit()
     'View…':
       title: 'View…'
       url: ''
@@ -38,11 +39,11 @@ define [
         dialogs.transReport.dialog 'open'
     'Close':
       title: 'Close'
-      url: 'task/close-task'
+      url: urls.task.closed
       handler: (param)->
         return if param.status == '1'
         $.blockUI
-        $.post 'task/close-task', {id: param.id}, (json)->
+        $.post @url, {id: param.id}, (json)->
           $.unblockUI()
           if json.status != 0
             $.msgBox json.message, null, {title: c18n.error}
@@ -50,7 +51,7 @@ define [
           $("#taskGrid").trigger 'reloadGrid'
     'Upload':
       title: 'Upload'
-      url: 'task/receive-task-files'
+      url: urls.task.receive_task_files
       handler: ((param)->)
 
 
@@ -73,7 +74,7 @@ define [
       {name: 'lastUpdateTime', index: 'lastUpdateTime', width: 150, align: 'left'}
       {name: 'status', index: 'status', width: 80, align: 'left', editable: false, edittype: 'select',
       editoptions: {value: "0:#{i18n.task.open};1:#{i18n.task.closed}"}, formatter: 'select'}
-      {name: 'actions', index: 'actions', width: 260, align: 'left',
+      {name: 'actions', index: 'actions', width: 260, align: 'left', sortable: false
       formatter: (cellvalue, options, rowObject)->
         $.map(handlers,
         (value, index)->
@@ -117,7 +118,7 @@ define [
 
           fileInput.fileupload {
           type: 'POST', dataType: 'json'
-          url: "task/receive-task-files"
+          url: urls.task.receive_task_files
           formData: [
             {name: 'id', value: rowid}
           ]
