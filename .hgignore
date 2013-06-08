@@ -52,3 +52,4 @@ src/main/webapp/js/npm-debug.log
 *.ipr
 *.ids
 *.log
+*.js
