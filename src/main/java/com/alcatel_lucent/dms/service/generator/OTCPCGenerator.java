@@ -73,6 +73,7 @@ public class OTCPCGenerator extends DictionaryGenerator {
         // generate "information" sheet
         Sheet infoSheet = wb.createSheet(OTCPCParser.SHEET_INFO);
         String info = dict.getAnnotation1();
+        if (StringUtils.isBlank(info)) return;
 
         int rowNum = 0;
         try {
@@ -159,7 +160,7 @@ public class OTCPCGenerator extends DictionaryGenerator {
                 CellUtil.createCell(row, colIndex++, StringUtils.defaultString(annotationMap.get("userInterface")));
                 Cell cell = row.createCell(colIndex++, Cell.CELL_TYPE_NUMERIC);
                 String used = annotationMap.get("used");
-                if(StringUtils.isNotBlank(used)){
+                if (StringUtils.isNotBlank(used)) {
                     cell.setCellValue(Double.parseDouble(used));
                 }
                 cell.setCellStyle(customBooleanStyle);
@@ -169,8 +170,10 @@ public class OTCPCGenerator extends DictionaryGenerator {
             rowNum++;
         }
         refSheet.setColumnWidth(2 + checkColumnLen, 5120);
-        //TODO: adjust the auto filter.
-        refSheet.setAutoFilter(new CellRangeAddress(0, rowNum - 1, 0, 3 + checkColumnLen));
+
+//        refSheet.setAutoFilter(new CellRangeAddress(0, rowNum - 1, 0, 3 + checkColumnLen));
+        refSheet.setAutoFilter(new CellRangeAddress(0, 0, 2 + checkColumnLen, 3 + checkColumnLen));
+
         // group column
         refSheet.groupColumn(0, 0);
         refSheet.groupColumn(2, checkColumnLen);
