@@ -8,7 +8,7 @@
       find the labels which reference resemblant to the text and display in a modal dialog
     */
 
-    matchAction = function(refText) {
+    matchAction = function(refText, transId) {
       var grid, languageId, postData;
 
       languageId = $('#detailLanguageSwitcher').val();
@@ -19,7 +19,11 @@
       postData.text = refText;
       postData.format = 'grid';
       postData.fuzzy = true;
+      postData.transId = transId;
       postData.prop = 'reference, translation, score';
+      if (typeof console !== "undefined" && console !== null) {
+        console.log(postData);
+      }
       return grid.setGridParam({
         url: urls.translations,
         page: 1
@@ -142,11 +146,12 @@
           width: 50,
           align: 'center',
           search: false,
+          sortable: false,
           hidden: true,
           formatter: function(cellvalue, options, rowObject) {
             var ret;
 
-            ret = "<div id='matchAct_" + rowObject[3] + "' style='display:inline-block' title=\"Match\" class=\"ui-state-default ui-corner-all\">";
+            ret = "<div id='matchAct_" + rowObject[3] + "_" + rowObject[6] + "' style='display:inline-block' title=\"Match\" class=\"ui-state-default ui-corner-all\">";
             ret += "<span class=\"ui-icon ui-icon-search\"></span></div>";
             return ret;
           },
@@ -160,10 +165,11 @@
 
         grid = $(this);
         return $('div[id^=matchAct]', this).click(function() {
-          var ref, _, _ref;
+          var ref, transId, _, _ref;
 
-          _ref = this.id.split('_'), _ = _ref[0], ref = _ref[1];
-          return matchAction(ref);
+          _ref = this.id.split('_'), _ = _ref[0], ref = _ref[1], transId = _ref[2];
+          grid.getRowData();
+          return matchAction(ref, transId);
         }).on('mouseover', function() {
           return $(this).addClass('ui-state-hover');
         }).on('mouseout', function() {

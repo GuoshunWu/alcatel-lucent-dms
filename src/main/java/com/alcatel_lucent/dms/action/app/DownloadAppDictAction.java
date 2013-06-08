@@ -43,11 +43,9 @@ public class DownloadAppDictAction extends JSONAction {
     }
 
     public String getFilename() {
-        if (null != filename) return filename;
-
-        String[] snippets = FilenameUtils.getBaseName(fileLoc).split("_");
-        filename = join(Arrays.copyOfRange(snippets, 0, Math.min(snippets.length, 3)), '_') + ".zip";
-
+//        if (null != filename) return filename;
+//        String[] snippets = FilenameUtils.getBaseName(fileLoc).split("_");
+//        filename = join(Arrays.copyOfRange(snippets, 0, Math.min(snippets.length, 3)), '_') + ".zip";
         return filename;
     }
 

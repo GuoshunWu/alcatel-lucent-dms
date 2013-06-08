@@ -6,20 +6,16 @@
     handlers = {
       'Download': {
         title: 'Download',
-        url: 'task/generate-task-files',
+        url: urls.task.generate_task_files,
         handler: function(param) {
           var filename;
 
-          filename = $('#versionTypeLabel', "div[id='taskmng']").text() + '_';
-          filename += $('#selVersion option:selected', "div[id='taskmng']").text() + '_translation';
-          filename += "_" + (new Date().format('yyyyMMdd_hhmmss')) + ".zip";
+          filename = "" + param.name + ".zip";
           $.blockUI();
-          return $.post('task/generate-task-files', {
+          return $.post(this.url, {
             id: param.id,
             filename: filename
           }, function(json) {
-            var downloadForm;
-
             $.unblockUI();
             if (json.status !== 0) {
               $.msgBox(json.message, null, {
@@ -27,9 +23,10 @@
               });
               return;
             }
-            downloadForm = $('#downloadTaskFiles');
-            $('#fileLoc', downloadForm).val(json.fileLoc);
-            return downloadForm.submit();
+            return window.location = urls.getURL(urls.app.download_app_dict, '', {
+              fileLoc: json.fileLoc,
+              filename: filename
+            });
           });
         }
       },
@@ -46,13 +43,13 @@
       },
       'Close': {
         title: 'Close',
-        url: 'task/close-task',
+        url: urls.task.closed,
         handler: function(param) {
           if (param.status === '1') {
             return;
           }
           $.blockUI;
-          return $.post('task/close-task', {
+          return $.post(this.url, {
             id: param.id
           }, function(json) {
             $.unblockUI();
@@ -68,7 +65,7 @@
       },
       'Upload': {
         title: 'Upload',
-        url: 'task/receive-task-files',
+        url: urls.task.receive_task_files,
         handler: (function(param) {})
       }
     };
@@ -136,6 +133,7 @@
           index: 'actions',
           width: 260,
           align: 'left',
+          sortable: false,
           formatter: function(cellvalue, options, rowObject) {
             return $.map(handlers, function(value, index) {
               if ('1' === rowObject[4] && (index === 'Upload' || index === 'Close')) {
@@ -200,7 +198,7 @@
             return fileInput.fileupload({
               type: 'POST',
               dataType: 'json',
-              url: "task/receive-task-files",
+              url: urls.task.receive_task_files,
               formData: [
                 {
                   name: 'id',

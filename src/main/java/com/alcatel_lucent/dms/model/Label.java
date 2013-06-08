@@ -80,10 +80,28 @@ public class Label extends BaseEntity implements Cloneable {
     private Text text;
     private boolean removed;
 
+    private String fontName;
+    private String fontSize;
+
     private String annotation1;
     private String annotation2;
     private Collection<LabelTranslation> origTranslations;
 
+    public String getFontName() {
+        return fontName;
+    }
+
+    public void setFontName(String fontName) {
+        this.fontName = fontName;
+    }
+
+    public String getFontSize() {
+        return fontSize;
+    }
+
+    public void setFontSize(String fontSize) {
+        this.fontSize = fontSize;
+    }
 
     public void addLabelTranslation(LabelTranslation labelTranslation) {
         this.origTranslations.add(labelTranslation);
