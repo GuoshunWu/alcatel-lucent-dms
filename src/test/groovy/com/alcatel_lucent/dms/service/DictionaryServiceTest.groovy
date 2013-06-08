@@ -82,9 +82,11 @@ public class DictionaryServiceTest {
     }
 
     @Test
+//    @Rollback(false)
     void testDictionaryProcess() {
         String targetDir = "D:/test/dictgenerate/"
         String srcPath = 'XMLHelp/test'
+        srcPath = 'OTCPC/test'
 
         File f = new File("${testFileRoot}/${srcPath}")
 
@@ -94,12 +96,19 @@ public class DictionaryServiceTest {
         println "About to import dicts: ${dicts}".center(100, '=')
 
         dictionaryService.importDictionaries(1, dicts, Constants.ImportingMode.DELIVERY)
-
         daoService.session.clear()
 
-        // There may be dictionaries errors need to be adjust manually here
-        Collection<Long> dbIds = daoService.retrieve('select id from Dictionary where base.name in :names', ['names': Util.getObjectProperiesList(dicts, 'name')])
+//        There may be dictionaries errors need to be adjust manually here
+
+        List dictNames = Util.getObjectProperiesList(dicts, 'name')
+//        List dictNames = Arrays.asList(
+//                'OTC-Android_languages-v2.0.30.0.xls',
+//                'languages_ori.xls'
+//        )
+
+        Collection<Long> dbIds = daoService.retrieve('select id from Dictionary where base.name in :names', ['names': dictNames])
         dictionaryService.generateDictFiles(targetDir, dbIds)
+        println "Test done.".center(100, '=')
 
     }
 

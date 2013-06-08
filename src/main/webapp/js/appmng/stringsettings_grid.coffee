@@ -53,6 +53,8 @@ define [
       }
       {name: 'maxLength', index: 'maxLength', width: 40, editable: true, classes: 'editable-column', align: 'right'}
       {name: 'context', index: 'context.name', width: 40, editable: true, classes: 'editable-column', align: 'left'
+      stype: 'select', searchoptions:
+        value: 'All:'
       editrules:
         required: true
       }

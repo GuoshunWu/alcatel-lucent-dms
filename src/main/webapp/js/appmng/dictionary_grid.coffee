@@ -7,12 +7,13 @@ define [
   'i18n!nls/appmng'
   'i18n!nls/common'
   'dms-util'
+  'dms-urls'
 
   # following dependency are not referenced directly.
   'appmng/langsetting_grid'
   'appmng/stringsettings_grid'
   'appmng/history_grid'
-], ($, blockui, msgbox,ui, i18n, c18n, util)->
+], ($, blockui, msgbox,ui, i18n, c18n, util, urls)->
 
 #  console?.log "module appmng/dictionary_grid loading."
   #  for form edit delete option
@@ -59,16 +60,16 @@ define [
     {name: 'encoding', index: 'base.encoding', width: 40, editable: true, edittype: 'select',
     editoptions: {value: c18n.dictencodings}, align: 'left'}
     {name: 'labelNum', index: 'labelNum', width: 20, align: 'right'}
-    {name: 'action', index: 'action', width: 70, editable: false, align: 'center',
+    {name: 'action', index: 'action', width: 70, editable: false, align: 'center', sortable: false
     formatter: (cellvalue, options, rowObject)->
       $.map(handlers,
         (value, index)->"<A id='action_#{index}_#{options.rowId}' style='color:blue' title='#{value.title}'href=# >#{index}</A>"
       ).join('&nbsp;&nbsp;&nbsp;&nbsp;')
     }
-    {name: 'history', index: 'history', width: 25, editable: false, align: 'center', formatter: (cellvalue, options, rowObject)->
+    {name: 'history', index: 'history', width: 25, editable: false, align: 'center', sortable: false,formatter: (cellvalue, options, rowObject)->
       "<img class='historyAct' id='hisact_#{options.rowId}'  src='images/history.png'>"
     }
-    {name: 'cellaction', index: 'cellaction', width: 20, editable: false, align: 'center', formatter: 'actions'
+    {name: 'cellaction', index: 'cellaction', width: 20, editable: false, align: 'center', sortable: false, formatter: 'actions'
     formatoptions: {keys: true, delbutton: true, delOptions: deleteOptions, editbutton: false}
     }
   ]
@@ -152,14 +153,14 @@ define [
   })
 
 
-  $('#generateDict').button().width(170).attr('privilegeName', util.urlname2Action 'app/generate-dict').click ->
+  $('#generateDict').button().width(170).attr('privilegeName', util.urlname2Action urls.app.generate_dict).click ->
   #    Test
     dicts = dicGrid.getGridParam('selarrrow')
     if !dicts || dicts.length == 0
       $.msgBox (c18n.selrow.format c18n.dict), null, {title: c18n.warning}
       return
 
-    filename = "#{$('#appDispAppName').text()}_#{$('#selAppVersion option:selected').text()}_#{new Date().format 'yyyyMMdd_hhmmss'}.zip"
+    filename = "#{$('#appDispAppName').text()}_#{$('#selAppVersion option:selected').text()}_#{new Date().format 'yyyyMMdd_hhmm'}.zip"
 
     $(@).button 'disable'
     oldLabel = $(@).button 'option', 'label'
@@ -167,11 +168,13 @@ define [
 
     me=$(@)
     pb = util.genProgressBar()
-    util.updateProgress('app/generate-dict', {dicts: dicts.join(','), filename: filename}, (json)->
+    util.updateProgress(urls.app.generate_dict, {dicts: dicts.join(','), filename: filename}, (json)->
       pb.parent().remove()
       me.button 'option', 'label', oldLabel
       me.button 'enable'
-      window.location.href = "app/download-app-dict.action?fileLoc=#{json.event.msg}"
+      dowloadURL = urls.getURL(urls.app.download_app_dict,'',fileLoc:json.event.msg, filename: filename)
+#      console?.log dowloadURL
+      window.location.href = dowloadURL
     , pb)
 
 
