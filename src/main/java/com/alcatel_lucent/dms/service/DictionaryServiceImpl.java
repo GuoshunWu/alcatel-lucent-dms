@@ -597,10 +597,23 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     text.addTranslation(t);
                 } //for
             }
+            
+            // align translations with dictLanguages in purpose of getting translation suggestion
+            for (DictionaryLanguage dl : dict.getDictLanguages()) {
+            	if (!dl.isReference() && label.getOrigTranslation(dl.getLanguageCode()) == null) {
+            		Translation t = new Translation();
+            		t.setText(text);
+            		t.setTranslation(label.getReference());
+            		t.setLanguage(dl.getLanguage());
+            		t.setStatus(Translation.STATUS_UNTRANSLATED);
+            		text.addTranslation(t);
+            	}
+            }
         }
 
         ProgressQueue.setProgress(50);
         // for each context, insert or update label/text/translation data
+        Context defaultCtx = textService.getContextByExpression(Context.DEFAULT, null);
         for (String contextName : textMap.keySet()) {
             log.info("Importing data into context " + contextName);
             Context context = textService.getContextByExpression(contextName, dbDict);
@@ -608,6 +621,10 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             Collection<Label> labels = labelMap.get(contextName);
             Map<String, Text> dbTextMap = textService.updateTranslations(
                     context.getId(), texts, mode);
+            // update DEFAULT context from each DICT context, so the DEFAULT context would be a union of all translations
+            if (context.getName().equals(Context.DICT)) {
+            	textService.updateTranslations(defaultCtx.getId(), texts, Constants.ImportingMode.DELIVERY);
+            }
 
             // in TRANSLATION_MODE, no change to label
             if (mode == Constants.ImportingMode.TRANSLATION) {

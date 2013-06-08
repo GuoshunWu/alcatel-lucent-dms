@@ -110,7 +110,7 @@ public class StandardExcelDictParser extends DictionaryParser {
         }
 
         Sheet sheet = wb.getSheetAt(0);
-        CreationHelper helper = wb.getCreationHelper();
+        FormulaEvaluator evaluator = wb.getCreationHelper().createFormulaEvaluator();
 
         HashedMap colIndexes = null;
         for (Row row : sheet) {
@@ -131,7 +131,7 @@ public class StandardExcelDictParser extends DictionaryParser {
              * We skip the row without label key
              * */
             if (null == row.getCell((Integer) colIndexes.get(LABEL))) continue;
-            dictionary.getLabels().add(readLabelFromRow(dictionary, row, colIndexes, helper));
+            dictionary.getLabels().add(readLabelFromRow(dictionary, row, colIndexes, evaluator));
         }
         acceptedFiles.add(file);
         log.info("Accepted excel file " + file.getName());
@@ -147,7 +147,7 @@ public class StandardExcelDictParser extends DictionaryParser {
      * @param helper
      */
 
-    private Label readLabelFromRow(Dictionary dict, Row row, HashedMap colIndex, CreationHelper helper) {
+    private Label readLabelFromRow(Dictionary dict, Row row, HashedMap colIndex, FormulaEvaluator evaluator) {
         /**
          * The contents row
          * */
@@ -170,7 +170,7 @@ public class StandardExcelDictParser extends DictionaryParser {
                 continue;
             }
 
-            String cellContent = getStringCellValue(cell, helper);
+            String cellContent = getStringCellValue(cell, evaluator);
 //            CellReference cellRef = new CellReference(cell);
 //            log.info("cell {} value=[{}].", cellRef.formatAsString(), cellContent);
 
@@ -216,10 +216,10 @@ public class StandardExcelDictParser extends DictionaryParser {
      * @param helper
      * @return converted string
      */
-    private String getStringCellValue(Cell cell, CreationHelper helper) {
+    private String getStringCellValue(Cell cell, FormulaEvaluator evaluator) {
         DataFormatter formatter = new HSSFDataFormatter(Locale.ENGLISH);
         if (Cell.CELL_TYPE_FORMULA == cell.getCellType()) {
-            return formatter.formatCellValue(cell, helper.createFormulaEvaluator());
+            return formatter.formatCellValue(cell, evaluator);
         }
         return formatter.formatCellValue(cell);
     }
