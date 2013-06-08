@@ -640,6 +640,11 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
         }
         if (count > 0) {
             textService.updateTranslations(context.getId(), textMap.values(), Constants.ImportingMode.TRANSLATION);
+            // update DEFAULT context from each DICT context, so the DEFAULT context would be a union of all translations
+            if (context.getName().equals(Context.DICT)) {
+            	Context defaultCtx = textService.getContextByExpression(Context.DEFAULT, null);
+                textService.updateTranslations(defaultCtx.getId(), textMap.values(), Constants.ImportingMode.DELIVERY);
+            }
         }
         return count;
     }

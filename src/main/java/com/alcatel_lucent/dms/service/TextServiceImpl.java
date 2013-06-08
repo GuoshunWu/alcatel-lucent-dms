@@ -504,9 +504,15 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
      * @return persistent Translation object
      */
 	private Translation addTranslation(Text text, Translation trans) {
-        trans.setText(text);
-		trans.setLanguage((Language) dao.retrieve(Language.class, trans.getLanguage().getId()));
-        return (Translation) dao.create(trans, false);
+		Translation dbTrans = new Translation();
+        dbTrans.setText(text);
+		dbTrans.setLanguage((Language) dao.retrieve(Language.class, trans.getLanguage().getId()));
+		dbTrans.setTranslation(trans.getTranslation());
+		dbTrans.setStatus(trans.getStatus());
+		dbTrans.setTranslationType(trans.getTranslationType());
+		dbTrans.setLastUpdateTime(trans.getLastUpdateTime());
+		dbTrans.setVerifyStatus(trans.getVerifyStatus());
+        return (Translation) dao.create(dbTrans, false);
     }
 
     /**
@@ -590,6 +596,9 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 	public Collection<String> updateTranslation(Long labelId,
 			Long translationId, String translation, Boolean confirmAll) {
 		Label label = (Label) dao.retrieve(Label.class, labelId);
+		if (label.getContext().getName().equals(Context.EXCLUSION)) {
+			throw new BusinessException(BusinessException.CANNOT_UPDATE_EXCLUSION);
+		}
 		Translation trans;
 		if (translationId < 0) {	// proceed virtual id, create translation if necessary
 			translationId = -translationId;
@@ -606,13 +615,10 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 		} else {
 			trans = (Translation) dao.retrieve(Translation.class, translationId);
 		}
-		Long langId = trans.getLanguage().getId();
-		if (label.getContext().getName().equals(Context.EXCLUSION)) {
-			throw new BusinessException(BusinessException.CANNOT_UPDATE_EXCLUSION);
-		}
 		if (!label.getText().getId().equals(trans.getText().getId())) {
 			throw new BusinessException(BusinessException.INCONSISTENT_DATA);
 		}
+		Long langId = trans.getLanguage().getId();
 		Collection<String> result = new TreeSet<String>();
 		if (confirmAll != null && confirmAll) {	// confirm to update translation for all reference
 			trans.setTranslation(translation);
