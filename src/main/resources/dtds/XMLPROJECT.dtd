@@ -1,0 +1,26 @@
+<!-- Element 'PROJECT' is the root element of this XML Model -->
+<!-- Attribute 'name' is the name of this project -->
+<!ELEMENT PROJECT (LANGUAGE*, DICTIONARY*)>
+<!ATTLIST PROJECT 
+	name CDATA #REQUIRED>
+
+	<!-- Element 'LANGUAGE' defines one allowed language -->
+	<!-- Attribute 'id' is a locale code made up of language code ISO-639 and country code ISO-3166 -->
+	<!-- Example 'id' : 'fr_CA' for Canada French or 'fr' for French without country information -->
+	<!-- Attribute 'is_reference' : true if this language is a reference for translator, false overwise -->
+	<!-- Attribute 'is_context' : true if this language is allowed to have a context description, false overwise -->
+	<!ELEMENT LANGUAGE EMPTY>
+	<!ATTLIST LANGUAGE
+		id ID #REQUIRED
+		is_reference (true|false) "false"
+		is_context (true|false) "false">
+	
+	<!-- Element 'DICTIONARY' define a dictionary of this project -->
+	<!-- Attribute 'name' is the name of this dictionary -->
+	<!-- Attribute 'path' is the path of this dictionary file. -->
+	<!-- path must be a relatif path if it's possible -->
+	<!ELEMENT DICTIONARY EMPTY>
+	<!ATTLIST DICTIONARY 
+		name CDATA #REQUIRED
+		path CDATA #REQUIRED>
+
