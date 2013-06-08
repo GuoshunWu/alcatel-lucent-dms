@@ -284,17 +284,21 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
         File targetFile = new File(dir, filename);
         Workbook wb = null;
         FileOutputStream fos = null;
+        FileInputStream fin = null;
         try {
             fos = FileUtils.openOutputStream(targetFile);
             IOUtils.copy(getClass().getResourceAsStream(TASK_TEMPLATE_NAME), fos);
-            wb = WorkbookFactory.create(new AutoCloseInputStream(FileUtils.openInputStream(targetFile)));
+            fin = FileUtils.openInputStream(targetFile);
+            wb = WorkbookFactory.create(fin);
         } catch (Exception e) {
             log.error(e.toString());
             e.printStackTrace();
             throw new SystemError(e);
+        } finally {
+            IOUtils.closeQuietly(fin);
+            IOUtils.closeQuietly(fos);
         }
 
-//		Workbook wb = new HSSFWorkbook();
         Font fontHead = wb.createFont();
         fontHead.setFontHeightInPoints((short) 10);
         fontHead.setFontName("Arial Unicode MS");
@@ -310,7 +314,6 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
         styleUnlockedBody.setFont(fontBody);
         styleUnlockedBody.setLocked(false);
 
-//		Sheet sheet = wb.createSheet(languageName);
         Sheet sheet = wb.cloneSheet(0);
         wb.setSheetName(wb.getSheetIndex(sheet), languageName);
 
@@ -349,7 +352,8 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 
         wb.removeSheetAt(0);
         try {
-            wb.write(FileUtils.openOutputStream(targetFile));
+            fos = FileUtils.openOutputStream(targetFile);
+            wb.write(fos);
         } catch (Exception e) {
             log.error(e.toString());
             e.printStackTrace();
@@ -483,7 +487,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
      *
      * @param task           task
      * @param language       language
-     * @param contextKey    context name
+     * @param contextKey     context name
      * @param translationMap map of reference-translation pairs
      */
     private void updateTaskDetails(Task task, Language language, String contextKey,

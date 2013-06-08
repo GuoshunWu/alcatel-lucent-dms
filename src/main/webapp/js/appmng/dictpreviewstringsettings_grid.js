@@ -16,8 +16,6 @@
       cellEdit: true,
       rowNum: 10,
       rowList: [10, 20, 30],
-//      sortname: 'reference',
-//      sortorder: 'asc',
       viewrecords: true,
       gridview: true,
       colNames: ['Label', 'Reference Language', 'Max Length', 'Context', 'Description'],

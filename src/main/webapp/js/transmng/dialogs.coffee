@@ -84,7 +84,7 @@ define [
     open: ->
       info = grid.getTotalSelectedRowInfo()
       taskname = "#{$('#versionTypeLabel', '#transmng').text()}_#{$('#selVersion option:selected', '#transmng').text()}"
-      taskname += "_#{new Date().format('yyyyMMddhhmmss')}"
+      taskname += "_#{new Date().format('yyyyMMdd')}"
       $('#taskName').val(taskname).select()
       #      tableType is app or dict
       tableType = grid.getTableType()

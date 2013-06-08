@@ -120,6 +120,10 @@
           editable: true,
           classes: 'editable-column',
           align: 'left',
+          stype: 'select',
+          searchoptions: {
+            value: 'All:'
+          },
           editrules: {
             required: true
           }

@@ -67,7 +67,6 @@ public class GenerateTaskFilesAction extends JSONAction {
         String downTmpPath = tmpDownload + File.separator + UserContext.getInstance().getUser().getName() +"_" +dFmt.format(new Date());
         taskService.generateTaskFiles(downTmpPath, id);
 
-
         File generatedTaskFiles=new File(downTmpPath);
         if (!generatedTaskFiles.exists()){
             setStatus(-1);

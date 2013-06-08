@@ -19,6 +19,9 @@
         <property name="sortNo" type="integer" column="SORT_NO"/>
         <property name="description" type="string" column="DESCRIPTION"/>
         <property name="maxLength" type="string" column="MAX_LENGTH"/>
+        <property name="fontName" type="string" column="FONT_NAME"/>
+        <property name="fontSize" type="string" column="FONT_SIZE"/>
+
         <property name="annotation1" type="text" column="ANNOTATION1"/>
         <property name="annotation2" type="text" column="ANNOTATION2"/>
         <property name="removed" type="boolean" column="REMOVED" not-null="true"/>

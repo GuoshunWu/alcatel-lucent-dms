@@ -23,10 +23,10 @@ import javax.ws.rs.Path;
 import java.util.*;
 
 /**
- * Label REST service.
+ * Translation hibernate search REST service.
  * URL: /rest/labels
  * Filter parameters:
- * prod		(optional) product id
+ * transId	Translation id
  * app		(optional) application id
  * dict		(optional) dictionary id
  * text		(optional) search text (case insensitive)
@@ -36,7 +36,6 @@ import java.util.*;
  * If language is supplied, relative LabelTranslation and Translation object can be accessed by
  * adding "ot" or "ct" prefix to the property name, e.g. ot.needTranslation,ct.translation
  * Otherwise, only label properties can be accessed.
- * nodiff		(optional) default false, if true, return only labels of which translation is identical to reference text.
  * The option only works when "language" parameter is specified.
  * filters	(optional) jqGrid-style filter string, in json format, e.g.
  * {"groupOp":"AND","rules":[{"field":"status","op":"eq","data":"2"}]}
@@ -82,6 +81,7 @@ public class TranslationLuceneREST extends BaseREST {
     protected String doGetOrPost(Map<String, String> requestMap) throws Exception {
         String text = requestMap.get("text");
         Boolean fuzzy = Boolean.valueOf(requestMap.get("fuzzy"));
+        Long transId = Long.parseLong(requestMap.get("transId"));
 
         Integer firstResult = null;
         Integer maxResult = requestMap.get("rows") == null ? null : Integer.valueOf(requestMap.get("rows"));
@@ -111,6 +111,8 @@ public class TranslationLuceneREST extends BaseREST {
         Map<String, Object> keywords = new HashMap<String, Object>();
         Map<String, String> fuzzyKeywords = new HashMap<String, String>();
         keywords.put("status", 2);
+        // -id: 843415
+//        keywords.put("id", transId);
         if (null != langId) {
             keywords.put("language.id", langId);
         }
