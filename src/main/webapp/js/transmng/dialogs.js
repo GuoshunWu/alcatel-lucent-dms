@@ -386,7 +386,7 @@
     showSearchResult = function(params) {
       return transSearchText.data('params', params).dialog('open');
     };
-    transSearchText = $('#transmngMatchTextDialog').dialog({
+    $('#transmngMatchTextDialog').dialog({
       autoOpen: false,
       width: 1000,
       height: 'auto',

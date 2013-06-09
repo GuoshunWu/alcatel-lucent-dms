@@ -147,7 +147,6 @@
           align: 'center',
           search: false,
           sortable: false,
-          hidden: true,
           formatter: function(cellvalue, options, rowObject) {
             var ret;
 

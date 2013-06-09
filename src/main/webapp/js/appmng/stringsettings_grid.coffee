@@ -110,7 +110,7 @@ define [
   )
   .setGroupHeaders(useColSpanStyle: true, groupHeaders: [
     {startColumnName: "t", numberOfColumns: 3, titleText: 'Status'}
-  ]).filterToolbar()
+  ]).filterToolbar(stringResult: true, searchOnEnter: false)
 
 
   saveLastEditedCell: ()->dicGrid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell

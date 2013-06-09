@@ -59,7 +59,7 @@ define [
       formatter: 'date', formatoptions:{srcformat:'ISO8601Long', newformat: 'Y-m-d H:i'}
       }
       {name: 'action', index: 'action', width: 50, align:'center', search: false, sortable: false
-      hidden: true
+#      hidden: true
       formatter: (cellvalue, options, rowObject)->
         #"<img class='historyAct' id='matchAct_#{rowObject[3]}' src='images/history.png'>"
 #        console?.log rowObject
