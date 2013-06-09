@@ -116,7 +116,7 @@ public class LabelREST extends BaseREST {
 	    	Map countParam = new HashMap();
 	    	if (dictId != null) {
 	    		hql = "select obj from Label obj where obj.dictionary.id=:dictId and obj.removed=false";
-	    		countHql = "select count(*) from Label where dictionary.id=:dictId and removed=false";
+	    		countHql = "select count(*) from Label obj where obj.dictionary.id=:dictId and obj.removed=false";
 	        	param.put("dictId", dictId);
 	        	countParam.put("dictId", dictId);
 	    	} else if (appId != null) {
@@ -135,7 +135,7 @@ public class LabelREST extends BaseREST {
 	    	}
 	    	if (text != null) {
 	    		hql += " and upper(obj.reference) like :text";
-	    		countHql += " and upper(reference) like :text";
+	    		countHql += " and upper(obj.reference) like :text";
 	    		param.put("text", "%" + text + "%");
 	    		countParam.put("text", "%" + text + "%");
 	    	}
