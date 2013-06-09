@@ -5,6 +5,7 @@ import com.alcatel_lucent.dms.action.ProgressAction;
 import com.alcatel_lucent.dms.action.ProgressQueue;
 import com.alcatel_lucent.dms.service.DeliveringDictPool;
 import com.alcatel_lucent.dms.util.Util;
+import org.apache.commons.io.FileUtils;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.slf4j.Logger;
@@ -51,31 +52,34 @@ public class ProcessDictAction extends ProgressAction {
     }
 
     public String performAction() throws Exception {
-        File dir = new File(deliverDir, UserContext.getInstance().getUser().getName() +"_"+ dFmt.format(new Date()));
+        String tempName = UserContext.getInstance().getUser().getName() + "_" + dFmt.format(new Date());
+        File deliverDestDir = new File(deliverDir, tempName);
+        if (!deliverDestDir.exists()) deliverDestDir.mkdirs();
 
-        if (!dir.exists()) dir.mkdirs();
         File upload = new File(filename);
-        log.info("upload={}, filename={}, targetdir={}, appId={}", new Object[]{upload, filename, dir, appId});
+        log.info("upload={}, filename={}, targetdir={}, appId={}", new Object[]{upload, filename, deliverDestDir, appId});
 
-        boolean fileCreateSuccess = true;
         if (Util.isZipFile(filename)) {
-            log.info("decompress file " + upload + " to " + dir.getAbsolutePath());
+            log.info("decompress file " + upload + " to " + deliverDestDir.getAbsolutePath());
             ProgressQueue.setProgress("Decompressing zip package...", -1);
-            Util.unzip(upload, dir.getAbsolutePath());
+            Util.unzip(upload, deliverDestDir.getAbsolutePath());
+
+            //move and rename zip file to deliver dest dir
+            FileUtils.moveFile(upload, new File(deliverDir, tempName + ".zip"));
 
         } else {
             log.info("deliver normal(not zip) file.");
-            fileCreateSuccess = upload.renameTo(new File(dir, upload.getName()));
-            if (!fileCreateSuccess) {
-                log.warn("move file fail.");
-                fileCreateSuccess = false;
-            }
-        }
-        if (fileCreateSuccess) {
-            deliveringDictPool.addHandler(dir.getName(), appId);
-        }
+            File destFile = new File(deliverDestDir, upload.getName());
+            FileUtils.moveFile(upload, destFile);
 
-        setMessage(dir.getName());
+            //compress backup
+            Util.createZip(destFile.getAbsolutePath(), deliverDestDir.getAbsolutePath() + ".zip");
+        }
+        deliveringDictPool.addHandler(deliverDestDir.getName(), appId);
+
+        FileUtils.deleteDirectory(deliverDestDir);
+
+        setMessage(deliverDestDir.getName());
         setStatus(0);
         return SUCCESS;
     }

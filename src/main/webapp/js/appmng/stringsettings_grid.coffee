@@ -6,6 +6,9 @@ define [
   'appmng/stringsettings_translation_grid'
 ], ($, util, urls, c18n, i18n, ltgrid)->
 #  console?.log "module appmng/stringsetting_grid loading."
+
+#  used for restore filter
+#  $("select[id='gs_context'][name='context.name']").val('All')
   lastEditedCell = null
 
   lockLabels = (lock = true, grid=$('#stringSettingsGrid'), btn = $('#custom_lock_stringSettingsGrid > div.ui-pg-div'))->
@@ -37,28 +40,28 @@ define [
     gridview: true, multiselect: true, cellEdit: true, cellurl: 'app/update-label'
     colNames: ['Label', 'Reference Language', 'T', 'N', 'I', 'Max Length', 'Context', 'Description', ]
     colModel: [
-      {name: 'key', index: 'key', width: 100, editable: false, align: 'left'}
-      {name: 'reference', index: 'reference', width: 200, edittype:'textarea', editable: false, align: 'left'}
-      {name: 't', index: 't', sortable: true, width: 15, align: 'right', formatter: 'showlink'
+      {name: 'key', index: 'key', width: 100, editable: false, align: 'left', search:false}
+      {name: 'reference', index: 'reference', width: 200, edittype:'textarea', editable: false, align: 'left',search:false}
+      {name: 't', index: 't', sortable: true, width: 15, align: 'right', formatter: 'showlink',search:false, search:false
       formatoptions:
         baseLinkUrl: '#', addParam: encodeURI("&status=2")
       }
-      {name: 'n', index: 'n', formatter: 'showlink', sortable: true, width: 15, align: 'right'
+      {name: 'n', index: 'n', formatter: 'showlink', sortable: true, width: 15, align: 'right',search:false
       formatoptions:
         baseLinkUrl: '#', addParam: encodeURI("&status=0")
       }
-      {name: 'i', index: 'i', formatter: 'showlink', sortable: true, width: 15, align: 'right'
+      {name: 'i', index: 'i', formatter: 'showlink', sortable: true, width: 15, align: 'right',search:false
       formatoptions:
         baseLinkUrl: '#', addParam: encodeURI("&status=1")
       }
-      {name: 'maxLength', index: 'maxLength', width: 40, editable: true, classes: 'editable-column', align: 'right'}
+      {name: 'maxLength', index: 'maxLength', width: 40, editable: true, classes: 'editable-column', align: 'right', search:false}
       {name: 'context', index: 'context.name', width: 40, editable: true, classes: 'editable-column', align: 'left'
       stype: 'select', searchoptions:
-        value: 'All:'
+        value: ":All;#{c18n.transcontext}"
       editrules:
         required: true
       }
-      {name: 'description', index: 'description', width: 60, editable: true, edittype:'textarea', classes: 'editable-column', align: 'left'}
+      {name: 'description', index: 'description', width: 60, editable: true, edittype:'textarea', classes: 'editable-column', align: 'left', search:false}
     ]
     gridComplete: ->
       grid = $(@)
@@ -107,7 +110,7 @@ define [
   )
   .setGroupHeaders(useColSpanStyle: true, groupHeaders: [
     {startColumnName: "t", numberOfColumns: 3, titleText: 'Status'}
-  ])
+  ]).filterToolbar()
 
 
   saveLastEditedCell: ()->dicGrid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell

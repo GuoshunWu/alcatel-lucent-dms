@@ -59,6 +59,19 @@
         <appender-ref ref="DATABASE"/>
     </appender>
 
+    <appender name="debugLogger" class="org.apache.log4j.FileAppender">
+        <param name="File" value="target/DMSLOG/debug.log"/>
+        <param name="append" value="false"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%m%n"/>
+        </layout>
+
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMax" value="ERROR"/>
+            <param name="LevelMin" value="INFO"/>
+        </filter>
+    </appender>
+
 
     <!--<logger name="org.hibernate.type">-->
     <!--<level value="TRACE"/>-->
@@ -80,6 +93,7 @@
             <param name="LevelMin" value="INFO"/>
         </filter>
     </appender>
+
     <appender name="FILE_DIC_DELIVER_SUCCESS" class="org.apache.log4j.FileAppender">
         <param name="File" value="target/DMSLOG/DictionaryDeliverSuccess.csv"/>
         <param name="append" value="false"/>
@@ -115,6 +129,11 @@
 
     <logger name="DictDeliverWaning">
         <appender-ref ref="FILE_DIC_DELIVER_WARNING"/>
+    </logger>
+
+
+    <logger name="com.alcatel_lucent.dms.service.parser">
+        <appender-ref ref="debugLogger"/>
     </logger>
 
     <root>

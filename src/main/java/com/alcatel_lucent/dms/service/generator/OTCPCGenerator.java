@@ -11,6 +11,7 @@ import com.alcatel_lucent.dms.util.Util;
 import org.apache.commons.collections.map.MultiKeyMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.input.AutoCloseInputStream;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFPalette;
@@ -26,9 +27,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.StringReader;
+import java.io.*;
 import java.util.Collection;
 import java.util.Map;
 
@@ -60,11 +59,21 @@ public class OTCPCGenerator extends DictionaryGenerator {
         Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
         File targetFile = new File(targetDir, dict.getName());
 
-        Workbook wb = createWorkbook(dict);
+        OutputStream os=null;
+        InputStream is=null;
+
         try {
-            wb.write(FileUtils.openOutputStream(targetFile));
+            is = null;
+//            os =FileUtils.openOutputStream(targetFile);
+//            IOUtils.copy(is, os);
+//            is = new AutoCloseInputStream(FileUtils.openInputStream(targetFile));
+            Workbook wb = createWorkbook(dict, is);
+            os = FileUtils.openOutputStream(targetFile);
+            wb.write(os);
         } catch (IOException e) {
             e.printStackTrace();
+        }finally{
+            IOUtils.closeQuietly(os);
         }
 
     }
@@ -402,8 +411,10 @@ public class OTCPCGenerator extends DictionaryGenerator {
     /**
      * Create workbook according to dict
      */
-    private Workbook createWorkbook(Dictionary dict) {
-        HSSFWorkbook wb = new HSSFWorkbook();
+    private Workbook createWorkbook(Dictionary dict, InputStream template) throws IOException {
+
+        HSSFWorkbook wb = null!=template?new HSSFWorkbook(template):new HSSFWorkbook();
+
         int defaultColWidth = 256 * 40;
         MultiKeyMap styleMap = new MultiKeyMap();
         // create the workbook used styles

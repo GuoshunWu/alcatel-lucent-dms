@@ -142,15 +142,16 @@ public class OTCPCParser extends DictionaryParser {
         for (int i = 0; i < numOfSheet; ++i) {
             Sheet sheet = wb.getSheetAt(i);
             if (sheet.getSheetName().equalsIgnoreCase(SHEET_INFO)) {
-                readDictionaryInformation(sheet, dictionary, evaluator);
+                readDictionaryInformation(sheet, dictionary, evaluator, warnings, dictName);
             } else if (sheet.getSheetName().equalsIgnoreCase(SHEET_LANG)) {
-                // no action.
+                readDictLanguages(sheet, dictionary);
             } else if (sheet.getSheetName().equalsIgnoreCase(SHEET_CTX)) {
-                // no action, it is processed in Translation sheet.
+                // no action, it is processed in reference sheet.
             } else if (sheet.getSheetName().equalsIgnoreCase(SHEET_REF)) {
-                readRefSheet(i, dictionary, sheet);
-            } else
-                readTranslationsInSheet(sheet, i, dictionary, evaluator, warnings);
+                readRefSheet(dictionary, sheet, evaluator, warnings, dictName);
+            } else {
+                //no action, all the translations have been proce
+            }
         }
         acceptedFiles.add(file);
 
@@ -158,23 +159,40 @@ public class OTCPCParser extends DictionaryParser {
         return dictionary;
     }
 
-    private void readRefSheet(int sortNo, Dictionary dictionary, Sheet sheet) {
-        DictionaryLanguage dl = new DictionaryLanguage();
-        dl.setLanguageCode(REFERENCE_LANG_CODE);
-        dl.setSortNo(sortNo);
+    private void readDictLanguages(Sheet langSheet, Dictionary dictionary) {
+        Map<String, Integer> colIndexes = getTitleMap(langSheet);
+        int langCodeColNum = colIndexes.get(SHEET_LANG_TITLE_LANG);
+        int sortNo = 0;
+        for (Row row : langSheet) {
+            if (row.getRowNum() == langSheet.getFirstRowNum()) continue;
+            Cell langCell = row.getCell(langCodeColNum);
+            if (null == langCell) continue;
+            String langCode = langCell.getStringCellValue().trim();
+            if (StringUtils.isEmpty(langCode)) continue;
 
-        dl.setLanguage(languageService.getLanguage(REFERENCE_LANG_CODE));
-        dl.setCharset(new Charset(DEFAULT_ENCODING));
+            if (langCode.equals(SHEET_REF)) {
+                langCode = REFERENCE_LANG_CODE;
+            }
+            DictionaryLanguage dl = new DictionaryLanguage();
+            dl.setLanguageCode(langCode);
+            dl.setSortNo(sortNo);
+            dl.setLanguage(languageService.getLanguage(langCode));
+            dl.setCharset(new Charset(DEFAULT_ENCODING));
+            dl.setDictionary(dictionary);
+            dictionary.getDictLanguages().add(dl);
 
-        dl.setDictionary(dictionary);
-        dictionary.getDictLanguages().add(dl);
+            ++sortNo;
+        }
+    }
 
+    private void readRefSheet(Dictionary dictionary, Sheet sheet, FormulaEvaluator evaluator, Collection<BusinessWarning> warnings, String dictName) {
         //save the display check column info in reference sheet into dictionary annotation2
         Map<String, Integer> colIndexes = getTitleMap(sheet);
 
         Cell displayCheckTitleCell = CellUtil.getCell(sheet.getRow(sheet.getFirstRowNum()), colIndexes.get(SHEET_REF_TITLE_DISPLAY_CHECK));
         CellRangeAddress cellRangeAddress = findCellRangeAddress(sheet, displayCheckTitleCell);
         StringBuilder sb = new StringBuilder();
+
         for (int colIdx = cellRangeAddress.getFirstColumn(); colIdx <= cellRangeAddress.getLastColumn(); ++colIdx) {
             if (colIdx > cellRangeAddress.getFirstColumn()) {
                 sb.append(",");
@@ -183,19 +201,125 @@ public class OTCPCParser extends DictionaryParser {
         }
         String annotation2 = SHEET_REF_TITLE_DISPLAY_CHECK + "=" + sb.toString();
         dictionary.setAnnotation2(annotation2);
+        //read and generate labels
+        Label label;
+        for (Row row : sheet) {
+            if (row.getRowNum() == sheet.getFirstRowNum()) continue;
+            label = getLabel(row, colIndexes, evaluator, warnings, dictName);
+            label.setDictionary(dictionary);
+            fillLabelTranslations(label, row, evaluator, warnings, dictName);
+            dictionary.addLabel(label);
+        }
+    }
+
+    private Label getLabel(Row row, Map<String, Integer> colIndexes, FormulaEvaluator evaluator, Collection<BusinessWarning> warnings, String dictName) {
+        Cell cell = row.getCell(colIndexes.get(SHEET_REF_TITLE_ID));
+        String labelKey = getStringCellValue(cell, evaluator, warnings, dictName).trim();
+
+        if (null == cell || StringUtils.isBlank(labelKey)) {
+            warnings.add(new BusinessWarning(BusinessWarning.LABEL_KEY_BLANK, row.getSheet().getSheetName(), TITLE_DEFAULT, row.getRowNum()));
+        }
+
+        cell = row.getCell(colIndexes.get(SHEET_REF_TITLE_VALUE));
+        String reference = getStringCellValue(cell, evaluator, warnings, dictName);
+
+        // get display check column info and store it in label annotation1.
+        cell = row.getCell(colIndexes.get(SHEET_REF_TITLE_DISPLAY_CHECK));
+        Integer lblDisplayCheckMergeNum = null;
+        Font font = null;
+        if (null != cell) {
+            CellRangeAddress cr = findCellRangeAddress(row.getSheet(), cell);
+            lblDisplayCheckMergeNum = cr.getLastColumn() - cr.getFirstColumn() + 1;
+            font = cell.getSheet().getWorkbook().getFontAt(cell.getCellStyle().getFontIndex());
+        }
+
+        // get description in context sheet
+        Sheet ctxSheet = row.getSheet().getWorkbook().getSheet(SHEET_CTX);
+        Map<String, Integer> ctxColIndexesMap = getTitleMap(ctxSheet);
+        int colNumber = ctxColIndexesMap.get(SHEET_CTX_TITLE_DESC);
+        Cell descCell = CellUtil.getRow(row.getRowNum(), ctxSheet).getCell(colNumber);
+
+        cell = row.getCell(colIndexes.get(SHEET_REF_TITLE_USER_INTERFACE));
+        String userInterface = null == cell ? "" : getStringCellValue(cell, evaluator, warnings, dictName);
+
+        cell = row.getCell(colIndexes.get(SHEET_REF_TITLE_USED));
+        String used = null == cell ? "" : getStringCellValue(cell, evaluator, warnings, dictName);
+        return createNewLabel(row.getRowNum(), row.getHeightInPoints(), labelKey, reference, lblDisplayCheckMergeNum, font, userInterface, used);
+    }
+
+    private Label createNewLabel(int sortNo, float rowHeightInPoints, String key, String ref, Integer displayCheckMergeNum, Font font, String userInterface, String used) {
+        Label label = new Label();
+        label.setSortNo(sortNo);
+        label.setKey(key);
+        label.setReference(ref);
+        label.setOrigTranslations(new ArrayList<LabelTranslation>());
+        if (null != font) {
+            label.setFontName(font.getFontName());
+            label.setFontSize(font.getFontHeightInPoints() + "");
+        }
+        Map<String, String> annotation = new HashMap<String, String>();
+        annotation.put("rowHeight", String.valueOf(rowHeightInPoints));
+
+        if (null != displayCheckMergeNum) {
+            annotation.put("displayCheckMergeNum", displayCheckMergeNum + "");
+        }
+        if (null != userInterface) {
+            annotation.put("userInterface", userInterface);
+        }
+        if (null != used) {
+            annotation.put("used", used);
+        }
+
+        label.setAnnotation1(Util.map2String(annotation));
+        return label;
+    }
+
+    private void fillLabelTranslations(Label label, Row row, FormulaEvaluator evaluator, Collection<BusinessWarning> warnings, String dictName) {
+        Collection<DictionaryLanguage> dictionaryLanguages = label.getDictionary().getDictLanguages();
+        for (DictionaryLanguage dictionaryLanguage : dictionaryLanguages) {
+            if (dictionaryLanguage.getLanguageCode().equals(REFERENCE_LANG_CODE)) continue;
+            LabelTranslation lt = getLabelTranslation(dictionaryLanguage.getLanguageCode(), dictionaryLanguage.getLanguage(), row, evaluator, warnings, dictName);
+            if (null != lt) {
+                lt.setLabel(label);
+                label.getOrigTranslations().add(lt);
+            }
+        }
+    }
+
+    private LabelTranslation getLabelTranslation(String langCode, Language language, Row row, FormulaEvaluator evaluator, Collection<BusinessWarning> warnings, String dictName) {
+        Sheet transSheet = row.getSheet().getWorkbook().getSheet(langCode);
+        if (null == transSheet) {
+            log.warn("Language sheet \"{}\" not found.", langCode);
+            return null;
+        }
+        Map<String, Integer> colIndexes = getTitleMap(transSheet);
+        int transColNumber = colIndexes.get(TITLE_VALUE);
+        Cell transCell = transSheet.getRow(row.getRowNum()).getCell(transColNumber);
+        if (null == transCell) {
+            return null;
+        }
+        String translation = getStringCellValue(transCell, evaluator, warnings, dictName);
+        if (StringUtils.isBlank(translation)) return null;
+
+        LabelTranslation lbTranslation = new LabelTranslation();
+        lbTranslation.setLanguageCode(langCode);
+        lbTranslation.setLanguage(language);
+        lbTranslation.setSortNo(row.getRowNum());
+        lbTranslation.setOrigTranslation(translation);
+        return lbTranslation;
     }
 
     /**
      * Get the information from sheet to dictionary.
      */
-    private void readDictionaryInformation(Sheet sheet, Dictionary dictionary, FormulaEvaluator evaluator) {
+    private void readDictionaryInformation(Sheet sheet, Dictionary dictionary, FormulaEvaluator evaluator, Collection<BusinessWarning> warnings, String dictName) {
         StringBuilder sb = new StringBuilder();
         for (int i = sheet.getFirstRowNum(); i <= sheet.getLastRowNum(); ++i) {
             Row row = sheet.getRow(i);
             if (null != row) {
                 for (Cell cell : row) {
                     if (null == cell) continue;
-                    String cellValue = getStringCellValue(cell, evaluator);
+                    String cellValue = getStringCellValue(cell, evaluator, warnings, dictName);
                     if (cellValue.isEmpty()) continue;
                     sb.append(cellValue);
                 }
@@ -232,158 +356,12 @@ public class OTCPCParser extends DictionaryParser {
     }
 
     /**
-     * read language translations from translation sheet
-     */
-    private void readTranslationsInSheet(Sheet sheet, int index, Dictionary dict, FormulaEvaluator evaluator, Collection<BusinessWarning> warnings) {
-        String langCode = sheet.getSheetName().trim();
-        DictionaryLanguage dl = new DictionaryLanguage();
-        dl.setLanguageCode(langCode);
-        dl.setSortNo(index);
-
-        dl.setLanguage(languageService.getLanguage(langCode));
-        dl.setCharset(new Charset(DEFAULT_ENCODING));
-
-        dl.setDictionary(dict);
-        dict.getDictLanguages().add(dl);
-
-        Map<String, Integer> colIndexes = getTitleMap(sheet);
-
-        Collection checkCollection = Arrays.asList(TITLE_ID, TITLE_VALUE, TITLE_DEFAULT, TITLE_DISPLAY_CHECK);
-        if (!(CollectionUtils.isSubCollection(checkCollection, colIndexes.keySet()))) {
-            throw new BusinessException(BusinessException.INVALID_OTC_EXCEL_DICT_FILE);
-        }
-
-        Sheet ctxSheet = sheet.getWorkbook().getSheet(SHEET_CTX);
-        Map<String, Integer> ctxColIndexes = getTitleMap(ctxSheet);
-        checkCollection = Arrays.asList(SHEET_CTX_TITLE_DEFAULT, SHEET_CTX_TITLE_DESC);
-        if (!(CollectionUtils.isSubCollection(checkCollection, ctxColIndexes.keySet()))) {
-            throw new BusinessException(BusinessException.INVALID_OTC_EXCEL_DICT_FILE);
-        }
-        int displayCheckLen = Util.string2Map(dict.getAnnotation2()).get(OTCPCParser.SHEET_REF_TITLE_DISPLAY_CHECK).split(", ").length;
-
-        for (Row row : sheet) {
-            if (row.getRowNum() == sheet.getFirstRowNum()) continue;
-            /**
-             * Skip the row without label key
-             * */
-            Cell cell = row.getCell(colIndexes.get(TITLE_ID));
-            if (null == cell || getStringCellValue(cell, evaluator).isEmpty()) continue;
-            readLabelTrans(dict, row, colIndexes, evaluator, warnings, displayCheckLen);
-        }
-
-    }
-
-    /**
-     * Read a label and add it into the dictionary.
-     *
-     * @param dict        the dictionary to be filled
-     * @param row         the label data row
-     * @param colIndexMap the map include which index of the specific data belong to.
-     */
-
-    private Label readLabelTrans(Dictionary dict, Row row, Map<String, Integer> colIndexMap, FormulaEvaluator evaluator, Collection<BusinessWarning> warnings, int displayCheckLen) {
-        Cell cell = row.getCell(colIndexMap.get(TITLE_ID));
-        String labelKey = getStringCellValue(cell, evaluator).trim();
-
-        if (null == cell || StringUtils.isBlank(labelKey)) {
-            warnings.add(new BusinessWarning(BusinessWarning.LABEL_KEY_BLANK, row.getSheet().getSheetName(), TITLE_DEFAULT, row.getRowNum()));
-        }
-
-        Label label = dict.getLabel(labelKey);
-
-        if (null == label) {
-            cell = row.getCell(colIndexMap.get(TITLE_DEFAULT));
-
-            String reference = getStringCellValue(cell, evaluator);
-
-            label = createNewLabel(dict, row, labelKey, reference, colIndexMap, evaluator);
-            dict.addLabel(label);
-            // get description in context sheet
-            Sheet ctxSheet = row.getSheet().getWorkbook().getSheet(SHEET_CTX);
-            Map<String, Integer> ctxColIndexesMap = getTitleMap(ctxSheet);
-            int colNumber = ctxColIndexesMap.get(SHEET_CTX_TITLE_DESC);
-            Cell descCell = CellUtil.getRow(row.getRowNum(), ctxSheet).getCell(colNumber);
-            if (null != descCell) label.setDescription(getStringCellValue(descCell, evaluator));
-        }
-
-        cell = row.getCell(colIndexMap.get(TITLE_VALUE));
-        String translation = getStringCellValue(cell, evaluator);
-        if (null == translation || translation.isEmpty()) {
-            log.debug("Row {} column {} is blank.", row.getRowNum(), TITLE_VALUE);
-            return label;
-        }
-
-        String langCode = row.getSheet().getSheetName().trim();
-        LabelTranslation lbTranslation = new LabelTranslation();
-        lbTranslation.setLabel(label);
-        lbTranslation.setLanguageCode(langCode);
-
-        DictionaryLanguage dl = dict.getDictLanguage(langCode);
-        lbTranslation.setLanguage(null == dl ? null : dl.getLanguage());
-
-        lbTranslation.setOrigTranslation(translation);
-        label.getOrigTranslations().add(lbTranslation);
-
-        return label;
-    }
-
-    private Label createNewLabel(Dictionary dict, Row row, String key, String reference, Map<String, Integer> colIndexMap, FormulaEvaluator evaluator) {
-        Label label = new Label();
-        label.setDictionary(dict);
-        label.setSortNo(row.getRowNum());
-        label.setKey(key);
-        label.setReference(reference);
-        label.setOrigTranslations(new ArrayList<LabelTranslation>());
-        Map<String, String> annotation = new HashMap<String, String>();
-
-        // get display check column info and store it in label annotation1.
-        Cell cell = row.getCell(colIndexMap.get(TITLE_DISPLAY_CHECK));
-        if (null != cell) {
-            CellRangeAddress cr = findCellRangeAddress(row.getSheet(), cell);
-            int lblDisplayCheckMergeNum = cr.getLastColumn() - cr.getFirstColumn() + 1;
-            annotation.put("displayCheckMergeNum", lblDisplayCheckMergeNum + "");
-        }
-        annotation.put("rowHeight", String.valueOf(row.getHeightInPoints()));
-
-
-        Sheet refSheet = row.getSheet().getWorkbook().getSheet(SHEET_REF);
-        Map<String, Integer> refColIndexMap = getTitleMap(refSheet);
-        Row refRow = refSheet.getRow(row.getRowNum());
-
-        if (null == refRow) {
-            label.setAnnotation1(Util.map2String(annotation));
-            return label;
-        }
-        cell = refRow.getCell(refColIndexMap.get(SHEET_REF_TITLE_DISPLAY_CHECK));
-        if (null != cell) {
-            CellStyle style = cell.getCellStyle();
-            Font font = refSheet.getWorkbook().getFontAt(style.getFontIndex());
-            label.setFontName(font.getFontName());
-            label.setFontSize(font.getFontHeightInPoints() + "");
-        }
-
-        cell = refRow.getCell(refColIndexMap.get(SHEET_REF_TITLE_USER_INTERFACE));
-        if (null != cell) {
-            String userInterface = getStringCellValue(cell, evaluator);
-            annotation.put("userInterface", userInterface);
-        }
-
-        cell = refRow.getCell(refColIndexMap.get(SHEET_REF_TITLE_USED));
-        if (null != cell) {
-            String used = getStringCellValue(cell, evaluator);
-            annotation.put("used", used);
-        }
-        label.setAnnotation1(Util.map2String(annotation));
-        return label;
-    }
-
-    /**
      * Convert the cell value to string
      *
      * @param cell
      * @return converted string
      */
-    public String getStringCellValue(Cell cell, FormulaEvaluator evaluator) {
+    public String getStringCellValue(Cell cell, FormulaEvaluator evaluator, Collection<BusinessWarning> warnings, String dictName) {
         if (null == cell || Cell.CELL_TYPE_BLANK == cell.getCellType() || Cell.CELL_TYPE_ERROR == cell.getCellType())
             return StringUtils.EMPTY;
         DataFormatter formatter = new HSSFDataFormatter(Locale.ENGLISH);
@@ -391,7 +369,9 @@ public class OTCPCParser extends DictionaryParser {
             try {
                 return formatter.formatCellValue(cell, evaluator);
             } catch (Exception e) {
-                log.warn("Formula at row {} col {} of sheet {} evaluation failed({}).", new Object[]{cell.getRowIndex(), cell.getColumnIndex(), cell.getSheet().getSheetName(), e.toString()});
+                BusinessWarning warning = new BusinessWarning(BusinessWarning.EXCEL_CELL_EVALUATION_FAIL, cell.getRowIndex(), cell.getColumnIndex(), cell.getSheet().getSheetName(),dictName, e.getMessage());
+                warnings.add(warning);
+                log.warn(warning.toString());
                 return StringUtils.EMPTY;
             }
         }

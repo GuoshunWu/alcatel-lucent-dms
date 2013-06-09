@@ -277,7 +277,7 @@
       title: i18n.dialog.stringsettings.title,
       modal: true,
       width: 910,
-      height: 605,
+      height: 620,
       create: function(e, ui) {
         var _this = this;
 

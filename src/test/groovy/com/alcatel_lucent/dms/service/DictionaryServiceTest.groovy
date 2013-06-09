@@ -81,7 +81,7 @@ public class DictionaryServiceTest {
         println doc
     }
 
-    @Test
+//    @Test
 //    @Rollback(false)
     void testDictionaryProcess() {
         String targetDir = "D:/test/dictgenerate/"
@@ -105,6 +105,8 @@ public class DictionaryServiceTest {
 //                'OTC-Android_languages-v2.0.30.0.xls',
 //                'languages_ori.xls'
 //        )
+        if(dictNames.isEmpty())return
+
 
         Collection<Long> dbIds = daoService.retrieve('select id from Dictionary where base.name in :names', ['names': dictNames])
         dictionaryService.generateDictFiles(targetDir, dbIds)
