@@ -183,7 +183,7 @@ define [
       $('#detailLanguageSwitcher').change ->
         param = $('#translationDetailDialog').data "param"
         language = {id: $(@).val(), name: $("option:selected", @).text()}
-        detailgrid.languageChanged {language: language, dict: param.dict, searchStatus: param.searchStatus}
+        detailgrid.languageChanged {language: language, dict: param.dict, searchStatus: param.searchStatus, transsrc: param.transsrc}
     close: (event, ui)->
       detailgrid.saveLastEditedCell()
       postData = $("#transDetailGridList").getGridParam('postData')
@@ -294,6 +294,6 @@ define [
     map = 'N': '0', 'I': '1', 'T': '2'
     status = param.language.name.split('.')[1]
 
-    transDetailDialog.data('param', {dict: param.dict, searchStatus: map[status]}).dialog "open"
+    transDetailDialog.data('param', {dict: param.dict, searchStatus: map[status]}, transsrc: '').dialog "open"
 
   showSearchResult: showSearchResult

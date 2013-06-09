@@ -366,11 +366,12 @@
           format: 'grid',
           prop: "key,reference,t,n,i,maxLength,context.name,description"
         };
+        $("select[id='gs_context'][name='context.name']", '#stringSettingsDialog').val('');
         return $('#stringSettingsGrid').setGridParam({
           url: 'rest/labels',
           page: 1,
           postData: postData
-        }).trigger("reloadGrid");
+        })[0].triggerToolbar();
       },
       close: function(event, ui) {
         var postData;
