@@ -1,6 +1,7 @@
 package com.alcatel_lucent.dms.rest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -44,7 +45,7 @@ import com.alcatel_lucent.dms.util.ObjectComparator;
  *   	The option only works when "language" parameter is specified.
  *   filters	(optional) jqGrid-style filter string, in json format, e.g.
  *   	{"groupOp":"AND","rules":[{"field":"status","op":"eq","data":"2"}]}
- *   NOTE: only support filter "ct.status" and "ct.translationType" for the moment
+ *   NOTE: only support filter "context.name", "ct.status" and "ct.translationType" for the moment
  *   
  * Sort parameters:
  *   sidx		(optional) sort by, default is "sortNo"
@@ -137,6 +138,25 @@ public class LabelREST extends BaseREST {
 	    		countHql += " and upper(reference) like :text";
 	    		param.put("text", "%" + text + "%");
 	    		countParam.put("text", "%" + text + "%");
+	    	}
+	    	Map<String, String> filters = getGridFilters(requestMap);
+        	if (filters != null) {	// filter by status
+        		String contextFilter = filters.get("context.name");
+        		if (contextFilter != null && !contextFilter.isEmpty()) {
+        			if (contextFilter.equalsIgnoreCase("other")) {
+        				String[] systemContexts = new String[] {
+        						Context.DEFAULT, Context.EXCLUSION,  Context.DICT, Context.APP, Context.PROD};
+        				hql += " and obj.context.name not in (:systemContexts)";
+        				countHql += " and obj.context.name not in (:systemContexts)";
+        				param.put("systemContexts", Arrays.asList(systemContexts));
+        				countParam.put("systemContexts", Arrays.asList(systemContexts));
+        			} else {
+        				hql += " and obj.context.name=:contextName";
+        				countHql += " and obj.context.name=:contextName";
+        				param.put("contextName", contextFilter);
+        				countParam.put("contextName", contextFilter);
+        			}
+        		}
 	    	}
 	    	ComparatorChain comparator = null;
 			if (sidx.indexOf(",") == -1 && !sidx.equals("t") && !sidx.equals("n") && !sidx.equals("i") && 
