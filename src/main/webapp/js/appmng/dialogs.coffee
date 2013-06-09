@@ -231,7 +231,9 @@ define [
       $('#dictEncoding', @).val(param.encoding)
 
       postData = dict: param.id, format: 'grid', prop: "key,reference,t,n,i,maxLength,context.name,description"
-      $('#stringSettingsGrid').setGridParam(url: 'rest/labels', page: 1, postData: postData).trigger "reloadGrid"
+      #  used for restore filter
+      $("select[id='gs_context'][name='context.name']", '#stringSettingsDialog').val('')
+      $('#stringSettingsGrid').setGridParam(url: 'rest/labels', page: 1, postData: postData)[0].triggerToolbar()
     close: (event, ui)->
       postData =  $('#stringSettingsGrid').getGridParam('postData')
 

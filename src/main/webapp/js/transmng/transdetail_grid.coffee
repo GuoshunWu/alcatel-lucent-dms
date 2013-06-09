@@ -152,7 +152,8 @@ define [
     options.defaultValue = param.searchStatus
     transDetailGrid.setColProp 'transStatus', searchoptions: options
 
-    $('#gs_transStatus').val param.searchStatus
+    $('select#gs_transStatus[name=ct.status]','#translationDetailDialog').val param.searchStatus
+    $('select#gs_transtype[name=ct.translationType]','#translationDetailDialog').val param.transsrc
     transDetailGrid[0].triggerToolbar()
 
 

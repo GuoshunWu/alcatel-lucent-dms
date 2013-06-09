@@ -289,7 +289,8 @@
           return detailgrid.languageChanged({
             language: language,
             dict: param.dict,
-            searchStatus: param.searchStatus
+            searchStatus: param.searchStatus,
+            transsrc: param.transsrc
           });
         });
       },
@@ -433,6 +434,8 @@
         return transDetailDialog.data('param', {
           dict: param.dict,
           searchStatus: map[status]
+        }, {
+          transsrc: ''
         }).dialog("open");
       },
       showSearchResult: showSearchResult

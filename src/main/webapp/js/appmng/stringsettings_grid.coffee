@@ -7,8 +7,6 @@ define [
 ], ($, util, urls, c18n, i18n, ltgrid)->
 #  console?.log "module appmng/stringsetting_grid loading."
 
-#  used for restore filter
-#  $("select[id='gs_context'][name='context.name']").val('All')
   lastEditedCell = null
 
   lockLabels = (lock = true, grid=$('#stringSettingsGrid'), btn = $('#custom_lock_stringSettingsGrid > div.ui-pg-div'))->
