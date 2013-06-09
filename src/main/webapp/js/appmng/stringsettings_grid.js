@@ -247,7 +247,10 @@
           titleText: 'Status'
         }
       ]
-    }).filterToolbar();
+    }).filterToolbar({
+      stringResult: true,
+      searchOnEnter: false
+    });
     return {
       saveLastEditedCell: function() {
         if (lastEditedCell) {

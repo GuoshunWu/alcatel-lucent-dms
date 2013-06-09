@@ -256,7 +256,7 @@ define [
 
   showSearchResult = (params)->transSearchText.data('params', params).dialog 'open'
 
-  transSearchText = $('#transmngMatchTextDialog').dialog(
+  $('#transmngMatchTextDialog').dialog(
     autoOpen: false
     width: 1000, height: 'auto', modal: true
 

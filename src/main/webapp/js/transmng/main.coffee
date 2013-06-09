@@ -90,7 +90,6 @@ define [
         typeText = if 'prod' == nodeInfo.type then 'Product' else 'Application'
         $.msgBox "#{typeText.capitalize()} \"#{nodeInfo.text}\" has no version."
         return
-
       dialogs.showSearchResult(
           text: $('#transSearchText', '#transmng').val()
           version:
