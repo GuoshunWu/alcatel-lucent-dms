@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Collection;
 
 import static com.alcatel_lucent.dms.service.parser.StandardExcelDictParser.*;
@@ -43,15 +44,19 @@ public class StandardExcelGenerator extends DictionaryGenerator {
     public void generateDict(File targetDir, Dictionary dict) throws BusinessException {
         File targetFile = new File(targetDir, dict.getName());
 
+        OutputStream os=null;
         try {
             IOUtils.copy(getClass().getResourceAsStream("StandardExcelTemplate.xls"), FileUtils.openOutputStream(targetFile));
             Workbook wb = WorkbookFactory.create(new AutoCloseInputStream(new FileInputStream(targetFile)));
             fillWorkbook(wb, dict);
-            wb.write(FileUtils.openOutputStream(targetFile));
+            os =  FileUtils.openOutputStream(targetFile);
+            wb.write(os);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InvalidFormatException e) {
             e.printStackTrace();
+        } finally {
+            IOUtils.closeQuietly(os);
         }
     }
 

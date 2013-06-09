@@ -8,6 +8,8 @@ import com.alcatel_lucent.dms.service.generator.DictionaryGenerator;
 import com.alcatel_lucent.dms.service.parser.DictionaryParser;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections.Transformer;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,10 +65,16 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         long before = System.currentTimeMillis();
         HashSet<String> allAcceptedFiles = new HashSet<String>();
         for (DictionaryParser parser : parsers) {
-        	ProgressQueue.setProgress("" + allAcceptedFiles.size() + " file(s) were accepted. Scanning for " + parser.getFormat().toString() + "...", -1);
+            ProgressQueue.setProgress("" + allAcceptedFiles.size() + " file(s) were accepted. Scanning for " + parser.getFormat().toString() + "...", -1);
             Collection<File> acceptedFiles = new ArrayList<File>();
             try {
                 result.addAll(parser.parse(rootDir, file, acceptedFiles));
+                // remove accepted file to avoid repeatedly parse
+                for (File acceptedFile : acceptedFiles) {
+                    if (acceptedFile.delete()){
+//                        acceptedFiles.remove(acceptedFile);
+                    }
+                }
             } catch (BusinessException e) {
                 if (e.getErrorCode() == BusinessException.NESTED_ERROR) {
                     for (BusinessException subE : e.getNested()) {
@@ -86,13 +94,17 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         log.info("**************preview directory '" + file.getAbsolutePath() + "' take " + (after - before)
                 + " milliseconds of time.************");
         // check files not accepted
-        Collection<String> notAcceptedFiles = getNotAcceptedFiles(file, allAcceptedFiles);
+
+        Collection<File> notAcceptedFiles = FileUtils.listFiles(file, null, true);
+//      getNotAcceptedFiles(file, allAcceptedFiles);
         if (!notAcceptedFiles.isEmpty()) {
-            for (String notAcceptedFile : notAcceptedFiles) {
-                if (notAcceptedFile.startsWith(rootDir)) {
-                    notAcceptedFile = notAcceptedFile.substring(rootDir.length());
+            String normalRoot=FilenameUtils.normalize(rootDir,true);
+            for (File notAcceptedFile : notAcceptedFiles) {
+                String fName= FilenameUtils.normalize(file.getAbsolutePath(), true);
+                if (fName.startsWith(normalRoot)) {
+                    fName = fName.substring(normalRoot.length());
                 }
-                exceptions.addNestedException(new BusinessException(BusinessException.UNRECOGNIZED_DICT_FILE, notAcceptedFile));
+                exceptions.addNestedException(new BusinessException(BusinessException.UNRECOGNIZED_DICT_FILE, fName));
             }
         }
         if (exceptions.hasNestedException()) {
@@ -612,17 +624,17 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     text.addTranslation(t);
                 } //for
             }
-            
+
             // align translations with dictLanguages in purpose of getting translation suggestion
             for (DictionaryLanguage dl : dict.getDictLanguages()) {
-            	if (!dl.isReference() && label.getOrigTranslation(dl.getLanguageCode()) == null) {
-            		Translation t = new Translation();
-            		t.setText(text);
-            		t.setTranslation(label.getReference());
-            		t.setLanguage(dl.getLanguage());
-            		t.setStatus(Translation.STATUS_UNTRANSLATED);
-            		text.addTranslation(t);
-            	}
+                if (!dl.isReference() && label.getOrigTranslation(dl.getLanguageCode()) == null) {
+                    Translation t = new Translation();
+                    t.setText(text);
+                    t.setTranslation(label.getReference());
+                    t.setLanguage(dl.getLanguage());
+                    t.setStatus(Translation.STATUS_UNTRANSLATED);
+                    text.addTranslation(t);
+                }
             }
         }
 
@@ -638,7 +650,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     context.getId(), texts, mode);
             // update DEFAULT context from each DICT context, so the DEFAULT context would be a union of all translations
             if (context.getName().equals(Context.DICT)) {
-            	textService.updateTranslations(defaultCtx.getId(), texts, Constants.ImportingMode.DELIVERY);
+                textService.updateTranslations(defaultCtx.getId(), texts, Constants.ImportingMode.DELIVERY);
             }
 
             // in TRANSLATION_MODE, no change to label
@@ -890,30 +902,30 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         if (dict.getDictLanguage(code) != null) {
             throw new BusinessException(BusinessException.DUPLICATE_LANG_CODE, dict.getName(), code);
         }
-        
+
         // simulate a delivery activity in order to benefit from auto-match of other contexts
         // construct texts parameter
         Map<Long, Collection<Text>> ctxMap = new HashMap<Long, Collection<Text>>();
         if (dict.getLabels() != null) {
-	        for (Label label : dict.getLabels()) {
-	        	Collection<Text> texts = ctxMap.get(label.getContext().getId());
-	        	if (texts == null) {
-	        		texts = new ArrayList<Text>();
-	        		ctxMap.put(label.getContext().getId(), texts);
-	        	}
-	        	Text text = new Text();
-	        	text.setReference(label.getReference());
-	        	Translation trans = new Translation();
-	        	trans.setTranslation(label.getReference());
-	        	trans.setLanguage((Language) dao.retrieve(Language.class, languageId));
-	        	trans.setStatus(Translation.STATUS_UNTRANSLATED);
-	        	text.addTranslation(trans);
-	        	texts.add(text);
-	        }
+            for (Label label : dict.getLabels()) {
+                Collection<Text> texts = ctxMap.get(label.getContext().getId());
+                if (texts == null) {
+                    texts = new ArrayList<Text>();
+                    ctxMap.put(label.getContext().getId(), texts);
+                }
+                Text text = new Text();
+                text.setReference(label.getReference());
+                Translation trans = new Translation();
+                trans.setTranslation(label.getReference());
+                trans.setLanguage((Language) dao.retrieve(Language.class, languageId));
+                trans.setStatus(Translation.STATUS_UNTRANSLATED);
+                text.addTranslation(trans);
+                texts.add(text);
+            }
         }
         for (Long ctxId : ctxMap.keySet()) {
-        	Collection<Text> texts = ctxMap.get(ctxId);
-        	textService.updateTranslations(ctxId, texts, Constants.ImportingMode.DELIVERY);
+            Collection<Text> texts = ctxMap.get(ctxId);
+            textService.updateTranslations(ctxId, texts, Constants.ImportingMode.DELIVERY);
         }
         // add dictLanguage
         DictionaryLanguage dl = new DictionaryLanguage();
@@ -923,7 +935,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         dl.setCharset((Charset) dao.retrieve(Charset.class, charsetId));
         dl.setSortNo(dict.getMaxDictLanguageSortNo());
         dl = (DictionaryLanguage) dao.create(dl);
-        
+
         return dl;
     }
 
@@ -964,7 +976,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         label.setReference(reference);
         // re-associate text unless EXCLUSION context
         if (!label.getContext().getName().equals(Context.EXCLUSION)) {
-        	Text text = textService.updateTranslations(label);
+            Text text = textService.updateTranslations(label);
             label.setText(text);
         }
         // reset LabelTranslation objects
@@ -1050,7 +1062,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 //        label.setText(text);
         label.setSortNo(dict.getMaxLabelSortNo() + 1);
         label.setRemoved(false);
-        
+
         Text text = textService.updateTranslations(label);
         label.setText(text);
         label = (Label) dao.create(label);

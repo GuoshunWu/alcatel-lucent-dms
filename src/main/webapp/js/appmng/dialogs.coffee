@@ -181,7 +181,7 @@ define [
     autoOpen: false
     title: i18n.dialog.stringsettings.title, modal: true
     width: 910,
-    height: 605
+    height: 620
     create: (e, ui)->
       # create search text component
       $('#searchText', @).keydown (e)=>

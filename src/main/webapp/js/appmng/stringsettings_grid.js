@@ -65,14 +65,16 @@
           index: 'key',
           width: 100,
           editable: false,
-          align: 'left'
+          align: 'left',
+          search: false
         }, {
           name: 'reference',
           index: 'reference',
           width: 200,
           edittype: 'textarea',
           editable: false,
-          align: 'left'
+          align: 'left',
+          search: false
         }, {
           name: 't',
           index: 't',
@@ -80,6 +82,8 @@
           width: 15,
           align: 'right',
           formatter: 'showlink',
+          search: false,
+          search: false,
           formatoptions: {
             baseLinkUrl: '#',
             addParam: encodeURI("&status=2")
@@ -91,6 +95,7 @@
           sortable: true,
           width: 15,
           align: 'right',
+          search: false,
           formatoptions: {
             baseLinkUrl: '#',
             addParam: encodeURI("&status=0")
@@ -102,6 +107,7 @@
           sortable: true,
           width: 15,
           align: 'right',
+          search: false,
           formatoptions: {
             baseLinkUrl: '#',
             addParam: encodeURI("&status=1")
@@ -112,7 +118,8 @@
           width: 40,
           editable: true,
           classes: 'editable-column',
-          align: 'right'
+          align: 'right',
+          search: false
         }, {
           name: 'context',
           index: 'context.name',
@@ -122,7 +129,7 @@
           align: 'left',
           stype: 'select',
           searchoptions: {
-            value: 'All:'
+            value: ":All;" + c18n.transcontext
           },
           editrules: {
             required: true
@@ -134,7 +141,8 @@
           editable: true,
           edittype: 'textarea',
           classes: 'editable-column',
-          align: 'left'
+          align: 'left',
+          search: false
         }
       ],
       gridComplete: function() {
@@ -239,7 +247,7 @@
           titleText: 'Status'
         }
       ]
-    });
+    }).filterToolbar();
     return {
       saveLastEditedCell: function() {
         if (lastEditedCell) {
