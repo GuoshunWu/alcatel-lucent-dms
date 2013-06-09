@@ -164,10 +164,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         Context defaultCtx = new Context(Context.DEFAULT);
 //        Context exclusionCtx = new Context(Context.EXCLUSION);
         Context dbDefaultCtx = textService.getContextByExpression(Context.DEFAULT, null);
-        Context dbExclusionCtx = textService.getContextByExpression(Context.EXCLUSION, null);
+//        Context dbExclusionCtx = textService.getContextByExpression(Context.EXCLUSION, null);
         Map<String, Text> textMap = dbDefaultCtx == null ? new HashMap<String, Text>() :
                 textService.getTextsAsMap(dbDefaultCtx.getId());
-        Map<String, Text> exclusionMap = textService.getTextsAsMap(dbExclusionCtx.getId());
+//        Map<String, Text> exclusionMap = textService.getTextsAsMap(dbExclusionCtx.getId());
+        Map<String, Text> unsavedTextMap = new HashMap<String, Text>();
         for (Dictionary dict : dictList) {
             Context dictCtx = new Context(Context.DICT);
             if (dict.getLabels() == null) continue;
@@ -181,78 +182,92 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
                 // check for each language, if translation in any language is conflict (either translation or status)
                 // with Default context, set the label to dictionary context
-                if (label.getOrigTranslations() != null) {
-                    for (LabelTranslation lt : label.getOrigTranslations()) {
-//                        if (lt == null || lt.getOrigTranslation() == null) {
-//                            System.out.println("label.key= " + label.getKey());
-//                            System.out.println("label translation = " + lt);
-//                            System.out.println("label translation original= " + lt.getOrigTranslation());
-//                        }
-                        if (lt.getLanguage() != null && !lt.getOrigTranslation().equals(label.getReference())) {
-                            Text text = textMap.get(label.getReference());
-//                        	Text text = textService.getText(dbDefaultCtx.getId(), label.getReference());
-                            if (text != null) {
-                                Translation trans = text.getTranslation(lt.getLanguage().getId());
-                                if (trans != null) {    // compare converted label translation with context translation
-                                    String translation = lt.getOrigTranslation();
-                                    DictionaryLanguage dl = dict.getDictLanguage(lt.getLanguageCode());
-                                    if (dl != null && dl.getCharset() != null && dict.getEncoding() != null) {
-                                        try {
-                                            translation = new String(translation.getBytes(dict.getEncoding()), dl.getCharset().getName());
-                                        } catch (UnsupportedEncodingException e) {
-                                            log.error(e.toString());
-                                        }
-                                    }
-                                    if ((!trans.getTranslation().equals(translation) || 
-                                    				lt.getStatus() != null && lt.getStatus() != trans.getStatus()) && trans.getStatus() == Translation.STATUS_TRANSLATED) {
-                                        log.debug("Context conflict - Reference:" + label.getReference() + ", Translation:" + lt.getOrigTranslation() + ", ContextTranslation:" + trans.getTranslation());
-                                        label.setContext(dictCtx);
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
+                if (isConflict(dict, label, textMap) || isConflict(dict, label, unsavedTextMap)) {
+                	label.setContext(dictCtx);
                 }
                 if (label.getContext() == null) {
                     label.setContext(defaultCtx);
                 }
 
-                // temporarily add in-memory LabelTranslations to Default context text map
+                // temporarily add in-memory LabelTranslations to unsaved Default context text map
                 // to ensure no conflict translation in scope of current delivery are put into DEFAULT context
-//                if (label.getContext().getName().equals(Context.DEFAULT)) {
-//                    Text text = textMap.get(label.getReference());
-//                    if (text == null) {
-//                        text = new Text();
-//                        text.setReference(label.getReference());
-//                        textMap.put(label.getReference(), text);
-//                    }
-//                    if (label.getOrigTranslations() != null) {
-//                        for (LabelTranslation lt : label.getOrigTranslations()) {
-//                            if (lt.getLanguage() != null && !lt.getOrigTranslation().equals(label.getReference())) {
-//                                Translation trans = text.getTranslation(lt.getLanguage().getId());
-//                                if (trans == null) {
-//                                    trans = new Translation();
-//                                    String translation = lt.getOrigTranslation();
-//                                    DictionaryLanguage dl = dict.getDictLanguage(lt.getLanguageCode());
-//                                    if (dl != null && dl.getCharset() != null && dict.getEncoding() != null) {
-//                                        try {
-//                                            translation = new String(translation.getBytes(dict.getEncoding()), dl.getCharset().getName());
-//                                        } catch (UnsupportedEncodingException e) {
-//                                            log.error(e.toString());
-//                                        }
-//                                    }
-//                                    trans.setLanguage(lt.getLanguage());
-//                                    trans.setTranslation(translation);
-//                                    text.addTranslation(trans);
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
+                if (label.getContext().getName().equals(Context.DEFAULT)) {
+                    Text text = unsavedTextMap.get(label.getReference());
+                    if (text == null) {
+                        text = new Text();
+                        text.setReference(label.getReference());
+                        unsavedTextMap.put(label.getReference(), text);
+                    }
+                    if (label.getOrigTranslations() != null) {
+                        for (LabelTranslation lt : label.getOrigTranslations()) {
+                        	if (lt.getLabel() == null) lt.setLabel(label);
+                            if (lt.getLanguage() != null && !lt.getOrigTranslation().equals(label.getReference())) {
+                                Translation trans = text.getTranslation(lt.getLanguage().getId());
+                                String translation = lt.getOrigTranslation();
+                                DictionaryLanguage dl = dict.getDictLanguage(lt.getLanguageCode());
+                                if (dl != null && dl.getCharset() != null && dict.getEncoding() != null) {
+                                    try {
+                                        translation = new String(translation.getBytes(dict.getEncoding()), dl.getCharset().getName());
+                                    } catch (UnsupportedEncodingException e) {
+                                        log.error(e.toString());
+                                    }
+                                }
+                                if (trans == null) {
+                                    trans = new Translation();
+                                    trans.setLanguage(lt.getLanguage());
+                                    trans.setTranslation(translation);
+                                    trans.setStatus(populateTranslationStatus(lt));
+                                    text.addTranslation(trans);
+                                } else if (trans.getTranslation().equals(label.getReference()) && 
+                                		!translation.equals(label.getReference())) {
+                                	trans.setTranslation(translation);
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
+    }
+    
+    /**
+     * check for each language, if translation in any language is conflict (either translation or status)
+     * with Default context, set the label to dictionary context 
+     * @param dict
+     * @param label
+     * @param textMap
+     * @return
+     */
+    private boolean isConflict(Dictionary dict, Label label, Map<String, Text> textMap) {
+        if (label.getOrigTranslations() != null) {
+            for (LabelTranslation lt : label.getOrigTranslations()) {
+                if (lt.getLanguage() != null && !lt.getOrigTranslation().equals(label.getReference())) {
+                    Text text = textMap.get(label.getReference());
+                    if (text != null) {
+                        Translation trans = text.getTranslation(lt.getLanguage().getId());
+                        if (trans != null) {    // compare converted label translation with context translation
+                            String translation = lt.getOrigTranslation();
+                            DictionaryLanguage dl = dict.getDictLanguage(lt.getLanguageCode());
+                            if (dl != null && dl.getCharset() != null && dict.getEncoding() != null) {
+                                try {
+                                    translation = new String(translation.getBytes(dict.getEncoding()), dl.getCharset().getName());
+                                } catch (UnsupportedEncodingException e) {
+                                    log.error(e.toString());
+                                }
+                            }
+                            if ((!trans.getTranslation().equals(translation) ||
+                            				lt.getStatus() != null && lt.getStatus() != trans.getStatus()) 
+                            				&& trans.getStatus() == Translation.STATUS_TRANSLATED) {
+                                log.debug("Context conflict - Reference:" + label.getReference() + ", Translation:" + lt.getOrigTranslation() + ", ContextTranslation:" + trans.getTranslation());
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private Collection<String> getNotAcceptedFiles(File file,
