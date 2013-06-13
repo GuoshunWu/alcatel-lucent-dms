@@ -111,8 +111,7 @@ public class TranslationLuceneREST extends BaseREST {
         Map<String, Object> keywords = new HashMap<String, Object>();
         Map<String, String> fuzzyKeywords = new HashMap<String, String>();
         keywords.put("status", 2);
-        // -id: 843415
-//        keywords.put("id", transId);
+
         if (null != langId) {
             keywords.put("language.id", langId);
         }

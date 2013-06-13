@@ -209,6 +209,11 @@
                 <div id="dictListPreviewPager"></div>
             </td>
         </tr>
+        <tr>
+            <td>
+               &nbsp;&nbsp; <input type="checkbox" id="isAutoCreateLanguage"/><s:text name="appmng.dialogs.dictpreview.autocreatelanguage"/>
+            </td>
+        </tr>
     </table>
 </div>
 
