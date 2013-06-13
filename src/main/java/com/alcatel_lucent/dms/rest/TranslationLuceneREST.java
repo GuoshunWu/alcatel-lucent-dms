@@ -2,14 +2,12 @@ package com.alcatel_lucent.dms.rest;
 
 import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.Translation;
+import com.alcatel_lucent.dms.model.TranslationMatch;
 import com.alcatel_lucent.dms.service.DictionaryService;
 import com.alcatel_lucent.dms.service.TranslationService;
-import com.alcatel_lucent.dms.util.ObjectComparator;
-import org.apache.commons.beanutils.*;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Transformer;
-import org.apache.commons.collections.comparators.ComparatorChain;
+import org.apache.commons.collections.*;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
@@ -104,7 +102,6 @@ public class TranslationLuceneREST extends BaseREST {
         }
 
         Long langId = requestMap.get("language") == null ? null : Long.valueOf(requestMap.get("language"));
-        Collection<Label> labels;
         String[] orders = sidx.split("\\s*,\\s*");
 
 
@@ -135,37 +132,67 @@ public class TranslationLuceneREST extends BaseREST {
             requestMap.put("records", resultSize + "");
         }
 
-        return toJSON(toDynaBeanList(result.getRight()), requestMap);
+        return toJSON(toTranslationMatchList(result.getRight(), transId), requestMap);
+    }
+
+    /**
+     * find original translation match in result list.
+     */
+    private TranslationMatch findOriginalTranslation(final List<TranslationMatch> resultList, final Long transId) {
+        return (TranslationMatch) CollectionUtils.find(resultList, new Predicate() {
+            @Override
+            public boolean evaluate(Object object) {
+                TranslationMatch filteredTm = (TranslationMatch) object;
+                return filteredTm.getId().equals(transId);
+            }
+        });
     }
 
     /**
      * Convert item in list which is a object array to dynamic bean.
      */
-    private List<DynaBean> toDynaBeanList(List list) {
-        final DynaClass dTranslation = new BasicDynaClass("Translation", null, new DynaProperty[]{
-                new DynaProperty("id", Long.class),
-                new DynaProperty("score", Float.class),
-                new DynaProperty("reference", String.class),
-                new DynaProperty("translation", String.class)
-        });
+    private List<TranslationMatch> toTranslationMatchList(List list, final Long transId) {
 
-        List<DynaBean> resultList = (List<DynaBean>) CollectionUtils.collect(list, new Transformer() {
+        List<TranslationMatch> resultList = (List<TranslationMatch>) CollectionUtils.collect(list, new Transformer() {
             @Override
             public Object transform(Object o) {
                 Object[] row = (Object[]) o;
                 Float score = (Float) row[0];
                 Translation trans = (Translation) row[1];
-
-                DynaBean translation = new BasicDynaBean(dTranslation);
-                translation.set("id", trans.getId());
-                translation.set("score", score);
-                translation.set("reference", trans.getText().getReference());
-                translation.set("translation", trans.getTranslation());
-                return translation;
+                return new TranslationMatch(trans.getId(), score, trans.getTranslation(), trans.getText().getReference());
             }
         });
+        final TranslationMatch originalTransMatch = findOriginalTranslation(resultList, transId);
+        log.info("Original size {},resultList=\n{}", resultList.size(), StringUtils.join(resultList, "\n"));
 
-        return resultList;
+        //distinct
+        List<TranslationMatch> filteredList = new ArrayList<TranslationMatch>();
+        for (final TranslationMatch tm : resultList) {
+            if (!tm.getId().equals(originalTransMatch.getId())
+                    && !tm.getTranslation().equals(originalTransMatch.getTranslation())
+                    && !CollectionUtils.exists(filteredList, new Predicate() {
+                @Override
+                public boolean evaluate(Object object) {
+                    TranslationMatch filteredTm = (TranslationMatch) object;
+                    boolean transEqual = filteredTm.getTranslation().equals(tm.getTranslation());
+                    if (transEqual) {
+                        log.info("tm.id={},tm.trans={}; filteredTm.id={}, filteredTm.trans={}, should be rejected",
+                                new Object[]{tm.getId(), tm.getTranslation(), filteredTm.getId(), filteredTm.getTranslation()});
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            })) {
+                log.info("added tm id: {}, translation {} to filtered list.", tm.getId(), tm.getTranslation());
+                filteredList.add(tm);
+            }
+        }
+
+        log.info("filterList size: {}, filteredList =\n{}", filteredList.size(), StringUtils.join(filteredList, "\n"));
+
+
+        return filteredList;
     }
 
     private Sort orders2Sort(String[] orders, String sord) {
@@ -174,8 +201,6 @@ public class TranslationLuceneREST extends BaseREST {
         for (String order : orders) {
             String[] idxOrder = order.split("\\s+");
             sidx = idxOrder[0];
-//            if (sidx.endsWith("reference")) sidx += "_forSort";
-//            if (sidx.equals("score")) sidx = FullTextQuery.SCORE;
             String tmpOrd = idxOrder.length > 1 ? idxOrder[1] : sord;
             boolean isAsc = tmpOrd.equalsIgnoreCase("asc");
             SortField sf = FullTextQuery.SCORE.equals(sidx) ?

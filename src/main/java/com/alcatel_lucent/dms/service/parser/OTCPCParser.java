@@ -237,17 +237,18 @@ public class OTCPCParser extends DictionaryParser {
         Sheet ctxSheet = row.getSheet().getWorkbook().getSheet(SHEET_CTX);
         Map<String, Integer> ctxColIndexesMap = getTitleMap(ctxSheet);
         int colNumber = ctxColIndexesMap.get(SHEET_CTX_TITLE_DESC);
-        Cell descCell = CellUtil.getRow(row.getRowNum(), ctxSheet).getCell(colNumber);
+        cell = CellUtil.getRow(row.getRowNum(), ctxSheet).getCell(colNumber);
+        String desc = null == cell ? "" : getStringCellValue(cell, evaluator, warnings, dictName);
 
         cell = row.getCell(colIndexes.get(SHEET_REF_TITLE_USER_INTERFACE));
         String userInterface = null == cell ? "" : getStringCellValue(cell, evaluator, warnings, dictName);
 
         cell = row.getCell(colIndexes.get(SHEET_REF_TITLE_USED));
         String used = null == cell ? "" : getStringCellValue(cell, evaluator, warnings, dictName);
-        return createNewLabel(row.getRowNum(), row.getHeightInPoints(), labelKey, reference, lblDisplayCheckMergeNum, font, userInterface, used);
+        return createNewLabel(row.getRowNum(), row.getHeightInPoints(), labelKey, reference, lblDisplayCheckMergeNum, font, desc, userInterface, used);
     }
 
-    private Label createNewLabel(int sortNo, float rowHeightInPoints, String key, String ref, Integer displayCheckMergeNum, Font font, String userInterface, String used) {
+    private Label createNewLabel(int sortNo, float rowHeightInPoints, String key, String ref, Integer displayCheckMergeNum, Font font, String desc, String userInterface, String used) {
         Label label = new Label();
         label.setSortNo(sortNo);
         label.setKey(key);
@@ -268,6 +269,10 @@ public class OTCPCParser extends DictionaryParser {
         }
         if (null != used) {
             annotation.put("used", used);
+        }
+
+        if (StringUtils.isNotBlank(desc)) {
+            label.setDescription(desc);
         }
 
         label.setAnnotation1(Util.map2String(annotation));
@@ -369,7 +374,7 @@ public class OTCPCParser extends DictionaryParser {
             try {
                 return formatter.formatCellValue(cell, evaluator);
             } catch (Exception e) {
-                BusinessWarning warning = new BusinessWarning(BusinessWarning.EXCEL_CELL_EVALUATION_FAIL, cell.getRowIndex(), cell.getColumnIndex(), cell.getSheet().getSheetName(),dictName, e.getMessage());
+                BusinessWarning warning = new BusinessWarning(BusinessWarning.EXCEL_CELL_EVALUATION_FAIL, cell.getRowIndex(), cell.getColumnIndex(), cell.getSheet().getSheetName(), dictName, e.getMessage());
                 warnings.add(warning);
                 log.warn(warning.toString());
                 return StringUtils.EMPTY;

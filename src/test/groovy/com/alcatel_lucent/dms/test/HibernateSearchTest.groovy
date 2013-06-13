@@ -22,6 +22,7 @@ import org.apache.lucene.util.Version
 import org.apache.solr.handler.component.TermsComponent
 import org.hibernate.Criteria
 import org.hibernate.criterion.Projections
+import org.hibernate.criterion.Property
 import org.hibernate.search.FullTextQuery
 import org.hibernate.search.FullTextSession
 import org.hibernate.search.Search
@@ -181,7 +182,8 @@ class HibernateSearchTest {
 
 
         Criteria crit = fullTextSession.createCriteria(Translation.class);
-//        crit.projection = Projections.distinct(Projections.property("text.reference"))
+//        crit.projection = Projections.distinct(Projections.property("status"))
+
 
         FullTextQuery hibQuery = fullTextSession.createFullTextQuery(query).setCriteriaQuery(crit)
 

@@ -123,6 +123,7 @@ public class OTCPCGenerator extends DictionaryGenerator {
         CellUtil.createCell(row, colIndex++, OTCPCParser.SHEET_REF_TITLE_USED, style);
 
         rowNum++;
+        refSheet.createFreezePane(255, rowNum);
 
         Collection<Label> labels = dict.getAvailableLabels();
 
@@ -282,6 +283,8 @@ public class OTCPCGenerator extends DictionaryGenerator {
         CellUtil.createCell(row, colIndex++, OTCPCParser.SHEET_CTX_TITLE_DEFAULT, style);
         CellUtil.createCell(row, colIndex++, OTCPCParser.SHEET_CTX_TITLE_DESC, style);
 
+        ctxSheet.createFreezePane(255, rowNum);
+
         Map<String, Integer> colMap = OTCPCParser.getTitleMap(refSheet);
         int defCellColIndex = colMap.get(OTCPCParser.SHEET_REF_TITLE_VALUE);
 
@@ -314,7 +317,7 @@ public class OTCPCGenerator extends DictionaryGenerator {
         String refSheetName = refSheet.getSheetName();
         String refRangeString = refCellRef.formatAsString();
         String formula = String.format("IF(%s!%s<>0,%s!%s,\"\")", refSheetName, refRangeString, refSheetName, refRangeString);
-//        log.info("Sheet {} array formula {}, ctx range: {}", new Object[]{ctxSheet.getSheetName(), formula, ctxCellRef});
+        wb.setSheetOrder(ctxSheet.getSheetName(), 2);
         ctxSheet.setArrayFormula(formula, ctxCellRef);
     }
 
@@ -339,17 +342,24 @@ public class OTCPCGenerator extends DictionaryGenerator {
 
         Dictionary dict = dictionaryLanguage.getDictionary();
         String[] strWidths = Util.string2Map(dict.getAnnotation2()).get(OTCPCParser.SHEET_REF_TITLE_DISPLAY_CHECK).split(",");
-        drawDisplayCheckColumnHeader(row, strWidths, colIndex, style);
+        colIndex = drawDisplayCheckColumnHeader(row, strWidths, colIndex, style);
+
+        langSheet.createFreezePane(255, rowNum);
+
         int checkColumnLen = strWidths.length;
 
-        Map<String, Integer> colMap = OTCPCParser.getTitleMap(refSheet);
+
 
         //Translation row
         Cell cell = null;
 
-        CellStyle greyStyle = wb.createCellStyle();
-        greyStyle.setFillForegroundColor(HSSFColor.GREY_25_PERCENT.index);
-        greyStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+        CellStyle greyStyle = (CellStyle) styleMap.get(Style.GREY, StringUtils.EMPTY);
+        if(null== greyStyle){
+            greyStyle = wb.createCellStyle();
+            greyStyle.setFillForegroundColor(HSSFColor.GREY_25_PERCENT.index);
+            greyStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+
+        }
 
         int startRowNum = rowNum;
         for (Label label : labels) {
@@ -380,7 +390,7 @@ public class OTCPCGenerator extends DictionaryGenerator {
 
         rowNum += (RESERVED_ROW_NUM - 1);
 
-        colMap = OTCPCParser.getTitleMap(refSheet);
+        Map<String, Integer> colMap = OTCPCParser.getTitleMap(refSheet);
         int refColIndex = colMap.get(OTCPCParser.SHEET_REF_TITLE_ID);
         CellRangeAddress refCellRef = new CellRangeAddress(startRowNum, rowNum, refColIndex, refColIndex);
 
@@ -442,21 +452,22 @@ public class OTCPCGenerator extends DictionaryGenerator {
         Collection<DictionaryLanguage> dictionaryLanguageCollection = dict.getDictLanguages();
         generateLanguageSheet(wb, dictionaryLanguageCollection, (CellStyle) styleMap.get(Style.BOLD, StringUtils.EMPTY));
 
+
         // generate "default" sheet
         Sheet refSheet = generateReferenceSheet(wb, dict, defaultColWidth, styleMap);
+
 
         Collection<Label> labels = dict.getAvailableLabels();
 
         // generate context sheet.
         generateContextSheet(wb, refSheet, labels, (CellStyle) styleMap.get(Style.BOLD_LIGHT_BLUE, StringUtils.EMPTY));
 
+
         // generate a sheet for each language
         for (DictionaryLanguage dictionaryLanguage : dictionaryLanguageCollection) {
             if (dictionaryLanguage.getLanguageCode().equals(OTCPCParser.REFERENCE_LANG_CODE)) continue;
             generateTranslationSheet(wb, refSheet, labels, dictionaryLanguage, defaultColWidth, styleMap);
         }
-
-//        wb.setSheetOrder(OTCPCParser.SHEET_CTX, 2);
 
         return wb;
     }
