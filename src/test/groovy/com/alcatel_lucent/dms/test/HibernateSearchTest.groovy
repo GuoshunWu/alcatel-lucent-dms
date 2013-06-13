@@ -20,6 +20,8 @@ import org.apache.lucene.search.Sort
 import org.apache.lucene.search.SortField
 import org.apache.lucene.util.Version
 import org.apache.solr.handler.component.TermsComponent
+import org.hibernate.Criteria
+import org.hibernate.criterion.Projections
 import org.hibernate.search.FullTextQuery
 import org.hibernate.search.FullTextSession
 import org.hibernate.search.Search
@@ -104,7 +106,7 @@ class HibernateSearchTest {
         return labels
     }
 
-    @Test
+//    @Test
     void testHibSearch() {
         //        total result size
         int pageNumber = 1  //http parameter page
@@ -112,7 +114,7 @@ class HibernateSearchTest {
         Pair<Integer, List> result = dao.hibSearchRetrieve(
                 Translation.class,
                 [status: 2, 'language.id': 21],
-                ['text.reference': 'Patch No.'], 0.8f,
+                ['text.reference': 'Call Routing Service Management'], 0.8f,
                 (pageNumber - 1) * pageSize, pageSize,
                 new Sort(new SortField(null, SortField.SCORE, true)),
                 FullTextQuery.SCORE,
@@ -122,7 +124,7 @@ class HibernateSearchTest {
 
         List<Object[]> list = result.right
         println 'Querying result: '
-        list.each {entry ->
+        list.each { entry ->
             Float score = entry[0]
             Translation trans = entry[1]
             println "${'*' * 100}\n${score}, ${trans.id}, ${trans.text.reference}, ${trans.translation}"
@@ -155,9 +157,18 @@ class HibernateSearchTest {
 
 
         Query query = qb.bool()
-                .must(qb.keyword().fuzzy().withThreshold(0.8).onField("text.reference").matching('starting').createQuery()
+                .must(
+                qb.bool().must(
+                        qb.keyword().fuzzy().withThreshold(0.8).onField("text.reference").matching('Call').createQuery()
+                ).must(
+                        qb.keyword().fuzzy().withThreshold(0.8).onField("text.reference").matching('Routing').createQuery()
+                ).must(
+                        qb.keyword().fuzzy().withThreshold(0.8).onField("text.reference").matching('Service').createQuery()
+                ).must(
+                        qb.keyword().fuzzy().withThreshold(0.8).onField("text.reference").matching('Management').createQuery()
+                ).createQuery()
         ).must(qb.keyword().onField("status").matching(2).createQuery()
-        ).must(qb.keyword().onField("language.id").matching(46).createQuery()
+        ).must(qb.keyword().onField("language.id").matching(21).createQuery()
         ).createQuery()
 //        Query query = qb.phrase().onField("reference_forSort").sentence("This is a test.").createQuery()
         println "Query string: ${query.toString()}".center(100, '=')
@@ -168,10 +179,15 @@ class HibernateSearchTest {
         List list
         long start = System.nanoTime()
 
-        FullTextQuery hibQuery = fullTextSession.createFullTextQuery(query, Translation.class)
 
-        hibQuery.setProjection(FullTextQuery.SCORE, FullTextQuery.THIS)
-        hibQuery.sort = new Sort(new SortField(null, SortField.SCORE, true))
+        Criteria crit = fullTextSession.createCriteria(Translation.class);
+//        crit.projection = Projections.distinct(Projections.property("text.reference"))
+
+        FullTextQuery hibQuery = fullTextSession.createFullTextQuery(query).setCriteriaQuery(crit)
+
+//        hibQuery.setProjection(FullTextQuery.SCORE, FullTextQuery.THIS)
+
+//        hibQuery.sort = new Sort(new SortField(null, SortField.SCORE, true))
 //        total result size
         int pageNumber = 1  //http parameter page
         int pageSize = 400    //http parameter rows
@@ -195,10 +211,12 @@ class HibernateSearchTest {
 
         //execute search
         println 'Querying result: '
-        list.each {entry ->
-            Float score = entry[0]
-            Translation trans = entry[1]
-            println "${'*' * 100}\n${score}, ${trans.id}, ${trans.text.reference}, ${trans.translation}"
+        list.each { entry ->
+            def trans = entry
+            println "${'*' * 100}\n${trans.id}, ${trans.text.reference}, ${trans.translation}"
+//            Float score = entry[0]
+//            Translation trans = entry[1]
+//            println "${'*' * 100}\n${score}, ${trans.id}, ${trans.text.reference}, ${trans.translation}"
         }
         println "Page ${list.size()} record(s).".center(100, '=')
     }

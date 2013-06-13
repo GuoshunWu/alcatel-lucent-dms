@@ -306,7 +306,8 @@ define [
     buttons: [
       {text: i18n.dialog.dictlistpreview['import'], click: ()->
         param = dictListPreview.data "param"
-        postData = handler: param.handler, app: $('#selAppVersion').val()
+        isAutoCreateLanguage=Boolean($('#isAutoCreateLanguage', @).attr("checked"))
+        postData = handler: param.handler, app: $('#selAppVersion').val(), autoCreateLang: isAutoCreateLanguage
         ($.msgBox i18n.dialog.dictlistpreview.check, null, {title: c18n.error};return) if previewgrid.gridHasErrors()
         dictListPreview.dialog 'close'
 
@@ -322,6 +323,7 @@ define [
       }
     ]
     open: ->
+      $('#isAutoCreateLanguage', @).attr("checked", false)
       #    param need to be initilize before the dialog open
       param = $(@).data 'param'
       return if !param

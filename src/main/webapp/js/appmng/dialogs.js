@@ -489,12 +489,14 @@
         {
           text: i18n.dialog.dictlistpreview['import'],
           click: function() {
-            var param, pb, postData;
+            var isAutoCreateLanguage, param, pb, postData;
 
             param = dictListPreview.data("param");
+            isAutoCreateLanguage = Boolean($('#isAutoCreateLanguage', this).attr("checked"));
             postData = {
               handler: param.handler,
-              app: $('#selAppVersion').val()
+              app: $('#selAppVersion').val(),
+              autoCreateLang: isAutoCreateLanguage
             };
             if (previewgrid.gridHasErrors()) {
               $.msgBox(i18n.dialog.dictlistpreview.check, null, {
@@ -522,6 +524,7 @@
       open: function() {
         var param, postData;
 
+        $('#isAutoCreateLanguage', this).attr("checked", false);
         param = $(this).data('param');
         if (!param) {
           return;
