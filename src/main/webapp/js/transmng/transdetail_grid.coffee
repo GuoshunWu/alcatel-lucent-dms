@@ -12,7 +12,7 @@ define [
   ###
     find the labels which reference resemblant to the text and display in a modal dialog
   ###
-  matchAction = (refText, transId) ->
+  matchAction = (refText, transId, labelId) ->
     # +_hibernate_class:com.alcatel_lucent.dms.model.Translation +text.reference:text~0.8 + status:2 + language.id:46
     languageId = $('#detailLanguageSwitcher').val()
 
@@ -24,9 +24,9 @@ define [
     postData.format = 'grid'
     postData.fuzzy = true
     postData.transId = transId
+    postData.labelId = labelId
     postData.prop = 'reference, translation, score'
 
-    console?.log postData
     grid.setGridParam(url: urls.translations, page: 1).trigger 'reloadGrid'
 
   transDetailGrid = $("#transDetailGridList").jqGrid(
@@ -61,7 +61,7 @@ define [
       {name: 'action', index: 'action', width: 50, align:'center', search: false, sortable: false
       hidden: true
       formatter: (cellvalue, options, rowObject)->
-        ret ="<div id='matchAct_#{rowObject[3]}_#{rowObject[6]}' style='display:inline-block' title=\"Match\" class=\"ui-state-default ui-corner-all\">"
+        ret ="<div id='matchAct_#{options.rowId}_#{rowObject[3]}_#{rowObject[6]}' style='display:inline-block' title=\"Match\" class=\"ui-state-default ui-corner-all\">"
         ret +="<span class=\"ui-icon ui-icon-search\"></span></div>"
         ret
       unformat:(cellvalue, options)->""
@@ -70,9 +70,9 @@ define [
     gridComplete: ->
       grid = $(@)
       $('div[id^=matchAct]', @).click(()->
-        [_, ref,transId]=@id.split('_')
+        [_, id, ref,transId]=@id.split('_')
         grid.getRowData()
-        matchAction(ref, transId)
+        matchAction(ref, transId, id)
       ).on('mouseover',()->
         $(@).addClass('ui-state-hover')
       ).on('mouseout', ()->
@@ -140,7 +140,7 @@ define [
 
   languageChanged: (param)->
     transDetailGrid = $("#transDetailGridList")
-    url = "rest/labels"
+    url = urls.labels_normal
     prop = "key,maxLength,context.name,reference,ct.translation,ct.status,ct.id,ct.translationType,ct.lastUpdateTime"
 #    idprop: 'ct.id'
     transDetailGrid.setGridParam url: url, datatype: "json", postData: {dict: param.dict.id, language: param.language.id, format: 'grid', prop: prop}

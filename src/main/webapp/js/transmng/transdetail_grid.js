@@ -8,7 +8,7 @@
       find the labels which reference resemblant to the text and display in a modal dialog
     */
 
-    matchAction = function(refText, transId) {
+    matchAction = function(refText, transId, labelId) {
       var grid, languageId, postData;
 
       languageId = $('#detailLanguageSwitcher').val();
@@ -20,10 +20,8 @@
       postData.format = 'grid';
       postData.fuzzy = true;
       postData.transId = transId;
+      postData.labelId = labelId;
       postData.prop = 'reference, translation, score';
-      if (typeof console !== "undefined" && console !== null) {
-        console.log(postData);
-      }
       return grid.setGridParam({
         url: urls.translations,
         page: 1
@@ -151,7 +149,7 @@
           formatter: function(cellvalue, options, rowObject) {
             var ret;
 
-            ret = "<div id='matchAct_" + rowObject[3] + "_" + rowObject[6] + "' style='display:inline-block' title=\"Match\" class=\"ui-state-default ui-corner-all\">";
+            ret = "<div id='matchAct_" + options.rowId + "_" + rowObject[3] + "_" + rowObject[6] + "' style='display:inline-block' title=\"Match\" class=\"ui-state-default ui-corner-all\">";
             ret += "<span class=\"ui-icon ui-icon-search\"></span></div>";
             return ret;
           },
@@ -165,11 +163,11 @@
 
         grid = $(this);
         return $('div[id^=matchAct]', this).click(function() {
-          var ref, transId, _, _ref;
+          var id, ref, transId, _, _ref;
 
-          _ref = this.id.split('_'), _ = _ref[0], ref = _ref[1], transId = _ref[2];
+          _ref = this.id.split('_'), _ = _ref[0], id = _ref[1], ref = _ref[2], transId = _ref[3];
           grid.getRowData();
-          return matchAction(ref, transId);
+          return matchAction(ref, transId, id);
         }).on('mouseover', function() {
           return $(this).addClass('ui-state-hover');
         }).on('mouseout', function() {
@@ -295,7 +293,7 @@
         var options, prop, url;
 
         transDetailGrid = $("#transDetailGridList");
-        url = "rest/labels";
+        url = urls.labels_normal;
         prop = "key,maxLength,context.name,reference,ct.translation,ct.status,ct.id,ct.translationType,ct.lastUpdateTime";
         transDetailGrid.setGridParam({
           url: url,

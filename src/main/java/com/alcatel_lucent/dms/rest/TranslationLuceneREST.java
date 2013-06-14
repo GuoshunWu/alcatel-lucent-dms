@@ -22,22 +22,14 @@ import java.util.*;
 
 /**
  * Translation hibernate search REST service.
- * URL: /rest/labels
+ * URL: /rest/luceneTranslations
  * Filter parameters:
  * transId	Translation id
- * app		(optional) application id
- * dict		(optional) dictionary id
- * text		(optional) search text (case insensitive)
- * NOTE: at least one of the parameter "dict" and "text" should be provided
+ * text	 search text (case insensitive)
  * <p/>
- * language	(optional) language id
- * If language is supplied, relative LabelTranslation and Translation object can be accessed by
- * adding "ot" or "ct" prefix to the property name, e.g. ot.needTranslation,ct.translation
- * Otherwise, only label properties can be accessed.
- * The option only works when "language" parameter is specified.
+ * language	language id
  * filters	(optional) jqGrid-style filter string, in json format, e.g.
  * {"groupOp":"AND","rules":[{"field":"status","op":"eq","data":"2"}]}
- * NOTE: only support filter "ct.status" and "ct.translationType" for the moment
  * <p/>
  * Sort parameters:
  * sidx		(optional) sort by, default is "sortNo"
@@ -63,15 +55,8 @@ public class TranslationLuceneREST extends BaseREST {
 
     private static Logger log = LoggerFactory.getLogger(TranslationLuceneREST.class);
 
-    @Autowired
-    private DictionaryService dictionaryService;
-
-    @Autowired
-    private TranslationService translationService;
-
     @Override
-    @SuppressWarnings("rawtypes")
-    public Class getEntityClass() {
+    public Class<Label> getEntityClass() {
         return Label.class;
     }
 
@@ -163,7 +148,8 @@ public class TranslationLuceneREST extends BaseREST {
             }
         });
         final TranslationMatch originalTransMatch = findOriginalTranslation(resultList, transId);
-        log.info("Original size {},resultList=\n{}", resultList.size(), StringUtils.join(resultList, "\n"));
+//        log.info("original transMatch: {}", originalTransMatch);
+//        log.info("resultList size {},resultList=\n{}", resultList.size(), StringUtils.join(resultList, "\n"));
 
         //distinct
         List<TranslationMatch> filteredList = new ArrayList<TranslationMatch>();
@@ -176,20 +162,20 @@ public class TranslationLuceneREST extends BaseREST {
                     TranslationMatch filteredTm = (TranslationMatch) object;
                     boolean transEqual = filteredTm.getTranslation().equals(tm.getTranslation());
                     if (transEqual) {
-                        log.info("tm.id={},tm.trans={}; filteredTm.id={}, filteredTm.trans={}, should be rejected",
-                                new Object[]{tm.getId(), tm.getTranslation(), filteredTm.getId(), filteredTm.getTranslation()});
+//                        log.info("tm.id={},tm.trans={}; filteredTm.id={}, filteredTm.trans={}, should be rejected",
+//                                new Object[]{tm.getId(), tm.getTranslation(), filteredTm.getId(), filteredTm.getTranslation()});
                         return true;
                     } else {
                         return false;
                     }
                 }
             })) {
-                log.info("added tm id: {}, translation {} to filtered list.", tm.getId(), tm.getTranslation());
+//                log.info("added tm id: {}, translation {} to filtered list.", tm.getId(), tm.getTranslation());
                 filteredList.add(tm);
             }
         }
 
-        log.info("filterList size: {}, filteredList =\n{}", filteredList.size(), StringUtils.join(filteredList, "\n"));
+//        log.info("filterList size: {}, filteredList =\n{}", filteredList.size(), StringUtils.join(filteredList, "\n"));
 
 
         return filteredList;
@@ -210,14 +196,4 @@ public class TranslationLuceneREST extends BaseREST {
         }
         return new Sort(sortFields.toArray(new SortField[0]));
     }
-
-
-    public TranslationService getTranslationService() {
-        return translationService;
-    }
-
-    public void setTranslationService(TranslationService translationService) {
-        this.translationService = translationService;
-    }
-
 }
