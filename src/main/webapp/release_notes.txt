@@ -1,3 +1,11 @@
+V2.7.0 (Jun. 14, 2013)
+	* Add option "Auto create translation languages" for importing dictionaries
+	* Update DEFAULT context during importing and receiving translations to DICT context
+	* Add context filter in String settings view
+	* Update OTC Excel parser and generator to support display check column and other dict information
+	* Optimized dictionary import service to avoid parsing dictionary files repeatedly
+	* Fixed an importing issue in case conflict translations are found in a single delivery package
+
 V2.6.3 (Jun. 6, 2013)
 	* Merge same reference texts of context DEFAULT and DICT into one translation in translation tasks
 	* Preview grid of imported dictionaries is now sortable
