@@ -1,11 +1,12 @@
 package com.alcatel_lucent.dms.util;
 
-import org.apache.commons.logging.LogFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class CharsetUtil {
 	
-	public static Logger log = (Logger) LogFactory.getLog(CharsetUtil.class);
+	public static Logger log = LoggerFactory.getLogger(CharsetUtil.class);
 	
 	/**
 	 * Get unicode block name of a character.
