@@ -78,7 +78,6 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
         Context ctx = (Context) dao.retrieve(Context.class, ctxId);
         Text text = new Text();
         text.setContext(ctx);
-        reference = CharsetUtil.truncate(reference, Constants.MAX_TEXT_LENGTH);
         text.setReference(reference);
         text.setStatus(Text.STATUS_NOT_TRANSLATED);
         return (Text) dao.create(text, false);
@@ -134,6 +133,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
     		suggestTranslations(ctxId, texts, dbTextMap);
     	}
         for (Text text : texts) {
+        	text.setReference(CharsetUtil.truncate(text.getReference(), Constants.MAX_TEXT_LENGTH));
             if (result.containsKey(text.getReference())) {
                 // ignore same reference
                 continue;
