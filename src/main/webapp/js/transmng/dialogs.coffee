@@ -256,7 +256,7 @@ define [
 
   showSearchResult = (params)->transSearchText.data('params', params).dialog 'open'
 
-  $('#transmngMatchTextDialog').dialog(
+  transMatchText = $('#transmngMatchTextDialog').dialog(
     autoOpen: false
     width: 1000, height: 'auto', modal: true
 
@@ -267,10 +267,30 @@ define [
         if grid.getRowData().length > 0 and not selId
           $.msgBox('Please select translation to apply.', null, title: c18n.error)
           return
-        #TODO: apply translation
-        console.log "Selected: translation id: " + selId
+        rowData=grid.getRowData(selId)
+        console?.log rowData
+        postData = grid.getGridParam('postData')
+        $.post(urls.trans.update_translation, {
+          oper: 'edit'
+          translation: rowData.translation
+          id: postData.labelId
+          ctid: postData.transId
+        },(json)->
+          if json.status != 1
+            $("#transDetailGridList").trigger 'reloadGrid'
+            return
+
+          dictList = "<ul>\n  <li>#{json.dicts.join('</li>\n  <li>')}</li>\n</ul>"
+          showMsg = i18n.msgbox.updatetranslation.msg.format dictList
+          delete json.dicts
+          delete json.message
+          delete json.status
+          $('#transmngTranslationUpdate').html(showMsg).data('param', json).dialog 'open'
+
+        )
         $(@).dialog 'close'
       }
+      {text: c18n.cancel, click: ()->  $(@).dialog 'close'}
     ]
   )
 
