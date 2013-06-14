@@ -38,6 +38,7 @@ import com.alcatel_lucent.dms.model.LabelTranslation;
 import com.alcatel_lucent.dms.model.Language;
 import com.alcatel_lucent.dms.model.Text;
 import com.alcatel_lucent.dms.model.Translation;
+import com.alcatel_lucent.dms.util.CharsetUtil;
 
 @Service("textService")
 @SuppressWarnings("unchecked")
@@ -77,6 +78,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
         Context ctx = (Context) dao.retrieve(Context.class, ctxId);
         Text text = new Text();
         text.setContext(ctx);
+        reference = CharsetUtil.truncate(reference, Constants.MAX_TEXT_LENGTH);
         text.setReference(reference);
         text.setStatus(Text.STATUS_NOT_TRANSLATED);
         return (Text) dao.create(text, false);
@@ -110,7 +112,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                 Translation trans = new Translation();
                 trans.setText(text);
                 trans.setLanguage((Language) dao.retrieve(Language.class, languageId));
-                trans.setTranslation(translations.get(languageId));
+                trans.setTranslation(CharsetUtil.truncate(translations.get(languageId), Constants.MAX_TEXT_LENGTH));
                 dao.create(trans, false);
             } else {
                 dbTrans.setTranslation(translations.get(languageId));
@@ -148,6 +150,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 	                    // ignore translation of same language
 	                    continue;
 	                }
+	                trans.setTranslation(CharsetUtil.truncate(trans.getTranslation(), Constants.MAX_TEXT_LENGTH));
 	                Translation dbTrans = dbText.getTranslation(trans.getLanguage().getId());
 	                if (dbTrans == null) {
 	                	if (trans.getTranslationType() == null && trans.getStatus() == Translation.STATUS_TRANSLATED) {
@@ -507,7 +510,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 		Translation dbTrans = new Translation();
         dbTrans.setText(text);
 		dbTrans.setLanguage((Language) dao.retrieve(Language.class, trans.getLanguage().getId()));
-		dbTrans.setTranslation(trans.getTranslation());
+		dbTrans.setTranslation(CharsetUtil.truncate(trans.getTranslation(), Constants.MAX_TEXT_LENGTH));
 		dbTrans.setStatus(trans.getStatus());
 		dbTrans.setTranslationType(trans.getTranslationType());
 		dbTrans.setLastUpdateTime(trans.getLastUpdateTime());
@@ -596,6 +599,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 	public Collection<String> updateTranslation(Long labelId,
 			Long translationId, String translation, Boolean confirmAll) {
 		Label label = (Label) dao.retrieve(Label.class, labelId);
+		translation = CharsetUtil.truncate(translation, Constants.MAX_TEXT_LENGTH);
 		if (label.getContext().getName().equals(Context.EXCLUSION)) {
 			throw new BusinessException(BusinessException.CANNOT_UPDATE_EXCLUSION);
 		}
