@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Constants {
+	
+	public static final int MAX_TEXT_LENGTH = 2000;
+	
     // dictionary importing modes
     public enum ImportingMode {
         DELIVERY, TRANSLATION

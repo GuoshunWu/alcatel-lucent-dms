@@ -1,6 +1,11 @@
 package com.alcatel_lucent.dms.util;
 
+import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+
 public class CharsetUtil {
+	
+	public static Logger log = (Logger) LogFactory.getLog(CharsetUtil.class);
 	
 	/**
 	 * Get unicode block name of a character.
@@ -54,6 +59,22 @@ public class CharsetUtil {
 			return ub.equals("HEBREW");
 		} else {
 			return ub.startsWith("LATIN_");
+		}
+	}
+
+	/**
+	 * Truncate a string.
+	 * @param reference
+	 * @param maxLength
+	 * @return
+	 */
+	public static String truncate(String reference, int maxLength) {
+		if (reference == null) return null;
+		if (reference.length() > maxLength) {
+			log.warn("A text was truncated from " + reference.length() + " to " + maxLength);
+			return reference.substring(0, maxLength);
+		} else {
+			return reference;
 		}
 	}
 }
