@@ -14,7 +14,7 @@
         </id>
 
         <property name="reference" type="string" column="REFERENCE"
-                  length="1024"/>
+                  length="2048"/>
         <property name="key" type="string" column="LABEL_KEY"/>
         <property name="sortNo" type="integer" column="SORT_NO"/>
         <property name="description" type="string" column="DESCRIPTION"/>

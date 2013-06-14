@@ -14,7 +14,7 @@
 		</id>
 
 		<property name="reference" type="string" column="REFERENCE" index="I_TEXT_REF_CTX"
-			length="1024" />
+			length="2048" />
 		<property name="status" type="integer" column="STATUS" />
         <many-to-one name="context" column="CONTEXT_ID" index="I_TEXT_REF_CTX" not-null="true" />
 
