@@ -612,4 +612,19 @@ public class Dictionary extends BaseEntity {
     public String getNameVersion() {
     	return base == null ? null : base.getName() + " " + version;
     }
+    
+    /**
+     * Check if the dictionary contains no language other than reference language
+     * @return
+     */
+    public boolean hasNoLanguage() {
+    	if (dictLanguages != null) {
+	        for (DictionaryLanguage dictLanguage : dictLanguages) {
+	        	if (!dictLanguage.isReference()) {
+	        		return false;
+	        	}
+	        }
+    	}
+        return true;
+    }
 }
