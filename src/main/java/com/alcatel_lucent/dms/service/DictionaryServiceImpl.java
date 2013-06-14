@@ -341,7 +341,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
     @Override
     public Dictionary importDictionary(Long appId, Dictionary dict, String version, Constants.ImportingMode mode, String[] langCodes,
-                                       Map<String, String> langCharset,
+                                       Map<String, String> langCharset, Boolean autoCreateLang,
                                        Collection<BusinessWarning> warnings, DeliveryReport report) {
         log.info("Start importing dictionary in " + mode + " mode");
         if (null == dict)
@@ -457,40 +457,72 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         }
         dictionaries.add(dbDict);
 
+        for (DictionaryLanguage dictLanguage : dict.getDictLanguages()) {	// make sure dl.dictionary is not null
+        	if (dictLanguage.getDictionary() == null) dictLanguage.setDictionary(dict);
+        }
         // update dictionary languages in delivery mode
+        boolean noLanguage = dict.hasNoLanguage();	// whether the imported dictionary contains no language other than ref language
+        boolean needAppendLanguage = autoCreateLang != null && autoCreateLang.booleanValue() && noLanguage;
         if (mode == Constants.ImportingMode.DELIVERY) {
-            if (dbDict.getDictLanguages() != null) {    //remove all existing dict languages
-                for (DictionaryLanguage dl : dbDict.getDictLanguages()) {
-                    dao.delete(dl);
-                }
-            }
-            for (DictionaryLanguage dictLanguage : dict.getDictLanguages()) {
-                String uniLangCode = getUnifiedLangCode(dictLanguage.getLanguageCode());
-                if (langCodeList != null && !langCodeList.contains(uniLangCode)) {
-                    continue;
-                }
-                String charsetName = null;
-                if (dictLanguage.getCharset() != null) {
-                    charsetName = dictLanguage.getCharset().getName();
-                }
-                if (charsetName == null) {
-                    charsetName = langCharset.get(uniLangCode);
-                    if (charsetName == null) {
-                        charsetName = langCharset.get("DEFAULT");
-                    }
-                }
-                if (null == charsetName) {
-                    nonBreakExceptions.addNestedException(new BusinessException(
-                            BusinessException.CHARSET_NOT_DEFINED, dictLanguage.getLanguageCode()));
-                } else {
-                    dictLanguage.setCharset(langService.getCharset(charsetName));
-                }
-
-                dictLanguage.setDictionary(dbDict);
-                dictLanguage.setLanguage((Language) dao.retrieve(Language.class,
-                        dictLanguage.getLanguage().getId()));
-                dao.create(dictLanguage);
-            }
+        	if (needAppendLanguage) {	// GAE-only dictionary and need auto creating languages
+        		// if the dictionary is new, copy languages from any other existing dictionary in the application
+        		if (dbDict.hasNoLanguage()) {
+        			Dictionary anotherDict = findDictionaryForAppendingLanguage(appId);
+        			if (anotherDict != null) {
+        				for (DictionaryLanguage dictLanguage : anotherDict.getDictLanguages()) {
+        					if (dbDict.getDictLanguage(dictLanguage.getLanguageCode()) != null) continue;
+        					DictionaryLanguage dl = new DictionaryLanguage();
+        					dl.setLanguageCode(dictLanguage.getLanguageCode());
+        					dl.setLanguage(dictLanguage.getLanguage());
+        					dl.setCharset(dictLanguage.getCharset());
+        					dl.setSortNo(dictLanguage.getSortNo());
+        					dl.setDictionary(dbDict);
+        					dl = (DictionaryLanguage) dao.create(dl);
+        					dict.addDictLanguage(dl);
+        				}
+        			}
+        		} else {	// if the dictionary already exists, do nothing change on the languages
+        			for (DictionaryLanguage dl : dbDict.getDictLanguages()) {
+        				if (!dl.isReference()) {
+        					dict.addDictLanguage(dl);
+        				}
+        			}
+        		}
+        	} else {	// normal case
+	        	// remove all existing dict languages 
+	            if (dbDict.getDictLanguages() != null) {    
+	                for (DictionaryLanguage dl : dbDict.getDictLanguages()) {
+	                    dao.delete(dl);
+	                }
+	            }
+	            for (DictionaryLanguage dictLanguage : dict.getDictLanguages()) {
+	                String uniLangCode = getUnifiedLangCode(dictLanguage.getLanguageCode());
+	                if (langCodeList != null && !langCodeList.contains(uniLangCode)) {
+	                    continue;
+	                }
+	                String charsetName = null;
+	                if (dictLanguage.getCharset() != null) {
+	                    charsetName = dictLanguage.getCharset().getName();
+	                }
+	                if (charsetName == null) {
+	                    charsetName = langCharset.get(uniLangCode);
+	                    if (charsetName == null) {
+	                        charsetName = langCharset.get("DEFAULT");
+	                    }
+	                }
+	                if (null == charsetName) {
+	                    nonBreakExceptions.addNestedException(new BusinessException(
+	                            BusinessException.CHARSET_NOT_DEFINED, dictLanguage.getLanguageCode()));
+	                } else {
+	                    dictLanguage.setCharset(langService.getCharset(charsetName));
+	                }
+	
+	                dictLanguage.setDictionary(dbDict);
+	                dictLanguage.setLanguage((Language) dao.retrieve(Language.class,
+	                        dictLanguage.getLanguage().getId()));
+	                dao.create(dictLanguage);
+	            }
+        	}
         }
 
         // prepare data for creation: textMap, labelMap indexed by context
@@ -717,7 +749,22 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         return dbDict;
     }
 
-    private int populateTranslationStatus(LabelTranslation trans) {
+    /**
+     * Find out a dictionary in the application which contains languages
+     * @param appId
+     * @return
+     */
+    private Dictionary findDictionaryForAppendingLanguage(Long appId) {
+		Application app = (Application) dao.retrieve(Application.class, appId);
+		if (app.getDictionaries() != null) {
+			for (Dictionary dict : app.getDictionaries()) {
+				if (!dict.hasNoLanguage()) return dict;
+			}
+		}
+		return null;
+	}
+
+	private int populateTranslationStatus(LabelTranslation trans) {
         Label label = trans.getLabel();
         if (trans.getStatus() != null) {    // status information is specified in dictionary
             return trans.getStatus();
@@ -745,7 +792,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 }
             }
             Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
-            importDictionary(appId, dict, dict.getVersion(), mode, null, langCharset, warnings, report);
+            importDictionary(appId, dict, dict.getVersion(), mode, null, langCharset, null, warnings, report);
             warningMap.put(dict.getName(), warnings);
         }
         report.setWarningMap(warningMap);

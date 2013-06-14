@@ -52,11 +52,13 @@ public interface DictionaryService {
      *                    should be imported
      * @param langCharset mapping of language code and its source charset name
      * 					  There might be a 'DEFAULT' language code indicating default charset name
+     * @param autoCreateLang indicate whether to create languages if the dictionary has no language,
+     * 					if true, add languages from any other dictionary in the application. Default is false.
      * @param warnings    a collection to hold output warnings
      * @return persistent Dictionary object created
      */
     Dictionary importDictionary(Long appId, Dictionary dict, String version, Constants.ImportingMode mode, String[] langCodes,
-                         Map<String, String> langCharset,
+                         Map<String, String> langCharset, Boolean autoCreateLang,
                          Collection<BusinessWarning> warnings, DeliveryReport report);
     
     /**

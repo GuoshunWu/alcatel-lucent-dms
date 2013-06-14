@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.struts2.convention.annotation.ParentPackage;
-import org.apache.struts2.convention.annotation.Result;
 
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
@@ -20,13 +18,13 @@ import com.alcatel_lucent.dms.service.DeliveringDictPool;
 import com.alcatel_lucent.dms.service.DeliveryReport;
 import com.alcatel_lucent.dms.service.DictionaryService;
 import com.alcatel_lucent.dms.service.JSONService;
-import com.google.gson.JsonObject;
 
 @SuppressWarnings("serial")
 public class DeliverDictAction extends ProgressAction {
 	
 	private String handler;
 	private Long app;
+	private Boolean autoCreateLang;
 	
 	private DeliveringDictPool deliveringDictPool;
 	private DictionaryService dictionaryService;
@@ -67,7 +65,7 @@ public class DeliverDictAction extends ProgressAction {
             }
             Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
             ProgressQueue.setProgress("[" + cur + "/" + total + "] Importing " + dict.getName(), 0);
-            dictionaryService.importDictionary(appId, dict, dict.getVersion(), mode, null, langCharset, warnings, report);
+            dictionaryService.importDictionary(appId, dict, dict.getVersion(), mode, null, langCharset, autoCreateLang, warnings, report);
             warningMap.put(dict.getName(), warnings);
             cur++;
         }
@@ -122,6 +120,14 @@ public class DeliverDictAction extends ProgressAction {
 
 	public void setJsonService(JSONService jsonService) {
 		this.jsonService = jsonService;
+	}
+
+	public Boolean getAutoCreateLang() {
+		return autoCreateLang;
+	}
+
+	public void setAutoCreateLang(Boolean autoCreateLang) {
+		this.autoCreateLang = autoCreateLang;
 	}
 
 }
