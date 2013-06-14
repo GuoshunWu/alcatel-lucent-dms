@@ -225,11 +225,18 @@ public class XMLHelpParser extends DictionaryParser {
                 helpLabel.setReference(help);
             } else {
                 helpLabel =  label.getDictionary().getLabel(label.getKey() + KEY_HELP_SIGN);
+                if(null == helpLabel){ // special help label which has no reference
+                    helpLabel = new Label(label.getKey() + KEY_HELP_SIGN);
+                    helpLabel.setDictionary(label.getDictionary());
+                    helpLabel.setOrigTranslations(new ArrayList<LabelTranslation>());
+                    label.getDictionary().addLabel(helpLabel);
+                    helpLabel.setReference("");
+                }
                 LabelTranslation lt = createTranslation(langCode, helpLabel, help);
+                lt.setNeedTranslation(false);
                 setLabelTranslationStatus(lt, followUp);
             }
         }
-//        attrMap.put("HELP", help);
         String text = elemTrans.element("LABEL").getTextTrim();
         if (langCode.equals(refCode)) {
             label.setReference(text);

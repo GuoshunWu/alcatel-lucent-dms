@@ -46,7 +46,7 @@ public class Text extends BaseEntity {
         this.context = context;
     }
 
-    @Column(name = "REFERENCE", length = 1024)
+    @Column(name = "REFERENCE", length = 2048)
     @Field
     public String getReference() {
         return reference;

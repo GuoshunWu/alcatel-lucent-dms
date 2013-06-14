@@ -13,7 +13,7 @@
             </generator>
         </id>
 
-        <property name="translation" type="string" column="TRANSLATION" length="1024"/>
+        <property name="translation" type="string" column="TRANSLATION" length="2048"/>
         <property name="warnings" type="string" column="WARNINGS" length="255"/>
         <property name="status" type="integer" column="STATUS"/>
         <property name="translationType" type="integer" column="TRANSLATION_TYPE"/>
