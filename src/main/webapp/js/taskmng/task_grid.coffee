@@ -39,7 +39,7 @@ define [
         dialogs.transReport.dialog 'open'
     'Close':
       title: 'Close'
-      url: urls.task.closed
+      url: urls.task.close
       handler: (param)->
         return if param.status == '1'
         $.blockUI

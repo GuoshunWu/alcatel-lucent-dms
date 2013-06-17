@@ -43,7 +43,7 @@
       },
       'Close': {
         title: 'Close',
-        url: urls.task.closed,
+        url: urls.task.close,
         handler: function(param) {
           if (param.status === '1') {
             return;
