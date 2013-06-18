@@ -16,6 +16,8 @@ public class BusinessWarning {
     public static final int DUPLICATE_REFERENCE = 208;
     public static final int LABEL_KEY_BLANK = 209;
     public static final int EXCEL_CELL_EVALUATION_FAIL = 210;
+    public static final int LABEL_TRANS_BLANK = 211;
+
 
     private int warningCode;
     private Object[] parameters;
