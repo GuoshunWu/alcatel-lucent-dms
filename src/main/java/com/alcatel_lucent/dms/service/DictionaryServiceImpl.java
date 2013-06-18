@@ -143,7 +143,10 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     if (dbDict != null) {
                         Label dbLabel = dbDict.getLabel(label.getKey());
                         if (dbLabel != null) {
-                            label.setContext(dbLabel.getContext());
+                        	// copy context value from existing label unless reference text was changed
+                        	if (label.getContext() == null && label.getReference().equals(dbLabel.getReference())) {
+                        		label.setContext(dbLabel.getContext());
+                        	}
                             if (label.getMaxLength() == null) {
                                 label.setMaxLength(dbLabel.getMaxLength());
                             }
@@ -187,8 +190,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             Context dictCtx = new Context(Context.DICT);
             if (dict.getLabels() == null) continue;
             for (Label label : dict.getLabels()) {
-                if (label.getContext() != null)
+                if (label.getContext() != null) {
                     continue;
+            	}
 //                if (exclusionMap.containsKey(label.getReference())) {
 //                    label.setContext(exclusionCtx);
 //                    continue;
@@ -273,7 +277,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                             if ((!trans.getTranslation().equals(translation) ||
                             				lt.getStatus() != null && lt.getStatus() != trans.getStatus()) 
                             				&& trans.getStatus() == Translation.STATUS_TRANSLATED) {
-                                log.debug("Context conflict - Reference:" + label.getReference() + ", Translation:" + lt.getOrigTranslation() + ", ContextTranslation:" + trans.getTranslation());
+                                log.info("Context conflict - Reference:" + label.getReference() + ", Translation:" + lt.getOrigTranslation() + ", ContextTranslation:" + trans.getTranslation());
                                 return true;
                             }
                         }
@@ -634,14 +638,22 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     // determine if the translation should take value from context dictionary
                     trans.setNeedTranslation(true);
                     if (lastLabel != null) {
-                        // get the original translation in latest version
                         LabelTranslation lastTranslation = lastLabel.getOrigTranslation(trans.getLanguageCode());
-                        if (lastTranslation != null &&
-                                !lastTranslation.getOrigTranslation().equals(trans.getOrigTranslation()) &&
-                                !trans.getOrigTranslation().equals(label.getReference())) {
-                            // translation changed means the label was translated on developer side
-                            trans.setNeedTranslation(false);
-                        }
+                    	if (label.getReference().equals(lastLabel.getReference())) {	// reference is not changed
+	                        // get the original translation in latest version
+	                        if (lastTranslation != null &&
+	                                !lastTranslation.getOrigTranslation().equals(trans.getOrigTranslation()) &&
+	                                !trans.getOrigTranslation().equals(label.getReference())) {
+	                            // translation changed means the label was translated on developer side
+	                            trans.setNeedTranslation(false);
+	                        }
+                    	} else {	
+                    		// if reference is changed, but translation is not changed,
+                			// abandon the translation because it's the translation of previous reference text
+                    		if (lastTranslation != null && lastTranslation.getOrigTranslation().equals(trans.getOrigTranslation())) {
+                    			trans.setOrigTranslation(label.getReference());
+                    		}
+                    	}
                     }
 
                     Translation t = new Translation();
