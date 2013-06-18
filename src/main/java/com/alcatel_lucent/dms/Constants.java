@@ -33,7 +33,8 @@ public class Constants {
 //        OTC_ANDROID_IPHONE("OTC Android/iPhone"),
 //        OTC_WEB("OTC Web"),
         VOICE_APP("Voice App"),
-        PO("PO");
+        PO("PO"),
+        NOE_STRING("NOE String");
 
 
         private static Map<String, DictionaryFormat> valueEnumMap = new HashMap<String, DictionaryFormat>();

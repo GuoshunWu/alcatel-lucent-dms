@@ -38,6 +38,7 @@ public class BusinessException extends RuntimeException {
     static public final int FAILED_TO_MKDIRS = 224;
     static public final int PREVIEW_DICT_ERRORS = 225;
     static public final int UNRECOGNIZED_DICT_FILE = 226;
+    static public final int NESTED_VLE_LANG_FILE_ERROR = 227;
     // VLEExcel error
     static public final int INVALID_VLE_DICT_FILE = 240;
 
