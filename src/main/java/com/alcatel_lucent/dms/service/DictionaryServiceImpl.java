@@ -1022,6 +1022,23 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             dao.delete(dl);
         }
     }
+    
+    public void removeDictionaryLanguage(Collection<Long> dictIds, String languageCode) {
+    	for (Long dictId : dictIds) {
+    		Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
+        	if (dict.getDictLanguages() != null) {
+        		Iterator<DictionaryLanguage> iter = dict.getDictLanguages().iterator();
+        		while (iter.hasNext()) {
+        			DictionaryLanguage dl = iter.next();
+        			if (dl.getLanguageCode().equals(languageCode)) {
+        				iter.remove();
+        				dao.delete(dl);
+        			}
+        		}
+        	}
+
+    	}
+    }
 
     public void updateLabelKey(Long labelId, String key) throws BusinessException {
         Label label = (Label) dao.retrieve(Label.class, labelId);

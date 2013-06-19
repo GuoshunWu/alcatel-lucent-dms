@@ -182,6 +182,13 @@ public interface DictionaryService {
 	void removeDictionaryLanguage(Collection<Long> ids);
 
 	/**
+	 * Remove a language code from a set of dictionaries
+	 * @param dictIds list of dictionary id
+	 * @param languageCode language code to be removed
+	 */
+	void removeDictionaryLanguage(Collection<Long> dictIds,	String languageCode);
+
+	/**
 	 * Update labels
 	 * @param idList list of label id
 	 * @param maxLength new max length, null if no change required
