@@ -123,7 +123,7 @@ public class OTCPCGenerator extends DictionaryGenerator {
         CellUtil.createCell(row, colIndex++, OTCPCParser.SHEET_REF_TITLE_USED, style);
 
         rowNum++;
-        refSheet.createFreezePane(255, rowNum);
+        refSheet.createFreezePane(0, rowNum);
 
         Collection<Label> labels = dict.getAvailableLabels();
 
@@ -283,7 +283,7 @@ public class OTCPCGenerator extends DictionaryGenerator {
         CellUtil.createCell(row, colIndex++, OTCPCParser.SHEET_CTX_TITLE_DEFAULT, style);
         CellUtil.createCell(row, colIndex++, OTCPCParser.SHEET_CTX_TITLE_DESC, style);
 
-        ctxSheet.createFreezePane(255, rowNum);
+        ctxSheet.createFreezePane(0, rowNum);
 
         Map<String, Integer> colMap = OTCPCParser.getTitleMap(refSheet);
         int defCellColIndex = colMap.get(OTCPCParser.SHEET_REF_TITLE_VALUE);
@@ -344,7 +344,7 @@ public class OTCPCGenerator extends DictionaryGenerator {
         String[] strWidths = Util.string2Map(dict.getAnnotation2()).get(OTCPCParser.SHEET_REF_TITLE_DISPLAY_CHECK).split(",");
         colIndex = drawDisplayCheckColumnHeader(row, strWidths, colIndex, style);
 
-        langSheet.createFreezePane(255, rowNum);
+        langSheet.createFreezePane(0, rowNum);
 
         int checkColumnLen = strWidths.length;
 

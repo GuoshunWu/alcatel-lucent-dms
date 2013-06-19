@@ -6,13 +6,16 @@ import com.alcatel_lucent.dms.Constants.DictionaryFormat;
 import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.service.LanguageService;
+import net.sf.json.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.LineIterator;
 import org.apache.commons.io.filefilter.*;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +35,22 @@ public class NOEStrParser extends DictionaryParser {
 
     public static final String LABEL_KEY_PREFIX = "\u001B";
     public static final String LABEL_TRANS_PREFIX = "\\?";
+
+    public static final Map<String, String> ESCAPE_SEARCH_MAP = MapUtils.typedMap(ArrayUtils.toMap(new String[][]{
+            {"\\A'", ""},
+            {"\\a'", ""}
+
+    }), String.class, String.class);
+
+    static {
+        //initialize ESCAPE_SEARCH_MAP
+        List<Character> vowelLetters = Arrays.asList('a', 'e', 'i', 'o', 'u', 'n', 'c', 'y');
+        List<Character> accents = Arrays.asList('\'', '^', '"', ',', '*', '~', '/', '_');
+    }
+
+    public static String escape(String input){
+        return "";
+    }
 
 
     private SuffixFileFilter NOEStrFilter = new SuffixFileFilter(extensions, IOCase.INSENSITIVE);
@@ -195,6 +214,10 @@ public class NOEStrParser extends DictionaryParser {
                         warnings.add(new BusinessWarning(BusinessWarning.LABEL_TRANS_BLANK, lineNo, langFile.getAbsolutePath()));
                         continue;
                     }
+
+                    //process escape character
+                    labelKey = StringUtils.replaceEachRepeatedly(labelKey, new String[]{}, new String[]{});
+                    translation = StringUtils.replaceEachRepeatedly(translation, new String[]{}, new String[]{});
 
                     Label label = null;
                     if (langCode.equals(REFERENCE_CODE)) { // create new label
