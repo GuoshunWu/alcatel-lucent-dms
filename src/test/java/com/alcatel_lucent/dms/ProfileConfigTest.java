@@ -1,7 +1,10 @@
 package com.alcatel_lucent.dms;
 
 
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.text.translate.*;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.util.LinkedMultiValueMap;
@@ -12,12 +15,8 @@ import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.List;
-import java.util.Properties;
+import java.io.*;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,7 +28,7 @@ import java.util.Properties;
 @Ignore
 public class ProfileConfigTest {
 
-//    @Test
+    //    @Test
     public void testConfig() throws IOException {
         InputStream in = ClassLoader.getSystemResourceAsStream("proxool.properties");
         Properties p = new Properties();
@@ -59,7 +58,7 @@ public class ProfileConfigTest {
 
     }
 
-//    @Test
+    //    @Test
     public void testJSEngine() throws Exception {
         ScriptEngine engine = new ScriptEngineManager().getEngineByName("JavaScript");
         System.out.println("Test begin...");
@@ -78,5 +77,62 @@ public class ProfileConfigTest {
         Invocable inv = (Invocable) engine;
         //invokeFunction()中的第一个参数就是被调用的脚本程序中的函数，第二个参数是传递给被调用函数的参数；
         inv.invokeFunction("doSwing", "Scripting Swing");
+    }
+
+
+    public static final CharSequenceTranslator ESCAPE_NOE_STRING =
+            new LookupTranslator(
+                    new String[][]{
+                            {"\"", "\\\""},
+                            {"\\", "\\\\"},
+                    }).with(
+                    new LookupTranslator(EntityArrays.JAVA_CTRL_CHARS_ESCAPE())
+            ).with(
+                    UnicodeEscaper.outsideOf(32, 0x7f)
+            );
+
+    public static final CharSequenceTranslator UNESCAPE_NOE_STRING=
+            new AggregateTranslator(
+                    new OctalUnescaper(),     // .between('\1', '\377'),
+                    new UnicodeUnescaper(),
+                    new LookupTranslator(EntityArrays.JAVA_CTRL_CHARS_UNESCAPE())
+//                    new LookupTranslator(
+//                            new String[][] {
+//                                    {"\\\\", "\\"},
+//                                    {"\\\"", "\""},
+//                                    {"\\'", "'"},
+//                                    {"\\", ""}
+//                            })
+            );
+
+    public String escapeNOEString(String input) {
+        return ESCAPE_NOE_STRING.translate(input);
+    }
+
+    public String unescapeNOEString(String input){
+        return UNESCAPE_NOE_STRING.translate(input);
+    }
+
+    @Test
+    public void testAccent() throws Exception {
+        Map<String, String> ESCAPE_SEARCH_MAP = MapUtils.typedMap(ArrayUtils.toMap(new String[][]{
+                {"\\a'a", "\u2345"},
+                {"\\a'", "\u3456"}
+
+        }), String.class, String.class);
+
+        List<Character> vowelLetters = Arrays.asList('a', 'e', 'i', 'o', 'u', 'n', 'c', 'y');
+        List<Character> accents = Arrays.asList('\'', '^', '"', ',', '*', '~', '/', '_');
+        ESCAPE_SEARCH_MAP.put("another", "Some");
+
+//        MapUtils.debugPrint(System.out, "ESCAPE_SEARCH_MAP", ESCAPE_SEARCH_MAP);
+        String filePath = "D:\\360CloudUI\\Cache\\45698397\\Documents\\Alcatel-Lucent\\DMS\\DMSFiles\\TestFile.txt";
+        String str = FileUtils.readFileToString(new File(filePath), "GBK");
+        System.out.println("Original: " + str);
+//        System.out.println(StringEscapeUtils.unescapeJava(str));
+        System.out.print("Translated: ");
+
+        System.out.println(unescapeNOEString(str));
+
     }
 }
