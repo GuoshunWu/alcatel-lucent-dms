@@ -216,8 +216,8 @@ public class NOEStrParser extends DictionaryParser {
                     }
 
                     //process escape character
-                    labelKey = StringUtils.replaceEachRepeatedly(labelKey, new String[]{}, new String[]{});
-                    translation = StringUtils.replaceEachRepeatedly(translation, new String[]{}, new String[]{});
+//                    labelKey = StringUtils.replaceEachRepeatedly(labelKey, new String[]{}, new String[]{});
+//                    translation = StringUtils.replaceEachRepeatedly(translation, new String[]{}, new String[]{});
 
                     Label label = null;
                     if (langCode.equals(REFERENCE_CODE)) { // create new label
