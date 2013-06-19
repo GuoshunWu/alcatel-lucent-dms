@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.alcatel_lucent.dms.model">
+
+    <class name="LabelTranslation" table="LABEL_TRANSLATION">
+        <id column="ID" name="id">
+            <generator class="hilo">
+                <param name="table">ID_LABEL_TRANSLATION</param>
+                <param name="column">next_hi</param>
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+
+        <property name="origTranslation" type="string" column="ORIG_TRANSLATION" length="2048"/>
+        <property name="needTranslation" type="boolean" column="NEED_TRANSLATION"/>
+        <property name="annotation1" type="text" column="ANNOTATION1"/>
+        <property name="annotation2" type="text" column="ANNOTATION2"/>
+        <property name="warnings" type="string" column="WARNINGS" length="255"/>
+        <property name="languageCode" type="string" column="LANGUAGE_CODE"/>
+		<property name="sortNo" type="integer" column="SORT_NO"/>
+        <property name="requestTranslation" type="boolean" column="REQUEST_TRANSLATION"/>
+        <many-to-one name="label" column="LABEL_ID" index="I_LABEL_TRANSLATION_LABEL_LANG" not-null="true"/>
+        <many-to-one lazy="false" name="language" index="I_LABEL_TRANSLATION_LABEL_LANG" column="LANGUAGE_ID" not-null="true"/>
+
+    </class>
+
+</hibernate-mapping>
