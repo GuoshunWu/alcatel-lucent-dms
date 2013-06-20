@@ -298,7 +298,7 @@
         return window.location.href = dowloadURL;
       }, pb);
     });
-    $('#batchAddLanguage').button().attr('privilegeName', util.urlname2Action('app/add-dict-language')).click(function() {
+    $('#batchAddLanguage').button().attr('privilegeName', util.urlname2Action(urls.app.add_dict_language)).click(function() {
       var dicts;
 
       dicts = dicGrid.getGridParam('selarrrow');
@@ -308,10 +308,23 @@
         });
         return;
       }
-      $('#addLanguageDialog').data('param', {
+      return $('#addLanguageDialog').data('param', {
         dicts: dicts
-      });
-      return $('#addLanguageDialog').dialog('open');
+      }).dialog('open');
+    });
+    $('#batchDeleteLanguage').button().attr('privilegeName', util.urlname2Action(urls.app.remove_dict_language)).click(function() {
+      var dicts;
+
+      dicts = dicGrid.getGridParam('selarrrow');
+      if (!dicts || dicts.length === 0) {
+        $.msgBox(c18n.selrow.format(c18n.dict), null, {
+          title: c18n.warning
+        });
+        return;
+      }
+      return $('#removeLanguageDialog').data('param', {
+        dicts: dicts
+      }).dialog('open');
     });
     return {
       appChanged: function(param) {

@@ -178,14 +178,21 @@ define [
     , pb)
 
 
-  $('#batchAddLanguage').button().attr('privilegeName', util.urlname2Action 'app/add-dict-language').click ->
+  $('#batchAddLanguage').button().attr('privilegeName', util.urlname2Action urls.app.add_dict_language).click ->
     dicts = dicGrid.getGridParam('selarrrow')
     if !dicts || dicts.length == 0
       $.msgBox (c18n.selrow.format c18n.dict), null, {title: c18n.warning}
       return
     #    pass parameters to dialog
-    $('#addLanguageDialog').data 'param', dicts: dicts
-    $('#addLanguageDialog').dialog 'open'
+    $('#addLanguageDialog').data('param', dicts: dicts).dialog 'open'
+
+  $('#batchDeleteLanguage').button().attr('privilegeName', util.urlname2Action urls.app.remove_dict_language).click ->
+    dicts = dicGrid.getGridParam('selarrrow')
+    if !dicts || dicts.length == 0
+      $.msgBox (c18n.selrow.format c18n.dict), null, {title: c18n.warning}
+      return
+    $('#removeLanguageDialog').data('param', dicts: dicts).dialog 'open'
+
 
   appChanged: (param)->
     prop = "languageReferenceCode,base.name,version,base.format,base.encoding,labelNum"

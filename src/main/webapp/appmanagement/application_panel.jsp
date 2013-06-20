@@ -40,12 +40,12 @@
                     <tr>
                         <td style="width: 165px">
                             <span id="uploadBrower" style="height: 28px"></span>
-                        </td>
-                        <td style="width: 170px">
-                            <button style="width:160;" id="generateDict"><s:text name="appmng.generatedict"/></button>
-                        </td>
-                        <td>
-                            <button id="batchAddLanguage">Add language</button>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <button id="generateDict"><s:text name="appmng.generatedict"/></button>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <button id="batchAddLanguage"><s:text name="appmng.addlanguage"/></button>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <button id="batchDeleteLanguage"><s:text name="appmng.dellanguage"/></button>
                         </td>
                     </tr>
                 </table>

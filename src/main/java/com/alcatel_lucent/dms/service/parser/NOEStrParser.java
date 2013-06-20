@@ -6,7 +6,6 @@ import com.alcatel_lucent.dms.Constants.DictionaryFormat;
 import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.service.LanguageService;
-import net.sf.json.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections.Predicate;
@@ -15,9 +14,11 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.LineIterator;
 import org.apache.commons.io.filefilter.*;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.text.translate.*;
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,9 +26,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+import static org.apache.commons.lang3.ArrayUtils.add;
+import static org.apache.commons.lang3.ArrayUtils.subarray;
+
 @Component
 @SuppressWarnings("unchecked")
 public class NOEStrParser extends DictionaryParser {
+
+    private static final Logger log = LoggerFactory.getLogger(NOEStrParser.class);
 
     public static final String[] extensions = new String[]{"doc"};
     public static final String DEFAULT_ENCODING = "ISO-8859-1";
@@ -36,20 +42,135 @@ public class NOEStrParser extends DictionaryParser {
     public static final String LABEL_KEY_PREFIX = "\u001B";
     public static final String LABEL_TRANS_PREFIX = "\\?";
 
-    public static final Map<String, String> ESCAPE_SEARCH_MAP = MapUtils.typedMap(ArrayUtils.toMap(new String[][]{
-            {"\\A'", ""},
-            {"\\a'", ""}
+    private static String[][] NOE_STRING_ESCAPE = new String[][]{
 
-    }), String.class, String.class);
+            {"\u00df", "\\LBETA"},   //ß
+            {"\u00c6", "\\LA--E"},   //Æ
+            {"\u00e6", "\\La--e"},   //æ
+            {"\u00a3", "\\LLIRA"},   //£
+            {"\u00bf", "\\LINV?"},   //¿
+            {"\u00b6", "\\L-PI-"},   //¶
+            {"\u03bc", "\\L-MU-"},   //μ
+
+            // TODO: complement UA code mapping
+            {"\u00b0", "\\x04"},   //°
+    };
 
     static {
-        //initialize ESCAPE_SEARCH_MAP
-        List<Character> vowelLetters = Arrays.asList('a', 'e', 'i', 'o', 'u', 'n', 'c', 'y');
-        List<Character> accents = Arrays.asList('\'', '^', '"', ',', '*', '~', '/', '_');
+        //fill accents NOE_STRING_ESCAPE array
+        //upper case
+        NOE_STRING_ESCAPE = ArrayUtils.addAll(NOE_STRING_ESCAPE, getNoeStringAccentMap());
+        //lower case
+        NOE_STRING_ESCAPE = ArrayUtils.addAll(NOE_STRING_ESCAPE, getNoeStringAccentMap(false));
     }
 
-    public static String escape(String input){
-        return "";
+    public static final CharSequenceTranslator ESCAPE_NOE_STRING =
+            new LookupTranslator(
+                    new String[][]{
+                            {"\"", "\\\""},
+                            {"\\", "\\\\"},
+                    }
+            ).with(
+                    new LookupTranslator(NOEStrParser.NOE_STRING_ESCAPE()))
+                    .with(
+                            new LookupTranslator(EntityArrays.JAVA_CTRL_CHARS_ESCAPE())
+                    ).with(
+                    UnicodeEscaper.outsideOf(32, 0x7f)
+            );
+
+    public static final CharSequenceTranslator UNESCAPE_NOE_STRING =
+            new AggregateTranslator(
+//                    new OctalUnescaper(),     // .between('\1', '\377'),
+//                    new UnicodeUnescaper(),
+                    new LookupTranslator(EntityArrays.JAVA_CTRL_CHARS_UNESCAPE()),
+                    new LookupTranslator(NOEStrParser.NOE_STRING_UNESCAPE()),
+                    new LookupTranslator(
+                            new String[][]{
+                                    {"\\\\", "\\"},
+                                    {"\\\\", "\\"},
+                                    {"\\\"", "\""},
+                                    {"\\'", "'"},
+                                    {"\\", ""}
+                            })
+            );
+
+
+    private static String[][] getNoeStringAccentMap(boolean uppercase) {
+        List<Character> accents = Arrays.asList('`', '\'', '^', '~', '"', '*');
+
+        final int firstAccentLetterIndex = 6;
+
+        Map<Character, int[]> accentRect = MapUtils.typedMap(ArrayUtils.toMap(new Object[][]{
+                {'a', new int[]{1, 1, 1, 1, 1, 1, 'à'}},
+                {'e', new int[]{1, 1, 1, 0, 1, 0, 'è'}},
+                {'n', new int[]{0, 0, 0, 0, 1, 0, 'ñ'}},
+                {'o', new int[]{1, 1, 1, 1, 1, 0, 'ò'}},
+                {'y', new int[]{0, 1, 0, 0, 0, 0, 'ý'}},
+        }), Character.class, int[].class);
+        accentRect.put('i', add(subarray(accentRect.get('e'), 0, firstAccentLetterIndex), 'ì'));
+        accentRect.put('u', add(subarray(accentRect.get('e'), 0, firstAccentLetterIndex), 'ù'));
+        List<String[]> accentMap = new ArrayList<String[]>();
+
+        Set<Character> vowelLetters = accentRect.keySet();
+        for (Character vowelLetter : vowelLetters) {
+            int offset = 0;
+            for (int i = 0; i < firstAccentLetterIndex; ++i) {
+                int exists = 0;
+                if (1 == (exists = accentRect.get(vowelLetter)[i])) {
+                    int firstAccentLetter = accentRect.get(vowelLetter)[firstAccentLetterIndex];
+                    Character accentLetter = (char) (firstAccentLetter + i + offset);
+                    char convertedVowelLetter = vowelLetter;
+                    if (uppercase) {
+                        accentLetter = Character.toUpperCase(accentLetter);
+                        convertedVowelLetter = Character.toUpperCase(vowelLetter);
+                    }
+                    Character escapeLetter = accents.get(i);
+                    accentMap.add(getAccentLetterEscapePair(accentLetter, vowelLetter, escapeLetter, uppercase));
+                } else --offset;
+            }
+        }
+
+        /**
+         * remain letter
+         * */
+        //add special ones like z,c,y
+        accentMap.add(getAccentLetterEscapePair('ÿ', 'y', '\"', uppercase));
+        accentMap.add(getAccentLetterEscapePair('ç', 'c', ',', uppercase));
+        accentMap.add(getAccentLetterEscapePair('ø', 'o', '/', uppercase));
+
+//        accentMap.add(getAccentLetterEscapePair('°', 'o', '_', uppercase));
+
+        return accentMap.toArray(new String[0][]);
+    }
+
+    private static String[][] getNoeStringAccentMap() {
+        return getNoeStringAccentMap(true);
+    }
+
+    private static String[] getAccentLetterEscapePair(char accentLetter, char vowelLetter, char escapeLetter, boolean isUpperCase) {
+        if (isUpperCase) {
+            accentLetter = Character.toUpperCase(accentLetter);
+            vowelLetter = Character.toUpperCase(vowelLetter);
+        }
+        String escapeString = "\\a" + escapeLetter + vowelLetter;
+        log.debug("{}: {}", accentLetter, escapeString);
+        return new String[]{accentLetter + "", escapeString};
+    }
+
+    public static String[][] NOE_STRING_ESCAPE() {
+        return NOE_STRING_ESCAPE.clone();
+    }
+
+    public static String[][] NOE_STRING_UNESCAPE() {
+        return EntityArrays.invert(NOE_STRING_ESCAPE);
+    }
+
+    public static String escapeNOEString(String input) {
+        return ESCAPE_NOE_STRING.translate(input);
+    }
+
+    public static String unescapeNOEString(String input) {
+        return UNESCAPE_NOE_STRING.translate(input);
     }
 
 
@@ -103,7 +224,7 @@ public class NOEStrParser extends DictionaryParser {
         if (null == refFile) return null;
         langFiles.remove(refFile);
         File[] langFilesArray = langFiles.toArray(new File[0]);
-        langFilesArray = ArrayUtils.add(langFilesArray, 0, refFile);
+        langFilesArray = add(langFilesArray, 0, refFile);
         langFiles.clear();
         langFiles.addAll(Arrays.asList(langFilesArray));
         return refFile;
@@ -216,8 +337,8 @@ public class NOEStrParser extends DictionaryParser {
                     }
 
                     //process escape character
-//                    labelKey = StringUtils.replaceEachRepeatedly(labelKey, new String[]{}, new String[]{});
-//                    translation = StringUtils.replaceEachRepeatedly(translation, new String[]{}, new String[]{});
+//                    labelKey = unescapeNOEString(labelKey);
+                    translation = unescapeNOEString(translation);
 
                     Label label = null;
                     if (langCode.equals(REFERENCE_CODE)) { // create new label

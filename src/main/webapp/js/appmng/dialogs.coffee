@@ -399,13 +399,13 @@ define [
           $('#addLangCode', @).val json.languageCode
           $('#charset', @).val json['charset.id']
 
-        $.getJSON 'rest/charsets', {prop: 'id,name'}, (charsets)=>$('#charset', @)
+        $.getJSON urls.charsets, {prop: 'id,name'}, (charsets)=>$('#charset', @)
           .append("<option value='-1'>#{c18n.selecttip}</option>")
           .append(util.json2Options charsets, false, 'name')
 
 
     open: (event, ui)->
-      $.getJSON 'rest/languages', {prop: 'id,name'}, (languages)=>
+      $.getJSON urls.languages, {prop: 'id,name'}, (languages)=>
         $('#languageName', @)
           .append("<option value='-1'>#{c18n.selecttip}</option>")
           .append(util.json2Options languages, false, 'name').trigger 'change'
@@ -417,14 +417,12 @@ define [
       $('#languageName', @).val '-1'
 
     buttons: [
-      {text: 'Add', icons:
-        {primary: "ui-icon-locked"}
-      click: (e)->
+      {text: c18n.add, icons: {primary: "ui-icon-locked"}, click: (e)->
         postData =
-          dicts: $('#addLanguageDialog').data('param').dicts.join(',')
-          languageId: $('#addLanguageDialog #languageName').val()
-          charsetId: $('#addLanguageDialog #charset').val()
-          code: $('#addLanguageDialog #addLangCode').val()
+          dicts: $(@).data('param').dicts.join(',')
+          languageId: $('#languageName', @).val()
+          charsetId: $('#charset',@).val()
+          code: $('#addLangCode', @).val()
 
         #      validate postData such as code is blank
         $('#errorMsg', @).empty()
@@ -434,14 +432,44 @@ define [
           $('#errorMsg', @).append($("<li>#{i18n.dialog.addlanguage.charsettip}</li>")) if '-1' == postData.charsetId
 
           return
-
-        $.post 'app/add-dict-language', postData, (json)=>
+        $(@).block(message: '<img src="images/busy.gif" />Please wait...')
+        $.post urls.app.add_dict_language, postData, (json)=>
+          $(@).unblock()
           ($.msgBox(json.message, null, {title: c18n.error});return) if json.status != 0
           $('#languageSettingGrid').trigger("reloadGrid") if -1 == postData.dicts.indexOf(',')
           $(@).dialog 'close'
           $.msgBox i18n.dialog.addlanguage.successtip.format $('#languageName option:selected').text(), null, {title: c18n.error}
       },
-      {text: 'Cancel', click: (e)->$(@).dialog 'close'}
+      {text: c18n.cancel, click: (e)->$(@).dialog 'close'}
+    ]
+  )
+
+  removeLanguage = $('#removeLanguageDialog').dialog(
+    autoOpen: false
+    create: (event, ui)->
+    open: (e, ui)->$('#removeLanguageDialog_errorMsg', @).empty()
+    buttons: [
+      {text: c18n['del'], icons:{primary: "ui-icon-locked"}, click: (e)->
+
+        postData =
+          dicts: $(@).data('param').dicts.join(',')
+          code: $('#removeLanguageDialog_addLangCode', @).val()
+
+        #      validate postData such as code is blank
+        $('#removeLanguageDialog_errorMsg', @).empty()
+        if !postData.code
+          $('#removeLanguageDialog_errorMsg', @).append($("<li>#{i18n.dialog.addlanguage.coderequired}</li>")) if !postData.code
+          return
+
+        $(@).block(message: '<img src="images/busy.gif" />&nbsp;Please wait...')
+        $.post urls.app.remove_dict_language, postData, (json)=>
+          $(@).unblock()
+          ($.msgBox(json.message, null, {title: c18n.error});return) if json.status != 0
+          $('#languageSettingGrid').trigger("reloadGrid") if -1 == postData.dicts.indexOf(',')
+          $(@).dialog 'close'
+
+      },
+      {text: c18n.cancel, click: (e)->$(@).dialog 'close'}
     ]
   )
 
