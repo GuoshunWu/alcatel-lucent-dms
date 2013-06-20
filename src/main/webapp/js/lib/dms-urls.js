@@ -55,6 +55,8 @@ Time: 下午7:
       },
       app: {
         create: getURL('create-application-base', 'app/'),
+        add_dict_language: getURL('add-dict-language', 'app/'),
+        remove_dict_language: getURL('remove-dict-language', 'app/'),
         del: getURL('remove-application-base', 'app/'),
         create_version: getURL('create-application', 'app/'),
         generate_dict: getURL('generate-dict', 'app/'),
@@ -90,6 +92,7 @@ Time: 下午7:
       apps: getURL('applications', 'rest/'),
       dicts: getURL('dict', 'rest/'),
       tasks: getURL('tasks', 'rest/'),
+      charsets: getURL('charsets', 'rest/'),
       labels_normal: getURL('labels', 'rest/'),
       labels: getURL('luceneLabels', 'rest/'),
       languages: getURL('languages', 'rest/'),

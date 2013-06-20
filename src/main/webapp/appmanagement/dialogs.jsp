@@ -54,7 +54,6 @@
     </div>
 </div>
 
-
 <div id="addApplicationDialog" title="<s:text name="appmng.addapp"/>">
     <table>
         <tr>
@@ -287,7 +286,7 @@
             <td><select id="charset" name="charset"/></td>
         </tr>
         <tr>
-            <td><label for="addLangCode"><s:text name="appmng.addlanguage.code"/></label></td>
+            <td><label for="addLangCode"><s:text name="code"/></label></td>
             <td><input id="addLangCode" name='code'></td>
         </tr>
         <tr>
@@ -298,6 +297,22 @@
         </tr>
     </table>
 </div>
+
+<div id="removeLanguageDialog" title="<s:text name="appmng.removelanguage.title"/> ">
+    <table>
+        <tr>
+            <td><label for="removeLanguageDialog_addLangCode"><s:text name="code"/></label></td>
+            <td><input id="removeLanguageDialog_addLangCode" name='code'></td>
+        </tr>
+        <tr>
+            <td style="width: 25px"/>
+            <td align="left">
+                <span id="removeLanguageDialog_errorMsg" style="color:red"></span>
+            </td>
+        </tr>
+    </table>
+</div>
+
 
 <div id="historyDialog" title="<s:text name="appmng.dialogs.history.title"/> ">
     <table border="0" width="100%">

@@ -3,35 +3,25 @@ package com.alcatel_lucent.dms.service.generator;
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.model.Dictionary;
-import com.alcatel_lucent.dms.model.DictionaryLanguage;
 import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.service.DaoService;
 import com.alcatel_lucent.dms.service.parser.NOEStrParser;
-import com.alcatel_lucent.dms.service.parser.XMLHelpParser;
-import com.alcatel_lucent.dms.util.Util;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DurationFormatUtils;
-import org.dom4j.Document;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
-import org.dom4j.io.OutputFormat;
-import org.dom4j.io.XMLWriter;
-import org.hibernate.FetchMode;
-import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Set;
 
-import static org.apache.commons.lang3.StringUtils.center;
-import static org.apache.commons.lang3.StringUtils.split;
+import static com.alcatel_lucent.dms.service.parser.NOEStrParser.*;
 
 @Component
 public class NOEStrGenerator extends DictionaryGenerator {
@@ -78,9 +68,9 @@ public class NOEStrGenerator extends DictionaryGenerator {
         PrintWriter out = new PrintWriter(sw);
 
         for (Label label : labels) {
-            String text = langCode.equals(NOEStrParser.REFERENCE_CODE) ? label.getReference() : label.getTranslation(langCode);
-            out.println(NOEStrParser.LABEL_KEY_PREFIX + label.getKey());
-            out.println(NOEStrParser.LABEL_TRANS_PREFIX + text);
+            String text = langCode.equals(REFERENCE_CODE) ? label.getReference() : label.getTranslation(langCode);
+            out.println(LABEL_KEY_PREFIX + label.getKey());
+            out.println(escapeNOEString(LABEL_TRANS_PREFIX + text));
         }
 
         out.close();
