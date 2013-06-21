@@ -13,10 +13,9 @@
         	</generator>
 		</id>
 
-		<property name="reference" type="string" column="REFERENCE" index="I_TEXT_REF_CTX"
-			length="2048" />
+		<property name="reference" type="text" column="REFERENCE"/>
 		<property name="status" type="integer" column="STATUS" />
-        <many-to-one name="context" column="CONTEXT_ID" index="I_TEXT_REF_CTX" not-null="true" />
+        <many-to-one name="context" column="CONTEXT_ID" not-null="true" />
 
 		<set name="translations" cascade="delete" inverse="true">
 			<key column="TEXT_ID" />
