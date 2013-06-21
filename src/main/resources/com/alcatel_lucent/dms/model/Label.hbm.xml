@@ -13,8 +13,7 @@
             </generator>
         </id>
 
-        <property name="reference" type="string" column="REFERENCE"
-                  length="2048"/>
+        <property name="reference" type="text" column="REFERENCE"/>
         <property name="key" type="string" column="LABEL_KEY"/>
         <property name="sortNo" type="integer" column="SORT_NO"/>
         <property name="description" type="string" column="DESCRIPTION"/>

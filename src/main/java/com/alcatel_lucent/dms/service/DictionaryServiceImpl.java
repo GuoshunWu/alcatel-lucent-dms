@@ -706,7 +706,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             // NOTE: following code is only executed in DELIVERY_MODE
             for (Label label : labels) {
                 // create or update label
-                label.setReference(CharsetUtil.truncate(label.getReference(), Constants.MAX_TEXT_LENGTH));
                 Label dbLabel = dbDict.getLabel(label.getKey());
                 boolean newLabel = true;
                 if (dbLabel == null) {
@@ -731,7 +730,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 if (label.getOrigTranslations() != null) {
                     for (LabelTranslation trans : label.getOrigTranslations()) {
                         LabelTranslation dbLabelTrans = null;
-                        trans.setOrigTranslation(CharsetUtil.truncate(trans.getOrigTranslation(), Constants.MAX_TEXT_LENGTH));
                         if (!newLabel) {
                             dbLabelTrans = dbLabel.getOrigTranslation(trans.getLanguageCode());
                         }

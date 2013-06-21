@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class Constants {
 	
-	public static final int MAX_TEXT_LENGTH = 2000;
+	public static final int MAX_TEXT_LENGTH = 65535;
 	
     // dictionary importing modes
     public enum ImportingMode {
