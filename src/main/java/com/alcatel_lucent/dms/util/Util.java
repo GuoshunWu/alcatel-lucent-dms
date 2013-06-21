@@ -9,10 +9,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.collections.Predicate;
-import org.apache.commons.collections.Transformer;
+import org.apache.commons.collections.*;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.io.ByteOrderMark;
 import org.apache.commons.io.FileUtils;
@@ -207,9 +204,9 @@ public class Util {
     public static boolean isXmlFile(File file) {
         return isSpecificFile(file.getName(), ".xml");
     }
-    
+
     public static boolean isPOFile(File file) {
-    	return isSpecificFile(file.getName(), ".po");
+        return isSpecificFile(file.getName(), ".po");
     }
 
     private static boolean isSpecificFile(String fileName, String fileExtPattern) {
@@ -456,6 +453,13 @@ public class Util {
             }
         });
         try {
+            CollectionUtils.filter(lstEntries, new Predicate() {
+                @Override
+                public boolean evaluate(Object object) {
+                    String[] keyValue = (String[]) object;
+                    return null != keyValue[0] && null != keyValue[1];
+                }
+            });
             return typedMap(toMap(lstEntries.toArray(new String[0][])), String.class, String.class);
         } catch (Exception e) {
             log.error("Failed to save annotation: " + str);
