@@ -47,17 +47,11 @@ public class ProfileConfigTest {
         System.out.println(dbpassword);
     }
 
-    //    @Test
+//    @Test
     public void testMultiMap() {
         MultiValueMap<String, String> test = new LinkedMultiValueMap<String, String>();
         test.add("AA", "BB");
-//        test.add("AA", "AB");
-//        test.add("AA", "AB");
-
-
         System.out.println(test.get("AA"));
-
-
     }
 
     //    @Test
