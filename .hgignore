@@ -6,9 +6,10 @@ syntax:glob
 *.orig
 *.rej
 
+*.py
+
 # Java
 *.class
-*.js
 target/
 *.bak
 
