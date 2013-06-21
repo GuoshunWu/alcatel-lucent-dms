@@ -185,8 +185,9 @@ public interface DictionaryService {
 	 * Remove a language code from a set of dictionaries
 	 * @param dictIds list of dictionary id
 	 * @param languageCode language code to be removed
+	 * @return count of dictionaries affected
 	 */
-	void removeDictionaryLanguage(Collection<Long> dictIds,	String languageCode);
+	int removeDictionaryLanguageInBatch(Collection<Long> dictIds,	String languageCode);
 
 	/**
 	 * Update labels
