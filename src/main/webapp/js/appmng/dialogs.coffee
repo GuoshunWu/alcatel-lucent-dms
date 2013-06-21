@@ -438,7 +438,7 @@ define [
           ($.msgBox(json.message, null, {title: c18n.error});return) if json.status != 0
           $('#languageSettingGrid').trigger("reloadGrid") if -1 == postData.dicts.indexOf(',')
           $(@).dialog 'close'
-          $.msgBox i18n.dialog.addlanguage.successtip.format $('#languageName option:selected').text(), null, {title: c18n.error}
+          $.msgBox i18n.dialog.addlanguage.successtip.format $('#languageName option:selected').text(), null, {title: c18n.info}
       },
       {text: c18n.cancel, click: (e)->$(@).dialog 'close'}
     ]
@@ -466,6 +466,7 @@ define [
           $(@).unblock()
           ($.msgBox(json.message, null, {title: c18n.error});return) if json.status != 0
           $('#languageSettingGrid').trigger("reloadGrid") if -1 == postData.dicts.indexOf(',')
+          $.msgBox json.message, null, title: c18n.info
           $(@).dialog 'close'
 
       },

@@ -53,7 +53,8 @@ public class NOEStrParser extends DictionaryParser {
             {"\u03bc", "\\L-MU-"},   //μ
 
             // TODO: complement UA code mapping
-            {"\u00b0", "\\x04"},   //°
+            {"\u03c6", "\\x03"},    //φ
+            {"\u00b0", "\\x04"},    //°
     };
 
     static {
@@ -86,6 +87,13 @@ public class NOEStrParser extends DictionaryParser {
                     new LookupTranslator(NOEStrParser.NOE_STRING_UNESCAPE()),
                     new LookupTranslator(
                             new String[][]{
+                                    //many to one mappings
+                                    {"\\Hb2", "\u00b0"},
+                                    {"\\a_o", "\u00b0"},
+
+//                                    {"\\x02","\u03c6" },        //φ
+//                                    {"\\Lphi-","\u03c6" },      //φ
+
                                     {"\\\\", "\\"},
                                     {"\\\\", "\\"},
                                     {"\\\"", "\""},
@@ -337,7 +345,6 @@ public class NOEStrParser extends DictionaryParser {
                     }
 
                     //process escape character
-//                    labelKey = unescapeNOEString(labelKey);
                     translation = unescapeNOEString(translation);
 
                     Label label = null;
@@ -351,6 +358,9 @@ public class NOEStrParser extends DictionaryParser {
                         label.setDictionary(dict);
                         label.setOrigTranslations(new ArrayList<LabelTranslation>());
                         label.setReference(translation);
+                        if(-1!=translation.indexOf("\\*")){
+                            label.setDescription("The char following the \\* sequence must be the same in every other translation of the string.");
+                        }
                     } else {
                         createTranslation(lineNo, langCode, dict.getLabel(labelKey), translation);
                     }

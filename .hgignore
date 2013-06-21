@@ -1,4 +1,6 @@
 # Remove some patch or backup files from SCM
+syntax:regexp
+
 syntax:glob
 *~
 *.orig
@@ -6,6 +8,7 @@ syntax:glob
 
 # Java
 *.class
+*.js
 target/
 *.bak
 
@@ -52,4 +55,4 @@ src/main/webapp/js/npm-debug.log
 *.ipr
 *.ids
 *.log
-*.js
+

@@ -58,9 +58,10 @@ define [
       $("#selAppVersion option:selected").remove()
       $("#selAppVersion").trigger 'change'
 
+  uploadBrowserId = "#uploadBrowser"
   $("#selAppVersion").change (e)->
     appInfo.app = {version: $("option:selected", @).text(), id: if @value then @value else -1}
-    uploadBtn=$("#uploadBrower", '#appmng')
+    uploadBtn=$(uploadBrowserId, '#appmng')
 
     unless uploadBtn.attr('privilegeName') in window.param.forbiddenPrivileges
       action = if $('option', @).length > 0 then 'enable' else 'disable'
@@ -70,7 +71,7 @@ define [
 
   dctFileUpload = 'dctFileUpload'
   #  create upload filebutton
-  $('#uploadBrower').button(label: i18n.browse).attr('privilegeName', urls.app.deliver_dict).css({overflow: 'hidden'}).append $(
+  $(uploadBrowserId).button(label: i18n.browse).attr('privilegeName', urls.app.deliver_dict).css(overflow: 'hidden').append $(
     "<input type='file' id='#{dctFileUpload}' name='upload' title='#{i18n.choosefile}' accept='application/zip' multiple/>").css(
     position: 'absolute', top: -3, right: -3, border: '1px solid', borderWidth: '10px 180px 40px 20px',
     opacity: 0, filter: 'alpha(opacity=0)',
@@ -93,13 +94,13 @@ define [
     ]
     data.submit()
     @pb=util.genProgressBar() if !$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10
-    $('#uploadBrower').button 'disable'
+    $(uploadBrowserId).button 'disable'
   progressall: (e, data) ->
     return if $.browser.msie && parseInt($.browser.version.split('\.')[0]) < 10
     progress = data.loaded / data.total * 100
     @pb.progressbar "value", progress
   done: (e, data)->
-    $('#uploadBrower').button 'enable'
+    $(uploadBrowserId).button 'enable'
     @pb.parent().remove() if !$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10
     #    request handler
     jsonFromServer = data.result
