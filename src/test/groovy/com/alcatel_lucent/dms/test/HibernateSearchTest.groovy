@@ -30,6 +30,7 @@ import org.hibernate.search.query.dsl.QueryBuilder
 import org.hibernate.search.query.dsl.impl.Helper
 import org.junit.Assert
 import org.junit.BeforeClass
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -47,7 +48,7 @@ import org.springframework.util.MultiValueMap
  * Time: 下午10:03
  * To change this template use File | Settings | File Templates.
  */
-//@Ignore
+@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = ["/spring.xml"])
 @Transactional //Important, or the transaction control will be invalid
