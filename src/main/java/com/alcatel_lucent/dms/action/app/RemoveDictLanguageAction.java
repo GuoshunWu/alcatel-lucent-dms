@@ -1,5 +1,9 @@
 package com.alcatel_lucent.dms.action.app;
 
+import java.util.ArrayList;
+
+import antlr.collections.List;
+
 import com.alcatel_lucent.dms.action.JSONAction;
 import com.alcatel_lucent.dms.service.DictionaryService;
 
@@ -18,11 +22,14 @@ public class RemoveDictLanguageAction extends JSONAction {
 		log.info("RemoveDictLanguageAction: id=" + id + ", dicts=" + dicts + ", code=" + code);
 		if (id != null) {
 			dictionaryService.removeDictionaryLanguage(toIdList(id));
+			setMessage(getText("message.success"));
 		} else {
-			dictionaryService.removeDictionaryLanguage(toIdList(dicts), code);
+			int count = dictionaryService.removeDictionaryLanguageInBatch(toIdList(dicts), code);
+			ArrayList msgParam = new ArrayList();
+			msgParam.add(count);
+			setMessage(getText("removeDictLanguage.success", msgParam));
 		}
 		setStatus(0);
-		setMessage(getText("message.success"));
 		return SUCCESS;
 	}
 

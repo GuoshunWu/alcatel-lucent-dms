@@ -639,22 +639,20 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     // determine if the translation should take value from context dictionary
                     trans.setNeedTranslation(true);
                     if (lastLabel != null) {
+                        // get the original translation in latest version
                         LabelTranslation lastTranslation = lastLabel.getOrigTranslation(trans.getLanguageCode());
                     	if (label.getReference().equals(lastLabel.getReference())) {	// reference is not changed
-	                        // get the original translation in latest version
 	                        if (lastTranslation != null &&
 	                                !lastTranslation.getOrigTranslation().equals(trans.getOrigTranslation()) &&
 	                                !trans.getOrigTranslation().equals(label.getReference())) {
 	                            // translation changed means the label was translated on developer side
 	                            trans.setNeedTranslation(false);
 	                        }
-                    	} else {	
-                    		// if reference is changed, but translation is not changed,
-                			// abandon the translation because it's the translation of previous reference text
-                    		if (lastTranslation != null && lastTranslation.getOrigTranslation().equals(trans.getOrigTranslation())) {
-                    			trans.setOrigTranslation(label.getReference());
-                    		}
                     	}
+                		// don't update context translation if translation is not changed in the delivered dictionary
+                		if (lastTranslation != null && lastTranslation.getOrigTranslation().equals(trans.getOrigTranslation())) {
+                			continue;	// don't add this labelTranslation into text.translations
+                		}
                     }
 
                     Translation t = new Translation();
@@ -788,8 +786,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             return trans.getStatus();
         } else if (label.getReference().trim().isEmpty()) {
             return Translation.STATUS_TRANSLATED;
-//        } else if (trans.getRequestTranslation() != null) {
-//        	t.setStatus(trans.getRequestTranslation() ? Translation.STATUS_UNTRANSLATED : Translation.STATUS_TRANSLATED);
+//        } else if (trans.getRequestTranslation() != null && trans.getRequestTranslation()) {
+//        	return Translation.STATUS_UNTRANSLATED;
         } else if (!trans.isNeedTranslation()) {
             return Translation.STATUS_TRANSLATED;
         } else if (label.getReference().equals(trans.getOrigTranslation()) || trans.getOrigTranslation().trim().isEmpty()) {
@@ -1025,7 +1023,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         }
     }
     
-    public void removeDictionaryLanguage(Collection<Long> dictIds, String languageCode) {
+    public int removeDictionaryLanguageInBatch(Collection<Long> dictIds, String languageCode) {
+    	int count = 0;
     	for (Long dictId : dictIds) {
     		Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
         	if (dict.getDictLanguages() != null) {
@@ -1035,11 +1034,13 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         			if (dl.getLanguageCode().equals(languageCode)) {
         				iter.remove();
         				dao.delete(dl);
+        				count++;
         			}
         		}
         	}
 
     	}
+    	return count;
     }
 
     public void updateLabelKey(Long labelId, String key) throws BusinessException {

@@ -1,5 +1,6 @@
 V2.7.1
-    * Add validity check of translation for importing an existing dictionary (If reference text is changed while translation is not changed, don't take the translation).
+    * Add validity check of translation for importing an existing dictionary (If reference text is changed while translation is not changed, don't take the translation)
+    * Fixed freeze issue of generated OTC excel dictionary
 
 V2.7.0 (Jun. 14, 2013)
 	* Add option "Auto create translation languages" for importing dictionaries
