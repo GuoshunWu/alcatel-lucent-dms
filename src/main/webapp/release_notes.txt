@@ -1,7 +1,8 @@
-V2.7.1 (Jun. 21, 2013)
+V2.8.0 (Jun. 21, 2013)
     * Add validity check of translation for importing an existing dictionary (If reference text is changed while translation is not changed, don't take the translation)
     * Allows to remove a language from multiple dictionaries in batch
     * Fixed freeze issue of generated OTC excel dictionary
+    * Fixed string length limitation problem of XMLHelp dictionary
 
 V2.7.0 (Jun. 14, 2013)
 	* Add option "Auto create translation languages" for importing dictionaries
