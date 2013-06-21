@@ -1019,7 +1019,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     public void removeDictionaryLanguage(Collection<Long> ids) {
         for (Long id : ids) {
             DictionaryLanguage dl = (DictionaryLanguage) dao.retrieve(DictionaryLanguage.class, id);
-            dao.delete(dl);
+            if (!dl.isReference()) {
+            	dao.delete(dl);
+            }
         }
     }
     
@@ -1031,7 +1033,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         		Iterator<DictionaryLanguage> iter = dict.getDictLanguages().iterator();
         		while (iter.hasNext()) {
         			DictionaryLanguage dl = iter.next();
-        			if (dl.getLanguageCode().equals(languageCode)) {
+        			if (dl.getLanguageCode().equals(languageCode) && !dl.isReference()) {
         				iter.remove();
         				dao.delete(dl);
         				count++;
