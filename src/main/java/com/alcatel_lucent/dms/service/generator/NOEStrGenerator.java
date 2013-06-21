@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.nio.CharBuffer;
 import java.util.Collection;
 import java.util.Set;
 
@@ -70,7 +71,15 @@ public class NOEStrGenerator extends DictionaryGenerator {
         for (Label label : labels) {
             String text = langCode.equals(REFERENCE_CODE) ? label.getReference() : label.getTranslation(langCode);
             out.println(LABEL_KEY_PREFIX + label.getKey());
-            out.println(escapeNOEString(LABEL_TRANS_PREFIX + text));
+            String translation = escapeNOEString(text);
+
+            // ignore character great than '\u0080'
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < translation.length(); ++i) {
+                char ch = translation.charAt(i);
+                sb.append(ch > '\u0080' ? '?' : ch);
+            }
+            out.println(LABEL_TRANS_PREFIX + sb.toString());
         }
 
         out.close();

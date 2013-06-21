@@ -75,9 +75,11 @@ public class NOEStrParser extends DictionaryParser {
                     new LookupTranslator(NOEStrParser.NOE_STRING_ESCAPE()))
                     .with(
                             new LookupTranslator(EntityArrays.JAVA_CTRL_CHARS_ESCAPE())
-                    ).with(
-                    UnicodeEscaper.outsideOf(32, 0x7f)
-            );
+                    )
+//                    .with(
+//                    UnicodeEscaper.outsideOf(32, 0x7f)
+//            )
+            ;
 
     public static final CharSequenceTranslator UNESCAPE_NOE_STRING =
             new AggregateTranslator(
@@ -95,9 +97,8 @@ public class NOEStrParser extends DictionaryParser {
 //                                    {"\\Lphi-","\u03c6" },      //φ
 
                                     {"\\\\", "\\"},
-                                    {"\\\\", "\\"},
-                                    {"\\\"", "\""},
-                                    {"\\'", "'"},
+//                                    {"\\\"", "\""},
+//                                    {"\\'", "'"},
                                     {"\\", ""}
                             })
             );

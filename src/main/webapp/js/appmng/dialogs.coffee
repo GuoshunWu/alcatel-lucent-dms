@@ -432,9 +432,9 @@ define [
           $('#errorMsg', @).append($("<li>#{i18n.dialog.addlanguage.charsettip}</li>")) if '-1' == postData.charsetId
 
           return
-        $(@).block(message: '<img src="images/busy.gif" />Please wait...')
+        $(@).parent().block(message: '<img src="images/busy.gif" />Please wait...')
         $.post urls.app.add_dict_language, postData, (json)=>
-          $(@).unblock()
+          $(@).parent().unblock()
           ($.msgBox(json.message, null, {title: c18n.error});return) if json.status != 0
           $('#languageSettingGrid').trigger("reloadGrid") if -1 == postData.dicts.indexOf(',')
           $(@).dialog 'close'
@@ -461,9 +461,9 @@ define [
           $('#removeLanguageDialog_errorMsg', @).append($("<li>#{i18n.dialog.addlanguage.coderequired}</li>")) if !postData.code
           return
 
-        $(@).block(message: '<img src="images/busy.gif" />&nbsp;Please wait...')
+        $(@).parent().block(message: '<img src="images/busy.gif" />&nbsp;Please wait...')
         $.post urls.app.remove_dict_language, postData, (json)=>
-          $(@).unblock()
+          $(@).parent().unblock()
           ($.msgBox(json.message, null, {title: c18n.error});return) if json.status != 0
           $('#languageSettingGrid').trigger("reloadGrid") if -1 == postData.dicts.indexOf(',')
           $.msgBox json.message, null, title: c18n.info
