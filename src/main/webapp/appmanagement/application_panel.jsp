@@ -38,9 +38,10 @@
             <td colspan="2">
                 <table border="0" width="100%">
                     <tr>
-                        <td style="width: 165px">
-                            <span id="uploadBrower" style="height: 28px"></span>
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <td style="width: 160px">
+                            <span id="uploadBrowser"></span>
+                        </td>
+                        <td>
                             <button id="generateDict"><s:text name="appmng.generatedict"/></button>
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             <button id="batchAddLanguage"><s:text name="appmng.addlanguage"/></button>
