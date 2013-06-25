@@ -42,7 +42,7 @@ define [
       url: urls.task.close
       handler: (param)->
         return if param.status == '1'
-        $.blockUI
+        $.blockUI()
         $.post @url, {id: param.id}, (json)->
           $.unblockUI()
           if json.status != 0

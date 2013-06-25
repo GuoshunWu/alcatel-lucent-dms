@@ -15,6 +15,7 @@ define [
   'appmng/history_grid'
 ], ($, blockui, msgbox,ui, i18n, c18n, util, urls)->
 
+  dictGridId= 'dictionaryGridList'
 #  console?.log "module appmng/dictionary_grid loading."
   #  for form edit delete option
   deleteOptions = {
@@ -24,13 +25,16 @@ define [
   url: 'app/remove-dict'
   beforeShowForm: (form)->
     permanent = $('#permanentDeleteSignId', form)
+    console?.log form
     #    make permanent sign default checked and hide
     $("<tr><td>#{i18n.grid.permanenttext}<td><input align='left'checked type='checkbox' id='permanentDeleteSignId'>")
     .hide().appendTo $("tbody", form) if permanent.length == 0
   #    permanent?.removeAttr 'checked'
   onclickSubmit: (params, posdata)->
-    {appId: $("#selAppVersion").val(), permanent: Boolean($('#permanentDeleteSignId').attr("checked"))}
+    $.blockUI()
+    appId: $("#selAppVersion").val(), permanent: Boolean($('#permanentDeleteSignId').attr("checked"))
   afterSubmit: (response, postdata)->
+    $.unblockUI()
     jsonFromServer = eval "(#{response.responseText})"
     #dictBase is deleted
     #remove dictionary base.
@@ -76,7 +80,7 @@ define [
   $(colModel).each (index, colModel)->colModel.classes = 'editable-column' if colModel.editable
 
 
-  dicGrid = $('#dictionaryGridList').jqGrid({
+  dicGrid = $('#' + dictGridId).jqGrid({
   url: 'json/dummy.json'
   datatype: 'local'
   width: 1000
