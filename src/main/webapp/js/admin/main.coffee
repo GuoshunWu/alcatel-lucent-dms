@@ -8,12 +8,14 @@ define [
   'i18n!nls/common'
 
   'dms-urls'
+  'dms-util'
+
 
   'admin/languagegrid'
   'admin/charsetgrid'
   'admin/usergrid'
 
-], (require, $, blockui,jqmsgbox, i18n, c18n, urls)->
+], (require, $, blockui,jqmsgbox, i18n, c18n, urls, util)->
   init = ()->
     #    console?.log "transmng panel init..."
     $('#adminTabs').tabs(
@@ -39,6 +41,19 @@ define [
           $.msgBox json.message, null, {title: c18n.error, width: 300, height: 'auto'}
           return false
         $.msgBox json.message, null, {title: c18n.info, width: 300, height: 'auto'}
+#      pb = util.genProgressBar()
+#      $.blockUI(message: '')
+#      util.updateProgress(urls.config.create_index, {}, (json)->
+#        $.unblockUI()
+#        pb.parent().remove()
+#
+#        retJson = $.parseJSON(json.event.msg)
+#        if retJson.status != 0
+#          $.msgBox retJson.message, null, {title: c18n.error, width: 300, height: 'auto'}
+#          return false
+#        $.msgBox retJson.message, null, {title: c18n.info, width: 300, height: 'auto'}
+#
+#      , pb)
 
     # init dialogs
     $('#addUserDialog').dialog(
@@ -93,6 +108,7 @@ define [
             role: $('select#role', @).val()
 
           console?.log postData
+
           $.post urls.user.update, postData, (json)->
             if(json.status !=0 )
               $.msgBox json.message, null, {title: c18n.error, width: 300, height: 'auto'}

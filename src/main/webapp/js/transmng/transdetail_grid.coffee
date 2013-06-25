@@ -59,7 +59,7 @@ define [
       formatter: 'date', formatoptions:{srcformat:'ISO8601Long', newformat: 'Y-m-d H:i'}
       }
       {name: 'action', index: 'action', width: 50, align:'center', search: false, sortable: false
-      hidden: true
+#      hidden: true
       formatter: (cellvalue, options, rowObject)->
         ret ="<div id='matchAct_#{options.rowId}_#{rowObject[3]}_#{rowObject[6]}' style='display:inline-block' title=\"Match\" class=\"ui-state-default ui-corner-all\">"
         ret +="<span class=\"ui-icon ui-icon-search\"></span></div>"

@@ -6,15 +6,16 @@ import com.alcatel_lucent.dms.util.CharsetUtil;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.annotations.*;
 
 import javax.persistence.*;
 
 //@Entity
+
 @Table(name = "TRANSLATION")
 @Indexed
+@FullTextFilterDefs({
+})
 public class Translation extends BaseEntity {
     /**
      *
@@ -34,11 +35,11 @@ public class Translation extends BaseEntity {
     public static final int STATUS_UNTRANSLATED = 0;
     public static final int STATUS_IN_PROGRESS = 1;
     public static final int STATUS_TRANSLATED = 2;
-    
-    public static final int TYPE_DICT = 1;		// imported from dictionary
-    public static final int TYPE_TASK = 2;		// received from translation task
-    public static final int TYPE_MANUAL = 3;	// updated manually
-    public static final int TYPE_AUTO = 4;		// matched automatically from other context
+
+    public static final int TYPE_DICT = 1;        // imported from dictionary
+    public static final int TYPE_TASK = 2;        // received from translation task
+    public static final int TYPE_MANUAL = 3;    // updated manually
+    public static final int TYPE_AUTO = 4;        // matched automatically from other context
 
     private Text text;
     private Language language;
@@ -75,7 +76,10 @@ public class Translation extends BaseEntity {
     }
 
     @Column(name = "TRANSLATION", length = 1024)
-    @Field
+    @Fields({
+            @Field(store = Store.YES),
+            @Field(name = "translation_forSort", index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
+    })
     public String getTranslation() {
         return translation;
     }
@@ -118,28 +122,28 @@ public class Translation extends BaseEntity {
         return warnings;
     }
 
-	public Integer getTranslationType() {
-		return translationType;
-	}
+    public Integer getTranslationType() {
+        return translationType;
+    }
 
-	public void setTranslationType(Integer translationType) {
-		this.translationType = translationType;
-	}
+    public void setTranslationType(Integer translationType) {
+        this.translationType = translationType;
+    }
 
-	public Timestamp getLastUpdateTime() {
-		return lastUpdateTime;
-	}
+    public Timestamp getLastUpdateTime() {
+        return lastUpdateTime;
+    }
 
-	public void setLastUpdateTime(Timestamp lastUpdateTime) {
-		this.lastUpdateTime = lastUpdateTime;
-	}
+    public void setLastUpdateTime(Timestamp lastUpdateTime) {
+        this.lastUpdateTime = lastUpdateTime;
+    }
 
-	public Integer getVerifyStatus() {
-		return verifyStatus;
-	}
+    public Integer getVerifyStatus() {
+        return verifyStatus;
+    }
 
-	public void setVerifyStatus(Integer verifyStatus) {
-		this.verifyStatus = verifyStatus;
-	}
+    public void setVerifyStatus(Integer verifyStatus) {
+        this.verifyStatus = verifyStatus;
+    }
 
 }

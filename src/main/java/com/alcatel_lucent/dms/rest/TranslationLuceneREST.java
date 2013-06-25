@@ -107,7 +107,7 @@ public class TranslationLuceneREST extends BaseREST {
         Sort sort = orders2Sort(orders, sord);
 
         result = dao.hibSearchRetrieve(Translation.class, keywords, fuzzyKeywords, minimumSimilarity,
-                firstResult, maxResult, sort,
+                0, -1, null,
                 FullTextQuery.SCORE,
                 FullTextQuery.THIS
         );
@@ -117,7 +117,14 @@ public class TranslationLuceneREST extends BaseREST {
             requestMap.put("records", resultSize + "");
         }
 
-        return toJSON(toTranslationMatchList(result.getRight(), transId), requestMap);
+        //distinct list
+        List<TranslationMatch> translationMatchList = toTranslationMatchList(result.getRight(), transId);
+        //sort, reverse the original ascending order
+        Collections.sort(translationMatchList);
+        Collections.reverse(translationMatchList);
+        //pager
+        translationMatchList = (List<TranslationMatch>) pageFilter(translationMatchList, requestMap);
+        return toJSON(translationMatchList, requestMap);
     }
 
     /**
@@ -147,36 +154,22 @@ public class TranslationLuceneREST extends BaseREST {
                 return new TranslationMatch(trans.getId(), score, trans.getTranslation(), trans.getText().getReference());
             }
         });
-        final TranslationMatch originalTransMatch = findOriginalTranslation(resultList, transId);
-//        log.info("original transMatch: {}", originalTransMatch);
 //        log.info("resultList size {},resultList=\n{}", resultList.size(), StringUtils.join(resultList, "\n"));
 
-        //distinct
-        List<TranslationMatch> filteredList = new ArrayList<TranslationMatch>();
-        for (final TranslationMatch tm : resultList) {
-            if (!tm.getId().equals(originalTransMatch.getId())
-                    && !tm.getTranslation().equals(originalTransMatch.getTranslation())
-                    && !CollectionUtils.exists(filteredList, new Predicate() {
-                @Override
-                public boolean evaluate(Object object) {
-                    TranslationMatch filteredTm = (TranslationMatch) object;
-                    boolean transEqual = filteredTm.getTranslation().equals(tm.getTranslation());
-                    if (transEqual) {
-//                        log.info("tm.id={},tm.trans={}; filteredTm.id={}, filteredTm.trans={}, should be rejected",
-//                                new Object[]{tm.getId(), tm.getTranslation(), filteredTm.getId(), filteredTm.getTranslation()});
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-            })) {
-//                log.info("added tm id: {}, translation {} to filtered list.", tm.getId(), tm.getTranslation());
-                filteredList.add(tm);
-            }
-        }
+        return filteredList(resultList, transId);
+    }
 
+    /**
+     * Distinct the list by its translation and remove the original transation from the list
+     */
+    private List<TranslationMatch> filteredList(List<TranslationMatch> resultList, final Long transId) {
+        final TranslationMatch originalTransMatch = findOriginalTranslation(resultList, transId);
+        log.info("original transMatch: {}", originalTransMatch);
+
+        Set<TranslationMatch> translationMatchSet = new HashSet<TranslationMatch>(resultList);
+        translationMatchSet.remove(originalTransMatch);
+        List<TranslationMatch> filteredList = new ArrayList<TranslationMatch>(translationMatchSet);
 //        log.info("filterList size: {}, filteredList =\n{}", filteredList.size(), StringUtils.join(filteredList, "\n"));
-
 
         return filteredList;
     }
