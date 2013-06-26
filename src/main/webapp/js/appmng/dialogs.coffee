@@ -137,10 +137,8 @@ define [
         $.post url, params, (json)->
           ($.msgBox json.message, null, {title: c18n.error}; return) if json.status != 0
 
-          # TODO: analysis here, what is this doing?
           if -1 == params.appBaseId
             params.appBaseId = json.appBaseId
-          #            (require 'appmng/apptree').addNewApplicationBase(params)
           $("#applicationGridList").trigger("reloadGrid")
 
         $(@).dialog("close")
@@ -432,12 +430,13 @@ define [
           $('#errorMsg', @).append($("<li>#{i18n.dialog.addlanguage.charsettip}</li>")) if '-1' == postData.charsetId
 
           return
-        $(@).parent().block(message: '<img src="images/busy.gif" />Please wait...')
+        $(@).dialog 'close'
+
+        $.blockUI()
         $.post urls.app.add_dict_language, postData, (json)=>
-          $(@).parent().unblock()
+          $.unblockUI()
           ($.msgBox(json.message, null, {title: c18n.error});return) if json.status != 0
           $('#languageSettingGrid').trigger("reloadGrid") if -1 == postData.dicts.indexOf(',')
-          $(@).dialog 'close'
           $.msgBox i18n.dialog.addlanguage.successtip.format $('#languageName option:selected').text(), null, {title: c18n.info}
       },
       {text: c18n.cancel, click: (e)->$(@).dialog 'close'}
@@ -460,10 +459,11 @@ define [
         if !postData.code
           $('#removeLanguageDialog_errorMsg', @).append($("<li>#{i18n.dialog.addlanguage.coderequired}</li>")) if !postData.code
           return
-
-        $(@).parent().block(message: '<img src="images/busy.gif" />&nbsp;Please wait...')
+        $.blockUI()
+#        $(@).parent().block(message: '<img src="images/busy.gif" />&nbsp;Please wait...')
         $.post urls.app.remove_dict_language, postData, (json)=>
-          $(@).parent().unblock()
+          $.unblockUI()
+#          $(@).parent().unblock()
           ($.msgBox(json.message, null, {title: c18n.error});return) if json.status != 0
           $('#languageSettingGrid').trigger("reloadGrid") if -1 == postData.dicts.indexOf(',')
           $.msgBox json.message, null, title: c18n.info

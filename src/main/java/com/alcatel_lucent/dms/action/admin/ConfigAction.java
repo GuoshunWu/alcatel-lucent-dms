@@ -16,8 +16,7 @@ import org.hibernate.search.stat.Statistics;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("serial")
-//public class ConfigAction extends ProgressAction {
-public class ConfigAction extends JSONAction {
+public class ConfigAction extends ProgressAction {
 
     public DaoService getDaoService() {
         return daoService;
@@ -30,38 +29,12 @@ public class ConfigAction extends JSONAction {
     private DaoService daoService;
 
     @Override
-    // TODO: printStatusMessage in event
-
     protected String performAction() throws Exception {
-        log.info("ConfigAction...");
         FullTextSession fullTextSession = Search.getFullTextSession(daoService.getSession());
-
-        fullTextSession.createIndexer().progressMonitor(new SimpleIndexingProgressMonitor() {
-            @Override
-            protected void printStatusMessage(long starttime, long totalTodoCount, long doneCount) {
-                long elapsedMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - starttime);
-                log.info("{} documents indexed in {} ms", doneCount, elapsedMs);
-                float estimateSpeed = doneCount * 1000f / elapsedMs;
-                float estimatePercentileComplete = doneCount * 100f / totalTodoCount;
-                log.info("Indexing speed: {} documents/second; progress: {}%", estimateSpeed, estimatePercentileComplete);
-                ProgressQueue.setProgress(
-                        String.format("{} documents indexed in {} ms. Indexing speed: {} documents/second", doneCount, elapsedMs, estimateSpeed),
-                        (int) estimatePercentileComplete);
-
-            }
-
-            @Override
-            public void indexingCompleted() {
-                super.indexingCompleted();
-                ProgressQueue.setProgress("Reindexed entities complete.", 100);
-            }
-
-            @Override
-            public void addToTotalCount(long count) {
-                super.addToTotalCount(count);
-            }
-        }).startAndWait();
-        setMessage("Index create successful.");
+        final ProgressQueue queue = ProgressQueue.getInstance();
+        AjaxIndexProgressMonitor monitor = new AjaxIndexProgressMonitor(queue);
+        fullTextSession.createIndexer().progressMonitor(monitor).startAndWait();
+        setMessage(String.format("Reindexed %d entities successful.", monitor.getTotalCounter().get()));
         return SUCCESS;
     }
 

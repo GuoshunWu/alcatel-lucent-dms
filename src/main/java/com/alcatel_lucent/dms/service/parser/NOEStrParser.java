@@ -337,16 +337,16 @@ public class NOEStrParser extends DictionaryParser {
                             lineNo++;
                             continue;
                         }
-                        translation = line.trim().replace(LABEL_TRANS_PREFIX, "");
+                        translation = line.trim();
                     }
 
                     if (null == translation) {
                         warnings.add(new BusinessWarning(BusinessWarning.LABEL_TRANS_BLANK, lineNo, langFile.getAbsolutePath()));
-                        continue;
+                        translation = "";
+                    }else{
+                        //process escape character
+                        translation = unescapeNOEString(translation);
                     }
-
-                    //process escape character
-                    translation = unescapeNOEString(translation);
 
                     Label label = null;
                     if (langCode.equals(REFERENCE_CODE)) { // create new label
@@ -358,7 +358,7 @@ public class NOEStrParser extends DictionaryParser {
                         dict.addLabel(label);
                         label.setDictionary(dict);
                         label.setOrigTranslations(new ArrayList<LabelTranslation>());
-                        label.setReference(translation);
+                        label.setReference(translation.substring(LABEL_TRANS_PREFIX.length()));
                         if(-1!=translation.indexOf("\\*")){
                             label.setDescription("The char following the \\* sequence must be the same in every other translation of the string.");
                         }
@@ -382,7 +382,12 @@ public class NOEStrParser extends DictionaryParser {
         lt.setLanguageCode(langCode);
         lt.setSortNo(lineNo);
         lt.setLanguage(label.getDictionary().getLanguageByCode(langCode));
-        lt.setOrigTranslation(text);
+        if(text.startsWith(LABEL_TRANS_PREFIX)){
+            lt.setStatus(Translation.STATUS_UNTRANSLATED);
+        }else {
+            lt.setStatus(Translation.STATUS_TRANSLATED);
+        }
+        lt.setOrigTranslation(text.substring(LABEL_TRANS_PREFIX.length()));
 
         label.addLabelTranslation(lt);
         return lt;
