@@ -34,27 +34,13 @@ define [
     # console?.log "language grid height=#{$('#languageGrid').getGridParam('height')}."
 
     $('#buildLuceneIndex').button().click (e)->
-      $.blockUI()
-      $.post urls.config.create_index, (json)->
-        $.unblockUI()
-        if json.status != 0
-          $.msgBox json.message, null, {title: c18n.error, width: 300, height: 'auto'}
-          return false
-        $.msgBox json.message, null, {title: c18n.info, width: 300, height: 'auto'}
-#      pb = util.genProgressBar()
-#      $.blockUI(message: '')
-#      util.updateProgress(urls.config.create_index, {}, (json)->
-#        $.unblockUI()
-#        pb.parent().remove()
-#
-#        retJson = $.parseJSON(json.event.msg)
-#        if retJson.status != 0
-#          $.msgBox retJson.message, null, {title: c18n.error, width: 300, height: 'auto'}
-#          return false
-#        $.msgBox retJson.message, null, {title: c18n.info, width: 300, height: 'auto'}
-#
-#      , pb)
-
+      pb = util.genProgressBar()
+      util.updateProgress(urls.config.create_index, {}, (json)->
+        pb.parent().remove()
+        console.log json
+        msg = json.event.msg
+        $.msgBox msg, null, {title: c18n.info, width: 300, height: 'auto'}
+      , pb)
     # init dialogs
     $('#addUserDialog').dialog(
       autoOpen: false

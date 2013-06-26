@@ -15,7 +15,10 @@ public class ProgressQueue extends LinkedBlockingQueue<ProgressEvent> {
 	public static void setInstance(ProgressQueue queue) {
 		instance.set(queue);
 	}
-	
+    public static ProgressQueue getInstance() {
+       return instance.get();
+    }
+
 	public static void removeInstance() {
 		instance.remove();
 		currentMsg.remove();
