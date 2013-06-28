@@ -1,3 +1,10 @@
+V2.8.1 (Jun 28, 2013)
+    * Add a "Match" button in Translation details view allowing to match translations by searching similar reference text across different contexts.
+    * Add progress bar for some time-consuming operations such as deleting dictionaries, exporting translations
+    * Add "Display Check" column in generated translation task file for labels from OTC Android dictionary
+    * Update translation grid cell click action to eliminate translation detail dialog open delay
+    * Fixed login issue in a specific case
+
 V2.8.0 (Jun. 21, 2013)
     * Add validity check of translation for importing an existing dictionary (If reference text is changed while translation is not changed, don't take the translation)
     * Allows to remove a language from multiple dictionaries in batch
