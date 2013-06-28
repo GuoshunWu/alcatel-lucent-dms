@@ -1,26 +1,21 @@
 package com.alcatel_lucent.dms.test
 
-import org.junit.runner.RunWith
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.transaction.TransactionConfiguration
+import com.alcatel_lucent.dms.service.DaoService
 import com.alcatel_lucent.dms.service.TaskService
-import org.springframework.beans.factory.annotation.Autowired
-import org.junit.Test
 import org.junit.BeforeClass
-import com.alcatel_lucent.dms.model.Text
-
-import static org.junit.Assert.*
-import com.alcatel_lucent.dms.service.DaoService
-import net.sf.json.JSONObject
-import com.alcatel_lucent.dms.BusinessException
-
-import com.alcatel_lucent.dms.service.DaoService
-import org.junit.Ignore;
+import org.junit.Ignore
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
+import org.springframework.test.context.transaction.TransactionConfiguration
+import org.springframework.transaction.annotation.Transactional
 
 @Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = ["/spring.xml"])
+@Transactional
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 class GTaskServiceImplTest {
 	
@@ -50,7 +45,7 @@ class GTaskServiceImplTest {
 	@Test
 	void testGenerateTaskFiles() {
 		String dir = "d:/temp/task_test"
-		taskService.generateTaskFiles(dir, 2);
+		taskService.generateTaskFiles(dir, 12);
 	}
 	
 	@Test

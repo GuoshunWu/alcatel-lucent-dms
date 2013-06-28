@@ -24,8 +24,6 @@ public class GenerateDictAction extends ProgressAction {
 
     private String filename;
     private String dicts;
-//    private String fileLoc;
-
 
     private DictionaryService dictionaryService;
     private SimpleDateFormat dFmt = new SimpleDateFormat("yyyyMMdd_HHmmss");

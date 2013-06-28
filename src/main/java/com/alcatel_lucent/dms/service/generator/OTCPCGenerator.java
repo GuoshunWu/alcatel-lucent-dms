@@ -39,15 +39,7 @@ public class OTCPCGenerator extends DictionaryGenerator {
 
     @Autowired
     private DaoService dao;
-
     private static final int RESERVED_ROW_NUM = 100;
-
-    enum Style {
-        BOLD,
-        BOLD_LIGHT_BLUE,
-        GREY,
-        USED
-    }
 
     @Override
     public Constants.DictionaryFormat getFormat() {
@@ -105,7 +97,7 @@ public class OTCPCGenerator extends DictionaryGenerator {
     private Sheet generateReferenceSheet(Workbook wb, Dictionary dict, int defaultColWidth, MultiKeyMap styleMap) {
         Sheet refSheet = wb.createSheet(OTCPCParser.SHEET_REF);
 
-        CellStyle style = (CellStyle) styleMap.get(Style.BOLD_LIGHT_BLUE, StringUtils.EMPTY);
+        CellStyle style = (CellStyle) styleMap.get(OTCExcelCellStyle.BOLD_LIGHT_BLUE, StringUtils.EMPTY);
 
         int rowNum = 0;
         Row row = refSheet.createRow(rowNum);
@@ -127,20 +119,20 @@ public class OTCPCGenerator extends DictionaryGenerator {
 
         Collection<Label> labels = dict.getAvailableLabels();
 
-        CellStyle greyStyle = (CellStyle) styleMap.get(Style.GREY, StringUtils.EMPTY);
+        CellStyle greyStyle = (CellStyle) styleMap.get(OTCExcelCellStyle.GREY, StringUtils.EMPTY);
         if (null == greyStyle) {
             greyStyle = wb.createCellStyle();
             greyStyle.setFillForegroundColor(HSSFColor.GREY_25_PERCENT.index);
             greyStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
-            styleMap.put(Style.GREY, StringUtils.EMPTY, greyStyle);
+            styleMap.put(OTCExcelCellStyle.GREY, StringUtils.EMPTY, greyStyle);
         }
 
-        CellStyle customBooleanStyle = (CellStyle) styleMap.get(Style.USED, StringUtils.EMPTY);
+        CellStyle customBooleanStyle = (CellStyle) styleMap.get(OTCExcelCellStyle.USED, StringUtils.EMPTY);
         if (null == customBooleanStyle) {
             customBooleanStyle = wb.createCellStyle();
             DataFormat dFmt = wb.createDataFormat();
             customBooleanStyle.setDataFormat(dFmt.getFormat("\"True\";\"True\";\"False\""));
-            styleMap.put(Style.USED, StringUtils.EMPTY, customBooleanStyle);
+            styleMap.put(OTCExcelCellStyle.USED, StringUtils.EMPTY, customBooleanStyle);
         }
 
         int checkColumnLen = strWidths.length;
@@ -192,7 +184,7 @@ public class OTCPCGenerator extends DictionaryGenerator {
         return refSheet;
     }
 
-    private void setDisplayCheckCellStyle(Cell cell, Label label, MultiKeyMap styleMap) {
+    public static void setDisplayCheckCellStyle(Cell cell, Label label, MultiKeyMap styleMap) {
         Workbook wb = cell.getSheet().getWorkbook();
         if (StringUtils.isBlank(label.getFontName())) return;
         CellStyle cellStyle = (CellStyle) styleMap.get(label.getFontName(), StringUtils.defaultString(label.getFontSize()));
@@ -211,7 +203,7 @@ public class OTCPCGenerator extends DictionaryGenerator {
 
     }
 
-    private int drawDisplayCheckColumnHeader(Row row, String[] strWidths, int colIndex, CellStyle style) {
+    public static int drawDisplayCheckColumnHeader(Row row, String[] strWidths, int colIndex, CellStyle style) {
         Sheet sheet = row.getSheet();
 
         int firstColumn = colIndex;
@@ -234,8 +226,14 @@ public class OTCPCGenerator extends DictionaryGenerator {
 
     /**
      * Draw display check on specific row
+     * @param row the row to draw.
+     * @param refColIndex the reference column number
+     * @param colIndex  the column start index
+     * @param mergeNum  the merged cell number
+     * @param displayCheckColumnNum the total display check column number
+     * @param style cell style
      */
-    private Cell drawDisplayCheckColumns(Row row, int refColIndex, int colIndex, int mergeNum, int displayCheckColumnNum, CellStyle style) {
+    public static Cell drawDisplayCheckColumns(Row row, int refColIndex, int colIndex, int mergeNum, int displayCheckColumnNum, CellStyle style) {
         Cell cell = row.createCell(colIndex, Cell.CELL_TYPE_FORMULA);
         cell.setCellFormula(new CellReference(cell.getRowIndex(), refColIndex).formatAsString());
 
@@ -323,7 +321,7 @@ public class OTCPCGenerator extends DictionaryGenerator {
 
     private void generateTranslationSheet(Workbook wb, Sheet refSheet, Collection<Label> labels, DictionaryLanguage dictionaryLanguage, int defaultColWidth, MultiKeyMap styleMap) {
         Sheet langSheet = wb.createSheet(dictionaryLanguage.getLanguageCode());
-        CellStyle style = (CellStyle) styleMap.get(Style.BOLD_LIGHT_BLUE, StringUtils.EMPTY);
+        CellStyle style = (CellStyle) styleMap.get(OTCExcelCellStyle.BOLD_LIGHT_BLUE, StringUtils.EMPTY);
 
         //Title row
         int rowNum = 0;
@@ -353,7 +351,7 @@ public class OTCPCGenerator extends DictionaryGenerator {
         //Translation row
         Cell cell = null;
 
-        CellStyle greyStyle = (CellStyle) styleMap.get(Style.GREY, StringUtils.EMPTY);
+        CellStyle greyStyle = (CellStyle) styleMap.get(OTCExcelCellStyle.GREY, StringUtils.EMPTY);
         if(null== greyStyle){
             greyStyle = wb.createCellStyle();
             greyStyle.setFillForegroundColor(HSSFColor.GREY_25_PERCENT.index);
@@ -435,7 +433,7 @@ public class OTCPCGenerator extends DictionaryGenerator {
         CellStyle style = wb.createCellStyle();
         style = wb.createCellStyle();
         style.setFont(font);
-        styleMap.put(Style.BOLD, StringUtils.EMPTY, style);
+        styleMap.put(OTCExcelCellStyle.BOLD, StringUtils.EMPTY, style);
 
         style = wb.createCellStyle();
 
@@ -445,12 +443,12 @@ public class OTCPCGenerator extends DictionaryGenerator {
         style.setFillForegroundColor((short) 9);
         style.setFillPattern(CellStyle.SOLID_FOREGROUND);
         style.setFont(font);
-        styleMap.put(Style.BOLD_LIGHT_BLUE, StringUtils.EMPTY, style);
+        styleMap.put(OTCExcelCellStyle.BOLD_LIGHT_BLUE, StringUtils.EMPTY, style);
 
-        generateInfoSheet(wb, dict, (CellStyle) styleMap.get(Style.BOLD, StringUtils.EMPTY));
+        generateInfoSheet(wb, dict, (CellStyle) styleMap.get(OTCExcelCellStyle.BOLD, StringUtils.EMPTY));
 
         Collection<DictionaryLanguage> dictionaryLanguageCollection = dict.getDictLanguages();
-        generateLanguageSheet(wb, dictionaryLanguageCollection, (CellStyle) styleMap.get(Style.BOLD, StringUtils.EMPTY));
+        generateLanguageSheet(wb, dictionaryLanguageCollection, (CellStyle) styleMap.get(OTCExcelCellStyle.BOLD, StringUtils.EMPTY));
 
 
         // generate "default" sheet
@@ -460,7 +458,7 @@ public class OTCPCGenerator extends DictionaryGenerator {
         Collection<Label> labels = dict.getAvailableLabels();
 
         // generate context sheet.
-        generateContextSheet(wb, refSheet, labels, (CellStyle) styleMap.get(Style.BOLD_LIGHT_BLUE, StringUtils.EMPTY));
+        generateContextSheet(wb, refSheet, labels, (CellStyle) styleMap.get(OTCExcelCellStyle.BOLD_LIGHT_BLUE, StringUtils.EMPTY));
 
 
         // generate a sheet for each language

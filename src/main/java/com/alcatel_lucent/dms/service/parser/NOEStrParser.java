@@ -343,9 +343,6 @@ public class NOEStrParser extends DictionaryParser {
                     if (null == translation) {
                         warnings.add(new BusinessWarning(BusinessWarning.LABEL_TRANS_BLANK, lineNo, langFile.getAbsolutePath()));
                         translation = "";
-                    }else{
-                        //process escape character
-                        translation = unescapeNOEString(translation);
                     }
 
                     Label label = null;
@@ -358,8 +355,13 @@ public class NOEStrParser extends DictionaryParser {
                         dict.addLabel(label);
                         label.setDictionary(dict);
                         label.setOrigTranslations(new ArrayList<LabelTranslation>());
-                        label.setReference(translation.substring(LABEL_TRANS_PREFIX.length()));
-                        if(-1!=translation.indexOf("\\*")){
+                        if (translation.startsWith(LABEL_TRANS_PREFIX)) {
+                            translation = translation.substring(LABEL_TRANS_PREFIX.length());
+                            //process escape character
+                            translation = unescapeNOEString(translation);
+                        }
+                        label.setReference(translation);
+                        if (-1 != translation.indexOf("\\*")) {
                             label.setDescription("The char following the \\* sequence must be the same in every other translation of the string.");
                         }
                     } else {
@@ -382,12 +384,15 @@ public class NOEStrParser extends DictionaryParser {
         lt.setLanguageCode(langCode);
         lt.setSortNo(lineNo);
         lt.setLanguage(label.getDictionary().getLanguageByCode(langCode));
-        if(text.startsWith(LABEL_TRANS_PREFIX)){
+        if (text.startsWith(LABEL_TRANS_PREFIX)) {
             lt.setStatus(Translation.STATUS_UNTRANSLATED);
-        }else {
+            text = text.substring(LABEL_TRANS_PREFIX.length());
+        } else {
             lt.setStatus(Translation.STATUS_TRANSLATED);
         }
-        lt.setOrigTranslation(text.substring(LABEL_TRANS_PREFIX.length()));
+
+        text = unescapeNOEString(text);
+        lt.setOrigTranslation(text);
 
         label.addLabelTranslation(lt);
         return lt;

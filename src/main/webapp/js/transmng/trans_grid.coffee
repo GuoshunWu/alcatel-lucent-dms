@@ -103,7 +103,6 @@ define [
 
       $('a', @).css('color', 'blue').click ()->
         pageParams = util.getUrlParams(@href)
-        #      console?.log pageParams
         rowid = pageParams?.id
         language = id: pageParams.languageId, name: pageParams.languageName
 
@@ -113,12 +112,19 @@ define [
           num = parseInt rowData["#{language.name}.#{elem}"]
           allZero = 0 == num
           allZero
-
         (console?.log 'zero';return) if allZero
-        util.getDictLanguagesByDictId rowid, (languages)=>
-          dialogs = require('transmng/dialogs')
-          dialogs.showTransDetailDialog {dict:{id: rowid, name: rowData.dictionary}, language: language, languages: languages}
-    #  customed method executed when the grid is created.
+
+        map = 'N': '0', 'I': '1', 'T': '2'
+        status = language.name.split('.')[1]
+        param =
+          dict: {id: rowid, name: rowData.dictionary}
+          searchStatus: map[status]
+          language:language
+          transsrc: ''
+        $('#translationDetailDialog').data(param: param).dialog "open"
+
+
+  #  customed method executed when the grid is created.
     afterCreate: (grid)->
       grid.setGridParam 'datatype': 'json'
       grid.setGroupHeaders {useColSpanStyle: true, groupHeaders: grid.getGridParam('groupHeaders')}

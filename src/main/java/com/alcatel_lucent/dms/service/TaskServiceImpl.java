@@ -1,54 +1,32 @@
 package com.alcatel_lucent.dms.service;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.TreeMap;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.input.AutoCloseInputStream;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.util.CellUtil;
-import org.apache.poi.util.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.apache.poi.hssf.usermodel.HSSFDataFormatter;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.UserContext;
-import com.alcatel_lucent.dms.model.Application;
-import com.alcatel_lucent.dms.model.Context;
+import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
-import com.alcatel_lucent.dms.model.DictionaryHistory;
-import com.alcatel_lucent.dms.model.Label;
-import com.alcatel_lucent.dms.model.Language;
-import com.alcatel_lucent.dms.model.Product;
-import com.alcatel_lucent.dms.model.Task;
-import com.alcatel_lucent.dms.model.TaskDetail;
-import com.alcatel_lucent.dms.model.Text;
-import com.alcatel_lucent.dms.model.Translation;
+import com.alcatel_lucent.dms.service.generator.OTCExcelCellStyle;
+import com.alcatel_lucent.dms.service.generator.OTCPCGenerator;
+import com.alcatel_lucent.dms.service.parser.OTCPCParser;
 import com.alcatel_lucent.dms.util.Util;
+import org.apache.commons.collections.map.MultiKeyMap;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFDataFormatter;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.util.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.*;
 
 @Service("taskService")
 public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
@@ -206,6 +184,38 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
         historyService.logCloseTask(task);
     }
 
+    /**
+     * Get OTC excel dictionary display check information in the task details.
+     * Return null if there are conflict exists
+     *
+     * @param taskDetails
+     */
+    private String[] getOTCExcelDisplayCheckInfo(Collection<TaskDetail> taskDetails) {
+        String[] strWidths = null;
+        String[] previousStrWidths = null;
+        boolean conflict = false;
+        for (TaskDetail td : taskDetails) {
+            Dictionary dict = td.getLabel().getDictionary();
+            if (dict.getFormat().equals(Constants.DictionaryFormat.OTC_EXCEL.toString())) {
+                strWidths = Util.string2Map(dict.getAnnotation2()).get(OTCPCParser.SHEET_REF_TITLE_DISPLAY_CHECK).split(",");
+
+                if (null != previousStrWidths) {
+                    // check if there's conflict
+                    if (previousStrWidths.length != strWidths.length) return null;
+
+                    for (int i = 0; i < previousStrWidths.length && !conflict; ++i) {
+                        if (!previousStrWidths[i].trim().equals(strWidths[i].trim())) return null;
+                    }
+                }
+                previousStrWidths = strWidths;
+            }
+        }
+        if (null != strWidths) {
+            log.info("OTC excel dictionary display check information: " + Arrays.asList(strWidths));
+        }
+        return strWidths;
+    }
+
     @Override
     public void generateTaskFiles(String targetDir, Long taskId) {
         log.info("Generate task files to " + targetDir + ", id=" + taskId);
@@ -218,16 +228,22 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
         Map<String, Integer> labelCountMap = new TreeMap<String, Integer>();
         Map<String, Integer> wordCountMap = new TreeMap<String, Integer>();
         HashSet<String> defaultReferences = new HashSet<String>();
+
+        String[] otcExcelDisplayInfo = getOTCExcelDisplayCheckInfo(task.getDetails());
+
         for (TaskDetail td : task.getDetails()) {
             String languageName = td.getLanguage().getName();
-            String appName = td.getLabel().getDictionary().getBase().getApplicationBase().getName();
+
+            Dictionary dict = td.getLabel().getDictionary();
+            String appName = dict.getBase().getApplicationBase().getName();
+
             if ((currentLanguage != null && !currentLanguage.equals(languageName)) ||
-                    (currentApp != null && !currentApp.equals(appName))) {	// change to next file
-            	if (currentDetails.size() > 0) {
-	                generateTaskFile(targetDir, currentLanguage, currentApp, currentDetails, existingFilenames);
-	                currentDetails.clear();
-            	}
-                if (currentLanguage != null && !currentLanguage.equals(languageName)) {	// change to next language
+                    (currentApp != null && !currentApp.equals(appName))) {    // change to next file
+                if (currentDetails.size() > 0) {
+                    generateTaskFile(targetDir, currentLanguage, currentApp, currentDetails, existingFilenames, otcExcelDisplayInfo);
+                    currentDetails.clear();
+                }
+                if (currentLanguage != null && !currentLanguage.equals(languageName)) {    // change to next language
                     labelCountMap.put(currentLanguage, labelCount);
                     wordCountMap.put(currentLanguage, wordCount);
                     labelCount = wordCount = 0;
@@ -237,25 +253,26 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
             }
             currentLanguage = languageName;
             currentApp = appName;
-            
+
             // skip same reference text in [DEFAULT] AND [DICT] context
             Context ctx = td.getText().getContext();
             boolean skip = false;
             if (ctx.getName().equals(Context.DEFAULT) || ctx.getName().equals(Context.DICT)) {
-            	if (defaultReferences.contains(td.getText().getReference())) {
-            		skip = true;
-            	} else {
-    	            defaultReferences.add(td.getText().getReference());
-            	}
+                if (defaultReferences.contains(td.getText().getReference())) {
+                    skip = true;
+                } else {
+                    defaultReferences.add(td.getText().getReference());
+                }
             }
             if (!skip) {
-	            currentDetails.add(td);
-	            labelCount++;
-	            wordCount += Util.countWords(td.getText().getReference());
+                currentDetails.add(td);
+                labelCount++;
+                wordCount += Util.countWords(td.getText().getReference());
             }
         }
+
         if (currentDetails.size() > 0) {
-            generateTaskFile(targetDir, currentLanguage, currentApp, currentDetails, existingFilenames);
+            generateTaskFile(targetDir, currentLanguage, currentApp, currentDetails, existingFilenames, otcExcelDisplayInfo);
             labelCountMap.put(currentLanguage, labelCount);
             wordCountMap.put(currentLanguage, wordCount);
         }
@@ -265,7 +282,12 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
     }
 
     private void generateTaskFile(String targetDir, String languageName,
-                                  String appName, ArrayList<TaskDetail> taskDetails, ArrayList<String> existingFilenames) {
+                                  String appName, ArrayList<TaskDetail> taskDetails, ArrayList<String> existingFileNames) {
+        generateTaskFile(targetDir, languageName, appName, taskDetails, existingFileNames, null);
+    }
+
+    private void generateTaskFile(String targetDir, String languageName,
+                                  String appName, ArrayList<TaskDetail> taskDetails, ArrayList<String> existingFileNames, String[] OTCExcelDisplayInfo) {
         File dir = new File(targetDir, languageName);
         if (!dir.exists()) {
             dir.mkdirs();
@@ -275,10 +297,10 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
         String filename = toFilename(appName);
         String tempName = filename;
         int i = 2;
-        while (existingFilenames.contains(tempName)) {
+        while (existingFileNames.contains(tempName)) {
             tempName = filename + "_" + i++;
         }
-        existingFilenames.add(tempName);
+        existingFileNames.add(tempName);
         filename = tempName + ".xls";
 
         File targetFile = new File(dir, filename);
@@ -326,11 +348,27 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
         createCell(row, 4, headerMap.get(ExcelFileHeader.REFERENCE), styleHead);
         createCell(row, 5, headerMap.get(ExcelFileHeader.TRANSLATION), styleHead);
         createCell(row, 6, headerMap.get(ExcelFileHeader.REMARKS), styleHead);
+        if (null != OTCExcelDisplayInfo) {
+            OTCPCGenerator.drawDisplayCheckColumnHeader(row, OTCExcelDisplayInfo, 7, styleHead);
+        }
+
 //        sheet.setColumnWidth(1, 0);
         sheet.setColumnWidth(4, 40 * 256);
         sheet.setColumnWidth(5, 40 * 256);
         sheet.setColumnWidth(6, 20 * 256);
         short rowNo = 1;
+
+        // create style map
+        MultiKeyMap styleMap = new MultiKeyMap();
+        // add grey style
+        CellStyle greyStyle = (CellStyle) styleMap.get(OTCExcelCellStyle.GREY, StringUtils.EMPTY);
+        if (null == greyStyle) {
+            greyStyle = wb.createCellStyle();
+            greyStyle.setFillForegroundColor(HSSFColor.GREY_25_PERCENT.index);
+            greyStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+            styleMap.put(OTCExcelCellStyle.GREY, StringUtils.EMPTY, greyStyle);
+        }
+
         for (TaskDetail td : taskDetails) {
             row = sheet.createRow(rowNo++);
             createCell(row, 0, td.getLabelKey(), styleBody);
@@ -347,6 +385,17 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
             createCell(row, 4, td.getText().getReference(), styleBody);
             createCell(row, 5, td.getNewTranslation() == null ? td.getOrigTranslation() : td.getNewTranslation(), styleUnlockedBody);
             createCell(row, 6, "", styleUnlockedBody);
+            Label label = td.getLabel();
+            String strMergeNum = Util.string2Map(label.getAnnotation1()).get("displayCheckMergeNum");
+            if (StringUtils.isNotBlank(strMergeNum)) {
+                Cell cell = OTCPCGenerator.drawDisplayCheckColumns(row, 5, 7, Integer.parseInt(strMergeNum), OTCExcelDisplayInfo.length, greyStyle);
+                OTCPCGenerator.setDisplayCheckCellStyle(cell, label, styleMap);
+            }
+            //set row height
+            String sRowHeight = Util.string2Map(label.getAnnotation1()).get("rowHeight");
+            if (StringUtils.isNotBlank(sRowHeight)) {
+                row.setHeightInPoints(Float.parseFloat(sRowHeight));
+            }
         }
         sheet.protectSheet(PROTECT_PASSWORD);
 
@@ -498,12 +547,12 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
         param.put("taskId", task.getId());
         param.put("languageId", language.getId());
         if (contextKey.isEmpty()) {
-        	hql += " and text.context.name in(:ctxDefault,:ctxDict)";
-        	param.put("ctxDefault", Context.DEFAULT);
-        	param.put("ctxDict", Context.DICT);
+            hql += " and text.context.name in(:ctxDefault,:ctxDict)";
+            param.put("ctxDefault", Context.DEFAULT);
+            param.put("ctxDict", Context.DICT);
         } else {
-        	hql += " and text.context.key=:contextKey";
-        	param.put("contextKey", contextKey);
+            hql += " and text.context.key=:contextKey";
+            param.put("contextKey", contextKey);
         }
         Collection<TaskDetail> details = dao.retrieve(hql, param);
         for (TaskDetail td : details) {
@@ -563,7 +612,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
             }
             return result;
         } catch (BusinessException e) {
-        	throw e;
+            throw e;
         } catch (Exception e) {
             e.printStackTrace();
             log.error(e.toString());
@@ -642,7 +691,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
             textService.updateTranslations(context.getId(), textMap.values(), Constants.ImportingMode.TRANSLATION);
             // update DEFAULT context from each DICT context, so the DEFAULT context would be a union of all translations
             if (context.getName().equals(Context.DICT)) {
-            	Context defaultCtx = textService.getContextByExpression(Context.DEFAULT, null);
+                Context defaultCtx = textService.getContextByExpression(Context.DEFAULT, null);
                 textService.updateTranslations(defaultCtx.getId(), textMap.values(), Constants.ImportingMode.DELIVERY);
             }
         }
@@ -674,44 +723,44 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
             }
             langMap.put(languageId, value);
         }
-*/        
+*/
         Map<Long, Map<Long, int[]>> result = new HashMap<Long, Map<Long, int[]>>();
-    	Task task = (Task) dao.retrieve(Task.class, taskId);
+        Task task = (Task) dao.retrieve(Task.class, taskId);
         HashSet<String> uniqueReferences = new HashSet<String>();
         Long currentLangId = null;
         for (TaskDetail td : task.getDetails()) {
-        	Long appBaseId = td.getLabel().getDictionary().getBase().getApplicationBase().getId();
-        	Long languageId = td.getLanguage().getId();
-        	if (currentLangId == null || !currentLangId.equals(languageId)) {
-        		currentLangId = languageId;
-        		uniqueReferences.clear();
-        	}
-        	// skip duplicate reference text of context DEFAULT and DICT
-        	String contextName = td.getLabel().getText().getContext().getName();
-        	if (contextName.equals(Context.DEFAULT) || contextName.equals(Context.DICT)) {
-        		if (uniqueReferences.contains(td.getText().getReference())) {
-        			continue;
-        		} else {
-        			uniqueReferences.add(td.getText().getReference());
-        		}
-        	}
-        	// add count
-        	Map<Long, int[]> langMap = result.get(appBaseId);
-        	if (langMap == null) {
-        		langMap = new HashMap<Long, int[]>();
+            Long appBaseId = td.getLabel().getDictionary().getBase().getApplicationBase().getId();
+            Long languageId = td.getLanguage().getId();
+            if (currentLangId == null || !currentLangId.equals(languageId)) {
+                currentLangId = languageId;
+                uniqueReferences.clear();
+            }
+            // skip duplicate reference text of context DEFAULT and DICT
+            String contextName = td.getLabel().getText().getContext().getName();
+            if (contextName.equals(Context.DEFAULT) || contextName.equals(Context.DICT)) {
+                if (uniqueReferences.contains(td.getText().getReference())) {
+                    continue;
+                } else {
+                    uniqueReferences.add(td.getText().getReference());
+                }
+            }
+            // add count
+            Map<Long, int[]> langMap = result.get(appBaseId);
+            if (langMap == null) {
+                langMap = new HashMap<Long, int[]>();
                 result.put(appBaseId, langMap);
-        	}
-        	int[] value = langMap.get(languageId);
-        	if (value == null) {
-        		value = new int[] {0, 0};
-        		langMap.put(languageId, value);
-        	}
-        	if (td.getNewTranslation() == null || td.getNewTranslation().isEmpty() || 
-        			td.getNewTranslation().equals(td.getText().getReference())) {
-        		value[1]++;
-        	} else {
-        		value[0]++;
-        	}
+            }
+            int[] value = langMap.get(languageId);
+            if (value == null) {
+                value = new int[]{0, 0};
+                langMap.put(languageId, value);
+            }
+            if (td.getNewTranslation() == null || td.getNewTranslation().isEmpty() ||
+                    td.getNewTranslation().equals(td.getText().getReference())) {
+                value[1]++;
+            } else {
+                value[0]++;
+            }
         }
         return result;
     }
