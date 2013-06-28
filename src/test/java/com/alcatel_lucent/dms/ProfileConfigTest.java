@@ -2,6 +2,7 @@ package com.alcatel_lucent.dms;
 
 
 import com.alcatel_lucent.dms.service.parser.NOEStrParser;
+import junit.framework.Assert;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -18,6 +19,10 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.Charset;
 import java.util.*;
 
 /**
@@ -75,7 +80,21 @@ public class ProfileConfigTest {
         inv.invokeFunction("doSwing", "Scripting Swing");
     }
 
-    @Test
+//    @Test
+    public void testEncoding() throws UnsupportedEncodingException, CharacterCodingException {
+
+        String charset="windows-1252";
+        ByteBuffer buffer=ByteBuffer.allocate(255) ;
+        buffer.put((byte)0x82);
+        buffer.put((byte)0x70);
+        buffer.flip();
+
+        CharBuffer cb= Charset.forName(charset).decode(buffer);
+        System.out.println(cb.toString());
+
+    }
+
+//    @Test
     public void testAccent() throws Exception {
 //        MapUtils.debugPrint(System.out, "ESCAPE_SEARCH_MAP", ESCAPE_SEARCH_MAP);
         String filePath = "D:\\360CloudUI\\Cache\\45698397\\Documents\\Alcatel-Lucent\\DMS\\DMSFiles\\TestFile.txt";

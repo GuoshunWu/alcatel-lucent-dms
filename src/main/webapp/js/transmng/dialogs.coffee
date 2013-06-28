@@ -69,7 +69,14 @@ define [
           ()->@id).get().join ','
         dicts = $(grid.getTotalSelectedRowInfo().rowIds).map(
           ()->@).get().join(',')
-        window.location.href = "trans/export-translation-details?dict=#{dicts}&lang=#{langids}"
+        $.blockUI()
+        $.post urls.trans.generate_translation_details, {dict:dicts, lang: langids}, (json)->
+          $.unblockUI()
+          if(json.status !=0)
+            $.msgBox json.message, null, title: (c18n.error)
+            return
+          console?.log json
+          window.location.href = urls.getURL(urls.trans.export_translation_details,'',{translationDetailId: json.translationDetailId})
         $(@).dialog 'close'
       }
       {text: c18n.cancel, click: ->$(@).dialog 'close'}
@@ -159,7 +166,10 @@ define [
 
     open: ()->
       $('#transDetailSearchAction',@).position(my: 'left center', at: 'right center', of: '#transDetailSearchText')
-      $('#detailLanguageSwitcher').trigger "change"
+      param = $(@).data "param"
+      $('#dictionaryName', @).html param.dict.name
+      util.getDictLanguagesByDictId param.dict.id, (languages)=>
+        $('#detailLanguageSwitcher', @).empty().append(util.json2Options languages, param.language.id, 'name').trigger 'change'
     create: ()->
       $(@).dialog 'option', 'width', $('#transDetailGridList').getGridParam('width') + 60
       transDetailGrid = $("#transDetailGridList")
@@ -306,14 +316,14 @@ define [
   exportTranslationDialog: exportTranslationDialog
 
   refreshGrid: refreshGrid
-  showTransDetailDialog: (param)->
-    #    refresh dialog
-    $('#dictionaryName', transDetailDialog).html param.dict.name
-    $('#detailLanguageSwitcher', transDetailDialog).empty().append (util.json2Options param.languages, param.language.id, 'name')
-
-    map = 'N': '0', 'I': '1', 'T': '2'
-    status = param.language.name.split('.')[1]
-
-    transDetailDialog.data('param', {dict: param.dict, searchStatus: map[status]}, transsrc: '').dialog "open"
+#  showTransDetailDialog: (param)->
+#    #    refresh dialog
+#    $('#dictionaryName', transDetailDialog).html param.dict.name
+#    $('#detailLanguageSwitcher', transDetailDialog).empty().append (util.json2Options param.languages, param.language.id, 'name')
+#
+#    map = 'N': '0', 'I': '1', 'T': '2'
+#    status = param.language.name.split('.')[1]
+#
+#    transDetailDialog.data('param', {dict: param.dict, searchStatus: map[status]}, transsrc: '').dialog "open"
 
   showSearchResult: showSearchResult

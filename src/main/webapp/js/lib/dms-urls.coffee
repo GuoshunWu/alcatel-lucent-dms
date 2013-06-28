@@ -50,6 +50,9 @@ define (require)->
   trans:
     update_translation: getURL('update-translation', 'trans/')
     update_status: getURL('update-status', 'trans/')
+    generate_translation_details: getURL('generate-translation-details', 'trans/')
+    export_translation_details: getURL('export-translation-details', 'trans/')
+
   user:
     update: getURL('user', 'admin/')
   config:
