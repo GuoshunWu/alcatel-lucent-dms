@@ -23,6 +23,8 @@ require.config
     appmng: '../appmng'
     transmng: '../transmng'
     taskmng: '../taskmng'
+    ctxmng: '../ctxmng'
+
     login: '../login'
     admin: '../admin'
     nls: '../nls'

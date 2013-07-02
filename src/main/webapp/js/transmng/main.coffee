@@ -1,12 +1,16 @@
 define [
   'i18n!nls/common'
+  'i18n!nls/transmng'
   'dms-util'
   'dms-urls'
+
+  'jqupload'
+  'iframetransport'
 
   'transmng/trans_grid'
   'transmng/dialogs'
   'ptree'
-], (c18n, util, urls, grid, dialogs, ptree)->
+], (c18n, i18n, util, urls, upload, iframetrans, grid, dialogs, ptree)->
   nodeSelectHandler = (node, nodeInfo)->
     type=node.attr('type')
     return if 'products' == type
@@ -130,7 +134,53 @@ define [
           return
         dialogs.exportTranslationDialog.dialog 'open'
 
+    importTranslationId = "#importTranslation"
+    transFileUpload = 'transFileUpload'
+
+    #  create upload filebutton
+    $(importTranslationId).button(label: i18n.transupload).attr('privilegeName', urls.trans.import_translation_details).css(overflow: 'hidden')
+    .append $(
+      "<input type='file' id='#{transFileUpload}' name='upload' accept='application/zip' multiple/>").css(
+      position: 'absolute', top: -3, right: -3, border: '1px solid', borderWidth: '10px 180px 40px 20px',
+      opacity: 0, filter: 'alpha(opacity=0)',
+      cursor: 'pointer'
+    )
+
+    $("##{transFileUpload}").fileupload {
+      type: 'POST', dataType: 'json'
+      url: urls.trans.import_translation_details
+
+    #  forceIframeTransport:true
+      add: (e, data)->
+        $.each data.files, (index, file) ->
+        data.submit()
+        @pb=util.genProgressBar() if !$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10
+        $(importTranslationId).button 'disable'
+      progressall: (e, data) ->
+        return if $.browser.msie && parseInt($.browser.version.split('\.')[0]) < 10
+        progress = data.loaded / data.total * 100
+        @pb.progressbar "value", progress
+      done: (e, data)->
+        $(importTranslationId).button 'enable'
+        @pb.parent().remove() if !$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10
+        #    request handler
+        jsonFromServer = data.result
+#        console?.log jsonFromServer
+        if(0 != jsonFromServer.status)
+          $.msgBox jsonFromServer.message, null, {title: c18n.error, height: 600, width: 800}
+          return
+        $.msgBox jsonFromServer.message, null, {title: c18n.info, height: 600, width: 800}
+
+#        pb = util.genProgressBar()
+#        util.updateProgress(urls.app.process_dict, jsonFromServer, (json)->
+#          pb.parent().remove()
+#          filename = json.event.msg
+#          console?.log filename
+#        , pb)
+    }
+
     #    add action for export
+
     $("#exportExcel", '#transmng').click ()->exportAppOrDicts 'excel'
     $("#exportPDF", '#transmng').click ()->exportAppOrDicts 'pdf'
 

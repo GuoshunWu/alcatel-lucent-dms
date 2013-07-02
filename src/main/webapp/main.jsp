@@ -34,6 +34,7 @@
             <%@include file="appmanagement/appmng.jsp" %>
             <%@include file="transmanagement/transmng.jsp" %>
             <%@include file="taskmanagement/taskmng.jsp" %>
+            <%@include file="contextmanagement/contextmng.jsp" %>
             <%@include file="admin/admin.jsp" %>
         </div>
     </div>

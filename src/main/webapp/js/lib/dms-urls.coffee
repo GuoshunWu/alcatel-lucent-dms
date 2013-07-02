@@ -32,6 +32,7 @@ define (require)->
     del: getURL('remove-application-base', 'app/')
     create_version: getURL('create-application', 'app/')
     generate_dict: getURL('generate-dict','app/')
+    remove_dict: getURL('remove-dict', 'app/')
     remove_version: getURL('remove-application', 'app/')
     deliver_dict: getURL('deliver-dict', 'app/')
     deliver_app_dict: getURL('deliver-app-dict', 'app/')
@@ -52,6 +53,7 @@ define (require)->
     update_status: getURL('update-status', 'trans/')
     generate_translation_details: getURL('generate-translation-details', 'trans/')
     export_translation_details: getURL('export-translation-details', 'trans/')
+    import_translation_details: getURL('import-translation-details', 'trans/')
 
   user:
     update: getURL('user', 'admin/')

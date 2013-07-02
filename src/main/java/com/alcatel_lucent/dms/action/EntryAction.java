@@ -12,6 +12,7 @@ import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.functors.InvokerTransformer;
 import org.apache.commons.lang.enums.EnumUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -49,6 +50,7 @@ public class EntryAction extends BaseAction {
     private String version;
     private Long curProductId = -1L;
     private Long curProductBaseId = -1L;
+    private ArrayList<Product> products;
 
     public String getVersion() {
         return version;
@@ -106,17 +108,25 @@ public class EntryAction extends BaseAction {
 
     @SuppressWarnings("unchecked")
     public Map<String, String> getNaviPages() {
-        StringBuilder strPages = new StringBuilder("{");
-        boolean isFirst = true;
-        for (String pagePrefix : Arrays.asList("app", "trans", "task")) {
-            if (!isFirst) strPages.append(", ");
-            strPages.append(String.format("'%s':'%s'", pagePrefix + "mng.jsp", getText(pagePrefix + "mng.title")));
-            isFirst = false;
-        }
-        if (UserContext.getInstance().getUser().getRole() == User.ROLE_ADMINISTRATOR) {
-            strPages.append(String.format(", '%s':'%s'", "admin.jsp", getText("admin.title")));
-        }
+        List<String> pages = Arrays.asList("app", "trans", "task");
+        pages = Arrays.asList("app", "trans", "task", "ctx");
 
+        final String textKeySuffix = "mng.title";
+        final String pageSuffix = "mng.jsp";
+        final String fmt =  "'%s':'%s'";
+        StringBuilder strPages = new StringBuilder("{");
+        strPages.append(StringUtils.join(
+                CollectionUtils.collect(pages, new Transformer() {
+                    @Override
+                    public Object transform(Object input) {
+                        String abbrName = (String) input;
+                        return String.format(fmt, abbrName + pageSuffix, getText(abbrName + textKeySuffix));
+                    }
+                }), ", "));
+        if (UserContext.getInstance().getUser().getRole() == User.ROLE_ADMINISTRATOR) {
+            strPages.append(", ");
+            strPages.append(String.format(fmt, "admin.jsp", getText("admin.title")));
+        }
 
         strPages.append("}");
         Map<String, String> pagesMap = JSONObject.fromObject(strPages.toString());
@@ -136,7 +146,7 @@ public class EntryAction extends BaseAction {
             param.put("baseId", curProductBaseId);
             return dao.retrieve("from Product where base.id = :baseId", param);
         }
-        return new ArrayList<Product>();
+        return products;
     }
 
     /**
