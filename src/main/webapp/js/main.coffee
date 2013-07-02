@@ -6,9 +6,10 @@ define [
   'appmng/main'
   'transmng/main'
   'taskmng/main'
+  'ctxmng/main'
   'admin/main'
   'i18n!nls/common'
-], ($, util, glayout, ptree, appmngPanel, transmngPanel, taskmngPanel, adminPanel, c18n)->
+], ($, util, glayout, ptree, appmngPanel, transmngPanel, taskmngPanel, ctxmngPanel, adminPanel, c18n)->
   ready = (param)->
 #    console?.log "page ready..."
     util.afterInitilized(@)

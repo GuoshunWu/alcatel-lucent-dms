@@ -22,7 +22,7 @@ define [
   msg: i18n.dialog.delete.delmsg.format c18n.dict
   top: 250, left: 550
   reloadAfterSubmit: false
-  url: 'app/remove-dict'
+  url: urls.app.remove_dict
   beforeShowForm: (form)->
     permanent = $('#permanentDeleteSignId', form)
     console?.log form
@@ -36,8 +36,10 @@ define [
   afterSubmit: (response, postdata)->
     $.unblockUI()
     jsonFromServer = eval "(#{response.responseText})"
-    #dictBase is deleted
-    #remove dictionary base.
+    #check if theres task attached to dictionaries
+
+    #deleteTask
+
     [0 == jsonFromServer.status, jsonFromServer.message]
   }
 

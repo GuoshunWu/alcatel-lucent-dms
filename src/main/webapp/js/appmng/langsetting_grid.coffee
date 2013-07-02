@@ -1,4 +1,11 @@
-define ['jqgrid', 'i18n!nls/appmng', 'i18n!nls/common'], ($, i18n, c18n)->
+define [
+  'jqgrid'
+  'i18n!nls/appmng'
+  'i18n!nls/common'
+
+  'dms-urls'
+
+],($, i18n, c18n, urls)->
 #  console?.log "module appmng/langsetting_grid loading."
 
   lastEditedCell = null
@@ -27,16 +34,16 @@ define ['jqgrid', 'i18n!nls/appmng', 'i18n!nls/common'], ($, i18n, c18n)->
       #    console?.log $('#languageSettingGrid').getGridParam('postData').dict
       #    query all the languages
       return if 'local' == $(@).getGridParam('datatype')
-      $.getJSON 'rest/languages', {prop: 'id,name'}, (languages)->
+      $.getJSON urls.languages, {prop: 'id,name'}, (languages)->
         langSettingGrid.setColProp 'languageId', editoptions: {value: ($(languages).map ()->"#{@id}:#{@name}").get().join(';')}
       #    query all the charsets
-      $.getJSON 'rest/charsets', {prop: 'id,name'}, (charsets)->
+      $.getJSON urls.charsets, {prop: 'id,name'}, (charsets)->
         langSettingGrid.setColProp 'charsetId', editoptions: {value: ($(charsets).map ()->"#{@id}:#{@name}").get().join(';')}
   ).jqGrid('navGrid', '#langSettingPager', {edit: false, add: false, del: false, search: false}, {}, {
     #    prmAdd
-    zIndex: 2000
+    zIndex: 10000
     modal: true
-    url: 'app/add-dict-language'
+    url: urls.app.add_dict_language
     onclickSubmit: (params, posdata)->{dicts: $('#languageSettingGrid').getGridParam('postData').dict}
     onClose: ->$('#languageSettingGrid').setColProp 'code', editable: false
     beforeInitData: ->$('#languageSettingGrid').setColProp 'code', editable: true
@@ -49,8 +56,11 @@ define ['jqgrid', 'i18n!nls/appmng', 'i18n!nls/common'], ($, i18n, c18n)->
     if(rowIds = $(@).getGridParam('selarrrow')).length == 0
       $.msgBox (c18n.selrow.format c18n.language), null, {title: c18n.warning}
       return
+    langSettingsDialog = $('#languageSettingsDialog').parent()
+#      top: 250, left: 550,
     $(@).jqGrid 'delGridRow', rowIds,
-      {zIndex: 2000, top: 250, left: 550, msg: (i18n.dialog.delete.delmsg.format c18n.language), url: 'app/remove-dict-language'}
+    {zIndex: 10000, msg: (i18n.dialog.delete.delmsg.format c18n.language), url: urls.app.remove_dict_language}
+    $("#delmodlanguageSettingGrid").position(my:'center', at:'center', of: window)
   })
   #  custom button for add language
   langSettingGrid.navButtonAdd '#langSettingPager', {id: "custom_add_#{langSettingGrid.attr 'id'}", caption: "", buttonicon: "ui-icon-plus", position: "first"

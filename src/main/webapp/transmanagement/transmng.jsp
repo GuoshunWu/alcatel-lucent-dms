@@ -85,10 +85,13 @@
                 <table width="100%" border="0" style="border-color: blue">
                     <tr>
                         <td style="width: 15px"/>
-                        <td style="width: 410px">
+                        <td style="width: 540px">
                             <button id="create"><s:text name="button.translationtask"/></button>
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             <button id="exportTranslation"><s:text name="button.exporttranslation"/></button>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <span id="importTranslation"></span>
+                            <%--<button id="importTranslation"><s:text name="button.importtranslation"/></button>--%>
                         </td>
                         <td align="left">
                             <ul id="translationStatus">

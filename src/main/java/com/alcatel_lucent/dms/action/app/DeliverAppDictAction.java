@@ -37,16 +37,8 @@ public class DeliverAppDictAction extends JSONAction {
     private String filename;
     private Long appId;
 
-    private SimpleDateFormat dFmt = new SimpleDateFormat("yyyyMMdd_HHmmss");
-
     @Value("${dms.deliver.dir}")
     private String deliverDir;
-
-    private DeliveringDictPool deliveringDictPool;
-
-    public void setDeliveringDictPool(DeliveringDictPool deliveringDictPool) {
-        this.deliveringDictPool = deliveringDictPool;
-    }
 
     public void setUpload(File upload) {
         this.upload = upload;
