@@ -1,5 +1,7 @@
 package com.alcatel_lucent.dms.service;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Connection;
@@ -20,17 +22,21 @@ import java.util.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.lang.time.DateUtils;
+import org.apache.poi.hssf.usermodel.HSSFDataFormatter;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.hibernate.jdbc.Work;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alcatel_lucent.dms.BusinessException;
+import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.model.Application;
 import com.alcatel_lucent.dms.model.Context;
@@ -39,6 +45,7 @@ import com.alcatel_lucent.dms.model.DictionaryLanguage;
 import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.LabelTranslation;
 import com.alcatel_lucent.dms.model.Language;
+import com.alcatel_lucent.dms.model.Text;
 import com.alcatel_lucent.dms.model.Translation;
 
 @Service("translationService")
@@ -49,6 +56,9 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 	
 	@Autowired
 	private LanguageService languageService;
+	
+	@Autowired
+	private TextService textService;
 
 	/*    
     public Map<Long, int[]> getDictTranslationSummary(Long dictId) {
@@ -818,13 +828,17 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 			Row headRow = sheet.createRow(0);
 			createCell(headRow, 0, "Dictionary", null);
 			createCell(headRow, 1, "Label", null);
-			createCell(headRow, 2, "Context", null);
-			createCell(headRow, 3, "Max Length", null);
-			createCell(headRow, 4, "Reference", null);
-			createCell(headRow, 5, "Translation", null);
-			createCell(headRow, 6, "Description", null);
-			createCell(headRow, 7, "Translation Source", null);
-			createCell(headRow, 8, "Last Updated", null);
+			createCell(headRow, 2, "Context Key", null);
+			createCell(headRow, 3, "Context", null);
+			createCell(headRow, 4, "Max Length", null);
+			createCell(headRow, 5, "Reference", null);
+			createCell(headRow, 6, "Original Translation", null);
+			createCell(headRow, 7, "Translation", null);
+			createCell(headRow, 8, "Description", null);
+			createCell(headRow, 9, "Translation Source", null);
+			createCell(headRow, 10, "Last Updated", null);
+			sheet.setColumnWidth(2, 0);
+			sheet.setColumnWidth(6, 0);
 			int r = 1;
 			for (Long dictId : dictIds) {
 				Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
@@ -833,16 +847,18 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 					Row row = sheet.createRow(r++);
 					createCell(row, 0, dict.getName(), null);
 					createCell(row, 1, label.getKey(), null);
-					createCell(row, 2, label.getContext().getName(), null);
-					createCell(row, 3, label.getMaxLength(), null);
-					createCell(row, 4, label.getReference(), null);
-					createCell(row, 5, label.getCt().getTranslation(), null);
-					createCell(row, 6, label.getDescription(), null);
+					createCell(row, 2, label.getContext().getKey(), null);
+					createCell(row, 3, label.getContext().getName(), null);
+					createCell(row, 4, label.getMaxLength(), null);
+					createCell(row, 5, label.getReference(), null);
+					createCell(row, 6, label.getCt().getTranslation(), null);
+					createCell(row, 7, label.getCt().getTranslation(), null);
+					createCell(row, 8, label.getDescription(), null);
 					if (label.getCt().getTranslationType() != null) {
-						createCell(row, 7, getTranslationTypeLabel(label.getCt().getTranslationType()), null);
+						createCell(row, 9, getTranslationTypeLabel(label.getCt().getTranslationType()), null);
 					}
 					if (label.getCt().getLastUpdateTime() != null) {
-						createCell(row, 8, sdf.format(label.getCt().getLastUpdateTime()), null);
+						createCell(row, 10, sdf.format(label.getCt().getLastUpdateTime()), null);
 					}
 				}
 			}
@@ -854,6 +870,85 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 			log.error(e.toString());
 			throw new SystemError(e);
 		}
+	}
+	
+	public int importTranslations(File file) throws BusinessException {
+        FileInputStream inp = null;
+        try {
+        	Map<String, Map<String, Text>> contextMap = new HashMap<String, Map<String, Text>>();
+        	int count = 0;
+	        inp = new FileInputStream(file);
+	        Workbook wb = WorkbookFactory.create(inp);
+	        HSSFDataFormatter formatter = new HSSFDataFormatter();
+	        for (int i = 0; i < wb.getNumberOfSheets(); i++) {
+	        	Sheet sheet = wb.getSheetAt(i);
+	        	String languageName = sheet.getSheetName();
+	        	Language lang = languageService.findLanguageByName(languageName);
+	        	if (lang == null) {
+	        		throw new BusinessException(BusinessException.UNKNOWN_LANG_NAME, languageName);
+	        	}
+	        	checkTranslationSheet(sheet);
+	        	Row row;
+	            for (int dataIndex = sheet.getFirstRowNum() + 1; (null != (row = sheet.getRow(dataIndex))); ++dataIndex) {
+	            	String contextKey = formatter.formatCellValue(row.getCell(2));
+	            	String reference = formatter.formatCellValue(row.getCell(5));
+	            	String origTranslation = formatter.formatCellValue(row.getCell(6));
+	            	String newTranslation = formatter.formatCellValue(row.getCell(7));
+	            	if (!origTranslation.equals(newTranslation)) {
+	            		log.info(languageName + " translation of \"" + reference + "\" was changed, update it into DMS.");
+	            		Map<String, Text> textMap = contextMap.get(contextKey);
+	            		if (textMap == null) {
+	            			textMap = new HashMap<String, Text>();
+	            			contextMap.put(contextKey, textMap);
+	            		}
+	            		Text text = textMap.get(reference);
+	            		if (text == null) {
+	            			text = new Text();
+	            			text.setReference(reference);
+	            			textMap.put(reference, text);
+	            		}
+	            		Translation trans = new Translation();
+	            		trans.setLanguage(lang);
+	            		trans.setTranslation(newTranslation);
+	            		text.addTranslation(trans);
+	            		count++;
+	            	}
+	            }
+	        }
+	        for (String contextKey : contextMap.keySet()) {
+	        	Context context = textService.getContextByKey(contextKey);
+	        	if (context == null) {
+	        		throw new BusinessException(BusinessException.INVALID_CONTEXT_KEY, contextKey);
+	        	}
+	        	Map<String, Text> textMap = contextMap.get(contextKey);
+	        	textService.updateTranslations(context.getId(), textMap.values(), Constants.ImportingMode.TRANSLATION);
+	        }
+	        return count;
+        } catch (BusinessException e) {
+            throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.toString());
+            throw new SystemError(e);
+        } finally {
+            if (inp != null) try {
+                inp.close();
+            } catch (Exception e) {
+            }
+        }
+	}
+	
+	private void checkTranslationSheet(Sheet sheet) throws BusinessException {
+		Row row = sheet.getRow(0);
+		if (row != null) {
+			if (row.getCell(2).getStringCellValue().equals("Context Key") &&
+					row.getCell(5).getStringCellValue().equals("Reference") &&
+					row.getCell(6).getStringCellValue().equals("Original Translation") &&
+					row.getCell(7).getStringCellValue().equals("Translation")) {
+				return;
+			}
+		}
+		throw new BusinessException(BusinessException.INVALID_TRANSLATION_FILE);
 	}
 	
 	private String getTranslationTypeLabel(int translationType) {
