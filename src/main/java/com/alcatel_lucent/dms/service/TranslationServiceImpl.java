@@ -910,6 +910,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 	            		Translation trans = new Translation();
 	            		trans.setLanguage(lang);
 	            		trans.setTranslation(newTranslation);
+	            		trans.setStatus(Translation.STATUS_TRANSLATED);
 	            		text.addTranslation(trans);
 	            		count++;
 	            	}
@@ -921,6 +922,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 	        		throw new BusinessException(BusinessException.INVALID_CONTEXT_KEY, contextKey);
 	        	}
 	        	Map<String, Text> textMap = contextMap.get(contextKey);
+	        	log.info("### context key:" + contextKey + " text num: " + textMap.size());
 	        	textService.updateTranslations(context.getId(), textMap.values(), Constants.ImportingMode.TRANSLATION);
 	        }
 	        return count;

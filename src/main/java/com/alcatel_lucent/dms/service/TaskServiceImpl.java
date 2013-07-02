@@ -768,4 +768,30 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
     enum ExcelFileHeader {
         LABEL, CONTEXT, MAX_LEN, DESCRIPTION, REFERENCE, TRANSLATION, REMARKS
     }
+
+	@Override
+	public Collection<Task> findAllDictRelatedTasks(Collection<Long> dictIdList) {
+		String hql = "select distinct task from Task task join task.details td" +
+				" where td.label.dictionary.id in (:dictIds)" +
+				" order by task.createTime";
+		Map param = new HashMap();
+		param.put("dictIds", dictIdList);
+		return dao.retrieve(hql, param);
+	}
+
+	@Override
+	public void deleteTask(Long taskId) {
+		String hql = "select obj from DictionaryHistory obj where obj.task.id=:taskId";
+		Map param = new HashMap();
+		param.put("taskId", taskId);
+		Collection<DictionaryHistory> histories = dao.retrieve(hql, param);
+		for (DictionaryHistory history : histories) {
+			dao.delete(history);
+		}
+		Task task = (Task) dao.retrieve(Task.class, taskId);
+		if (task.getStatus() == Task.STATUS_OPEN) {	// close the task if it's open
+			closeTask(taskId);
+		}
+		dao.delete(Task.class, taskId);
+	}
 }

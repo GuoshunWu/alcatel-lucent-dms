@@ -1,11 +1,9 @@
 package com.alcatel_lucent.dms.service;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.Map;
 
 import com.alcatel_lucent.dms.BusinessException;
-import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Task;
 
 public interface TaskService {
@@ -61,5 +59,18 @@ public interface TaskService {
 	 * @return first level key is app base id, second level key is language id, value is [translated, not translated]
 	 */
 	Map<Long, Map<Long, int[]>> getTaskSummary(Long taskId);
+
+	/**
+	 * Find all dictionary-related tasks.
+	 * @param dictIdList dictionary id list
+	 * @return task list or empty list if no task is related
+	 */
+	Collection<Task> findAllDictRelatedTasks(Collection<Long> dictIdList);
+
+	/**
+	 * Delete a task.
+	 * @param taskId task id
+	 */
+	void deleteTask(Long taskId);
 
 }
