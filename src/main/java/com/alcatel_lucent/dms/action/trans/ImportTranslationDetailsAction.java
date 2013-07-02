@@ -1,5 +1,6 @@
 package com.alcatel_lucent.dms.action.trans;
 
+import com.alcatel_lucent.dms.UserContext;
 import com.alcatel_lucent.dms.action.JSONAction;
 import com.alcatel_lucent.dms.service.TranslationService;
 import org.apache.commons.io.FileUtils;
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Action of creating a product
@@ -29,8 +32,10 @@ public class ImportTranslationDetailsAction extends JSONAction {
     private String contentType;
     private String filename;
 
-    @Value("${dms.deliver.dir}")
+    @Value("${dms.receive.dir}")
     private String deliverDir;
+
+    private SimpleDateFormat dFmt = new SimpleDateFormat("yyyyMMdd_HHmmss");
 
     @Autowired
     private TranslationService translationService;
@@ -56,12 +61,15 @@ public class ImportTranslationDetailsAction extends JSONAction {
     }
 
     public String performAction() throws Exception {
-        File restoredFile = new File(deliverDir, filename);
+        String newName = UserContext.getInstance().getUser().getName() +"_"+ dFmt.format(new Date());
+        File restoredFile = new File(deliverDir, newName);
+
         log.info("upload={}, filename={}, contentType={}, restoredFile={}", new Object[]{upload, filename, contentType, restoredFile});
         if (restoredFile.exists()) restoredFile.delete();
         FileUtils.copyFile(upload, restoredFile);
         int num = translationService.importTranslations(upload);
         log.info("{} translation updated.", num);
+
         setStatus(0);
         setMessage(getText("message.translationupdated", new String[]{num + ""}));
         return SUCCESS;
