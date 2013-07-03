@@ -18,6 +18,8 @@ define [
   dictGridId= 'dictionaryGridList'
 #  console?.log "module appmng/dictionary_grid loading."
   #  for form edit delete option
+  isConfirmDictDeleteRequest = false
+
   deleteOptions = {
   msg: i18n.dialog.delete.delmsg.format c18n.dict
   top: 250, left: 550
@@ -25,22 +27,46 @@ define [
   url: urls.app.remove_dict
   beforeShowForm: (form)->
     permanent = $('#permanentDeleteSignId', form)
-    console?.log form
     #    make permanent sign default checked and hide
     $("<tr><td>#{i18n.grid.permanenttext}<td><input align='left'checked type='checkbox' id='permanentDeleteSignId'>")
     .hide().appendTo $("tbody", form) if permanent.length == 0
   #    permanent?.removeAttr 'checked'
   onclickSubmit: (params, posdata)->
     $.blockUI()
-    appId: $("#selAppVersion").val(), permanent: Boolean($('#permanentDeleteSignId').attr("checked"))
+    console?.log "postData="
+    console?.log posdata
+    pData =
+      appId: $("#selAppVersion").val()
+      permanent: Boolean($('#permanentDeleteSignId').attr("checked"))
+    pData.deleteTask=true if isConfirmDictDeleteRequest
+    pData
+
   afterSubmit: (response, postdata)->
     $.unblockUI()
     jsonFromServer = eval "(#{response.responseText})"
+    return [true, jsonFromServer.message] if(0 == jsonFromServer.status)
     #check if theres task attached to dictionaries
 
-    #deleteTask
+    if(1 == jsonFromServer.status)
+      taskList = jsonFromServer.message
+      console?.log taskList
+      confirmInfo = i18n.grid.confirmdeldict.format(taskList)
+      console?.log confirmInfo
+      $.msgBox confirmInfo, ((keyPressed)->
+        if c18n.yes == keyPressed
+          $.post deleteOptions.url, $.extend({}, postdata, deleteTask:true), (json)->
+            if(0!=json.status)
+              $.msgBox json.message, null, {title: c18n.error}
+              $('#' + dictGridId).trigger 'reloadGrid'
+              return
+            $.msgBox json.message, null, {title: c18n.info}
+        else
+          $('#' + dictGridId).trigger 'reloadGrid'
 
-    [0 == jsonFromServer.status, jsonFromServer.message]
+      ),{title: c18n.confirm, width: 500}, [c18n.yes, c18n.no]
+      return [true, jsonFromServer.message]
+
+    [1 == jsonFromServer.status, jsonFromServer.message]
   }
 
   handlers =
@@ -156,6 +182,7 @@ define [
       $.msgBox (c18n.selrow.format c18n.dict), null, {title: c18n.warning}
       return
     $(@).jqGrid 'delGridRow', rowIds, deleteOptions
+    $('#delmod'+dictGridId).position(my:'center', at: 'center', of: window)
   })
 
 

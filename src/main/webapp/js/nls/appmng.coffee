@@ -7,6 +7,11 @@ define
     grid:
       delappmsg: 'Please select application to delete.'
       permanenttext: 'Delete permanently'
+      confirmdeldict: '''<table>
+                      <tr><td>Following tasks are associated with the dictionaries being deleted:</td></tr>
+                      <tr><td><pre>{0}</pre></td></tr>
+                      <tr><td>The tasks will be deleted all together. Do you confirm it?</td></tr>
+                      '''
       dictlistpreview: caption: 'Dictionaries in zip'
     dialog:
       addapplication:
