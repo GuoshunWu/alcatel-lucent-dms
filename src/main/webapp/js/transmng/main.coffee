@@ -167,9 +167,9 @@ define [
         jsonFromServer = data.result
 #        console?.log jsonFromServer
         if(0 != jsonFromServer.status)
-          $.msgBox jsonFromServer.message, null, {title: c18n.error, height: 600, width: 800}
+          $.msgBox jsonFromServer.message, null, {title: c18n.error}
           return
-        $.msgBox jsonFromServer.message, null, {title: c18n.info, height: 600, width: 800}
+        $.msgBox jsonFromServer.message, null, {title: c18n.info}
 
 #        pb = util.genProgressBar()
 #        util.updateProgress(urls.app.process_dict, jsonFromServer, (json)->
