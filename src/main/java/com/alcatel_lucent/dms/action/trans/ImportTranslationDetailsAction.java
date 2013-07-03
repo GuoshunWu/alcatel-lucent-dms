@@ -4,6 +4,7 @@ import com.alcatel_lucent.dms.UserContext;
 import com.alcatel_lucent.dms.action.JSONAction;
 import com.alcatel_lucent.dms.service.TranslationService;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.slf4j.Logger;
@@ -61,7 +62,8 @@ public class ImportTranslationDetailsAction extends JSONAction {
     }
 
     public String performAction() throws Exception {
-        String newName = UserContext.getInstance().getUser().getName() +"_"+ dFmt.format(new Date());
+
+        String newName = UserContext.getInstance().getUser().getName() + "_" + dFmt.format(new Date()) + "." + FilenameUtils.getExtension(filename);
         File restoredFile = new File(deliverDir, newName);
 
         log.info("upload={}, filename={}, contentType={}, restoredFile={}", new Object[]{upload, filename, contentType, restoredFile});
