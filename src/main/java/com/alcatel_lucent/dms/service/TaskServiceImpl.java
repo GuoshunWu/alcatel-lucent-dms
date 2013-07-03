@@ -781,6 +781,10 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 
 	@Override
 	public void deleteTask(Long taskId) {
+		Task task = (Task) dao.retrieve(Task.class, taskId);
+		if (task.getStatus() == Task.STATUS_OPEN) {	// close the task if it's open
+			closeTask(taskId);
+		}
 		String hql = "select obj from DictionaryHistory obj where obj.task.id=:taskId";
 		Map param = new HashMap();
 		param.put("taskId", taskId);
@@ -788,10 +792,6 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 		for (DictionaryHistory history : histories) {
 			dao.delete(history);
 		}
-		Task task = (Task) dao.retrieve(Task.class, taskId);
-		if (task.getStatus() == Task.STATUS_OPEN) {	// close the task if it's open
-			closeTask(taskId);
-		}
-		dao.delete(Task.class, taskId);
+		dao.delete(task);
 	}
 }
