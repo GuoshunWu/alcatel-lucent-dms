@@ -97,5 +97,63 @@ public class Text extends BaseEntity {
         }
         translations.add(trans);
     }
+    
+    public int getLanguageNum() {
+    	if (translations != null) {
+    		return translations.size();
+    	} else {
+    		return 0;
+    	}
+    }
+    
+
+	// transient variable for REST service
+    private Integer t;
+    private Integer n;
+    private Integer i;
+    private Integer refs;
+    
+    public Integer getT() {
+		return t;
+	}
+
+	public void setT(Integer t) {
+		this.t = t;
+	}
+
+	public Integer getN() {
+		return n;
+	}
+
+	public void setN(Integer n) {
+		this.n = n;
+	}
+
+	public Integer getI() {
+		return i;
+	}
+
+	public void setI(Integer i) {
+		this.i = i;
+	}
+
+	public Integer getRefs() {
+		return refs;
+	}
+
+	public void setRefs(Integer refs) {
+		this.refs = refs;
+	}
+
+	public void populateTranslationSummary() {
+		t = n = i = 0;
+		if (translations != null) {
+			for (Translation trans : translations) {
+				if (trans.getStatus() == Translation.STATUS_TRANSLATED) t++;
+				else if (trans.getStatus() == Translation.STATUS_UNTRANSLATED) n++;
+				else i++;
+			}
+		}
+	}
 
 }

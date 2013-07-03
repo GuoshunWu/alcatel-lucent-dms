@@ -157,4 +157,16 @@ public interface TextService {
 	Collection<String> updateTranslation(Long labelId, Long translationId,
 			String translation, Boolean confirmAll);
 
+	/**
+	 * Populate T/N/I summary of texts.
+	 * @param texts
+	 */
+	void populateTranslationSummary(Collection<Text> texts);
+
+	/**
+	 * Populate Refs of texts.
+	 * @param texts
+	 */
+	void populateRefs(Collection<Text> texts);
+
 }
