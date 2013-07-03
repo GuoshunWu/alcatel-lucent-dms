@@ -169,6 +169,7 @@ define [
         if(0 != jsonFromServer.status)
           $.msgBox jsonFromServer.message, null, {title: c18n.error}
           return
+        $("#transGrid").trigger 'reloadGrid'
         $.msgBox jsonFromServer.message, null, {title: c18n.info}
 
 #        pb = util.genProgressBar()
