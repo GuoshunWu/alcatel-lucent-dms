@@ -699,4 +699,33 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
         Map<String, Text> textMap = updateTranslations(label.getContext().getId(), texts, Constants.ImportingMode.DELIVERY);
         return textMap.get(label.getReference());
 	}
+
+
+	@Override
+	public void populateTranslationSummary(Collection<Text> texts) {
+		for (Text text : texts) {
+			text.populateTranslationSummary();
+		}
+	}
+
+
+	@Override
+	public void populateRefs(Collection<Text> texts) {
+		Collection<Long> ids = new ArrayList<Long>();
+		Map<Long, Text> textMap = new HashMap<Long, Text>();
+		for (Text text : texts) {
+			ids.add(text.getId());
+			textMap.put(text.getId(), text);
+		}
+		String hql = "select text.id,count(*) from Label where text.id in (:ids) and removed=false group by text.id";
+		Map param = new HashMap();
+		param.put("ids", ids);
+		Collection<Object[]> qr = dao.retrieve(hql, param);
+		for (Object[] row : qr) {
+			Long textId = ((Number) row[0]).longValue();
+			int count = ((Number) row[1]).intValue();
+			Text text = textMap.get(textId);
+			text.setRefs(count);
+		}
+	}
 }
