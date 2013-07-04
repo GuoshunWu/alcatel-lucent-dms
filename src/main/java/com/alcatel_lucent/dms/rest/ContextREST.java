@@ -50,6 +50,7 @@ public class ContextREST extends BaseREST {
 		if (sord == null) {
 			sord = "ASC";
 		}
+		hql += " order by " + sidx + " " + sord;
 		Collection<Context> contexts = retrieve(hql, null, countHql, null, requestMap);
 		return toJSON(contexts, requestMap);
 	}
