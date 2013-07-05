@@ -319,7 +319,7 @@ public class XMLDictParser extends DictionaryParser {
                 boolean needTrans = !followUp.equals("no_translate");
                 lt.setNeedTranslation(needTrans);
                 if (needTrans) {
-                    if("to_translate".equals(followUp) || "to_validate".equals(followUp)){
+                    if("to_translate".equals(followUp)){
                         lt.setStatus(Translation.STATUS_UNTRANSLATED);
                     }else{
                         lt.setStatus(Translation.STATUS_TRANSLATED);
