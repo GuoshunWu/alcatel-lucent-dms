@@ -635,9 +635,10 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                         nonBreakExceptions.addNestedException(new BusinessException(
                                 BusinessException.CHARSET_NOT_FOUND, charsetName));
                     }
-
+                    
                     // determine if the translation should take value from context dictionary
                     trans.setNeedTranslation(true);
+                    
                     if (lastLabel != null) {
                         // get the original translation in latest version
                         LabelTranslation lastTranslation = lastLabel.getOrigTranslation(trans.getLanguageCode());
@@ -648,23 +649,32 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	                            // translation changed means the label was translated on developer side
 	                            trans.setNeedTranslation(false);
 	                        }
+
+                    		// don't update context translation if both translation and translation is not changed in the delivered dictionary
+	                        // unless status is specified in dict because we don't know if status is changed in dict
+	                    	if (lastTranslation != null	
+	                    			&& lastTranslation.getOrigTranslation().equals(trans.getOrigTranslation())
+	                    			&& trans.getStatus() == null) {
+	                			continue;	// don't add this labelTranslation into text.translations
+	                		}
+                    	} else {	// reference is changed
+                    		// don't update context translation if translation is not changed in the delivered dictionary
+	                    	if (lastTranslation != null	
+	                    			&& lastTranslation.getOrigTranslation().equals(trans.getOrigTranslation())) {
+	                			continue;	// don't add this labelTranslation into text.translations
+	                		}
                     	}
-                		// don't update context translation if translation is not changed in the delivered dictionary
-                		if (lastTranslation != null && lastTranslation.getOrigTranslation().equals(trans.getOrigTranslation())) {
-                			continue;	// don't add this labelTranslation into text.translations
-                		}
                     }
 
                     Translation t = new Translation();
                     t.setText(text);
                     t.setTranslation(trans.getOrigTranslation());
                     t.setLanguage(trans.getLanguage());
-
                     // determine translation status
                     if (invalidText) {
-                        t.setStatus(Translation.STATUS_UNTRANSLATED);
+                    	t.setStatus(Translation.STATUS_UNTRANSLATED);
                     } else {
-                        t.setStatus(populateTranslationStatus(trans));
+                    	t.setStatus(populateTranslationStatus(trans));
                     }
                     text.addTranslation(t);
                 } //for
