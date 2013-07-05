@@ -171,7 +171,6 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 //	                			trans.getStatus() == Translation.STATUS_UNTRANSLATED) {
 //	                		dbTrans.setStatus(Translation.STATUS_UNTRANSLATED);
 //	                	}
-	                	
 	                	// update translation if got translated in delivered dict
 	                	if (dbTrans.getStatus() != Translation.STATUS_TRANSLATED && 
 	                			trans.getStatus() == Translation.STATUS_TRANSLATED &&
@@ -711,6 +710,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 
 	@Override
 	public void populateRefs(Collection<Text> texts) {
+		if (texts.isEmpty()) return;
 		Collection<Long> ids = new ArrayList<Long>();
 		Map<Long, Text> textMap = new HashMap<Long, Text>();
 		for (Text text : texts) {
