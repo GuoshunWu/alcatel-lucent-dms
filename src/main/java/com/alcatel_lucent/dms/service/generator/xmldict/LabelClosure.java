@@ -141,16 +141,16 @@ public class LabelClosure implements Closure {
             	} else {
                 	int translationStatus = label.getTranslationStatus(langCode);
             		String origStatus = lt.getValueFromField("follow_up", LabelTranslation.ANNOTATION1);
-	            	if (translationStatus == Translation.STATUS_TRANSLATED) {	// "no_translate" or "validated"
+	            	if (translationStatus == Translation.STATUS_TRANSLATED) {	// "no_translate", "to_validate" or "validated"
 	            		followUp = "validated";
 	            		if (origStatus.equals("no_translate")) {
 	            			followUp = origStatus;
 	            		}
-	            	} else {	// "to_translate" or "to_validate" if not translated
+	            	} else {	// "to_translate" if not translated
 	        			followUp = "to_translate"; 
-	            		if (origStatus.equals("to_validate")) {
-	            			followUp = origStatus;
-	            		}
+//	            		if (origStatus.equals("to_validate")) {
+//	            			followUp = origStatus;
+//	            		}
 	            	}
             	}
             }
