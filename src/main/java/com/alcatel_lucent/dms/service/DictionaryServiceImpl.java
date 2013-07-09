@@ -733,6 +733,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     dbLabel.setReference(label.getReference());
                     dbLabel.setAnnotation1(label.getAnnotation1());
                     dbLabel.setAnnotation2(label.getAnnotation2());
+                    dbLabel.setFontName(label.getFontName());
+                    dbLabel.setFontSize(label.getFontSize());
                     dbLabel.setSortNo(label.getSortNo());
                 }
 
