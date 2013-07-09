@@ -169,4 +169,10 @@ public interface TextService {
 	 */
 	void populateRefs(Collection<Text> texts);
 
+	/**
+	 * Delete a text when there is no refs.
+	 * @param id text id
+	 */
+	void deleteText(Long id);
+
 }

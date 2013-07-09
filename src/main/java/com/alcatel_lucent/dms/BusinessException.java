@@ -92,6 +92,9 @@ public class BusinessException extends RuntimeException {
     public static final int USER_ALREADY_EXISTS = 605;
     public static final int USER_NOT_FOUND = 606;
     
+    // context management
+    public static final int TEXT_HAS_REFS = 701;
+    
     
     private int errorCode;
     private String errorMessage;
