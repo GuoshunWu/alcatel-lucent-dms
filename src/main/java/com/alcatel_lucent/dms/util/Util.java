@@ -446,8 +446,7 @@ public class Util {
                     keyValues[0] = URLDecoder.decode(keyValues[0], "UTF-8");
                     keyValues[1] = URLDecoder.decode(keyValues[1], "UTF-8");
                 } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                    throw new SystemError(e);
+                    return null;	// return null if not valid string
                 }
                 return keyValues;
             }
@@ -457,7 +456,7 @@ public class Util {
                 @Override
                 public boolean evaluate(Object object) {
                     String[] keyValue = (String[]) object;
-                    return null != keyValue[0] && null != keyValue[1];
+                    return keyValue != null && null != keyValue[0] && null != keyValue[1];
                 }
             });
             return typedMap(toMap(lstEntries.toArray(new String[0][])), String.class, String.class);
