@@ -728,4 +728,15 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 			text.setRefs(count);
 		}
 	}
+	
+	public void deleteText(Long textId) {
+		String hql = "select count(*) from Label where text.id=:textId and removed=false";
+		Map param = new HashMap();
+		param.put("textId", textId);
+		Number refs = (Number) dao.retrieveOne(hql, param);
+		if (refs.intValue() > 0) {
+			throw new BusinessException(BusinessException.TEXT_HAS_REFS);
+		}
+		dao.delete(Text.class, textId);
+	}
 }
