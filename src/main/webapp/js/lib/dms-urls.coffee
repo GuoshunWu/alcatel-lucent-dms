@@ -18,7 +18,6 @@ define (require)->
       isFirst = false
     url
 
-  test: getURL('test', 'test/', name: 'aaa', id: 32)
   ### URLs for product tree. ###
   navigateTree: getURL('rest/products', '', format: 'tree')
   product:
@@ -71,6 +70,7 @@ define (require)->
   tasks: getURL('tasks', 'rest/')
 
   charsets: getURL('charsets', 'rest/')
+  contexts: getURL('contexts', 'rest/')
 
   labels_normal: getURL('labels', 'rest/')
   # lucene query
@@ -82,6 +82,11 @@ define (require)->
 
   users: getURL('users', 'rest/')
   ldapuser: getURL('users/ldapUser', 'rest/')
+
+  text:
+    texts: getURL('texts', 'rest/')
+    refs: getURL('text/refs', 'rest/')
+    translations: getURL('text/translations', 'rest/')
 
   getURL: getURL
 

@@ -18,11 +18,9 @@ define [
   dictGridId= 'dictionaryGridList'
 #  console?.log "module appmng/dictionary_grid loading."
   #  for form edit delete option
-  isConfirmDictDeleteRequest = false
 
   deleteOptions = {
   msg: i18n.dialog.delete.delmsg.format c18n.dict
-  top: 250, left: 550
   reloadAfterSubmit: false
   url: urls.app.remove_dict
   beforeShowForm: (form)->
@@ -38,7 +36,6 @@ define [
     pData =
       appId: $("#selAppVersion").val()
       permanent: Boolean($('#permanentDeleteSignId').attr("checked"))
-    pData.deleteTask=true if isConfirmDictDeleteRequest
     pData
 
   afterSubmit: (response, postdata)->

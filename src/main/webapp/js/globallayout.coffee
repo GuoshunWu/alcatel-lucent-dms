@@ -1,5 +1,11 @@
 define ['jqlayout'], ($)->
-  autoSizeGrids = ['applicationGridList', 'dictionaryGridList', 'transGrid', 'taskGrid', 'globalSearchResultGrid']
+  autoSizeGrids = [
+    'applicationGridList'
+    'dictionaryGridList'
+    'transGrid'
+    'taskGrid'
+    'globalSearchResultGrid'
+  ]
 
   ready = (param)->
 #    console?.log "global layout ready..."

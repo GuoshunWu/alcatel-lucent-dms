@@ -21,6 +21,7 @@ define [
     if 'admin' == oldpnl or 'admin' == newpnl
       $('#adminTabs').tabs 'select', 2
       return
+    return if 'ctxmng' == oldpnl or 'ctxmng' == newpnl
 
     treeSelectedNode=$("#appTree").jstree 'get_selected'
     nodeInfo = util.getProductTreeInfo()
@@ -59,10 +60,13 @@ define [
 #        console?.log "currentPanel=#{currentPanel}, dmsPanels.currentPanel=#{dmsPanels.currentPanel}."
         return if currentPanel == dmsPanels.currentPanel
 
-        if 'admin' == currentPanel
+        if currentPanel in ['admin', 'ctxmng']
           glayout.layout.hide('west')
         else
           glayout.layout.show('west')
+        padding = if currentPanel == 'ctxmng' then 0 else 10
+        # special setting for context
+#        $('#globalUILayoutContent').css('padding': padding)
 
         $("#pageNavigator").val "#{currentPanel}.jsp"
         $('span.page-title').text $("#pageNavigator>option[value='#{currentPanel}.jsp']").text()

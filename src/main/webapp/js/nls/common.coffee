@@ -37,5 +37,7 @@ define
         tip: 'Please select product release'
         msg: 'Please select product release!'
         msgtitle: 'Select product release'
+      context:
+        tip: 'Please select context'
 
   "zh-cn": true

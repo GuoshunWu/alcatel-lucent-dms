@@ -10,7 +10,6 @@ define [
   'dms-urls'
   'dms-util'
 
-
   'admin/languagegrid'
   'admin/charsetgrid'
   'admin/usergrid'
@@ -37,7 +36,6 @@ define [
       pb = util.genProgressBar()
       util.updateProgress(urls.config.create_index, {}, (json)->
         pb.parent().remove()
-        console.log json
         msg = json.event.msg
         $.msgBox msg, null, {title: c18n.info, width: 300, height: 'auto'}
       , pb)
