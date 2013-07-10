@@ -21,7 +21,7 @@ define [
 
     delete postData.app
     delete postData.prod
-    console?.log postData
+#    console?.log postData
     grid.setGridParam(url: (if fuzzy then urls.labels else urls.labels_normal), page: 1).trigger 'reloadGrid'
 
 

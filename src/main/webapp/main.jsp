@@ -12,15 +12,6 @@
 
     <%@include file="common/env.jsp" %>
     <link rel="stylesheet" type="text/css" href="${base}css/main.css?v=<s:property value="buildNumber"/>"/>
-    <script type="text/javascript" src="js/lib/require.js"></script>
-    <script type="text/javascript">
-        require(['./js/config.js?bust=' + new Date().getTime(), 'js/lib/domReady'], function (config, domReady) {
-            domReady(function(){
-                require(['main']);
-            });
-        });
-    </script>
-
 </head>
 <body>
 
@@ -30,7 +21,7 @@
         <%@include file="common/navigator.jsp" %>
     </div>
     <div id="ui_center" class="ui-layout-center">
-        <div class="ui-layout-content">
+        <div class="ui-layout-content" id="globalUILayoutContent">
             <%@include file="appmanagement/appmng.jsp" %>
             <%@include file="transmanagement/transmng.jsp" %>
             <%@include file="taskmanagement/taskmng.jsp" %>
@@ -46,5 +37,14 @@
     <%--<div class="footer">A test footer</div>--%>
     </div>
 </div>
+
+<script type="text/javascript" src="js/lib/require.js"></script>
+<script type="text/javascript">
+    require(['./js/config.js?bust=' + new Date().getTime(), 'js/lib/domReady'], function (config, domReady) {
+        domReady(function(){
+            require(['main']);
+        });
+    });
+</script>
 </body>
 </html>

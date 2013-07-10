@@ -109,7 +109,6 @@ public class EntryAction extends BaseAction {
     @SuppressWarnings("unchecked")
     public Map<String, String> getNaviPages() {
         List<String> pages = Arrays.asList("app", "trans", "task");
-        pages = Arrays.asList("app", "trans", "task", "ctx");
 
         final String textKeySuffix = "mng.title";
         final String pageSuffix = "mng.jsp";
@@ -123,7 +122,10 @@ public class EntryAction extends BaseAction {
                         return String.format(fmt, abbrName + pageSuffix, getText(abbrName + textKeySuffix));
                     }
                 }), ", "));
+
         if (UserContext.getInstance().getUser().getRole() == User.ROLE_ADMINISTRATOR) {
+            strPages.append(", ");
+            strPages.append(String.format(fmt, "ctxmng.jsp", getText("ctxmng.title")));
             strPages.append(", ");
             strPages.append(String.format(fmt, "admin.jsp", getText("admin.title")));
         }
