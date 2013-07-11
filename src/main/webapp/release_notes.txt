@@ -1,3 +1,11 @@
+V2.9.0 (Jul 12, 2013)
+    * Allows to import modified translation file (excel) in Translation view
+    * Allows to delete dictionaries and their associated translation tasks with user confirmation
+    * Add "Context View" (visible to Admin role only in current version)
+    * Take "to_validate" translations in XMLDict dictionary as "translated" status
+    * Change default font of generated translation task file (excel) to "Arial Unicode MS"
+    * Bug fix - font information in OTC Excel cannot be updated by second-time delivery
+
 V2.8.1 (Jun 28, 2013)
     * Add a "Match" button in Translation details view allowing to match translations by searching similar reference text across different contexts.
     * Add progress bar for some time-consuming operations such as deleting dictionaries, exporting translations
