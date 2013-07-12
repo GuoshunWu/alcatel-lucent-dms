@@ -163,7 +163,7 @@ public class XMLDictParser extends DictionaryParser {
         dictLanguage.setSortNo(-1);
 
         dict.addDictLanguage(dictLanguage);
-        if (xLanguage.isIs_reference()) {
+        if (xLanguage.isIs_context()) {
         	dict.setReferenceLanguage(xLanguage.getId());
         }
     }
