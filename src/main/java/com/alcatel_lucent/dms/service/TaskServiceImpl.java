@@ -151,8 +151,9 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
         } else {
             throw new BusinessException(BusinessException.EMPTY_TASK);
         }
+        log.info("Creating " + newTransList.size() + " new translation objects...");
         for (Translation trans : newTransList) {
-            dao.create(trans);
+            dao.create(trans, false);
         }
 
         // create log
