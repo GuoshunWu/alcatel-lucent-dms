@@ -205,7 +205,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 	            	if (dbTrans == null) {
 	                	if (trans.getLanguage().getId() != 0 && trans.getLanguage().getId() != 1L &&
 	                			trans.getStatus() == Translation.STATUS_UNTRANSLATED &&
-	                			trans.getTranslation().equals(text.getReference())) {
+	                			(trans.getTranslation().equals(text.getReference()) || trans.getTranslation().trim().isEmpty())) {
 	                		if (suggestedTranslations == null) {
 	                			suggestedTranslations = getSuggestedTranslations(text.getReference(), ctxId);
 	                		}
