@@ -445,7 +445,7 @@ public class Util {
                 try {
                     keyValues[0] = URLDecoder.decode(keyValues[0], "UTF-8");
                     keyValues[1] = URLDecoder.decode(keyValues[1], "UTF-8");
-                } catch (UnsupportedEncodingException e) {
+                } catch (Exception e) {
                     return null;	// return null if not valid string
                 }
                 return keyValues;

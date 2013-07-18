@@ -387,15 +387,17 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
             createCell(row, 5, td.getNewTranslation() == null ? td.getOrigTranslation() : td.getNewTranslation(), styleUnlockedBody);
             createCell(row, 6, "", styleUnlockedBody);
             Label label = td.getLabel();
-            String strMergeNum = Util.string2Map(label.getAnnotation1()).get("displayCheckMergeNum");
-            if (StringUtils.isNotBlank(strMergeNum)) {
-                Cell cell = OTCPCGenerator.drawDisplayCheckColumns(row, 5, 7, Integer.parseInt(strMergeNum), OTCExcelDisplayInfo.length, greyStyle);
-                OTCPCGenerator.setDisplayCheckCellStyle(cell, label, styleMap);
-            }
-            //set row height
-            String sRowHeight = Util.string2Map(label.getAnnotation1()).get("rowHeight");
-            if (StringUtils.isNotBlank(sRowHeight)) {
-                row.setHeightInPoints(Float.parseFloat(sRowHeight));
+            if (label.getDictionary().getFormat().equals(Constants.DictionaryFormat.OTC_EXCEL.toString())) {
+	            String strMergeNum = Util.string2Map(label.getAnnotation1()).get("displayCheckMergeNum");
+	            if (StringUtils.isNotBlank(strMergeNum)) {
+	                Cell cell = OTCPCGenerator.drawDisplayCheckColumns(row, 5, 7, Integer.parseInt(strMergeNum), OTCExcelDisplayInfo.length, greyStyle);
+	                OTCPCGenerator.setDisplayCheckCellStyle(cell, label, styleMap);
+	            }
+	            //set row height
+	            String sRowHeight = Util.string2Map(label.getAnnotation1()).get("rowHeight");
+	            if (StringUtils.isNotBlank(sRowHeight)) {
+	                row.setHeightInPoints(Float.parseFloat(sRowHeight));
+	            }
             }
         }
         sheet.protectSheet(PROTECT_PASSWORD);
