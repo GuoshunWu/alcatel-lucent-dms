@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+
+    <style type="text/css">
+        .preview {
+            height: 100px;
+            font-weight: bolder;
+            font-size: 10px;
+            text-align: center;
+        }
+
+        .playerStyle {
+            display: block;
+            outline: 0px;
+            position: absolute;
+            width: 1126px;
+            height: 667px;
+            display: none;
+
+            border: 1px solid #aaaaaa;
+            color: #222222;
+            z-index: 3000;
+
+        }
+
+        .ui-widget-header {
+            border: 1px solid #aaaaaa;
+            display: block;
+
+            background: #cccccc url(//frcolv10lin237.pqa-collab.fr.alcatel-lucent.com/css/jqueryUI/themes/base/images/ui-bg_highlight-soft_75_cccccc_1x100.png) 50% 50% repeat-x;
+            color: #222222;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .ui-dialog .ui-dialog-titlebar {
+            padding: .4em 1em;
+            position: relative;
+        }
+
+        .ui-icon {
+            width: 16px;
+            height: 16px;
+            background-image: url(//frcolv10lin237.pqa-collab.fr.alcatel-lucent.com/css/jqueryUI/themes/base/images/ui-icons_222222_256x240.png) /*{iconsContent}*/;
+        }
+
+        .ui-icon-closethick {
+            background-position: -96px -128px;
+        }
+
+        .ui-dialog .ui-dialog-titlebar-close {
+            position: absolute;
+            right: .3em;
+            top: 50%;
+            width: 19px;
+            margin: -10px 0 0 0;
+            padding: 1px;
+            height: 18px;
+        }
+
+    </style>
+</head>
+<body>
+<table border="0" id="guidesArea">
+    <thead>
+    <tr>
+        <th colspan="2">Guides</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>
+            <div class="preview" id="//frcolv10lin237.pqa-collab.fr.alcatel-lucent.com/manual/CreateProductApp.swf">
+                <img src="//frcolv10lin237.pqa-collab.fr.alcatel-lucent.com/images/play_icon.png" alt=""/><br/>
+                Create Product/Application
+            </div>
+        </td>
+        <td>
+            <div class="preview" id="//frcolv10lin237.pqa-collab.fr.alcatel-lucent.com/manual/CreateTranslationTask.swf">
+                <img src="//frcolv10lin237.pqa-collab.fr.alcatel-lucent.com/images/play_icon.png" alt=""/><br/>
+                Create Translation Task
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div class="preview" id="//frcolv10lin237.pqa-collab.fr.alcatel-lucent.com/manual/ImportDictionary.swf">
+                <img src="//frcolv10lin237.pqa-collab.fr.alcatel-lucent.com/images/play_icon.png" alt=""/><br/>
+                Import Dictionary
+            </div>
+        </td>
+        <td>
+            <div class="preview" id="//frcolv10lin237.pqa-collab.fr.alcatel-lucent.com/manual/ExportDictionary.swf">
+                <img src="//frcolv10lin237.pqa-collab.fr.alcatel-lucent.com/images/play_icon.png" alt=""/><br/>
+                Export Dictionary
+            </div>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div id="player" class="playerStyle ui-dialog">
+    <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">
+        <span class="ui-dialog-title" id="ui-dialog-title-player"></span>
+        <a href="javascript:void(0);" class="ui-dialog-titlebar-close ui-corner-all">
+            <span class="ui-icon ui-icon-closethick"></span>
+        </a>
+    </div>
+    <div class="ui-dialog-content ui-widget-content">
+
+    </div>
+</div>
+
+
+<script src="//frcolv10lin237.pqa-collab.fr.alcatel-lucent.com/js/lib/jquery-1.7.2.min.js" type="text/javascript">
+</script>
+<script src="//frcolv10lin237.pqa-collab.fr.alcatel-lucent.com/js/lib/jquery-ui-1.8.22.custom.min.js"
+        type="text/javascript">
+</script>
+
+
+<script type="text/javascript">
+    $(function () {
+
+        function showTutorial(swf, title) {
+            var width = 1126;
+            var height = 667;
+
+            var embed = $("<" + "EMBED" + ">").attr({
+                src: swf, width: width, height: height,
+                quality: "low", loop: false, wmode: "transparent",
+                TYPE: "application/x-shockwave-flash",
+                PLUGINSPAGE: "http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash"
+            });
+
+            var playDialog = $("div#player");
+            $("span.ui-dialog-title", playDialog).empty().text(title);
+            $("div.ui-dialog-content", playDialog).empty().append(embed);
+            playDialog.show();
+
+            $('a.ui-dialog-titlebar-close', playDialog).on('click', function (e) {
+                $("div.ui-dialog-content", playDialog).empty();
+                playDialog.hide();
+            });
+        }
+
+        $("div#player").position({my: 'center', at: 'center', of: window});
+
+        $("div.preview", "table#guidesArea").on("click", function (e) {
+            var swfURL = this.id;
+            if (!swfURL) return;
+            var title = $(this).text().trim();
+            console.log("swfURL=" + swfURL + ", title=" + title);
+            showTutorial(swfURL, title);
+        });
+    });
+</script>
+</body>
+</html>

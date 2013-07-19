@@ -7,9 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Constants {
-	
-	public static final int MAX_TEXT_LENGTH = 65535;
-	
+
+    public static final int MAX_TEXT_LENGTH = 65535;
+
     // dictionary importing modes
     public enum ImportingMode {
         DELIVERY, TRANSLATION
@@ -30,10 +30,9 @@ public class Constants {
         TEXT_PROP("Text properties"),
         ACS_TEXT("ACS text"),
         OTC_EXCEL("OTC Excel"),
-//        OTC_ANDROID_IPHONE("OTC Android/iPhone"),
-//        OTC_WEB("OTC Web"),
         VOICE_APP("Voice App"),
         PO("PO"),
+        //        VITAL_SUITE("Vital Suite"),
         NOE_STRING("NOE String");
 
 
@@ -54,7 +53,7 @@ public class Constants {
             return null != DictionaryFormat.valueEnumMap.get(format);
         }
 
-        public static DictionaryFormat getEnum(String format){
+        public static DictionaryFormat getEnum(String format) {
             return valueEnumMap.get(format);
         }
 
