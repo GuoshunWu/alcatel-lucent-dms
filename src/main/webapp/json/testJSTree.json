@@ -1,0 +1,20 @@
+{
+    "children":[
+        {
+            "data":"ISC",
+            "attr":{
+                "id":"iscId"
+            }
+        },
+        {
+            "data":"Other",
+            "attr":{
+                "id":"OtherId"
+            }
+        }
+    ],
+    "data":"products",
+    "attr":{
+        "id":"productsId"
+    }
+}

@@ -1,0 +1,846 @@
+--?000 #CHECKSUM=2285104#
+
+--? ---------------------------------------------------------------
+--Dictionnaire de l'application Instant COmmmunicator pour le Kernel
+--------------------------------------------------------------------
+--Creation date : 13/02/2007
+--Last Modification Date :
+
+-- Supported languages
+
+LANGUAGES {CHK, GAE, FR0, EN0, DE0, IT0, PT0, ES0, US0, PL0, KO0, NO0, NL0, RU0, CH0, FI0, ES1, CS0, HU0, CH1, SV0, AR0, DA0, HE0}
+
+-- Structure of the dictionary:
+
+-- First, you can see commentary lines, precedeed by two minus signs "--". these comments are not
+-- interpreted by the dictionary tool.
+
+-- For each translation needed, you will find:
+-- An entry key string in upper case, followed by a colon ":".
+-- This key is used by the software to associate a text field in the application with a set of
+-- translations
+-- Each translation associated with this key enholds:
+-- - a language code (FR0 for French for instance)
+-- - a text between brackets for the translation
+-- - a comma to delimit the end of the translation for this language
+-- the comma is replaced by a semicolon ";" to end the list of translations for a specific key
+
+-- NOTA 1: The CHK (Czech) language is used for indicating the maximum width of a text field.
+-- This indication stands only if you visualize the present dictionary with the proper
+-- font (as used in the application). Then, whichever characters you are using
+-- (W can be wider than i) the translations in the different languages  must not exeed the text width
+-- (undependantly to the characters amount) indicated in the CHK field
+-- Texts that are to be displayed in a popup window (OK popup, yes-no popup...) can consist
+-- of more than one line:
+-- "This text will be displayed""on two lines"
+-- Each line must not exceed the width indicated in the CHK field
+-- Texts that are to be displayed in a temporised popup (also called timed popup) can consist of :
+-- One (long) line (with automatic wrap of text on the following 3 lines),
+-- Or several lines ("First line"Second line"...up to "Forth line")
+-- In any case, you are limited to 256 caracters.
+
+-- General syntax:
+-- WC_xxxx : Window caption (title of the window)
+-- ME_xxxx : element of a menu
+-- BU_xxxx : name of a button
+-- CB_xxxx : element of a combo-box
+-- TQ_xxxx : text of a question
+-- TI_xxxx : text of an information, a warning, a problem
+-- ST_xxxx : static text before a variable field or others....
+-- EN_xxxx : for enumered types
+-- TT_xxxx : tool tips
+
+-- General rules:
+-- the "%s" inserted in a string will be replaced by a text at execution;
+-- the "%d" inserted in a string will be replaced by a number;
+-- all the translation for a string including a %s or a %d must keep those key characters, or an error occurs.
+-- The translations being presented in two string ("like" "this") will be displayed on two lines;
+-- you are not allowed to translate on two lines a text which is in one line in the English translation.
+
+-- Text displayed if the translation is not found
+-- nota: Sometimes the default text is included in English in the source code, beginning with "?"
+
+-- --------------------------------------
+-- kernel
+-- --------------------------------------
+
+WC_UPDATE:
+  CHK "My Instant Communicator - Mise ?jour0123465789",
+  GAE "My Instant Communicator - Update",
+  FR0 "My Instant Communicator - Mise ?jour",
+  EN0 "My Instant Communicator - Update",
+  DE0 "My Instant Communicator - Aktualisierung", -- ??
+  IT0 "My Instant Communicator - Aggiornamento", -- 
+  PT0 "My Instant Communicator - Actualização",
+  ES0 "My Instant Communicator - Actualización", -- 
+  US0 "My Instant Communicator - Updated", -- 
+  PL0 "My Instant Communicator - aktualizacja", -- ??
+  KO0 "My Instant Communicator - ¾÷µ¥ÀÌÆ®",
+  NO0 "My Instant Communicator - oppdatering",
+  NL0 "My Instant Communicator - Update", -- -???
+  RU0 "My Instant Communicator - Îáíîâëåíèå", -- 
+  CH0 "ÎÒµÄ¼´Ê±Í¨ - ¸üĞÂ",
+  FI0 "My Instant Communicator - Päivitys", -- -???
+  ES1 "My Instant Communicator - Actualitzaci?, -- 
+  CS0 "My Instant Communicator - aktualizace",
+  HU0 "My Instant Communicator - Frissítés",
+  CH1 "ÎÒµÄ¼´•rÍ¨ - ¸üĞÂ",
+  SV0 "My Instant Communicator - uppdatering",
+  AR0 "My Instant Communicator - ÊÍÏí?,
+  DA0 "My Instant Communicator - opdatering",
+  HE0 "My Instant Communicator - Update"; --???
+
+APPLICATION_NAME_TITLE:
+  CHK "Alcatel-Lucent - My Instant Communicator1234",
+  GAE "Alcatel-Lucent - My Instant Communicator ",
+  FR0 "Alcatel-Lucent - My Instant Communicator ",
+  EN0 "Alcatel-Lucent - My Instant Communicator ",
+  DE0 "Alcatel-Lucent - My Instant Communicator ",
+  IT0 "Alcatel-Lucent - My Instant Communicator ",
+  PT0 "Alcatel-Lucent - My Instant Communicator ",
+  ES0 "Alcatel-Lucent - My Instant Communicator ",
+  US0 "Alcatel-Lucent - My Instant Communicator ",
+  PL0 "Alcatel-Lucent - My Instant Communicator ",
+  KO0 "Alcatel-Lucent - My Instant Communicator ",
+  NO0 "Alcatel-Lucent - My Instant Communicator ",
+  NL0 "Alcatel-Lucent - My Instant Communicator ",
+  RU0 "Alcatel-Lucent - My Instant Communicator ",
+  CH0 "°¢¶û¿¨ÌØÀÊÑ¶ - ÎÒµÄ¼´Ê±Í¨ ", 
+  FI0 "Alcatel-Lucent - My Instant Communicator ",
+  ES1 "Alcatel-Lucent - My Instant Communicator ",
+  CS0 "Alcatel-Lucent - My Instant Communicator ",
+  HU0 "Alcatel-Lucent - My Instant Communicator ",
+  CH1 "Alcatel-Lucent - §Úªº§Y®É³q°T­û ", --????
+  SV0 "Alcatel-Lucent - My Instant Communicator ",
+  AR0 "Alcatel-Lucent - My Instant Communicator ",
+  DA0 "Alcatel-Lucent - My Instant Communicator ",
+  HE0 "Alcatel-Lucent - My Instant Communicator "; --???
+
+TI_UPDATE_NO_REBOOT:
+  CHK "The update of My Instant Communicator is required to start the application.0123465789",
+  GAE "The update of My Instant Communicator is required to start the application.",
+  FR0 "La mise ?jour de My Instant Communicator est requise pour démarrer l'application.",
+  EN0 "The update of My Instant Communicator is required to start the application.",
+  DE0 "Das Update des My Instant Communicator ist zum Starten der Anwendung erforderlich.", -- ??
+  IT0 "Per avviare l'applicazione ?necessario aggiornare My Instant Communicator.", -- 
+  PT0 "?necessário actualizar o My Instant Communicator para iniciar a aplicação.",
+  ES0 "La actualización de My Instant Communicator es necesaria para iniciar la aplicación.",
+  US0 "An update of My Instant Communicator is required to start the application.", --!!! 
+  PL0 "Aktualizacja prog. My Instant Communicator jest wymagana do uruchomienia aplikacji.",
+  KO0 "My Instant Communicator ¾÷µ¥ÀÌÆ®°¡ ¾ÖÇÃ¸®ÄÉÀÌ¼ÇÀ» ½ÃÀÛÇÏ±â À§ÇØ¼­ ÇÊ¿äÇÕ´Ï´Ù.",
+  NO0 "My Instant Communicator m?oppdateres for ?kunne starte programmet.",
+  NL0 "De update van My Instant Communicator is nodig om de toepassing te starten.",
+  RU0 "Íåîáõîäèìî îáíîâëåíèå My Instant Communicator äëÿ çàïóñê?ïğèëîæåí?.", -- 
+  CH0 "ĞèÒªÉı¼¶ ÎÒµÄ¼´Ê±Í¨ À´Æô¶¯Ó¦ÓÃ³ÌĞò.",
+  FI0 "My Instant Communicator on päivitettäv? jotta sovellus voidaan käynnistää.", -- ??
+  ES1 "L'actualitzaci?de My Instant Communicator es necessita per iniciar l'aplicaci?", -- 
+  CS0 "Chcete-li spustit aplikaci My Instant Communicator, je vyadována jej?aktualizace.",
+  HU0 "A My Instant Communicator frissítéséhez indítsa el az alkalmazást.",
+  CH1 "ĞèÒªÉı¼‰ ÎÒµÄ¼´•rÍ¨ í†¢„Ó‘ªÓÃ³ÌÊ½.",
+  SV0 "Uppdateringen av My Instant Communicator krävs för att programmet ska kunna startas.",
+  AR0 "íÊØá?ÊÍÏí?My Instant Communicator ÈÏ?ÊÔÛí?ÇáÊØÈí?",
+  DA0 "My Instant Communicator skal opdateres for at starte programmet.",
+  HE0 "The update of My Instant Communicator is required to start the application."; --???
+
+TQ_UPDATED_NEEDED:
+  CHK "Une mise ?jour de My Instant Communicator est nécessaire. Voulez-vous procéder maintenant ?cette mise ?jour ?0123465789",
+  GAE "An update of My Instant Communicator is required. Do you want to perform this update now ?",
+  FR0 "Une mise ?jour de My Instant Communicator est nécessaire. Voulez-vous procéder maintenant ?cette mise ?jour ?",
+  EN0 "An update of My Instant Communicator is required. Do you want to perform this update now ?",
+  DE0 "My Instant Communicator muss aktualisiert werden. Möchten Sie die Aktualisierung jetzt durchführen?",
+  IT0 "?necessario un aggiornamento di My Instant Communicator. Eseguire l'aggiornamento ora?",
+  PT0 "?necessária uma actualização do My Instant Communicator. Pretende realizar esta actualização agora?",
+  ES0 "Es necesario actualizar My Instant Communicator. ¿Desea hacerlo ahora?",
+  US0 "An update of My Instant Communicator is required. Do you want to perform this update now?",
+  PL0 "Wymagana jest aktualizacja programu My Instant Communicator. Czy chcesz zaktualizowa?program teraz?",
+  KO0 "My Instant Communicator¸¦ ¾÷µ¥ÀÌÆ®ÇØ¾ß ÇÕ´Ï´Ù. Áö±İ ¾÷µ¥ÀÌÆ®ÇÏ½Ã°Ú½À´Ï±î?", --!!! 
+  NO0 "My Instant Communicator krever oppdatering. Vil du oppdatere n?", --!!! 
+  NL0 "My Instant Communicator moet worden bijgewerkt. Wilt u deze update nu uitvoeren?",
+  RU0 "Íåîáõîäèìî îáíîâëåíèå My Instant Communicator. Õîòèòå ëè âûïîëíèò?îáíîâëåíèå ñåé÷àñ ?",
+  CH0 "ĞèÒªÉı¼¶ĞÂ°æ±¾µÄ ÎÒµÄ¼´Ê±Í¨. ÄúÏëÏÖÔÚ¾Í½øĞĞÉı¼¶Âğ ?",
+  FI0 "My Instant Communicator on päivitettäv? Päivitetäänk?heti?",
+  ES1 "Es necessita una actualitzaci?de My Instant Communicator. Voleu executar aquesta actualitzaci?ara?",
+  CS0 "Je nutn?aktualizace aplikace My Instant Communicator. Chcete tuto aktualizaci provést nyn?",
+  HU0 "A My Instant Communicator frissítése szükséges. Frissíti most ?",
+  CH1 "ĞèÒªÉı¼‰ĞÂ°æ±¾µÄ ÎÒµÄ¼´•rÍ¨. ÄúÏë¬FÔÚ¾ÍßMĞĞÉı¼‰†á ?",
+  SV0 "My Instant Communicator måste uppdateras. Vill du utföra uppdateringen nu?",
+  AR0 "íÚÊÈ?ÊÍÏí?My Instant Communicator ãØáæÈÇ. åá ÊÑÛÈ İí ÅÌÑÇ?åĞ?ÇáÊÍÏí?ÇáÂä?,
+  DA0 "My Instant Communicator kræver opdatering. Vil du opdatere nu?",
+  HE0 "An update of My Instant Communicator is required. Do you want to perform this update now ?"; --???
+
+TI_UPDATE_NOSTART:
+  CHK "My Instant Communicator is not started.0123465789",
+  GAE "My Instant Communicator is not started.",
+  FR0 "My Instant Communicator n'est pas démarr?",
+  EN0 "My Instant Communicator is not started.",
+  DE0 "My Instant Communicator wird nicht gestartet.",
+  IT0 "My Instant Communicator non ?stato avviato.", -- 
+  PT0 "O My Instant Communicator não iniciou.",
+  ES0 "No se ha iniciado Instant Communicator.",
+  US0 "My Instant Communicator did not start.", --!!! 
+  PL0 "Nie uruchomiono programu My Instant Communicator.",
+  KO0 "My Instant Communicator °¡ ½ÃÀÛµÇÁö ¾Ê¾Ò½À´Ï´Ù.",
+  NO0 "My Instant Communicator er ikke startet.",
+  NL0 "My Instant Communicator is niet gestart.",
+  RU0 "Ïğèëîæåíèå My Instant Communicator íå çàïóùåíî.", -- 
+  CH0 "ÎÒµÄ¼´Ê±Í¨ Ã»ÓĞÆô¶¯.",
+  FI0 "My Instant Communicator ei ole käynniss?",
+  ES1 "My Instant Communicator no est?iniciat.", -- 
+  CS0 "Aplikace My Instant Communicator nen?spuštìna.",
+  HU0 "A My Instant Communicator nincs elindítva.",
+  CH1 "ÎÒµÄ¼´•rÍ¨ ›]ÓĞ†¢„Ó.",
+  SV0 "My Instant Communicator har inte startats.",
+  AR0 "áã íÈÏÃ ÊÔÛí?My Instant Communicator.",
+  DA0 "My Instant Communicator er ikke startet.",
+  HE0 "My Instant Communicator is not started."; --???
+
+-- crms00141441 +
+
+TI_UPDATE_INCOMPATIBILITY:
+  CHK "Your version of My Instant Communicator is incompatible with the server.0123465789",
+  GAE "Your version of My Instant Communicator is incompatible with the server.",
+  FR0 "Votre version de My Instant Communicator est incompatible avec le serveur.",
+  EN0 "Your version of My Instant Communicator is incompatible with the server.",
+  DE0 "Ihre Version von My Instant Communicator ist nicht mit dem Server kompatibel.",
+  IT0 "La versione di My Instant Communicator ?incompatibile con il server.",
+  PT0 "A sua versão do My Instant Communicator ?incompatível com o servidor.",
+  ES0 "Su versión de My Instant Communicator no es compatible con el servidor.",
+  US0 "Your version of My Instant Communicator is not compatible with the server.", --!!! 
+  PL0 "Twoja wersja aplikacji My Instant Communicator jest niekompatybilna z serwerem.",
+  KO0 "My Instant Communicator ¹öÀüÀÌ ¼­¹ö¿Í È£È¯µÇÁö ¾Ê½À´Ï´Ù.", --!!! 
+  NO0 "Din versjon av My Instant Communicator er ikke kombatibel med serveren.", --!!! 
+  NL0 "Uw versie van My Instant Communicator is niet compatibel met de server.",
+  RU0 "İò?âåğñ? My Instant Communicator íåñîâìåñòèìà ?ñåğâåğîì.",
+  CH0 "ÎÒµÄ¼´Ê±Í¨°æ±¾Óë·şÎñÆ÷²»¼æÈİ¡£", 
+  FI0 "My Instant Communicator -versio ei ole yhteensopiva palvelimen kanssa.",
+  ES1 "La versi?de My Instant Communicator és incompatible amb el servidor.",
+  CS0 "Vaše verze aplikace My Instant Communicator nen?kompatibiln?se serverem.",
+  HU0 "Az Õn My Instant Communicator alkalmazása nem kompatibilis a kiszolgálóval.",
+  CH1 "ÎÒµÄ¼´•rÍ¨°æ±¾ÅcËÅ·şÆ÷²»ÏàÈİ¡£", --????
+  SV0 "Den aktuella versionen av My Instant Communicator är inte kompatibel med servern.",
+  AR0 "ÅÕÏÇ?My Instant Communicator ÇáÎÇ?Èß Ûí?ãÊæÇİŞ ãÚ ÇáÎÇÏã.",
+  DA0 "Din version af My Instant Communicator er ikke kompatibel med serveren.",
+  HE0 "Your version of My Instant Communicator is incompatible with the server."; --???
+
+TQ_UPDATE_PROPOSAL:
+  CHK "Une nouvelle version de My Instant Communicator est disponible.0123465789012345678901234567890123"
+      "Voulez-vous procéder ?la mise ?jour ?0123465789",
+  GAE "A new version of My Instant Communicator is available."
+      "Do you want to proceed to the update ?",
+  FR0 "Une nouvelle version de My Instant Communicator est disponible."
+      "Voulez-vous procéder ?la mise ?jour ?",
+  EN0 "A new version of My Instant Communicator is available."
+      "Do you want to proceed to the update ?",
+  DE0 "Es ist eine neue Version von My Instant Communicator verfügbar."
+      "Möchten Sie die Aktualisierung fortsetzen?",
+  IT0 "?disponibile una nuova versione di My Instant Communicator."
+      "Procedere con l'aggiornamento?",
+  PT0 "Est?disponível uma nova versão do My Instant Communicator. "
+      "Deseja continuar com a actualização?",
+  ES0 "Hay una nueva versión de My Instant Communicator disponible."
+      "¿Desea actualizar?",
+  US0 "A new version of My Instant Communicator is available."
+      "Do you want to update now?",
+  PL0 "Dostêpna jest nowa wersja programu My Instant Communicator."
+      "Czy chcesz przejœæ do aktualizacji?",
+  KO0 "My Instant CommunicatorÀÇ »õ ¹öÀüÀ» »ç¿ëÇÒ ¼ö ÀÖ½À´Ï´Ù."
+      "¾÷µ¥ÀÌÆ®ÇÏ½Ã°Ú½À´Ï±î?",
+  NO0 "En ny versjon av My Instant Communicator er tilgjengelig."
+      "Vil du oppdatere til denne?", --!!! 
+  NL0 "Er is een nieuwe versie van My Instant Communicator beschikbaar."
+      "Wilt u naar de update gaan?",
+  RU0 "Äîñòóïíà íîâàÿ âåğñ? My Instant Communicator."
+      "Õîòèòå ëè âûïîëíèò?îáíîâëåíèå ?",
+  CH0 "¼ì²âµ½ĞÂ°æ±¾µÄ ÎÒµÄ¼´Ê±Í¨."
+      "ÄúÏë½øĞĞÉı¼¶Âğ ?",
+  FI0 "My Instant Communicatorista on saatavissa uusi versio."
+      "Päivitetäänk?",
+  ES1 "Hi ha disponible una nova versi?de My Instant Communicator."
+      "Voleu continuar amb l'actualitzaci?",
+  CS0 "Na serveru je dostupn?nov?verze aplikace My Instant Communicator."
+      "Chcete provést aktualizaci?",
+  HU0 "A My Instant Communicator új verziója elérhet?"
+      "Frissíti most ?",
+  CH1 "‚Éœyµ½ĞÂ°æ±¾µÄ ÎÒµÄ¼´•rÍ¨."
+      "ÄúÏëßMĞĞÉı¼‰†á ?",
+  SV0 "Det finns en ny version av My Instant Communicator."
+      "Vill du fortsätta till uppdateringen?",
+  AR0 "åäÇß ÅÕÏÇ?ÌÏíÏ ãÊæİ?ãä My Instant Communicator"
+      "åá ÊÑÛÈ İí ÅÌÑÇ?ÇáÊÍÏíË¿",
+  DA0 "En ny version af My Instant Communicator er klar."
+      "Vil du opdatere til denne ?",
+  HE0 "A new version of My Instant Communicator is available."
+      "Do you want to proceed to the update ?"; --???
+
+TQ_UPDATE_REBOOT:
+  CHK "To update My Instant Communicator, your personal computer must be restarted.0123465789012345678901234567890123"
+      "Do you want to restart now ?0123465789012345678901234567890123456789",
+  GAE "To update My Instant Communicator, your personal computer must be restarted."
+      "Do you want to restart now ?",
+  FR0 "Afin de mettre ?jour My Instant Communicator, votre ordinateur doit être redémarr?"
+      "Voulez-vous redémarrer maintenant ?",
+  EN0 "To update My Instant Communicator, your personal computer must be restarted."
+      "Do you want to restart now ?",
+  DE0 "Um My Instant Communicator zu aktualisieren, muss Ihr Computer neu gestartet werden."
+      "Möchten Sie den Computer jetzt neu starten?",
+  IT0 "Per aggiornare My Instant Communicator, ?necessario riavviare il personal computer."
+      "Riavviare ora?",
+  PT0 "Para actualizar o My Instant Communicator, o seu computador tem de ser reiniciado."
+      "Deseja reinici?lo agora?",
+  ES0 "Para actualizar My Instant Communicator, debe reiniciar el ordenador."
+      "¿Desea hacerlo ahora?",
+  US0 "To update My Instant Communicator, your computer must be restarted."
+      "Do you want to restart now?",
+  PL0 "Aby zaktualizowa?program My Instant Communicator, nale¿y ponownie uruchomi?komputer."
+      "Czy chcesz teraz ponownie uruchomi?komputer?",
+  KO0 "My Instant Communicator¸¦ ¾÷µ¥ÀÌÆ®ÇÏ·Á¸é PC¸¦ ´Ù½Ã ½ÃÀÛÇØ¾ß ÇÕ´Ï´Ù."
+      "Áö±İ ´Ù½Ã ½ÃÀÛÇÏ½Ã°Ú½À´Ï±î?",
+  NO0 "For ?oppdatere My Instant Communicator, m?du starte PC-en p?nytt."
+      "Vil du starte p?nytt n?",
+  NL0 "Om My Instant Communicator bij te werken, moet uw pc opnieuw worden gestart."
+      "Wilt u de pc nu opnieuw starten?",
+  RU0 "Íåîáõîäèìî ïåğåçàãğóçèò?Âà?êîìïüşòå?"
+      "Õîòèòå ëè ïåğåçàãğóçèò?ñåé÷àñ ?",
+  CH0 "ÒªÉı¼¶ ÎÒµÄ¼´Ê±Í¨, ÄúµÄ¼ÆËã»ú±ØĞëÖØĞÂÆô¶¯."
+      "ÄúÏëÏÖÔÚ¾ÍÖØÆôÂğ ?",
+  FI0 "My Instant Communicatorin päivittämist?varten tietokone on käynnistettäv?uudelleen."
+      "Käynnistetäänk?uudelleen nyt?",
+  ES1 "Per actualitzar My Instant Communicator, heu de reiniciar l'ordinador."
+      "Voleu reiniciar l'ordinador ara?",
+  CS0 "Aktualizace aplikace My Instant Communicator vyaduje restart poèítaèe."
+      "Chcete restartovat nyn?",
+  HU0 "A My Instant Communicator frissítéséhez újra kell indítani a számítógépet."
+      "Újraindítja most ?",
+  CH1 "ÒªÉı¼‰ ÎÒµÄ¼´•rÍ¨, ÄúµÄëŠÄX±ØíšÖØĞÂ†¢„Ó."
+      "ÄúÏë¬FÔÚ¾ÍÖØ†¢†á ?",
+  SV0 "Datorn måste startas om för att My Instant Communicator ska uppdateras."
+      "Vill du starta om nu?",
+  AR0 "áÊÍÏíË My Instant Communicator?íÌ?ÅÚÇÏ?ÊÔÛí?ÇáßãÈíæÊ?ÇáÔÎÕí."
+      "åá ÊÑÛÈ İí ÅÚÇÏ?ÇáÊÔÛí?ÇáÂä ?,
+  DA0 "For at opdatere My Instant Communicator skal din PC genstartes."
+      "Vil du genstarte PC'en nu ?",
+  HE0 "To update My Instant Communicator, your personal computer must be restarted."
+      "Do you want to restart now ?"; --???
+
+-- crms00139200 +
+
+CONTACT_ADMIN:
+  CHK "Pour plus d'informations, merci de contacter votre administrateur.1234",
+  GAE "For more information, please contact your administrator.",
+  FR0 "Pour plus d'informations, merci de contacter votre administrateur.",
+  EN0 "For more information, please contact your administrator.",
+  DE0 "Weitere Informationen erhalten Sie von Ihrem Administrator.",
+  IT0 "Per ulteriori informazioni, contattare l'amministratore.",
+  PT0 "Para mais informações, contacte o administrador.",
+  ES0 "Para obtener más información, contacte al administrador.",
+  US0 "For more information, please contact your administrator.",
+  PL0 "Aby uzyska?wiêcej informacji, skontaktuj si?z administratorem.",
+  KO0 "ÀÚ¼¼ÇÑ ³»¿ëÀº °ü¸®ÀÚ¿¡°Ô ¹®ÀÇÇÏ½Ê½Ã¿À.",
+  NO0 "Kontakt administrator for mer informasjon.",
+  NL0 "Neem contact op met uw beheerder voor meer informatie.",
+  RU0 "Äëÿ ïîëó÷åíèÿ äîïîëíèòåëüíîé èíôîğìàöèè îáğàòèòåñü ?àäìèíèñòğàòîğó.",
+  CH0 "ÈçĞè¸ü¶àĞÅÏ¢£¬ÇëÁªÏµÄúµÄ¹ÜÀíÔ±.",
+  FI0 "Saat lisätietoja järjestelmänvalvojaltasi.",
+  ES1 "Per a més informaci? contacteu amb el vostre administrador.",
+  CS0 "Máte-li zájem o další informace, obrate se na svého správce.",
+  HU0 "For more information, please contact your administrator.",
+  CH1 "ÈçĞè¸ü¶àÙYÓ£¬ÕˆÂ“½jÄúµÄ¹ÜÀí†T.",
+  SV0 "Kontakta administratören om du vill ha mer information.",
+  AR0 "áãÒí?ãä ÇáãÚáæãÇÊ¡ ÇáÑÌÇÁ ÇáÇÊÕÇ?ÈÇáãÓÄæá ÇáÎÇ?Èß.",
+  DA0 "Kontakt din administrator for yderligere information.",
+  HE0 "For more information, please contact your administrator."; --???
+
+ERROR_CRITIC:
+  CHK "My Instant Communicator - Erreur critique0123465789",
+  GAE "My Instant Communicator - Critic error",
+  FR0 "My Instant Communicator - Erreur critique",
+  EN0 "My Instant Communicator - Critic error",
+  DE0 "My Instant Communicator - Kritischer Fehler",
+  IT0 "My Instant Communicator - Errore critico",
+  PT0 "My Instant Communicator - Erro crítico",
+  ES0 "My Instant Communicator - Error crítico",
+  US0 "My Instant Communicator - Critical error", --!!! 
+  PL0 "My Instant Communicator - b³¹d krytyczny",
+  KO0 "My Instant Communicator - Ä¡¸íÀû ¿À·ù", --!!! 
+  NO0 "My Instant Communicator - kritisk feil", --!!! 
+  NL0 "My Instant Communicator - Kritieke fout",
+  RU0 "My Instant Communicator - êğèòè÷åñêàÿ îøèáêà",
+  CH0 "ÎÒµÄ¼´Ê±Í¨ - ÑÏÖØ´íÎó", 
+  FI0 "My Instant Communicator - Kriittinen virhe",
+  ES1 "My Instant Communicator - Error crític",
+  CS0 "My Instant Communicator - Kritick?chyba",
+  HU0 "My Instant Communicator - Kritikus hiba",
+  CH1 "ÎÒµÄ¼´•rÍ¨ - ‡ÀÖØåeÕ`", --????
+  SV0 "My Instant Communicator - allvarligt fel",
+  AR0 "My Instant Communicator - ÎØ?İÇÏÍ",
+  DA0 "My Instant Communicator - Kritisk fejl",
+  HE0 "My Instant Communicator - Critic error"; --???
+
+ERROR_LICENSE_REQUIRED:
+  CHK "Vous ne disposez pas des licences nécessaires pour exécuter l'application.0123465789",
+  GAE "You don't have the licence required to execute the application.",
+  FR0 "Vous ne disposez pas des licences nécessaires pour exécuter l'application.",
+  EN0 "You don't have the licence required to execute the application.",
+  DE0 "Sie verfügen nicht über die zum Ausführen der Anwendung erforderlichen Lizenz.",
+  IT0 "Non si dispone della licenza richiesta per l'esecuzione dell'applicazione.",
+  PT0 "Não tem a licença necessária para executar a aplicação.",
+  ES0 "No dispone de la licencia necesaria para ejecutar la aplicación.",
+  US0 "You do not have the license required to execute the application.", --!!! 
+  PL0 "Nie masz licencji wymaganej do uruchomienia aplikacji.",
+  KO0 "¾ÖÇÃ¸®ÄÉÀÌ¼ÇÀ» ½ÇÇàÇÏ´Â µ¥ ÇÊ¿äÇÑ ¶óÀÌ¼±½º°¡ ¾ø½À´Ï´Ù.", --!!! 
+  NO0 "Du har ikke lisensen som kreves for ?kunne kjøre applikasjonen.", --!!! 
+  NL0 "U hebt geen licentie voor het uitvoeren van de toepassing.",
+  RU0 "Íå?ëèöåíçèè íà èñïîëüçîâàíè?ïğèëîæåí?.",
+  CH0 "Äú²»ĞèÒªĞí¿ÉÖ´ĞĞÓ¦ÓÃ³ÌĞò¡£", 
+  FI0 "Sinulla ei ole tarvittavia käyttöoikeuksia sovelluksen suorittamiseen.",
+  ES1 "No teniu la llicència necessària per executar l'aplicaci?",
+  CS0 "Nemáte licenci poadovanou ke spuštìn?aplikace.",
+  HU0 "Önnek nincs megfelel?jogosultsága az alkalmazás indításához.",
+  CH1 "Äú²»ĞèÒªÊÚ™àˆÌĞĞ‘ªÓÃ³ÌÊ½¡£", --????
+  SV0 "Du saknar den licens som krävs för att köra programmet.",
+  AR0 "áí?áÏíß ÇáÊÑÎí?ÇáãØáæ?áÊäİíĞ ÇáÊØÈí?",
+  DA0 "Du har ikke licensen til at køre programmet.",
+  HE0 "You don't have the licence required to execute the application."; --???
+
+MYIC_STOPPED:
+  CHK "L'application va être arrêtée.0123465789",
+  GAE "The application will be stopped.",
+  FR0 "L'application va être arrêtée.",
+  EN0 "The application will be stopped.",
+  DE0 "Die Anwendung wird gestoppt.",
+  IT0 "L'applicazione verr?interrotta.",
+  PT0 "A aplicação ser?parada.",
+  ES0 "Se detendr?la aplicación.",
+  US0 "The application will be stopped.", --!!! 
+  PL0 "Aplikacja zostanie zatrzymana.",
+  KO0 "¾ÖÇÃ¸®ÄÉÀÌ¼ÇÀÌ Áß´ÜµË´Ï´Ù.", --!!! 
+  NO0 "Applikasjonen vil bli stoppet.", --!!! 
+  NL0 "De toepassing wordt gestopt.",
+  RU0 "Ïğèëîæåíèå áóäå?îñòàíîâëåí?",
+  CH0 "Ó¦ÓÃ³ÌĞò½«²»»áÍ£Ö¹¡£", 
+  FI0 "Sovellus pysäytetään.",
+  ES1 "L'aplicaci?s'aturar?",
+  CS0 "Aplikace bude zastavena.",
+  HU0 "Az alkalmazás le fog állni.",
+  CH1 "‘ªÓÃ³ÌÊ½Œ¢²»•şÍ£Ö¹¡£", --????
+  SV0 "Programmet stoppas.",
+  AR0 "ÓíÊã ÅíŞÇ?ÊÔÛí?ÇáÊØÈí?",
+  DA0 "Programmet stoppes.",
+  HE0 "The application will be stopped."; --???
+
+ERR_API_BAD_FRAMEWORK_SESSION_IDENTIFIER:
+  CHK "Impossible de vous connecter sur le serveur.0123465789",
+  GAE "Impossible to connect you on the server.",
+  FR0 "Impossible de vous connecter sur le serveur.",
+  EN0 "Impossible to connect you on the server",
+  DE0 "Verbindung zum Server nicht möglich.",
+  IT0 "Impossibile connettersi al server.",
+  PT0 "Não ?possível lig?lo ao servidor.",
+  ES0 "No es posible conectarle con el servidor.",
+  US0 "Unable to connect to the server.", --!!! 
+  PL0 "Po³¹czenie z serwerem jest niemo¿liwe.",
+  KO0 "¼­¹ö¿¡ ¿¬°áÇÒ ¼ö ¾ø½À´Ï´Ù.", --!!! 
+  NO0 "Tilkobling til serveren mislyktes.", --!!! 
+  NL0 "U kunt geen verbinding maken met de server.",
+  RU0 "Íåâîçìîæíî ïîäêëş÷èòü? ?ñåğâåğ?",
+  CH0 "²»ÄÜÔÚ·şÎñÆ÷ÉÏÁ¬½ÓÄú", 
+  FI0 "Yhteyden muodostaminen palvelimeen epäonnistui.",
+  ES1 "És impossible connectar-vos al servidor.",
+  CS0 "Nelze vás pøipojit k serveru",
+  HU0 "Nem lehet a kiszolgálóhoz kapcsolódni.",
+  CH1 "²»ÄÜÔÚËÅ·şÆ÷ÉÏßB¾€Äú", --????
+  SV0 "Det går inte att ansluta till servern.",
+  AR0 "íÓÊÍíá ÇÊÕÇáß ÈÇáÎÇÏ?",
+  DA0 "Du kunne ikke tilsluttes serveren.",
+  HE0 "Impossible to connect you on the server"; --???
+
+-- crms00139200 -
+
+ERR_API_4980_ALREADY_RUNNING:
+  CHK "4980 Softphone is running."
+      " Please close this application before starting My Instant Communicator.012346578901234567890123456789012345678",
+  GAE "4980 Softphone is running."
+      " Please close this application before starting My Instant Communicator.",
+  FR0 "4980 Softphone est en cours d'exécution."
+      " Veuillez fermer cette application avant de démarrer My Instant Communicator.",
+  EN0 "4980 Softphone is running."
+      " Please close this application before starting My Instant Communicator.",
+  DE0 "4980 Softphone wird ausgeführt."
+      " Bitte schließen Sie die Anwendung vor dem Start von My Instant Communicator.",
+  IT0 "4980 Softphone in esecuzione."
+      " Chiudere l'applicazione prima di avviare My Instant Communicator.",
+  PT0 "O 4980 Softphone est?em execução."
+      " Feche esta aplicação antes de iniciar o My Instant Communicator.",
+  ES0 "4980 Softphone se est?ejecutando."
+      " Cierre esta aplicación antes de iniciar My Instant Communicator.",
+  US0 "4980 Softphone is running."
+      " Please close this application before starting My Instant Communicator.",
+  PL0 "Uruchomiona jest aplikacja 4980 Softphone."
+      " Zamknij j?przed uruchomieniem aplikacji My Instant Communicator.",
+  KO0 "4980 SoftphoneÀÌ ½ÇÇà ÁßÀÔ´Ï´Ù."
+      " My Instant Communicator¸¦ ½ÃÀÛÇÏ±â Àü¿¡ ÀÌ ¾ÖÇÃ¸®ÄÉÀÌ¼ÇÀ» ´İÀ¸½Ê½Ã¿À.",
+  NO0 "4980 Softphone kjører."
+      " Vennligst avslutt applikasjonen før du starter My Instant Communicator.", --!!! 
+  NL0 "4980 Softphone wordt uitgevoerd."
+      " Sluit deze toepassing voordat u My Instant Communicator start.",
+  RU0 "Âûïîëíÿåò? ïğèëîæåíèå 4980 Softphone."
+      " Çàêğîéòå åã? ïğåæäå ÷å?çàïóñêàò?My Instant Communicator.",
+  CH0 "4980 Èíµç»°ÕıÔÚÔËĞĞ¡£"
+      "Æô¶¯ÎÒµÄ¼´Ê±Í¨Ç°£¬Çë¹Ø±ÕÕâ¸öÓ¦ÓÃ³ÌĞò¡£", 
+  FI0 "4980 Softphone on käynniss?"
+      " Sulje täm?sovellus ennen My Instant Communicatorin käynnistämist?",
+  ES1 "4980 Softphone s'est?executant."
+      " Abans d'iniciar My Instant Communicator, tanqueu aquesta aplicaci?",
+  CS0 "Aplikace 4980 Softphone je spuštìna."
+      " Pøed spuštìním aplikace My Instant Communicator tuto aplikaci zavøete.",
+  HU0 "4980 Softphone fut."
+      " Kérjük, zárja be az alkalmazást a My Instant Communicator indítása elõtt.",
+  CH1 "4980 Ü›ëŠÔ’ÕıÔÚˆÌĞĞ¡£"
+      "†¢„ÓÎÒµÄ¼´•rÍ¨Ç°£¬ÕˆêPé]ß@‚€‘ªÓÃ³ÌÊ½¡£", --????
+  SV0 "4980 Softphone körs."
+      " Stäng det här programmet innan du startar My Instant Communicator.",
+  AR0 "íÊ?ÊÔÛí?4980 Softphone."
+      "ÇáÑÌÇÁ ÅÛáÇ?åĞ?ÇáÊØÈí?ŞÈ?ÈÏ?ÊÔÛí?My Instant Communicator.",
+  DA0 "4980 softphone kører."
+      "Luk venligst dette program før du starter My Instant Communicator.",
+  HE0 "4980 Softphone is running."
+      " Please close this application before starting My Instant Communicator."; --???
+
+APPLICATION_NAME:
+  CHK "My Instant Communicator1234",
+  GAE "My Instant Communicator",
+  FR0 "My Instant Communicator", -- 
+  EN0 "My Instant Communicator",
+  DE0 "My Instant Communicator",
+  IT0 "My Instant Communicator",
+  PT0 "My Instant Communicator",
+  ES0 "My Instant Communicator",
+  US0 "My Instant Communicator", --!!! 
+  PL0 "My Instant Communicator",
+  KO0 "My Instant Communicator",
+  NO0 "My Instant Communicator",
+  NL0 "My Instant Communicator",
+  RU0 "My Instant Communicator",
+  CH0 "ÎÒµÄ¼´Ê±Í¨",
+  FI0 "My Instant Communicator",
+  ES1 "My Instant Communicator",
+  CS0 "My Instant Communicator",
+  HU0 "My Instant Communicator",
+  CH1 "ÎÒµÄ¼´•rÍ¨",
+  SV0 "My Instant Communicator",
+  AR0 "My Instant Communicator",
+  DA0 "My Instant Communicator",
+  HE0 "My Instant Communicator"; --???
+
+WC_CERT_TITLE:
+  CHK "Certificate Installation12345678901234567890",
+  GAE "Certificate installation",
+  FR0 "Installation de certificat",
+  EN0 "Certificate installation",
+  DE0 "Zertifikatinstallation",
+  IT0 "Installazione certificato",
+  PT0 "Instalação de certificado",
+  ES0 "Instalación de certificado",
+  US0 "Certificate installation", --!!! 
+  PL0 "Instalacja certyfikatu",
+  KO0 "ÀÎÁõ¼­ ¼³Ä¡",
+  NO0 "Sertifikatinstallasjon", --!!! 
+  NL0 "Installatie van certificaat",
+  RU0 "Óñòàíîâê?ñåğòèôèêàò?,
+  CH0 "Ö¤Êé°²×°", 
+  FI0 "Varmenteen asennus", --!!! 
+  ES1 "Instal·laci?del certificat",
+  CS0 "Instalace certifikátu", --!!! 
+  HU0 "Tanúsítvány telepítése", --!!! 
+  CH1 "‘{×C°²Ñb", --????
+  SV0 "Installation av certifikat",
+  AR0 "ÊËÈí?ÇáÔåÇÏ?,
+  DA0 "Installation af certificat",
+  HE0 "Certificate installation"; --???
+
+CALLBACK_REQUEST:
+  CHK "Callback request0123456789012345678",
+  GAE "Callback request",
+  FR0 "Demande de rappel",
+  EN0 "Callback request",
+  DE0 "Ruckrufanforderung",
+  IT0 "Richiesta richiamata",
+  PT0 "Pedido de chamada de resposta",
+  ES0 "Solicitud de rellamada",
+  US0 "Callback request", --!!! 
+  PL0 "¯¹danie oddzwonienia",
+  KO0 "Callback request", --???
+  NO0 "Forespørsel om gjenoppringing", --!!! 
+  NL0 "Terugbelverzoek", --!!! 
+  RU0 "Çàïğîñ îáğàòíîã?âûçîâà", --!!! 
+  CH0 "»Ø½ĞÇëÇó", 
+  FI0 "Takaisinsoittopyynt?, --!!! 
+  ES1 "Sol·licitud de devoluci?de trucada",
+  CS0 "ádost o zpìtn?volán?, --!!! 
+  HU0 "Visszahívás kérése", --!!! 
+  CH1 "Callback request", --????
+  SV0 "Återuppringningsbegäran",
+  AR0 "Øá?ÅÚÇÏ?ÇáÇÊÕÇ?,
+  DA0 "Opkalds anmodning",
+  HE0 "Callback request"; --???
+
+TI_CERT_REQUEST:
+  CHK "The following certificate installation is requested :12345678901234567890",
+  GAE "The following certificate installation is requested :",
+  FR0 "L'installation du certificat suivant est requise :",
+  EN0 "The following certificate installation is requested :",
+  DE0 "Folgende Zertifikatinstallation wird angefordert:",
+  IT0 "?necessaria l'installazione del seguente certificato:",
+  PT0 "?necessária a instalação do seguinte certificado:",
+  ES0 "Es necesario instalar los siguientes certificados:",
+  US0 "The following certificate installation is requested:", --!!! 
+  PL0 "Za¿¹dano instalacji nastêpuj¹cego certyfikatu:",
+  KO0 "´ÙÀ½ ÀÎÁõ¼­ ¼³Ä¡¸¦ ¿äÃ»ÇÕ´Ï´Ù.",
+  NO0 "Følgende sertifikatinstallasjon forespørres:", --!!! 
+  NL0 "Het volgende certificaat moet worden geïnstalleerd:",
+  RU0 "Çàïğîøåí?óñòàíîâê?ñëåäóşùåãî ñåğòèôèêàò?",
+  CH0 "ĞèÒªÒÔÏÂÖ¤Êé°²×°:", 
+  FI0 "Seuraavan varmenteen asennusta on pyydetty :", --!!! 
+  ES1 "S'ha sol·licitat la instal·laci?del certificat següent:",
+  CS0 "Je poadována instalace následujícího certifikátu:", --!!! 
+  HU0 "A következ?tanúsítvány telepítését kérték :", --!!! 
+  CH1 "ĞèÒªÒÔÏÂ‘{×C°²Ñb:", --????
+  SV0 "Följande certifikatinstallation krävs:",
+  AR0 "Êã Øá?ÊËÈí?ÇáÔåÇÏ?ÇáÊÇáí?:",
+  DA0 "Følgende certificat installation kræves :",
+  HE0 "The following certificate installation is requested :"; --???
+
+TI_CERT_QUESTION1:
+  CHK "Do you accept to use and/or install this certificate ?12345678901234567890",
+  GAE "Do you accept to use and/or install this certificate ?",
+  FR0 "Acceptez vous d'utiliser et/ou d'installer ce certificat ?",
+  EN0 "Do you accept to use and/or install this certificate ?",
+  DE0 "Möchten Sie dieses Zertifikat verwenden und/oder installieren?",
+  IT0 "Si accetta di utilizzare e/o installare questo certificato?",
+  PT0 "Aceita utilizar e/ou instalar este certificado?",
+  ES0 "¿Acepta utilizar o instalar este certificado?",
+  US0 "Do you want to accept this certificate for installation and use?", --!!! 
+  PL0 "Czy zgadzasz si?na u¿ywanie i/lub zainstalowanie certyfikatu?",
+  KO0 "ÀÌ ÀÎÁõ¼­ »ç¿ë ¹×/¶Ç´Â ¼³Ä¡¸¦ ¼ö¶ôÇÏ½Ã°Ú½À´Ï±î?",
+  NO0 "Godtar du ?bruke og/eller installere dette sertifikatet?", --!!! 
+  NL0 "Gaat u ermee akkoord dit certificaat te gebruiken en/of installeren?",
+  RU0 "Âû ïîäòâåğæäàåò?èñïîëüçîâàíè?èë?óñòàíîâê?ıòîã?ñåğòèôèêàò?",
+  CH0 "Äú½ÓÊÜÊ¹ÓÃºÍ/»ò°²×°´ËÖ¤ÊéÂğ ?", 
+  FI0 "Hyväksytk?tämän varmenteen käytön ja/tai asennuksen ?", --!!! 
+  ES1 "Accepteu utilitzar i/o instal·lar aquest certificat?",
+  CS0 "Souhlasíte s pouitím a/nebo instalac?tohoto certifikátu?", --!!! 
+  HU0 "Elfogadja a tanúsítvány használatát és/vagy telepítését?", --!!! 
+  CH1 "Äú½ÓÈëÊ¹ÓÃºÍ/»ò°²Ñb´Ë‘{×C†á ?", --????
+  SV0 "Godkänner du att använda och/eller installera det här certifikatet?",
+  AR0 "åá ÊæÇİ?Úá?ÇÓÊÎÏÇ??Ãæ ÊËÈí?åĞ?ÇáÔåÇÏÉ¿",
+  DA0 "Godkender du at bruge og/eller installere dette certificat ?",
+  HE0 "Do you accept to use and/or install this certificate ?"; --???
+
+TI_CERT_QUESTION2:
+  CHK "If not, the application will terminate immediately.12345678901234567890",
+  GAE "If not, the application will terminate immediately.",
+  FR0 "Si non, l'application s'arrêtera immédiatement.",
+  EN0 "If not, the application will terminate immediately.",
+  DE0 "Falls nicht, wird die Anwendung sofort beendet.",
+  IT0 "In caso contrario, l'applicazione verr?terminata immediatamente.",
+  PT0 "Em caso de resposta negativa, a aplicação ser?imediatamente encerrada.",
+  ES0 "Si no acepta, la aplicación finalizar?inmediatamente.",
+  US0 "If not, the application will terminate immediately.", --!!! 
+  PL0 "Jeœli nie, aplikacja natychmiast zakoñczy dzia³anie.",
+  KO0 "¼ö¶ôÇÏÁö ¾ÊÀ¸¸é ¾ÖÇÃ¸®ÄÉÀÌ¼ÇÀÌ Áï½Ã Á¾·áµË´Ï´Ù.",
+  NO0 "Hvis ikke, vil programmet avsluttes umiddelbart.", --!!! 
+  NL0 "Zo niet, dan wordt de toepassing onmiddellijk beëindigd.",
+  RU0 "Åñëè íå? ïğèëîæåíèå íåçàìåäëèòåëüí?ïğåêğàùàåò ğàáîòó.",
+  CH0 "Èç¹û·ñ£¬Ó¦ÓÃ³ÌĞò½«Á¢¼´ÖĞÖ¹¡£", 
+  FI0 "Jos et, sovellus suljetaan välittömästi.", --!!! 
+  ES1 "En cas contrari, l'aplicaci?finalitzar?immediatament.",
+  CS0 "Pokud ne, aplikace se ihned ukonèí.", --!!! 
+  HU0 "Ha nem, akkor az alkalmazás azonnal leáll.", --!!! 
+  CH1 "Èç¹û·ñ£¬‘ªÓÃ³ÌÊ½Œ¢Á¢¼´ÖĞÖ¹¡£", --????
+  SV0 "Om inte, avslutas programmet omedelbart.",
+  AR0 "ÅĞ?áã ÊÑÛÈ İí Ğáß¡ İÓæİ íÊ?ÅäåÇ?ÇáÊØÈí?ÍÇáÇ.",
+  DA0 "Hvis ikke, vil programmet straks blive stoppet.",
+  HE0 "If not, the application will terminate immediately."; --???
+
+TI_CERT_DELIVERED_TO:
+  CHK "Delivered to  : .12345678901234567890",
+  GAE "Delivered to  : ", --???
+  FR0 "Delivr?? : ",
+  EN0 "Delivered to : ",
+  DE0 "Geliefert an: ",
+  IT0 "Consegnato a  : ",
+  PT0 "Entregue a: ",
+  ES0 "Enviado a: ",
+  US0 "Delivered to: ", --!!! 
+  PL0 "Dostarczono do: ",
+  KO0 "Delivered to  : ", --???
+  NO0 "Levert til: ", --!!! 
+  NL0 "Afgeleverd aan:", --!!! 
+  RU0 "Äîñòàâëåíî êîìó: ", --!!! 
+  CH0 "´«ËÍÖÁ£º", 
+  FI0 "Toimitettu  : ", --!!! 
+  ES1 "Lliurat a : ",
+  CS0 "Pøíjemce: ", --!!! 
+  HU0 "Kézbesítve  : ", --!!! 
+  CH1 "Delivered to  : ", --????
+  SV0 "Levererat till: ",
+  AR0 "Êã ÇáÊæÕí?Åá? ",
+  DA0 "Leveret til : ",
+  HE0 "Delivered to : "; --???
+
+TI_CERT_DELIVERED_BY:
+  CHK "Delivered by : 12345678901234567890",
+  GAE "Delivered by : ", --???
+  FR0 "Delivr?par : ",
+  EN0 "Delivered by : ",
+  DE0 "Geliefert von: ",
+  IT0 "Consegnato da : ",
+  PT0 "Entregue por: ",
+  ES0 "Enviado por: ",
+  US0 "Delivered by: ", --!!! 
+  PL0 "Dostarczone przez: ",
+  KO0 "Delivered by : ", --???
+  NO0 "Levert av: ", --!!! 
+  NL0 "Afgeleverd door:", --!!! 
+  RU0 "Äîñòàâëåíî êå? ", --!!! 
+  CH0 "·¢¼şÈË£º ", 
+  FI0 "Toimittaja : ", --!!! 
+  ES1 "Lliurat per : ",
+  CS0 "Doruèil: ", --!!! 
+  HU0 "Kézbesítette : ", --!!! 
+  CH1 "Delivered by : ", --????
+  SV0 "Levererat av: ",
+  AR0 "Êã ÇáÊæÕí?ÈæÇÓØÉ: ",
+  DA0 "Leveret af : ",
+  HE0 "Delivered by : "; --???
+
+TI_CERT_VALID_FROM:
+  CHK "Valid from : .12345678901234567890",
+  GAE "Valid from : ", --???
+  FR0 "Valide ?partir du : ",
+  EN0 "Valid from : ",
+  DE0 "Gültig ab: ",
+  IT0 "Valido da : ",
+  PT0 "Válido a partir de: ",
+  ES0 "Válido desde: ",
+  US0 "Valid from: ", --!!! 
+  PL0 "Wa¿ne od: ",
+  KO0 "Valid from : ", --???
+  NO0 "Gyldig fra: ", --!!! 
+  NL0 "Geldig van:", --!!! 
+  RU0 "Äåéñòâèòåëüí?? ", --!!! 
+  CH0 "ÓĞĞ§ÆÚ´Ó£º ", 
+  FI0 "Vahvistettu : ", --!!! 
+  ES1 "Vàlid des de : ",
+  CS0 "Platn?od: ", --!!! 
+  HU0 "Érvényesség kezdete : ", --!!! 
+  CH1 "Valid from : ", --????
+  SV0 "Giltigt från: ",
+  AR0 "ÕÇáÍ ãä: ",
+  DA0 "Godkendt fra : ",
+  HE0 "Valid from : "; --???
+
+TI_CERT_VALID_TO:
+  CHK " until : 12345678901234567890",
+  GAE " until : ", --???
+  FR0 " jusqu'au : ",
+  EN0 " until : ",
+  DE0 " bis: ",
+  IT0 " fino : ",
+  PT0 " at? ",
+  ES0 " hasta: ",
+  US0 " until: ", --!!! 
+  PL0 " do: ",
+  KO0 " until : ", --???
+  NO0 " til: ", --!!! 
+  NL0 " tot: ", --!!! 
+  RU0 "äî: ", --!!! 
+  CH0 " ÖÁ£º", 
+  FI0 " saakka : ", --!!! 
+  ES1 " fins a : ",
+  CS0 " do: ", --!!! 
+  HU0 " vége : ", --!!! 
+  CH1 " until : ", --????
+  SV0 " till: ",
+  AR0 "ÍÊ? ",
+  DA0 " indtil : ",
+  HE0 " until : "; --???
+
+TI_CERT_NEEDS_INSTALL:
+  CHK "needs to be installed on your machine.12345678901234567890",
+  GAE "needs to be installed on your machine.", --???
+  FR0 "doit être install?sur votre machine.",
+  EN0 "needs to be installed on your machine.",
+  DE0 "muss auf Ihrem System installiert werden.",
+  IT0 "deve essere installato sulla macchina.",
+  PT0 "tem de ser instalado no computador.",
+  ES0 "debe instalarse en la máquina.",
+  US0 "must be installed on your machine.", --!!! 
+  PL0 "musi by?zainstalowana na Twoim komputerze.",
+  KO0 "needs to be installed on your machine.", --???
+  NO0 "m?installeres p?maskinen din.", --!!! 
+  NL0 "moet op uw computer zijn geïnstalleerd.", --!!! 
+  RU0 "íåîáõîäèìî óñòàíîâèòü íà êîìïüşòåğå.", --!!! 
+  CH0 "ĞèÒª°²×°ÔÚÄúµÄ»úÆ÷ÉÏ¡£", 
+  FI0 "on asennettava tietokoneeseen.", --!!! 
+  ES1 "cal instal·lar-lo al vostre equip.",
+  CS0 "je tøeba nainstalovat do vašeho poèítaèe.", --!!! 
+  HU0 "telepítend?a készülékre.", --!!! 
+  CH1 "needs to be installed on your machine.", --????
+  SV0 "behöver installeras p?datorn.",
+  AR0 "íÌ?ÊËÈíÊå Úá?ÌåÇÒ?",
+  DA0 "skal installeres p?din PC.",
+  HE0 "needs to be installed on your machine."; --???
+
+TI_BADLICENSE:
+  CHK "Utilisateur non reconnu. 0123456789 0123456789 0123456789 0123456789 0123456789 0123456789 0123456789",
+  GAE "The licence associated with this user is not correct.",
+  FR0 "La license associée ?cet utilisateur n'est pas correcte.",
+  EN0 "The licence associated with this user is not correct.",
+  DE0 "Die diesem Benutzer zugeordnete Lizenz ist nicht korrekt.",
+  IT0 "La licenza associata a questo utente non ?corretta.",
+  PT0 "A licença associada a este utilizador não est?correcta.",
+  ES0 "La licencia asociada con este usuario no es correcta.",
+  US0 "The license associated with this user is not correct.", --!!! 
+  PL0 "Licencja skojarzona z tym u¿ytkownikiem nie jest poprawna.",
+  KO0 "ÀÌ »ç¿ëÀÚ¿Í ¿¬°áµÈ ¶óÀÌ¼¾½º°¡ Àß¸øµÇ¾ú½À´Ï´Ù.",
+  NO0 "Lisensen som er knyttet til denne brukeren, er ikke riktig.",
+  NL0 "De licentie die aan deze gebruiker is gekoppeld, is onjuist.", --!!! 
+  RU0 "Ëèöåíç? äëÿ ıòîã?ïîëüçîâàòå? íåäåéñòâèòåëüí?",
+  CH0 "Óë´ËÓÃ»§Ïà¹ØÁªµÄÈÏÖ¤²»ÕıÈ·.",
+  FI0 "Tämän käyttäjän käyttöoikeus on virheellinen.",
+  ES1 "La llicència associada amb aquest usuari no és correcta.",
+  CS0 "Licence pøidruen?k tomuto uivateli nen?správn?",
+  HU0 "Az ehhez a felhasználóhoz tartoz?licenc nem megfelel?",
+  CH1 "»P¦¹¨Ï¥ÎªÌ¬ÛÃöªº±ÂÅv¿ù»~<¡C0}",
+  SV0 "Licensen som är associerad med den här användaren är inte korrekt.",
+  AR0 "ÇáÊÑÎí?ÇáãÊÚá?ÈåĞÇ ÇáãÓÊÎÏã Ûí?ÕÍíÍ",
+  DA0 "Den licens, der er knyttet til denne bruger, er ikke korrekt.",
+  HE0 "The licence associated with this user is not correct."; --???
+
+NO_CONFIG_FILE:
+  CHK "Erreur lors de l'accès au fichier 0123456789 0123456789 0123456789 0123456789 0123456789 0123456789 0123456789",
+  GAE "Impossible to access or read file",
+  FR0 "Erreur lors de l'accès au fichier",
+  EN0 "Impossible to access or read file",
+  DE0 "Zugriff auf/Lesen der Datei nicht möglich",
+  IT0 "Impossibile accedere al file o leggerlo",
+  PT0 "Impossível aceder ou ler o ficheiro",
+  ES0 "No se puede acceder al archivo o leerlo",
+  US0 "Unable to access or read file.", --!!! 
+  PL0 "Nie mo¿na odczyta?lub uzyska?dostêpu do pliku",
+  KO0 "Impossible to access or read file", --???
+  NO0 "Filen kunne ikke åpnes eller leses", --!!! 
+  NL0 "Bestand kan niet worden geopend of gelezen", --!!! 
+  RU0 "Íåâîçìîæíî ïîëó÷èòü äîñòóï ?ôàéë?èë?ïğî÷èòàò?åã?, --!!! 
+  CH0 "²»ÄÜ½ÓÈë»ò¶ÁÈ¡ÎÄ¼ş", 
+  FI0 "Tiedostoa ei voi käyttää tai lukea", --!!! 
+  ES1 "No s'hi pot accedir ni llegir el fitxer",
+  CS0 "Pøístup k souboru nen?mon?nebo jej nelze èíst", --!!! 
+  HU0 "Nem érhet?el vagy olvashat?a fájl.", --!!! 
+  CH1 "Impossible to access or read file", --????
+  SV0 "Det går inte att komma åt eller läsa filen",
+  AR0 "áÇ íãßä ÇáæÕæá Åá?Çáãá?Ãæ ŞÑÇÁÊå",
+  DA0 "Kan ikke åbne eller læse filen",
+  HE0 "Impossible to access or read file"; --???
+
