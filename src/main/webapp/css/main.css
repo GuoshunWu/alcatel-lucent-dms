@@ -1,4 +1,5 @@
-@import "jqueryUI/themes/base/jquery.ui.all.css";
+/*@import "jqueryUI/themes/base/jquery.ui.all.css";*/
+@import "//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css";
 @import "jqgrid/ui.jqgrid.css";
 @import "jqueryLayout/layout.css";
 /*
