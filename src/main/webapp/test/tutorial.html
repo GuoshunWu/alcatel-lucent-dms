@@ -4,62 +4,21 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 
     <style type="text/css">
+        @import "//frcolv10lin237.pqa-collab.fr.alcatel-lucent.com/css/jqueryUI/themes/base/jquery.ui.all.css";
+    </style>
+
+    <style type="text/css">
         .preview {
-            height: 100px;
+            /*height: 100px;*/
             font-weight: bolder;
             font-size: 10px;
             text-align: center;
         }
 
-        .playerStyle {
-            display: block;
-            outline: 0px;
-            position: absolute;
-            width: 1126px;
-            height: 667px;
-            display: none;
-
-            border: 1px solid #aaaaaa;
-            color: #222222;
-            z-index: 3000;
-
-        }
-
-        .ui-widget-header {
-            border: 1px solid #aaaaaa;
-            display: block;
-
-            background: #cccccc url(//frcolv10lin237.pqa-collab.fr.alcatel-lucent.com/css/jqueryUI/themes/base/images/ui-bg_highlight-soft_75_cccccc_1x100.png) 50% 50% repeat-x;
-            color: #222222;
-            font-weight: bold;
+        .playerFont {
+            font-family: Lucida Grande, Lucida Sans, Arial, Helvetica, sans-serif, '宋体';
             font-size: 12px;
         }
-
-        .ui-dialog .ui-dialog-titlebar {
-            padding: .4em 1em;
-            position: relative;
-        }
-
-        .ui-icon {
-            width: 16px;
-            height: 16px;
-            background-image: url(//frcolv10lin237.pqa-collab.fr.alcatel-lucent.com/css/jqueryUI/themes/base/images/ui-icons_222222_256x240.png) /*{iconsContent}*/;
-        }
-
-        .ui-icon-closethick {
-            background-position: -96px -128px;
-        }
-
-        .ui-dialog .ui-dialog-titlebar-close {
-            position: absolute;
-            right: .3em;
-            top: 50%;
-            width: 19px;
-            margin: -10px 0 0 0;
-            padding: 1px;
-            height: 18px;
-        }
-
     </style>
 </head>
 <body>
@@ -69,48 +28,17 @@
         <th colspan="2">Guides</th>
     </tr>
     </thead>
-    <tbody>
-    <tr>
-        <td>
-            <div class="preview" id="//frcolv10lin237.pqa-collab.fr.alcatel-lucent.com/manual/CreateProductApp.swf">
-                <img src="//frcolv10lin237.pqa-collab.fr.alcatel-lucent.com/images/play_icon.png" alt=""/><br/>
-                Create Product/Application
-            </div>
-        </td>
-        <td>
-            <div class="preview" id="//frcolv10lin237.pqa-collab.fr.alcatel-lucent.com/manual/CreateTranslationTask.swf">
-                <img src="//frcolv10lin237.pqa-collab.fr.alcatel-lucent.com/images/play_icon.png" alt=""/><br/>
-                Create Translation Task
-            </div>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <div class="preview" id="//frcolv10lin237.pqa-collab.fr.alcatel-lucent.com/manual/ImportDictionary.swf">
-                <img src="//frcolv10lin237.pqa-collab.fr.alcatel-lucent.com/images/play_icon.png" alt=""/><br/>
-                Import Dictionary
-            </div>
-        </td>
-        <td>
-            <div class="preview" id="//frcolv10lin237.pqa-collab.fr.alcatel-lucent.com/manual/ExportDictionary.swf">
-                <img src="//frcolv10lin237.pqa-collab.fr.alcatel-lucent.com/images/play_icon.png" alt=""/><br/>
-                Export Dictionary
-            </div>
-        </td>
-    </tr>
-    </tbody>
+    <tbody></tbody>
 </table>
 
-<div id="player" class="playerStyle ui-dialog">
-    <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">
-        <span class="ui-dialog-title" id="ui-dialog-title-player"></span>
-        <a href="javascript:void(0);" class="ui-dialog-titlebar-close ui-corner-all">
-            <span class="ui-icon ui-icon-closethick"></span>
-        </a>
-    </div>
-    <div class="ui-dialog-content ui-widget-content">
-
-    </div>
+<div id="playerDialog" style="padding: 0px;">
+    <table style="height: 100%; width: 100%" border="0">
+        <tr>
+            <td>
+                <div class="playerContent"></div>
+            </td>
+        </tr>
+    </table>
 </div>
 
 
@@ -124,37 +52,77 @@
 <script type="text/javascript">
     $(function () {
 
-        function showTutorial(swf, title) {
-            var width = 1126;
-            var height = 667;
+        var defaultPlayer = $("div#playerDialog").dialog({
+            autoOpen: false, resizable: false,
+            dialogClass: 'playerFont',
+            width: 1133, height: "auto",
+            close: function (event, ui) {
+                $("div.playerContent", this).empty();
+            }
+        });
 
-            var embed = $("<" + "EMBED" + ">").attr({
-                src: swf, width: width, height: height,
-                quality: "low", loop: false, wmode: "transparent",
-                TYPE: "application/x-shockwave-flash",
-                PLUGINSPAGE: "http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash"
-            });
+        function showTutorial(swf, title, player) {
+            if (!player) player = defaultPlayer;
+            var width = 1126, height = 667,
+                    embed = '<' + 'EMBED ' + 'SRC="' + swf + '" width= ' + width + ' height=' + height + ' qulity=low loop=false wmode=transparent ';
+            embed += "type='application/x-shockwave-flash' ";
+            embed += 'pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash"' + '>';
+            embed += "<" + '/EMBED' + '>';
 
-            var playDialog = $("div#player");
-            $("span.ui-dialog-title", playDialog).empty().text(title);
-            $("div.ui-dialog-content", playDialog).empty().append(embed);
-            playDialog.show();
-
-            $('a.ui-dialog-titlebar-close', playDialog).on('click', function (e) {
-                $("div.ui-dialog-content", playDialog).empty();
-                playDialog.hide();
-            });
+            $("div.playerContent", player).html(embed);
+            player.dialog("option", "title", title)
+                    .dialog("open");
         }
 
-        $("div#player").position({my: 'center', at: 'center', of: window});
 
-        $("div.preview", "table#guidesArea").on("click", function (e) {
-            var swfURL = this.id;
-            if (!swfURL) return;
-            var title = $(this).text().trim();
-            console.log("swfURL=" + swfURL + ", title=" + title);
-            showTutorial(swfURL, title);
+        function initPreviews(container, colNum, swfFiles) {
+            if (!container) container = $("#guidesArea");
+            if (!colNum) colNum = 2;
+            var remoteResourceAddr = "//frcolv10lin237.pqa-collab.fr.alcatel-lucent.com/",
+                    swfBasePath = remoteResourceAddr + "manual/",
+                    imageBasePath = remoteResourceAddr + "images/",
+                    rowNum = Math.ceil(swfFiles.length / colNum),
+                    swfIndex = 0,
+                    imgFileName = "play_icon.png";
+
+            for (var row = 0; row < rowNum; ++row) {
+                //create tr
+                var trRow = $("<" + "tr" + ">");
+                for (var col = 0; col < colNum; ++col) {
+                    if (swfIndex >= swfFiles.length)break;
+                    var fileEntry = swfFiles[swfIndex++];
+
+                    var preview = $("<" + "div" + ">").addClass("preview").prop("id", swfBasePath + fileEntry.filename + ".swf").append(
+                            $("<" + "img" + ">").prop("src", imageBasePath + imgFileName).after("<" + "br/" + ">" + fileEntry.title));
+
+                    preview.on("mouseover", function (e) {
+                        $(this).addClass('ui-state-hover');
+                    })
+                            .on("mouseout", function (e) {
+                                $(this).removeClass('ui-state-hover');
+                            })
+                            .on("click", function (e) {
+                                var swfURL = this.id;
+                                if (!swfURL) return;
+                                var title = $.trim($(this).text());
+                                if (typeof console !== "undefined" && console !== null) {
+                                    console.log("swfURL=" + swfURL + ", title=" + title);
+                                }
+                                showTutorial(swfURL, title);
+                            });
+                    trRow.append($("<" + "td" + ">").append(preview));
+                }
+                $("tbody", container).append(trRow);
+            }
+        }
+
+        var jsonServerBase = "//frcolv10lin237.pqa-collab.fr.alcatel-lucent.com/";
+        jsonServerBase = '../';
+
+        var test = $.getJSON(jsonServerBase + "scripts/tutorialsJSON.groovy", function (json) {
+            initPreviews($("#guidesArea"), 2, json);
         });
+
     });
 </script>
 </body>

@@ -179,7 +179,7 @@ define [
     autoOpen: false
     title: i18n.dialog.stringsettings.title, modal: true
     width: 910,
-    height: 620
+    height: 630
     create: (e, ui)->
       # create search text component
       $('#searchText', @).keydown (e)=>
@@ -214,6 +214,22 @@ define [
           ($.msgBox json.message, null, title: c18n.warning; return) unless json.status == 0
           grid.trigger 'reloadGrid'
 
+      capitalizeId = '#stringCapitalize'
+      menu = $(capitalizeId + 'Menu').hide().menu(
+        select: ( event, ui )->
+          console.log $('a',ui.item).prop('name')
+      )
+
+      $(capitalizeId).button(
+        create:(event, ui)->$(@).width(180)
+        icons: {
+          primary: "ui-icon-triangle-1-n"
+        }
+      ).on('click', (e)->
+        menu.width($(@).width() - 3).show().position(my: "left bottom", at: "left top", of: this)
+        $(document).one("click", ()->menu.hide())
+        false
+      )
 
     open: (e, ui)->
       stgrid.lockLabels()

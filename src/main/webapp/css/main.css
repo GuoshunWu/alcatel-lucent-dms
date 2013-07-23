@@ -1,6 +1,9 @@
-@import "jqueryUI/themes/base/jquery.ui.all.css";
+/*@import "jqueryUI/themes/base/jquery.ui.all.css";*/
+/*@import "//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css";*/
+@import "jqueryUI/1.10.3/themes/smoothness/jquery-ui-1.10.3.custom.min.css";
 @import "jqgrid/ui.jqgrid.css";
 @import "jqueryLayout/layout.css";
+
 /*
 *	GENERAL COSMETICS
 */
@@ -32,7 +35,7 @@ html, body {
     color: red;
 }
 
-.form-label{
+.form-label {
     font-weight: bold;
     text-align: right;
 }
@@ -102,40 +105,42 @@ input[readonly] {
     text-shadow: 1px 1px 0 #fff;
 }
 
-.translation-search-text{
+.translation-search-text {
     /*border: 1px rgb(0, 82, 255) dashed;*/
     /*background-color: gainsboro;*/
 }
 
-.import-report-header{
-    height: 20px!important;
+.import-report-header {
+    height: 20px !important;
 }
 
-.import-report-label{
+.import-report-label {
     text-align: right;
     width: 180px;
     height: 30px;
 }
 
-.import-report-number{
+.import-report-number {
     text-align: right;
     width: 75px;
 }
 
-.import-report-group{
+.import-report-group {
     border-bottom: 1px solid #000000;
 }
 
-.import-report-group-right{
+.import-report-group-right {
     border-right: 1px solid #000000;
 }
 
-.import-report-chart-container{
-    width: 260px; height: 120px; margin: 0 auto
+.import-report-chart-container {
+    width: 260px;
+    height: 120px;
+    margin: 0 auto
     /*width: 400px; height: 240px; margin: 0 auto*/
 }
 
-.import-report-title{
+.import-report-title {
     font-weight: bold;
 }
 
