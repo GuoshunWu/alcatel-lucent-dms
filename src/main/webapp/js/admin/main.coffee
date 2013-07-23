@@ -10,9 +10,10 @@ define [
   'dms-urls'
   'dms-util'
 
-  'admin/languagegrid'
-  'admin/charsetgrid'
-  'admin/usergrid'
+  './languagegrid'
+  './charsetgrid'
+  './usergrid'
+  './glossarygrid'
 
 ], (require, $, blockui,jqmsgbox, i18n, c18n, urls, util)->
   init = ()->

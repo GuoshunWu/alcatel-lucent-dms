@@ -223,6 +223,23 @@ define [
       return
     $('#removeLanguageDialog').data('param', dicts: dicts).dialog 'open'
 
+  capitalizeId = '#dictCapitalize'
+  menu = $(capitalizeId + 'Menu', '#DMS_applicationPanel').hide().menu(
+    select: ( event, ui )->
+      console.log $('a',ui.item).prop('name')
+  )
+
+  $(capitalizeId, '#DMS_applicationPanel').button(
+    create:(event, ui)->$(@).width(180)
+    icons: {
+      primary: "ui-icon-triangle-1-n"
+    }
+  ).on('click', (e)->
+    menu.width($(@).width() - 3).show().position(my: "left bottom", at: "left top", of: this)
+    $(document).one("click", ()->menu.hide())
+    false
+  )
+
 
   appChanged: (param)->
     prop = "languageReferenceCode,base.name,version,base.format,base.encoding,labelNum"

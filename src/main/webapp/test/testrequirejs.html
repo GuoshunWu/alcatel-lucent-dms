@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>jQuery UI Dialog</title>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>
+
+    <script type="text/javascript" src="../js/lib/require.js"></script>
+
+</head>
+<body>
+    Let's have a test.
+
+    <div id="hiDialog"></div>
+
+    <script type="text/javascript">
+        require(['../js/config.js?bust=' + new Date().getTime(), '../js/lib/domReady'], function (config, domReady) {
+            domReady(function(){
+                console.log(requirejs.toUrl("."));
+            });
+        });
+    </script>
+</body>
+</html>

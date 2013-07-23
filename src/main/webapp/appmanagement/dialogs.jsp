@@ -157,6 +157,16 @@
                 </ul>
                 <button id='makeStringSettingsLabelTranslateStatus'><s:text
                         name="transmng.summarypanel.makelabelas"/></button>
+                &nbsp; &nbsp; &nbsp; &nbsp;
+                <button id='stringCapitalize'><s:text
+                        name="appmng.capitalize"/></button>
+                <ul id="stringCapitalizeMenu">
+                    <li><a name="all" href="#" ><s:text name="appmng.capitalize.all"/></a></li>
+                    <li><a name="first" href="#"><s:text name="appmng.capitalize.first"/></a></li>
+                    <li><a name="lower" href="#"><s:text name="appmng.capitalize.lower"/></a></li>
+                    <li><a name="upper" href="#"><s:text name="appmng.capitalize.upper"/></a></li>
+                </ul>
+
             </td>
         </tr>
     </table>
