@@ -2,11 +2,12 @@ require.config
   baseUrl: 'js/lib'
   paths:
 #    jquery: 'jquery-1.7.2.min'
-    jquery: 'jquery-1.10.1.min'
+#    jquery: 'jquery-1.10.1.min'
+    jquery: '//code.jquery.com/jquery-1.10.1'
     "jquery.migrate": 'jquery-migrate-1.2.1.min'
 #    jqueryui: 'jquery-ui-1.8.22.custom.min'
     jqueryui: 'jquery-ui-1.10.3.custom.min'
-#    jqueryui: '//code.jquery.com/ui/1.10.3/jquery-ui.min'
+#    jqueryui: 'jquery-ui'
 
     formvalidate: 'formValidator-4.0.1.min'
     formvalreg: 'formValidatorRegex'
@@ -59,10 +60,10 @@ require.config
       deps: ['jquery']
       exports: 'jQuery'
     'jqueryui':
-      deps: ['jquery.migrate']
+      deps: ['jquery']
       exports: 'jQuery'
     'jqupload':
-      deps: ['jquery']
+      deps: ['jqueryui','jquery.migrate','iframetransport']
       exports: 'jQuery'
     'i18n/grid.locale-en':
       deps: ['jquery']
@@ -71,16 +72,16 @@ require.config
       deps: ['jquery']
       exports: 'jQuery'
     'jqgrid':
-      deps: ['jqueryui', if param? then param.i18ngridfile else 'i18n/grid.locale-en']
+      deps: ['jqueryui','jquery.migrate', if param? then param.i18ngridfile else 'i18n/grid.locale-en']
       exports: 'jQuery'
     'jqtree':
       deps: ['jquery']
       exports: 'jQuery'
     'jqlayout':
-      deps: ['jquery','jqueryui']
+      deps: ['jqueryui']
       exports: 'jQuery'
     'jqmsgbox':
-      deps: ['jquery']
+      deps: ['jqueryui']
       exports: 'jQuery'
     'blockui':
       deps: ['jquery']

@@ -18,11 +18,12 @@ define [
 ], (require, $, blockui,jqmsgbox, i18n, c18n, urls, util)->
   init = ()->
     #    console?.log "transmng panel init..."
+
     $('#adminTabs').tabs(
-      show: (event, ui)->
-        pheight = $(ui.panel).height()
-        pwidth = $(ui.panel).width()
-        #        console?.log "height=#{pheight}, width=#{pwidth}."
+      activate: (event, ui)->
+        pheight = $(ui.newPanel).height()
+        pwidth = $(ui.newPanel).width()
+#        console?.log "height=#{pheight}, width=#{pwidth}."
         $('table.ui-jqgrid-btable', ui.panel).setGridHeight(pheight - 90).setGridWidth(pwidth - 20)
     )
 
