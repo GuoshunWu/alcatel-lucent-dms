@@ -84,7 +84,7 @@
             </props>
         </property>
 
-        <property name="packagesToScan" value="com.alcatel_lucent.dms.model.test"/>
+        <property name="packagesToScan" value="com.alcatel_lucent.dms.model"/>
         <property name="mappingDirectoryLocations">
             <list>
                 <value>classpath:com/alcatel_lucent/dms/model</value>

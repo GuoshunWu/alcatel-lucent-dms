@@ -81,7 +81,9 @@ define ['require','jqtree', 'jqmsgbox', 'dms-util', 'dms-urls', 'i18n!nls/common
             currentTab=$("#pageNavigator").val()
 #            console?.log "current tab= #{currentTab}"
             currentModule = currentTab.split('.')[0]
-            module = require "#{currentModule}/main"
+            moduleToLoad = "#{currentModule}/main"
+            console?.log "module to load: #{moduleToLoad}"
+            module = require moduleToLoad
             module?.nodeSelect?(node, nodeInfo)
         , 300)
 

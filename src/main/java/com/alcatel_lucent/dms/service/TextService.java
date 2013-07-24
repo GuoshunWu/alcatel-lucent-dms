@@ -14,7 +14,7 @@ public interface TextService {
 	
 	/**
 	 * Find context by name.
-	 * @param name context name
+	 * @param key context name
 	 * @return persistent Context object
 	 */
 	Context getContextByKey(String key);
@@ -98,7 +98,7 @@ public interface TextService {
     
     /**
      * Update translation status
-     * @param tarnsIds Translation object id list
+     * @param transIds Translation object id list
      * @param transStatus new translation status
      */
     void updateTranslationStatus(Collection<Long> transIds, int transStatus);
