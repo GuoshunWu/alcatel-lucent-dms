@@ -2,8 +2,8 @@ require.config
   baseUrl: 'js/lib'
   paths:
 #    jquery: 'jquery-1.7.2.min'
-#    jquery: 'jquery-1.10.1.min'
-    jquery: '//code.jquery.com/jquery-1.10.1'
+    jquery: 'jquery-1.10.1.min'
+#    jquery: '//code.jquery.com/jquery-1.10.1'
     "jquery.migrate": 'jquery-migrate-1.2.1.min'
 #    jqueryui: 'jquery-ui-1.8.22.custom.min'
     jqueryui: 'jquery-ui-1.10.3.custom.min'
@@ -62,9 +62,9 @@ require.config
     'jqueryui':
       deps: ['jquery']
       exports: 'jQuery'
-    'jqupload':
-      deps: ['jqueryui','jquery.migrate','iframetransport']
-      exports: 'jQuery'
+#    'jqupload':
+#      deps: ['jqueryui','jquery.migrate','iframetransport']
+#      exports: 'jQuery'
     'i18n/grid.locale-en':
       deps: ['jquery']
       exports: 'jQuery'
@@ -83,9 +83,9 @@ require.config
     'jqmsgbox':
       deps: ['jqueryui']
       exports: 'jQuery'
-    'blockui':
-      deps: ['jquery']
-      exports: 'jQuery'
+#    'blockui':
+#      deps: ['jquery']
+#      exports: 'jQuery'
     'themeswitchertool':
       deps: ['jquery']
       exports: 'jQuery'
