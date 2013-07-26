@@ -53,6 +53,10 @@ define (require)->
     generate_translation_details: getURL('generate-translation-details', 'trans/')
     export_translation_details: getURL('export-translation-details', 'trans/')
     import_translation_details: getURL('import-translation-details', 'trans/')
+  charset:
+    update: getURL('charset', 'admin/')
+  glossary:
+    update: getURL('glossary', 'admin/')
 
   user:
     update: getURL('user', 'admin/')
@@ -87,6 +91,7 @@ define (require)->
     texts: getURL('texts', 'rest/')
     refs: getURL('text/refs', 'rest/')
     translations: getURL('text/translations', 'rest/')
+  glossaries: getURL('glossaries', 'rest/')
 
   getURL: getURL
 

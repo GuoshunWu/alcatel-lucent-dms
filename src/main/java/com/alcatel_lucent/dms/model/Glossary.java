@@ -1,7 +1,12 @@
 package com.alcatel_lucent.dms.model;
 
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
+
+
 import javax.persistence.*;
-import java.sql.Timestamp;
+import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,31 +17,38 @@ import java.sql.Timestamp;
  */
 
 @Entity
-@Table(name = "GLOSSARY")  @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Table(name = "GLOSSARY")
 public class Glossary {
-    private Timestamp createTime;
 
+//    @Temporal(TemporalType.TIMESTAMP)
+//    @Generated(GenerationTime.ALWAYS)
+    @Column(name = "CREATE_TIME", updatable = false, nullable = false)
+    private Date createTime;
+
+    @Id
+    @Column(name = "TEXT")
     private String text;
 
     public Glossary() {
     }
 
-    public Glossary(Timestamp createTime, String text) {
-        this.createTime = createTime;
+    public Glossary(String text) {
         this.text = text;
     }
 
-    @Column(name="CREATE_TIME")
-    public Timestamp getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Timestamp createTime) {
+    public Glossary(Date createTime, String text) {
+        this(text);
         this.createTime = createTime;
     }
 
-    @Id
-    @Column(name="TEXT")
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
     public String getText() {
         return text;
     }

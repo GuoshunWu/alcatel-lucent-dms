@@ -82,7 +82,7 @@ define ['require','jqtree', 'jqmsgbox', 'dms-util', 'dms-urls', 'i18n!nls/common
 #            console?.log "current tab= #{currentTab}"
             currentModule = currentTab.split('.')[0]
             moduleToLoad = "#{currentModule}/main"
-            console?.log "module to load: #{moduleToLoad}"
+#            console?.log "module to load: #{moduleToLoad}"
             module = require moduleToLoad
             module?.nodeSelect?(node, nodeInfo)
         , 300)
