@@ -152,7 +152,8 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 	                Translation dbTrans = dbText.getTranslation(trans.getLanguage().getId());
 	                if (dbTrans == null) {
 	                	if (trans.getTranslationType() == null && trans.getStatus() == Translation.STATUS_TRANSLATED) {
-	                		trans.setTranslationType(Translation.TYPE_DICT);
+	                		trans.setTranslationType(trans.getTranslationType() != null ? 
+	                				trans.getTranslationType() : Translation.TYPE_DICT);
 	                	}
             			trans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
 						dbTrans = addTranslation(dbText, trans);
@@ -162,7 +163,8 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 	                		dbTrans.setTranslation(trans.getTranslation());
 	                	}
 						dbTrans.setStatus(trans.getStatus());
-						dbTrans.setTranslationType(Translation.TYPE_TASK);
+						dbTrans.setTranslationType(trans.getTranslationType() != null ? 
+								trans.getTranslationType() : Translation.TYPE_TASK);
 						dbTrans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
 	                } else {
 	                	// in DELIVERY_MODE, set status to UNTRANSLATED if translation is explicitly requested 
@@ -173,11 +175,11 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 //	                	}
 	                	// update translation if got translated in delivered dict
 	                	if (dbTrans.getStatus() != Translation.STATUS_TRANSLATED && 
-	                			trans.getStatus() == Translation.STATUS_TRANSLATED &&
-	                			!trans.getTranslation().equals(text.getReference())) {
+	                			trans.getStatus() == Translation.STATUS_TRANSLATED) {
 	                		dbTrans.setTranslation(trans.getTranslation());
 	                		dbTrans.setStatus(Translation.STATUS_TRANSLATED);
-	                		dbTrans.setTranslationType(Translation.TYPE_DICT);
+	                		dbTrans.setTranslationType(trans.getTranslationType() != null ? 
+	                				trans.getTranslationType() : Translation.TYPE_DICT);
 	                		dbTrans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
 	                	}
 	                }
@@ -677,26 +679,6 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 			}
 		}
 		return result;
-	}
-
-
-	@Override
-	public Text updateTranslations(Label label) {
-    	Collection<Text> texts = new ArrayList<Text>();
-    	Text text = new Text();
-    	text.setReference(label.getReference());
-    	texts.add(text);
-        if (label.getDictionary().getDictLanguages() != null) {
-	        for (DictionaryLanguage dl : label.getDictionary().getDictLanguages()) {
-	        	Translation trans = new Translation();
-	        	trans.setTranslation(label.getReference());
-	        	trans.setLanguage(dl.getLanguage());
-	        	trans.setStatus(Translation.STATUS_UNTRANSLATED);
-	        	text.addTranslation(trans);
-	        }
-        }
-        Map<String, Text> textMap = updateTranslations(label.getContext().getId(), texts, Constants.ImportingMode.DELIVERY);
-        return textMap.get(label.getReference());
 	}
 
 
