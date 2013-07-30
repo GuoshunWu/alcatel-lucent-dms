@@ -16,7 +16,8 @@
         <hibernate.version>3.6.10.Final</hibernate.version>
         <!--<hibernate.version>4.1.6.Final</hibernate.version>-->
         <gmavenVersion>1.5</gmavenVersion>
-        <jerseyVersion>1.13</jerseyVersion>
+        <!--<jerseyVersion>1.13</jerseyVersion>-->
+        <jerseyVersion>1.17.1</jerseyVersion>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <buildNumber>${maven.build.timestamp}</buildNumber>
 

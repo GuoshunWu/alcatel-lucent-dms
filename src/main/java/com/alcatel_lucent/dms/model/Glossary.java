@@ -73,4 +73,12 @@ public class Glossary {
     public int hashCode() {
         return text != null ? text.hashCode() : 0;
     }
+
+    @Override
+    public String toString() {
+        return "Glossary{" +
+                "createTime=" + createTime +
+                ", text='" + text + '\'' +
+                '}';
+    }
 }

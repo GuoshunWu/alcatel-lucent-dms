@@ -70,8 +70,7 @@ define [
         param.key = rowData.key
         param.ref = rowData.reference
 
-        $('#stringSettingsTranslationDialog').data param: param
-        $('#stringSettingsTranslationDialog').dialog 'open'
+        $('#stringSettingsTranslationDialog').data(param: param).dialog 'open'
 
     afterEditCell: (rowid, cellname, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
     afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->

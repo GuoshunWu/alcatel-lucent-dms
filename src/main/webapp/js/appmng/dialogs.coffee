@@ -20,6 +20,37 @@ define [
 ], ($, jqgrid, blockui, msgbox, c18n, i18n, urls, util, previewgrid, stgrid, chart)->
 
   #  console?.log "module appmng/dialogs loading."
+
+
+  capitalizationDialog = $('#capitalizationDialog').dialog(
+    autoOpen: false, modal: true
+    width: 1100, height: 'auto'
+    show: { effect: 'slide', direction: "up" }
+
+    open: (e, ui) ->
+      params = $(@).data 'params'
+      console?.log params
+      $.getJSON urls.languages, {prop: 'id,name', dict: params.dicts}, (languages)=>
+        langTable = util.generateLanguageTable languages
+        $(@).empty().append(langTable)
+
+    buttons: [
+      {text: c18n.ok, click: (e)->
+        languages = $("input:checkbox[name='languages']:checked", @).map (index, element)->{id: element.id, name: element.value}
+        if(languages.length == 0)
+          $.msgBox c18n.languagerequired, null, title: (c18n.warning)
+          return
+
+        params = $(@).data 'params'
+        postData =
+          languages: languages
+          dicts: params.dicts
+        $(@).dialog "close"
+      }
+      {text: c18n.cancel, click: (e)->$(@).dialog "close"}
+    ]
+  )
+
   newProductVersion = $("#newProductReleaseDialog").dialog(
     autoOpen: false
     height: 200, width: 500, modal: true
@@ -215,9 +246,18 @@ define [
           grid.trigger 'reloadGrid'
 
       capitalizeId = '#stringCapitalize'
+
       menu = $(capitalizeId + 'Menu').hide().menu(
         select: ( event, ui )->
-          console.log $('a',ui.item).prop('name')
+          grid = $("#stringSettingsGrid")
+          ids = grid.getGridParam('selarrrow').join(",")
+          ($.msgBox (c18n.selrow.format c18n.label), null, title: c18n.warning; return) unless ids
+
+          $('#capitalizationDialog').data(params: {
+            labels: ids,
+            type: $('a',ui.item).prop('name')
+            dicts: stringSettings.data("param").id
+          }).dialog('open')
       )
 
       $(capitalizeId).button(

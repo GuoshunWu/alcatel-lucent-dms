@@ -1,3 +1,6 @@
+<div id="capitalizationDialog" title="<s:text name="appmng.dialogs.capitalize.title"/>">
+</div>
+
 <div id="newProductReleaseDialog" title="<s:text name="appmng.newproduct"/>">
     <table>
         <tr>

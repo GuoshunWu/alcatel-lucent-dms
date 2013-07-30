@@ -41,6 +41,16 @@ define [
         msg = json.event.msg
         $.msgBox msg, null, {title: c18n.info, width: 300, height: 'auto'}
       , pb)
+
+    $('#consistentGlossaries').button().click (e)->
+      $.blockUI()
+      $.post urls.glossary.update, {oper: 'consistentGlossaries'}, (json)->
+        $.unblockUI()
+        if 0 != json.status
+          $.msgBox json.message, null, {title: c18n.error}
+          return
+        $.msgBox json.message, null, {title: c18n.info}
+
     # init dialogs
     $('#addUserDialog').dialog(
       autoOpen: false

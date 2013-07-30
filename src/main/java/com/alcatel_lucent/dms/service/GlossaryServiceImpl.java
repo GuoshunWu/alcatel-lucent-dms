@@ -2,6 +2,10 @@ package com.alcatel_lucent.dms.service;
 
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.model.Glossary;
+import com.alcatel_lucent.dms.model.Label;
+import com.alcatel_lucent.dms.model.Text;
+import com.alcatel_lucent.dms.model.Translation;
+import com.alcatel_lucent.dms.util.Util;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +21,6 @@ import java.util.Map;
  * User: Guoshun Wu
  * Date: 13-7-25
  * Time: PM 3:07
- * To change this template use File | Settings | File Templates.
  */
 @Service
 public class GlossaryServiceImpl implements GlossaryService {
@@ -65,10 +68,38 @@ public class GlossaryServiceImpl implements GlossaryService {
      */
     @Override
     public void deleteGlossaries(Collection<String> texts) {
-        String hsql = "delete Glossary where text in :texts";
+        String hSQL = "delete Glossary where text in :texts";
         Map params = new HashMap();
         params.put("texts", texts);
-        dao.delete(hsql, params);
+        dao.delete(hSQL, params);
+    }
+
+    /**
+     * Make all the glossaries in Database consistent
+     */
+    @Override
+    public void consistentGlossaries() {
+        String hSQL = "from Glossary";
+        Collection<Glossary> glossaries = dao.retrieve(hSQL);
+
+        hSQL = "from Label where id in (select l.id from Label l, Glossary g where upper(l.reference) like concat( '%', upper(g.text), '%'))";
+        Collection<Label> labels = dao.retrieve(hSQL);
+        for (Label label : labels) {
+            label.setReference(Util.consistentGlossaries(label.getReference(), glossaries));
+        }
+
+        hSQL = "from Text where id in (select t.id from Text t, Glossary g where upper(t.reference) like concat( '%', upper(g.text), '%'))";
+        Collection<Text> texts = dao.retrieve(hSQL);
+        for (Text text : texts) {
+            text.setReference(Util.consistentGlossaries(text.getReference(), glossaries));
+        }
+
+        hSQL = "from Translation where id in (select t.id from Translation t, Glossary g where upper(t.translation) like concat( '%', upper(g.text), '%'))";
+        Collection<Translation> translations = dao.retrieve(hSQL);
+        for (Translation translation : translations) {
+            translation.setTranslation(Util.consistentGlossaries(translation.getTranslation(), glossaries));
+        }
+
     }
 
     private Glossary findGlossaryByText(String text) {
