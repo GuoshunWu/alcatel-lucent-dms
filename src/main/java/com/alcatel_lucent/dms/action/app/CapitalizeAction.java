@@ -26,7 +26,7 @@ public class CapitalizeAction extends JSONAction {
 		} else {
 			dictionaryService.changeDictCapitalization(toIdList(dict), lang == null ? null : toIdList(lang), style);
 		}
-		setMessage(getText("operation.success"));
+		setMessage(getText("message.success"));
 		return SUCCESS;
 	}
 
