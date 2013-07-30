@@ -39,4 +39,10 @@ public interface GlossaryService {
      */
     void deleteGlossaries(Collection<String> texts);
 
+
+    /**
+     * Make all the glossaries in Database consistent
+     * */
+    void consistentGlossaries();
+
 }

@@ -35,9 +35,13 @@ public class GlossaryAction extends JSONAction {
             glossaryService.updateGlossary(text, newText);
         } else if (oper.equals("del")) {
             glossaryService.deleteGlossaries(Arrays.asList(text.split(",")));
+        } else if (oper.equals("consistentGlossaries")) {
+            glossaryService.consistentGlossaries();
         } else {
             throw new SystemError("Unknown oper: " + oper);
         }
+
+        setMessage(getText("message.success"));
         return SUCCESS;
     }
 

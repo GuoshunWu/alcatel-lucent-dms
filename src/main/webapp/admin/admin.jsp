@@ -26,9 +26,11 @@
         </div>
         <div id="sysConfig">
             <button id="buildLuceneIndex"><s:text name="admin.sysconfig.rebuildindex"/></button>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <button id="consistentGlossaries"><s:text name="admin.sysconfig.glossaries"/></button>
         </div>
         <div id="glossary">
-            <%@include file="sysconfig.jsp"%>
+            <%@include file="glossary.jsp"%>
         </div>
 
     </div>

@@ -83,9 +83,9 @@ require.config
     'jqmsgbox':
       deps: ['jqueryui']
       exports: 'jQuery'
-#    'blockui':
-#      deps: ['jquery']
-#      exports: 'jQuery'
+    'blockui':
+      deps: ['jquery']
+      exports: 'jQuery'
     'themeswitchertool':
       deps: ['jquery']
       exports: 'jQuery'
