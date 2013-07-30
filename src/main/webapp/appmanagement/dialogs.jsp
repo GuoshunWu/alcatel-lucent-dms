@@ -164,12 +164,8 @@
                 <button id='stringCapitalize'><s:text
                         name="appmng.capitalize"/></button>
                 <ul id="stringCapitalizeMenu">
-                    <li><a name="upper" href="#"><s:text name="appmng.capitalize.upper"/></a></li>
-                    <li><a name="all" href="#" ><s:text name="appmng.capitalize.all"/></a></li>
-                    <li><a name="first" href="#"><s:text name="appmng.capitalize.first"/></a></li>
-                    <li><a name="lower" href="#"><s:text name="appmng.capitalize.lower"/></a></li>
+                    <%@include file="capitalizeMenu.jsp" %>
                 </ul>
-
             </td>
         </tr>
     </table>
@@ -223,7 +219,8 @@
         </tr>
         <tr>
             <td>
-               &nbsp;&nbsp; <input type="checkbox" id="isAutoCreateLanguage"/><s:text name="appmng.dialogs.dictpreview.autocreatelanguage"/>
+                &nbsp;&nbsp; <input type="checkbox" id="isAutoCreateLanguage"/><s:text
+                    name="appmng.dialogs.dictpreview.autocreatelanguage"/>
             </td>
         </tr>
     </table>
@@ -411,13 +408,15 @@
             <th class="import-report-number import-report-group import-report-group-right">
                 <s:text name="appmng.dialogs.importreport.instrings"/>
             </th>
-            <th class="import-report-group import-report-group-right"><s:text name="appmng.dialogs.importreport.inwords"/></th>
+            <th class="import-report-group import-report-group-right"><s:text
+                    name="appmng.dialogs.importreport.inwords"/></th>
             <th class="import-report-group"><s:text name="appmng.dialogs.importreport.chart"/></th>
         </tr>
 
         <%-- Duplication Translations --%>
         <tr>
-            <td class="import-report-label import-report-group-right"><label><s:text name="appmng.dialogs.importreport.toltrans"/></label></td>
+            <td class="import-report-label import-report-group-right"><label><s:text
+                    name="appmng.dialogs.importreport.toltrans"/></label></td>
             <td class="import-report-number import-report-group-right">
                 <span id="totalTrans"></span>
             </td>
@@ -427,14 +426,16 @@
             </td>
         </tr>
         <tr>
-            <td class="import-report-label import-report-group-right"><label><s:text name="appmng.dialogs.importreport.duptrans"/></label></td>
+            <td class="import-report-label import-report-group-right"><label><s:text
+                    name="appmng.dialogs.importreport.duptrans"/></label></td>
             <td class="import-report-number import-report-group-right">
                 <span id="dupTrans"></span>
             </td>
             <td class="import-report-number import-report-group-right"><span></span></td>
         </tr>
         <tr>
-            <td class="import-report-label import-report-group-right"><label><s:text name="appmng.dialogs.importreport.disttrans"/></label></td>
+            <td class="import-report-label import-report-group-right"><label><s:text
+                    name="appmng.dialogs.importreport.disttrans"/></label></td>
             <td class="import-report-number import-report-group-right">
                 <span id="distinctTrans1"></span>
             </td>
@@ -453,7 +454,8 @@
 
         <%-- Translated--%>
         <tr>
-            <td class="import-report-label import-report-group-right"><label><s:text name="appmng.dialogs.importreport.disttrans"/></label></td>
+            <td class="import-report-label import-report-group-right"><label><s:text
+                    name="appmng.dialogs.importreport.disttrans"/></label></td>
             <td class="import-report-number import-report-group-right">
                 <span id="distinctTrans2"></span>
             </td>
@@ -463,21 +465,24 @@
             </td>
         </tr>
         <tr>
-            <td class="import-report-label import-report-group-right"><label><s:text name="appmng.dialogs.importreport.translated"/></label></td>
+            <td class="import-report-label import-report-group-right"><label><s:text
+                    name="appmng.dialogs.importreport.translated"/></label></td>
             <td class="import-report-number import-report-group-right">
                 <span id="translated"></span>
             </td>
             <td class="import-report-number import-report-group-right"><span></span></td>
-       </tr>
+        </tr>
         <tr>
-            <td class="import-report-label import-report-group-right"><label><s:text name="appmng.dialogs.importreport.untranslated"/></label></td>
+            <td class="import-report-label import-report-group-right"><label><s:text
+                    name="appmng.dialogs.importreport.untranslated"/></label></td>
             <td class="import-report-number import-report-group-right">
                 <span id="untranslated"></span>
             </td>
             <td class="import-report-number import-report-group-right"><span></span></td>
         </tr>
         <tr>
-            <td class="import-report-label import-report-group import-report-group-right"><label><s:text name="appmng.dialogs.importreport.transratio"/></label>
+            <td class="import-report-label import-report-group import-report-group-right"><label><s:text
+                    name="appmng.dialogs.importreport.transratio"/></label>
             </td>
             <td class="import-report-number import-report-group import-report-group-right">
                 <span id="transRatio"></span>
@@ -487,7 +492,8 @@
 
         <%-- Auto Trans--%>
         <tr>
-            <td class="import-report-label import-report-group-right"><label><s:text name="appmng.dialogs.importreport.untranslated"/></label></td>
+            <td class="import-report-label import-report-group-right"><label><s:text
+                    name="appmng.dialogs.importreport.untranslated"/></label></td>
             <td class="import-report-number import-report-group-right">
                 <span id="untranslated1"></span>
             </td>
@@ -497,14 +503,16 @@
             </td>
         </tr>
         <tr>
-            <td class="import-report-label import-report-group-right"><label><s:text name="appmng.dialogs.importreport.autotrans"/></label></td>
+            <td class="import-report-label import-report-group-right"><label><s:text
+                    name="appmng.dialogs.importreport.autotrans"/></label></td>
             <td class="import-report-number import-report-group-right">
                 <span id="autoTrans"></span>
             </td>
             <td class="import-report-number import-report-group-right"><span></span></td>
         </tr>
         <tr>
-            <td class="import-report-label import-report-group-right"><label><s:text name="appmng.dialogs.importreport.nomatch"/></label></td>
+            <td class="import-report-label import-report-group-right"><label><s:text
+                    name="appmng.dialogs.importreport.nomatch"/></label></td>
             <td class="import-report-number import-report-group-right">
                 <span id="noMatch"></span>
             </td>
@@ -512,7 +520,8 @@
 
         </tr>
         <tr>
-            <td class="import-report-label import-report-group-right"><label><s:text name="appmng.dialogs.importreport.autotransratio"/></label></td>
+            <td class="import-report-label import-report-group-right"><label><s:text
+                    name="appmng.dialogs.importreport.autotransratio"/></label></td>
             <td class="import-report-number import-report-group-right">
                 <span id="autoRatio"></span>
             </td>

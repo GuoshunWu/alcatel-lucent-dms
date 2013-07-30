@@ -525,8 +525,10 @@ public class Util {
     public static String consistentGlossaries(String text, Collection<Glossary> glossaries) {
         if (StringUtils.isBlank(text)) return text;
         String str = text;
+        String patternFmt = "(\\b|[^a-zA-Z])((?i)%s)([^a-zA-Z]|\\b)";
+        String targetStr = "\\$1%s\\$3";
         for (Glossary glossary : glossaries) {
-            str = str.replaceAll("(?i)\b" + glossary.getText() + "\b", glossary.getText());
+            str = str.replaceAll(String.format(patternFmt, glossary.getText()), String.format(targetStr, glossary.getText()));
         }
         return str;
     }

@@ -1,10 +1,7 @@
 package com.alcatel_lucent.dms.service;
 
 import com.alcatel_lucent.dms.BusinessException;
-import com.alcatel_lucent.dms.model.Glossary;
-import com.alcatel_lucent.dms.model.Label;
-import com.alcatel_lucent.dms.model.Text;
-import com.alcatel_lucent.dms.model.Translation;
+import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.util.Util;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,6 +97,63 @@ public class GlossaryServiceImpl implements GlossaryService {
             translation.setTranslation(Util.consistentGlossaries(translation.getTranslation(), glossaries));
         }
 
+        hSQL = "from LabelTranslation where id in (select lt.id from LabelTranslation lt, Glossary g where upper(lt.origTranslation) like concat( '%', upper(g.text), '%'))";
+        Collection<LabelTranslation> lbTranslations = dao.retrieve(hSQL);
+        for (LabelTranslation lbTranslation : lbTranslations) {
+            lbTranslation.setOrigTranslation(Util.consistentGlossaries(lbTranslation.getOrigTranslation(), glossaries));
+        }
+
+    }
+
+    /**
+     * Make all the glossaries in Dictionary consistent
+     *
+     * @param dict
+     */
+    @Override
+    public void consistentGlossariesInDict(Dictionary dict, Collection<Glossary> glossaries) {
+        Collection<Label> labels = dict.getLabels();
+        for (Label label : labels) {
+            consistentGlossariesInLabel(label, glossaries);
+        }
+    }
+
+    /**
+     * Make all the glossaries in Dictionary consistent
+     *
+     * @param task
+     */
+    @Override
+    public void consistentGlossariesInTask(Task task, Collection<Glossary> glossaries) {
+        Collection<TaskDetail> taskDetails = task.getDetails();
+        for (TaskDetail taskDetail : taskDetails) {
+//            taskDetail.setOrigTranslation(Util.consistentGlossaries(taskDetail.getOrigTranslation(), glossaries));
+            taskDetail.setNewTranslation(Util.consistentGlossaries(taskDetail.getNewTranslation(), glossaries));
+        }
+    }
+
+
+
+    /**
+     * Make all the glossaries in Label consistent
+     *
+     * @param label
+     */
+    @Override
+    public void consistentGlossariesInLabel(Label label, Collection<Glossary> glossaries) {
+        label.setReference(Util.consistentGlossaries(label.getReference(), glossaries));
+//        Text text = label.getText();
+//        text.setReference(Util.consistentGlossaries(text.getReference(), glossaries));
+
+        Collection<LabelTranslation> labelTranslations = label.getOrigTranslations();
+        for (LabelTranslation ltTranslation : labelTranslations) {
+            ltTranslation.setOrigTranslation(Util.consistentGlossaries(ltTranslation.getOrigTranslation(), glossaries));
+        }
+
+//        Collection<Translation> translations = text.getTranslations();
+//        for (Translation translation : translations) {
+//            translation.setTranslation(Util.consistentGlossaries(translation.getTranslation(), glossaries));
+//        }
     }
 
     private Glossary findGlossaryByText(String text) {

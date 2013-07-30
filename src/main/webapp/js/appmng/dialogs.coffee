@@ -29,22 +29,34 @@ define [
 
     open: (e, ui) ->
       params = $(@).data 'params'
-      console?.log params
       $.getJSON urls.languages, {prop: 'id,name', dict: params.dicts}, (languages)=>
         langTable = util.generateLanguageTable languages
         $(@).empty().append(langTable)
 
     buttons: [
       {text: c18n.ok, click: (e)->
-        languages = $("input:checkbox[name='languages']:checked", @).map (index, element)->{id: element.id, name: element.value}
-        if(languages.length == 0)
-          $.msgBox c18n.languagerequired, null, title: (c18n.warning)
-          return
+        languages =($("input:checkbox[name='languages']:checked", @).map (index, element)->element.id).get()
+#        if(languages.length == 0)
+#          $.msgBox c18n.languagerequired, null, title: (c18n.warning)
+#          return
 
         params = $(@).data 'params'
         postData =
-          languages: languages
-          dicts: params.dicts
+          lang: languages.join(",")
+          style: params.style
+          dict: params.dicts
+          label: params.labels
+
+        delete postData.lang if(!postData.lang)
+
+        $.blockUI()
+        $.post urls.app.capitalize, postData, (json)->
+          $.unblockUI()
+          if (json.status != 0)
+            $.msgBox json.message, null, {title: c18n.error, width: 300, height: 'auto'}
+            return
+          $('#stringSettingsGrid').trigger 'reloadGrid' if(postData.label)
+          $.msgBox json.message, null, {title: c18n.info, width: 300, height: 'auto'}
         $(@).dialog "close"
       }
       {text: c18n.cancel, click: (e)->$(@).dialog "close"}
@@ -255,7 +267,7 @@ define [
 
           $('#capitalizationDialog').data(params: {
             labels: ids,
-            type: $('a',ui.item).prop('name')
+            style: $('a',ui.item).prop('name')
             dicts: stringSettings.data("param").id
           }).dialog('open')
       )
