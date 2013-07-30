@@ -1,6 +1,9 @@
 package com.alcatel_lucent.dms.service;
 
+import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.Glossary;
+import com.alcatel_lucent.dms.model.Label;
+import com.alcatel_lucent.dms.model.Task;
 
 import java.util.Collection;
 
@@ -44,5 +47,25 @@ public interface GlossaryService {
      * Make all the glossaries in Database consistent
      * */
     void consistentGlossaries();
+
+    /**
+     * Make all the glossaries in Dictionary consistent
+     * @param dict
+     * */
+    void consistentGlossariesInDict(Dictionary dict, Collection<Glossary> glossaries);
+
+    /**
+     * Make all the glossaries in Task consistent
+     * @param dict
+     * */
+    void consistentGlossariesInTask(Task dict, Collection<Glossary> glossaries);
+
+    /**
+     * Make all the glossaries in Label consistent
+     * @param dict
+     * */
+    void consistentGlossariesInLabel(Label dict, Collection<Glossary> glossaries);
+
+
 
 }

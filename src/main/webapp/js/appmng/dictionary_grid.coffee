@@ -231,7 +231,7 @@ define [
       if !dicts.length
         $.msgBox (c18n.selrow.format c18n['dict']), null, title: c18n.warning
         return
-      $('#capitalizationDialog').data(params: {dicts: dicts.join(','), type: $('a',ui.item).prop('name')}).dialog('open')
+      $('#capitalizationDialog').data(params: {dicts: dicts.join(','), style: $('a',ui.item).prop('name')}).dialog('open')
   )
 
   $(capitalizeId, '#DMS_applicationPanel').button(

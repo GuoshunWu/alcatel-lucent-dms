@@ -38,6 +38,7 @@ define (require)->
     process_dict: getURL('process-dict', 'app/')
     update_label_status: getURL('update-label-status', 'app/')
     download_app_dict: getURL('download-app-dict', 'app/')
+    capitalize: getURL('capitalize', 'app/')
   label:
     del: getURL('delete-label', 'app/')
     create: getURL('add-label', 'app/')

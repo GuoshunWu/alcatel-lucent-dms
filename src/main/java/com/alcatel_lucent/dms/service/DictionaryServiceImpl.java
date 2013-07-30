@@ -41,6 +41,13 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     private LanguageService langService;
     @Autowired
     private HistoryService historyService;
+
+    @Autowired
+    private DaoService dao;
+
+    @Autowired
+    private GlossaryService glossaryService;
+
     @Autowired
     private List<DictionaryParser> parsers;
     private Map<String, DictionaryGenerator> generators;
@@ -162,9 +169,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
         populateDefaultContext(result);
 
+        Collection<Glossary> glossaries = dao.retrieve("from Glossary");
         for (Dictionary dict : result) {
             // populate additional errors and warnings
             dict.validate();
+            glossaryService.consistentGlossariesInDict(dict, glossaries);
         }
 
         return result;

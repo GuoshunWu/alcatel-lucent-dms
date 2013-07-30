@@ -13,9 +13,9 @@
                 <button id="removeAppVersion" title="<s:text name="appmng.removeapp"/>"></button>
             </td>
 
-            <td align ="right">
+            <td align="right">
                 <label for="appSearchText"><s:text name="searchtext"/></label>
-                <input id="appSearchText" />
+                <input id="appSearchText"/>
                 <button id="appSearchAction"></button>
                 &nbsp;&nbsp;
                 <s:text name="fuzzy"/> <input type="checkbox" id="appSearchText_fuzzy"/>
@@ -51,10 +51,7 @@
                             <button id="dictCapitalize"><s:text name="appmng.capitalize"/></button>
 
                             <ul id="dictCapitalizeMenu">
-                                <li><a name="upper" href="#"><s:text name="appmng.capitalize.upper"/></a></li>
-                                <li><a name="all" href="#" ><s:text name="appmng.capitalize.all"/></a></li>
-                                <li><a name="first" href="#"><s:text name="appmng.capitalize.first"/></a></li>
-                                <li><a name="lower" href="#"><s:text name="appmng.capitalize.lower"/></a></li>
+                                <%@include file="capitalizeMenu.jsp" %>
                             </ul>
                         </td>
                     </tr>
