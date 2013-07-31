@@ -123,7 +123,8 @@ public class EntryAction extends BaseAction {
                     }
                 }), ", "));
 
-        if (UserContext.getInstance().getUser().getRole() == User.ROLE_ADMINISTRATOR) {
+
+        if (UserContext.getInstance().getUser().getRole() != User.ROLE_GUEST) {
             strPages.append(", ");
             strPages.append(String.format(fmt, "ctxmng.jsp", getText("ctxmng.title")));
             strPages.append(", ");
