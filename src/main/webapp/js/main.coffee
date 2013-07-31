@@ -26,7 +26,7 @@ define [
   ctxmngPanel,
   adminPanel
 )->
-
+  isFirst = true
   ready = (param)->
 #    console?.log "page ready..."
 
@@ -38,7 +38,8 @@ define [
     # we need keep the panels to be informed if current product base changed
 #    console?.log "oldpnl= #{oldpnl}, newpnl= #{newpnl}."
     if 'admin' == oldpnl or 'admin' == newpnl
-      $('#adminTabs').tabs 'option', 'active', 2
+      $('#adminTabs').tabs 'option', 'active', 2  if isFirst
+      isFirst = false
       return
     return if 'ctxmng' == oldpnl or 'ctxmng' == newpnl
 
