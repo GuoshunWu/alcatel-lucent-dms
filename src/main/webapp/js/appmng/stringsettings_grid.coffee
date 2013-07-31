@@ -31,11 +31,11 @@ define [
     url: 'json/dummy.json', mtype: 'post', datatype: 'local'
     width: 880, height: 300
     pager: '#stringSettingsPager'
-    editurl: "app/add-label"
+    editurl: urls.label.create
     rowNum: 10, rowList: [10, 20, 30]
     sortorder: 'asc'
     viewrecords: true
-    gridview: true, multiselect: true, cellEdit: true, cellurl: 'app/update-label'
+    gridview: true, multiselect: true, cellEdit: true, cellurl: urls.label.update
     colNames: ['Label', 'Reference Language', 'T', 'N', 'I', 'Max Length', 'Context', 'Description', ]
     colModel: [
       {name: 'key', index: 'key', width: 100, editable: false, align: 'left', search:false}

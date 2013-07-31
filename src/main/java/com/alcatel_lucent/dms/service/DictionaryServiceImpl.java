@@ -1087,6 +1087,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         Label label = (Label) dao.retrieve(Label.class, labelId);
         if (label.getReference().equals(reference)) return label;
         label.setReference(reference);
+        glossaryService.consistentGlossariesInLabelRef(label);
+
         // re-associate text unless EXCLUSION context
         if (!label.getContext().getName().equals(Context.EXCLUSION)) {
             Text text = updateLabelTranslations(label, translationMap);
