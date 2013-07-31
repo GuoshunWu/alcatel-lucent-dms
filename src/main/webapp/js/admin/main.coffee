@@ -24,8 +24,9 @@ define [
         pheight = $(ui.newPanel).height()
         pwidth = $(ui.newPanel).width()
 #        console?.log "height=#{pheight}, width=#{pwidth}."
-
-        $('table.ui-jqgrid-btable', ui.panel).setGridHeight(pheight - 90).setGridWidth(pwidth - 20) if isFirst
+        if isFirst
+          $('table.ui-jqgrid-btable', @).setGridHeight(pheight - 90).setGridWidth(pwidth - 20)
+          $('#glossaryGrid',@).setGridHeight(pheight - 120)
         isFirst = false
     )
 
