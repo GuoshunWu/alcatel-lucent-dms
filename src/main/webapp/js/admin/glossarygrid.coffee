@@ -32,6 +32,7 @@ define [
 
     afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
       jsonFromServer = $.parseJSON serverresponse.responseText
+      $(@).trigger 'reloadGrid'
       [jsonFromServer.status == 0, jsonFromServer.message]
     beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
       console?.log "rowid: #{rowid}, value:#{value}"

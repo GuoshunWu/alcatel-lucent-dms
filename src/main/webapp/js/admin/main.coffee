@@ -23,7 +23,7 @@ define [
       activate: (event, ui)->
         pheight = $(ui.newPanel).height()
         pwidth = $(ui.newPanel).width()
-        console?.log "height=#{pheight}, width=#{pwidth}."
+#        console?.log "height=#{pheight}, width=#{pwidth}."
 
         $('table.ui-jqgrid-btable', ui.panel).setGridHeight(pheight - 90).setGridWidth(pwidth - 20) if isFirst
         isFirst = false
