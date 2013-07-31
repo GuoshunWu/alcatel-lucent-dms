@@ -54,6 +54,9 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
     @Autowired
     private TextService textService;
 
+    @Autowired
+    private GlossaryService glossaryService;
+
     @SuppressWarnings("unchecked")
     @Override
     public Task createTask(Long productId, Long appId, String name,
@@ -635,6 +638,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
         if (task.getStatus() == Task.STATUS_CLOSED || task.getLastUpdateTime() == null) {
             throw new BusinessException(BusinessException.INVALID_TASK_STATUS);
         }
+        glossaryService.consistentGlossariesInTask(task);
         Collection<Context> contexts = getTaskContexts(taskId);
         int count = 0;
         for (Context context : contexts) {

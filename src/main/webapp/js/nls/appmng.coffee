@@ -13,6 +13,9 @@ define
                       <tr><td>The tasks will be deleted all together. Do you confirm it?</td></tr>
                       '''
       dictlistpreview: caption: 'Dictionaries in zip'
+      dictsforapp: 'Dictionaries for Application'
+      appsforprod: 'Applications for Product'
+
     dialog:
       addapplication:
         tip: 'There is no application to add.'

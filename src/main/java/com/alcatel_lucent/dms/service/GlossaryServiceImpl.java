@@ -76,10 +76,9 @@ public class GlossaryServiceImpl implements GlossaryService {
      */
     @Override
     public void consistentGlossaries() {
-        String hSQL = "from Glossary";
-        Collection<Glossary> glossaries = dao.retrieve(hSQL);
+        Collection<Glossary> glossaries = getAllGlossaries();
 
-        hSQL = "from Label where id in (select l.id from Label l, Glossary g where upper(l.reference) like concat( '%', upper(g.text), '%'))";
+        String hSQL = "from Label where id in (select l.id from Label l, Glossary g where upper(l.reference) like concat( '%', upper(g.text), '%'))";
         Collection<Label> labels = dao.retrieve(hSQL);
         for (Label label : labels) {
             label.setReference(Util.consistentGlossaries(label.getReference(), glossaries));
@@ -132,6 +131,10 @@ public class GlossaryServiceImpl implements GlossaryService {
         }
     }
 
+    public void consistentGlossariesInTask(Task task) {
+        consistentGlossariesInTask(task, getAllGlossaries());
+    }
+
 
 
     /**
@@ -154,6 +157,25 @@ public class GlossaryServiceImpl implements GlossaryService {
 //        for (Translation translation : translations) {
 //            translation.setTranslation(Util.consistentGlossaries(translation.getTranslation(), glossaries));
 //        }
+    }
+
+    public void consistentGlossariesInLabelRef(Label label){
+        label.setReference(getConsistentGlossariesText(label.getReference()));
+    }
+
+    @Override
+    public String getConsistentGlossariesText(String text) {
+        return getConsistentGlossariesText(text, getAllGlossaries());
+    }
+
+    @Override
+    public String getConsistentGlossariesText(String text, Collection<Glossary> glossaries) {
+        return Util.consistentGlossaries(text, glossaries);
+    }
+
+    @Override
+    public Collection<Glossary> getAllGlossaries() {
+        return dao.retrieve("from Glossary");
     }
 
     private Glossary findGlossaryByText(String text) {

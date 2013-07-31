@@ -36,12 +36,13 @@ define (require)->
     deliver_dict: getURL('deliver-dict', 'app/')
     deliver_app_dict: getURL('deliver-app-dict', 'app/')
     process_dict: getURL('process-dict', 'app/')
-    update_label_status: getURL('update-label-status', 'app/')
     download_app_dict: getURL('download-app-dict', 'app/')
     capitalize: getURL('capitalize', 'app/')
   label:
     del: getURL('delete-label', 'app/')
     create: getURL('add-label', 'app/')
+    update: getURL('update-label', 'app/')
+    update_status: getURL('update-label-status', 'app/')
   task:
     apply:  getURL('apply-task', 'task/')
     close:  getURL('close-task', 'task/')

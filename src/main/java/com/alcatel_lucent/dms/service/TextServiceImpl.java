@@ -23,6 +23,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alcatel_lucent.dms.BusinessException;
@@ -45,6 +46,10 @@ import com.alcatel_lucent.dms.util.CharsetUtil;
 public class TextServiceImpl extends BaseServiceImpl implements TextService {
 
 	private Logger log = LoggerFactory.getLogger(TextServiceImpl.class);
+
+    @Autowired
+    private GlossaryService glossaryService;
+
     enum ExcelFileHeader{
         DICTIONARY,LABEL, MAX_LEN,REFERENCE,TRANSLATION
     }
@@ -500,9 +505,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
      * Create a persistent Translation object.
      *
      * @param text            persistent Text object
-     * @param languageId      language id
-     * @param translationText translation text
-     * @param memo translation memo
+     * @param trans translation text
      * @return persistent Translation object
      */
 	private Translation addTranslation(Text text, Translation trans) {
@@ -622,6 +625,9 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 		}
 		Long langId = trans.getLanguage().getId();
 		Collection<String> result = new TreeSet<String>();
+        // consistent glossaries
+        translation = glossaryService.getConsistentGlossariesText(translation);
+
 		if (confirmAll != null && confirmAll) {	// confirm to update translation for all reference
 			trans.setTranslation(translation);
 			trans.setTranslationType(Translation.TYPE_MANUAL);
