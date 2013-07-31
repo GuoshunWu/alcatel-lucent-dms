@@ -1286,7 +1286,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	}
 	
 	private String capitalizeText(String text, int style, Locale locale) {
-		System.out.println("###capitalize text: '" + text + "'");
 		if (style == CapitalizeAction.CAPITALIZATION_ALL_UPPER_CASE) {
 			return text.toUpperCase(locale);
 		} else if (style == CapitalizeAction.CAPITALIZATION_ALL_LOWER_CASE) {
@@ -1294,7 +1293,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 		} else if (style == CapitalizeAction.CAPITALIZATION_FIRST_CAPITALIZED) {
 			text = text.toLowerCase(locale);
 			for (int i = 0; i < text.length(); i++) {
-				if (!Character.isWhitespace(text.charAt(i))) {
+				if (!isWordBoundary(text.charAt(i))) {
 					text = text.substring(0, i) + text.substring(i, i + 1).toUpperCase(locale) + text.substring(i + 1);
 					break;
 				}
@@ -1303,7 +1302,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 			text = text.toLowerCase(locale);
 			boolean inWord = false;
 			for (int i = 0; i < text.length(); i++) {
-				if (Character.isWhitespace(text.charAt(i))) {
+				if (isWordBoundary(text.charAt(i))) {
 					inWord = false;
 				} else {
 					if (!inWord) {
@@ -1313,7 +1312,10 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 				}
 			}
 		}
-		System.out.println("result: '" + text + "'");
 		return text;
+	}
+	
+	private boolean isWordBoundary(char ch) {
+		return Character.isWhitespace(ch) || ",./<>?;':[]{}()+=`~!@#$%^&*|\\\"".indexOf(ch) != -1;
 	}
 }
