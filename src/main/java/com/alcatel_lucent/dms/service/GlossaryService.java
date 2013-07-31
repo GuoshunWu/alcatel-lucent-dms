@@ -52,25 +52,24 @@ public interface GlossaryService {
      * Make all the glossaries in Dictionary consistent
      * @param dict
      * */
-    void consistentGlossariesInDict(Dictionary dict, Collection<Glossary> glossaries);
+    void consistentGlossariesInDict(Dictionary dict);
 
     /**
      * Make all the glossaries in Task consistent
      * @param task
      * */
-    void consistentGlossariesInTask(Task task, Collection<Glossary> glossaries);
-
     void consistentGlossariesInTask(Task task);
 
     /**
      * Make all the glossaries in Label consistent
      * @param label
      * */
-    void consistentGlossariesInLabel(Label label, Collection<Glossary> glossaries);
+
+    void consistentGlossariesInLabel(Label label);
     void consistentGlossariesInLabelRef(Label label);
 
     String getConsistentGlossariesText(String text);
-    String getConsistentGlossariesText(String text, Collection<Glossary> glossaries);
+
 
     Collection<Glossary> getAllGlossaries();
 
