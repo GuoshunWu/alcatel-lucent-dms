@@ -1084,7 +1084,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     
     public Label updateLabelReference(Long labelId, String reference, Map<Long, Translation> translationMap) {
         Label label = (Label) dao.retrieve(Label.class, labelId);
-        if (label.getReference().equals(reference)) return label;
+        String oldReference = label.getReference();
         label.setReference(reference);
         glossaryService.consistentGlossariesInLabelRef(label);
         if(null != translationMap){
@@ -1099,7 +1099,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             label.setText(text);
         }
         // reset LabelTranslation objects
-        if (label.getOrigTranslations() != null) {
+        if (!reference.equals(oldReference) && label.getOrigTranslations() != null) {
             for (LabelTranslation lt : label.getOrigTranslations()) {
                 lt.setOrigTranslation(reference);
                 lt.setNeedTranslation(true);
@@ -1205,16 +1205,18 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         if (label.getDictionary().getDictLanguages() != null) {
 	        for (DictionaryLanguage dl : label.getDictionary().getDictLanguages()) {
 	        	Translation trans = translationMap != null ? translationMap.get(dl.getLanguage().getId()) : null;
-	        	if (trans == null) {
-	        		trans = new Translation();
-		        	trans.setTranslation(label.getReference());
-		        	trans.setLanguage(dl.getLanguage());
-		        	trans.setStatus(Translation.STATUS_UNTRANSLATED);
+//	        	if (trans == null) {
+//	        		trans = new Translation();
+//		        	trans.setTranslation(label.getReference());
+//		        	trans.setLanguage(dl.getLanguage());
+//		        	trans.setStatus(Translation.STATUS_UNTRANSLATED);
+//	        	}
+	        	if (trans != null) {
+	        		text.addTranslation(trans);
 	        	}
-	        	text.addTranslation(trans);
 	        }
         }
-        Map<String, Text> textMap = textService.updateTranslations(label.getContext().getId(), texts, Constants.ImportingMode.DELIVERY);
+        Map<String, Text> textMap = textService.updateTranslations(label.getContext().getId(), texts, Constants.ImportingMode.TRANSLATION);
         return textMap.get(label.getReference());
 	}
 
@@ -1256,36 +1258,35 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 	private void changeLabelCapitalization(Dictionary dict, Label label, HashSet<Long> langSet, int style) {
 		String oldReference = label.getReference();
 		String newReference = capitalizeText(oldReference, style, Locale.ENGLISH);
-		if (!newReference.equals(oldReference)) {
-			Map<Long, Translation> translationMap = new HashMap<Long, Translation>();
-			Text text = label.getText();
-			// duplicate existing translations and capitalize them if required
-			for (DictionaryLanguage dl : dict.getDictLanguages()) {
-				Translation translation = text.getTranslation(dl.getLanguage().getId());
-				if (translation != null) {
-					Translation newTrans = new Translation();
-					String oldTranslation = translation.getTranslation();
-					newTrans.setLanguage(translation.getLanguage());
-					newTrans.setTranslation(oldTranslation);
-					newTrans.setTranslationType(translation.getTranslationType());
-					newTrans.setStatus(translation.getStatus());
-					if (langSet.contains(dl.getLanguage().getId())) {	// capitalization required
-						String newTranslation = capitalizeText(oldTranslation, style, langService.getLocale(dl.getLanguage()));
-						newTrans.setTranslation(newTranslation);
-						if (!newTranslation.equals(oldTranslation)) {
-							newTrans.setTranslationType(Translation.TYPE_MANUAL);
-						}
-					} else if (oldTranslation.equals(oldReference)) {	// update translation if it's same with old reference
-						newTrans.setTranslation(newReference);
+		Map<Long, Translation> translationMap = new HashMap<Long, Translation>();
+		Text text = label.getText();
+		// duplicate existing translations and capitalize them if required
+		for (DictionaryLanguage dl : dict.getDictLanguages()) {
+			Translation translation = text.getTranslation(dl.getLanguage().getId());
+			if (translation != null) {
+				Translation newTrans = new Translation();
+				String oldTranslation = translation.getTranslation();
+				newTrans.setLanguage(translation.getLanguage());
+				newTrans.setTranslation(oldTranslation);
+				newTrans.setTranslationType(translation.getTranslationType());
+				newTrans.setStatus(translation.getStatus());
+				if (langSet.contains(dl.getLanguage().getId())) {	// capitalization required
+					String newTranslation = capitalizeText(oldTranslation, style, langService.getLocale(dl.getLanguage()));
+					newTrans.setTranslation(newTranslation);
+					if (!newTranslation.equals(oldTranslation)) {
+						newTrans.setTranslationType(Translation.TYPE_MANUAL);
 					}
-					translationMap.put(dl.getLanguage().getId(), newTrans);
+				} else if (oldTranslation.equals(oldReference)) {	// update translation if it's same with old reference
+					newTrans.setTranslation(newReference);
 				}
+				translationMap.put(dl.getLanguage().getId(), newTrans);
 			}
 			label = updateLabelReference(label.getId(), newReference, translationMap);
 		}
 	}
 	
 	private String capitalizeText(String text, int style, Locale locale) {
+		System.out.println("###capitalize text: '" + text + "'");
 		if (style == CapitalizeAction.CAPITALIZATION_ALL_UPPER_CASE) {
 			return text.toUpperCase(locale);
 		} else if (style == CapitalizeAction.CAPITALIZATION_ALL_LOWER_CASE) {
@@ -1312,6 +1313,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 				}
 			}
 		}
+		System.out.println("result: '" + text + "'");
 		return text;
 	}
 }
