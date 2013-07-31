@@ -169,11 +169,10 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
         populateDefaultContext(result);
 
-        Collection<Glossary> glossaries = dao.retrieve("from Glossary");
         for (Dictionary dict : result) {
             // populate additional errors and warnings
             dict.validate();
-            glossaryService.consistentGlossariesInDict(dict, glossaries);
+            glossaryService.consistentGlossariesInDict(dict);
         }
 
         return result;
@@ -1088,6 +1087,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         if (label.getReference().equals(reference)) return label;
         label.setReference(reference);
         glossaryService.consistentGlossariesInLabelRef(label);
+        if(null != translationMap){
+            for(Translation translation: translationMap.values()){
+                translation.setTranslation(glossaryService.getConsistentGlossariesText(translation.getTranslation()));
+            }
+        }
 
         // re-associate text unless EXCLUSION context
         if (!label.getContext().getName().equals(Context.EXCLUSION)) {

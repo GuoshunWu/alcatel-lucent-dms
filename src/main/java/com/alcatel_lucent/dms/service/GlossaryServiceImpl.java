@@ -2,16 +2,14 @@ package com.alcatel_lucent.dms.service;
 
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.model.*;
+import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.util.Util;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,8 +20,15 @@ import java.util.Map;
 @Service
 public class GlossaryServiceImpl implements GlossaryService {
 
-    @Autowired
     private DaoService dao;
+    private Collection<Glossary> glossaries;
+
+
+    @Autowired
+    public void setDao(DaoService dao) {
+        this.dao = dao;
+        this.glossaries = dao.retrieve("from Glossary");
+    }
 
     /**
      * Create a glossary.
@@ -37,8 +42,10 @@ public class GlossaryServiceImpl implements GlossaryService {
         if (language != null) {
             throw new BusinessException(BusinessException.GLOSSARY_ALREADY_EXISTS, text);
         }
-//        return (Glossary) dao.create(new Glossary(text));
-        return (Glossary) dao.create(new Glossary(new Date(), text));
+        Glossary glossary = (Glossary) dao.create(new Glossary(new Date(), text));
+
+        glossaries.add(glossary);
+        return glossary;
     }
 
     /**
@@ -53,7 +60,9 @@ public class GlossaryServiceImpl implements GlossaryService {
         Glossary glossary = findGlossaryByText(id);
         if (StringUtils.isNotBlank(text)) {
             dao.delete(Glossary.class, id);
+            glossaries.remove(glossary);
             glossary = createGlossary(text);
+            glossaries.add(glossary);
         }
         return glossary;
     }
@@ -69,6 +78,13 @@ public class GlossaryServiceImpl implements GlossaryService {
         Map params = new HashMap();
         params.put("texts", texts);
         dao.delete(hSQL, params);
+
+        Iterator<Glossary> itrGlossaries=glossaries.iterator();
+        Glossary g;
+        while(itrGlossaries.hasNext()){
+            g = itrGlossaries.next();
+            if(texts.contains(g.getText())) itrGlossaries.remove();
+        }
     }
 
     /**
@@ -110,10 +126,10 @@ public class GlossaryServiceImpl implements GlossaryService {
      * @param dict
      */
     @Override
-    public void consistentGlossariesInDict(Dictionary dict, Collection<Glossary> glossaries) {
+    public void consistentGlossariesInDict(Dictionary dict) {
         Collection<Label> labels = dict.getLabels();
         for (Label label : labels) {
-            consistentGlossariesInLabel(label, glossaries);
+            consistentGlossariesInLabel(label);
         }
     }
 
@@ -123,18 +139,13 @@ public class GlossaryServiceImpl implements GlossaryService {
      * @param task
      */
     @Override
-    public void consistentGlossariesInTask(Task task, Collection<Glossary> glossaries) {
+    public void consistentGlossariesInTask(Task task) {
         Collection<TaskDetail> taskDetails = task.getDetails();
         for (TaskDetail taskDetail : taskDetails) {
 //            taskDetail.setOrigTranslation(Util.consistentGlossaries(taskDetail.getOrigTranslation(), glossaries));
             taskDetail.setNewTranslation(Util.consistentGlossaries(taskDetail.getNewTranslation(), glossaries));
         }
     }
-
-    public void consistentGlossariesInTask(Task task) {
-        consistentGlossariesInTask(task, getAllGlossaries());
-    }
-
 
 
     /**
@@ -143,7 +154,7 @@ public class GlossaryServiceImpl implements GlossaryService {
      * @param label
      */
     @Override
-    public void consistentGlossariesInLabel(Label label, Collection<Glossary> glossaries) {
+    public void consistentGlossariesInLabel(Label label) {
         label.setReference(Util.consistentGlossaries(label.getReference(), glossaries));
 //        Text text = label.getText();
 //        text.setReference(Util.consistentGlossaries(text.getReference(), glossaries));
@@ -159,26 +170,23 @@ public class GlossaryServiceImpl implements GlossaryService {
 //        }
     }
 
-    public void consistentGlossariesInLabelRef(Label label){
+    public void consistentGlossariesInLabelRef(Label label) {
         label.setReference(getConsistentGlossariesText(label.getReference()));
     }
 
-    @Override
-    public String getConsistentGlossariesText(String text) {
-        return getConsistentGlossariesText(text, getAllGlossaries());
-    }
 
     @Override
-    public String getConsistentGlossariesText(String text, Collection<Glossary> glossaries) {
+    public String getConsistentGlossariesText(String text) {
         return Util.consistentGlossaries(text, glossaries);
+    }
+
+
+    private Glossary findGlossaryByText(String text) {
+        return (Glossary) dao.retrieve(Glossary.class, text);
     }
 
     @Override
     public Collection<Glossary> getAllGlossaries() {
-        return dao.retrieve("from Glossary");
-    }
-
-    private Glossary findGlossaryByText(String text) {
-        return (Glossary) dao.retrieve(Glossary.class, text);
+        return glossaries;
     }
 }
