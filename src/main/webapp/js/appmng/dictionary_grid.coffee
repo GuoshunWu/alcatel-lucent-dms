@@ -93,7 +93,7 @@ define [
     {name: 'action', index: 'action', width: 70, editable: false, align: 'center', sortable: false
     formatter: (cellvalue, options, rowObject)->
       $.map(handlers,
-        (value, index)->"<A id='action_#{index}_#{options.rowId}' style='color:blue' title='#{value.title}'href=# >#{index}</A>"
+        (value, index)->"<A id='action_#{index}_#{options.rowId}' style='color:blue' title='#{value.title}'href='javascript:void(0)'>#{index}</A>"
       ).join('&nbsp;&nbsp;&nbsp;&nbsp;')
     }
     {name: 'history', index: 'history', width: 25, editable: false, align: 'center', sortable: false,formatter: (cellvalue, options, rowObject)->

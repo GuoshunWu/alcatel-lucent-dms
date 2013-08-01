@@ -32,6 +32,7 @@ define ['jqgrid'], ($)->
           allZero
         (console.log 'zero';return) if allZero
         $('#taskDetailDialog').data('param', task: $('#reportGrid').getGridParam('postData').task, language: param.languageId, translated: Number(param.languaeName.split('.')[1] == 'T'), context: param.id).dialog 'open'
+        false
 
     afterCreate: (grid)->
       #    console.log "After Create in task report grid: #{grid.getGridParam('postData').task}"

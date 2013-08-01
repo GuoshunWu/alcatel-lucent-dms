@@ -32,10 +32,10 @@ define [
 
     afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
       jsonFromServer = $.parseJSON serverresponse.responseText
-      $(@).trigger 'reloadGrid'
+      setTimeout (->grid.trigger 'reloadGrid'), 10
       [jsonFromServer.status == 0, jsonFromServer.message]
     beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
-      console?.log "rowid: #{rowid}, value:#{value}"
+#      console?.log "rowid: #{rowid}, value:#{value}"
       newText:value
 
     editurl: urls.glossary.update

@@ -71,11 +71,15 @@ define [
         param.ref = rowData.reference
 
         $('#stringSettingsTranslationDialog').data(param: param).dialog 'open'
+        false
 
     afterEditCell: (rowid, cellname, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
     afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
       json = $.parseJSON(serverresponse.responseText)
-      $(@).trigger 'reloadGrid' if 'reference' == cellname and 0== json.status
+      setTimeout (->
+        dicGrid.trigger 'reloadGrid'
+      ), 10 if 'reference' == cellname and 0== json.status
+
       [0 == json.status, json.message]
     beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
   ).setGridParam(datatype: 'json').jqGrid('navGrid', '#stringSettingsPager', {edit: false, add: false, del: false, search: false, view: false},{}, {}, {})

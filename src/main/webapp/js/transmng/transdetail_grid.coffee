@@ -103,8 +103,9 @@ define [
           delete json.status
           $('#transmngTranslationUpdate').html(showMsg).data('param', json).dialog 'open'
         else
-          transDetailGrid.trigger 'reloadGrid'
-
+          setTimeout (->
+            transDetailGrid.trigger 'reloadGrid'
+          ), 10
         return [true, json.message]
 
       [0 == json.status, json.message]

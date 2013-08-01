@@ -63,12 +63,12 @@ define ['jqgrid', 'jqmsgbox', 'jqueryui', 'i18n!nls/appmng', 'i18n!nls/common'],
 
 
     $(data.rows).each (index, rowData)->
-      @cell[warningIdx] = "<a id='warnAndErr_warnings_#{rowData.id}' title='details' href=#>#{@cell[warningIdx]}</a>"
-      @cell[errorIdx] = "<a id='warnAndErr_errors_#{rowData.id}' title='details' href=#>#{@cell[errorIdx]}</a>"
+      @cell[warningIdx] = "<a id='warnAndErr_warnings_#{rowData.id}' title='details' href='javascript:void(0);'>#{@cell[warningIdx]}</a>"
+      @cell[errorIdx] = "<a id='warnAndErr_errors_#{rowData.id}' title='details' href='javascript:void(0);'>#{@cell[errorIdx]}</a>"
 
       @cell[actIdx] = $(actions).map(
         ()->
-          "<a id='action_#{@}_#{rowData.id}_#{actIdx}' title='#{handlers[@].title}' href=# >#{@}</A>"
+          "<a id='action_#{@}_#{rowData.id}_#{actIdx}' title='#{handlers[@].title}' href='javascript:void(0);' >#{@}</A>"
       ).get().join('&nbsp;&nbsp;&nbsp;&nbsp;')
 
 

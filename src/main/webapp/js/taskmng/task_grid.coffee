@@ -80,7 +80,7 @@ define [
         (value, index)->
           return if '1' == rowObject[4] and index in ['Upload', 'Close']
           return "<a id='upload_#{index}_#{options.rowId}'title='#{value.title}' ></a>" if index == 'Upload'
-          "<A id='action_#{index}_#{options.rowId}' style='color:blue' title='#{value.title}'href=# >#{index}</A>"
+          "<A id='action_#{index}_#{options.rowId}' style='color:blue' title='#{value.title}'href='javascript:void(0);' >#{index}</A>"
         ).join('&nbsp;&nbsp;&nbsp;&nbsp;')
       }
     ]
