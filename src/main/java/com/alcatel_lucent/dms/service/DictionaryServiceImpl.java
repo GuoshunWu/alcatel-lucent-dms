@@ -603,9 +603,10 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 for (LabelTranslation trans : label.getOrigTranslations()) {
                     // determine charset, first take value from DictionaryLanguage
                     // if not specified in DictionaryLanguage, then take value from langCharset parameter
-                    trans.setLabel(label);
-                    String langCode = langCodeMap.get(trans.getLanguage().getId());
+                    String langCode = trans.getLanguageCode();
                     DictionaryLanguage dl = dict.getDictLanguage(langCode);
+                    trans.setLabel(label);
+                    trans.setLanguage(dl.getLanguage());	// update language in LabelTranslation by dl
                     String charsetName = dl.getCharset().getName();
                     boolean invalidText = false;
                     try {
