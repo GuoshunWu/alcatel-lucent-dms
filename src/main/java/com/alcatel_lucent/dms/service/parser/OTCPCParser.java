@@ -138,22 +138,30 @@ public class OTCPCParser extends DictionaryParser {
 
         //   HSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
         FormulaEvaluator evaluator = wb.getCreationHelper().createFormulaEvaluator();
-
+        boolean hasInfo = false, hasLang = false, hasCtx = false, hasRef = false;
         for (int i = 0; i < numOfSheet; ++i) {
             Sheet sheet = wb.getSheetAt(i);
             if (sheet.getSheetName().equalsIgnoreCase(SHEET_INFO)) {
                 readDictionaryInformation(sheet, dictionary, evaluator, warnings, dictName);
+                hasInfo = true;
             } else if (sheet.getSheetName().equalsIgnoreCase(SHEET_LANG)) {
                 readDictLanguages(sheet, dictionary);
+                hasLang = true;
             } else if (sheet.getSheetName().equalsIgnoreCase(SHEET_CTX)) {
                 // no action, it is processed in reference sheet.
+            	hasCtx = true;
             } else if (sheet.getSheetName().equalsIgnoreCase(SHEET_REF)) {
                 readRefSheet(dictionary, sheet, evaluator, warnings, dictName);
+                hasRef = true;
             } else {
                 //no action, all the translations have been proce
             }
         }
-        acceptedFiles.add(file);
+        if (hasInfo && hasLang && hasCtx && hasRef) {
+        	acceptedFiles.add(file);
+        } else {
+        	throw new BusinessException(BusinessException.INVALID_OTC_EXCEL_DICT_FILE, file.getName());
+        }
 
         dictionary.setParseWarnings(warnings);
         return dictionary;
