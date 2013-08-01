@@ -1,21 +1,17 @@
 define [
   'jqlayout'
-  'blockui'
   'dms-util'
   'globallayout'
   'ptree'
-
   'appmng/main'
   'transmng/main'
   'taskmng/main'
   'ctxmng/main'
   'admin/main'
   'i18n!nls/common'
-], ($, blockui, util, glayout, ptree, appmngPanel, transmngPanel, taskmngPanel, ctxmngPanel, adminPanel, c18n)->
+], ($, util, glayout, ptree, appmngPanel, transmngPanel, taskmngPanel, ctxmngPanel, adminPanel, c18n)->
   ready = (param)->
 #    console?.log "page ready..."
-    $.blockUI.defaults.message = '<h1><img src="images/busy.gif" />&nbsp;Please wait...</h1>'
-
     util.afterInitilized(@)
     $('#loading-container').fadeOut 'slow', ()->$(@).remove()
 
