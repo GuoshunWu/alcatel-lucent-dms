@@ -12,8 +12,6 @@ define [
   'appmng/dictionary_grid'
 ], ($, upload, iframetrans, i18n, c18n, util, urls, dialogs, grid)->
 
-#  console?.log "module appmng/application_panel loading."
-
   appInfo = {}
 
   searchActionBtn = $('#appSearchAction', '#appmng').attr('title', 'Search').button(text: false, icons:{primary: "ui-icon-search"})

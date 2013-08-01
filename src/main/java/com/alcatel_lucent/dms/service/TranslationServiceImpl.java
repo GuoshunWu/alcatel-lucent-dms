@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.alcatel_lucent.dms.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.lang.time.DateUtils;
@@ -38,15 +39,6 @@ import org.springframework.stereotype.Service;
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.SystemError;
-import com.alcatel_lucent.dms.model.Application;
-import com.alcatel_lucent.dms.model.Context;
-import com.alcatel_lucent.dms.model.Dictionary;
-import com.alcatel_lucent.dms.model.DictionaryLanguage;
-import com.alcatel_lucent.dms.model.Label;
-import com.alcatel_lucent.dms.model.LabelTranslation;
-import com.alcatel_lucent.dms.model.Language;
-import com.alcatel_lucent.dms.model.Text;
-import com.alcatel_lucent.dms.model.Translation;
 
 @Service("translationService")
 public class TranslationServiceImpl extends BaseServiceImpl implements
@@ -59,6 +51,9 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 	
 	@Autowired
 	private TextService textService;
+
+    @Autowired
+    private GlossaryService glossaryService;
 
 	/*    
     public Map<Long, int[]> getDictTranslationSummary(Long dictId) {
@@ -889,6 +884,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 	        	}
 	        	checkTranslationSheet(sheet);
 	        	Row row;
+                Collection<Glossary> glossaries=glossaryService.getAllGlossaries();
 	            for (int dataIndex = sheet.getFirstRowNum() + 1; (null != (row = sheet.getRow(dataIndex))); ++dataIndex) {
 	            	String contextKey = formatter.formatCellValue(row.getCell(2));
 	            	String reference = formatter.formatCellValue(row.getCell(5));
@@ -896,6 +892,8 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 	            	String newTranslation = formatter.formatCellValue(row.getCell(7));
 	            	if (!origTranslation.equals(newTranslation)) {
 	            		log.info(languageName + " translation of \"" + reference + "\" was changed, update it into DMS.");
+                        //consistent glossaries
+                        newTranslation = glossaryService.getConsistentGlossariesText(newTranslation);
 	            		Map<String, Text> textMap = contextMap.get(contextKey);
 	            		if (textMap == null) {
 	            			textMap = new HashMap<String, Text>();

@@ -212,7 +212,7 @@ public interface DictionaryService {
 	 * @param labelId label id
 	 * @param reference new reference text
 	 */
-	void updateLabelReference(Long labelId, String reference);
+	Label updateLabelReference(Long labelId, String reference);
 
 	/**
 	 * Delete labels.
@@ -235,4 +235,28 @@ public interface DictionaryService {
 			String context, String description);
 
     //Dictionary previewProp(String dictionaryName, Map<String, Collection<Properties>> propMap, Collection<BusinessWarning> warnings) throws BusinessException;
+	
+	/**
+	 * Change capitalization style of all labels in dictionaries.
+	 * @param dictIds collection of dictionary id
+	 * @param langIds collection of language id, if not specified, only reference text is changed
+	 * @param style capitalization style:
+	 * CAPITALIZATION_ALL_UPPER_CASE = 1
+	 * CAPITALIZATION_ALL_CAPITALIZED = 2
+	 * CAPITALIZATION_FIRST_CAPITALIZED = 3
+	 * CAPITALIZATION_ALL_LOWER_CASE = 4
+	 */
+	void changeDictCapitalization(Collection<Long> dictIds, Collection<Long> langIds, int style);
+	
+	/**
+	 * Change capitalization style of labels.
+	 * @param labelIds collection of label id
+	 * @param langIds collection of language id, if not specified, only reference text is changed
+	 * @param style capitalization style:
+	 * CAPITALIZATION_ALL_UPPER_CASE = 1
+	 * CAPITALIZATION_ALL_CAPITALIZED = 2
+	 * CAPITALIZATION_FIRST_CAPITALIZED = 3
+	 * CAPITALIZATION_ALL_LOWER_CASE = 4
+	 */
+	void changeLabelCapitalization(Collection<Long> labelIds, Collection<Long> langIds, int style);
 }

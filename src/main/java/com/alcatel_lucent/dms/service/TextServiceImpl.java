@@ -23,6 +23,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alcatel_lucent.dms.BusinessException;
@@ -45,6 +46,10 @@ import com.alcatel_lucent.dms.util.CharsetUtil;
 public class TextServiceImpl extends BaseServiceImpl implements TextService {
 
 	private Logger log = LoggerFactory.getLogger(TextServiceImpl.class);
+
+    @Autowired
+    private GlossaryService glossaryService;
+
     enum ExcelFileHeader{
         DICTIONARY,LABEL, MAX_LEN,REFERENCE,TRANSLATION
     }
@@ -152,7 +157,8 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 	                Translation dbTrans = dbText.getTranslation(trans.getLanguage().getId());
 	                if (dbTrans == null) {
 	                	if (trans.getTranslationType() == null && trans.getStatus() == Translation.STATUS_TRANSLATED) {
-	                		trans.setTranslationType(Translation.TYPE_DICT);
+	                		trans.setTranslationType(trans.getTranslationType() != null ? 
+	                				trans.getTranslationType() : Translation.TYPE_DICT);
 	                	}
             			trans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
 						dbTrans = addTranslation(dbText, trans);
@@ -162,7 +168,8 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 	                		dbTrans.setTranslation(trans.getTranslation());
 	                	}
 						dbTrans.setStatus(trans.getStatus());
-						dbTrans.setTranslationType(Translation.TYPE_TASK);
+						dbTrans.setTranslationType(trans.getTranslationType() != null ? 
+								trans.getTranslationType() : Translation.TYPE_TASK);
 						dbTrans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
 	                } else {
 	                	// in DELIVERY_MODE, set status to UNTRANSLATED if translation is explicitly requested 
@@ -173,11 +180,11 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 //	                	}
 	                	// update translation if got translated in delivered dict
 	                	if (dbTrans.getStatus() != Translation.STATUS_TRANSLATED && 
-	                			trans.getStatus() == Translation.STATUS_TRANSLATED &&
-	                			!trans.getTranslation().equals(text.getReference())) {
+	                			trans.getStatus() == Translation.STATUS_TRANSLATED) {
 	                		dbTrans.setTranslation(trans.getTranslation());
 	                		dbTrans.setStatus(Translation.STATUS_TRANSLATED);
-	                		dbTrans.setTranslationType(Translation.TYPE_DICT);
+	                		dbTrans.setTranslationType(trans.getTranslationType() != null ? 
+	                				trans.getTranslationType() : Translation.TYPE_DICT);
 	                		dbTrans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
 	                	}
 	                }
@@ -205,7 +212,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 	            	if (dbTrans == null) {
 	                	if (trans.getLanguage().getId() != 0 && trans.getLanguage().getId() != 1L &&
 	                			trans.getStatus() == Translation.STATUS_UNTRANSLATED &&
-	                			trans.getTranslation().equals(text.getReference())) {
+	                			(trans.getTranslation().equals(text.getReference()) || trans.getTranslation().trim().isEmpty())) {
 	                		if (suggestedTranslations == null) {
 	                			suggestedTranslations = getSuggestedTranslations(text.getReference(), ctxId);
 	                		}
@@ -498,9 +505,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
      * Create a persistent Translation object.
      *
      * @param text            persistent Text object
-     * @param languageId      language id
-     * @param translationText translation text
-     * @param memo translation memo
+     * @param trans translation text
      * @return persistent Translation object
      */
 	private Translation addTranslation(Text text, Translation trans) {
@@ -620,6 +625,9 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 		}
 		Long langId = trans.getLanguage().getId();
 		Collection<String> result = new TreeSet<String>();
+        // consistent glossaries
+        translation = glossaryService.getConsistentGlossariesText(translation);
+
 		if (confirmAll != null && confirmAll) {	// confirm to update translation for all reference
 			trans.setTranslation(translation);
 			trans.setTranslationType(Translation.TYPE_MANUAL);
@@ -677,26 +685,6 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 			}
 		}
 		return result;
-	}
-
-
-	@Override
-	public Text updateTranslations(Label label) {
-    	Collection<Text> texts = new ArrayList<Text>();
-    	Text text = new Text();
-    	text.setReference(label.getReference());
-    	texts.add(text);
-        if (label.getDictionary().getDictLanguages() != null) {
-	        for (DictionaryLanguage dl : label.getDictionary().getDictLanguages()) {
-	        	Translation trans = new Translation();
-	        	trans.setTranslation(label.getReference());
-	        	trans.setLanguage(dl.getLanguage());
-	        	trans.setStatus(Translation.STATUS_UNTRANSLATED);
-	        	text.addTranslation(trans);
-	        }
-        }
-        Map<String, Text> textMap = updateTranslations(label.getContext().getId(), texts, Constants.ImportingMode.DELIVERY);
-        return textMap.get(label.getReference());
 	}
 
 

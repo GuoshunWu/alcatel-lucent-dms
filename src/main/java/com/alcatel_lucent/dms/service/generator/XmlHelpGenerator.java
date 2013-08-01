@@ -2,10 +2,7 @@ package com.alcatel_lucent.dms.service.generator;
 
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.Constants;
-import com.alcatel_lucent.dms.model.Dictionary;
-import com.alcatel_lucent.dms.model.DictionaryLanguage;
-import com.alcatel_lucent.dms.model.Label;
-import com.alcatel_lucent.dms.model.LabelTranslation;
+import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.service.DaoService;
 import com.alcatel_lucent.dms.service.parser.VoiceAppParser;
 import com.alcatel_lucent.dms.service.parser.XMLHelpParser;
@@ -158,7 +155,19 @@ public class XmlHelpGenerator extends DictionaryGenerator {
 
                 String text = isRef ? label.getReference() : label.getTranslation(langCode);
 //                annotationMap.remove("HELP");
+                String followUp = annotationMap.get("follow_up");
+                annotationMap.remove("follow_up");
                 addAttributes(elemTrans, annotationMap);
+                if (StringUtils.isNotBlank(followUp) && !isRef) {
+                    int translationStatus = label.getTranslationStatus(langCode);
+                    if(label.getContext().getName().equals(Context.EXCLUSION)){
+                        followUp = "no_translate";
+                    }
+                    if (!followUp.equals("no_translate") ) {
+                        followUp = translationStatus == Translation.STATUS_TRANSLATED ? "validated" : "to_translate";
+                    }
+                    elemTrans.addAttribute("follow_up", followUp);
+                }
 
                 elemTrans.addElement("LABEL").addCDATA(text);
                 Element elemHelp = elemTrans.addElement("HELP");

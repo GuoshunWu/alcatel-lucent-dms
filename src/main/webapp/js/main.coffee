@@ -1,6 +1,9 @@
 define [
   'jqlayout'
+  'blockui'
   'dms-util'
+  'i18n!nls/common'
+
   'globallayout'
   'ptree'
   'appmng/main'
@@ -8,10 +11,26 @@ define [
   'taskmng/main'
   'ctxmng/main'
   'admin/main'
-  'i18n!nls/common'
-], ($, util, glayout, ptree, appmngPanel, transmngPanel, taskmngPanel, ctxmngPanel, adminPanel, c18n)->
+
+], (
+  $
+  blockui
+  util
+  c18n
+
+  glayout
+  ptree
+  appmngPanel
+  transmngPanel
+  taskmngPanel
+  ctxmngPanel,
+  adminPanel
+)->
+  isFirst = true
   ready = (param)->
 #    console?.log "page ready..."
+
+    $.blockUI.defaults.message = '<h1><img src="images/busy.gif" />&nbsp;Please wait...</h1>'
     util.afterInitilized(@)
     $('#loading-container').fadeOut 'slow', ()->$(@).remove()
 
@@ -19,7 +38,8 @@ define [
     # we need keep the panels to be informed if current product base changed
 #    console?.log "oldpnl= #{oldpnl}, newpnl= #{newpnl}."
     if 'admin' == oldpnl or 'admin' == newpnl
-      $('#adminTabs').tabs 'select', 2
+      $('#adminTabs').tabs 'option', 'active', 2  if isFirst
+      isFirst = false
       return
     return if 'ctxmng' == oldpnl or 'ctxmng' == newpnl
 

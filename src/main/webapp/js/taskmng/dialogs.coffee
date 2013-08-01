@@ -14,7 +14,7 @@ define [
   languageChooserDialog = $("<div title='Study' id='languageChooser'>").dialog {
   autoOpen: false, height: 'auto', width: 900, modal: true
   show: { effect: 'slide', direction: "up" }
-  open: ->$.getJSON 'rest/languages?prop=id,name', {}, (languages)=>$(@).append(util.generateLanguageTable languages)
+  open: ->$.getJSON urls.languages, {prop: 'id, name'}, (languages)=>$(@).append(util.generateLanguageTable languages)
   buttons: [
     { text: c18n.ok, click: ()->
       $(@).dialog "close"

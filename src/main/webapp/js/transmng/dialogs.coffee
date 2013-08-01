@@ -4,6 +4,7 @@ define [
   'i18n!nls/common'
   'dms-util'
   'dms-urls'
+
   'transmng/trans_grid'
   'transmng/transdetail_grid'
   'transmng/trans_searchtext_grid'
@@ -56,7 +57,7 @@ define [
       postData = {prop: 'id,name'}
       postData[tableType] = info.rowIds.join(',')
 
-      $.getJSON 'rest/languages', postData, (languages)=>$(@).append util.generateLanguageTable languages, langFilterTableId if languages.length > 0
+      $.getJSON urls.languages, postData, (languages)=>$(@).append util.generateLanguageTable languages, langFilterTableId if languages.length > 0
     buttons: [
       {text: c18n['export'], click: ->
         me = $(@)
@@ -111,7 +112,7 @@ define [
       postData = {prop: 'id,name'}
       postData[tableType] = info.rowIds.join(',')
 
-      $.getJSON 'rest/languages', postData, (languages)=>$(@).append util.generateLanguageTable languages, langFilterTableId if languages.length > 0
+      $.getJSON urls.languages, postData, (languages)=>$(@).append util.generateLanguageTable languages, langFilterTableId if languages.length > 0
     close: -> $('#transTaskErr').hide()
     buttons: [
       {text: c18n.create
@@ -119,7 +120,7 @@ define [
         taskDialog = $(@)
         languages = ($(":checkbox[name='languages']", @).map -> {id: @id, name: @value} if @checked).get()
         if(languages.length == 0)
-          $.msgBox (i18n.msgbox.createtranstask.msg.format c18n.language), null, title: (c18n.warning)
+          $.msgBox c18n.languagerequired, null, title: (c18n.warning)
           return
         name = $('#taskName').val()
         if '' == name

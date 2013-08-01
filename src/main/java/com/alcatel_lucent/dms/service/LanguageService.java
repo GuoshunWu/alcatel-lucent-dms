@@ -1,6 +1,7 @@
 package com.alcatel_lucent.dms.service;
 
 import java.util.Collection;
+import java.util.Locale;
 import java.util.Map;
 
 import com.alcatel_lucent.dms.model.AlcatelLanguageCode;
@@ -95,4 +96,11 @@ public interface LanguageService {
 	 * @param idList
 	 */
 	void deleteCharset(Collection<Long> idList);
+
+	/**
+	 * Get default locale for a language
+	 * @param language
+	 * @return
+	 */
+	Locale getLocale(Language language);
 }

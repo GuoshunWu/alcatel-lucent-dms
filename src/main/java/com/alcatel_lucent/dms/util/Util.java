@@ -4,6 +4,7 @@
 package com.alcatel_lucent.dms.util;
 
 import com.alcatel_lucent.dms.SystemError;
+import com.alcatel_lucent.dms.model.Glossary;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -445,8 +446,8 @@ public class Util {
                 try {
                     keyValues[0] = URLDecoder.decode(keyValues[0], "UTF-8");
                     keyValues[1] = URLDecoder.decode(keyValues[1], "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    return null;	// return null if not valid string
+                } catch (Exception e) {
+                    return null;    // return null if not valid string
                 }
                 return keyValues;
             }
@@ -515,5 +516,20 @@ public class Util {
             }
         });
         return MapUtils.typedMap(ArrayUtils.toMap(attributesCollection.toArray(new String[0][])), String.class, String.class);
+    }
+
+
+    /**
+     * Make glossaries in the text consistent.
+     */
+    public static String consistentGlossaries(String text, Collection<Glossary> glossaries) {
+        if (StringUtils.isBlank(text)) return text;
+        String str = text;
+        String patternFmt = "(\\b|[^a-zA-Z])((?i)%s)([^a-zA-Z]|\\b)";
+        String targetStr = "$1%s$3";
+        for (Glossary glossary : glossaries) {
+            str = str.replaceAll(String.format(patternFmt, glossary.getText()), String.format(targetStr, glossary.getText()));
+        }
+        return str;
     }
 }

@@ -1,13 +1,12 @@
 package com.alcatel_lucent.dms.util
 
+import com.alcatel_lucent.dms.model.Glossary
+import junit.framework.Assert
 import org.apache.commons.collections.*
 import org.apache.commons.collections.functors.EqualPredicate
-import org.apache.commons.io.ByteOrderMark
 import org.apache.commons.io.IOUtils
 import org.apache.commons.io.input.AutoCloseInputStream
 import org.apache.commons.io.input.BOMInputStream
-import org.apache.commons.lang3.time.DurationFormatUtils
-import org.junit.Ignore
 import org.junit.Test
 
 /**
@@ -17,8 +16,16 @@ import org.junit.Test
  * Time: 上午11:14
  * To change this template use File | Settings | File Templates.
  */
-@Ignore
+//@Ignore
 public class UtilTest {
+
+//    @Test
+    void testConsistentGlossaries() {
+        Collection<Glossary> glossaries = Arrays.asList(
+                new Glossary("LDAP"), new Glossary("OpenGL"));
+        String text = "LDAp test openGl Ldap hi";
+        Assert.assertEquals("LDAP test OpenGL LDAP hi", Util.consistentGlossaries(text, glossaries))
+    }
 //    @Test
     void testUnzip() throws Exception {
         Util.unzip("D:/test/dms.zip", "d:/tmp");
@@ -82,11 +89,11 @@ public class UtilTest {
         println Util.map2String(Util.string2Map("a=b;c=d;e=f"))
     }
 
-    @Test
+//    @Test
     void testLabelFieldAccess() {
 //        println DurationFormatUtils.formatDuration(65450000l, "HH 'hour(s)' mm 'minute(s)' ss 'second(s)'")
-        StringWriter temp= new StringWriter()
-        PrintWriter pw= new PrintWriter(temp)
+        StringWriter temp = new StringWriter()
+        PrintWriter pw = new PrintWriter(temp)
         pw.println("Hello, world")
         pw.println("What")
         temp = new StringWriter()

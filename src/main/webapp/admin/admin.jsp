@@ -6,26 +6,39 @@
         }
     </style>
 
+
     <div id="adminTabs">
         <ul>
             <li><a href="#langAdmin"><s:text name="admin.language.title"/></a></li>
             <li><a href="#charsetAdmin"><s:text name="admin.charset.title"/></a></li>
-            <li><a href="#userAdmin"><s:text name="admin.user.title"/></a></li>
-            <li><a href="#sysConfig">System configuration</a></li>
+
+            <s:if test="#session.user_context.user.role in {4}">
+                <li><a href="#userAdmin"><s:text name="admin.user.title"/></a></li>
+                <li><a href="#sysConfig"><s:text name="admin.sysconfig.title"/></a></li>
+            </s:if>
+            <li><a href="#glossary">Glossary</a></li>
         </ul>
 
         <div id="langAdmin">
-            <jsp:include page="admin/languageadmin.jsp"/>
+            <%@include file="languageadmin.jsp" %>
         </div>
         <div id="charsetAdmin">
-            <jsp:include page="admin/charsetadmin.jsp"/>
+            <%@include file="charsetadmin.jsp" %>
         </div>
-        <div id="userAdmin">
-            <jsp:include page="admin/useradmin.jsp"/>
+
+        <s:if test="#session.user_context.user.role in {4}">
+            <div id="userAdmin">
+                <%@include file="useradmin.jsp" %>
+            </div>
+            <div id="sysConfig">
+                <button id="buildLuceneIndex"><s:text name="admin.sysconfig.rebuildindex"/></button>
+            </div>
+        </s:if>
+
+        <div id="glossary">
+            <%@include file="glossary.jsp" %>
         </div>
-        <div id="sysConfig">
-            <button id="buildLuceneIndex">(Re)build lucene index</button>
-        </div>
+
     </div>
 </div>
 
@@ -37,15 +50,15 @@
                     <table border="0">
                         <tr>
                             <td class="form-label">
-                                <label for="loginName">Login name: </label>
+                                <label for="loginName"><s:text name="admin.user.loginname"/></label>
                             </td>
                             <td>
-                                <input id="loginName" name="loginName" /><span style="color: red">*</span>
+                                <input id="loginName" name="loginName"/><span style="color: red">*</span>
                             </td>
                         </tr>
                         <tr>
                             <td class="form-label">
-                                <label for="name">Name: </label>
+                                <label for="name"><s:text name="admin.user.name"/></label>
                             </td>
                             <td>
                                 <input size="60" readonly="true" name="name" id="name"/>
@@ -53,7 +66,7 @@
                         </tr>
                         <tr>
                             <td class="form-label">
-                                <label for="email">Email: </label>
+                                <label for="email"><s:text name="admin.user.email"/></label>
                             </td>
                             <td>
                                 <input size="60" readonly="true" name="email" id="email"/>
@@ -61,7 +74,7 @@
                         </tr>
                         <tr>
                             <td class="form-label">
-                                <label for="enabled">Enabled: </label>
+                                <label for="enabled"><s:text name="admin.user.enabled"/></label>
                             </td>
                             <td>
                                 <input type="checkbox" name="userStatus" value="1" checked="true" id="enabled"/>
@@ -69,7 +82,7 @@
                         </tr>
                         <tr>
                             <td class="form-label">
-                                <label for="role">Role: </label>
+                                <label for="role"><s:text name="admin.user.role"/></label>
                             </td>
                             <td>
                                 <select id="role"></select>

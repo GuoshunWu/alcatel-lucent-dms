@@ -13,12 +13,15 @@ define
                       <tr><td>The tasks will be deleted all together. Do you confirm it?</td></tr>
                       '''
       dictlistpreview: caption: 'Dictionaries in zip'
+      dictsforapp: 'Dictionaries for Application'
+      appsforprod: 'Applications for Product'
+
     dialog:
       addapplication:
         tip: 'There is no application to add.'
         'dummy': ''
       stringsettings:
-        title: 'String settings'
+        title: 'String Settings'
         unlock: 'Unlock'
         lock: 'Lock'
         add: 'Add'
@@ -28,7 +31,7 @@ define
         'caption': "Label key: '{0}'<br/>Ref text: '{1}'"
         'dummy': ''
       languagesettings:
-        title: 'Language settings'
+        title: 'Language Settings'
         'dummy': ''
       searchtext:
         caption: 'Text "{0}" found in {1} {2} version {3}'
@@ -46,7 +49,7 @@ define
         success: 'Import {0} label(s) in {1} dictionaries to {2} successful.'
 
       dictpreviewstringsettings:
-        title: 'String settings'
+        title: 'String Settings'
         'dummy': ''
 
       "addlanguage":

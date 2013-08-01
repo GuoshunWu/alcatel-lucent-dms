@@ -30,7 +30,6 @@ define [
     grid.setGridParam(url: urls.translations, page: 1).trigger 'reloadGrid'
 
   transDetailGrid = $("#transDetailGridList").jqGrid(
-    url: 'json/transdetailgrid.json'
     mtype: 'POST', postData: {}, editurl: "", datatype: 'local'
     width: 'auto', height: 200, shrinkToFit: false
     rownumbers: true
@@ -95,14 +94,18 @@ define [
       json = $.parseJSON(serverresponse.responseText)
       # edit translation in cell is different from common cell editor
 #      console?.log json
-      if 'translation' == cellname and 1 == json.status
-        dictList = "<ul>\n  <li>#{json.dicts.join('</li>\n  <li>')}</li>\n</ul>"
-        showMsg = i18n.msgbox.updatetranslation.msg.format dictList
-        delete json.dicts
-        delete json.message
-        delete json.status
-        $('#transmngTranslationUpdate').html(showMsg).data('param', json).dialog 'open'
-
+      if 'translation' == cellname
+        if 1 == json.status
+          dictList = "<ul>\n  <li>#{json.dicts.join('</li>\n  <li>')}</li>\n</ul>"
+          showMsg = i18n.msgbox.updatetranslation.msg.format dictList
+          delete json.dicts
+          delete json.message
+          delete json.status
+          $('#transmngTranslationUpdate').html(showMsg).data('param', json).dialog 'open'
+        else
+          setTimeout (->
+            transDetailGrid.trigger 'reloadGrid'
+          ), 10
         return [true, json.message]
 
       [0 == json.status, json.message]
@@ -150,8 +153,8 @@ define [
     options.defaultValue = param.searchStatus
     transDetailGrid.setColProp 'transStatus', searchoptions: options
 
-    $('select#gs_transStatus[name=ct.status]','#translationDetailDialog').val param.searchStatus
-    $('select#gs_transtype[name=ct.translationType]','#translationDetailDialog').val param.transsrc
+    $('select#gs_transStatus','#translationDetailDialog').val param.searchStatus
+    $('select#gs_transtype','#translationDetailDialog').val param.transsrc
     transDetailGrid[0].triggerToolbar()
 
 

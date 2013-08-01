@@ -5,7 +5,13 @@ define [
   'dms-urls'
   'taskmng/task_grid'
   'taskmng/dialogs'
-], ($, c18n, util, urls, grid)->
+], (
+  $
+  c18n
+  util
+  urls
+  grid
+)->
 
   nodeSelectHandler = (node, nodeInfo)->
     type = node.attr('type')

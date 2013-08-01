@@ -52,7 +52,7 @@ define [
 
         $('#stringSettingsTranslationDialog').data param: param
         $('#stringSettingsTranslationDialog').dialog 'open'
-
+        false
   )
   .setGridParam(datatype: 'json').jqGrid('navGrid', pagerId, {edit: false, add: false, del: false, search: false, view: false})
   .setGroupHeaders(useColSpanStyle: true, groupHeaders: [

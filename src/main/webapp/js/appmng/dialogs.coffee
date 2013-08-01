@@ -20,6 +20,49 @@ define [
 ], ($, jqgrid, blockui, msgbox, c18n, i18n, urls, util, previewgrid, stgrid, chart)->
 
   #  console?.log "module appmng/dialogs loading."
+
+
+  capitalizationDialog = $('#capitalizationDialog').dialog(
+    autoOpen: false, modal: true
+    width: 1100, height: 'auto'
+    show: { effect: 'slide', direction: "up" }
+
+    open: (e, ui) ->
+      params = $(@).data 'params'
+      $.getJSON urls.languages, {prop: 'id,name', dict: params.dicts}, (languages)=>
+        langTable = util.generateLanguageTable languages
+        $(@).empty().append(langTable)
+
+    buttons: [
+      {text: c18n.ok, click: (e)->
+        languages =($("input:checkbox[name='languages']:checked", @).map (index, element)->element.id).get()
+#        if(languages.length == 0)
+#          $.msgBox c18n.languagerequired, null, title: (c18n.warning)
+#          return
+
+        params = $(@).data 'params'
+        postData =
+          lang: languages.join(",")
+          style: params.style
+          dict: params.dicts
+          label: params.labels
+
+        delete postData.lang if(!postData.lang)
+
+        $.blockUI()
+        $.post urls.app.capitalize, postData, (json)->
+          $.unblockUI()
+          if (json.status != 0)
+            $.msgBox json.message, null, {title: c18n.error, width: 300, height: 'auto'}
+            return
+          $('#stringSettingsGrid').trigger 'reloadGrid' if(postData.label)
+          $.msgBox json.message, null, {title: c18n.info, width: 300, height: 'auto'}
+        $(@).dialog "close"
+      }
+      {text: c18n.cancel, click: (e)->$(@).dialog "close"}
+    ]
+  )
+
   newProductVersion = $("#newProductReleaseDialog").dialog(
     autoOpen: false
     height: 200, width: 500, modal: true
@@ -179,7 +222,7 @@ define [
     autoOpen: false
     title: i18n.dialog.stringsettings.title, modal: true
     width: 910,
-    height: 620
+    height: 630
     create: (e, ui)->
       # create search text component
       $('#searchText', @).keydown (e)=>
@@ -200,7 +243,7 @@ define [
           primary: "ui-icon-triangle-1-n"
           secondary: "ui-icon-gear"
       )
-      .attr('privilegeName', util.urlname2Action urls.app.update_label_status)
+      .attr('privilegeName', util.urlname2Action urls.label.update_status)
       .click (e)->
         menu = $('#stringSettingsTranslationStatus').show().width($(@).width()).position(my: "left bottom", at: "left top", of: @)
         $(document).one "click", ()->menu.hide()
@@ -210,10 +253,35 @@ define [
         grid = $("#stringSettingsGrid")
         ids = grid.getGridParam('selarrrow').join(",")
         ($.msgBox (c18n.selrow.format c18n.label), null, title: c18n.warning; return) unless ids
-        $.post urls.app.update_label_status, {type: 'trans', transStatus: e.target.name, id: ids}, (json)->
+        $.post urls.label.update_status, {type: 'trans', transStatus: e.target.name, id: ids}, (json)->
           ($.msgBox json.message, null, title: c18n.warning; return) unless json.status == 0
           grid.trigger 'reloadGrid'
 
+      capitalizeId = '#stringCapitalize'
+
+      menu = $(capitalizeId + 'Menu').hide().menu(
+        select: ( event, ui )->
+          grid = $("#stringSettingsGrid")
+          ids = grid.getGridParam('selarrrow').join(",")
+          ($.msgBox (c18n.selrow.format c18n.label), null, title: c18n.warning; return) unless ids
+
+          $('#capitalizationDialog').data(params: {
+            labels: ids,
+            style: $('a',ui.item).prop('name')
+            dicts: stringSettings.data("param").id
+          }).dialog('open')
+      )
+
+      $(capitalizeId).button(
+        create:(event, ui)->$(@).width(180)
+        icons: {
+          primary: "ui-icon-triangle-1-n"
+        }
+      ).on('click', (e)->
+        menu.width($(@).width() - 3).show().position(my: "left bottom", at: "left top", of: this)
+        $(document).one("click", ()->menu.hide())
+        false
+      )
 
     open: (e, ui)->
       stgrid.lockLabels()

@@ -3,6 +3,7 @@ package com.alcatel_lucent.dms.service;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
@@ -276,5 +277,23 @@ public class LanguageServiceImpl extends BaseServiceImpl implements LanguageServ
 			}
 			charsets = null;	// reset cache
 		}
+	}
+
+	@Override
+	public Locale getLocale(Language language) {
+		Collection<ISOLanguageCode> isoCodes = language.getIsoCodes();
+		if (isoCodes != null) {
+			for (ISOLanguageCode isoCode : isoCodes) {
+				if (isoCode.isDefaultCode()) {
+					String code = isoCode.getCode();
+					if (code.length() == 2) {
+						return new Locale(code.substring(0, 2));
+					} else if (code.length() == 5) {
+						return new Locale(code.substring(0, 2), code.substring(3));
+					}
+				}
+			}
+		}
+		return Locale.ENGLISH;	// default ENGLISH for unknown locales
 	}
 }

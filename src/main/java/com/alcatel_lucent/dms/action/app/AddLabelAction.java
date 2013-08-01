@@ -20,7 +20,7 @@ public class AddLabelAction extends JSONAction {
 		log.info("AddLabelAction: dict=" + dict + ", key=" + key + ", reference=" + reference + 
 				", maxLength=" + maxLength + ", context=" + context + ", description=" + description);
 		dictionaryService.addLabel(dict, key, reference, maxLength, context, description);
-		setMessage(getText("operation.success"));
+		setMessage(getText("message.success"));
 		return SUCCESS;
 	}
 

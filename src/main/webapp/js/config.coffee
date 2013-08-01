@@ -1,8 +1,14 @@
 require.config
   baseUrl: 'js/lib'
   paths:
-    jquery: 'jquery-1.7.2.min'
-    jqueryui: 'jquery-ui-1.8.22.custom.min'
+#    jquery: 'jquery-1.7.2.min'
+    jquery: 'jquery-1.10.1.min'
+#    jquery: '//code.jquery.com/jquery-1.10.1'
+    "jquery.migrate": 'jquery-migrate-1.2.1.min'
+#    jqueryui: 'jquery-ui-1.8.22.custom.min'
+    jqueryui: 'jquery-ui-1.10.3.custom.min'
+#    jqueryui: 'jquery-ui'
+
     formvalidate: 'formValidator-4.0.1.min'
     formvalreg: 'formValidatorRegex'
     jqform: 'jquery.form'
@@ -10,7 +16,7 @@ require.config
     jqtree: 'jquery.jstree'
     jqlayout: 'jquery.layout-latest.min'
     jqmsgbox: 'jquery.msgBox.v1'
-    blockui: 'jquery.blockUI'
+    blockui: 'jquery.blockUI.min'
     jqupload: 'jsfileuploader/jquery.fileupload'
     iframetransport: 'jsfileuploader/jquery.iframe-transport'
     hchart: 'highcharts'
@@ -31,6 +37,12 @@ require.config
     main: '../main'
 
   shim:
+    'jquery.migrate':
+      deps: ['jquery']
+      exports: 'jQuery'
+    'jquerym':
+      deps: ['jquery']
+      exports: 'jQuery'
     'hchart':
       deps: ['jquery']
       exports: 'jQuery'
@@ -50,9 +62,9 @@ require.config
     'jqueryui':
       deps: ['jquery']
       exports: 'jQuery'
-    'jqupload':
-      deps: ['jquery']
-      exports: 'jQuery'
+#    'jqupload':
+#      deps: ['jqueryui','jquery.migrate','iframetransport']
+#      exports: 'jQuery'
     'i18n/grid.locale-en':
       deps: ['jquery']
       exports: 'jQuery'
@@ -60,16 +72,16 @@ require.config
       deps: ['jquery']
       exports: 'jQuery'
     'jqgrid':
-      deps: ['jqueryui', if param? then param.i18ngridfile else 'i18n/grid.locale-en']
+      deps: ['jqueryui','jquery.migrate', if param? then param.i18ngridfile else 'i18n/grid.locale-en']
       exports: 'jQuery'
     'jqtree':
       deps: ['jquery']
       exports: 'jQuery'
     'jqlayout':
-      deps: ['jquery','jqueryui']
+      deps: ['jqueryui']
       exports: 'jQuery'
     'jqmsgbox':
-      deps: ['jquery']
+      deps: ['jqueryui']
       exports: 'jQuery'
     'blockui':
       deps: ['jquery']
