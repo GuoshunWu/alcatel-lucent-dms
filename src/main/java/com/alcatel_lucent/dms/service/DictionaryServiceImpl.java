@@ -167,12 +167,16 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             }
         }
 
+        // replace glossary before populating context
+        for (Dictionary dict : result) {
+            glossaryService.consistentGlossariesInDict(dict);
+        }
+        
         populateDefaultContext(result);
 
         for (Dictionary dict : result) {
             // populate additional errors and warnings
             dict.validate();
-            glossaryService.consistentGlossariesInDict(dict);
         }
 
         return result;
@@ -194,6 +198,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         Map<String, Text> textMap = dbDefaultCtx == null ? new HashMap<String, Text>() :
                 textService.getTextsAsMap(dbDefaultCtx.getId());
 //        Map<String, Text> exclusionMap = textService.getTextsAsMap(dbExclusionCtx.getId());
+        Collection<Glossary> glossaryObjects = glossaryService.getAllGlossaries();
+        HashSet<String> glossaries = new HashSet<String>();
+        for (Glossary glossary : glossaryObjects) {
+        	glossaries.add(glossary.getText());
+        }
         Map<String, Text> unsavedTextMap = new HashMap<String, Text>();
         for (Dictionary dict : dictList) {
             Context dictCtx = new Context(Context.DICT);
@@ -202,10 +211,10 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 if (label.getContext() != null) {
                     continue;
             	}
-//                if (exclusionMap.containsKey(label.getReference())) {
-//                    label.setContext(exclusionCtx);
-//                    continue;
-//                }
+                if (glossaries.contains(label.getReference())) {
+                    label.setContext(exclusionCtx);
+                    continue;
+                }
                 if (label.getReference().trim().isEmpty()) {
                 	label.setContext(exclusionCtx);
                 	continue;
