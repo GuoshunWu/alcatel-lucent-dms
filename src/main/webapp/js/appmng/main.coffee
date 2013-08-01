@@ -2,7 +2,7 @@ define [
   'jqgrid'
   'dms-util'
 
-  './product_panel'
+  'appmng/product_panel'
   'appmng/application_panel'
   'appmng/search_panel'
   'appmng/layout'

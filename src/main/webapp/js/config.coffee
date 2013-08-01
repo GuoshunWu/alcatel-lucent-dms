@@ -1,13 +1,8 @@
 require.config
   baseUrl: 'js/lib'
   paths:
-#    jquery: 'jquery-1.7.2.min'
-    "jquery": "//code.jquery.com/jquery-1.10.2.min"
-#    "jquery": "//code.jquery.com/jquery-1.9.1.min"
-    "jquery.migrate": "//code.jquery.com/jquery-migrate-1.2.1.min"
-#    jqueryui: 'jquery-ui-1.8.22.custom.min'
-    "jqueryui": "//code.jquery.com/ui/1.10.3/jquery-ui.min"
-
+    jquery: 'jquery-1.7.2.min'
+    jqueryui: 'jquery-ui-1.8.22.custom.min'
     formvalidate: 'formValidator-4.0.1.min'
     formvalreg: 'formValidatorRegex'
     jqform: 'jquery.form'
@@ -15,8 +10,7 @@ require.config
     jqtree: 'jquery.jstree'
     jqlayout: 'jquery.layout-latest.min'
     jqmsgbox: 'jquery.msgBox.v1'
-#    blockui: 'jquery.blockUI'
-    blockui: '//cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.61.0-2013.06.06/jquery.blockUI.min'
+    blockui: 'jquery.blockUI'
     jqupload: 'jsfileuploader/jquery.fileupload'
     iframetransport: 'jsfileuploader/jquery.iframe-transport'
     hchart: 'highcharts'
@@ -37,9 +31,6 @@ require.config
     main: '../main'
 
   shim:
-    'jquery.migrate':
-      deps: ['jquery']
-      exports: 'jQuery'
     'hchart':
       deps: ['jquery']
       exports: 'jQuery'
@@ -57,7 +48,7 @@ require.config
       deps: ['jquery']
       exports: 'jQuery'
     'jqueryui':
-      deps: ['jquery.migrate']
+      deps: ['jquery']
       exports: 'jQuery'
     'jqupload':
       deps: ['jquery']
