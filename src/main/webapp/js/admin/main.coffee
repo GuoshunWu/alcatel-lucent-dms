@@ -10,19 +10,24 @@ define [
   'dms-urls'
   'dms-util'
 
-  'admin/languagegrid'
-  'admin/charsetgrid'
-  'admin/usergrid'
+  './languagegrid'
+  './charsetgrid'
+  './usergrid'
+  './glossarygrid'
 
 ], (require, $, blockui,jqmsgbox, i18n, c18n, urls, util)->
   init = ()->
     #    console?.log "transmng panel init..."
+    isFirst = true
     $('#adminTabs').tabs(
-      show: (event, ui)->
-        pheight = $(ui.panel).height()
-        pwidth = $(ui.panel).width()
-        #        console?.log "height=#{pheight}, width=#{pwidth}."
-        $('table.ui-jqgrid-btable', ui.panel).setGridHeight(pheight - 90).setGridWidth(pwidth - 20)
+      activate: (event, ui)->
+        pheight = $(ui.newPanel).height()
+        pwidth = $(ui.newPanel).width()
+#        console?.log "height=#{pheight}, width=#{pwidth}."
+        if isFirst
+          $('table.ui-jqgrid-btable', @).setGridHeight(pheight - 90).setGridWidth(pwidth - 20)
+          $('#glossaryGrid',@).setGridHeight(pheight - 120)
+        isFirst = false
     )
 
     tabs = $('#adminTabs')
@@ -39,6 +44,16 @@ define [
         msg = json.event.msg
         $.msgBox msg, null, {title: c18n.info, width: 300, height: 'auto'}
       , pb)
+
+    $('#consistentGlossaries').button().click (e)->
+      $.blockUI()
+      $.post urls.glossary.update, {oper: 'consistentGlossaries'}, (json)->
+        $.unblockUI()
+        if 0 != json.status
+          $.msgBox json.message, null, {title: c18n.error}
+          return
+        $.msgBox json.message, null, {title: c18n.info}
+
     # init dialogs
     $('#addUserDialog').dialog(
       autoOpen: false

@@ -36,11 +36,13 @@ define (require)->
     deliver_dict: getURL('deliver-dict', 'app/')
     deliver_app_dict: getURL('deliver-app-dict', 'app/')
     process_dict: getURL('process-dict', 'app/')
-    update_label_status: getURL('update-label-status', 'app/')
     download_app_dict: getURL('download-app-dict', 'app/')
+    capitalize: getURL('capitalize', 'app/')
   label:
     del: getURL('delete-label', 'app/')
     create: getURL('add-label', 'app/')
+    update: getURL('update-label', 'app/')
+    update_status: getURL('update-label-status', 'app/')
   task:
     apply:  getURL('apply-task', 'task/')
     close:  getURL('close-task', 'task/')
@@ -53,6 +55,10 @@ define (require)->
     generate_translation_details: getURL('generate-translation-details', 'trans/')
     export_translation_details: getURL('export-translation-details', 'trans/')
     import_translation_details: getURL('import-translation-details', 'trans/')
+  charset:
+    update: getURL('charset', 'admin/')
+  glossary:
+    update: getURL('glossary', 'admin/')
 
   user:
     update: getURL('user', 'admin/')
@@ -87,6 +93,7 @@ define (require)->
     texts: getURL('texts', 'rest/')
     refs: getURL('text/refs', 'rest/')
     translations: getURL('text/translations', 'rest/')
+  glossaries: getURL('glossaries', 'rest/')
 
   getURL: getURL
 

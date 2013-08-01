@@ -91,6 +91,8 @@ public class BusinessException extends RuntimeException {
     static public final int CHARSET_IS_IN_USE = 604;
     public static final int USER_ALREADY_EXISTS = 605;
     public static final int USER_NOT_FOUND = 606;
+
+    public static final int GLOSSARY_ALREADY_EXISTS = 607;
     
     // context management
     public static final int TEXT_HAS_REFS = 701;

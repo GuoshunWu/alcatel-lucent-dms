@@ -46,7 +46,7 @@ public class StandardExcelGenerator extends DictionaryGenerator {
 
         OutputStream os=null;
         try {
-            IOUtils.copy(getClass().getResourceAsStream("StandardExcelTemplate.xls"), FileUtils.openOutputStream(targetFile));
+            IOUtils.copy(getClass().getResourceAsStream("StandardExcelTemplate.xlsx"), FileUtils.openOutputStream(targetFile));
             Workbook wb = WorkbookFactory.create(new AutoCloseInputStream(new FileInputStream(targetFile)));
             fillWorkbook(wb, dict);
             os =  FileUtils.openOutputStream(targetFile);
@@ -79,6 +79,7 @@ public class StandardExcelGenerator extends DictionaryGenerator {
         int i = 4;
         String langCode;
         CellStyle style = titleRow.getCell(1).getCellStyle();
+        CellStyle cellStyle = sheet.getRow(1).getCell(0).getCellStyle();
 
         for (DictionaryLanguage dctLanguage : dctLanguages) {
             cell = titleRow.createCell(i);
@@ -113,6 +114,7 @@ public class StandardExcelGenerator extends DictionaryGenerator {
                 } else { //All the other language translations
                     cell.setCellValue(label.getTranslation(colName));
                 }
+                cell.setCellStyle(cellStyle);
             }
         }
     }

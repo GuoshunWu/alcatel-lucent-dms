@@ -7,7 +7,9 @@ define ['jqgrid', 'dms-util', 'i18n!nls/admin'], ($, util, i18n)->
     url: 'rest/languages', postData: {prop: 'name,defaultCharset', format: 'grid'}, datatype: 'json', mtype: 'post'
     pager: '#languagePager', rowNum: 15, rowList: [15, 30, 60]
     multiselect: true
-    cellEdit: true, cellurl: 'admin/language', afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
+    cellEdit: true, cellurl: 'admin/language'
+
+    afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
       jsonFromServer = $.parseJSON serverresponse.responseText
       [jsonFromServer.status == 0, jsonFromServer.message]
     editurl: 'admin/language'

@@ -25,9 +25,12 @@ define
     dict: 'dictionary'
     label: 'label'
     language: 'language'
+    languagerequired: 'Please select languages!'
     selrow: 'Please select {0} first'
     'selecttip': 'Please select'
     noversion: '{0} \"{1}\" has no version.'
+    glossary:
+      caption: 'Glossaries'
     select:
       product:
         tip: 'Please select product'

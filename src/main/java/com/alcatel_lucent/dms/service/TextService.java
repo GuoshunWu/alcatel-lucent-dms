@@ -14,7 +14,7 @@ public interface TextService {
 	
 	/**
 	 * Find context by name.
-	 * @param name context name
+	 * @param key context name
 	 * @return persistent Context object
 	 */
 	Context getContextByKey(String key);
@@ -55,6 +55,7 @@ public interface TextService {
 	 * @param translations map of translations which takes language id as key,
 	 *        translated text as value
 	 * @return Text object
+	 * @deprecated
 	 */
 	Text addTranslations(Long ctxId, String reference, Map<Long, String> translations);
 	
@@ -64,6 +65,7 @@ public interface TextService {
 	 * @param translations map of translations which takes language id as key,
 	 *        translated text as value
 	 * @return Text object
+	 * @deprecated
 	 */
 	Text addTranslations(Long textId, Map<Long, String> translations);
 	
@@ -78,15 +80,6 @@ public interface TextService {
 	 */
 	Map<String, Text> updateTranslations(Long ctxId, Collection<Text> texts, Constants.ImportingMode mode);
 
-	/**
-	 * Update translation for a new label.
-	 * The method is invoked when a new label was added or reference text of a label is changed.
-	 * An auto-match of translation action will be performed.
-	 * @param label new label or the label whose reference text was changed
-	 * @return text object linked to the label
-	 */
-	Text updateTranslations(Label label);
-
     /**
      *  Receive the completed translation in a excel file.
      *  Insert or update translation for a given  languageId in excel file,
@@ -98,7 +91,7 @@ public interface TextService {
     
     /**
      * Update translation status
-     * @param tarnsIds Translation object id list
+     * @param transIds Translation object id list
      * @param transStatus new translation status
      */
     void updateTranslationStatus(Collection<Long> transIds, int transStatus);

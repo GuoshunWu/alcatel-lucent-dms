@@ -122,7 +122,7 @@ define [
           language:language
           transsrc: ''
         $('#translationDetailDialog').data(param: param).dialog "open"
-
+        false
 
   #  customed method executed when the grid is created.
     afterCreate: (grid)->

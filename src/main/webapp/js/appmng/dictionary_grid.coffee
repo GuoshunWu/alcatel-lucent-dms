@@ -93,7 +93,7 @@ define [
     {name: 'action', index: 'action', width: 70, editable: false, align: 'center', sortable: false
     formatter: (cellvalue, options, rowObject)->
       $.map(handlers,
-        (value, index)->"<A id='action_#{index}_#{options.rowId}' style='color:blue' title='#{value.title}'href=# >#{index}</A>"
+        (value, index)->"<A id='action_#{index}_#{options.rowId}' style='color:blue' title='#{value.title}'href='javascript:void(0)'>#{index}</A>"
       ).join('&nbsp;&nbsp;&nbsp;&nbsp;')
     }
     {name: 'history', index: 'history', width: 25, editable: false, align: 'center', sortable: false,formatter: (cellvalue, options, rowObject)->
@@ -120,7 +120,7 @@ define [
   sortorder: 'asc'
   viewrecords: true, cellEdit: true, cellurl: 'app/update-dict', ajaxCellOptions: {async: false}
   gridview: true, multiselect: true
-  caption: 'Dictionary for Application'
+  caption: i18n.grid.dictsforapp
   colNames: ['LangRefCode', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels', 'Action','History', 'Del']
   colModel: colModel
   beforeProcessing: (data, status, xhr)->
@@ -222,6 +222,28 @@ define [
       $.msgBox (c18n.selrow.format c18n.dict), null, {title: c18n.warning}
       return
     $('#removeLanguageDialog').data('param', dicts: dicts).dialog 'open'
+
+  capitalizeId = '#dictCapitalize'
+  menu = $(capitalizeId + 'Menu', '#DMS_applicationPanel').hide().menu(
+    select: ( event, ui )->
+
+      dicts = dicGrid.getGridParam('selarrrow')
+      if !dicts.length
+        $.msgBox (c18n.selrow.format c18n['dict']), null, title: c18n.warning
+        return
+      $('#capitalizationDialog').data(params: {dicts: dicts.join(','), style: $('a',ui.item).prop('name')}).dialog('open')
+  )
+
+  $(capitalizeId, '#DMS_applicationPanel').button(
+    create:(event, ui)->$(@).width(180)
+    icons: {
+      primary: "ui-icon-triangle-1-n"
+    }
+  ).on('click', (e)->
+    menu.width($(@).width() - 3).show().position(my: "left bottom", at: "left top", of: this)
+    $(document).one("click", ()->menu.hide())
+    false
+  )
 
 
   appChanged: (param)->

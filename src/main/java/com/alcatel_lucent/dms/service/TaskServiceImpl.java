@@ -54,6 +54,9 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
     @Autowired
     private TextService textService;
 
+    @Autowired
+    private GlossaryService glossaryService;
+
     @SuppressWarnings("unchecked")
     @Override
     public Task createTask(Long productId, Long appId, String name,
@@ -151,8 +154,9 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
         } else {
             throw new BusinessException(BusinessException.EMPTY_TASK);
         }
+        log.info("Creating " + newTransList.size() + " new translation objects...");
         for (Translation trans : newTransList) {
-            dao.create(trans);
+            dao.create(trans, false);
         }
 
         // create log
@@ -386,15 +390,17 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
             createCell(row, 5, td.getNewTranslation() == null ? td.getOrigTranslation() : td.getNewTranslation(), styleUnlockedBody);
             createCell(row, 6, "", styleUnlockedBody);
             Label label = td.getLabel();
-            String strMergeNum = Util.string2Map(label.getAnnotation1()).get("displayCheckMergeNum");
-            if (StringUtils.isNotBlank(strMergeNum)) {
-                Cell cell = OTCPCGenerator.drawDisplayCheckColumns(row, 5, 7, Integer.parseInt(strMergeNum), OTCExcelDisplayInfo.length, greyStyle);
-                OTCPCGenerator.setDisplayCheckCellStyle(cell, label, styleMap);
-            }
-            //set row height
-            String sRowHeight = Util.string2Map(label.getAnnotation1()).get("rowHeight");
-            if (StringUtils.isNotBlank(sRowHeight)) {
-                row.setHeightInPoints(Float.parseFloat(sRowHeight));
+            if (label.getDictionary().getFormat().equals(Constants.DictionaryFormat.OTC_EXCEL.toString())) {
+	            String strMergeNum = Util.string2Map(label.getAnnotation1()).get("displayCheckMergeNum");
+	            if (StringUtils.isNotBlank(strMergeNum)) {
+	                Cell cell = OTCPCGenerator.drawDisplayCheckColumns(row, 5, 7, Integer.parseInt(strMergeNum), OTCExcelDisplayInfo.length, greyStyle);
+	                OTCPCGenerator.setDisplayCheckCellStyle(cell, label, styleMap);
+	            }
+	            //set row height
+	            String sRowHeight = Util.string2Map(label.getAnnotation1()).get("rowHeight");
+	            if (StringUtils.isNotBlank(sRowHeight)) {
+	                row.setHeightInPoints(Float.parseFloat(sRowHeight));
+	            }
             }
         }
         sheet.protectSheet(PROTECT_PASSWORD);
@@ -632,6 +638,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
         if (task.getStatus() == Task.STATUS_CLOSED || task.getLastUpdateTime() == null) {
             throw new BusinessException(BusinessException.INVALID_TASK_STATUS);
         }
+        glossaryService.consistentGlossariesInTask(task);
         Collection<Context> contexts = getTaskContexts(taskId);
         int count = 0;
         for (Context context : contexts) {

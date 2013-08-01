@@ -31,11 +31,11 @@ define [
     url: 'json/dummy.json', mtype: 'post', datatype: 'local'
     width: 880, height: 300
     pager: '#stringSettingsPager'
-    editurl: "app/add-label"
+    editurl: urls.label.create
     rowNum: 10, rowList: [10, 20, 30]
     sortorder: 'asc'
     viewrecords: true
-    gridview: true, multiselect: true, cellEdit: true, cellurl: 'app/update-label'
+    gridview: true, multiselect: true, cellEdit: true, cellurl: urls.label.update
     colNames: ['Label', 'Reference Language', 'T', 'N', 'I', 'Max Length', 'Context', 'Description', ]
     colModel: [
       {name: 'key', index: 'key', width: 100, editable: false, align: 'left', search:false}
@@ -70,13 +70,16 @@ define [
         param.key = rowData.key
         param.ref = rowData.reference
 
-        $('#stringSettingsTranslationDialog').data param: param
-        $('#stringSettingsTranslationDialog').dialog 'open'
+        $('#stringSettingsTranslationDialog').data(param: param).dialog 'open'
+        false
 
     afterEditCell: (rowid, cellname, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
     afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
       json = $.parseJSON(serverresponse.responseText)
-      $(@).trigger 'reloadGrid' if 'reference' == cellname and 0== json.status
+      setTimeout (->
+        dicGrid.trigger 'reloadGrid'
+      ), 10 if 'reference' == cellname and 0== json.status
+
       [0 == json.status, json.message]
     beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
   ).setGridParam(datatype: 'json').jqGrid('navGrid', '#stringSettingsPager', {edit: false, add: false, del: false, search: false, view: false},{}, {}, {})
