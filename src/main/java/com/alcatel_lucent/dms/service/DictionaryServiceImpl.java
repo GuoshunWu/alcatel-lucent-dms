@@ -715,6 +715,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 }
             }
         }
+        
+        // merge duplicate texts
+        mergeDuplicateTexts(textMap);
 
         ProgressQueue.setProgress(50);
         // for each context, insert or update label/text/translation data
@@ -798,6 +801,38 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     }
 
     /**
+     * Merge duplicate texts in textMap.
+     * Translated string will be chosen prior
+     * @param textMap
+     */
+    private void mergeDuplicateTexts(Map<String, Collection<Text>> textMap) {
+		for (String ctx : textMap.keySet()) {
+			Collection<Text> texts = textMap.get(ctx);
+			Map<String, Text> refMap = new HashMap<String, Text>();
+			for (Iterator<Text> iter = texts.iterator(); iter.hasNext();) {
+				Text text = iter.next();
+				Text existText = refMap.get(text.getReference());
+				if (existText != null) {	// do merge and remove current text
+					log.info("Merge duplicate text: " + text.getReference());
+					for (Translation trans : text.getTranslations()) {
+						Translation existTrans = existText.getTranslation(trans.getLanguage().getId());
+						if (existTrans == null) {
+							trans.setText(existText);
+							existText.addTranslation(trans);
+						} else if (existTrans.getStatus() == Translation.STATUS_UNTRANSLATED && trans.getStatus() == Translation.STATUS_TRANSLATED) {
+							existTrans.setTranslation(trans.getTranslation());
+							existTrans.setStatus(trans.getStatus());
+						}
+					}
+					iter.remove();
+				} else {
+					refMap.put(text.getReference(), text);
+				}
+			}
+		}
+	}
+
+	/**
      * Find out a dictionary in the application which contains languages
      *
      * @param appId
