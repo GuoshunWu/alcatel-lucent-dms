@@ -261,7 +261,7 @@ public class VitalSuiteDictParser extends DictionaryParser {
             if (isRef) {
                 Label label = new Label();
                 if (comments.toString().length() > 0) {
-                    label.setAnnotation1(comments.toString());
+                    label.setAnnotation1(comments.toString().trim());
                 }
                 label.setKey(key);
                 label.setReference(text);

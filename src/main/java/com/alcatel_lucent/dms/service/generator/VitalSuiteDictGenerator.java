@@ -12,6 +12,7 @@ import org.apache.commons.io.ByteOrderMark;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +56,7 @@ public class VitalSuiteDictGenerator extends DictionaryGenerator {
 
     private void generateProp(File targetDir, Dictionary dict, DictionaryLanguage dl) {
         PrintStream out = null;
-        File targetFile = new File(targetDir + "/" + dict.getName(), dl.getLanguageCode()+".txt");
+        File targetFile = new File(targetDir + "/" + dict.getName(), dl.getLanguageCode() + ".txt");
 
         try {
             out = new PrintStream(new BufferedOutputStream(FileUtils.openOutputStream(targetFile)), true, "UTF-8");
@@ -67,22 +68,21 @@ public class VitalSuiteDictGenerator extends DictionaryGenerator {
 
             for (Label label : labels) {
                 boolean isRef = dict.getReferenceLanguage().equals(dl.getLanguageCode());
-
+                String text = null;
                 if (isRef) {    // reference language
                     if (label.getAnnotation1() != null) {
                         out.println(label.getAnnotation1());
                     }
-//                    out.print(StringUtils.rightPad(label.getKey(), maxKeyLen + 4, ' '));
-//                    out.println(label.getReference());
+                    text = label.getReference();
                 } else {
-//                    LabelTranslation lt = label.getOrigTranslation(dl.getLanguageCode());
-//                    if (lt != null && lt.getAnnotation1() != null) {
-//                        out.println(lt.getAnnotation1());
-//                    }
-//                    // populate translation result
-//                    out.print(StringUtils.rightPad(label.getKey(), maxKeyLen + 4, ' '));
-//                    out.println(label.getTranslation(dl.getLanguageCode()));
+                    LabelTranslation lt = label.getOrigTranslation(dl.getLanguageCode());
+                    if (lt != null && lt.getAnnotation1() != null) {
+                        out.println(lt.getAnnotation1());
+                    }
+                    // populate translation result
+                    text = StringEscapeUtils.escapeJava(label.getTranslation(dl.getLanguageCode()));
                 }
+                out.println(String.format("    %s{\"%s\"}", label.getKey(), text));
             }
             out.println("}");
         } catch (IOException e) {

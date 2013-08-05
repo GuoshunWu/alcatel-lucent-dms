@@ -2,28 +2,32 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-
-    <style type="text/css">
-        .preview {
-            /*height: 100px;*/
-            font-weight: bolder;
-            font-size: 10px;
-            text-align: center;
-        }
-
-        .playerFont {
-            font-family: Lucida Grande, Lucida Sans, Arial, Helvetica, sans-serif, '宋体' !important;
-            font-size: 12px !important;
-        }
-
-        .ui-menu {
-            font-size: 12px !important;
-            /*width: 150px;*/
-        }
-    </style>
 </head>
 <body>
-<table border="0" id="guidesArea">
+<!-- for DMS guides -->
+<style type="text/css">
+    .preview {
+        /*height: 100px;*/
+        font-weight: bolder;
+        font-size: 10px;
+        text-align: center;
+    }
+
+    .playerFont {
+        font-family: Lucida Grande, Lucida Sans, Arial, Helvetica, sans-serif, '宋体' !important;
+        font-size: 12px !important;
+    }
+
+    .ui-menu {
+        font-size: 12px !important;
+        /*width: 150px;*/
+    }
+
+    .guide-title {
+        background-color: lightblue;
+    }
+</style>
+<table id="guidesArea">
     <thead></thead>
     <tbody></tbody>
 </table>
@@ -41,13 +45,21 @@
 <script type="text/javascript">
 
     (function (window) {
-        //    var removeServerAddress= "//frcolv10lin237.pqa-collab.fr.alcatel-lucent.com/"
-        var removeServerAddress = "//localhost:8888/dms/"
-                , scriptsDir = removeServerAddress + "js/lib/"
+        var tmpAddress = location.toString();
+        tmpAddress = tmpAddress.substring(0, tmpAddress.lastIndexOf('/'));
+        tmpAddress = tmpAddress.substring(0, tmpAddress.lastIndexOf('/') + 1);
+        var removeServerAddress = tmpAddress;
+
+        if (location.hostname == 'aww.rdcsbu.bsf.alcatel.fr')
+            removeServerAddress = "//frcolv10lin237.pqa-collab.fr.alcatel-lucent.com/"
+
+        var scriptsDir = removeServerAddress + "js/lib/"
                 , cssDir = removeServerAddress + "css/"
                 , swfBasePath = removeServerAddress + "manual/"
                 , imageBasePath = removeServerAddress + "images/"
-                , swfJSON = removeServerAddress + "scripts/tutorialsJSON.groovy"
+        //user JSONP for cross domain
+                , swfJSONP = removeServerAddress + "scripts/tutorialsJSON.groovy?callback=?"
+                , guideTitle = "Video Tutorial"
                 ;
 
         /**
@@ -134,12 +146,13 @@
                     embed += "<" + '/EMBED' + '>';
 
                     $("div.playerContent", player).html(embed);
+
                     player.dialog("option", "title", title).dialog("open");
                 }
 
                 function initPreviewTable(container, swfFiles, playIcon, playIconSize, colNum) {
                     if (!colNum) colNum = 2;
-                    $('thead', container).append($("<" + "tr" + ">").append($("<" + "th" + ">").prop({'colspan': colNum}).text("Guides")));
+                    $('thead', container).append($("<" + "tr" + ">").append($("<" + "th" + ">").addClass('guide-title').prop({'colspan': colNum}).text(guideTitle)));
                     var rowNum = Math.ceil(swfFiles.length / colNum),
                             swfIndex = 0,
                             imgFileName = playIcon ? playIcon : "play/2.png",
@@ -179,25 +192,27 @@
                             imgFileName = playIcon ? playIcon : "play/2.png",
                             imgSize = playIconSize ? playIconSize : '64px',
                             tHead = $('thead', container);
-
                     if (!tHead.find("tr").length) {
-                        tHead.append($("<" + "tr" + ">").append($("<" + "th" + ">").text("Guides")));
+                        tHead.append($("<" + "tr" + ">").append($("<" + "th" + ">").addClass('guide-title').text(guideTitle)));
                     }
                     var trRow = $("<" + "tr" + ">"),
                             preview = $("<" + "ul id='menu1'" + ">");
 
 
                     for (var i = 0; i < swfFiles.length; ++i) {
-                        var fileEntry = swfFiles[swfIndex++],
-                                playIcon = $("<" + "span" + ">").addClass('ui-icon')
-                                        .css({
-                                            'width': imgSize, 'height': imgSize,
-                                            'background': 'url(' + imageBasePath + imgFileName + ') no-repeat center/' + imgSize + ' ' + imgSize,
-                                            'display': 'block'
-                                        })
-                                ;
+                        var fileEntry = swfFiles[swfIndex++];
+                        // for IE compatibility
+                        var playIcon = $("<" + "span" + ">").addClass('ui-icon').css({
+                            'display': 'block',
+                            'background-image': 'url(' + imageBasePath + imgFileName + ')',
+                            'background-position': 'center'
+                        });
+
+
+                        var a = $("<" + "a" + ">").prop({'name': fileEntry.filename, 'href': 'javascript:void(0)'}).append(playIcon).append(fileEntry.title);
                         $("<" + "li" + ">")
-                                .append($("<" + "a" + " href='javascript:void(0)'>").prop({'name': fileEntry.filename}).append(playIcon).append(fileEntry.title)).appendTo(preview);
+                                .append(a).appendTo(preview);
+
                     }
                     preview.menu({select: function (event, ui) {
                         var swf = swfBasePath + $('a', ui.item).prop('name') + '.swf';
@@ -208,10 +223,11 @@
                     $("tbody", container).append(trRow);
                 }
 
-                var test = $.getJSON(swfJSON, function (json) {
+                var test = $.getJSON(swfJSONP, function (json) {
                     var container = $("#guidesArea");
                     var imgName = 'play/5.png';
 //                    initPreviewTable(container, json, imgName, '32px');
+//
                     initPreviewList(container, json, imgName, '20px');
                 });
             });
@@ -220,5 +236,7 @@
     })(window);
 
 </script>
+
+<!-- for DMS guides ends -->
 </body>
 </html>
