@@ -78,13 +78,15 @@ public class ACSTextDictParser extends DictionaryParser {
         }
 
         File refFile = null;
+        /**
+         * Ref text file would never be null
+         * */
         for (String baseName : refTextFiles.keySet()) {
             try {
                 refFile = refTextFiles.get(baseName);
                 deliveredDicts.add(parseProp(rootDir, baseName, textFiles.get(baseName), refTextFiles.get(baseName)));
             } catch (BusinessException e) {
                 e.addNestedException(exceptions);
-                log.info(file + " is not a ACSText because {}", e.getMessage());
             }
             acceptedFiles.add(refFile);
             if (null != textFiles.get(baseName)) {
@@ -102,6 +104,10 @@ public class ACSTextDictParser extends DictionaryParser {
      */
     private Dictionary parseProp(String rootDir,
                                  String baseName, Collection<File> files, File refFile) {
+
+        if(null == refFile) {
+            throw new BusinessException(BusinessException.ACS_TEXT_REF_FILE_NOT_FOUND, baseName);
+        }
         Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
         String[] nameParts = splitFileName(refFile.getName());
 

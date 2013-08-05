@@ -40,6 +40,7 @@ public class BusinessException extends RuntimeException {
     static public final int UNRECOGNIZED_DICT_FILE = 226;
     static public final int NESTED_VLE_LANG_FILE_ERROR = 227;
     static public final int VITAL_SUITE_REF_FILE_NOT_FOUND = 228;
+    static public final int ACS_TEXT_REF_FILE_NOT_FOUND = 229;
 
     // VLEExcel error
     static public final int INVALID_VLE_DICT_FILE = 240;

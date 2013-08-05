@@ -6,7 +6,7 @@ import org.apache.commons.io.FilenameUtils
 
 def replaceMap = ["CreateProductApp": "Create Product/Application"]
 
-response.contentType = 'text/json'
+response.contentType = 'text/javascript;charset=utf-8'
 //System.out.println "${request.scheme}://${request.serverName}:${request.serverPort}${request.contextPath}/manual"
 def list = FileUtils.listFiles(new File(context.getRealPath("/manual")), ["swf"] as String[], true);
 CollectionUtils.transform(list, { File input ->
@@ -14,5 +14,5 @@ CollectionUtils.transform(list, { File input ->
     String title = null != replaceMap[fileName] ? replaceMap[fileName] : fileName.replaceAll("([A-Z])", " \$1").trim()
     [filename: fileName, title: title]
 } as Transformer);
-println new JsonBuilder(list).toPrettyString()
+println "${params.callback}(${new JsonBuilder(list).toPrettyString()});"
 
