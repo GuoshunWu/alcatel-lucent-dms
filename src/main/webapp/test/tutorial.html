@@ -142,7 +142,7 @@
                     $('thead', container).append($("<" + "tr" + ">").append($("<" + "th" + ">").prop({'colspan': colNum}).text("Guides")));
                     var rowNum = Math.ceil(swfFiles.length / colNum),
                             swfIndex = 0,
-                            imgFileName = playIcon ? playIcon : "play/1.png",
+                            imgFileName = playIcon ? playIcon : "play/2.png",
                             imgSize = playIconSize ? playIconSize : 64;
 
 
@@ -176,7 +176,7 @@
 
                 function initPreviewList(container, swfFiles, playIcon, playIconSize) {
                     var swfIndex = 0,
-                            imgFileName = playIcon ? playIcon : "play/1.png",
+                            imgFileName = playIcon ? playIcon : "play/2.png",
                             imgSize = playIconSize ? playIconSize : '64px',
                             tHead = $('thead', container);
 
@@ -210,8 +210,9 @@
 
                 var test = $.getJSON(swfJSON, function (json) {
                     var container = $("#guidesArea");
-//                    initPreviewTable(container, json, 'play/2.png', '32px');
-                    initPreviewList(container, json, 'play/1.png', '20px');
+                    var imgName = 'play/5.png';
+                    initPreviewTable(container, json, imgName, '32px');
+                    initPreviewList(container, json, imgName, '20px');
                 });
             });
         });
