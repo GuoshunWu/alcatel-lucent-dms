@@ -1,4 +1,8 @@
-V2.10.0
+V2.10.1 (Aug 5, 2013)
+    * Optimize pager size in different grids
+    * Automatically set labels with EXCLUSION context in any case if its reference equals to a glossary
+
+V2.10.0 (Aug 2, 2013)
     * Add "Capitalize" feature allowing to change capitalization style for labels
     * Rename "Admin" view to "Settings" view
     * Allows application owner or translation manager to maintain a "Glossary" list in "Settings" view
