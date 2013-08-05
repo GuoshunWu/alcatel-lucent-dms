@@ -32,7 +32,7 @@ public class Constants {
         OTC_EXCEL("OTC Excel"),
         VOICE_APP("Voice App"),
         PO("PO"),
-        //        VITAL_SUITE("Vital Suite"),
+        VITAL_SUITE("Vital Suite"),
         NOE_STRING("NOE String");
 
 

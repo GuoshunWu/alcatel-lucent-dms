@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.beans.factory.annotation.Autowired
 import com.alcatel_lucent.dms.model.Dictionary
 import org.junit.Ignore
+import org.springframework.transaction.annotation.Transactional
 
 /**
  * Created by IntelliJ IDEA.
@@ -24,6 +25,7 @@ import org.junit.Ignore
 @Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = ["/spring.xml"])
+@Transactional
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 public class XMLDictParserTest {
 

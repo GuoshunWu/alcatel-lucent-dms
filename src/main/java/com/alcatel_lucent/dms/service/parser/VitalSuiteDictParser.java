@@ -11,12 +11,15 @@ import com.alcatel_lucent.dms.util.Util;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.PredicateUtils;
 import org.apache.commons.io.ByteOrderMark;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.OrFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.io.input.AutoCloseInputStream;
 import org.apache.commons.io.input.BOMInputStream;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -24,23 +27,28 @@ import org.springframework.util.MultiValueMap;
 
 import java.io.*;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.apache.commons.io.FilenameUtils.normalize;
 
 @SuppressWarnings("unchecked")
-//@Component
+@Component
 public class VitalSuiteDictParser extends DictionaryParser {
 
     private static final Collection<String> REFERENCE_CODE = Arrays.asList("EN", "EN-EN");
     private FileFilter textFilter = new OrFileFilter(new SuffixFileFilter(Arrays.asList(".txt")), DirectoryFileFilter.INSTANCE);
+
+    private static final Pattern linePattern = Pattern.compile("^([A-Za-z0-9-\\.]+)\\s*\\{\"(.*?)\"\\}$");
+    private static final Pattern filePattern = Pattern.compile("^((?://.*\\s*)*\\s*[a-zA-Z]{2}(?:[-_][a-zA-Z]{2})?\\s*(?://.*\\s)*)\\s*\\{([\\s\\S]*)\\}\\s*(?://.*\\s*)*$");
+
     @Autowired
     private LanguageService languageService;
 
-	@Override
-	public DictionaryFormat getFormat() {
-//		return DictionaryFormat.VITAL_SUITE;
-        return null;
-	}
+    @Override
+    public DictionaryFormat getFormat() {
+        return DictionaryFormat.VITAL_SUITE;
+    }
 
     @Override
     public ArrayList<Dictionary> parse(String rootDir, File file, Collection<File> acceptedFiles) throws BusinessException {
@@ -48,6 +56,7 @@ public class VitalSuiteDictParser extends DictionaryParser {
         ArrayList<Dictionary> result = parse(rootDir, file, acceptedFiles, exceptions);
         return result;
     }
+
 
     public ArrayList<Dictionary> parse(String rootDir, File file, Collection<File> acceptedFiles, BusinessException exceptions) throws BusinessException {
         ArrayList<Dictionary> deliveredDicts = new ArrayList<Dictionary>();
@@ -59,68 +68,108 @@ public class VitalSuiteDictParser extends DictionaryParser {
         MultiValueMap<String, File> textFiles = new LinkedMultiValueMap<String, File>();
         Map<String, File> refTextFiles = new HashMap<String, File>();
 
+        File refFile = null;
+        String dictName = null;
+        Collection<File> translationFiles = new ArrayList<File>();
+
         for (File subFile : fileOrDirs) {
             if (subFile.isDirectory()) {
                 deliveredDicts.addAll(parse(rootDir, subFile, acceptedFiles, exceptions));
                 continue;
             }
 
-            String[] nameParts = splitFileName(subFile.getName());
-            String langCode = nameParts[2];
-            if (null == nameParts) continue;
+
+            String langCode = FilenameUtils.getBaseName(subFile.getName());
+            if (StringUtils.isBlank(langCode)) continue;
+            String normalizedName = normalize(subFile.getParent(), true);
+            if (null != rootDir && normalizedName.startsWith(rootDir) && normalizedName.length() >= rootDir.length() + 1) {
+                dictName = normalizedName.substring(rootDir.length() + 1);
+            }
+            // sub file at root of the package  or is invalid vital suite file
+            if (StringUtils.isEmpty(dictName) || null == getVitalSuiteLines(subFile)) continue;
+
             // reference file must end with "en.txt"
             if (CollectionUtils.exists(REFERENCE_CODE,
                     PredicateUtils.invokerPredicate("equalsIgnoreCase", new Class[]{String.class}, new String[]{langCode}))) {
-                refTextFiles.put(nameParts[0], subFile);
+                refFile = subFile;
             } else {
-                textFiles.add(nameParts[0], subFile);
+                translationFiles.add(subFile);
             }
         }
 
-        File refFile = null;
-        for (String baseName : refTextFiles.keySet()) {
-            try {
-                refFile = refTextFiles.get(baseName);
-                deliveredDicts.add(parseProp(rootDir, baseName, textFiles.get(baseName), refTextFiles.get(baseName)));
-            } catch (BusinessException e) {
-                e.addNestedException(exceptions);
-                log.info(file + " is not a ACSText because {}", e.getMessage());
-            }
-            acceptedFiles.add(refFile);
-            if (null != textFiles.get(baseName)) {
-                acceptedFiles.addAll(textFiles.get(baseName));
-            }
+        // skip the dictionary files at the root directory of the package
+        if (StringUtils.isEmpty(dictName)) {
+            return deliveredDicts;
         }
 
+        try {
+            deliveredDicts.add(parseDict(rootDir, file.getName(), translationFiles, refFile));
+        } catch (BusinessException e) {
+            e.addNestedException(exceptions);
+        }
+        acceptedFiles.add(refFile);
+        acceptedFiles.addAll(translationFiles);
 
         return deliveredDicts;
+    }
+
+
+    /**
+     * Read text file to string, return null if it is not a valid vital suite dictionary
+     */
+    private String getVitalSuiteLines(File file) {
+        InputStream in = null;
+        String langCode = FilenameUtils.getBaseName(file.getName());
+        boolean isRefFile = CollectionUtils.exists(REFERENCE_CODE,
+                PredicateUtils.invokerPredicate("equalsIgnoreCase", new Class[]{String.class}, new String[]{langCode}));
+        try {
+            in = new AutoCloseInputStream(new FileInputStream(file));
+            String encoding = Util.detectEncoding(file);
+            if (encoding.startsWith("UTF-")) {
+                do {
+                    in = new BOMInputStream(in, ByteOrderMark.UTF_8, ByteOrderMark.UTF_16BE, ByteOrderMark.UTF_16LE);
+                } while (((BOMInputStream) in).hasBOM());
+            } else if (!isRefFile) {
+//                encoding is ISO-8859-1
+                Language language = languageService.getLanguage(langCode);
+                if (null != language) {
+                    encoding = language.getDefaultCharset();
+                }
+            }
+            String fileContent = IOUtils.toString(in, encoding);
+            if (filePattern.matcher(fileContent).matches()) {
+                return fileContent;
+            }
+            return null;
+        } catch (Exception e) {
+            log.error("Read file {} error.", file.getAbsolutePath());
+            return null;
+        } finally {
+            IOUtils.closeQuietly(in);
+        }
     }
 
     /**
      * @param files   Collection represent a dictionary except its reference language
      * @param refFile store the reference language text
      */
-    private Dictionary parseProp(String rootDir,
-                                 String baseName, Collection<File> files, File refFile) {
+    private Dictionary parseDict(String rootDir,
+                                 String dictName, Collection<File> files, File refFile) {
         Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
-        String[] nameParts = splitFileName(refFile.getName());
 
-        String refLangCode = nameParts[2];
-        String dictName = normalize(refFile.getAbsolutePath(), true);
-
-        if (rootDir != null && dictName.startsWith(rootDir)) {
-            dictName = dictName.substring(rootDir.length() + 1);
-        }
-        log.info("Parsing acs text file '" + dictName + "'");
+        if (null == refFile) throw new BusinessException(BusinessException.VITAL_SUITE_REF_FILE_NOT_FOUND, dictName);
+        log.info("Parsing vital suite dict '" + dictName + "'");
 
         DictionaryBase dictBase = new DictionaryBase();
         dictBase.setName(dictName);
         dictBase.setPath(normalize(refFile.getAbsolutePath()));
         dictBase.setEncoding("UTF-8");
-        dictBase.setFormat(DictionaryFormat.ACS_TEXT.toString());
+        dictBase.setFormat(DictionaryFormat.VITAL_SUITE.toString());
 
         Dictionary dictionary = new Dictionary();
         dictionary.setBase(dictBase);
+
+        String refLangCode = FilenameUtils.getBaseName(refFile.getName());
 
         int sortNo = 1;
 
@@ -146,8 +195,7 @@ public class VitalSuiteDictParser extends DictionaryParser {
 //      Parsing non-reference text files
         BusinessException dictExceptions = new BusinessException(BusinessException.NESTED_PROP_ERROR);
         for (File file : files) {
-            nameParts = splitFileName(file.getName());
-            String langCode = nameParts[2];
+            String langCode = FilenameUtils.getBaseName(file.getName());
 
             BusinessException fileExceptions = new BusinessException(BusinessException.NESTED_PROP_FILE_ERROR, file.getName());
             DictionaryLanguage dictLanguage = new DictionaryLanguage();
@@ -171,97 +219,90 @@ public class VitalSuiteDictParser extends DictionaryParser {
         ArrayList<Label> result = new ArrayList<Label>();
         InputStream in = null;
 
+
+        List<String> lines = null;
         try {
-            in = new AutoCloseInputStream(new FileInputStream(file));
-            String encoding = Util.detectEncoding(file);
-            if (encoding.startsWith("UTF-")) {
-                do {
-                    in = new BOMInputStream(in, ByteOrderMark.UTF_8, ByteOrderMark.UTF_16BE, ByteOrderMark.UTF_16LE);
-                } while (((BOMInputStream) in).hasBOM());
-            } else if (!isRef) {
-//                encoding is ISO-8859-1
-                encoding = languageService.getLanguage(splitFileName(file.getName())[2]).getDefaultCharset();
-            }
-            List<String> lines = IOUtils.readLines(in, encoding);
-
-            Writer comments = new StringWriter();
-            PrintWriter pComments = new PrintWriter(comments);
-
-            HashSet<String> keys = new HashSet<String>();
-
-            int sortNo = 1;
-            int lineNo = 0;
-
-            for (String line : lines) {
-                lineNo++;
-                if (isCommentOrBlankLine(line) && !line.contains(DictionaryGenerator.GEN_SIGN)) {
-                    pComments.println(line);
-                    continue;
-                }
-                String[] keyElement = line.split("\\s+", 2);
-
-                if (keys.contains(keyElement[0])) {
-                    warnings.add(new BusinessWarning(
-                            BusinessWarning.DUPLICATE_LABEL_KEY, lineNo,
-                            keyElement[0]));
-                    continue;
-                }
-                if (2 != keyElement.length) {
-                    continue;
-                }
-                keys.add(keyElement[0]);
-                if (isRef) {
-                    Label label = new Label();
-                    if (comments.toString().length() > 0) {
-                        label.setAnnotation1(comments.toString());
-                    }
-                    label.setKey(keyElement[0].trim());
-                    label.setReference(keyElement[1].trim());
-                    label.setSortNo(sortNo++);
-                    label.setDictionary(dict);
-
-                    result.add(label);
-                } else {
-                    Label refLabel = dict.getLabel(keyElement[0]);
-                    if (refLabel == null) {
-                        log.warn("Label {} in file {} could not be found in reference file.", keyElement[0], file.getName());
-                        continue;
-                    }
-                    LabelTranslation trans = new LabelTranslation();
-                    String langCode = splitFileName(file.getName())[2];
-
-                    trans.setLanguageCode(langCode);
-                    trans.setLanguage(dict.getDictLanguage(langCode).getLanguage());
-                    trans.setOrigTranslation(keyElement[1]);
-                    trans.setAnnotation1(comments.toString());
-
-                    trans.setSortNo(sortNo);
-                    refLabel.addOrigTranslation(trans);
-                }
-                pComments.close();
-                comments = new StringWriter();
-                pComments = new PrintWriter(comments);
-            }
-
-        } catch (Exception e) {
+            lines = IOUtils.readLines(new StringReader(getVitalSuiteLines(file)));
+        } catch (IOException e) {
             e.printStackTrace();
-            exceptions.addNestedException(new BusinessException(e.toString()));
-        } finally {
-            IOUtils.closeQuietly(in);
         }
+
+        Writer comments = new StringWriter();
+        PrintWriter pComments = new PrintWriter(comments);
+
+        HashSet<String> keys = new HashSet<String>();
+
+        int sortNo = 1;
+        int lineNo = 0;
+
+        for (String line : lines) {
+            lineNo++;
+            if (isCommentOrBlankLine(line) && !line.contains(DictionaryGenerator.GEN_SIGN)) {
+                pComments.println(line);
+                continue;
+            }
+            line = line.trim();
+
+            Matcher matcher = linePattern.matcher(line);
+            // skip lines are not label line
+            if (!matcher.matches()) continue;
+
+            String key = matcher.group(1);
+            String text = matcher.group(2);
+            text = StringEscapeUtils.unescapeJava(text);
+
+            if (keys.contains(key)) {
+                warnings.add(new BusinessWarning(
+                        BusinessWarning.DUPLICATE_LABEL_KEY, lineNo,
+                        key));
+                continue;
+            }
+            keys.add(key);
+            if (isRef) {
+                Label label = new Label();
+                if (comments.toString().length() > 0) {
+                    label.setAnnotation1(comments.toString());
+                }
+                label.setKey(key);
+                label.setReference(text);
+                label.setSortNo(sortNo++);
+                label.setDictionary(dict);
+
+                result.add(label);
+            } else {
+                Label refLabel = dict.getLabel(key);
+                if (refLabel == null) {
+                    log.warn("Label {} in file {} could not be found in reference file.", key, file.getName());
+                    continue;
+                }
+                LabelTranslation trans = new LabelTranslation();
+                String langCode = FilenameUtils.getBaseName(file.getName());
+
+                trans.setLanguageCode(langCode);
+                trans.setLanguage(dict.getDictLanguage(langCode).getLanguage());
+                trans.setOrigTranslation(text);
+                trans.setAnnotation1(comments.toString());
+
+                trans.setSortNo(sortNo);
+                refLabel.addOrigTranslation(trans);
+            }
+            pComments.close();
+            comments = new StringWriter();
+            pComments = new PrintWriter(comments);
+        }
+
         return result;
     }
 
     /**
      * Determine if the line is a comment line or blank line.
-     * A line is a comment line when the first non-space character is '#' or '!'.
      *
      * @param line
      * @return
      */
     private boolean isCommentOrBlankLine(String line) {
         line = line.trim();
-        return line.isEmpty() || line.charAt(0) == '#';
+        return line.isEmpty() || line.startsWith("//");
     }
 
 }
