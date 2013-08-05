@@ -32,7 +32,7 @@ define [
     width: 880, height: 300
     pager: '#stringSettingsPager'
     editurl: urls.label.create
-    rowNum: 10, rowList: [10, 20, 30]
+    rowNum: 100, rowList: [20,50,100,200,500]
     sortorder: 'asc'
     viewrecords: true
     gridview: true, multiselect: true, cellEdit: true, cellurl: urls.label.update

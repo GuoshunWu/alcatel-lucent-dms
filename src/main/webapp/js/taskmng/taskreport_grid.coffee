@@ -11,7 +11,7 @@ define ['jqgrid'], ($)->
     mtype: 'POST'
     editurl: "", datatype: 'local'
     width: $(window).width() * 0.78, height: 200, shrinkToFit: false
-    pager: '#reportPager', rowNum: 60, rowList: [30, 60, 120]
+    pager: '#reportPager', rowNum: 50, rowList: [20,50,100,200,500]
     sortname: 'key', sortorder: 'asc', viewrecords: true, gridview: true, multiselect: false
     cellEdit: true, cellurl: ''
     colNames: colNames, colModel: colModel, groupHeaders: groupHeader

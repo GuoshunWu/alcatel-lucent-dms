@@ -89,7 +89,7 @@ define [
     width: 1000, height: 300
     viewrecords: true, gridview: true, multiselect: true
     rownumbers: true, shrinkToFit: false
-    pager: '#transPager', rowNum: 60, rowList: [20, 30, 60, 120, 500, 1000]
+    pager: '#transPager', rowNum: 50, rowList: [20,50,100,200,500]
     sortname: 'app.base.name', sortorder: 'asc'
     colNames: grid.dictionary.colNames, colModel: grid.dictionary.colModel
     #  customed option for save the toolbar search value and group headers

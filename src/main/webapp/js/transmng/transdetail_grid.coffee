@@ -33,7 +33,7 @@ define [
     mtype: 'POST', postData: {}, editurl: "", datatype: 'local'
     width: 'auto', height: 200, shrinkToFit: false
     rownumbers: true
-    pager: '#transDetailsPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
+    pager: '#transDetailsPager', rowNum: 100, rowList: [20,50,100,200,500]
     viewrecords: true, gridview: true, multiselect: true
     cellEdit: true, cellurl: urls.trans.update_status, ajaxCellOptions: {async: false}
     colNames: ['Label', 'Max Len.', 'Context', 'Reference language', 'Translation', 'Status','TransId', 'Trans.Src', 'Last updated','Match']
