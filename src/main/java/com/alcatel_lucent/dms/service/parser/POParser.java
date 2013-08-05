@@ -27,6 +27,7 @@ import com.alcatel_lucent.dms.model.DictionaryLanguage;
 import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.LabelTranslation;
 import com.alcatel_lucent.dms.model.Language;
+import com.alcatel_lucent.dms.model.Translation;
 import com.alcatel_lucent.dms.service.LanguageService;
 import com.alcatel_lucent.dms.util.Util;
 
@@ -208,6 +209,12 @@ public class POParser extends DictionaryParser {
                     trans.setAnnotation1(label.getAnnotation1());
                     trans.setAnnotation2(label.getAnnotation2());
                     trans.setSortNo(sortNo);
+                    // for PO file, string is translated when msgid is not empty, even if it's same with the reference
+                    if (label.getReference().trim().isEmpty()) {
+                    	trans.setStatus(Translation.STATUS_UNTRANSLATED);
+                    } else {
+                    	trans.setStatus(Translation.STATUS_TRANSLATED);
+                    }
                     refLabel.addOrigTranslation(trans);
                 }
             }
