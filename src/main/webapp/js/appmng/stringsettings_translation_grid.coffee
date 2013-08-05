@@ -8,7 +8,7 @@ define ['jqgrid'], ($)->
   width: 800, height: 270
 #  height: $(window).innerHeight() - 200
   pager: '#stringSettingsTranslationPager'
-  rowNum: 10, rowList: [10, 20, 30]
+  rowNum: 100
   sortname: 'language.name'
   caption: 'Label Translation'
   sortorder: 'asc'

@@ -80,7 +80,7 @@ define [
 
   viewDetail = $('#taskDetailDialog').dialog(
     autoOpen: false, modal: true
-    width: 850, height: 'auto'
+    width: $(window).width() * 0.62, height: 'auto'
 #    resize: (event, ui)->$("#viewDetailGrid", @).setGridWidth(ui.size.width - 35, true).setGridHeight(ui.size.height - 145, true)
     open: ->
       param = $(@).data 'param'

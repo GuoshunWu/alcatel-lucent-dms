@@ -8,7 +8,7 @@ define ['jqgrid'], ($)->
     width: 700, height: 300
     pager: '#dictPreviewStringSettingsPager'
     editurl: "", cellurl: 'app/deliver-update-label', cellEdit: true
-    rowNum: 10, rowList: [10, 20, 30]
+    rowNum: 100, rowList: [20,50,100,200,500]
     #sortname: 'reference'
     #sortorder: 'asc'
     viewrecords: true

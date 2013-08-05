@@ -16,8 +16,7 @@ define [
     pager: '#langSettingPager'
     editurl: "app/add-dict-language"
     cellactionurl: "app/remove-dict-language"
-    rowNum: 10
-    rowList: [10, 20, 30]
+    rowNum: 100
     sortname: 'languageCode'
     sortorder: 'asc'
     viewrecords: true
