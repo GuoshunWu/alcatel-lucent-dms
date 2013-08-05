@@ -79,11 +79,11 @@ public class GlossaryServiceImpl implements GlossaryService {
         params.put("texts", texts);
         dao.delete(hSQL, params);
 
-        Iterator<Glossary> itrGlossaries=glossaries.iterator();
+        Iterator<Glossary> itrGlossaries = glossaries.iterator();
         Glossary g;
-        while(itrGlossaries.hasNext()){
+        while (itrGlossaries.hasNext()) {
             g = itrGlossaries.next();
-            if(texts.contains(g.getText())) itrGlossaries.remove();
+            if (texts.contains(g.getText())) itrGlossaries.remove();
         }
     }
 
@@ -160,6 +160,7 @@ public class GlossaryServiceImpl implements GlossaryService {
 //        text.setReference(Util.consistentGlossaries(text.getReference(), glossaries));
 
         Collection<LabelTranslation> labelTranslations = label.getOrigTranslations();
+        if (null == labelTranslations) return;
         for (LabelTranslation ltTranslation : labelTranslations) {
             ltTranslation.setOrigTranslation(Util.consistentGlossaries(ltTranslation.getOrigTranslation(), glossaries));
         }

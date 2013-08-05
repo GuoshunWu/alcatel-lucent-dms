@@ -66,8 +66,8 @@ public class ACSTextDictParser extends DictionaryParser {
             }
 
             String[] nameParts = splitFileName(subFile.getName());
-            String langCode = nameParts[2];
             if (null == nameParts) continue;
+            String langCode = nameParts[2];
             // reference file must end with "en.txt"
             if (CollectionUtils.exists(REFERENCE_CODE,
                     PredicateUtils.invokerPredicate("equalsIgnoreCase", new Class[]{String.class}, new String[]{langCode}))) {
