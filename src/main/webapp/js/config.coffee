@@ -56,7 +56,8 @@ require.config
       exports: 'jQuery'
     'jqueryui':
       deps: ['jquery']
-      exports: 'jQuery'                                               'i18n/grid.locale-en':
+      exports: 'jQuery'
+    'i18n/grid.locale-en':
       deps: ['jquery']
       exports: 'jQuery'
     'ui.multiselect':
