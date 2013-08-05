@@ -22,6 +22,9 @@ public class GlossaryServiceImpl implements GlossaryService {
 
     private DaoService dao;
     private Collection<Glossary> glossaries;
+    
+    @Autowired
+    private TextService textService;
 
 
     @Autowired
@@ -96,8 +99,12 @@ public class GlossaryServiceImpl implements GlossaryService {
 
         String hSQL = "from Label where id in (select l.id from Label l, Glossary g where upper(l.reference) like concat( '%', upper(g.text), '%'))";
         Collection<Label> labels = dao.retrieve(hSQL);
+        Context ctxExclusion = textService.getContextByExpression(Context.EXCLUSION, null);
         for (Label label : labels) {
             label.setReference(Util.consistentGlossaries(label.getReference(), glossaries));
+            if (isGlossary(label.getReference())) {
+            	label.setContext(ctxExclusion);
+            }
         }
 
         hSQL = "from Text where id in (select t.id from Text t, Glossary g where upper(t.reference) like concat( '%', upper(g.text), '%'))";
@@ -173,10 +180,25 @@ public class GlossaryServiceImpl implements GlossaryService {
 
     public void consistentGlossariesInLabelRef(Label label) {
         label.setReference(getConsistentGlossariesText(label.getReference()));
+        if (isGlossary(label.getReference())) {
+        	label.setContext(textService.getContextByExpression(Context.EXCLUSION, null));
+        }
     }
 
+    /**
+     * Check if a string is in glossary list
+     * @param s
+     * @return
+     */
+    private boolean isGlossary(String s) {
+    	s = s.trim();
+		for (Glossary g : glossaries) {
+			if (g.getText().equals(s)) return true;
+		}
+		return false;
+	}
 
-    @Override
+	@Override
     public String getConsistentGlossariesText(String text) {
         return Util.consistentGlossaries(text, glossaries);
     }
