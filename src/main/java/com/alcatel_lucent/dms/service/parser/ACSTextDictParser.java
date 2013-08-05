@@ -37,10 +37,10 @@ public class ACSTextDictParser extends DictionaryParser {
     @Autowired
     private LanguageService languageService;
 
-	@Override
-	public DictionaryFormat getFormat() {
-		return Constants.DictionaryFormat.ACS_TEXT;
-	}
+    @Override
+    public DictionaryFormat getFormat() {
+        return Constants.DictionaryFormat.ACS_TEXT;
+    }
 
     @Override
     public ArrayList<Dictionary> parse(String rootDir, File file, Collection<File> acceptedFiles) throws BusinessException {
@@ -180,7 +180,10 @@ public class ACSTextDictParser extends DictionaryParser {
                 } while (((BOMInputStream) in).hasBOM());
             } else if (!isRef) {
 //                encoding is ISO-8859-1
-                encoding = languageService.getLanguage(splitFileName(file.getName())[2]).getDefaultCharset();
+                Language language = languageService.getLanguage(splitFileName(file.getName())[2]);
+                if (null != language) {
+                    encoding = language.getDefaultCharset();
+                }
             }
             List<String> lines = IOUtils.readLines(in, encoding);
 
