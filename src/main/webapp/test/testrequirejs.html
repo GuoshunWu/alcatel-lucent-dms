@@ -2,7 +2,8 @@
 <html>
 <head>
     <title>jQuery UI Dialog</title>
-    <link rel="stylesheet" href="../css/jqueryUI/1.10.3/themes/smoothness/jquery-ui-1.10.3.custom.min.css"/>
+    <!--<link rel="stylesheet" href="../css/jqueryUI/1.10.3/themes/smoothness/jquery-ui-1.10.3.custom.min.css"/>-->
+    <link rel="stylesheet" href="../css/jqueryUI/themes/base/jquery.ui.all.css"/>
     <style type="text/css">
         .myfont{
             font-family: Lucida Grande, Lucida Sans, Arial, Helvetica, sans-serif, '宋体';
@@ -22,9 +23,12 @@ Let's have a test aa.
     require.config({
         baseUrl: '../js/lib',
         paths: {
-            jquery: 'jquery-1.10.1.min',
+//            jquery: 'jquery-1.10.1.min',
+            jquery: 'jquery-1.7.2.min',
             "jquery.migrate": 'jquery-migrate-1.2.1.min',
-            jqueryui: 'jquery-ui-1.10.3.custom.min',
+//            jqueryui: 'jquery-ui-1.10.3.custom.min',
+            jqueryui: 'jquery-ui-1.8.22.custom.min',
+
             jqupload: 'jsfileuploader/jquery.fileupload'
         },
         shim: {
@@ -32,7 +36,8 @@ Let's have a test aa.
                 deps: ['jquery'],
                 exports: 'jQuery'
             }, 'jqueryui': {
-                deps: ['jquery.migrate'],
+//                deps: ['jquery.migrate'],
+                deps: ['jquery'],
                 exports: 'jQuery'
             }
         } ,

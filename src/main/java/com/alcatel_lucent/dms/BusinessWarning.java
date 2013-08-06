@@ -17,6 +17,8 @@ public class BusinessWarning {
     public static final int LABEL_KEY_BLANK = 209;
     public static final int EXCEL_CELL_EVALUATION_FAIL = 210;
     public static final int LABEL_TRANS_BLANK = 211;
+    public static final int INVALID_LINE_IN_VITAL_SUITE_FILE = 212;
+
 
 
     private int warningCode;
