@@ -245,7 +245,10 @@ public class VitalSuiteDictParser extends DictionaryParser {
 
             Matcher matcher = linePattern.matcher(line);
             // skip lines are not label line
-            if (!matcher.matches()) continue;
+            if (!matcher.matches()) {
+                warnings.add(new BusinessWarning(BusinessWarning.INVALID_LINE_IN_VITAL_SUITE_FILE, line, file.getAbsolutePath()));
+                continue;
+            }
 
             String key = matcher.group(1);
             String text = matcher.group(2);
