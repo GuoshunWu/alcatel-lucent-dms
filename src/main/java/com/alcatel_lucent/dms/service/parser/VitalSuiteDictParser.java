@@ -42,6 +42,11 @@ public class VitalSuiteDictParser extends DictionaryParser {
     private static final Pattern linePattern = Pattern.compile("^([A-Za-z0-9-\\.]+)\\s*\\{\"(.*?)\"\\}$");
     private static final Pattern filePattern = Pattern.compile("^((?://.*\\s*)*\\s*[a-zA-Z]{2}(?:[-_][a-zA-Z]{2})?\\s*(?://.*\\s)*)\\s*\\{([\\s\\S]*)\\}\\s*(?://.*\\s*)*$");
 
+    /**
+     * The lines start with following keys should not be treated as normal label.
+     */
+    private static final Collection<String> specialTextKeys = Arrays.asList("Language-English", "Language-Display");
+
     @Autowired
     private LanguageService languageService;
 
@@ -188,7 +193,7 @@ public class VitalSuiteDictParser extends DictionaryParser {
 
         BusinessException refFileExceptions = new BusinessException(BusinessException.NESTED_PROP_FILE_ERROR, refFile.getName());
 //      First parse reference text file
-        dictionary.setLabels(readLabels(refFile, dictionary, warnings, refFileExceptions, true));
+        dictionary.setLabels(readLabels(refFile, dictionary, warnings, refFileExceptions, refDl));
         if (null == files) {
             return dictionary;
         }
@@ -206,7 +211,7 @@ public class VitalSuiteDictParser extends DictionaryParser {
             dictLanguage.setLanguage(language);
             dictLanguage.setCharset(languageService.getCharset("UTF-8"));
             dictLanguages.add(dictLanguage);
-            readLabels(file, dictionary, warnings, fileExceptions, false);
+            readLabels(file, dictionary, warnings, fileExceptions, dictLanguage);
         }
 
         if (refFileExceptions.hasNestedException()) {
@@ -215,10 +220,10 @@ public class VitalSuiteDictParser extends DictionaryParser {
         return dictionary;
     }
 
-    private Collection<Label> readLabels(File file, Dictionary dict, Collection<BusinessWarning> warnings, BusinessException exceptions, boolean isRef) {
+    private Collection<Label> readLabels(File file, Dictionary dict, Collection<BusinessWarning> warnings, BusinessException exceptions, DictionaryLanguage dictionaryLanguage) {
+        boolean isRef = CollectionUtils.exists(REFERENCE_CODE,
+                PredicateUtils.invokerPredicate("equalsIgnoreCase", new Class[]{String.class}, new String[]{dictionaryLanguage.getLanguageCode()}));
         ArrayList<Label> result = new ArrayList<Label>();
-        InputStream in = null;
-
 
         List<String> lines = null;
         try {
@@ -226,6 +231,7 @@ public class VitalSuiteDictParser extends DictionaryParser {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        if (null == lines) return result;
 
         Writer comments = new StringWriter();
         PrintWriter pComments = new PrintWriter(comments);
@@ -250,9 +256,38 @@ public class VitalSuiteDictParser extends DictionaryParser {
                 continue;
             }
 
-            String key = matcher.group(1);
-            String text = matcher.group(2);
+            String key = matcher.group(1).trim();
+            String text = matcher.group(2).trim();
             text = StringEscapeUtils.unescapeJava(text);
+
+            String strComments = comments.toString();
+
+            if (StringUtils.isNotEmpty(strComments)) {
+                strComments = StringUtils.removeEnd(strComments, System.getProperty("line.separator"));
+
+                pComments.close();
+                comments = new StringWriter();
+                pComments = new PrintWriter(comments);
+            }
+
+
+            /**
+             * Language-English
+             * Language-Display
+             * lines are just language relevant parameters
+             * */
+            if (specialTextKeys.contains(key)) {
+
+                if (StringUtils.isNotEmpty(strComments)) {
+                    dictionaryLanguage.setAnnotation2(strComments);
+                }
+
+                String annotation = dictionaryLanguage.getAnnotation1();
+                annotation = null == annotation ? "" : annotation + System.getProperty("line.separator");
+                annotation += "    " + line;
+                dictionaryLanguage.setAnnotation1(annotation);
+                continue;
+            }
 
             if (keys.contains(key)) {
                 warnings.add(new BusinessWarning(
@@ -261,10 +296,11 @@ public class VitalSuiteDictParser extends DictionaryParser {
                 continue;
             }
             keys.add(key);
+
             if (isRef) {
                 Label label = new Label();
-                if (comments.toString().length() > 0) {
-                    label.setAnnotation1(comments.toString().trim());
+                if (StringUtils.isNotEmpty(strComments)) {
+                    label.setAnnotation1(strComments);
                 }
                 label.setKey(key);
                 label.setReference(text);
@@ -284,14 +320,13 @@ public class VitalSuiteDictParser extends DictionaryParser {
                 trans.setLanguageCode(langCode);
                 trans.setLanguage(dict.getDictLanguage(langCode).getLanguage());
                 trans.setOrigTranslation(text);
-                trans.setAnnotation1(comments.toString());
-
+                if (StringUtils.isNotEmpty(strComments)) {
+                    trans.setAnnotation1(strComments);
+                }
                 trans.setSortNo(sortNo);
                 refLabel.addOrigTranslation(trans);
             }
-            pComments.close();
-            comments = new StringWriter();
-            pComments = new PrintWriter(comments);
+
         }
 
         return result;

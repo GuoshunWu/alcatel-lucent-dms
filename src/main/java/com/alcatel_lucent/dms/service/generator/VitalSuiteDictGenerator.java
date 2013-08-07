@@ -64,19 +64,27 @@ public class VitalSuiteDictGenerator extends DictionaryGenerator {
             out.println("// " + getDMSGenSign());
             out.println(dl.getLanguageCode());
             out.println("{");
+            // write language relevant comments
+            if(StringUtils.isNotBlank(dl.getAnnotation2())){
+                out.println(dl.getAnnotation2());
+            }
+            // write language relevant parameters
+            if(StringUtils.isNotBlank(dl.getAnnotation1())){
+                out.println(dl.getAnnotation1());
+            }
             Collection<Label> labels = dict.getAvailableLabels();
 
             for (Label label : labels) {
                 boolean isRef = dict.getReferenceLanguage().equals(dl.getLanguageCode());
                 String text = null;
                 if (isRef) {    // reference language
-                    if (label.getAnnotation1() != null) {
+                    if (StringUtils.isNotBlank(label.getAnnotation1())) {
                         out.println(label.getAnnotation1());
                     }
                     text = label.getReference();
                 } else {
                     LabelTranslation lt = label.getOrigTranslation(dl.getLanguageCode());
-                    if (lt != null && lt.getAnnotation1() != null) {
+                    if (lt != null && StringUtils.isNotBlank(lt.getAnnotation1())) {
                         out.println(lt.getAnnotation1());
                     }
                     // populate translation result
