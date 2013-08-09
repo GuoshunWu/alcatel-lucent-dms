@@ -63,7 +63,12 @@ public class XMLDictParser extends DictionaryParser {
 
         long begin = System.currentTimeMillis();
         for (Map.Entry<String, Collection<XDictionary>> entry : propFiles.entrySet()) {
-            deliveredDicts.add(processDictionary(entry, acceptedFiles));
+        	try {
+        		deliveredDicts.add(processDictionary(entry, acceptedFiles));
+        	} catch (Exception e) {
+        		log.error(e.getMessage());
+        		e.printStackTrace();
+        	}
         }
         long end = System.currentTimeMillis();
         String timeStr = DurationFormatUtils.formatPeriod(begin, end, "mm 'minute(s)' ss 'second(s)'.");
