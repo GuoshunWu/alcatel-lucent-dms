@@ -26,7 +26,7 @@ define [
 
     datatype: 'json'
     mtype: 'post'
-    postData: {format:'grid', prop: 'text, createTime', 'idprop': 'text'}
+    postData: {format:'grid', prop: 'text, createTime,creator.name', 'idprop': 'text'}
     prmNames: id: 'text'
     cellurl: urls.glossary.update, cellEdit: true
 
@@ -48,10 +48,11 @@ define [
     caption: c18n.glossary.caption
     autowidth: true
     height: '100%'
-    colNames: ['Glossary text', 'Create Time']
+    colNames: ['Glossary text', 'Create Time', 'creator']
     colModel: [
       {name: 'text', index: 'text', editable: true, classes: 'editable-column', align: 'left',editrules: {required: true}}
       {name: 'createTime', index: 'createTime', align: 'left'}
+      {name: 'creator.name', index: 'creator.name', align: 'left'}
     ]
 
     gridComplete: ->

@@ -2,6 +2,7 @@ package com.alcatel_lucent.dms.service
 
 import com.alcatel_lucent.dms.Constants
 import com.alcatel_lucent.dms.UserContext
+import com.alcatel_lucent.dms.model.Glossary
 import com.alcatel_lucent.dms.model.User
 import com.alcatel_lucent.dms.util.Util
 import org.apache.commons.io.ByteOrderMark
@@ -40,6 +41,9 @@ public class GlossaryServiceTest {
     @Autowired
     private GlossaryService glossaryService
 
+    @Autowired
+    private DaoService daoService
+
     @BeforeClass
     static void setUpBeforeClass() throws Exception {
 
@@ -58,8 +62,17 @@ public class GlossaryServiceTest {
     void tearDown() throws Exception {
     }
 
-
     @Test
+    void testCreateGlossary(){
+        User user= daoService.retrieveOne("from User where loginName=:loginName", ['loginName': 'test'])
+        Glossary glossary=new Glossary('Temp', user)
+        glossary = daoService.create(glossary)
+        println glossary
+    }
+
+
+
+//    @Test
     void testConsistentGlossaries() {
         glossaryService.consistentGlossaries();
     }

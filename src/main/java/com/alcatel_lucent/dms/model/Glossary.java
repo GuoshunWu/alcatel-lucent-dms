@@ -18,15 +18,11 @@ import java.util.Date;
 
 @Entity
 @Table(name = "GLOSSARY")
+
 public class Glossary {
 
-//    @Temporal(TemporalType.TIMESTAMP)
-//    @Generated(GenerationTime.ALWAYS)
-    @Column(name = "CREATE_TIME", updatable = false, nullable = false)
-    private Date createTime;
-
-    @Id
-    @Column(name = "TEXT")
+    private User creator;
+    private Date createTime = new Date();
     private String text;
 
     public Glossary() {
@@ -36,11 +32,24 @@ public class Glossary {
         this.text = text;
     }
 
-    public Glossary(Date createTime, String text) {
+    public Glossary(String text, User creator) {
         this(text);
-        this.createTime = createTime;
+        this.creator = creator;
     }
 
+    @ManyToOne
+    @JoinColumn(name = "creator")
+    public User getCreator() {
+        return creator;
+    }
+
+    public void setCreator(User creator) {
+        this.creator = creator;
+    }
+
+//    @Temporal(TemporalType.TIMESTAMP)
+//    @Generated(GenerationTime.ALWAYS)
+    @Column(name = "CREATE_TIME", nullable = false)
     public Date getCreateTime() {
         return createTime;
     }
@@ -49,6 +58,8 @@ public class Glossary {
         this.createTime = createTime;
     }
 
+    @Id
+    @Column(name = "TEXT")
     public String getText() {
         return text;
     }

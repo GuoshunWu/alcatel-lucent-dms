@@ -1,6 +1,7 @@
 package com.alcatel_lucent.dms.service;
 
 import com.alcatel_lucent.dms.BusinessException;
+import com.alcatel_lucent.dms.UserContext;
 import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.util.Util;
@@ -45,7 +46,9 @@ public class GlossaryServiceImpl implements GlossaryService {
         if (language != null) {
             throw new BusinessException(BusinessException.GLOSSARY_ALREADY_EXISTS, text);
         }
-        Glossary glossary = (Glossary) dao.create(new Glossary(new Date(), text));
+        User user= UserContext.getInstance().getUser();
+        Glossary glossary = new Glossary(text, user);
+        glossary = (Glossary) dao.create(glossary);
 
         glossaries.add(glossary);
         return glossary;
