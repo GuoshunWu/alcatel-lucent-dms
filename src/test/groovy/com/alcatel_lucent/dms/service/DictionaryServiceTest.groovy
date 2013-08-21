@@ -32,7 +32,7 @@ import javax.annotation.Resource
  * To change this template use File | Settings | File Templates.
  */
 
-//@Ignore
+@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = ["/spring.xml"])
 @Transactional //Important, or the transaction control will be invalid
@@ -81,7 +81,7 @@ public class DictionaryServiceTest {
         println doc
     }
 
-    @Test
+//    @Test
 //    @Rollback(false)
     void testDictionaryProcess() {
         String targetDir = "D:/test/dictgenerate/"

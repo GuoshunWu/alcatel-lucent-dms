@@ -1,10 +1,11 @@
 package com.alcatel_lucent.dms.model;
 
-import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
+import org.hibernate.annotations.*;
 
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
@@ -18,6 +19,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "GLOSSARY")
+@org.hibernate.annotations.Entity(dynamicInsert = true)
 public class Glossary {
 
     private User creator;
@@ -48,7 +50,7 @@ public class Glossary {
     }
 
     @ManyToOne
-    @JoinColumn(name = "creator")
+    @JoinColumn(name = "creator", nullable = false, updatable = false)
     public User getCreator() {
         return creator;
     }
@@ -57,9 +59,9 @@ public class Glossary {
         this.creator = creator;
     }
 
-    //    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.TIMESTAMP)
 //    @Generated(GenerationTime.ALWAYS)
-    @Column(name = "CREATE_TIME", nullable = false)
+    @Column(name = "CREATE_TIME", nullable = false, updatable = false)
     public Date getCreateTime() {
         return createTime;
     }

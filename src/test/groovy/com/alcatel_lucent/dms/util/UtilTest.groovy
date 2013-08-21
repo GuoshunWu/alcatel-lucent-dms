@@ -7,6 +7,7 @@ import org.apache.commons.collections.functors.EqualPredicate
 import org.apache.commons.io.IOUtils
 import org.apache.commons.io.input.AutoCloseInputStream
 import org.apache.commons.io.input.BOMInputStream
+import org.junit.Ignore
 import org.junit.Test
 
 /**
@@ -16,7 +17,7 @@ import org.junit.Test
  * Time: 上午11:14
  * To change this template use File | Settings | File Templates.
  */
-//@Ignore
+@Ignore
 public class UtilTest {
 
 //    @Test

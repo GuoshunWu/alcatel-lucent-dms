@@ -24,7 +24,7 @@ import java.util.regex.Pattern
  * To change this template use File | Settings | File Templates.
  */
 
-//@Ignore
+@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = ["/spring.xml"])
 @Transactional

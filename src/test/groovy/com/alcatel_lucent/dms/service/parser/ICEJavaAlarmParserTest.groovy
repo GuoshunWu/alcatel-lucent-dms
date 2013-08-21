@@ -22,7 +22,7 @@ import org.xml.sax.SAXException
  * To change this template use File | Settings | File Templates.
  */
 
-//@Ignore
+@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = ["/spring.xml"])
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
