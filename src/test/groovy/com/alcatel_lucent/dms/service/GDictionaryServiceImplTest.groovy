@@ -14,6 +14,8 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.test.context.transaction.TransactionConfiguration
 import com.alcatel_lucent.dms.model.*
+import org.springframework.transaction.annotation.Transactional
+
 import static org.apache.commons.lang.StringUtils.join
 import static org.hamcrest.Matchers.*
 import org.junit.*
@@ -28,6 +30,7 @@ import static org.junit.Assert.*
 @org.junit.Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = ["/spring.xml"])
+@Transactional
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 class GDictionaryServiceImplTest {
 
@@ -44,9 +47,6 @@ class GDictionaryServiceImplTest {
 
     private static Logger log = LoggerFactory.getLogger(GDictionaryServiceImplTest.class)
 
-    public static Logger logDictDeliverSuccess
-    public static Logger logDictDeliverFail
-    public static Logger logDictDeliverWarning
 
     @BeforeClass
     static void setUpBeforeClass() throws Exception {
@@ -54,11 +54,6 @@ class GDictionaryServiceImplTest {
         testFilePath = testFilePath.parentFile.parentFile
         testFilesPathDir = "${new File(testFilePath, 'dct_test_files').absolutePath}/"
         log.info "Test file path is: $testFilesPathDir"
-
-//        create statics logger
-        logDictDeliverSuccess = LoggerFactory.getLogger("DictDeliverSuccess")
-        logDictDeliverFail = LoggerFactory.getLogger("DictDeliverFail")
-        logDictDeliverWarning = LoggerFactory.getLogger("DictDeliverWaning")
     }
 
     @AfterClass
@@ -83,6 +78,16 @@ class GDictionaryServiceImplTest {
 
 //    @Test
     void testSampleAbout_DCT() throws Exception {
+
+        Logger logDictDeliverSuccess = LoggerFactory.getLogger("DictDeliverSuccess")
+        Logger logDictDeliverFail = LoggerFactory.getLogger("DictDeliverFail")
+        Logger logDictDeliverWarning = LoggerFactory.getLogger("DictDeliverWaning")
+
+        if(null == logDictDeliverSuccess){
+            log.error("logDictDeliverSuccess haven't configured in log4j.xml")
+            return
+        }
+
 
         Long appId = 1L
         String encoding = null

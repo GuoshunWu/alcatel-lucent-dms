@@ -67,55 +67,55 @@
     <!--</logger>-->
 
 
-    <appender name="FILE_DIC_DELIVER_FAIL" class="org.apache.log4j.FileAppender">
-        <param name="File" value="target/DMSLOG/DictionaryDeliverFail.csv"/>
-        <param name="append" value="false"/>
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%m%n"/>
-        </layout>
+    <!--<appender name="FILE_DIC_DELIVER_FAIL" class="org.apache.log4j.FileAppender">-->
+        <!--<param name="File" value="target/DMSLOG/DictionaryDeliverFail.csv"/>-->
+        <!--<param name="append" value="false"/>-->
+        <!--<layout class="org.apache.log4j.PatternLayout">-->
+            <!--<param name="ConversionPattern" value="%m%n"/>-->
+        <!--</layout>-->
 
-        <filter class="org.apache.log4j.varia.LevelRangeFilter">
-            <param name="LevelMax" value="ERROR"/>
-            <param name="LevelMin" value="INFO"/>
-        </filter>
-    </appender>
+        <!--<filter class="org.apache.log4j.varia.LevelRangeFilter">-->
+            <!--<param name="LevelMax" value="ERROR"/>-->
+            <!--<param name="LevelMin" value="INFO"/>-->
+        <!--</filter>-->
+    <!--</appender>-->
 
-    <appender name="FILE_DIC_DELIVER_SUCCESS" class="org.apache.log4j.FileAppender">
-        <param name="File" value="target/DMSLOG/DictionaryDeliverSuccess.csv"/>
-        <param name="append" value="false"/>
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%m%n"/>
-        </layout>
+    <!--<appender name="FILE_DIC_DELIVER_SUCCESS" class="org.apache.log4j.FileAppender">-->
+        <!--<param name="File" value="target/DMSLOG/DictionaryDeliverSuccess.csv"/>-->
+        <!--<param name="append" value="false"/>-->
+        <!--<layout class="org.apache.log4j.PatternLayout">-->
+            <!--<param name="ConversionPattern" value="%m%n"/>-->
+        <!--</layout>-->
 
-        <filter class="org.apache.log4j.varia.LevelRangeFilter">
-            <param name="LevelMax" value="ERROR"/>
-            <param name="LevelMin" value="INFO"/>
-        </filter>
-    </appender>
-    <appender name="FILE_DIC_DELIVER_WARNING" class="org.apache.log4j.FileAppender">
-        <param name="File" value="target/DMSLOG/DictionaryDeliverWarning.csv"/>
-        <param name="append" value="false"/>
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%m%n"/>
-        </layout>
+        <!--<filter class="org.apache.log4j.varia.LevelRangeFilter">-->
+            <!--<param name="LevelMax" value="ERROR"/>-->
+            <!--<param name="LevelMin" value="INFO"/>-->
+        <!--</filter>-->
+    <!--</appender>-->
+    <!--<appender name="FILE_DIC_DELIVER_WARNING" class="org.apache.log4j.FileAppender">-->
+        <!--<param name="File" value="target/DMSLOG/DictionaryDeliverWarning.csv"/>-->
+        <!--<param name="append" value="false"/>-->
+        <!--<layout class="org.apache.log4j.PatternLayout">-->
+            <!--<param name="ConversionPattern" value="%m%n"/>-->
+        <!--</layout>-->
 
-        <filter class="org.apache.log4j.varia.LevelRangeFilter">
-            <param name="LevelMax" value="ERROR"/>
-            <param name="LevelMin" value="INFO"/>
-        </filter>
-    </appender>
+        <!--<filter class="org.apache.log4j.varia.LevelRangeFilter">-->
+            <!--<param name="LevelMax" value="ERROR"/>-->
+            <!--<param name="LevelMin" value="INFO"/>-->
+        <!--</filter>-->
+    <!--</appender>-->
 
-    <logger name="DictDeliverSuccess">
-        <appender-ref ref="FILE_DIC_DELIVER_SUCCESS"/>
-    </logger>
+    <!--<logger name="DictDeliverSuccess">-->
+        <!--<appender-ref ref="FILE_DIC_DELIVER_SUCCESS"/>-->
+    <!--</logger>-->
 
-    <logger name="DictDeliverFail">
-        <appender-ref ref="FILE_DIC_DELIVER_FAIL"/>
-    </logger>
+    <!--<logger name="DictDeliverFail">-->
+        <!--<appender-ref ref="FILE_DIC_DELIVER_FAIL"/>-->
+    <!--</logger>-->
 
-    <logger name="DictDeliverWaning">
-        <appender-ref ref="FILE_DIC_DELIVER_WARNING"/>
-    </logger>
+    <!--<logger name="DictDeliverWaning">-->
+        <!--<appender-ref ref="FILE_DIC_DELIVER_WARNING"/>-->
+    <!--</logger>-->
 
 
     <!--<logger name="com.alcatel_lucent.dms.filters">-->
