@@ -18,12 +18,13 @@ import java.util.Date;
 
 @Entity
 @Table(name = "GLOSSARY")
-
 public class Glossary {
 
     private User creator;
     private Date createTime = new Date();
     private String text;
+    private boolean dirty = true;
+
 
     public Glossary() {
     }
@@ -37,6 +38,15 @@ public class Glossary {
         this.creator = creator;
     }
 
+    @Column(name = "DIRTY", nullable = false)
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
+    }
+
     @ManyToOne
     @JoinColumn(name = "creator")
     public User getCreator() {
@@ -47,7 +57,7 @@ public class Glossary {
         this.creator = creator;
     }
 
-//    @Temporal(TemporalType.TIMESTAMP)
+    //    @Temporal(TemporalType.TIMESTAMP)
 //    @Generated(GenerationTime.ALWAYS)
     @Column(name = "CREATE_TIME", nullable = false)
     public Date getCreateTime() {

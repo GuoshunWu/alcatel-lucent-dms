@@ -48,10 +48,10 @@ define [
     caption: c18n.glossary.caption
     autowidth: true
     height: '100%'
-    colNames: ['Glossary text', 'Create Time', 'creator']
+    colNames: ['Glossary text', 'Create Time', 'Creator']
     colModel: [
       {name: 'text', index: 'text', editable: true, classes: 'editable-column', align: 'left',editrules: {required: true}}
-      {name: 'createTime', index: 'createTime', align: 'left'}
+      {name: 'createTime', index: 'createTime', align: 'left', formatter: 'date', formatoptions: {srcformat: 'ISO8601Long', newformat: 'ISO8601Long'}}
       {name: 'creator.name', index: 'creator.name', align: 'left'}
     ]
 
