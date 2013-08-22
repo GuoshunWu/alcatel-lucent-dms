@@ -115,7 +115,7 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
   ###
     generate a progress bar
   ###
-  genProgressBar = (autoDispaly = true, autoRemoveWhenCompleted = true)->
+  genProgressBar = (autoDispaly = true, autoRemoveWhenCompleted = false)->
     randStr = randomStr(5)
     pbContainer=$("""
                   <div id="pb_container_#{randStr}"  class="progressbar-container">
