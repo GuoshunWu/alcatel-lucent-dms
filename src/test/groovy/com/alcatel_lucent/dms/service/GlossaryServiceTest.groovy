@@ -1,15 +1,7 @@
 package com.alcatel_lucent.dms.service
 
-import com.alcatel_lucent.dms.Constants
-import com.alcatel_lucent.dms.UserContext
 import com.alcatel_lucent.dms.model.Glossary
 import com.alcatel_lucent.dms.model.User
-import com.alcatel_lucent.dms.util.Util
-import org.apache.commons.io.ByteOrderMark
-import org.apache.commons.io.IOUtils
-import org.apache.commons.io.input.BOMInputStream
-import org.dom4j.Document
-import org.dom4j.io.SAXReader
 import org.junit.*
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,10 +9,6 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.test.context.transaction.TransactionConfiguration
 import org.springframework.transaction.annotation.Transactional
-import org.xml.sax.EntityResolver
-import org.xml.sax.InputSource
-
-import javax.annotation.Resource
 
 /**
  * Created by IntelliJ IDEA.
@@ -67,7 +55,7 @@ public class GlossaryServiceTest {
         User user= daoService.retrieveOne("from User where loginName=:loginName", ['loginName': 'test'])
         Glossary glossary=new Glossary('Temp', user)
         glossary = daoService.create(glossary)
-        println glossary
+        println glossary.createTime
     }
 
 
