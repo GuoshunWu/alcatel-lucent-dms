@@ -50,7 +50,7 @@ public class Glossary {
     }
 
     @ManyToOne
-    @JoinColumn(name = "creator", nullable = false, updatable = false)
+    @JoinColumn(name = "creator", updatable = false)
     public User getCreator() {
         return creator;
     }
@@ -61,7 +61,7 @@ public class Glossary {
 
     @Temporal(TemporalType.TIMESTAMP)
 //    @Generated(GenerationTime.ALWAYS)
-    @Column(name = "CREATE_TIME", nullable = false, updatable = false)
+    @Column(name = "CREATE_TIME", updatable = false)
     public Date getCreateTime() {
         return createTime;
     }
