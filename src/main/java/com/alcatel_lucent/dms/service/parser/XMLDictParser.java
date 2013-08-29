@@ -52,10 +52,11 @@ public class XMLDictParser extends DictionaryParser {
 
         Map<String, Collection<XDictionary>> propFiles = new HashMap<String, Collection<XDictionary>>();
         // add xdct files referred by an xdcp file
-        propFiles = groupDictionaries(file, propFiles, acceptedFiles);
+        HashSet<File> groupedFiles = new HashSet<File>();
+        propFiles = groupDictionaries(file, propFiles, acceptedFiles, groupedFiles);
         
         // add other xdct files which is not referred by any xdcp file
-        propFiles = addDictionariesWithoutXdcp(rootDir, file, propFiles);
+        propFiles = addDictionariesWithoutXdcp(rootDir, file, propFiles, groupedFiles);
 
         /*
         * after grouped, each entry in the propFiles map is a dictionary
@@ -354,10 +355,11 @@ public class XMLDictParser extends DictionaryParser {
      * @param file          a xdcp file or a dir contained xdcp and xdct files.
      * @param propFiles     the initial map for xdct files group.
      * @param acceptedFiles
+     * @param groupedFiles	prevent duplicate read
      * @return map which contained grouped dct files, the key is their name, and the value is a collection of this
      *         dictionary related File objects.
      */
-    public Map<String, Collection<XDictionary>> groupDictionaries(File file, Map<String, Collection<XDictionary>> propFiles, Collection<File> acceptedFiles) {
+    public Map<String, Collection<XDictionary>> groupDictionaries(File file, Map<String, Collection<XDictionary>> propFiles, Collection<File> acceptedFiles, HashSet<File> groupedFiles) {
         if (file.isFile()) {
             if (!Util.isXdcpFile(file)) return propFiles;
             /* Read the xdcp file and get the dictionary and their relative path information from it.*/
@@ -375,11 +377,12 @@ public class XMLDictParser extends DictionaryParser {
                     log.warn("The file '" + xdctFile + "' referenced by '" + file + "' does not exist, ignore.");
                     continue;
                 }
-                if (dictFiles.contains(dict)) {
+                if (dictFiles.contains(dict) || groupedFiles.contains(dict.getFile())) {
                     log.info("The file '" + xdctFile + "' referenced by '" + file + "' already in collection, ignore.");
                     continue;
                 }
                 dictFiles.add(dict);
+                groupedFiles.add(dict.getFile());
             }
             return propFiles;
         }
@@ -392,7 +395,7 @@ public class XMLDictParser extends DictionaryParser {
         });
 
         for (File subFile : xDcpFileOrDirs) {
-            propFiles.putAll(groupDictionaries(subFile, propFiles, acceptedFiles));
+            propFiles.putAll(groupDictionaries(subFile, propFiles, acceptedFiles, groupedFiles));
         }
         return propFiles;
     }
@@ -402,22 +405,25 @@ public class XMLDictParser extends DictionaryParser {
      * Each of such xdct file is regarded as a separate dictionary
      * @param file a xdct file or a directory containing xdct files
      * @param propFiles xdct files group (output)
+     * @param groupedFiles files which already referred by an xdcp file, used to prevent duplicate read
      * @return xdct files group
      */
-    public Map<String, Collection<XDictionary>> addDictionariesWithoutXdcp(String rootDir, File file, Map<String, Collection<XDictionary>> propFiles) {
+    public Map<String, Collection<XDictionary>> addDictionariesWithoutXdcp(String rootDir, File file, Map<String, Collection<XDictionary>> propFiles, HashSet<File> groupedFiles) {
     	if (file.isFile()) {
-    		String dictName = FilenameUtils.normalize(file.getAbsolutePath(), true);
-            if (rootDir != null && dictName.startsWith(rootDir)) {
-                dictName = dictName.substring(rootDir.length() + 1);
-            }
-            dictName = dictName.substring(0, dictName.length() - 5);	// remove ".xdct"
-    		XDictionary xdct = new XDictionary();
-    		xdct.setFile(file);
-    		xdct.setName(dictName);
-    		xdct.setPath(null);
-    		Collection<XDictionary> xdctFiles = new ArrayList<XDictionary>();
-    		xdctFiles.add(xdct);
-    		propFiles.put(dictName, xdctFiles);
+    		if (!groupedFiles.contains(file)) {
+	    		String dictName = FilenameUtils.normalize(file.getAbsolutePath(), true);
+	            if (rootDir != null && dictName.startsWith(rootDir)) {
+	                dictName = dictName.substring(rootDir.length() + 1);
+	            }
+	            dictName = dictName.substring(0, dictName.length() - 5);	// remove ".xdct"
+	    		XDictionary xdct = new XDictionary();
+	    		xdct.setFile(file);
+	    		xdct.setName(dictName);
+	    		xdct.setPath(null);
+	    		Collection<XDictionary> xdctFiles = new ArrayList<XDictionary>();
+	    		xdctFiles.add(xdct);
+	    		propFiles.put(dictName, xdctFiles);
+    		}
     	} else if (file.isDirectory()) {
             File[] xDctFileOrDirs = file.listFiles(new FileFilter() {
                 @Override
@@ -427,7 +433,7 @@ public class XMLDictParser extends DictionaryParser {
             });
 
             for (File subFile : xDctFileOrDirs) {
-                propFiles.putAll(addDictionariesWithoutXdcp(rootDir, subFile, propFiles));
+                propFiles.putAll(addDictionariesWithoutXdcp(rootDir, subFile, propFiles, groupedFiles));
             }
     	}
     	return propFiles;
