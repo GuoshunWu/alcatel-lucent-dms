@@ -54,7 +54,7 @@ define [ 'hchart'], ($)->
 
     options.series[0].data = [
       ['Auto trans', json.matchedNum]
-      {name: 'No match', y: json.distinctTranslationNum - json.matchedNum, color: colors[3]}
+      {name: 'No match', y: json.untranslatedNum - json.matchedNum, color: colors[3]}
     ]
     $('#autoTransContainer').highcharts(options)
 
