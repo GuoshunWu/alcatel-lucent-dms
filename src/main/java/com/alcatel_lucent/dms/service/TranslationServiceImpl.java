@@ -1058,16 +1058,16 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 		param.put("languageId", langId);
 		param.put("exclusion", Context.EXCLUSION);
     	if (dictId != null) {
-    		hql = "select obj,lt,0 from Label obj join obj.origTranslations lt where obj.dictionary.id=:dictId and lt.language.id=:languageId and obj.removed=false and obj.context.name<>:exclusion";
+    		hql = "select obj,lt,0 from Label obj join obj.origTranslations lt where obj.dictionary.id=:dictId and lt.language.id=:languageId and lt.needTranslation=false and obj.removed=false and obj.context.name<>:exclusion";
         	param.put("dictId", dictId);
     	} else if (appId != null) {
-    		hql = "select obj,lt,a from Application a join a.dictionaries d join d.labels obj join obj.origTranslations lt where a.id=:appId and lt.language.id=:languageId and obj.removed=false and obj.context.name<>:exclusion";
+    		hql = "select obj,lt,a from Application a join a.dictionaries d join d.labels obj join obj.origTranslations lt where a.id=:appId and lt.language.id=:languageId and lt.needTranslation=false and obj.removed=false and obj.context.name<>:exclusion";
         	param.put("appId", appId);
     	} else if (prodId != null) {
-    		hql = "select obj,lt,a from Product p join p.applications a join a.dictionaries d join d.labels obj join obj.origTranslations lt where p.id=:prodId and lt.language.id=:languageId and obj.removed=false and obj.context.name<>:exclusion";
+    		hql = "select obj,lt,a from Product p join p.applications a join a.dictionaries d join d.labels obj join obj.origTranslations lt where p.id=:prodId and lt.language.id=:languageId and lt.needTranslation=false and obj.removed=false and obj.context.name<>:exclusion";
         	param.put("prodId", prodId);
     	} else {
-    		hql = "select obj,lt,a from Application a join a.dictionaries d join d.labels obj join obj.origTranslation lt where lt.language.id=:languageId and obj.removed=false and obj.context.name<>:exclusion";
+    		hql = "select obj,lt,a from Application a join a.dictionaries d join d.labels obj join obj.origTranslation lt where lt.language.id=:languageId and lt.needTranslation=false and obj.removed=false and obj.context.name<>:exclusion";
     	}
 		hql += " and lt.needTranslation=true and upper(lt.origTranslation) like :text";
 		param.put("text", "%" + text + "%");

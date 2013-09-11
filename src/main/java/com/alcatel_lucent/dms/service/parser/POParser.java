@@ -98,8 +98,8 @@ public class POParser extends DictionaryParser {
     		if (!subFile.isDirectory()) continue;
     		File[] poFiles = subFile.listFiles(new FileFilter() {
                 @Override
-                public boolean accept(File pathname) {
-                    return Util.isPOFile(pathname);
+                public boolean accept(File pathname) {	// .mo files will be accepted but ignored
+                    return Util.isPOFile(pathname) || Util.isMOFile(pathname);
                 }
             });
     		for (File po : poFiles) {
@@ -115,8 +115,17 @@ public class POParser extends DictionaryParser {
     	// parse po files for each filename
     	for (String filename : poMap.keySet()) {
     		Collection<File> poFiles = poMap.get(filename);
+    		// remove .mo files
+    		Collection<File> trueFiles = new ArrayList<File>();
+    		for (File poFile : poFiles) {
+    			if (Util.isPOFile(poFile)) {
+    				trueFiles.add(poFile);
+    			}
+    		}
     		try {
-	    		result.add(parsePODictionary(rootDir, file, poFiles, exceptions));
+        		if (!trueFiles.isEmpty()) {
+        			result.add(parsePODictionary(rootDir, file, trueFiles, exceptions));
+        		}
 	    		acceptedFiles.addAll(poFiles);
     		} catch (BusinessException e) {
     			exceptions.addNestedException(e);
