@@ -210,6 +210,10 @@ public class Util {
         return isSpecificFile(file.getName(), ".po");
     }
 
+    public static boolean isMOFile(File file) {
+        return isSpecificFile(file.getName(), ".mo");
+    }
+
     private static boolean isSpecificFile(String fileName, String fileExtPattern) {
         Pattern pattern = Pattern.compile(fileExtPattern,
                 Pattern.CASE_INSENSITIVE);
