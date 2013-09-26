@@ -25,6 +25,16 @@ public interface DictionaryService {
     public Collection<Dictionary> previewDictionaries(String rootDir, File file, Long appId) throws BusinessException;
     
     /**
+     * Determine default context of labels which have no context info.
+     * If the label was already assigned to a context, keep it;
+     * If any translation or its status of the label is different than default context, take dictionary context;
+     * Otherwise, take default context.
+     *
+     * @param dictList
+     */
+    public void populateDefaultContext(Collection<Dictionary> dictList);
+    
+    /**
      * Import an application dictionary
      * @param appId application id
      * @param dict        transient Dictionary object
