@@ -405,6 +405,7 @@ public class Dictionary extends BaseEntity {
             HashSet<String> existingReference = new HashSet<String>();
             HashSet<String> alreadyWarning = new HashSet<String>();
             for (Label label : labels) {
+            	if (label.getContext() == null) continue;
                 String key = label.getContext() + "~~" + label.getReference();
                 if (existingReference.contains(key)) {
                     if (!alreadyWarning.contains(key)) {    // warn only once

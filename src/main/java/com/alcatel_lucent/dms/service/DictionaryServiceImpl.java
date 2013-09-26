@@ -151,8 +151,12 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     if (dbDict != null) {
                         Label dbLabel = dbDict.getLabel(label.getKey());
                         if (dbLabel != null) {
-                            // copy context value from existing label unless reference text was changed
-                            if (label.getContext() == null && label.getReference().equals(dbLabel.getReference())) {
+                            // copy context value from existing label unless:
+                        	// * reference text was changed
+                        	// * the existing context value is [DEFAULT] or [DICT]
+                            if (label.getContext() == null && label.getReference().equals(dbLabel.getReference())
+                            		&& !dbLabel.getContext().getName().equals(Context.DEFAULT) 
+                            		&& !dbLabel.getContext().getName().equals(Context.DICT)) {
                                 label.setContext(dbLabel.getContext());
                             }
                             if (label.getMaxLength() == null) {
@@ -172,12 +176,12 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             glossaryService.consistentGlossariesInDict(dict);
         }
 
-        populateDefaultContext(result);
-
         for (Dictionary dict : result) {
             // populate additional errors and warnings
             dict.validate();
         }
+
+        populateDefaultContext(result);
 
         return result;
     }
@@ -190,7 +194,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
      *
      * @param dictList
      */
-    private void populateDefaultContext(Collection<Dictionary> dictList) {
+    public void populateDefaultContext(Collection<Dictionary> dictList) {
         Context defaultCtx = new Context(Context.DEFAULT);
         Context exclusionCtx = new Context(Context.EXCLUSION);
         Context dbDefaultCtx = textService.getContextByExpression(Context.DEFAULT, null);
@@ -205,6 +209,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         }
         Map<String, Text> unsavedTextMap = new HashMap<String, Text>();
         for (Dictionary dict : dictList) {
+        	if (!dict.getPreviewErrors().isEmpty()) continue;	// don't populate context if there is still any error in dict
             Context dictCtx = new Context(Context.DICT);
             if (dict.getLabels() == null) continue;
             for (Label label : dict.getLabels()) {
