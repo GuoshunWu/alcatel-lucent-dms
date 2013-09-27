@@ -140,6 +140,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                         if (dbDl != null) {
                             dl.setLanguage(dbDl.getLanguage());
                             dl.setCharset(dbDl.getCharset());
+                            dict.updateLanguage(dl.getLanguageCode(), dbDl.getLanguage());
                         }
                     }
                 }
@@ -176,12 +177,12 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             glossaryService.consistentGlossariesInDict(dict);
         }
 
+        populateDefaultContext(result);
+
         for (Dictionary dict : result) {
             // populate additional errors and warnings
             dict.validate();
         }
-
-        populateDefaultContext(result);
 
         return result;
     }
@@ -209,7 +210,14 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         }
         Map<String, Text> unsavedTextMap = new HashMap<String, Text>();
         for (Dictionary dict : dictList) {
-        	if (!dict.getPreviewErrors().isEmpty()) continue;	// don't populate context if there is still any error in dict
+        	boolean langError = false;
+            for (DictionaryLanguage dl : dict.getDictLanguages()) {
+                if (dl.getLanguage() == null || dl.getCharset() == null) {
+                	langError = true;
+                	break;
+                }
+            }
+            if (langError) continue; // don't populate context if language information is not complete
             Context dictCtx = new Context(Context.DICT);
             if (dict.getLabels() == null) continue;
             for (Label label : dict.getLabels()) {
