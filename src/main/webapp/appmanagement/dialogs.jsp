@@ -147,6 +147,7 @@
                 <ul id="setContextMenu">
                     <li><a name="[DEFAULT]" href="#"><s:text name="context.default"/></a></li>
                     <li><a name="[EXCLUSION]" href="#"><s:text name="context.excl"/></a></li>
+                    <li><a name="[LABEL]" href="#"><s:text name="context.label"/></a></li>
                     <li><a name="[DICT]" href="#"><s:text name="context.dict"/></a></li>
                     <li><a name="[APP]" href="#"><s:text name="context.app"/></a></li>
                     <li><a name="[PROD]" href="#"><s:text name="context.prod"/></a></li>

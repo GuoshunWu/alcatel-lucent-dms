@@ -134,6 +134,15 @@ public interface TextService {
      */
 	Context getContextByExpression(String contextExp, Dictionary dict);
 
+    /**
+     * Populate context name and get the Context instance, create one if not exists.
+     * @param contextExp context expression, supported variables: [LABEL]
+     * @param label object, used to populate context value
+     * @return Context instance
+
+     */
+    Context getContextByExpression(String contextExp, Label label);
+
 	/**
 	 * Update one translation
 	 * Update translation result of a label.
@@ -161,6 +170,9 @@ public interface TextService {
 	 * @param texts
 	 */
 	void populateRefs(Collection<Text> texts);
+
+    public String populateContextKey(String contextExp, Dictionary dictionary);
+    public String populateContextKey(String contextExp, Label label);
 
 	/**
 	 * Delete a text when there is no refs.
