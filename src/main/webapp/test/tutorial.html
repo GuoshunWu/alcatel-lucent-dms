@@ -26,6 +26,7 @@
 
     .item-text {
         font-size: 13px;
+        cursor: pointer;
     }
 
     .guide-title {
@@ -178,10 +179,10 @@
                                         .append(
                                                 $("<" + "span" + ">").append(
                                                         $("<" + "img" + ">").prop("src", imageBasePath + imgFileName).width(imgSize).height(imgSize)
-                                                ).css({'vertical-align': '-5px'})
+                                                ).css({'vertical-align': '-5px', cursor: 'pointer'})
                                         )
                                         .append(
-                                                $("<" + "span" + ">").append(fileEntry.title).addClass("item-text")
+                                                $("<" + "a" + ">").append(fileEntry.title).addClass("item-text")
                                         );
 
                         preview.on("mouseover", function (e) {

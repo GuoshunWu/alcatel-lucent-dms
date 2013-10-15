@@ -319,7 +319,7 @@ define [
   setContextTo = (context = 'Default', labelids = $('#stringSettingsGrid').getGridParam('selarrrow'))->
     # console?.log "context=#{context}, labelids =#{labelids}."
     ($.msgBox(i18n.dialog.customcontext.labeltip, null, {title: c18n.warn});return) if labelids.length == 0
-    $.post 'app/update-label', {id: labelids.join(','), context: context}, (json)->
+    $.post urls.label.update, {id: labelids.join(','), context: context}, (json)->
       ($.msgBox json.message, null, {title: c18n.error}; return) if json.status != 0
       $('#stringSettingsGrid').trigger 'reloadGrid'
 

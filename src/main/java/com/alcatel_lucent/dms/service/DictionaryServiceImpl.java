@@ -7,18 +7,16 @@ import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.service.generator.DictionaryGenerator;
 import com.alcatel_lucent.dms.service.parser.DictionaryParser;
-import com.alcatel_lucent.dms.util.CharsetUtil;
-
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.collections.Transformer;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -153,11 +151,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                         Label dbLabel = dbDict.getLabel(label.getKey());
                         if (dbLabel != null) {
                             // copy context value from existing label unless:
-                        	// * reference text was changed
-                        	// * the existing context value is [DEFAULT] or [DICT]
+                            // * reference text was changed
+                            // * the existing context value is [DEFAULT] or [DICT]
                             if (label.getContext() == null && label.getReference().equals(dbLabel.getReference())
-                            		&& !dbLabel.getContext().getName().equals(Context.DEFAULT) 
-                            		&& !dbLabel.getContext().getName().equals(Context.DICT)) {
+                                    && !dbLabel.getContext().getName().equals(Context.DEFAULT)
+                                    && !dbLabel.getContext().getName().equals(Context.DICT)) {
                                 label.setContext(dbLabel.getContext());
                             }
                             if (label.getMaxLength() == null) {
@@ -198,7 +196,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     public void populateDefaultContext(Collection<Dictionary> dictList) {
         Context defaultCtx = new Context(Context.DEFAULT);
         Context exclusionCtx = new Context(Context.EXCLUSION);
-        Context dbDefaultCtx = textService.getContextByExpression(Context.DEFAULT, null);
+        Context dbDefaultCtx = textService.getContextByExpression(Context.DEFAULT, (Dictionary)null);
 //        Context dbExclusionCtx = textService.getContextByExpression(Context.EXCLUSION, null);
         Map<String, Text> textMap = dbDefaultCtx == null ? new HashMap<String, Text>() :
                 textService.getTextsAsMap(dbDefaultCtx.getId());
@@ -209,16 +207,20 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             glossaries.add(glossary.getText());
         }
         Map<String, Text> unsavedTextMap = new HashMap<String, Text>();
+        // save dict context text map
+        Map<String, Text> dictTextMap = new HashMap<String, Text>();
+
         for (Dictionary dict : dictList) {
-        	boolean langError = false;
+            boolean langError = false;
             for (DictionaryLanguage dl : dict.getDictLanguages()) {
                 if (dl.getLanguage() == null || dl.getCharset() == null) {
-                	langError = true;
-                	break;
+                    langError = true;
+                    break;
                 }
             }
             if (langError) continue; // don't populate context if language information is not complete
             Context dictCtx = new Context(Context.DICT);
+
             if (dict.getLabels() == null) continue;
             for (Label label : dict.getLabels()) {
                 if (label.getContext() != null) {
@@ -228,7 +230,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     label.setContext(exclusionCtx);
                     continue;
                 }
-                if (label.getReference().trim().isEmpty()) {
+                if (StringUtils.isBlank(label.getReference())) {
                     label.setContext(exclusionCtx);
                     continue;
                 }
@@ -237,51 +239,67 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 // with Default context, set the label to dictionary context
                 if (isConflict(dict, label, textMap) || isConflict(dict, label, unsavedTextMap)) {
                     label.setContext(dictCtx);
+                    Text text = populateTextForLabel(label, dictTextMap);
+                    if (isConflict(dict, label, dictTextMap)) {
+                        label.setContext(new Context(Context.LABEL));
+                    }
                 }
                 if (label.getContext() == null) {
                     label.setContext(defaultCtx);
-                }
 
-                // temporarily add in-memory LabelTranslations to unsaved Default context text map
-                // to ensure no conflict translation in scope of current delivery are put into DEFAULT context
-                if (label.getContext().getName().equals(Context.DEFAULT)) {
-                    Text text = unsavedTextMap.get(label.getReference());
-                    if (text == null) {
-                        text = new Text();
-                        text.setReference(label.getReference());
-                        unsavedTextMap.put(label.getReference(), text);
-                    }
-                    if (label.getOrigTranslations() != null) {
-                        for (LabelTranslation lt : label.getOrigTranslations()) {
-                            if (lt.getLabel() == null) lt.setLabel(label);
-                            if (lt.getLanguage() != null && !lt.getOrigTranslation().equals(label.getReference())) {
-                                Translation trans = text.getTranslation(lt.getLanguage().getId());
-                                String translation = lt.getOrigTranslation();
-                                DictionaryLanguage dl = dict.getDictLanguage(lt.getLanguageCode());
-                                if (dl != null && dl.getCharset() != null && dict.getEncoding() != null) {
-                                    try {
-                                        translation = new String(translation.getBytes(dict.getEncoding()), dl.getCharset().getName());
-                                    } catch (UnsupportedEncodingException e) {
-                                        log.error(e.toString());
-                                    }
-                                }
-                                if (trans == null) {
-                                    trans = new Translation();
-                                    trans.setLanguage(lt.getLanguage());
-                                    trans.setTranslation(translation);
-                                    trans.setStatus(populateTranslationStatus(lt));
-                                    text.addTranslation(trans);
-                                } else if (trans.getTranslation().equals(label.getReference()) &&
-                                        !translation.equals(label.getReference())) {
-                                    trans.setTranslation(translation);
-                                }
-                            }
-                        }
-                    }
+                    // temporarily add in-memory LabelTranslations to unsaved Default context text map
+                    // to ensure no conflict translation in scope of current delivery are put into DEFAULT context
+                    Text text = populateTextForLabel(label, unsavedTextMap);
                 }
             }
         }
 
+    }
+
+    /**
+     * Populate text for label
+     *
+     * @param label Label
+     */
+    private Text populateTextForLabel(Label label, Map<String, Text> unsavedTextMap) {
+        Text text = unsavedTextMap.get(label.getReference());
+        if (null == text) {
+            text = new Text();
+            text.setReference(label.getReference());
+            unsavedTextMap.put(label.getReference(), text);
+        }
+
+        if (CollectionUtils.isEmpty(label.getOrigTranslations())) {
+            return text;
+        }
+        Dictionary dict = label.getDictionary();
+        // add Translations for text
+        for (LabelTranslation lt : label.getOrigTranslations()) {
+            if (lt.getLabel() == null) lt.setLabel(label);
+            //skip if original translation equals reference
+            if (null == lt.getLanguage() || lt.getOrigTranslation().equals(label.getReference())) continue;
+
+            Translation trans = text.getTranslation(lt.getLanguage().getId());
+            String translation = lt.getOrigTranslation();
+            DictionaryLanguage dl = dict.getDictLanguage(lt.getLanguageCode());
+            if (dl != null && dl.getCharset() != null && dict.getEncoding() != null) {
+                try {
+                    translation = new String(translation.getBytes(dict.getEncoding()), dl.getCharset().getName());
+                } catch (UnsupportedEncodingException e) {
+                    log.error(e.toString());
+                }
+            }
+            if (trans == null) {
+                trans = new Translation();
+                trans.setLanguage(lt.getLanguage());
+                trans.setTranslation(translation);
+                trans.setStatus(populateTranslationStatus(lt));
+                text.addTranslation(trans);
+            } else if (trans.getTranslation().equals(label.getReference()) && !translation.equals(label.getReference())) { //?
+                trans.setTranslation(translation);
+            }
+        }
+        return text;
     }
 
     /**
@@ -290,35 +308,34 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
      *
      * @param dict
      * @param label
-     * @param textMap
+     * @param textMap all the texts in DB with reference as key, text as value.
      * @return
      */
     private boolean isConflict(Dictionary dict, Label label, Map<String, Text> textMap) {
-        if (label.getOrigTranslations() != null) {
-            for (LabelTranslation lt : label.getOrigTranslations()) {
-                if (lt.getLanguage() != null && !lt.getOrigTranslation().equals(label.getReference())) {
-                    Text text = textMap.get(label.getReference());
-                    if (text != null) {
-                        Translation trans = text.getTranslation(lt.getLanguage().getId());
-                        if (trans != null) {    // compare converted label translation with context translation
-                            String translation = lt.getOrigTranslation();
-                            DictionaryLanguage dl = dict.getDictLanguage(lt.getLanguageCode());
-                            if (dl != null && dl.getCharset() != null && dict.getEncoding() != null) {
-                                try {
-                                    translation = new String(translation.getBytes(dict.getEncoding()), dl.getCharset().getName());
-                                } catch (UnsupportedEncodingException e) {
-                                    log.error(e.toString());
-                                }
-                            }
-                            if ((!trans.getTranslation().equals(translation) ||
-                                    lt.getStatus() != null && lt.getStatus() != trans.getStatus())
-                                    && trans.getStatus() == Translation.STATUS_TRANSLATED) {
-                                log.info("Context conflict - Reference:" + label.getReference() + ", Translation:" + lt.getOrigTranslation() + ", ContextTranslation:" + trans.getTranslation());
-                                return true;
-                            }
-                        }
-                    }
+        if (null == label.getOrigTranslations()) return false;
+
+        for (LabelTranslation lt : label.getOrigTranslations()) {
+            if (lt.getLanguage() == null || lt.getOrigTranslation().equals(label.getReference())) continue;
+            Text text = textMap.get(label.getReference());
+            if (null == text) continue;
+            Translation trans = text.getTranslation(lt.getLanguage().getId());
+            if (null == trans) continue;
+            // compare converted label translation with context translation
+            String translation = lt.getOrigTranslation();
+            DictionaryLanguage dl = dict.getDictLanguage(lt.getLanguageCode());
+
+            if (dl != null && dl.getCharset() != null && dict.getEncoding() != null) {
+                try {
+                    translation = new String(translation.getBytes(dict.getEncoding()), dl.getCharset().getName());
+                } catch (UnsupportedEncodingException e) {
+                    log.error(e.toString());
                 }
+            }
+            if ((!trans.getTranslation().equals(translation) ||
+                    lt.getStatus() != null && lt.getStatus() != trans.getStatus())
+                    && trans.getStatus() == Translation.STATUS_TRANSLATED) {
+                log.info("Context conflict - Reference:" + label.getReference() + ", Translation:" + lt.getOrigTranslation() + ", ContextTranslation:" + trans.getTranslation());
+                return true;
             }
         }
         return false;
@@ -386,8 +403,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                                        Map<String, String> langCharset, Boolean autoCreateLang,
                                        Collection<BusinessWarning> warnings, DeliveryReport report) {
         log.info("Start importing dictionary in " + mode + " mode");
-        if (null == dict)
-            return null;
+        if (null == dict) return null;
 
         BusinessException nonBreakExceptions = new BusinessException(
                 BusinessException.NESTED_DCT_PARSE_ERROR, dict.getName());
@@ -570,8 +586,10 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         // prepare data for creation: textMap, labelMap indexed by context
         log.info("Prepare data to import");
         ProgressQueue.setProgress(20);
-        Map<String, Collection<Text>> textMap = new HashMap<String, Collection<Text>>();
-        Map<String, Collection<Label>> labelMap = new HashMap<String, Collection<Label>>();
+        // context key
+        MultiValueMap<String, Text> textMap = new LinkedMultiValueMap<String, Text>();
+        MultiValueMap<String, Label> labelMap = new LinkedMultiValueMap<String, Label>();
+
         Map<Long, String> langCodeMap = dict.getLangCodeMap();
 //        Map<Long, String> langCodeMap = new HashMap<Long, String>();
 //        for (DictionaryLanguage dl : dict.getDictLanguages()) {
@@ -583,21 +601,13 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             label.setRemoved(false);
             String contextName = label.getContext().getName();
             Text text = new Text();
+
             text.setReference(label.getReference());
-
-            Collection<Text> texts = textMap.get(contextName);
-            if (texts == null) {
-                texts = new ArrayList<Text>();
-                textMap.put(contextName, texts);
+            if (Context.LABEL.equals(contextName)) {// distinct label context
+                contextName = textService.populateContextKey(Context.LABEL, label);
             }
-            texts.add(text);
-
-            Collection<Label> labels = labelMap.get(contextName);
-            if (labels == null) {
-                labels = new ArrayList<Label>();
-                labelMap.put(contextName, labels);
-            }
-            labels.add(label);
+            textMap.add(contextName, text);
+            labelMap.add(contextName, label);
 
             // filter by langCodes parameter
             if (langCodeList != null) {
@@ -734,16 +744,27 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
         ProgressQueue.setProgress(50);
         // for each context, insert or update label/text/translation data
-        Context defaultCtx = textService.getContextByExpression(Context.DEFAULT, null);
+        Context defaultCtx = textService.getContextByExpression(Context.DEFAULT, (Dictionary) null);
         for (String contextName : textMap.keySet()) {
             log.info("Importing data into context " + contextName);
-            Context context = textService.getContextByExpression(contextName, dbDict);
             Collection<Text> texts = textMap.get(contextName);
-            Collection<Label> labels = labelMap.get(contextName);
+            Context context = null;
+            if (contextName.contains(Context.LABEL.substring(0, Context.LABEL.length() - 1))) {
+                String contextKey = contextName;
+                context = textService.getContextByKey(contextKey);
+                if (null == context) {
+                    context = new Context(Context.LABEL);
+                    context.setKey(contextKey);
+                    context = (Context) dao.create(context);
+                }
+            } else {
+                context = textService.getContextByExpression(contextName, dbDict);
+            }
+
             Map<String, Text> dbTextMap = textService.updateTranslations(
                     context.getId(), texts, mode);
-            // update DEFAULT context from each DICT context, so the DEFAULT context would be a union of all translations
-            if (context.getName().equals(Context.DICT)) {
+            // update DEFAULT context from each DICT context or LABEL context, so the DEFAULT context would be a union of all translations
+            if (context.getName().equals(Context.DICT) || context.getName().equals(Context.LABEL)) {
                 textService.updateTranslations(defaultCtx.getId(), texts, Constants.ImportingMode.DELIVERY);
             }
 
@@ -753,6 +774,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             }
 
             // NOTE: following code is only executed in DELIVERY_MODE
+            Collection<Label> labels = labelMap.get(contextName);
             for (Label label : labels) {
                 // create or update label
                 Label dbLabel = dbDict.getLabel(label.getKey());
@@ -819,10 +841,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
      *
      * @param textMap
      */
-    private void mergeDuplicateTexts(Map<String, Collection<Text>> textMap) {
+    private void mergeDuplicateTexts(MultiValueMap<String, Text> textMap) {
         for (String ctx : textMap.keySet()) {
             Collection<Text> texts = textMap.get(ctx);
             Map<String, Text> refMap = new HashMap<String, Text>();
+
             for (Iterator<Text> iter = texts.iterator(); iter.hasNext(); ) {
                 Text text = iter.next();
                 Text existText = refMap.get(text.getReference());
@@ -1184,7 +1207,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             }
             if (contextExp != null) {
                 if (ctx == null) {
-                    ctx = textService.getContextByExpression(contextExp, label.getDictionary());
+                    ctx = textService.getContextByExpression(contextExp, label);
                 }
                 if (!label.getContext().getId().equals(ctx.getId())) {
                     // context changed
@@ -1232,17 +1255,20 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         if (dict.getLabel(key) != null) {
             throw new BusinessException(BusinessException.DUPLICATE_LABEL_KEY);
         }
-        Context context = textService.getContextByExpression(contextExp, dict);
         Label label = new Label();
         label.setDictionary(dict);
         label.setKey(key);
         label.setReference(reference);
         label.setMaxLength(maxLength);
-        label.setContext(context);
         label.setDescription(description);
+
+
 //        label.setText(text);
         label.setSortNo(dict.getMaxLabelSortNo() + 1);
         label.setRemoved(false);
+
+        Context context = textService.getContextByExpression(contextExp, dict);
+        label.setContext(context);
 
         Text text = updateLabelTranslations(label, null);
         label.setText(text);

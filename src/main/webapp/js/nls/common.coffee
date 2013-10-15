@@ -3,7 +3,7 @@ define
     loadingpage: '<h1><img src="busy.gif" />Loading page please wait...</h1>'
     all: 'All'
     dictformats: window.param?.dictFormats
-    transcontext: '[DEFAULT]:[DEFAULT];[EXCLUSION]:[EXCLUSION];[DICT]:[DICT];[APP]:[APP];[PROD]:[PROD];Other:Other'
+    transcontext: '[DEFAULT]:[DEFAULT];[EXCLUSION]:[EXCLUSION];[LABEL]:[LABEL];[DICT]:[DICT];[APP]:[APP];[PROD]:[PROD];Other:Other'
     dictencodings: 'ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE'
     "import": 'Import'
     ok: 'OK'
