@@ -5,6 +5,7 @@ import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryLanguage;
 import com.alcatel_lucent.dms.model.Label;
+import com.alcatel_lucent.dms.model.LabelTranslation;
 import com.alcatel_lucent.dms.service.DaoService;
 import com.alcatel_lucent.dms.service.parser.OTCPCParser;
 import com.alcatel_lucent.dms.util.Util;
@@ -12,8 +13,10 @@ import org.apache.commons.collections.map.MultiKeyMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.AutoCloseInputStream;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFFormulaEvaluator;
 import org.apache.poi.hssf.usermodel.HSSFPalette;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.AreaReference;
@@ -28,8 +31,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Component
 public class OTCPCGenerator extends DictionaryGenerator {
@@ -51,8 +55,8 @@ public class OTCPCGenerator extends DictionaryGenerator {
         Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
         File targetFile = new File(targetDir, dict.getName());
 
-        OutputStream os=null;
-        InputStream is=null;
+        OutputStream os = null;
+        InputStream is = null;
 
         try {
             is = null;
@@ -64,7 +68,7 @@ public class OTCPCGenerator extends DictionaryGenerator {
             wb.write(os);
         } catch (IOException e) {
             e.printStackTrace();
-        }finally{
+        } finally {
             IOUtils.closeQuietly(os);
         }
 
@@ -92,6 +96,83 @@ public class OTCPCGenerator extends DictionaryGenerator {
         } catch (IOException e) {
             log.warn("Dictionary {} annotation1 {}", dict.getName(), info);
         }
+    }
+
+    private Collection<CellReference> convertLabelKeyToCellRef(String formulaKeys, Sheet sheet, Integer idColumnNum, Integer valueColumnNum) {
+        Collection<CellReference> cellReferences = new ArrayList<CellReference>();
+        List<String> labelKeys = Arrays.asList(formulaKeys.split(","));
+        for (String labelKey : labelKeys) {
+            for (Row row : sheet) {
+                Cell labelKeyCell = row.getCell(idColumnNum);
+                if (labelKeyCell.getStringCellValue().trim().equals(labelKey)) {
+                    cellReferences.add(new CellReference(row.getRowNum(), valueColumnNum));
+                    break;
+                }
+            }
+        }
+        if (labelKeys.size() != cellReferences.size()) return null;
+        return cellReferences;
+    }
+
+
+    /**
+     * Update formula in case of Label update in DMS
+     */
+    private String updateFormula(String formula, CellReference[] params) {
+        Pattern p = Pattern.compile("[a-zA-Z]{1,2}\\d{1,6}");
+        // matcher
+        Matcher m = p.matcher(formula);
+        StringBuffer sb = new StringBuffer();
+        int i = 0;
+        while (m.find()) {
+            m.appendReplacement(sb, params[i++].formatAsString());
+        }
+        m.appendTail(sb);
+        return sb.toString();
+    }
+
+    /**
+     * Restore formula cell from formulaInfo
+     *
+     * @param formulaInfo    formula string info which from annotation
+     * @param originalCell   original cell
+     * @param value          default cell value if formula ref cell is not found
+     * @param currentSheet   current sheet to be filled
+     * @param labelKeyColumn column number of label key
+     * @param valColumn      column number of value(reference or translation)
+     * @param greyStyle      grey cell style
+     */
+    private Cell restoreFormulaCell(String formulaInfo, Cell originalCell, String value, Sheet currentSheet, int labelKeyColumn, int valColumn, CellStyle greyStyle) {
+        if (StringUtils.isBlank(formulaInfo)) {
+            originalCell.setCellValue(value);
+            originalCell.setCellType(Cell.CELL_TYPE_STRING);
+            return originalCell;
+        }
+
+        Map<String, String> params = Util.string2Map(formulaInfo);
+        String formula = params.get("formula");
+        String formulaKeys = params.get("formulaRefLabelKeys");
+        Collection<CellReference> cellReferences = convertLabelKeyToCellRef(formulaKeys, currentSheet, labelKeyColumn, valColumn);
+        if (null == cellReferences) {
+            originalCell.setCellValue(value);
+            originalCell.setCellType(Cell.CELL_TYPE_STRING);
+            return originalCell;
+        }
+
+        formula = updateFormula(formula, cellReferences.toArray(new CellReference[0]));
+        //convert keys to cell reference
+        originalCell.setCellType(Cell.CELL_TYPE_FORMULA);
+        originalCell.setCellFormula(formula);
+        originalCell.setCellStyle(greyStyle);
+
+        //log if evaluate correct.
+        FormulaEvaluator evaluator = originalCell.getSheet().getWorkbook().getCreationHelper().createFormulaEvaluator();
+        int cellType = evaluator.evaluateFormulaCell(originalCell);
+        CellReference cr = new CellReference(originalCell.getSheet().getSheetName(), originalCell.getRowIndex(), originalCell.getColumnIndex(), false, false);
+        log.info("Generated cell {} formula= {}, evaluated value= {}",
+                new Object[]{cr.formatAsString(), formula, originalCell.getStringCellValue()});
+
+        return originalCell;
     }
 
     private Sheet generateReferenceSheet(Workbook wb, Dictionary dict, int defaultColWidth, MultiKeyMap styleMap) {
@@ -143,7 +224,11 @@ public class OTCPCGenerator extends DictionaryGenerator {
             //key
             CellUtil.createCell(row, colIndex++, label.getKey());
             //value
-            CellUtil.createCell(row, colIndex++, label.getReference());
+            Cell referenceCell = row.createCell(colIndex++);
+
+            // restore cell formula
+            String formulaInfo = label.getAnnotation2();
+            restoreFormulaCell(formulaInfo, referenceCell, label.getReference(), refSheet, colIndex - 2, colIndex - 1, greyStyle);
 
             String annotation = label.getAnnotation1();
             if (StringUtils.isNotBlank(annotation)) {
@@ -226,12 +311,13 @@ public class OTCPCGenerator extends DictionaryGenerator {
 
     /**
      * Draw display check on specific row
-     * @param row the row to draw.
-     * @param refColIndex the reference column number
-     * @param colIndex  the column start index
-     * @param mergeNum  the merged cell number
+     *
+     * @param row                   the row to draw.
+     * @param refColIndex           the reference column number
+     * @param colIndex              the column start index
+     * @param mergeNum              the merged cell number
      * @param displayCheckColumnNum the total display check column number
-     * @param style cell style
+     * @param style                 cell style
      */
     public static Cell drawDisplayCheckColumns(Row row, int refColIndex, int colIndex, int mergeNum, int displayCheckColumnNum, CellStyle style) {
         Cell cell = row.createCell(colIndex, Cell.CELL_TYPE_FORMULA);
@@ -321,7 +407,14 @@ public class OTCPCGenerator extends DictionaryGenerator {
 
     private void generateTranslationSheet(Workbook wb, Sheet refSheet, Collection<Label> labels, DictionaryLanguage dictionaryLanguage, int defaultColWidth, MultiKeyMap styleMap) {
         Sheet langSheet = wb.createSheet(dictionaryLanguage.getLanguageCode());
+        FormulaEvaluator evaluator = wb.getCreationHelper().createFormulaEvaluator();
         CellStyle style = (CellStyle) styleMap.get(OTCExcelCellStyle.BOLD_LIGHT_BLUE, StringUtils.EMPTY);
+        CellStyle greyStyle = (CellStyle) styleMap.get(OTCExcelCellStyle.GREY, StringUtils.EMPTY);
+        if (null == greyStyle) {
+            greyStyle = wb.createCellStyle();
+            greyStyle.setFillForegroundColor(HSSFColor.GREY_25_PERCENT.index);
+            greyStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+        }
 
         //Title row
         int rowNum = 0;
@@ -347,17 +440,8 @@ public class OTCPCGenerator extends DictionaryGenerator {
         int checkColumnLen = strWidths.length;
 
 
-
         //Translation row
         Cell cell = null;
-
-        CellStyle greyStyle = (CellStyle) styleMap.get(OTCExcelCellStyle.GREY, StringUtils.EMPTY);
-        if(null== greyStyle){
-            greyStyle = wb.createCellStyle();
-            greyStyle.setFillForegroundColor(HSSFColor.GREY_25_PERCENT.index);
-            greyStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
-
-        }
 
         int startRowNum = rowNum;
         for (Label label : labels) {
@@ -366,7 +450,13 @@ public class OTCPCGenerator extends DictionaryGenerator {
 
             row.createCell(colIndex++, Cell.CELL_TYPE_FORMULA);
             row.createCell(colIndex++, Cell.CELL_TYPE_FORMULA);
-            CellUtil.createCell(row, colIndex++, label.getTranslation(dictionaryLanguage.getLanguageCode()));
+            // generate translation cell
+            Cell tranCell = row.createCell(colIndex++);
+            LabelTranslation lt = label.getOrigTranslation(dictionaryLanguage.getLanguageCode());
+            if (null != lt) { // may use formula
+                tranCell = restoreFormulaCell(lt.getAnnotation2(), tranCell,
+                        label.getTranslation(dictionaryLanguage.getLanguageCode()), refSheet, 0, 2, greyStyle);
+            }
 
             String annotation = label.getAnnotation1();
             if (StringUtils.isNotBlank(annotation)) {
@@ -414,6 +504,7 @@ public class OTCPCGenerator extends DictionaryGenerator {
         langSheet.groupColumn(0, 0);
         langSheet.groupColumn(3, checkColumnLen + 1);
 
+        langSheet.setForceFormulaRecalculation(true);
     }
 
     /**
@@ -421,7 +512,7 @@ public class OTCPCGenerator extends DictionaryGenerator {
      */
     private Workbook createWorkbook(Dictionary dict, InputStream template) throws IOException {
 
-        HSSFWorkbook wb = null!=template?new HSSFWorkbook(template):new HSSFWorkbook();
+        HSSFWorkbook wb = null != template ? new HSSFWorkbook(template) : new HSSFWorkbook();
 
         int defaultColWidth = 256 * 40;
         MultiKeyMap styleMap = new MultiKeyMap();

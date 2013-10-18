@@ -258,10 +258,11 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
             currentLanguage = languageName;
             currentApp = appName;
 
-            // skip same reference text in [DEFAULT] AND [DICT] context
+            // skip same reference text in special context such as [DEFAULT] ,[DICT] etc.
             Context ctx = td.getText().getContext();
             boolean skip = false;
-            if (ctx.getName().equals(Context.DEFAULT) || ctx.getName().equals(Context.DICT)) {
+
+            if (ctx.isSpecial()) {
                 if (defaultReferences.contains(td.getText().getReference())) {
                     skip = true;
                 } else {
@@ -378,7 +379,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
             createCell(row, 0, td.getLabelKey(), styleBody);
             Context context = td.getText().getContext();
             // display only special contexts
-            String contextStr = context.getName().equals(Context.DEFAULT) || context.getName().equals(Context.DICT) ? "" : context.getKey();
+            String contextStr = context.isSpecial() ? "" : context.getKey();
             createCell(row, 1, contextStr, styleBody);
             if (td.getMaxLength() != null) {
                 createCell(row, 2, td.getMaxLength(), styleBody);
@@ -404,7 +405,6 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
             }
         }
         sheet.protectSheet(PROTECT_PASSWORD);
-
         wb.removeSheetAt(0);
         try {
             fos = FileUtils.openOutputStream(targetFile);
@@ -553,9 +553,8 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
         param.put("taskId", task.getId());
         param.put("languageId", language.getId());
         if (contextKey.isEmpty()) {
-            hql += " and text.context.name in(:ctxDefault,:ctxDict)";
-            param.put("ctxDefault", Context.DEFAULT);
-            param.put("ctxDict", Context.DICT);
+            hql += " and text.context.name in :specialCtxNames";
+            param.put("specialCtxNames", Context.SPECIAL_CONTEXT_NAMES);
         } else {
             hql += " and text.context.key=:contextKey";
             param.put("contextKey", contextKey);
@@ -698,7 +697,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
             textService.updateTranslations(context.getId(), textMap.values(), Constants.ImportingMode.TRANSLATION);
             // update DEFAULT context from each DICT context, so the DEFAULT context would be a union of all translations
             if (context.getName().equals(Context.DICT)) {
-                Context defaultCtx = textService.getContextByExpression(Context.DEFAULT, null);
+                Context defaultCtx = textService.getContextByExpression(Context.DEFAULT, (Dictionary)null);
                 textService.updateTranslations(defaultCtx.getId(), textMap.values(), Constants.ImportingMode.DELIVERY);
             }
         }

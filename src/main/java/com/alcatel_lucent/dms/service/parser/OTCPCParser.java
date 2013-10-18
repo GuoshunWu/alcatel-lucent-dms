@@ -19,6 +19,7 @@ import org.apache.poi.hssf.usermodel.HSSFDataFormatter;
 import org.apache.poi.hssf.usermodel.HSSFFormulaEvaluator;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.ss.util.CellUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,8 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.apache.commons.io.FilenameUtils.normalize;
 
@@ -136,7 +139,6 @@ public class OTCPCParser extends DictionaryParser {
 
         int numOfSheet = wb.getNumberOfSheets();
 
-        //   HSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
         FormulaEvaluator evaluator = wb.getCreationHelper().createFormulaEvaluator();
         boolean hasInfo = false, hasLang = false, hasCtx = false, hasRef = false;
         for (int i = 0; i < numOfSheet; ++i) {
@@ -149,7 +151,7 @@ public class OTCPCParser extends DictionaryParser {
                 hasLang = true;
             } else if (sheet.getSheetName().equalsIgnoreCase(SHEET_CTX)) {
                 // no action, it is processed in reference sheet.
-            	hasCtx = true;
+                hasCtx = true;
             } else if (sheet.getSheetName().equalsIgnoreCase(SHEET_REF)) {
                 readRefSheet(dictionary, sheet, evaluator, warnings, dictName);
                 hasRef = true;
@@ -157,10 +159,11 @@ public class OTCPCParser extends DictionaryParser {
                 //no action, all the translations have been proce
             }
         }
+
         if (hasInfo && hasLang && hasCtx && hasRef) {
-        	acceptedFiles.add(file);
+            acceptedFiles.add(file);
         } else {
-        	throw new BusinessException(BusinessException.INVALID_OTC_EXCEL_DICT_FILE, file.getName());
+            throw new BusinessException(BusinessException.INVALID_OTC_EXCEL_DICT_FILE, file.getName());
         }
 
         dictionary.setParseWarnings(warnings);
@@ -220,6 +223,23 @@ public class OTCPCParser extends DictionaryParser {
         }
     }
 
+    private String getFormulaRefLabelKeys(Cell cell, Integer columnNum) {
+        if (null == cell || Cell.CELL_TYPE_FORMULA != cell.getCellType()) return StringUtils.EMPTY;
+        String formulaStr = cell.getCellFormula();
+        // cell reference pattern
+        Pattern p = Pattern.compile("[a-zA-Z]{1,2}\\d{1,6}");
+        // matcher
+        Matcher m = p.matcher(formulaStr);
+        List<String> keys = new ArrayList<String>();
+        while (m.find()) {
+            String cellRef = m.group(0);
+            CellReference cellReference = new CellReference(cellRef);
+            String labelKey = cell.getSheet().getRow(cellReference.getRow()).getCell(columnNum).getStringCellValue().trim();
+            keys.add(labelKey);
+        }
+        return StringUtils.join(keys, ",");
+    }
+
     private Label getLabel(Row row, Map<String, Integer> colIndexes, FormulaEvaluator evaluator, Collection<BusinessWarning> warnings, String dictName) {
         Cell cell = row.getCell(colIndexes.get(SHEET_REF_TITLE_ID));
         String labelKey = getStringCellValue(cell, evaluator, warnings, dictName).trim();
@@ -229,6 +249,19 @@ public class OTCPCParser extends DictionaryParser {
         }
 
         cell = row.getCell(colIndexes.get(SHEET_REF_TITLE_VALUE));
+        String formulaDesc = null;
+        if (Cell.CELL_TYPE_FORMULA == cell.getCellType()) {
+            CellReference cellReference = new CellReference(cell.getSheet().getSheetName(), cell.getRowIndex(), cell.getColumnIndex(), false, false);
+            String formulaKeys = getFormulaRefLabelKeys(cell, colIndexes.get(SHEET_REF_TITLE_ID));
+            log.info("Reference cell {} is a formula cell, formula = {}, formulaRefLabel keys= {}", new Object[]{
+                    cellReference.formatAsString(),
+                    cell.getCellFormula(), formulaKeys});
+            Map<String,String> formulaDescMap = new HashMap<String, String>();
+            formulaDescMap.put("formula", cell.getCellFormula());
+            formulaDescMap.put("formulaRefLabelKeys", formulaKeys);
+
+            formulaDesc = Util.map2String(formulaDescMap);
+        }
         String reference = getStringCellValue(cell, evaluator, warnings, dictName);
 
         // get display check column info and store it in label annotation1.
@@ -253,10 +286,10 @@ public class OTCPCParser extends DictionaryParser {
 
         cell = row.getCell(colIndexes.get(SHEET_REF_TITLE_USED));
         String used = null == cell ? "" : getStringCellValue(cell, evaluator, warnings, dictName);
-        return createNewLabel(row.getRowNum(), row.getHeightInPoints(), labelKey, reference, lblDisplayCheckMergeNum, font, desc, userInterface, used);
+        return createNewLabel(row.getRowNum(), row.getHeightInPoints(), labelKey, reference, lblDisplayCheckMergeNum, font, desc, userInterface, used, formulaDesc);
     }
 
-    private Label createNewLabel(int sortNo, float rowHeightInPoints, String key, String ref, Integer displayCheckMergeNum, Font font, String desc, String userInterface, String used) {
+    private Label createNewLabel(int sortNo, float rowHeightInPoints, String key, String ref, Integer displayCheckMergeNum, Font font, String desc, String userInterface, String used, String formulaDesc) {
         Label label = new Label();
         label.setSortNo(sortNo);
         label.setKey(key);
@@ -284,6 +317,7 @@ public class OTCPCParser extends DictionaryParser {
         }
 
         label.setAnnotation1(Util.map2String(annotation));
+        label.setAnnotation2(formulaDesc);
         return label;
     }
 
@@ -315,6 +349,20 @@ public class OTCPCParser extends DictionaryParser {
         if (StringUtils.isBlank(translation)) return null;
 
         LabelTranslation lbTranslation = new LabelTranslation();
+
+        if (Cell.CELL_TYPE_FORMULA == transCell.getCellType()) {
+            CellReference cellReference = new CellReference(transCell.getSheet().getSheetName(), transCell.getRowIndex(), transCell.getColumnIndex(), false, false);
+            String formulaKeys = getFormulaRefLabelKeys(transCell, colIndexes.get(SHEET_REF_TITLE_ID));
+            log.info("Reference cell {} is a formula cell, formula = {}, formulaRefLabel keys= {}", new Object[]{
+                    cellReference.formatAsString(),
+                    transCell.getCellFormula(), formulaKeys});
+
+            Map<String,String> formulaDescMap = new HashMap<String, String>();
+            formulaDescMap.put("formula", transCell.getCellFormula());
+            formulaDescMap.put("formulaRefLabelKeys", formulaKeys);
+            lbTranslation.setAnnotation2(Util.map2String(formulaDescMap));
+        }
+
         lbTranslation.setLanguageCode(langCode);
         lbTranslation.setLanguage(language);
         lbTranslation.setSortNo(row.getRowNum());
