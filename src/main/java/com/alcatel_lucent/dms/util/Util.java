@@ -490,8 +490,7 @@ public class Util {
         if (separators.length > 0) entrySep = separators[0];
         if (separators.length > 1) keyValueSep = separators[1];
         final String finalKeyValueSep = keyValueSep;
-
-        return StringUtils.join(
+        String result = StringUtils.join(
                 CollectionUtils.collect(map.entrySet(), new Transformer() {
                     @Override
                     public Object transform(Object input) {
@@ -506,6 +505,7 @@ public class Util {
                         }
                     }
                 }), entrySep);
+        return result;
     }
 
     /**

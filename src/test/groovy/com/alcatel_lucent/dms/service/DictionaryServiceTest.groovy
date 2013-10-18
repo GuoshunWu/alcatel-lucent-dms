@@ -1,10 +1,6 @@
 package com.alcatel_lucent.dms.service
 
-import com.alcatel_lucent.dms.Constants
-import com.alcatel_lucent.dms.UserContext
 import com.alcatel_lucent.dms.model.User
-import com.alcatel_lucent.dms.service.parser.OTCAndoridOrIPhoneParser
-import com.alcatel_lucent.dms.util.Util
 import org.apache.commons.io.ByteOrderMark
 import org.apache.commons.io.IOUtils
 import org.apache.commons.io.input.BOMInputStream
@@ -13,8 +9,6 @@ import org.dom4j.io.SAXReader
 import org.junit.*
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.orm.hibernate3.SessionFactoryUtils
-import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.test.context.transaction.TransactionConfiguration

@@ -196,7 +196,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     public void populateDefaultContext(Collection<Dictionary> dictList) {
         Context defaultCtx = new Context(Context.DEFAULT);
         Context exclusionCtx = new Context(Context.EXCLUSION);
-        Context dbDefaultCtx = textService.getContextByExpression(Context.DEFAULT, (Dictionary)null);
+        Context dbDefaultCtx = textService.getContextByExpression(Context.DEFAULT, (Dictionary) null);
 //        Context dbExclusionCtx = textService.getContextByExpression(Context.EXCLUSION, null);
         Map<String, Text> textMap = dbDefaultCtx == null ? new HashMap<String, Text>() :
                 textService.getTextsAsMap(dbDefaultCtx.getId());
@@ -241,7 +241,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     label.setContext(dictCtx);
                     Text text = populateTextForLabel(label, dictTextMap);
                     if (isConflict(dict, label, dictTextMap)) {
-                        label.setContext(new Context(Context.LABEL));
+                        Context labelCtx = new Context(textService.populateContextKey(Context.LABEL, label), Context.LABEL);
+                        label.setContext(labelCtx);
                     }
                 }
                 if (label.getContext() == null) {
@@ -764,7 +765,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             Map<String, Text> dbTextMap = textService.updateTranslations(
                     context.getId(), texts, mode);
             // update DEFAULT context from each DICT context or LABEL context, so the DEFAULT context would be a union of all translations
-            if (context.getName().equals(Context.DICT) || context.getName().equals(Context.LABEL)) {
+            if (context.isNameIn(Context.DICT, Context.LABEL)) {
                 textService.updateTranslations(defaultCtx.getId(), texts, Constants.ImportingMode.DELIVERY);
             }
 

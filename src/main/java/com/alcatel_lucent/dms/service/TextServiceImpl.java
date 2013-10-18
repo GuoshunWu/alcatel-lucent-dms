@@ -40,6 +40,7 @@ import com.alcatel_lucent.dms.model.Language;
 import com.alcatel_lucent.dms.model.Text;
 import com.alcatel_lucent.dms.model.Translation;
 import com.alcatel_lucent.dms.util.CharsetUtil;
+import org.springframework.util.CollectionUtils;
 
 @Service("textService")
 @SuppressWarnings("unchecked")
@@ -202,33 +203,34 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
     /**
      * For new un-translated translation entries, try to match existing translation by searching text across all contexts
      * If matched, set status to T, translation type to "Auto" and translation text to the matched result
-     *
+     * @param ctxId
      * @param texts
      * @param dbTextMap
      */
     private void suggestTranslations(Long ctxId, Collection<Text> texts, Map<String, Text> dbTextMap) {
         for (Text text : texts) {
+            if (CollectionUtils.isEmpty(text.getTranslations())) continue;
+
             Text dbText = dbTextMap.get(text.getReference());
             Map<Long, String> suggestedTranslations = null;
-            if (text.getTranslations() != null) {
-                for (Translation trans : text.getTranslations()) {
-                    Translation dbTrans = dbText == null ? null : dbText.getTranslation(trans.getLanguage().getId());
-                    if (dbTrans == null) {
-                        if (trans.getLanguage().getId() != 0 && trans.getLanguage().getId() != 1L &&
-                                trans.getStatus() == Translation.STATUS_UNTRANSLATED &&
-                                (trans.getTranslation().equals(text.getReference()) || trans.getTranslation().trim().isEmpty())) {
-                            if (suggestedTranslations == null) {
-                                suggestedTranslations = getSuggestedTranslations(text.getReference(), ctxId);
-                            }
-                            String suggestedTranslation = suggestedTranslations.get(trans.getLanguage().getId());
-                            if (suggestedTranslation != null) {
-                                log.info("Auto translate \"" + text.getReference() + "\" to \"" + suggestedTranslation + "\" in " + trans.getLanguage().getName() + ".");
-                                trans.setTranslation(suggestedTranslation);
-                                trans.setStatus(Translation.STATUS_TRANSLATED);
-                                trans.setTranslationType(Translation.TYPE_AUTO);
-                            }
+            for (Translation trans : text.getTranslations()) {
+                Translation dbTrans = dbText == null ? null : dbText.getTranslation(trans.getLanguage().getId());
+                if (dbTrans == null) {
+                    if (trans.getLanguage().getId() != 0 && trans.getLanguage().getId() != 1L &&
+                            trans.getStatus() == Translation.STATUS_UNTRANSLATED &&
+                            (trans.getTranslation().equals(text.getReference()) || trans.getTranslation().trim().isEmpty())) {
+                        if (suggestedTranslations == null) {
+                            suggestedTranslations = getSuggestedTranslations(text.getReference(), ctxId);
                         }
+                        String suggestedTranslation = suggestedTranslations.get(trans.getLanguage().getId());
+                        if (suggestedTranslation != null) {
+                            log.info("Auto translate \"" + text.getReference() + "\" to \"" + suggestedTranslation + "\" in " + trans.getLanguage().getName() + ".");
+                            trans.setTranslation(suggestedTranslation);
+                            trans.setStatus(Translation.STATUS_TRANSLATED);
+                            trans.setTranslationType(Translation.TYPE_AUTO);
 
+
+                        }
                     }
                 }
             }

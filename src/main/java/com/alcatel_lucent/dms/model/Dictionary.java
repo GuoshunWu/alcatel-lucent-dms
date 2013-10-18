@@ -97,7 +97,7 @@ public class Dictionary extends BaseEntity {
 
     @Transient
     public String getLanguageReferenceCode() {
-        return referenceLanguage;	// same as referenceLanguage field
+        return referenceLanguage;    // same as referenceLanguage field
     }
 
     public String getFormat() {
@@ -405,8 +405,11 @@ public class Dictionary extends BaseEntity {
             HashSet<String> existingReference = new HashSet<String>();
             HashSet<String> alreadyWarning = new HashSet<String>();
             for (Label label : labels) {
-            	if (label.getContext() == null) continue;
-                String key = label.getContext() + "~~" + label.getReference();
+                if (label.getContext() == null) continue;
+                String key = label.getContext().getName().equals(Context.LABEL) ?
+                        String.format("Context [name=%s]", label.getContext().getKey()) :
+                        label.getContext().toString();
+                key += "~~" + label.getReference();
                 if (existingReference.contains(key)) {
                     if (!alreadyWarning.contains(key)) {    // warn only once
                         importWarnings.add(new BusinessWarning(BusinessWarning.DUPLICATE_REFERENCE, label.getContext().getName(), label.getReference()));
@@ -498,7 +501,7 @@ public class Dictionary extends BaseEntity {
         }
         return max;
     }
-    
+
     @Transient
     public int getMaxLabelSortNo() {
         if (labels == null) {
@@ -513,7 +516,7 @@ public class Dictionary extends BaseEntity {
         return max;
     }
 
-    
+
     @Column(name = "ANNOTATION1")
     @Type(type = "text")
     public String getAnnotation1() {
@@ -611,21 +614,22 @@ public class Dictionary extends BaseEntity {
 
     @Field(index = Index.UN_TOKENIZED)
     public String getNameVersion() {
-    	return base == null ? null : base.getName() + " " + version;
+        return base == null ? null : base.getName() + " " + version;
     }
-    
+
     /**
      * Check if the dictionary contains no language other than reference language
+     *
      * @return
      */
     public boolean hasNoLanguage() {
-    	if (dictLanguages != null) {
-	        for (DictionaryLanguage dictLanguage : dictLanguages) {
-	        	if (!dictLanguage.isReference()) {
-	        		return false;
-	        	}
-	        }
-    	}
+        if (dictLanguages != null) {
+            for (DictionaryLanguage dictLanguage : dictLanguages) {
+                if (!dictLanguage.isReference()) {
+                    return false;
+                }
+            }
+        }
         return true;
     }
 }

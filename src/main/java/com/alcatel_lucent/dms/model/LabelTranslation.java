@@ -11,7 +11,7 @@ import javax.persistence.Table;
 @Table(name = "LABEL_TRANSLATION")
 @org.hibernate.annotations.Table(appliesTo = "LABEL_TRANSLATION",
         indexes = {@Index(name = "I_LABEL_TRANSLATION_LABEL_LANG", columnNames = {
-                "LABEL_ID","LANGUAGE_ID"
+                "LABEL_ID", "LANGUAGE_ID"
         })})
 public class LabelTranslation extends BaseEntity {
 
@@ -36,6 +36,9 @@ public class LabelTranslation extends BaseEntity {
     private String languageCode;
     private int sortNo;
 
+    private Integer translationType;
+    public static final int TYPE_AUTO = Translation.TYPE_AUTO;        // matched automatically from other context
+
     /**
      * Specify if translation is requested.
      * Some dictionary can explicitly specify if translation is request
@@ -51,6 +54,15 @@ public class LabelTranslation extends BaseEntity {
 
     public void setLabel(Label label) {
         this.label = label;
+    }
+
+    @Column(name = "TRANSLATION_TYPE", length = 1024)
+    public Integer getTranslationType() {
+        return translationType;
+    }
+
+    public void setTranslationType(Integer translationType) {
+        this.translationType = translationType;
     }
 
     @ManyToOne
@@ -160,27 +172,28 @@ public class LabelTranslation extends BaseEntity {
         this.annotation2 = annotation2;
     }
 
-    
-	// transient variables
-    
-    private String translation;	// hold translation result for LabelTranslationREST
+
+    // transient variables
+
+    private String translation;    // hold translation result for LabelTranslationREST
+
     public String getTranslation() {
-		return translation;
-	}
+        return translation;
+    }
 
-	public void setTranslation(String translation) {
-		this.translation = translation;
-	}
-	
-	private Integer status;	// hold translation status for LabelTranslationREST, or delivery
-	public Integer getStatus() {
-		return status;
-	}
+    public void setTranslation(String translation) {
+        this.translation = translation;
+    }
 
-	public void setStatus(Integer status) {
-		this.status = status;
-	}
+    private Integer status;    // hold translation status for LabelTranslationREST, or delivery
 
-	
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
 
 }
