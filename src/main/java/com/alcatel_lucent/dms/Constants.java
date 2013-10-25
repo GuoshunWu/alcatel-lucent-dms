@@ -23,6 +23,7 @@ public class Constants {
         MDC("Dictionary conf"),
         XML_LABEL("XML labels"),
         XML_PROP("XML properties"),
+        XML_ANDROID("XML android"),
         XML_Help("XML help"),
         XDCT("XMLDict"),
         ICE_JAVA_ALARM("ICE Java Alarm"),
