@@ -42,6 +42,11 @@ public class BusinessException extends RuntimeException {
     static public final int VITAL_SUITE_REF_FILE_NOT_FOUND = 228;
     static public final int ACS_TEXT_REF_FILE_NOT_FOUND = 229;
 
+    static public final int NESTED_ANDROID_XML_ERROR = 230;
+    static public final int NESTED_ANDROID_XML_FILE_ERROR = 231;
+
+
+
     // VLEExcel error
     static public final int INVALID_VLE_DICT_FILE = 240;
 
