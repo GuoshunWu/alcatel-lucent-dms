@@ -3,10 +3,8 @@ package com.alcatel_lucent.dms.service.parser;
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.Constants.DictionaryFormat;
+import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
-import com.alcatel_lucent.dms.model.DictionaryBase;
-import com.alcatel_lucent.dms.model.DictionaryLanguage;
-import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.service.LanguageService;
 import com.alcatel_lucent.dms.service.generator.DictionaryGenerator;
 import com.alcatel_lucent.dms.util.NoOpEntityResolver;
@@ -154,17 +152,37 @@ public class AndroidXMLParser extends DictionaryParser {
         if (null == dictName) {
             dictName = nameLangCodePair.getKey();
         }
-        Dictionary dict = readReferenceFile(dictName, refFile, nameLangCodePair.getValue());
+        Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
+        Dictionary dict = readReferenceFile(dictName, refFile, nameLangCodePair.getValue(), warnings);
         // read other language translations
+
+        int sortNo = 1;
+
+        BusinessException dictExceptions = new BusinessException(BusinessException.NESTED_ANDROID_XML_ERROR);
 
         for (File file : filesInDict) {
             nameLangCodePair = getFileLangCodeAndBaseName(rootDir, refFile);
+            // add DictionaryLanguage for dict
+            DictionaryLanguage dictionaryLanguage = getDictionaryLanguage(nameLangCodePair.getValue(), sortNo);
+            dict.addDictLanguage(dictionaryLanguage);
+
+            BusinessException fileExceptions = new BusinessException(BusinessException.NESTED_ANDROID_XML_FILE_ERROR, file.getName());
+
+            readLabels(file, dict, dictionaryLanguage, warnings, fileExceptions);
+
+            if (fileExceptions.hasNestedException()) {
+                dictExceptions.addNestedException(fileExceptions);
+            }
         }
 
-        return null;
+        if (dictExceptions.hasNestedException()) {
+            throw dictExceptions;
+        }
+        dict.setParseWarnings(warnings);
+        return dict;
     }
 
-    private Dictionary readReferenceFile(String dictName, File refFile, String refLangCode) {
+    private Dictionary readReferenceFile(String dictName, File refFile, String refLangCode, Collection<BusinessWarning> warnings) {
         if (StringUtils.isEmpty(refLangCode)) refLangCode = REFERENCE_LANG_CODE;
         // create dictionary.
         log.info("Parsing label xml file '" + refFile.getAbsolutePath() + "'");
@@ -181,20 +199,24 @@ public class AndroidXMLParser extends DictionaryParser {
         dictionary.setDictLanguages(dictLanguages);
         dictionary.setReferenceLanguage(refLangCode);
 
-        Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
-        BusinessException refFileExceptions = new BusinessException(BusinessException.NESTED_LABEL_XML_FILE_ERROR, refFile.getName());
-        // read reference file
         // add reference dictLanguage object
-        DictionaryLanguage refDictLanguage = new DictionaryLanguage();
-        refDictLanguage.setLanguageCode(refLangCode);
-        refDictLanguage.setSortNo(0);
-        refDictLanguage.setLanguage(languageService.getLanguage(refLangCode));
-        refDictLanguage.setCharset(languageService.getCharset("UTF-8"));
+        DictionaryLanguage refDictLanguage = getDictionaryLanguage(refLangCode, 0);
+        dictLanguages.add(refDictLanguage);
         dictLanguages.add(refDictLanguage);
 
-        dictionary.setLabels(readLabels(refFile, dictionary, refDictLanguage, warnings, refFileExceptions));
+        BusinessException fileExceptions = new BusinessException(BusinessException.NESTED_ANDROID_XML_FILE_ERROR, refFile.getName());
+        readLabels(refFile, dictionary, refDictLanguage, warnings, fileExceptions);
         return dictionary;
 
+    }
+
+    private DictionaryLanguage getDictionaryLanguage(String langCode, int sortNo) {
+        DictionaryLanguage dictLanguage = new DictionaryLanguage();
+        dictLanguage.setLanguageCode(langCode);
+        dictLanguage.setLanguage(languageService.getLanguage(langCode));
+        dictLanguage.setCharset(languageService.getCharset("UTF-8"));
+        dictLanguage.setSortNo(sortNo);
+        return dictLanguage;
     }
 
     public ArrayList<Dictionary> parse(String rootDir, File file, Collection<File> acceptedFiles, BusinessException exceptions) throws BusinessException {
@@ -268,6 +290,7 @@ public class AndroidXMLParser extends DictionaryParser {
 
     public Collection<Label> readLabels(File file, Dictionary dict, DictionaryLanguage dl, Collection<BusinessWarning> warnings, BusinessException exceptions) {
         String langCode = dl.getLanguageCode();
+        boolean isReference = langCode.equals(dict.getLanguageReferenceCode());
 
         Document document;
         Element root;
@@ -286,7 +309,7 @@ public class AndroidXMLParser extends DictionaryParser {
             throw new BusinessException(BusinessException.INVALID_XML_FILE, file.getName());
         }
 
-        if (langCode.equals(dict.getLanguageReferenceCode())) { // ref root comments stored in dict level
+        if (isReference) { // ref root comments stored in dict level
             // read root comments
             dict.setAnnotation2(readCommentsAboveNode(document.nodeIterator()).getLeft());
             // read attributes of root element
@@ -315,39 +338,65 @@ public class AndroidXMLParser extends DictionaryParser {
                 throw new BusinessException(BusinessException.INVALID_XML_FILE, file.getName());
             Element element = (Element) node;
             // precess label according to different element type
-
-            if(element.getName().equals(ELEMENT_STRING)){
-
-            }else if(element.getName().equals(ELEMENT_STRING_ARRAY)){
-
-            }else if(element.getName().equals(ELEMENT_PLURALS)){
-
-            }else {
+            int size = 0;
+            if (element.getName().equals(ELEMENT_STRING)) {
+                size = readStringElement(dict, element, comments, sortNo, isReference, warnings, keys);
+            } else if (element.getName().equals(ELEMENT_STRING_ARRAY)) {
+                size = readStringArrayElement(dict, element, comments, sortNo, isReference, warnings, keys);
+            } else if (element.getName().equals(ELEMENT_PLURALS)) {
+                size = readStringPluralsElement(dict, element, comments, sortNo, isReference, warnings, keys);
+            } else {
                 // nothing to do
             }
-
-            String nodeAttributes = elemAttributeToString(element);
-            String key = element.attributeValue(getKeyAttributeName());
-
-
-
-            if (keys.contains(key)) {
-                // add this type of warning only for label
-                warnings.add(new BusinessWarning(BusinessWarning.DUPLICATE_LABEL_KEY, 0, key));
-                continue;
-            }
-            keys.add(key);
-
-            Label label = new Label();
-            label.setKey(key);
-            label.setReference(node.getStringValue().trim());
-
-            label.setAnnotation1(nodeAttributes);
-            label.setAnnotation2(comments);
-
-            label.setSortNo(sortNo++);
+            sortNo += size;
         }
 
         return null;
     }
+
+    private int readStringElement(Dictionary dict, Element element, String comments, int sortNo, boolean isReference, Collection<BusinessWarning> warnings, HashSet<String> keys) {
+        String key = element.attributeValue(getKeyAttributeName());
+        if (keys.contains(key)) {
+            // add this type of warning only for label
+            warnings.add(new BusinessWarning(BusinessWarning.DUPLICATE_LABEL_KEY, 0, key));
+            return 0;
+        }
+        keys.add(key);
+        String nodeAttributes = elemAttributeToString(element);
+
+        if (isReference) {
+            Label label = new Label();
+            label.setKey(key);
+            label.setReference(element.getStringValue().trim());
+            label.setAnnotation1(nodeAttributes);
+            label.setAnnotation2(comments);
+            label.setSortNo(sortNo);
+
+            dict.addLabel(label);
+            label.setDictionary(dict);
+            return 1;
+        }
+
+        // add a new label translation
+        Label label = dict.getLabel(key);
+        if (null == label) {
+            warnings.add(new BusinessWarning(BusinessWarning.LABEL_KEY_BLANK));
+            return 0;
+        }
+
+        LabelTranslation lt= new LabelTranslation();
+
+        lt.setLabel(label);
+        label.addLabelTranslation(lt);
+        return 1;
+    }
+
+    private int readStringArrayElement(Dictionary dict, Element element, String comments, int sortNo, boolean isReference, Collection<BusinessWarning> warnings, HashSet<String> keys) {
+        return 1;
+    }
+
+    private int readStringPluralsElement(Dictionary dict, Element element, String comments, int sortNo, boolean isReference, Collection<BusinessWarning> warnings, HashSet<String> keys) {
+        return 1;
+    }
+
 }
