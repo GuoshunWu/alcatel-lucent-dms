@@ -7,6 +7,7 @@ import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.service.generator.DictionaryGenerator;
 import com.alcatel_lucent.dms.service.parser.DictionaryParser;
+import org.apache.commons.collections.Transformer;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -24,6 +25,8 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 
+import static org.apache.commons.collections.CollectionUtils.collect;
+import static org.apache.commons.collections.CollectionUtils.subtract;
 import static org.apache.commons.io.FilenameUtils.normalize;
 
 @Service("dictionaryService")
@@ -49,6 +52,22 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     @Autowired
     private List<DictionaryParser> parsers;
     private Map<String, DictionaryGenerator> generators;
+
+    private Transformer file2NormalizedNameTransformer = new Transformer() {
+        @Override
+        public Object transform(Object input) {
+            File f = (File) input;
+            return normalize(f.getAbsolutePath());
+        }
+    };
+
+    private Transformer name2FileTransformer = new Transformer() {
+        @Override
+        public Object transform(Object input) {
+            return new File((String) input);
+        }
+    };
+
 
     public DictionaryServiceImpl() {
     }
@@ -98,8 +117,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 + " milliseconds of time.************");
         // check files not accepted
 //        Collection<File> notAcceptedFiles = FileUtils.listFiles(file, null, true);
-        Collection<File> notAcceptedFiles = FileUtils.listFiles(file, null, true);
-        notAcceptedFiles.removeAll(allAcceptedFiles);
+        Collection<File> files = FileUtils.listFiles(file, null, true);
+        Collection<String> strNotAcceptedFiles = subtract(collect(files, file2NormalizedNameTransformer), collect(allAcceptedFiles, file2NormalizedNameTransformer));
+        Collection<File> notAcceptedFiles = collect(strNotAcceptedFiles, name2FileTransformer);
 
 //      getNotAcceptedFiles(file, allAcceptedFiles);
 
