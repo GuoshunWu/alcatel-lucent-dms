@@ -84,8 +84,7 @@ public class AndroidXMLGenerator extends DictionaryGenerator {
         if (dictComments != null) {
             String[] comments = dictComments.split("\n");
             for (String comment : comments) {
-                comment = comment.replace("\\n", "\n");
-                comment = comment.replace("\\\\", "\\");
+                comment = StringEscapeUtils.unescapeJava(comment);
                 doc.addComment(comment);
             }
         }
@@ -109,58 +108,7 @@ public class AndroidXMLGenerator extends DictionaryGenerator {
             }
         }
         for (Label label : dict.getAvailableLabels()) {
-            String text = label.getReference();
-            String annotation1 = label.getAnnotation1();    // attributes
-            String annotation2 = label.getAnnotation2();    // leading comments
-            if (dl != null) {
-                LabelTranslation lt = label.getOrigTranslation(dl.getLanguageCode());
-                if (lt != null) {
-                    annotation1 = lt.getAnnotation1();
-                    annotation2 = lt.getAnnotation2();
-                }
-                text = label.getTranslation(dl.getLanguageCode());
-            }
-            // add leading comments
-            if (annotation2 != null) {
-                String[] comments = annotation2.split("\n");
-                for (String comment : comments) {
-                    if (StringUtils.isBlank(comment)) {
-                        eleLabels.addText("\n");
-                    } else
-                        eleLabels.addComment(StringEscapeUtils.unescapeJava(comment));
-                }
-            }
-            // create label
-            Element eleLabel = eleLabels.addElement("string");
-            eleLabel.addAttribute("name", label.getKey());
-            if (annotation1 != null) {
-                String[] attributes = annotation1.split("\n");
-                for (String entry : attributes) {
-                    String[] keyValue = entry.split("=", 2);
-                    if (keyValue.length == 2) {
-                        eleLabel.addAttribute(keyValue[0], keyValue[1]);
-                    }
-                }
-            }
-            eleLabel.addText(text);
-            if (text.indexOf('\n') != -1) {    // preserve line breaks among the text
-                eleLabel.addAttribute(QName.get("space", Namespace.XML_NAMESPACE), "preserve");
-            }
-
-            // proceed CMS specific case
-            // if label ends with "$LABEL" or "$HELP", append context description as another label
-//            if (label.getDescription() != null && !label.getDescription().trim().isEmpty() &&
-//                    (label.getKey().endsWith("$LABEL") || label.getKey().endsWith("$HELP"))) {
-//                String contextKey;
-//                if (label.getKey().endsWith("$LABEL")) {
-//                    contextKey = label.getKey().substring(0, label.getKey().length() - 6) + "$CONTEXTLABEL";
-//                } else {
-//                    contextKey = label.getKey().substring(0, label.getKey().length() - 5) + "$CONTEXTHELP";
-//                }
-//                Element eleContext = eleLabels.addElement("entry");
-//                eleContext.addAttribute("key", contextKey);
-//                eleContext.addText(label.getDescription());
-//            }
+            writeLabel(eleLabels, label, dl);
         }
 
         // output
@@ -194,6 +142,69 @@ public class AndroidXMLGenerator extends DictionaryGenerator {
             }
         }
     }
+
+    private void writeLabel(Element eleLabels, Label label, DictionaryLanguage dl) {
+        String text = label.getReference();
+        String annotation1 = label.getAnnotation1();    // attributes
+        String annotation2 = label.getAnnotation2();    // leading comments
+        if (dl != null) {
+            LabelTranslation lt = label.getOrigTranslation(dl.getLanguageCode());
+            if (lt != null) {
+                annotation1 = lt.getAnnotation1();
+                annotation2 = lt.getAnnotation2();
+            }
+            text = label.getTranslation(dl.getLanguageCode());
+        }
+        // add leading comments
+        if (annotation2 != null) {
+            String[] comments = annotation2.split("\n");
+            for (String comment : comments) {
+                if (StringUtils.isBlank(comment)) {
+                    eleLabels.addText("\n");
+                } else
+                    eleLabels.addComment(StringEscapeUtils.unescapeJava(comment));
+            }
+        }
+        String lblKey = label.getKey();
+        if (lblKey.startsWith(AndroidXMLParser.ELEMENT_STRING_ARRAY) || lblKey.startsWith(AndroidXMLParser.ELEMENT_PLURALS)) {
+            String[] tokens = lblKey.split(AndroidXMLParser.KEY_SEPARATOR);
+            String elemName = tokens[0];
+            String key = tokens[1];
+            String xpath = String.format("%s[@%s='%s']", elemName, AndroidXMLParser.getKeyAttributeName(), key);
+            Element subElem = (Element) eleLabels.selectSingleNode(xpath);
+            if (null == subElem) {
+                subElem = eleLabels.addElement(elemName);
+                subElem.addAttribute(AndroidXMLParser.getKeyAttributeName(), key);
+            }
+
+            Element elemItem = subElem.addElement("item");
+            addAttributesForElement(annotation1, elemItem);
+            elemItem.addText(text);
+
+        } else {
+            // create label
+            Element eleLabel = eleLabels.addElement("string");
+            eleLabel.addAttribute("name", label.getKey());
+            addAttributesForElement(annotation1, eleLabel);
+            eleLabel.addText(text);
+            if (text.indexOf('\n') != -1) {    // preserve line breaks among the text
+                eleLabel.addAttribute(QName.get("space", Namespace.XML_NAMESPACE), "preserve");
+            }
+        }
+    }
+
+    private Element addAttributesForElement(String strAttributes, Element element) {
+        if (StringUtils.isEmpty(strAttributes)) return element;
+        String[] attributes = strAttributes.split("\n");
+        for (String entry : attributes) {
+            String[] keyValue = entry.split("=", 2);
+            if (keyValue.length == 2) {
+                element.addAttribute(keyValue[0], keyValue[1]);
+            }
+        }
+        return element;
+    }
+
 
     private String getFileName(String dictName, DictionaryLanguage dl) {
         if (null == dl) return dictName;

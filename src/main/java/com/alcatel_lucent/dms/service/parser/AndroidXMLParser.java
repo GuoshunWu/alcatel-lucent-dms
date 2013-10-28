@@ -75,15 +75,15 @@ public class AndroidXMLParser extends DictionaryParser {
         return DictionaryFormat.XML_ANDROID;
     }
 
-    protected String getRootName() {
+    public static String getRootName() {
         return "resources";
     }
 
-    protected Collection<String> getSecondNodeName() {
+    public static Collection<String> getSecondNodeName() {
         return Arrays.asList(ELEMENT_STRING, ELEMENT_STRING_ARRAY, ELEMENT_PLURALS);
     }
 
-    protected String getKeyAttributeName() {
+    public static String getKeyAttributeName() {
         return "name";
     }
 

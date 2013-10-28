@@ -89,7 +89,7 @@ public class DictionaryServiceTest {
 
         File f = new File("${testFileRoot}/${srcPath}")
 
-        UserContext.userContext = new UserContext(Locale.ENGLISH, new User('guoshunw', "Guoshun WU", 'Guoshun.Wu@alcatel-sbell.com.cn'))
+        UserContext.userContext = new UserContext(Locale.ENGLISH, new User('admin', "Guoshun WU", 'Guoshun.Wu@alcatel-sbell.com.cn'))
 
         Collection<com.alcatel_lucent.dms.model.Dictionary> dicts = dictionaryService.previewDictionaries(f.absolutePath, f, 1)
 //        return
