@@ -104,7 +104,7 @@ public class GlossaryServiceImpl implements GlossaryService {
 
         String hSQL = "from Label where id in (select l.id from Label l, Glossary g where g.dirty=true and upper(l.reference) like concat( '%', upper(g.text), '%'))";
         Collection<Label> labels = dao.retrieve(hSQL);
-        Context ctxExclusion = textService.getContextByExpression(Context.EXCLUSION, null);
+        Context ctxExclusion = textService.getContextByExpression(Context.EXCLUSION, (Dictionary)null);
         for (Label label : labels) {
             label.setReference(Util.consistentGlossaries(label.getReference(), glossaries));
             if (isGlossary(label.getReference())) {
@@ -188,7 +188,7 @@ public class GlossaryServiceImpl implements GlossaryService {
     public void consistentGlossariesInLabelRef(Label label) {
         label.setReference(getConsistentGlossariesText(label.getReference()));
         if (isGlossary(label.getReference())) {
-            label.setContext(textService.getContextByExpression(Context.EXCLUSION, null));
+            label.setContext(textService.getContextByExpression(Context.EXCLUSION, (Dictionary)null));
         }
     }
 
