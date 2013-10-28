@@ -1,6 +1,9 @@
 package com.alcatel_lucent.dms.service
 
+import com.alcatel_lucent.dms.Constants
+import com.alcatel_lucent.dms.UserContext
 import com.alcatel_lucent.dms.model.User
+import com.alcatel_lucent.dms.util.Util
 import org.apache.commons.io.ByteOrderMark
 import org.apache.commons.io.IOUtils
 import org.apache.commons.io.input.BOMInputStream
@@ -26,7 +29,7 @@ import javax.annotation.Resource
  * To change this template use File | Settings | File Templates.
  */
 
-@Ignore
+//@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = ["/spring.xml"])
 @Transactional //Important, or the transaction control will be invalid
@@ -76,30 +79,31 @@ public class DictionaryServiceTest {
     }
 
 //    @Test
+    void testMe(){}
+
+    @Test
 //    @Rollback(false)
     void testDictionaryProcess() {
         String targetDir = "D:/test/dictgenerate/"
-        String srcPath = 'VitalSuite R12.5/test'
+        String srcPath = 'Test/android_string_resources'
 
         File f = new File("${testFileRoot}/${srcPath}")
 
-//        UserContext.userContext = new UserContext(Locale.ENGLISH, new User('guoshunw', "Guoshun WU", 'Guoshun.Wu@alcatel-sbell.com.cn'))
-//
-//        Collection<com.alcatel_lucent.dms.model.Dictionary> dicts = dictionaryService.previewDictionaries(f.absolutePath, f, 1)
-////        return
-//        println "About to import dicts: ${dicts}".center(100, '=')
-//        dictionaryService.importDictionaries(1, dicts, Constants.ImportingMode.DELIVERY)
-//        daoService.session.clear()
+        UserContext.userContext = new UserContext(Locale.ENGLISH, new User('guoshunw', "Guoshun WU", 'Guoshun.Wu@alcatel-sbell.com.cn'))
+
+        Collection<com.alcatel_lucent.dms.model.Dictionary> dicts = dictionaryService.previewDictionaries(f.absolutePath, f, 1)
+//        return
+        println "About to import dicts: ${dicts}".center(100, '=')
+        dictionaryService.importDictionaries(1, dicts, Constants.ImportingMode.DELIVERY)
+        daoService.session.clear()
 
 //        There may be dictionaries errors need to be adjust manually here
-
-//        List dictNames = Util.getObjectProperiesList(dicts, 'name')
-
-        List dictNames = Arrays.asList(
-//                'OTC-Android_languages-v2.0.30.0.xls',
-                'Test2'
-        )
-        if(dictNames.isEmpty())return
+        List dictNames = Util.getObjectProperiesList(dicts, 'name')
+//        List dictNames = Arrays.asList(
+////                'OTC-Android_languages-v2.0.30.0.xls',
+//                'Test2'
+//        )
+        if (dictNames.isEmpty()) return
 
         Collection<Long> dbIds = daoService.retrieve('select id from Dictionary where base.name in :names', ['names': dictNames])
         dictionaryService.generateDictFiles(targetDir, dbIds)
