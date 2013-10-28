@@ -71,18 +71,13 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         BusinessException exceptions = new BusinessException(BusinessException.PREVIEW_DICT_ERRORS);
         rootDir = normalize(rootDir, true);
         long before = System.currentTimeMillis();
-        HashSet<String> allAcceptedFiles = new HashSet<String>();
+        HashSet<File> allAcceptedFiles = new HashSet<File>();
         for (DictionaryParser parser : parsers) {
             ProgressQueue.setProgress("" + allAcceptedFiles.size() + " file(s) were accepted. Scanning for " + parser.getFormat().toString() + "...", -1);
             Collection<File> acceptedFiles = new ArrayList<File>();
             try {
                 result.addAll(parser.parse(rootDir, file, acceptedFiles));
                 // remove accepted file to avoid repeatedly parse
-                for (File acceptedFile : acceptedFiles) {
-                    if (acceptedFile.delete()) {
-//                        acceptedFiles.remove(acceptedFile);
-                    }
-                }
             } catch (BusinessException e) {
                 if (e.getErrorCode() == BusinessException.NESTED_ERROR) {
                     for (BusinessException subE : e.getNested()) {
@@ -95,16 +90,19 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             for (File acceptedFile : acceptedFiles) {
                 String filename = normalize(acceptedFile.getAbsolutePath(), true);
                 log.info("Accepted file: " + filename);
-                allAcceptedFiles.add(filename);
+                allAcceptedFiles.add(acceptedFile);
             }
         }
         long after = System.currentTimeMillis();
         log.info("**************preview directory '" + file.getAbsolutePath() + "' take " + (after - before)
                 + " milliseconds of time.************");
         // check files not accepted
-
+//        Collection<File> notAcceptedFiles = FileUtils.listFiles(file, null, true);
         Collection<File> notAcceptedFiles = FileUtils.listFiles(file, null, true);
+        notAcceptedFiles.removeAll(allAcceptedFiles);
+
 //      getNotAcceptedFiles(file, allAcceptedFiles);
+
         if (!notAcceptedFiles.isEmpty()) {
             String normalRoot = FilenameUtils.normalize(rootDir, true);
             for (File notAcceptedFile : notAcceptedFiles) {
