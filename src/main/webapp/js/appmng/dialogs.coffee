@@ -319,6 +319,8 @@ define [
   setContextTo = (context = 'Default', labelids = $('#stringSettingsGrid').getGridParam('selarrrow'))->
     # console?.log "context=#{context}, labelids =#{labelids}."
     ($.msgBox(i18n.dialog.customcontext.labeltip, null, {title: c18n.warn});return) if labelids.length == 0
+#    console.log "About to post %s, postData=%o", urls.label.update, {id: labelids.join(','), context: context}
+#    return
     $.post urls.label.update, {id: labelids.join(','), context: context}, (json)->
       ($.msgBox json.message, null, {title: c18n.error}; return) if json.status != 0
       $('#stringSettingsGrid').trigger 'reloadGrid'
@@ -328,12 +330,10 @@ define [
     modal: true
     create: ()->
       $('#setContextMenu').menu().hide().find("li").on 'click', (e)->
-        if e.target.name != 'Custom'
-          setContextTo(e.target.name)
-          return
-        $('#customContext').dialog 'open'
+        (setContextTo(e.target.name);return) if e.target.name != 'Custom'
+        $(@).dialog 'open'
 
-      $('#setContexts').attr('privilegeName', util.urlname2Action 'app/update-label').button(
+      $('#setContexts').attr('privilegeName', util.urlname2Action urls.label.update).button(
         icons:
           primary: 'ui-icon-gear'
           secondary: "ui-icon-triangle-1-n"
@@ -341,12 +341,6 @@ define [
         menu = $('#setContextMenu').show().width($(@).width() - 3).position(my: "right bottom", at: "right top", of: @)
         $(document).one "click", ()->menu.hide()
         false
-
-      $('#setContextMenu').menu().hide().find("li").on 'click', (e)->
-        if e.target.name != 'Custom'
-          setContextTo(e.target.name)
-          return
-        $(@).dialog 'open'
 
     buttons: [
       {
