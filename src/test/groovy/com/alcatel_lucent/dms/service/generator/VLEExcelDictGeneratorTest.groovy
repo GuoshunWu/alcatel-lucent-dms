@@ -5,6 +5,11 @@ import com.alcatel_lucent.dms.model.DictionaryBase
 import com.alcatel_lucent.dms.service.parser.StandardExcelDictParser
 import org.apache.commons.collections.MapIterator
 import org.apache.commons.collections.map.HashedMap
+import org.apache.poi.hssf.usermodel.HSSFWorkbook
+import org.apache.poi.ss.usermodel.Cell
+import org.apache.poi.ss.usermodel.Row
+import org.apache.poi.ss.usermodel.Sheet
+import org.apache.poi.ss.util.CellUtil
 import org.junit.*
 import org.junit.runner.RunWith
 import org.logicalcobwebs.proxool.ProxoolFacade
@@ -55,7 +60,30 @@ public class VLEExcelDictGeneratorTest {
         ProxoolFacade.shutdown(0);
     }
 
-    @Test
+//    @Test
+    void testPOIGenerator(){
+        HSSFWorkbook wb = new HSSFWorkbook()
+        Sheet sheet =wb.createSheet("Test1")
+        Row row =sheet.createRow(0)
+        CellUtil.createCell(row, 0, "Hello world.")
+        row = sheet.createRow(1)
+        Cell cell = row.createCell(0)
+        cell.setCellType(Cell.CELL_TYPE_FORMULA)
+        String refCell = "A1"
+        String formula = refCell
+        formula = String.format("CONCATENATE(%s,\" - %%s\")", refCell)
+        formula = String.format "IF(isblank(%s),\" not blank a1\",CONCATENATE(\"Hello\", \" - %%s.\"))", refCell
+        formula = String.format "IF(isblank(%s),\" not blank a1\",CONCATENATE(A1, \" - %%s.\"))", refCell
+        formula = String.format "IF(isblank(%s),\" not blank a1\",CONCATENATE(text(a1, \"#\"), \" - %%s.\"))", refCell
+
+        cell.setCellFormula(formula)
+        wb.forceFormulaRecalculation = true
+        wb.write new FileOutputStream( "d:/test/test.xls")
+
+
+    }
+
+//    @Test
     void testGenerateDict() throws Exception {
         println "=" * 100
 
