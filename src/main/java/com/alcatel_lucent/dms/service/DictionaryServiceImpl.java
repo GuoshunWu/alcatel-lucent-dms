@@ -1221,8 +1221,12 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             }
             if (contextExp != null) {
                 if (ctx == null) {
-                    String expression = textService.populateContextKey(contextExp, label);
-                    ctx = textService.getContextByExpressionForLabel(expression, label.getDictionary().getId());
+                    if(contextExp.equals(Context.LABEL)){
+                        String expression = textService.populateContextKey(contextExp, label);
+                        ctx = textService.getContextByExpressionForLabel(expression, label.getDictionary().getId());
+                    }else{
+                        ctx = textService.getContextByExpression(contextExp, label.getDictionary());
+                    }
                 }
                 if (!label.getContext().getId().equals(ctx.getId())) {
                     // context changed
