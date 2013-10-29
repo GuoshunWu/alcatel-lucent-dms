@@ -136,12 +136,13 @@ public interface TextService {
 
     /**
      * Populate context name and get the Context instance, create one if not exists.
-     * @param contextExp context expression, supported variables: [LABEL]
-     * @param label object, used to populate context value
+     * @param contextExp context expression, which like [LABEL-labelKey], this method is used in
+     *                   DictionaryServiceImpl.updateLabels and DictionaryServiceImpl.importDictionary
+     * @param dictId dictionary id
      * @return Context instance
 
      */
-    Context getContextByExpression(String contextExp, Label label);
+    public Context getContextByExpressionForLabel(String contextExp, Long dictId);
 
 	/**
 	 * Update one translation

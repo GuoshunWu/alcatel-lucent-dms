@@ -203,6 +203,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
     /**
      * For new un-translated translation entries, try to match existing translation by searching text across all contexts
      * If matched, set status to T, translation type to "Auto" and translation text to the matched result
+     *
      * @param ctxId
      * @param texts
      * @param dbTextMap
@@ -577,13 +578,14 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
     }
 
     @Override
-    public Context getContextByExpression(String contextExp, Label label) {
-        String contextKey = populateContextKey(contextExp, label);
+    public Context getContextByExpressionForLabel(String contextExp, Long dictId) {
+        int index = contextExp.indexOf("[") + 1;
+        String contextKey = new StringBuffer(contextExp).insert(index, "DICT-" + dictId + "-").toString();
         Context context = getContextByKey(contextKey);
         if (context == null) {
             context = new Context();
             context.setKey(contextKey);
-            context.setName(contextExp);
+            context.setName(Context.LABEL);
             context = (Context) dao.create(context);
         }
         return context;
