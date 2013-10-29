@@ -769,13 +769,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             Collection<Text> texts = textMap.get(contextName);
             Context context = null;
             if (contextName.contains(Context.LABEL.substring(0, Context.LABEL.length() - 1))) {
-                String contextKey = contextName;
-                context = textService.getContextByKey(contextKey);
-                if (null == context) {
-                    context = new Context(Context.LABEL);
-                    context.setKey(contextKey);
-                    context = (Context) dao.create(context);
-                }
+                context = textService.getContextByExpressionForLabel(contextName, dbDict.getId());
             } else {
                 context = textService.getContextByExpression(contextName, dbDict);
             }
@@ -839,6 +833,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                             dbLabelTrans.setLanguageCode(trans.getLanguageCode());
                             dbLabelTrans.setSortNo(trans.getSortNo());
                         }
+
                     }
                 }
             }
@@ -1226,7 +1221,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             }
             if (contextExp != null) {
                 if (ctx == null) {
-                    ctx = textService.getContextByExpression(contextExp, label);
+                    String expression = textService.populateContextKey(contextExp, label);
+                    ctx = textService.getContextByExpressionForLabel(expression, label.getDictionary().getId());
                 }
                 if (!label.getContext().getId().equals(ctx.getId())) {
                     // context changed
