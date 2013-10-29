@@ -44,6 +44,8 @@ public class AndroidXMLParser extends DictionaryParser {
     public static final String ELEMENT_STRING_ARRAY = "string-array";
     public static final String ELEMENT_PLURALS = "plurals";
 
+    public Collection<String> multiItemElements = Arrays.asList(ELEMENT_STRING_ARRAY, ELEMENT_PLURALS);
+
     @Autowired
     private LanguageService languageService;
 
@@ -365,7 +367,7 @@ public class AndroidXMLParser extends DictionaryParser {
             int size = 0;
             if (element.getName().equals(ELEMENT_STRING)) {
                 size = readElement(dict, element, key, comments, sortNo, dl, warnings);
-            } else if (element.getName().equals(ELEMENT_STRING_ARRAY)) {
+            } else if (multiItemElements.contains(element.getName())) {
                 size = readStringArrayOrPluralsElement(dict, element, key, comments, sortNo, dl, warnings);
             } else {
                 // nothing to do
