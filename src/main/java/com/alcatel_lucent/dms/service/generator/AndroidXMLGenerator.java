@@ -9,23 +9,25 @@ import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.LabelTranslation;
 import com.alcatel_lucent.dms.service.DaoService;
 import com.alcatel_lucent.dms.service.parser.AndroidXMLParser;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.plexus.util.FileUtils;
 import org.dom4j.*;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
+import org.dom4j.tree.DefaultComment;
+import org.dom4j.tree.DefaultText;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.util.Arrays;
-import java.util.HashSet;
 
 @Component
 public class AndroidXMLGenerator extends DictionaryGenerator {
@@ -72,64 +74,35 @@ public class AndroidXMLGenerator extends DictionaryGenerator {
     private void generateAndroidXML(File targetDir, Dictionary dict, DictionaryLanguage dl) {
         String refLangCode = AndroidXMLParser.REFERENCE_LANG_CODE;
         if (dict.getDictLanguage("GAE") != null) refLangCode = "GAE";
-        if (dl != null && dl.getLanguageCode().equals(refLangCode)) {    // if dl is reference, set it to null
-            dl = null;
-        }
-        Document doc = DocumentHelper.createDocument();
-        doc.addComment("\n# " + getDMSGenSign() + " using language " + (dl == null ? refLangCode : dl.getLanguageCode()) + ".\n# Labels: " + dict.getLabelNum() + "\n");
+        // if dl is reference, set it to null
+        if (dl != null && dl.getLanguageCode().equals(refLangCode)) dl = null;
         String dictAttributes = (dl == null ? dict.getAnnotation1() : dl.getAnnotation1());
         String dictComments = (dl == null ? dict.getAnnotation2() : dl.getAnnotation2());
         String dictNamespaces = (dl == null ? dict.getAnnotation3() : dl.getAnnotation3());
         String processingInstructions = (dl == null ? dict.getAnnotation4() : dl.getAnnotation4());
-        if (dictComments != null) {
-            String[] comments = dictComments.split("\n");
-            for (String comment : comments) {
-                comment = StringEscapeUtils.unescapeJava(comment);
-                doc.addComment(comment);
-            }
-        }
+
+        Document doc = DocumentHelper.createDocument();
+        doc.addComment("\n# " + getDMSGenSign() + " using language " + (dl == null ? refLangCode : dl.getLanguageCode()) + ".\n# Labels: " + dict.getLabelNum() + "\n");
+        addCommentsForElement(dictComments, doc);
         Element eleLabels = doc.addElement("resources");
-        if (dictNamespaces != null) {
-            String[] nsList = dictNamespaces.split("\n");
-            for (String ns : nsList) {
-                String[] keyValue = ns.split("=", 2);
-                if (keyValue.length == 2) {
-                    eleLabels.addNamespace(keyValue[0], keyValue[1]);
-                }
-            }
-        }
-        if (dictAttributes != null) {
-            String[] attributes = dictAttributes.split("\n");
-            for (String entry : attributes) {
-                String[] keyValue = entry.split("=", 2);
-                if (keyValue.length == 2) {
-                    eleLabels.addAttribute(keyValue[0], keyValue[1]);
-                }
-            }
-        }
+        addNamespaceForElement(dictNamespaces, eleLabels);
+
+        addAttributesForElement(dictAttributes, eleLabels);
         for (Label label : dict.getAvailableLabels()) {
             writeLabel(eleLabels, label, dl);
         }
-
         // output
         String filename = getFileName(dict.getName(), dl);
         OutputFormat format = OutputFormat.createPrettyPrint();
+        format.setEncoding("UTF-8");
+        format.setNewlines(true);
         XMLWriter output = null;
+
         try {
             File targetFile = new File(targetDir, filename);
-            if (!targetFile.getParentFile().exists()) {
-                targetFile.getParentFile().mkdirs();
-            }
+            FileUtils.touch(targetFile);
             output = new XMLWriter(new FileWriter(targetFile), format);
-            if (processingInstructions != null) {
-                String[] piList = processingInstructions.split("\n");
-                for (String pi : piList) {
-                    String[] keyValue = pi.split("=", 2);
-                    if (keyValue.length == 2) {
-                        output.processingInstruction(keyValue[0], keyValue[1]);
-                    }
-                }
-            }
+            writeProcessingInstructions(processingInstructions, output);
             output.write(doc);
         } catch (Exception e) {
             e.printStackTrace();
@@ -139,6 +112,29 @@ public class AndroidXMLGenerator extends DictionaryGenerator {
             if (output != null) try {
                 output.close();
             } catch (Exception e) {
+            }
+        }
+    }
+
+    private void writeProcessingInstructions(String processingInstructions, XMLWriter output) throws SAXException {
+        if (StringUtils.isEmpty(processingInstructions)) return;
+        String[] piList = processingInstructions.split("\n");
+        for (String pi : piList) {
+            String[] keyValue = pi.split("=", 2);
+            if (keyValue.length == 2) {
+                output.processingInstruction(keyValue[0], keyValue[1]);
+            }
+        }
+
+    }
+
+    private void addNamespaceForElement(String strNameSpaces, Element element) {
+        if (StringUtils.isEmpty(strNameSpaces)) return;
+        String[] nsList = strNameSpaces.split("\n");
+        for (String ns : nsList) {
+            String[] keyValue = ns.split("=", 2);
+            if (keyValue.length == 2) {
+                element.addNamespace(keyValue[0], keyValue[1]);
             }
         }
     }
@@ -156,18 +152,11 @@ public class AndroidXMLGenerator extends DictionaryGenerator {
             text = label.getTranslation(dl.getLanguageCode());
         }
         // add leading comments
-        if (annotation2 != null) {
-            String[] comments = annotation2.split("\n");
-            for (String comment : comments) {
-                if (StringUtils.isBlank(comment)) {
-                    eleLabels.addText("\n");
-                } else
-                    eleLabels.addComment(StringEscapeUtils.unescapeJava(comment));
-            }
-        }
+        addCommentsForElement(annotation2, eleLabels);
         String lblKey = label.getKey();
-        if (lblKey.startsWith(AndroidXMLParser.ELEMENT_STRING_ARRAY) || lblKey.startsWith(AndroidXMLParser.ELEMENT_PLURALS)) {
-            String[] tokens = lblKey.split(AndroidXMLParser.KEY_SEPARATOR);
+        String[] tokens = lblKey.split(AndroidXMLParser.KEY_SEPARATOR);
+
+        if (3 == tokens.length && (lblKey.startsWith(AndroidXMLParser.ELEMENT_STRING_ARRAY) || lblKey.startsWith(AndroidXMLParser.ELEMENT_PLURALS))) {
             String elemName = tokens[0];
             String key = tokens[1];
             String xpath = String.format("%s[@%s='%s']", elemName, AndroidXMLParser.getKeyAttributeName(), key);
@@ -178,9 +167,9 @@ public class AndroidXMLGenerator extends DictionaryGenerator {
             }
 
             Element elemItem = subElem.addElement("item");
+            addCommentsForElement(annotation2, subElem);
             addAttributesForElement(annotation1, elemItem);
             elemItem.addText(text);
-
         } else {
             // create label
             Element eleLabel = eleLabels.addElement("string");
@@ -189,6 +178,20 @@ public class AndroidXMLGenerator extends DictionaryGenerator {
             eleLabel.addText(text);
             if (text.indexOf('\n') != -1) {    // preserve line breaks among the text
                 eleLabel.addAttribute(QName.get("space", Namespace.XML_NAMESPACE), "preserve");
+            }
+        }
+    }
+
+    private void addCommentsForElement(String strComments, Branch parentBranch) {
+        if (StringUtils.isEmpty(strComments)) return;
+        String[] comments = strComments.split("\n");
+
+        for (String comment : comments) {
+            comment = StringEscapeUtils.unescapeJava(comment);
+            if (StringUtils.isBlank(comment)) {
+                parentBranch.add(new DefaultText("\n"));
+            } else {
+                parentBranch.add(new DefaultComment(comment));
             }
         }
     }
@@ -204,7 +207,6 @@ public class AndroidXMLGenerator extends DictionaryGenerator {
         }
         return element;
     }
-
 
     private String getFileName(String dictName, DictionaryLanguage dl) {
         if (null == dl) return dictName;
