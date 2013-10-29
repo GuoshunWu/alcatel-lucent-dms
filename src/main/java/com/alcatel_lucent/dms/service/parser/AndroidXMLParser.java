@@ -399,7 +399,7 @@ public class AndroidXMLParser extends DictionaryParser {
         // add a new label translation
         Label label = dict.getLabel(key);
         if (null == label) {
-            warnings.add(new BusinessWarning(BusinessWarning.LABEL_KEY_BLANK));
+            warnings.add(new BusinessWarning(BusinessWarning.ANDROID_LABEL_KEY_BLANK, key, dl.getLanguageCode()));
             return 0;
         }
 
@@ -433,9 +433,8 @@ public class AndroidXMLParser extends DictionaryParser {
             if (Node.ELEMENT_NODE != node.getNodeType() || !(node instanceof Element)) continue;
             // not valid android xml file
             Element item = (Element) node;
-            String subKey = elemName + KEY_SEPARATOR + key + KEY_SEPARATOR + sortNo;
+            String subKey = elemName + KEY_SEPARATOR + key + KEY_SEPARATOR + num;
             num += readElement(dict, item, subKey, subNodeComments, sortNo, dl, warnings);
-            sortNo++;
         }
         return num;
     }

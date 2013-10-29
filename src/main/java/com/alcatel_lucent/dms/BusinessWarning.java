@@ -19,6 +19,7 @@ public class BusinessWarning {
     public static final int LABEL_TRANS_BLANK = 211;
     public static final int INVALID_LINE_IN_VITAL_SUITE_FILE = 212;
 
+    public static final int ANDROID_LABEL_KEY_BLANK = 213;
 
 
     private int warningCode;
