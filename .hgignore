@@ -6,7 +6,9 @@ syntax:glob
 *.orig
 *.rej
 *.js
+*.map
 *.py
+
 
 # Java
 *.class

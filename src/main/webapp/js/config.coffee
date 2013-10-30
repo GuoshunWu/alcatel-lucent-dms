@@ -88,4 +88,8 @@ require.config
       locale: if param? then param.locale else 'en_us'
   urlArgs: "bust=#{if param? then param.buildNumber else '1'}"
 
+#  generateSourceMaps : true
+  preserveLicenseComments: false
+  useSourceUrl: true
+
   waitSeconds: 60
