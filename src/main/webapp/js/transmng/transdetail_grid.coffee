@@ -131,11 +131,13 @@ define [
 
   $('#detailTranslationStatus').menu().hide().find("li").on 'click', (e)->
     detailGrid = $("#transDetailGridList")
-    ids = detailGrid.getGridParam('selarrrow').join(',')
-    ctIds = $.map(ids, (element, index)->detailGrid.getRowData(element).transId)
-    ($.msgBox (c18n.selrow.format c18n.label), null, title: c18n.warning; return) unless ids
+    ids = detailGrid.getGridParam('selarrrow')
+#    ctIds = $.map(ids, (element, index)->detailGrid.getRowData(element).transId)
+    ctIds = (detailGrid.getRowData(id).transId for id in ids)
+#    console.log "ids=%s, ctIds=%o", ids, ctIds
+    ($.msgBox (c18n.selrow.format c18n.label), null, title: c18n.warning; return) unless ids.length
 
-    $.post urls.trans.update_status, {type: 'trans', transStatus: e.target.name, ctid: ctIds.join(','), id: ids}, (json)->
+    $.post urls.trans.update_status, {type: 'trans', transStatus: e.target.name, ctid: ctIds.join(','), id: ids.join(", ")}, (json)->
       ($.msgBox json.message, null, title: c18n.warning; return) unless json.status == 0
       detailGrid.trigger 'reloadGrid'
       $("#transGrid").trigger 'reloadGrid'
