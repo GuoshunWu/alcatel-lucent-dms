@@ -296,13 +296,13 @@
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
-            <version>3.8</version>
+            <version>3.9</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
-            <version>3.8</version>
+            <version>3.9</version>
         </dependency>
 
 
@@ -449,7 +449,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>2.2</version>
+                <version>2.4</version>
                 <executions>
                     <execution>
                         <phase>prepare-package</phase>
@@ -757,7 +757,6 @@
                 <dms.luceneindex.dir>${dms.temp}/dms/lucene/indexes/local_qa2_db</dms.luceneindex.dir>
             </properties>
         </profile>
-
 
         <profile>
             <id>dev</id>
