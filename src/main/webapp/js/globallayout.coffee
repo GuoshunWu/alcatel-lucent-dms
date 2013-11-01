@@ -59,7 +59,6 @@ define ['jqlayout'], ($)->
 #    # BIND layout events to close-buttons to make them functional
     westPanel.prepend $("<span id='dms-west-closer'></span>")
     layout.addCloseBtn("#dms-west-closer", "west")
-
     layout
 
   glayout = init()
