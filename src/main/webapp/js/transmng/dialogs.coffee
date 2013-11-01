@@ -10,7 +10,6 @@ define [
   'transmng/trans_searchtext_grid'
   'transmng/trans_matchtext_grid'
 ], ($, i18n, c18n, util, urls, grid, detailgrid, searchgrid, matchgrid)->
-#  console?.log "transmng panel dialogs init..."
   transGrid = grid
   refreshGrid = (languageTrigger = false, grid = transGrid)->
     nodeInfo=util.getProductTreeInfo()

@@ -24,22 +24,22 @@ import static com.alcatel_lucent.dms.util.Util.anyMatch;
  * Time: 下午2:23
  */
 
-@WebFilter(filterName = "authenticationFilter", urlPatterns = {"/*"}, asyncSupported = true, initParams = {
-        @WebInitParam(description = "This parameter include the pattern list separated by comma, the uri in which will not be ignored by this filter.",
-                name = "excludePatterns",
-                value = "/entry\\.action\\?login\\.jsp,/login\\.action,\n" +
-                        "/login/forward-to-https,\n" +
-                        "/test/.*,/scripts/.*,/json/.*,/manual/.*,/release_notes.txt,.*.js,.*.map,.*.css,.*images.*,.*.ico"
-        ),
-        @WebInitParam(description = "This parameter include the pattern list separated by comma, the uri in which will send specific response to client",
-                name = "ajaxURIs",
-                value = "/test/.*,/rest/.*,/app/.*,/trans/.*,/task/.*,/admin/.*"
-        ),
-        @WebInitParam(name = "authURL",
-                value = "/login/forward-to-https",
-                description = "This parameter include the pattern list separated by comma, the uri in which will send specific response to client"
-        )}
-)
+//@WebFilter(filterName = "authenticationFilter", urlPatterns = {"/*"}, asyncSupported = true, initParams = {
+//        @WebInitParam(description = "This parameter include the pattern list separated by comma, the uri in which will not be ignored by this filter.",
+//                name = "excludePatterns",
+//                value = "/entry\\.action\\?login\\.jsp,/login\\.action,\n" +
+//                        "/login/forward-to-https,\n" +
+//                        "/test/.*,/scripts/.*,/json/.*,/manual/.*,/release_notes.txt,.*js,.*map,.*coffee,.*css,.*images.*,.*ico"
+//        ),
+//        @WebInitParam(description = "This parameter include the pattern list separated by comma, the uri in which will send specific response to client",
+//                name = "ajaxURIs",
+//                value = "/test/.*,/rest/.*,/app/.*,/trans/.*,/task/.*,/admin/.*"
+//        ),
+//        @WebInitParam(name = "authURL",
+//                value = "/login/forward-to-https",
+//                description = "This parameter include the pattern list separated by comma, the uri in which will send specific response to client"
+//        )}
+//)
 public class AuthenticationFilter implements Filter {
     protected Logger log = LoggerFactory.getLogger(AuthenticationFilter.class);
     private List<String> excludePatterns;
@@ -90,6 +90,7 @@ public class AuthenticationFilter implements Filter {
     }
 
     public void init(FilterConfig config) throws ServletException {
+
 
         String strExcludePatterns = config.getInitParameter("excludePatterns");
         if (null != strExcludePatterns) {
