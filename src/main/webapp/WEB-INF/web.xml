@@ -94,7 +94,7 @@
             <param-value>
                 /entry\.action\?login\.jsp,/login\.action.*,
                 /login/forward-to-https,
-                /test/.*,/scripts/.*,/json/.*,/manual/.*,/release_notes.txt,.*.js,.*.css,.*images.*,.*.ico
+                /test/.*,/scripts/.*,/json/.*,/manual/.*,/release_notes.txt,.*.js,.*.map,.*.css,.*images.*,.*.ico
             </param-value>
         </init-param>
         <init-param>

@@ -29,7 +29,7 @@ import static com.alcatel_lucent.dms.util.Util.anyMatch;
                 name = "excludePatterns",
                 value = "/entry\\.action\\?login\\.jsp,/login\\.action,\n" +
                         "/login/forward-to-https,\n" +
-                        "/test/.*,/scripts/.*,/json/.*,/manual/.*,.*.js,.*.css,.*images.*,.*.ico"
+                        "/test/.*,/scripts/.*,/json/.*,/manual/.*,/release_notes.txt,.*.js,.*.map,.*.css,.*images.*,.*.ico"
         ),
         @WebInitParam(description = "This parameter include the pattern list separated by comma, the uri in which will send specific response to client",
                 name = "ajaxURIs",
