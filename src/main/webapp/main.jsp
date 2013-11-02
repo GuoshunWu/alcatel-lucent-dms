@@ -38,14 +38,6 @@
     <%--<div class="footer">A test footer</div>--%>
     </div>
 </div>
-
-<script type="text/javascript" src="js/lib/require.js"></script>
-<script type="text/javascript">
-    require(['./js/config.js?bust=' + new Date().getTime(), 'js/lib/domReady'], function (config, domReady) {
-        domReady(function(){
-            require(['main']);
-        });
-    });
-</script>
+<script type="text/javascript" data-main="js/entry.js" src="js/lib/require.js"></script>
 </body>
 </html>
