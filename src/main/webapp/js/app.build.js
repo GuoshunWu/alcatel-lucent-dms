@@ -23,13 +23,14 @@
     optimize: "uglify2",
 //    optimize:"none",
 
-    generateSourceMaps: true,
+    preserveLicenseComments: false,
+    generateSourceMaps: false,
     uglify2: {
         output: {
-            beautify: true
+            beautify: false
         },
         compress: {
-            sequences: false,
+            sequences: true,
             global_defs: {
                 DEBUG: false
             }
@@ -40,7 +41,7 @@
     },
 
 
-    fileExclusionRegExp: "/^\./",
+    fileExclusionRegExp: "^(.*\.(coffee|map|src|cmd)|.*r\(.min)?\.js)$",
 
     optimizeCss: "standard.keepLines",
     pragmasOnSave: {

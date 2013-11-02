@@ -347,9 +347,9 @@
         </dependency>
 
         <!--<dependency>-->
-            <!--<groupId>com.google.javascript</groupId>-->
-            <!--<artifactId>closure-compiler</artifactId>-->
-            <!--<version>v20131014</version>-->
+        <!--<groupId>com.google.javascript</groupId>-->
+        <!--<artifactId>closure-compiler</artifactId>-->
+        <!--<version>v20131014</version>-->
         <!--</dependency>-->
 
         <dependency>
@@ -464,11 +464,13 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <warSourceExcludes>**/*.coffee</warSourceExcludes>
-                    <!--<warSourceExcludes>**/config.js</warSourceExcludes>-->
+                    <!-- https://maven.apache.org/plugins/maven-war-plugin/war-mojo.html#warSourceDirectory -->
+                    <!--<packagingExcludes>%regex[js/.*\.(coffee|map)]</packagingExcludes>-->
+                    <warSourceExcludes>%regex[(js/.*\.(coffee|map|cmd)|tools/.*)]</warSourceExcludes>
                     <useCache>true</useCache>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
+
             </plugin>
 
             <plugin>
@@ -511,7 +513,7 @@
                 <configuration>
                     <executable>node</executable>
                     <arguments>
-                        <argument>src/main/webapp/tools/r.js</argument>
+                        <argument>src/main/webapp/tools/r.min.js</argument>
                         <argument>-o</argument>
                         <argument>src/main/webapp/js/app.build.js</argument>
 
@@ -587,9 +589,9 @@
                 <directory>src/main/resources</directory>
                 <filtering>false</filtering>
                 <excludes>
-                    <exclude>**/*.xml</exclude>
-                    <exclude>**/*.properties</exclude>
-                    <exclude>**/*.js</exclude>
+                    <exclude>**/*.xls</exclude>
+                    <exclude>**/*.jpg</exclude>
+                    <!--<exclude>**/*.js</exclude>-->
                 </excludes>
             </resource>
             <!--<resource>-->
