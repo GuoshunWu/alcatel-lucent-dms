@@ -465,8 +465,8 @@
                 </executions>
                 <configuration>
                     <!-- https://maven.apache.org/plugins/maven-war-plugin/war-mojo.html#warSourceDirectory -->
-                    <!--<packagingExcludes>%regex[js/.*\.(coffee|map)]</packagingExcludes>-->
-                    <warSourceExcludes>%regex[(js/.*\.(coffee|map|cmd)|tools/.*)]</warSourceExcludes>
+                    <packagingExcludes>%regex[js/.*\.js$]</packagingExcludes>
+                    <warSourceExcludes>%regex[(js/.*\.(coffee|map|cmd)$|tools/.*)]</warSourceExcludes>
                     <useCache>true</useCache>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
@@ -556,7 +556,7 @@
                 <version>2.1</version>
                 <configuration>
                     <uriEncoding>utf-8</uriEncoding>
-                    <url>http://localhost:8888/manager/html</url>
+                    <url>http://localhost:8888/manager/text</url>
                     <port>8888</port>
                     <path>/</path>
                     <update>true</update>
