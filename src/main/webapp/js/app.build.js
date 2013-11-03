@@ -37,7 +37,6 @@
         {
             name: "../entry",
             include: ['main']
-//            exclude: ['../config']
         }, {
             name: "login/main"
         }
