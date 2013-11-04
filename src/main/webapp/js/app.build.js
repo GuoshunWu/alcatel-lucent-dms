@@ -28,6 +28,7 @@
     },
     fileExclusionRegExp: "^(.*\.(coffee|map|src|cmd|build\.js)|.*r(.min)?.js)$",
     optimizeCss: "standard.keepLines",
+//    optimizeCss: "none",
     pragmasOnSave: {
         excludeCoffeeScript: true
     },
@@ -35,10 +36,12 @@
 
     modules: [
         {
+            name: "login/main",
+            exclude: ['../config', 'domReady']
+        },
+        {
             name: "../entry",
             include: ['main']
-        }, {
-            name: "login/main"
         }
     ]
 })
