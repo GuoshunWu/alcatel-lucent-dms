@@ -13,6 +13,8 @@
     optimize: "uglify2",
     preserveLicenseComments: false,
     generateSourceMaps: false,
+    useSourceUrl: false,
+
     uglify2: {
         output: {
             beautify: false
