@@ -465,7 +465,7 @@
                 </executions>
                 <configuration>
                     <!-- https://maven.apache.org/plugins/maven-war-plugin/war-mojo.html#warSourceDirectory -->
-                    <packagingExcludes>%regex[js/.*\.js$]</packagingExcludes>
+                    <packagingExcludes>%regex[js/(?!(?:config|entry|login/main|lib/require)\.js).*$]</packagingExcludes>
                     <warSourceExcludes>%regex[(js/.*\.(coffee|map|cmd)$|tools/.*)]</warSourceExcludes>
                     <useCache>true</useCache>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
