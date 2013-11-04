@@ -90,6 +90,6 @@ require.config
 
 #  generateSourceMaps : true
   preserveLicenseComments: false
-  useSourceUrl: true
+#  useSourceUrl: true
 
   waitSeconds: 60
