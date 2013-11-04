@@ -10,4 +10,4 @@
   In general though, it is best to use the baseUrl and "paths" config to set paths for module IDs. By doing so, it gives you more flexibility in renaming and configuring the paths to different locations for optimization builds.
 ###
 
-require ['/js/config.js', '/js/lib/domReady.js'], (config, domReady)->domReady(->require ['main'])
+require ['js/config.js', 'js/lib/domReady.js'], (config, domReady)->domReady(->require ['main'])
