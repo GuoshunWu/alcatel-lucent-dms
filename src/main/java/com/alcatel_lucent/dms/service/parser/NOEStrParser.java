@@ -116,6 +116,7 @@ public class NOEStrParser extends DictionaryParser {
                 {'o', new int[]{1, 1, 1, 1, 1, 0, 'ò'}},
                 {'y', new int[]{0, 1, 0, 0, 0, 0, 'ý'}},
         }), Character.class, int[].class);
+
         accentRect.put('i', add(subarray(accentRect.get('e'), 0, firstAccentLetterIndex), 'ì'));
         accentRect.put('u', add(subarray(accentRect.get('e'), 0, firstAccentLetterIndex), 'ù'));
         List<String[]> accentMap = new ArrayList<String[]>();
