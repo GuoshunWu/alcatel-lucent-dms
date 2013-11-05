@@ -515,18 +515,25 @@
                         <phase>prepare-package</phase>
                         <goals>
                             <goal>exec</goal>
+                            <goal>java</goal>
                         </goals>
                     </execution>
                 </executions>
                 <configuration>
+                    <mainClass>com.alcatel_lucent.dms.service.DeployAdjust</mainClass>
                     <executable>node</executable>
                     <arguments>
                         <argument>src/main/webapp/tools/r.min.js</argument>
                         <argument>-o</argument>
                         <argument>src/main/webapp/js/app.build.js</argument>
-
                         <argument>dir=${project.build.directory}/${project.build.finalName}</argument>
                     </arguments>
+                    <systemProperties>
+                        <systemProperty>
+                            <key>mainJSP</key>
+                            <value>${project.build.directory}/${project.build.finalName}/main.jsp</value>
+                        </systemProperty>
+                    </systemProperties>
                 </configuration>
             </plugin>
 
