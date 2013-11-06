@@ -9,26 +9,13 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta http-equiv="Pragma" content="no-cache"/>
 
-    <%--<link rel="stylesheet" href="../css/jqueryUI/themes/base/jquery.ui.all.css">--%>
-
     <link rel="stylesheet" type="text/css" href="css/login.css"/>
     <link rel="stylesheet" type="text/css" href="css/jqformvalidator/validator.css"/>
 
     <%@include file="common/env.jsp" %>
 
-    <script type="text/javascript" src="js/lib/require.js"></script>
-    <script type="text/javascript">
-        //Load common code that includes config, then load the app
-        //logic for this page. Do the require calls here instead of
-        //a separate file so after a build there are only 2 HTTP
-        //requests instead of three.
+    <script type="text/javascript" data-main="js/loginEntry.js" src="js/lib/require.js"></script>
 
-        require(['./js/config.js?bust=' + new Date().getTime()], function (config) {
-            require(['login/main']);
-        }, function (err) {
-            console.log("load module err: " + err);
-        });
-    </script>
 </head>
 <body>
 <div id="login_area">

@@ -20,6 +20,8 @@ require.config
     hchart: 'highcharts'
     hchart_exp: 'exporting'
 
+    requireLib: 'require'
+
     globallayout: '../globallayout'
     ptree: '../producttree'
 
