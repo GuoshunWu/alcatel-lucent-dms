@@ -11,13 +11,15 @@
     appDir: "../",
     mainConfigFile: "config.js",
     optimize: "uglify2",
+
     preserveLicenseComments: false,
     generateSourceMaps: false,
     useSourceUrl: false,
 
     uglify2: {
         output: {
-            beautify: false
+            beautify: false,
+            comments: false
         },
         compress: {
             sequences: true,
@@ -26,24 +28,42 @@
             }
         },
         warnings: true,
-        mangle: false
+        mangle: true
     },
     fileExclusionRegExp: "^(.*\.(coffee|map|src|cmd|build\.js)|.*r(.min)?.js)$",
     optimizeCss: "standard.keepLines",
-//    optimizeCss: "none",
     pragmasOnSave: {
         excludeCoffeeScript: true
     },
     keepBuildDir: true,
 
+    //A function that is called for each JS module bundle that has been
+    //completed. This function is called after all module bundles have
+    //completed, but it is called for each bundle. A module bundle is a
+    //"modules" entry or if just a single file JS optimization, the
+    //optimized JS file.
+    //Introduced in r.js version 2.1.6
+
+    onModuleBundleComplete: function (data) {
+        /*
+         data.name: the bundle name.
+         data.path: the bundle path relative to the output directory.
+         data.included: an array of items included in the build bundle.
+         If a file path, it is relative to the output directory. Loader
+         plugin IDs are also included in this array, but dependending
+         on the plugin, may or may not have something inlined in the
+         module bundle.
+         */
+        console.log("========Module %s(path=%s) build complete========", data.name, data.path);
+    },
     modules: [
         {
-            name: "login/main",
-            exclude: ['../config', 'domReady']
+            name: "../loginEntry",
+            include: ['requireLib','login/main']
         },
         {
             name: "../entry",
-            include: ['main']
+            include: ['requireLib','main']
         }
     ]
 })

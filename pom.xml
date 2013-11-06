@@ -473,7 +473,7 @@
                 </executions>
                 <configuration>
                     <!-- https://maven.apache.org/plugins/maven-war-plugin/war-mojo.html#warSourceDirectory -->
-                    <packagingExcludes>%regex[js/(?!(?:config|entry|login/main|lib/require)\.js).*$]</packagingExcludes>
+                    <packagingExcludes>%regex[js/(?!(?:loginEntry|entry)\.js).*$]</packagingExcludes>
                     <warSourceExcludes>%regex[(js/.*\.(coffee|map|cmd|orig)$|tools/.*)]</warSourceExcludes>
                     <useCache>true</useCache>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
@@ -530,8 +530,12 @@
                     </arguments>
                     <systemProperties>
                         <systemProperty>
-                            <key>mainJSP</key>
+                            <key>main.jsp</key>
                             <value>${project.build.directory}/${project.build.finalName}/main.jsp</value>
+                        </systemProperty>
+                        <systemProperty>
+                            <key>login.jsp</key>
+                            <value>${project.build.directory}/${project.build.finalName}/login.jsp</value>
                         </systemProperty>
                     </systemProperties>
                 </configuration>
