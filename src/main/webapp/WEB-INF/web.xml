@@ -34,17 +34,6 @@
         <param-value>classpath:spring.xml</param-value>
     </context-param>
 
-    <!--Load log4j -->
-    <!--<context-param>-->
-    <!--<param-name>log4jConfigLocation</param-name>-->
-    <!--<param-value>classpath:log4j.xml</param-value>-->
-    <!--</context-param>-->
-    <!--&lt;!&ndash; Let the watch dog scan the log4j config file every ten seconds. &ndash;&gt;-->
-    <!--<context-param>-->
-    <!--<param-name>log4jRefreshInterval</param-name>-->
-    <!--<param-value>10000</param-value>-->
-    <!--</context-param>-->
-
 
     <!--<filter>-->
     <!--<filter-name>springSecurityFilterChain</filter-name>-->
