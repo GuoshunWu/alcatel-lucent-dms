@@ -82,6 +82,12 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
             <version>${spring.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -184,13 +190,13 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
-            <version>1.6.1</version>
+            <version>1.7.5</version>
         </dependency>
 
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.6.1</version>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.0.13</version>
         </dependency>
 
         <dependency>
@@ -401,6 +407,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-core</artifactId>
@@ -585,7 +592,16 @@
                     <keystoreFile>conf/.keystore</keystoreFile>
                     <keystorePass>changeit</keystorePass>
                 </configuration>
+                <!--<dependencies>-->
+                    <!--<dependency>-->
+                        <!--<groupId>ch.qos.logback</groupId>-->
+                        <!--<artifactId>logback-classic</artifactId>-->
+                        <!--<version>1.0.13</version>-->
+                        <!--<scope>runtime</scope>-->
+                    <!--</dependency>-->
+                <!--</dependencies>-->
             </plugin>
+
 
         </plugins>
 
@@ -613,6 +629,7 @@
                     <!--<exclude>**/*.js</exclude>-->
                 </excludes>
             </resource>
+
             <!--<resource>-->
             <!--<directory>src/main/webapp/js</directory>-->
             <!--<filtering>true</filtering>-->
