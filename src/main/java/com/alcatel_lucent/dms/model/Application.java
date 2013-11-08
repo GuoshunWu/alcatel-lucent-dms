@@ -1,13 +1,11 @@
 package com.alcatel_lucent.dms.model;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 import com.alcatel_lucent.dms.SpringContext;
 import com.alcatel_lucent.dms.service.DictionaryService;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.hibernate.annotations.*;
 import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.DocumentId;
@@ -89,8 +87,9 @@ public class Application extends BaseEntity {
     public void setS(Map<Long, int[]> summary) {
         this.summaryCache = new HashMap<String, int[]>();
         if (summary == null) return;
-        for (Long langId : summary.keySet()) {
-            summaryCache.put(langId.toString(), summary.get(langId));
+
+        for (Map.Entry<Long, int[]> entry : summary.entrySet()) {
+            summaryCache.put(entry.getKey() +"", entry.getValue());
         }
     }
 
@@ -144,7 +143,7 @@ public class Application extends BaseEntity {
 
     @Transient
     public String getNameVersion() {
-    	return base == null ? null : base.getName() + " " + version;
+        return base == null ? null : base.getName() + " " + version;
     }
 
 }

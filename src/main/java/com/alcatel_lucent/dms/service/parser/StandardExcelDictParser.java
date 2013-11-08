@@ -144,7 +144,6 @@ public class StandardExcelDictParser extends DictionaryParser {
      * @param dict     the dictionary to be filled
      * @param row      the label data row
      * @param colIndex the map include which index of the specific data belong to.
-     * @param helper
      */
 
     private Label readLabelFromRow(Dictionary dict, Row row, HashedMap colIndex, FormulaEvaluator evaluator) {
@@ -213,7 +212,6 @@ public class StandardExcelDictParser extends DictionaryParser {
      * Convert the cell value to string
      *
      * @param cell
-     * @param helper
      * @return converted string
      */
     private String getStringCellValue(Cell cell, FormulaEvaluator evaluator) {
