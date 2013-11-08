@@ -59,20 +59,6 @@
         <appender-ref ref="DATABASE"/>
     </appender>
 
-    <!--<logger name="org.hibernate.type">-->
-    <!--<level value="TRACE"/>-->
-    <!--</logger>-->
-    <!--<logger name="org.hibernate.SQL">-->
-    <!--<level value="DEBUG"/>-->
-    <!--</logger>-->
-
-    <logger name="com.alcatel_lucent.dms.filters">
-        <level value="INFO"/>
-    </logger>
-
-    <!--<logger name="com.alcatel_lucent.dms.action.login">-->
-        <!--<level value="DEBUG"/>-->
-    <!--</logger>-->
 
     <root>
         <level value="INFO"/>

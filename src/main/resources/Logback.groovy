@@ -14,14 +14,38 @@ For professional support please see
    http://www.qos.ch/shop/products/professionalSupport
 */
 
+
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder
 import ch.qos.logback.core.ConsoleAppender
+import ch.qos.logback.core.rolling.RollingFileAppender
+import ch.qos.logback.core.rolling.TimeBasedRollingPolicy
 
-import static ch.qos.logback.classic.Level.INFO
+import static ch.qos.logback.classic.Level.*
 
 appender("STDOUT", ConsoleAppender) {
     encoder(PatternLayoutEncoder) {
         pattern = "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
     }
 }
-root(INFO, ["STDOUT"])
+
+String TARGET_DIR = "target/DMSLOG"
+
+appender("FILE", RollingFileAppender) {
+    append = true
+    rollingPolicy(TimeBasedRollingPolicy) {
+        fileNamePattern = "${TARGET_DIR}/logFile.%d{yyyy-MM-dd}.log"
+        maxHistory = 30
+    }
+
+    encoder(PatternLayoutEncoder) {
+        pattern = "%date %level [%thread] %logger{10} [%file:%line] %msg%n"
+    }
+}
+
+//logger("com.alcatel_lucent.dms.filters",INFO)
+//logger("org.hibernate.type", TRACE)
+//logger("org.hibernate.SQL", DEBUG)
+
+root(INFO, ["STDOUT", "FILE"])
+
+
