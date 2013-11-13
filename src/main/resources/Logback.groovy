@@ -15,21 +15,31 @@ For professional support please see
 */
 
 
+
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder
+import ch.qos.logback.classic.filter.ThresholdFilter
+import ch.qos.logback.classic.jul.LevelChangePropagator
 import ch.qos.logback.core.ConsoleAppender
 import ch.qos.logback.core.rolling.RollingFileAppender
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy
 
-import static ch.qos.logback.classic.Level.*
+import static ch.qos.logback.classic.Level.INFO
+import static ch.qos.logback.classic.Level.WARN
+
+context = new LevelChangePropagator()
+context.resetJUL = true
 
 appender("STDOUT", ConsoleAppender) {
     encoder(PatternLayoutEncoder) {
         pattern = "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
     }
+    filter(ThresholdFilter){
+        level = WARN
+    }
 }
 
-String TARGET_DIR = "target/DMSLOG"
-
+String TARGET_DIR = new File(this.class.getResource('/').path +"../", "logs").canonicalPath
+println String.format("Log root dir=%s", TARGET_DIR).center(100, '=')
 appender("FILE", RollingFileAppender) {
     append = true
     rollingPolicy(TimeBasedRollingPolicy) {
@@ -46,6 +56,6 @@ appender("FILE", RollingFileAppender) {
 //logger("org.hibernate.type", TRACE)
 //logger("org.hibernate.SQL", DEBUG)
 
-root(INFO, ["STDOUT", "FILE"])
+root(INFO, ["STDOUT","FILE"])
 
 

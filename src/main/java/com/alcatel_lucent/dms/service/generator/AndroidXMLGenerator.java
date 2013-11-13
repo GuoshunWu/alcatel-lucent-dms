@@ -3,10 +3,7 @@ package com.alcatel_lucent.dms.service.generator;
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.SystemError;
-import com.alcatel_lucent.dms.model.Dictionary;
-import com.alcatel_lucent.dms.model.DictionaryLanguage;
-import com.alcatel_lucent.dms.model.Label;
-import com.alcatel_lucent.dms.model.LabelTranslation;
+import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.service.DaoService;
 import com.alcatel_lucent.dms.service.parser.AndroidXMLParser;
 import org.apache.commons.io.FileUtils;
@@ -140,6 +137,10 @@ public class AndroidXMLGenerator extends DictionaryGenerator {
     }
 
     private void writeLabel(Element eleLabels, Label label, DictionaryLanguage dl) {
+        if (null != dl && label.getTranslationStatus(dl.getLanguageCode()) != Translation.STATUS_TRANSLATED) {
+            return;
+        }
+
         String text = label.getReference();
         String annotation1 = label.getAnnotation1();    // attributes
         String annotation2 = label.getAnnotation2();    // leading comments
@@ -151,6 +152,7 @@ public class AndroidXMLGenerator extends DictionaryGenerator {
             }
             text = label.getTranslation(dl.getLanguageCode());
         }
+
         // add leading comments
         addCommentsForElement(annotation2, eleLabels);
         String lblKey = label.getKey();

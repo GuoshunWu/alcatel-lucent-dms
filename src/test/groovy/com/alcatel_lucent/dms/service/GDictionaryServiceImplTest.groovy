@@ -1,11 +1,12 @@
 package com.alcatel_lucent.dms.service
 
-
+import ch.qos.logback.core.FileAppender
 import com.alcatel_lucent.dms.BusinessWarning
 import com.alcatel_lucent.dms.Constants
+import com.alcatel_lucent.dms.model.*
 import org.apache.commons.collections.keyvalue.MultiKey
 import org.apache.commons.collections.map.MultiKeyMap
-import org.apache.log4j.FileAppender
+import org.junit.*
 import org.junit.runner.RunWith
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -13,12 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.test.context.transaction.TransactionConfiguration
-import com.alcatel_lucent.dms.model.*
 import org.springframework.transaction.annotation.Transactional
 
 import static org.apache.commons.lang.StringUtils.join
 import static org.hamcrest.Matchers.*
-import org.junit.*
 import static org.junit.Assert.*
 
 /**

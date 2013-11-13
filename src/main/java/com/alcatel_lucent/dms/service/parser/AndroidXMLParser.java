@@ -408,9 +408,14 @@ public class AndroidXMLParser extends DictionaryParser {
         lt.setAnnotation2(comments);
         lt.setSortNo(sortNo);
 
+
         lt.setLanguage(dl.getLanguage());
         lt.setLanguageCode(dl.getLanguageCode());
-        lt.setOrigTranslation(element.getStringValue().trim());
+        String origTranslation = element.getStringValue().trim();
+
+        lt.setStatus(Translation.STATUS_TRANSLATED);
+        lt.setOrigTranslation(origTranslation);
+
 
         lt.setLabel(label);
         label.addLabelTranslation(lt);
