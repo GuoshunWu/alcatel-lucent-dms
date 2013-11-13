@@ -27,8 +27,8 @@ public class DMSContextLoadListener implements ServletContextListener {
         SLF4JBridgeHandler.install();
 
         // print internal state
-        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-        StatusPrinter.print(lc);
+//        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+//        StatusPrinter.print(lc);
     }
 
     @Override
