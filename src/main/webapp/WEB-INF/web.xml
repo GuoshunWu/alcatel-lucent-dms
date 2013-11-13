@@ -145,6 +145,10 @@
             org.springframework.web.context.ContextLoaderListener
         </listener-class>
     </listener>
+    
+    <listener>
+        <listener-class>com.alcatel_lucent.dms.listeners.DMSContextLoadListener</listener-class>
+    </listener>
 
 
     <servlet>

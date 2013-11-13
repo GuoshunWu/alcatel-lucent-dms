@@ -111,6 +111,12 @@ public class LabelTranslation extends BaseEntity {
     }
 
     @Transient
+    public boolean isTranslationEqualsReference(){
+        if(null == label) return false;
+        return label.getReference().equals(getOrigTranslation());
+    }
+
+    @Transient
     public boolean isValidText() {
         if (origTranslation != null) {
             return CharsetUtil.isValid(origTranslation, language.getName());
