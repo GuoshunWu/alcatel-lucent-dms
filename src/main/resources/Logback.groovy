@@ -38,12 +38,12 @@ appender("STDOUT", ConsoleAppender) {
     }
 }
 
-String TARGET_DIR = new File(this.class.getResource('/').path +"../", "logs").canonicalPath
+String TARGET_DIR = new File(this.class.getResource('/').path +"../../../../logs", "dms").canonicalPath
 println String.format("Log root dir=%s", TARGET_DIR).center(100, '=')
 appender("FILE", RollingFileAppender) {
     append = true
     rollingPolicy(TimeBasedRollingPolicy) {
-        fileNamePattern = "${TARGET_DIR}/logFile.%d{yyyy-MM-dd}.log"
+        fileNamePattern = "${TARGET_DIR}/DMSlog.%d{yyyy-MM-dd}.log"
         maxHistory = 30
     }
 
