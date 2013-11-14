@@ -329,7 +329,7 @@ define [
     autoOpen: false
     modal: true
     create: ()->
-      $('#setContextMenu').menu().hide().find("li").on 'click', (e)->
+      $('#setContextMenu').menu().hide().find("li").on 'click', (e)=>
         (setContextTo(e.target.name);return) if e.target.name != 'Custom'
         $(@).dialog 'open'
 
