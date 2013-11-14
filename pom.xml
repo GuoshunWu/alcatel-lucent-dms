@@ -599,8 +599,8 @@
                     <username>admin</username>
                     <password>alcatel123</password>
                     <httpsPort>8443</httpsPort>
-                    <!--<keystoreFile>conf/.keystore</keystoreFile>-->
-                    <!--<keystorePass>changeit</keystorePass>-->
+                    <keystoreFile>conf/.keystore</keystoreFile>
+                    <keystorePass>changeit</keystorePass>
                     <systemProperties>
                       <java.util.logging.config.file>conf/logging.properties</java.util.logging.config.file>
                         <java.util.logging.SimpleFormatter.format>[%4$s] %1$tH:%1$tM:%1$tS.%1$tL %2$s - %5$s %n</java.util.logging.SimpleFormatter.format>
