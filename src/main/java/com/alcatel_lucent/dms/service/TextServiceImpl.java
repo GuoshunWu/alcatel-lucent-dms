@@ -1,46 +1,26 @@
 package com.alcatel_lucent.dms.service;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
+import com.alcatel_lucent.dms.BusinessException;
+import com.alcatel_lucent.dms.BusinessWarning;
+import com.alcatel_lucent.dms.Constants;
+import com.alcatel_lucent.dms.SystemError;
+import com.alcatel_lucent.dms.model.*;
+import com.alcatel_lucent.dms.model.Dictionary;
 import net.sf.json.JSONObject;
-
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.TransformerUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.usermodel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.alcatel_lucent.dms.BusinessException;
-import com.alcatel_lucent.dms.BusinessWarning;
-import com.alcatel_lucent.dms.Constants;
-import com.alcatel_lucent.dms.SystemError;
-import com.alcatel_lucent.dms.model.Application;
-import com.alcatel_lucent.dms.model.Context;
-import com.alcatel_lucent.dms.model.Dictionary;
-import com.alcatel_lucent.dms.model.DictionaryLanguage;
-import com.alcatel_lucent.dms.model.Label;
-import com.alcatel_lucent.dms.model.LabelTranslation;
-import com.alcatel_lucent.dms.model.Language;
-import com.alcatel_lucent.dms.model.Text;
-import com.alcatel_lucent.dms.model.Translation;
-import com.alcatel_lucent.dms.util.CharsetUtil;
-import org.springframework.util.CollectionUtils;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.util.*;
 
 @Service("textService")
 @SuppressWarnings("unchecked")
@@ -210,7 +190,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
      */
     private void suggestTranslations(Long ctxId, Collection<Text> texts, Map<String, Text> dbTextMap) {
         for (Text text : texts) {
-            if (CollectionUtils.isEmpty(text.getTranslations())) continue;
+            if (org.springframework.util.CollectionUtils.isEmpty(text.getTranslations())) continue;
 
             Text dbText = dbTextMap.get(text.getReference());
             Map<Long, String> suggestedTranslations = null;
@@ -538,13 +518,37 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
      * @return text map with reference as key
      */
     public Map<String, Text> getTextsAsMap(Long ctxId) {
+        return getTextAsMapForDict(ctxId, null);
+    }
+
+    private Map<String, Text> textCollectionToMap(Collection<Text> texts) {
+        Map<String, Text> result = new HashMap<String, Text>();
+        if (org.springframework.util.CollectionUtils.isEmpty(texts)) return result;
+        for (Text text : texts) {
+            result.put(text.getReference(), text);
+        }
+        return result;
+    }
+
+    public Map<String, Text> getTextAsMapForDict(Long ctxId, Dictionary dict) {
         String hql = "from Text where context.id=:ctxId";
         Map param = new HashMap();
         param.put("ctxId", ctxId);
-        Collection<Text> texts = dao.retrieve(hql, param);
+        if (null == dict) {
+            return textCollectionToMap(dao.retrieve(hql, param));
+        }
+
+        // dict is not null
         Map<String, Text> result = new HashMap<String, Text>();
-        for (Text text : texts) {
-            result.put(text.getReference(), text);
+        hql += " and reference in :references";
+        int subListSize = 200;
+        List<String> dictReferences = new ArrayList<String>(new HashSet<String>(CollectionUtils.collect(dict.getLabels(),
+                TransformerUtils.invokerTransformer("getText"))));
+        for (int fromIndex = 0; fromIndex < dictReferences.size(); fromIndex += subListSize) {
+            int toIndex = fromIndex + subListSize;
+            if (toIndex > dictReferences.size()) toIndex = dictReferences.size();
+            param.put("references", dictReferences.subList(fromIndex, toIndex));
+            result.putAll(textCollectionToMap(dao.retrieve(hql, param)));
         }
         return result;
     }

@@ -1,12 +1,5 @@
 package com.alcatel_lucent.dms.action.app;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
-
-
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.Constants;
@@ -18,6 +11,8 @@ import com.alcatel_lucent.dms.service.DeliveringDictPool;
 import com.alcatel_lucent.dms.service.DeliveryReport;
 import com.alcatel_lucent.dms.service.DictionaryService;
 import com.alcatel_lucent.dms.service.JSONService;
+
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class DeliverDictAction extends ProgressAction {
@@ -56,7 +51,12 @@ public class DeliverDictAction extends ProgressAction {
         Map<String, Collection<BusinessWarning>> warningMap = new TreeMap<String, Collection<BusinessWarning>>();
         int total = dictList.size();
         int cur = 1;
-        for (Dictionary dict : dictList) {
+        Iterator<Dictionary> dictionaryIterator = dictList.iterator();
+        while(dictionaryIterator.hasNext()){
+            Dictionary dict = dictionaryIterator.next();
+            // remote from the collection to free memory
+            dictionaryIterator.remove();
+
             Map<String, String> langCharset = new HashMap<String, String>();
             if (dict.getDictLanguages() != null) {
                 for (DictionaryLanguage dl : dict.getDictLanguages()) {

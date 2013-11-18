@@ -127,6 +127,13 @@ public interface TextService {
     Map<String, Text> getTextsAsMap(Long ctxId);
 
     /**
+     * Get translation details by context in a dictionary, return all if dict is null
+     * @param ctxId context id
+     * @return map of text objects indexed by reference.
+     */
+    Map<String, Text> getTextAsMapForDict(Long ctxId, Dictionary dict);
+
+    /**
      * Populate context name and get the Context instance, create one if not exists.
      * @param contextExp context expression, supported variables: [DICT], [APP], [PROD]
      * @param dict Dictionary object, used to populate context value
