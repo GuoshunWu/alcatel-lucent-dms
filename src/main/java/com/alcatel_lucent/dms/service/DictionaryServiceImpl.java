@@ -918,6 +918,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         }
     }
 
+    @Deprecated
     public DeliveryReport importDictionaries(Long appId, Collection<Dictionary> dictList, Constants.ImportingMode mode) throws BusinessException {
         DeliveryReport report = new DeliveryReport();
         Map<String, Collection<BusinessWarning>> warningMap = new TreeMap<String, Collection<BusinessWarning>>();

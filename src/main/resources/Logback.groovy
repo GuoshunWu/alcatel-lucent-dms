@@ -44,7 +44,7 @@ appender("FILE", RollingFileAppender) {
     append = true
     rollingPolicy(TimeBasedRollingPolicy) {
         fileNamePattern = "${TARGET_DIR}/DMSlog.%d{yyyy-MM-dd}.log"
-        maxHistory = 30
+        maxHistory = 100
     }
 
     encoder(PatternLayoutEncoder) {

@@ -794,7 +794,8 @@
             <id>local-qa-db</id>
             <properties>
                 <db.driver>org.postgresql.Driver</db.driver>
-                <db.url>jdbc:postgresql://172.24.190.236:5432/dms_qa</db.url>
+                <!--<db.url>jdbc:postgresql://172.24.190.236:5432/dms_qa</db.url>-->
+                <db.url>jdbc:postgresql://172.24.190.236:5432/dms_131118</db.url>
                 <db.user>dms</db.user>
                 <db.password>alcatel123</db.password>
                 <db.house-keeping-test-sql>select CURRENT_DATE</db.house-keeping-test-sql>
