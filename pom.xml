@@ -31,6 +31,9 @@
         <dms.temp></dms.temp>
         <dms.luceneindex.dir>/dms/lucene/indexes</dms.luceneindex.dir>
 
+        <!-- Resolve Perm OOME issue
+        set CATALINA_OPTS=-XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=256M
+        -->
 
     </properties>
 
@@ -92,12 +95,6 @@
 
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <version>${spring.version}</version>
         </dependency>
@@ -113,11 +110,16 @@
             <version>3.1.2.RELEASE</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-web</artifactId>
-            <version>3.1.2.RELEASE</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.springframework.security</groupId>-->
+            <!--<artifactId>spring-security-web</artifactId>-->
+            <!--<version>3.1.2.RELEASE</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.springframework</groupId>-->
+            <!--<artifactId>spring-jdbc</artifactId>-->
+            <!--<version>${spring.version}</version>-->
+        <!--</dependency>-->
 
 
         <dependency>
@@ -125,19 +127,32 @@
             <artifactId>hibernate-proxool</artifactId>
             <version>${hibernate.version}</version>
             <!--<version>4.0.0.Final</version>-->
+            <exclusions>
+                <exclusion>
+                    <groupId>proxool</groupId>
+                    <artifactId>proxool</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
-            <groupId>proxool</groupId>
+            <groupId>com.cloudhopper.proxool</groupId>
             <artifactId>proxool</artifactId>
             <version>0.9.1</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>proxool</groupId>
-            <artifactId>proxool-cglib</artifactId>
-            <version>0.9.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
 
@@ -389,7 +404,7 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>3.0.1</version>
+            <version>3.1.0</version>
             <scope>provided</scope>
         </dependency>
 
