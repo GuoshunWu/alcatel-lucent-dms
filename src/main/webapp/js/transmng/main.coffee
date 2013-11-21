@@ -73,7 +73,7 @@ define [
         $("#languageFilterDialog").empty().append langTable
 
         # for search text
-        languages.unshift(id: 1, name: 'Reference')
+#        languages.unshift(id: 1, name: 'Reference')
         $('#transSearchTextLanguage', "#transmng").empty().append util.json2Options(languages, false, "name")
 
       }
