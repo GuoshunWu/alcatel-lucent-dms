@@ -170,10 +170,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                         if (dbLabel != null) {
                             // copy context value from existing label unless:
                             // * reference text was changed
-                            // * the existing context value is [DEFAULT] or [DICT]
+                            // * the existing context value is [DEFAULT] or [DICT] or [LABEL]
                             if (label.getContext() == null && label.getReference().equals(dbLabel.getReference())
                                     && !dbLabel.getContext().getName().equals(Context.DEFAULT)
-                                    && !dbLabel.getContext().getName().equals(Context.DICT)) {
+                                    && !dbLabel.getContext().getName().equals(Context.DICT)
+                                    && !dbLabel.getContext().getName().equals(Context.LABEL)) {
                                 label.setContext(dbLabel.getContext());
                             }
                             if (label.getMaxLength() == null) {
@@ -704,17 +705,19 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     // determine if the translation should take value from context dictionary
                     trans.setNeedTranslation(true);
 
-                    if (lastLabel != null) {
+
+                    if (lastLabel != null && label.getContext().getName().equals(lastLabel.getContext().getName())) {
                         // get the original translation in latest version
                         LabelTranslation lastTranslation = lastLabel.getOrigTranslation(trans.getLanguageCode());
                         if (label.getReference().equals(lastLabel.getReference())) {    // reference is not changed
-                            if (lastTranslation != null &&
+/*
+                        	if (lastTranslation != null &&
                                     !lastTranslation.getOrigTranslation().equals(trans.getOrigTranslation()) &&
                                     !trans.getOrigTranslation().equals(label.getReference())) {
                                 // translation changed means the label was translated on developer side
                                 trans.setNeedTranslation(false);
                             }
-
+*/
                             // don't update context translation if both translation and translation is not changed in the delivered dictionary
                             // unless status is specified in dict because we don't know if status is changed in dict
                             if (lastTranslation != null
@@ -778,7 +781,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     context.getId(), texts, mode);
             // update DEFAULT context from each DICT context or LABEL context, so the DEFAULT context would be a union of all translations
             if (context.isNameIn(Context.DICT, Context.LABEL)) {
-                textService.updateTranslations(defaultCtx.getId(), texts, Constants.ImportingMode.DELIVERY);
+                textService.updateTranslations(defaultCtx.getId(), texts, Constants.ImportingMode.SUPPLEMENT);
             }
 
             // in TRANSLATION_MODE, no change to label

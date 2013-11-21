@@ -155,7 +155,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                         dbTrans.setTranslationType(trans.getTranslationType() != null ?
                                 trans.getTranslationType() : Translation.TYPE_TASK);
                         dbTrans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
-                    } else {
+                    } else if (mode == Constants.ImportingMode.DELIVERY) {
                         // in DELIVERY_MODE, set status to UNTRANSLATED if translation is explicitly requested
 //	                	if (dbTrans.getTranslation().equals(trans.getTranslation()) && 
 //	                			!dbTrans.getTranslation().equals(text.getReference()) && 
@@ -163,8 +163,16 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 //	                		dbTrans.setStatus(Translation.STATUS_UNTRANSLATED);
 //	                	}
                         // update translation if got translated in delivered dict
+                        if (trans.getStatus() == Translation.STATUS_TRANSLATED) {
+                            dbTrans.setTranslation(trans.getTranslation());
+                            dbTrans.setStatus(Translation.STATUS_TRANSLATED);
+                            dbTrans.setTranslationType(trans.getTranslationType() != null ?
+                                    trans.getTranslationType() : Translation.TYPE_DICT);
+                            dbTrans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
+                        }
+                    } else {	// supplement mode
                         if (dbTrans.getStatus() != Translation.STATUS_TRANSLATED &&
-                                trans.getStatus() == Translation.STATUS_TRANSLATED) {
+                        		trans.getStatus() == Translation.STATUS_TRANSLATED) {
                             dbTrans.setTranslation(trans.getTranslation());
                             dbTrans.setStatus(Translation.STATUS_TRANSLATED);
                             dbTrans.setTranslationType(trans.getTranslationType() != null ?
