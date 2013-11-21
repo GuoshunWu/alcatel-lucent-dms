@@ -1,21 +1,26 @@
 package com.alcatel_lucent.dms.listeners;
 
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.core.util.StatusPrinter;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Enumeration;
 
 /**
  * Created with IntelliJ IDEA.
  * User: guoshunw
  * Date: 13-11-12
- * Time: 下午6:22
- * @see http://www.slf4j.org/api/org/slf4j/bridge/SLF4JBridgeHandler.html
+ *
+ * see http://www.slf4j.org/api/org/slf4j/bridge/SLF4JBridgeHandler.html
  */
 public class DMSContextLoadListener implements ServletContextListener {
+    private static Logger log = LoggerFactory.getLogger(DMSContextLoadListener.class);
+
     @Override
     public void contextInitialized(ServletContextEvent sce) {
 
@@ -33,6 +38,16 @@ public class DMSContextLoadListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-
+//        the driver should be removed before undeploying
+        Enumeration<Driver> drivers =DriverManager.getDrivers();
+        while (drivers.hasMoreElements()){
+            Driver driver = drivers.nextElement();
+            log.info("De register driver {}", driver.getClass().getName());
+            try {
+                DriverManager.deregisterDriver(driver);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

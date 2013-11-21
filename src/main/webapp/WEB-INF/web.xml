@@ -10,9 +10,9 @@
     <description>
         Dictionary Management System
     </description>
-    
+
     <session-config>
-    	<session-timeout>60</session-timeout>
+        <session-timeout>60</session-timeout>
     </session-config>
     <!--
     The Spring plugin can be configured to automatically reload classes that change in the file system.
@@ -128,24 +128,18 @@
 
     <!-- Listening Log4j -->
     <!--<listener>-->
-    <!--<listener-class>-->
-    <!--org.springframework.web.util.Log4jConfigListener-->
-    <!--</listener-class>-->
+        <!--<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>-->
     <!--</listener>-->
 
     <listener>
-        <listener-class>
-            org.springframework.web.context.request.RequestContextListener
-        </listener-class>
+        <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
     </listener>
 
-    <!-- Listening Spring -->
+    <!--Listening Spring-->
     <listener>
-        <listener-class>
-            org.springframework.web.context.ContextLoaderListener
-        </listener-class>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
-    
+
     <listener>
         <listener-class>com.alcatel_lucent.dms.listeners.DMSContextLoadListener</listener-class>
     </listener>
@@ -189,7 +183,7 @@
         <!--<servlet-class>groovy.modules.pages.GroovyPages</servlet-class>-->
         <async-supported>true</async-supported>
     </servlet>
-    
+
     <servlet-mapping>
         <servlet-name>GSP</servlet-name>
         <url-pattern>*.gsp</url-pattern>

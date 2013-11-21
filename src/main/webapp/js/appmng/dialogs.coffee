@@ -318,7 +318,6 @@ define [
 
   setContextTo = (context = 'Default', labelids = $('#stringSettingsGrid').getGridParam('selarrrow'))->
     # console?.log "context=#{context}, labelids =#{labelids}."
-    ($.msgBox(i18n.dialog.customcontext.labeltip, null, {title: c18n.warn});return) if labelids.length == 0
 #    console.log "About to post %s, postData=%o", urls.label.update, {id: labelids.join(','), context: context}
 #    return
     $.post urls.label.update, {id: labelids.join(','), context: context}, (json)->
@@ -330,7 +329,9 @@ define [
     modal: true
     create: ()->
       $('#setContextMenu').menu().hide().find("li").on 'click', (e)=>
-        (setContextTo(e.target.name);return) if e.target.name != 'Custom'
+        labelids = $('#stringSettingsGrid').getGridParam('selarrrow')
+        ($.msgBox(i18n.dialog.customcontext.labeltip, null, {title: c18n.warn});return) if labelids.length == 0
+        (setContextTo(e.target.name, labelids);return) if e.target.name != 'Custom'
         $(@).dialog 'open'
 
       $('#setContexts').attr('privilegeName', util.urlname2Action urls.label.update).button(

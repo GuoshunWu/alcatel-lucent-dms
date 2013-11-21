@@ -226,7 +226,7 @@ define [
     transUpdateDialog.dialog 'close'
 
   transUpdateDialog.dialog(
-    autoOpen: false, width: 800, title: c18n.confirm, modal: true
+    autoOpen: false, width: 800, maxHeight: 600, title: c18n.confirm, modal: true
 
     buttons:[
       {text: c18n.yes, click: handler }

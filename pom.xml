@@ -30,17 +30,6 @@
 
         <dms.temp></dms.temp>
         <dms.luceneindex.dir>/dms/lucene/indexes</dms.luceneindex.dir>
-
-        <!-- Resolve Perm OOME issue
-        catalina.sh or catalina.bat file
-        set CATALINA_OPTS=-XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=256M
-        -->
-
-        <!--
-            set context.xml attribute important
-            http://tomcat.apache.org/tomcat-7.0-doc/config/context.html
-            <Context antiJARLocking="true">
-        -->
     </properties>
 
 
@@ -63,15 +52,11 @@
             </exclusions>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-orm</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
+
 
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
+            <artifactId>spring-test</artifactId>
             <version>${spring.version}</version>
         </dependency>
 
@@ -101,31 +86,41 @@
 
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
+            <artifactId>spring-orm</artifactId>
             <version>${spring.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-core</artifactId>
-            <version>3.1.2.RELEASE</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-config</artifactId>
-            <version>3.1.2.RELEASE</version>
-        </dependency>
+        <!--<dependency>-->
+        <!--<groupId>org.springframework</groupId>-->
+        <!--<artifactId>spring-web</artifactId>-->
+        <!--<version>${spring.version}</version>-->
+        <!--</dependency>-->
 
         <!--<dependency>-->
-            <!--<groupId>org.springframework.security</groupId>-->
-            <!--<artifactId>spring-security-web</artifactId>-->
-            <!--<version>3.1.2.RELEASE</version>-->
+        <!--<groupId>org.springframework</groupId>-->
+        <!--<artifactId>spring-jdbc</artifactId>-->
+        <!--<version>${spring.version}</version>-->
         <!--</dependency>-->
+
+
         <!--<dependency>-->
-            <!--<groupId>org.springframework</groupId>-->
-            <!--<artifactId>spring-jdbc</artifactId>-->
-            <!--<version>${spring.version}</version>-->
+        <!--<groupId>org.springframework.security</groupId>-->
+        <!--<artifactId>spring-security-core</artifactId>-->
+        <!--<version>3.1.2.RELEASE</version>-->
         <!--</dependency>-->
+
+        <!--<dependency>-->
+        <!--<groupId>org.springframework.security</groupId>-->
+        <!--<artifactId>spring-security-config</artifactId>-->
+        <!--<version>3.1.2.RELEASE</version>-->
+        <!--</dependency>-->
+
+        <!--<dependency>-->
+        <!--<groupId>org.springframework.security</groupId>-->
+        <!--<artifactId>spring-security-web</artifactId>-->
+        <!--<version>3.1.2.RELEASE</version>-->
+        <!--</dependency>-->
+
 
 
         <dependency>
@@ -623,19 +618,20 @@
                     <keystoreFile>conf/.keystore</keystoreFile>
                     <keystorePass>changeit</keystorePass>
                     <systemProperties>
-                      <java.util.logging.config.file>conf/logging.properties</java.util.logging.config.file>
-                        <java.util.logging.SimpleFormatter.format>[%4$s] %1$tH:%1$tM:%1$tS.%1$tL %2$s - %5$s %n</java.util.logging.SimpleFormatter.format>
+                        <java.util.logging.config.file>conf/logging.properties</java.util.logging.config.file>
+                        <java.util.logging.SimpleFormatter.format>[%4$s] %1$tH:%1$tM:%1$tS.%1$tL %2$s - %5$s %n
+                        </java.util.logging.SimpleFormatter.format>
                     </systemProperties>
                 </configuration>
 
 
                 <!--<dependencies>-->
-                    <!--<dependency>-->
-                        <!--<groupId>ch.qos.logback</groupId>-->
-                        <!--<artifactId>logback-classic</artifactId>-->
-                        <!--<version>1.0.13</version>-->
-                        <!--<scope>runtime</scope>-->
-                    <!--</dependency>-->
+                <!--<dependency>-->
+                <!--<groupId>ch.qos.logback</groupId>-->
+                <!--<artifactId>logback-classic</artifactId>-->
+                <!--<version>1.0.13</version>-->
+                <!--<scope>runtime</scope>-->
+                <!--</dependency>-->
                 <!--</dependencies>-->
             </plugin>
 
@@ -759,7 +755,9 @@
             <properties>
 
                 <db.driver>com.mysql.jdbc.Driver</db.driver>
-                <db.url>jdbc:MySQL://172.24.191.199:3306/dms?characterEncoding=utf8&amp;useCursorFetch=true&amp;useUnicode=true</db.url>
+                <db.url>
+                    jdbc:MySQL://172.24.191.199:3306/dms?characterEncoding=utf8&amp;useCursorFetch=true&amp;useUnicode=true
+                </db.url>
                 <db.user>dms</db.user>
                 <db.password>alcatel123</db.password>
 
@@ -815,8 +813,8 @@
             <id>local-qa-db</id>
             <properties>
                 <db.driver>org.postgresql.Driver</db.driver>
-                <!--<db.url>jdbc:postgresql://172.24.190.236:5432/dms_qa</db.url>-->
-                <db.url>jdbc:postgresql://172.24.190.236:5432/dms_131118</db.url>
+                <db.url>jdbc:postgresql://172.24.190.236:5432/dms_qa</db.url>
+                <!--<db.url>jdbc:postgresql://172.24.190.236:5432/dms_131118</db.url>-->
                 <db.user>dms</db.user>
                 <db.password>alcatel123</db.password>
                 <db.house-keeping-test-sql>select CURRENT_DATE</db.house-keeping-test-sql>
