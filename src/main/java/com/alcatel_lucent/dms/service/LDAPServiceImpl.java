@@ -1,20 +1,21 @@
 package com.alcatel_lucent.dms.service;
 
+import com.alcatel_lucent.dms.model.User;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.PredicateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.ldap.core.AttributesMapper;
+import org.springframework.ldap.core.DistinguishedName;
+import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.stereotype.Service;
 
-import com.alcatel_lucent.dms.SystemError;
-import com.alcatel_lucent.dms.model.User;
-
-import javax.naming.directory.*;
-import javax.naming.AuthenticationException;
-import javax.naming.Context;
-import javax.naming.NamingEnumeration;
-import java.util.Hashtable;
-import java.util.Collection;
-import java.util.ArrayList;
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+import java.util.List;
 
 @Service("ldapService")
 public class LDAPServiceImpl implements LDAPService {
@@ -23,118 +24,55 @@ public class LDAPServiceImpl implements LDAPService {
     @Value("${ldap.url}")
 	private String ldapUrl;
 
+    @Autowired
+    private LdapTemplate ldapTemplate;
 
-    public static String INITCTX = "com.sun.jndi.ldap.LdapCtxFactory";
-    public static String LDAP_DN = "o=alcatel";
+    private static class UserAttributesMapper implements AttributesMapper {
+        private static UserAttributesMapper me = new UserAttributesMapper();
+        public static UserAttributesMapper getInstance(){
+            return  me;
+        }
+        @Override
+        public Object mapFromAttributes(Attributes attributes) throws NamingException {
+            Attribute cil = attributes.get("cslx500");
+            Attribute email = attributes.get("mail");
+            if (null == cil || email == null) return null;
+            String csl = (String) attributes.get("cn").get();
+
+            if (cil == null || email == null) return null;
+            return new User(csl, email.get().toString(), cil.get().toString());
+        }
+    }
 
     public boolean login(String username, String password) {
-        return loginLDAP(username, password) != null;
-    }
-    
-    private DirContext loginLDAP(String username, String password) {
-        log.info("Connecting to LDAP server with " + username + "...");
-        Hashtable<String, Object> env = new Hashtable<String, Object>();
-        env.put(Context.INITIAL_CONTEXT_FACTORY, INITCTX);
-        env.put(Context.PROVIDER_URL, ldapUrl);
-        env.put(Context.SECURITY_AUTHENTICATION, "simple");
-        env.put(Context.SECURITY_PRINCIPAL, username);
-        env.put(Context.SECURITY_CREDENTIALS, password);
-        try {
-            return new InitialDirContext(env);
-        } catch (AuthenticationException e) {
-            return null;
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw new SystemError(e);
-        }
+        return ldapTemplate.authenticate("", "(&(objectclass=person)(cn=" + username + "))", password);
     }
 
-    private NamingEnumeration search(DirContext ctx, String baseDN, String filter, String[] attrNames) {
-        try {
-            SearchControls constraints = new SearchControls();
-            constraints.setSearchScope(SearchControls.SUBTREE_SCOPE);
-            constraints.setReturningAttributes(attrNames);
-            NamingEnumeration ne = ctx.search(baseDN, filter, constraints);
-            if (ne.hasMoreElements()) {
-                SearchResult sr = (SearchResult) ne.next();
-                return sr.getAttributes().getAll();
-            } else {
-                return null;
-            }
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw new SystemError(e);
-        }
+    public List<User> findUsers(String filter) {
+        List<User> users = ldapTemplate.search(DistinguishedName.EMPTY_PATH, filter, UserAttributesMapper.getInstance());
+        CollectionUtils.filter(users, PredicateUtils.notNullPredicate());
+        return users;
     }
+
 
     /**
      * @deprecated use findUserByCIL instead, which also accept CSL as input and have better performance
      */
     @Deprecated
     public User findUserByCSL(String csl) {
-        DirContext ctx = null;
-        try {
-            ctx = loginLDAP("dms", "");
-            if (ctx == null) return null;
-            log.info("Search CSL: " + csl );
-            String filter = "(&(objectclass=person)(cslx500=" + csl + "))";
-            NamingEnumeration enu = search(ctx, LDAP_DN, filter, new String[] {"cn", "cslx500", "mail"});
-            if (enu != null) {
-                User user = new User();
-                while (enu.hasMore()) {
-                    Attribute attr = (Attribute) enu.next();
-                    NamingEnumeration values = attr.getAll();
-                    String value = (String) (values != null && values.hasMore() ? values.next() : null);
-                    if (attr.getID().equalsIgnoreCase("cn")) {
-                        user.setName(value);
-                    } else if (attr.getID().equalsIgnoreCase("cslx500")) {
-                        user.setLoginName(value);
-                    } else if (attr.getID().equalsIgnoreCase("mail")) {
-                        user.setEmail(value);
-                    }
-                }
-                return user;
-            }
-            return null;
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            return null;
-        } finally {
-            if (ctx != null) try {ctx.close();} catch (Exception e) {}
-        }
+        String strFilter = "(&(objectclass=person)(cslx500=" + csl + "))";
+        log.info("String filter={}", strFilter);
+        List<User> users = findUsers(strFilter);
+        if (users.isEmpty()) return null;
+        return users.get(0);
     }
 
     public User findUserByCIL(String cil) {
-        DirContext ctx = null;
-        try {
-            ctx = loginLDAP("dms", "");
-            if (ctx == null) return null;
-            String filter = "(&(objectclass=person)(cn=" + cil + "))";
-            log.info("Search CIL: " + cil);
-            NamingEnumeration enu = search(ctx, LDAP_DN, filter, new String[] {"cn", "cslx500", "mail"});
-            if (enu != null) {
-                User user = new User();
-                while (enu.hasMore()) {
-                    Attribute attr = (Attribute) enu.next();
-                    NamingEnumeration values = attr.getAll();
-                    String value = (String) (values != null && values.hasMore() ? values.next() : null);
-                    if (attr.getID().equalsIgnoreCase("cn")) {
-                        user.setName(value);
-                    } else if (attr.getID().equalsIgnoreCase("cslx500")) {
-                        user.setLoginName(value);
-                    } else if (attr.getID().equalsIgnoreCase("mail")) {
-                        user.setEmail(value);
-                    }
-                }
-                return user;
-            }
-            return null;
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            return null;
-        } finally {
-            if (ctx != null) try {ctx.close();} catch (Exception e) {}
-        }
+        String strFilter = "(&(objectclass=person)(cn=" + cil + "))";
+        log.info("String filter={}", strFilter);
+        List<User> users = findUsers(strFilter);
+        if (users.isEmpty()) return null;
+        return users.get(0);
     }
 
 }

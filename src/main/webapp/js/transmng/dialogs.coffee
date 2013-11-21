@@ -215,19 +215,20 @@ define [
   handler = (e)->
     return if !e.clientX
     param = transUpdateDialog.data('param')
+    gridToReload = param.gridToReload
+    delete param.gridToReload
     postData = $.extend(confirm: c18n.yes == $(e.target).text() , param)
 #    console?.log postData
 
     $.post urls.trans.update_translation, postData , (json)->
-      unless json.status == 0
-        $.msgBox(json.message, null, title: c18n.error)
-        return
+      ($.msgBox(json.message, null, title: c18n.error); return) unless json.status == 0
       $("#transDetailGridList").trigger 'reloadGrid'
+      gridToReload?.trigger 'reloadGrid'
+
     transUpdateDialog.dialog 'close'
 
   transUpdateDialog.dialog(
     autoOpen: false, width: 800, maxHeight: 600, title: c18n.confirm, modal: true
-
     buttons:[
       {text: c18n.yes, click: handler }
       {text: c18n.no, click: handler }
@@ -256,7 +257,8 @@ define [
       name = unless -1 == node.parent then node.text else $('#versionTypeLabel').text()
       grid.setCaption(i18n.searchtext.caption.format params.text, typeText, name, params.version.text, params.language.text)
         .setGridParam(url: urls.labels).trigger 'reloadGrid'
-
+    close: ()->
+      searchgrid.saveLastEditedCell()
     buttons: [
       {text: c18n.close, click: ()->
         $(@).dialog 'close'
