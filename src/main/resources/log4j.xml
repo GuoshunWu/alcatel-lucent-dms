@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration>
+
+    <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d - %c -%-4r [%t] %-5p %x - %m%n"/>
+        </layout>
+
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMax" value="ERROR"/>
+            <param name="LevelMin" value="TRACE"/>
+        </filter>
+
+    </appender>
+
+
+    <appender name="FILE" class="org.apache.log4j.FileAppender">
+        <param name="File" value="target/DMSLOG/log4j.log"/>
+        <param name="append" value="false"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d - %c -%-4r [%t] %-5p %x - %m%n"/>
+        </layout>
+
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMax" value="ERROR"/>
+            <param name="LevelMin" value="TRACE"/>
+        </filter>
+    </appender>
+
+    <appender name="DATABASE" class="org.apache.log4j.jdbc.JDBCAppender">
+        <param name="URL" value="jdbc:mysql://localhost:3306/dms"/>
+        <param name="driver" value="com.mysql.jdbc.Driver"/>
+        <param name="user" value="root"/>
+        <param name="password" value="root123"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern"
+                   value="insert into `dms`.`log4j` (`stamp`, `thread`, `info_level`, `class`, `message`) values   ('%d{yyyy-MM-dd HH:mm:ss}', '%t', '%p', '%c', '%m')"/>
+        </layout>
+    </appender>
+
+    <appender name="MAIL" class="org.apache.log4j.net.SMTPAppender">
+        <param name="threshold" value="debug"/>
+        <param name="BufferSize" value="512"/>
+        <param name="From" value="test@163.com"/>
+        <param name="SMTPHost" value="smtp.163.com"/>
+        <param name="Subject" value="juyee-log4jMessage"/>
+        <param name="To" value="test@163.com"/>
+        <param name="SMTPUsername" value="test"/>
+        <param name="SMTPPassword" value="test"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%-d{yyyy-MM-dd HH:mm:ss.SSS} [%p]-[%c] %m%n"/>
+        </layout>
+    </appender>
+
+    <appender name="ASYNC" class="org.apache.log4j.AsyncAppender">
+        <param name="BufferSize" value="25"/>
+        <appender-ref ref="DATABASE"/>
+    </appender>
+
+
+    <root>
+        <level value="INFO"/>
+        <appender-ref ref="CONSOLE"/>
+        <!--<appender-ref ref="FILE"/>-->
+        <!-- <appender-ref ref="ASYNC" /> -->
+    </root>
+
+
+</log4j:configuration>

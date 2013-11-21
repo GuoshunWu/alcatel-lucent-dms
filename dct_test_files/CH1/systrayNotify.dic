@@ -1,0 +1,2732 @@
+--?000 #CHECKSUM=5126805#
+
+--? ?000 #CHECKSUM=9141119#
+
+-- ? -------------------------------------------------------------------------------
+-- Dictionnaire de l'application Instant Commmunicator pour la bulle de notification
+-- ----------------------------------------------------------------------------------
+-- Creation date : 19/01/2009
+-- Last Modification Date :
+
+-- Supported languages
+
+LANGUAGES {GAE, FR0, EN0, DE0, IT0, PT0, ES0, US0, PL0, KO0, NO0, NL0, RU0, CH0, FI0, ES1, CS0, HU0, CH1, SV0, AR0, DA0, HE0}
+
+-- Structure of the dictionary:
+
+-- First, you can see commentary lines, precedeed by two minus signs "--". these comments are not
+-- interpreted by the dictionary tool.
+
+-- For each translation needed, you will find:
+-- An entry key string in upper case, followed by a colon ":".
+-- This key is used by the software to associate a text field in the application with a set of
+-- translations
+-- Each translation associated with this key enholds:
+-- - a language code (FR0 for French for instance)
+-- - a text between brackets for the translation
+-- - a comma to delimit the end of the translation for this language
+-- the comma is replaced by a semicolon ";" to end the list of translations for a specific key
+
+-- NOTA 1: The CHK (Czech) language is used for indicating the maximum width of a text field.
+-- This indication stands only if you visualize the present dictionary with the proper
+-- font (as used in the application). Then, whichever characters you are using
+-- (W can be wider than i) the translations in the different languages  must not exeed the text width
+-- (undependantly to the characters amount) indicated in the CHK field
+-- Texts that are to be displayed in a popup window (OK popup, yes-no popup...) can consist
+-- of more than one line:
+-- "This text will be displayed""on two lines"
+-- Each line must not exceed the width indicated in the CHK field
+-- Texts that are to be displayed in a temporised popup (also called timed popup) can consist of :
+-- One (long) line (with automatic wrap of text on the following 3 lines),
+-- Or several lines ("First line"Second line"...up to "Forth line")
+-- In any case, you are limited to 256 caracters.
+
+-- General syntax:
+-- WC_xxxx : Window caption (title of the window)
+-- ME_xxxx : element of a menu
+-- BU_xxxx : name of a button
+-- CB_xxxx : element of a combo-box
+-- TQ_xxxx : text of a question
+-- TI_xxxx : text of an information, a warning, a problem
+-- ST_xxxx : static text before a variable field or others....
+-- EN_xxxx : for enumered types
+-- TT_xxxx : tool tips
+
+-- General rules:
+-- the "%s" inserted in a string will be replaced by a text at execution;
+-- the "%d" inserted in a string will be replaced by a number;
+-- all the translation for a string including a %s or a %d must keep those key characters, or an error occurs.
+-- The translations being presented in two string ("like" "this") will be displayed on two lines;
+-- you are not allowed to translate on two lines a text which is in one line in the English translation.
+
+-- Text displayed if the translation is not found
+-- nota: Sometimes the default text is included in English in the source code, beginning with "?"
+
+-- --------------------------------------
+-- General
+-- --------------------------------------
+
+TELEPHONY:
+--SIZECHAR 200;
+
+  GAE "Telephony information",
+  EN0 "Telephony information",
+
+
+
+
+  US0 "Telephone information", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "??資?",
+
+
+
+  HE0 "Telephony information"; --???
+
+USER:
+--SIZECHAR 200;
+
+  GAE "User information",
+  EN0 "User information",
+
+
+
+
+  US0 "User information", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "使用者資?",
+
+
+
+  HE0 "User information"; --???
+
+-- crms00217060 +
+
+ERR_MAKEDIALABLE:
+--SIZECHAR 200;
+
+  GAE "Following phone number cannot be dialed : ", --???
+  EN0 "Following phone number cannot be dialled: ",
+
+
+
+
+  US0 "The following phone number cannot be dialed: ", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "礚猭挤ゴ筿杠腹絏 ", 
+
+
+
+  HE0 "Following phone number cannot be dialled: "; --???
+
+-- DLM crms00219382 08/09/2010 +
+
+ERR_SEARCHSTRING_EMPTY:
+--SIZECHAR 200;
+
+  GAE "Searched string cannot be empty", --???
+  EN0 "Searched string cannot be empty",
+
+
+
+
+  US0 "The search string cannot be empty", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "穓碝﹃ぃ",
+
+
+
+  HE0 "Searched string cannot be empty"; --???
+
+TELEPHONY_UNAVAILABLE:
+--SIZECHAR 200;
+
+  GAE "Telephony service unavailable",
+  EN0 "Telephony service unavailable",
+
+
+
+
+  US0 "Telephone service unavailable", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "??服務不可用",
+
+
+
+  HE0 "Telephony service unavailable"; --???
+
+TELEPHONY_AVAILABLE:
+--SIZECHAR 200;
+
+  GAE "Telephony service available",
+  EN0 "Telephony service available",
+
+
+
+
+  US0 "Telephone service available", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "??服務可用",
+
+
+
+  HE0 "Telephony service available"; --???
+
+SIP_UNAVAILABLE:
+--SIZECHAR 200;
+
+  GAE "The SIP telephony service is not available",
+  EN0 "The SIP telephony service is not available",
+
+
+
+
+  US0 "SIP Phone service is unavailable", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "SIP ???題",
+
+
+
+  HE0 "The SIP telephony service is not available"; --???
+
+RTP_UNAVAILABLE:
+--SIZECHAR 200;
+
+  GAE "The voice over IP service is not available",
+  EN0 "The voice over IP service is not available",
+
+
+
+
+  US0 "The VoIP service is unavailable", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "VoIP ???題",
+
+
+
+  HE0 "The voice over IP service is not available"; --???
+
+RTP_AVAILABLE:
+--SIZECHAR 200;
+
+  GAE "The voice over IP service is available",
+  EN0 "The voice over IP service is available",
+
+
+
+
+  US0 "VoIP Telephone service is available", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "VoIP ??可用",
+
+
+
+  HE0 "The voice over IP service is available"; --???
+
+RTP_SERVICE_FAILED:
+--SIZECHAR 200;
+
+  GAE "The voice over IP communication cannot be initialized",
+  EN0 "The voice over IP communication cannot be initialized",
+
+
+
+
+  US0 "The VoIP communication cannot be initialized", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "初始化 VoIP 通信的?題",
+
+
+
+  HE0 "The voice over IP communication cannot be initialized"; --???
+
+USER_REGISTERED:
+--SIZECHAR 200;
+
+  GAE "Telephony in service",
+  EN0 "Telephony in service",
+
+
+
+
+  US0 "Telephone in service",
+
+
+
+
+
+
+
+
+
+
+  CH1 "筿杠タㄏノ", 
+
+
+
+  HE0 "Telephony in service"; --???
+
+USER_FAILTO_REGISTERED:
+--SIZECHAR 200;
+
+  GAE "Telephony out of service",
+  EN0 "Telephony out of service",
+
+
+
+
+  US0 "Telephone out of service",
+
+
+
+
+
+
+
+
+
+
+  CH1 "筿杠タㄏノ", 
+
+
+
+  HE0 "Telephony out of service"; --???
+
+INFORMATION:
+--SIZECHAR 200;
+
+  GAE "Call status",
+  EN0 "Call status",
+
+
+
+
+  US0 "Call status", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "呼叫狀態",
+
+
+
+  HE0 "Call status"; --???
+
+FORWARD_ACTIVE_TITLE:
+--SIZECHAR 200;
+
+  GAE "Call forwarding activated",
+  EN0 "Call forwarding activated",
+
+
+
+
+  US0 "Call forwarding activated", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "呼叫轉移已活化",
+
+
+
+  HE0 "Call forwarding activated"; --???
+
+FORWARD_IMMEDIATE:
+--SIZECHAR 200;
+  GAE "(Without condition)",
+
+  EN0 "(Without condition)",
+
+
+
+
+
+  US0 "(Without condition)", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "(礚兵ン)", 
+
+
+  HE0 "(Without condition)"; --???
+
+FORWARD_ON_BUSY:
+--SIZECHAR 200;
+  GAE "(Phone is busy)",
+
+  EN0 "(Phone is busy)",
+
+
+
+
+
+  US0 "(Phone is busy)", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "(筿杠絬)", 
+
+
+  HE0 "(Phone is busy)"; --???
+
+FORWARD_ON_NO_ANSWER:
+--SIZECHAR 200;
+  GAE "(No reply)",
+
+  EN0 "(No reply)",
+
+
+
+
+
+  US0 "(No reply)", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "(礚钡钮)", 
+
+
+  HE0 "(No reply)"; --???
+
+FORWARD_ON_BUSY_OR_NO_ANSWER:
+--SIZECHAR 200;
+  GAE "(Phone is busy or No reply)",
+
+  EN0 "(Phone is busy or No reply)",
+
+
+
+
+
+  US0 "(Phone is busy or No reply)", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "(筿杠絬┪礚钡钮)", 
+
+
+  HE0 "(Phone is busy or No reply)"; --???
+
+FORWARD_INACTIVE_TITLE:
+--SIZECHAR 200;
+
+  GAE "Call forwarding deactivated",
+  EN0 "Call forwarding deactivated",
+
+
+
+
+  US0 "Call forwarding deactivated", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "呼叫轉移已去活",
+
+
+
+  HE0 "Call forwarding deactivated"; --???
+
+FORWARD_VOICE_MAIL:
+--SIZECHAR 200;
+
+  GAE "Calls are now forwarded to voicemail",
+  EN0 "Calls are now forwarded to voicemail",
+
+
+
+
+  US0 "Calls are now forwarded to voicemail", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "呼叫正轉移至語音郵件",
+
+
+
+  HE0 "Calls are now forwarded to voicemail"; --???
+
+FORWARD_PRO_MOBILE:
+--SIZECHAR 200;
+
+  GAE "Calls are now forwarded to your Professional Mobile",
+  EN0 "Calls are now forwarded to your Professional Mobile",
+
+
+
+
+  US0 "Calls are now forwarded to your Professional Cell Phone", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "呼叫正轉移至您的業務行動??",
+
+
+
+  HE0 "Calls are now forwarded to your Professional Mobile"; --???
+
+FORWARD_PERSO_MOBILE:
+--SIZECHAR 200;
+
+  GAE "Calls are now forwarded to your Personal Mobile",
+  EN0 "Calls are now forwarded to your Personal Mobile",
+
+
+
+
+  US0 "Calls are now forwarded to your Personal Cell Phone", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "呼叫正轉移至您的?人行動??",
+
+
+
+  HE0 "Calls are now forwarded to your Personal Mobile"; --???
+
+FORWARD_HOME_PHONE:
+--SIZECHAR 200;
+
+  GAE "Calls are now forwarded to your Home Phone",
+  EN0 "Calls are now forwarded to your Home Phone",
+
+
+
+
+  US0 "Calls are now forwarded to your Home Phone", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "呼叫正轉移至家庭??",
+
+
+
+  HE0 "Calls are now forwarded to your Home Phone"; --???
+
+FORWARD_CORDLESS_PHONE:
+--SIZECHAR 200;
+
+  GAE "Calls are now forwarded to your Wireless Phone",
+  EN0 "Calls are now forwarded to your Wireless Phone",
+
+
+
+
+  US0 "Calls are now forwarded to your Wireless Phone", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "呼叫正轉移至無???",
+
+
+
+  HE0 "Calls are now forwarded to your Wireless Phone"; --???
+
+FORWARD_COLLEAGUE_PHONE:
+--SIZECHAR 200;
+
+  GAE "Calls are now forwarded to your Colleague Phone",
+  EN0 "Calls are now forwarded to your Colleague Phone",
+
+
+
+
+  US0 "Calls are now forwarded to your Colleague's Phone", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "呼叫正轉移至同事??",
+
+
+
+  HE0 "Calls are now forwarded to your Colleague Phone"; --???
+
+FORWARD_FREE_NUMBER:
+--SIZECHAR 200;
+
+  GAE "Calls are now forwarded to another phone",
+  EN0 "Calls are now forwarded to another phone",
+
+
+
+
+  US0 "Calls are now forwarded to another phone", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "呼叫正轉移至其他??",
+
+
+
+  HE0 "Calls are now forwarded to another phone"; --???
+
+CANCEL_FORWARD:
+--SIZECHAR 200;
+
+  GAE "Call forwarding has been deactivated",
+  EN0 "Call forwarding has been deactivated",
+
+
+
+
+  US0 "Call forwarding has been deactivated", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "呼叫轉移已去活",
+
+
+
+  HE0 "Call forwarding has been deactivated"; --???
+
+OVERFLOW_ACTIVE_TITLE:
+--SIZECHAR 200;
+
+  GAE "Call overflow activated",
+  EN0 "Call overflow activated",
+
+
+
+
+  US0 "Call overflow activated", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "呼叫溢位已活化",
+
+
+
+  HE0 "Call overflow activated"; --???
+
+OVERFLOW_INACTIVE_TITLE:
+--SIZECHAR 200;
+
+  GAE "Call overflow deactivated",
+  EN0 "Call overflow deactivated",
+
+
+
+
+  US0 "Call overflow deactivated", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "呼叫溢位已去活",
+
+
+
+  HE0 "Call overflow deactivated"; --???
+
+OVERFLOW_ACTIVE:
+--SIZECHAR 200;
+-- beware!! In our case, you talk about associated and NOT about colleague. This is not the same
+
+  GAE "Call overflow on your associate is activated",
+  EN0 "Call overflow on your associate is activated",
+
+
+
+
+  US0 "Call overflow on your associate is activated", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "您的關?上的呼叫溢位已活化",
+
+
+
+  HE0 "Call overflow on your associate is activated"; --???
+
+OVERFLOW_INACTIVE:
+--SIZECHAR 200;
+-- beware!! In our case, you talk about associated and NOT about colleague. This is not the same
+
+  GAE "Call overflow on your associate has been deactivated",
+  EN0 "Call overflow on your associate has been deactivated",
+
+
+
+
+  US0 "Call overflow to your associate has been deactivated", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "您的關?上的呼叫溢位已去活",
+
+
+
+  HE0 "Call overflow on your associate has been deactivated"; --???
+
+OVERFLOW_ON_BUSY:
+--SIZECHAR 200;
+  GAE "(Phone is busy)",
+
+  EN0 "(Phone is busy)",
+
+
+
+
+
+  US0 "(Phone is busy)", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "(筿杠絬)", 
+
+
+  HE0 "(Phone is busy)"; --???
+
+OVERFLOW_ON_NO_ANSWER:
+--SIZECHAR 200;
+  GAE "(No reply)",
+
+  EN0 "(No reply)",
+
+
+
+
+
+  US0 "(No reply)", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "(礚钡钮)",
+
+
+  HE0 "(No reply)"; --???
+
+OVERFLOW_ON_BUSY_OR_NO_ANSWER:
+--SIZECHAR 200;
+  GAE "(Phone is busy or No reply)",
+
+  EN0 "(Phone is busy or No reply)",
+
+
+
+
+
+  US0 "(Phone is busy or no reply)", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "(筿杠絬┪礚钡钮)", 
+
+
+  HE0 "(Phone is busy or No reply)"; --???
+
+CURRENT_PHONE_TITLE:
+--SIZECHAR 200;
+  GAE "My Current Phone",
+
+  EN0 "My Current Phone",
+
+
+
+
+  US0 "My Current Phone", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "我的?前??",
+
+
+
+  HE0 "My Current Phone"; --???
+
+SET_BUSINESS_PHONE:
+--SIZECHAR 200;
+  GAE "Business Phone",
+
+  EN0 "Business Phone",
+
+
+
+
+  US0 "Business Phone", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "業務??",
+
+
+
+  HE0 "Business Phone"; --???
+
+SET_PRO_MOBILE:
+--SIZECHAR 200;
+  GAE "professional mobile",
+
+  EN0 "Professional Mobile",
+
+
+
+
+  US0 "Professional Mobile", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "業務行動??",
+
+
+
+  HE0 "Professional Mobile"; --???
+
+SET_PERSO_MOBILE:
+--SIZECHAR 200;
+  GAE "Personal Mobile",
+
+  EN0 "Personal Mobile",
+
+
+
+
+  US0 "Personal Mobile", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "?人行動??",
+
+
+
+  HE0 "Personal Mobile"; --???
+
+SET_HOME_PHONE:
+--SIZECHAR 200;
+  GAE "Home Phone",
+
+  EN0 "Home Phone",
+
+
+
+
+  US0 "Home Phone", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "家庭??",
+
+
+
+  HE0 "Home Phone"; --???
+
+SET_CORDLESS_PHONE:
+--SIZECHAR 200;
+  GAE "Wireless Phone",
+
+  EN0 "Wireless Phone",
+
+
+
+
+  US0 "Wireless Phone", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "無???",
+
+
+
+  HE0 "Wireless Phone"; --???
+
+SET_COLLEAGUE_PHONE:
+--SIZECHAR 200;
+  GAE "Colleague Phone",
+
+  EN0 "Colleague Phone",
+
+
+
+
+  US0 "Colleague Phone", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "同事??",
+
+
+
+  HE0 "Colleague Phone"; --???
+
+SET_VOIP_PHONE:
+--SIZECHAR 200;
+  GAE "Personal Computer",
+
+  EN0 "Personal Computer",
+
+
+
+
+  US0 "Personal Computer", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "?人?腦",
+
+
+
+  HE0 "Personal Computer"; --???
+
+SET_FREE_NUMBER:
+--SIZECHAR 200;
+  GAE "",
+
+  EN0 "",
+
+
+
+
+  US0 "",
+
+
+
+
+
+
+
+
+
+
+  CH1 "",
+
+
+
+  HE0 ""; --???
+
+NOW_CURRENT_PHONE:
+--SIZECHAR 200;
+  GAE " is now your current phone",
+
+  EN0 " is now your current phone",
+
+
+
+
+  US0 " is now your current phone", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "琌眤讽玡筿杠", 
+
+
+
+  HE0 " is now your current phone"; --???
+
+300:
+--SIZECHAR 200;
+
+  GAE "The address in the request resolved to several choices",
+  EN0 "The address in the request resolved to several choices",
+
+
+
+
+  US0 "The address in the request resolved to several choices", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "?求中的位址已解析為多?選擇",
+
+
+
+  HE0 "The address in the request resolved to several choices"; --???
+
+301:
+--SIZECHAR 200;
+
+  GAE "The user can no longer be found at the address",
+  EN0 "The user can no longer be found at the address",
+
+
+
+
+  US0 "The user can no longer be found at this address", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "位址中不會再發現使用者了",
+
+
+
+  HE0 "The user can no longer be found at the address"; --???
+
+302:
+--SIZECHAR 200;
+
+  GAE "The client retry the request at new address",
+  EN0 "The client retry the request at new address",
+
+
+
+
+  US0 "The client will retry the request at new address", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "用戶端在新位址中重??求",
+
+
+
+  HE0 "The client retry the request at new address"; --???
+
+305:
+--SIZECHAR 200;
+
+  GAE "The requested resource must be accessed through the proxy",
+  EN0 "The requested resource must be accessed through the proxy",
+
+
+
+
+  US0 "The requested resource must be accessed through the proxy", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "?求的資源必?透過代理接入",
+
+
+
+  HE0 "The requested resource must be accessed through the proxy"; --???
+
+380:
+--SIZECHAR 200;
+
+  GAE "The call was not successful, but alternative services are possible.",
+  EN0 "The call was not successful, but alternative services are possible.",
+
+
+
+
+  US0 "The call was not successful, but alternative services are possible.", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "呼叫未成功，才可能有取代服務",
+
+
+
+  HE0 "The call was not successful, but alternative services are possible."; --???
+
+400:
+--SIZECHAR 200;
+
+  GAE "Operation cannot be performed",
+  EN0 "Operation cannot be performed",
+
+
+
+
+  US0 "Operation cannot be performed",
+
+
+
+
+
+
+
+
+
+
+  CH1 "礚猭秈︽巨求",
+
+
+
+  HE0 "Operation cannot be performed"; --???
+
+401:
+--SIZECHAR 200;
+
+  GAE "Unauthorized",
+  EN0 "Unauthorized",
+
+
+
+
+  US0 "Unauthorized",
+
+
+
+
+
+
+
+
+
+
+  CH1 "ゼ甭舦", 
+
+
+
+  HE0 "Unauthorized"; --???
+
+403:
+--SIZECHAR 200;
+
+  GAE "Operation cannot be performed",
+  EN0 "Operation cannot be performed",
+
+
+
+
+  US0 "Operation cannot be performed",
+
+
+
+
+
+
+
+
+
+
+  CH1 "礚猭秈︽巨", 
+
+
+
+  HE0 "Operation cannot be performed"; --???
+
+404:
+--SIZECHAR 200;
+
+  GAE "Wrong number or number no longer exists",
+  EN0 "Wrong number or number no longer exists",
+
+
+
+
+  US0 "Wrong number or number no longer exists",
+
+
+
+
+
+
+
+
+
+
+  CH1 "岿粇腹絏┪腹絏ぃ",
+
+
+
+  HE0 "Wrong number or number no longer exists"; --???
+
+405:
+--SIZECHAR 200;
+
+  GAE "Operation cannot be performed",
+  EN0 "Operation cannot be performed",
+
+
+
+
+  US0 "Operation cannot be performed",
+
+
+
+
+
+
+
+
+
+
+  CH1 "礚猭秈︽巨", 
+
+
+
+  HE0 "Operation cannot be performed"; --???
+
+406:
+--SIZECHAR 200;
+
+  GAE "Operation cannot be performed",
+  EN0 "Operation cannot be performed",
+
+
+
+
+  US0 "Operation cannot be performed",
+
+
+
+
+
+
+
+
+
+
+  CH1 "礚猭秈︽巨", 
+
+
+
+  HE0 "Operation cannot be performed"; --???
+
+407:
+--SIZECHAR 200;
+
+  GAE "Unauthorized",
+  EN0 "Unauthorized",
+
+
+
+
+  US0 "Unauthorized",
+
+
+
+
+
+
+
+
+
+
+  CH1 "ゼ甭舦", 
+
+
+
+  HE0 "Unauthorized"; --???
+
+408:
+--SIZECHAR 200;
+
+  GAE "Operation cannot be performed",
+  EN0 "Operation cannot be performed",
+
+
+
+
+  US0 "Operation cannot be performed",
+
+
+
+
+
+
+
+
+
+
+  CH1 "礚猭秈︽巨", 
+
+
+
+  HE0 "Operation cannot be performed"; --???
+
+410:
+--SIZECHAR 200;
+
+  GAE "Number no longer exists",
+  EN0 "Number no longer exists",
+
+
+
+
+  US0 "Number no longer exists",
+
+
+
+
+
+
+
+
+
+
+  CH1 "腹絏ぃ", 
+
+
+
+  HE0 "Number no longer exists"; --???
+
+413:
+--SIZECHAR 200;
+
+  GAE "Operation cannot be performed",
+  EN0 "Operation cannot be performed",
+
+
+
+
+  US0 "Operation cannot be performed", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "礚猭秈︽巨",
+
+
+
+  HE0 "Operation cannot be performed"; --???
+
+414:
+--SIZECHAR 200;
+
+  GAE "Not found",
+  EN0 "Not found",
+
+
+
+
+  US0 "Not found", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "⊿Τт",
+
+
+
+  HE0 "Not found"; --???
+
+415:
+--SIZECHAR 200;
+
+  GAE "Unsupported media type",
+  EN0 "Unsupported media type",
+
+
+
+
+  US0 "Unsupported media type", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "ぃや穿碈砰摸", 
+
+
+
+  HE0 "Unsupported media type"; --???
+
+416:
+--SIZECHAR 200;
+
+  GAE "Operation cannot be performed",
+  EN0 "Operation cannot be performed",
+
+
+
+
+  US0 "Operation cannot be performed", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "礚猭秈︽巨", 
+
+
+
+  HE0 "Operation cannot be performed"; --???
+
+420:
+--SIZECHAR 200;
+
+  GAE "Operation cannot be performed",
+  EN0 "Operation cannot be performed",
+
+
+
+
+  US0 "Operation cannot be performed", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "礚猭秈︽巨機",
+
+
+
+  HE0 "Operation cannot be performed"; --???
+
+421:
+--SIZECHAR 200;
+
+  GAE "Operation cannot be performed",
+  EN0 "Operation cannot be performed",
+
+
+
+
+  US0 "Operation cannot be performed", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "礚猭秈︽巨", 
+
+
+
+  HE0 "Operation cannot be performed"; --???
+
+423:
+--SIZECHAR 200;
+
+  GAE "Operation cannot be performed",
+  EN0 "Operation cannot be performed",
+
+
+
+
+  US0 "Operation cannot be performed", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "礚猭秈︽巨", 
+
+
+
+  HE0 "Operation cannot be performed"; --???
+
+480:
+--SIZECHAR 200;
+
+  GAE "Callee is temporarily unavailable or busy", --???
+  EN0 "Called party is temporarily unavailable or busy",
+
+
+
+
+  US0 "The party you called is temporarily unavailable or busy", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "砆よ既ぃノ┪絬", 
+
+
+
+  HE0 "Called party is temporarily unavailable or busy"; --???
+
+482:
+--SIZECHAR 200;
+
+  GAE "Operation cannot be performed",
+  EN0 "Operation cannot be performed",
+
+
+
+
+  US0 "Operation cannot be performed", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "礚猭秈︽巨", 
+
+
+
+  HE0 "Operation cannot be performed"; --???
+
+483:
+--SIZECHAR 200;
+
+  GAE "Operation cannot be performed",
+  EN0 "Operation cannot be performed",
+
+
+
+
+  US0 "Operation cannot be performed", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "礚猭秈︽巨", 
+
+
+
+  HE0 "Operation cannot be performed"; --???
+
+484:
+--SIZECHAR 200;
+
+  GAE "Address incomplete",
+  EN0 "Address incomplete",
+
+
+
+
+  US0 "Address incomplete", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "ぃЧ俱", 
+
+
+
+  HE0 "Address incomplete"; --???
+
+485:
+--SIZECHAR 200;
+
+  GAE "Operation cannot be performed",
+  EN0 "Operation cannot be performed",
+
+
+
+
+  US0 "Operation cannot be performed", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "礚猭秈︽巨", 
+
+
+
+  HE0 "Operation cannot be performed"; --???
+
+486:
+--SIZECHAR 200;
+
+  GAE "Callee is temporarily unavailable or busy", --???
+  EN0 "Called party is temporarily unavailable or busy",
+
+
+
+
+  US0 "The party you called is temporarily unavailable or busy", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "砆よ既ぃノ┪絬",
+
+
+
+  HE0 "Called party is temporarily unavailable or busy"; --???
+
+487:
+--SIZECHAR 200;
+
+  GAE "The request was terminated by a BYE or CANCEL request.  ",
+  EN0 "The request was terminated by a BYE or CANCEL request.  ",
+
+
+
+
+  US0 "The request was terminated by a BYE or CANCEL request.  ", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "?求被 BYE 或 CANCEL ?求而終止。",
+
+
+
+  HE0 "The request was terminated by a BYE or CANCEL request.  "; --???
+
+488:
+--SIZECHAR 200;
+
+  GAE "Operation is not authorised", --???
+  EN0 "Operation is not authorised",
+
+
+
+
+  US0 "Operation is not authorized", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "⊿Τ甭舦巨", 
+
+
+
+  HE0 "Operation is not authorised"; --???
+
+491:
+--SIZECHAR 200;
+
+  GAE "Operation cannot be performed",
+  EN0 "Operation cannot be performed",
+
+
+
+
+  US0 "Operation cannot be performed", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "礚猭秈︽巨", 
+
+
+
+  HE0 "Operation cannot be performed"; --???
+
+493:
+--SIZECHAR 200;
+
+  GAE "Operation cannot be performed", --???
+  EN0 "Operation cannot be performed",
+
+
+
+
+  US0 "Operation cannot be performed", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "礚猭秈︽巨", 
+
+
+
+  HE0 "Operation cannot be performed"; --???
+
+500:
+--SIZECHAR 200;
+
+  GAE "Server error",
+  EN0 "Server error",
+
+
+
+
+  US0 "Server error", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "狝竟岿粇",
+
+
+
+  HE0 "Server error"; --???
+
+501:
+--SIZECHAR 200;
+
+  GAE "Server error",
+  EN0 "Server error",
+
+
+
+
+  US0 "Server error", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "狝竟岿粇", 
+
+
+
+  HE0 "Server error"; --???
+
+502:
+--SIZECHAR 200;
+
+  GAE "Server error",
+  EN0 "Server error",
+
+
+
+
+  US0 "Server error", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "狝竟岿粇", 
+
+
+
+  HE0 "Server error"; --???
+
+503:
+--SIZECHAR 200;
+
+  GAE "Server error",
+  EN0 "Server error",
+
+
+
+
+  US0 "Server error", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "狝竟岿粇",
+
+
+
+  HE0 "Server error"; --???
+
+504:
+--SIZECHAR 200;
+
+  GAE "Server error",
+  EN0 "Server error",
+
+
+
+
+  US0 "Server error", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "狝竟岿粇", 
+
+
+
+  HE0 "Server error"; --???
+
+505:
+--SIZECHAR 200;
+
+  GAE "Server error",
+  EN0 "Server error",
+
+
+
+
+  US0 "Server error", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "狝竟岿粇", 
+
+
+
+  HE0 "Server error"; --???
+
+513:
+--SIZECHAR 200;
+
+  GAE "Server error",
+  EN0 "Server error",
+
+
+
+
+  US0 "Server error", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "狝竟岿粇", 
+
+
+
+  HE0 "Server error"; --???
+
+600:
+--SIZECHAR 200;
+
+  GAE "Global error",
+  EN0 "Global error",
+
+
+
+
+  US0 "Global error", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "Ы岿粇", 
+
+
+
+  HE0 "Global error"; --???
+
+603:
+--SIZECHAR 200;
+
+  GAE "Global error",
+  EN0 "Global error",
+
+
+
+
+  US0 "Global error", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "Ы岿粇", 
+
+
+
+  HE0 "Global error"; --???
+
+604:
+--SIZECHAR 200;
+
+  GAE "Global error",
+  EN0 "Global error",
+
+
+
+
+  US0 "Global error", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "Ы岿粇", 
+
+
+
+  HE0 "Global error"; --???
+
+606:
+--SIZECHAR 200;
+
+  GAE "Global error",
+  EN0 "Global error",
+
+
+
+
+  US0 "Global error", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "Ы岿粇", 
+
+
+
+  HE0 "Global error"; --???
+
+900:
+--SIZECHAR 200;
+
+  GAE "End of Retransmission Timer.  ",
+  EN0 "End of Retransmission Timer.  ",
+
+
+
+
+  US0 "End of Retransmission Timer", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "結束重傳?定時器。",
+
+
+
+  HE0 "End of Retransmission Timer.  "; --???
+
+901:
+--SIZECHAR 200;
+-- DNS Request Failure | 蒫hec de requ阾e DNS
+
+  GAE "Network error, please contact your system administrator.  ",
+  EN0 "Network error, please contact your system administrator.  ",
+
+
+
+
+  US0 "Network error. Please contact your system administrator.",
+
+
+
+
+
+
+
+
+
+
+  CH1 "呼隔岿粇叫羛么╰参恨瞶",
+
+
+
+  HE0 "Network error, please contact your system administrator.  "; --???
+
+902:
+--SIZECHAR 200;
+
+  GAE "Bad SIP Configuration File.  ",
+  EN0 "Bad SIP Configuration File.  ",
+
+
+
+
+  US0 "Bad SIP Configuration File", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "壞 SIP 設定檔。",
+
+
+
+  HE0 "Bad SIP Configuration File.  "; --???
+
+903:
+--SIZECHAR 200;
+
+  GAE "SIP Stack Restarting.  ",
+  EN0 "SIP Stack Restarting.  ",
+
+
+
+
+  US0 "SIP Stack Restarting ", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "SIP 堆疊重啟。",
+
+
+
+  HE0 "SIP Stack Restarting.  "; --???
+
+904:
+--SIZECHAR 200;
+
+  GAE "Configuration error, check the user domain information.  ",
+  EN0 "Configuration error, check the user domain information.  ",
+
+
+
+
+  US0 "Configuration error. Check the user domain information.  ", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "組態錯誤，檢查使用者網域資?。",
+
+
+
+  HE0 "Configuration error, check the user domain information.  "; --???
+
+905:
+--SIZECHAR 200;
+
+  GAE "Configuration problem, no sound card managed",
+  EN0 "Configuration problem, no sound card managed",
+
+
+
+
+  US0 "Configuration problem. No sound card declared.", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "組態?題，無管理的音效卡",
+
+
+
+  HE0 "Configuration problem, no sound card managed"; --???
+
+906:
+--SIZECHAR 200;
+
+  GAE "Certificat failure, please contact your administrator",
+  EN0 "Certificat failure, please contact your administrator",
+
+
+
+
+  US0 "Certificat failure, please contact your administrator", --???
+
+
+
+
+
+
+
+
+
+
+  CH1 "粄靡ア毖叫羛么眤恨瞶", 
+
+
+
+  HE0 "Certificat failure, please contact your administrator"; --???
+
+907:
+--SIZECHAR 200;
+
+  GAE "Configuration problem, please contact your administrator",
+  EN0 "Configuration problem, please contact your administrator",
+
+
+
+
+  US0 "Configuration problem. Please contact your administrator.",
+
+
+
+
+
+
+
+
+
+
+  CH1 "舱篈砞﹚拜肈叫羛么眤恨瞶", 
+
+
+
+  HE0 "Configuration problem, please contact your administrator"; --???
+
+-- DLM 02/07/2009 crms00182492 +
+-- CTA 08/04/2009 : CR crms00168200 +
+
+FORWARD_ROUTING:
+--SIZECHAR 200;
+
+  GAE "Call routing is now activated",
+  EN0 "Call routing is now activated",
+
+
+
+
+  US0 "Call routing is now activated", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "㊣隔パ瞷币笆",
+
+
+
+  HE0 "Call routing is now activated"; --???
+
+-- DLM 02/07/2009 crms00182492 -
+
+FORWARD_ROUTING_ACTIVE_TITLE:
+--SIZECHAR 100;
+  GAE "Call routing activated",
+
+  EN0 "Call routing activated",
+
+
+
+
+  US0 "Call routing activated", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "㊣隔パ币笆", 
+
+
+
+  HE0 "Call routing activated"; --???
+
+REQUEST_IN_PROGRESS:
+--SIZECHAR 100;
+  GAE "Request in progress ...",
+
+  EN0 "Request in progress ...",
+
+
+
+
+  US0 "Request in progress...", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "㊣隔パ币笆", 
+
+
+
+  HE0 "Request in progress ..."; --???
+
+REQUEST_IN_PROGRESS_FLEX:
+--SIZECHAR 100;
+  GAE "Request in progress ...",
+
+  EN0 "Request in progress ...",
+
+
+
+
+  US0 "FlexOffice request in progress...", -- fr0 and gae do not have 'FlexOffice' - should the term be in or out?
+
+
+
+
+
+
+
+
+
+
+  CH1 "叫―タ矪瞶い...", 
+
+
+
+  HE0 "Request in progress ..."; --???
+
+SET_CURRENT_PHONE_UNAVAILABLE:
+--SIZECHAR 200;
+
+  GAE "The current phone cannot be changed while on the phone",
+  EN0 "The current phone cannot be changed while on the phone",
+
+
+
+
+  US0 "The current phone cannot be changed while in operation.", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "硄杠いぃэ讽玡筿杠", 
+
+
+
+  HE0 "The current phone cannot be changed while on the phone"; --???
+
+SIP_INTERNAL_ERROR:
+--SIZECHAR 100;
+  GAE "SIP user agent error ...",
+
+  EN0 "SIP user agent error ...",
+
+
+
+
+  US0 "SIP user agent error", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "SIP ㄏノ瞶岿粇...", 
+
+
+
+  HE0 "SIP user agent error ..."; --???
+
+SIP_DEVICE_OUT_RETURN_BUSINESS:
+--SIZECHAR 100;
+  GAE "A problem occur on current phone, return on business phone mode.",
+
+  EN0 "A problem occur on current phone, return on business phone mode.", --!!! 
+
+
+
+
+  US0 "A problem occur on current phone, return on business phone mode.", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "A problem occur on current phone, return on business phone mode.", --!!! 
+
+
+
+  HE0 "A problem occur on current phone, return on business phone mode."; --!!! 
+
+SET_SIP_DEVICE_UNAVAILABLE:
+--SIZECHAR 100;
+  GAE "SIP Configuration error, please contact your administrator",
+
+  EN0 "SIP Configuration error, please contact your administrator", --!!! 
+
+
+
+
+  US0 "SIP Configuration error, please contact your administrator", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "SIP Configuration error, please contact your administrator", --!!! 
+
+
+
+  HE0 "SIP Configuration error, please contact your administrator"; --!!! 
+

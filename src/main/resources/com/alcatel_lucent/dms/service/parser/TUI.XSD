@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  
+  <xs:element name="catalog">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="unbounded" ref="entry"/>
+        <xs:element minOccurs="0" ref="comment"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="entry"> <!-- An entry contains, the TUI key element and message elements with the translation of the TUI key for supported languages. 
+  It may also contain a usage element that has an example of how it is used in the TUI -->
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" ref="key"/>
+        <xs:element minOccurs="0" maxOccurs="1" ref="usage"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="message"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="key"> <!-- The text content of a key element is the name of the TUI key referenced by Voice App -->
+    <xs:complexType  mixed="true">
+      <xs:attribute name="wavOrTts" use="optional" type="attrWavOrTts"/> <!--Specifies if a wav recording is needed or if TTS engine is used or both -->
+      <xs:attribute name="position" use="optional" type="phrasePositions"/><!-- Specifies position of prompt in constructed sentences. Used to indicate tone in the .xls transcripts to voice talents -->
+      <xs:attribute name="context" use="optional" type="contextEnum"/><!-- Specifies context of prompts (ordinal, time, default etc) -->
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="message"> <!-- A message element has a nested phrase element whose text content has the translation in a particular language for the TUI key in the key element  -->
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" ref="comment"/> <!-- Comments about translation if needed -->
+        <xs:element minOccurs="0" ref="phrase"/> <!-- Contains the translated phrase. Used to generate .xls transcripts for translators and voice talents as well as to generate property files -->
+      </xs:sequence>
+      <xs:attribute name="lang" use="required" type="supportedLanguages"/> <!-- language value in POSIX format -->
+      <xs:attribute name="doNotTranslate" type="xs:boolean"/> <!-- Some prompts are needed in property files but are to be ignored by translators and voice talents. Hence this flag.  -->
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:simpleType name="supportedLanguages"> <!--  All possible supported languages to be added here -->
+  <xs:restriction base="xs:string">
+  	<xs:enumeration value="ca_ES" />
+  	<xs:enumeration value="cs_CZ" />
+  	<xs:enumeration value="da_DK" />
+    <xs:enumeration value="de_DE" />
+    <xs:enumeration value="en_GB" />
+    <xs:enumeration value="en_US" />
+    <xs:enumeration value="es_ES" />
+    <xs:enumeration value="es_MX" />
+    <xs:enumeration value="fi_FI" />
+    <xs:enumeration value="fr_FR" />
+    <xs:enumeration value="fr_CA" />
+    <xs:enumeration value="hu_HU" />
+    <xs:enumeration value="he_IL" />
+    <xs:enumeration value="it_IT" />
+    <xs:enumeration value="ja_JP" />
+    <xs:enumeration value="ko_KR" />
+    <xs:enumeration value="nl_BE" />
+    <xs:enumeration value="nl_NL" />
+    <xs:enumeration value="no_NO" />
+    <xs:enumeration value="pl_PL" />
+    <xs:enumeration value="pt_PT" />
+    <xs:enumeration value="pt_BR" />
+    <xs:enumeration value="ru_RU" />
+    <xs:enumeration value="sv_SE" />
+    <xs:enumeration value="tr_TR" />
+    <xs:enumeration value="zh_TW" />
+    <xs:enumeration value="zh_CN" />
+    <xs:enumeration value="zh_HK" />
+   </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="phrasePositions">
+  <xs:restriction base="xs:string">
+  	<xs:enumeration value="middle" /> <!--  occurs only in the middle of any constructed sentence (Ex: TUI.of= "... of ...")  -->
+  	<xs:enumeration value="begin" />  <!--  occurs only in the beginning of a constructed sentence (Ex: TUI.sendMessages= "Send messages..." ) -->
+    <xs:enumeration value="end" /> <!--  occurs only at the end of a constructed sentence (Ex: TUI.fromAnUnknownCaller= "... from an unknown caller.") -->
+    <xs:enumeration value="whole" /> <!--  Is a complete sentence by itself (Ex: TUI.accessNotGranted= "You are not granted access to this application.") -->
+  </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="attrWavOrTts"> 
+  <xs:restriction base="xs:string">
+    <xs:enumeration value="wav" /> <!-- needs a wav recording and translation-->
+    <xs:enumeration value="tts" /> <!--  uses TTS engine and needs translation-->
+    <xs:enumeration value="both" /> <!--  uses TTS engine, needs wav recording and translation.-->   
+  </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="contextEnum">
+  <xs:restriction base="xs:string">
+	<xs:enumeration value="NOUN" /> <!-- To resolve ambiguity if a word can be used as both a noun and a verb -->
+	<xs:enumeration value="VERB" /> <!-- To resolve ambiguity if a word can be used as both a noun and a verb -->
+	<xs:enumeration value="ORDINAL" /> <!-- To specify a number's usage as an ordinal number -->
+	<xs:enumeration value="CARDINAL" /> <!-- To specify a number's usage as an cardinal number -->
+	<xs:enumeration value="TIME" /> <!-- To specify a word's usage as a unit of time -->
+	<xs:enumeration value="DEFAULT" /> <!-- Default context -->
+  </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:element name="comment" type="xs:string"/> <!-- Document (catalog) level comment, Message element level comment -->
+  <xs:element name="usage" type="xs:string"/> <!--  Entry level usage comment -->
+  <xs:element name="phrase" type="xs:string"/> <!--  Message level translation -->
+  
+</xs:schema>
