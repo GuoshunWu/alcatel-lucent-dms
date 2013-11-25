@@ -550,7 +550,7 @@ define [
         page: 1
         postData:
           {label: param.id, format: 'grid', status: param.status, prop: 'languageCode,language.name,translation'}
-      ).setCaption(i18n.dialog.stringsettingstrans.caption.format param.key, param.ref)
+      ).setCaption(i18n.dialog.stringsettingstrans.caption.format $.jgrid.htmlEncode(param.key), $.jgrid.htmlEncode(param.ref))
         .trigger "reloadGrid"
     buttons: [
       {text: c18n.close, click: (e)->
