@@ -620,7 +620,7 @@
             <plugin>
                 <groupId>org.apache.tomcat.maven</groupId>
                 <artifactId>tomcat7-maven-plugin</artifactId>
-                <version>2.1</version>
+                <version>2.2</version>
                 <configuration>
                     <uriEncoding>utf-8</uriEncoding>
                     <url>http://localhost:8888/manager/text</url>
@@ -770,16 +770,13 @@
         <profile>
             <id>MySQL199</id>
             <properties>
-
                 <db.driver>com.mysql.jdbc.Driver</db.driver>
                 <db.url>
                     jdbc:MySQL://172.24.191.199:3306/dms?characterEncoding=utf8&amp;useCursorFetch=true&amp;useUnicode=true
                 </db.url>
                 <db.user>dms</db.user>
                 <db.password>alcatel123</db.password>
-
                 <db.house-keeping-test-sql>select CURRENT_DATE</db.house-keeping-test-sql>
-
                 <db.dialect>org.hibernate.dialect.MySQL5InnoDBDialect</db.dialect>
                 <!-- none, create, create-drop, update, validate -->
                 <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
@@ -877,7 +874,6 @@
                     <plugin>
                         <groupId>org.apache.tomcat.maven</groupId>
                         <artifactId>tomcat7-maven-plugin</artifactId>
-                        <version>2.1</version>
                         <configuration>
                             <path>/dms</path>
                         </configuration>
@@ -898,7 +894,6 @@
                     <plugin>
                         <groupId>org.apache.tomcat.maven</groupId>
                         <artifactId>tomcat7-maven-plugin</artifactId>
-                        <version>2.1</version>
                         <configuration>
                             <url>http://135.117.180.165:8888/manager/text</url>
                         </configuration>
@@ -919,7 +914,6 @@
                     <plugin>
                         <groupId>org.apache.tomcat.maven</groupId>
                         <artifactId>tomcat7-maven-plugin</artifactId>
-                        <version>2.1</version>
                         <configuration>
                             <url>http://172.24.190.236:8888/manager/text</url>
                         </configuration>
@@ -940,7 +934,6 @@
                     <plugin>
                         <groupId>org.apache.tomcat.maven</groupId>
                         <artifactId>tomcat7-maven-plugin</artifactId>
-                        <version>2.1</version>
                         <configuration>
                             <url>http://172.24.190.236:9999/manager/text</url>
                         </configuration>
@@ -962,7 +955,6 @@
                     <plugin>
                         <groupId>org.apache.tomcat.maven</groupId>
                         <artifactId>tomcat7-maven-plugin</artifactId>
-                        <version>2.1</version>
                         <configuration>
                             <url>http://135.117.177.136:7777/manager/text</url>
                         </configuration>
@@ -983,7 +975,6 @@
                     <plugin>
                         <groupId>org.apache.tomcat.maven</groupId>
                         <artifactId>tomcat7-maven-plugin</artifactId>
-                        <version>2.1</version>
                         <configuration>
                             <url>http://135.117.180.165:9999/manager/text</url>
                             <!-- <url>http://172.24.190.236:8080/manager/text</url>-->
