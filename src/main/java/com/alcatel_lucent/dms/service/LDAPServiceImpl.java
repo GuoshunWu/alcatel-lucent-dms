@@ -34,13 +34,13 @@ public class LDAPServiceImpl implements LDAPService {
         }
         @Override
         public Object mapFromAttributes(Attributes attributes) throws NamingException {
-            Attribute cil = attributes.get("cslx500");
+            Attribute csl = attributes.get("cslx500");
             Attribute email = attributes.get("mail");
-            if (null == cil || email == null) return null;
-            String csl = (String) attributes.get("cn").get();
+            if (null == csl || email == null) return null;
+            String cil = (String) attributes.get("cn").get();
 
             if (cil == null || email == null) return null;
-            return new User(csl, email.get().toString(), cil.get().toString());
+            return new User(csl.get().toString(), email.get().toString(), cil);
         }
     }
 
