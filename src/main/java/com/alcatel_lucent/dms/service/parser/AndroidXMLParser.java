@@ -305,7 +305,7 @@ public class AndroidXMLParser extends DictionaryParser {
         return StringUtils.join(strings, "\n");
     }
 
-    public Collection<Label> readLabels(File file, Dictionary dict, DictionaryLanguage dl, Collection<BusinessWarning> warnings, BusinessException exceptions) {
+    public void readLabels(File file, Dictionary dict, DictionaryLanguage dl, Collection<BusinessWarning> warnings, BusinessException exceptions) {
         String langCode = dl.getLanguageCode();
         boolean isReference = langCode.equals(dict.getLanguageReferenceCode());
 
@@ -374,8 +374,6 @@ public class AndroidXMLParser extends DictionaryParser {
             }
             sortNo += size;
         }
-
-        return null;
     }
 
     private int readElement(Dictionary dict, Element element, String key, String comments, int sortNo, DictionaryLanguage dl, Collection<BusinessWarning> warnings) {
