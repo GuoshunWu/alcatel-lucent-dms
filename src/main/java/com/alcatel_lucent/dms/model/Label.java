@@ -316,6 +316,12 @@ public class Label extends BaseEntity implements Cloneable {
     }
 
     @Transient
+    public boolean isTranslated(DictionaryLanguage dl) {
+        return Translation.STATUS_TRANSLATED == getTranslationStatus(dl.getLanguageCode());
+
+    }
+
+    @Transient
     public Translation getCt() {
         return ct;
     }
@@ -355,9 +361,9 @@ public class Label extends BaseEntity implements Cloneable {
      * @return
      */
     public String getTranslation(String langCode) {
-    	if (context.getName().equals(Context.EXCLUSION)) {
-    		return reference;
-    	}
+        if (context.getName().equals(Context.EXCLUSION)) {
+            return reference;
+        }
         DictionaryLanguage dl = this.getDictionary().getDictLanguage(langCode);
         LabelTranslation lt = getOrigTranslation(langCode);
         if (lt != null && (!lt.isNeedTranslation())) {
