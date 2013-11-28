@@ -711,7 +711,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                         LabelTranslation lastTranslation = lastLabel.getOrigTranslation(trans.getLanguageCode());
                         if (label.getReference().equals(lastLabel.getReference())) {    // reference is not changed
 /*
-                        	if (lastTranslation != null &&
+                            if (lastTranslation != null &&
                                     !lastTranslation.getOrigTranslation().equals(trans.getOrigTranslation()) &&
                                     !trans.getOrigTranslation().equals(label.getReference())) {
                                 // translation changed means the label was translated on developer side
@@ -1225,10 +1225,10 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             }
             if (contextExp != null) {
                 if (ctx == null) {
-                    if(contextExp.equals(Context.LABEL)){
+                    if (contextExp.equals(Context.LABEL)) {
                         String expression = textService.populateContextKey(contextExp, label);
                         ctx = textService.getContextByExpressionForLabel(expression, label.getDictionary().getId());
-                    }else{
+                    } else {
                         ctx = textService.getContextByExpression(contextExp, label.getDictionary());
                     }
                 }
@@ -1396,11 +1396,16 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     }
 
     private String capitalizeText(String text, int style, Locale locale) {
-        if (style == CapitalizeAction.CAPITALIZATION_ALL_UPPER_CASE) {
-            return text.toUpperCase(locale);
-        } else if (style == CapitalizeAction.CAPITALIZATION_ALL_LOWER_CASE) {
-            return text.toLowerCase(locale);
-        } else if (style == CapitalizeAction.CAPITALIZATION_FIRST_CAPITALIZED) {
+        if (StringUtils.isBlank(text)) return text;
+
+        if (style == CapitalizeAction.CAPITALIZATION_ALL_UPPER_CASE) return text.toUpperCase(locale);
+        if (style == CapitalizeAction.CAPITALIZATION_ALL_LOWER_CASE) return text.toLowerCase(locale);
+
+        if (style == CapitalizeAction.CAPITALIZATION_FIRST_CAPITALIZED_ONLY) {
+
+            return String.valueOf(text.charAt(0)).toUpperCase(locale) + text.substring(1);
+        }
+        if (style == CapitalizeAction.CAPITALIZATION_FIRST_CAPITALIZED) {
             text = text.toLowerCase(locale);
             for (int i = 0; i < text.length(); i++) {
                 if (!isWordBoundary(text.charAt(i))) {
@@ -1408,7 +1413,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     break;
                 }
             }
-        } else if (style == CapitalizeAction.CAPITALIZATION_ALL_CAPITALIZED) {
+        }
+        if (style == CapitalizeAction.CAPITALIZATION_ALL_CAPITALIZED) {
             text = text.toLowerCase(locale);
             boolean inWord = false;
             for (int i = 0; i < text.length(); i++) {

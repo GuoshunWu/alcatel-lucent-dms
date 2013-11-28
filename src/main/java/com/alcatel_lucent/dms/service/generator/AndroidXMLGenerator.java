@@ -6,6 +6,10 @@ import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.service.DaoService;
 import com.alcatel_lucent.dms.service.parser.AndroidXMLParser;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
+import org.apache.commons.collections.PredicateUtils;
+import org.apache.commons.collections.Transformer;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
@@ -20,11 +24,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Component
 public class AndroidXMLGenerator extends DictionaryGenerator {
@@ -50,7 +56,7 @@ public class AndroidXMLGenerator extends DictionaryGenerator {
         generateAndroidXML(target, dict, null);
 
         // generate for each language
-        if (CollectionUtils.isEmpty(dict.getDictLanguages())) return;
+        if (org.springframework.util.CollectionUtils.isEmpty(dict.getDictLanguages())) return;
         for (DictionaryLanguage dl : dict.getDictLanguages()) {
             generateAndroidXML(target, dict, dl);
         }
@@ -85,8 +91,12 @@ public class AndroidXMLGenerator extends DictionaryGenerator {
         addNamespaceForElement(dictNamespaces, eleLabels);
 
         addAttributesForElement(dictAttributes, eleLabels);
+        String lastComment = null;
         for (Label label : dict.getAvailableLabels()) {
-            writeLabel(eleLabels, label, dl);
+            //keep last comment above the label which is not translated
+            lastComment = StringUtils.defaultIfBlank(label.getAnnotation2(), lastComment);
+            //if last comment has been write done, then make it empty
+            lastComment = writeLabel(eleLabels, label, dl, lastComment) ? "" : lastComment;
         }
         // output
         String filename = getFileName(dict.getName(), dl);
@@ -136,43 +146,75 @@ public class AndroidXMLGenerator extends DictionaryGenerator {
         }
     }
 
-    private void writeLabel(Element eleLabels, Label label, DictionaryLanguage dl) {
-        if (null != dl && label.getTranslationStatus(dl.getLanguageCode()) != Translation.STATUS_TRANSLATED) {
-            return;
-        }
+
+    private boolean isArrayOrPluralLabel(Label label) {
+        String lblKey = label.getKey();
+        String[] tokens = lblKey.split(AndroidXMLParser.KEY_SEPARATOR);
+        return 3 == tokens.length && (lblKey.startsWith(AndroidXMLParser.ELEMENT_STRING_ARRAY) || lblKey.startsWith(AndroidXMLParser.ELEMENT_PLURALS));
+    }
+
+    /**
+     * @param name array or plural name which like string-array_typeOfEmbedTags
+     *             labelKey.substring(0, labelKey.lastIndexOf(AndroidXMLParser.KEY_SEPARATOR))
+     */
+    private List<Label> getLabelsInArrayOrPlural(final String name, final Collection<Label> allLabels) {
+        List<Label> arrayLabels = new ArrayList(allLabels);
+        CollectionUtils.filter(arrayLabels, new Predicate() {
+            @Override
+            public boolean evaluate(Object object) {
+                Label dictLabel = (Label) object;
+                if (!isArrayOrPluralLabel(dictLabel)) return false;
+                String key = dictLabel.getKey();
+                String pattern = "^" + name + "_\\d+$";
+                return key.matches(pattern);
+            }
+        });
+        return arrayLabels;
+    }
+
+    /**
+     * return true, only if the array or plurals is translated(at least one item in array or plurals
+     * is translated will be considered translated)
+     */
+    private boolean isArrayOrPluralTranslated(String name, Collection<Label> allLabels, DictionaryLanguage dl) {
+        return CollectionUtils.exists(getLabelsInArrayOrPlural(name, allLabels),
+                PredicateUtils.invokerPredicate("isTranslated", new Class[]{DictionaryLanguage.class}, new Object[]{dl}));
+    }
+
+    /**
+     * Write a label element from an label for a specified language
+     *
+     * @param eleLabels element label to write
+     * @param label
+     * @return whether the label is write
+     */
+    private boolean writeLabel(Element eleLabels, Label label, DictionaryLanguage dl, String lastComment) {
+        String lblKey = label.getKey();
+        String[] tokens = lblKey.split(AndroidXMLParser.KEY_SEPARATOR);
+
 
         String text = label.getReference();
         String annotation1 = label.getAnnotation1();    // attributes
-        String annotation2 = label.getAnnotation2();    // leading comments
-        if (dl != null) {
+//        String annotation2 = label.getAnnotation2();    // leading comments
+        // keep the last comment
+        String annotation2 = lastComment;
+        boolean isArrayOrPlurals = isArrayOrPluralLabel(label);
+
+        if (dl != null) {//language file
             LabelTranslation lt = label.getOrigTranslation(dl.getLanguageCode());
             if (lt != null) {
                 annotation1 = lt.getAnnotation1();
-                annotation2 = lt.getAnnotation2();
+                // DMS will take the comment in reference file instead(language file comment is discarded)
+//                annotation2 = lt.getAnnotation2();
             }
             text = label.getTranslation(dl.getLanguageCode());
         }
 
         // add leading comments
         addCommentsForElement(annotation2, eleLabels);
-        String lblKey = label.getKey();
-        String[] tokens = lblKey.split(AndroidXMLParser.KEY_SEPARATOR);
 
-        if (3 == tokens.length && (lblKey.startsWith(AndroidXMLParser.ELEMENT_STRING_ARRAY) || lblKey.startsWith(AndroidXMLParser.ELEMENT_PLURALS))) {
-            String elemName = tokens[0];
-            String key = tokens[1];
-            String xpath = String.format("%s[@%s='%s']", elemName, AndroidXMLParser.getKeyAttributeName(), key);
-            Element subElem = (Element) eleLabels.selectSingleNode(xpath);
-            if (null == subElem) {
-                subElem = eleLabels.addElement(elemName);
-                subElem.addAttribute(AndroidXMLParser.getKeyAttributeName(), key);
-            }
 
-            Element elemItem = subElem.addElement("item");
-            addCommentsForElement(annotation2, subElem);
-            addAttributesForElement(annotation1, elemItem);
-            elemItem.addText(text);
-        } else {
+        if (!isArrayOrPlurals) { // normal label
             // create label
             Element eleLabel = eleLabels.addElement("string");
             eleLabel.addAttribute("name", label.getKey());
@@ -181,7 +223,26 @@ public class AndroidXMLGenerator extends DictionaryGenerator {
             if (text.indexOf('\n') != -1) {    // preserve line breaks among the text
                 eleLabel.addAttribute(QName.get("space", Namespace.XML_NAMESPACE), "preserve");
             }
+
+            return true;
         }
+
+        // string array or quantity string
+        String elemName = tokens[0];
+        String key = tokens[1];
+        String xpath = String.format("%s[@%s='%s']", elemName, AndroidXMLParser.getKeyAttributeName(), key);
+
+        Element elemLabel = (Element) eleLabels.selectSingleNode(xpath);
+        if (null == elemLabel) { // add array or quantity string element at first time
+            elemLabel = eleLabels.addElement(elemName);
+            elemLabel.addAttribute(AndroidXMLParser.getKeyAttributeName(), key);
+        }
+        // add each item in array or quantity string
+        Element elemItem = elemLabel.addElement("item");
+        addCommentsForElement(annotation2, elemLabel);
+        addAttributesForElement(annotation1, elemItem);
+        elemItem.addText(text);
+        return true;
     }
 
     private void addCommentsForElement(String strComments, Branch parentBranch) {
