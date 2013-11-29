@@ -273,7 +273,7 @@ define [
       )
 
       $(capitalizeId).button(
-        create:(event, ui)->$(@).width(300)
+        create:(event, ui)->
         icons: {
           primary: "ui-icon-triangle-1-n"
         }

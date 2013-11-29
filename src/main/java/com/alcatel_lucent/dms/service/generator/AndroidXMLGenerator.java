@@ -7,6 +7,7 @@ import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.service.DaoService;
 import com.alcatel_lucent.dms.service.parser.AndroidXMLParser;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.collections.PredicateUtils;
@@ -29,6 +30,7 @@ import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 @Component
@@ -66,6 +68,11 @@ public class AndroidXMLGenerator extends DictionaryGenerator {
         return Constants.DictionaryFormat.XML_ANDROID;
     }
 
+    private String getArrayNameByLabel(Label label) {
+        String labelKey = label.getKey();
+        return labelKey.substring(0, labelKey.lastIndexOf(AndroidXMLParser.KEY_SEPARATOR));
+    }
+
     /**
      * Generate a single file
      *
@@ -95,7 +102,8 @@ public class AndroidXMLGenerator extends DictionaryGenerator {
         for (Label label : dict.getAvailableLabels()) {
             if (outputtedArrayLabels.contains(label.getKey())) continue;
             //keep last comment above the label which is not translated
-            lastComment = StringUtils.defaultIfBlank(label.getAnnotation2(), lastComment);
+            String realComment = isArrayOrPluralLabel(label) ? getArrayOrPluralsComment(getArrayNameByLabel(label), dict) : label.getAnnotation2();
+            lastComment = StringUtils.defaultIfBlank(realComment, lastComment);
             //if last comment has been write done, then make it empty
             lastComment = writeLabel(eleLabels, label, dl, lastComment, outputtedArrayLabels) ? "" : lastComment;
         }
@@ -183,6 +191,27 @@ public class AndroidXMLGenerator extends DictionaryGenerator {
     }
 
     /**
+     * Get the comment above the array from its first item annotation
+     */
+    private String getArrayOrPluralsComment(String name, Dictionary dict) {
+        Label fistLabel = dict.getLabel(name + AndroidXMLParser.KEY_SEPARATOR + "0");
+        String[] tokens = fistLabel.getAnnotation2().split(";");
+        return decodeBase64(tokens[0]);
+    }
+
+    private String decodeBase64(String source) {
+        String charset = "iso8859-1";
+        String result = null;
+        try {
+            result = new String(Base64.decodeBase64(source.getBytes(charset)), charset);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+
+    /**
      * Write a label element from an label for a specified language
      *
      * @param eleLabels            element label to write
@@ -238,19 +267,23 @@ public class AndroidXMLGenerator extends DictionaryGenerator {
 
         if (dl != null && !isArrayOrPluralTranslated(arrayName, dictLabels, dl)) return true;
 
+        addCommentsForElement(lastComment, eleLabels);
         Element elemLabel = eleLabels.addElement(elemName);
         elemLabel.addAttribute(AndroidXMLParser.getKeyAttributeName(), key);
-        // how can we handle with the comment above array
-//        addCommentsForElement(lastComment, elemLabel);
 
         //if array is not translated continue
-
         // add each item in array or quantity string
         for (Label arrayLabel : arrayLabels) {
-            Element elemItem = elemLabel.addElement("item");
-            text = arrayLabel.getReference();
+            String index = arrayLabel.getKey().substring(arrayLabel.getKey().lastIndexOf(AndroidXMLParser.KEY_SEPARATOR) + 1);
             annotation1 = arrayLabel.getAnnotation1();
             lastComment = arrayLabel.getAnnotation2();
+            if ("0".equals(index) && !StringUtils.isBlank(lastComment)) {//first label comment is special
+                lastComment = decodeBase64(lastComment.split(";")[1]);
+            }
+            addCommentsForElement(lastComment, elemLabel);
+
+            Element elemItem = elemLabel.addElement("item");
+            text = arrayLabel.getReference();
 
             if (dl != null) {
                 LabelTranslation lt = arrayLabel.getOrigTranslation(dl.getLanguageCode());
@@ -261,10 +294,8 @@ public class AndroidXMLGenerator extends DictionaryGenerator {
                 }
                 text = arrayLabel.getTranslation(dl.getLanguageCode());
             }
-            addCommentsForElement(lastComment, elemLabel);
             addAttributesForElement(annotation1, elemItem);
             elemItem.addText(text);
-
             outputtedArrayLabels.add(arrayLabel.getKey());
         }
         return true;

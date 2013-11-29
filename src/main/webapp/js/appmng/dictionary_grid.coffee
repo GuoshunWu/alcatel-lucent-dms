@@ -235,7 +235,7 @@ define [
   )
 
   $(capitalizeId, '#DMS_applicationPanel').button(
-    create:(event, ui)->$(@).width(300)
+    create:(event, ui)->
     icons: {
       primary: "ui-icon-triangle-1-n"
     }
