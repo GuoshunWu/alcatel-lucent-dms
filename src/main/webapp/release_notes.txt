@@ -3,7 +3,9 @@ V2.13.0
     * Keep original formula in OTC dictionary
     * New dictionary format support: XML android
     * Optimize memory usage of importing dictionaries
+    * Allow to modify translation and status in translation search result
     * Fix display issue of updating translation prompt
+    * Fix display issue of table header in Detailed Translation dialog
 
 V2.12.2 (Sep 26, 2013)
     * Fix problem of default context value in case some language codes were not recognized when import
