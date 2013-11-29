@@ -4,6 +4,7 @@ import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.model.*;
+import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.service.DaoService;
 import com.alcatel_lucent.dms.service.parser.AndroidXMLParser;
 import org.apache.commons.collections.CollectionUtils;
@@ -28,9 +29,7 @@ import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class AndroidXMLGenerator extends DictionaryGenerator {
@@ -92,11 +91,13 @@ public class AndroidXMLGenerator extends DictionaryGenerator {
 
         addAttributesForElement(dictAttributes, eleLabels);
         String lastComment = null;
+        Set<String> outputtedArrayLabels = new HashSet<String>();
         for (Label label : dict.getAvailableLabels()) {
+            if (outputtedArrayLabels.contains(label.getKey())) continue;
             //keep last comment above the label which is not translated
             lastComment = StringUtils.defaultIfBlank(label.getAnnotation2(), lastComment);
             //if last comment has been write done, then make it empty
-            lastComment = writeLabel(eleLabels, label, dl, lastComment) ? "" : lastComment;
+            lastComment = writeLabel(eleLabels, label, dl, lastComment, outputtedArrayLabels) ? "" : lastComment;
         }
         // output
         String filename = getFileName(dict.getName(), dl);
@@ -184,11 +185,12 @@ public class AndroidXMLGenerator extends DictionaryGenerator {
     /**
      * Write a label element from an label for a specified language
      *
-     * @param eleLabels element label to write
+     * @param eleLabels            element label to write
      * @param label
+     * @param outputtedArrayLabels
      * @return whether the label is write
      */
-    private boolean writeLabel(Element eleLabels, Label label, DictionaryLanguage dl, String lastComment) {
+    private boolean writeLabel(Element eleLabels, Label label, DictionaryLanguage dl, String lastComment, Set<String> outputtedArrayLabels) {
         String lblKey = label.getKey();
         String[] tokens = lblKey.split(AndroidXMLParser.KEY_SEPARATOR);
 
@@ -197,7 +199,6 @@ public class AndroidXMLGenerator extends DictionaryGenerator {
         String annotation1 = label.getAnnotation1();    // attributes
 //        String annotation2 = label.getAnnotation2();    // leading comments
         // keep the last comment
-        String annotation2 = lastComment;
         boolean isArrayOrPlurals = isArrayOrPluralLabel(label);
 
         if (dl != null) {//language file
@@ -210,12 +211,10 @@ public class AndroidXMLGenerator extends DictionaryGenerator {
             text = label.getTranslation(dl.getLanguageCode());
         }
 
-        // add leading comments
-        addCommentsForElement(annotation2, eleLabels);
-
-
         if (!isArrayOrPlurals) { // normal label
             // create label
+            if (null != dl && !label.isTranslated(dl)) return false;
+            addCommentsForElement(lastComment, eleLabels);
             Element eleLabel = eleLabels.addElement("string");
             eleLabel.addAttribute("name", label.getKey());
             addAttributesForElement(annotation1, eleLabel);
@@ -223,25 +222,51 @@ public class AndroidXMLGenerator extends DictionaryGenerator {
             if (text.indexOf('\n') != -1) {    // preserve line breaks among the text
                 eleLabel.addAttribute(QName.get("space", Namespace.XML_NAMESPACE), "preserve");
             }
-
             return true;
         }
+
 
         // string array or quantity string
         String elemName = tokens[0];
         String key = tokens[1];
-        String xpath = String.format("%s[@%s='%s']", elemName, AndroidXMLParser.getKeyAttributeName(), key);
 
-        Element elemLabel = (Element) eleLabels.selectSingleNode(xpath);
-        if (null == elemLabel) { // add array or quantity string element at first time
-            elemLabel = eleLabels.addElement(elemName);
-            elemLabel.addAttribute(AndroidXMLParser.getKeyAttributeName(), key);
-        }
+        //get array element items
+        String arrayName = elemName + AndroidXMLParser.KEY_SEPARATOR + key;
+
+        Collection<Label> dictLabels = label.getDictionary().getAvailableLabels();
+        Collection<Label> arrayLabels = getLabelsInArrayOrPlural(arrayName, dictLabels);
+
+        if (dl != null && !isArrayOrPluralTranslated(arrayName, dictLabels, dl)) return true;
+
+        Element elemLabel = eleLabels.addElement(elemName);
+        elemLabel.addAttribute(AndroidXMLParser.getKeyAttributeName(), key);
+        // how can we handle with the comment above array
+//        addCommentsForElement(lastComment, elemLabel);
+
+        //if array is not translated continue
+
         // add each item in array or quantity string
-        Element elemItem = elemLabel.addElement("item");
-        addCommentsForElement(annotation2, elemLabel);
-        addAttributesForElement(annotation1, elemItem);
-        elemItem.addText(text);
+        for (Label arrayLabel : arrayLabels) {
+            Element elemItem = elemLabel.addElement("item");
+            text = arrayLabel.getReference();
+            annotation1 = arrayLabel.getAnnotation1();
+            lastComment = arrayLabel.getAnnotation2();
+
+            if (dl != null) {
+                LabelTranslation lt = arrayLabel.getOrigTranslation(dl.getLanguageCode());
+                if (lt != null) {
+                    annotation1 = lt.getAnnotation1();
+                    // DMS will take the comment in reference file instead(language file comment is discarded)
+//                annotation2 = lt.getAnnotation2();
+                }
+                text = arrayLabel.getTranslation(dl.getLanguageCode());
+            }
+            addCommentsForElement(lastComment, elemLabel);
+            addAttributesForElement(annotation1, elemItem);
+            elemItem.addText(text);
+
+            outputtedArrayLabels.add(arrayLabel.getKey());
+        }
         return true;
     }
 
