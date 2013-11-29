@@ -162,7 +162,7 @@
                 <button id='makeStringSettingsLabelTranslateStatus'><s:text
                         name="transmng.summarypanel.makelabelas"/></button>
                 &nbsp; &nbsp; &nbsp; &nbsp;
-                <button id='stringCapitalize'><s:text
+                <button id='stringCapitalize' class="capitalization_button"><s:text
                         name="appmng.capitalize"/></button>
                 <ul id="stringCapitalizeMenu">
                     <%@include file="capitalizeMenu.jsp" %>

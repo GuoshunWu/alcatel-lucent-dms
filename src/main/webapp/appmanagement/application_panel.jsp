@@ -48,7 +48,7 @@
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             <button id="batchDeleteLanguage"><s:text name="appmng.dellanguage"/></button>
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <button id="dictCapitalize"><s:text name="appmng.capitalize"/></button>
+                            <button id="dictCapitalize" class="capitalization_button"><s:text name="appmng.capitalize"/></button>
 
                             <ul id="dictCapitalizeMenu">
                                 <%@include file="capitalizeMenu.jsp" %>

@@ -93,6 +93,10 @@ input[readonly] {
     width: 100%;
 }
 
+.capitalization_button{
+    width: 180px;
+}
+
 .progressbar-indeterminate {
     background: #d3d3d3 url(../images/pbar-ani.gif);
 }

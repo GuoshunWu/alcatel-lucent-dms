@@ -9,6 +9,7 @@ import com.alcatel_lucent.dms.service.LanguageService;
 import com.alcatel_lucent.dms.service.generator.DictionaryGenerator;
 import com.alcatel_lucent.dms.util.NoOpEntityResolver;
 import com.alcatel_lucent.dms.util.Util;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.ClosureUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -27,6 +28,7 @@ import org.springframework.util.MultiValueMap;
 import org.w3c.dom.traversal.NodeIterator;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 @Component
@@ -420,14 +422,26 @@ public class AndroidXMLParser extends DictionaryParser {
         return 1;
     }
 
+    private String base64Encoding(String source) {
+        String charset = "iso8859-1";
+        String result = null;
+        try {
+            result = new String(Base64.encodeBase64(source.getBytes(charset)), charset);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
     private int readStringArrayOrPluralsElement(Dictionary dict, Element element, String key, String comments, int sortNo, DictionaryLanguage dl, Collection<BusinessWarning> warnings) {
-        boolean isReference = dl.getLanguageCode().equals(REFERENCE_LANG_CODE);
         String elemName = element.getName();
         // how to save comments above this group which is parameter comments
         //get sub node
 
         Iterator<Node> nodeIterator = element.nodeIterator();
         int num = 0;
+
+        //encode the first comment with base64
         while (nodeIterator.hasNext()) {
             Pair<String, Node> pair = readCommentsAboveNode(nodeIterator);
             String subNodeComments = pair.getLeft();
@@ -437,6 +451,9 @@ public class AndroidXMLParser extends DictionaryParser {
             // not valid android xml file
             Element item = (Element) node;
             String subKey = elemName + KEY_SEPARATOR + key + KEY_SEPARATOR + num;
+            if (0 == num) {
+                subNodeComments = base64Encoding(comments) + ";" + base64Encoding(subNodeComments);
+            }
             num += readElement(dict, item, subKey, subNodeComments, sortNo, dl, warnings);
         }
         return num;
