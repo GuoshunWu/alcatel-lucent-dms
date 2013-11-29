@@ -1,0 +1,38 @@
+# This is cake file for coffeescript build
+fs = require 'fs'
+path = require 'path'
+CoffeeScript = require 'coffee-script'
+{spawn, exec}  = require 'child_process'
+
+JS_DIR = '.'
+
+#ANSI Terminal Colors.
+bold = red = green = reset = ''
+unless process.env.NODE_DISABLE_COLORS
+  bold = '\x1B[0;1m'
+  red = '\x1B[0;31m'
+  green = '\x1B[0;32m'
+  reset = '\x1B[0m'
+
+# Built file header.
+header = """
+         /**
+         * CoffeeScript Compiler v#{CoffeeScript.VERSION}
+         * http://coffeescript.org
+         *
+         * Copyright 2011, Jeremy Ashkenas
+         * Released under the MIT License
+         */
+         """
+# Build the CoffeeScript language from source
+build = (cb) ->
+  files = (file for file in (fs.readdirSync JS_DIR) when CoffeeScript.helpers.isCoffee file)
+  console.log files
+
+task 'test', 'Just a test task.', (options) ->
+  console.log 'Hello, world.， options=', options
+
+task 'build', 'Compile all the coffee files', (options)->
+  build('a')
+task 'clean', 'Clean all the generated files(include js file and map file).', (options) ->
+  invoke 'test'
