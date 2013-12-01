@@ -40,10 +40,10 @@
 
     <!--http://maven.apache.org/scm/mercurial.html-->
     <!--<scm>-->
-        <!--<connection>scm:hg:http://</connection>-->
-        <!--<developerConnection></developerConnection>-->
-        <!--<tag>HEAD</tag>-->
-        <!--<url></url>-->
+    <!--<connection>scm:hg:http://</connection>-->
+    <!--<developerConnection></developerConnection>-->
+    <!--<tag>HEAD</tag>-->
+    <!--<url></url>-->
     <!--</scm>-->
 
     <properties>
@@ -63,13 +63,34 @@
         <!--Default console log filer -->
         <logger.filter>WARN</logger.filter>
 
-        <dms.deliver.dir>/dms/deliver</dms.deliver.dir>
-        <dms.generate.dir>/dms/generate</dms.generate.dir>
-        <dms.send.dir>/dms/send</dms.send.dir>
-        <dms.receive.dir>/dms/receive</dms.receive.dir>
 
         <dms.temp></dms.temp>
+
+        <dms.deliver.dir>${dms.temp}/dms/deliver</dms.deliver.dir>
+        <dms.generate.dir>${dms.temp}/dms/generate</dms.generate.dir>
+        <dms.send.dir>${dms.temp}/dms/send</dms.send.dir>
+        <dms.receive.dir>${dms.temp}/dms/receive</dms.receive.dir>
         <dms.luceneindex.dir>/dms/lucene/indexes</dms.luceneindex.dir>
+
+        <!--Use dev database as default-->
+        <db.driver>org.h2.Driver</db.driver>
+        <db.urlparam>AUTO_SERVER=TRUE;DB_CLOSE_DELAY=-1;INIT=create schema if not exists dms;</db.urlparam>
+        <db.url>
+            <!--jdbc:h2:tcp://localhost/dms;${db.urlparam}-->
+            jdbc:h2:~/dms;${db.urlparam}
+        </db.url>
+        <db.user>dms</db.user>
+        <db.password>alcatel123</db.password>
+        <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
+        <db.dialect>org.hibernate.dialect.H2Dialect</db.dialect>
+        <!-- none, create, create-drop, update, validate -->
+        <db.hbm2ddl.auto>create</db.hbm2ddl.auto>
+        <dms.luceneindex.dir>${dms.temp}/dms/lucene/indexes/h2</dms.luceneindex.dir>
+
+        <!-- use UTF-8 for everything -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
     </properties>
 
 
@@ -730,63 +751,6 @@
     </build>
 
     <profiles>
-        <profile>
-            <id>LDAPServer</id>
-            <properties>
-                <ldap.url>ldap://localhost:10389</ldap.url>
-            </properties>
-
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <version>1.2.1</version>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>java</goal>
-                                    <!--<goal>exec</goal>-->
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <mainClass>com.alcatel_lucent.dms.service.EmbeddedADService</mainClass>
-                            <!--<executable>java</executable>-->
-                            <!--<arguments>-->
-                            <!--<argument>-classpath</argument>-->
-                            <!--&lt;!&ndash; automatically creates the classpath using all project dependencies, also adding-->
-                            <!--the project build directory &ndash;&gt;-->
-                            <!--<classpath>-->
-                            <!--</classpath>-->
-                            <!--<argument>com.alcatel_lucent.dms.service.EmbeddedADService</argument>-->
-                            <!--</arguments>-->
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-
-        </profile>
-
-        <profile>
-            <id>H2</id>
-            <properties>
-                <db.driver>org.h2.Driver</db.driver>
-                <db.urlparam>
-                    MODE=MYSQL;AUTO_SERVER=TRUE;DB_CLOSE_DELAY=-1;INIT=create schema if not exists dms;
-                </db.urlparam>
-                <db.url>
-                    jdbc:h2:tcp://localhost/dms;${db.urlparam}
-                </db.url>
-                <db.user>dms</db.user>
-                <db.password>alcatel123</db.password>
-                <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
-                <db.dialect>org.hibernate.dialect.H2Dialect</db.dialect>
-                <!-- none, create, create-drop, update, validate -->
-                <db.hbm2ddl.auto>none</db.hbm2ddl.auto>
-                <dms.luceneindex.dir>${dms.temp}/dms/lucene/indexes/h2</dms.luceneindex.dir>
-            </properties>
-        </profile>
 
         <profile>
             <id>127.0.0.1_PostGreSQL</id>
@@ -892,10 +856,6 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <dms.deliver.dir>D:/tmp/dms/deliver/</dms.deliver.dir>
-                <dms.generate.dir>D:/tmp/dms/generate</dms.generate.dir>
-                <dms.send.dir>D:/tmp/dms/send</dms.send.dir>
-                <dms.receive.dir>D:/tmp/dms/receive</dms.receive.dir>
                 <dms.temp>D:/tmp</dms.temp>
                 <httpPort>8888</httpPort>
                 <httpsPort>8443</httpsPort>
