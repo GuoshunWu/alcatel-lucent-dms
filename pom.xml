@@ -10,6 +10,42 @@
     <name>Dictionary Management System</name>
     <url>http://localhost:8080/dms</url>
 
+    <developers>
+        <developer>
+            <id>allany</id>
+            <name>Allan Yang</name>
+            <email>Allany.YANG@alcatel-lucent.com</email>
+            <roles>
+                <role>architect</role>
+                <role>developer</role>
+            </roles>
+            <timezone>+8</timezone>
+        </developer>
+
+        <developer>
+            <id>guoshunw</id>
+            <name>Guoshun Wu</name>
+            <email>Guoshun.WU@alcatel-sbell.com.cn</email>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>+8</timezone>
+        </developer>
+    </developers>
+
+    <issueManagement>
+        <system>JIRA</system>
+        <url>http://aww.rdcsbu.bsf.alcatel.fr/tools/dms</url>
+    </issueManagement>
+
+    <!--http://maven.apache.org/scm/mercurial.html-->
+    <!--<scm>-->
+        <!--<connection>scm:hg:http://</connection>-->
+        <!--<developerConnection></developerConnection>-->
+        <!--<tag>HEAD</tag>-->
+        <!--<url></url>-->
+    <!--</scm>-->
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring.version>3.1.1.RELEASE</spring.version>
@@ -55,7 +91,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
 
 
         <dependency>
@@ -143,7 +178,6 @@
         <!--</dependency>-->
 
 
-
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-proxool</artifactId>
@@ -152,23 +186,23 @@
         </dependency>
 
         <!--<dependency>-->
-            <!--<groupId>com.cloudhopper.proxool</groupId>-->
-            <!--<artifactId>proxool</artifactId>-->
-            <!--<version>0.9.1</version>-->
-            <!--<exclusions>-->
-                <!--<exclusion>-->
-                    <!--<groupId>commons-logging</groupId>-->
-                    <!--<artifactId>commons-logging</artifactId>-->
-                <!--</exclusion>-->
-                <!--<exclusion>-->
-                    <!--<groupId>log4j</groupId>-->
-                    <!--<artifactId>log4j</artifactId>-->
-                <!--</exclusion>-->
-                <!--<exclusion>-->
-                    <!--<groupId>javax.servlet</groupId>-->
-                    <!--<artifactId>servlet-api</artifactId>-->
-                <!--</exclusion>-->
-            <!--</exclusions>-->
+        <!--<groupId>com.cloudhopper.proxool</groupId>-->
+        <!--<artifactId>proxool</artifactId>-->
+        <!--<version>0.9.1</version>-->
+        <!--<exclusions>-->
+        <!--<exclusion>-->
+        <!--<groupId>commons-logging</groupId>-->
+        <!--<artifactId>commons-logging</artifactId>-->
+        <!--</exclusion>-->
+        <!--<exclusion>-->
+        <!--<groupId>log4j</groupId>-->
+        <!--<artifactId>log4j</artifactId>-->
+        <!--</exclusion>-->
+        <!--<exclusion>-->
+        <!--<groupId>javax.servlet</groupId>-->
+        <!--<artifactId>servlet-api</artifactId>-->
+        <!--</exclusion>-->
+        <!--</exclusions>-->
         <!--</dependency>-->
 
 
@@ -462,6 +496,7 @@
     </dependencies>
 
     <build>
+        <defaultGoal>org.apache.tomcat.maven:tomcat7-maven-plugin:2.1:run</defaultGoal>
 
         <plugins>
             <plugin>
@@ -986,18 +1021,54 @@
         </profile>
     </profiles>
 
-    <!--<repositories> -->
-    <!--<repository> -->
-    <!--<id>repos_local</id> -->
-    <!--<name>myLocalnetRepos</name> -->
-    <!--<url>http://192.168.1.102:8081/nexus/content/groups/public/</url> -->
-    <!--</repository> -->
-    <!--</repositories> -->
+    <repositories>
+        <repository>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
 
-    <!-- <distributionManagement> <repository> <id>releases</id> <name>Internal
-         Releases</name> <url>http://localhost:8081/nexus/content/repositories/releases</url>
-         </repository> <snapshotRepository> <id>snapshots</id> <name>Internal Snapshots</name>
-         <url>http://localhost:8081/nexus/content/repositories/snapshots</url> </snapshotRepository>
-         </distributionManagement> -->
+            <id>ShanghaiRepo</id>
+            <name>Alcatel lucent repository in Shanghai</name>
+            <url>http://192.168.1.102:8081/nexus/content/groups/public/</url>
+        </repository>
+
+        <repository>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+
+            <id>GlobalRepo</id>
+            <name>Alcatel lucent repository for global</name>
+            <url>http://192.168.1.102:8081/nexus/content/groups/public/</url>
+        </repository>
+    </repositories>
+
+
+    <distributionManagement>
+
+        <repository>
+            <id>releases</id>
+            <name>Internal Releases</name>
+            <url>file://d:/test/release</url>
+        </repository>
+
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Internal Snapshots</name>
+            <url>file://d:/test/snapshot</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 </project>
