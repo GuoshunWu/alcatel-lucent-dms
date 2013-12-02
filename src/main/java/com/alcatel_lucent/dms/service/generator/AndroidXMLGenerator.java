@@ -273,11 +273,13 @@ public class AndroidXMLGenerator extends DictionaryGenerator {
 
         //if array is not translated continue
         // add each item in array or quantity string
+        boolean foundComment = false;
+        int index = arrayName.length() + 1;
         for (Label arrayLabel : arrayLabels) {
-            String index = arrayLabel.getKey().substring(arrayLabel.getKey().lastIndexOf(AndroidXMLParser.KEY_SEPARATOR) + 1);
             annotation1 = arrayLabel.getAnnotation1();
             lastComment = arrayLabel.getAnnotation2();
-            if ("0".equals(index) && !StringUtils.isBlank(lastComment)) {//first label comment is special
+            if (!foundComment && !StringUtils.isBlank(lastComment) &&
+                    (foundComment = "0".equals(arrayLabel.getKey().substring(index)))) { //first label comment is special
                 lastComment = decodeBase64(lastComment.split(";")[1]);
             }
             addCommentsForElement(lastComment, elemLabel);
