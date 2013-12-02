@@ -852,6 +852,7 @@
 
         <profile>
             <id>dev</id>
+            <!-- set MAVEN_OPTS="-XX:MaxPermSize=256M" -->
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
@@ -972,7 +973,6 @@
                         <artifactId>tomcat7-maven-plugin</artifactId>
                         <configuration>
                             <url>http://135.117.180.165:9999/manager/text</url>
-                            <!-- <url>http://172.24.190.236:8080/manager/text</url>-->
                         </configuration>
                     </plugin>
                 </plugins>
@@ -995,7 +995,7 @@
 
             <id>ShanghaiRepo</id>
             <name>Alcatel lucent repository in Shanghai</name>
-            <url>http://192.168.1.102:8081/nexus/content/groups/public/</url>
+            <url>http://repository.all.alcatel-lucent.com/nexus/content/groups/reference-cache</url>
         </repository>
 
         <repository>
@@ -1011,7 +1011,7 @@
 
             <id>GlobalRepo</id>
             <name>Alcatel lucent repository for global</name>
-            <url>http://192.168.1.102:8081/nexus/content/groups/public/</url>
+            <url>http://shrdwin014.cn.alcatel-lucent.com:8200/nexus/content/groups/reference-cache</url>
         </repository>
     </repositories>
 
