@@ -258,22 +258,22 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 // with Default context, set the label to dictionary context
                 if (isConflict(dict, label, textMap) || isConflict(dict, label, unsavedTextMap)) {
                     label.setContext(dictCtx);
-                    Text text = populateTextForLabel(label, dictTextMap);
+                    updateTextMap(dict ,label, dictTextMap);
                     if (isConflict(dict, label, dictTextMap)) {
                         Context labelCtx = new Context(textService.populateContextKey(Context.LABEL, label), Context.LABEL);
                         label.setContext(labelCtx);
                     }
+                    continue;
                 }
                 if (label.getContext() == null) {
                     label.setContext(defaultCtx);
 
                     // temporarily add in-memory LabelTranslations to unsaved Default context text map
                     // to ensure no conflict translation in scope of current delivery are put into DEFAULT context
-                    Text text = populateTextForLabel(label, unsavedTextMap);
+                    updateTextMap(dict, label, unsavedTextMap);
                 }
             }
         }
-
     }
 
     /**
@@ -281,7 +281,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
      *
      * @param label Label
      */
-    private Text populateTextForLabel(Label label, Map<String, Text> unsavedTextMap) {
+    private Text updateTextMap(Dictionary dict,Label label, Map<String, Text> unsavedTextMap) {
         Text text = unsavedTextMap.get(label.getReference());
         if (null == text) {
             text = new Text();
@@ -292,7 +292,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         if (CollectionUtils.isEmpty(label.getOrigTranslations())) {
             return text;
         }
-        Dictionary dict = label.getDictionary();
+
+
         // add Translations for text
         for (LabelTranslation lt : label.getOrigTranslations()) {
             if (lt.getLabel() == null) lt.setLabel(label);
