@@ -577,7 +577,7 @@
                 </executions>
                 <configuration>
                     <!-- https://maven.apache.org/plugins/maven-war-plugin/war-mojo.html#warSourceDirectory -->
-                    <packagingExcludes>%regex[js/(?!(?:loginEntry|entry)\.js).*$]</packagingExcludes>
+                    <packagingExcludes>%regex[js/(?!(?:(?:login)?[Ee]ntry\.js|lib)).*$]</packagingExcludes>
                     <warSourceExcludes>%regex[(js/.*\.(coffee|map|cmd|orig)$|tools/.*)]</warSourceExcludes>
                     <useCache>true</useCache>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
@@ -729,23 +729,12 @@
                 <directory>src/main/resources</directory>
                 <filtering>false</filtering>
                 <excludes>
-                    <exclude>**/*.xls</exclude>
-                    <exclude>**/*.jpg</exclude>
-                    <exclude>**/*.jpeg</exclude>
-                    <!--<exclude>**/*.js</exclude>-->
+                    <exclude>**/*.xml</exclude>
+                    <exclude>**/*.properties</exclude>
+                    <exclude>**/*.js</exclude>
+                    <exclude>**/*.groovy</exclude>
                 </excludes>
             </resource>
-
-            <!--<resource>-->
-            <!--<directory>src/main/webapp/js</directory>-->
-            <!--<filtering>true</filtering>-->
-            <!--<includes>-->
-            <!--<include>**/config.js</include>-->
-            <!--</includes>-->
-            <!--<targetPath>-->
-            <!--${project.build.directory}/${project.build.finalName}/js/-->
-            <!--</targetPath>-->
-            <!--</resource>-->
         </resources>
 
     </build>
