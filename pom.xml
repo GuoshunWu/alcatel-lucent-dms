@@ -706,7 +706,34 @@
                 <!--</dependencies>-->
             </plugin>
 
+            <plugin>
+                <inherited>false</inherited>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <configuration>
+                    <target>
+                        <echo message="Stopping test server ..."/>
+                        <sshexec host="172.24.190.236" trust="true" port="22" username="dmsadmin" password="alcatel123" command="ls -la"/>
+                        <!--<sleep seconds="10"/>-->
+                        <!--<echo message="Copying WAR to test server ..."/>-->
+                    </target>
+                </configuration>
 
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.ant</groupId>
+                        <artifactId>ant-jsch</artifactId>
+                        <version>1.9.2</version>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>com.jcraft</groupId>
+                        <artifactId>jsch</artifactId>
+                        <version>0.1.50</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
         </plugins>
 
         <resources>
@@ -941,7 +968,8 @@
                         <groupId>org.apache.tomcat.maven</groupId>
                         <artifactId>tomcat7-maven-plugin</artifactId>
                         <configuration>
-                            <url>http://135.117.177.136:7777/manager/text</url>
+                            <!--<url>http://135.117.177.136:7777/manager/text</url>-->
+                            <url>http://frcolv10lin237.pqa-collab.fr.alcatel-lucent.com:7777/manager/text</url>
                         </configuration>
                     </plugin>
                 </plugins>
