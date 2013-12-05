@@ -3,8 +3,8 @@ package com.alcatel_lucent.dms.service.parser;
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.Constants.DictionaryFormat;
-import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.*;
+import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.service.LanguageService;
 import com.alcatel_lucent.dms.util.NoOpLSResourceResolver;
 import com.alcatel_lucent.dms.util.Util;
@@ -12,7 +12,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang3.StringUtils;
@@ -52,7 +51,7 @@ public class VoiceAppParser extends DictionaryParser {
 
         SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         Schema schema = null;
-        String schemaFile = "TUI.XSD";
+        String schemaFile = "TUI.xsd";
         try {
             schema = factory.newSchema(getClass().getResource(schemaFile).toURI().toURL());
             iceJavaAlarmValidator = schema.newValidator();

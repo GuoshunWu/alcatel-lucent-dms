@@ -31,7 +31,7 @@ define [
       {name: 'loginName', index: 'loginName', width: 100, align: 'left'}
       {name: 'name', index: 'name', width: 100, align: 'left'}
       {name: 'email', index: 'email', width: 150, align: 'left'}
-      {name: 'lastLoginTime', index: 'lastLoginTime', width: 150, align: 'left'}
+      {name: 'lastLoginTime', index: 'lastLoginTime',formatter:'date',formatoptions:{srcformat: 'ISO8601Long', newformat: 'ISO8601Long'}, width: 150, align: 'left'}
       {name: 'userStatus', index: 'status', width: 50, align: 'left',editable:true, classes: 'editable-column'
       edittype: 'select' , editoptions: {value: "0:Disabled;1:Enabled"}, formatter: 'select'
       }
