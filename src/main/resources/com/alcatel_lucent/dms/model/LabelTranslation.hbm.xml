@@ -19,6 +19,7 @@
         <property name="annotation2" type="text" column="ANNOTATION2"/>
         <property name="warnings" type="string" column="WARNINGS" length="255"/>
         <property name="languageCode" type="string" column="LANGUAGE_CODE"/>
+        <property name="comment" type="string" column="COMMENT" length="4096"/>
 		<property name="sortNo" type="integer" column="SORT_NO"/>
         <property name="translationType" type="integer" column="TRANSLATION_TYPE"/>
         <property name="requestTranslation" type="boolean" column="REQUEST_TRANSLATION"/>

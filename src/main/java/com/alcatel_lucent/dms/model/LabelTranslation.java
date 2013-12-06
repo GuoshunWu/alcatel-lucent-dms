@@ -34,10 +34,20 @@ public class LabelTranslation extends BaseEntity {
 
     private String warnings;
     private String languageCode;
+    private String comment;
     private int sortNo;
 
     private Integer translationType;
     public static final int TYPE_AUTO = Translation.TYPE_AUTO;        // matched automatically from other context
+
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 
     /**
      * Specify if translation is requested.
