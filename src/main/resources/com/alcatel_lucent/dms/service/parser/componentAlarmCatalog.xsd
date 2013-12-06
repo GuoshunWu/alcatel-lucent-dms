@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="alarmCommon.xsd" />
+
+	<xs:element name="catalog">
+		<xs:annotation>
+			<xs:documentation>Component alarms catalog</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="defaultContextService" type="ContextService" />
+				<xs:element name="alarm" type="Alarm" minOccurs="0"
+					maxOccurs="unbounded" />
+			</xs:sequence>
+			<xs:attribute name="componentName" type="xs:string" use="required" />
+		</xs:complexType>
+		<xs:unique name="alarmIdKey">
+			<xs:selector xpath="./alarm" />
+			<xs:field xpath="alarmId" />
+		</xs:unique>
+		<xs:unique name="constantNameKey">
+			<xs:selector xpath="./alarm" />
+			<xs:field xpath="constantName" />
+		</xs:unique>
+	</xs:element>
+
+
+	<xs:complexType name="Alarm">
+		<xs:annotation>
+			<xs:documentation> For Network Management (NMC), uniqueness of an
+				instance of an alarm
+				is made of : - Managed Object Instance - Event
+				Type - Probable Cause - Specific
+				Problem </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="alarmId" type="AlarmId">
+				<xs:annotation>
+					<xs:documentation>a unique integer value identifying the alarm
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="constantName" type="ConstantName">
+				<xs:annotation>
+					<xs:documentation>unique name identifying the alarm Java constant
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:choice>
+				<xs:element name="communications">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="eventType" type="eventTypeCommunication_t">
+							</xs:element>
+							<xs:element name="probableCause" type="ProbableCauseCommunication">
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="processingError">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="eventType" type="eventTypeProcessingError_t">
+							</xs:element>
+							<xs:element name="probableCause" type="ProbableCauseProcessingError">
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+
+				<xs:element name="environmental">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="eventType" type="eventTypeEnvironmental_t">
+							</xs:element>
+							<xs:element name="probableCause" type="ProbableCauseEnvironmental">
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="qualityOfService">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="eventType" type="eventTypeQualityOfService_t">
+							</xs:element>
+							<xs:element name="probableCause" type="ProbableCauseQos">
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="equipment">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="eventType" type="eventTypeEquipment_t">
+							</xs:element>
+							<xs:element name="probableCause" type="ProbableCauseEquipment">
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="integrityViolation">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="eventType" type="eventTypeIntegrityViolation_t">
+							</xs:element>
+							<xs:element name="probableCause" type="ProbableCauseIntegrityViolation">
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="operationViolation">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="eventType" type="eventTypeOperationalViolation_t">
+							</xs:element>
+							<xs:element name="probableCause" type="ProbableCauseOperationalViolation">
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="physicalViolation">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="eventType" type="eventTypePhysicalViolation_t">
+							</xs:element>
+							<xs:element name="probableCause" type="ProbableCausePhysicalViolation">
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="securityServiceOrMechanismViolation">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="eventType"
+								type="eventTypeSecurityServiceOrMechanism_t">
+							</xs:element>
+							<xs:element name="probableCause"
+								type="ProbableCauseSecurityServiceOrMechanismViolation">
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="timeDomainViolation">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="eventType" type="eventTypeTimeDomainViolation_t">
+							</xs:element>
+							<xs:element name="probableCause" type="ProbableCauseTimeDomainViolation">
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:choice>
+			<xs:element name="perceivedSeverity" type="PerceivedSeverity">
+			</xs:element>
+			<xs:element name="text" type="TextPerLanguage">
+				<xs:annotation>
+					<xs:documentation> Detailed description of the alarm
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="attributesDesc" type="TextPerLanguage"
+				minOccurs="0" />
+			<xs:element name="proposedRepairAction" type="LongTextPerLanguage"
+				minOccurs="0" />
+			<xs:element name="clearAlarms" type="ClearAlarms"
+				minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="ClearAlarms">
+		<xs:sequence>
+			<xs:element name="alarmId" type="ClearAlarmId" minOccurs="1"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:simpleType name="ClearAlarmId">
+		<xs:restriction base="xs:token">
+			<xs:pattern value="[0-9]*|\*" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="eventTypeCommunication_t">
+		<xs:restriction base="EventType">
+			<xs:enumeration value="COMMUNICATIONS" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="eventTypeProcessingError_t">
+		<xs:restriction base="EventType">
+			<xs:enumeration value="PROCESSING_ERROR" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="eventTypeQualityOfService_t">
+		<xs:restriction base="EventType">
+			<xs:enumeration value="QUALITY_OF_SERVICE" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="eventTypeEquipment_t">
+		<xs:restriction base="EventType">
+			<xs:enumeration value="EQUIPMENT" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="eventTypeEnvironmental_t">
+		<xs:restriction base="EventType">
+			<xs:enumeration value="ENVIRONMENTAL" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="eventTypeIntegrityViolation_t">
+		<xs:restriction base="EventType">
+			<xs:enumeration value="INTEGRITY_VIOLATION" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="eventTypeOperationalViolation_t">
+		<xs:restriction base="EventType">
+			<xs:enumeration value="OPERATIONAL_VIOLATION" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="eventTypePhysicalViolation_t">
+		<xs:restriction base="EventType">
+			<xs:enumeration value="PHYSICAL_VIOLATION" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="eventTypeSecurityServiceOrMechanism_t">
+		<xs:restriction base="EventType">
+			<xs:enumeration value="SECURITY_SERVICE_OR_MECHANISM_VIOLATION" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="eventTypeTimeDomainViolation_t">
+		<xs:restriction base="EventType">
+			<xs:enumeration value="TIME_DOMAIN_VIOLATION" />
+		</xs:restriction>
+	</xs:simpleType>
+
+
+	<xs:simpleType name="AlarmId">
+		<xs:restriction base="xs:unsignedInt">
+			<xs:minInclusive value="1" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="ConstantName">
+		<xs:restriction base="xs:token">
+			<xs:pattern value="([A-Z]|_|[0-9])*" />
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>
