@@ -51,6 +51,7 @@ jettyStart.cmd
 #webapp
 WEB-INF/classes/
 target
+build
 tmp
 atlassian-ide-plugin.xml
 src/main/webapp/js/test.js

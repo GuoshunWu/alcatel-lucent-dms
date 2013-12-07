@@ -1,0 +1,83 @@
+import org.apache.tools.ant.filters.FixCrLfFilter
+
+Map databases = [
+        h2: [
+                'db.driver': 'org.h2.Driver',
+//                'db.url': 'jdbc:h2:~/dms;AUTO_SERVER:TRUE;DB_CLOSE_DELAY:-1;INIT:create schema if not exists dms;',
+                'db.url': 'jdbc:h2:~/dms',
+                'db.user': 'dms',
+                'db.password': 'alcatel123',
+                'db.house-keeping-test-sql': 'select CURRENT_DATE from dual',
+                'db.dialect': 'org.hibernate.dialect.H2Dialect',
+                'db.hbm2ddl.auto': 'auto',
+                'dms.luceneindex.dir': '/dms/lucene/indexes/h2',
+        ],
+        '127.0.0.1_PostGreSQL': [
+                'db.driver': 'org.postgresql.Driver',
+                'db.url': 'jdbc:postgresql://127.0.0.1:5432/dms',
+                'db.user': 'dms',
+                'db.password': 'alcatel123',
+                'db.house-keeping-test-sql': 'select CURRENT_DATE',
+                'db.dialect': 'org.hibernate.dialect.PostgreSQLDialect',
+                'db.hbm2ddl.auto': 'update'
+        ]
+]
+
+Map websservers = [
+        embedded: [
+                httpPort: 8888,
+                httpsPort: 8443,
+                path: '/dms',
+
+                'dms.savebase': '',
+                'dms.deliver.dir': "/dms/deliver",
+                'dms.generate.dir': "/dms/generate",
+                'dms.send.dir': '/dms/send',
+                'dms.receive.dir': '/dms/receive',
+
+                'ldap.url': 'ldap://ldap.sxb.bsf.alcatel.fr',
+
+                'logger.filter': 'INFO',
+                'buildNumber': '(new Date()).getTime()'
+        ],
+
+        qa: [
+                httpPort: "7777",
+                httsPort: '7443',
+                path: '/'
+        ]
+]
+
+
+Map profiles = [
+        default: websservers.embedded + databases.h2,
+        test: databases['127.0.0.1_PostGreSQL'] + websservers.qa
+]
+
+ext {
+    myConfig = [
+            databases: databases,
+            websservers: websservers,
+            profiles: profiles
+    ]
+}
+
+loadConfiguration()
+def loadConfiguration(String configFilePath = 'config.gradle') {
+//    load the default profile
+    project.myConfig.each { k, v ->
+        v['default'].each { String pk, pv ->
+            project.ext[pk] = pv
+        }
+    }
+
+    String profile = hasProperty('profile') ? profile : 'default'
+    println "Profile is set to $profile"
+    if (profile == 'default') return
+
+    project.myConfig.each {k, v->
+        v[profile].each { String pk, Object pv->
+            project.ext[pk] = pv
+        }
+    }
+}
