@@ -646,7 +646,6 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
         task.setLastApplyTime(new Date());
         log.info("" + count + " translation results were applied.");
 
-        // create log
         historyService.logImportTask(task);
         return task;
     }
