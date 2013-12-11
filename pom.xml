@@ -70,7 +70,7 @@
         <dms.generate.dir>${dms.temp}/dms/generate</dms.generate.dir>
         <dms.send.dir>${dms.temp}/dms/send</dms.send.dir>
         <dms.receive.dir>${dms.temp}/dms/receive</dms.receive.dir>
-        <dms.luceneindex.dir>/dms/lucene/indexes</dms.luceneindex.dir>
+        <dms.luceneindex.dir>${dms.temp}/dms/lucene/indexes</dms.luceneindex.dir>
 
         <!--Use dev database as default-->
         <db.driver>org.h2.Driver</db.driver>
@@ -279,6 +279,18 @@
             <version>1.7.5</version>
         </dependency>
 
+        <!--<dependency>-->
+            <!--<groupId>log4j</groupId>-->
+            <!--<artifactId>log4j</artifactId>-->
+            <!--<version>1.2.17</version>-->
+        <!--</dependency>-->
+
+        <!--<dependency>-->
+            <!--<groupId>org.slf4j</groupId>-->
+            <!--<artifactId>log4j-over-slf4j</artifactId>-->
+            <!--<version>1.7.5</version>-->
+        <!--</dependency>-->
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jul-to-slf4j</artifactId>
@@ -360,11 +372,11 @@
             <version>1.6.1</version>
         </dependency>
         <!-- for xpath support -->
-        <dependency>
-            <groupId>jaxen</groupId>
-            <artifactId>jaxen</artifactId>
-            <version>1.1</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>jaxen</groupId>-->
+            <!--<artifactId>jaxen</artifactId>-->
+            <!--<version>1.1</version>-->
+        <!--</dependency>-->
 
         <!-- Jersey libs -->
 
@@ -503,7 +515,18 @@
                     <groupId>org.sonatype.gossip</groupId>
                     <artifactId>gossip</artifactId>
                 </exclusion>
+
+                <exclusion>
+                    <groupId>org.apache.ant</groupId>
+                    <artifactId>ant</artifactId>
+                </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>1.8.3</version>
         </dependency>
 
         <dependency>
@@ -714,7 +737,8 @@
                 <configuration>
                     <target>
                         <echo message="Stopping test server ..."/>
-                        <sshexec host="172.24.190.236" trust="true" port="22" username="dmsadmin" password="alcatel123" command="ls -la"/>
+                        <sshexec host="172.24.190.236" trust="true" port="22" username="dmsadmin" password="alcatel123"
+                                 command="ls -la"/>
                         <!--<sleep seconds="10"/>-->
                         <!--<echo message="Copying WAR to test server ..."/>-->
                     </target>

@@ -1,0 +1,140 @@
+import org.apache.tools.ant.filters.FixCrLfFilter
+
+apply from: 'config.gradle'
+
+apply plugin: 'groovy'
+//apply plugin: 'jetty'
+//jettyRun{
+//    httpPort = project.httpPort
+//}
+
+apply plugin: 'tomcat'
+
+apply plugin: 'maven'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+
+group = 'com.alcatel_lucent'
+version = "2.13.0"
+description = 'Hello, description of Dictionary Management System'
+
+ext {
+    springVersion = '3.1.1.RELEASE'
+    hibernateVersion = '3.6.10.Final'
+    jerseyVersion = '1.17.1'
+}
+ext['ldap.url'] = 'ldap://ldap.sxb.bsf.alcatel.fr'
+
+repositories {
+
+    mavenLocal()
+    mavenCentral()
+
+}
+
+tasks.withType(Compile) {
+    options.encoding = 'UTF-8'
+}
+
+
+processResources {
+    includeEmptyDirs = false
+    // Use some of the filters provided by Ant
+    List<String> toBefittedFiles = ["**/*.properties", "**/*.groovy", "**/*.xml"]
+
+    from(source.files) {
+        includes = toBefittedFiles
+        filter FixCrLfFilter
+
+        Map<String, Closure<String>> model = project.properties
+        Closure lineProcessClosure = { String m, String k ->
+            String value = model[k]
+            if (null != value) return value
+            m
+        }
+        filter { String line -> line.replaceAll(/\$\{([a-zA-Z_0-9\.\-]+)\}/, lineProcessClosure) }
+    }
+    from(source.files) { excludes = toBefittedFiles }
+}
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'org.gradle.api.plugins:gradle-tomcat-plugin:1.0'
+    }
+}
+
+dependencies {
+
+    def tomcatVersion = '7.0.47'
+    tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
+            "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}"
+    tomcat("org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}") {
+        exclude group: 'org.eclipse.jdt.core.compiler', module: 'ecj'
+    }
+
+    compile "com.ibm.icu:icu4j:49.1",
+            "org.springframework:spring-context:${springVersion}",
+            "org.springframework:spring-test:${springVersion}",
+            "org.springframework:spring-aop:${springVersion}",
+            "org.aspectj:aspectjweaver:1.7.0",
+            "org.springframework:spring-context-support:${springVersion}",
+            "org.springframework:spring-orm:${springVersion}",
+            "commons-pool:commons-pool:1.6",
+            "org.springframework.ldap:spring-ldap-core:1.3.2.RELEASE",
+            "org.springframework.ldap:spring-ldap-core-tiger:1.3.2.RELEASE",
+            "org.hibernate:hibernate-proxool:${hibernateVersion}",
+            "org.hibernate:hibernate-core:${hibernateVersion}",
+            "org.hibernate:hibernate-validator:4.3.0.Final",
+            "org.hibernate:hibernate-oscache:3.6.9.Final",
+            "org.apache.lucene:lucene-queryparser:3.1.0",
+            "org.hibernate:hibernate-search:3.4.2.Final",
+            "org.hibernate:hibernate-entitymanager:${hibernateVersion}",
+            'org.slf4j:slf4j-log4j12:1.7.5',
+            "org.slf4j:jcl-over-slf4j:1.7.5",
+            "org.slf4j:jul-to-slf4j:1.7.5",
+            "org.slf4j:slf4j-api:1.7.5",
+            "ch.qos.logback:logback-classic:1.0.13",
+            "cglib:cglib:2.2",
+            "mysql:mysql-connector-java:5.1.20",
+            "postgresql:postgresql:9.1-901.jdbc4",
+            "net.sf.json-lib:json-lib:2.4:jdk15",
+            "com.h2database:h2:1.3.167",
+            "net.sourceforge.jchardet:jchardet:1.0",
+            "com.sun.jersey.contribs:jersey-spring:${jerseyVersion}",
+            "com.sun.jersey:jersey-bundle:1.9",
+            "org.apache.poi:poi:3.9",
+            "org.apache.poi:poi-ooxml:3.9",
+            "org.apache.struts:struts2-core:2.3.4.1",
+            "org.apache.struts:struts2-convention-plugin:2.3.4.1",
+            "org.apache.struts:struts2-json-plugin:2.3.4.1",
+            "org.apache.struts:struts2-spring-plugin:2.3.4.1",
+            "com.google.code.gson:gson:2.2.2",
+            "org.codehaus.groovy:groovy-all:2.1.2",
+            "org.apache.tomcat.embed:tomcat-embed-core:7.0.30"
+//            "xml-apis:xml-apis:1.4.01"
+
+    providedCompile "javax.servlet:javax.servlet-api:3.1.0",
+            "javax.servlet.jsp:jsp-api:2.2",
+            "jstl:jstl:1.2",
+
+    compile("dom4j:dom4j:1.6.1") {
+        exclude module: 'xml-apis'
+    }
+
+    testCompile "junit:junit:4.10",
+            "org.hamcrest:hamcrest-all:1.0"
+
+    compile "org.apache.ant:ant:1.8.3"
+
+}
+
+defaultTasks 'printProps'
+
+task printProps << {
+    println "Driver = ${project['db.driver']}, httpPort=$httpPort"
+}
