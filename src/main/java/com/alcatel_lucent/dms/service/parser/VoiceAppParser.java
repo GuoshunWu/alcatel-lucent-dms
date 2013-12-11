@@ -188,13 +188,13 @@ public class VoiceAppParser extends DictionaryParser {
         label.setAnnotation1(Util.map2String(Util.attributeList2Map(elemKey.attributes())));
         Attribute attrContext = elemKey.attribute("context");
         if (null != attrContext) {
-            label.setContext(new Context(attrContext.getValue().trim()));
+//            label.setContext(new Context(attrContext.getValue().trim()));
         }
 
         Element elemUsage = entry.element("usage");
         if (null != elemUsage) {
             String usage = elemUsage.getTextTrim();
-            label.setAnnotation2("usage=" + usage);
+            label.setDescription(usage);
         }
 
         List<Element> messages = entry.elements("message");
@@ -211,15 +211,15 @@ public class VoiceAppParser extends DictionaryParser {
 
         Element elemComment = message.element("comment");
         Element elemPhrase = message.element("phrase");
-        Attribute doNotTrans = message.attribute("doNotTranslate");
+        Attribute translate = message.attribute("translate");
 
         String langCode = message.attribute("lang").getValue();
 
 
         Map<String, String> attributes = new HashMap<String, String>();
 
-        if (null != doNotTrans) {
-            attributes.put("doNotTranslate", doNotTrans.getValue());
+        if (null != translate) {
+            attributes.put("translate", translate.getValue());
         }
 
         if (null != elemComment) {
@@ -255,8 +255,8 @@ public class VoiceAppParser extends DictionaryParser {
 
             lt.setOrigTranslation(text);
 
-            if (null != doNotTrans) {
-                lt.setNeedTranslation(!Boolean.valueOf(doNotTrans.getValue()));
+            if (null != translate) {
+                lt.setNeedTranslation(!Boolean.valueOf(translate.getValue()));
             }
 
             label.addLabelTranslation(lt);

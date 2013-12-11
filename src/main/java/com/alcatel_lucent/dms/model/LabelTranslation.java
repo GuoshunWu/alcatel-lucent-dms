@@ -60,7 +60,7 @@ public class LabelTranslation extends BaseEntity {
      * Specify if the translation of this label should be retrieved from context dictionary.
      * In some case, translation should not come from context dictionary.
      */
-    private boolean needTranslation;
+    private boolean needTranslation = true;
 
     public void setLabel(Label label) {
         this.label = label;
@@ -121,8 +121,8 @@ public class LabelTranslation extends BaseEntity {
     }
 
     @Transient
-    public boolean isTranslationEqualsReference(){
-        if(null == label) return false;
+    public boolean isTranslationEqualsReference() {
+        if (null == label) return false;
         return label.getReference().equals(getOrigTranslation());
     }
 

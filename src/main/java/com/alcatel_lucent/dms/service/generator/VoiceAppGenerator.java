@@ -128,10 +128,8 @@ public class VoiceAppGenerator extends DictionaryGenerator {
             }
 
             //restore usage element
-            String annotation2 = label.getAnnotation2();
-            String usage;
-            if (StringUtils.isNotEmpty(annotation2) && StringUtils.isNotEmpty(usage = Util.string2Map(annotation2).get("usage"))) {
-                elemEntry.addElement("usage").setText(usage);
+            if (StringUtils.isNotEmpty(label.getDescription())) {
+                elemEntry.addElement("usage").setText(label.getDescription());
             }
 
             //restore message element
@@ -155,9 +153,9 @@ public class VoiceAppGenerator extends DictionaryGenerator {
                 }
                 if (null == annotationMap) continue;
 
-                String notTrans = annotationMap.get("doNotTranslate");
-                if (StringUtils.isNotEmpty(notTrans)) {
-                    elemMsg.addAttribute("doNotTranslate", notTrans);
+                String translate = annotationMap.get("translate");
+                if (StringUtils.isNotEmpty(translate)) {
+                    elemMsg.addAttribute("translate", translate);
                 }
                 String comment = annotationMap.get("comment");
                 if (StringUtils.isNotEmpty(comment)) {

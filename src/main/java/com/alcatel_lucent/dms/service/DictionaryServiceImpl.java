@@ -24,6 +24,7 @@ import org.springframework.util.MultiValueMap;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
+import java.util.regex.Matcher;
 
 import static org.apache.commons.collections.CollectionUtils.collect;
 import static org.apache.commons.collections.CollectionUtils.subtract;
@@ -258,7 +259,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 // with Default context, set the label to dictionary context
                 if (isConflict(dict, label, textMap) || isConflict(dict, label, unsavedTextMap)) {
                     label.setContext(dictCtx);
-                    updateTextMap(dict ,label, dictTextMap);
+                    updateTextMap(dict, label, dictTextMap);
                     if (isConflict(dict, label, dictTextMap)) {
                         Context labelCtx = new Context(textService.populateContextKey(Context.LABEL, label), Context.LABEL);
                         label.setContext(labelCtx);
@@ -281,7 +282,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
      *
      * @param label Label
      */
-    private Text updateTextMap(Dictionary dict,Label label, Map<String, Text> unsavedTextMap) {
+    private Text updateTextMap(Dictionary dict, Label label, Map<String, Text> unsavedTextMap) {
         Text text = unsavedTextMap.get(label.getReference());
         if (null == text) {
             text = new Text();
@@ -1189,10 +1190,16 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         Label label = (Label) dao.retrieve(Label.class, labelId);
         String oldReference = label.getReference();
         label.setReference(reference);
-        glossaryService.consistentGlossariesInLabelRef(label);
+        Collection<PatternPair> patternPairs = glossaryService.consistentGlossariesInLabelRef(label);
         if (null != translationMap) {
             for (Translation translation : translationMap.values()) {
-                translation.setTranslation(glossaryService.getConsistentGlossariesText(translation.getTranslation()));
+                String strTrans = translation.getTranslation();
+                for (PatternPair pp : patternPairs) {
+                    Matcher matcher = pp.getPattern().matcher(strTrans);
+                    if (!matcher.find()) continue;
+                    strTrans = matcher.replaceAll(pp.getReplacement());
+                }
+                translation.setTranslation(strTrans);
             }
         }
 

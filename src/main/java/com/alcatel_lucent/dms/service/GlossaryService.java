@@ -1,9 +1,6 @@
 package com.alcatel_lucent.dms.service;
 
-import com.alcatel_lucent.dms.model.Dictionary;
-import com.alcatel_lucent.dms.model.Glossary;
-import com.alcatel_lucent.dms.model.Label;
-import com.alcatel_lucent.dms.model.Task;
+import com.alcatel_lucent.dms.model.*;
 
 import java.util.Collection;
 
@@ -60,17 +57,9 @@ public interface GlossaryService {
      * */
     void consistentGlossariesInTask(Task task);
 
-    /**
-     * Make all the glossaries in Label consistent
-     * @param label
-     * */
-
-    void consistentGlossariesInLabel(Label label);
-    void consistentGlossariesInLabelRef(Label label);
-
-    String getConsistentGlossariesText(String text);
-
+    Collection<PatternPair> consistentGlossariesInLabelRef(Label label);
 
     Collection<Glossary> getAllGlossaries();
 
+    Collection<PatternPair> getGlossaryMatchedPatterns(final String text);
 }

@@ -22,9 +22,11 @@ public class GlossaryAction extends JSONAction {
         this.newText = newText;
     }
 
-    @Autowired
     private GlossaryService glossaryService;
 
+    public void setGlossaryService(GlossaryService glossaryService) {
+        this.glossaryService = glossaryService;
+    }
 
     @Override
     protected String performAction() throws Exception {

@@ -21,6 +21,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.regex.Matcher;
 
 @Service("textService")
 @SuppressWarnings("unchecked")
@@ -170,9 +171,9 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                                     trans.getTranslationType() : Translation.TYPE_DICT);
                             dbTrans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
                         }
-                    } else {	// supplement mode
+                    } else {    // supplement mode
                         if (dbTrans.getStatus() != Translation.STATUS_TRANSLATED &&
-                        		trans.getStatus() == Translation.STATUS_TRANSLATED) {
+                                trans.getStatus() == Translation.STATUS_TRANSLATED) {
                             dbTrans.setTranslation(trans.getTranslation());
                             dbTrans.setStatus(Translation.STATUS_TRANSLATED);
                             dbTrans.setTranslationType(trans.getTranslationType() != null ?
@@ -668,8 +669,14 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
         }
         Long langId = trans.getLanguage().getId();
         Collection<String> result = new TreeSet<String>();
+
         // consistent glossaries
-        translation = glossaryService.getConsistentGlossariesText(translation);
+        Collection<PatternPair> patternPairs = glossaryService.getGlossaryMatchedPatterns(trans.getText().getReference());
+        for(PatternPair patternPair: patternPairs){
+            Matcher matcher =patternPair.getPattern().matcher(translation);
+            if(!matcher.find())continue;
+            translation = matcher.replaceAll(patternPair.getReplacement());
+        }
 
         if (confirmAll != null && confirmAll) {    // confirm to update translation for all reference
             trans.setTranslation(translation);

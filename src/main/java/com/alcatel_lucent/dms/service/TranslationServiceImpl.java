@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
 
 import com.alcatel_lucent.dms.model.*;
 import org.slf4j.Logger;
@@ -884,17 +885,26 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 	        	}
 	        	checkTranslationSheet(sheet);
 	        	Row row;
-                Collection<Glossary> glossaries=glossaryService.getAllGlossaries();
+
 	            for (int dataIndex = sheet.getFirstRowNum() + 1; (null != (row = sheet.getRow(dataIndex))); ++dataIndex) {
 	            	String contextKey = formatter.formatCellValue(row.getCell(2));
 	            	String reference = formatter.formatCellValue(row.getCell(5));
 	            	String origTranslation = formatter.formatCellValue(row.getCell(6));
 	            	String newTranslation = formatter.formatCellValue(row.getCell(7));
+
+
+
 	            	if (!origTranslation.equals(newTranslation)) {
 	            		log.info(languageName + " translation of \"" + reference + "\" was changed, update it into DMS.");
                         //consistent glossaries
-                        newTranslation = glossaryService.getConsistentGlossariesText(newTranslation);
-	            		Map<String, Text> textMap = contextMap.get(contextKey);
+                        Collection<PatternPair> patternPairs = glossaryService.getGlossaryMatchedPatterns(reference);
+                        for(PatternPair patternPair: patternPairs){
+                            Matcher matcher =patternPair.getPattern().matcher(newTranslation);
+                            if(!matcher.find()) continue;
+                            newTranslation = matcher.replaceAll(patternPair.getReplacement());
+                        }
+
+                        Map<String, Text> textMap = contextMap.get(contextKey);
 	            		if (textMap == null) {
 	            			textMap = new HashMap<String, Text>();
 	            			contextMap.put(contextKey, textMap);
