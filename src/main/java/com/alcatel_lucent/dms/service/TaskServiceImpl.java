@@ -376,6 +376,17 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 
         for (TaskDetail td : taskDetails) {
             row = sheet.createRow(rowNo++);
+            Label label = td.getLabel();
+            // find LabelTranslation
+            LabelTranslation lt = null;
+            if (label.getOrigTranslations() != null) {
+            	for (LabelTranslation ot : label.getOrigTranslations()) {
+            		if (ot.getLanguage().getId().equals(td.getLanguage().getId())) {
+            			lt = ot;
+            			break;
+            		}
+            	}
+            }
             createCell(row, 0, td.getLabelKey(), styleBody);
             Context context = td.getText().getContext();
             // display only special contexts
@@ -389,8 +400,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
             }
             createCell(row, 4, td.getText().getReference(), styleBody);
             createCell(row, 5, td.getNewTranslation() == null ? td.getOrigTranslation() : td.getNewTranslation(), styleUnlockedBody);
-            createCell(row, 6, "", styleUnlockedBody);
-            Label label = td.getLabel();
+            createCell(row, 6, lt == null || lt.getComment() == null ? "" : lt.getComment(), styleUnlockedBody);
             if (label.getDictionary().getFormat().equals(Constants.DictionaryFormat.OTC_EXCEL.toString())) {
 	            String strMergeNum = Util.string2Map(label.getAnnotation1()).get("displayCheckMergeNum");
 	            if (StringUtils.isNotBlank(strMergeNum)) {

@@ -704,8 +704,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                                 BusinessException.CHARSET_NOT_FOUND, charsetName));
                     }
 
-                    // determine if the translation should take value from context dictionary
-                    trans.setNeedTranslation(true);
+                    // read needTranslation flag from parser
+                    // trans.setNeedTranslation(true);
 
 
                     if (lastLabel != null && label.getContext().getName().equals(lastLabel.getContext().getName())) {
@@ -832,6 +832,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                             dbLabelTrans.setOrigTranslation(trans.getOrigTranslation());
                             dbLabelTrans.setAnnotation1(trans.getAnnotation1());
                             dbLabelTrans.setAnnotation2(trans.getAnnotation2());
+                            dbLabelTrans.setComment(trans.getComment());
                             dbLabelTrans.setWarnings(trans.getWarnings());
                             dbLabelTrans.setNeedTranslation(trans.isNeedTranslation());
                             dbLabelTrans.setRequestTranslation(trans.getRequestTranslation());

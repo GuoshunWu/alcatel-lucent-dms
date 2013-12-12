@@ -144,12 +144,15 @@ public class VoiceAppGenerator extends DictionaryGenerator {
                 elemMsg.addAttribute("lang", langCode);
                 LabelTranslation labelTranslation = null;
                 String translation = null;
+                String comment = null;
                 if (VoiceAppParser.REFERENCE_LANG_CODE.equals(langCode)) {
                     annotationMap = Util.string2Map(label.getAnnotation2());
                     translation = label.getReference();
+                    comment = annotationMap == null ? null : annotationMap.get("comment");
                 } else if (null != (labelTranslation = label.getOrigTranslation(langCode))) {
                     annotationMap = Util.string2Map(labelTranslation.getAnnotation1());
                     translation = label.getTranslation(langCode);
+                    comment = labelTranslation.getComment();
                 }
                 if (null == annotationMap) continue;
 
@@ -158,8 +161,8 @@ public class VoiceAppGenerator extends DictionaryGenerator {
                     elemMsg.addAttribute("translate", translate);
                 }
 
-                if (StringUtils.isNotEmpty(labelTranslation.getComment())) {
-                    elemMsg.addElement("comment").setText(labelTranslation.getComment());
+                if (StringUtils.isNotEmpty(comment)) {
+                    elemMsg.addElement("comment").setText(comment);
                 }
 
                 if (StringUtils.isNotEmpty(translation)) {
