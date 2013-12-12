@@ -157,9 +157,9 @@ public class VoiceAppGenerator extends DictionaryGenerator {
                 if (StringUtils.isNotEmpty(translate)) {
                     elemMsg.addAttribute("translate", translate);
                 }
-                String comment = annotationMap.get("comment");
-                if (StringUtils.isNotEmpty(comment)) {
-                    elemMsg.addElement("comment").setText(comment);
+
+                if (StringUtils.isNotEmpty(labelTranslation.getComment())) {
+                    elemMsg.addElement("comment").setText(labelTranslation.getComment());
                 }
 
                 if (StringUtils.isNotEmpty(translation)) {

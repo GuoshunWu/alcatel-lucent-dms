@@ -222,10 +222,6 @@ public class VoiceAppParser extends DictionaryParser {
             attributes.put("translate", translate.getValue());
         }
 
-        if (null != elemComment) {
-            attributes.put("comment", elemComment.getTextTrim());
-        }
-
         DictionaryLanguage dl = dict.getDictLanguage(langCode);
         if (null == dl) {
             dl = new DictionaryLanguage();
@@ -256,7 +252,11 @@ public class VoiceAppParser extends DictionaryParser {
             lt.setOrigTranslation(text);
 
             if (null != translate) {
-                lt.setNeedTranslation(!Boolean.valueOf(translate.getValue()));
+                lt.setNeedTranslation(Boolean.valueOf(translate.getValue()));
+            }
+
+            if(null!= elemComment){
+                lt.setComment(elemComment.getStringValue());
             }
 
             label.addLabelTranslation(lt);

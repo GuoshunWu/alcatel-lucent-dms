@@ -217,6 +217,7 @@ public class OTCPCParser extends DictionaryParser {
         for (Row row : sheet) {
             if (row.getRowNum() == sheet.getFirstRowNum()) continue;
             label = getLabel(row, colIndexes, evaluator, warnings, dictName);
+            if (null == label) continue;
             label.setDictionary(dictionary);
             fillLabelTranslations(label, row, evaluator, warnings, dictName);
             dictionary.addLabel(label);
@@ -246,23 +247,28 @@ public class OTCPCParser extends DictionaryParser {
 
         if (null == cell || StringUtils.isBlank(labelKey)) {
             warnings.add(new BusinessWarning(BusinessWarning.LABEL_KEY_BLANK, row.getSheet().getSheetName(), TITLE_DEFAULT, row.getRowNum()));
+            return null;
         }
 
         cell = row.getCell(colIndexes.get(SHEET_REF_TITLE_VALUE));
+        String reference = "";
         String formulaDesc = null;
-        if (Cell.CELL_TYPE_FORMULA == cell.getCellType()) {
-            CellReference cellReference = new CellReference(cell.getSheet().getSheetName(), cell.getRowIndex(), cell.getColumnIndex(), false, false);
-            String formulaKeys = getFormulaRefLabelKeys(cell, colIndexes.get(SHEET_REF_TITLE_ID));
-            log.info("Reference cell {} is a formula cell, formula = {}, formulaRefLabel keys= {}", new Object[]{
-                    cellReference.formatAsString(),
-                    cell.getCellFormula(), formulaKeys});
-            Map<String,String> formulaDescMap = new HashMap<String, String>();
-            formulaDescMap.put("formula", cell.getCellFormula());
-            formulaDescMap.put("formulaRefLabelKeys", formulaKeys);
 
-            formulaDesc = Util.map2String(formulaDescMap);
+        if (null != cell) {
+            if (Cell.CELL_TYPE_FORMULA == cell.getCellType()) {
+                CellReference cellReference = new CellReference(cell.getSheet().getSheetName(), cell.getRowIndex(), cell.getColumnIndex(), false, false);
+                String formulaKeys = getFormulaRefLabelKeys(cell, colIndexes.get(SHEET_REF_TITLE_ID));
+                log.info("Reference cell {} is a formula cell, formula = {}, formulaRefLabel keys= {}", new Object[]{
+                        cellReference.formatAsString(),
+                        cell.getCellFormula(), formulaKeys});
+                Map<String, String> formulaDescMap = new HashMap<String, String>();
+                formulaDescMap.put("formula", cell.getCellFormula());
+                formulaDescMap.put("formulaRefLabelKeys", formulaKeys);
+
+                formulaDesc = Util.map2String(formulaDescMap);
+            }
+            reference = getStringCellValue(cell, evaluator, warnings, dictName);
         }
-        String reference = getStringCellValue(cell, evaluator, warnings, dictName);
 
         // get display check column info and store it in label annotation1.
         cell = row.getCell(colIndexes.get(SHEET_REF_TITLE_DISPLAY_CHECK));
@@ -326,10 +332,9 @@ public class OTCPCParser extends DictionaryParser {
         for (DictionaryLanguage dictionaryLanguage : dictionaryLanguages) {
             if (dictionaryLanguage.getLanguageCode().equals(REFERENCE_LANG_CODE)) continue;
             LabelTranslation lt = getLabelTranslation(dictionaryLanguage.getLanguageCode(), dictionaryLanguage.getLanguage(), row, evaluator, warnings, dictName);
-            if (null != lt) {
-                lt.setLabel(label);
-                label.getOrigTranslations().add(lt);
-            }
+            if (null == lt) continue;
+            lt.setLabel(label);
+            label.getOrigTranslations().add(lt);
         }
     }
 
@@ -346,23 +351,27 @@ public class OTCPCParser extends DictionaryParser {
             return null;
         }
         String translation = getStringCellValue(transCell, evaluator, warnings, dictName);
-        if (StringUtils.isBlank(translation)) return null;
+        String formulaDesc = null;
+        if (StringUtils.isBlank(translation)) {
+            translation = transCell.getStringCellValue();
+            if (StringUtils.isBlank(translation)) return null;
+        } else {
+            if (Cell.CELL_TYPE_FORMULA == transCell.getCellType()) {
+                CellReference cellReference = new CellReference(transCell.getSheet().getSheetName(), transCell.getRowIndex(), transCell.getColumnIndex(), false, false);
+                String formulaKeys = getFormulaRefLabelKeys(transCell, colIndexes.get(SHEET_REF_TITLE_ID));
+                log.info("Reference cell {} is a formula cell, formula = {}, formulaRefLabel keys= {}", new Object[]{
+                        cellReference.formatAsString(),
+                        transCell.getCellFormula(), formulaKeys});
 
+                Map<String, String> formulaDescMap = new HashMap<String, String>();
+                formulaDescMap.put("formula", transCell.getCellFormula());
+                formulaDescMap.put("formulaRefLabelKeys", formulaKeys);
+                formulaDesc = Util.map2String(formulaDescMap);
+            }
+        }
         LabelTranslation lbTranslation = new LabelTranslation();
 
-        if (Cell.CELL_TYPE_FORMULA == transCell.getCellType()) {
-            CellReference cellReference = new CellReference(transCell.getSheet().getSheetName(), transCell.getRowIndex(), transCell.getColumnIndex(), false, false);
-            String formulaKeys = getFormulaRefLabelKeys(transCell, colIndexes.get(SHEET_REF_TITLE_ID));
-            log.info("Reference cell {} is a formula cell, formula = {}, formulaRefLabel keys= {}", new Object[]{
-                    cellReference.formatAsString(),
-                    transCell.getCellFormula(), formulaKeys});
-
-            Map<String,String> formulaDescMap = new HashMap<String, String>();
-            formulaDescMap.put("formula", transCell.getCellFormula());
-            formulaDescMap.put("formulaRefLabelKeys", formulaKeys);
-            lbTranslation.setAnnotation2(Util.map2String(formulaDescMap));
-        }
-
+        if (formulaDesc != null) lbTranslation.setAnnotation2(formulaDesc);
         lbTranslation.setLanguageCode(langCode);
         lbTranslation.setLanguage(language);
         lbTranslation.setSortNo(row.getRowNum());
