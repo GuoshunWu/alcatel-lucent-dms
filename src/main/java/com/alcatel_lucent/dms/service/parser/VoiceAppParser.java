@@ -226,7 +226,7 @@ public class VoiceAppParser extends DictionaryParser {
         if (null == dl) {
             dl = new DictionaryLanguage();
             dl.setLanguageCode(langCode);
-            dl.setSortNo(-1);
+            dl.setSortNo(dict.getDictLanguages().size() + 1);
 
             dl.setLanguage(languageService.getLanguage(langCode));
             dl.setCharset(new Charset(DEFAULT_ENCODING));
@@ -238,8 +238,17 @@ public class VoiceAppParser extends DictionaryParser {
         String text = null != elemPhrase ? elemPhrase.getTextTrim() : StringUtils.EMPTY;
         if (REFERENCE_LANG_CODE.equals(langCode)) {
             label.setReference(text);
+            // set context to [LABEL] in case reference text is empty. e.g. for key "TUI.oneFemale"
+            if (StringUtils.isBlank(text)) {
+            	Context ctxLabel = new Context();
+            	ctxLabel.setName(Context.LABEL);
+            	label.setContext(ctxLabel);
+            }
             Map<String, String> origAttributes = Util.string2Map(label.getAnnotation2());
             origAttributes.putAll(attributes);
+            if(null!= elemComment){
+                attributes.put("comment", elemComment.getStringValue());
+            }
             label.setAnnotation2(Util.map2String(origAttributes));
         } else {
             //LabelTranslation
