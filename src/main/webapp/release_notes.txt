@@ -1,4 +1,10 @@
-V2.13.0
+V2.13.1 (Dec 13, 2013)
+    * Fix issue of glossary replacement in latin languages
+    * Fix issue of importing OTC PC dictioanry
+    * Adjust VoiceApp parser and generator for new format
+    * Proceed "translate"/"usage"/"comment" fields in VoiceApp XML
+
+V2.13.0 (Dec 3, 2013)
     * Add [LABEL] context which can separate same references from each other in a dictionary
     * Keep original formula in OTC dictionary
     * New dictionary format support: XML android
