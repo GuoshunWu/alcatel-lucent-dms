@@ -1347,13 +1347,33 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         if (langIds != null) {
             langSet.addAll(langIds);
         }
+        float curDict = 1.0f;
+        int dictTotal = dictIds.size();
+
         for (Long id : dictIds) {
             Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, id);
-            for (Label label : dict.getAvailableLabels()) {
+            String dictName = dict.getName();
+            Collection<Label> availableLabels = dict.getAvailableLabels();
+            float cur = 1.0f;
+            int lblTotal = availableLabels.size() + 1;
+            String msg;
+            for (Label label : availableLabels) {
+                float percent = (cur / lblTotal) * 100;
+                msg = StringUtils.join(
+                        Arrays.asList(
+                                //for dictionary
+                                String.format("[%d/%d]Current Dictionary: %s", (int) curDict, dictTotal, dictName),
+                                //for label in dictionary
+                                String.format("[%d/%d]Processing Label: %s", (int) cur, lblTotal - 1, label.getKey())
+                        )
+                        , "<br/>");
+                ProgressQueue.getInstance().setProgress(msg, percent);
                 changeLabelCapitalization(dict, label, langSet, style);
+                cur++;
             }
-        }
 
+            curDict++;
+        }
     }
 
     @Override
@@ -1364,12 +1384,19 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         if (langIds != null) {
             langSet.addAll(langIds);
         }
+
+        int total = labelIds.size();
+        float cur = 1.0f;
+        float percent;
         for (Long id : labelIds) {
+            percent = (cur / total) * 100;
             Label label = (Label) dao.retrieve(Label.class, id);
             if (dict == null) {
                 dict = label.getDictionary();
             }
+            ProgressQueue.getInstance().setProgress(String.format("[%d/%d]Processing Label: %s", (int) cur, total, label.getKey()), percent);
             changeLabelCapitalization(dict, label, langSet, style);
+            cur++;
         }
 
     }

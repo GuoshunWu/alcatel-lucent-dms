@@ -64,14 +64,14 @@ abstract public class ProgressAction extends JSONAction implements SessionAware 
                         UserContext.setUserContext(uc);
 						performAction();
 						if (status == 0) {
-							queue.put(new ProgressEvent(CMD_DONE, getMessage(), 100));
+							queue.put(new ProgressEvent(CMD_DONE, getMessage(), 100f));
 						} else {
-							queue.put(new ProgressEvent(CMD_ERROR, getMessage(), -1));
+							queue.put(new ProgressEvent(CMD_ERROR, getMessage(), -1f));
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
 						try {
-							queue.put(new ProgressEvent(CMD_ERROR, e.getMessage(), -1));
+							queue.put(new ProgressEvent(CMD_ERROR, e.getMessage(), -1f));
 						} catch (InterruptedException e1) {
 							// dummy
 						}
@@ -82,7 +82,7 @@ abstract public class ProgressAction extends JSONAction implements SessionAware 
 				}
 			});
 			thread.start();
-			event = new ProgressEvent(CMD_PROCESS, "Please wait...", -1);
+			event = new ProgressEvent(CMD_PROCESS, "Please wait...", -1f);
 		} else if (getPqCmd().equals(CMD_PROCESS)) {	// wait for an event in the queue
 			ProgressQueue queue = (ProgressQueue) session.get(getPqId());
 			if (queue != null) {
@@ -98,11 +98,11 @@ abstract public class ProgressAction extends JSONAction implements SessionAware 
 					session.remove(getPqId());
 				}
 			} else {
-				event = new ProgressEvent(CMD_DONE, "", 100);
+				event = new ProgressEvent(CMD_DONE, "", 100f);
 			}
             log.info("event="+event);
 		} else {
-			event = new ProgressEvent(CMD_ERROR, "Unknown progress action cmd " + getPqCmd() + ".", -1);
+			event = new ProgressEvent(CMD_ERROR, "Unknown progress action cmd " + getPqCmd() + ".", -1f);
 			setStatus(-1);
 			setMessage("Unknown progress action cmd: " + getPqCmd());
 		}

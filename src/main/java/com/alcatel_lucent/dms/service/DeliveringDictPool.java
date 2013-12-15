@@ -1,31 +1,15 @@
 package com.alcatel_lucent.dms.service;
 
-import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.alcatel_lucent.dms.BusinessException;
+import com.alcatel_lucent.dms.model.Dictionary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import com.alcatel_lucent.dms.BusinessException;
-import com.alcatel_lucent.dms.BusinessWarning;
-import com.alcatel_lucent.dms.model.Application;
-import com.alcatel_lucent.dms.model.Context;
-import com.alcatel_lucent.dms.model.Dictionary;
-import com.alcatel_lucent.dms.model.DictionaryLanguage;
-import com.alcatel_lucent.dms.model.Label;
-import com.alcatel_lucent.dms.model.LabelTranslation;
-import com.alcatel_lucent.dms.model.Text;
-import com.alcatel_lucent.dms.model.Translation;
+import java.io.File;
+import java.util.*;
 @Service("deliveringDictPool")
 public class DeliveringDictPool {
 	
@@ -35,12 +19,6 @@ public class DeliveringDictPool {
 	@Autowired
 	private DictionaryService dictionaryService;
 	
-	@Autowired
-	private TextService textService;
-	
-	@Autowired
-	private DaoService dao;
-
     @Value("${dms.deliver.dir}")
 	private String baseDir;
 	
