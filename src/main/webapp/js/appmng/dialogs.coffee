@@ -36,10 +36,6 @@ define [
     buttons: [
       {text: c18n.ok, click: (e)->
         languages =($("input:checkbox[name='languages']:checked", @).map (index, element)->element.id).get()
-#        if(languages.length == 0)
-#          $.msgBox c18n.languagerequired, null, title: (c18n.warning)
-#          return
-
         params = $(@).data 'params'
         postData =
           lang: languages.join(",")
@@ -47,16 +43,22 @@ define [
           dict: params.dicts
           label: params.labels
 
+        # language id list, empty for reference only
         delete postData.lang if(!postData.lang)
 
-        $.blockUI()
-        $.post urls.app.capitalize, postData, (json)->
-          $.unblockUI()
-          if (json.status != 0)
-            $.msgBox json.message, null, {title: c18n.error, width: 300, height: 'auto'}
-            return
-          $('#stringSettingsGrid').trigger 'reloadGrid' if(postData.label)
-          $.msgBox json.message, null, {title: c18n.info, width: 300, height: 'auto'}
+        pb = util.genProgressBar()
+        util.updateProgress(urls.app.capitalize, postData, (json)->
+          pb.parent().remove()
+          msg = json.event.msg
+          $.msgBox msg, null, {title: c18n.info, width: 300, height: 'auto'}
+          $('#stringSettingsGrid').trigger 'reloadGrid' if postData.label
+        , pb)
+
+#        $.post urls.app.capitalize, postData, (json)->
+#          ($.msgBox json.message, null, {title: c18n.error, width: 300, height: 'auto'};return) unless json.status == 0
+#          $('#stringSettingsGrid').trigger 'reloadGrid' if postData.label
+#          $.msgBox json.message, null, {title: c18n.info, width: 300, height: 'auto'}
+
         $(@).dialog "close"
       }
       {text: c18n.cancel, click: (e)->$(@).dialog "close"}

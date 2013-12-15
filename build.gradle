@@ -122,9 +122,9 @@ dependencies {
             "javax.servlet.jsp:jsp-api:2.2",
             "jstl:jstl:1.2",
 
-    compile("dom4j:dom4j:1.6.1") {
-        exclude module: 'xml-apis'
-    }
+            compile("dom4j:dom4j:1.6.1") {
+                exclude module: 'xml-apis'
+            }
 
     testCompile "junit:junit:4.10",
             "org.hamcrest:hamcrest-all:1.0"

@@ -226,11 +226,8 @@ define [
   capitalizeId = '#dictCapitalize'
   menu = $(capitalizeId + 'Menu', '#DMS_applicationPanel').hide().menu(
     select: ( event, ui )->
-
       dicts = dicGrid.getGridParam('selarrrow')
-      if !dicts.length
-        $.msgBox (c18n.selrow.format c18n['dict']), null, title: c18n.warning
-        return
+      ($.msgBox (c18n.selrow.format c18n['dict']), null, title: c18n.warning; return) unless dicts.length
       $('#capitalizationDialog').data(params: {dicts: dicts.join(','), style: $('a',ui.item).prop('name')}).dialog('open')
   )
 

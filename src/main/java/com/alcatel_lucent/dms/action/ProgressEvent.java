@@ -3,9 +3,9 @@ package com.alcatel_lucent.dms.action;
 public class ProgressEvent {
 	private String cmd;
 	private String msg;
-	private int percent;
+	private float percent;
 	
-	public ProgressEvent(String cmd, String msg, int percent) {
+	public ProgressEvent(String cmd, String msg, float percent) {
 		this.cmd = cmd;
 		this.msg = msg;
 		this.percent = percent;
@@ -23,10 +23,10 @@ public class ProgressEvent {
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
-	public int getPercent() {
+	public float getPercent() {
 		return percent;
 	}
-	public void setPercent(int percent) {
+	public void setPercent(float percent) {
 		this.percent = percent;
 	}
 
