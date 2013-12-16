@@ -12,8 +12,6 @@ public class ProgressQueue extends LinkedBlockingQueue<ProgressEvent> {
         id = queueId;
     }
 
-    ;
-
     public static void setInstance(ProgressQueue queue) {
         instance.set(queue);
     }

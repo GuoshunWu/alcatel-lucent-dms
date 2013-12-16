@@ -1,11 +1,12 @@
 package com.alcatel_lucent.dms.action;
 
-import java.util.Map;
-
 import com.alcatel_lucent.dms.UserContext;
+import org.apache.commons.lang.StringUtils;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.interceptor.SessionAware;
+
+import java.util.Map;
 
 /**
  * Base class of actions which need a progress bar
@@ -50,13 +51,17 @@ abstract public class ProgressAction extends JSONAction implements SessionAware 
 	
 	private Thread thread;
 
+
+
 	public String execute() {
 		if (getPqCmd().equals(CMD_START)) {	// initialize progress queue and start job
 			setPqId("pq_" + System.currentTimeMillis());
 			final ProgressQueue queue = new ProgressQueue(getPqId());
 			session.put(getPqId(), queue);
             final UserContext uc=UserContext.getInstance();
-			thread = new Thread(new Runnable() {
+
+//            thread = new MessageProducerThread(queue, uc, this, ActionContext.getContext());
+            thread = new Thread(new Runnable() {
 				@Override
 				public void run() {
 					try {
@@ -68,10 +73,12 @@ abstract public class ProgressAction extends JSONAction implements SessionAware 
 						} else {
 							queue.put(new ProgressEvent(CMD_ERROR, getMessage(), -1f));
 						}
-					} catch (Exception e) {
+                    }
+                    catch (Exception e) {
 						e.printStackTrace();
 						try {
-							queue.put(new ProgressEvent(CMD_ERROR, e.getMessage(), -1f));
+                            String msg = StringUtils.defaultIfEmpty(e.getMessage(), "System error, please contact system administrator!");
+							queue.put(new ProgressEvent(CMD_ERROR, msg, -1f));
 						} catch (InterruptedException e1) {
 							// dummy
 						}
@@ -109,7 +116,8 @@ abstract public class ProgressAction extends JSONAction implements SessionAware 
 		return SUCCESS;
 	}
 
-	public ProgressEvent getEvent() {
+
+    public ProgressEvent getEvent() {
 		return event;
 	}
 
