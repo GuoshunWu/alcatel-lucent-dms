@@ -1,6 +1,8 @@
 package com.alcatel_lucent.dms.action;
 
 import com.alcatel_lucent.dms.UserContext;
+import com.opensymphony.xwork2.Action;
+import com.opensymphony.xwork2.ActionContext;
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
@@ -56,15 +58,15 @@ abstract public class ProgressAction extends JSONAction implements SessionAware 
 	public String execute() {
 		if (getPqCmd().equals(CMD_START)) {	// initialize progress queue and start job
 			setPqId("pq_" + System.currentTimeMillis());
-			final ProgressQueue queue = new ProgressQueue(getPqId());
-			session.put(getPqId(), queue);
+            final ProgressQueue queue = new ProgressQueue(getPqId());
+            session.put(getPqId(), queue);
             final UserContext uc=UserContext.getInstance();
-
-//            thread = new MessageProducerThread(queue, uc, this, ActionContext.getContext());
+            final ActionContext ctx= ActionContext.getContext();
             thread = new Thread(new Runnable() {
 				@Override
 				public void run() {
-					try {
+                    ActionContext.setContext(ctx);
+                    try {
 						ProgressQueue.setInstance(queue);
                         UserContext.setUserContext(uc);
 						performAction();
@@ -77,7 +79,7 @@ abstract public class ProgressAction extends JSONAction implements SessionAware 
                     catch (Exception e) {
 						e.printStackTrace();
 						try {
-                            String msg = StringUtils.defaultIfEmpty(e.getMessage(), "System error, please contact system administrator!");
+                            String msg = StringUtils.defaultIfEmpty(e.getMessage(), getText("message.generalErrorMsg"));
 							queue.put(new ProgressEvent(CMD_ERROR, msg, -1f));
 						} catch (InterruptedException e1) {
 							// dummy
