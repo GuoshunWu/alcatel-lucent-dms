@@ -49,7 +49,7 @@ public class TaskDetailREST extends BaseREST {
 		String translated = requestMap.get("translated");
 		String hql = "from TaskDetail where task.id=:taskId and label.dictionary.base.applicationBase.id=:appBaseId and language.id=:languageId";
 		if (translated != null && translated.equals("1")) {
-			hql += " and newTranslation<>text.reference";
+			hql += " and newTranslation<>text.reference and newTranslation<>''";
 		} else {
 			hql += " and (newTranslation is null or newTranslation='' or newTranslation=text.reference)";
 		}

@@ -377,6 +377,33 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
         for (TaskDetail td : taskDetails) {
             row = sheet.createRow(rowNo++);
             Label label = td.getLabel();
+            String reference = td.getText().getReference();
+            String translation = td.getNewTranslation() == null ? td.getOrigTranslation() : td.getNewTranslation();
+            
+            // for VoiceApp dict, add "..." for punctuation when position=begin/middle/end
+            if (label.getDictionary().getFormat().equals(Constants.DictionaryFormat.VOICE_APP.toString())) {
+            	Map<String, String> attributes = Util.string2Map(label.getAnnotation1());
+            	String position = attributes.get("position");
+            	if (position != null) {
+            		if (position.equals("begin") || position.equals("middle")) {
+            			if (!StringUtils.isBlank(reference)) {
+            				reference = reference + "...";
+            			}
+            			if (!StringUtils.isBlank(translation)) {
+            				translation += "...";
+            			}
+            		}
+            		if (position.equals("end") || position.equals("middle")) {
+            			if (!StringUtils.isBlank(reference)) {
+            				reference = "..." + reference;
+            			}
+            			if (!StringUtils.isBlank(translation)) {
+            				translation = "..." + translation;
+            			}
+            		}
+            	}
+            }
+            
             // find LabelTranslation
             LabelTranslation lt = null;
             if (label.getOrigTranslations() != null) {
@@ -398,8 +425,8 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
             if (td.getDescription() != null) {
                 createCell(row, 3, td.getDescription(), styleBody);
             }
-            createCell(row, 4, td.getText().getReference(), styleBody);
-            createCell(row, 5, td.getNewTranslation() == null ? td.getOrigTranslation() : td.getNewTranslation(), styleUnlockedBody);
+            createCell(row, 4, reference, styleBody);
+            createCell(row, 5, translation, styleUnlockedBody);
             createCell(row, 6, lt == null || lt.getComment() == null ? "" : lt.getComment(), styleUnlockedBody);
             if (label.getDictionary().getFormat().equals(Constants.DictionaryFormat.OTC_EXCEL.toString())) {
 	            String strMergeNum = Util.string2Map(label.getAnnotation1()).get("displayCheckMergeNum");
@@ -571,8 +598,43 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
         }
         Collection<TaskDetail> details = dao.retrieve(hql, param);
         for (TaskDetail td : details) {
-            if (translationMap.containsKey(td.getText().getReference())) {
-                td.setNewTranslation(translationMap.get(td.getText().getReference()));
+        	Label label = td.getLabel();
+        	String reference = label.getText().getReference();
+        	
+        	// For VoiceApp dict, add "..." for punctuation when position=begin/middle/end
+        	String position = null;
+            if (label.getDictionary().getFormat().equals(Constants.DictionaryFormat.VOICE_APP.toString())) {
+            	Map<String, String> attributes = Util.string2Map(label.getAnnotation1());
+            	position = attributes.get("position");
+            	if (position != null && !StringUtils.isBlank(reference)) {
+            		if (position.equals("begin") || position.equals("middle")) {
+            			reference += "...";
+            		}
+            		if (position.equals("end") || position.equals("middle")) {
+            			reference = "..." + reference;
+            		}
+            	}
+            }
+            if (translationMap.containsKey(reference)) {
+            	String translation = translationMap.get(reference);
+            	// For VoiceApp dict, remove "..." when position=begin/middle/end
+            	if (position != null && translation != null) {
+            		if (position.equals("begin") || position.equals("middle")) {
+            			if (translation.endsWith("...")) {
+            				translation = translation.substring(0, translation.length() - 3);
+            			} else if (translation.endsWith("…")) {
+            				translation = translation.substring(0, translation.length() - 1);
+            			}
+            		}
+            		if (position.equals("end") || position.equals("middle")) {
+            			if (translation.startsWith("...")) {
+            				translation = translation.substring(3);
+            			} else if (translation.startsWith("…")) {
+            				translation = translation.substring(1);
+            			}
+            		}
+            	}
+                td.setNewTranslation(translation);
             }
         }
     }
