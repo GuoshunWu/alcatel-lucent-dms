@@ -137,7 +137,7 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
               @msg = $('div.progressbar-msg', pbContainer)
             change: (e, ui) ->
               @msg.html $(@).data('msg') if $(@).is(":data(msg)")
-              @label.html "#{$(@).progressbar('value').toPrecision(4)}%"
+              @label.html "#{$(@).progressbar('value').toFixed(0)}%"
             complete: (e, ui) ->
               pbContainer.remove() if autoRemoveWhenCompleted
           )
