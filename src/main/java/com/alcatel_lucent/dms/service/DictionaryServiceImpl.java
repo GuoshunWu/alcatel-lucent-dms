@@ -1,6 +1,7 @@
 package com.alcatel_lucent.dms.service;
 
 import com.alcatel_lucent.dms.*;
+import com.alcatel_lucent.dms.Constants.ImportingMode;
 import com.alcatel_lucent.dms.action.ProgressQueue;
 import com.alcatel_lucent.dms.action.app.CapitalizeAction;
 import com.alcatel_lucent.dms.model.*;
@@ -23,6 +24,7 @@ import org.springframework.util.MultiValueMap;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.regex.Matcher;
 
@@ -1347,33 +1349,19 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         if (langIds != null) {
             langSet.addAll(langIds);
         }
-        float curDict = 1.0f;
+        int curDict = 1;
         int dictTotal = dictIds.size();
 
         for (Long id : dictIds) {
             Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, id);
             String dictName = dict.getName();
             Collection<Label> availableLabels = dict.getAvailableLabels();
-            float cur = 1.0f;
-            int lblTotal = availableLabels.size() + 1;
-            String msg;
-            for (Label label : availableLabels) {
-                float percent = (cur / lblTotal) * 100;
-                msg = StringUtils.join(
-                        Arrays.asList(
-                                //for dictionary
-                                String.format("[%d/%d]Current Dictionary: %s", (int) curDict, dictTotal, dictName),
-                                //for label in dictionary
-                                String.format("[%d/%d]Processing Label: %s", (int) cur, lblTotal - 1, label.getKey())
-                        )
-                        , "<br/>");
-                ProgressQueue.getInstance().setProgress(msg, percent);
-                changeLabelCapitalization(dict, label, langSet, style);
-                cur++;
-            }
-
+            String msg = String.format("[%d/%d] Processing dictionary: %s", (int) curDict, dictTotal, dictName);
+            ProgressQueue.getInstance().setProgress(msg, (int) Math.round(curDict * 100.0 / dictTotal));
+            changeLabelCapitalization(dict, availableLabels, langSet, style);
             curDict++;
         }
+        ProgressQueue.getInstance().setProgress("Completing...", -1);
     }
 
     @Override
@@ -1385,50 +1373,84 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             langSet.addAll(langIds);
         }
 
-        int total = labelIds.size();
-        float cur = 1.0f;
-        float percent;
+        Collection<Label> labels = new ArrayList<Label>();
         for (Long id : labelIds) {
-            percent = (cur / total) * 100;
             Label label = (Label) dao.retrieve(Label.class, id);
             if (dict == null) {
                 dict = label.getDictionary();
             }
-            ProgressQueue.getInstance().setProgress(String.format("[%d/%d]Processing Label: %s", (int) cur, total, label.getKey()), percent);
-            changeLabelCapitalization(dict, label, langSet, style);
-            cur++;
+            labels.add(label);
         }
-
+        changeLabelCapitalization(dict, labels, langSet, style);
+        ProgressQueue.getInstance().setProgress("Completing...", -1);
     }
 
-    private void changeLabelCapitalization(Dictionary dict, Label label, HashSet<Long> langSet, int style) {
-        String oldReference = label.getReference();
-        String newReference = capitalizeText(oldReference, style, Locale.ENGLISH);
-        Map<Long, Translation> translationMap = new HashMap<Long, Translation>();
-        Text text = label.getText();
-        // duplicate existing translations and capitalize them if required
-        for (DictionaryLanguage dl : dict.getDictLanguages()) {
-            Translation translation = text.getTranslation(dl.getLanguage().getId());
-            if (translation != null) {
-                Translation newTrans = new Translation();
-                String oldTranslation = translation.getTranslation();
-                newTrans.setLanguage(translation.getLanguage());
-                newTrans.setTranslation(oldTranslation);
-                newTrans.setTranslationType(translation.getTranslationType());
-                newTrans.setStatus(translation.getStatus());
-                if (langSet.contains(dl.getLanguage().getId())) {    // capitalization required
-                    String newTranslation = capitalizeText(oldTranslation, style, langService.getLocale(dl.getLanguage()));
-                    newTrans.setTranslation(newTranslation);
-                    if (!newTranslation.equals(oldTranslation)) {
-                        newTrans.setTranslationType(Translation.TYPE_MANUAL);
-                    }
-                } else if (oldTranslation.equals(oldReference)) {    // update translation if it's same with old reference
-                    newTrans.setTranslation(newReference);
-                }
-                translationMap.put(dl.getLanguage().getId(), newTrans);
-            }
-            label = updateLabelReference(label.getId(), newReference, translationMap);
-        }
+    private void changeLabelCapitalization(Dictionary dict, Collection<Label> labels, HashSet<Long> langSet, int style) {
+    	Map<Long, Collection<Text>> contextMap = new HashMap<Long, Collection<Text>>();
+    	Map<Long, Collection<Label>> labelMap = new HashMap<Long, Collection<Label>>();
+	    for (Label label : labels) {
+	        String oldReference = label.getReference();
+	        label.setReference(capitalizeText(oldReference, style, Locale.ENGLISH));
+	        Collection<PatternPair> patternPairs = glossaryService.consistentGlossariesInLabelRef(label);
+	        String newReference = label.getReference(); 
+	        Text text = label.getText();
+	        Text newText = new Text();
+	        newText.setReference(newReference);
+	        for (DictionaryLanguage dl : dict.getDictLanguages()) {
+	            Translation translation = text.getTranslation(dl.getLanguage().getId());
+	            if (translation != null) {
+	                String oldTranslation = translation.getTranslation();
+	                String newTranslation = oldTranslation;
+	                if (langSet.contains(dl.getLanguage().getId())) {    // capitalization required
+	                    newTranslation = capitalizeText(oldTranslation, style, langService.getLocale(dl.getLanguage()));
+	                    // glossary matching
+	                    for (PatternPair pp : patternPairs) {
+	                        Matcher matcher = pp.getPattern().matcher(newTranslation);
+	                        if (!matcher.find()) continue;
+	                        newTranslation = matcher.replaceAll(pp.getReplacement());
+	                    }
+	                } else if (oldTranslation.equals(oldReference)) {    // update translation if it's same with old reference
+	                    newTranslation = newReference;
+	                }
+			        if (newReference.equals(oldReference)) {	// if reference is not changed, update translations directly
+		                if (!newTranslation.equals(oldTranslation)) {
+				        	translation.setTranslation(newTranslation);
+		                	translation.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
+		                }
+			        } else {	// if reference is changed, prepare data for calling textService.updateTranslations() in batch
+				        // duplicate existing translations and capitalize them if required
+		                Translation newTrans = new Translation();
+		                newTrans.setLanguage(translation.getLanguage());
+		                newTrans.setTranslation(newTranslation);
+		                newTrans.setTranslationType(translation.getTranslationType());
+		                newTrans.setStatus(translation.getStatus());
+		                newText.addTranslation(newTrans);
+			        }
+	            }
+	        }
+	        if (!newReference.equals(oldReference)) { // if reference is changed, prepare data for calling textService.updateTranslations() in batch
+	        	Long ctxId = text.getContext().getId();
+	        	Collection<Label> ctxLabels = labelMap.get(ctxId);
+	        	Collection<Text> texts = contextMap.get(ctxId);
+	        	if (texts == null) {
+	        		texts = new ArrayList<Text>();
+	        		ctxLabels = new ArrayList<Label>();
+	        		contextMap.put(ctxId, texts);
+	        		labelMap.put(ctxId, ctxLabels);
+	        	}
+	        	texts.add(newText);
+	        	ctxLabels.add(label);
+	        }
+	    }
+	    
+	    // update text and translations for each context
+	    for (Long ctxId : contextMap.keySet()) {
+	    	Map<String, Text> textMap = textService.updateTranslations(ctxId, contextMap.get(ctxId), Constants.ImportingMode.TRANSLATION);
+	    	// re-associate text with labels
+	    	for (Label label : labelMap.get(ctxId)) {
+	    		label.setText(textMap.get(label.getReference()));
+	    	}
+	    }
     }
 
     private String capitalizeText(String text, int style, Locale locale) {
