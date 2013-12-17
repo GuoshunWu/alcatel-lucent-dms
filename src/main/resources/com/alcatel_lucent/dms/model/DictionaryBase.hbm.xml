@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.alcatel_lucent.dms.model">
+	<class name="DictionaryBase" table="DICTIONARY_BASE">
+		<id column="ID" name="id">
+			<generator class="native">
+                <param name="sequence">ID_DICTIONARY_BASE</param>
+			</generator>
+		</id>
+		<property column="NAME" name="name" not-null="true" type="string" />
+		<property column="FORMAT" length="20" name="format" type="string" />
+		<property column="ENCODING" length="20" name="encoding" type="string" />
+		<property column="PATH" name="path" type="string" />
+
+        <many-to-one name="applicationBase" column="APPLICATION_BASE_ID" />
+        <many-to-one name="owner" column="USER_ID" />
+
+        <set name="dictionaries" inverse="true">
+            <key column="DICTIONARY_BASE_ID" not-null="true" on-delete="cascade"/>
+            <one-to-many class="Dictionary"/>
+        </set>
+
+	</class>
+</hibernate-mapping>

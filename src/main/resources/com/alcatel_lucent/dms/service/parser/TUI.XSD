@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:element name="catalog">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="unbounded" ref="entry"/>
+        <xs:element minOccurs="0" ref="comment"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="entry">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" ref="key"/>
+        <xs:element minOccurs="0" maxOccurs="1" ref="usage"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="message"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="key">
+    <xs:complexType  mixed="true">
+      <xs:attribute name="wavOrTts" use="optional" type="attrWavOrTts"/>
+      <xs:attribute name="position" use="optional" type="phrasePositions"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="message">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" ref="comment"/>
+        <xs:element minOccurs="0" ref="phrase"/>
+      </xs:sequence>
+      <xs:attribute name="lang" use="required" type="supportedLanguages"/>
+      <xs:attribute name="translate" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:simpleType name="supportedLanguages">
+  <xs:restriction base="xs:string">
+  	<xs:enumeration value="ca_ES" />
+  	<xs:enumeration value="cs_CZ" />
+  	<xs:enumeration value="da_DK" />
+    <xs:enumeration value="de_DE" />
+    <xs:enumeration value="en_GB" />
+    <xs:enumeration value="en_US" />
+    <xs:enumeration value="es_ES" />
+    <xs:enumeration value="es_MX" />
+    <xs:enumeration value="fi_FI" />
+    <xs:enumeration value="fr_FR" />
+    <xs:enumeration value="fr_CA" />
+    <xs:enumeration value="hu_HU" />
+    <xs:enumeration value="he_IL" />
+    <xs:enumeration value="it_IT" />
+    <xs:enumeration value="ja_JP" />
+    <xs:enumeration value="ko_KR" />
+    <xs:enumeration value="nl_BE" />
+    <xs:enumeration value="nl_NL" />
+    <xs:enumeration value="no_NO" />
+    <xs:enumeration value="pl_PL" />
+    <xs:enumeration value="pt_PT" />
+    <xs:enumeration value="pt_BR" />
+    <xs:enumeration value="ru_RU" />
+    <xs:enumeration value="sv_SE" />
+    <xs:enumeration value="tr_TR" />
+    <xs:enumeration value="zh_TW" />
+    <xs:enumeration value="zh_CN" />
+    <xs:enumeration value="zh_HK" />
+   </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="phrasePositions">
+  <xs:restriction base="xs:string">
+  	<xs:enumeration value="middle" />
+  	<xs:enumeration value="begin" />
+    <xs:enumeration value="end" />
+    <xs:enumeration value="whole" />
+  </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="attrWavOrTts">
+  <xs:restriction base="xs:string">
+    <xs:enumeration value="wav" />
+    <xs:enumeration value="tts" />
+    <xs:enumeration value="both" />
+    
+  </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="comment" type="xs:string"/>
+  <xs:element name="usage" type="xs:string"/>
+  <xs:element name="phrase" type="xs:string"/>
+</xs:schema>
