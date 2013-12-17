@@ -27,7 +27,7 @@ public class JSONServiceImpl implements JSONService {
     private static Logger log = LoggerFactory.getLogger(JSONServiceImpl.class);
 
     public String toJSONString(Object entity, String propExp) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-    	return Util.jsonFormat(toJSON(entity, propExp).toString());
+    	return toJSON(entity, propExp).toString(4);
     }
     
     public JSON toJSON(Object entity, String propExp) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
@@ -136,7 +136,7 @@ public class JSONServiceImpl implements JSONService {
 //        Map<String, Object> userData=new HashMap<String, Object>();
 //        jsonGrid.put("userData",userData);
         
-        log.debug(Util.jsonFormat(jsonGrid.toString()));
+        log.debug(jsonGrid.toString(4));
         return jsonGrid;
     }
 

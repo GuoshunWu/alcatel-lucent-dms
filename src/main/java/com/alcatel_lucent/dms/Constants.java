@@ -33,6 +33,7 @@ public class Constants {
         TEXT_PROP("Text properties"),
         ACS_TEXT("ACS text"),
         OTC_EXCEL("OTC Excel"),
+        OTC_WEB("OTC Web"),
         VOICE_APP("Voice App"),
         PO("PO"),
         VITAL_SUITE("Vital Suite"),
