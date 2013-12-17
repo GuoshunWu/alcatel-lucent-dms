@@ -3,14 +3,13 @@ package com.alcatel_lucent.dms.service.parser;
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.Constants.DictionaryFormat;
-import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
+import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.service.LanguageService;
 import com.alcatel_lucent.dms.service.generator.DictionaryGenerator;
 import com.alcatel_lucent.dms.util.NoOpEntityResolver;
 import com.alcatel_lucent.dms.util.Util;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.collections.ClosureUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
@@ -25,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.w3c.dom.traversal.NodeIterator;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -34,19 +32,20 @@ import java.util.*;
 @Component
 public class AndroidXMLParser extends DictionaryParser {
 
-    public static final String[] extensions = new String[]{"xml"};
-    private SuffixFileFilter xmlFilter = new SuffixFileFilter(extensions, IOCase.INSENSITIVE);
-    public static String LANG_CODE_SEPARATOR = "-";
-    public static String REFERENCE_LANG_CODE = "GAE";
-    public static String PARENT_BASE_NAME = "values";
+    private static final String[] extensions = new String[]{"xml"};
+    private static final SuffixFileFilter  xmlFilter = new SuffixFileFilter(extensions, IOCase.INSENSITIVE);
+    private static final String PARENT_BASE_NAME = "values";
 
-    public static String KEY_SEPARATOR = "_";
+    public static final String LANG_CODE_SEPARATOR = "-";
+    public static final String REFERENCE_LANG_CODE = "GAE";
 
-    public static final String ELEMENT_STRING = "string";
+    public static final String KEY_SEPARATOR = "_";
+
+    private static final String ELEMENT_STRING = "string";
     public static final String ELEMENT_STRING_ARRAY = "string-array";
     public static final String ELEMENT_PLURALS = "plurals";
 
-    public Collection<String> multiItemElements = Arrays.asList(ELEMENT_STRING_ARRAY, ELEMENT_PLURALS);
+    private static final Collection<String> multiItemElements = Arrays.asList(ELEMENT_STRING_ARRAY, ELEMENT_PLURALS);
 
     @Autowired
     private LanguageService languageService;
@@ -58,10 +57,9 @@ public class AndroidXMLParser extends DictionaryParser {
      * @param file          directory or file to be parsed, if file is a dictionary, files under the dictionary will be parsed recursively.
      * @param acceptedFiles output parameter, holder of accepted files list
      * @return list of Dictionary objects
-     * @throws com.alcatel_lucent.dms.BusinessException
-     *          fatal errors, multiple exceptions can be put into a NESTED_ERROR exception.
-     *          It's suggested to go through all files before throw a fatal error, so that user can get as more as possible
-     *          information about errors.
+     * @throws com.alcatel_lucent.dms.BusinessException fatal errors, multiple exceptions can be put into a NESTED_ERROR exception.
+     *                                                  It's suggested to go through all files before throw a fatal error, so that user can get as more as possible
+     *                                                  information about errors.
      */
     @Override
     public ArrayList<Dictionary> parse(String rootDir, File file, Collection<File> acceptedFiles) throws BusinessException {
@@ -79,11 +77,11 @@ public class AndroidXMLParser extends DictionaryParser {
         return DictionaryFormat.XML_ANDROID;
     }
 
-    public static String getRootName() {
+    private static String getRootName() {
         return "resources";
     }
 
-    public static Collection<String> getSecondNodeName() {
+    private static Collection<String> getSecondNodeName() {
         return Arrays.asList(ELEMENT_STRING, ELEMENT_STRING_ARRAY, ELEMENT_PLURALS);
     }
 
@@ -95,8 +93,8 @@ public class AndroidXMLParser extends DictionaryParser {
      * Get file parent base name and language code
      *
      * @param file file
-     * @return a pair which left element is parent base name and right is language code, if not language code, the
-     *         right element would be empty string.
+     * @return a pair which left element is parent base name and right is language code, if no language code, the
+     * right element would be empty string.
      */
     private Pair<String, String> getFileLangCodeAndBaseName(String rootDir, File file) {
         File parentFile = file.getParentFile();
@@ -120,7 +118,7 @@ public class AndroidXMLParser extends DictionaryParser {
      * @return reference file or null if not found
      */
     private File takeReferenceFileFromCollection(String rootDir, Collection<File> files) {
-        File referenceFile = null;
+
         for (File file : files) {
             Pair<String, String> pBaseNameAndLangCode = getFileLangCodeAndBaseName(rootDir, file);
             if (StringUtils.isEmpty(pBaseNameAndLangCode.getRight())) {
@@ -128,7 +126,7 @@ public class AndroidXMLParser extends DictionaryParser {
                 return file;
             }
         }
-        return referenceFile;
+        return null;
     }
 
 
@@ -175,13 +173,9 @@ public class AndroidXMLParser extends DictionaryParser {
             dictionaryLanguage.setDictionary(dict);
             dict.addDictLanguage(dictionaryLanguage);
 
-            BusinessException fileExceptions = new BusinessException(BusinessException.NESTED_ANDROID_XML_FILE_ERROR, file.getName());
-
-            readLabels(file, dict, dictionaryLanguage, warnings, fileExceptions);
+            readLabels(file, dict, dictionaryLanguage, warnings);
             acceptedFiles.add(file);
-            if (fileExceptions.hasNestedException()) {
-                dictExceptions.addNestedException(fileExceptions);
-            }
+
         }
 
         if (dictExceptions.hasNestedException()) {
@@ -194,7 +188,7 @@ public class AndroidXMLParser extends DictionaryParser {
     private Dictionary readReferenceFile(String dictName, File refFile, String refLangCode, Collection<BusinessWarning> warnings) throws BusinessException {
         if (StringUtils.isEmpty(refLangCode)) refLangCode = REFERENCE_LANG_CODE;
         // create dictionary.
-        log.info("Parsing label xml file '" + refFile.getAbsolutePath() + "'");
+        log.info("Parsing reference android xml file '" + refFile.getAbsolutePath() + "'");
         DictionaryBase dictBase = new DictionaryBase();
         dictBase.setName(dictName);
         dictBase.setPath(refFile.getAbsolutePath());
@@ -208,16 +202,15 @@ public class AndroidXMLParser extends DictionaryParser {
         Collection<DictionaryLanguage> dictLanguages = new ArrayList<DictionaryLanguage>();
         dictionary.setDictLanguages(dictLanguages);
         dictionary.setReferenceLanguage(refLangCode);
+        dictionary.setReferenceLanguage(REFERENCE_LANG_CODE);
 
         // add reference dictLanguage object
         DictionaryLanguage refDictLanguage = getDictionaryLanguage(refLangCode, 0);
         refDictLanguage.setDictionary(dictionary);
         dictLanguages.add(refDictLanguage);
 
-        BusinessException fileExceptions = new BusinessException(BusinessException.NESTED_ANDROID_XML_FILE_ERROR, refFile.getName());
-        readLabels(refFile, dictionary, refDictLanguage, warnings, fileExceptions);
+        readLabels(refFile, dictionary, refDictLanguage, warnings);
 
-        if (fileExceptions.hasNestedException()) throw fileExceptions;
         return dictionary;
 
     }
@@ -231,14 +224,14 @@ public class AndroidXMLParser extends DictionaryParser {
         return dictLanguage;
     }
 
-    public ArrayList<Dictionary> parse(String rootDir, File file, Collection<File> acceptedFiles, BusinessException exceptions) throws BusinessException {
+    private ArrayList<Dictionary> parse(String rootDir, File file, Collection<File> acceptedFiles, BusinessException exceptions) throws BusinessException {
         rootDir = FilenameUtils.normalize(rootDir, true);
-        ArrayList<Dictionary> deliveredDicts = new ArrayList<Dictionary>();
-        if (!file.exists()) return deliveredDicts;
+        ArrayList<Dictionary> deliveredDictionaries = new ArrayList<Dictionary>();
+        if (!file.exists()) return deliveredDictionaries;
 
         if (file.isFile()) { // single file import, only reference file is permitted.
-            deliveredDicts.add(parseDictionary(rootDir, null, Arrays.asList(file), acceptedFiles));
-            return deliveredDicts;
+            deliveredDictionaries.add(parseDictionary(rootDir, null, Arrays.asList(file), acceptedFiles));
+            return deliveredDictionaries;
         }
 
         // file is directory
@@ -248,7 +241,7 @@ public class AndroidXMLParser extends DictionaryParser {
             try {
                 String baseName = entry.getKey();
                 List<File> dictFiles = entry.getValue();
-                deliveredDicts.add(parseDictionary(rootDir, baseName, dictFiles, acceptedFiles));
+                deliveredDictionaries.add(parseDictionary(rootDir, baseName, dictFiles, acceptedFiles));
             } catch (BusinessException e) {
                 // Ignore INVALID_XML_FILE error because the file can be another type of xml dictionary.
                 if (e.getErrorCode() != BusinessException.INVALID_XML_FILE) {
@@ -256,7 +249,7 @@ public class AndroidXMLParser extends DictionaryParser {
                 }
             }
         }
-        return deliveredDicts;
+        return deliveredDictionaries;
     }
 
     /**
@@ -264,7 +257,7 @@ public class AndroidXMLParser extends DictionaryParser {
      *
      * @param nodeIterator node iterator
      * @return A pair which left element will be the comment above this node and the right element
-     *         will be the node.
+     * will be the node.
      */
     private Pair<String, Node> readCommentsAboveNode(Iterator<Node> nodeIterator) {
         List<String> lines = new ArrayList<String>();
@@ -285,10 +278,12 @@ public class AndroidXMLParser extends DictionaryParser {
         return Pair.of(StringUtils.join(lines, "\n"), null);
     }
 
+    @SuppressWarnings("unchecked")
     private String elemAttributeToString(Element element) {
         return Util.map2String(Util.attributeList2Map(element.attributes()), "\n");
     }
 
+    @SuppressWarnings("unchecked")
     private String elemNamespacesToString(Element element) {
         List<Namespace> nsList = element.declaredNamespaces();
         List<String> nsStrings = new ArrayList<String>();
@@ -298,6 +293,7 @@ public class AndroidXMLParser extends DictionaryParser {
         return StringUtils.join(nsStrings, "\n");
     }
 
+    @SuppressWarnings("unchecked")
     private String elemProcessingInstructionsToString(Element element) {
         List<ProcessingInstruction> piList = element.processingInstructions();
         List<String> strings = new ArrayList<String>();
@@ -307,7 +303,8 @@ public class AndroidXMLParser extends DictionaryParser {
         return StringUtils.join(strings, "\n");
     }
 
-    public void readLabels(File file, Dictionary dict, DictionaryLanguage dl, Collection<BusinessWarning> warnings, BusinessException exceptions) {
+    @SuppressWarnings("unchecked")
+    private void readLabels(File file, Dictionary dict, DictionaryLanguage dl, Collection<BusinessWarning> warnings) {
         String langCode = dl.getLanguageCode();
         boolean isReference = langCode.equals(dict.getLanguageReferenceCode());
 
@@ -337,9 +334,9 @@ public class AndroidXMLParser extends DictionaryParser {
             dict.setAnnotation3(elemNamespacesToString(root));
             // read processing instructions
             dict.setAnnotation4(elemProcessingInstructionsToString(root));
-        } else { // other language level saved in each label translation annotation
-
         }
+        // other language level saved in each label translation annotation
+
 
         int sortNo = 1;
 
@@ -371,8 +368,6 @@ public class AndroidXMLParser extends DictionaryParser {
                 size = readElement(dict, element, key, comments, sortNo, dl, warnings);
             } else if (multiItemElements.contains(element.getName())) {
                 size = readStringArrayOrPluralsElement(dict, element, key, comments, sortNo, dl, warnings);
-            } else {
-                // nothing to do
             }
             sortNo += size;
         }
@@ -433,6 +428,7 @@ public class AndroidXMLParser extends DictionaryParser {
         return result;
     }
 
+    @SuppressWarnings("unchecked")
     private int readStringArrayOrPluralsElement(Dictionary dict, Element element, String key, String comments, int sortNo, DictionaryLanguage dl, Collection<BusinessWarning> warnings) {
         String elemName = element.getName();
         // how to save comments above this group which is parameter comments

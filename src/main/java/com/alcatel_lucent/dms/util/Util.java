@@ -5,12 +5,11 @@ package com.alcatel_lucent.dms.util;
 
 import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.model.Glossary;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.collections.*;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections.Predicate;
+import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.io.ByteOrderMark;
 import org.apache.commons.io.FileUtils;
@@ -223,13 +222,6 @@ public class Util {
         return pattern.matcher(fileExt).matches();
     }
 
-    public static String jsonFormat(String uglyJSONString) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        JsonParser jp = new JsonParser();
-        JsonElement je = jp.parse(uglyJSONString);
-        String prettyJsonString = gson.toJson(je);
-        return prettyJsonString;
-    }
 
     public static void unzip(File zip, String unzipFilePath) throws Exception {
         if (!zip.exists()) return;
