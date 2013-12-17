@@ -1,12 +1,14 @@
 package com.alcatel_lucent.dms.model;
 
+import org.apache.catalina.util.MD5Encoder;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -40,11 +42,50 @@ public class User implements Serializable {
     private int role = ROLE_GUEST;
     private int status = ENABLED;
 
+    private String passwordDigest;
 
-    public User(String loginName, String name, String email) {
+
+    public User(String loginName, String email, String name) {
         this.loginName = loginName;
         this.name = name;
         this.email = email;
+    }
+
+    /**
+     * Local user authenticate
+     */
+    public boolean authenticate(String password) {
+        if (StringUtils.isEmpty(passwordDigest)) return false;
+
+        String digest = generatePwdDigest(password);
+        boolean result = digest.equals(passwordDigest);
+        if (result) {
+            this.passwordDigest = digest;
+            return true;
+        }
+
+        return false;
+    }
+
+    @Transient
+    public String generatePwdDigest(String password) {
+        if (StringUtils.isEmpty(password)) return password;
+        try {
+            MessageDigest digest = MessageDigest.getInstance("MD5");
+            digest.update(password.getBytes("UTF-8"));
+            return MD5Encoder.encode(digest.digest());
+        } catch (Exception e) {
+        }
+        return "";
+    }
+
+    @Column(name = "PASSWORD_DIGEST")
+    public String getPasswordDigest() {
+        return passwordDigest;
+    }
+
+    public void setPasswordDigest(String passwordDigest) {
+        this.passwordDigest = passwordDigest;
     }
 
     @Id
