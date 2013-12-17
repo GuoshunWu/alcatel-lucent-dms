@@ -21,5 +21,6 @@ public interface UserService {
 	 * @return
 	 */
 	User updateUser(String loginName, String name, String email, Integer role, Integer status) throws BusinessException;
-	
+
+
 }
