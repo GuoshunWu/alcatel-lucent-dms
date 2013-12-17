@@ -21,6 +21,8 @@ public class BusinessWarning {
 
     public static final int ANDROID_LABEL_KEY_BLANK = 213;
 
+    public static final int OTC_WEB_DEFINE_NOT_FOUND = 223;
+
 
     private int warningCode;
     private Object[] parameters;

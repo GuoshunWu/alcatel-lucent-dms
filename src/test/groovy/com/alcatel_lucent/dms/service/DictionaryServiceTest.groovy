@@ -85,7 +85,7 @@ public class DictionaryServiceTest {
 //    @Rollback(false)
     void testDictionaryProcess() {
         String targetDir = "D:/test/dictgenerate/"
-        String srcPath = 'Test/android_string_resources'
+        String srcPath = 'Test/OTCWEB_languages_packages'
 
         File f = new File("${testFileRoot}/${srcPath}")
 
