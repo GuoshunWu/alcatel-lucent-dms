@@ -4,6 +4,7 @@ import com.alcatel_lucent.dms.action.ProgressAction;
 import com.alcatel_lucent.dms.service.DictionaryService;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 @SuppressWarnings("serial")
@@ -32,7 +33,7 @@ public class CapitalizeAction extends ProgressAction {
             dictionaryService.changeDictCapitalization(toIdList(dict), languages, style);
         }
         setStatus(0);
-        setMessage("Capitalization success!");
+        setMessage(getText("message.operationSuccess", Arrays.asList(getText("message.capitalization"))));
         return SUCCESS;
     }
 
