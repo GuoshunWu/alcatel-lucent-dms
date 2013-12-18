@@ -91,6 +91,7 @@ abstract public class ProgressAction extends JSONAction implements SessionAware 
 				}
 			});
 			thread.start();
+            thread.setName("Event_"+ getPqId());
 			event = new ProgressEvent(CMD_PROCESS, "Please wait...", -1f);
 		} else if (getPqCmd().equals(CMD_PROCESS)) {	// wait for an event in the queue
 			ProgressQueue queue = (ProgressQueue) session.get(getPqId());
