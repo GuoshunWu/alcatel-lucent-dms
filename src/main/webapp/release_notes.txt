@@ -1,3 +1,11 @@
+V2.13.2 (Dec 18, 2013)
+    * New dictionary format support: OTC Web
+    * Optimize performance of capitalization
+    * Add proress bar for capitalization
+    * Support punctuation rule of VoiceApp dict
+    * Fix display issue of error dialog
+    * Support local user
+
 V2.13.1 (Dec 13, 2013)
     * Fix issue of glossary replacement in latin languages
     * Fix issue of importing OTC PC dictioanry
