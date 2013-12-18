@@ -1,7 +1,7 @@
 define ['formvalidate', 'i18n!nls/login'],($, i18n)->
 
-  $("span#version").html window.param.version
-  $("span#buildNumber").html window.param.buildNumber
+  $("span#version").html window.param?.version
+  $("span#buildNumber").html window.param?.buildNumber
 
 
   $.formValidator.initConfig(formID: "loginForm", autoTip: true, (onError: (msg)->

@@ -70,14 +70,18 @@
 -- INSERT INTO dms.PRODUCT (VERSION,PRODUCT_BASE_ID) VALUES ('1.0' ,2 );
 -- INSERT INTO dms.APPLICATION_BASE (NAME,PRODUCT_BASE_ID) VALUES('App_B1',2);
 
--- FOR H2 --CALL HASH('SHA256', STRINGTOUTF8('Password'), 1)
--- --create alias MD5 for "rg.apache.commons.codec.digest.DigestUtils.md5Hex(java.lang.String)";
 
---FOR POSTGRESQL select md5('alcatel123')
 INSERT INTO dms.USER (login_name, email, last_login_time, name, role,status) VALUES ('admin', 'Admin@test.com', CURRENT_DATE, 'Administrator',  4, 1);
 INSERT INTO dms.USER (login_name, email, last_login_time, name, role,status) VALUES ('owner', 'Owner@test.com', CURRENT_DATE, 'Application Owner',  1, 1);
 INSERT INTO dms.USER (login_name, email, last_login_time, name, role,status) VALUES ('manager', 'Manager@test.com', CURRENT_DATE, 'Application Manager', 2, 1);
 INSERT INTO dms.USER (login_name, email, last_login_time, name, role,status) VALUES ('guest', 'Guest@test.com', CURRENT_DATE, 'Guest',  0, 1);
+
+-- FOR H2 --CALL HASH('SHA256', STRINGTOUTF8('Password'), 1)
+--create alias MD5 for "rg.apache.commons.codec.digest.DigestUtils.md5Hex(java.lang.String)";
+
+-- --FOR PostGreSQL
+--update dms.user set password_digest=md5('alcatel123') where login_name in ('owner', 'manager', 'guest', 'admin')
+
 
 INSERT INTO dms.LANGUAGE(ID,NAME,DEFAULT_CHARSET) VALUES (0,'General Alcatel English','windows-1252');
 INSERT INTO dms.LANGUAGE(ID,NAME,DEFAULT_CHARSET) VALUES (1,'English','windows-1252');

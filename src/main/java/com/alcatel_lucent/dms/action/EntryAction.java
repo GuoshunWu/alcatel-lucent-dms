@@ -98,7 +98,6 @@ public class EntryAction extends BaseAction {
 
     @Action(results = {
             @Result(location = "${naviTo}"),
-            @Result(name = INPUT, location = "/login.jsp")
     })
     public String execute() throws Exception {
         log.debug("Switch to " + getNaviTo());
