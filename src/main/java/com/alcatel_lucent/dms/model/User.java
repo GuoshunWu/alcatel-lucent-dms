@@ -1,6 +1,7 @@
 package com.alcatel_lucent.dms.model;
 
 import org.apache.catalina.util.MD5Encoder;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Type;
 
@@ -55,28 +56,8 @@ public class User implements Serializable {
      * Local user authenticate
      */
     public boolean authenticate(String password) {
-        if (StringUtils.isEmpty(passwordDigest)) return false;
-
-        String digest = generatePwdDigest(password);
-        boolean result = digest.equals(passwordDigest);
-        if (result) {
-            this.passwordDigest = digest;
-            return true;
-        }
-
-        return false;
-    }
-
-    @Transient
-    public String generatePwdDigest(String password) {
-        if (StringUtils.isEmpty(password)) return password;
-        try {
-            MessageDigest digest = MessageDigest.getInstance("MD5");
-            digest.update(password.getBytes("UTF-8"));
-            return MD5Encoder.encode(digest.digest());
-        } catch (Exception e) {
-        }
-        return "";
+        if(null == password) return false;
+        return DigestUtils.md5Hex(password).equals(passwordDigest);
     }
 
     @Column(name = "PASSWORD_DIGEST")

@@ -84,7 +84,7 @@
         <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
         <db.dialect>org.hibernate.dialect.H2Dialect</db.dialect>
         <!-- none, create, create-drop, update, validate -->
-        <db.hbm2ddl.auto>create</db.hbm2ddl.auto>
+        <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
         <dms.luceneindex.dir>${dms.temp}/dms/lucene/indexes/h2</dms.luceneindex.dir>
 
         <!-- use UTF-8 for everything -->
@@ -280,15 +280,15 @@
         </dependency>
 
         <!--<dependency>-->
-            <!--<groupId>log4j</groupId>-->
-            <!--<artifactId>log4j</artifactId>-->
-            <!--<version>1.2.17</version>-->
+        <!--<groupId>log4j</groupId>-->
+        <!--<artifactId>log4j</artifactId>-->
+        <!--<version>1.2.17</version>-->
         <!--</dependency>-->
 
         <!--<dependency>-->
-            <!--<groupId>org.slf4j</groupId>-->
-            <!--<artifactId>log4j-over-slf4j</artifactId>-->
-            <!--<version>1.7.5</version>-->
+        <!--<groupId>org.slf4j</groupId>-->
+        <!--<artifactId>log4j-over-slf4j</artifactId>-->
+        <!--<version>1.7.5</version>-->
         <!--</dependency>-->
 
         <dependency>
@@ -371,12 +371,13 @@
             <artifactId>dom4j</artifactId>
             <version>1.6.1</version>
         </dependency>
+
         <!-- for xpath support -->
-        <!--<dependency>-->
-            <!--<groupId>jaxen</groupId>-->
-            <!--<artifactId>jaxen</artifactId>-->
-            <!--<version>1.1</version>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>jaxen</groupId>
+            <artifactId>jaxen</artifactId>
+            <version>1.1.6</version>
+        </dependency>
 
         <!-- Jersey libs -->
 
@@ -794,7 +795,7 @@
                 <db.password>alcatel123</db.password>
                 <db.house-keeping-test-sql>select CURRENT_DATE</db.house-keeping-test-sql>
                 <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
-                <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
+                <db.hbm2ddl.auto>create</db.hbm2ddl.auto>
                 <dms.luceneindex.dir>${dms.temp}/dms/lucene/indexes/Local_PostGreSQL</dms.luceneindex.dir>
             </properties>
         </profile>

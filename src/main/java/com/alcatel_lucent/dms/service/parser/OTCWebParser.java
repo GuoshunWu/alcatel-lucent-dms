@@ -182,7 +182,6 @@ public class OTCWebParser extends DictionaryParser {
 
                 lt.setLanguage(dl.getLanguage());
                 lt.setLanguageCode(dl.getLanguageCode());
-                lt.setStatus(Translation.STATUS_TRANSLATED);
                 lt.setOrigTranslation(text);
 
                 lt.setLabel(label);

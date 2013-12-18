@@ -42,7 +42,6 @@ public class AuthenticationServiceImpl extends BaseServiceImpl implements Authen
         user.setRole(User.ROLE_APPLICATION_OWNER | User.ROLE_TRANSLATION_MANAGER);    // Unlimited access on QA
 //				user.setRole(User.ROLE_GUEST);	// Limited access on Prod
         user.setStatus(User.ENABLED);
-        user.setPasswordDigest(user.generatePwdDigest(password));
         user = (User) dao.create(user);
         log.info("Created new user " + user.getName() + "(" + user.getLoginName() + ")");
 
