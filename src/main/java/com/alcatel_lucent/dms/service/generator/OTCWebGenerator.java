@@ -51,12 +51,45 @@ public class OTCWebGenerator extends DictionaryGenerator {
             translationMap.put(label.getKey(), label.getTranslation(langCode));
         }
 
-        JSONObject jsonObject = JSONObject.fromObject(translationMap);
+        JSONObject jsonObject = JSONObject.fromObject(toHierarchyMap(translationMap));
 
         return StringUtils.join(Arrays.asList(
                 "// " + DictionaryGenerator.getDMSGenSign(),
                 String.format("define(%s);", jsonObject.toString(4))),
                 "\n");
+    }
+
+    private static Map<String, Object> toHierarchyMap(Map<String, String> original) {
+        return toHierarchyMap(original, null);
+    }
+
+    private static Map<String, Object> toHierarchyMap(Map<String, String> original, String separator) {
+        if (separator == null) separator = ".";
+        Map<String, Object> result = new LinkedHashMap<String, Object>();
+        Set<Map.Entry<String, String>> entrySet = original.entrySet();
+
+        Map<String, Map<String, String>> subMap = new LinkedHashMap<String, Map<String, String>>();
+
+        for (Map.Entry<String, String> entry : entrySet) {
+            String[] keyToken = StringUtils.split(entry.getKey(), separator);
+            if (keyToken.length < 2) {
+                result.put(entry.getKey(), entry.getValue());
+                continue;
+            }
+            Map<String, String> descendantMap = subMap.get(keyToken[0]);
+            if (null == descendantMap) {
+                descendantMap = new LinkedHashMap<String, String>();
+                subMap.put(keyToken[0], descendantMap);
+            }
+            descendantMap.put(entry.getKey().substring(entry.getKey().indexOf(separator) + separator.length()), entry.getValue());
+
+        }
+
+        //add sub map
+        for (Map.Entry<String, Map<String, String>> entry : subMap.entrySet()) {
+            result.put(entry.getKey(), toHierarchyMap(entry.getValue(), separator));
+        }
+        return result;
     }
 
     @Override
