@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.alcatel_lucent.dms.model">
+	<class name="Task" table="TASK">
+		<id column="ID" name="id">
+			<generator class="native">
+                <param name="sequence">ID_TASK</param>
+			</generator>
+		</id>
+		<property name="name" type="string" column="NAME" />
+		<property name="createTime" type="java.util.Date" column="CREATE_TIME" />
+		<property name="lastUpdateTime" type="java.util.Date" column="LAST_UPDATE_TIME" />
+		<property name="lastApplyTime" type="java.util.Date" column="LAST_APPLY_TIME" />
+		<property name="closeTime" type="java.util.Date" column="CLOSE_TIME" />
+		<property name="status" type="int" column="STATUS" />
+
+        <many-to-one name="product" class="Product" column="PRODUCT_ID" />
+        <many-to-one name="application" class="Application" column="APPLICATION_ID" />
+		<many-to-one name="creator" column="CREATOR_ID"  />	
+		<many-to-one name="lastUpdater" column="LAST_UPDATER_ID"  />
+		<set inverse="true" name="details" order-by="ID">
+			<key column="TASK_ID" on-delete="cascade" not-null="true" />
+			<one-to-many class="TaskDetail" />
+		</set>
+	</class>
+</hibernate-mapping>
