@@ -10,6 +10,8 @@ import net.sf.json.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.collections.PredicateUtils;
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.collections.map.TransformedMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
@@ -22,8 +24,6 @@ import org.springframework.util.MultiValueMap;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * OTC web dictionary parser
@@ -35,13 +35,12 @@ public class OTCWebParser extends DictionaryParser {
 
     private static final String PARENT_BASE_NAME = "en-us";
     public static final String REFERENCE_LANG_CODE = PARENT_BASE_NAME;
-    private static final Pattern FILE_CONTENT_PATTERN = Pattern.compile("define\\s*\\(([\\s\\S]*)\\);?");
+    private static final String START_FUNCTION_NAME = "define";
     private static final String[] extensions = new String[]{"js"};
     private static final String LANG_CODE_SEPARATOR = "-";
 
     public static final String LANG_PATTERN = "^[a-zA-Z]{2}(?:\\" + LANG_CODE_SEPARATOR + "[a-zA-Z]{2})?$";
     public static final String DEFAULT_FILE_ENCODING = "UTF-8";
-
 
 
     private final SuffixFileFilter jsFilter = new SuffixFileFilter(extensions, IOCase.INSENSITIVE);
@@ -137,15 +136,14 @@ public class OTCWebParser extends DictionaryParser {
         dl.setDictionary(dict);
         dict.addDictLanguage(dl);
 
-        Matcher matcher = FILE_CONTENT_PATTERN.matcher(fileContent);
-        if (!matcher.find()) {
+        String jsonString = getJSONContent(fileContent);
+        if (jsonString.isEmpty()) {
             warnings.add(new BusinessWarning(BusinessWarning.OTC_WEB_DEFINE_NOT_FOUND, dictEntry.getFileName()));
             return;
         }
-        String jsonString = matcher.group(1);
         JSONObject jsonObject = JSONObject.fromObject(jsonString);
 
-        Set<Map.Entry<String, String>> strLabels = jsonObject.entrySet();
+        Set<Map.Entry<String, String>> strLabels = toFlatMap(jsonObject).entrySet();
 
         boolean isRef = dictEntry.isReferenceFile();
         HashSet<String> keys = new HashSet<String>();
@@ -153,7 +151,7 @@ public class OTCWebParser extends DictionaryParser {
         int sortNo = 0;
         for (Map.Entry<String, String> strLabel : strLabels) {
             String key = strLabel.getKey();
-            String text =  strLabel.getValue();
+            String text = strLabel.getValue();
             if (isRef) {
                 if (keys.contains(key)) {
                     // add this type of warning only for label
@@ -191,6 +189,24 @@ public class OTCWebParser extends DictionaryParser {
         }
     }
 
+    private static String getJSONContent(String contentString) {
+        int index = contentString.indexOf(START_FUNCTION_NAME) + START_FUNCTION_NAME.length();
+        int maxLen = contentString.length() - START_FUNCTION_NAME.length() - 1;
+        StringBuilder sb = new StringBuilder();
+        Character lastCh = '\uffff';
+        Stack<Character> bracketStack = new Stack<Character>();
+
+        do {
+            Character ch = contentString.charAt(index++);
+            if ('\\' != lastCh && ch == '(') bracketStack.push(ch);
+            else if ('\\' != lastCh && ch == ')') bracketStack.pop();
+            lastCh = ch;
+            sb.append(ch);
+        } while (!bracketStack.empty() || index > maxLen);
+
+        return sb.substring(1, sb.length() - 1);
+    }
+
     private DictionaryLanguage getDictionaryLanguage(String langCode, int sortNo) {
         DictionaryLanguage dictLanguage = new DictionaryLanguage();
         dictLanguage.setLanguageCode(langCode);
@@ -217,6 +233,36 @@ public class OTCWebParser extends DictionaryParser {
             dictionariesGroups.add(entry.getFileName(), entry);
         }
         return dictionariesGroups;
+    }
+
+    private static Map<String, String> toFlatMap(Map<String, Object> original) {
+        return toFlatMap(original, null);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Map<String, String> toFlatMap(Map<String, Object> original, String separator) {
+        if (separator == null) separator = ".";
+        Map<String, String> result = new LinkedHashMap<String, String>();
+        Set<Map.Entry<String, Object>> entrySet = original.entrySet();
+        for (Map.Entry<String, Object> entry : entrySet) {
+            final String key = entry.getKey();
+            Object value = entry.getValue();
+            if (value instanceof Object[]) {
+                //todo add translate
+            } else if (value instanceof Map) {
+                final String finalSeparator = separator;
+                Map<String, String> subMap = TransformedMap.decorateTransform(toFlatMap((Map) value, separator), new Transformer() {
+                    @Override
+                    public Object transform(Object input) {
+                        return key + finalSeparator + input;
+                    }
+                }, null);
+                result.putAll(subMap);
+            } else {
+                result.put(entry.getKey(), value.toString());
+            }
+        }
+        return result;
     }
 
 

@@ -1,18 +1,13 @@
 package com.alcatel_lucent.dms.service.parser
 
-import com.alcatel_lucent.dms.model.Dictionary
-import com.alcatel_lucent.dms.util.XDCPDTDEntityResolver
-import org.dom4j.Document
-import org.dom4j.io.SAXReader
+import net.sf.json.JSONObject
+import org.apache.commons.io.FileUtils
 import org.junit.*
 import org.junit.runner.RunWith
-import org.logicalcobwebs.proxool.ProxoolFacade
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.test.context.transaction.TransactionConfiguration
-import org.xml.sax.InputSource
-import org.xml.sax.SAXException
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,6 +26,7 @@ public class ICEJavaAlarmParserTest {
 
     @Autowired
     private ICEJavaAlarmParser iceJavaAlarmParser = new ICEJavaAlarmParser();
+
 
     @BeforeClass
     static void setUpBeforeClass() throws Exception {
@@ -52,13 +48,13 @@ public class ICEJavaAlarmParserTest {
 
     @Test
     void testParse() throws Exception {
-//        File file = new File("D:/MyDocuments/Alcatel_LucentSBell/DMS/DMSFiles/ICEJavaAlarm/catalog-builder-plugin-1.3.000.000-schemas/")
-//
-//        println "=" * 100
-//        ArrayList<Dictionary> dictionaries = iceJavaAlarmParser.parse(file.absolutePath, file, [] as Collection<File>)
-//
-//        dictionaries.each { dict ->
-//            println dict
-//        }
+        new File("C:\\Users\\Administrator\\Desktop\\Test\\en-us\\").eachFile {
+            String testStr = FileUtils.readFileToString it, "UTF-8"
+            String json = OTCWebParser.getJSONContent(testStr)
+//        json = StringEscapeUtils.escapeEcmaScript(json)
+//            println json
+            println JSONObject.fromObject(json)
+
+        }
     }
 }

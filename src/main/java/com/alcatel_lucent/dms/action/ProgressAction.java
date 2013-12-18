@@ -1,7 +1,6 @@
 package com.alcatel_lucent.dms.action;
 
 import com.alcatel_lucent.dms.UserContext;
-import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionContext;
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts2.convention.annotation.ParentPackage;
