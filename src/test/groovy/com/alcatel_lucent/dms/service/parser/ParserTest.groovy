@@ -5,9 +5,14 @@ import org.apache.commons.io.FileUtils
 import org.junit.*
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.scripting.ScriptFactory
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.test.context.transaction.TransactionConfiguration
+
+import javax.script.Invocable
+import javax.script.ScriptEngine
+import javax.script.ScriptEngineManager
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,12 +22,11 @@ import org.springframework.test.context.transaction.TransactionConfiguration
  * To change this template use File | Settings | File Templates.
  */
 
-@Ignore
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = ["/spring.xml"])
-@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
-
-public class ICEJavaAlarmParserTest {
+//@Ignore
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(locations = ["/spring.xml"])
+//@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
+public class ParserTest {
 
     @Autowired
     private ICEJavaAlarmParser iceJavaAlarmParser = new ICEJavaAlarmParser();
@@ -48,13 +52,16 @@ public class ICEJavaAlarmParserTest {
 
     @Test
     void testParse() throws Exception {
-        new File("C:\\Users\\Administrator\\Desktop\\Test\\en-us\\").eachFile {
-            String testStr = FileUtils.readFileToString it, "UTF-8"
-            String json = OTCWebParser.getJSONContent(testStr)
-//        json = StringEscapeUtils.escapeEcmaScript(json)
-//            println json
-            println JSONObject.fromObject(json)
+        String js = """
+            function testFun(p1, p2){
+                print("p1="+p1+", p2="+p2);
+            }
+       """
+        ScriptEngine engine = new ScriptEngineManager().getEngineByName("javascript")
+        engine.eval(js)
+        Invocable invokable = engine as Invocable
 
-        }
+        invokable.invokeFunction "testFun", "I am ", "here"
+
     }
 }
