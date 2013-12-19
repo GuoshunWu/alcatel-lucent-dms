@@ -4,6 +4,9 @@ import net.sf.json.JSONObject
 import org.apache.commons.io.FileUtils
 import org.junit.*
 import org.junit.runner.RunWith
+import org.mozilla.javascript.Context
+import org.mozilla.javascript.Scriptable
+import org.mozilla.javascript.tools.shell.Global
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
@@ -21,10 +24,10 @@ import javax.script.ScriptEngineManager
  * To change this template use File | Settings | File Templates.
  */
 
-@Ignore
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = ["/spring.xml"])
-@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
+//@Ignore
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(locations = ["/spring.xml"])
+//@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 
 public class ICEJavaAlarmParserTest {
 
@@ -63,17 +66,22 @@ public class ICEJavaAlarmParserTest {
     }
 
     @Test
-    void testJS(){
+    void testJS() {
         File jsFile = new File("C:\\Users\\Administrator\\Desktop\\Test\\coffee-script.js")
         String jsFileStr = FileUtils.readFileToString(jsFile, "UTF-8")
-        // create a script engine manager
-        ScriptEngineManager factory = new ScriptEngineManager();
-        // create a JavaScript engine
-        ScriptEngine engine = factory.getEngineByName("JavaScript");
-        // evaluate JavaScript code from String
-        engine.eval(jsFileStr);
-        Object coffeeScript=engine.get("CoffeeScript")
-        Invocable inv = (Invocable) engine;
-        inv.invokeMethod(coffeeScript, "compile")
+
+        Context ctx = Context.enter()
+        ctx.setOptimizationLevel(-1); // Without this, Rhino hits a 64K bytecode limit and fails
+
+        final Scriptable globalScope = ctx.initStandardObjects()
+        // Add some global function in the global scope see: http://stackoverflow.com/questions/12399462/rhino-print-function
+        Global global = new Global(ctx)
+        ctx.evaluateString(global, jsFileStr, "coffee-script.js", 0, null)
+
+        ctx.evaluateString(global, "print('Where is the dog?');var a='This is my test;'", "Test", 1, null)
+        globalScope.put("b", globalScope, "My test here")
+        ctx.evaluateString(global, "print('a=' + a+', b='+b);", "Test", 1, null)
+        ctx.exit()
+
     }
 }
