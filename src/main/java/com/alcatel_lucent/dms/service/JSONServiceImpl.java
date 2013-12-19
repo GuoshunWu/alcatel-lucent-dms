@@ -1,22 +1,22 @@
 package com.alcatel_lucent.dms.service;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-
-import com.alcatel_lucent.dms.util.Util;
-
+import com.opensymphony.xwork2.ActionContext;
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 import net.sf.json.processors.PropertyNameProcessor;
 import net.sf.json.util.PropertyFilter;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import java.lang.reflect.InvocationTargetException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static java.lang.Math.ceil;
 
@@ -25,117 +25,133 @@ import static java.lang.Math.ceil;
 public class JSONServiceImpl implements JSONService {
 
     private static Logger log = LoggerFactory.getLogger(JSONServiceImpl.class);
+    private static final DateFormat dFmt = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
+    private static final TimeZone tz = new SimpleTimeZone(0, "dynamicFormatDate");
 
     public String toJSONString(Object entity, String propExp) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-    	return toJSON(entity, propExp).toString(4);
+        return toJSON(entity, propExp).toString(4);
     }
-    
+
     public JSON toJSON(Object entity, String propExp) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-    	if (entity instanceof Collection) {
-    		JSONArray jsonArray = new JSONArray();
-    		for (Object obj : (Collection<Object>) entity) {
-    			jsonArray.add(toJSON(obj, propExp));
-    		}
-    		return jsonArray;
-    	}
-    	JSONObject json = new JSONObject();
-    	String[] props = extractFirstLevelProperties(propExp);
-    	for (String prop : props) {
-    		try {
-	    		int pos = prop.indexOf("{");
-	    		if (pos == -1) {
-	    			json.put(prop, PropertyUtils.getProperty(entity, prop.trim()));
-	    		} else {
-	    			String refProp = prop.substring(0, pos).trim();
-	    			Object refObject = PropertyUtils.getProperty(entity, refProp);
-	    			if (refObject == null) {
-	    				json.put(refProp, null);
-	    			} else {
-	    				json.put(refProp, toJSON(refObject, prop.substring(pos)));
-	    			}
-	    		}
-    		} catch (Exception e) {
-    			e.printStackTrace();
-    			log.error(e.toString());
-    		}
-    	}
-    	return json;
+        if (entity instanceof Collection) {
+            JSONArray jsonArray = new JSONArray();
+            for (Object obj : (Collection<Object>) entity) {
+                jsonArray.add(toJSON(obj, propExp));
+            }
+            return jsonArray;
+        }
+        JSONObject json = new JSONObject();
+        String[] props = extractFirstLevelProperties(propExp);
+        for (String prop : props) {
+            try {
+                int pos = prop.indexOf("{");
+                if (pos == -1) {
+                    json.put(prop, PropertyUtils.getProperty(entity, prop.trim()));
+                } else {
+                    String refProp = prop.substring(0, pos).trim();
+                    Object refObject = PropertyUtils.getProperty(entity, refProp);
+                    if (refObject == null) {
+                        json.put(refProp, null);
+                    } else {
+                        json.put(refProp, toJSON(refObject, prop.substring(pos)));
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                log.error(e.toString());
+            }
+        }
+        return json;
     }
-    
+
     private String[] extractFirstLevelProperties(String propExp) {
-		propExp = propExp.trim();
-		if (propExp.startsWith("{") && propExp.endsWith("}")) {
-			propExp = propExp.substring(1, propExp.length() - 1).trim();
-		}
-		ArrayList<String> result = new ArrayList<String>();
-		StringBuffer item = new StringBuffer();
-		int deep = 0;
-		for (int i = 0; i < propExp.length(); i++) {
-			if (propExp.charAt(i) == '{') {
-				deep++;
-				item.append(propExp.charAt(i));
-			} else if (propExp.charAt(i) == '}') {
-				deep--;
-				item.append(propExp.charAt(i));
-			} else if (propExp.charAt(i) == ',' && deep == 0) {
-				result.add(item.toString().trim());
-				item = new StringBuffer();
-			} else {
-				item.append(propExp.charAt(i));
-			}
-		}
-		if (!item.toString().isEmpty()) {
-			result.add(item.toString().trim());
-		}
-		return result.toArray(new String[0]);
-	}
+        propExp = propExp.trim();
+        if (propExp.startsWith("{") && propExp.endsWith("}")) {
+            propExp = propExp.substring(1, propExp.length() - 1).trim();
+        }
+        ArrayList<String> result = new ArrayList<String>();
+        StringBuffer item = new StringBuffer();
+        int deep = 0;
+        for (int i = 0; i < propExp.length(); i++) {
+            if (propExp.charAt(i) == '{') {
+                deep++;
+                item.append(propExp.charAt(i));
+            } else if (propExp.charAt(i) == '}') {
+                deep--;
+                item.append(propExp.charAt(i));
+            } else if (propExp.charAt(i) == ',' && deep == 0) {
+                result.add(item.toString().trim());
+                item = new StringBuffer();
+            } else {
+                item.append(propExp.charAt(i));
+            }
+        }
+        if (!item.toString().isEmpty()) {
+            result.add(item.toString().trim());
+        }
+        return result.toArray(new String[0]);
+    }
 
 
     @Override
-	public JSONObject toGridJSON(Collection<?> entities, Integer rows, Integer page, Integer records, String idProp, String cellProps) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    public JSONObject toGridJSON(Collection<?> entities, Integer rows, Integer page, Integer records, String idProp, String cellProps) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
         JSONArray jsonArrayGrid = new JSONArray();
         JSONObject jsonGrid = new JSONObject();
-        
+
         for (Object entity : entities) {
-        	JSONObject jsonRow = new JSONObject();
-        	if (idProp != null) {
-        		jsonRow.put("id", PropertyUtils.getProperty(entity, idProp.trim()));
-        	}
-        	JSONArray jsonCell = new JSONArray();
-        	String[] propArray = cellProps.split(",");
-        	for (String prop : propArray) {
-        		Object value = null;
-        		try {
-        			value = PropertyUtils.getProperty(entity, prop.trim());
-        		} catch (Exception e) {
-        			log.error(e.toString());
-        		}
-        		if (value != null) {	// escape html tags in grid result
-        			value = StringEscapeUtils.escapeHtml(value.toString());
-        		}
-        		jsonCell.add(value);
-        	}
-        	jsonRow.put("cell", jsonCell);
-        	jsonArrayGrid.add(jsonRow);
+            JSONObject jsonRow = new JSONObject();
+            if (idProp != null) {
+                jsonRow.put("id", PropertyUtils.getProperty(entity, idProp.trim()));
+            }
+            JSONArray jsonCell = new JSONArray();
+            String[] propArray = cellProps.split(",");
+            for (String prop : propArray) {
+                Object value = null;
+                try {
+                    value = PropertyUtils.getProperty(entity, prop.trim());
+                } catch (Exception e) {
+                    log.error(e.toString());
+                }
+                if (value != null) {    // escape html tags in grid result
+                    if (value instanceof Date) {
+                        TimeZone timeZone = TimeZone.getDefault();
+                        Integer timeZoneOffset = null;
+                        String strTmp = "server";
+                        if (null != ActionContext.getContext() && null != (timeZoneOffset = (Integer) ActionContext.getContext().get("timeZoneOffset"))) {
+                            tz.setRawOffset(timeZoneOffset);
+                            timeZone = tz;
+                            log.info("format Date with client time zone {}", timeZone);
+                            dFmt.setTimeZone(timeZone);
+                        }
+                        log.info("format Date with {} time zone {}", strTmp, timeZone);
+                        value = dFmt.format((Date) value);
+                    } else {
+                        value = StringEscapeUtils.escapeHtml(value.toString());
+                    }
+                }
+                jsonCell.add(value);
+            }
+            jsonRow.put("cell", jsonCell);
+            jsonArrayGrid.add(jsonRow);
         }
 
         if (rows != null && page != null) {
-	        int totalPages = (records != null && records > 0) ? (int) ceil(records / (float) rows) : 0;
-	        if (page > totalPages) page = totalPages;
-	
-	        jsonGrid.put("page", page);
-	        jsonGrid.put("total", totalPages);
-	        jsonGrid.put("records", records);
-	                
+            int totalPages = (records != null && records > 0) ? (int) ceil(records / (float) rows) : 0;
+            if (page > totalPages) page = totalPages;
+
+            jsonGrid.put("page", page);
+            jsonGrid.put("total", totalPages);
+            jsonGrid.put("records", records);
+
         } else {
-        	jsonGrid.put("records", entities.size());
+            jsonGrid.put("records", entities.size());
         }
         jsonGrid.put("rows", jsonArrayGrid);
 
 //        Map<String, Object> userData=new HashMap<String, Object>();
 //        jsonGrid.put("userData",userData);
-        
+
         log.debug(jsonGrid.toString(4));
         return jsonGrid;
     }
@@ -150,40 +166,40 @@ public class JSONServiceImpl implements JSONService {
         }
         return jsonTree;
     }
-    
+
     public JSONObject toTreeJSON(Object root, String[] idProp, String[] types, String[] dataProp, String[] childrenProp) {
-    	JSONObject result = new JSONObject();
-		try {
-			Object id = PropertyUtils.getProperty(root, idProp[0]);
-			Object data = PropertyUtils.getProperty(root, dataProp[0]);
-			JSONObject jsonAttr = new JSONObject();
-			jsonAttr.put("id", id);
-			jsonAttr.put("type", types[0]);
-			result.put("attr", jsonAttr);
-			result.put("data", data);
-			if (idProp.length > 1 && types.length > 1 && dataProp.length > 1 && childrenProp.length > 0) {
-				Object children = PropertyUtils.getProperty(root, childrenProp[0]);
-				if (children != null && children instanceof Collection) {
-					JSONArray jsonChildren = new JSONArray();
-					for (Object obj : (Collection<?>) children) {
-						jsonChildren.add(toTreeJSON(obj, next(idProp), next(types), next(dataProp), next(childrenProp)));
-					}
-					result.put("children", jsonChildren);
-				}
-			}
-			return result;
-		} catch (Exception e) {
-			log.error("Failed to populate tree json of object " + root, e);
-			return result; 
-		}
+        JSONObject result = new JSONObject();
+        try {
+            Object id = PropertyUtils.getProperty(root, idProp[0]);
+            Object data = PropertyUtils.getProperty(root, dataProp[0]);
+            JSONObject jsonAttr = new JSONObject();
+            jsonAttr.put("id", id);
+            jsonAttr.put("type", types[0]);
+            result.put("attr", jsonAttr);
+            result.put("data", data);
+            if (idProp.length > 1 && types.length > 1 && dataProp.length > 1 && childrenProp.length > 0) {
+                Object children = PropertyUtils.getProperty(root, childrenProp[0]);
+                if (children != null && children instanceof Collection) {
+                    JSONArray jsonChildren = new JSONArray();
+                    for (Object obj : (Collection<?>) children) {
+                        jsonChildren.add(toTreeJSON(obj, next(idProp), next(types), next(dataProp), next(childrenProp)));
+                    }
+                    result.put("children", jsonChildren);
+                }
+            }
+            return result;
+        } catch (Exception e) {
+            log.error("Failed to populate tree json of object " + root, e);
+            return result;
+        }
     }
 
     private String[] next(String[] arr) {
-    	String[] result = new String[arr.length - 1];
-    	for (int i = 0; i < result.length; i++) {
-    		result[i] = arr[i + 1];
-    	}
-    	return result;
+        String[] result = new String[arr.length - 1];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = arr[i + 1];
+        }
+        return result;
     }
 
 

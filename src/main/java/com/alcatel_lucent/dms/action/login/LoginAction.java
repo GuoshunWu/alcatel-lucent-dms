@@ -4,6 +4,7 @@ import com.alcatel_lucent.dms.UserContext;
 import com.alcatel_lucent.dms.action.BaseAction;
 import com.alcatel_lucent.dms.model.User;
 import com.alcatel_lucent.dms.service.AuthenticationService;
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
@@ -30,11 +31,16 @@ public class LoginAction extends BaseAction implements SessionAware {
 
     private AuthenticationService authenticationService;
     private Map<String, Object> session;
+    private Integer timeZoneOffset;
 
     private HttpServletRequest request = ServletActionContext.getRequest();
 
     @Value("${httpPort}")
     private String httpPort;
+
+    public void setTimeZoneOffset(Integer timeZoneOffset) {
+        this.timeZoneOffset = timeZoneOffset;
+    }
 
     public void setHttpPort(String httpPort) {
         this.httpPort = httpPort;
@@ -80,8 +86,11 @@ public class LoginAction extends BaseAction implements SessionAware {
             log.debug("user: " + user);
             log.debug("redirect to " + getLocation());
 
+            log.info("timeZoneOffset={}", timeZoneOffset);
+            if (timeZoneOffset != null) ActionContext.getContext().put("timeZoneOffset", timeZoneOffset);
+
 //          Tomcat will create new session id if there is no JSESSIONID cookie when https jump to http
-            HttpServletResponse response=ServletActionContext.getResponse();
+            HttpServletResponse response = ServletActionContext.getResponse();
             Cookie cookie = new Cookie("JSESSIONID", request.getSession().getId());
             response.addCookie(cookie);
 

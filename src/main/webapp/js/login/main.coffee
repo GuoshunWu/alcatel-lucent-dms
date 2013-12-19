@@ -3,6 +3,8 @@ define ['formvalidate', 'i18n!nls/login'],($, i18n)->
   $("span#version").html window.param?.version
   $("span#buildNumber").html window.param?.buildNumber
 
+  timeZoneOffset = -new Date().getTimezoneOffset() * 60 * 1000   # in millisecond
+  $("#idTimeZoneOffset").val timeZoneOffset
 
   $.formValidator.initConfig(formID: "loginForm", autoTip: true, (onError: (msg)->
   #    alert(msg)

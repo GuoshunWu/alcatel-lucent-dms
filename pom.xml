@@ -658,6 +658,10 @@
                             <key>login.jsp</key>
                             <value>${project.build.directory}/${project.build.finalName}/login.jsp</value>
                         </systemProperty>
+                        <systemProperty>
+                            <key>buildNumber</key>
+                            <value>${maven.build.timestamp}</value>
+                        </systemProperty>
                     </systemProperties>
                 </configuration>
             </plugin>

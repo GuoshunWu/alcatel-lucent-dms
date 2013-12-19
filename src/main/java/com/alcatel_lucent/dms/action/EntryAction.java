@@ -7,6 +7,7 @@ import com.alcatel_lucent.dms.model.ProductBase;
 import com.alcatel_lucent.dms.model.User;
 import com.alcatel_lucent.dms.service.AuthenticationService;
 import com.alcatel_lucent.dms.service.DaoService;
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import net.sf.json.JSON;
@@ -39,8 +40,8 @@ public class EntryAction extends BaseAction {
 
     private static Logger log = LoggerFactory.getLogger(EntryAction.class);
     private Map<String, Object> session;
-    @Autowired
-    private DaoService dao;
+
+    private DaoService daoService;
     //    The page navigate to
     private String naviTo;
     //    build number for deploy
@@ -50,7 +51,11 @@ public class EntryAction extends BaseAction {
     private String version;
     private Long curProductId = -1L;
     private Long curProductBaseId = -1L;
+
+
     private ArrayList<Product> products;
+
+
 
     public String getVersion() {
         return version;
@@ -84,8 +89,8 @@ public class EntryAction extends BaseAction {
         this.buildNumber = buildNumber;
     }
 
-    public void setDao(DaoService dao) {
-        this.dao = dao;
+    public void setDaoService(DaoService daoService) {
+        this.daoService = daoService;
     }
 
     public String getNaviTo() {
@@ -138,7 +143,7 @@ public class EntryAction extends BaseAction {
 
     @SuppressWarnings("unchecked")
     public List<ProductBase> getProductBases() {
-        return dao.retrieve("from ProductBase");
+        return daoService.retrieve("from ProductBase");
     }
 
     @SuppressWarnings("unchecked")
@@ -146,7 +151,7 @@ public class EntryAction extends BaseAction {
         if (null != curProductBaseId) {
             Map<String, Long> param = new HashMap<String, Long>();
             param.put("baseId", curProductBaseId);
-            return dao.retrieve("from Product where base.id = :baseId", param);
+            return daoService.retrieve("from Product where base.id = :baseId", param);
         }
         return products;
     }

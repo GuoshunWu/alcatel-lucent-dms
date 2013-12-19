@@ -9,6 +9,10 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.test.context.transaction.TransactionConfiguration
 
+import javax.script.Invocable
+import javax.script.ScriptEngine
+import javax.script.ScriptEngineManager
+
 /**
  * Created by IntelliJ IDEA.
  * User: guoshunw
@@ -46,7 +50,7 @@ public class ICEJavaAlarmParserTest {
     void tearDown() throws Exception {
     }
 
-    @Test
+//    @Test
     void testParse() throws Exception {
         new File("C:\\Users\\Administrator\\Desktop\\Test\\en-us\\").eachFile {
             String testStr = FileUtils.readFileToString it, "UTF-8"
@@ -56,5 +60,20 @@ public class ICEJavaAlarmParserTest {
             println JSONObject.fromObject(json)
 
         }
+    }
+
+    @Test
+    void testJS(){
+        File jsFile = new File("C:\\Users\\Administrator\\Desktop\\Test\\coffee-script.js")
+        String jsFileStr = FileUtils.readFileToString(jsFile, "UTF-8")
+        // create a script engine manager
+        ScriptEngineManager factory = new ScriptEngineManager();
+        // create a JavaScript engine
+        ScriptEngine engine = factory.getEngineByName("JavaScript");
+        // evaluate JavaScript code from String
+        engine.eval(jsFileStr);
+        Object coffeeScript=engine.get("CoffeeScript")
+        Invocable inv = (Invocable) engine;
+        inv.invokeMethod(coffeeScript, "compile")
     }
 }
