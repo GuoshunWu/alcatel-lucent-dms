@@ -6,6 +6,7 @@ import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.service.LanguageService;
+import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
@@ -147,7 +148,14 @@ public class OTCWebParser extends DictionaryParser {
             warnings.add(new BusinessWarning(BusinessWarning.OTC_WEB_DEFINE_NOT_FOUND, dictEntry.getFileName()));
             return;
         }
-        JSONObject jsonObject = JSONObject.fromObject(jsonString);
+        JSONObject jsonObject=null;
+        try {
+            jsonObject = JSONObject.fromObject(jsonString);
+
+        }catch (JSONException e){
+            e.printStackTrace();
+            return;
+        }
 
         Set<Map.Entry<String, String>> strLabels = toFlatMap(jsonObject).entrySet();
 
