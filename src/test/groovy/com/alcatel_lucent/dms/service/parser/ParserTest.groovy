@@ -1,18 +1,9 @@
 package com.alcatel_lucent.dms.service.parser
 
-import net.sf.json.JSONObject
-import org.apache.commons.io.FileUtils
 import org.junit.*
-import org.junit.runner.RunWith
+import org.mozilla.javascript.*
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.scripting.ScriptFactory
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
-import org.springframework.test.context.transaction.TransactionConfiguration
 
-import javax.script.Invocable
-import javax.script.ScriptEngine
-import javax.script.ScriptEngineManager
 
 /**
  * Created by IntelliJ IDEA.
@@ -52,16 +43,26 @@ public class ParserTest {
 
     @Test
     void testParse() throws Exception {
+
         String js = """
             function testFun(p1, p2){
-                print("p1="+p1+", p2="+p2);
+                console.log("p1="+p1+", p2="+p2);
             }
-       """
-        ScriptEngine engine = new ScriptEngineManager().getEngineByName("javascript")
-        engine.eval(js)
-        Invocable invokable = engine as Invocable
 
-        invokable.invokeFunction "testFun", "I am ", "here"
+            testFun();
+       """
+        String filePath = "${System.getenv('NODE_PATH')}/coffee-script/lib/coffee-script/coffee-script.js"
+        String requireJS = "C:/Users/guoshunw.AD4/Desktop/temp/r.js"
+//        js = FileUtils.readFileToString(new File(requireJS))
+
+        Context ctx = Context.enter()
+        Scriptable scope = ctx.initStandardObjects()
+        Object result = ctx.evaluateString(scope, js, "<cmd>", 1, null)
+        println Context.toString(result)
+        ctx.exit()
+
+//        Invocable invokable = engine as Invocable
+//        invokable.invokeFunction "testFun", "I am ", "here"
 
     }
 }
