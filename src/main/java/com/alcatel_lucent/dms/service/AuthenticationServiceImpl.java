@@ -24,6 +24,7 @@ public class AuthenticationServiceImpl extends BaseServiceImpl implements Authen
         User user = findUser(username);
         if (null != user) {
             if (user.getStatus() == User.DISABLED) return null;
+            user.setLastLoginTime(new Timestamp(System.currentTimeMillis()));
             if (user.authenticate(password)) return user;
         }
 

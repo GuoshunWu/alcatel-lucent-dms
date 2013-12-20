@@ -33,7 +33,7 @@ import java.util.*;
 public class AndroidXMLParser extends DictionaryParser {
 
     private static final String[] extensions = new String[]{"xml"};
-    private static final SuffixFileFilter  xmlFilter = new SuffixFileFilter(extensions, IOCase.INSENSITIVE);
+    private static final SuffixFileFilter xmlFilter = new SuffixFileFilter(extensions, IOCase.INSENSITIVE);
     private static final String PARENT_BASE_NAME = "values";
 
     public static final String LANG_CODE_SEPARATOR = "-";
@@ -65,11 +65,8 @@ public class AndroidXMLParser extends DictionaryParser {
     public ArrayList<Dictionary> parse(String rootDir, File file, Collection<File> acceptedFiles) throws BusinessException {
         BusinessException exceptions = new BusinessException(BusinessException.NESTED_ERROR);
         ArrayList<Dictionary> result = parse(rootDir, file, acceptedFiles, exceptions);
-        if (exceptions.hasNestedException()) {
-            throw exceptions;
-        } else {
-            return result;
-        }
+        if (exceptions.hasNestedException()) throw exceptions;
+        return result;
     }
 
     @Override

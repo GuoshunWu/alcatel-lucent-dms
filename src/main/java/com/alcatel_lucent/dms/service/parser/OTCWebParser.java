@@ -6,6 +6,7 @@ import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.service.LanguageService;
+import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
@@ -48,8 +49,16 @@ public class OTCWebParser extends DictionaryParser {
     @Autowired
     private LanguageService languageService;
 
+
     @Override
     public ArrayList<Dictionary> parse(String rootDir, File file, Collection<File> acceptedFiles) throws BusinessException {
+        BusinessException exceptions = new BusinessException(BusinessException.NESTED_ERROR);
+        ArrayList<Dictionary> result = parse(rootDir, file, acceptedFiles, exceptions);
+        if (exceptions.hasNestedException()) throw exceptions;
+        return result;
+    }
+
+    private ArrayList<Dictionary> parse(String rootDir, File file, Collection<File> acceptedFiles, BusinessException exceptions) throws BusinessException {
 
         ArrayList<Dictionary> deliveredDictionaries = new ArrayList<Dictionary>();
         if (!file.exists()) return deliveredDictionaries;
@@ -57,8 +66,6 @@ public class OTCWebParser extends DictionaryParser {
         if (file.isFile()) { // single file import, only reference file is permitted.
             return deliveredDictionaries;
         }
-
-        BusinessException exceptions = new BusinessException(BusinessException.NESTED_ERROR);
 
         // file is directory
         MultiValueMap<String, DictEntry> dictionariesGroups = groupingFiles(file);
@@ -141,7 +148,14 @@ public class OTCWebParser extends DictionaryParser {
             warnings.add(new BusinessWarning(BusinessWarning.OTC_WEB_DEFINE_NOT_FOUND, dictEntry.getFileName()));
             return;
         }
-        JSONObject jsonObject = JSONObject.fromObject(jsonString);
+        JSONObject jsonObject=null;
+        try {
+            jsonObject = JSONObject.fromObject(jsonString);
+
+        }catch (JSONException e){
+            e.printStackTrace();
+            return;
+        }
 
         Set<Map.Entry<String, String>> strLabels = toFlatMap(jsonObject).entrySet();
 
@@ -191,18 +205,27 @@ public class OTCWebParser extends DictionaryParser {
 
     private static String getJSONContent(String contentString) {
         int index = contentString.indexOf(START_FUNCTION_NAME) + START_FUNCTION_NAME.length();
-        int maxLen = contentString.length() - START_FUNCTION_NAME.length() - 1;
+        int maxLen = contentString.length() - 1;
         StringBuilder sb = new StringBuilder();
-        Character lastCh = '\uffff';
         Stack<Character> bracketStack = new Stack<Character>();
+        boolean doubleQuoted = false;
+        boolean singleQuoted = false;
+        boolean escaped = false;
 
         do {
             Character ch = contentString.charAt(index++);
-            if ('\\' != lastCh && ch == '(') bracketStack.push(ch);
-            else if ('\\' != lastCh && ch == ')') bracketStack.pop();
-            lastCh = ch;
+            if ('\\' == ch) escaped = !escaped;
+            boolean quoted = doubleQuoted || singleQuoted;
+            if (!escaped) {
+                if (ch == '(' && !quoted) bracketStack.push(ch);
+                else if (ch == ')' && !quoted) bracketStack.pop();
+                else if (ch == '\'' && !doubleQuoted) singleQuoted = !singleQuoted;
+                else if (ch == '"' && !singleQuoted) doubleQuoted = !doubleQuoted;
+            }
+
+            if ('\\' != ch) escaped = false;
             sb.append(ch);
-        } while (!bracketStack.empty() || index > maxLen);
+        } while (!bracketStack.empty() && index < maxLen);
 
         return sb.substring(1, sb.length() - 1);
     }
