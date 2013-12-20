@@ -38,9 +38,18 @@ public class LoginAction extends BaseAction implements SessionAware {
     @Value("${httpPort}")
     private String httpPort;
 
+    //    build number for deploy
+    @Value("${buildNumber}")
+    private String buildNumber;
+    @Value("${version}")
+    private String version;
+
     public void setTimeZoneOffset(Integer timeZoneOffset) {
         this.timeZoneOffset = timeZoneOffset;
     }
+
+    private String version;
+
 
     public void setHttpPort(String httpPort) {
         this.httpPort = httpPort;
@@ -102,6 +111,14 @@ public class LoginAction extends BaseAction implements SessionAware {
 
     public AuthenticationService getAuthenticationService() {
         return authenticationService;
+    }
+
+    public String getBuildNumber() {
+        return buildNumber;
+    }
+
+    public String getVersion() {
+        return version;
     }
 
     public void setAuthenticationService(AuthenticationService authenticationService) {

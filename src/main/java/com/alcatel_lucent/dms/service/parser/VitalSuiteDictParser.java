@@ -112,7 +112,7 @@ public class VitalSuiteDictParser extends DictionaryParser {
         } catch (BusinessException e) {
             e.addNestedException(exceptions);
         }
-        acceptedFiles.add(refFile);
+        if (null != refFile) acceptedFiles.add(refFile);
         acceptedFiles.addAll(translationFiles);
 
         return deliveredDicts;

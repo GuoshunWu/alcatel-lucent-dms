@@ -1,16 +1,12 @@
 package com.alcatel_lucent.dms.service.parser
 
-import net.sf.json.JSONObject
-import org.apache.commons.io.FileUtils
 import org.junit.*
-import org.junit.runner.RunWith
+import org.mozilla.javascript.*
 import org.mozilla.javascript.Context
 import org.mozilla.javascript.Scriptable
 import org.mozilla.javascript.tools.shell.Global
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
-import org.springframework.test.context.transaction.TransactionConfiguration
+
 
 import javax.script.Invocable
 import javax.script.ScriptEngine
@@ -28,8 +24,7 @@ import javax.script.ScriptEngineManager
 //@RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration(locations = ["/spring.xml"])
 //@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
-
-public class ICEJavaAlarmParserTest {
+public class ParserTest {
 
     @Autowired
     private ICEJavaAlarmParser iceJavaAlarmParser = new ICEJavaAlarmParser();
@@ -55,14 +50,11 @@ public class ICEJavaAlarmParserTest {
 
 //    @Test
     void testParse() throws Exception {
-        new File("C:\\Users\\Administrator\\Desktop\\Test\\en-us\\").eachFile {
-            String testStr = FileUtils.readFileToString it, "UTF-8"
-            String json = OTCWebParser.getJSONContent(testStr)
-//        json = StringEscapeUtils.escapeEcmaScript(json)
-//            println json
-            println JSONObject.fromObject(json)
 
-        }
+        String js = """
+            function testFun(p1, p2){
+                console.log("p1="+p1+", p2="+p2);
+            }
     }
 
     @Test
