@@ -1,16 +1,15 @@
 package com.alcatel_lucent.dms.service.parser
 
-import org.junit.*
-import org.mozilla.javascript.*
+import org.apache.commons.io.FileUtils
+import org.junit.After
+import org.junit.AfterClass
+import org.junit.Before
+import org.junit.BeforeClass
+import org.junit.Test
 import org.mozilla.javascript.Context
 import org.mozilla.javascript.Scriptable
 import org.mozilla.javascript.tools.shell.Global
 import org.springframework.beans.factory.annotation.Autowired
-
-
-import javax.script.Invocable
-import javax.script.ScriptEngine
-import javax.script.ScriptEngineManager
 
 /**
  * Created by IntelliJ IDEA.
@@ -48,19 +47,31 @@ public class ParserTest {
     void tearDown() throws Exception {
     }
 
+    class TestClass{
+        String name
+        @Override
+        void finalize(){
+            println "\"${name}\"going to be cleaned."
+        }
+    }
+
+    @Test
+    void testThreadLocal() {
+        println "=" * 100
+        TestClass t1 =new TestClass(name: "T1")
+        t1 = null
+    }
+
 //    @Test
     void testParse() throws Exception {
 
         String js = """
-            function testFun(p1, p2){
-                console.log("p1="+p1+", p2="+p2);
-            }
-    }
-
-    @Test
-    void testJS() {
-        File jsFile = new File("C:\\Users\\Administrator\\Desktop\\Test\\coffee-script.js")
-        String jsFileStr = FileUtils.readFileToString(jsFile, "UTF-8")
+        function testFun(p1, p2){
+            console.log("p1="+p1+", p2="+p2);
+        }
+       """
+        String filePath = "${System.getenv('NODE_PATH')}/coffee-script/lib/coffee-script/coffee-script.js"
+        String jsFileStr = FileUtils.readFileToString(new File(filePath), "UTF-8")
 
         Context ctx = Context.enter()
         ctx.setOptimizationLevel(-1); // Without this, Rhino hits a 64K bytecode limit and fails

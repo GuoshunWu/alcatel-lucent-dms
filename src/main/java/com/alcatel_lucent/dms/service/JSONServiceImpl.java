@@ -1,5 +1,6 @@
 package com.alcatel_lucent.dms.service;
 
+import com.alcatel_lucent.dms.UserContext;
 import com.opensymphony.xwork2.ActionContext;
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
@@ -26,7 +27,6 @@ public class JSONServiceImpl implements JSONService {
 
     private static Logger log = LoggerFactory.getLogger(JSONServiceImpl.class);
     private static final DateFormat dFmt = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
-    private static final TimeZone tz = new SimpleTimeZone(0, "dynamicFormatDate");
 
     public String toJSONString(Object entity, String propExp) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         return toJSON(entity, propExp).toString(4);
@@ -115,16 +115,11 @@ public class JSONServiceImpl implements JSONService {
                 }
                 if (value != null) {    // escape html tags in grid result
                     if (value instanceof Date) {
-                        TimeZone timeZone = TimeZone.getDefault();
-                        Integer timeZoneOffset = null;
-                        String strTmp = "server";
-                        if (null != ActionContext.getContext() && null != (timeZoneOffset = (Integer) ActionContext.getContext().get("timeZoneOffset"))) {
-                            tz.setRawOffset(timeZoneOffset);
-                            timeZone = tz;
-                            log.info("format Date with client time zone {}", timeZone);
-                            dFmt.setTimeZone(timeZone);
-                        }
-                        log.info("format Date with {} time zone {}", strTmp, timeZone);
+                        UserContext uc = UserContext.getInstance();
+                        TimeZone timeZone = null == uc ? TimeZone.getDefault() : uc.getTimeZone();
+                        String strTmp = null == uc ? "server" : "client";
+                        dFmt.setTimeZone(timeZone);
+                        log.debug("format Date with {} time zone {}", strTmp, timeZone);
                         value = dFmt.format((Date) value);
                     } else {
                         value = StringEscapeUtils.escapeHtml(value.toString());
