@@ -6,6 +6,7 @@ import com.alcatel_lucent.dms.model.User;
 import com.alcatel_lucent.dms.service.AuthenticationService;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Result;
@@ -15,10 +16,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 
+import javax.servlet.SessionCookieConfig;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
+import java.util.SimpleTimeZone;
+import java.util.TimeZone;
 
 @SuppressWarnings("serial")
 //@Namespace("/")
@@ -47,9 +51,6 @@ public class LoginAction extends BaseAction implements SessionAware {
     public void setTimeZoneOffset(Integer timeZoneOffset) {
         this.timeZoneOffset = timeZoneOffset;
     }
-
-    private String version;
-
 
     public void setHttpPort(String httpPort) {
         this.httpPort = httpPort;
@@ -88,21 +89,23 @@ public class LoginAction extends BaseAction implements SessionAware {
             @Result(type = "redirect", location = "${location}"),
             @Result(name = INPUT, location = "/login.jsp")
     })
+
     public String execute() throws Exception {
         User user = authenticationService.login(loginname, password);
         if (user != null) {
-            session.put(UserContext.SESSION_USER_CONTEXT, new UserContext(getLocale(), user));
+            log.info("timeZoneOffset={}", timeZoneOffset);
+
+            session.put(UserContext.SESSION_USER_CONTEXT, new UserContext(getLocale(), user, new SimpleTimeZone(timeZoneOffset, user.getName() + "_TimeZone")));
             log.debug("user: " + user);
             log.debug("redirect to " + getLocation());
 
-            log.info("timeZoneOffset={}", timeZoneOffset);
-            if (timeZoneOffset != null) ActionContext.getContext().put("timeZoneOffset", timeZoneOffset);
 
 //          Tomcat will create new session id if there is no JSESSIONID cookie when https jump to http
             HttpServletResponse response = ServletActionContext.getResponse();
-            Cookie cookie = new Cookie("JSESSIONID", request.getSession().getId());
+            SessionCookieConfig scc= ServletActionContext.getServletContext().getSessionCookieConfig();
+            Cookie cookie = new Cookie(scc.getName(), request.getSession().getId());
+            cookie.setPath(scc.getPath());
             response.addCookie(cookie);
-
             return SUCCESS;
         }
         addActionError(getText("message.loginfail"));
