@@ -5,16 +5,12 @@ define [
 
   'i18n!nls/admin'
   'i18n!nls/common'
-], ($, util, urls, i18n, c18n)->
-
-  afterSubmit = (response, postdata)->
-    jsonFromServer = $.parseJSON response.responseText
-    [jsonFromServer.status == 0, jsonFromServer.message]
+], ($, util, urls, i18n)->
 
   grid = $('#userGrid').jqGrid(
     url: urls.users
     datatype: 'json', mtype: 'post'
-    postData: {prop: 'loginName,name,email,lastLoginTime, status, role', format: 'grid'}
+    postData: {prop: 'loginName,name,email,lastLoginTime, status, role, onLine', format: 'grid'}
     pager: '#userGridPager', rowNum: 30, rowList: [15, 30, 60]
     multiselect: true
     cellEdit: true, cellurl: urls.user.update, afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
@@ -26,7 +22,7 @@ define [
     viewrecords: true, gridview: true, multiselect: true
     sortname: 'lastLoginTime', sortorder: 'desc'
     height: '100%'
-    colNames: ['Login name', 'Name', 'Email', 'Last login time', 'Enabled', 'Role']
+    colNames: ['Login name', 'Name', 'Email', 'Last login time', 'Enabled', 'Role', 'IsOnLine']
     colModel: [
       {name: 'loginName', index: 'loginName', width: 100, align: 'left'}
       {name: 'name', index: 'name', width: 100, align: 'left'}
@@ -38,6 +34,11 @@ define [
       {name: 'role', index: 'role', width: 200, align: 'left',editable:true, classes: 'editable-column', edittype: 'select'
       editoptions: {value: i18n.usergrid.roleeditoptions}
       formatter: 'select'
+      }
+      {name: 'onLine', index: 'onLine', sortable: false, width: 50, align: 'center', formatter: (cellvalue)->
+        picName = if cellvalue.toLowerCase() == 'true'then 'online' else 'offline'
+        "<span>#{picName}&nbsp;<img src='images/#{picName}16.png'></span>"
+      unformat:(cellvalue, options, cell)-> -1 isnt cellvalue.indexOf("online") + ""
       }
     ]
     beforeSubmitCell:(rowid,celname,value,iRow,iCol)->

@@ -1,17 +1,15 @@
 package com.alcatel_lucent.dms.action.login;
 
+import com.alcatel_lucent.dms.Global;
 import com.alcatel_lucent.dms.UserContext;
 import com.alcatel_lucent.dms.action.BaseAction;
 import com.alcatel_lucent.dms.model.User;
 import com.alcatel_lucent.dms.service.AuthenticationService;
-import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.interceptor.SessionAware;
-import org.apache.struts2.interceptor.TokenInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 import java.util.SimpleTimeZone;
-import java.util.TimeZone;
 
 @SuppressWarnings("serial")
 //@Namespace("/")
@@ -96,6 +93,7 @@ public class LoginAction extends BaseAction implements SessionAware {
             log.info("timeZoneOffset={}", timeZoneOffset);
 
             session.put(UserContext.SESSION_USER_CONTEXT, new UserContext(getLocale(), user, new SimpleTimeZone(timeZoneOffset, user.getName() + "_TimeZone")));
+            Global.login(user);
             log.debug("user: " + user);
             log.debug("redirect to " + getLocation());
 

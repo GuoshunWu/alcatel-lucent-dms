@@ -2,6 +2,7 @@ package com.alcatel_lucent.dms.service;
 
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.UserContext;
+import com.alcatel_lucent.dms.action.ProgressQueue;
 import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
 import org.apache.commons.beanutils.PropertyUtils;
@@ -113,6 +114,7 @@ public class GlossaryServiceImpl implements GlossaryService {
             consistentGlossariesInLabel(label, ctxExclusion, dirtyGlossaries);
         }
 
+        ProgressQueue.setProgress("message", 0.3f);
         // replace all the Text and Translations
 
         hSQL = "from Text where id in (select t.id from Text t, Glossary g where g.dirty=true and upper(t.reference) like concat( '%', upper(g.text), '%'))";

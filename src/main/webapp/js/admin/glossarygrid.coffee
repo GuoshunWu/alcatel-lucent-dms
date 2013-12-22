@@ -18,10 +18,12 @@ define [
     $(formid).parent().parent().position(my:'center', at: 'center', of: window)
   }
 
-  addOptions = {}
+  addOptions = {
+    addCaption: 'Add Glossary'
+    bSubmit: 'Add'
+  }
 
   grid = $(hGridId).jqGrid(
-#    url: 'json/glossaries.json'
     url: urls.glossaries
 
     datatype: 'json'
@@ -35,7 +37,6 @@ define [
       setTimeout (->grid.trigger 'reloadGrid'), 10
       [jsonFromServer.status == 0, jsonFromServer.message]
     beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
-#      console?.log "rowid: #{rowid}, value:#{value}"
       newText:value
 
     editurl: urls.glossary.update
@@ -57,9 +58,7 @@ define [
 
     gridComplete: ->
       grid = $(@)
-      #handlers = grid.getGridParam 'cellactionhandlers'
   )
-#  .setGridParam(datatype: 'json')
   .navGrid "#{hGridId}Pager", {search: false, edit: false}, addOptions,{},deleteOptions
 
   grid: grid

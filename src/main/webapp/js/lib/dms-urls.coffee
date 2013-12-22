@@ -59,6 +59,7 @@ define (require)->
     update: getURL('charset', 'admin/')
   glossary:
     update: getURL('glossary', 'admin/')
+    apply: getURL('apply-glossaries', 'admin/')
 
   user:
     update: getURL('user', 'admin/')
