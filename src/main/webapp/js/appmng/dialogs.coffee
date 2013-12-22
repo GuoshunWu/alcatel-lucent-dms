@@ -46,8 +46,10 @@ define [
         # language id list, empty for reference only
         delete postData.lang if(!postData.lang)
 
+        $.blockUI(message: '')
         pb = util.genProgressBar()
         util.updateProgress(urls.app.capitalize, postData, (json)->
+          $.unblockUI()
           pb.parent().remove()
           msg = json.event.msg
           $.msgBox msg, null, {title: c18n.info, width: 300, height: 'auto'}

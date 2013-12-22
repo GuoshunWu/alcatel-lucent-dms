@@ -3,7 +3,6 @@ package com.alcatel_lucent.dms.action.admin;
 import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.action.JSONAction;
 import com.alcatel_lucent.dms.service.GlossaryService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 
@@ -37,12 +36,11 @@ public class GlossaryAction extends JSONAction {
             glossaryService.updateGlossary(text, newText);
         } else if (oper.equals("del")) {
             glossaryService.deleteGlossaries(Arrays.asList(text.split(",")));
-        } else if (oper.equals("consistentGlossaries")) {
-            glossaryService.consistentGlossaries();
         } else {
             throw new SystemError("Unknown oper: " + oper);
         }
 
+        setStatus(0);
         setMessage(getText("message.success"));
         return SUCCESS;
     }

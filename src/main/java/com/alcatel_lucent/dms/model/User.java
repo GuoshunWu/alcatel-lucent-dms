@@ -1,5 +1,6 @@
 package com.alcatel_lucent.dms.model;
 
+import com.alcatel_lucent.dms.Global;
 import org.apache.catalina.util.MD5Encoder;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -56,7 +57,7 @@ public class User implements Serializable {
      * Local user authenticate
      */
     public boolean authenticate(String password) {
-        if(null == password) return false;
+        if (null == password) return false;
         return DigestUtils.md5Hex(password).equals(passwordDigest);
     }
 
@@ -125,6 +126,25 @@ public class User implements Serializable {
     }
 
     public User() {
+    }
+
+    @Transient
+    public boolean isOnLine() {
+        return Global.isOnLine(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+        return (loginName.equals(user.loginName));
+    }
+
+    @Override
+    public int hashCode() {
+        return loginName.hashCode();
     }
 
     @Override

@@ -2,7 +2,6 @@ define [
   'jqueryui'
   'jqupload'
 ], ($, fileupload)->
-
   d = $('#hiDialog').dialog(
     autoOpen: false
     buttons: [
