@@ -296,4 +296,13 @@ public interface DictionaryService {
      *                 CAPITALIZATION_ALL_LOWER_CASE = 5
      */
     void changeLabelCapitalization(Collection<Long> labelIds, Collection<Long> langIds, int style);
+    
+    /**
+     * Find dictionary by prod, app and version
+     * @param prod
+     * @param app
+     * @param ver
+     * @return
+     */
+    Collection<Dictionary> findDictionaries(String prod, String app, String ver);
 }

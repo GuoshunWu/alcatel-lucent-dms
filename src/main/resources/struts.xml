@@ -36,6 +36,23 @@
 	    </global-results>
     </package>
 
+    <package name="dms-api" extends="json-default">
+        <interceptors>
+            <interceptor name="apiAuthenticationInterceptor"
+                class="com.alcatel_lucent.dms.interceptors.APIAuthenticationInterceptor"/>
+    
+            <interceptor-stack name="dmsAPIStack">
+                <interceptor-ref name="apiAuthenticationInterceptor"/>
+                <interceptor-ref name="defaultStack"/>
+            </interceptor-stack>
+        </interceptors>
+        <default-interceptor-ref name="dmsAPIStack"/>
+        <global-results>
+            <result name="401">/common/401.jsp</result>
+            <result name="403">/common/403.jsp</result>
+        </global-results>
+    </package>
+
 	<constant name="struts.convention.default.parent.package" value="default"/>
     <constant name="struts.locale" value="en_US"/>
 
