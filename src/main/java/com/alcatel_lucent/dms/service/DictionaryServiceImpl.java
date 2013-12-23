@@ -1492,4 +1492,17 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     private boolean isWordBoundary(char ch) {
         return Character.isWhitespace(ch) || ",./<>?;':[]{}()+=`~!@#$%^&*|\\\"".indexOf(ch) != -1;
     }
+
+	@Override
+	public Collection<Dictionary> findDictionaries(String prod, String app, String ver) {
+		String hql = "select obj from Dictionary obj" +
+				" where obj.base.applicationBase.productBase.name=:prod" +
+				" and obj.base.applicationBase.name=:app" +
+				" and obj.version=:ver";
+		Map param = new HashMap();
+		param.put("prod", prod);
+		param.put("app", app);
+		param.put("ver", ver);
+		return dao.retrieve(hql, param);
+	}
 }
