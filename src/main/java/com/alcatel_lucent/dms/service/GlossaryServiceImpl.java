@@ -5,7 +5,6 @@ import com.alcatel_lucent.dms.UserContext;
 import com.alcatel_lucent.dms.action.ProgressQueue;
 import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,19 +109,35 @@ public class GlossaryServiceImpl implements GlossaryService {
 
         //replace all the labels and labelTranslations
         Context ctxExclusion = textService.getContextByExpression(Context.EXCLUSION, (Dictionary) null);
+        int totalLabel = labels.size() + 1;
+        int current = 1;
+        float percent;
         for (final Label label : labels) {
+            percent = current / (float)totalLabel * 100;
+            ProgressQueue.setProgress(StringUtils.join(Arrays.asList(
+                    String.format("[ %d/%d ]Process Labels...", 1, totalLabel),
+                    String.format("Current Label '%s'", label.getKey())
+            ), "<br/>"), percent);
             consistentGlossariesInLabel(label, ctxExclusion, dirtyGlossaries);
+            current++;
         }
 
-        ProgressQueue.setProgress("message", 0.3f);
         // replace all the Text and Translations
 
         hSQL = "from Text where id in (select t.id from Text t, Glossary g where g.dirty=true and upper(t.reference) like concat( '%', upper(g.text), '%'))";
         Collection<Text> texts = dao.retrieve(hSQL);
+
+        int totalText = texts.size();
+        current = 1;
         for (Text text : texts) {
+
+            percent = current / (float)totalText * 100;
+            ProgressQueue.setProgress(StringUtils.join(Arrays.asList(
+                    String.format("[ %d/%d ]Process texts and translations...", 1, totalLabel),
+                    String.format("Current text '%s'", text.getReference())
+            ), "<br/>"), percent);
             consistentGlossariesInText(text, dirtyGlossaries);
         }
-
 
         // update dirty glossaries
         CollectionUtils.forAllDo(dirtyGlossaries, ClosureUtils.invokerClosure("setDirty", new Class[]{Boolean.TYPE}, new Object[]{false}));

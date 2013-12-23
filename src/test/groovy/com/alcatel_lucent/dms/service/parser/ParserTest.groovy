@@ -1,15 +1,14 @@
 package com.alcatel_lucent.dms.service.parser
 
 import org.apache.commons.io.FileUtils
-import org.junit.After
-import org.junit.AfterClass
-import org.junit.Before
-import org.junit.BeforeClass
-import org.junit.Test
+import org.junit.*
+import org.junit.runner.RunWith
 import org.mozilla.javascript.Context
 import org.mozilla.javascript.Scriptable
 import org.mozilla.javascript.tools.shell.Global
-import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
+import org.springframework.test.context.transaction.TransactionConfiguration
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,15 +18,11 @@ import org.springframework.beans.factory.annotation.Autowired
  * To change this template use File | Settings | File Templates.
  */
 
-//@Ignore
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(locations = ["/spring.xml"])
-//@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
+@Ignore
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = ["/spring.xml"])
+@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 public class ParserTest {
-
-    @Autowired
-    private ICEJavaAlarmParser iceJavaAlarmParser = new ICEJavaAlarmParser();
-
 
     @BeforeClass
     static void setUpBeforeClass() throws Exception {

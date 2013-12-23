@@ -26,7 +26,7 @@ public class Global {
     }
 
     public static boolean isOnLine(User user) {
-        log.info("onLineUsers {}, user {}", onLineUsers, user);
+        log.debug("onLineUsers {}, user {}", onLineUsers, user);
         return UserContext.getInstance().getUser().equals(user) || onLineUsers.contains(user);
     }
 
