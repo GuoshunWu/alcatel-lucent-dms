@@ -1,0 +1,1 @@
+java -cp D:/grocery/maven2_local_repos/org/mozilla/rhino/1.7R4/rhino-1.7R4.jar org.mozilla.javascript.tools.debugger.Main

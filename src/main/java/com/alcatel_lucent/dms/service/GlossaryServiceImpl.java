@@ -6,6 +6,7 @@ import com.alcatel_lucent.dms.action.ProgressQueue;
 import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
 import org.apache.commons.collections.*;
+import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,16 @@ public class GlossaryServiceImpl implements GlossaryService {
     @Autowired
     private TextService textService;
 
-    public static final String PATTERN_FMT = "((?<=[\\xf7\\xd7[^\\xc0-\\xff]&&\\W]|^))((?i)%s)((?=[\\xf7\\xd7[^\\xc0-\\xff]&&\\W]|$))";
+
+    public static String PATTERN_FMT = "((?<=[\\xf7\\xd7[^\\xc0-\\xff]&&\\W]|^))((?i)%s)((?=[\\xf7\\xd7[^\\xc0-\\xff]&&\\W]|$))";
+    static {
+        FileAlterationMonitor monitor;
+//        FileObserver ob = new FileObserver("D:\\test");
+//        FileListener listener = new FileListener();
+//        ob.addListener(listener);
+//        FileMonitor monitor = new FileMonitor(ob);
+//        monitor.start();
+    }
 
     @Autowired
     public void setDao(DaoService dao) {
