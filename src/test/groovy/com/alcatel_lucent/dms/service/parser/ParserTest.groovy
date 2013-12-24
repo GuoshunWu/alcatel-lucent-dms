@@ -12,6 +12,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration
 
 import org.mozilla.javascript.*
 import javax.script.*
+import java.util.logging.Logger
 
 /**
  * Created by IntelliJ IDEA.
@@ -50,12 +51,12 @@ public class ParserTest {
 
         String filePath = "${System.getenv('NODE_PATH')}/coffee-script/lib/extra/coffee-script.js"
 //        filePath = "${System.getenv('NODE_PATH')}/coffee-script/lib/coffee-script/coffee-script.js"
-
-        String rJSPath = "${System.getenv('NODE_PATH')}/requirejs/bin/r_rhino.js"
-
-
-        String rJSPathStr = FileUtils.readFileToString(new File(rJSPath), "UTF-8")
         String jsFileStr = FileUtils.readFileToString(new File(filePath), "UTF-8")
+
+        String js2CoffeePath = "${System.getenv('NODE_PATH')}/js2coffee/out/lib/extras/js2coffee.js"
+        String js2CoffeeStr = FileUtils.readFileToString(new File(js2CoffeePath), "UTF-8")
+
+
 
         // Creates and enters a Context. The Context stores information
         // about the execution environment of a script.
@@ -72,21 +73,16 @@ public class ParserTest {
 
             final Scriptable globalScope = ctx.initStandardObjects()
             // Add a global variable "out" that is a JavaScript reflection of System.out
-            Object jsOut = Context.javaToJS(System.out, globalScope)
-            ScriptableObject.putProperty(globalScope, "out", jsOut)
-//            String returnStr =ctx.evaluateString(globalScope, rJSPathStr, "require.js", 0, null)
-//            println returnStr
-//            return
+            Object jsConsole = Context.javaToJS(Logger.getLogger("jsConsole"), globalScope)
+            ScriptableObject.putProperty(globalScope, "console", jsConsole)
+
             ctx.evaluateString(globalScope, jsFileStr, "coffee-script.js", 1, null)
-
+//            ctx.evaluateString(globalScope, js2CoffeeStr, "js2coffee.js", 1, null)
             ScriptableObject coffeeScript = globalScope.get("CoffeeScript", globalScope)
+//            ScriptableObject js2coffee = globalScope.get("js2coffee", globalScope)
+//            println js2coffee
             String coffeeJSTest ="""
-(console=
-  log:(obj)->out.println(obj)
-  info:(obj)->out.println(obj)
-)unless console
-
-console.log 'This is my coffee script!'
+console.info 'This is my coffee script!'
 """
             //Coffee script compiled java scripts
             Object result = ((Function)coffeeScript.get("compile")).call ctx, globalScope, coffeeScript, [coffeeJSTest] as Object[]
@@ -110,7 +106,6 @@ console.log 'This is my coffee script!'
         ScriptEngineManager factory = new ScriptEngineManager();
         // create JavaScript engine
         ScriptEngine engine = factory.getEngineByName("JavaScript");
-
         // evaluate JavaScript code from given file - specified by first argument
         engine.eval(jsFileStr);
 
@@ -119,12 +114,7 @@ console.log 'This is my coffee script!'
         Invocable inv = (Invocable) engine
 
         String coffeeJSTest ="""
-(console=
-  log:(obj)->out.println(obj)
-  info:(obj)->out.println(obj)
-)unless console
-
-console.log 'This is my coffee script!'
+#console.log 'This is my coffee script!'
 """
 
         inv.invokeMethod(coffeeScript, "run", coffeeJSTest)
