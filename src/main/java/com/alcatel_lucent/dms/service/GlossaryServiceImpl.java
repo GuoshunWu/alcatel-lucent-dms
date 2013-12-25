@@ -6,14 +6,23 @@ import com.alcatel_lucent.dms.action.ProgressQueue;
 import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
 import org.apache.commons.collections.*;
+import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
+import org.apache.commons.io.monitor.FileAlterationObserver;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.apache.commons.io.FileUtils.openInputStream;
 
 /**
  * Created with IntelliJ IDEA.
@@ -30,16 +39,7 @@ public class GlossaryServiceImpl implements GlossaryService {
     @Autowired
     private TextService textService;
 
-
-    public static String PATTERN_FMT = "((?<=[\\xf7\\xd7[^\\xc0-\\xff]&&\\W]|^))((?i)%s)((?=[\\xf7\\xd7[^\\xc0-\\xff]&&\\W]|$))";
-    static {
-        FileAlterationMonitor monitor;
-//        FileObserver ob = new FileObserver("D:\\test");
-//        FileListener listener = new FileListener();
-//        ob.addListener(listener);
-//        FileMonitor monitor = new FileMonitor(ob);
-//        monitor.start();
-    }
+    private static Logger log = LoggerFactory.getLogger(GlossaryServiceImpl.class);
 
     @Autowired
     public void setDao(DaoService dao) {
@@ -123,7 +123,7 @@ public class GlossaryServiceImpl implements GlossaryService {
         int current = 1;
         float percent;
         for (final Label label : labels) {
-            percent = current / (float)totalLabel * 100;
+            percent = current / (float) totalLabel * 100;
             ProgressQueue.setProgress(StringUtils.join(Arrays.asList(
                     String.format("[ %d/%d ]Process Labels...", 1, totalLabel),
                     String.format("Current Label '%s'", label.getKey())
@@ -141,7 +141,7 @@ public class GlossaryServiceImpl implements GlossaryService {
         current = 1;
         for (Text text : texts) {
 
-            percent = current / (float)totalText * 100;
+            percent = current / (float) totalText * 100;
             ProgressQueue.setProgress(StringUtils.join(Arrays.asList(
                     String.format("[ %d/%d ]Process texts and translations...", 1, totalLabel),
                     String.format("Current text '%s'", text.getReference())
@@ -212,11 +212,10 @@ public class GlossaryServiceImpl implements GlossaryService {
         if (StringUtils.isBlank(label.getReference())) return;
         Collection<PatternPair> glossaryPatternPairs = getGlossaryPatterns(glossaries);
         for (PatternPair gpp : glossaryPatternPairs) {
-            Matcher matcher = gpp.getPattern().matcher(label.getReference());
-            if (!matcher.find()) continue;
-            label.setReference(matcher.replaceAll(gpp.getReplacement()));
+            if (!gpp.find(label.getReference())) continue;
+            label.setReference(gpp.getProcessedString(label.getReference()));
 
-            if (gpp.getGlossary().equals(label.getReference())) {
+            if (gpp.getGlossaryText().equals(label.getReference())) {
                 label.setContext(ctxExclusion);
                 return;
             }
@@ -224,11 +223,9 @@ public class GlossaryServiceImpl implements GlossaryService {
             Collection<LabelTranslation> labelTranslations = label.getOrigTranslations();
             if (null == labelTranslations) return;
             for (LabelTranslation lt : labelTranslations) {
-                Matcher transMatcher = gpp.getPattern().matcher(lt.getOrigTranslation());
-                if (!transMatcher.find()) continue;
-                lt.setOrigTranslation(transMatcher.replaceAll(gpp.getReplacement()));
+                if (!gpp.find(lt.getOrigTranslation())) continue;
+                lt.setOrigTranslation(gpp.getProcessedString(lt.getOrigTranslation()));
             }
-
         }
     }
 
@@ -238,16 +235,14 @@ public class GlossaryServiceImpl implements GlossaryService {
         Collection<PatternPair> glossaryPatternPairs = getGlossaryPatterns(glossaries);
 
         for (PatternPair gpp : glossaryPatternPairs) {
-            Matcher matcher = gpp.getPattern().matcher(text.getReference());
-            if (!matcher.find()) continue;
-            text.setReference(matcher.replaceAll(gpp.getReplacement()));
+            if (!gpp.find(text.getReference())) continue;
+            text.setReference(gpp.getProcessedString(text.getReference()));
 
             Collection<Translation> translations = text.getTranslations();
             if (null == translations) return;
             for (Translation translation : translations) {
-                Matcher transMatcher = gpp.getPattern().matcher(translation.getTranslation());
-                if (!transMatcher.find()) continue;
-                translation.setTranslation(transMatcher.replaceAll(gpp.getReplacement()));
+                if (!gpp.find(translation.getTranslation())) continue;
+                translation.setTranslation(gpp.getProcessedString(translation.getTranslation()));
             }
         }
     }
@@ -264,8 +259,7 @@ public class GlossaryServiceImpl implements GlossaryService {
         return CollectionUtils.collect(glossaries, new Transformer() {
             @Override
             public Object transform(Object input) {
-                String glossaryText = ((Glossary) input).getText();
-                return new PatternPair(Pattern.compile(String.format(PATTERN_FMT, glossaryText)), String.format("$1%s$3", glossaryText), glossaryText);
+                return new PatternPair(((Glossary) input).getText());
             }
         });
     }
@@ -280,7 +274,7 @@ public class GlossaryServiceImpl implements GlossaryService {
         return CollectionUtils.select(patternParis, new Predicate() {
             @Override
             public boolean evaluate(Object object) {
-                return ((PatternPair) object).getPattern().matcher(text).find();
+                return ((PatternPair) object).find(text);
             }
         });
     }
@@ -303,7 +297,7 @@ public class GlossaryServiceImpl implements GlossaryService {
             if (!matcher.find()) continue;
             matchedGlossaryPatternPairs.add(pp);
             label.setReference(matcher.replaceAll(pp.getReplacement()));
-            if (pp.getGlossary().equals(label.getReference())) {
+            if (pp.getGlossaryText().equals(label.getReference())) {
                 label.setContext(textService.getContextByExpression(Context.EXCLUSION, (Dictionary) null));
                 return matchedGlossaryPatternPairs;
             }

@@ -50,7 +50,7 @@ public class GlossaryServiceTest {
     void tearDown() throws Exception {
     }
 
-    @Test
+//    @Test
     void testCreateGlossary(){
         User user= daoService.retrieveOne("from User where loginName=:loginName", ['loginName': 'test'])
         Glossary glossary=new Glossary('Temp', user)
@@ -63,5 +63,18 @@ public class GlossaryServiceTest {
 //    @Test
     void testConsistentGlossaries() {
         glossaryService.consistentGlossaries();
+    }
+
+    @Test
+    void testGlossaryMatch(){
+        PatternPair pp = new PatternPair("HTTPS")
+        String reference ="This is a https://instance.opentouch.tv"
+//        Assert.assertEquals(reference, pp.getProcessedString(reference))
+//        Assert.assertEquals("This is a HTTPS://instance.opentouch.tv", pp.getProcessedString(reference))
+
+        pp = new PatternPair("OpenTouch")
+        Assert.assertEquals("This is a https://instance.OpenTouch.tv", pp.getProcessedString(reference))
+
+
     }
 }

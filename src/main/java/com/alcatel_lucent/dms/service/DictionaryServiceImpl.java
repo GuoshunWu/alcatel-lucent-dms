@@ -1304,6 +1304,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         Context context = textService.getContextByExpression(contextExp, dict);
         label.setContext(context);
 
+        glossaryService.consistentGlossariesInLabelRef(label);
+
         Text text = updateLabelTranslations(label, null);
         label.setText(text);
         label = (Label) dao.create(label);
