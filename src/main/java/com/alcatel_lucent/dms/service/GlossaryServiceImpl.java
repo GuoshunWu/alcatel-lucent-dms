@@ -5,6 +5,8 @@ import com.alcatel_lucent.dms.UserContext;
 import com.alcatel_lucent.dms.action.ProgressQueue;
 import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
+import com.sun.tools.javac.resources.compiler;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections.*;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -180,24 +183,58 @@ public class GlossaryServiceImpl implements GlossaryService {
     public void consistentGlossariesInTask(Task task) {
         Collection<TaskDetail> taskDetails = task.getDetails();
 
-        Collection<PatternPair> patternPair = getGlossaryPatterns();
-
+        Collection<GlossaryMatchObject> GlossaryMatchObject = getGlossaryPatterns();
+//        consistentGlossariesInObject(glossaries, label, "reference", "origTranslations", "origTranslation");
         for (TaskDetail taskDetail : taskDetails) {
             final String reference = taskDetail.getText().getReference();
-            Collection<PatternPair> matchedPatternPair = CollectionUtils.select(patternPair, new Predicate() {
-                @Override
-                public boolean evaluate(Object object) {
-                    PatternPair pp = (PatternPair) object;
-                    return pp.getPattern().matcher(reference).find();
-                }
-            });
-
-            for (PatternPair pp : matchedPatternPair) {
-                Matcher matcher = pp.getPattern().matcher(taskDetail.getNewTranslation());
-                if (!matcher.find()) continue;
-                taskDetail.setNewTranslation(matcher.replaceAll(pp.getReplacement()));
+            for (GlossaryMatchObject gmo : GlossaryMatchObject) {
+                String resultText;
+                gmo.getProcessedString(reference);
+                if (!gmo.isReplaced()) continue;
+                resultText = gmo.getProcessedString(taskDetail.getNewTranslation());
+                if (!gmo.isReplaced()) continue;
+                taskDetail.setNewTranslation(resultText);
             }
         }
+    }
+
+    /**
+     *
+     * */
+    private Collection<GlossaryMatchObject> consistentGlossariesInObject(final Collection<Glossary> glossaries, Object bean, String propertyName, String subCollectionPropertyName, String subObjectPropertyName) {
+        Collection<GlossaryMatchObject> matchedGlossaryMatchObjects = new ArrayList<GlossaryMatchObject>();
+        try {
+            String propertyValue = (String) PropertyUtils.getProperty(bean, propertyName);
+            if (StringUtils.isBlank(propertyValue)) return matchedGlossaryMatchObjects;
+
+            Collection<GlossaryMatchObject> glossaryGlossaryMatchObjects = getGlossaryPatterns(glossaries);
+            for (GlossaryMatchObject gmo : glossaryGlossaryMatchObjects) {
+                propertyValue = (String) PropertyUtils.getProperty(bean, propertyName);
+                String resultText = gmo.getProcessedString(propertyValue);
+                if (!gmo.isReplaced()) continue;
+                PropertyUtils.setProperty(bean, propertyName, resultText);
+                matchedGlossaryMatchObjects.add(gmo);
+                if (gmo.getGlossaryText().equals(resultText) && bean instanceof Label) {
+                    Context ctxExclusion = textService.getContextByExpression(Context.EXCLUSION, (Dictionary) null);
+                    ((Label) bean).setContext(ctxExclusion);
+                    return matchedGlossaryMatchObjects;
+                }
+
+                if (StringUtils.isEmpty(subCollectionPropertyName)) continue;
+                Collection subCollection = (Collection) PropertyUtils.getProperty(bean, subCollectionPropertyName);
+                if (null == subCollection) return matchedGlossaryMatchObjects;
+                for (Object subObj : subCollection) {
+                    String subPropertyValue = (String) PropertyUtils.getProperty(subObj, subObjectPropertyName);
+                    resultText = gmo.getProcessedString(subPropertyValue);
+                    PropertyUtils.setProperty(subObj, subObjectPropertyName, resultText);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BusinessException(e.getMessage());
+        }
+        return matchedGlossaryMatchObjects;
     }
 
 
@@ -209,100 +246,37 @@ public class GlossaryServiceImpl implements GlossaryService {
      */
     private void consistentGlossariesInLabel(final Label label, final Context ctxExclusion, final Collection<Glossary> glossaries) {
 //        Consistent label reference first
-        if (StringUtils.isBlank(label.getReference())) return;
-        Collection<PatternPair> glossaryPatternPairs = getGlossaryPatterns(glossaries);
-        for (PatternPair gpp : glossaryPatternPairs) {
-            if (!gpp.find(label.getReference())) continue;
-            label.setReference(gpp.getProcessedString(label.getReference()));
-
-            if (gpp.getGlossaryText().equals(label.getReference())) {
-                label.setContext(ctxExclusion);
-                return;
-            }
-
-            Collection<LabelTranslation> labelTranslations = label.getOrigTranslations();
-            if (null == labelTranslations) return;
-            for (LabelTranslation lt : labelTranslations) {
-                if (!gpp.find(lt.getOrigTranslation())) continue;
-                lt.setOrigTranslation(gpp.getProcessedString(lt.getOrigTranslation()));
-            }
-        }
+        consistentGlossariesInObject(glossaries, label, "reference", "origTranslations", "origTranslation");
     }
 
 
     private void consistentGlossariesInText(final Text text, Collection<Glossary> glossaries) {
-        if (StringUtils.isBlank(text.getReference())) return;
-        Collection<PatternPair> glossaryPatternPairs = getGlossaryPatterns(glossaries);
-
-        for (PatternPair gpp : glossaryPatternPairs) {
-            if (!gpp.find(text.getReference())) continue;
-            text.setReference(gpp.getProcessedString(text.getReference()));
-
-            Collection<Translation> translations = text.getTranslations();
-            if (null == translations) return;
-            for (Translation translation : translations) {
-                if (!gpp.find(translation.getTranslation())) continue;
-                translation.setTranslation(gpp.getProcessedString(translation.getTranslation()));
-            }
-        }
+        consistentGlossariesInObject(glossaries, text, "reference", "translations", "translation");
     }
 
-    public Collection<PatternPair> getGlossaryPatterns() {
+    public Collection<GlossaryMatchObject> getGlossaryPatterns() {
         return getGlossaryPatterns(null);
     }
 
     /**
      * Get glossary patterns pairs
      */
-    public Collection<PatternPair> getGlossaryPatterns(Collection<Glossary> glossaries) {
+    public Collection<GlossaryMatchObject> getGlossaryPatterns(Collection<Glossary> glossaries) {
         if (null == glossaries) glossaries = this.glossaries;
         return CollectionUtils.collect(glossaries, new Transformer() {
             @Override
             public Object transform(Object input) {
-                return new PatternPair(((Glossary) input).getText());
+                return new GlossaryMatchObject(((Glossary) input).getText());
             }
         });
-    }
-
-    /**
-     * Get matched glossary pattern pairs
-     */
-
-    public Collection<PatternPair> getGlossaryMatchedPatterns(Collection<Glossary> glossaries, final String text) {
-        if (null == glossaries) glossaries = this.glossaries;
-        Collection<PatternPair> patternParis = getGlossaryPatterns(glossaries);
-        return CollectionUtils.select(patternParis, new Predicate() {
-            @Override
-            public boolean evaluate(Object object) {
-                return ((PatternPair) object).find(text);
-            }
-        });
-    }
-
-
-    public Collection<PatternPair> getGlossaryMatchedPatterns(final String text) {
-        return getGlossaryMatchedPatterns((Collection<Glossary>) null, text);
     }
 
     /**
      * This method is called in DictionaryserviceImpl.updateLabelReference, only label reference need to be consistent
      * when Label reference is updated
      */
-    public Collection<PatternPair> consistentGlossariesInLabelRef(Label label) {
-
-        Collection<PatternPair> glossaryPatternPairs = getGlossaryPatterns();
-        Collection<PatternPair> matchedGlossaryPatternPairs = new ArrayList<PatternPair>();
-        for (PatternPair pp : glossaryPatternPairs) {
-            Matcher matcher = pp.getPattern().matcher(label.getReference());
-            if (!matcher.find()) continue;
-            matchedGlossaryPatternPairs.add(pp);
-            label.setReference(matcher.replaceAll(pp.getReplacement()));
-            if (pp.getGlossaryText().equals(label.getReference())) {
-                label.setContext(textService.getContextByExpression(Context.EXCLUSION, (Dictionary) null));
-                return matchedGlossaryPatternPairs;
-            }
-        }
-        return matchedGlossaryPatternPairs;
+    public Collection<GlossaryMatchObject> consistentGlossariesInLabelRef(Label label) {
+        return consistentGlossariesInObject(glossaries, label, "reference", null, null);
     }
 
     private Glossary findGlossaryByText(String text) {

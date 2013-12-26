@@ -1193,14 +1193,12 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         Label label = (Label) dao.retrieve(Label.class, labelId);
         String oldReference = label.getReference();
         label.setReference(reference);
-        Collection<PatternPair> patternPairs = glossaryService.consistentGlossariesInLabelRef(label);
+        Collection<GlossaryMatchObject> GlossaryMatchObjects = glossaryService.consistentGlossariesInLabelRef(label);
         if (null != translationMap) {
             for (Translation translation : translationMap.values()) {
                 String strTrans = translation.getTranslation();
-                for (PatternPair pp : patternPairs) {
-                    Matcher matcher = pp.getPattern().matcher(strTrans);
-                    if (!matcher.find()) continue;
-                    strTrans = matcher.replaceAll(pp.getReplacement());
+                for (GlossaryMatchObject gmo : GlossaryMatchObjects) {
+                    strTrans = gmo.getProcessedString(strTrans);
                 }
                 translation.setTranslation(strTrans);
             }
@@ -1388,71 +1386,69 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     }
 
     private void changeLabelCapitalization(Dictionary dict, Collection<Label> labels, HashSet<Long> langSet, int style) {
-    	Map<Long, Collection<Text>> contextMap = new HashMap<Long, Collection<Text>>();
-    	Map<Long, Collection<Label>> labelMap = new HashMap<Long, Collection<Label>>();
-	    for (Label label : labels) {
-	        String oldReference = label.getReference();
-	        label.setReference(capitalizeText(oldReference, style, Locale.ENGLISH));
-	        Collection<PatternPair> patternPairs = glossaryService.consistentGlossariesInLabelRef(label);
-	        String newReference = label.getReference(); 
-	        Text text = label.getText();
-	        Text newText = new Text();
-	        newText.setReference(newReference);
-	        for (DictionaryLanguage dl : dict.getDictLanguages()) {
-	            Translation translation = text.getTranslation(dl.getLanguage().getId());
-	            if (translation != null) {
-	                String oldTranslation = translation.getTranslation();
-	                String newTranslation = oldTranslation;
-	                if (langSet.contains(dl.getLanguage().getId())) {    // capitalization required
-	                    newTranslation = capitalizeText(oldTranslation, style, langService.getLocale(dl.getLanguage()));
-	                    // glossary matching
-	                    for (PatternPair pp : patternPairs) {
-	                        Matcher matcher = pp.getPattern().matcher(newTranslation);
-	                        if (!matcher.find()) continue;
-	                        newTranslation = matcher.replaceAll(pp.getReplacement());
-	                    }
-	                } else if (oldTranslation.equals(oldReference)) {    // update translation if it's same with old reference
-	                    newTranslation = newReference;
-	                }
-			        if (newReference.equals(oldReference)) {	// if reference is not changed, update translations directly
-		                if (!newTranslation.equals(oldTranslation)) {
-				        	translation.setTranslation(newTranslation);
-		                	translation.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
-		                }
-			        } else {	// if reference is changed, prepare data for calling textService.updateTranslations() in batch
-				        // duplicate existing translations and capitalize them if required
-		                Translation newTrans = new Translation();
-		                newTrans.setLanguage(translation.getLanguage());
-		                newTrans.setTranslation(newTranslation);
-		                newTrans.setTranslationType(translation.getTranslationType());
-		                newTrans.setStatus(translation.getStatus());
-		                newText.addTranslation(newTrans);
-			        }
-	            }
-	        }
-	        if (!newReference.equals(oldReference)) { // if reference is changed, prepare data for calling textService.updateTranslations() in batch
-	        	Long ctxId = text.getContext().getId();
-	        	Collection<Label> ctxLabels = labelMap.get(ctxId);
-	        	Collection<Text> texts = contextMap.get(ctxId);
-	        	if (texts == null) {
-	        		texts = new ArrayList<Text>();
-	        		ctxLabels = new ArrayList<Label>();
-	        		contextMap.put(ctxId, texts);
-	        		labelMap.put(ctxId, ctxLabels);
-	        	}
-	        	texts.add(newText);
-	        	ctxLabels.add(label);
-	        }
-	    }
-	    
-	    // update text and translations for each context
-	    for (Long ctxId : contextMap.keySet()) {
-	    	Map<String, Text> textMap = textService.updateTranslations(ctxId, contextMap.get(ctxId), Constants.ImportingMode.TRANSLATION);
-	    	// re-associate text with labels
-	    	for (Label label : labelMap.get(ctxId)) {
-	    		label.setText(textMap.get(label.getReference()));
-	    	}
-	    }
+        Map<Long, Collection<Text>> contextMap = new HashMap<Long, Collection<Text>>();
+        Map<Long, Collection<Label>> labelMap = new HashMap<Long, Collection<Label>>();
+        for (Label label : labels) {
+            String oldReference = label.getReference();
+            label.setReference(capitalizeText(oldReference, style, Locale.ENGLISH));
+            Collection<GlossaryMatchObject> GlossaryMatchObjects = glossaryService.consistentGlossariesInLabelRef(label);
+            String newReference = label.getReference();
+            Text text = label.getText();
+            Text newText = new Text();
+            newText.setReference(newReference);
+            for (DictionaryLanguage dl : dict.getDictLanguages()) {
+                Translation translation = text.getTranslation(dl.getLanguage().getId());
+                if (translation != null) {
+                    String oldTranslation = translation.getTranslation();
+                    String newTranslation = oldTranslation;
+                    if (langSet.contains(dl.getLanguage().getId())) {    // capitalization required
+                        newTranslation = capitalizeText(oldTranslation, style, langService.getLocale(dl.getLanguage()));
+                        // glossary matching
+                        for (GlossaryMatchObject gmo : GlossaryMatchObjects) {
+                            newTranslation = gmo.getProcessedString(newTranslation);
+                        }
+                    } else if (oldTranslation.equals(oldReference)) {    // update translation if it's same with old reference
+                        newTranslation = newReference;
+                    }
+                    if (newReference.equals(oldReference)) {    // if reference is not changed, update translations directly
+                        if (!newTranslation.equals(oldTranslation)) {
+                            translation.setTranslation(newTranslation);
+                            translation.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
+                        }
+                    } else {    // if reference is changed, prepare data for calling textService.updateTranslations() in batch
+                        // duplicate existing translations and capitalize them if required
+                        Translation newTrans = new Translation();
+                        newTrans.setLanguage(translation.getLanguage());
+                        newTrans.setTranslation(newTranslation);
+                        newTrans.setTranslationType(translation.getTranslationType());
+                        newTrans.setStatus(translation.getStatus());
+                        newText.addTranslation(newTrans);
+                    }
+                }
+            }
+            if (!newReference.equals(oldReference)) { // if reference is changed, prepare data for calling textService.updateTranslations() in batch
+                Long ctxId = text.getContext().getId();
+                Collection<Label> ctxLabels = labelMap.get(ctxId);
+                Collection<Text> texts = contextMap.get(ctxId);
+                if (texts == null) {
+                    texts = new ArrayList<Text>();
+                    ctxLabels = new ArrayList<Label>();
+                    contextMap.put(ctxId, texts);
+                    labelMap.put(ctxId, ctxLabels);
+                }
+                texts.add(newText);
+                ctxLabels.add(label);
+            }
+        }
+
+        // update text and translations for each context
+        for (Long ctxId : contextMap.keySet()) {
+            Map<String, Text> textMap = textService.updateTranslations(ctxId, contextMap.get(ctxId), Constants.ImportingMode.TRANSLATION);
+            // re-associate text with labels
+            for (Label label : labelMap.get(ctxId)) {
+                label.setText(textMap.get(label.getReference()));
+            }
+        }
     }
 
     private String capitalizeText(String text, int style, Locale locale) {
@@ -1495,16 +1491,16 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         return Character.isWhitespace(ch) || ",./<>?;':[]{}()+=`~!@#$%^&*|\\\"".indexOf(ch) != -1;
     }
 
-	@Override
-	public Collection<Dictionary> findDictionaries(String prod, String app, String ver) {
-		String hql = "select obj from Dictionary obj" +
-				" where obj.base.applicationBase.productBase.name=:prod" +
-				" and obj.base.applicationBase.name=:app" +
-				" and obj.version=:ver";
-		Map param = new HashMap();
-		param.put("prod", prod);
-		param.put("app", app);
-		param.put("ver", ver);
-		return dao.retrieve(hql, param);
-	}
+    @Override
+    public Collection<Dictionary> findDictionaries(String prod, String app, String ver) {
+        String hql = "select obj from Dictionary obj" +
+                " where obj.base.applicationBase.productBase.name=:prod" +
+                " and obj.base.applicationBase.name=:app" +
+                " and obj.version=:ver";
+        Map param = new HashMap();
+        param.put("prod", prod);
+        param.put("app", app);
+        param.put("ver", ver);
+        return dao.retrieve(hql, param);
+    }
 }
