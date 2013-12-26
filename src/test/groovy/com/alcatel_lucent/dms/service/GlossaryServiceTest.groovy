@@ -65,16 +65,16 @@ public class GlossaryServiceTest {
         glossaryService.consistentGlossaries();
     }
 
-    @Test
+//    @Test
     void testGlossaryMatch(){
-        PatternPair pp = new PatternPair("HTTPS")
-        String reference ="This is a https://instance.opentouch.tv"
-//        Assert.assertEquals(reference, pp.getProcessedString(reference))
-//        Assert.assertEquals("This is a HTTPS://instance.opentouch.tv", pp.getProcessedString(reference))
+        GlossaryMatchObject gmo = new GlossaryMatchObject("HTTPS")
+        String reference ="Https is a https://instance.opentouch.tv 1231 https://instance.opentouch.tv"
+        Assert.assertEquals("HTTPS is a https://instance.opentouch.tv 1231 https://instance.opentouch.tv", pp.getProcessedString(reference))
+//        Assert.assertEquals("HTTPS is a HTTPS://instance.opentouch.tv", pp.getProcessedString(reference))
 
-        pp = new PatternPair("OpenTouch")
-        Assert.assertEquals("This is a https://instance.OpenTouch.tv", pp.getProcessedString(reference))
-
+        gmo = new GlossaryMatchObject("OpenTouch")
+//        Assert.assertEquals("Https is a https://instance.OpenTouch.tv", pp.getProcessedString(reference))
+        Assert.assertEquals("Https is a https://instance.opentouch.tv 1231 https://instance.opentouch.tv", pp.getProcessedString(reference))
 
     }
 }

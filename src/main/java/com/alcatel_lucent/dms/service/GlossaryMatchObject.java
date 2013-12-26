@@ -4,6 +4,7 @@ import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
+import org.apache.commons.lang3.Range;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,23 +15,24 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.apache.commons.io.FileUtils.openInputStream;
+import static org.apache.commons.lang3.Range.between;
 
 /**
  * Created by guoshunw on 13-12-11.
  */
-public class PatternPair {
+public class GlossaryMatchObject {
 
     public static String substitutePattern;
-    public static Collection<String> exceptionPatterns = new ArrayList<String>();
+    public static Collection<Pattern> exceptionPatterns = new ArrayList<Pattern>();
 
     private static final File glossaryConfigFile =
             new File(GlossaryServiceImpl.class.getResource("glossaryConfig.properties").getPath());
 
-    private static Logger log = LoggerFactory.getLogger(PatternPair.class);
+    private static Logger log = LoggerFactory.getLogger(GlossaryMatchObject.class);
 
     /**
-     *  Load config file and update substitutePattern and exceptionPatterns with its content
-     * */
+     * Load config file and update substitutePattern and exceptionPatterns with its content
+     */
     private static Properties loadPatternConfigFile() {
         Properties properties = new Properties();
         try {
@@ -47,13 +49,13 @@ public class PatternPair {
             String key = (String) entry.getKey();
             String value = (String) entry.getValue();
             if (!key.startsWith("exceptionPatterns")) continue;
-            exceptionPatterns.add(value);
+            exceptionPatterns.add(Pattern.compile(value, Pattern.CASE_INSENSITIVE));
         }
         return properties;
     }
 
     /**
-     * Load the config file when the PatternPair class is loaded.
+     * Load the config file when the GlossaryMatchObject class is loaded.
      * Watch the glossaries config file every second and reload the file if it is modified.
      * */
     static {
@@ -76,17 +78,17 @@ public class PatternPair {
 
     }
 
-    PatternPair(String glossaryText) {
+    GlossaryMatchObject(String glossaryText) {
         this.glossaryText = glossaryText;
-        this.pattern = Pattern.compile(String.format(substitutePattern, glossaryText));
-        this.replacement = String.format("$1%s$3", glossaryText);
+        this.pattern = Pattern.compile(String.format(substitutePattern, glossaryText), Pattern.CASE_INSENSITIVE);
     }
 
     private Pattern pattern;
-    private String replacement;
+    private boolean replaced = false;
     private String glossaryText;
 
     private Matcher matcher;
+    private String matchingText = "";
 
     public void setPattern(Pattern pattern) {
         this.pattern = pattern;
@@ -96,43 +98,49 @@ public class PatternPair {
         return glossaryText;
     }
 
-    public Matcher getMatcher(String text) {
+    private Matcher getMatcher(String text) {
+        if (text.equals(matchingText)) return matcher;
         this.matcher = pattern.matcher(text);
         return matcher;
     }
 
-    /**
-     * Find the glossary in text and not match exceptions
-     * */
-    public boolean find(String text) {
-        if (null == matcher) getMatcher(text);
-        boolean isFound = matcher.find();
-        if (!isFound) return false;
+    /*
+    *  Only replace the text when the match is not in any of the exception patterns
+    * */
 
-        boolean isIncludeInExceptions = false;
-        Pattern exceptionPattern;
-        for (String exceptionPatternStr : exceptionPatterns) {
-            exceptionPattern = Pattern.compile(String.format(exceptionPatternStr, glossaryText));
+    private void processMatchInExceptions(Matcher matcher, String text, StringBuffer sb) {
+        Range<Integer> matchedRange = between(matcher.start(), matcher.end());
+
+        boolean replace = true;
+        for (Pattern exceptionPattern : exceptionPatterns) {
             Matcher exceptionMatcher = exceptionPattern.matcher(text);
-            if (!exceptionMatcher.find()) continue;
-            if (exceptionMatcher.start() <= matcher.start() && exceptionMatcher.end() >= matcher.end()) {
-                isIncludeInExceptions = true;
-                break;
+            while (exceptionMatcher.find() & replace) {
+                Range<Integer> exceptionMatchedRange = between(exceptionMatcher.start(), exceptionMatcher.end());
+                if (exceptionMatchedRange.containsRange(matchedRange)) {
+                    replace = false;
+                }
             }
+            if (!replace) break;
         }
-
-        return isFound && !isIncludeInExceptions;
+        if (replace) {
+            matcher.appendReplacement(sb, glossaryText);
+            this.replaced = true;
+        }
     }
+
 
     public String getProcessedString(String originalText) {
-        return find(originalText) ? matcher.replaceAll(replacement) : originalText;
+        Matcher latestMatcher = getMatcher(originalText);
+        StringBuffer sb = new StringBuffer();
+        while (latestMatcher.find()) {
+            processMatchInExceptions(latestMatcher, originalText, sb);
+        }
+        matcher.appendTail(sb);
+        return sb.toString();
     }
 
-    public Pattern getPattern() {
-        return pattern;
+    public boolean isReplaced() {
+        return replaced;
     }
 
-    public String getReplacement() {
-        return replacement;
-    }
 }

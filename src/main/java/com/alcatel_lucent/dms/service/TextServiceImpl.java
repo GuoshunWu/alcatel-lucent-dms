@@ -671,11 +671,12 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
         Collection<String> result = new TreeSet<String>();
 
         // consistent glossaries
-        Collection<PatternPair> patternPairs = glossaryService.getGlossaryMatchedPatterns(trans.getText().getReference());
-        for(PatternPair patternPair: patternPairs){
-            Matcher matcher =patternPair.getPattern().matcher(translation);
-            if(!matcher.find())continue;
-            translation = matcher.replaceAll(patternPair.getReplacement());
+        Collection<GlossaryMatchObject> GlossaryMatchObjects = glossaryService.getGlossaryPatterns();
+        String reference = trans.getText().getReference();
+        for(GlossaryMatchObject gmo: GlossaryMatchObjects){
+            gmo.getProcessedString(reference);
+            if(!gmo.isReplaced())continue;
+            translation =gmo.getProcessedString(translation);
         }
 
         if (confirmAll != null && confirmAll) {    // confirm to update translation for all reference

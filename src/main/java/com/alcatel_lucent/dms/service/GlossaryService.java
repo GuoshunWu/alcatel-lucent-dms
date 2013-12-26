@@ -57,9 +57,9 @@ public interface GlossaryService {
      * */
     void consistentGlossariesInTask(Task task);
 
-    Collection<PatternPair> consistentGlossariesInLabelRef(Label label);
+    Collection<GlossaryMatchObject> consistentGlossariesInLabelRef(Label label);
 
     Collection<Glossary> getAllGlossaries();
 
-    Collection<PatternPair> getGlossaryMatchedPatterns(final String text);
+    Collection<GlossaryMatchObject> getGlossaryPatterns();
 }
