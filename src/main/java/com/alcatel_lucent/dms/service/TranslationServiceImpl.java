@@ -1025,7 +1025,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
             if (label.getCt() == null) {
                 Translation ct = new Translation();
                 ct.setId(-(label.getId() * 1000 + langId));    // virtual tid < 0, indicating a non-existing ct object
-                ct.setTranslation(label.getOt().getOrigTranslation());
+                ct.setTranslation(label.getReference());
                 ct.setStatus(Translation.STATUS_UNTRANSLATED);
                 label.setCt(ct);
             }
