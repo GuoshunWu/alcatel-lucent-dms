@@ -1,3 +1,12 @@
+V2.14.0 (Dec 27, 2013)
+    * New API "generate-dict" for extracting dictionary files from DMS
+    * Display date time with client timezone
+    * Display user online status in Admin tab
+    * Refine glossary matching method, add exception rules
+    * Fix glossaries applying issue when add Label
+    * Add progress bar for applying new glossary
+    * Enhancement of OTCWeb parser and generator to support DMS JSON dictionary
+
 V2.13.2 (Dec 18, 2013)
     * New dictionary format support: OTC Web
     * Optimize performance of capitalization
