@@ -1,6 +1,8 @@
 package com.alcatel_lucent.dms.service;
 import com.alcatel_lucent.dms.model.User;
 
+import java.util.List;
+
 public interface LDAPService {
 	
 	/**
@@ -16,8 +18,8 @@ public interface LDAPService {
      * @param csl
      * @return null if CSL doesn't exist
      */
-    @Deprecated
     User findUserByCSL(String csl);
+    List<User> findUsers(String filter);
     
     /**
      * Get user information by CIL.
@@ -25,4 +27,5 @@ public interface LDAPService {
      * @return null if CIL doesn't exist
      */
     User findUserByCIL(String cil);
+    User findUserByCSLOrCIL(String cslOrCil);
 }
