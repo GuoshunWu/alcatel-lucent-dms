@@ -518,6 +518,7 @@ public class Util {
     /**
      * Make glossaries in the text consistent.
      */
+    @Deprecated
     public static String consistentGlossaries(String text, Collection<Glossary> glossaries) {
         if (StringUtils.isBlank(text)) return text;
         String str = text;

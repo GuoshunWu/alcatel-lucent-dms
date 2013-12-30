@@ -1,11 +1,23 @@
 package com.alcatel_lucent.dms.test
 
+import com.alcatel_lucent.dms.service.LDAPService
+import org.junit.BeforeClass
+import org.junit.Ignore
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
+import org.springframework.test.context.transaction.TransactionConfiguration
+import org.springframework.transaction.annotation.Transactional
+
 import javax.naming.Context
 import javax.naming.NamingEnumeration
-import org.junit.BeforeClass
-import org.junit.Test
-import javax.naming.directory.*
-import org.junit.Ignore
+import javax.naming.directory.InitialDirContext
+import javax.naming.directory.SearchControls
+import javax.naming.directory.SearchResult
+import java.security.Provider
+import java.security.Security
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,10 +27,14 @@ import org.junit.Ignore
  * To change this template use File | Settings | File Templates.
  */
 @Ignore
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(locations = ["/spring.xml"])
-//@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = ["/spring.xml"])
+@Transactional
+@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
+
 class GLDAPTest {
+    @Autowired
+    LDAPService ldapService
 
     @BeforeClass
     static void setUpBeforeClass() throws Exception {
@@ -26,76 +42,38 @@ class GLDAPTest {
     }
 
     @Test
-    public void testAlcatelLDAP() throws Exception {
-        String INITCTX = "com.sun.jndi.ldap.LdapCtxFactory"
-        String ldapUrl = "ldap://ldap.sxb.bsf.alcatel.fr"
-        String LDAP_DN = "o=alcatel"
+    void testExample() throws Exception {
+        Provider[] providers = Security.providers
 
-        String username = "guoshunw"
-//        username = "cn=Guoshun WU"
-        String password = ""
-
-        Hashtable<String, Object> env = new Hashtable<String, Object>();
-        env.put(Context.INITIAL_CONTEXT_FACTORY, INITCTX);
-        env.put(Context.PROVIDER_URL, ldapUrl);
-        env.put(Context.SECURITY_AUTHENTICATION, "simple");
-        env.put(Context.SECURITY_PRINCIPAL, username);
-        env.put(Context.SECURITY_CREDENTIALS, password);
-
-        DirContext ctx = new InitialDirContext(env)
-        assert ctx!= null
-        def filter = "(&(objectclass=person)(cn=$username))"
-//        filter = "(&(objectclass=person))"
-        NamingEnumeration<SearchResult> results = ctx.search(LDAP_DN,
-                filter,
-                new SearchControls(
-                        returningObjFlag: true,
-                        searchScope: SearchControls.SUBTREE_SCOPE,
-//                        attributesToReturn: ["cn", "cslx500", "mail"]
-                )
-        )
-        Attributes attrs = null
-        results.toList().each {result ->
-            attrs = result.attributes
-            attrs.all.toList().each {attr ->
-                println attr
+        providers.each { Provider provider ->
+            println "${provider.getName()}:${provider.getVersion()}: ${provider.getInfo()}".center(150, '=')
+            provider.getServices().each {Provider.Service service->
+                print "    $service"
             }
-//            println attrs.cn.get()
-//            println attrs.cslx500.get()
-//            println attrs.mail.get()
-
-            println '=' * 80
         }
-        ctx.close()
     }
 //    @Test
-    public void testLDAPSettings() throws Exception {
-        String name = "admin"
-        String uid = "cbuckley"
-        String authDN = "uid=${name},ou=system"
-        String password = "secret"
-
-//        name = "admin"
-//        authDN = "uid=${name},ou=system"
-//        password = "alcatel123"
+    void testLDAPSettings() throws Exception {
+        String name = "reader.Web_SHA"
+        String authDN = "uid=${name},dc=Web_SHA,dc=apps,dc=root"
+        String password = "Pass_123"
 
         Hashtable<String, Object> env = new Hashtable<String, Object>()
 
         env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory")
-        env.put(Context.PROVIDER_URL, "ldap://localhost:10389")
+        env.put(Context.PROVIDER_URL, "ldap://ldap-emea.app.alcatel-lucent.com:2791/dc=internal,dc=users,dc=root")
+
         env.put(Context.SECURITY_AUTHENTICATION, "simple")
         env.put(Context.SECURITY_PRINCIPAL, authDN)
         env.put(Context.SECURITY_CREDENTIALS, password)
 
         InitialDirContext ctx = new InitialDirContext(env)
         SearchControls constraints = new SearchControls(returningObjFlag: true, searchScope: SearchControls.SUBTREE_SCOPE, attributesToReturn: ['uid', "commonName", "surname", "manager", "mail"])
-        String baseDN = "ou=system"
-        String filter = "(&(objectClass=person))"
-//        filter = "(&(objectClass=inetOrgPerson)(uid={0}))";
+        String filter = "(&(objectClass=person)(uid=guoshunw))"
 
-        NamingEnumeration<SearchResult> results = ctx.search(baseDN, filter, [uid].toArray(), constraints)
-        results.toList().each {result ->
-            result.attributes.all.toList().each {attr ->
+        NamingEnumeration<SearchResult> results = ctx.search("", filter, constraints)
+        results.toList().each { result ->
+            result.attributes.all.toList().each { attr ->
                 println attr
             }
 
@@ -106,8 +84,8 @@ class GLDAPTest {
     }
 
 //    @Test
-    void tempTest() {
-        println org.apache.commons.lang3.StringUtils.removeEnd('abc', 'c')
-    }
+    void testLDAPService() throws Exception {
+        println ldapService.findUserByCSLOrCIL("james zhang")
 
+    }
 }
