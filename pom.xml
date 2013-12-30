@@ -57,8 +57,6 @@
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <buildNumber>${maven.build.timestamp}</buildNumber>
 
-        <!--<ldap.url>ldap://ldap.sxb.bsf.alcatel.fr</ldap.url>-->
-
         <ldap.url>ldap://ldap-emea.app.alcatel-lucent.com:2791</ldap.url>
         <ldap.url2>ldaps://ldap-emea.app.alcatel-lucent.com:2793</ldap.url2>
 

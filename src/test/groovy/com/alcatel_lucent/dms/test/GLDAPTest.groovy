@@ -47,7 +47,7 @@ class GLDAPTest {
 
         providers.each { Provider provider ->
             println "${provider.getName()}:${provider.getVersion()}: ${provider.getInfo()}".center(150, '=')
-            provider.getServices().each {Provider.Service service->
+            provider.getServices().each {Provider.Service service->                                                                                                        o
                 print "    $service"
             }
         }
