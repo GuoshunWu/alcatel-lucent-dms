@@ -144,6 +144,9 @@
     <listener>
         <listener-class>com.alcatel_lucent.dms.listeners.DMSContextLoadListener</listener-class>
     </listener>
+    <listener>
+        <listener-class>com.alcatel_lucent.dms.listeners.DMSHttpSessionListener</listener-class>
+    </listener>
 
 
     <servlet>
