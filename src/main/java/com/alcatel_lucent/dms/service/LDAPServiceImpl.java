@@ -1,17 +1,14 @@
 package com.alcatel_lucent.dms.service;
 
 import com.alcatel_lucent.dms.model.User;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.PredicateUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.DistinguishedName;
 import org.springframework.ldap.core.LdapTemplate;
-import org.springframework.ldap.filter.AndFilter;
-import org.springframework.ldap.filter.EqualsFilter;
-import org.springframework.ldap.filter.OrFilter;
+import org.springframework.ldap.filter.*;
 import org.springframework.stereotype.Service;
 
 import javax.naming.NamingException;
@@ -24,6 +21,21 @@ public class LDAPServiceImpl implements LDAPService {
     private static final Logger log = LoggerFactory.getLogger(LDAPServiceImpl.class);
     @Autowired
     private LdapTemplate ldapTemplate;
+
+    private AndFilter buildUserFilter(Filter filter) {
+        AndFilter andFilter = new AndFilter().and(new EqualsFilter("objectclass", "person")).
+                and(new PresentFilter("mail")).
+                and(new PresentFilter("uid")).
+                and(new PresentFilter("cil"));
+        if (null != filter) andFilter.and(filter);
+        return andFilter;
+    }
+
+    private AndFilter buildUserFilter(String filter) {
+        Filter filter1 = null;
+        if (StringUtils.isNotEmpty(filter)) filter1 = new HardcodedFilter(filter);
+        return buildUserFilter(filter1);
+    }
 
     private static class UserAttributesMapper implements AttributesMapper {
         private static final UserAttributesMapper me = new UserAttributesMapper();
@@ -46,13 +58,18 @@ public class LDAPServiceImpl implements LDAPService {
     }
 
     public boolean login(String username, String password) {
-        return ldapTemplate.authenticate(DistinguishedName.EMPTY_PATH, "(&(objectclass=person)(uid=" + username + "))", password);
+        String filter = buildUserFilter(
+                new OrFilter().
+                        or(new EqualsFilter("uid", username)).
+                        or(new EqualsFilter("cn", username)).
+                        or(new EqualsFilter("cil", username))
+        ).encode();
+        return ldapTemplate.authenticate(DistinguishedName.EMPTY_PATH, filter, password);
     }
 
     public List<User> findUsers(String filter) {
         @SuppressWarnings("unchecked")
         List<User> users = ldapTemplate.search(DistinguishedName.EMPTY_PATH, filter, UserAttributesMapper.getInstance());
-        CollectionUtils.filter(users, PredicateUtils.notNullPredicate());
         return users;
     }
 
@@ -65,20 +82,21 @@ public class LDAPServiceImpl implements LDAPService {
 
 
     public User findUserByCSL(String csl) {
-        return findUser(String.format("(&(objectclass=person)(uid=%s))", csl));
+        return findUser(buildUserFilter(new EqualsFilter("uid", csl)).encode());
     }
 
     public User findUserByCIL(String cil) {
-        return findUser(String.format("(&(objectclass=person)(cil=%s))", cil));
+        return findUser(buildUserFilter(new EqualsFilter("cil", cil)).encode());
     }
 
     public User findUserByCSLOrCIL(String cslOrCil) {
-        AndFilter andFilter = new AndFilter();
-        andFilter.and(new EqualsFilter("objectclass", "person")).and(
-                new OrFilter().or(new EqualsFilter("uid", cslOrCil)
-                ).or(new EqualsFilter("cil", cslOrCil)).or(new EqualsFilter("cn", cslOrCil))
-        );
-        return findUser(andFilter.toString());
+        String filter = buildUserFilter(
+                new OrFilter().
+                        or(new EqualsFilter("uid", cslOrCil)).
+                        or(new EqualsFilter("cn", cslOrCil)).
+                        or(new EqualsFilter("cil", cslOrCil))
+        ).encode();
+        return findUser(filter);
     }
 
 }
