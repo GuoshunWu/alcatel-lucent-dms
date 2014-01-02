@@ -933,7 +933,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
                 }
                 Map<String, Text> textMap = contextMap.get(contextKey);
                 log.info("### context key:" + contextKey + " text num: " + textMap.size());
-                textService.updateTranslations(context.getId(), textMap.values(), Constants.ImportingMode.TRANSLATION);
+                textService.updateTranslations(context.getId(), textMap.values(), Constants.ImportingMode.TRANSLATION, TranslationHistory.TRANS_OPER_INPUT);
             }
             return count;
         } catch (BusinessException e) {

@@ -31,6 +31,12 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 
     @Autowired
     private GlossaryService glossaryService;
+    
+    @Autowired
+    private HistoryService historyService;
+    
+    @Autowired
+    private DictionaryService dictionaryService;
 
     enum ExcelFileHeader {
         DICTIONARY, LABEL, MAX_LEN, REFERENCE, TRANSLATION
@@ -110,7 +116,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
         return text;
     }
 
-    public Map<String, Text> updateTranslations(Long ctxId, Collection<Text> texts, Constants.ImportingMode mode) {
+    public Map<String, Text> updateTranslations(Long ctxId, Collection<Text> texts, Constants.ImportingMode mode, int operationType) {
         Map<String, Text> result = new HashMap<String, Text>();
         Map<String, Text> dbTextMap = getTextsAsMap(ctxId, texts);
         Context context = (Context) dao.retrieve(Context.class, ctxId);
@@ -141,13 +147,18 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                     }
                     Translation dbTrans = dbText.getTranslation(trans.getLanguage().getId());
                     if (dbTrans == null) {
+                    	int translationType = trans.getTranslationType() == null ? Translation.TYPE_DICT : trans.getTranslationType();
                         if (trans.getTranslationType() == null && trans.getStatus() == Translation.STATUS_TRANSLATED) {
-                            trans.setTranslationType(trans.getTranslationType() != null ?
-                                    trans.getTranslationType() : Translation.TYPE_DICT);
+                            trans.setTranslationType(translationType);
                         }
                         trans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
                         dbTrans = addTranslation(dbText, trans);
                         dbText.addTranslation(dbTrans);        // the dbText will be used in next invoke, so add translations in-memory
+                        historyService.addTranslationHistory(
+                        		dbTrans, 
+                        		translationType == Translation.TYPE_AUTO ? null : text.getRefLabel(), 
+                        		translationType == Translation.TYPE_AUTO ? TranslationHistory.TRANS_OPER_SUGGEST : operationType, 
+                        		null);
                     } else if (mode == Constants.ImportingMode.TRANSLATION) { // update translations in TRANSLATION_MODE
                         if (trans.getTranslation() != null) {
                             dbTrans.setTranslation(trans.getTranslation());
@@ -156,6 +167,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                         dbTrans.setTranslationType(trans.getTranslationType() != null ?
                                 trans.getTranslationType() : Translation.TYPE_TASK);
                         dbTrans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
+                        historyService.addTranslationHistory(dbTrans, text.getRefLabel(), operationType, null);
                     } else if (mode == Constants.ImportingMode.DELIVERY) {
                         // in DELIVERY_MODE, set status to UNTRANSLATED if translation is explicitly requested
 //	                	if (dbTrans.getTranslation().equals(trans.getTranslation()) && 
@@ -165,11 +177,16 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 //	                	}
                         // update translation if got translated in delivered dict
                         if (trans.getStatus() == Translation.STATUS_TRANSLATED) {
+                        	int translationType = trans.getTranslationType() == null ? Translation.TYPE_DICT : trans.getTranslationType();
                             dbTrans.setTranslation(trans.getTranslation());
                             dbTrans.setStatus(Translation.STATUS_TRANSLATED);
-                            dbTrans.setTranslationType(trans.getTranslationType() != null ?
-                                    trans.getTranslationType() : Translation.TYPE_DICT);
+                            dbTrans.setTranslationType(translationType);
                             dbTrans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
+                            historyService.addTranslationHistory(
+                            		dbTrans, 
+                            		translationType == Translation.TYPE_AUTO ? null : text.getRefLabel(), 
+                                    translationType == Translation.TYPE_AUTO ? TranslationHistory.TRANS_OPER_SUGGEST : operationType, 
+                            		null);
                         }
                     } else {    // supplement mode
                         if (dbTrans.getStatus() != Translation.STATUS_TRANSLATED &&
@@ -179,6 +196,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                             dbTrans.setTranslationType(trans.getTranslationType() != null ?
                                     trans.getTranslationType() : Translation.TYPE_DICT);
                             dbTrans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
+                            historyService.addTranslationHistory(dbTrans, null, TranslationHistory.TRANS_OPER_SUGGEST, null);
                         }
                     }
                     langSet.add(trans.getLanguage().getId());
@@ -186,6 +204,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
             }
             result.put(text.getReference(), dbText);
         }
+        historyService.flushHistoryQueue();
         return result;
     }
 
@@ -683,13 +702,15 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
             trans.setTranslation(translation);
             trans.setTranslationType(Translation.TYPE_MANUAL);
             trans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
+            historyService.addTranslationHistory(trans, label, TranslationHistory.TRANS_OPER_INPUT, null);
         } else if (confirmAll != null && !confirmAll) {
-            // change context to DICT first
-            Context context = getContextByExpression(Context.DICT, label.getDictionary());
+            // change context to [LABEL] first
+            Context context = getContextByExpressionForLabel("[LABEL-" + label.getKey() + "]", label.getDictionary().getId());
+            Collection<Label> labels = new ArrayList<Label>();
+            labels.add(label);
+            dictionaryService.updateLabelContext(context, labels);
+            
             Text text = getText(context.getId(), label.getReference());
-            if (text == null) {
-                text = addText(context.getId(), label.getReference());
-            }
             Translation newTrans = text.getTranslation(trans.getLanguage().getId());
             if (newTrans == null) {
                 newTrans = new Translation();
@@ -704,8 +725,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                 newTrans.setTranslationType(Translation.TYPE_MANUAL);
                 newTrans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
             }
-            label.setContext(context);
-            label.setText(text);
+            historyService.addTranslationHistory(newTrans, label, TranslationHistory.TRANS_OPER_INPUT, null);
         } else {    // no confirm
             Dictionary dict = label.getDictionary();
             String hql = "select distinct d from Dictionary d join d.labels l join d.dictLanguages dl" +
@@ -723,6 +743,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                 trans.setTranslation(translation);
                 trans.setTranslationType(Translation.TYPE_MANUAL);
                 trans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
+                historyService.addTranslationHistory(trans, label, TranslationHistory.TRANS_OPER_INPUT, null);
             } else {
                 return result;
             }
@@ -735,6 +756,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                 }
             }
         }
+        historyService.flushHistoryQueue();
         return result;
     }
 

@@ -92,6 +92,9 @@ public class Dictionary extends BaseEntity {
     }
 
     public void addLabel(Label label) {
+    	if (this.labels == null) {
+    		labels = new LinkedHashSet<Label>();
+    	}
         this.labels.add(label);
     }
 

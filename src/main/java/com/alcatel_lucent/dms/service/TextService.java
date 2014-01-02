@@ -76,9 +76,10 @@ public interface TextService {
 	 * @param ctxId context id
 	 * @param texts texts with their translations to update in the context
 	 * @param mode importing mode, see DictionaryService.importDictionary()
+	 * @param operationType operation type defined in TranslationHistory
 	 * @return map of persistent text objects indexed by reference.
 	 */
-	Map<String, Text> updateTranslations(Long ctxId, Collection<Text> texts, Constants.ImportingMode mode);
+	Map<String, Text> updateTranslations(Long ctxId, Collection<Text> texts, Constants.ImportingMode mode, int operationType);
 
     /**
      *  Receive the completed translation in a excel file.
