@@ -3,6 +3,7 @@ package com.alcatel_lucent.dms.service;
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.Constants;
+import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryLanguage;
 import com.alcatel_lucent.dms.model.Label;
@@ -228,6 +229,13 @@ public interface DictionaryService {
     void updateLabels(Collection<Long> idList, String maxLength,
                       String description, String context);
 
+    /**
+     * Update label context
+     * @param context
+     * @param labels
+     */
+    void updateLabelContext(Context context, Collection<Label> labels);
+    
     /**
      * Update a label key
      *

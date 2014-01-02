@@ -619,17 +619,33 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 //        for (DictionaryLanguage dl : dict.getDictLanguages()) {
 //            langCodeMap.put(dl.getLanguage().getId(), dl.getLanguageCode()) ;
 //        }
+        Context defaultCtx = textService.getContextByExpression(Context.DEFAULT, (Dictionary) null);
         int sortNo = 1;
         for (Label label : dict.getLabels()) {
+        	Context ctx = label.getContext();
             label.setSortNo(sortNo++);
             label.setRemoved(false);
             String contextName = label.getContext().getName();
-            Text text = new Text();
-
-            text.setReference(label.getReference());
             if (Context.LABEL.equals(contextName)) {// distinct label context
                 contextName = textService.populateContextKey(Context.LABEL, label);
             }
+            Label lastLabel = null;
+            if (lastDict != null) {
+                lastLabel = lastDict.getLabel(label.getKey());
+            }
+            
+            // persist label first, it's needed by translation history
+            Label dbLabel = dbDict.getLabel(label.getKey());
+            if (dbLabel == null) {
+            	label.setDictionary(dbDict);
+            	label.setContext(defaultCtx);	// transient context for the moment, temporarily remove it when create
+            	dbLabel = (Label) dao.create(label);
+            	dbDict.addLabel(dbLabel);
+            }
+            
+            Text text = new Text();
+            text.setRefLabel(dbLabel);
+            text.setReference(label.getReference());
             textMap.add(contextName, text);
             labelMap.add(contextName, label);
 
@@ -647,10 +663,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 }
             }
 
-            Label lastLabel = null;
-            if (lastDict != null) {
-                lastLabel = lastDict.getLabel(label.getKey());
-            }
             String labelWarnings = null;
             // for each translation
             // convert charset of translation strings
@@ -710,7 +722,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     // trans.setNeedTranslation(true);
 
 
-                    if (lastLabel != null && label.getContext().getName().equals(lastLabel.getContext().getName())) {
+                    if (lastLabel != null && ctx.getName().equals(lastLabel.getContext().getName())) {
                         // get the original translation in latest version
                         LabelTranslation lastTranslation = lastLabel.getOrigTranslation(trans.getLanguageCode());
                         if (label.getReference().equals(lastLabel.getReference())) {    // reference is not changed
@@ -770,7 +782,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
         ProgressQueue.setProgress(50);
         // for each context, insert or update label/text/translation data
-        Context defaultCtx = textService.getContextByExpression(Context.DEFAULT, (Dictionary) null);
         for (String contextName : textMap.keySet()) {
             log.info("Importing data into context " + contextName);
             Collection<Text> texts = textMap.get(contextName);
@@ -782,10 +793,10 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             }
 
             Map<String, Text> dbTextMap = textService.updateTranslations(
-                    context.getId(), texts, mode);
+                    context.getId(), texts, mode, TranslationHistory.TRANS_OPER_DELIVER);
             // update DEFAULT context from each DICT context or LABEL context, so the DEFAULT context would be a union of all translations
             if (context.isNameIn(Context.DICT, Context.LABEL)) {
-                textService.updateTranslations(defaultCtx.getId(), texts, Constants.ImportingMode.SUPPLEMENT);
+                textService.updateTranslations(defaultCtx.getId(), texts, Constants.ImportingMode.SUPPLEMENT, TranslationHistory.TRANS_OPER_SUGGEST);
             }
 
             // in TRANSLATION_MODE, no change to label
@@ -796,36 +807,24 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             // NOTE: following code is only executed in DELIVERY_MODE
             Collection<Label> labels = labelMap.get(contextName);
             for (Label label : labels) {
-                // create or update label
+                // update label
                 Label dbLabel = dbDict.getLabel(label.getKey());
-                boolean newLabel = true;
-                if (dbLabel == null) {
-                    label.setDictionary(dbDict);
-                    label.setContext(context);
-                    label.setText(dbTextMap.get(label.getReference()));
-                    dbLabel = (Label) dao.create(label, false);
-                } else {
-                    newLabel = false;
-                    dbLabel.setContext(context);
-                    dbLabel.setText(dbTextMap.get(label.getReference()));
-                    dbLabel.setKey(label.getKey());
-                    dbLabel.setDescription(label.getDescription());
-                    dbLabel.setMaxLength(label.getMaxLength());
-                    dbLabel.setReference(label.getReference());
-                    dbLabel.setAnnotation1(label.getAnnotation1());
-                    dbLabel.setAnnotation2(label.getAnnotation2());
-                    dbLabel.setFontName(label.getFontName());
-                    dbLabel.setFontSize(label.getFontSize());
-                    dbLabel.setSortNo(label.getSortNo());
-                }
+                dbLabel.setContext(context);
+                dbLabel.setText(dbTextMap.get(label.getReference()));
+                dbLabel.setKey(label.getKey());
+                dbLabel.setDescription(label.getDescription());
+                dbLabel.setMaxLength(label.getMaxLength());
+                dbLabel.setReference(label.getReference());
+                dbLabel.setAnnotation1(label.getAnnotation1());
+                dbLabel.setAnnotation2(label.getAnnotation2());
+                dbLabel.setFontName(label.getFontName());
+                dbLabel.setFontSize(label.getFontSize());
+                dbLabel.setSortNo(label.getSortNo());
 
                 // create or update LabelTranslation
                 if (label.getOrigTranslations() != null) {
                     for (LabelTranslation trans : label.getOrigTranslations()) {
-                        LabelTranslation dbLabelTrans = null;
-                        if (!newLabel) {
-                            dbLabelTrans = dbLabel.getOrigTranslation(trans.getLanguageCode());
-                        }
+                        LabelTranslation dbLabelTrans = dbLabel.getOrigTranslation(trans.getLanguageCode());
                         if (dbLabelTrans == null) {
                             trans.setLabel(dbLabel);
                             trans.setLanguage((Language) dao.retrieve(Language.class, trans.getLanguage().getId()));
@@ -1107,6 +1106,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     ctxMap.put(label.getContext().getId(), texts);
                 }
                 Text text = new Text();
+                text.setRefLabel(label);
                 text.setReference(label.getReference());
                 Translation trans = new Translation();
                 trans.setTranslation(label.getReference());
@@ -1118,7 +1118,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         }
         for (Long ctxId : ctxMap.keySet()) {
             Collection<Text> texts = ctxMap.get(ctxId);
-            textService.updateTranslations(ctxId, texts, Constants.ImportingMode.DELIVERY);
+            textService.updateTranslations(ctxId, texts, Constants.ImportingMode.DELIVERY, TranslationHistory.TRANS_OPER_NEW);
         }
         // add dictLanguage
         DictionaryLanguage dl = new DictionaryLanguage();
@@ -1186,27 +1186,14 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     }
 
     public Label updateLabelReference(Long labelId, String reference) {
-        return updateLabelReference(labelId, reference, null);
-    }
-
-    public Label updateLabelReference(Long labelId, String reference, Map<Long, Translation> translationMap) {
         Label label = (Label) dao.retrieve(Label.class, labelId);
         String oldReference = label.getReference();
         label.setReference(reference);
         Collection<GlossaryMatchObject> GlossaryMatchObjects = glossaryService.consistentGlossariesInLabelRef(label);
-        if (null != translationMap) {
-            for (Translation translation : translationMap.values()) {
-                String strTrans = translation.getTranslation();
-                for (GlossaryMatchObject gmo : GlossaryMatchObjects) {
-                    strTrans = gmo.getProcessedString(strTrans);
-                }
-                translation.setTranslation(strTrans);
-            }
-        }
 
         // re-associate text unless EXCLUSION context
         if (!label.getContext().getName().equals(Context.EXCLUSION)) {
-            Text text = updateLabelTranslations(label, translationMap);
+            Text text = updateLabelTranslations(label);
             label.setText(text);
         }
         // reset LabelTranslation objects
@@ -1252,11 +1239,12 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         }
     }
 
-    private void updateLabelContext(Context context, Collection<Label> labels) {
+    public void updateLabelContext(Context context, Collection<Label> labels) {
         Collection<Text> texts = new ArrayList<Text>();
         for (Label label : labels) {
             label.setContext(context);
             Text text = new Text();
+            text.setRefLabel(label);
             text.setReference(label.getReference());
             if (label.getOrigTranslations() != null) {
                 for (LabelTranslation lt : label.getOrigTranslations()) {
@@ -1269,7 +1257,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             }
             texts.add(text);
         }
-        Map<String, Text> textMap = textService.updateTranslations(context.getId(), texts, Constants.ImportingMode.DELIVERY);
+        Map<String, Text> textMap = textService.updateTranslations(context.getId(), texts, Constants.ImportingMode.DELIVERY, TranslationHistory.TRANS_OPER_NEW);
         for (Label label : labels) {
             label.setText(textMap.get(label.getReference()));
         }
@@ -1298,15 +1286,14 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 //        label.setText(text);
         label.setSortNo(dict.getMaxLabelSortNo() + 1);
         label.setRemoved(false);
-
         Context context = textService.getContextByExpression(contextExp, dict);
         label.setContext(context);
 
         glossaryService.consistentGlossariesInLabelRef(label);
-
-        Text text = updateLabelTranslations(label, null);
-        label.setText(text);
         label = (Label) dao.create(label);
+
+        Text text = updateLabelTranslations(label);
+        label.setText(text);
         return label;
     }
 
@@ -1319,26 +1306,24 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
      * @param translationMap existing translations to be updated, null if no translation
      * @return text object linked to the label
      */
-    private Text updateLabelTranslations(Label label, Map<Long, Translation> translationMap) {
+    private Text updateLabelTranslations(Label label) {
         Collection<Text> texts = new ArrayList<Text>();
         Text text = new Text();
+        text.setRefLabel(label);
         text.setReference(label.getReference());
         texts.add(text);
         if (label.getDictionary().getDictLanguages() != null) {
             for (DictionaryLanguage dl : label.getDictionary().getDictLanguages()) {
-                Translation trans = translationMap != null ? translationMap.get(dl.getLanguage().getId()) : null;
-//	        	if (trans == null) {
-//	        		trans = new Translation();
-//		        	trans.setTranslation(label.getReference());
-//		        	trans.setLanguage(dl.getLanguage());
-//		        	trans.setStatus(Translation.STATUS_UNTRANSLATED);
-//	        	}
-                if (trans != null) {
-                    text.addTranslation(trans);
-                }
+            	if (label.getDictionary().getReferenceLanguage().equals(dl.getLanguageCode()))
+            		continue;
+        		Translation trans = new Translation();
+	        	trans.setTranslation(label.getReference());
+	        	trans.setLanguage(dl.getLanguage());
+	        	trans.setStatus(Translation.STATUS_UNTRANSLATED);
+                text.addTranslation(trans);
             }
         }
-        Map<String, Text> textMap = textService.updateTranslations(label.getContext().getId(), texts, Constants.ImportingMode.TRANSLATION);
+        Map<String, Text> textMap = textService.updateTranslations(label.getContext().getId(), texts, Constants.ImportingMode.DELIVERY, TranslationHistory.TRANS_OPER_NEW);
         return textMap.get(label.getReference());
     }
 
@@ -1395,6 +1380,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             String newReference = label.getReference();
             Text text = label.getText();
             Text newText = new Text();
+            newText.setRefLabel(label);
             newText.setReference(newReference);
             for (DictionaryLanguage dl : dict.getDictLanguages()) {
                 Translation translation = text.getTranslation(dl.getLanguage().getId());
@@ -1414,6 +1400,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                         if (!newTranslation.equals(oldTranslation)) {
                             translation.setTranslation(newTranslation);
                             translation.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
+                            historyService.addTranslationHistory(translation, label, TranslationHistory.TRANS_OPER_CAPITALIZE, null);
                         }
                     } else {    // if reference is changed, prepare data for calling textService.updateTranslations() in batch
                         // duplicate existing translations and capitalize them if required
@@ -1443,12 +1430,14 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
         // update text and translations for each context
         for (Long ctxId : contextMap.keySet()) {
-            Map<String, Text> textMap = textService.updateTranslations(ctxId, contextMap.get(ctxId), Constants.ImportingMode.TRANSLATION);
+            Map<String, Text> textMap = textService.updateTranslations(ctxId, contextMap.get(ctxId), Constants.ImportingMode.TRANSLATION, TranslationHistory.TRANS_OPER_CAPITALIZE);
             // re-associate text with labels
             for (Label label : labelMap.get(ctxId)) {
                 label.setText(textMap.get(label.getReference()));
             }
         }
+        
+        historyService.flushHistoryQueue();
     }
 
     private String capitalizeText(String text, int style, Locale locale) {
