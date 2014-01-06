@@ -9,7 +9,8 @@ define [
   'transmng/transdetail_grid'
   'transmng/trans_searchtext_grid'
   'transmng/trans_matchtext_grid'
-], ($, i18n, c18n, util, urls, grid, detailgrid, searchgrid, matchgrid)->
+  'transmng/translation_history_grid_detail_view'
+], ($, i18n, c18n, util, urls, grid, detailgrid, searchgrid, matchgrid, historygrid)->
   transGrid = grid
   refreshGrid = (languageTrigger = false, grid = transGrid)->
     nodeInfo=util.getProductTreeInfo()
@@ -280,7 +281,7 @@ define [
           $.msgBox('Please select translation to apply.', null, title: c18n.error)
           return
         rowData=grid.getRowData(selId)
-        console?.log rowData
+#        console?.log rowData
         postData = grid.getGridParam('postData')
         $.post(urls.trans.update_translation, {
           oper: 'edit'
@@ -303,6 +304,26 @@ define [
         $(@).dialog 'close'
       }
       {text: c18n.cancel, click: ()->  $(@).dialog 'close'}
+    ]
+  )
+
+  transHistoryDialogInDetailView = $('#translationHistoryDialogInDetailView').dialog(
+    autoOpen: false, modal: true
+    width: 845
+    open: (event, ui)->
+      param = $(@).data('param')
+      return unless param
+
+      $('#detailViewTranslationHistoryGrid').setGridParam(
+        url: urls.translation_histories
+        page: 1
+        postData: {transId: param.transId, format: 'grid', prop: 'operationTime,operationType,memo,operator.name'}
+      ).setCaption(c18n.history.caption.format param.reflang).trigger "reloadGrid"
+
+    buttons: [
+      {text: c18n.close, click: (e)->
+        $(@).dialog 'close'
+      }
     ]
   )
 

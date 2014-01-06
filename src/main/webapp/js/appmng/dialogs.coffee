@@ -16,8 +16,9 @@ define [
   'appmng/dictpreviewstringsettings_grid'
   'appmng/previewlangsetting_grid'
   'appmng/searchtext_grid'
+  'appmng/stringsettings_translation_history_grid'
 
-], ($, jqgrid, blockui, msgbox, c18n, i18n, urls, util, previewgrid, stgrid, chart)->
+], ($, jqgrid, blockui, msgbox, c18n, i18n, urls, util, previewgrid, stgrid, chart, shistorygrid)->
 
   #  console?.log "module appmng/dialogs loading."
 
@@ -734,6 +735,28 @@ define [
 
     buttons: [
       {text: c18n.ok, click: -> $(@).dialog "close"}
+    ]
+  )
+
+  stringSettingsTransHistoryDialog = $('#stringSettingsTranslationHistoryDialog').dialog(
+    autoOpen: false, modal: true
+    width: 845
+    open: (event, ui)->
+      param = $(@).data('param')
+      return unless param
+
+      console.log param
+
+      $('#stringSettingsTranslationHistoryGrid').setGridParam(
+        url: urls.translation_histories
+        page: 1
+        postData: {transId: param.id, format: 'grid', prop: 'operationTime,operationType,memo,operator.name'}
+      ).setCaption(c18n.history.caption.format 'reference text').trigger "reloadGrid"
+
+    buttons: [
+      {text: c18n.close, click: (e)->
+        $(@).dialog 'close'
+      }
     ]
   )
 

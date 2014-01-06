@@ -38,6 +38,6 @@ public class DMSHttpSessionListener implements HttpSessionListener {
             }
             session.removeAttribute(UserContext.SESSION_USER_CONTEXT);
         }
-        log.info("User {} logout at {}.", userContext != null ? userContext.getUser().getName() : "Unknown", new Date().toString());
+        log.info("User {} logout at {}, session id: {}.", userContext != null ? userContext.getUser().getName() : "Unknown", new Date().toString(), session.getId());
     }
 }
