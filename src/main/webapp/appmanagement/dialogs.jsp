@@ -340,6 +340,21 @@
     </table>
 </div>
 
+<div id="stringSettingsTranslationHistoryDialog" title="<s:text name="appmng.dialogs.history.title"/> ">
+    <table border="0" width="100%">
+        <tr>
+            <td>
+                <table id="stringSettingsTranslationHistoryGrid">
+                    <tr>
+                        <td></td>
+                    </tr>
+                </table>
+                <div id="stringSettingsTranslationHistoryGridPager"></div>
+            </td>
+        </tr>
+    </table>
+</div>
+
 <div id="addLabelDialog" title="<s:text name="appmng.dialogs.addlabel.title"/>">
     <table border="0" width="100%">
         <tr>

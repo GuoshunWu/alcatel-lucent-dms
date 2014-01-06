@@ -36,7 +36,7 @@ define [
     pager: '#transDetailsPager', rowNum: 100, rowList: [20,50,100,200,500]
     viewrecords: true, gridview: true, multiselect: true
     cellEdit: true, cellurl: urls.trans.update_status, ajaxCellOptions: {async: false}
-    colNames: ['Label', 'Max Len.', 'Context', 'Reference language', 'Translation', 'Status','TransId', 'Trans.Src', 'Last updated','Match']
+    colNames: ['Label', 'Max Len.', 'Context', 'Reference language', 'Translation', 'Status','TransId', 'Trans.Src', 'Last updated','Match','History']
     colModel: [
       {name: 'key', index: 'key', width: 120, editable: false, stype: 'select', align: 'left', frozen: true}
       {name: 'maxlen', index: 'maxLength', width: 60, editable: false, align: 'right', frozen: true, search: false}
@@ -65,6 +65,10 @@ define [
         ret
       unformat:(cellvalue, options)->""
       }
+
+      {name: 'history', index: 'history', width: 40, editable: false, align: 'center', sortable: false, search: false, formatter: (cellvalue, options)->
+        "<img class='historyAct' id='hisact_#{options.rowId}'  src='images/history.png'>"
+      }
     ]
     gridComplete: ->
       grid = $(@)
@@ -72,6 +76,23 @@ define [
         [_, id, ref,transId]=@id.split('_')
         grid.getRowData()
         matchAction(ref, transId, id)
+      ).on('mouseover',()->
+        $(@).addClass('ui-state-hover')
+      ).on('mouseout', ()->
+        $(@).removeClass('ui-state-hover')
+      )
+
+      $('img.historyAct', @).click(()->
+        grid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
+        [_, rowid]=@id.split('_')
+        rowData = grid.getRowData(rowid)
+        delete rowData.action
+        delete rowData.history
+        rowData.labelId = rowid
+
+        ($.msgBox c18n.history.nohistory, null, {title: c18n.error} ;return) unless rowData.transId? and parseInt(rowData.transId) > 0
+
+        $('#translationHistoryDialogInDetailView').data('param', rowData).dialog 'open'
       ).on('mouseover',()->
         $(@).addClass('ui-state-hover')
       ).on('mouseout', ()->

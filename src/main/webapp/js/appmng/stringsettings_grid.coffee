@@ -36,7 +36,7 @@ define [
     sortorder: 'asc'
     viewrecords: true
     gridview: true, multiselect: true, cellEdit: true, cellurl: urls.label.update
-    colNames: ['Label', 'Reference Language', 'T', 'N', 'I', 'Max Length', 'Context', 'Description', ]
+    colNames: ['Label', 'Reference Language', 'T', 'N', 'I', 'Max Length', 'Context', 'Description']
     colModel: [
       {name: 'key', index: 'key', width: 100, editable: false, align: 'left', search:false}
       {name: 'reference', index: 'reference', width: 200, edittype:'textarea', editable: false, align: 'left',search:false}
