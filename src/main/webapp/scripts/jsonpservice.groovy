@@ -26,4 +26,5 @@ response.contentType = "application/json"
 
 System.out.println "Got Parameters: ${params}"
 //System.out.println("JSON to write back:${builder.toPrettyString()}")
+
 println builder.toPrettyString()
