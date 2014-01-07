@@ -7,6 +7,7 @@
     <script>
         jQuery(function ($) {
             var url = 'myevents';
+            url = '../scripts/ajaxstreaming.groovy'
 
             function long_polling() {
                 $.getJSON(url, function (json) {
@@ -23,7 +24,47 @@
                 });
             }
 
-            long_polling();
+//            long_polling();
+
+            function ajax_stream(url) {
+                if (!window.XMLHttpRequest) {
+                    log_message("Your browser does not support the native XMLHttpRequest object.");
+                    return;
+                }
+
+                try {
+                    var xhr = new XMLHttpRequest();
+                    xhr.previous_text = '';
+
+                    xhr.onerror = function () {
+                        log_message("[XHR] Fatal Error.");
+                    };
+                    xhr.onreadystatechange = function () {
+                        try {
+                            if (xhr.readyState > 2) {
+                                var new_response = xhr.responseText.substring(xhr.previous_text.length);
+                                var result = JSON.parse(new_response);
+//                                console.log(result);
+                                $("#logs").text(result.birthday);
+                                //update the progressbar
+                                //document.getElementById('progressor').style.width = result.progress + "%";
+                                xhr.previous_text = xhr.responseText;
+                            }
+                        }
+                        catch (e) {
+                            //log_message("<b>[XHR] Exception: " + e + "</b>");
+                        }
+                    };
+
+                    xhr.open("GET", url, true);
+                    xhr.send("Making request...");
+                }
+                catch (e) {
+                    log_message("<b>[XHR] Exception: " + e + "</b>");
+                }
+            }
+
+            ajax_stream(url);
         });
     </script>
 </head>
