@@ -354,6 +354,41 @@ public class Label extends BaseEntity implements Cloneable {
         this.i = i;
     }
 
+
+    public Translation getTranslationObject(DictionaryLanguage dl) {
+        return (null == dl) ? null : getTranslationObject(dl.getLanguageCode());
+    }
+
+    public Translation getTranslationObject(String langCode) {
+        if (StringUtils.isEmpty(langCode) || context.getName().equals(Context.EXCLUSION)){
+            return getTransientTranslation(Translation.STATUS_TRANSLATED);
+        }
+
+        DictionaryLanguage dl = this.getDictionary().getDictLanguage(langCode);
+        LabelTranslation lt = getOrigTranslation(langCode);
+        if (lt != null && (!lt.isNeedTranslation())) {
+            return getTransientTranslation(Translation.STATUS_TRANSLATED, lt.getOrigTranslation());
+        }
+        for (Translation translation : getText().getTranslations()) {
+            if (translation.getLanguage().getId().equals(dl.getLanguage().getId())) {
+                return translation;
+            }
+        }
+        return getTransientTranslation(Translation.STATUS_UNTRANSLATED);
+    }
+
+    private Translation getTransientTranslation(int status){
+        return getTransientTranslation(status, null);
+    }
+
+    private Translation getTransientTranslation(int status, String translation){
+        Translation tempTrans = new Translation();
+        tempTrans.setId(-1L);  //virtual id < 0, indicating a non-existing translation object
+        tempTrans.setStatus(status);
+        tempTrans.setTranslation(StringUtils.defaultString(translation, reference));
+        return tempTrans;
+    }
+
     /**
      * Calculate final translation of the label
      *
@@ -361,36 +396,11 @@ public class Label extends BaseEntity implements Cloneable {
      * @return
      */
     public String getTranslation(String langCode) {
-        if (context.getName().equals(Context.EXCLUSION)) {
-            return reference;
-        }
-        DictionaryLanguage dl = this.getDictionary().getDictLanguage(langCode);
-        LabelTranslation lt = getOrigTranslation(langCode);
-        if (lt != null && (!lt.isNeedTranslation())) {
-            return lt.getOrigTranslation();
-        } else {
-            for (Translation translation : getText().getTranslations()) {
-                if (translation.getLanguage().getId().equals(dl.getLanguage().getId())) {
-                    return translation.getTranslation();
-                }
-            }
-        }
-        return reference;
+       return  getTranslationObject(langCode).getTranslation();
     }
 
     public int getTranslationStatus(String langCode) {
-        DictionaryLanguage dl = this.getDictionary().getDictLanguage(langCode);
-        LabelTranslation lt = getOrigTranslation(langCode);
-        if (lt != null && !lt.isNeedTranslation() || context.getName().equals(Context.EXCLUSION)) {
-            return Translation.STATUS_TRANSLATED;
-        } else {
-            for (Translation translation : getText().getTranslations()) {
-                if (translation.getLanguage().getId().equals(dl.getLanguage().getId())) {
-                    return translation.getStatus();
-                }
-            }
-        }
-        return Translation.STATUS_UNTRANSLATED;
+        return  getTranslationObject(langCode).getStatus();
     }
 
     /**

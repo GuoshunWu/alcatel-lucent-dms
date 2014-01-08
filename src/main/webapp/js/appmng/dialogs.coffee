@@ -554,7 +554,7 @@ define [
         url: 'rest/label/translation'
         page: 1
         postData:
-          {label: param.id, format: 'grid', status: param.status, prop: 'languageCode,language.name,translation'}
+          {label: param.id, format: 'grid', status: param.status, prop: 'languageCode,language.name,ct.translation,ct.id'}
       ).setCaption(i18n.dialog.stringsettingstrans.caption.format $.jgrid.htmlEncode(param.key), $.jgrid.htmlEncode(param.ref))
         .trigger "reloadGrid"
     buttons: [
@@ -744,13 +744,11 @@ define [
     open: (event, ui)->
       param = $(@).data('param')
       return unless param
-
-      console.log param
-
+#      console.log param
       $('#stringSettingsTranslationHistoryGrid').setGridParam(
         url: urls.translation_histories
         page: 1
-        postData: {transId: param.id, format: 'grid', prop: 'operationTime,operationType,memo,operator.name'}
+        postData: {transId: param['ct.id'], format: 'grid', prop: 'operationTime,operationType,operator.name,memo'}
       ).setCaption(c18n.history.caption.format 'reference text').trigger "reloadGrid"
 
     buttons: [
