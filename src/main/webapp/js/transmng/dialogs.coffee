@@ -314,10 +314,11 @@ define [
       param = $(@).data('param')
       return unless param
 
+
       $('#detailViewTranslationHistoryGrid').setGridParam(
         url: urls.translation_histories
         page: 1
-        postData: {transId: param.transId, format: 'grid', prop: 'operationTime,operationType,memo,operator.name'}
+        postData: {transId: param.transId, format: 'grid', prop: 'operationTime,operationType,operator.name,memo'}
       ).setCaption(c18n.history.caption.format param.reflang).trigger "reloadGrid"
 
     buttons: [

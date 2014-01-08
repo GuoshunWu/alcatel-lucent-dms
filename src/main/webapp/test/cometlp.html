@@ -25,46 +25,24 @@
             }
 
 //            long_polling();
+            //"json stream",
 
-            function ajax_stream(url) {
-                if (!window.XMLHttpRequest) {
-                    log_message("Your browser does not support the native XMLHttpRequest object.");
-                    return;
+            function ajaxStream(url) {
+                // Declare the variables we'll be using
+                var xmlHttp = new $.ajaxSettings.xhr();
+                xmlHttp.open("GET", url, true);
+                var len = 0;
+                xmlHttp.onreadystatechange = function () {
+                    if (xmlHttp.status == 200 && xmlHttp.readyState >= 3) {
+                        var text = xmlHttp.responseText;
+                        text = text.substr(len);
+                        len = xmlHttp.responseText.length;
+                        console.log(text);
+                    }
                 }
-
-                try {
-                    var xhr = new XMLHttpRequest();
-                    xhr.previous_text = '';
-
-                    xhr.onerror = function () {
-                        log_message("[XHR] Fatal Error.");
-                    };
-                    xhr.onreadystatechange = function () {
-                        try {
-                            if (xhr.readyState > 2) {
-                                var new_response = xhr.responseText.substring(xhr.previous_text.length);
-                                var result = JSON.parse(new_response);
-//                                console.log(result);
-                                $("#logs").text(result.birthday);
-                                //update the progressbar
-                                //document.getElementById('progressor').style.width = result.progress + "%";
-                                xhr.previous_text = xhr.responseText;
-                            }
-                        }
-                        catch (e) {
-                            //log_message("<b>[XHR] Exception: " + e + "</b>");
-                        }
-                    };
-
-                    xhr.open("GET", url, true);
-                    xhr.send("Making request...");
-                }
-                catch (e) {
-                    log_message("<b>[XHR] Exception: " + e + "</b>");
-                }
+                xmlHttp.send(null);
             }
-
-            ajax_stream(url);
+            ajaxStream(url);
         });
     </script>
 </head>

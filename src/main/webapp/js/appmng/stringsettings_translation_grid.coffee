@@ -1,4 +1,4 @@
-define ['jqgrid'], ($)->
+define ['jqgrid', 'i18n!nls/common'], ($, c18n)->
 #  console?.log "module appmng/langsetting_translation_grid loading."
   lastEditedCell = null
 
@@ -14,11 +14,12 @@ define ['jqgrid'], ($)->
     viewrecords: true
   #  ajaxGridOptions:{async:false}
     gridview: true
-    colNames: [ 'Code', 'Language', 'Translation', 'History']
+    colNames: [ 'Code', 'Language', 'Translation','CtId', 'History']
     colModel: [
       {name: 'code', index: 'languageCode', width: 20, editable: false, align: 'left'}
       {name: 'language', index: 'language', width: 40, align: 'left'}
-      {name: 'translation', index: 'translation', width: 100, align: 'left'}
+      {name: 'ct.translation', index: 'ct.translation', width: 100, align: 'left'}
+      {name: 'ct.id', index: 'ct.id', width: 100, align: 'left', hidden: true}
       {name: 'history', index: 'history', width: 10, editable: false, align: 'center', sortable: false, search: false, formatter: (cellvalue, options)->
         "<img class='historyAct' id='hisact_#{options.rowId}'  src='images/history.png'>"
       }
@@ -32,6 +33,9 @@ define ['jqgrid'], ($)->
         [_, rowid]=@id.split('_')
         rowData = grid.getRowData(rowid)
         rowData.id = rowid
+
+        ($.msgBox c18n.history.nohistory, null, {title: c18n.error} ;return) unless rowData['ct.id']? and parseInt(rowData['ct.id']) > 0
+
         $('#stringSettingsTranslationHistoryDialog').data('param', rowData).dialog 'open'
 
       ).on('mouseover',()->

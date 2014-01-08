@@ -13,14 +13,14 @@ define ['jqgrid', 'dms-util', 'i18n!nls/common'], ($, util, c18n)->
     sortorder: 'asc'
     viewrecords: true
     gridview: true, multiselect: false, cellEdit: false
-    colNames: ['Operation Time', 'Operation Type', 'Memo', 'Operator']
+    colNames: ['Operation Time', 'Operation Type','Operator', 'Memo']
     colModel: [
       {name: 'operationTime', index: 'operationTime', width: 50, editable: false, align: 'left'}
       {name: 'operationType', index: 'operationType', width: 40, editable: false, align: 'left'
       formatter: 'select', editoptions:{value: c18n.transoptype}
       }
-      {name: 'memo', index: 'memo', width: 70, editable: true, align: 'left'}
       {name: 'operator.name', index: 'operator.name', width: 50, editable: true, align: 'left'}
+      {name: 'memo', index: 'memo', width: 70, editable: true, align: 'left'}
     ]
     gridComplete: ->
 

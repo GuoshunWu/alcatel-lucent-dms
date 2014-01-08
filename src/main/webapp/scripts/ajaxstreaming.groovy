@@ -14,10 +14,11 @@ def root = builder {
 
 
 response.contentType = "application/json"
-while (true) {
+int times = 5;
+while (times-- > 0) {
     root['birthday'] = new Date().format('yyyy-MM-dd HH:mm:ss.SSS')
 
     out.println builder.toPrettyString()
     out.flush()
-    Thread.sleep(1000)
+    Thread.sleep(500)
 }
