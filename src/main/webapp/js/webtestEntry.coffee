@@ -1,11 +1,13 @@
+"use strict"
 require ['js/config.js'],
 (config, r)->
-  require ['qunit','webtests/main'], (qunit, main)->
-    qunit =  QUnit unless qunit
+  require ['qunit','webtests/example'], (QUnit, example)->
+#    console.log QUnit
 
-    main.run()
+    example.run()
+
     # start QUnit.
-    qunit.load()
-    qunit.start()
+    QUnit.load()
+    QUnit.start()
 
 (err)->console.log("load module err: " + err)

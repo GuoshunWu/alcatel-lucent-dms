@@ -38,10 +38,12 @@
                         text = text.substr(len);
                         len = xmlHttp.responseText.length;
                         console.log(text);
+//                        log_message("[XHR] Fatal Error.");
                     }
                 }
                 xmlHttp.send(null);
             }
+
             ajaxStream(url);
         });
     </script>

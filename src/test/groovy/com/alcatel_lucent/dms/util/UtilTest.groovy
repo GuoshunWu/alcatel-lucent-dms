@@ -10,6 +10,11 @@ import org.apache.commons.io.input.BOMInputStream
 import org.junit.Ignore
 import org.junit.Test
 
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicInteger
+
 /**
  * Created by IntelliJ IDEA.
  * User: guoshunw
@@ -17,7 +22,7 @@ import org.junit.Test
  * Time: 上午11:14
  * To change this template use File | Settings | File Templates.
  */
-@Ignore
+//@Ignore
 public class UtilTest {
 
 //    @Test
@@ -111,5 +116,29 @@ public class UtilTest {
         lines.each { line ->
             println line
         }
+    }
+
+    @Test
+    void testAsyncServlet() {
+
+        final AtomicInteger counter = new AtomicInteger(0);
+        final int maxThreadCount = 100;
+
+        // client test code
+        ExecutorService clientExec = Executors.newCachedThreadPool();
+        for (int i = 0; i < maxThreadCount; ++i) {
+            clientExec.submit(new Runnable() {
+                @Override
+                public void run() {
+                    int count = counter.addAndGet(1);
+                    try {
+                        IOUtils.readLines(new URL("http://localhost:8888/dms/test/simple").openStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+        clientExec.awaitTermination(1, TimeUnit.DAYS);
     }
 }

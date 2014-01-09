@@ -40,11 +40,9 @@ require.config
 
   shim:
     'qunit':
-      deps: []
-      init: ->
-        QUnit.config.autoload = false
-        QUnit.config.autostart = false
-     export: 'QUnit'
+      exports: 'QUnit'
+      init: ()->
+        QUnit.config.autoload =  QUnit.config.autostart = false
 
     'jquery.migrate':
       deps: ['jquery']
@@ -97,6 +95,6 @@ require.config
   config:
     i18n:
       locale: if param? then param.locale else 'en_us'
-  urlArgs: "bust=#{if param? then param.buildNumber else '1'}"
+  urlArgs: "bust=#{if param? then param.buildNumber else new Date().getTime()}"
 
   waitSeconds: 60
