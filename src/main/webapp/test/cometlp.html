@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Comet long polling</title>
+    <script src="../js/lib/jquery-1.7.2.min.js"></script>
+    <script>
+        jQuery(function ($) {
+            var url = 'myevents';
+            url = '../scripts/ajaxstreaming.groovy'
+
+            function long_polling() {
+                $.getJSON(url, function (json) {
+                    if (console) {
+                        console.log(json);
+                    }
+                    if (json.status != 0) {
+                        $("#logs").append($('<span/>').html('Message: ' + json.msg + ' status: ' + json.status + "<br/>"));
+                        return;
+                    }
+                    $("#logs").append($('<span/>').html('Client: ' + json.client + ' got event: ' + json.msg + "<br/>"));
+                    long_polling();
+
+                });
+            }
+
+//            long_polling();
+            //"json stream",
+
+            function ajaxStream(url) {
+                // Declare the variables we'll be using
+                var xmlHttp = new $.ajaxSettings.xhr();
+                xmlHttp.open("GET", url, true);
+                var len = 0;
+                xmlHttp.onreadystatechange = function () {
+                    if (xmlHttp.status == 200 && xmlHttp.readyState >= 3) {
+                        var text = xmlHttp.responseText;
+                        text = text.substr(len);
+                        len = xmlHttp.responseText.length;
+                        console.log(text);
+                    }
+                }
+                xmlHttp.send(null);
+            }
+            ajaxStream(url);
+        });
+    </script>
+</head>
+<body>
+<h2 align="center">Comet long polling demo</h2>
+
+<div id="logs" style="font-family: monospace;"/>
+</body>
+</html>
