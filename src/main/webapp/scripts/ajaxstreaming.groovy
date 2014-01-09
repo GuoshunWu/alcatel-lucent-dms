@@ -12,7 +12,6 @@ def root = builder {
     birthday new Date().format('yyyy-MM-dd HH:mm:ss.SSS')
 }
 
-
 response.contentType = "application/json"
 int times = 5;
 while (times-- > 0) {
