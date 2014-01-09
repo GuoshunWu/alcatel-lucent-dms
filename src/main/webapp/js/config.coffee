@@ -6,7 +6,7 @@ require.config
     "jquery.migrate": 'jquery-migrate-1.2.1.min'
     jqueryui: 'jquery-ui-1.10.3.custom.min'
 #    jqueryui: 'jquery-ui'
-
+    qunit: 'qunit-1.13.0'
     formvalidate: 'formValidator-4.0.1.min'
     formvalreg: 'formValidatorRegex'
     jqform: 'jquery.form'
@@ -31,12 +31,21 @@ require.config
     taskmng: '../taskmng'
     ctxmng: '../ctxmng'
 
+    webtests: '../webtests'
+
     login: '../login'
     admin: '../admin'
     nls: '../nls'
     main: '../main'
 
   shim:
+    'qunit':
+      deps: []
+      init: ->
+        QUnit.config.autoload = false
+        QUnit.config.autostart = false
+     export: 'QUnit'
+
     'jquery.migrate':
       deps: ['jquery']
       exports: 'jQuery'

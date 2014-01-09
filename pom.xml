@@ -102,9 +102,23 @@
     <dependencies>
 
         <!--<dependency>-->
-            <!--<groupId>commons-validator</groupId>-->
-            <!--<artifactId>commons-validator</artifactId>-->
-            <!--<version>1.4.0</version>-->
+            <!--<groupId>net.sourceforge.jwebunit</groupId>-->
+            <!--<artifactId>jwebunit-webdriver-plugin</artifactId>-->
+            <!--<version>3.1</version>-->
+            <!--<exclusions>-->
+                <!--<exclusion>-->
+                    <!--<groupId>javax.servlet</groupId>-->
+                    <!--<artifactId>javax.servlet-api</artifactId>-->
+                <!--</exclusion>-->
+                <!--<exclusion>-->
+                    <!--<groupId>javax.servlet.jsp</groupId>-->
+                    <!--<artifactId>jsp-api</artifactId>-->
+                <!--</exclusion>-->
+                <!--<exclusion>-->
+                    <!--<groupId>org.eclipse.jetty</groupId>-->
+                    <!--<artifactId>jetty-server</artifactId>-->
+                <!--</exclusion>-->
+            <!--</exclusions>-->
         <!--</dependency>-->
 
         <dependency>
