@@ -71,9 +71,9 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
     @push(elem) for elem in newarray
     delElem
 
-  window.onbeforeunload = ->
-    $.post 'login/logout', {'navigator': navigator.userAgent, 'time': new Date().getTime()}
-    undefined
+#  window.onbeforeunload = ->
+#    $.post 'login/logout', {'navigator': navigator.userAgent, 'time': new Date().getTime()}
+#    undefined
   ###
   format json string to pretty.
   ###

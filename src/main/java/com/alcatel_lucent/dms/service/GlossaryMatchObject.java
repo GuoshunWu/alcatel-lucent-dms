@@ -5,6 +5,7 @@ import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
 import org.apache.commons.lang3.Range;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -130,6 +131,7 @@ public class GlossaryMatchObject {
 
 
     public String getProcessedString(String originalText) {
+    	if (StringUtils.isEmpty(originalText)) return originalText;
         Matcher latestMatcher = getMatcher(originalText);
         StringBuffer sb = new StringBuffer();
         while (latestMatcher.find()) {

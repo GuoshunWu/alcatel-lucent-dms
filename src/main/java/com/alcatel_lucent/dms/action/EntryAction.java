@@ -102,7 +102,7 @@ public class EntryAction extends BaseAction {
     }
 
     @Action(results = {
-            @Result(location = "${naviTo}"),
+            @Result(location = "${naviTo}")
     })
     public String execute() throws Exception {
         log.debug("Switch to " + getNaviTo());
