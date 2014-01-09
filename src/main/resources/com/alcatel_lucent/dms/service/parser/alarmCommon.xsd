@@ -1,0 +1,499 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+	<xs:simpleType name="CatalogName">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1" />
+			<xs:maxLength value="255" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="ContextService">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="COMMUNICATION" />
+			<xs:enumeration value="COMMUNICATION.TELEPHONY" />
+			<xs:enumeration value="COMMUNICATION.ROUTING" />
+			<xs:enumeration value="COMMUNICATION.REGISTRAR" />
+			
+			<xs:enumeration value="MEDIA" />
+			<xs:enumeration value="MEDIA.RESSOURCE" />
+			<xs:enumeration value="MEDIA.AUDIO_STREAMING" />
+			<xs:enumeration value="MEDIA.AUDIO_CONFERENCING" />
+			<xs:enumeration value="MEDIA.VIDEO_CONFERENCING" />
+			<xs:enumeration value="MEDIA.VOICE_MAIL" />
+			<xs:enumeration value="MEDIA.TEXT_TO_SPEECH" />
+			<xs:enumeration value="MEDIA.AUTOMATED_ATTENDANT" />
+			
+			<xs:enumeration value="MESSAGING" />
+			<xs:enumeration value="MESSAGING.UNIFIED_MESSAGING" />
+			<xs:enumeration value="MESSAGING.MESSAGING_SERVICES" />
+			<xs:enumeration value="MESSAGING.IMAP4" />
+			<xs:enumeration value="MESSAGING.NOTIFICATION" />
+			
+			<xs:enumeration value="ADVANCED_TELEPHONY" />
+			<xs:enumeration value="ADVANCED_TELEPHONY.MULTIMEDIA_ASSISTANT" />
+			<xs:enumeration value="ADVANCED_TELEPHONY.SOFTPHONE" />
+			<xs:enumeration value="ADVANCED_TELEPHONY.MANAGER_SECRETARY" />
+			<xs:enumeration value="ADVANCED_TELEPHONY.COMMUNICATION_LOG" />
+			<xs:enumeration value="ADVANCED_TELEPHONY.FREE_SEATING" />
+			<xs:enumeration value="ADVANCED_TELEPHONY.ONE_NUMBER" />
+			<xs:enumeration value="ADVANCED_TELEPHONY.OFFICE_COMMUNICATOR_COUPLING" />
+			<xs:enumeration value="ADVANCED_TELEPHONY.SAMETIME_COUPLING" />
+			
+			<xs:enumeration value="AUTOMATED_ATTENDANT" />
+			<xs:enumeration value="AUTOMATED_ATTENDANT.ROUTING" />
+			<xs:enumeration value="AUTOMATED_ATTENDANT.MAILBOX" />
+			
+			<xs:enumeration value="DIRECTORY" />
+			
+			<xs:enumeration value="MOBILITY" />
+			
+			<xs:enumeration value="FAX" />
+			
+			<xs:enumeration value="COLLABORATION" />
+			<xs:enumeration value="COLLABORATION.INSTANT_MESSAGING" />
+			<xs:enumeration value="COLLABORATION.RICH_USER_PRESENCE" />
+			<xs:enumeration value="COLLABORATION.OFFICE_COMMUNICATOR_COUPLING" />
+			<xs:enumeration value="COLLABORATION.SAMETIME" />
+			
+			<xs:enumeration value="CONFERENCING" />
+			<xs:enumeration value="CONFERENCING.AUDIO_CONFERENCE" />
+			<xs:enumeration value="CONFERENCING.VIDEO_CONFERENCE" />
+			
+			<xs:enumeration value="AUDIO_BROADCASTING" />
+			
+			<xs:enumeration value="INFRASTRUCTURE" />
+			<xs:enumeration value="INFRASTRUCTURE.SOLUTION_CONTROL" />
+			<xs:enumeration value="INFRASTRUCTURE.PERFORMANCE" />
+			<xs:enumeration value="INFRASTRUCTURE.HIGH_AVAILABILITY" />
+			<xs:enumeration value="INFRASTRUCTURE.MONITORING" />
+			<xs:enumeration value="INFRASTRUCTURE.LICENSING" />
+			<xs:enumeration value="INFRASTRUCTURE.ALARMING" />
+			<xs:enumeration value="INFRASTRUCTURE.BACKUP_RESTORE" />
+			
+			<xs:enumeration value="MANAGEMENT" />
+			<xs:enumeration value="MANAGEMENT.USER_PROVISIONING" />
+			<xs:enumeration value="MANAGEMENT.SYSTEM_PROVISIONING" />
+			<xs:enumeration value="MANAGEMENT.DEVICE_PROVISIONING" />
+			<xs:enumeration value="MANAGEMENT.MAILBOX_PROVISIONING" />
+
+			<xs:enumeration value="SECURITY" />
+			<xs:enumeration value="SECURITY.AUTHENTICATION" />
+			<xs:enumeration value="SECURITY.ENCRYPTION" />
+			<xs:enumeration value="SECURITY.CERTIFICAT" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="PerceivedSeverity">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CLEAR" />
+			<xs:enumeration value="INDETERMINATE" />
+			<xs:enumeration value="CRITICAL" />
+			<xs:enumeration value="MAJOR" />
+			<xs:enumeration value="MINOR" />
+			<xs:enumeration value="WARNING" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="EventType">
+		<xs:annotation>
+			<xs:documentation>3GPP TS 32.111-2 V6.9.0 annex A</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="COMMUNICATIONS" />
+			<xs:enumeration value="PROCESSING_ERROR" />
+			<xs:enumeration value="QUALITY_OF_SERVICE" />
+			<xs:enumeration value="EQUIPMENT" />
+			<xs:enumeration value="ENVIRONMENTAL" />
+			<xs:enumeration value="INTEGRITY_VIOLATION" />
+			<xs:enumeration value="OPERATIONAL_VIOLATION" />
+			<xs:enumeration value="PHYSICAL_VIOLATION" />
+			<xs:enumeration value="SECURITY_SERVICE_OR_MECHANISM_VIOLATION" />
+			<xs:enumeration value="TIME_DOMAIN_VIOLATION" />
+			<!-- dirty hack for crms00304867, in 1.0.1 COMMUNICATIONS should be removed -->
+			<xs:enumeration value="COMMUNICATION" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="TextPerLanguage8770">
+		<xs:all>
+			<xs:element name="i-alu" type="LongText" />
+			<xs:element name="ar" type="LongText" minOccurs="0" />
+			<xs:element name="ca" type="LongText" minOccurs="0" />
+			<xs:element name="cs" type="LongText" minOccurs="0" />
+			<xs:element name="de" type="LongText" minOccurs="0" />
+			<xs:element name="en" type="LongText" minOccurs="0" />
+			<xs:element name="en-US" type="LongText" minOccurs="0" />
+			<xs:element name="es" type="LongText" minOccurs="0" />
+			<xs:element name="fi" type="LongText" minOccurs="0" />
+			<xs:element name="fr" type="LongText" minOccurs="0" />
+			<xs:element name="hu" type="LongText" minOccurs="0" />
+			<xs:element name="it" type="LongText" minOccurs="0" />
+			<xs:element name="ko" type="LongText" minOccurs="0" />
+			<xs:element name="nl" type="LongText" minOccurs="0" />
+			<xs:element name="no" type="LongText" minOccurs="0"/>
+			<xs:element name="pl" type="LongText" minOccurs="0" />
+			<xs:element name="pt" type="LongText" minOccurs="0" />
+			<xs:element name="ru" type="LongText" minOccurs="0" />
+			<xs:element name="sv" type="LongText" minOccurs="0" />
+			<xs:element name="zh" type="LongText" minOccurs="0" />
+			<xs:element name="zh-CN" type="LongText" minOccurs="0" />
+		</xs:all>
+	</xs:complexType>
+
+	<xs:complexType name="TextPerLanguage">
+		<xs:all>
+			<xs:element name="i-alu" type="Text" />
+			<xs:element name="fr" type="Text" minOccurs="0" />
+			<xs:element name="en" type="Text" minOccurs="0" />
+			<xs:element name="de" type="Text" minOccurs="0" />
+			<xs:element name="pt" type="Text" minOccurs="0" />
+			<xs:element name="es" type="Text" minOccurs="0" />
+			<xs:element name="it" type="Text" minOccurs="0" />
+
+			<xs:element name="ar" type="LongText" minOccurs="0" />
+			<xs:element name="en-US" type="Text" minOccurs="0" />
+			<xs:element name="no" type="Text" minOccurs="0" />
+			<xs:element name="nl" type="Text" minOccurs="0" />
+			<xs:element name="pl" type="Text" minOccurs="0" />
+			<xs:element name="fi" type="Text" minOccurs="0" />
+			<xs:element name="ko" type="Text" minOccurs="0" />
+			<xs:element name="ru" type="Text" minOccurs="0" />
+			<xs:element name="cs" type="Text" minOccurs="0" />
+			<xs:element name="sv" type="Text" minOccurs="0" />
+			<xs:element name="hu" type="Text" minOccurs="0" />
+			<xs:element name="sk" type="Text" minOccurs="0" />
+			<xs:element name="ca" type="Text" minOccurs="0" />
+			<xs:element name="zh" type="LongText" minOccurs="0" />
+			<xs:element name="zh-CN" type="Text" minOccurs="0" />
+			<xs:element name="zh-TW" type="Text" minOccurs="0" />
+		</xs:all>
+	</xs:complexType>
+
+	<xs:simpleType name="Text">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1" />
+			<xs:maxLength value="200" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="LongTextPerLanguage8770">
+		<xs:all>
+			<xs:element name="i-alu" type="LongText" />
+			<xs:element name="ar" type="LongText" minOccurs="0" />
+			<xs:element name="ca" type="LongText" minOccurs="0" />
+			<xs:element name="cs" type="LongText" minOccurs="0" />
+			<xs:element name="de" type="LongText" minOccurs="0" />
+			<xs:element name="en" type="LongText" minOccurs="0" />
+			<xs:element name="en-US" type="LongText" minOccurs="0" />
+			<xs:element name="es" type="LongText" minOccurs="0" />
+			<xs:element name="fi" type="LongText" minOccurs="0" />
+			<xs:element name="fr" type="LongText" minOccurs="0" />
+			<xs:element name="hu" type="LongText" minOccurs="0" />
+			<xs:element name="it" type="LongText" minOccurs="0" />
+			<xs:element name="ko" type="LongText" minOccurs="0" />
+			<xs:element name="nl" type="LongText" minOccurs="0" />
+			<xs:element name="no" type="LongText" minOccurs="0"/>
+			<xs:element name="pl" type="LongText" minOccurs="0" />
+			<xs:element name="pt" type="LongText" minOccurs="0" />
+			<xs:element name="ru" type="LongText" minOccurs="0" />
+			<xs:element name="sv" type="LongText" minOccurs="0" />
+			<xs:element name="zh" type="LongText" minOccurs="0" />
+			<xs:element name="zh-CN" type="LongText" minOccurs="0" />
+		</xs:all>
+	</xs:complexType>
+
+	<xs:complexType name="LongTextPerLanguage">
+		<xs:all>
+			<xs:element name="i-alu" type="LongText" />
+			<xs:element name="fr" type="LongText" minOccurs="0" />
+			<xs:element name="en" type="LongText" minOccurs="0" />
+			<xs:element name="de" type="LongText" minOccurs="0" />
+			<xs:element name="pt" type="LongText" minOccurs="0" />
+			<xs:element name="es" type="LongText" minOccurs="0" />
+			<xs:element name="it" type="LongText" minOccurs="0" />
+
+			<xs:element name="ar" type="LongText" minOccurs="0" />
+			<xs:element name="en-US" type="LongText" minOccurs="0" />
+			<xs:element name="no" type="LongText" minOccurs="0"/>
+			<xs:element name="nl" type="LongText" minOccurs="0" />
+			<xs:element name="pl" type="LongText" minOccurs="0" />
+			<xs:element name="fi" type="LongText" minOccurs="0" />
+			<xs:element name="ko" type="LongText" minOccurs="0" />
+			<xs:element name="ru" type="LongText" minOccurs="0" />
+			<xs:element name="cs" type="LongText" minOccurs="0" />
+			<xs:element name="sv" type="LongText" minOccurs="0" />
+			<xs:element name="hu" type="LongText" minOccurs="0" />
+			<xs:element name="sk" type="LongText" minOccurs="0" />
+			<xs:element name="ca" type="LongText" minOccurs="0" />
+			<xs:element name="zh" type="LongText" minOccurs="0" />
+			<xs:element name="zh-CN" type="LongText" minOccurs="0" />
+			<xs:element name="zh-TW" type="LongText" minOccurs="0" />
+		</xs:all>
+	</xs:complexType>
+
+	<xs:simpleType name="LongText">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1" />
+			<xs:maxLength value="1024" />
+		</xs:restriction>
+	</xs:simpleType>
+
+
+	<xs:simpleType name="ProbableCauseCommunication">
+		<xs:annotation>
+			<xs:documentation>3GPP TS 32.111-2 V6.9.0 annex B</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<!-- eventType=Communications M.3100 -->
+			<xs:enumeration value="CALL_SET_UP_FAILURE" />
+			<xs:enumeration value="DEGRADED_SIGNAL" />
+			<xs:enumeration value="FAR_END_RECEIVER_FAILURE" />
+			<xs:enumeration value="FRAMING_ERROR" />
+			<xs:enumeration value="LOSS_OF_FRAME" />
+			<xs:enumeration value="LOSS_OF_POINTER" />
+			<xs:enumeration value="LOSS_OF_SIGNAL" />
+			<xs:enumeration value="PAYLOAD_TYPE_MISMATCH" />
+			<xs:enumeration value="TRANSMISSION_ERROR" />
+			<xs:enumeration value="REMOTE_ALARM_INTERFACE" />
+			<xs:enumeration value="PATH_TRACE_MISMATCH" />
+			<xs:enumeration value="UNAVAILABLE" />
+			<xs:enumeration value="SIGNAL_LABEL_MISMATCH" />
+			<xs:enumeration value="LOSS_OF_MULTI_FRAME" />
+			<xs:enumeration value="MODULATION_FAILURE" />
+			<xs:enumeration value="DEMODULATION_FAILURE" />
+			<!-- eventType=Communications X.721, X.733, X.736 -->
+			<xs:enumeration value="COMMUNICATION_PROTOCOL_ERROR" />
+			<xs:enumeration value="COMMUNICATION_SUBSYSTEM_FAILURE" />
+			<xs:enumeration value="DTE_DCE_INTERFACE_ERROR" />
+			<xs:enumeration value="LAN_ERROR" />
+			<xs:enumeration value="LOCAL_NODE_TRANSMISSION_ERROR" />
+			<xs:enumeration value="REMOTE_NODE_TRANSMISSION_ERROR" />
+			<!-- eventType=Communications 2G & 3G Wireless Systems -->
+			<xs:enumeration value="BROADCAST_CHANNEL_FAILURE" />
+			<xs:enumeration value="CALL_ESTABLISHMENT_ERROR" />
+			<xs:enumeration value="INVALID_MESSAGE_RECEIVED" />
+			<xs:enumeration value="ROUTING_FAILURE" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="ProbableCauseProcessingError">
+		<xs:annotation>
+			<xs:documentation>3GPP TS 32.111-2 V6.9.0 annex B</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<!-- eventType=ProcessingError M.3100 -->
+			<xs:enumeration value="STORAGE_CAPACITY_PROBLEM" />
+			<xs:enumeration value="MEMORY_MISMATCH" />
+			<xs:enumeration value="CORRUPT_DATA" />
+			<xs:enumeration value="OUT_OF_CPU_CYCLES" />
+			<xs:enumeration value="SOFTWARE_ENVIRONMENT_PROBLEM" />
+			<xs:enumeration value="SOFTWARE_DOWNLOAD_FAILURE" />
+			<xs:enumeration value="LOSS_OF_REAL_TIME" />
+			<xs:enumeration value="REINITIALIZED" />
+			<!-- eventType=ProcessingError X.721, X.733, X.736 -->
+			<xs:enumeration value="APPLICATION_SUBSYSTEM_FAILURE" />
+			<xs:enumeration value="CONFIGURATION_OR_CUSTOMIZATION_ERROR" />
+			<xs:enumeration value="CPU_CYCLES_LIMIT_EXCEEDED" />
+			<xs:enumeration value="FILE_ERROR" />
+			<xs:enumeration value="OUT_OF_MEMORY" />
+			<xs:enumeration value="SOFTWARE_ERROR" />
+			<xs:enumeration value="SOFTWARE_PROGRAM_ABNORMALLY_TERMINATED" />
+			<xs:enumeration value="SOFTWARE_PROGRAM_ERROR" />
+			<xs:enumeration value="UNDERLYING_RESOURCE_UNAVAILABLE" />
+			<xs:enumeration value="VERSION_MISMATCH" />
+			<!-- eventType=ProcessingError 2G & 3G Wireless Systems -->
+			<xs:enumeration value="FILE_SYSTEM_CALL_UNSUCCESSFUL" />
+			<xs:enumeration value="DATABASE_INCONSISTENCY" />
+			<xs:enumeration value="LOSS_OF_POINTER" />
+			<xs:enumeration value="TIMEOUT_EXPIRED" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="ProbableCauseQos">
+		<xs:annotation>
+			<xs:documentation>3GPP TS 32.111-2 V6.9.0 annex B</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<!-- eventType=QualityOfService X.721, X.733, X.736 -->
+			<xs:enumeration value="BANDWIDTH_REDUCED" />
+			<xs:enumeration value="CONGESTION" />
+			<xs:enumeration value="PERFORMANCE_DEGRADED" />
+			<xs:enumeration value="QUEUE_SIZE_EXCEEDED" />
+			<xs:enumeration value="RESOURCE_AT_OR_NEARING_CAPACITY" />
+			<xs:enumeration value="RESPONSE_TIME_EXCESSIVE" />
+			<xs:enumeration value="RETRANSMISSION_RATE_EXCESSIVE" />
+			<xs:enumeration value="THRESHOLD_CROSSED" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="ProbableCauseEquipment">
+		<xs:annotation>
+			<xs:documentation>3GPP TS 32.111-2 V6.9.0 annex B</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<!-- eventType=Equipment M.3100 -->
+			<xs:enumeration value="BACKPLANE_FAILURE" />
+			<xs:enumeration value="DATA_SET_PROBLEM" />
+			<xs:enumeration value="EQUIPMENT_IDENTIFIER_DUPLICATION" />
+			<xs:enumeration value="EXTERNAL_IF_DEVICE_PROBLEM" />
+			<xs:enumeration value="LINE_CARD_PROBLEM" />
+			<xs:enumeration value="MULTIPLEXER_PROBLEM" />
+			<xs:enumeration value="NE_IDENTIFIER_DUPLICATION" />
+			<xs:enumeration value="POWER_PROBLEMS" />
+			<xs:enumeration value="PROCESSOR_PROBLEMS" />
+			<xs:enumeration value="PROTECTION_PATH_FAILURE" />
+			<xs:enumeration value="RECEIVER_FAILURE" />
+			<xs:enumeration value="REPLACEABLE_UNIT_MISSING" />
+			<xs:enumeration value="REPLACEABLE_UNIT_TYPE_MISMATCH" />
+			<xs:enumeration value="SYNCHRONIZATION_SOURCE_MISMATCH" />
+			<xs:enumeration value="TERMINAL_PROBLEM" />
+			<xs:enumeration value="TIMING_PROBLEM" />
+			<xs:enumeration value="TRANSMITER_FAILURE" />
+			<xs:enumeration value="TRUNK_CARD_PROBLEM" />
+			<xs:enumeration value="REPLACEABLE_UNIT_PROBLEM" />
+			<xs:enumeration value="REAL_TIME_CLOCK_FAILURE" />
+			<xs:enumeration value="PROTECTION_MECHANISM_FAILURE" />
+			<xs:enumeration value="PROTECTING_RESOURCE_FAILURE" />
+			<!-- eventType=Equipment X.721, X.733, X.736 -->
+			<xs:enumeration value="ADAPTER_ERROR" />
+			<xs:enumeration value="DATA_SET_OR_MODEM_ERROR" />
+			<xs:enumeration value="EQUIPMENT_MALFUNCTION" />
+			<xs:enumeration value="INPUT_OUTPUT_DEVICE_ERROR" />
+			<xs:enumeration value="INPUT_DEVICE_ERROR" />
+			<xs:enumeration value="OUTPUT_DEVICE_ERROR" />
+			<xs:enumeration value="RECEIVE_FAILURE" />
+			<xs:enumeration value="TRANSMIT_FAILURE" />
+			<!-- eventType=Equipment 2G & 3G Wireless Systems -->
+			<xs:enumeration value="ANTENNA_FAILURE" />
+			<xs:enumeration value="DISK_FAILURE" />
+			<xs:enumeration value="LOSS_OF_SYNCHRONISATION" />
+			<xs:enumeration value="POWER_SUPPLY_FAILURE" />
+			<xs:enumeration value="SIGNAL_QUALITY_EVALUATION_FAILURE" />
+			<xs:enumeration value="TRANCEIVER_FAILURE" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="ProbableCauseEnvironmental">
+		<xs:annotation>
+			<xs:documentation>3GPP TS 32.111-2 V6.9.0 annex B</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<!-- eventType=Environmental M.3100 -->
+			<xs:enumeration value="AIR_COMPRESSOR_FAILURE" />
+			<xs:enumeration value="AIR_CONDITIONING_FAILURE" />
+			<xs:enumeration value="AIR_DRYER_FAILURE" />
+			<xs:enumeration value="BATTERY_DISCHARGING" />
+			<xs:enumeration value="BATTERY_FAILURE" />
+			<xs:enumeration value="COMMERCIAL_POWER_FAILURE" />
+			<xs:enumeration value="COOLING_FAN_FAILURE" />
+			<xs:enumeration value="ENGINE_FAILURE" />
+			<xs:enumeration value="FIRE_DETECTOR_FAILURE" />
+			<xs:enumeration value="FUSE_FAILURE" />
+			<xs:enumeration value="GENERATOR_FAILURE" />
+			<xs:enumeration value="LOW_BATTERY_THRESHOLD" />
+			<xs:enumeration value="PUMP_FAILURE" />
+			<xs:enumeration value="RECTIFIER_FAILURE" />
+			<xs:enumeration value="RECTIFIER_HIGH_VOLTAGE" />
+			<xs:enumeration value="RECTIFIER_LOW_F_VOLTAGE" />
+			<xs:enumeration value="VENTILATIONS_SYSTEM_FAILURE" />
+			<xs:enumeration value="ENCLOSURE_DOOR_OPEN" />
+			<xs:enumeration value="EXPLOSIVE_GAS" />
+			<xs:enumeration value="FIRE_DETECTED" />
+			<xs:enumeration value="FLOOD_DETECTED" />
+			<xs:enumeration value="HIGH_HUMIDITY" />
+			<xs:enumeration value="HIGH_TEMPERATURE" />
+			<xs:enumeration value="HIGH_WIND" />
+			<xs:enumeration value="ICE_BUILD_UP" />
+			<xs:enumeration value="INTRUSION_DETECTION" />
+			<xs:enumeration value="LOW_FUEL" />
+			<xs:enumeration value="LOW_HUMIDITY" />
+			<xs:enumeration value="LOW_CABLE_PRESSURE" />
+			<xs:enumeration value="LOW_TEMPERATURE" />
+			<xs:enumeration value="LOW_WATER" />
+			<xs:enumeration value="SMOKE" />
+			<xs:enumeration value="TOXIC_GAS" />
+			<xs:enumeration value="EXTERNAL_POINT_FAILURE" />
+			<!-- eventType=Environmental X.721, X.733, X.736 -->
+			<xs:enumeration value="EXCESSIVE_VIBRATION" />
+			<xs:enumeration value="HEATING_VENT_COOLING_SYSTEM_PROBLEM" />
+			<xs:enumeration value="HUMIDITY_UNACCEPTABLE" />
+			<xs:enumeration value="MATERIAL_SUPPLY_EXHAUSTED" />
+			<xs:enumeration value="PRESSURE_UNACCEPTABLE" />
+			<xs:enumeration value="TEMPERATURE_UNACCEPTABLE" />
+			<xs:enumeration value="LEAK_DETECTED" />
+			<xs:enumeration value="TOXIC_LEAK_DETECTED" />
+			<!-- eventType=Environmental 2G & 3G Wireless Systems -->
+			<xs:enumeration value="COOLING_SYSTEM_FAILURE" />
+			<xs:enumeration value="EXTERNAL_EQUIPMENT_FAILURE" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="ProbableCauseOperationalViolation">
+		<xs:annotation>
+			<xs:documentation>3GPP TS 32.111-2 V6.9.0 annex B</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<!-- eventType=OperationalViolation X.721, X.733, X.736 -->
+			<xs:enumeration value="DENIAL_OF_SERVICE" />
+			<xs:enumeration value="OUT_OF_SERVICE" />
+			<xs:enumeration value="PROCEDURAL_ERROR" />
+			<xs:enumeration value="INDETERMINATE" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="ProbableCausePhysicalViolation">
+		<xs:annotation>
+			<xs:documentation>3GPP TS 32.111-2 V6.9.0 annex B</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<!-- eventType=PhysicalViolation X.721, X.733, X.736 -->
+			<xs:enumeration value="CABLE_TAMPER" />
+			<xs:enumeration value="INDETERMINATE" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="ProbableCauseSecurityServiceOrMechanismViolation">
+		<xs:annotation>
+			<xs:documentation>3GPP TS 32.111-2 V6.9.0 annex B</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<!--
+				eventType=SecurityServiceOrMechanismViolation X.721, X.733, X.736
+			-->
+			<xs:enumeration value="AUTHENTICATION_FAILURE" />
+			<xs:enumeration value="BREACH_OF_CONFIDENTIALITY" />
+			<xs:enumeration value="NON_REPUDIATION_FAILURE" />
+			<xs:enumeration value="UNAUTHORIZED_ACCESS_ATTEMPT" />
+			<xs:enumeration value="INDETERMINATE" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="ProbableCauseIntegrityViolation">
+		<xs:annotation>
+			<xs:documentation>3GPP TS 32.111-2 V6.9.0 annex B</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<!-- eventType=IntegrityViolation X.721, X.733, X.736 -->
+			<xs:enumeration value="DUPLICATE_INFORMATION" />
+			<xs:enumeration value="INFORMATION_MISSING" />
+			<xs:enumeration value="INFORMATION_MODIFICATION_DETECTED" />
+			<xs:enumeration value="INFORMATION_OUT_OF_SEQUENCE" />
+			<xs:enumeration value="UNEXPECTED_INFORMATION" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="ProbableCauseTimeDomainViolation">
+		<xs:annotation>
+			<xs:documentation>3GPP TS 32.111-2 V6.9.0 annex B</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<!-- eventType=TimeDomainViolation X.721, X.733, X.736 -->
+			<xs:enumeration value="DELAYED_INFORMATION" />
+			<xs:enumeration value="KEY_EXPIRED" />
+			<xs:enumeration value="OUT_OF_HOURS_ACTIVITY" />
+		</xs:restriction>
+	</xs:simpleType>
+
+</xs:schema>
