@@ -3,9 +3,6 @@ require ['js/config.js'],
 (config, r)->
   require ['qunit','webtests/example'], (QUnit, example)->
 #    console.log QUnit
-
-    example.run()
-
     # start QUnit.
     QUnit.load()
     QUnit.start()
