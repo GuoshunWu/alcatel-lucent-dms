@@ -14,6 +14,7 @@ define [
   './charsetgrid'
   './usergrid'
   './glossarygrid'
+  './webtestsMain'
 
 ], (require, $, blockui,jqmsgbox, i18n, c18n, urls, util)->
   init = ()->
