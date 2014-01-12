@@ -101,24 +101,24 @@
 
     <dependencies>
 
+        <!-- for web page test -->
+
+        <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+            <version>1.4.01</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>2.39.0</version>
+        </dependency>
+
         <!--<dependency>-->
-            <!--<groupId>net.sourceforge.jwebunit</groupId>-->
-            <!--<artifactId>jwebunit-webdriver-plugin</artifactId>-->
-            <!--<version>3.1</version>-->
-            <!--<exclusions>-->
-                <!--<exclusion>-->
-                    <!--<groupId>javax.servlet</groupId>-->
-                    <!--<artifactId>javax.servlet-api</artifactId>-->
-                <!--</exclusion>-->
-                <!--<exclusion>-->
-                    <!--<groupId>javax.servlet.jsp</groupId>-->
-                    <!--<artifactId>jsp-api</artifactId>-->
-                <!--</exclusion>-->
-                <!--<exclusion>-->
-                    <!--<groupId>org.eclipse.jetty</groupId>-->
-                    <!--<artifactId>jetty-server</artifactId>-->
-                <!--</exclusion>-->
-            <!--</exclusions>-->
+            <!--<groupId>org.seleniumhq.selenium</groupId>-->
+            <!--<artifactId>selenium-server</artifactId>-->
+            <!--<version>2.39.0</version>-->
         <!--</dependency>-->
 
         <dependency>
