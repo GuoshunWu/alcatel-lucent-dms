@@ -57,7 +57,12 @@
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <buildNumber>${maven.build.timestamp}</buildNumber>
 
-        <ldap.url>ldap://ldap.sxb.bsf.alcatel.fr</ldap.url>
+        <ldap.url>ldap://ldap-emea.app.alcatel-lucent.com:2791</ldap.url>
+        <ldap.url2>ldaps://ldap-emea.app.alcatel-lucent.com:2793</ldap.url2>
+
+        <ldap.dirbase>dc=internal,dc=users,dc=root</ldap.dirbase>
+        <ldap.bind>uid=reader.Web_SHA,dc=Web_SHA,dc=apps,dc=root</ldap.bind>
+        <ldap.password>Pass_123</ldap.password>
 
 
         <!--Default console log filer -->

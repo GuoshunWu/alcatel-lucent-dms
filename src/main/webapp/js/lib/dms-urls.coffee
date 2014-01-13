@@ -85,8 +85,9 @@ define (require)->
 
   languages: getURL('languages','rest/')
 
-  translations: getURL('luceneTranslations', 'rest/')
 
+  translations: getURL('luceneTranslations', 'rest/')
+  translation_histories: getURL('translationHistory', 'rest/')
   users: getURL('users', 'rest/')
   ldapuser: getURL('users/ldapUser', 'rest/')
 

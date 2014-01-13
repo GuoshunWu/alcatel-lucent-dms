@@ -7,6 +7,7 @@
     <script>
         jQuery(function ($) {
             var url = 'myevents';
+            url = '../scripts/ajaxstreaming.groovy'
 
             function long_polling() {
                 $.getJSON(url, function (json) {
@@ -23,7 +24,25 @@
                 });
             }
 
-            long_polling();
+//            long_polling();
+            //"json stream",
+
+            function ajaxStream(url) {
+                // Declare the variables we'll be using
+                var xmlHttp = new $.ajaxSettings.xhr();
+                xmlHttp.open("GET", url, true);
+                var len = 0;
+                xmlHttp.onreadystatechange = function () {
+                    if (xmlHttp.status == 200 && xmlHttp.readyState >= 3) {
+                        var text = xmlHttp.responseText;
+                        text = text.substr(len);
+                        len = xmlHttp.responseText.length;
+                        console.log(text);
+                    }
+                }
+                xmlHttp.send(null);
+            }
+            ajaxStream(url);
         });
     </script>
 </head>

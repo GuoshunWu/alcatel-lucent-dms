@@ -1,6 +1,7 @@
 package com.alcatel_lucent.dms.model;
 
 import java.sql.Timestamp;
+import java.util.Collection;
 
 import com.alcatel_lucent.dms.util.CharsetUtil;
 import org.hibernate.annotations.Index;
@@ -49,6 +50,7 @@ public class Translation extends BaseEntity {
     private Integer translationType;
     private Timestamp lastUpdateTime;
     private Integer verifyStatus;
+    private Collection<TranslationHistory> histories;
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -145,5 +147,13 @@ public class Translation extends BaseEntity {
     public void setVerifyStatus(Integer verifyStatus) {
         this.verifyStatus = verifyStatus;
     }
+
+	public Collection<TranslationHistory> getHistories() {
+		return histories;
+	}
+
+	public void setHistories(Collection<TranslationHistory> histories) {
+		this.histories = histories;
+	}
 
 }

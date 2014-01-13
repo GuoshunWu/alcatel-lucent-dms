@@ -754,6 +754,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
             Text text = textMap.get(td.getText().getReference());
             if (text == null) {
                 text = new Text();
+                text.setRefLabel(td.getLabel());
                 text.setReference(td.getText().getReference());
                 textMap.put(td.getText().getReference(), text);
             }
@@ -765,11 +766,11 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
             count++;
         }
         if (count > 0) {
-            textService.updateTranslations(context.getId(), textMap.values(), Constants.ImportingMode.TRANSLATION);
+            textService.updateTranslations(context.getId(), textMap.values(), Constants.ImportingMode.TRANSLATION, TranslationHistory.TRANS_OPER_RECEIVE);
             // update DEFAULT context from each DICT context, so the DEFAULT context would be a union of all translations
             if (context.getName().equals(Context.DICT)) {
                 Context defaultCtx = textService.getContextByExpression(Context.DEFAULT, (Dictionary)null);
-                textService.updateTranslations(defaultCtx.getId(), textMap.values(), Constants.ImportingMode.DELIVERY);
+                textService.updateTranslations(defaultCtx.getId(), textMap.values(), Constants.ImportingMode.SUPPLEMENT, TranslationHistory.TRANS_OPER_SUGGEST);
             }
         }
         return count;

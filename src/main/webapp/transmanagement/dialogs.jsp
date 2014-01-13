@@ -159,3 +159,18 @@
         </tr>
     </table>
 </div>
+
+<div id="translationHistoryDialogInDetailView" title="<s:text name="appmng.dialogs.history.title"/> ">
+    <table border="0" width="100%">
+        <tr>
+            <td>
+                <table id="detailViewTranslationHistoryGrid">
+                    <tr>
+                        <td></td>
+                    </tr>
+                </table>
+                <div id="detailViewTranslationHistoryGridPager"></div>
+            </td>
+        </tr>
+    </table>
+</div>

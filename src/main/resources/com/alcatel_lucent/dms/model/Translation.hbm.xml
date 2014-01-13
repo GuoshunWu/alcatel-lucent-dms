@@ -21,6 +21,11 @@
         <property name="verifyStatus" type="integer" column="VERIFY_STATUS"/>
         <many-to-one name="text" column="TEXT_ID" index="I_TRANSLATION_TEXT_LAN" not-null="true"/>
         <many-to-one lazy="false" name="language" index="I_TRANSLATION_TEXT_LAN" column="LANGUAGE_ID" not-null="true"/>
+        
+        <set inverse="true" lazy="true" name="histories" order-by="OPERATION_TIME">
+            <key column="PARENT_ID" on-delete="cascade" not-null="true"/>
+            <one-to-many class="TranslationHistory"/>
+        </set>
 
     </class>
 

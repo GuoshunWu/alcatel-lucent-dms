@@ -21,22 +21,6 @@ import org.junit.Test
 public class UtilTest {
 
 //    @Test
-    void testConsistentGlossaries() {
-        Collection<Glossary> glossaries = Arrays.asList(new Glossary("LDAP"),new Glossary("HA"), new Glossary("OpenGL"));
-        String text = "Valige üks element, et näha kõiki selles sisalduvaid sõnumeid (uusi ja vanu)."
-        Assert.assertEquals("Valige üks element, et näha kõiki selles sisalduvaid sõnumeid (uusi ja vanu).", Util.consistentGlossaries(text, glossaries))
-
-        text = "Valige üks element, et 中ha kõiki selles sisalduvaid sõnumeid (uusi ja vanu)."
-        Assert.assertEquals("Valige üks element, et 中HA kõiki selles sisalduvaid sõnumeid (uusi ja vanu).", Util.consistentGlossaries(text, glossaries))
-
-        text = "ha Valige üks element, et =ha kõiki selles sisalduvaid sõnumeid (uusi ja vanu)."
-        Assert.assertEquals("HA Valige üks element, et =HA kõiki selles sisalduvaid sõnumeid (uusi ja vanu).", Util.consistentGlossaries(text, glossaries))
-
-        text = "haValige üks element, et ÷ha kõiki selles sisalduvaid sõnumeid (uusi ja vanu)."
-        Assert.assertEquals("haValige üks element, et ÷HA kõiki selles sisalduvaid sõnumeid (uusi ja vanu).", Util.consistentGlossaries(text, glossaries))
-
-    }
-//    @Test
     void testUnzip() throws Exception {
         Util.unzip("D:/test/dms.zip", "d:/tmp");
     }

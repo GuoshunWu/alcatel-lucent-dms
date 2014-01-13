@@ -200,6 +200,12 @@ public class GlossaryServiceImpl implements GlossaryService {
 
     /**
      *
+     * @param glossaries glossaries used for match, all glossaries will be used if null
+     * @param propertyName
+     * @param subCollectionPropertyName
+     * @param subObjectPropertyName
+     *
+     * @return Matched GlossaryMatchObject collection
      * */
     private Collection<GlossaryMatchObject> consistentGlossariesInObject(final Collection<Glossary> glossaries, Object bean, String propertyName, String subCollectionPropertyName, String subObjectPropertyName) {
         Collection<GlossaryMatchObject> matchedGlossaryMatchObjects = new ArrayList<GlossaryMatchObject>();

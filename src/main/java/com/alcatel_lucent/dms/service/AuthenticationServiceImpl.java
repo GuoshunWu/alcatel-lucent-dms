@@ -39,7 +39,7 @@ public class AuthenticationServiceImpl extends BaseServiceImpl implements Authen
         //local authenticate failed but ldap authenticate success
         if (null != user) return user;
         //user == null ,create a new user entry
-        user = ldapService.findUserByCIL(username);
+        user = ldapService.findUserByCSLOrCIL(username);
         user.setRole(User.ROLE_APPLICATION_OWNER | User.ROLE_TRANSLATION_MANAGER);    // Unlimited access on QA
 //				user.setRole(User.ROLE_GUEST);	// Limited access on Prod
         user.setStatus(User.ENABLED);

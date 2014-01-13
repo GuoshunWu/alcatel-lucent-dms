@@ -18,7 +18,8 @@ define
       inprogress: 'In progress',
       translated: 'Translated'
       typefilter: ':All;1:From dict;2:From task;3:Manual;4:Auto'
-
+    history:
+      'caption': "History for translation '{0}'"
     transupload: 'Import translations...'
 
 

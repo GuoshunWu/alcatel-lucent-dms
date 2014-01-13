@@ -933,7 +933,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
                 }
                 Map<String, Text> textMap = contextMap.get(contextKey);
                 log.info("### context key:" + contextKey + " text num: " + textMap.size());
-                textService.updateTranslations(context.getId(), textMap.values(), Constants.ImportingMode.TRANSLATION);
+                textService.updateTranslations(context.getId(), textMap.values(), Constants.ImportingMode.TRANSLATION, TranslationHistory.TRANS_OPER_INPUT);
             }
             return count;
         } catch (BusinessException e) {
@@ -1214,7 +1214,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
         List<LabelTranslation> result = new ArrayList<LabelTranslation>();
         if (dict.getDictLanguages() != null) {
             for (DictionaryLanguage dl : dict.getDictLanguages()) {
-                if (dl.isReference()) continue;    // skip reference language
+                if (dl.isReference()) continue;  // skip reference language
                 LabelTranslation lt = label.getOrigTranslation(dl.getLanguageCode());
                 if (lt == null) {
                     lt = new LabelTranslation();
@@ -1225,9 +1225,8 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
                     lt.setLanguageCode(dl.getLanguageCode());
                     lt.setLanguage(dl.getLanguage());
                 }
-                lt.setTranslation(label.getTranslation(dl.getLanguageCode()));
-                lt.setStatus(label.getTranslationStatus(dl.getLanguageCode()));
-                if (status == null || lt.getStatus().intValue() == status.intValue()) {
+                lt.setCt(label.getTranslationObject(dl));
+                if (status == null || lt.getCt().getStatus() == status.intValue()) {
                     result.add(lt);
                 }
             }

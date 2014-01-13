@@ -40,6 +40,17 @@ public class LabelTranslation extends BaseEntity {
     private Integer translationType;
     public static final int TYPE_AUTO = Translation.TYPE_AUTO;        // matched automatically from other context
 
+    private Translation ct;
+
+    @Transient
+    public Translation getCt() {
+        return ct;
+    }
+
+    public void setCt(Translation ct) {
+        this.ct = ct;
+    }
+
 
     public String getComment() {
         return comment;
