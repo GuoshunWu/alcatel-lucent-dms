@@ -32,8 +32,8 @@
             <table border="0" align='center'>
                 <tr>
                     <td align="right">
-                        <label for="idLoginname"><s:text name="login.loginname"/></label></td>
-                    <td><s:textfield name="loginname" id="idLoginname" size="25" maxlength="40"/></td>
+                        <label for="idLoginName"><s:text name="login.loginname"/></label></td>
+                    <td><s:textfield name="loginname" id="idLoginName" size="25" maxlength="40"/></td>
                     <td style="width:120px">
                         <div id="idLoginnameTip">
                             <s:fielderror name="loginname"/>

@@ -1,5 +1,5 @@
 <style type="text/css">
-    #navitation-table {
+    #navigation-table {
         width: 100%;
         height: 100%;
         text-align: center;
@@ -21,7 +21,7 @@
     </table>
 </div>
 
-<table id="navitation-table" border="0">
+<table id="navigation-table" border="0">
     <tr class="top-bar">
         <td style="width: 300px">
             <span class="page-title"><s:text name="appmng.title"/></span>

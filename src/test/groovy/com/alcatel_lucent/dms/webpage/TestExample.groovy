@@ -1,44 +1,90 @@
 package com.alcatel_lucent.dms.webpage
 
-import junit.framework.Assert
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.openqa.selenium.By
+import org.openqa.selenium.StaleElementReferenceException
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
 import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.support.ui.ExpectedCondition
+import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.WebDriverWait
 
+import javax.annotation.Nullable
+
+import static junit.framework.Assert.assertNotNull
+
 /**
- * Created by Administrator on 14-1-12.
+ * Created by Guoshun on 14-1-12.
  * Reference: http://docs.seleniumhq.org/docs/03_webdriver.jsp#internet-explorer-driver
  */
 class TestExample {
+    private WebDriver driver
 
-    @Test
-    void TestDemo() {
+    private String userName
+    private String password
+
+    private String testProdName
+    private String testAppName
+
+    @Before
+    void setUp() {
         // Create a new instance of the Firefox driver
         // Notice that the remainder of the code relies on the interface,
         // not the implementation.
-        WebDriver driver = new FirefoxDriver()
 //        driver = new ChromeDriver()
 //        driver = new InternetExplorerDriver()
+        driver = new FirefoxDriver()
+        userName = "admin"
+        password = "alcatel123"
 
-        driver.get("https://www.google.com.hk")
-        WebElement element = driver.findElement(By.name('q'))
-        element.sendKeys('Cheese!')
-        element.submit()
-        println("Page title is: ${driver.title}")
+        testProdName = "TestProd"
+        testAppName = "TestApp"
+    }
 
-        // Google's search is rendered dynamically with JavaScript.
-        // Wait for the page to load, timeout after 10 seconds
-        // Should see: "cheese! - Google Search"
-        new WebDriverWait(driver, 10).until({ WebDriver webDriver ->
-            return webDriver.title.toLowerCase().startsWith("cheese!")
-        } as ExpectedCondition<Boolean>)
-
-        Assert.assertTrue driver.title.contains("Cheese")
-
+    @After
+    void tearDown() {
         driver.quit()
+        userName = password = null
+        testProdName = testAppName = null
+    }
+
+    private WebElement loginAsAdmin() {
+        driver.get "http://localhost:8888/dms"
+        driver.findElement(By.id('idLoginName')).sendKeys(userName)
+        WebElement pwdBtn = driver.findElement(By.id('idPassword'))
+        pwdBtn.sendKeys(password)
+        pwdBtn.submit()
+
+        return new WebDriverWait(driver, 10).
+                until(ExpectedConditions.presenceOfElementLocated(By.id("appTree")))
+    }
+
+    private WebElement getTestApp() {
+        WebElement appTree = loginAsAdmin()
+        final WebElement testProd = new WebDriverWait(driver, 10).until(
+                ExpectedConditions.presenceOfElementLocated(By.partialLinkText(testProdName)
+                )
+        )
+        //expand the test product
+        testProd.findElement(By.xpath("preceding-sibling::ins")).click()
+
+        new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOfElementLocated(""))
+        return new WebDriverWait(driver, 10).until({ WebDriver input ->
+            try{
+                WebElement testApp = testProd.findElement(By.xpath("following-sibling::ul/descendant::a[text()[contains(., \"${testAppName}\")]]"))
+                return testApp.isDisplayed() ? testApp : null
+            }catch(StaleElementReferenceException e){
+                return null
+            }
+        } as ExpectedCondition<WebElement>)
+    }
+
+    @Test
+    void TestDeliverDictionaries() {
+        WebElement testApp = getTestApp()
+        testApp.click()
     }
 }
