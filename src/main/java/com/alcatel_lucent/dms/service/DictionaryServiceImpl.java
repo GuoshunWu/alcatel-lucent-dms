@@ -1257,7 +1257,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             }
             texts.add(text);
         }
-        Map<String, Text> textMap = textService.updateTranslations(context.getId(), texts, Constants.ImportingMode.DELIVERY, TranslationHistory.TRANS_OPER_NEW);
+        Map<String, Text> textMap = textService.updateTranslations(context.getId(), texts, Constants.ImportingMode.SUPPLEMENT, TranslationHistory.TRANS_OPER_NEW);
         for (Label label : labels) {
             label.setText(textMap.get(label.getReference()));
         }
