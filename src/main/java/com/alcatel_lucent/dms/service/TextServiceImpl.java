@@ -719,7 +719,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                 newTrans.setStatus(trans.getStatus());
                 newTrans.setTranslationType(Translation.TYPE_MANUAL);
                 newTrans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
-                addTranslation(text, newTrans);
+                newTrans = addTranslation(text, newTrans);
             } else {
                 newTrans.setTranslation(translation);
                 newTrans.setTranslationType(Translation.TYPE_MANUAL);
