@@ -35,7 +35,7 @@
         <many-to-one name="context" column="CONTEXT_ID" class="Context"
                      not-null="true"/>
         <many-to-one name="text" column="TEXT_ID" class="Text"
-                     not-null="true"/>
+                     not-null="false"/>
         <bag name="origTranslations" inverse="true" order-by="SORT_NO">
             <key column="LABEL_ID" on-delete="cascade"/>
             <one-to-many class="LabelTranslation"/>

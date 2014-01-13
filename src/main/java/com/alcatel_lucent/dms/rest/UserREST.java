@@ -82,7 +82,7 @@ public class UserREST extends BaseREST {
         }
         Map<String, String> requestMap = new HashMap<String, String>();
         requestMap.put("prop", "loginName,name,email");
-        User user = ldapService.findUserByCIL(loginName);
+        User user = ldapService.findUserByCSLOrCIL(loginName);
         return toJSON(user, requestMap);
     }
 

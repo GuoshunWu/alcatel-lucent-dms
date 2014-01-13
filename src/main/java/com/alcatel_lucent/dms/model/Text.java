@@ -155,5 +155,18 @@ public class Text extends BaseEntity {
 			}
 		}
 	}
+	
+	// used by creation of translation history
+	private Label refLabel;
+	
+	@Transient
+	public Label getRefLabel() {
+		return refLabel;
+	}
+	
+	@Transient
+	public void setRefLabel(Label label) {
+		this.refLabel = label;
+	}
 
 }

@@ -7,11 +7,19 @@
 
     <!-- For LDAP Template -->
     <bean id="contextSource" class="org.springframework.ldap.core.support.LdapContextSource">
-        <property name="url" value="${ldap.url}"/>
-        <property name="base" value="o=alcatel"/>
+
+        <property name="urls">
+            <list>
+                <value>${ldap.url}</value>
+                <value>${ldap.url2}</value>
+            </list>
+        </property>
+
+        <property name="base" value="${ldap.dirbase}"/>
         <property name="pooled" value="true"/>
-        <!--<property name="userDn" value="dms" />-->
-        <!--<property name="password" value="" />-->
+        <property name="userDn" value="${ldap.bind}" />
+        <property name="password" value="${ldap.password}" />
+
     </bean>
 
     <bean id="ldapTemplate" class="org.springframework.ldap.core.LdapTemplate">

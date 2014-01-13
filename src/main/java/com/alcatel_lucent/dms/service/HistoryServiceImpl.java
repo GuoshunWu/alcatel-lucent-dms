@@ -1,6 +1,7 @@
 package com.alcatel_lucent.dms.service;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,11 +11,16 @@ import org.springframework.stereotype.Service;
 import com.alcatel_lucent.dms.UserContext;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryHistory;
+import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.Task;
+import com.alcatel_lucent.dms.model.Translation;
+import com.alcatel_lucent.dms.model.TranslationHistory;
 import com.alcatel_lucent.dms.model.User;
 
 @Service("historyService")
 public class HistoryServiceImpl extends BaseServiceImpl implements HistoryService {
+	
+	private static ThreadLocal<Collection<TranslationHistory>> historyQueue = new ThreadLocal<Collection<TranslationHistory>>();
 
 	@Override
 	public DictionaryHistory logDelivery(Dictionary dictionary, String tempPath) {
@@ -71,6 +77,38 @@ public class HistoryServiceImpl extends BaseServiceImpl implements HistoryServic
 	@Override
 	public void logCloseTask(Task task) {
 		logTask(task, DictionaryHistory.OP_CLOSE_TASK, null);
+	}
+
+	@Override
+	public TranslationHistory addTranslationHistory(Translation trans,
+			Label refLabel, int oper, String memo) {
+		User operator = UserContext.getInstance().getUser();
+		operator = (User) dao.retrieve(User.class, operator.getLoginName());
+		Timestamp now = new Timestamp(System.currentTimeMillis());
+		TranslationHistory th = new TranslationHistory();
+		th.setParent(trans);
+		th.setRefLabel(refLabel);
+		th.setTranslation(trans.getTranslation());
+		th.setStatus(trans.getStatus());
+		th.setOperationType(oper);
+		th.setOperationTime(now);
+		th.setOperator(operator);
+		Collection<TranslationHistory> queue = historyQueue.get();
+		if (queue == null) {
+			queue = new ArrayList<TranslationHistory>();
+			historyQueue.set(queue);
+		}
+		queue.add(th);
+		return th;
+	}
+	
+	@Override
+	public void flushHistoryQueue() {
+		Collection<TranslationHistory> queue = historyQueue.get();
+		if (queue != null) {
+			dao.createArray(queue.toArray());
+			queue.clear();
+		}
 	}
 
 }

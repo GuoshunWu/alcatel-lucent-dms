@@ -24,9 +24,7 @@ public class LogoutAction extends BaseAction implements SessionAware {
         UserContext uc = (UserContext) session.get(UserContext.SESSION_USER_CONTEXT);
         if (uc != null) {
             log.info("User " + uc.getUser().getLoginName() + " logged out");
-            session.remove(UserContext.SESSION_USER_CONTEXT);
             ServletActionContext.getRequest().getSession().invalidate();
-            Global.logout(uc.getUser());
         }
         return SUCCESS;
     }
