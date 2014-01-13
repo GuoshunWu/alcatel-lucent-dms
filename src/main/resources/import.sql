@@ -78,9 +78,10 @@ INSERT INTO dms.USER (login_name, email, last_login_time, name, role,status) VAL
 
 -- FOR H2 --CALL HASH('SHA256', STRINGTOUTF8('Password'), 1)
 --create alias MD5 for "rg.apache.commons.codec.digest.DigestUtils.md5Hex(java.lang.String)";
-
+update dms.user set password_digest='1891de42f0750f759f93f8e0f4414cfc' where login_name in ('owner', 'manager', 'guest', 'admin')
 -- --FOR PostGreSQL
---update dms.user set password_digest=md5('alcatel123') where login_name in ('owner', 'manager', 'guest', 'admin')
+-- md5('alcatel123') = '1891de42f0750f759f93f8e0f4414cfc'
+-- update dms.user set password_digest=md5('alcatel123') where login_name in ('owner', 'manager', 'guest', 'admin')
 
 
 INSERT INTO dms.LANGUAGE(ID,NAME,DEFAULT_CHARSET) VALUES (0,'General Alcatel English','windows-1252');
