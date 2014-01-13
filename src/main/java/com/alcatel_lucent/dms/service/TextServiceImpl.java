@@ -6,6 +6,7 @@ import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
+
 import net.sf.json.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.TransformerUtils;
@@ -164,8 +165,11 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                             dbTrans.setTranslation(trans.getTranslation());
                         }
                         dbTrans.setStatus(trans.getStatus());
-                        dbTrans.setTranslationType(trans.getTranslationType() != null ?
-                                trans.getTranslationType() : Translation.TYPE_TASK);
+                        // do not change translation src in case of capitalization
+                        if (operationType != TranslationHistory.TRANS_OPER_CAPITALIZE) {
+	                        dbTrans.setTranslationType(trans.getTranslationType() != null ?
+	                                trans.getTranslationType() : Translation.TYPE_TASK);
+                        }
                         dbTrans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
                         historyService.addTranslationHistory(dbTrans, text.getRefLabel(), operationType, null);
                     } else if (mode == Constants.ImportingMode.DELIVERY) {
@@ -326,27 +330,30 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 
     public void updateTranslationStatus(Collection<Long> transIds, int transStatus) {
         for (Long id : transIds) {
+        	Translation trans = null;
             if (id > 0) {
-                Translation trans = (Translation) dao.retrieve(Translation.class, id);
+                trans = (Translation) dao.retrieve(Translation.class, id);
                 trans.setStatus(transStatus);
             } else {    // virtual tid = - (label_id * 1000 + language_id)
                 id = -id;
                 Long labelId = id / 1000;
                 Long langId = id % 1000;
                 Label label = (Label) dao.retrieve(Label.class, labelId);
-                Translation trans = label.getText().getTranslation(langId);
+                trans = label.getText().getTranslation(langId);
                 if (trans == null) {
                     trans = new Translation();
                     trans.setTranslation(label.getReference());
                     trans.setLanguage((Language) dao.retrieve(Language.class, langId));
                     trans.setStatus(transStatus);
                     trans.setText(label.getText());
-                    dao.create(trans);
+                    trans = (Translation) dao.create(trans);
                 } else {
                     trans.setStatus(transStatus);
                 }
             }
+            historyService.addTranslationHistory(trans, null, TranslationHistory.TRANS_OPER_STATUS, null);
         }
+        historyService.flushHistoryQueue();
     }
 
     public void updateTranslationStatusByDict(Collection<Long> dictIds, Collection<Long> langIds, int transStatus) {
@@ -366,6 +373,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
             Collection<Translation> qr = findAllTranslationsByDictAndLanguage(dictId, langIds);
             for (Translation trans : qr) {
                 trans.setStatus(transStatus);
+                historyService.addTranslationHistory(trans, null, TranslationHistory.TRANS_OPER_STATUS, null);
             }
             // create missing Translation objects
             param.put("dictId", dictId);
@@ -378,9 +386,11 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                 translation.setText(text);
                 translation.setTranslation(text.getReference());
                 translation.setStatus(transStatus);
-                dao.create(translation);
+                translation = (Translation) dao.create(translation);
+                historyService.addTranslationHistory(translation, null, TranslationHistory.TRANS_OPER_STATUS, null);
             }
         }
+        historyService.flushHistoryQueue();
     }
 
     public void updateTranslationStatusByApp(Collection<Long> appIds, Collection<Long> langIds, int status) {
@@ -422,11 +432,13 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                         trans.setText(text);
                         trans.setTranslation(text.getReference());
                         trans.setStatus(transStatus);
-                        dao.create(trans);
+                        trans = (Translation) dao.create(trans);
                     } else {
                         trans.setStatus(transStatus);
                     }
+                    historyService.addTranslationHistory(trans, null, TranslationHistory.TRANS_OPER_STATUS, null);
                 }
+                historyService.flushHistoryQueue();
             }
 
         }

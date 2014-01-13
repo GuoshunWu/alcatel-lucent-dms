@@ -12,6 +12,7 @@ public class TranslationHistory extends BaseEntity {
 	public static final int TRANS_OPER_CAPITALIZE = 5;	// changed by capitalization, with refLabel
 	public static final int TRANS_OPER_GLOSSARY = 6;	// changed by glossary matching, without refLabel
 	public static final int TRANS_OPER_SUGGEST = 7; // suggested by DMS, with or without refLabel
+	public static final int TRANS_OPER_STATUS = 8;	// manually change translation status
 	
 	private Translation parent;
 	private Label refLabel;
