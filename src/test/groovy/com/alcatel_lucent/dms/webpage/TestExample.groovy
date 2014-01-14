@@ -4,17 +4,12 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.openqa.selenium.By
-import org.openqa.selenium.StaleElementReferenceException
+import org.openqa.selenium.JavascriptExecutor
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
 import org.openqa.selenium.firefox.FirefoxDriver
-import org.openqa.selenium.support.ui.ExpectedCondition
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.WebDriverWait
-
-import javax.annotation.Nullable
-
-import static junit.framework.Assert.assertNotNull
 
 /**
  * Created by Guoshun on 14-1-12.
@@ -22,12 +17,15 @@ import static junit.framework.Assert.assertNotNull
  */
 class TestExample {
     private WebDriver driver
+    private JavascriptExecutor jsExecutor
 
     private String userName
     private String password
 
     private String testProdName
     private String testAppName
+
+    private String testFilePath
 
     @Before
     void setUp() {
@@ -37,16 +35,21 @@ class TestExample {
 //        driver = new ChromeDriver()
 //        driver = new InternetExplorerDriver()
         driver = new FirefoxDriver()
+        jsExecutor = driver
+
         userName = "admin"
         password = "alcatel123"
 
         testProdName = "TestProd"
         testAppName = "TestApp"
+
+        testFilePath = "D:\\Documents\\Alcatel_Lucent\\DMS\\Test\\material\\cms-sample.zip"
     }
 
     @After
     void tearDown() {
         driver.quit()
+        jsExecutor = driver = null
         userName = password = null
         testProdName = testAppName = null
     }
@@ -70,21 +73,26 @@ class TestExample {
         )
         //expand the test product
         testProd.findElement(By.xpath("preceding-sibling::ins")).click()
-
-        new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOfElementLocated(""))
-        return new WebDriverWait(driver, 10).until({ WebDriver input ->
-            try{
-                WebElement testApp = testProd.findElement(By.xpath("following-sibling::ul/descendant::a[text()[contains(., \"${testAppName}\")]]"))
-                return testApp.isDisplayed() ? testApp : null
-            }catch(StaleElementReferenceException e){
-                return null
-            }
-        } as ExpectedCondition<WebElement>)
+        String xPathOfTestApp = "//div[@id='appTree']/descendant::a[contains(.,'${testProdName}')]/" +
+                "following-sibling::ul/descendant::a[contains(.,'${testAppName}')]"
+        return new WebDriverWait(driver, 10).until(ExpectedConditions.elementToBeClickable(By.xpath(xPathOfTestApp)))
     }
 
     @Test
     void TestDeliverDictionaries() {
         WebElement testApp = getTestApp()
+        Thread.sleep(500)
         testApp.click()
+        WebElement elemUploadDict = new WebDriverWait(driver, 10).until(ExpectedConditions.presenceOfElementLocated(By.id("dctFileUpload")))
+        Thread.sleep(500)
+        elemUploadDict.sendKeys(testFilePath)
+
+        new WebDriverWait(driver, 60 * 2).until(
+                ExpectedConditions.visibilityOfElementLocated(By.id("dictListPreviewDialog"))
+        )
+        jsExecutor.executeScript("\$('#dictListPreviewDialog').next().find(\"button\").click()")
+        new WebDriverWait(driver, 60 * 3).until(
+                ExpectedConditions.visibilityOfElementLocated(By.id("importReportDialog"))
+        )
     }
 }
