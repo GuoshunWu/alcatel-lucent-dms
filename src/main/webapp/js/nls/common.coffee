@@ -5,7 +5,7 @@ define
     dictformats: window.param?.dictFormats
     transcontext: '[DEFAULT]:[DEFAULT];[EXCLUSION]:[EXCLUSION];[LABEL]:[LABEL];[DICT]:[DICT];[APP]:[APP];[PROD]:[PROD];Other:Other'
     dictencodings: 'ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE'
-    transoptype: '1:DELIVER;2:RECEIVE;3:NEW;4:INPUT;5:CAPITALIZE;6:GLOSSARY;7:SUGGEST'
+    transoptype: '1:DELIVER;2:RECEIVE;3:NEW;4:INPUT;5:CAPITALIZE;6:GLOSSARY;7:SUGGEST;8:TRANS_OPER_STATUS'
     history:
       'caption': "History for translation '{0}'"
       'nohistory': 'No translation history to display.'
