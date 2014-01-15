@@ -71,14 +71,14 @@
 -- INSERT INTO dms.APPLICATION_BASE (NAME,PRODUCT_BASE_ID) VALUES('App_B1',2);
 
 
-INSERT INTO dms.USER (login_name, email, last_login_time, name, role,status) VALUES ('admin', 'Admin@test.com', CURRENT_DATE, 'Administrator',  4, 1);
-INSERT INTO dms.USER (login_name, email, last_login_time, name, role,status) VALUES ('owner', 'Owner@test.com', CURRENT_DATE, 'Application Owner',  1, 1);
-INSERT INTO dms.USER (login_name, email, last_login_time, name, role,status) VALUES ('manager', 'Manager@test.com', CURRENT_DATE, 'Application Manager', 2, 1);
-INSERT INTO dms.USER (login_name, email, last_login_time, name, role,status) VALUES ('guest', 'Guest@test.com', CURRENT_DATE, 'Guest',  0, 1);
+INSERT INTO dms.USER (login_name, email, last_login_time, name, role,status, password_digest) VALUES ('admin', 'Admin@test.com', CURRENT_DATE, 'Administrator',  4, 1, '1891de42f0750f759f93f8e0f4414cfc');
+INSERT INTO dms.USER (login_name, email, last_login_time, name, role,status, password_digest) VALUES ('owner', 'Owner@test.com', CURRENT_DATE, 'Application Owner',  1, 1, '1891de42f0750f759f93f8e0f4414cfc');
+INSERT INTO dms.USER (login_name, email, last_login_time, name, role,status, password_digest) VALUES ('manager', 'Manager@test.com', CURRENT_DATE, 'Application Manager', 2, 1, '1891de42f0750f759f93f8e0f4414cfc');
+INSERT INTO dms.USER (login_name, email, last_login_time, name, role,status, password_digest) VALUES ('guest', 'Guest@test.com', CURRENT_DATE, 'Guest',  0, 1, '1891de42f0750f759f93f8e0f4414cfc');
 
 -- FOR H2 --CALL HASH('SHA256', STRINGTOUTF8('Password'), 1)
 --create alias MD5 for "rg.apache.commons.codec.digest.DigestUtils.md5Hex(java.lang.String)";
-update dms.user set password_digest='1891de42f0750f759f93f8e0f4414cfc' where login_name in ('owner', 'manager', 'guest', 'admin')
+-- update dms.user set password_digest='1891de42f0750f759f93f8e0f4414cfc' where login_name in ('owner', 'manager', 'guest', 'admin')
 -- --FOR PostGreSQL
 -- md5('alcatel123') = '1891de42f0750f759f93f8e0f4414cfc'
 -- update dms.user set password_digest=md5('alcatel123') where login_name in ('owner', 'manager', 'guest', 'admin')
