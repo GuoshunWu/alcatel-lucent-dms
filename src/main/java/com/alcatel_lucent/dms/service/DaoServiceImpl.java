@@ -191,6 +191,10 @@ public class DaoServiceImpl implements DaoService {
         return Pair.of(resultSize, hibQuery.list());
     }
 
+    public Object merge(Object obj) {
+        return getSession().merge(obj);
+    }
+
     public Object retrieveOne(String hql) {
         return retrieveOne(hql, null, null);
     }

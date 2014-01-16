@@ -11,7 +11,7 @@ define [
   'taskmng/main'
   'ctxmng/main'
   'admin/main'
-
+  'commons/dialogs'
 ], (
   $
   blockui
@@ -24,7 +24,8 @@ define [
   transmngPanel
   taskmngPanel
   ctxmngPanel,
-  adminPanel
+  adminPanel,
+  cdialogs
 )->
   isFirst = true
   ready = (param)->
@@ -33,6 +34,8 @@ define [
     $.blockUI.defaults.message = '<h1><img src="images/busy.gif" />&nbsp;Please wait...</h1>'
     util.afterInitilized(@)
     $('#loading-container').fadeOut 'slow', ()->$(@).remove()
+
+    cdialogs.tipOfDayDialog.dialog 'open' if window.param.currentUser.showTips
 
   panelSwitchHandler = (oldpnl, newpnl)->
     # we need keep the panels to be informed if current product base changed
@@ -106,6 +109,7 @@ define [
 
     # appmng panel as the current page on init
     $("span[id^='nav'][value='appmng']").trigger 'click'
+
   ################################################## Initilaized #####################################################
   init()
   ready(@)

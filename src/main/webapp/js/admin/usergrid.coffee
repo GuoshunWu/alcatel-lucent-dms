@@ -10,7 +10,7 @@ define [
   grid = $('#userGrid').jqGrid(
     url: urls.users
     datatype: 'json', mtype: 'post'
-    postData: {prop: 'loginName,name,email,lastLoginTime, status, role, onLine', format: 'grid'}
+    postData: {prop: 'loginName,name,email,lastLoginTime, status, role, onLine,loginCounter', format: 'grid'}
     pager: '#userGridPager', rowNum: 30, rowList: [15, 30, 60]
     multiselect: true
     cellEdit: true, cellurl: urls.user.update, afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
@@ -22,7 +22,7 @@ define [
     viewrecords: true, gridview: true, multiselect: true
     sortname: 'lastLoginTime', sortorder: 'desc'
     height: '100%'
-    colNames: ['Login name', 'Name', 'Email', 'Last login time', 'Enabled', 'Role', 'IsOnLine']
+    colNames: ['Login name', 'Name', 'Email', 'Last login time', 'Enabled', 'Role', 'IsOnLine', 'Login Counter']
     colModel: [
       {name: 'loginName', index: 'loginName', width: 100, align: 'left'}
       {name: 'name', index: 'name', width: 100, align: 'left'}
@@ -40,6 +40,7 @@ define [
         "<span>#{picName}&nbsp;<img src='images/#{picName}16.png'></span>"
       unformat:(cellvalue, options, cell)-> -1 isnt cellvalue.indexOf("online") + ""
       }
+      {name: 'loginCounter', index: 'loginCounter', width: 60, align: 'right'}
     ]
     beforeSubmitCell:(rowid,celname,value,iRow,iCol)->
       'loginName':rowid

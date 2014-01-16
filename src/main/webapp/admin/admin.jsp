@@ -17,7 +17,7 @@
                 <li><a href="#sysConfig"><s:text name="admin.sysconfig.title"/></a></li>
             </s:if>
             <li><a href="#glossary">Glossary</a></li>
-            <li><a href="#webTests">Web Test Suites</a></li>
+            <%--<li><a href="#webTests">Web Test Suites</a></li>--%>
         </ul>
 
         <div id="langAdmin">
@@ -40,9 +40,9 @@
             <%@include file="glossary.jsp" %>
         </div>
 
-        <div id="webTests">
-            <%@include file="webTests.jsp" %>
-        </div>
+        <%--<div id="webTests">--%>
+            <%--<%@include file="webTests.jsp" %>--%>
+        <%--</div>--%>
 
     </div>
 </div>

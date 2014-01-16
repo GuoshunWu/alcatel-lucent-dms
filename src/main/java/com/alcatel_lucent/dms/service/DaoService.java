@@ -53,6 +53,8 @@ public interface DaoService {
     List retrieve(String hql, Map paramMap, int firstResult, int maxResults);
     List retrieve(String hql, Map paramMap, int firstResult, int maxResults, String[] initProps);
 
+    Object merge(Object obj);
+
     Object retrieveOne(String hql);
     Object retrieveOne(String hql, String[] initProps);
 

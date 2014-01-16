@@ -32,7 +32,7 @@ public class AsyncLongRunningServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        pool = Executors.newFixedThreadPool(100);
+        pool = Executors.newCachedThreadPool();
     }
 
     @Override
@@ -49,18 +49,12 @@ public class AsyncLongRunningServlet extends HttpServlet {
                 currentThread.getName(), currentThread.getId(), dFmt.format(new Date()));
         req.setAttribute("org.apache.catalina.ASYNC_SUPPORTED", true);
 
-        String time = req.getParameter("time");
-        if (null == time) time = "5000";
-        int secs = Integer.parseInt(time);
-
-        // max 10 seconds
-        if (secs > 10000) secs = 10000;
-
         AsyncContext asyncCtx = req.startAsync();
         asyncCtx.addListener(new AppAsyncListener());
-        asyncCtx.setTimeout(9000);
+        // no time out
+        asyncCtx.setTimeout(0);
 
-        pool.execute(new AsyncRequestProcessor(asyncCtx, secs));
+        pool.execute(new AsyncRequestProcessor(asyncCtx));
         long endTime = System.currentTimeMillis();
         log.info("AsyncLongRunningServlet End::Name={}::ID={}::Time Taken={} End at {}",
                 currentThread.getName(), currentThread.getId(), endTime - startTime, dFmt.format(new Date()));

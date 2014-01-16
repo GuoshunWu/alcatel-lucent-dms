@@ -12,12 +12,13 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import net.sf.json.JSON;
 import net.sf.json.JSONObject;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Transformer;
+import org.apache.commons.collections.*;
 import org.apache.commons.collections.functors.InvokerTransformer;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.enums.EnumUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.struts2.interceptor.ServletRequestAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.struts2.ServletActionContext;
@@ -30,13 +31,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.util.*;
 
 import static org.apache.commons.lang3.StringUtils.join;
 
 @SuppressWarnings("serial")
 @ResultPath("/")
-public class EntryAction extends BaseAction {
+public class EntryAction extends BaseAction implements ServletRequestAware {
 
     private static Logger log = LoggerFactory.getLogger(EntryAction.class);
     private Map<String, Object> session;
@@ -52,9 +54,10 @@ public class EntryAction extends BaseAction {
     private Long curProductId = -1L;
     private Long curProductBaseId = -1L;
 
+    private HttpServletRequest request;
+
 
     private ArrayList<Product> products;
-
 
 
     public String getVersion() {
@@ -116,7 +119,7 @@ public class EntryAction extends BaseAction {
 
         final String textKeySuffix = "mng.title";
         final String pageSuffix = "mng.jsp";
-        final String fmt =  "'%s':'%s'";
+        final String fmt = "'%s':'%s'";
         StringBuilder strPages = new StringBuilder("{");
         strPages.append(StringUtils.join(
                 CollectionUtils.collect(pages, new Transformer() {
@@ -164,6 +167,29 @@ public class EntryAction extends BaseAction {
         clientParams.put("locale", getLocale().toString());
         clientParams.put("dictFormats", join(CollectionUtils.collect(EnumSet.allOf(Constants.DictionaryFormat.class), InvokerTransformer.getInstance("doubleMe")), ";"));
         clientParams.put("forbiddenPrivileges", StringUtils.join(Privileges.getInstance().getForbiddenPrivileges().toArray(ArrayUtils.EMPTY_STRING_ARRAY), ","));
+        clientParams.put("tipFiles", StringUtils.join(getTipFileNames(), ","));
         return clientParams;
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<String> getTipFileNames() {
+        final String relativeTipDir = "tips";
+        File tipFileDir = new File(request.getServletContext().getRealPath(relativeTipDir));
+        if (!tipFileDir.exists()) return Collections.EMPTY_LIST;
+
+        List<String> tipFileNames = (List<String>) CollectionUtils.collect(Arrays.asList(tipFileDir.listFiles()), TransformerUtils.invokerTransformer("getName"));
+        Collections.sort(tipFileNames);
+        tipFileNames = (List<String>) CollectionUtils.collect(tipFileNames, new Transformer() {
+            @Override
+            public Object transform(Object input) {
+                return relativeTipDir +"/" + input;
+            }
+        });
+        return tipFileNames;
+    }
+
+    @Override
+    public void setServletRequest(HttpServletRequest request) {
+        this.request = request;
     }
 }

@@ -17,6 +17,8 @@
 <body>
 
 <%@include file="common/maskdiv.jsp" %>
+<%@include file="common/commonDialogs.jsp" %>
+
 <div id="global-container">
     <div class="ui-layout-north">
         <%@include file="common/navigator.jsp" %>

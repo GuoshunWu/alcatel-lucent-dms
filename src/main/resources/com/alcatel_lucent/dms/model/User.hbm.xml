@@ -8,6 +8,8 @@
         <id name="loginName" type="string" column="LOGIN_NAME"/>
 
         <property name="name" not-null="true" type="string" column="NAME"/>
+        <property name="loginCounter" type="integer" column="LOGIN_COUNTER"/>
+        <property name="showTips" type="boolean" column="SHOW_TIPS"/>
         <property name="email" not-null="true" type="string" column="EMAIL"/>
         <property name="passwordDigest" not-null="false" type="string" column="PASSWORD_DIGEST"/>
         <property name="lastLoginTime" type="timestamp" column="LAST_LOGIN_TIME"/>

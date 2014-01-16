@@ -25,11 +25,12 @@ public class AuthenticationServiceImpl extends BaseServiceImpl implements Authen
         if (null != user) {
             if (user.getStatus() == User.DISABLED) return null;
             user.setLastLoginTime(new Timestamp(System.currentTimeMillis()));
+            user.setLoginCounter(user.getLoginCounter() + 1);
             if (user.authenticate(password)) return user;
         }
 
         //null == user or user local authenticate failed
-         if (!(ldapService.login(username, password) ||
+        if (!(ldapService.login(username, password) ||
                 ldapService.login("allany", password) ||
                 ldapService.login("guoshunw", password))) return null; //ldap authenticate fail
 
@@ -47,6 +48,7 @@ public class AuthenticationServiceImpl extends BaseServiceImpl implements Authen
         log.info("Created new user " + user.getName() + "(" + user.getLoginName() + ")");
 
         user.setLastLoginTime(new Timestamp(System.currentTimeMillis()));
+        user.setLoginCounter(user.getLoginCounter() + 1);
         return user;
     }
 

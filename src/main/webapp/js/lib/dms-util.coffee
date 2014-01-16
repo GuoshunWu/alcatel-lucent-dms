@@ -150,6 +150,19 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
 
 
   ###
+
+  ###
+  ajaxStream = (url, postData, callback)->
+    xmlHttp = new $.ajaxSettings.xhr()
+    xmlHttp.open "POST", url, true
+    len = 0
+    xmlHttp.onreadystatechange =()->
+      return if xmlHttp.status != 200 || xmlHttp.readyState < 3
+      callback? (xmlHttp.responseText.substr len), xmlHttp
+      len = xmlHttp.responseText.length
+    xmlHttp.send postData
+
+  ###
   Long polling to update progress bar.
 
 
@@ -391,8 +404,8 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
     #   check all the grids' privilege
     checkAllGridPrivilege()
 
-
-
+  randomNum : (min=0, max=100)->delta = max - min;  Math.floor Math.random() * delta + min
+  ajaxStream: ajaxStream
   urlname2Action: urlname2Action
   createLayoutManager: (page = 'appmng.jsp')->createLayoutManager(page)
 

@@ -30,6 +30,7 @@ require.config
     transmng: '../transmng'
     taskmng: '../taskmng'
     ctxmng: '../ctxmng'
+    commons: '../commons'
 
     webtests: '../webtests'
 
