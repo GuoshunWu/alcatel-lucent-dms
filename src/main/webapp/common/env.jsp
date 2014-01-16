@@ -11,10 +11,15 @@
         version: '<s:property value="version"/>',
         forbiddenPrivileges:'<s:property value="clientParams.forbiddenPrivileges"/>'.split(','),
         buildNumber:<s:property value="buildNumber"/>,
+        currentUser: {
+            showTips: 'true' == '${session['user_context'].user.showTips}',
+            loginName: '${session['user_context'].user.loginName}'
+        },
         currentSelected:{
             productBaseId:'<s:property value="curProductBaseId"/>',
             productId:'<s:property value="curProductId"/>'
-        }
+        },
+        tipFiles: '<s:property value="clientParams.tipFiles" />'
     }
 
     var ROLE = {

@@ -94,13 +94,14 @@ public class LoginAction extends BaseAction implements SessionAware {
 
             session.put(UserContext.SESSION_USER_CONTEXT, new UserContext(getLocale(), user, new SimpleTimeZone(timeZoneOffset, user.getName() + "_TimeZone")));
             Global.login(user);
+
             log.debug("user: " + user);
             log.debug("redirect to " + getLocation());
 
 
 //          Tomcat will create new session id if there is no JSESSIONID cookie when https jump to http
             HttpServletResponse response = ServletActionContext.getResponse();
-            SessionCookieConfig scc= ServletActionContext.getServletContext().getSessionCookieConfig();
+            SessionCookieConfig scc = ServletActionContext.getServletContext().getSessionCookieConfig();
             Cookie cookie = new Cookie(scc.getName(), request.getSession().getId());
             cookie.setPath(scc.getPath());
             response.addCookie(cookie);

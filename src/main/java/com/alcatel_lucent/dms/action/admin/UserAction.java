@@ -16,6 +16,7 @@ public class UserAction extends JSONAction {
 	private String email;
 	private Integer role;
 	private Integer userStatus;
+    private Boolean isShowTip;
 	
 	@Override
 	protected String performAction() throws Exception {
@@ -29,7 +30,7 @@ public class UserAction extends JSONAction {
 			user.setStatus(userStatus);
 			userService.createUser(user);
 		} else if (oper.equals("edit")) {
-			userService.updateUser(loginName, name, email, role, userStatus);
+			userService.updateUser(loginName, name, email, role, userStatus, isShowTip);
 		} else {
 			throw new SystemError("Unknown oper: " + oper);
 		}
@@ -37,7 +38,15 @@ public class UserAction extends JSONAction {
 		return SUCCESS;
 	}
 
-	public String getOper() {
+    public Boolean getIsShowTip() {
+        return isShowTip;
+    }
+
+    public void setIsShowTip(Boolean isShowTip) {
+        this.isShowTip = isShowTip;
+    }
+
+    public String getOper() {
 		return oper;
 	}
 

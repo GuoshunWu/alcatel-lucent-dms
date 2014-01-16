@@ -48,4 +48,9 @@ define
       context:
         tip: 'Please select context'
 
+    tipofday:
+      previous: 'Previous Tip'
+      next: 'Next Tip'
+      showtip: 'Don\'t Show Tips Next Time'
+
   "zh-cn": true

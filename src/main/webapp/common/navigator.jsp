@@ -50,13 +50,13 @@
             </s:form>
 
             <div style="margin-top:5px;margin-right: 15px">
+                <span id="showTipOfDay"><img src="images/tips/tipGrey24.png" style="vertical-align: middle"/></span>
+                &nbsp;&nbsp;&nbsp;&nbsp;
                 <s:text name="header.welcome"/>&nbsp;
                 <span style="color:#800080;font-weight:bold"><s:property
                         value="#session['user_context'].user.name"/></span>&nbsp;&nbsp;
                 <a href='<s:url action="logout" namespace="/login"/>'><s:text name="header.logout"/></a>
             </div>
-
-
         </td>
     </tr>
     <tr/>

@@ -41,16 +41,29 @@ public class User implements Serializable {
     private String email;
     private Timestamp lastLoginTime;
 
+    private Integer loginCounter = 0;
+
     private int role = ROLE_GUEST;
     private int status = ENABLED;
 
     private String passwordDigest;
+
+    private Boolean showTips = true;
 
 
     public User(String loginName, String email, String name) {
         this.loginName = loginName;
         this.name = name;
         this.email = email;
+    }
+
+    @Column(name = "LOGIN_COUNTER")
+    public Integer getLoginCounter() {
+        return loginCounter;
+    }
+
+    public void setLoginCounter(Integer loginCounter) {
+        this.loginCounter = loginCounter;
     }
 
     /**
@@ -126,6 +139,15 @@ public class User implements Serializable {
     }
 
     public User() {
+    }
+
+    @Column(name = "SHOW_TIPS")
+    public Boolean getShowTips() {
+        return showTips;
+    }
+
+    public void setShowTips(Boolean showTips) {
+        this.showTips = showTips;
     }
 
     @Transient
