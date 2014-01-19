@@ -19,7 +19,7 @@ public interface GlossaryService {
      * @param text glossary text
      * @return new Language object
      */
-    Glossary createGlossary(String text);
+    Glossary createGlossary(String text, Boolean translate, String description);
 
 
     /**
@@ -29,7 +29,7 @@ public interface GlossaryService {
      * @param text new glossary text
      * @return Glossary object
      */
-    Glossary updateGlossary(String id, String text);
+    Glossary updateGlossary(String id, String text, Boolean translate, String description);
 
 
     /**

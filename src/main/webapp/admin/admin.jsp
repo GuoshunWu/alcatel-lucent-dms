@@ -16,8 +16,9 @@
                 <li><a href="#userAdmin"><s:text name="admin.user.title"/></a></li>
                 <li><a href="#sysConfig"><s:text name="admin.sysconfig.title"/></a></li>
             </s:if>
-            <li><a href="#glossary">Glossary</a></li>
-            <%--<li><a href="#webTests">Web Test Suites</a></li>--%>
+            <li><a href="#glossary"><s:text name="admin.sysconfig.glossary"/></a></li>
+            <li><a href="#preferredTranslation"><s:text name="admin.sysconfig.preftrans"/></a></li>
+        <%--<li><a href="#webTests">Web Test Suites</a></li>--%>
         </ul>
 
         <div id="langAdmin">
@@ -38,6 +39,10 @@
 
         <div id="glossary">
             <%@include file="glossary.jsp" %>
+        </div>
+
+        <div id="preferredTranslation" >
+            <%@include file="preferredTranslation.jsp"%>
         </div>
 
         <%--<div id="webTests">--%>

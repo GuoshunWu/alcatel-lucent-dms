@@ -2,6 +2,10 @@ define
   root:
     langgrid: {caption: 'Language List'}
     charsetgrid: {caption: 'Charset List'}
+
+    glossary:
+      create:
+        title: 'Create new glossary'
     usernotfound: "{0} \"{1}\" could not be found in system."
     usergrid:
       caption: 'User List'

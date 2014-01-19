@@ -14,13 +14,15 @@ import java.util.Date;
 @Entity
 @Table(name = "GLOSSARY")
 @org.hibernate.annotations.Entity(dynamicInsert = true)
-public class Glossary {
+public class Glossary{
 
     private User creator;
     private Date createTime = new Date();
     private String text;
     private boolean dirty = true;
 
+    private Boolean translate = false;
+    private String description;
 
     public Glossary() {
     }
@@ -34,6 +36,23 @@ public class Glossary {
         this.creator = creator;
     }
 
+    public Boolean getTranslate() {
+        return translate;
+    }
+
+    @Column(name="TRANSLATE")
+    public void setTranslate(Boolean translate) {
+        this.translate = translate;
+    }
+    @Column(name="DESCRIPTION")
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @Column(name = "DIRTY", nullable = false)
     public boolean isDirty() {
         return dirty;
@@ -44,7 +63,7 @@ public class Glossary {
     }
 
     @ManyToOne
-    @JoinColumn(name = "creator", updatable = false)
+    @JoinColumn(name = "CREATOR", updatable = false)
     public User getCreator() {
         return creator;
     }

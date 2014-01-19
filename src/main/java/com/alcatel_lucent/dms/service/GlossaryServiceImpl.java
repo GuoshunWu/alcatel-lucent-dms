@@ -13,6 +13,7 @@ import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.xpath.operations.Bool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,13 +58,16 @@ public class GlossaryServiceImpl implements GlossaryService {
      * @return new Language object
      */
     @Override
-    public Glossary createGlossary(String text) {
+    public Glossary createGlossary(String text, Boolean translate, String description) {
         Glossary language = findGlossaryByText(text);
         if (language != null) {
             throw new BusinessException(BusinessException.GLOSSARY_ALREADY_EXISTS, text);
         }
         User user = UserContext.getInstance().getUser();
         Glossary glossary = new Glossary(text, user);
+        glossary.setTranslate(translate);
+        glossary.setDescription(StringUtils.defaultString(description));
+
         glossary = (Glossary) dao.create(glossary);
 
         glossaries.add(glossary);
@@ -78,14 +82,15 @@ public class GlossaryServiceImpl implements GlossaryService {
      * @return Glossary object
      */
     @Override
-    public Glossary updateGlossary(String id, String text) {
+    public Glossary updateGlossary(String id, String text, Boolean translate, String description) {
         Glossary glossary = findGlossaryByText(id);
-        if (StringUtils.isNotBlank(text)) {
-            dao.delete(Glossary.class, id);
-            glossaries.remove(glossary);
-            glossary = createGlossary(text);
-        }
-        return glossary;
+        dao.delete(glossary);
+
+        if (StringUtils.isNotBlank(text)) glossary.setText(text);
+        if (StringUtils.isNotBlank(description)) glossary.setDescription(description);
+        if (null != translate) glossary.setTranslate(translate);
+
+        return (Glossary) dao.create(glossary);
     }
 
     /**
@@ -121,7 +126,6 @@ public class GlossaryServiceImpl implements GlossaryService {
         Collection<Label> labels = dao.retrieve(hSQL);
 
         //replace all the labels and labelTranslations
-        Context ctxExclusion = textService.getContextByExpression(Context.EXCLUSION, (Dictionary) null);
         int totalLabel = labels.size() + 1;
         int current = 1;
         float percent;
@@ -131,7 +135,7 @@ public class GlossaryServiceImpl implements GlossaryService {
                     String.format("[ %d/%d ]Process Labels...", 1, totalLabel),
                     String.format("Current Label '%s'", label.getKey())
             ), "<br/>"), percent);
-            consistentGlossariesInLabel(label, ctxExclusion, dirtyGlossaries);
+            consistentGlossariesInLabel(label, dirtyGlossaries);
             current++;
         }
 
@@ -168,9 +172,8 @@ public class GlossaryServiceImpl implements GlossaryService {
     public void consistentGlossariesInDict(Dictionary dict) {
         Collection<Label> labels = dict.getLabels();
         if (null == labels || labels.isEmpty()) return;
-        Context ctxExclusion = textService.getContextByExpression(Context.EXCLUSION, (Dictionary) null);
         for (Label label : labels) {
-            consistentGlossariesInLabel(label, ctxExclusion, glossaries);
+            consistentGlossariesInLabel(label,  glossaries);
         }
     }
 
@@ -199,14 +202,12 @@ public class GlossaryServiceImpl implements GlossaryService {
     }
 
     /**
-     *
-     * @param glossaries glossaries used for match, all glossaries will be used if null
+     * @param glossaries                glossaries used for match, all glossaries will be used if null
      * @param propertyName
      * @param subCollectionPropertyName
      * @param subObjectPropertyName
-     *
      * @return Matched GlossaryMatchObject collection
-     * */
+     */
     private Collection<GlossaryMatchObject> consistentGlossariesInObject(final Collection<Glossary> glossaries, Object bean, String propertyName, String subCollectionPropertyName, String subObjectPropertyName) {
         Collection<GlossaryMatchObject> matchedGlossaryMatchObjects = new ArrayList<GlossaryMatchObject>();
         try {
@@ -220,7 +221,7 @@ public class GlossaryServiceImpl implements GlossaryService {
                 if (!gmo.isReplaced()) continue;
                 PropertyUtils.setProperty(bean, propertyName, resultText);
                 matchedGlossaryMatchObjects.add(gmo);
-                if (gmo.getGlossaryText().equals(resultText) && bean instanceof Label) {
+                if (gmo.getGlossaryText().equals(resultText) && !gmo.getGlossary().getTranslate() && bean instanceof Label) {
                     Context ctxExclusion = textService.getContextByExpression(Context.EXCLUSION, (Dictionary) null);
                     ((Label) bean).setContext(ctxExclusion);
                     return matchedGlossaryMatchObjects;
@@ -248,9 +249,8 @@ public class GlossaryServiceImpl implements GlossaryService {
      * Make all the glossaries in Label consistent
      *
      * @param label
-     * @param ctxExclusion
      */
-    private void consistentGlossariesInLabel(final Label label, final Context ctxExclusion, final Collection<Glossary> glossaries) {
+    private void consistentGlossariesInLabel(final Label label, final Collection<Glossary> glossaries) {
 //        Consistent label reference first
         consistentGlossariesInObject(glossaries, label, "reference", "origTranslations", "origTranslation");
     }
@@ -272,7 +272,7 @@ public class GlossaryServiceImpl implements GlossaryService {
         return CollectionUtils.collect(glossaries, new Transformer() {
             @Override
             public Object transform(Object input) {
-                return new GlossaryMatchObject(((Glossary) input).getText());
+                return new GlossaryMatchObject(((Glossary) input));
             }
         });
     }

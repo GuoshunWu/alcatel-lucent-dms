@@ -40,6 +40,10 @@ class TestExample {
         userName = "admin"
         password = "alcatel123"
 
+        /**
+         * You have to create testProdName and testAppName to start the test
+         * */
+
         testProdName = "TestProd"
         testAppName = "TestApp"
 
@@ -79,7 +83,7 @@ class TestExample {
     }
 
     @Test
-    void TestDeliverDictionaries() {
+    void testDeliverDictionaries() {
         WebElement testApp = getTestApp()
         Thread.sleep(500)
         testApp.click()
