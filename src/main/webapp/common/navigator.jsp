@@ -50,7 +50,7 @@
             </s:form>
 
             <div style="margin-top:5px;margin-right: 15px">
-                <span id="showTipOfDay"><img src="images/tips/tipGrey24.png" style="vertical-align: middle"/></span>
+                <span id="showTipOfDay"><img src="images/tips/lightbulb.png" style="vertical-align: middle"/></span>
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <s:text name="header.welcome"/>&nbsp;
                 <span style="color:#800080;font-weight:bold"><s:property

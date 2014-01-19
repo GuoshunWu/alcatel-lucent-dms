@@ -1,5 +1,6 @@
 package com.alcatel_lucent.dms.service;
 
+import com.alcatel_lucent.dms.model.Glossary;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
@@ -25,6 +26,7 @@ public class GlossaryMatchObject {
 
     public static String substitutePattern;
     public static Collection<Pattern> exceptionPatterns = new ArrayList<Pattern>();
+    private Glossary glossary;
 
     private static final File glossaryConfigFile =
             new File(GlossaryServiceImpl.class.getResource("glossaryConfig.properties").getPath());
@@ -79,8 +81,9 @@ public class GlossaryMatchObject {
 
     }
 
-    GlossaryMatchObject(String glossaryText) {
-        this.glossaryText = glossaryText;
+    GlossaryMatchObject(Glossary glossary) {
+        this.glossary = glossary;
+        this.glossaryText = glossary.getText();
         this.pattern = Pattern.compile(String.format(substitutePattern, glossaryText), Pattern.CASE_INSENSITIVE);
     }
 
@@ -90,6 +93,10 @@ public class GlossaryMatchObject {
 
     private Matcher matcher;
     private String matchingText = "";
+
+    public Glossary getGlossary() {
+        return glossary;
+    }
 
     public void setPattern(Pattern pattern) {
         this.pattern = pattern;

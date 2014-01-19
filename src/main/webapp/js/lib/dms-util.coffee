@@ -152,13 +152,17 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
   ###
 
   ###
-  ajaxStream = (url, postData, callback)->
+  ajaxStream = (url, postData, progress, finished)->
     xmlHttp = new $.ajaxSettings.xhr()
     xmlHttp.open "POST", url, true
     len = 0
     xmlHttp.onreadystatechange =()->
       return if xmlHttp.status != 200 || xmlHttp.readyState < 3
-      callback? (xmlHttp.responseText.substr len), xmlHttp
+      if xmlHttp.readyState == 3
+        progress? (xmlHttp.responseText.substr len), xmlHttp
+      else if xmlHttp.readyState == 4
+        finished? (xmlHttp.responseText.substr len), xmlHttp
+
       len = xmlHttp.responseText.length
     xmlHttp.send postData
 

@@ -73,9 +73,9 @@ define [
   )
 
   $('#showTipOfDay').on('mouseover',()->
-    $("img", @).prop "src", "images/tips/ktip32.png"
+    $("img", @).prop "src", "images/tips/ktip24.png"
   ).on('mouseout', ()->
-    $("img",@).prop "src", "images/tips/tipGrey24.png"
+    $("img",@).prop "src", "images/tips/lightbulb.png"
   ).on('click', ()->
     tipOfDayDialog.dialog 'open'
   )
