@@ -5,6 +5,7 @@ import com.alcatel_lucent.dms.service.parser.NOEStrParser;
 import junit.framework.Assert;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.text.translate.*;
@@ -19,6 +20,10 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
@@ -52,7 +57,7 @@ public class ProfileConfigTest {
         System.out.println(dbpassword);
     }
 
-//    @Test
+    //    @Test
     public void testMultiMap() {
         MultiValueMap<String, String> test = new LinkedMultiValueMap<String, String>();
         test.add("AA", "BB");
@@ -80,21 +85,21 @@ public class ProfileConfigTest {
         inv.invokeFunction("doSwing", "Scripting Swing");
     }
 
-//    @Test
+    //    @Test
     public void testEncoding() throws UnsupportedEncodingException, CharacterCodingException {
 
-        String charset="windows-1252";
-        ByteBuffer buffer=ByteBuffer.allocate(255) ;
-        buffer.put((byte)0x82);
-        buffer.put((byte)0x70);
+        String charset = "windows-1252";
+        ByteBuffer buffer = ByteBuffer.allocate(255);
+        buffer.put((byte) 0x82);
+        buffer.put((byte) 0x70);
         buffer.flip();
 
-        CharBuffer cb= Charset.forName(charset).decode(buffer);
+        CharBuffer cb = Charset.forName(charset).decode(buffer);
         System.out.println(cb.toString());
 
     }
 
-//    @Test
+    //    @Test
     public void testAccent() throws Exception {
 //        MapUtils.debugPrint(System.out, "ESCAPE_SEARCH_MAP", ESCAPE_SEARCH_MAP);
         String filePath = "D:\\360CloudUI\\Cache\\45698397\\Documents\\Alcatel-Lucent\\DMS\\DMSFiles\\TestFile.txt";
@@ -104,4 +109,5 @@ public class ProfileConfigTest {
         System.out.println(NOEStrParser.unescapeNOEString(str));
 
     }
+
 }

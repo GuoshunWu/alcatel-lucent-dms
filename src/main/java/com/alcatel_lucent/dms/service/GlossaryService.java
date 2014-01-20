@@ -17,13 +17,13 @@ public interface GlossaryService {
      * Create a glossary.
      *
      * @param text glossary text
-     * @return new Language object
+     * @return new glossary object
      */
     Glossary createGlossary(String text, Boolean translate, String description);
 
 
     /**
-     * Update a language.
+     * Update a Glossary.
      *
      * @param id   old glossary text
      * @param text new glossary text

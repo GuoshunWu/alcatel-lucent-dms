@@ -6,3 +6,11 @@
     background-color: #ffefd5;
     text-align: center;
 }
+
+.text-align-right {
+    text-align: right;
+}
+
+.fixed-width-340px {
+    width: 340px;
+}

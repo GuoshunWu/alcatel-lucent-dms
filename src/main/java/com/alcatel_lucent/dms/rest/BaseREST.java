@@ -138,7 +138,7 @@ public abstract class BaseREST {
     }
 
 
-    
+    @SuppressWarnings("unchecked")
     protected Collection retrieve(String hql, Map<?,?> param, String countHql, Map<?,?> countParam, Map<String, String> requestMap) {
     	String rows = requestMap.get("rows");
     	String page = requestMap.get("page");

@@ -15,29 +15,21 @@
         </td>
     </tr>
 </table>
-<style>
-    .glossaryLabel {
-        text-align: right;
-    }
 
-    .glossaryInput{
-        width: 340px;
-    }
-</style>
 <div id="createGlossaryDialog">
     <table border="0" width="100%">
         <tr>
-            <td class="glossaryLabel"><label for="glossaryText"><s:text name="admin.glossary.text"/></label></td>
-            <td><input id="glossaryText" class="glossaryInput" name="text"/>&nbsp;*</td>
+            <td class="text-align-right"><label for="glossaryText"><s:text name="admin.glossary.text"/></label></td>
+            <td><input id="glossaryText" class="fixed-width-340px" name="text"/>&nbsp;*</td>
         </tr>
         <tr>
-            <td class="glossaryLabel"><label for="glossaryTranslate"><s:text name="admin.glossary.translate"/></label></td>
+            <td class="text-align-right"><label for="glossaryTranslate"><s:text name="admin.glossary.translate"/></label></td>
             <td><input id="glossaryTranslate" type="checkbox" name="translate"/></td>
         </tr>
         <tr>
-            <td class="glossaryLabel"><label for="glossaryDescription"><s:text name="admin.glossary.description"/></label></td>
+            <td class="text-align-right"><label for="glossaryDescription"><s:text name="admin.glossary.description"/></label></td>
             <td>
-                <textarea id="glossaryDescription" rows="6" cols="50" class="glossaryInput" name="description"></textarea>
+                <textarea id="glossaryDescription" rows="6" cols="50" class="fixed-width-340px" name="description"></textarea>
             </td>
         </tr>
         <tr>
