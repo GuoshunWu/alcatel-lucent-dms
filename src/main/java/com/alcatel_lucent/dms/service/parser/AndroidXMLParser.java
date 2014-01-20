@@ -324,7 +324,8 @@ public class AndroidXMLParser extends DictionaryParser {
 
         if (isReference) { // ref root comments stored in dict level
             // read root comments
-            dict.setAnnotation2(readCommentsAboveNode(document.nodeIterator()).getLeft());
+            Pair<String, Node> pair = readCommentsAboveNode(document.nodeIterator());
+            dict.setAnnotation2(pair.getLeft());
             // read attributes of root element
             dict.setAnnotation1(elemAttributeToString(root));
             // read namespaces of root element

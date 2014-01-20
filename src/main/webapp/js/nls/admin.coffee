@@ -6,6 +6,9 @@ define
     glossary:
       create:
         title: 'Create new glossary'
+    preferredtranslation:
+      create:
+        title: 'Create new preferred translation'
     usernotfound: "{0} \"{1}\" could not be found in system."
     usergrid:
       caption: 'User List'

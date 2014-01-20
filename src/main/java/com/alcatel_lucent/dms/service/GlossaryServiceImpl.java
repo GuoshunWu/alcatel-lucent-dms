@@ -59,12 +59,12 @@ public class GlossaryServiceImpl implements GlossaryService {
      */
     @Override
     public Glossary createGlossary(String text, Boolean translate, String description) {
-        Glossary language = findGlossaryByText(text);
-        if (language != null) {
+        Glossary glossary = findGlossaryByText(text);
+        if (glossary != null) {
             throw new BusinessException(BusinessException.GLOSSARY_ALREADY_EXISTS, text);
         }
         User user = UserContext.getInstance().getUser();
-        Glossary glossary = new Glossary(text, user);
+        glossary = new Glossary(text, user);
         glossary.setTranslate(translate);
         glossary.setDescription(StringUtils.defaultString(description));
 

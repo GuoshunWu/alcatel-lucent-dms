@@ -2,6 +2,7 @@ package com.alcatel_lucent.dms.rest;
 
 import com.alcatel_lucent.dms.model.Charset;
 import com.alcatel_lucent.dms.model.Glossary;
+import com.alcatel_lucent.dms.model.PreferredTranslation;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.Path;
@@ -29,29 +30,29 @@ import java.util.Map;
  * @author allany
  *
  */
-@Path("glossaries")
+@Path("preferredTranslations")
 @Component
 @SuppressWarnings("unchecked")
-public class GlossaryREST extends BaseREST {
+public class PreferredTranslationREST extends BaseREST {
 	
-	public Class<Glossary> getEntityClass() {
-		return Glossary.class;
+	public Class<PreferredTranslation> getEntityClass() {
+		return PreferredTranslation.class;
 	}
 
 	@Override
 	protected String doGetOrPost(Map<String, String> requestMap) throws Exception {
-		String hql = "from Glossary";
-		String countHql = "select count(*) from Glossary";
+		String hql = "from PreferredTranslation";
+		String countHql = "select count(*) from PreferredTranslation";
     	String sidx = requestMap.get("sidx");
     	String sord = requestMap.get("sord");
     	if (sidx == null || sidx.trim().isEmpty()) {
-    		sidx = "text";
+    		sidx = "id";
     	}
     	if (sord == null) {
     		sord = "ASC";
     	}
     	hql += " order by " + sidx + " " + sord;
-		Collection<Glossary> result = retrieve(hql, null, countHql, null, requestMap);
+		Collection<PreferredTranslation> result = retrieve(hql, null, countHql, null, requestMap);
 		return toJSON(result, requestMap);
 	}
 }

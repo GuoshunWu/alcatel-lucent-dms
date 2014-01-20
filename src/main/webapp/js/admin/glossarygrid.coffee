@@ -17,18 +17,12 @@ define [
   hCreateGlossaryDlgId = "##{createGlossaryDlgId}"
 
   createGlossary = (glossary)->
-
     postData = $.extend glossary, {
       oper: 'add'
     }
-    #check fields
-
-    console.log postData
-#    return
     $.post urls.glossary.update, postData, (json)->
       ($.msgBox json.message, null, {title: c18n.error, width: 300, height: 'auto'};return) unless json.status == 0
       $(hGridId).trigger 'reloadGrid'
-
 
   #Create add glossary dialog
   createGlossaryDialog = $(hCreateGlossaryDlgId).dialog(
@@ -83,7 +77,7 @@ define [
 
     afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
       jsonFromServer = $.parseJSON serverresponse.responseText
-      setTimeout (->grid.trigger 'reloadGrid'), 10
+      #setTimeout (->grid.trigger 'reloadGrid'), 10
       [jsonFromServer.status == 0, jsonFromServer.message]
     beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
       newText: value if 'text' == cellname

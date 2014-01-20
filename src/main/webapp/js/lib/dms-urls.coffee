@@ -60,6 +60,8 @@ define (require)->
   glossary:
     update: getURL('glossary', 'admin/')
     apply: getURL('apply-glossaries', 'admin/')
+  preferredTranslation:
+    update: getURL('preferred-translation', 'admin/')
 
   user:
     update: getURL('user', 'admin/')
@@ -96,6 +98,7 @@ define (require)->
     refs: getURL('text/refs', 'rest/')
     translations: getURL('text/translations', 'rest/')
   glossaries: getURL('glossaries', 'rest/')
+  preferredTranslations: getURL('preferredTranslations', 'rest/')
 
   getURL: getURL
 

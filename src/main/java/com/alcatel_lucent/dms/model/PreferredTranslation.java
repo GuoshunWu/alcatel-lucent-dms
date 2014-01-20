@@ -23,6 +23,8 @@ public class PreferredTranslation extends BaseEntity {
 
     @Override
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "IdPreferredTranslationGenerator")
+    @SequenceGenerator(name = "IdPreferredTranslationGenerator",  sequenceName = "ID_PREFERRED_TRANSLATION")
     public Long getId() {
         return super.getId();
     }
