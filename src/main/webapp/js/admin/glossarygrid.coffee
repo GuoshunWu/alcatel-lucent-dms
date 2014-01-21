@@ -107,8 +107,27 @@ define [
   .navGrid("#{hGridId}Pager", {add: false, search: false, edit: false}, {},{},deleteOptions)
   .navButtonAdd("#{hGridId}Pager", {id: "custom_add_#{hGridId}", caption: "", buttonicon: "ui-icon-plus", position: "first", onClickButton: ()->
     createGlossaryDialog.dialog 'open'
+  }).navButtonAdd("#{hGridId}Pager", {id: "custom_apply_#{hGridId}", caption: i18n.glossary.apply, buttonicon: "ui-icon-note", position: "last", onClickButton: ()->
+    $.blockUI(message: '')
+    pb = util.genProgressBar()
+    util.updateProgress(urls.glossary.apply, {oper: 'consistentGlossaries'}, (json)->
+      $.unblockUI()
+      pb.parent().remove()
+      msg = json.event.msg
+      $.msgBox msg, null, {title: c18n.info, width: 300, height: 'auto'}
+    , pb)
   })
 
+
+#  $('#consistentGlossaries').button().click (e)->
+#    $.blockUI(message: '')
+#    pb = util.genProgressBar()
+#    util.updateProgress(urls.glossary.apply, {oper: 'consistentGlossaries'}, (json)->
+#      $.unblockUI()
+#      pb.parent().remove()
+#      msg = json.event.msg
+#      $.msgBox msg, null, {title: c18n.info, width: 300, height: 'auto'}
+#    , pb)
 
 
   grid: grid
