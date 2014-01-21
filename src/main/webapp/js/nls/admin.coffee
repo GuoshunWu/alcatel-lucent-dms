@@ -6,6 +6,7 @@ define
     glossary:
       create:
         title: 'Create new glossary'
+      apply: 'Apply Glossary'
     preferredtranslation:
       create:
         title: 'Create new preferred translation'

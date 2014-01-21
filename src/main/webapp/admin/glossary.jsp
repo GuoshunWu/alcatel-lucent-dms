@@ -9,11 +9,11 @@
             <div id="glossaryGridPager"/>
         </td>
     </tr>
-    <tr>
-        <td>
-            <button id="consistentGlossaries"><s:text name="admin.sysconfig.glossaries"/></button>
-        </td>
-    </tr>
+    <%--<tr>--%>
+        <%--<td>--%>
+            <%--<button id="consistentGlossaries"><s:text name="admin.sysconfig.glossaries"/></button>--%>
+        <%--</td>--%>
+    <%--</tr>--%>
 </table>
 
 <div id="createGlossaryDialog">
