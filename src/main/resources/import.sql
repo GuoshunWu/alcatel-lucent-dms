@@ -73,7 +73,7 @@
 INSERT INTO dms.USER (login_name, email, last_login_time, name, login_counter, show_tips, role, status, password_digest) VALUES ('admin', 'Admin@test.com', CURRENT_DATE, 'Administrator', 0, TRUE, 4, 1, '1891de42f0750f759f93f8e0f4414cfc');
 INSERT INTO dms.USER (login_name, email, last_login_time, name, login_counter, show_tips, role, status, password_digest) VALUES ('owner', 'Owner@test.com', CURRENT_DATE, 'Application Owner', 0, TRUE, 1, 1, '1891de42f0750f759f93f8e0f4414cfc');
 INSERT INTO dms.USER (login_name, email, last_login_time, name, login_counter, show_tips, role, status, password_digest) VALUES ('manager', 'Manager@test.com', CURRENT_DATE, 'Application Manager', 0, TRUE, 2, 1, '1891de42f0750f759f93f8e0f4414cfc');
-INSERT INTO dms.USER (login_name, email, last_login_time, name, login_counter, show_tips, role, status, password_digest) VALUES ('guest', 'Guest@test.com', CURRENT_DATE, 'Guest', 0, 0, TRUE, 1, '1891de42f0750f759f93f8e0f4414cfc');
+INSERT INTO dms.USER (login_name, email, last_login_time, name, login_counter, show_tips, role, status, password_digest) VALUES ('guest', 'Guest@test.com', CURRENT_DATE, 'Guest', 0, TRUE, 0, 1, '1891de42f0750f759f93f8e0f4414cfc');
 
 -- FOR H2 --CALL HASH('SHA256', STRINGTOUTF8('Password'), 1)
 --create alias MD5 for "rg.apache.commons.codec.digest.DigestUtils.md5Hex(java.lang.String)";
