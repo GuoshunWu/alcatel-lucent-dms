@@ -744,12 +744,15 @@ define [
     open: (event, ui)->
       param = $(@).data('param')
       return unless param
+      stringSettingsTransGridCaption  = $('#stringSettingsTranslationGrid').getGridParam('caption')
+      sstgRefText = 'Ref text:'
+      param.gridCaption = stringSettingsTransGridCaption.substring(stringSettingsTransGridCaption.lastIndexOf(sstgRefText)  + sstgRefText.length).trim()
 #      console.log param
       $('#stringSettingsTranslationHistoryGrid').setGridParam(
         url: urls.translation_histories
         page: 1
-        postData: {transId: param['ct.id'], format: 'grid', prop: 'operationTime,operationType,operator.name,memo'}
-      ).setCaption(c18n.history.caption.format 'reference text').trigger "reloadGrid"
+        postData: {transId: param['ct.id'], format: 'grid', prop: 'operationTime,operationType,operator.name,translation,status,memo'}
+      ).setCaption(c18n.history.caption.format param.gridCaption).trigger "reloadGrid"
 
     buttons: [
       {text: c18n.close, click: (e)->

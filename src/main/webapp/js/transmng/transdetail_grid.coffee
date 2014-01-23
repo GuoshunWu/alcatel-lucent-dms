@@ -45,9 +45,9 @@ define [
       {name: 'translation', index: 'ct.translation', width: 200, align: 'left', edittype:'textarea',
       editable:true, classes: 'editable-column', search: false}
       {name: 'transStatus', index: 'ct.status', width: 100, align: 'left', editable: true, classes: 'editable-column', search: true,
-      edittype: 'select', editoptions: {value: "0:#{i18n.trans.nottranslated};1:#{i18n.trans.inprogress};2:#{i18n.trans.translated}"},
+      edittype: 'select', editoptions: {value: c18n.translation.values},
       formatter: 'select',
-      stype: 'select', searchoptions: {value: ":#{c18n.all};0:#{i18n.trans.nottranslated};1:#{i18n.trans.inprogress};2:#{i18n.trans.translated}"}
+      stype: 'select', searchoptions: {value: c18n.translation.values}
       }
       {name: 'transId', index: 'ct.id', width: 50, align: 'left', hidden:true, search: false}
       {name: 'transtype', index: 'ct.translationType', width: 70, align: 'left',

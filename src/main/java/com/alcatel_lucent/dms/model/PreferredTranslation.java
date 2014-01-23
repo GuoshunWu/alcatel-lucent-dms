@@ -12,12 +12,13 @@ import java.util.Date;
 @org.hibernate.annotations.Entity(dynamicInsert = true)
 public class PreferredTranslation extends BaseEntity {
 
+    private PreferredReference preferredReference;
+
     private User creator;
     private Date createTime = new Date();
 
     private Language language;
 
-    private String reference;
     private String translation;
     private String comment;
 
@@ -59,15 +60,6 @@ public class PreferredTranslation extends BaseEntity {
         this.language = language;
     }
 
-    @Column(name = "REFERENCE", length = 1024)
-    public String getReference() {
-        return reference;
-    }
-
-    public void setReference(String reference) {
-        this.reference = reference;
-    }
-
     @Column(name = "TRANSLATION", length = 2048)
     public String getTranslation() {
         return translation;
@@ -86,5 +78,13 @@ public class PreferredTranslation extends BaseEntity {
         this.comment = comment;
     }
 
+    @ManyToOne
+    @JoinColumn(name = "PREFERRED_REFERENCE")
+    public PreferredReference getPreferredReference() {
+        return preferredReference;
+    }
 
+    public void setPreferredReference(PreferredReference preferredReference) {
+        this.preferredReference = preferredReference;
+    }
 }

@@ -76,7 +76,6 @@ define [
           if(json.status !=0)
             $.msgBox json.message, null, title: (c18n.error)
             return
-          console?.log json
           window.location.href = urls.getURL(urls.trans.export_translation_details,'',{translationDetailId: json.translationDetailId})
         $(@).dialog 'close'
       }
@@ -240,11 +239,11 @@ define [
     autoOpen: false, width: 1020, height: 'auto', modal: true
     open: ()->
       params = $(@).data 'params'
-      grid =  $("#transSearchTextGrid")
+      transSearchGrid =  $("#transSearchTextGrid")
       node=util.getProductTreeInfo()
       typeText = if 'prod' == node.type then 'product' else 'application'
 
-      postData = grid.getGridParam('postData')
+      postData = transSearchGrid.getGridParam('postData')
 
       postData.format = 'grid'
       postData.text = params.text
@@ -256,7 +255,7 @@ define [
 
       postData[node.type] = params.version.id
       name = unless -1 == node.parent then node.text else $('#versionTypeLabel').text()
-      grid.setCaption(i18n.searchtext.caption.format params.text, typeText, name, params.version.text, params.language.text)
+      transSearchGrid.setCaption(i18n.searchtext.caption.format params.text, typeText, name, params.version.text, params.language.text)
         .setGridParam(url: urls.labels).trigger 'reloadGrid'
     close: ()->
       searchgrid.saveLastEditedCell()
@@ -314,11 +313,10 @@ define [
       param = $(@).data('param')
       return unless param
 
-
       $('#detailViewTranslationHistoryGrid').setGridParam(
         url: urls.translation_histories
         page: 1
-        postData: {transId: param.transId, format: 'grid', prop: 'operationTime,operationType,operator.name,memo'}
+        postData: {transId: param.transId, format: 'grid', prop: 'operationTime,operationType,operator.name,translation, status, memo'}
       ).setCaption(c18n.history.caption.format param.reflang).trigger "reloadGrid"
 
     buttons: [

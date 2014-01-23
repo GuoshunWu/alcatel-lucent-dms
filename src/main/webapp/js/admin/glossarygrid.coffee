@@ -34,12 +34,11 @@ define [
       $('button[role=button]', btnPanel).width '63px'
     open: ()->
       $('#glossaryErrorMsgContainer', @).hide()
-      $('#glossaryTranslate', @).prop 'checked', false
+      $('input[value=false]:radio',@).prop 'checked', true
       $('#glossaryText', @).val ""
       $('#glossaryDescription', @).val ""
 
-    width: 490, minWidth: 200, height: 270, minHeight: 200
-    resizable: false
+    width: 490, minWidth: 200, height: 300, minHeight: 200
     buttons:[
       {text: c18n.ok, click: (e)->
         unless $('#glossaryText', @).val()
@@ -49,7 +48,7 @@ define [
 
         createGlossary(
           text: $('#glossaryText', @).val(),
-          translate: $('#glossaryTranslate', @).prop 'checked'
+          translate: $('input[name=translate]:radio:checked',@).val()
           description: $('#glossaryDescription', @).val()
         )
 
@@ -92,7 +91,7 @@ define [
     caption: c18n.glossary.caption
     autowidth: true
     height: '100%'
-    colNames: ['Glossary text', 'Is Translate' ,'Description' ,'Create Time', 'Creator']
+    colNames: ['Glossary text', 'Need Translation' ,'Comment' ,'Create Time', 'Creator']
     colModel: [
       {name: 'text', index: 'text', width: 15, editable: true, classes: 'editable-column', align: 'left',editrules: {required: true}}
       {name: 'translate', index: 'translate', formatter:'select',edittype: 'select', editoptions: {value: 'true:yes;false:no'}, width: 5, editable: true, classes: 'editable-column', align: 'left',editrules: {required: true}}
