@@ -20,11 +20,7 @@ import java.util.Map;
  * Time: PM 3:07
  */
 @Service("preferredTranslationService")
-public class PreferredTranslationServiceImpl implements PreferredTranslationService {
-    private DaoService dao;
-
-    @Autowired
-    private TextService textService;
+public class PreferredTranslationServiceImpl  extends  BaseServiceImpl implements PreferredTranslationService {
 
     private static Logger log = LoggerFactory.getLogger(PreferredTranslationServiceImpl.class);
 
@@ -37,24 +33,25 @@ public class PreferredTranslationServiceImpl implements PreferredTranslationServ
     @Override
     public PreferredTranslation createPreferredTranslation(String ref, String trans, String comment, Long languageId) {
         User user = UserContext.getInstance().getUser();
-        PreferredTranslation pt = new PreferredTranslation();
-        pt.setReference(ref);
-        pt.setTranslation(trans);
-        pt.setComment(comment);
-        pt.setLanguage((Language) dao.retrieve(Language.class, languageId));
-        pt.setCreator(user);
-        pt = (PreferredTranslation) dao.create(pt);
+//        PreferredTranslation pt = new PreferredTranslation();
+//        pt.setReference(ref);
+//        pt.setTranslation(trans);
+//        pt.setComment(comment);
+//        pt.setLanguage((Language) dao.retrieve(Language.class, languageId));
+//        pt.setCreator(user);
+//        pt = (PreferredTranslation) dao.create(pt);
 
-        return pt;
+//        return pt;
+        return null;
     }
 
     @Override
     public PreferredTranslation updatePreferredTranslation(Long id, String ref, String trans, String comment) {
         PreferredTranslation pt = (PreferredTranslation) dao.retrieve(PreferredTranslation.class, id);
-        if (null == pt) return null;
-        if(null!= ref) pt.setReference(ref);
-        if(null!= trans) pt.setTranslation(trans);
-        if(null!= comment) pt.setComment(comment);
+//        if (null == pt) return null;
+//        if(null!= ref) pt.setReference(ref);
+//        if(null!= trans) pt.setTranslation(trans);
+//        if(null!= comment) pt.setComment(comment);
 
         return pt;
     }

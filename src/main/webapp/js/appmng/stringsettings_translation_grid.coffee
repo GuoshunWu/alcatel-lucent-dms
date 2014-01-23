@@ -18,7 +18,7 @@ define ['jqgrid', 'i18n!nls/common'], ($, c18n)->
     colModel: [
       {name: 'code', index: 'languageCode', width: 20, editable: false, align: 'left'}
       {name: 'language', index: 'language', width: 40, align: 'left'}
-      {name: 'ct.translation', index: 'ct.translation', width: 100, align: 'left'}
+      {name: 'ct.translation', index: 'ct.translation', width: 100, align: 'left', }
       {name: 'ct.id', index: 'ct.id', width: 100, align: 'left', hidden: true}
       {name: 'history', index: 'history', width: 10, editable: false, align: 'center', sortable: false, search: false, formatter: (cellvalue, options)->
         "<img class='historyAct' id='hisact_#{options.rowId}'  src='images/history.png'>"

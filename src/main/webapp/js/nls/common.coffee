@@ -50,6 +50,8 @@ define
         msgtitle: 'Select product release'
       context:
         tip: 'Please select context'
+    translation:
+      values: ':All;0:Not translated;1:In progress;2:Translated'
 
     tipofday:
       previous: 'Previous Tip'
