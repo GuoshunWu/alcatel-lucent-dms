@@ -1,3 +1,10 @@
+v2.15.0
+    * Add "translation" flag and comment field to glossary
+    * Add "Preferred translation" tab for reference translation
+    * Add "Tip of the day"
+    * Add translation history
+    * Switch to new LDAP server for authentication
+
 V2.14.0 (Dec 27, 2013)
     * New API "generate-dict" for extracting dictionary files from DMS
     * Display date time with client timezone

@@ -29,6 +29,6 @@
         <div id="tipHeader">
             <img src="images/tips/ktip32.png" style="vertical-align: middle"><span><s:text name="common.tipofday.know" /></span>
         </div>
-        <div id="tipContent"></div>
+        <div id="tipContent" style="font-size:14px;font-family:Verdana"></div>
     </div>
 </div>

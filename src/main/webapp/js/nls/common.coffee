@@ -54,6 +54,6 @@ define
     tipofday:
       previous: 'Previous Tip'
       next: 'Next Tip'
-      showtip: 'Don\'t Show Tips Next Time'
+      showtip: 'Don\'t show tips next time'
 
   "zh-cn": true
