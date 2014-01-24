@@ -2,6 +2,7 @@ package com.alcatel_lucent.dms.service;
 
 import com.alcatel_lucent.dms.UserContext;
 import com.alcatel_lucent.dms.model.Language;
+import com.alcatel_lucent.dms.model.PreferredReference;
 import com.alcatel_lucent.dms.model.PreferredTranslation;
 import com.alcatel_lucent.dms.model.User;
 import org.slf4j.Logger;
@@ -24,43 +25,21 @@ public class PreferredTranslationServiceImpl  extends  BaseServiceImpl implement
 
     private static Logger log = LoggerFactory.getLogger(PreferredTranslationServiceImpl.class);
 
-    @Autowired
-    public void setDao(DaoService dao) {
-        this.dao = dao;
-    }
-
 
     @Override
-    public PreferredTranslation createPreferredTranslation(String ref, String trans, String comment, Long languageId) {
-        User user = UserContext.getInstance().getUser();
-//        PreferredTranslation pt = new PreferredTranslation();
-//        pt.setReference(ref);
-//        pt.setTranslation(trans);
-//        pt.setComment(comment);
-//        pt.setLanguage((Language) dao.retrieve(Language.class, languageId));
-//        pt.setCreator(user);
-//        pt = (PreferredTranslation) dao.create(pt);
-
-//        return pt;
-        return null;
-    }
-
-    @Override
-    public PreferredTranslation updatePreferredTranslation(Long id, String ref, String trans, String comment) {
+    public PreferredTranslation updatePreferredTranslation(Long preferredReferenceId, Long id, Long languageId, String translation, String comment) {
         PreferredTranslation pt = (PreferredTranslation) dao.retrieve(PreferredTranslation.class, id);
-//        if (null == pt) return null;
-//        if(null!= ref) pt.setReference(ref);
-//        if(null!= trans) pt.setTranslation(trans);
-//        if(null!= comment) pt.setComment(comment);
+        if (null == pt){
+            pt = new PreferredTranslation();
+            pt.setLanguage((Language) dao.retrieve(Language.class, languageId));
+            pt.setCreator(UserContext.getInstance().getUser());
+            pt.setPreferredReference((PreferredReference) dao.retrieve(PreferredReference.class, preferredReferenceId));
+            pt = (PreferredTranslation) dao.create(pt);
+        }
+
+        if(null!= translation) pt.setTranslation(translation);
+        if(null!= comment) pt.setComment(comment);
 
         return pt;
-    }
-
-    @Override
-    public void deletePreferredTranslations(Collection<Long> ids) {
-        String hSQL = "delete PreferredTranslation where id in :ids";
-        Map params = new HashMap();
-        params.put("ids", ids);
-        dao.delete(hSQL, params);
     }
 }

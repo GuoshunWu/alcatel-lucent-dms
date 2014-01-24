@@ -1,5 +1,8 @@
 <table style="width: 100%;height: 100%" border="0">
     <tr>
+        <td>&nbsp;&nbsp;&nbsp;&nbsp;Choose Language: <select id="preferredTranslationsLanguageSelector" name="languageId"/></td>
+    </tr>
+    <tr>
         <td align="center" valign="top">
             <table id="preferredTranslationGrid">
                 <tr>

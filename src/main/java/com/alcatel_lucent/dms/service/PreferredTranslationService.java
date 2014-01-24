@@ -1,8 +1,7 @@
 package com.alcatel_lucent.dms.service;
 
-import com.alcatel_lucent.dms.model.*;
-
-import java.util.Collection;
+import com.alcatel_lucent.dms.model.PreferredReference;
+import com.alcatel_lucent.dms.model.PreferredTranslation;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,28 +13,11 @@ import java.util.Collection;
 public interface PreferredTranslationService {
 
     /**
-     * Create a PreferredTranslation.
-     *
-     * @param ref reference
-     * @return new PreferredTranslation object
-     */
-    PreferredTranslation createPreferredTranslation(String ref, String trans, String comment, Long languageId);
-
-
-    /**
      * Update a PreferredTranslation.
      *
      * @param id preferredTranslation id
      * @return PreferredTranslation object
      */
-    PreferredTranslation updatePreferredTranslation(Long id, String ref, String trans, String comment);
-
-
-    /**
-     * Delete PreferredTranslations.
-     *
-     * @param ids ids of the PreferredTranslations to be deleted.
-     */
-    void deletePreferredTranslations(Collection<Long> ids);
+    PreferredTranslation updatePreferredTranslation(Long preferredReferenceId, Long id, Long languageId, String translation, String comment);
 
 }

@@ -49,7 +49,7 @@ public class PreferredReference extends BaseEntity{
         this.createTime = createTime;
     }
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "PREFERRED_REFERENCE")
     public Collection<PreferredTranslation> getPreferredTranslations() {
         return preferredTranslations;

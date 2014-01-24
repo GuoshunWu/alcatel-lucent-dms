@@ -79,7 +79,7 @@
 
         <!--Use dev database as default-->
         <db.driver>org.h2.Driver</db.driver>
-        <db.urlparam>AUTO_SERVER=TRUE;DB_CLOSE_DELAY=-1;INIT=create schema if not exists dms;</db.urlparam>
+        <db.urlparam>AUTO_SERVER=TRUE;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS DMS;SCHEMA=DMS;</db.urlparam>
         <db.url>
             <!--jdbc:h2:tcp://localhost/dms;${db.urlparam}-->
             jdbc:h2:~/dms;${db.urlparam}
