@@ -31,12 +31,12 @@ define [
       $('#preferredTranslationReference', @).val ""
       $('#preferredTranslationComment', @).val ""
 
-      $.ajax {url: urls.languages, async: false, data: {prop: 'id,name'}, dataType: 'json', success: (languages)=>
-        $('#preferredTranslationLanguage', @).empty().append util.json2Options(languages, false, "name")
-      }
+#      $.ajax {url: urls.languages, async: false, data: {prop: 'id,name'}, dataType: 'json', success: (languages)=>
+#        $('#preferredTranslationLanguage', @).empty().append util.json2Options(languages, false, "name")
+#      }
 
 
-    width: 490, minWidth: 200, height: 300, minHeight: 200
+    width: 490, minWidth: 200, height: 200, minHeight: 200
 
     buttons:[
       {text: c18n.ok, click: (e)->
@@ -44,25 +44,25 @@ define [
           $("#errorMsg", @).text("Reference is required.")
           $('#preferredTranslationErrorMsgContainer', @).show()
           return
-
-        unless $('#preferredTranslationTranslation', @).val()
-          $("#errorMsg", @).text("Translation is required.")
-          $('#preferredTranslationErrorMsgContainer', @).show()
-          return
-        $(@).dialog 'close'
+#
+#        unless $('#preferredTranslationTranslation', @).val()
+#          $("#errorMsg", @).text("Translation is required.")
+#          $('#preferredTranslationErrorMsgContainer', @).show()
+#          return
+#        $(@).dialog 'close'
 
         postData = {
           oper: 'add'
           reference: $('#preferredTranslationReference', @).val(),
-          translation: $('#preferredTranslationTranslation', @).val()
-          comment: $('#preferredTranslationComment', @).val()
-          languageId: $('#preferredTranslationLanguage', @).val()
+#          translation: $('#preferredTranslationTranslation', @).val()
+#          comment: $('#preferredTranslationComment', @).val()
+#          languageId: $('#preferredTranslationLanguage', @).val()
         }
 
-        $.post urls.preferredTranslation.update, postData, (json)->
-          ($.msgBox json.message, null, {title: c18n.error, width: 300, height: 'auto'};return) unless json.status == 0
+        $.post urls.preferredReference.create, postData, (json)=>
+          ($.msgBox json.message, null, {title: c18n.error, width: 350, height: 'auto'};return) unless json.status == 0
           $(hGridId).trigger 'reloadGrid'
-
+          $(@).dialog 'close'
       }
       {text: c18n.cancel, click: (e)->$(@).dialog 'close'}
     ]
@@ -74,12 +74,13 @@ define [
     $(formid).parent().parent().position(my:'center', at: 'center', of: window)
   }
 
+
   grid = $(hGridId).jqGrid(
     url: urls.preferredTranslations
 
     datatype: 'json'
     mtype: 'post'
-    postData: {format:'grid', prop: 'reference,translation,comment,language.name,createTime,creator.name'}
+    postData: {format:'grid', prop: 'reference,pt.language.name,pt.translation,pt.id'}
     cellurl: urls.preferredTranslation.update, cellEdit: true
 
     afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
@@ -97,23 +98,31 @@ define [
     caption: c18n.preferredTrans.caption
     autowidth: true
     height: '100%'
-    colNames: ['Reference','Translation', 'Comment', 'Language','Create Time', 'Creator']
+    colNames: ['Reference', 'Language', 'Translation','ptId']
     colModel: [
-      {name: 'reference', index: 'reference', editable: true, classes: 'editable-column', width: 20 , align: 'left',editrules: {required: true}}
-      {name: 'translation', index: 'translation', editable: true, classes: 'editable-column', width: 20, align: 'left',editrules: {required: true}}
-      {name: 'comment', index: 'comment', editable: true, classes: 'editable-column', align: 'left', width: 30, editrules: {required: true}}
-      {name: 'language.name', index: 'language.name', editable: false, width: 10, align: 'left'}
-      {name: 'createTime', index: 'createTime', align: 'left', formatter: 'date', width: 10, formatoptions: {srcformat: 'ISO8601Long', newformat: 'ISO8601Long'}}
-      {name: 'creator.name', index: 'creator.name', width: 10, align: 'left'}
+      {name: 'reference', index: 'reference', editable: true, classes: 'editable-column', width: 20 , align: 'left',editrules: {required: true}, search: false}
+      {name: 'pt.language.name', index: 'pt.language.name', editable: false, width: 5, align: 'left', stype: 'select'
+      searchoptions:
+        dataUrl: urls.getURL urls.languages, '', {prop: 'id,name'}
+        buildSelect: (languages)->
+          options = ($.parseJSON(languages).map (language,idx)->"  <option value='#{language.name}'>#{language.name}</option>").join('\n')
+          "<select>\n#{options}\n</select>"
+        defaultValue: 'French (France)'
+      }
+      {name: 'translation', index: 'translation', editable: true, classes: 'editable-column', width: 20, align: 'left',editrules: {required: true}, search: false}
+      {name: 'pt.id', index: 'pt.id', align: 'left', hidden: true, search: false}
     ]
-
-    gridComplete: ->
-      grid = $(@)
+    gridComplete: ->grid = $(@)
   )
   .navGrid("#{hGridId}Pager", {add: false, search: false, edit: false}, {},{},deleteOptions)
   .navButtonAdd("#{hGridId}Pager", {id: "custom_add_#{hGridId}", caption: "", buttonicon: "ui-icon-plus", position: "first", onClickButton: ()->
         createPreferredTranslationDialog.dialog 'open'
-      })
+  }).navButtonAdd("#{hGridId}Pager", {id: "custom_column_chooser_#{hGridId}", caption: "Columns", title: 'Reorder Columns', onClickButton: ()->
+      $("#preferredTranslationGridColumnChooser").jqGrid('columnChooser')
+  }).jqGrid('filterToolbar', {
+      stringResult: true,
+      searchOnEnter: false
+  })
 
   grid: grid
 

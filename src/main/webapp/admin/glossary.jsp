@@ -23,15 +23,24 @@
             <td><input id="glossaryText" class="fixed-width-340px" name="text"/>&nbsp;*</td>
         </tr>
         <tr>
-            <td class="text-align-right"><label for="glossaryTranslate"><s:text name="admin.glossary.translate"/></label></td>
-            <td><input id="glossaryTranslate" type="checkbox" name="translate"/></td>
-        </tr>
-        <tr>
-            <td class="text-align-right"><label for="glossaryDescription"><s:text name="admin.glossary.description"/></label></td>
+            <td class="text-align-right"><label for="glossaryDescription"><s:text name="admin.glossary.comment"/></label></td>
             <td>
-                <textarea id="glossaryDescription" rows="6" cols="50" class="fixed-width-340px" name="description"></textarea>
+                <textarea id="glossaryDescription" cols="50" style="height: 65px" class="fixed-width-340px" name="description"></textarea>
             </td>
         </tr>
+
+        <tr>
+            <td class="text-align-right"><label><s:text name="admin.glossary.translate"/></label></td>
+            <td>
+                <input type="radio" value="true" name="translate"/>Yes
+                <input type="radio" value="false" checked name="translate"/>No
+            </td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td><s:text name="admin.glossary.translateDescription"/></td>
+        </tr>
+
         <tr>
             <td colspan="2" align="center">
                 <div id="glossaryErrorMsgContainer" style="width: 95%;">
