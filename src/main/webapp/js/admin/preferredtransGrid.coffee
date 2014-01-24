@@ -16,6 +16,16 @@ define [
   createPreferredTranslationDlgId = 'createPreferredTranslationDialog'
   hCreatePreferredTranslationDlgId = "##{createPreferredTranslationDlgId}"
 
+  languageSelector = $('#preferredTranslationsLanguageSelector').on("change", ()->
+    $(hGridId).trigger "reloadGrid"
+  )
+
+  $.ajax {url: urls.languages, async: false, data: {prop: 'id,name'}, dataType: 'json', success: (languages)=>
+    languageSelector.empty().append util.json2Options(languages, false, "name")
+  }
+
+  $("option:contains('French (France)')", languageSelector).prop("selected", true)
+
   #Create add PreferredTranslation dialog
 
   createPreferredTranslationDialog = $(hCreatePreferredTranslationDlgId).dialog(
@@ -74,20 +84,24 @@ define [
     $(formid).parent().parent().position(my:'center', at: 'center', of: window)
   }
 
-
   grid = $(hGridId).jqGrid(
     url: urls.preferredTranslations
 
     datatype: 'json'
     mtype: 'post'
-    postData: {format:'grid', prop: 'reference,pt.language.name,pt.translation,pt.id'}
+    postData: {format:'grid', prop: 'reference,pt.translation,pt.id', languageId: languageSelector.val()}
     cellurl: urls.preferredTranslation.update, cellEdit: true
-
+    beforeRequest: ->
+      postData = $(hGridId).jqGrid "getGridParam", 'postData'
+      postData.languageId = languageSelector.val()
+#      console.log "postData = ", postData
     afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
       jsonFromServer = $.parseJSON serverresponse.responseText
       #setTimeout (->grid.trigger 'reloadGrid'), 10
       [jsonFromServer.status == 0, jsonFromServer.message]
     beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
+      rowData = $(hGridId).jqGrid "getRowData", rowid
+      languageId:languageSelector.val(), ptId: rowData['pt.id']
     editurl: urls.preferredTranslation.update
 
     pager: "#{hGridId}Pager"
@@ -98,18 +112,10 @@ define [
     caption: c18n.preferredTrans.caption
     autowidth: true
     height: '100%'
-    colNames: ['Reference', 'Language', 'Translation','ptId']
+    colNames: ['Reference', 'Translation','ptId']
     colModel: [
-      {name: 'reference', index: 'reference', editable: true, classes: 'editable-column', width: 20 , align: 'left',editrules: {required: true}, search: false}
-      {name: 'pt.language.name', index: 'pt.language.name', editable: false, width: 5, align: 'left', stype: 'select'
-      searchoptions:
-        dataUrl: urls.getURL urls.languages, '', {prop: 'id,name'}
-        buildSelect: (languages)->
-          options = ($.parseJSON(languages).map (language,idx)->"  <option value='#{language.name}'>#{language.name}</option>").join('\n')
-          "<select>\n#{options}\n</select>"
-        defaultValue: 'French (France)'
-      }
-      {name: 'translation', index: 'translation', editable: true, classes: 'editable-column', width: 20, align: 'left',editrules: {required: true}, search: false}
+      {name: 'reference', index: 'reference', editable: true, classes: 'editable-column', width: 30 , align: 'left',editrules: {required: true}, search: false}
+      {name: 'translation', index: 'translation', editable: true, classes: 'editable-column', width: 70, align: 'left',editrules: {required: true}, search: false}
       {name: 'pt.id', index: 'pt.id', align: 'left', hidden: true, search: false}
     ]
     gridComplete: ->grid = $(@)
@@ -117,8 +123,6 @@ define [
   .navGrid("#{hGridId}Pager", {add: false, search: false, edit: false}, {},{},deleteOptions)
   .navButtonAdd("#{hGridId}Pager", {id: "custom_add_#{hGridId}", caption: "", buttonicon: "ui-icon-plus", position: "first", onClickButton: ()->
         createPreferredTranslationDialog.dialog 'open'
-  }).navButtonAdd("#{hGridId}Pager", {id: "custom_column_chooser_#{hGridId}", caption: "Columns", title: 'Reorder Columns', onClickButton: ()->
-      $("#preferredTranslationGridColumnChooser").jqGrid('columnChooser')
   }).jqGrid('filterToolbar', {
       stringResult: true,
       searchOnEnter: false

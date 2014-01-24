@@ -18,12 +18,16 @@ import java.util.Collection;
 public class PreferredTranslationAction extends JSONAction {
 
     private String oper;
-    private String id;
-    private Long languageId;
+    private String id; // this is PreferredReference id
 
-    private String reference;
-    private String comment;
-    private String translation;
+    private Long languageId;  //PreferredTranslation
+
+    private String reference;   //PreferredReference
+    private String comment;     //PreferredReference
+
+    private Long ptId;  //PreferredTranslation id
+    private String translation;  //PreferredTranslation
+
 
     private PreferredTranslationService preferredTranslationService;
     private PreferredReferenceService preferredReferenceService;
@@ -32,13 +36,10 @@ public class PreferredTranslationAction extends JSONAction {
     @Action("create-preferred-reference")
     public String createPreferredReference() throws Exception {
         PreferredReference preferredReference = preferredReferenceService.createPreferredReference(reference, comment);
-        if (null == preferredReference) {
-            setStatus(-1);
-            setMessage(getText("message.preferredreference_exists", new String[]{reference}));
-        } else {
-            setStatus(0);
-            setMessage(getText("message.success"));
-        }
+        boolean isCreateSuccess = null != preferredReference;
+        setStatus(isCreateSuccess ? 0 : -1);
+        setMessage(isCreateSuccess ? getText("message.success") :
+                getText("message.preferredreference_exists", new String[]{reference}));
         return SUCCESS;
     }
 
@@ -46,16 +47,18 @@ public class PreferredTranslationAction extends JSONAction {
     protected String performAction() throws Exception {
         log.info(this.getClass().getSimpleName() + ": oper=" + oper + ", id=" + id);
 
-        if (oper.equals("add")) {
-            preferredTranslationService.createPreferredTranslation(reference, translation, comment, languageId);
-        } else if (oper.equals("edit")) {
-            preferredTranslationService.updatePreferredTranslation(Long.valueOf(id), reference, translation, comment);
+        if (oper.equals("edit")) {
+            if (null != reference) {
+                preferredReferenceService.updatePreferredReference(Long.valueOf(id), reference, comment);
+            } else if(null!= translation ){
+                preferredTranslationService.updatePreferredTranslation(Long.valueOf(id), ptId, languageId, translation, comment);
+            }
         } else if (oper.equals("del")) {
             Collection<Long> ids = new ArrayList<Long>();
             for (String sid : id.split(",")) {
                 ids.add(Long.valueOf(sid.trim()));
             }
-            preferredTranslationService.deletePreferredTranslations(ids);
+            preferredReferenceService.deletePreferredReferences(ids);
         } else {
             throw new SystemError("Unknown oper: " + oper);
         }
@@ -63,6 +66,14 @@ public class PreferredTranslationAction extends JSONAction {
         setStatus(0);
         setMessage(getText("message.success"));
         return SUCCESS;
+    }
+
+    public Long getPtId() {
+        return ptId;
+    }
+
+    public void setPtId(Long ptId) {
+        this.ptId = ptId;
     }
 
     public Long getLanguageId() {

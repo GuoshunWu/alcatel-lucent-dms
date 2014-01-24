@@ -10,9 +10,11 @@ import org.springframework.stereotype.Component;
 import javax.ws.rs.Path;
 import java.util.*;
 
+import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
+
 /**
  * PreferredReference REST service.
- * URL: /rest/glossaries
+ * URL: /rest/preferredTranslations
  * <p/>
  * Sort parameters:
  * sidx		(optional) sort by, default is "reference"
@@ -38,40 +40,36 @@ import java.util.*;
 @SuppressWarnings("unchecked")
 public class PreferredReferenceREST extends BaseREST {
 
-    public Class<PreferredTranslation> getEntityClass() {
-        return PreferredTranslation.class;
+    public Class<PreferredReference> getEntityClass() {
+        return PreferredReference.class;
     }
 
     @Override
     protected String doGetOrPost(Map<String, String> requestMap) throws Exception {
-
-        String hql = "select pr, pt from PreferredReference pr left join pr.preferredTranslations pt where pt is null or 1=1";
+        String hql = "select pr, pt from PreferredReference as pr left join pr.preferredTranslations as pt";
         Map<String, Object> params = new HashMap<String, Object>();
-        String countHql = "select count(*) from PreferredReference pr join pr.preferredTranslations pt where pt is null or 1=1";
+        String countHql = "select count(*) from PreferredReference as pr left join pr.preferredTranslations as pt";
         Map<String, Object> countParams = new HashMap<String, Object>();
+
+        Long languageId = null == requestMap.get("languageId") ? null : Long.valueOf(requestMap.get("languageId"));
+        if (null != languageId) {
+            hql += " with pt.language.id=:languageId";
+            params.put("languageId", languageId);
+            countHql += " with pt.language.id=:languageId";
+            countParams.put("languageId", languageId);
+        }
+
+        Map<String, Object> filterParams = new HashMap<String, Object>();
+        String filters = populateFiltersSQLFragment(requestMap, filterParams);
+        hql += filters;
+        params.putAll(filterParams);
+        countHql+=filters;
+        countParams.putAll(filterParams);
 
         String sidx = requestMap.get("sidx");
         String sord = requestMap.get("sord");
-        if (sidx == null || sidx.trim().isEmpty()) {
-            sidx = "reference";
-        }
-        if (sord == null) {
-            sord = "ASC";
-        }
-        Map<String, String> filters = getGridFilters(requestMap);
-        if (null != filters) {
-            Set<Map.Entry<String, String>> entries = filters.entrySet();
-            int paramIndex = 0;
-            for (Map.Entry<String, String> entry : entries) {
-                String vpName = "P" + paramIndex++;
-                String filter = String.format(" and %s=:%s", entry.getKey(), vpName);
-                params.put(vpName, entry.getValue());
-                hql += filter;
-                countHql += filter;
-            }
-        }
 
-        hql += " order by " + sidx + " " + sord;
+        hql += " order by " + defaultIfBlank(sidx, "reference") + " " + StringUtils.defaultString(sord) ;
         Collection<Object[]> result = retrieve(hql, params, countHql, params, requestMap);
 
         return toJSON(filledPreferredReference(result), requestMap);
