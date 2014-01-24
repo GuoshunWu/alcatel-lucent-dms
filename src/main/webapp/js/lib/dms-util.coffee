@@ -71,6 +71,11 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
     @push(elem) for elem in newarray
     delElem
 
+  Array::unique=()->
+    output = {}
+    output[@[key]] = @[key] for key in [0...@length]
+    value for key, value of output
+
 #  window.onbeforeunload = ->
 #    $.post 'login/logout', {'navigator': navigator.userAgent, 'time': new Date().getTime()}
 #    undefined
@@ -433,6 +438,28 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
       $("#{@panels}[id='#{panelId}']").show 0, ()->callback() if $.isFunction(callback)
 
       @onSwitch oldPanel, @currentPanel if $.isFunction(@onSwitch) and oldPanel != @currentPanel
+
+  # update search options value in grid model
+  updateSearchOptionsValue : (url, colModel)->
+    searchProps = $(colModel).map((idx, elem)->elem.name if elem.search).get()
+    $.ajax(url, async: false, data: {prop: searchProps.join(", ")}).done((json, textStatus, jqXHR)->
+      for model in colModel when model.search
+        model.searchoptions =
+          dataEvents: [
+            {
+              type: 'change'
+              fn:((e)->
+  #            console.log(e)
+              )
+            }
+          ] if not model.searchoptions
+        optionsValue = $(json).map((idx,elem)->
+  #        value = if model.name isnt 'status' then elem[model.name] else ''
+          value = elem[model.name]
+          "#{value}:#{value}").get().unique().join(';')
+        optionsValue = ":All;" + optionsValue if optionsValue
+        model.searchoptions.value = optionsValue
+    )
 
 
 

@@ -62,6 +62,8 @@ define (require)->
     apply: getURL('apply-glossaries', 'admin/')
   preferredTranslation:
     update: getURL('preferred-translation', 'admin/')
+  preferredReference:
+    create: getURL('create-preferred-reference', 'admin/')
 
   user:
     update: getURL('user', 'admin/')

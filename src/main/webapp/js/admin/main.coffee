@@ -29,7 +29,7 @@ define [
 #        console?.log "height=#{pheight}, width=#{pwidth}."
         if isFirst
           $('table.ui-jqgrid-btable', @).setGridHeight(pheight - 90).setGridWidth(pwidth - 20)
-#          $('#glossaryGrid',@).setGridHeight(pheight - 120)
+          $('#preferredTranslationGrid',@).setGridHeight(pheight - 113)
         isFirst = false
     )
 
