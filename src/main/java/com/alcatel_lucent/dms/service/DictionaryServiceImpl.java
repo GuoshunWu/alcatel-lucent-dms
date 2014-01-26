@@ -635,12 +635,35 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             }
             
             // persist label first, it's needed by translation history
+            boolean newLabel = false;	// used to determine if LabelTranslation needs persistence
             Label dbLabel = dbDict.getLabel(label.getKey());
             if (dbLabel == null) {
             	label.setDictionary(dbDict);
-            	label.setContext(defaultCtx);	// transient context for the moment, temporarily remove it when create
+            	label.setContext(defaultCtx);	// temporarily set an default value when create, it will be updated after updating translation
             	dbLabel = (Label) dao.create(label);
             	dbDict.addLabel(dbLabel);
+            	newLabel = true;
+            }
+            // create or update LabelTranslation
+            if (label.getOrigTranslations() != null) {
+                for (LabelTranslation trans : label.getOrigTranslations()) {
+                    LabelTranslation dbLabelTrans = dbLabel.getOrigTranslation(trans.getLanguageCode());
+                    if (newLabel || dbLabelTrans == null) {
+                        trans.setLabel(dbLabel);
+                        trans.setLanguage((Language) dao.retrieve(Language.class, trans.getLanguage().getId()));
+                        dbLabelTrans = (LabelTranslation) dao.create(trans, false);
+                    } else {
+                        dbLabelTrans.setOrigTranslation(trans.getOrigTranslation());
+                        dbLabelTrans.setAnnotation1(trans.getAnnotation1());
+                        dbLabelTrans.setAnnotation2(trans.getAnnotation2());
+                        dbLabelTrans.setComment(trans.getComment());
+                        dbLabelTrans.setWarnings(trans.getWarnings());
+                        dbLabelTrans.setNeedTranslation(trans.isNeedTranslation());
+                        dbLabelTrans.setRequestTranslation(trans.getRequestTranslation());
+                        dbLabelTrans.setLanguageCode(trans.getLanguageCode());
+                        dbLabelTrans.setSortNo(trans.getSortNo());
+                    }
+                }
             }
             
             Text text = new Text();
@@ -721,7 +744,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     // read needTranslation flag from parser
                     // trans.setNeedTranslation(true);
 
-
                     if (lastLabel != null && ctx.getName().equals(lastLabel.getContext().getName())) {
                         // get the original translation in latest version
                         LabelTranslation lastTranslation = lastLabel.getOrigTranslation(trans.getLanguageCode());
@@ -749,7 +771,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                             }
                         }
                     }
-
                     Translation t = new Translation();
                     t.setText(text);
                     t.setTranslation(trans.getOrigTranslation());
@@ -820,29 +841,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 dbLabel.setFontName(label.getFontName());
                 dbLabel.setFontSize(label.getFontSize());
                 dbLabel.setSortNo(label.getSortNo());
-
-                // create or update LabelTranslation
-                if (label.getOrigTranslations() != null) {
-                    for (LabelTranslation trans : label.getOrigTranslations()) {
-                        LabelTranslation dbLabelTrans = dbLabel.getOrigTranslation(trans.getLanguageCode());
-                        if (dbLabelTrans == null) {
-                            trans.setLabel(dbLabel);
-                            trans.setLanguage((Language) dao.retrieve(Language.class, trans.getLanguage().getId()));
-                            dbLabelTrans = (LabelTranslation) dao.create(trans, false);
-                        } else {
-                            dbLabelTrans.setOrigTranslation(trans.getOrigTranslation());
-                            dbLabelTrans.setAnnotation1(trans.getAnnotation1());
-                            dbLabelTrans.setAnnotation2(trans.getAnnotation2());
-                            dbLabelTrans.setComment(trans.getComment());
-                            dbLabelTrans.setWarnings(trans.getWarnings());
-                            dbLabelTrans.setNeedTranslation(trans.isNeedTranslation());
-                            dbLabelTrans.setRequestTranslation(trans.getRequestTranslation());
-                            dbLabelTrans.setLanguageCode(trans.getLanguageCode());
-                            dbLabelTrans.setSortNo(trans.getSortNo());
-                        }
-
-                    }
-                }
             }
             report.addData(context, dict, labels, dbTextMap);
         }
