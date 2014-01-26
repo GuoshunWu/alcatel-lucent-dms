@@ -454,8 +454,10 @@ public class OTCPCGenerator extends DictionaryGenerator {
             Cell tranCell = row.createCell(colIndex++);
             LabelTranslation lt = label.getOrigTranslation(dictionaryLanguage.getLanguageCode());
             if (null != lt) { // may use formula
-                tranCell = restoreFormulaCell(lt.getAnnotation2(), tranCell,
+                restoreFormulaCell(lt.getAnnotation2(), tranCell,
                         label.getTranslation(dictionaryLanguage.getLanguageCode()), refSheet, 0, 2, greyStyle);
+            }  else{
+                tranCell.setCellValue(label.getTranslation(dictionaryLanguage.getLanguageCode()));
             }
 
             String annotation = label.getAnnotation1();

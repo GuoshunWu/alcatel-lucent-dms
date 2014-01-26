@@ -288,7 +288,7 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
     # add event
     gridParam._originalBeforeRequest = gridParam.beforeRequest
     gridParam.beforeRequest=()->
-      gridParam._originalBeforeRequest()
+      gridParam._originalBeforeRequest?()
       #console?.log "#{@id} before load...."
       $(@).clearGridData()
 

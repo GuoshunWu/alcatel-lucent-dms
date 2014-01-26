@@ -307,7 +307,6 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
             <version>${hibernate.version}</version>
-            <classifier>sources</classifier>
         </dependency>
 
         <!-- This dependency is used in spring, see "spring-framework-reference page41- Using SLF4j" -->
