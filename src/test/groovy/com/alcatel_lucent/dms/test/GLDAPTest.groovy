@@ -1,6 +1,7 @@
 package com.alcatel_lucent.dms.test
 
 import com.alcatel_lucent.dms.service.LDAPService
+import junit.framework.Assert
 import org.junit.BeforeClass
 import org.junit.Ignore
 import org.junit.Test
@@ -41,13 +42,13 @@ class GLDAPTest {
 
     }
 
-    @Test
+//    @Test
     void testExample() throws Exception {
         Provider[] providers = Security.providers
 
         providers.each { Provider provider ->
             println "${provider.getName()}:${provider.getVersion()}: ${provider.getInfo()}".center(150, '=')
-            provider.getServices().each {Provider.Service service->                                                                                                        o
+            provider.getServices().each {Provider.Service service->
                 print "    $service"
             }
         }
@@ -83,9 +84,8 @@ class GLDAPTest {
         ctx.close()
     }
 
-//    @Test
+    @Test
     void testLDAPService() throws Exception {
-        println ldapService.findUserByCSLOrCIL("james zhang")
-
+        Assert.assertTrue ldapService.login('guoshunw', '123')
     }
 }
