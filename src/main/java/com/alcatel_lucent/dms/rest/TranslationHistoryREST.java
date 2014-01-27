@@ -1,12 +1,16 @@
 package com.alcatel_lucent.dms.rest;
 
 import com.alcatel_lucent.dms.model.TranslationHistory;
+import org.apache.commons.lang3.StringUtils;
+import org.intellij.lang.annotations.Language;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.Path;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 
 /**
  * DictionaryHistory REST service.
@@ -39,22 +43,15 @@ public class TranslationHistoryREST extends BaseREST {
 	@Override
 	String doGetOrPost(Map<String, String> requestMap) throws Exception {
 		Long transId = Long.valueOf(requestMap.get("transId"));
-		String hql = "select th from TranslationHistory th where th.parent.id =:transId";
-		String countHql = "select count(*) from TranslationHistory th where th.parent.id=:transId";
+        @Language("HQL") String hql = "from TranslationHistory where parent.id =:transId";
+		@Language("HQL") String countHql = "select count(*) from TranslationHistory where parent.id=:transId";
 		Map param = new HashMap();
 		param.put("transId", transId);
 		
     	String sidx = requestMap.get("sidx");
     	String sord = requestMap.get("sord");
-    	if (sidx == null || sidx.trim().isEmpty()) {
-    		sidx = "obj.operationTime";
-    		sord = "DESC";
-    	} else {
-    		sidx = "obj." + sidx;
-    	}
-    	if (sord == null) {
-    		sord = "ASC";
-    	}
+        hql += " order by " + defaultIfBlank(sidx, "operationTime") + " " + StringUtils.defaultString(sord) ;
+
 		Collection<TranslationHistory> data = retrieve(hql, param, countHql, param, requestMap);
 		return toJSON(data, requestMap);
 	}
