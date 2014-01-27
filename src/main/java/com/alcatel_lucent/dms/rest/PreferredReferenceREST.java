@@ -3,7 +3,6 @@ package com.alcatel_lucent.dms.rest;
 import com.alcatel_lucent.dms.model.Language;
 import com.alcatel_lucent.dms.model.PreferredReference;
 import com.alcatel_lucent.dms.model.PreferredTranslation;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
