@@ -647,7 +647,10 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             // create or update LabelTranslation
             if (label.getOrigTranslations() != null) {
                 for (LabelTranslation trans : label.getOrigTranslations()) {
-                    LabelTranslation dbLabelTrans = dbLabel.getOrigTranslation(trans.getLanguageCode());
+                	LabelTranslation dbLabelTrans = null;
+                	if (!newLabel) {
+                        dbLabelTrans = dbLabel.getOrigTranslation(trans.getLanguageCode());
+                	}
                     if (newLabel || dbLabelTrans == null) {
                         trans.setLabel(dbLabel);
                         trans.setLanguage((Language) dao.retrieve(Language.class, trans.getLanguage().getId()));
