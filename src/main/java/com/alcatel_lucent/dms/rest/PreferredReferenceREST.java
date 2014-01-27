@@ -45,9 +45,9 @@ public class PreferredReferenceREST extends BaseREST {
 
     @Override
     protected String doGetOrPost(Map<String, String> requestMap) throws Exception {
-        String hql = "select pr, pt from PreferredReference as pr left join pr.preferredTranslations as pt";
+        @org.intellij.lang.annotations.Language("HQL") String hql = "select pr, pt from PreferredReference as pr left join pr.preferredTranslations as pt";
         Map<String, Object> params = new HashMap<String, Object>();
-        String countHql = "select count(*) from PreferredReference as pr left join pr.preferredTranslations as pt";
+        @org.intellij.lang.annotations.Language("HQL") String countHql = "select count(*) from PreferredReference as pr left join pr.preferredTranslations as pt";
         Map<String, Object> countParams = new HashMap<String, Object>();
 
         Long languageId = null == requestMap.get("languageId") ? null : Long.valueOf(requestMap.get("languageId"));
@@ -59,9 +59,13 @@ public class PreferredReferenceREST extends BaseREST {
         }
 
         Map<String, Object> filterParams = new HashMap<String, Object>();
-        String filters = populateFiltersSQLFragment(requestMap, filterParams);
+        String filters = populateFiltersSQLFragment(requestMap, filterParams, "where pr.removed = :removed");
+
+        params.put("removed", false);
         hql += filters;
         params.putAll(filterParams);
+
+        countParams.put("removed", false);
         countHql+=filters;
         countParams.putAll(filterParams);
 
@@ -69,7 +73,7 @@ public class PreferredReferenceREST extends BaseREST {
         String sord = requestMap.get("sord");
 
         hql += " order by " + defaultIfBlank(sidx, "reference") + " " + StringUtils.defaultString(sord) ;
-        Collection<Object[]> result = retrieve(hql, params, countHql, params, requestMap);
+        Collection<Object[]> result = retrieve(hql, params, countHql, countParams, requestMap);
 
         return toJSON(filledPreferredReference(result), requestMap);
     }

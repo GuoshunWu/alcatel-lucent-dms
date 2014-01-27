@@ -20,6 +20,7 @@ public class PreferredReference extends BaseEntity{
 
     private User creator;
     private Date createTime = new Date();
+    private boolean removed = false;
 
     private Collection<PreferredTranslation> preferredTranslations;
 
@@ -80,9 +81,18 @@ public class PreferredReference extends BaseEntity{
         this.comment = comment;
     }
 
+    @Column(name = "REMOVED")
+    public boolean isRemoved() {
+        return removed;
+    }
+
+    public void setRemoved(boolean removed) {
+        this.removed = removed;
+    }
+
     /*
-    * Transient object for front end
-    * */
+        * Transient object for front end
+        * */
     private PreferredTranslation pt;
     @Transient
     public PreferredTranslation getPt() {

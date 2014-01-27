@@ -18,6 +18,7 @@ import javax.ws.rs.core.UriInfo;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -203,14 +204,14 @@ public abstract class BaseREST {
         return result;
     }
 
-    protected String populateFiltersSQLFragment(Map<String, String> requestMap, Map<String, Object> params) {
+    protected String populateFiltersSQLFragment(Map<String, String> requestMap, Map<String, Object> params, String whereCause) {
+        StringBuffer sb = new StringBuffer(" " + StringUtils.defaultString(whereCause));
         Map<String, String> filters = getGridFilters(requestMap);
-        if (null == filters) return "";
-        StringBuffer sb = new StringBuffer();
+        if (null == filters) return sb.toString();
 
         Set<Map.Entry<String, String>> entries = filters.entrySet();
         int paramIndex = 0;
-        boolean isFirst = true;
+        boolean isFirst = StringUtils.isEmpty(whereCause);
         for (Map.Entry<String, String> entry : entries) {
             String vpName = "P" + paramIndex++;
             String filter = String.format(" %s %s=:%s", isFirst ? "where" : "and", entry.getKey(), vpName);

@@ -4,6 +4,7 @@ import com.alcatel_lucent.dms.UserContext;
 import com.alcatel_lucent.dms.model.PreferredReference;
 import com.alcatel_lucent.dms.model.User;
 import net.sf.json.JSONObject;
+import org.intellij.lang.annotations.Language;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -20,10 +21,15 @@ public class PreferredReferenceServiceImpl extends BaseServiceImpl implements Pr
 
     @Override
     public PreferredReference createPreferredReference(String reference, String comment) {
-        List<PreferredReference> preferredReferences = dao.retrieve(
+        PreferredReference preferredReferences = (PreferredReference) dao.retrieveOne(
                 "from PreferredReference where reference = :reference",
                 JSONObject.fromObject("{'reference': '" + reference + "'}"));
-        if (!preferredReferences.isEmpty()) return null;
+        if (null != preferredReferences) {
+            // create failed if preference exists and not removed
+            if (!preferredReferences.isRemoved()) return null;
+            preferredReferences.setRemoved(false);
+            return preferredReferences;
+        }
 
         User user = UserContext.getInstance().getUser();
 
@@ -52,9 +58,10 @@ public class PreferredReferenceServiceImpl extends BaseServiceImpl implements Pr
 
     @Override
     public void deletePreferredReferences(Collection<Long> ids) {
-        String hSQL = "delete PreferredReference where id in :ids";
+        @Language("HQL") String hSQL = "update PreferredReference set removed =:removed where id in :ids";
         Map params = new HashMap();
         params.put("ids", ids);
+        params.put("removed", true);
         dao.delete(hSQL, params);
     }
 }

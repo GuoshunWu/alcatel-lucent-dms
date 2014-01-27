@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.SessionFactoryUtils;
 import org.springframework.stereotype.Repository;
 
+import javax.servlet.SessionCookieConfig;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Serializable;
@@ -298,6 +299,11 @@ public class DaoServiceImpl implements DaoService {
         session.flush();
 //        session.clear();
         return returns;
+    }
+
+    public int update(String hql, Map<String, Object> param){
+        Session session = getSession();
+        return 0;
     }
 
     public Object update(Object obj) {
