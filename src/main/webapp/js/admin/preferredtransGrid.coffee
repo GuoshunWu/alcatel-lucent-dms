@@ -123,10 +123,11 @@ define [
   .navGrid("#{hGridId}Pager", {add: false, search: false, edit: false}, {},{},deleteOptions)
   .navButtonAdd("#{hGridId}Pager", {id: "custom_add_#{hGridId}", caption: "", buttonicon: "ui-icon-plus", position: "first", onClickButton: ()->
         createPreferredTranslationDialog.dialog 'open'
-  }).jqGrid('filterToolbar', {
-      stringResult: true,
-      searchOnEnter: false
   })
+#  .jqGrid('filterToolbar', {
+#      stringResult: true,
+#      searchOnEnter: false
+#  })
 
   grid: grid
 
