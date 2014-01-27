@@ -15,8 +15,8 @@ define [
   './usergrid'
   './glossarygrid'
   './preferredtransgrid'
-  './webtestsMain'
-
+# web unit test is unnecessary
+#  './webtestsMain'
 
 ], (require, $, blockui,jqmsgbox, i18n, c18n, urls, util)->
   init = ()->

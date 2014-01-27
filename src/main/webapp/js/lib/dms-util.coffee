@@ -111,7 +111,12 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
       i++
     retval
 
-  (console.log=->) if !console.log
+  (
+    window.console=
+      log:->
+      warn:->
+      info:->
+  )unless window.console
 
   randomStr = (length = 10, alphbet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz')->
     rstr = ''
