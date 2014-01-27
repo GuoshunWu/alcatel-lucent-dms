@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="alarmCommon.xsd" />
+
+	<xs:element name="catalog">
+		<xs:annotation>
+			<xs:documentation>ICE alarms catalog</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="contextsKey" type="ContextsKey" />
+				<xs:element name="probableCauseMappings" type="ProbableCauseMappings" />
+				<xs:element name="alarm" type="Alarm" minOccurs="0"
+					maxOccurs="unbounded" />
+				<xs:element name="componentsDefaultService" type="ComponentsDefaultService"
+					minOccurs="0" />
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:string" use="required" />
+		</xs:complexType>
+		<!-- Check that mibName, osiValue and probable cause are unique in the 
+			mapping -->
+		<xs:unique name="mibName">
+			<xs:selector xpath="./probableCauseMappings/probableCauseMapping" />
+			<xs:field xpath="@mibName" />
+		</xs:unique>
+		<xs:unique name="osiValue">
+			<xs:selector xpath="./probableCauseMappings/probableCauseMapping" />
+			<xs:field xpath="@osiValue" />
+		</xs:unique>
+		<xs:unique name="probableCauseValue">
+			<xs:selector xpath="./probableCauseMappings/probableCauseMapping" />
+			<xs:field xpath="." />
+		</xs:unique>
+	</xs:element>
+
+	<xs:complexType name="Alarm">
+		<xs:sequence maxOccurs="1" minOccurs="1">
+			<xs:element name="alarmId" type="AlarmId">
+				<xs:annotation>
+					<xs:documentation> alarmId a unique value identifying the alarm
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="eventType" type="EventType">
+			</xs:element>
+			<xs:element name="probableCause" type="ProbableCause">
+			</xs:element>
+			<xs:element name="perceivedSeverity" type="PerceivedSeverity">
+				<xs:annotation>
+					<xs:documentation> CRITICAL : service affecting condition has
+						occured and an
+						immediate corrective action is required MAJOR :
+						service affecting
+						condition has occured and an urgent corrective
+						action is required MINOR
+						: existence of a non-service affecting
+						fault and corrective action
+						should be taken in order to prevent a
+						more serious fault WARNING :
+						detection of a potential or impending
+						service affecting fault, before
+						any significant effects have been
+						felt.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="text" type="TextPerLanguage">
+				<xs:annotation>
+					<xs:documentation> Detailed description of the alarm
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="attributesDesc" type="TextPerLanguage"
+				minOccurs="0" />
+			<xs:element name="proposedRepairAction" type="LongTextPerLanguage"
+				minOccurs="0" />
+			<xs:element name="clearAlarms" type="ClearAlarms"
+				minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="ContextsKey">
+		<xs:sequence>
+			<xs:element name="key" type="ContextKey" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:simpleType name="ContextKey">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="service" />
+			<xs:enumeration value="device" />
+			<xs:enumeration value="user" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="ProbableCauseMappings">
+		<xs:sequence>
+			<xs:element name="probableCauseMapping" type="ProbableCauseMapping"
+				minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="ProbableCauseMapping">
+		<xs:simpleContent>
+			<xs:extension base="ProbableCause">
+				<xs:attribute name="mibName" type="MibName" use="required" />
+				<xs:attribute name="osiValue" type="xs:unsignedInt"
+					use="required" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<!-- Only capitalized words except for the first one that begins by a lower 
+		case, i.e. validMibName -->
+	<xs:simpleType name="MibName">
+		<xs:restriction base="xs:token">
+			<xs:pattern value="([a-zA-Z])*" />
+		</xs:restriction>
+	</xs:simpleType>
+
+
+	<xs:complexType name="ComponentsDefaultService">
+		<xs:sequence>
+			<xs:element name="component" type="ComponentDefaultService"
+				minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="ComponentDefaultService">
+		<xs:attribute name="name" type="xs:string" use="required" />
+		<xs:attribute name="service" type="ContextService" use="required" />
+		<xs:attribute name="displayName" type="xs:string" use="optional" />
+		<xs:attribute name="coldStandBy" type="xs:boolean" use="optional"
+			default="true" />
+	</xs:complexType>
+
+	<xs:simpleType name="AlarmId">
+		<xs:restriction base="xs:token">
+			<xs:pattern value="[0-9_a-zA-Z]*\-[0-9]*" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="ProbableCause">
+		<xs:union
+			memberTypes="ProbableCauseIntegrityViolation ProbableCauseOperationalViolation ProbableCauseProcessingError ProbableCauseQos ProbableCauseSecurityServiceOrMechanismViolation ProbableCauseTimeDomainViolation ProbableCauseCommunication ProbableCauseEquipment ProbableCauseEnvironmental ProbableCausePhysicalViolation" />
+	</xs:simpleType>
+
+	<xs:complexType name="ClearAlarms">
+		<xs:sequence>
+			<xs:element name="alarmId" type="ClearAlarmId" minOccurs="1"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:simpleType name="ClearAlarmId">
+		<xs:restriction base="xs:token">
+			<xs:pattern value="[0-9_a-zA-Z]*\-[0-9]*|\*" />
+		</xs:restriction>
+	</xs:simpleType>
+
+</xs:schema>
