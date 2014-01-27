@@ -813,9 +813,9 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
                 currentLangId = languageId;
                 uniqueReferences.clear();
             }
-            // skip duplicate reference text of context DEFAULT and DICT
+            // skip duplicate reference text of context DEFAULT and DICT and LABEL
             String contextName = td.getLabel().getText().getContext().getName();
-            if (contextName.equals(Context.DEFAULT) || contextName.equals(Context.DICT)) {
+            if (contextName.equals(Context.DEFAULT) || contextName.equals(Context.DICT) || contextName.equals(Context.LABEL)) {
                 if (uniqueReferences.contains(td.getText().getReference())) {
                     continue;
                 } else {
