@@ -97,7 +97,7 @@ define [
 #      console.log "postData = ", postData
     afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
       jsonFromServer = $.parseJSON serverresponse.responseText
-      #setTimeout (->grid.trigger 'reloadGrid'), 10
+      setTimeout (->grid.trigger 'reloadGrid'), 10
       [jsonFromServer.status == 0, jsonFromServer.message]
     beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
       rowData = $(hGridId).jqGrid "getRowData", rowid
