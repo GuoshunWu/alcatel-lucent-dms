@@ -914,7 +914,7 @@
                 <db.password>alcatel123</db.password>
                 <db.house-keeping-test-sql>select CURRENT_DATE</db.house-keeping-test-sql>
                 <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
-                <db.hbm2ddl.auto>create</db.hbm2ddl.auto>
+                <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
                 <dms.luceneindex.dir>${dms.temp}/dms/lucene/indexes/local_qa_db</dms.luceneindex.dir>
             </properties>
         </profile>
