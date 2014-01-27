@@ -4,6 +4,7 @@ v2.15.0
     * Add "Tip of the day"
     * Add translation history
     * Switch to new LDAP server for authentication
+    * Fix issue of generated OTC PC dictionary
 
 V2.14.0 (Dec 27, 2013)
     * New API "generate-dict" for extracting dictionary files from DMS
