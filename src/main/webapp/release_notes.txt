@@ -1,4 +1,4 @@
-v2.15.0
+v2.15.0 (Jan 28, 2014)
     * Add "translation" flag and comment field to glossary
     * Add "Preferred translation" tab for reference translation
     * Add "Tip of the day"
