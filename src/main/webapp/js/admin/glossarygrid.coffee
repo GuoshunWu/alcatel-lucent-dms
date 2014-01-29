@@ -38,7 +38,7 @@ define [
       $('#glossaryText', @).val ""
       $('#glossaryDescription', @).val ""
 
-    width: 490, minWidth: 200, height: 300, minHeight: 200
+    width: 500, minWidth: 200, height: 310, minHeight: 200
     buttons:[
       {text: c18n.ok, click: (e)->
         unless $('#glossaryText', @).val()

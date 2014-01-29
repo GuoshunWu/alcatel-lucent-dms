@@ -19,7 +19,7 @@
 <div id="createGlossaryDialog">
     <table border="0" width="100%">
         <tr>
-            <td class="text-align-right"><label for="glossaryText"><s:text name="admin.glossary.text"/></label></td>
+            <td class="text-align-right fixed-width-90px"><label for="glossaryText"><s:text name="admin.glossary.text"/></label></td>
             <td><input id="glossaryText" class="fixed-width-340px" name="text"/>&nbsp;*</td>
         </tr>
         <tr>
@@ -32,8 +32,8 @@
         <tr>
             <td class="text-align-right"><label><s:text name="admin.glossary.translate"/></label></td>
             <td>
-                <input type="radio" value="true" name="translate"/>Yes
-                <input type="radio" value="false" checked name="translate"/>No
+                <input type="radio" value="true" name="translate"/><s:text name="admin.glossary.yes"/>
+                <input type="radio" value="false" checked name="translate"/><s:text name="admin.glossary.no"/>
             </td>
         </tr>
         <tr>
