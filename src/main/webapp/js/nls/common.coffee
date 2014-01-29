@@ -30,7 +30,7 @@ define
     dict: 'dictionary'
     label: 'label'
     language: 'language'
-    confirmloadall: "Some contents are not loaded in table. Do you want to load all contents right now?"
+    confirmloadall: "Some dictionaries are not loaded in this page.\n<br/>Do you want to load and select all dictionaries?"
     languagerequired: 'Please select languages!'
     selrow: 'Please select {0} first'
     'selecttip': 'Please select'

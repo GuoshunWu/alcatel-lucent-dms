@@ -120,7 +120,8 @@ define [
       return unless transGrid.getDataIDs().length
 
       $('a', @).each (index, a)->$(a).before(' ').remove() if '0' == $(a).text()
-      $('a', @).css('color', 'blue').click (e)->
+
+      $('a', @).css('color', 'blue').click((e)->
         pageParams = util.getUrlParams(@href)
         rowid = pageParams?.id
         language = id: pageParams.languageId, name: pageParams.languageName
@@ -142,6 +143,7 @@ define [
           transsrc: ''
         $('#translationDetailDialog').data(param: param).dialog "open"
         e.preventDefault()
+      ) if $("input:radio:checked[name='viewOption']").val() == 'dict'
       if isSelectAllReload
         transGrid.setSelection(id, true) for id in transGrid.getDataIDs()
         isSelectAllReload = false
