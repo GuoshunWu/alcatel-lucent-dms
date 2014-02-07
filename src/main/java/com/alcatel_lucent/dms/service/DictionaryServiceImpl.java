@@ -1483,9 +1483,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
     @Override
     public Collection<Dictionary> findDictionaries(String prod, String app, String ver) {
-        String hql = "select obj from Dictionary obj" +
-                " where obj.base.applicationBase.productBase.name=:prod" +
-                " and obj.base.applicationBase.name=:app" +
+        String hql = "select distinct obj.dictionaries from Application obj" +
+                " where obj.base.productBase.name=:prod" +
+                " and obj.base.name=:app" +
                 " and obj.version=:ver";
         Map param = new HashMap();
         param.put("prod", prod);
