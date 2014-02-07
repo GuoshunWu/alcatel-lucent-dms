@@ -156,6 +156,7 @@ public class DCTGenerator extends DictionaryGenerator {
 
         int min = Math.min(sLineLens.length, refers.length);
         for (int i = 0; i < min; ++i) {
+        	if (sLineLens[i].trim().isEmpty()) continue;
             maxLen = Integer.parseInt(sLineLens[i].trim());
             sb.append(refers[i].trim());
             int fill = maxLen - refers[i].length();
