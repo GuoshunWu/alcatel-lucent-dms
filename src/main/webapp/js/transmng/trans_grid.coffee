@@ -82,6 +82,7 @@ define [
   getTableType = ->if -1 == ($.inArray 'Dummy', $("#transGrid").getGridParam('colNames')) then  'dict' else 'app'
 
   ### Construct the grid with the column name(model) parameters above and other required parameters ###
+  isSelectAllReload = false
 
   transGrid = $("#transGrid").jqGrid(
     url: urls.dicts
@@ -89,19 +90,38 @@ define [
     width: 1000, height: 300
     viewrecords: true, gridview: true, multiselect: true
     rownumbers: true, shrinkToFit: false
-    pager: '#transPager', rowNum: 50, rowList: [20,50,100,200,500]
+    pager: '#transPager',
+    rowNum: 50, rowList: [50,100,500,9999]
+#    rowNum: 2, rowList: [2,5,10,50]
     sortname: 'app.base.name', sortorder: 'asc'
     colNames: grid.dictionary.colNames, colModel: grid.dictionary.colModel
     #  customed option for save the toolbar search value and group headers
     searchvalue: {}, groupHeaders: []
+    onSelectAll: (aRowids,status)->
+      records = $(@).jqGrid 'getGridParam', 'records'
+      reccount = $(@).jqGrid 'getGridParam', 'reccount'
+      return unless status and reccount < records
+      # prompt user whether want to select all the records
+      $.msgBox c18n.confirmloadall, ((keyPressed)=>
+        return unless c18n.yes == keyPressed
 
-    beforeProcessing: (data, status, xhr)->
+        isSelectAllReload = true
+        trangGridPagerList = $ "select.ui-pg-selbox","#transPager"
+        (option for option in $("option", trangGridPagerList) when option.value > records)[0].selected = true
+        trangGridPagerList.trigger "change"
+#        $(@).jqGrid('setGridParam', {rowNum:records}).trigger "reloadGrid"
+      ),{title: c18n.confirm, width: 510}, [c18n.yes, c18n.no]
+
+    beforeRequest:->
+      $(@).clearGridData()
     gridComplete: ->
       transGrid = $(@)
+      # only do the rest of the actions when there are data in grid.
+      return unless transGrid.getDataIDs().length
 
       $('a', @).each (index, a)->$(a).before(' ').remove() if '0' == $(a).text()
 
-      $('a', @).css('color', 'blue').click ()->
+      $('a', @).css('color', 'blue').click((e)->
         pageParams = util.getUrlParams(@href)
         rowid = pageParams?.id
         language = id: pageParams.languageId, name: pageParams.languageName
@@ -122,7 +142,11 @@ define [
           language:language
           transsrc: ''
         $('#translationDetailDialog').data(param: param).dialog "open"
-        false
+        e.preventDefault()
+      ) if $("input:radio:checked[name='viewOption']").val() == 'dict'
+      if isSelectAllReload
+        transGrid.setSelection(id, true) for id in transGrid.getDataIDs()
+        isSelectAllReload = false
 
   #  customed method executed when the grid is created.
     afterCreate: (grid)->
@@ -168,13 +192,10 @@ define [
       transGrid.trigger 'reloadGrid'
 
 
-  updateGrid: (param) ->
+  updateGrid: (param)->
     transGrid = $("#transGrid")
     summary = ($(param.languages).map ->_this = @;($([0, 1, 2]).map ->"s(#{_this.id})[#{@}]").get().join(',')).get().join(',')
     gridParam = transGrid.getGridParam()
-
-    #    console?.log 'Start loading data, setup the counter here...'
-    #    window.param.refreshCounter = setInterval("console.log('tick');", 1000)
 
     isApp = (param.level == "app")
     if isApp

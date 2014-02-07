@@ -18,7 +18,7 @@ define [
     param =
       release:
         {id: $('#selVersion', "div[id='transmng']").val(), version: $("#selVersion option:selected", "div[id='transmng']").text()}
-      level: $("input:radio[name='viewOption'][checked]").val()
+      level: $("input:radio:checked[name='viewOption']").val()
       type: type
       name: nodeInfo.text
     checkboxes = $("#languageFilterDialog input:checkbox[name='languages']")
