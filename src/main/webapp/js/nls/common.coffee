@@ -30,13 +30,14 @@ define
     dict: 'dictionary'
     label: 'label'
     language: 'language'
+    confirmloadall: "Some dictionaries are not loaded in this page.\n<br/>Do you want to load and select all dictionaries?"
     languagerequired: 'Please select languages!'
     selrow: 'Please select {0} first'
     'selecttip': 'Please select'
     noversion: '{0} \"{1}\" has no version.'
 
     preferredTrans:
-      caption: 'Preferred Translations'
+      caption: 'Reference Translation'
     glossary:
       caption: 'Glossaries'
     select:

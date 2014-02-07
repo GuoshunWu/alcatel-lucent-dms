@@ -11,6 +11,10 @@
     text-align: right;
 }
 
+.fixed-width-90px {
+    width: 90px;
+}
+
 .fixed-width-340px {
     width: 340px;
 }

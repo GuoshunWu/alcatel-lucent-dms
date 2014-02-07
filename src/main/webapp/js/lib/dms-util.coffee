@@ -291,11 +291,15 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
     # console?.log "check the privilege of grid '#{grid.id}'."
     gridParam = $(grid).jqGrid 'getGridParam'
     # add event
-    gridParam._originalBeforeRequest = gridParam.beforeRequest
-    gridParam.beforeRequest=()->
-      gridParam._originalBeforeRequest?()
-      #console?.log "#{@id} before load...."
-      $(@).clearGridData()
+    ###
+    It is unnecessary to clear all the grid data before new data loaded,
+    this action only need to be applied to translation grid.
+    ###
+#    gridParam._originalBeforeRequest = gridParam.beforeRequest
+#    gridParam.beforeRequest=()->
+#      gridParam._originalBeforeRequest?()
+#      console?.log "#{@id} before load...."
+#      $(@).clearGridData()
 
     forbiddenTab =
       cellurl: urlname2Action(gridParam.cellurl) in param.forbiddenPrivileges

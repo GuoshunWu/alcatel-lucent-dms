@@ -9,7 +9,7 @@ define
       apply: 'Apply Glossary'
     preferredtranslation:
       create:
-        title: 'Create new preferred translation'
+        title: 'Add Reference'
     usernotfound: "{0} \"{1}\" could not be found in system."
     usergrid:
       caption: 'User List'
