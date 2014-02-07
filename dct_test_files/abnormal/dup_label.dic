@@ -1,0 +1,403 @@
+--§1000 #CHECKSUM=344580#
+
+--§1 ---------------------------------------------------------------------
+--Dictionnaire de l'application Instant Commmunicator pour le menu
+--------------------------------------------------------------------------
+--Creation date : 29/03/2007
+--Last Modification Date :
+
+-- Supported languages
+
+LANGUAGES {CHK, GAE, FR0, EN0, DE0, IT0, PT0, ES0, US0, PL0, KO0, NO0, NL0, RU0, CH0, FI0, ES1, CS0, HU0, CH1, SV0, AR0, DA0, HE0}
+
+-- Structure of the dictionary:
+
+-- First, you can see commentary lines, precedeed by two minus signs "--". these comments are not
+-- interpreted by the dictionary tool.
+
+-- For each translation needed, you will find:
+-- An entry key string in upper case, followed by a colon ":".
+-- This key is used by the software to associate a text field in the application with a set of
+-- translations
+-- Each translation associated with this key enholds:
+-- - a language code (FR0 for French for instance)
+-- - a text between brackets for the translation
+-- - a comma to delimit the end of the translation for this language
+-- the comma is replaced by a semicolon ";" to end the list of translations for a specific key
+
+-- NOTA 1: The CHK (Czech) language is used for indicating the maximum width of a text field.
+-- This indication stands only if you visualize the present dictionary with the proper
+-- font (as used in the application). Then, whichever characters you are using
+-- (W can be wider than i) the translations in the different languages  must not exeed the text width
+-- (undependantly to the characters amount) indicated in the CHK field
+-- Texts that are to be displayed in a popup window (OK popup, yes-no popup...) can consist
+-- of more than one line:
+-- "This text will be displayed""on two lines"
+-- Each line must not exceed the width indicated in the CHK field
+-- Texts that are to be displayed in a temporised popup (also called timed popup) can consist of :
+-- One (long) line (with automatic wrap of text on the following 3 lines),
+-- Or several lines ("First line"Second line"...up to "Forth line")
+-- In any case, you are limited to 256 caracters.
+
+-- General syntax:
+-- WC_xxxx : Window caption (title of the window)
+-- ME_xxxx : element of a menu
+-- BU_xxxx : name of a button
+-- CB_xxxx : element of a combo-box
+-- TQ_xxxx : text of a question
+-- TI_xxxx : text of an information, a warning, a problem
+-- ST_xxxx : static text before a variable field or others....
+-- EN_xxxx : for enumered types
+-- TT_xxxx : tool tips
+
+-- General rules:
+-- the "%s" inserted in a string will be replaced by a text at execution;
+-- the "%d" inserted in a string will be replaced by a number;
+-- all the translation for a string including a %s or a %d must keep those key characters, or an error occurs.
+-- The translations being presented in two string ("like" "this") will be displayed on two lines;
+-- you are not allowed to translate on two lines a text which is in one line in the English translation.
+
+-- Text displayed if the translation is not found
+-- nota: Sometimes the default text is included in English in the source code, beginning with "?"
+
+-- --------------------------------------
+-- General
+-- --------------------------------------
+
+PREV_MESSAGE:
+  CHK "Go to previous message 01234567890123456789",
+  GAE "Go to previous message",
+  FR0 "Go to previous message", --???
+  EN0 "Go to previous message",
+  DE0 "Vorherige Nachricht", --???
+  IT0 "Go to previous message", --???
+  PT0 "Go to previous message", --???
+  ES0 "Go to previous message", --???
+  US0 "Go to previous message",
+  PL0 "Go to previous message", --???
+  KO0 "Go to previous message", --???
+  NO0 "Go to previous message", --???
+  NL0 "Go to previous message", --???
+  RU0 "Go to previous message", --???
+  CH0 "Go to previous message", --???
+  FI0 "Go to previous message", --???
+  ES1 "Go to previous message", --???
+  CS0 "Go to previous message", --???
+  HU0 "Go to previous message", --???
+  CH1 "Go to previous message", --???
+  SV0 "Go to previous message", --???
+  AR0 "Go to previous message", --???
+  DA0 "Go to previous message", --???
+  HE0 "Go to previous message"; --???
+
+REWIND:
+  CHK "Rewind 01223456",
+  GAE "Rewind",
+  FR0 "Rewind", --???
+  EN0 "Rewind",
+  DE0 "Rücklauf",
+  IT0 "Rewind", --???
+  PT0 "Rewind", --???
+  ES0 "Rewind", --???
+  US0 "Rewind",
+  PL0 "Rewind", --???
+  KO0 "Rewind", --???
+  NO0 "Rewind", --???
+  NL0 "Rewind", --???
+  RU0 "Rewind", --???
+  CH0 "Rewind", --???
+  FI0 "Rewind", --???
+  ES1 "Rewind", --???
+  CS0 "Rewind", --???
+  HU0 "Rewind", --???
+  CH1 "Rewind", --???
+  SV0 "Rewind", --???
+  AR0 "Rewind", --???
+  DA0 "Rewind", --???
+  HE0 "Rewind"; --???
+
+PAUSE_VOICEMAIL:
+  CHK "Pause 01223456",
+  GAE "Pause",
+  FR0 "Pause", --???
+  EN0 "Pause",
+  DE0 "Pause", --???
+  IT0 "Pause", --???
+  PT0 "Pause", --???
+  ES0 "Pause", --???
+  US0 "Pause",
+  PL0 "Pause", --???
+  KO0 "Pause", --???
+  NO0 "Pause", --???
+  NL0 "Pause", --???
+  RU0 "Pause", --???
+  CH0 "Pause", --???
+  FI0 "Pause", --???
+  ES1 "Pause", --???
+  CS0 "Pause", --???
+  HU0 "Pause", --???
+  CH1 "Pause", --???
+  SV0 "Pause", --???
+  AR0 "Pause", --???
+  DA0 "Pause", --???
+  HE0 "Pause"; --???
+
+FORWARD:
+  CHK "Forward 01223456",
+  GAE "Forward",
+  FR0 "Forward", --???
+  EN0 "Forward",
+  DE0 "Vorwärts", --???
+  IT0 "Forward", --???
+  PT0 "Forward", --???
+  ES0 "Forward", --???
+  US0 "Forward",
+  PL0 "Forward", --???
+  KO0 "Forward", --???
+  NO0 "Forward", --???
+  NL0 "Forward", --???
+  RU0 "Forward", --???
+  CH0 "Forward", --???
+  FI0 "Forward", --???
+  ES1 "Forward", --???
+  CS0 "Forward", --???
+  HU0 "Forward", --???
+  CH1 "Forward", --???
+  SV0 "Forward", --???
+  AR0 "Forward", --???
+  DA0 "Forward", --???
+  HE0 "Forward"; --???
+
+NEXT_MESSAGE:
+  CHK "Go to next message012345678901234567890",
+  GAE "Go to next message",
+  FR0 "Go to next message", --???
+  EN0 "Go to next message",
+  DE0 "folgende Nachricht",
+  IT0 "Go to next message", --???
+  PT0 "Go to next message", --???
+  ES0 "Go to next message",
+  US0 "Go to next message", --???
+  PL0 "Go to next message", --???
+  KO0 "Go to next message", --???
+  NO0 "Go to next message", --???
+  NL0 "Go to next message", --???
+  RU0 "Go to next message", --???
+  CH0 "Go to next message", --???
+  FI0 "Go to next message", --???
+  ES1 "Go to next message", --???
+  CS0 "Go to next message", --???
+  HU0 "Go to next message", --???
+  CH1 "Go to next message", --???
+  SV0 "Go to next message", --???
+  AR0 "Go to next message", --???
+  DA0 "Go to next message", --???
+  HE0 "Go to next message"; --???
+
+PLAY_VOICEMAIL:
+  CHK "Play the voicemail 012345678901234567890123456789",
+  GAE "Play the voicemail",
+  FR0 "Ecouter le msg. vocal",
+  EN0 "Play the voicemail",
+  DE0 "Spielen Sie die Sprachnachricht", --???
+  IT0 "Play the voicemail", --???
+  PT0 "Play the voicemail", --???
+  ES0 "Play the voicemail", --???
+  US0 "Play the voicemail", --???
+  PL0 "Play the voicemail", --???
+  KO0 "Play the voicemail", --???
+  NO0 "Play the voicemail", --???
+  NL0 "Play the voicemail", --???
+  RU0 "Play the voicemail", --???
+  CH0 "Play the voicemail", --???
+  FI0 "Play the voicemail", --???
+  ES1 "Play the voicemail", --???
+  CS0 "Play the voicemail", --???
+  HU0 "Play the voicemail", --???
+  CH1 "Play the voicemail", --???
+  SV0 "Play the voicemail", --???
+  AR0 "Play the voicemail", --???
+  DA0 "Afspil talebesked",
+  HE0 "Play the voicemail"; --???
+
+MAKE_CALL:
+  CHK "123456789 123456",
+  GAE "Call", --!!! 
+  FR0 "Appeler", --!!! 
+  EN0 "Call",
+  DE0 "Anrufen",
+  ES0 "Llamar",
+  PT0 "Efec. cham.",
+  IT0 "Es. chiam.",
+  NO0 "Ring opp",
+  US0 "Call", --!!! 
+  NL0 "Bellen",
+  CH0 "²¦´òµç»°",
+  KO0 "ÀüÈ­°É±â",
+  RU0 "Ïîçâîíèòü",
+  FI0 "Soita puh.",
+  PL0 "Po³¹cz",
+  ES1 "Trucar",
+  CS0 "Volat",
+  HU0 "Hívás",
+  CH1 "©I¥s",
+  SV0 "Ring",
+  AR0 "ÇÊÕÇá",
+  DA0 "Kald",
+  HE0 "Call"; --???
+
+ANSWER_IM:
+  CHK "Send an IMl012345678901234567898",
+  GAE "Send IM",
+  FR0 "Envoyer msg. instant.",
+  EN0 "Send IM",
+  DE0 "IM senden",
+  IT0 "Invia IM",
+  PT0 "Enviar MI",
+  ES0 "Enviar IM",
+  US0 "Send IM",
+  PL0 "Wyœlij wiad. b³yskaw.",
+  KO0 "IM º¸³»±â",
+  NO0 "Send direktemelding",
+  NL0 "IM sturen",
+  RU0 "Îòïðàâèòü ñîîáùåíèå",
+  CH0 "·¢ËÍ¼´Ê±ÏûÏ¢",
+  FI0 "Lähetä viesti",
+  ES1 "Enviar MI",
+  CS0 "Odeslat IM",
+  HU0 "Azonnali üzenetküldés",
+  CH1 "¶Ç°e§Y®É°T®§",
+  SV0 "Skicka snabbmedd.",
+  AR0 "ÅÑÓÇá ÑÓÇáÉ ÝæÑíÉ",
+  DA0 "Send tekstbesked",
+  HE0 "Send IM"; --???
+
+LOUDSPEAKER:
+  CHK "Loudspeaker012345678901234567890123",
+  GAE "Loudspeaker",
+  FR0 "Loudspeaker", --???
+  EN0 "Loudspeaker",
+  DE0 "Lautsprecher",
+  IT0 "Loudspeaker", --???
+  PT0 "Loudspeaker", --???
+  ES0 "Loudspeaker", --???
+  US0 "Loudspeaker",
+  PL0 "Loudspeaker", --???
+  KO0 "Loudspeaker", --???
+  NO0 "Loudspeaker", --???
+  NL0 "Loudspeaker", --???
+  RU0 "Loudspeaker", --???
+  CH0 "Loudspeaker", --???
+  FI0 "Loudspeaker", --???
+  ES1 "Loudspeaker", --???
+  CS0 "Loudspeaker", --???
+  HU0 "Loudspeaker", --???
+  CH1 "Loudspeaker", --???
+  SV0 "Loudspeaker", --???
+  AR0 "Loudspeaker", --???
+  DA0 "Loudspeaker", --???
+  HE0 "Loudspeaker"; --???
+
+STOP_VOICEMAIL:
+  CHK "End call 012345678901234567890123456789012",
+  GAE "Stop playing the message",
+  FR0 "Stop lecture",
+  EN0 "Stop playing the message",
+  DE0 "Das Abhören der Nachricht anhalten",
+  IT0 "Stop playing the message", --???
+  PT0 "Stop playing the message", --???
+  ES0 "Stop playing the message",
+  US0 "Stop playing the message", --???
+  PL0 "Stop playing the message", --???
+  KO0 "Stop playing the message", --???
+  NO0 "Stop playing the message", --???
+  NL0 "Stop playing the message", --???
+  RU0 "Stop playing the message", --???
+  CH0 "Stop playing the message", --???
+  FI0 "Stop playing the message", --???
+  ES1 "Stop playing the message", --???
+  CS0 "Stop playing the message", --???
+  HU0 "Stop playing the message", --???
+  CH1 "Stop playing the message", --???
+  SV0 "Stop playing the message", --???
+  AR0 "Stop playing the message", --???
+  DA0 "Stop playing the message", --???
+  HE0 "Stop playing the message"; --???
+
+UNKNOWN_SENDER:
+  CHK "Unknown sender 012345678901234567890123456789",
+  GAE "Unknown sender", --???
+  FR0 "Appelant non identifié",
+  EN0 "Unknown sender",
+  DE0 "Unknown sender", --???
+  IT0 "Unknown sender", --???
+  PT0 "Unknown sender", --???
+  ES0 "Unknown sender", --???
+  US0 "Unknown sender",
+  PL0 "Unknown sender", --???
+  KO0 "Unknown sender", --???
+  NO0 "Unknown sender", --???
+  NL0 "Unknown sender", --???
+  RU0 "Unknown sender", --???
+  CH0 "Unknown sender", --???
+  FI0 "Unknown sender", --???
+  ES1 "Unknown sender", --???
+  CS0 "Unknown sender", --???
+  HU0 "Unknown sender", --???
+  CH1 "Unknown sender", --???
+  SV0 "Unknown sender", --???
+  AR0 "Unknown sender", --???
+  DA0 "Unknown sender", --???
+  HE0 "Unknown sender"; --???
+UNKNOWN_SENDER:
+  CHK "Unknown sender 012345678901234567890123456789",
+  GAE "Unknown sender", --???
+  FR0 "Appelant non identifié",
+  EN0 "Unknown sender", 
+  DE0 "Unknown sender", --???
+  IT0 "Unknown sender", --???
+  PT0 "Unknown sender", --???
+  ES0 "Unknown sender", --???
+  US0 "Unknown sender", --???
+  PL0 "Unknown sender", --???
+  KO0 "Unknown sender", --???
+  NO0 "Unknown sender", --???
+  NL0 "Unknown sender", --???
+  RU0 "Unknown sender", --???
+  CH0 "Unknown sender", --???
+  FI0 "Unknown sender", --???
+  ES1 "Unknown sender", --???
+  CS0 "Unknown sender", --???
+  HU0 "Unknown sender", --???
+  CH1 "Unknown sender", --???
+  SV0 "Unknown sender", --???
+  AR0 "Unknown sender", --???
+  DA0 "Unknown sender", --???
+  HE0 "Unknown sender"; --???
+
+TEMPLATE:
+  CHK "",
+  GAE "",
+  FR0 "",
+  EN0 "",
+  DE0 "",
+  IT0 "",
+  PT0 "",
+  ES0 "",
+  US0 "",
+  PL0 "",
+  KO0 "",
+  NO0 "",
+  NL0 "",
+  RU0 "",
+  CH0 "",
+  FI0 "",
+  ES1 "",
+  CS0 "",
+  HU0 "",
+  CH1 "",
+  SV0 "",
+  AR0 "",
+  DA0 "",
+  HE0 "";
+
