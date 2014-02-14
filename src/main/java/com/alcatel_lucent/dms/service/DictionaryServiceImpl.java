@@ -1276,6 +1276,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         if (dict.getLabel(key) != null) {
             throw new BusinessException(BusinessException.DUPLICATE_LABEL_KEY);
         }
+        if (maxLength != null && maxLength.trim().isEmpty()) {
+        	maxLength = null;
+        }
         Label label = new Label();
         label.setDictionary(dict);
         label.setKey(key);
