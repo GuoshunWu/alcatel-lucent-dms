@@ -87,7 +87,9 @@ public class HistoryServiceImpl extends BaseServiceImpl implements HistoryServic
 		Timestamp now = new Timestamp(System.currentTimeMillis());
 		TranslationHistory th = new TranslationHistory();
 		th.setParent(trans);
-		th.setRefLabel(refLabel);
+		if (refLabel != null) {
+			th.setRefLabelId(refLabel.getId());
+		}
 		th.setTranslation(trans.getTranslation());
 		th.setStatus(trans.getStatus());
 		th.setOperationType(oper);
