@@ -6,6 +6,7 @@ import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryLanguage;
 import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.LabelTranslation;
+import com.alcatel_lucent.dms.model.Translation;
 import com.alcatel_lucent.dms.service.DaoService;
 import com.alcatel_lucent.dms.service.parser.OTCPCParser;
 import com.alcatel_lucent.dms.util.Util;
@@ -453,11 +454,14 @@ public class OTCPCGenerator extends DictionaryGenerator {
             // generate translation cell
             Cell tranCell = row.createCell(colIndex++);
             LabelTranslation lt = label.getOrigTranslation(dictionaryLanguage.getLanguageCode());
+            // if not translated, generate an empty cell
+            Translation to = label.getTranslationObject(dictionaryLanguage.getLanguageCode());
+            String translation = to.getStatus() == Translation.STATUS_TRANSLATED ? to.getTranslation() : "";
             if (null != lt) { // may use formula
                 restoreFormulaCell(lt.getAnnotation2(), tranCell,
-                        label.getTranslation(dictionaryLanguage.getLanguageCode()), refSheet, 0, 2, greyStyle);
+                        translation, refSheet, 0, 2, greyStyle);
             }  else{
-                tranCell.setCellValue(label.getTranslation(dictionaryLanguage.getLanguageCode()));
+                tranCell.setCellValue(translation);
             }
 
             String annotation = label.getAnnotation1();
