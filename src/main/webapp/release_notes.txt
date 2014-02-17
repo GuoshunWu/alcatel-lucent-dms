@@ -1,3 +1,8 @@
+v2.15.1 (Feb 17, 2014)
+    * remove association between TranslationHistory and Label in order to delete dictionary
+    * Update OTC Excel parser and generator
+    * Fix empty max-length issue of new label of DCT
+
 v2.15.0 (Jan 28, 2014)
     * Add "translation" flag and comment field to glossary
     * Add "Preferred translation" tab for reference translation

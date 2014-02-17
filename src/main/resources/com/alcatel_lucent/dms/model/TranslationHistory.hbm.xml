@@ -14,10 +14,10 @@
         <property name="status" type="integer" column="STATUS"/>
         <property column="OPERATION_TYPE" name="operationType" not-null="false" type="integer"/>
         <property column="OPERATION_TIME" name="operationTime" not-null="false" type="timestamp"/>
+        <property column="REF_LABEL_ID" name="refLabelId" not-null="false" type="long"/>
         <property column="MEMO" name="memo" not-null="false" type="text"/>
 
         <many-to-one name="parent" column="PARENT_ID"/>
-        <many-to-one name="refLabel" column="REF_LABEL_ID"/>
         <many-to-one name="operator" column="OPERATOR"/>
     </class>
 </hibernate-mapping>

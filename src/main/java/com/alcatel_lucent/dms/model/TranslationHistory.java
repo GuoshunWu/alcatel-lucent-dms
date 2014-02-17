@@ -15,7 +15,7 @@ public class TranslationHistory extends BaseEntity {
 	public static final int TRANS_OPER_STATUS = 8;	// manually change translation status
 	
 	private Translation parent;
-	private Label refLabel;
+	private Long refLabelId;
 	private String translation;
 	private Integer status;
 	
@@ -60,17 +60,17 @@ public class TranslationHistory extends BaseEntity {
 	public void setOperator(User operator) {
 		this.operator = operator;
 	}
-	public Label getRefLabel() {
-		return refLabel;
-	}
-	public void setRefLabel(Label refLabel) {
-		this.refLabel = refLabel;
-	}
 	public String getMemo() {
 		return memo;
 	}
 	public void setMemo(String memo) {
 		this.memo = memo;
+	}
+	public Long getRefLabelId() {
+		return refLabelId;
+	}
+	public void setRefLabelId(Long refLabelId) {
+		this.refLabelId = refLabelId;
 	}
 
 }
