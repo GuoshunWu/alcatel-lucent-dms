@@ -350,6 +350,7 @@ public class OTCPCParser extends DictionaryParser {
         if (null == transCell) {
             return null;
         }
+        int status = Translation.STATUS_TRANSLATED;
         String translation = getStringCellValue(transCell, evaluator, warnings, dictName);
         String formulaDesc = null;
         if (StringUtils.isBlank(translation)) {
@@ -367,6 +368,10 @@ public class OTCPCParser extends DictionaryParser {
                 formulaDescMap.put("formula", transCell.getCellFormula());
                 formulaDescMap.put("formulaRefLabelKeys", formulaKeys);
                 formulaDesc = Util.map2String(formulaDescMap);
+                if (translation.equals("0")) {
+                	translation = "";
+                	status = Translation.STATUS_UNTRANSLATED;
+                }
             }
         }
         LabelTranslation lbTranslation = new LabelTranslation();
@@ -376,6 +381,7 @@ public class OTCPCParser extends DictionaryParser {
         lbTranslation.setLanguage(language);
         lbTranslation.setSortNo(row.getRowNum());
         lbTranslation.setOrigTranslation(translation);
+        lbTranslation.setStatus(status);	// mark as translated if translation is not empty even if identical to reference
         return lbTranslation;
     }
 
