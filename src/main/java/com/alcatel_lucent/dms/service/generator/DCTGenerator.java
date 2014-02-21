@@ -51,7 +51,7 @@ public class DCTGenerator extends DictionaryGenerator {
             if (dict.getEncoding().equals("UTF-16LE")) {
                 out.write(new byte[]{(byte) 0xff, (byte) 0xfe});
             }
-            out.println("-- " + getDMSGenSign());
+//            out.println("-- " + getDMSGenSign());
             if (dict.getAnnotation1() != null) {
                 out.print(dict.getAnnotation1());
             }

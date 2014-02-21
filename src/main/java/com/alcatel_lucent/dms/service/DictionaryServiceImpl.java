@@ -1181,7 +1181,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         if (label.getKey().equals(key)) return;
         Label existing = label.getDictionary().getLabel(key);
         if (existing != null) {
-            throw new BusinessException(BusinessException.DUPLICATE_LABEL_KEY);
+            throw new BusinessException(BusinessException.DUPLICATE_LABEL_KEY, key);
         }
         label.setKey(key);
     }
@@ -1274,7 +1274,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     public Label addLabel(Long dictId, String key, String reference, String maxLength, String contextExp, String description) {
         Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
         if (dict.getLabel(key) != null) {
-            throw new BusinessException(BusinessException.DUPLICATE_LABEL_KEY);
+            throw new BusinessException(BusinessException.DUPLICATE_LABEL_KEY, key);
         }
         if (maxLength != null && maxLength.trim().isEmpty()) {
         	maxLength = null;

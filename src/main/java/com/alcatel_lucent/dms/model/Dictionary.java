@@ -407,8 +407,14 @@ public class Dictionary extends BaseEntity {
             // check duplicate reference+context
             HashSet<String> existingReference = new HashSet<String>();
             HashSet<String> alreadyWarning = new HashSet<String>();
+
+            HashSet<String> labelKeys = new HashSet<String>();
+
             for (Label label : labels) {
-                if (label.getContext() == null 
+                if(labelKeys.contains(label.getKey())){
+                    previewErrors.add(new BusinessException(BusinessException.DUPLICATE_LABEL_KEY, label.getKey()));
+                }
+                if (label.getContext() == null
                 		|| label.getContext().getName().equals(Context.EXCLUSION) 
                 		|| label.getContext().getName().equals(Context.LABEL)) continue;
                 String key = label.getContext().toString() + "~~" + label.getReference();
@@ -420,6 +426,7 @@ public class Dictionary extends BaseEntity {
                 } else {
                     existingReference.add(key);
                 }
+                labelKeys.add(label.getKey());
             }
 
             // sort malformed character warnings

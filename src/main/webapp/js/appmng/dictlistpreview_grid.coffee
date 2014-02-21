@@ -28,7 +28,9 @@ define ['jqgrid', 'jqmsgbox', 'jqueryui', 'i18n!nls/appmng', 'i18n!nls/common'],
     {name: 'encoding', index: 'base.encoding', width: 40, editable: true, edittype: 'select',
     editoptions: {value: c18n.dictencodings}, align: 'left'}
     {name: 'labelNum', index: 'labelNum', width: 20, align: 'right'}
-    {name: 'errors', index: 'errorCount', width: 20, align: 'right'}
+    {name: 'errors', index: 'errorCount', width: 20, align: 'right'
+#      unformat:(cellvalue, options, cell)->$('a', cell).text()
+    }
     {name: 'warnings', index: 'warningCount', width: 20, align: 'right'}
     {name: 'actions', index: 'action', width: 70, editable: false, align: 'center'}
   ]
@@ -61,17 +63,13 @@ define ['jqgrid', 'jqmsgbox', 'jqueryui', 'i18n!nls/appmng', 'i18n!nls/common'],
     actions = []
     actions.push k for k,v of handlers
 
-
     $(data.rows).each (index, rowData)->
       @cell[warningIdx] = "<a id='warnAndErr_warnings_#{rowData.id}' title='details' href='javascript:void(0);'>#{@cell[warningIdx]}</a>"
       @cell[errorIdx] = "<a id='warnAndErr_errors_#{rowData.id}' title='details' href='javascript:void(0);'>#{@cell[errorIdx]}</a>"
-
       @cell[actIdx] = $(actions).map(
         ()->
           "<a id='action_#{@}_#{rowData.id}_#{actIdx}' title='#{handlers[@].title}' href='javascript:void(0);' >#{@}</A>"
       ).get().join('&nbsp;&nbsp;&nbsp;&nbsp;')
-
-
 
   beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->handler: ($(@).getGridParam 'postData').handler
   afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
@@ -116,6 +114,13 @@ define ['jqgrid', 'jqmsgbox', 'jqueryui', 'i18n!nls/appmng', 'i18n!nls/common'],
 
       $(row).css 'background', '#FFFFAA' if parseInt($(rowData.warnings).text()) > 0
       $(row).css 'background', '#FFD2D2' if parseInt($(rowData.errors).text()) > 0
+
+    errors = $('#dictListPreviewGrid').getCol('errors')
+    hasError = ($(error).text() for error in errors when $(error).text() > 0).length
+
+    btnText = i18n.dialog.dictlistpreview['import']
+    importBtn = $('#dictListPreviewDialog').next("div.ui-dialog-buttonpane").find("button:contains('#{btnText}')")
+    importBtn.button('option','disabled', hasError)
 
   }).setGridParam(datatype: 'json')
   .jqGrid('navGrid', '#dictListPreviewPager', {add: false, edit: false, search: false, del: false}, {}, {}, {})
