@@ -1,6 +1,7 @@
 package com.alcatel_lucent.dms.service.parser;
 
 import com.alcatel_lucent.dms.BusinessException;
+import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.Constants.DictionaryFormat;
 import com.alcatel_lucent.dms.model.*;
@@ -38,11 +39,11 @@ public class StandardExcelDictParser extends DictionaryParser {
     @Autowired
     private LanguageService languageService;
 
-	@Override
-	public DictionaryFormat getFormat() {
-		return Constants.DictionaryFormat.STD_EXCEL;
-	}
-	
+    @Override
+    public DictionaryFormat getFormat() {
+        return Constants.DictionaryFormat.STD_EXCEL;
+    }
+
     @Override
     public ArrayList<Dictionary> parse(String rootDir, File file, Collection<File> acceptedFiles) throws BusinessException {
         ArrayList<Dictionary> deliveredDicts = new ArrayList<Dictionary>();
@@ -50,7 +51,7 @@ public class StandardExcelDictParser extends DictionaryParser {
         if (!file.exists()) return deliveredDicts;
         if (file.isFile()) {
             if (FilenameUtils.isExtension(file.getName(), EXTENSION)) {
-                try{
+                try {
                     deliveredDicts.add(parseDictionary(rootDir, file, acceptedFiles));
                 } catch (BusinessException e) {
                     // Ignore INVALID_OTC_PC_DICT_FILE error because the file can be another type of excel dictionary.
@@ -77,7 +78,7 @@ public class StandardExcelDictParser extends DictionaryParser {
     }
 
     public Dictionary parseDictionary(String rootDir, File file, Collection<File> acceptedFiles) {
-    	log.info("Parsing excel file " + file.getName());
+        log.info("Parsing excel file " + file.getName());
         DictionaryBase dictBase = new DictionaryBase();
         Dictionary dictionary = null;
 
@@ -98,6 +99,7 @@ public class StandardExcelDictParser extends DictionaryParser {
         dictionary.setLabels(new ArrayList<Label>());
 
         dictionary.setBase(dictBase);
+        dictionary.setParseWarnings(new ArrayList<BusinessWarning>());
 
 
         Workbook wb = null;
@@ -113,24 +115,32 @@ public class StandardExcelDictParser extends DictionaryParser {
         FormulaEvaluator evaluator = wb.getCreationHelper().createFormulaEvaluator();
 
         HashedMap colIndexes = null;
+        Set<String> labelKeys = new HashSet<String>();
         for (Row row : sheet) {
             /**
-             * We suppose that the first row is the title, which determine how to correlate their content in the following rows
+             * Suppose that the first row is the title, which determine how to correlate their content in the following rows
              * */
             if (row.getRowNum() == sheet.getFirstRowNum()) {
                 colIndexes = readTitleRow(dictionary, row);
                 if (!(colIndexes.containsKey(LABEL) && colIndexes.containsKey(MAX_LENGTH) &&
                         colIndexes.containsKey(CONTEXT) && colIndexes.containsKey(DESCRIPTION))) {
-                	log.info(file.getName() + " is not a DMS standard excel dictionary.");
+                    log.info(file.getName() + " is not a DMS standard excel dictionary.");
                     throw new BusinessException(BusinessException.INVALID_VLE_DICT_FILE, file.getName());
                 }
                 continue;
             }
 
             /**
-             * We skip the row without label key
+             * Skip the row without label key
              * */
-            if (null == row.getCell((Integer) colIndexes.get(LABEL))) continue;
+            Cell keyCell = row.getCell((Integer) colIndexes.get(LABEL));
+            if (null == keyCell) continue;
+//            String labelKey = getStringCellValue(keyCell, evaluator);
+//            if (labelKeys.contains(labelKey)) {
+//                dictionary.getParseWarnings().add(new BusinessWarning(BusinessWarning.DUPLICATE_LABEL_KEY, row.getRowNum(), labelKey));
+//                continue;
+//            }
+//            labelKeys.add(getStringCellValue(keyCell, evaluator));
             dictionary.getLabels().add(readLabelFromRow(dictionary, row, colIndexes, evaluator));
         }
         acceptedFiles.add(file);
