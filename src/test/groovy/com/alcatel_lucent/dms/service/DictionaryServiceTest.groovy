@@ -29,7 +29,7 @@ import javax.annotation.Resource
  * To change this template use File | Settings | File Templates.
  */
 
-@Ignore
+//@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = ["/spring.xml"])
 @Transactional //Important, or the transaction control will be invalid
@@ -81,15 +81,15 @@ public class DictionaryServiceTest {
 //    @Test
     void testMe(){}
 
-//    @Test
+    @Test
 //    @Rollback(false)
     void testDictionaryProcess() {
         String targetDir = "D:/test/dictgenerate/"
-        String srcPath = 'Test/OTCWEB_languages_packages'
+        String srcPath = 'Test/Archive'
 
         File f = new File("${testFileRoot}/${srcPath}")
 
-        UserContext.userContext = new UserContext(Locale.ENGLISH, new User('admin', "Guoshun WU", 'Guoshun.Wu@alcatel-sbell.com.cn'))
+        UserContext.userContext = new UserContext(Locale.ENGLISH, new User('admin', "Guoshun WU", 'Guoshun.Wu@alcatel-sbell.com.cn'), null)
 
         Collection<com.alcatel_lucent.dms.model.Dictionary> dicts = dictionaryService.previewDictionaries(f.absolutePath, f, 1)
 //        return

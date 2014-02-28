@@ -44,6 +44,7 @@ public class BusinessException extends RuntimeException {
 
     static public final int NESTED_ANDROID_XML_ERROR = 230;
     static public final int NESTED_ANDROID_XML_FILE_ERROR = 231;
+    static public final int FAILED_TO_CREATE_FILE = 232;
 
     // VLEExcel error
     static public final int INVALID_VLE_DICT_FILE = 240;
@@ -102,7 +103,9 @@ public class BusinessException extends RuntimeException {
     
     // context management
     public static final int TEXT_HAS_REFS = 701;
-    
+
+    static public final int NESTED_IOS_RESOURCE_ERROR = 801;
+
     
     private int errorCode;
     private String errorMessage;
