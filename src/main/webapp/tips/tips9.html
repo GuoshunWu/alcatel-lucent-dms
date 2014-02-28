@@ -1,0 +1,9 @@
+<!-- Tip of the html -->
+<h2>How to export dictionaries using Web API?</h2>
+It's now possible to download dictionaries via Web API. The link is:<br/><br/>
+    http://frcolv10lin237.pqa-collab.fr.alcatel-lucent.com/api/generate-dict?prod=<font color="red">xxx</font>&app=<font color="red">yyy</font>&ver=<font color="red">zzz</font><br/><br/>
+where “xxx/yyy/zzz” indicates product/application/version you want to extract.
+<p/>
+Downloaded file(s) are packaged in a zip archive, same as the one extracted through user interface.
+<p/>
+HTTP basic authentication is required: you need to add an http header “Authorization: Basic XXXX”, where XXXX is base64-encoded “username:password”. Since the base authentication is not safe, if you don't want to use CSL as user credential, please contact DMS admin to acquire a local user account.

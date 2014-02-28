@@ -1,0 +1,214 @@
+v2.15.2
+    * Fix issue when there is duplicate label key in delivered dictionary
+    * Remove DMS headline in generated DCT dictionary
+    * Accept task files with extension "xlsx" when upload
+
+v2.15.1 (Feb 17, 2014)
+    * remove association between TranslationHistory and Label in order to delete dictionary
+    * Update OTC Excel parser and generator
+    * Fix empty max-length issue of new label of DCT
+
+v2.15.0 (Jan 28, 2014)
+    * Add "translation" flag and comment field to glossary
+    * Add "Preferred translation" tab for reference translation
+    * Add "Tip of the day"
+    * Add translation history
+    * Switch to new LDAP server for authentication
+    * Fix issue of generated OTC PC dictionary
+
+V2.14.0 (Dec 27, 2013)
+    * New API "generate-dict" for extracting dictionary files from DMS
+    * Display date time with client timezone
+    * Display user online status in Admin tab
+    * Refine glossary matching method, add exception rules
+    * Fix glossaries applying issue when add Label
+    * Add progress bar for applying new glossary
+    * Enhancement of OTCWeb parser and generator to support DMS JSON dictionary
+
+V2.13.2 (Dec 18, 2013)
+    * New dictionary format support: OTC Web
+    * Optimize performance of capitalization
+    * Add progress bar for capitalization
+    * Support punctuation rule of VoiceApp dict
+    * Fix display issue of error dialog
+    * Support local user
+
+V2.13.1 (Dec 13, 2013)
+    * Fix issue of glossary replacement in latin languages
+    * Fix issue of importing OTC PC dictionary
+    * Adjust VoiceApp parser and generator for new format
+    * Proceed "translate"/"usage"/"comment" fields in VoiceApp XML
+    * Add local authenticate
+
+V2.13.0 (Dec 3, 2013)
+    * Add [LABEL] context which can separate same references from each other in a dictionary
+    * Keep original formula in OTC dictionary
+    * New dictionary format support: XML android
+    * Optimize memory usage of importing dictionaries
+    * Allow to modify translation and status in translation search result
+    * Fix display issue of updating translation prompt
+    * Fix display issue of table header in Detailed Translation dialog
+    * Add support for the comment above a array string or plurals and comment for each item in it
+    * Output array string and plurals as a whole according to their translation status
+
+V2.12.2 (Sep 26, 2013)
+    * Fix problem of default context value in case some language codes were not recognized when import
+
+V2.12.1 (Sep 11, 2013)
+    * Allow .mo files in PO dictionaries for importing (.mo files will be ignored)
+    * Fix pie chart of importing report
+    * Fix duplication of XMLDict parser
+
+V2.12.0 (Aug 23, 2013)
+    * Add "creator" information to Glossary
+    * Optimize performance of applying glossaries
+    * Bug fix of progress bar
+    * Bug fix of XMLDict dictionary parser
+
+V2.10.1 (Aug 5, 2013)
+    * Optimize pager size in different grids
+    * Automatically set labels with EXCLUSION context in any case if its reference equals to a glossary
+
+V2.10.0 (Aug 2, 2013)
+    * Add "Capitalize" feature allowing to change capitalization style for labels
+    * Rename "Admin" view to "Settings" view
+    * Allows application owner or translation manager to maintain a "Glossary" list in "Settings" view
+    * Automatically set labels with EXCLUSION context if its reference equals to a glossary
+    * Automatically keep consistent case of glossary words inside reference texts or translations
+    * Add a button to perform full glossary match on database  
+    * Fix file extension of Standard Excel Dictionary (.xls)
+    * Fix download issue of some tasks
+    * Fix initial translation status for PO dictionary
+
+V2.9.0 (Jul 12, 2013)
+    * Allows to import modified translation file (excel) in Translation view
+    * Allows to delete dictionaries and their associated translation tasks with user confirmation
+    * Add "Context View" (visible to Admin role only in current version)
+    * Take "to_validate" translations in XMLDict/XMLHelp dictionary as "translated" status
+    * Change default font of generated translation task file (excel) to "Arial Unicode MS"
+    * Bug fix - font information in OTC Excel cannot be updated by second-time delivery
+
+V2.8.1 (Jun 28, 2013)
+    * Add a "Match" button in Translation details view allowing to match translations by searching similar reference text across different contexts.
+    * Add progress bar for some time-consuming operations such as deleting dictionaries, exporting translations
+    * Add "Display Check" column in generated translation task file for labels from OTC Android dictionary
+    * Update translation grid cell click action to eliminate translation detail dialog open delay
+    * Fixed login issue in a specific case
+
+V2.8.0 (Jun. 21, 2013)
+    * Add validity check of translation for importing an existing dictionary (If reference text is changed while translation is not changed, don't take the translation)
+    * Allows to remove a language from multiple dictionaries in batch
+    * Fixed freeze issue of generated OTC excel dictionary
+    * Fixed string length limitation problem of XMLHelp dictionary
+
+V2.7.0 (Jun. 14, 2013)
+	* Add option "Auto create translation languages" for importing dictionaries
+	* Update DEFAULT context during importing and receiving translations to DICT context
+	* Add context filter in String settings view
+	* Update OTC Excel parser and generator to support display check column and other dict information
+	* Optimized dictionary import service to avoid parsing dictionary files repeatedly
+	* Fixed an importing issue in case conflict translations are found in a single delivery package
+
+V2.6.3 (Jun. 6, 2013)
+	* Merge same reference texts of context DEFAULT and DICT into one translation in translation tasks
+	* Preview grid of imported dictionaries is now sortable
+	* Fixed problem of manually updating translation in text search results
+
+V2.6.2 (Jun. 4, 2013)
+	* Fixed problem of truncated filename in generated dictionaries
+	* Fixed screen flash issue when switching between applications
+
+V2.6.1 (May. 31, 2013)
+	* Rename dict format "OTC PC" to "OTC Excel" and adjust dictioanry parser
+	* Bug fix of endless progress bar
+
+V2.6.0 (May. 29, 2013)
+	* Add "Fuzzy" option for text search (default is exact match)
+	* Add columns "Translation Source" and "Last Updated" in exported excel of translations.
+	* Bug fix of incorrect T/N/I number in Label translation view.
+	* Bug fix of XMLHelp dict
+
+V2.5.2 (May. 24, 2013)
+	* Introduced Apache Lucene as text search engine.
+	* Added a "System config" tab in Admin view for re-building Lucene index.
+	* Allows to change translation status of selected labels for all languages in "String settings" view.
+	* Show progress bar when parsing uploaded dictionary files
+	* Block current page when import dictionaries.
+	* Change associated language of "GAE" from "English" to "General Alcatel English"
+	* It becomes possible that "English" is not reference language.
+	* Update "description" column to textarea in String settings view of "import preview dialog"
+	* Bug fix of missing languages in Label translation view
+	* Bug fix of initial translation status of empty translation
+	* Rename "Translation Type" to "Trans.src" in Translation Detail view	
+
+
+V2.5.1 (May. 17, 2013)
+	* Updated User Manual
+	* Bug fix of Standard Excel dictionary parser
+	* Corrected some language names
+
+V2.5.0 (May. 10, 2013)
+	* New dictionary format support: PO
+	* New dictionary format support: XMLHelp
+	* Group text search results by their parent product/application/dictionary
+	* Take into account language filters when updating translation status in a batch
+	* Allows to import XMLDict dictionaries without project file (.xdcp)
+	* Perform auto match of translation when adding new language/labels to a dictionary
+	* Optimized performance of auto matching translations
+	* Bug fix of incorrect order of new labels added manually
+
+V2.3.2 (Apr. 26, 2013)
+    * Added "Translation type" and "Last updated" information in Translation details
+    * Bug fix of file not closed issue during importing
+
+V2.3.1 (Apr. 23, 2013)
+	* Take "GAE" (if exists) as reference for CMS XML dictionary
+	* Read context information from VoiceApp XML dictionary and disable auto-translation for specific contexts
+	* Bug fix of reference code display for some dict formats
+
+V2.3.0 (Apr. 18, 2013)
+	* User management (Admin only)
+	* New dictionary format support: VoiceApp XML
+	* Allow to adjust format of translation task file (Excel), only content is locked
+	* Bug fix of some dictionary parsers (OTC PC, ACS text, Standard Excel)
+
+V2.2.0 (Apr. 10, 2013)
+ What's new in DMS 2.2.0
+    * Major Highlights
+      Graphical delivery report after importing dictionaries
+      Full text search on product/application level
+      New dictionary format support: ACS dictionary (txt)
+      New dictionary format support: OTC PC(excel)
+    * Improvements
+
+    * Changes
+      Adjust label edit(lock labels) UI.
+      Generate xdcp file for XMLDict generation
+    * Fixes
+      Translation detail grid page did not initialized correctly when "View translation detail" open
+      If there is not a product/application version exist, task grid will not auto-refresh when you switch node on the tree
+      West panel scroll bar would disappear if you adjust its width
+      Make sure DOM and java script files load in correct order to keep page layout correct(it was disorder occasionally)
+      XML property file name incorrect when change other dictionary format to xml prop.
+
+ Known Issues
+ Troubleshooting
+ Frequently Asked Questions
+
+V2.1.1
+ * New dictionary format: ICE Java Alarm (XML)
+ * Adjust XML Properties adaptor to support CMS XML dictionaries
+ * UI improvement of String Settings
+ * Adjust delivery algorithm to match existing translation in scope all contexts
+ * Bug fix of task detal view
+ * Bug fix of session timed out issue
+
+V2.1.0
+ * New UI: all contents in a single AJAX page
+ * Product tree is also available for Translation and Task view
+ * New progress bar for delivering and generating dictionaries
+ * Allow to add/modify/delete labels in Dictionary view
+ * Allow to modify translation directly in Translation view
+ * New dictionary format: Standard Excel
+ * Keep original structure of XMLDict files
+ 
