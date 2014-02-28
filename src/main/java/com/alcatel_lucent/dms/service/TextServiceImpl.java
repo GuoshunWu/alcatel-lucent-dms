@@ -148,17 +148,16 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                     }
                     Translation dbTrans = dbText.getTranslation(trans.getLanguage().getId());
                     if (dbTrans == null) {
-                    	int translationType = trans.getTranslationType() == null ? Translation.TYPE_DICT : trans.getTranslationType();
-                        if (trans.getTranslationType() == null && trans.getStatus() == Translation.STATUS_TRANSLATED) {
-                            trans.setTranslationType(translationType);
-                        }
+                    	if (trans.getTranslationType() == null) {	// translation type is DICT by default
+                    		trans.setTranslationType(Translation.TYPE_DICT);
+                    	}
                         trans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
                         dbTrans = addTranslation(dbText, trans);
                         dbText.addTranslation(dbTrans);        // the dbText will be used in next invoke, so add translations in-memory
                         historyService.addTranslationHistory(
                         		dbTrans, 
-                        		translationType == Translation.TYPE_AUTO ? null : text.getRefLabel(), 
-                        		translationType == Translation.TYPE_AUTO ? TranslationHistory.TRANS_OPER_SUGGEST : operationType, 
+                        		trans.getTranslationType() == Translation.TYPE_AUTO ? null : text.getRefLabel(), 
+                        		trans.getTranslationType() == Translation.TYPE_AUTO ? TranslationHistory.TRANS_OPER_SUGGEST : operationType, 
                         		null);
                     } else if (mode == Constants.ImportingMode.TRANSLATION) { // update translations in TRANSLATION_MODE
                         if (trans.getTranslation() != null) {
