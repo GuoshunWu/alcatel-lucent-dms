@@ -1,3 +1,8 @@
+v2.15.2
+    * Fix issue when there is duplicate label key in delivered dictionary
+    * Remove DMS headline in generated DCT dictionary
+    * Accept task files with extension "xlsx" when upload
+
 v2.15.1 (Feb 17, 2014)
     * remove association between TranslationHistory and Label in order to delete dictionary
     * Update OTC Excel parser and generator

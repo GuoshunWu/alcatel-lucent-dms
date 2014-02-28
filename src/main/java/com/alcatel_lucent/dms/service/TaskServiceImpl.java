@@ -557,7 +557,9 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
                     throw new BusinessException(BusinessException.UNKNOWN_LANG_NAME, dir.getName());
                 }
                 for (File taskFile : dir.listFiles()) {
-                    if (taskFile.isFile() && taskFile.getName().toLowerCase().endsWith(".xls")) {
+                    if (taskFile.isFile() && (
+                    		taskFile.getName().toLowerCase().endsWith(".xls") || 
+                    		taskFile.getName().toLowerCase().endsWith(".xlsx"))) {
                         Map<String, Map<String, String>> transResult = receiveTaskFile(task, language, taskFile);
                         for (String contextKey : transResult.keySet()) {
                             updateTaskDetails(task, language, contextKey, transResult.get(contextKey));
