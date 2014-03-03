@@ -85,7 +85,7 @@ public class IOSParser extends DictionaryParser {
         }
         if (path.startsWith(rootDir)) path = path.substring(rootDir.length() + 1);
         if (path.isEmpty()) path = DEFAULT_DICT_NAME;
-        return Pair.of(path, langCodeName);
+        return Pair.of(StringUtils.removeEnd(path, "/"), langCodeName);
     }
 
 
