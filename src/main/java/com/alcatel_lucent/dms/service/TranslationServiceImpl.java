@@ -21,6 +21,7 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 
 import com.alcatel_lucent.dms.model.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.lang.time.DateUtils;
@@ -835,8 +836,10 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
             createCell(headRow, 8, "Description", null);
             createCell(headRow, 9, "Translation Source", null);
             createCell(headRow, 10, "Last Updated", null);
+            createCell(headRow, 11, "Label ID", null);
             sheet.setColumnWidth(2, 0);
             sheet.setColumnWidth(6, 0);
+            sheet.setColumnWidth(11,  0);
             int r = 1;
             for (Long dictId : dictIds) {
                 Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
@@ -858,6 +861,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
                     if (label.getCt().getLastUpdateTime() != null) {
                         createCell(row, 10, sdf.format(label.getCt().getLastUpdateTime()), null);
                     }
+                    createCell(row, 11, label.getId(), null);
                 }
             }
         }
@@ -893,6 +897,12 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
                     String reference = formatter.formatCellValue(row.getCell(5));
                     String origTranslation = formatter.formatCellValue(row.getCell(6));
                     String newTranslation = formatter.formatCellValue(row.getCell(7));
+                    Long refLabelId = null;
+                    try {
+                    	refLabelId = (long) row.getCell(11).getNumericCellValue();
+                    } catch (Exception e) {
+                    	log.warn("Error reading Column 'Label ID', maybe an excel of previous version.");
+                    }
 
 
                     if (!origTranslation.equals(newTranslation)) {
@@ -913,14 +923,17 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
                         }
                         Text text = textMap.get(reference);
                         if (text == null) {
+                        	Label label = refLabelId == null ? null : (Label) dao.retrieve(Label.class, refLabelId);
                             text = new Text();
                             text.setReference(reference);
+                            text.setRefLabel(label);
                             textMap.put(reference, text);
                         }
                         Translation trans = new Translation();
                         trans.setLanguage(lang);
                         trans.setTranslation(newTranslation);
                         trans.setStatus(Translation.STATUS_TRANSLATED);
+                        trans.setTranslationType(Translation.TYPE_MANUAL);
                         text.addTranslation(trans);
                         count++;
                     }

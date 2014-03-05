@@ -61,7 +61,7 @@ public class LabelXMLGenerator extends DictionaryGenerator {
     		dl = null;
     	}
         Document doc = DocumentHelper.createDocument();
-        doc.addComment("\n# "+getDMSGenSign()+" using language " + (dl == null ? refLangCode : dl.getLanguageCode()) + ".\n# Labels: " + dict.getLabelNum() + "\n");
+//        doc.addComment("\n# "+getDMSGenSign()+" using language " + (dl == null ? refLangCode : dl.getLanguageCode()) + ".\n# Labels: " + dict.getLabelNum() + "\n");
         String dictAttributes = (dl == null ? dict.getAnnotation1() : dl.getAnnotation1());
         String dictComments = (dl == null ? dict.getAnnotation2() : dl.getAnnotation2());
         String dictNamespaces = (dl == null ? dict.getAnnotation3() : dl.getAnnotation3());
