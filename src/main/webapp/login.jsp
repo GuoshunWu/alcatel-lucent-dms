@@ -14,7 +14,7 @@
 
     <%@include file="common/env.jsp" %>
 
-    <script type="text/javascript" data-main="js/loginEntry.js" src="js/lib/require.js"></script>
+    <script type="text/javascript" data-main="js/loginEntry" src="js/lib/require.js"></script>
 
 </head>
 <body>
