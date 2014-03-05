@@ -38,7 +38,7 @@ public class Constants {
         PO("PO"),
         VITAL_SUITE("Vital Suite"),
         NOE_STRING("NOE String"),
-        IOS_RESOURCE("IOS Resource");
+        IOS_RESOURCE("iOS Resource");
 
 
         private static Map<String, DictionaryFormat> valueEnumMap = new HashMap<String, DictionaryFormat>();
