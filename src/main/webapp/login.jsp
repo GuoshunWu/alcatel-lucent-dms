@@ -87,6 +87,12 @@
             <img src="<%=request.getContextPath()%>/images/release_notes.gif" alt="" style="border: 0"/>
             <b>Release Notes</b></a>
         </div>
+        <div style="float: left;font-size: 13px">
+            &nbsp;<a href="http://172.24.190.236:8080/osp/?category=1"
+                     target="_blank" style="text-decoration:none">
+            <img src="<%=request.getContextPath()%>/images/online16.png" alt="" style="border: 0"/>
+            <b>Support</b></a>
+        </div>
         <div style="float: right; font-size: 13px; font-weight:bold; padding-right:5px">
             V<span id='version'></span>&nbsp;Build&nbsp;
             <span id="buildNumber"></span>
