@@ -1,0 +1,744 @@
+--?000 #CHECKSUM=577354#
+
+--? ?000 #CHECKSUM=482400#
+
+-- ? ---------------------------------------------------------------
+-- Dictionnaire de l'application Instant COmmmunicator pour le toast
+-- ------------------------------------------------------------------
+-- Creation date : 13/02/2007
+-- Last Modification Date :
+
+-- Supported languages
+
+LANGUAGES {CHK, GAE, FR0, EN0, DE0, IT0, PT0, ES0, US0, PL0, KO0, NO0, NL0, RU0, CH0, FI0, ES1, CS0, HU0, CH1, SV0, AR0, DA0, HE0}
+
+-- Structure of the dictionary:
+
+-- First, you can see commentary lines, precedeed by two minus signs "--". these comments are not
+-- interpreted by the dictionary tool.
+
+-- For each translation needed, you will find:
+-- An entry key string in upper case, followed by a colon ":".
+-- This key is used by the software to associate a text field in the application with a set of
+-- translations
+-- Each translation associated with this key enholds:
+-- - a language code (FR0 for French for instance)
+-- - a text between brackets for the translation
+-- - a comma to delimit the end of the translation for this language
+-- the comma is replaced by a semicolon ";" to end the list of translations for a specific key
+
+-- NOTA 1: The CHK (Czech) language is used for indicating the maximum width of a text field.
+-- This indication stands only if you visualize the present dictionary with the proper
+-- font (as used in the application). Then, whichever characters you are using
+-- (W can be wider than i) the translations in the different languages  must not exeed the text width
+-- (undependantly to the characters amount) indicated in the CHK field
+-- Texts that are to be displayed in a popup window (OK popup, yes-no popup...) can consist
+-- of more than one line:
+-- "This text will be displayed""on two lines"
+-- Each line must not exceed the width indicated in the CHK field
+-- Texts that are to be displayed in a temporised popup (also called timed popup) can consist of :
+-- One (long) line (with automatic wrap of text on the following 3 lines),
+-- Or several lines ("First line"Second line"...up to "Forth line")
+-- In any case, you are limited to 256 caracters.
+
+-- General syntax:
+-- WC_xxxx : Window caption (title of the window)
+-- ME_xxxx : element of a menu
+-- BU_xxxx : name of a button
+-- CB_xxxx : element of a combo-box
+-- TQ_xxxx : text of a question
+-- TI_xxxx : text of an information, a warning, a problem
+-- ST_xxxx : static text before a variable field or others....
+-- EN_xxxx : for enumered types
+-- TT_xxxx : tool tips
+
+-- General rules:
+-- the "%s" inserted in a string will be replaced by a text at execution;
+-- the "%d" inserted in a string will be replaced by a number;
+-- all the translation for a string including a %s or a %d must keep those key characters, or an error occurs.
+-- The translations being presented in two string ("like" "this") will be displayed on two lines;
+-- you are not allowed to translate on two lines a text which is in one line in the English translation.
+
+-- Text displayed if the translation is not found
+-- nota: Sometimes the default text is included in English in the source code, beginning with "?"
+
+-- --------------------------------------
+-- General
+-- --------------------------------------
+
+TT_MAKE_CALL_CONTROLCOMBO_TIP:
+  CHK "123456789 123456789 123456789 123456789 12",
+  GAE "Enter a name or a number to make a call", --!!! 
+
+  EN0 "Enter a name or a number to make a call",
+
+
+
+
+
+  US0 "To make a call, enter a name or a number.", --!!! 
+
+
+
+
+
+
+
+
+
+  CH1 "輸入姓名或號碼進行呼叫",
+
+
+
+  HE0 "Enter a name or a number to make a call"; --???
+
+TT_CALLBY_ATTRIBUTE:
+  CHK "123456789 1234564",
+  GAE "Search by ", --???
+
+  EN0 "Search by ",
+
+
+
+
+
+  US0 "Call by ", --???
+
+
+
+
+
+
+
+
+
+  CH1 "搜尋", 
+
+
+
+  HE0 "Search by "; --???
+
+TT_CALLBY_NAME:
+  CHK "123456789 12345678",
+  GAE "Search by name", --???
+
+  EN0 "Search by name",
+
+
+
+
+
+  US0 "Call by name", --???
+
+
+
+
+
+
+
+
+
+  CH1 "按姓名搜尋", 
+
+
+
+  HE0 "Search by name"; --???
+
+50000:
+  CHK "nom de l'entreprise123456789 123456789",
+  GAE "Company name",
+
+  EN0 "Company name",
+
+
+
+
+
+  US0 "Company name",
+
+
+
+
+
+
+
+
+
+  CH1 "公司名稱",
+
+
+
+  HE0 "Company name"; --???
+
+50001:
+  CHK "Nombre habitual123456789 123456789 123456789",
+  GAE "Usual name",
+
+  EN0 "Usual name",
+
+
+
+
+
+  US0 "Usual name",
+
+
+
+
+
+
+
+
+
+  CH1 "常用名",
+
+
+
+  HE0 "Usual name"; --???
+
+50002:
+  CHK "Country123456789 12",
+  GAE "Country",
+
+  EN0 "Country",
+
+
+
+
+
+  US0 "Country",
+
+
+
+
+
+
+
+
+
+  CH1 "國家",
+
+
+
+  HE0 "Country"; --???
+
+50003:
+  CHK "Location123456789 123",
+  GAE "Location",
+
+  EN0 "Location",
+
+
+
+
+
+  US0 "Location",
+
+
+
+
+
+
+
+
+
+  CH1 "位置",
+
+
+
+  HE0 "Location"; --???
+
+50004:
+  CHK "Title789 123456789",
+  GAE "Title",
+
+  EN0 "Title",
+
+
+
+
+
+  US0 "Title",
+
+
+
+
+
+
+
+
+
+  CH1 "職位",
+
+
+
+  HE0 "Title"; --???
+
+50005:
+  CHK "Department1234567",
+  GAE "Department",
+
+  EN0 "Department",
+
+
+
+
+
+  US0 "Department",
+
+
+
+
+
+
+
+
+
+  CH1 "部門",
+
+
+
+  HE0 "Department"; --???
+
+50006:
+  CHK "Office9 123456789",
+  GAE "Office",
+
+  EN0 "Office",
+
+
+
+
+
+  US0 "Office",
+
+
+
+
+
+
+
+
+
+  CH1 "辦公室",
+
+
+
+  HE0 "Office"; --???
+
+50007:
+  CHK "Fax number126789 12345645",
+  GAE "Fax number",
+
+  EN0 "Fax number",
+
+
+
+
+
+  US0 "Fax number",
+
+
+
+
+
+
+
+
+
+  CH1 "傳真號碼",
+
+
+
+  HE0 "Fax number"; --???
+
+50008:
+  CHK "Telefone residencial123456789 1234",
+  GAE "Home phone",
+
+  EN0 "Home phone",
+
+
+
+
+
+  US0 "Home phone",
+
+
+
+
+
+
+
+
+
+  CH1 "住宅電話",
+
+
+
+  HE0 "Home phone"; --???
+
+50009:
+  CHK "Buscapersonas123456789 1",
+  GAE "Pager",
+
+  EN0 "Pager",
+
+
+
+
+
+  US0 "Pager",
+
+
+
+
+
+
+
+
+
+  CH1 "尋呼機",
+
+
+
+  HE0 "Pager"; --???
+
+50010:
+  CHK "Telefon Assistent123456789 123456789 ",
+  GAE "Assistant phone",
+
+  EN0 "Assistant phone",
+
+
+
+
+
+  US0 "Assistant phone",
+
+
+
+
+
+
+
+
+
+  CH1 "助理電話",
+
+
+
+  HE0 "Assistant phone"; --???
+
+50011:
+  CHK "Description6789 123456789",
+  GAE "Description",
+
+  EN0 "Description",
+
+
+
+
+
+  US0 "Description",
+
+
+
+
+
+
+
+
+
+  CH1 "描述",
+
+
+
+  HE0 "Description"; --???
+
+50012:
+  CHK "Nombre habitual123456789 123456789 123456789",
+  GAE "Job position",
+
+  EN0 "Job position",
+
+
+
+
+
+  US0 "Job position",
+
+
+
+
+
+
+
+
+
+  CH1 "工作職位",
+
+
+
+  HE0 "Job position"; --???
+
+50013:
+  CHK "Nombre habitual123456789 123456789 123456789",
+  GAE "Personal Web page",
+
+  EN0 "Personal Web page",
+
+
+
+
+
+  US0 "Personal Web page",
+
+
+
+
+
+
+
+
+
+  CH1 "個人網頁",
+
+
+
+  HE0 "Personal Web page"; --???
+
+50014:
+  CHK "Nombre habitual123456789 123456789 123456789",
+  GAE "Business Web page",
+
+  EN0 "Business Web page",
+
+
+
+
+
+  US0 "Business Web page",
+
+
+
+
+
+
+
+
+
+  CH1 "公司網頁",
+
+
+
+  HE0 "Business Web page"; --???
+
+50015:
+  CHK "Responsable123456789 123456789",
+  GAE "Manager",
+
+  EN0 "Manager",
+
+
+
+
+
+  US0 "Manager",
+
+
+
+
+
+
+
+
+
+  CH1 "經理",
+
+
+
+  HE0 "Manager"; --???
+
+50016:
+  CHK "Nombre habitual123456789 12",
+  GAE "Middle name",
+
+  EN0 "Middle name",
+
+
+
+
+
+  US0 "Middle name",
+
+
+
+
+
+
+
+
+
+  CH1 "中間名",
+
+
+
+  HE0 "Middle name"; --???
+
+50017:
+  CHK "Nombre habitual123456789 123456789 123456789",
+  GAE "Nickname",
+
+  EN0 "Nickname",
+
+
+
+
+
+  US0 "Nickname",
+
+
+
+
+
+
+
+
+
+  CH1 "暱稱",
+
+
+
+  HE0 "Nickname"; --???
+
+50018:
+  CHK "Emplacement123456789",
+  GAE "Location",
+
+  EN0 "Location",
+
+
+
+
+
+  US0 "Location",
+
+
+
+
+
+
+
+
+
+  CH1 "位置",
+
+
+
+  HE0 "Location"; --???
+
+MAIL:
+  CHK "Email address12345678901",
+  GAE "Email address",
+
+  EN0 "Email address",
+
+
+
+
+
+  US0 "Email address",
+
+
+
+
+
+
+
+
+
+  CH1 "電子郵件地址",
+
+
+
+  HE0 "Email address"; --???
+
+TELEPHONENUMBER:
+  CHK "Telephone number123456789",
+  GAE "Telephone number",
+
+  EN0 "Telephone number",
+
+
+
+
+
+  US0 "Telephone number",
+
+
+
+
+
+
+
+
+
+  CH1 "電話號碼",
+
+
+
+  HE0 "Telephone number"; --???
+
+FLOATING_GUI_SEARCH:
+  CHK "Floating Deskbar01234567890123456789012345678",
+  GAE "Floating Deskbar",
+
+  EN0 "Floating Deskbar",
+
+
+
+
+  US0 "Floating Deskbar", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "浮動桌面欄",
+
+
+
+  HE0 "Floating Deskbar"; --???
+
+EXPLORER_GUI_SEARCH:
+  CHK "Deskbar01234567890123456789012345678",
+  GAE "Deskbar",
+
+  EN0 "Deskbar",
+
+
+
+
+  US0 "Deskbar", --!!! 
+
+
+
+
+
+
+
+
+
+
+  CH1 "桌面欄",
+
+
+
+  HE0 "Deskbar"; --???
+
