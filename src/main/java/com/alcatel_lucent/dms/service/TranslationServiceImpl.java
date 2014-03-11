@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,6 +43,9 @@ import org.springframework.stereotype.Service;
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.SystemError;
+import com.ibm.icu.util.Calendar;
+
+import freemarker.template.utility.DateUtil;
 
 @Service("translationService")
 public class TranslationServiceImpl extends BaseServiceImpl implements
@@ -1024,6 +1029,35 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
                 label.setCt(ct);
             }
         }
+        
+        // find out auto-translated translations and change translationType to "auto"
+        HashSet<Long> notAutoIds = new HashSet<Long>();
+        Date firstDeliveryTime = getFirstDeliveryTime(dictId);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date historySince = null;
+		try {
+			historySince = sdf.parse("2014-01-29");
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+        boolean needCalculateAuto = firstDeliveryTime != null && firstDeliveryTime.after(historySince);
+        if (needCalculateAuto) {
+	        hql = "select distinct l.id from Label l join l.text.translations ct" +
+	        		",TranslationHistory his,Label refLabel" +
+	        		" where his.parent=ct and his.refLabelId=refLabel.id" +
+	        		" and l.dictionary.id=:dictId and ct.language.id=:langId" +
+	        		" and refLabel.dictionary.id=:dictId" +
+	        		" and (his.status=" + Translation.STATUS_TRANSLATED + " or his.translation=ct.translation)" +
+	        		" and his.operationType not in (" + 
+	        		TranslationHistory.TRANS_OPER_GLOSSARY + "," + 
+	        		TranslationHistory.TRANS_OPER_CAPITALIZE + "," + 
+	        		TranslationHistory.TRANS_OPER_SUGGEST + "," + 
+	        		TranslationHistory.TRANS_OPER_STATUS + ")";
+	        Collection<Long> ids = dao.retrieve(hql, param);
+	        for (Long id : ids) {
+	        	notAutoIds.add(id);
+	        }
+        }
 
         // populate default ct and ot values
         Iterator<Label> iter = labels.iterator();
@@ -1041,6 +1075,21 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
                 ct.setTranslation(label.getReference());
                 ct.setStatus(Translation.STATUS_UNTRANSLATED);
                 label.setCt(ct);
+            } else {
+            	if (needCalculateAuto &&
+            			label.getCt().getStatus() == Translation.STATUS_TRANSLATED && 
+            			!label.getCt().getTranslation().equals(label.getReference()) &&
+            			!notAutoIds.contains(label.getId())) {
+                    // duplicate an in-memory object to avoid database update
+            		log.info("Set translationType of label " + label.getKey() + " to AUTO");
+                    Translation ct = new Translation();
+                    ct.setId(label.getCt().getId());
+                    ct.setTranslation(label.getCt().getTranslation());
+                    ct.setTranslationType(Translation.TYPE_AUTO);	// set type to AUTO
+                    ct.setLastUpdateTime(label.getCt().getLastUpdateTime());
+                    ct.setStatus(label.getCt().getStatus());
+                    label.setCt(ct);
+            	}
             }
             // set status to Translated if no translation needed
             if (!label.getOt().isNeedTranslation() || label.getContext().getName().equals(Context.EXCLUSION)) {
@@ -1055,7 +1104,15 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
         return labels;
     }
 
-    public Collection<Label> searchLabelsWithTranslation(Long prodId,
+    private Date getFirstDeliveryTime(Long dictId) {
+		String hql = "SELECT MIN(obj.operationTime) FROM DictionaryHistory obj WHERE obj.dictionary.id=:dictId";
+		Map param = new HashMap();
+		param.put("dictId", dictId);
+		Timestamp firstTime = (Timestamp) dao.retrieveOne(hql, param);
+		return firstTime == null ? null : new Date(firstTime.getTime());
+	}
+
+	public Collection<Label> searchLabelsWithTranslation(Long prodId,
                                                          Long appId, Long dictId, Long langId, String text) {
         text = text.toUpperCase();
         String hql;
