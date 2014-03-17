@@ -290,6 +290,7 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
   checkGridPrivilege = (grid)->
     # console?.log "check the privilege of grid '#{grid.id}'."
     gridParam = $(grid).jqGrid 'getGridParam'
+    return unless gridParam
     # add event
     ###
     It is unnecessary to clear all the grid data before new data loaded,
@@ -301,6 +302,7 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
 #      console?.log "#{@id} before load...."
 #      $(@).clearGridData()
 
+#    console.log($(grid).attr("id") + ", cellurl=" + gridParam.cellurl)
     forbiddenTab =
       cellurl: urlname2Action(gridParam.cellurl) in param.forbiddenPrivileges
       editurl: urlname2Action(gridParam.editurl) in param.forbiddenPrivileges
@@ -312,7 +314,7 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
         if $.isPlainObject(obj) and obj.name and obj.editable
           obj.editable = false
           obj.classes = obj.classes.replace('editable-column', '')
-    #
+
     #    for the grid  navigatebar, ['view', 'search', 'refresh'] are readonly operation, enabled
     $.each ['add', 'edit', 'del', 'lock'], (index, value)->
       # for jqgrid predefined navigate buttons
