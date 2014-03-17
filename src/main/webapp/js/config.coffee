@@ -1,7 +1,7 @@
 require.config
   baseUrl: 'js/lib'
   paths:
-    jquery: 'jquery-1.10.1.min'
+    jquery: 'jquery-1.11.0.min'
 #    jquery: '//code.jquery.com/jquery-1.10.1'
     "jquery.migrate": 'jquery-migrate-1.2.1.min'
     jqueryui: 'jquery-ui-1.10.3.custom.min'
@@ -10,6 +10,7 @@ require.config
     formvalidate: 'formValidator-4.0.1.min'
     formvalreg: 'formValidatorRegex'
     jqform: 'jquery.form'
+#    jqgrid: 'jqgridlib/jquery.jqGrid.min'
     jqgrid: 'jquery.jqGrid.min'
     jqtree: 'jquery.jstree'
     jqlayout: 'jquery.layout-latest.min'
