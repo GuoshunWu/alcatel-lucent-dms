@@ -8,6 +8,7 @@ import com.alcatel_lucent.dms.model.Translation;
 import com.alcatel_lucent.dms.util.Util;
 import org.apache.commons.collections.Closure;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Element;
 import org.dom4j.Node;
 import org.slf4j.Logger;
@@ -34,6 +35,8 @@ public class LabelClosure implements Closure {
     private final Collection<DictionaryLanguage> dictLanguages;
     private int labelCounter = 0;
 
+    private Collection<String> noCDataDictionaries = Arrays.asList("objsysopt");
+
     public LabelClosure(Element xmlDict, int totalLabel, Collection<DictionaryLanguage> dictLanguages) {
         this.xmlDict = xmlDict;
         this.totalLabel = totalLabel;
@@ -59,11 +62,11 @@ public class LabelClosure implements Closure {
         String lines = "1";
         String columns = "-1";
         if (label.getMaxLength() != null) {
-        	String[] s = label.getMaxLength().split("\\*");
-        	if (s.length == 2) {
-        		lines = s[0];
-        		columns = s[1];
-        	}
+            String[] s = label.getMaxLength().split("\\*");
+            if (s.length == 2) {
+                lines = s[0];
+                columns = s[1];
+            }
         }
         xmlKey.addAttribute("columns", columns);
         xmlKey.addAttribute("lines", lines);
@@ -91,7 +94,13 @@ public class LabelClosure implements Closure {
             String[] sts = value.split(";");
             for (String st : sts) {
                 Element staticToken = xmlKey.addElement(elemName);
-                if (!st.isEmpty()) staticToken.addCDATA(st);
+                if (StringUtils.isNotBlank(st)) {
+                    String dictName = label.getDictionary().getName();
+                    if (noCDataDictionaries.contains(dictName))
+                        staticToken.addText(st);
+                    else
+                        staticToken.addCDATA(st);
+                }
             }
         }
         writeElement("TRANSLATION", xmlKey, label);
@@ -132,27 +141,33 @@ public class LabelClosure implements Closure {
             if (elemName.equals("CONTEXT") && !isContext) continue;
 
             Element element = xmlKey.addElement(elemName);
-            if (!elemTextValue.isEmpty()) element.addCDATA(elemTextValue);
+            if(StringUtils.isNotBlank(elemTextValue)){
+                if(noCDataDictionaries.contains(label.getDictionary().getName())){
+                    element.addText(elemTextValue);
+                } else{
+                    element.addCDATA(elemTextValue);
+                }
+            }
 
             String followUp = labelProp.get("follow_up");
             if (!isContext && hasLabelTrans) {
-            	if (label.getContext().getName().equals(Context.EXCLUSION)) {
-            		followUp = "no_translate";
-            	} else {
-                	int translationStatus = label.getTranslationStatus(langCode);
-            		String origStatus = lt.getValueFromField("follow_up", LabelTranslation.ANNOTATION1);
-	            	if (translationStatus == Translation.STATUS_TRANSLATED) {	// "no_translate", "to_validate" or "validated"
-	            		followUp = "validated";
-	            		if (origStatus.equals("no_translate")) {
-	            			followUp = origStatus;
-	            		}
-	            	} else {	// "to_translate" if not translated
-	        			followUp = "to_translate"; 
+                if (label.getContext().getName().equals(Context.EXCLUSION)) {
+                    followUp = "no_translate";
+                } else {
+                    int translationStatus = label.getTranslationStatus(langCode);
+                    String origStatus = lt.getValueFromField("follow_up", LabelTranslation.ANNOTATION1);
+                    if (translationStatus == Translation.STATUS_TRANSLATED) {    // "no_translate", "to_validate" or "validated"
+                        followUp = "validated";
+                        if (origStatus.equals("no_translate")) {
+                            followUp = origStatus;
+                        }
+                    } else {    // "to_translate" if not translated
+                        followUp = "to_translate";
 //	            		if (origStatus.equals("to_validate")) {
 //	            			followUp = origStatus;
 //	            		}
-	            	}
-            	}
+                    }
+                }
             }
             if (null != followUp
                     && Arrays.asList("HELP", "TRANSLATION").contains(elemName)) {
