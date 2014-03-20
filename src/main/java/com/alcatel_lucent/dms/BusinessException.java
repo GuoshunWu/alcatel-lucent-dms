@@ -55,6 +55,8 @@ public class BusinessException extends RuntimeException {
     static public final int INVALID_OTC_WEB_DICT_FILE = 242;
     static public final int INVALID_PO_SYNTAX = 243;
 
+    static public final int INVALID_TMX_FILE = 251;
+
     // application management
     static public final int CHARSET_NOT_FOUND = 301;
     static public final int INVALID_DICT_ENCODING = 302;

@@ -3,7 +3,6 @@ package com.alcatel_lucent.dms.service.generator.xmldict;
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.SystemError;
-import com.alcatel_lucent.dms.action.ProgressQueue;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryLanguage;
 import com.alcatel_lucent.dms.service.DaoService;
@@ -33,7 +32,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-
 import static org.apache.commons.lang3.StringUtils.center;
 
 @Component
@@ -42,7 +40,7 @@ public class XMLDictGenerator extends DictionaryGenerator {
     private static Logger log = LoggerFactory.getLogger(XMLDictGenerator.class);
     @Autowired
     private DaoService dao;
-    
+
     @Override
     public void generateDict(File target, Collection<Dictionary> dictList) throws BusinessException {
     	// generate xdcp file

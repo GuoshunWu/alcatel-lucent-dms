@@ -85,14 +85,14 @@ public class DictionaryServiceTest {
 //    @Rollback(false)
     void testDictionaryProcess() {
         String targetDir = "D:/test/dictgenerate/"
-        String srcPath = 'Test/Archive'
+        String srcPath = 'Test/TMX'
 
         File f = new File("${testFileRoot}/${srcPath}")
 
         UserContext.userContext = new UserContext(Locale.ENGLISH, new User('admin', "Guoshun WU", 'Guoshun.Wu@alcatel-sbell.com.cn'), null)
 
         Collection<com.alcatel_lucent.dms.model.Dictionary> dicts = dictionaryService.previewDictionaries(f.absolutePath, f, 1)
-//        return
+        return
         println "About to import dicts: ${dicts}".center(100, '=')
         dictionaryService.importDictionaries(1, dicts, Constants.ImportingMode.DELIVERY)
         daoService.session.clear()

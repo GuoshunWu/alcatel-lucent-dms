@@ -4,6 +4,7 @@ import com.alcatel_lucent.dms.model.Glossary
 import junit.framework.Assert
 import org.apache.commons.collections.*
 import org.apache.commons.collections.functors.EqualPredicate
+import org.apache.commons.io.FileUtils
 import org.apache.commons.io.IOUtils
 import org.apache.commons.io.input.AutoCloseInputStream
 import org.apache.commons.io.input.BOMInputStream
@@ -118,27 +119,8 @@ public class UtilTest {
         }
     }
 
-    @Test
+//    @Test
     void testAsyncServlet() {
 
-        final AtomicInteger counter = new AtomicInteger(0);
-        final int maxThreadCount = 100;
-
-        // client test code
-        ExecutorService clientExec = Executors.newCachedThreadPool();
-        for (int i = 0; i < maxThreadCount; ++i) {
-            clientExec.submit(new Runnable() {
-                @Override
-                public void run() {
-                    int count = counter.addAndGet(1);
-                    try {
-                        IOUtils.readLines(new URL("http://localhost:8888/dms/test/simple").openStream());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        }
-        clientExec.awaitTermination(1, TimeUnit.DAYS);
     }
 }
