@@ -746,6 +746,7 @@
                     <uriEncoding>utf-8</uriEncoding>
                     <url>http://localhost:8888/manager/text</url>
                     <port>8888</port>
+                    <contextReloadable>true</contextReloadable>
                     <path>/</path>
                     <!--<update>true</update>-->
                     <username>admin</username>

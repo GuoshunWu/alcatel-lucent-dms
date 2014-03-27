@@ -26,7 +26,7 @@ http://tomcat.apache.org/tomcat-7.0-doc/config/context.html
 -->
 
 <!-- The contents of this file will be loaded for each web application -->
-<Context antiJARLocking="true">
+<Context antiJARLocking="true" reloadable="true">
 
     <!-- Default set of monitored resources -->
     <WatchedResource>WEB-INF/web.xml</WatchedResource>

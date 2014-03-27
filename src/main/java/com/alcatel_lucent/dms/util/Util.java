@@ -19,6 +19,8 @@ import org.apache.commons.io.input.BOMInputStream;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Attribute;
+import org.dom4j.Element;
+import org.dom4j.tree.DefaultAttribute;
 import org.mozilla.intl.chardet.HtmlCharsetDetector;
 import org.mozilla.intl.chardet.nsDetector;
 import org.mozilla.intl.chardet.nsICharsetDetectionObserver;
@@ -496,12 +498,13 @@ public class Util {
                             throw new SystemError(e);
                         }
                     }
-                }), entrySep);
+                }), entrySep
+        );
         return result;
     }
 
     /**
-     * Convert a attribte list to a map
+     * Convert a attribute list to a map
      */
     public static Map<String, String> attributeList2Map(List<Attribute> attributeList) {
         Collection attributesCollection = CollectionUtils.collect(attributeList, new Transformer() {
@@ -514,6 +517,13 @@ public class Util {
         return MapUtils.typedMap(ArrayUtils.toMap(attributesCollection.toArray(new String[0][])), String.class, String.class);
     }
 
+    public static void String2AttributeList(Map<String, String> attributes) {
+        List<Attribute> attributeList = new ArrayList<Attribute>();
+        Set<Map.Entry<String, String>> entries = attributes.entrySet();
+        for (Map.Entry<String, String> entry : entries) {
+            attributeList.add(new DefaultAttribute(entry.getKey(), entry.getValue()));
+        }
+    }
 
     /**
      * Make glossaries in the text consistent.

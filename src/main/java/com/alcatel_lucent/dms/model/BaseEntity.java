@@ -2,6 +2,7 @@ package com.alcatel_lucent.dms.model;
 
 import com.alcatel_lucent.dms.util.Util;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,10 +18,12 @@ public abstract class BaseEntity implements Serializable {
 
     protected Logger log = LoggerFactory.getLogger(getClass());
 
-    public static final String ANNOTATION1 = "annotation1";
-    public static final String ANNOTATION2 = "annotation2";
-    public static final String ANNOTATION3 = "annotation3";
-    public static final String ANNOTATION4 = "annotation4";
+    public static final String ANNOTATION_NAME = "annotation";
+
+    public static final String ANNOTATION1 = ANNOTATION_NAME + "1";
+    public static final String ANNOTATION2 = ANNOTATION_NAME + "2";
+    public static final String ANNOTATION3 = ANNOTATION_NAME + "3";
+    public static final String ANNOTATION4 = ANNOTATION_NAME + "4";
 
     /**
      *
@@ -67,5 +70,29 @@ public abstract class BaseEntity implements Serializable {
             log.error("Field name " + fieldName + " does not exist in object.");
             return null;
         }
+    }
+
+    protected void setAnnotation(int index, Map<String, String> mapAnnotation) {
+        try {
+            PropertyUtils.setProperty(this, ANNOTATION_NAME + index, Util.map2String(mapAnnotation));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setAnnotation1(Map<String, String> mapAnnotation) {
+        setAnnotation(1, mapAnnotation);
+    }
+
+    public void setAnnotation2(Map<String, String> mapAnnotation) {
+        setAnnotation(2, mapAnnotation);
+    }
+
+    public void setAnnotation3(Map<String, String> mapAnnotation) {
+        setAnnotation(3, mapAnnotation);
+    }
+
+    public void setAnnotation4(Map<String, String> mapAnnotation) {
+        setAnnotation(4, mapAnnotation);
     }
 }

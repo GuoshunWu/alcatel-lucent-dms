@@ -15,7 +15,7 @@ import org.openqa.selenium.support.ui.WebDriverWait
  * Created by Guoshun on 14-1-12.
  * Reference: http://docs.seleniumhq.org/docs/03_webdriver.jsp#internet-explorer-driver
  */
-class TestExample {
+class TestImportDictionary {
     private WebDriver driver
     private JavascriptExecutor jsExecutor
 

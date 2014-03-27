@@ -20,6 +20,7 @@ public class BusinessException extends RuntimeException {
     static public final int UNDEFINED_LANG_CODE = 203;
     static public final int NO_REFERENCE_TEXT = 204;
     static public final int UNKNOWN_LANG_CODE = 205;
+    static public final int TMX_LABEL_NO_REFERENCE_FOUND = 206;
     static public final int CHARSET_NOT_DEFINED = 208;
     static public final int NESTED_DCT_PARSE_ERROR = 209;
     static public final int NESTED_LABEL_ERROR = 210;

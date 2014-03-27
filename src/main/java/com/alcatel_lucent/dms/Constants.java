@@ -38,8 +38,8 @@ public class Constants {
         PO("PO"),
         VITAL_SUITE("Vital Suite"),
         NOE_STRING("NOE String"),
-        IOS_RESOURCE("iOS Resource");
-//        TMX("TMX");
+        IOS_RESOURCE("iOS Resource"),
+        TMX("TMX");
 
 
         private static Map<String, DictionaryFormat> valueEnumMap = new HashMap<String, DictionaryFormat>();
