@@ -85,6 +85,9 @@ public class Label extends BaseEntity implements Cloneable {
 
     private String annotation1;
     private String annotation2;
+    private String annotation3;
+    private String annotation4;
+
     private Collection<LabelTranslation> origTranslations;
 
     public String getFontName() {
@@ -127,6 +130,24 @@ public class Label extends BaseEntity implements Cloneable {
         this.annotation1 = annotation1;
     }
 
+    @Column(name = "ANNOTATION3")
+    @Type(type = "text")
+    public String getAnnotation3() {
+        return annotation3;
+    }
+
+    public void setAnnotation3(String annotation3) {
+        this.annotation3 = annotation3;
+    }
+    @Column(name = "ANNOTATION4")
+    @Type(type = "text")
+    public String getAnnotation4() {
+        return annotation4;
+    }
+
+    public void setAnnotation4(String annotation4) {
+        this.annotation4 = annotation4;
+    }
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -141,7 +162,7 @@ public class Label extends BaseEntity implements Cloneable {
     }
 
     @Field(index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
-    @Column(name = "LABEL_KEY", nullable = false)
+    @Column(name = "LABEL_KEY", nullable = false, length = 1024)
     public String getKey() {
         return key;
     }

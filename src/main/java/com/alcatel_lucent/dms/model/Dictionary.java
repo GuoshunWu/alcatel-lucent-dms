@@ -4,7 +4,9 @@ import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.Constants;
 
+import com.alcatel_lucent.dms.util.Util;
 import net.sf.json.JSONObject;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.Parameter;
@@ -15,6 +17,7 @@ import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 //@Entity
@@ -92,9 +95,9 @@ public class Dictionary extends BaseEntity {
     }
 
     public void addLabel(Label label) {
-    	if (this.labels == null) {
-    		labels = new LinkedHashSet<Label>();
-    	}
+        if (this.labels == null) {
+            labels = new LinkedHashSet<Label>();
+        }
         this.labels.add(label);
     }
 
@@ -411,12 +414,12 @@ public class Dictionary extends BaseEntity {
             HashSet<String> labelKeys = new HashSet<String>();
 
             for (Label label : labels) {
-                if(labelKeys.contains(label.getKey())){
+                if (labelKeys.contains(label.getKey())) {
                     previewErrors.add(new BusinessException(BusinessException.DUPLICATE_LABEL_KEY, label.getKey()));
                 }
                 if (label.getContext() == null
-                		|| label.getContext().getName().equals(Context.EXCLUSION) 
-                		|| label.getContext().getName().equals(Context.LABEL)) continue;
+                        || label.getContext().getName().equals(Context.EXCLUSION)
+                        || label.getContext().getName().equals(Context.LABEL)) continue;
                 String key = label.getContext().toString() + "~~" + label.getReference();
                 if (existingReference.contains(key)) {
                     if (!alreadyWarning.contains(key)) {    // warn only once
@@ -546,6 +549,7 @@ public class Dictionary extends BaseEntity {
         this.annotation2 = annotation2;
     }
 
+
     @Column(name = "ANNOTATION3")
     @Type(type = "text")
     public String getAnnotation3() {
@@ -556,6 +560,8 @@ public class Dictionary extends BaseEntity {
         this.annotation3 = annotation3;
     }
 
+
+
     @Column(name = "ANNOTATION4")
     @Type(type = "text")
     public String getAnnotation4() {
@@ -565,6 +571,8 @@ public class Dictionary extends BaseEntity {
     public void setAnnotation4(String annotation4) {
         this.annotation4 = annotation4;
     }
+
+
 
     /**
      * Update language of a specific language code
