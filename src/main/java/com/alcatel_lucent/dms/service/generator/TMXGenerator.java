@@ -111,7 +111,7 @@ public class TMXGenerator extends DictionaryGenerator {
 
         OutputFormat format = OutputFormat.createPrettyPrint();
         format.setIndentSize(4);
-        format.setTrimText(true);
+//        format.setTrimText(true);
 //        format.setPadText(true);
 //        format.setNewlines(true);
         format.setXHTML(true);
@@ -213,21 +213,21 @@ public class TMXGenerator extends DictionaryGenerator {
                             propStatus.setText(TRANSLATED);
                         }
                     }
-
-                    String content = lt.getOrigTranslation();
                     Boolean isMixedContent = Boolean.parseBoolean(Util.string2Map(lt.getAnnotation2()).get("mixedContent"));
                     Element seg;
 
+                    String translation = label.getTranslation(dctLanguage.getLanguageCode());
                     if (isMixedContent) {
                         try {
-                            seg = DocumentHelper.parseText(content).getRootElement();
+                            seg = DocumentHelper.parseText(lt.getOrigTranslation()).getRootElement();
+                            seg.setText(translation);
                             tuv.elements().add(seg);
                         } catch (DocumentException e) {
                             e.printStackTrace();
                         }
                     } else {
                         seg = tuv.addElement("seg");
-                        seg.setText(content);
+                        seg.setText(translation);
                     }
                 }
                 if (null != tuv) tu.elements().add(tuv);

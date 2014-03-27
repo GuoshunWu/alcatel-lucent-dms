@@ -3,24 +3,14 @@ package com.alcatel_lucent.dms.service;
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.Constants.DictionaryFormat;
-import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.model.*;
-import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.service.parser.DictionaryParser;
-import com.alcatel_lucent.dms.util.Util;
-import com.alcatel_lucent.dms.util.XDCPDTDEntityResolver;
-import com.alcatel_lucent.dms.util.XDCTDTDEntityResolver;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Transformer;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.FileFilterUtils;
-import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.dom4j.*;
 import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
@@ -33,14 +23,13 @@ import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
-import static org.apache.commons.lang3.BooleanUtils.toBoolean;
 import static org.apache.commons.lang3.StringUtils.center;
-import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 @Component("TMXParser")
 @SuppressWarnings("unchecked")
@@ -149,8 +138,10 @@ public class TMXParser extends DictionaryParser {
             * if there is reference language in tu
             * */
             Boolean isReferenceExists = (Boolean) tu.selectObject("boolean(tuv/@xml:lang='" + dict.getLanguageReferenceCode() + "')");
+            String labelKey = (String) tu.selectObject("string(prop[@type='context'])");
+            if (StringUtils.isEmpty(labelKey)) labelKey = tu.attributeValue("tuid");
             if (!isReferenceExists) {
-                throw new BusinessException(BusinessException.TMX_LABEL_NO_REFERENCE_FOUND, tu.attributeValue("tuid"), dict.getName());
+                throw new BusinessException(BusinessException.TMX_LABEL_NO_REFERENCE_FOUND, labelKey, dict.getName());
             }
             List<Element> tuvInTu = tu.elements("tuv");
 
@@ -161,7 +152,7 @@ public class TMXParser extends DictionaryParser {
 
             removeElements(tu, tuvInTu);
             label.setAnnotation1(tu.asXML());
-            label.setKey(tu.attributeValue("tuid"));
+            label.setKey(labelKey);
 
             //save tu element attributes
             label.setDictionary(dict);
@@ -187,7 +178,7 @@ public class TMXParser extends DictionaryParser {
                 // tuv is reference language
                 if (lang.equalsIgnoreCase(dict.getReferenceLanguage())) {
                     label.setAnnotation2(tuv.asXML());
-                    label.setReference(seg.hasMixedContent() ? seg.asXML() : seg.getTextTrim());
+                    label.setReference(seg.hasMixedContent() ? seg.asXML() : seg.getText());
                     label.setAnnotation3("mixedContent=" + seg.hasMixedContent());
                     continue;
                 }
@@ -202,7 +193,7 @@ public class TMXParser extends DictionaryParser {
                 lt.setSortNo(index);
                 lt.setAnnotation1(tuv.asXML());
 
-                lt.setOrigTranslation(seg.hasMixedContent() ? seg.asXML() : seg.getTextTrim());
+                lt.setOrigTranslation(seg.hasMixedContent() ? seg.asXML() : seg.getText());
                 lt.setAnnotation2("mixedContent=" + seg.hasMixedContent());
 
                 if (null == label.getReference()) label.setReference("");
