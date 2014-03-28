@@ -4,12 +4,8 @@ import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.model.*;
-import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.service.DaoService;
-import com.alcatel_lucent.dms.service.generator.xmldict.LabelClosure;
-import com.alcatel_lucent.dms.service.generator.xmldict.LanguageClosure;
 import com.alcatel_lucent.dms.util.Util;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
@@ -29,12 +25,10 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
 
 import static org.apache.commons.lang3.StringUtils.center;
-import static org.apache.commons.lang3.StringUtils.contains;
 
 @Component
 public class TMXGenerator extends DictionaryGenerator {

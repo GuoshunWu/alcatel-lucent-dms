@@ -47,7 +47,7 @@ class TestImportDictionary {
         testProdName = "TestProd"
         testAppName = "TestApp"
 
-        testFilePath = "D:\\Documents\\Alcatel_Lucent\\DMS\\Test\\material\\cms-sample.zip"
+        testFilePath = new File("dct_test_files/sampleFiles", "cms-sample.zip").absolutePath
     }
 
     @After
@@ -88,7 +88,7 @@ class TestImportDictionary {
         Thread.sleep(500)
         testApp.click()
         WebElement elemUploadDict = new WebDriverWait(driver, 10).until(ExpectedConditions.presenceOfElementLocated(By.id("dctFileUpload")))
-        Thread.sleep(500)
+        Thread.sleep(1000)
         elemUploadDict.sendKeys(testFilePath)
 
         new WebDriverWait(driver, 60 * 2).until(
