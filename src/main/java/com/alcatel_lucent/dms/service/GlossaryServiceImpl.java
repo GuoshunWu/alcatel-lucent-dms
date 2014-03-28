@@ -219,7 +219,7 @@ public class GlossaryServiceImpl implements GlossaryService {
 
                 if (StringUtils.isEmpty(subCollectionPropertyName)) continue;
                 Collection subCollection = (Collection) PropertyUtils.getProperty(bean, subCollectionPropertyName);
-                if (null == subCollection) return matchedGlossaryMatchObjects;
+                if (null == subCollection) continue;
                 for (Object subObj : subCollection) {
                     String subPropertyValue = (String) PropertyUtils.getProperty(subObj, subObjectPropertyName);
                     resultText = gmo.getProcessedString(subPropertyValue);
