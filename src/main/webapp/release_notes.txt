@@ -1,4 +1,4 @@
-V2.15.4
+V2.15.4 (Mar 20, 2014)
     * Identify "Auto" translation type by translation history
     * Add "Support" link in login page
 
