@@ -4,6 +4,7 @@ import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.Constants.DictionaryFormat;
 import com.alcatel_lucent.dms.model.*;
+import com.alcatel_lucent.dms.service.generator.TMXGenerator;
 import com.alcatel_lucent.dms.service.parser.DictionaryParser;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -26,9 +27,11 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import static com.alcatel_lucent.dms.service.generator.TMXGenerator.*;
 import static org.apache.commons.lang3.StringUtils.center;
 
 @Component("TMXParser")
@@ -174,6 +177,8 @@ public class TMXParser extends DictionaryParser {
                 }
 
                 Element seg = tuv.element("seg");
+
+//                label.setOrigTranslations();
                 tuv.remove(seg);
                 // tuv is reference language
                 if (lang.equalsIgnoreCase(dict.getReferenceLanguage())) {
@@ -187,6 +192,12 @@ public class TMXParser extends DictionaryParser {
                 LabelTranslation lt = new LabelTranslation();
                 label.getOrigTranslations().add(lt);
                 lt.setLabel(label);
+
+                String translationStatus = (String) tuv.selectObject("string(prop[@type=\"status\"])");
+                if (StringUtils.isNotBlank(translationStatus)) {
+                    boolean isTranslated = Arrays.asList(AUTO_TRANSLATED, BEST_GUESS, COMPLETE, FOR_REVIEW, TRANSLATED).contains(translationStatus.trim());
+                    lt.setStatus(isTranslated ? Translation.STATUS_TRANSLATED : Translation.STATUS_UNTRANSLATED);
+                }
 
                 lt.setLanguage(dictionaryLanguage.getLanguage());
                 lt.setLanguageCode(dictionaryLanguage.getLanguageCode());
