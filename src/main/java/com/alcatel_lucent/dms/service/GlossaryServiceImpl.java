@@ -175,7 +175,6 @@ public class GlossaryServiceImpl implements GlossaryService {
         if (null == labels || labels.isEmpty()) return;
         for (Label label : labels) {
             consistentGlossariesInLabel(label, getNotDirtyGlossaries());
-//            consistentGlossariesInLabel(label, glossaries);
         }
     }
 
@@ -189,7 +188,6 @@ public class GlossaryServiceImpl implements GlossaryService {
         Collection<TaskDetail> taskDetails = task.getDetails();
 
         Collection<GlossaryMatchObject> GlossaryMatchObject = getGlossaryPatterns(getDirtyGlossaries());
-//        consistentGlossariesInObject(glossaries, label, "reference", "origTranslations", "origTranslation");
         for (TaskDetail taskDetail : taskDetails) {
             final String reference = taskDetail.getText().getReference();
             for (GlossaryMatchObject gmo : GlossaryMatchObject) {
@@ -259,7 +257,6 @@ public class GlossaryServiceImpl implements GlossaryService {
 
 
     private void consistentGlossariesInText(final Text text, Collection<Glossary> glossaries) {
-        //consistentGlossariesInObject(glossaries, text, "reference", "translations", "translation");
         if (StringUtils.isBlank(text.getReference())) return;
 
         String replacedReference = text.getReference();
