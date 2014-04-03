@@ -141,6 +141,7 @@ public interface TextService {
      * @return Context instance
      */
 	Context getContextByExpression(String contextExp, Dictionary dict);
+    Context getContextByExpression(String contextExp, Text text);
 
     /**
      * Populate context name and get the Context instance, create one if not exists.
@@ -182,6 +183,7 @@ public interface TextService {
 
     public String populateContextKey(String contextExp, Dictionary dictionary);
     public String populateContextKey(String contextExp, Label label);
+    public String populateContextKey(String contextExp, Text text);
 
 	/**
 	 * Delete a text when there is no refs.

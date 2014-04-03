@@ -914,7 +914,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
                         log.info(languageName + " translation of \"" + reference + "\" was changed, update it into DMS.");
                         //consistent glossaries
 
-                        Collection<GlossaryMatchObject> GlossaryMatchObjects = glossaryService.getGlossaryPatterns();
+                        Collection<GlossaryMatchObject> GlossaryMatchObjects = glossaryService.getNotDirtyGlossaryPatterns();
                         for (GlossaryMatchObject gmo : GlossaryMatchObjects) {
                             gmo.getProcessedString(reference);
                             if (!gmo.isReplaced()) continue;

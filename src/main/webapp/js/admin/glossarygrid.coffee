@@ -70,7 +70,7 @@ define [
 
     datatype: 'json'
     mtype: 'post'
-    postData: {format:'grid', prop: 'text, translate, description, createTime,creator.name', 'idprop': 'text'}
+    postData: {format:'grid', prop: 'text, translate, description, createTime,creator.name, dirty','idprop': 'text'}
     prmNames: id: 'text'
     cellurl: urls.glossary.update, cellEdit: true
 
@@ -91,13 +91,18 @@ define [
     caption: c18n.glossary.caption
     autowidth: true
     height: '100%'
-    colNames: ['Glossary text', 'Need Translation' ,'Comment' ,'Create Time', 'Creator']
+    colNames: ['Glossary text', 'Need Translation' ,'Comment' ,'Create Time', 'Creator', 'Applied']
     colModel: [
       {name: 'text', index: 'text', width: 15, editable: true, classes: 'editable-column', align: 'left',editrules: {required: true}}
       {name: 'translate', index: 'translate', formatter:'select',edittype: 'select', editoptions: {value: 'true:yes;false:no'}, width: 5, editable: true, classes: 'editable-column', align: 'left',editrules: {required: true}}
       {name: 'description', width: 40, index: 'description', editable: true, classes: 'editable-column', align: 'left',editrules: {required: true}}
       {name: 'createTime',width: 10, index: 'createTime', align: 'left', formatter: 'date', formatoptions: {srcformat: 'ISO8601Long', newformat: 'ISO8601Long'}}
       {name: 'creator.name', width: 10, index: 'creator.name', align: 'left'}
+      {name: 'dirty', width: 3, index: 'dirty', align: 'center', formatter: (cellvalue, options, rowObject)->
+        dirty = cellvalue == "true"
+        color = if dirty then "red" else "green"
+        "<span style='color: #{color}; font-weight: bold'>#{!dirty}</span>"
+      }
     ]
 
     gridComplete: ->
@@ -114,6 +119,7 @@ define [
       pb.parent().remove()
       msg = json.event.msg
       $.msgBox msg, null, {title: c18n.info, width: 300, height: 'auto'}
+      grid.trigger "reloadGrid"
     , pb)
   })
 

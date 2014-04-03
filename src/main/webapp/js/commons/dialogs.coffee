@@ -42,7 +42,7 @@ define [
       @checkTipIndex()
       tipFile = @tipFiles[@currentTipIndex]
       $('#tipContent', @).load(tipFile)
-      console.log "@currentTipIndex=%o", @currentTipIndex
+#      console.log "@currentTipIndex=%o", @currentTipIndex
 
     buttons: [
       {
