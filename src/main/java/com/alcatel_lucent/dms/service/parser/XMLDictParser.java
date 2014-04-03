@@ -7,9 +7,11 @@ import com.alcatel_lucent.dms.Constants.DictionaryFormat;
 import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.service.LanguageService;
+import com.alcatel_lucent.dms.service.TextService;
 import com.alcatel_lucent.dms.util.Util;
 import com.alcatel_lucent.dms.util.XDCPDTDEntityResolver;
 import com.alcatel_lucent.dms.util.XDCTDTDEntityResolver;
+import com.google.common.base.Strings;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.io.FilenameUtils;
@@ -39,6 +41,9 @@ public class XMLDictParser extends DictionaryParser {
     private static final XDCTDTDEntityResolver xdctdtdEntityResolver = new XDCTDTDEntityResolver();
     @Autowired
     private LanguageService languageService;
+
+    @Autowired
+    private TextService textService;
 
 	@Override
 	public DictionaryFormat getFormat() {
@@ -331,6 +336,19 @@ public class XMLDictParser extends DictionaryParser {
                         lt.setStatus(Translation.STATUS_TRANSLATED);
                     }
                 }
+            }
+        }
+
+        /**
+         * Set label context to label context if label reference is empty and exist translation follow_up attribute is not "no_translate"
+         * */
+        if(Strings.isNullOrEmpty(label.getReference())){
+//            String xpath = "TRANSLATION/@follow_up!='no_translate' or HELP/@follow_up!='no_translate'";
+            String xpath = "TRANSLATION/@follow_up!='no_translate'";
+            Boolean existTranslatedTranslation = (Boolean) key.selectObject(xpath);
+            if(existTranslatedTranslation){
+                Context labelCtx = new Context(textService.populateContextKey(Context.LABEL, label), Context.LABEL);
+                label.setContext(labelCtx);
             }
         }
     }

@@ -223,7 +223,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         Map<String, Text> textMap = dbDefaultCtx == null ? new HashMap<String, Text>() :
                 textService.getTextsAsMap(dbDefaultCtx.getId());
 //        Map<String, Text> exclusionMap = textService.getTextsAsMap(dbExclusionCtx.getId());
-        Collection<Glossary> glossaryObjects = glossaryService.getAllGlossaries();
+        Collection<Glossary> glossaryObjects = glossaryService.getNotDirtyGlossaries();
         HashSet<String> glossaries = new HashSet<String>();
         for (Glossary glossary : glossaryObjects) {
             glossaries.add(glossary.getText());

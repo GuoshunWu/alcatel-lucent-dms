@@ -60,8 +60,8 @@ public interface GlossaryService {
     Collection<GlossaryMatchObject> consistentGlossariesInLabelRef(Label label);
 
     Collection<Glossary> getAllGlossaries();
-
     Collection<GlossaryMatchObject> getGlossaryPatterns();
 
     Collection<GlossaryMatchObject> getNotDirtyGlossaryPatterns();
+    Collection<Glossary> getNotDirtyGlossaries();
 }
