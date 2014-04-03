@@ -32,10 +32,10 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 
     @Autowired
     private GlossaryService glossaryService;
-    
+
     @Autowired
     private HistoryService historyService;
-    
+
     @Autowired
     private DictionaryService dictionaryService;
 
@@ -57,7 +57,8 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
         return (Context) getDao().retrieveOne(
                 "from Context where key=:key",
                 JSONObject.fromObject(String.format("{'key':'%s'}",
-                        key)));
+                        key))
+        );
     }
 
 
@@ -88,7 +89,8 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                 "from translation " +
                         "where text.context.id=:ctxId " +
                         "and text.reference=:reference " +
-                        "and language.id=:languageId", param);
+                        "and language.id=:languageId", param
+        );
     }
 
     public Text addTranslations(Long ctxId, String reference, Map<Long, String> translations) {
@@ -148,17 +150,17 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                     }
                     Translation dbTrans = dbText.getTranslation(trans.getLanguage().getId());
                     if (dbTrans == null) {
-                    	if (trans.getTranslationType() == null) {	// translation type is DICT by default
-                    		trans.setTranslationType(Translation.TYPE_DICT);
-                    	}
+                        if (trans.getTranslationType() == null) {    // translation type is DICT by default
+                            trans.setTranslationType(Translation.TYPE_DICT);
+                        }
                         trans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
                         dbTrans = addTranslation(dbText, trans);
                         dbText.addTranslation(dbTrans);        // the dbText will be used in next invoke, so add translations in-memory
                         historyService.addTranslationHistory(
-                        		dbTrans, 
-                        		trans.getTranslationType() == Translation.TYPE_AUTO ? null : text.getRefLabel(), 
-                        		trans.getTranslationType() == Translation.TYPE_AUTO ? TranslationHistory.TRANS_OPER_SUGGEST : operationType, 
-                        		null);
+                                dbTrans,
+                                trans.getTranslationType() == Translation.TYPE_AUTO ? null : text.getRefLabel(),
+                                trans.getTranslationType() == Translation.TYPE_AUTO ? TranslationHistory.TRANS_OPER_SUGGEST : operationType,
+                                null);
                     } else if (mode == Constants.ImportingMode.TRANSLATION) { // update translations in TRANSLATION_MODE
                         if (trans.getTranslation() != null) {
                             dbTrans.setTranslation(trans.getTranslation());
@@ -166,8 +168,8 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                         dbTrans.setStatus(trans.getStatus());
                         // do not change translation src in case of capitalization
                         if (operationType != TranslationHistory.TRANS_OPER_CAPITALIZE) {
-	                        dbTrans.setTranslationType(trans.getTranslationType() != null ?
-	                                trans.getTranslationType() : Translation.TYPE_TASK);
+                            dbTrans.setTranslationType(trans.getTranslationType() != null ?
+                                    trans.getTranslationType() : Translation.TYPE_TASK);
                         }
                         dbTrans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
                         historyService.addTranslationHistory(dbTrans, text.getRefLabel(), operationType, null);
@@ -180,16 +182,16 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 //	                	}
                         // update translation if got translated in delivered dict
                         if (trans.getStatus() == Translation.STATUS_TRANSLATED) {
-                        	int translationType = trans.getTranslationType() == null ? Translation.TYPE_DICT : trans.getTranslationType();
+                            int translationType = trans.getTranslationType() == null ? Translation.TYPE_DICT : trans.getTranslationType();
                             dbTrans.setTranslation(trans.getTranslation());
                             dbTrans.setStatus(Translation.STATUS_TRANSLATED);
                             dbTrans.setTranslationType(translationType);
                             dbTrans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
                             historyService.addTranslationHistory(
-                            		dbTrans, 
-                            		translationType == Translation.TYPE_AUTO ? null : text.getRefLabel(), 
-                                    translationType == Translation.TYPE_AUTO ? TranslationHistory.TRANS_OPER_SUGGEST : operationType, 
-                            		null);
+                                    dbTrans,
+                                    translationType == Translation.TYPE_AUTO ? null : text.getRefLabel(),
+                                    translationType == Translation.TYPE_AUTO ? TranslationHistory.TRANS_OPER_SUGGEST : operationType,
+                                    null);
                         }
                     } else {    // supplement mode
                         if (dbTrans.getStatus() != Translation.STATUS_TRANSLATED &&
@@ -329,7 +331,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 
     public void updateTranslationStatus(Collection<Long> transIds, int transStatus) {
         for (Long id : transIds) {
-        	Translation trans = null;
+            Translation trans = null;
             if (id > 0) {
                 trans = (Translation) dao.retrieve(Translation.class, id);
                 trans.setStatus(transStatus);
@@ -634,17 +636,34 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
         return context;
     }
 
+    private Context createContext(String name, String key) {
+        Context context = new Context();
+        context.setKey(key);
+        context.setName(name);
+        context = (Context) dao.create(context);
+        return context;
+    }
+
+    @Override
+    public Context getContextByExpression(String contextExp, Text text) {
+        String contextKey = populateContextKey(contextExp, text);
+        Context context = getContextByKey(contextKey);
+        if (context == null) context = createContext(contextExp, contextKey);
+        return context;
+    }
+
     @Override
     public Context getContextByExpression(String contextExp, Dictionary dict) {
         String contextKey = populateContextKey(contextExp, dict);
         Context context = getContextByKey(contextKey);
-        if (context == null) {
-            context = new Context();
-            context.setKey(contextKey);
-            context.setName(contextExp);
-            context = (Context) dao.create(context);
-        }
+        if (context == null) context = createContext(contextExp, contextKey);
         return context;
+    }
+
+    @Override
+    public String populateContextKey(String contextExp, Text text) {
+        if (null == text) return contextExp;
+        return replaceVar(contextExp, Context.UNIQUE, "[UNIQUE-" + text.getId() + "]");
     }
 
     @Override
@@ -701,12 +720,12 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
         Collection<String> result = new TreeSet<String>();
 
         // consistent glossaries
-        Collection<GlossaryMatchObject> GlossaryMatchObjects = glossaryService.getGlossaryPatterns();
+        Collection<GlossaryMatchObject> GlossaryMatchObjects = glossaryService.getNotDirtyGlossaryPatterns();
         String reference = trans.getText().getReference();
-        for(GlossaryMatchObject gmo: GlossaryMatchObjects){
+        for (GlossaryMatchObject gmo : GlossaryMatchObjects) {
             gmo.getProcessedString(reference);
-            if(!gmo.isReplaced())continue;
-            translation =gmo.getProcessedString(translation);
+            if (!gmo.isReplaced()) continue;
+            translation = gmo.getProcessedString(translation);
         }
 
         if (confirmAll != null && confirmAll) {    // confirm to update translation for all reference
@@ -720,7 +739,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
             Collection<Label> labels = new ArrayList<Label>();
             labels.add(label);
             dictionaryService.updateLabelContext(context, labels);
-            
+
             Text text = getText(context.getId(), label.getReference());
             Translation newTrans = text.getTranslation(trans.getLanguage().getId());
             if (newTrans == null) {

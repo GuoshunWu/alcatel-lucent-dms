@@ -411,6 +411,7 @@ public class DaoServiceImpl implements DaoService {
         }
         Session sess = getSession();
         Query query = sess.createQuery(deleteStr);
+
         if (paramMap != null) {
             Set paramKey = paramMap.keySet();
             for (Object aParamKey : paramKey) {

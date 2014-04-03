@@ -62,4 +62,6 @@ public interface GlossaryService {
     Collection<Glossary> getAllGlossaries();
 
     Collection<GlossaryMatchObject> getGlossaryPatterns();
+
+    Collection<GlossaryMatchObject> getNotDirtyGlossaryPatterns();
 }

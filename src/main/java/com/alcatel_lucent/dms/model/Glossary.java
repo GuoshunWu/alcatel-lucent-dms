@@ -2,6 +2,7 @@ package com.alcatel_lucent.dms.model;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * Created with IntelliJ IDEA.
@@ -99,10 +100,7 @@ public class Glossary{
         if (!(o instanceof Glossary)) return false;
 
         Glossary glossary = (Glossary) o;
-
-        if (text != null ? !text.equals(glossary.text) : glossary.text != null) return false;
-
-        return true;
+        return Objects.equals(text, glossary.text);
     }
 
     @Override

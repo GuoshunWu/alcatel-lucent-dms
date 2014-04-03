@@ -19,6 +19,9 @@ public class Context extends BaseEntity {
     public static final String APP = "[APP]";
     public static final String PROD = "[PROD]";
 
+    public static final String UNIQUE = "[UNIQUE]";
+
+
     public static final Collection<String> SPECIAL_CONTEXT_NAMES = Arrays.asList(DEFAULT, PROD, APP, DICT, LABEL);
     /**
      *

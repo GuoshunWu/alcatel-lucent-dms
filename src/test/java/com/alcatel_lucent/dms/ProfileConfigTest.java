@@ -2,6 +2,8 @@ package com.alcatel_lucent.dms;
 
 
 import com.alcatel_lucent.dms.service.parser.NOEStrParser;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.MapMaker;
 import junit.framework.Assert;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.FileUtils;
@@ -29,6 +31,8 @@ import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by IntelliJ IDEA.
@@ -55,6 +59,7 @@ public class ProfileConfigTest {
         System.out.println(dburl);
         System.out.println(dbuser);
         System.out.println(dbpassword);
+
     }
 
     //    @Test
@@ -108,6 +113,10 @@ public class ProfileConfigTest {
         System.out.print("Translated: ");
         System.out.println(NOEStrParser.unescapeNOEString(str));
 
+    }
+
+//    @Test
+    public void testGuava() throws InterruptedException {
     }
 
 }

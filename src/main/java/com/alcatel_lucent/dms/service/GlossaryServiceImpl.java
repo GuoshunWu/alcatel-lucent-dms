@@ -5,12 +5,13 @@ import com.alcatel_lucent.dms.UserContext;
 import com.alcatel_lucent.dms.action.ProgressQueue;
 import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
+import com.google.common.collect.ImmutableMap;
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.collections.ClosureUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.PredicateUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang3.StringUtils;
+import org.intellij.lang.annotations.Language;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +26,16 @@ import java.util.*;
  * Time: PM 3:07
  */
 @Service("glossaryService")
+@SuppressWarnings("unchecked")
 public class GlossaryServiceImpl implements GlossaryService {
 
     private DaoService dao;
     private Collection<Glossary> glossaries;
-
     @Autowired
     private TextService textService;
+
+    @Autowired
+    private HistoryService historyService;
 
     private static Logger log = LoggerFactory.getLogger(GlossaryServiceImpl.class);
 
@@ -39,6 +43,10 @@ public class GlossaryServiceImpl implements GlossaryService {
     public void setDao(DaoService dao) {
         this.dao = dao;
         this.glossaries = dao.retrieve("from Glossary");
+    }
+
+    public Collection<Glossary> getNotDirtyGlossaries() {
+        return CollectionUtils.subtract(glossaries, getDirtyGlossaries());
     }
 
     /**
@@ -105,12 +113,13 @@ public class GlossaryServiceImpl implements GlossaryService {
 
 
     /**
-     * Make all the glossaries in Database consistent
+     * Make all the glossaries in Database consistent(execute on apply glossary)
      */
     @Override
     public void consistentGlossaries() {
 
         Collection<Glossary> dirtyGlossaries = getDirtyGlossaries();
+        if (dirtyGlossaries.isEmpty()) return;
 
         String hSQL = "from Label where id in (select l.id from Label l, Glossary g where g.dirty=true and upper(l.reference) like concat( '%', upper(g.text), '%'))";
         Collection<Label> labels = dao.retrieve(hSQL);
@@ -126,6 +135,7 @@ public class GlossaryServiceImpl implements GlossaryService {
                     String.format("Current Label '%s'", label.getKey())
             ), "<br/>"), percent);
             consistentGlossariesInLabel(label, dirtyGlossaries);
+
             current++;
         }
 
@@ -137,18 +147,19 @@ public class GlossaryServiceImpl implements GlossaryService {
         int totalText = texts.size();
         current = 1;
         for (Text text : texts) {
-
             percent = current / (float) totalText * 100;
             ProgressQueue.setProgress(StringUtils.join(Arrays.asList(
                     String.format("[ %d/%d ]Process texts and translations...", 1, totalLabel),
                     String.format("Current text '%s'", text.getReference())
             ), "<br/>"), percent);
+
             consistentGlossariesInText(text, dirtyGlossaries);
         }
 
         // update dirty glossaries
-        CollectionUtils.forAllDo(dirtyGlossaries, ClosureUtils.invokerClosure("setDirty", new Class[]{Boolean.TYPE}, new Object[]{false}));
-
+        hSQL = "update Glossary g set dirty = false where g in (:glossaries)";
+        dao.delete(hSQL, (Map) ImmutableMap.of("glossaries", dirtyGlossaries));
+        glossaries = dao.retrieve("from Glossary");
     }
 
     /**
@@ -163,7 +174,8 @@ public class GlossaryServiceImpl implements GlossaryService {
         Collection<Label> labels = dict.getLabels();
         if (null == labels || labels.isEmpty()) return;
         for (Label label : labels) {
-            consistentGlossariesInLabel(label,  glossaries);
+            consistentGlossariesInLabel(label, getNotDirtyGlossaries());
+//            consistentGlossariesInLabel(label, glossaries);
         }
     }
 
@@ -176,7 +188,7 @@ public class GlossaryServiceImpl implements GlossaryService {
     public void consistentGlossariesInTask(Task task) {
         Collection<TaskDetail> taskDetails = task.getDetails();
 
-        Collection<GlossaryMatchObject> GlossaryMatchObject = getGlossaryPatterns();
+        Collection<GlossaryMatchObject> GlossaryMatchObject = getGlossaryPatterns(getDirtyGlossaries());
 //        consistentGlossariesInObject(glossaries, label, "reference", "origTranslations", "origTranslation");
         for (TaskDetail taskDetail : taskDetails) {
             final String reference = taskDetail.getText().getReference();
@@ -247,12 +259,82 @@ public class GlossaryServiceImpl implements GlossaryService {
 
 
     private void consistentGlossariesInText(final Text text, Collection<Glossary> glossaries) {
-        consistentGlossariesInObject(glossaries, text, "reference", "translations", "translation");
+        //consistentGlossariesInObject(glossaries, text, "reference", "translations", "translation");
+        if (StringUtils.isBlank(text.getReference())) return;
+
+        String replacedReference = text.getReference();
+        Collection<GlossaryMatchObject> glossaryGlossaryMatchObjects = getGlossaryPatterns(glossaries);
+        for (GlossaryMatchObject gmo : glossaryGlossaryMatchObjects) {
+            replacedReference = gmo.getProcessedString(replacedReference);
+            //If glossary does not exists in text reference, then do not process the translations
+            if (!gmo.isReplaced()) continue;
+
+            Collection<Translation> translations = text.getTranslations();
+            for (Translation translation : translations) {
+                String replacedTranslation = gmo.getProcessedString(translation.getTranslation());
+                translation.setTranslation(replacedTranslation);
+            }
+        }
+
+        if (text.getReference().equals(replacedReference)) return;
+
+        text.setReference(replacedReference);
+        // query if the same reference and context in db
+        @Language("HQL") String sameTextHQL = "from Text where reference= :reference and context.id = :cid and id !=:tid";
+
+        Map params = ImmutableMap.of(
+                "reference", replacedReference,
+                "cid", text.getContext().getId(),
+                "tid", text.getId());
+        Collection<Text> sameTexts = dao.retrieve(sameTextHQL, params);
+
+
+        if (sameTexts.isEmpty()) return;
+
+        Context context = textService.getContextByExpression("[UNIQUE]", text);
+        text.setContext(context);
+
+        @Language("HQL") String textLabelsHQL = "from Label where text.id = :tid";
+        Collection<Label> labels = dao.retrieve(textLabelsHQL, ImmutableMap.of("tid", text.getId()));
+        for (Label label : labels) {
+            label.setContext(context);
+        }
+
+//        Merge same translation
+        for (Text sameText : sameTexts) {
+            Collection<Translation> translations = sameText.getTranslations();
+
+            for (Translation translation : translations) {
+                Translation transInText = text.getTranslation(translation.getLanguage().getId());
+                if (null == transInText) continue;
+                if (translation.getStatus() == Translation.STATUS_TRANSLATED) {
+                    if (transInText.getStatus() == Translation.STATUS_UNTRANSLATED) {
+                        transInText.setTranslation(translation.getTranslation());
+                        transInText.setStatus(Translation.STATUS_TRANSLATED);
+
+                        historyService.addTranslationHistory(transInText, null, TranslationHistory.TRANS_OPER_SUGGEST, "");
+                    }
+                } else if (translation.getStatus() == Translation.STATUS_UNTRANSLATED) {
+                    if (transInText.getStatus() == Translation.STATUS_TRANSLATED) {
+                        translation.setTranslation(transInText.getTranslation());
+                        translation.setStatus(Translation.STATUS_TRANSLATED);
+
+                        historyService.addTranslationHistory(translation, null, TranslationHistory.TRANS_OPER_SUGGEST, "");
+                    }
+                }
+
+            }
+        }
     }
 
     public Collection<GlossaryMatchObject> getGlossaryPatterns() {
         return getGlossaryPatterns(null);
     }
+
+    public Collection<GlossaryMatchObject> getNotDirtyGlossaryPatterns() {
+        return getGlossaryPatterns(getNotDirtyGlossaries());
+    }
+
 
     /**
      * Get glossary patterns pairs
@@ -272,7 +354,7 @@ public class GlossaryServiceImpl implements GlossaryService {
      * when Label reference is updated
      */
     public Collection<GlossaryMatchObject> consistentGlossariesInLabelRef(Label label) {
-        return consistentGlossariesInObject(glossaries, label, "reference", null, null);
+        return consistentGlossariesInObject(getNotDirtyGlossaries(), label, "reference", null, null);
     }
 
     private Glossary findGlossaryByText(String text) {
