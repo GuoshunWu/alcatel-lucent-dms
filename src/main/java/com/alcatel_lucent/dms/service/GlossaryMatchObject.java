@@ -109,6 +109,7 @@ public class GlossaryMatchObject {
     private Matcher getMatcher(String text) {
         if (text.equals(matchingText)) return matcher;
         this.matcher = pattern.matcher(text);
+        matchingText = text;
         return matcher;
     }
 
@@ -138,6 +139,7 @@ public class GlossaryMatchObject {
 
 
     public String getProcessedString(String originalText) {
+    	replaced = false;
     	if (StringUtils.isEmpty(originalText)) return originalText;
         Matcher latestMatcher = getMatcher(originalText);
         StringBuffer sb = new StringBuffer();

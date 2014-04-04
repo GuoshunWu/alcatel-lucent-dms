@@ -187,10 +187,10 @@ public class GlossaryServiceImpl implements GlossaryService {
     public void consistentGlossariesInTask(Task task) {
         Collection<TaskDetail> taskDetails = task.getDetails();
 
-        Collection<GlossaryMatchObject> GlossaryMatchObject = getGlossaryPatterns(getDirtyGlossaries());
+        Collection<GlossaryMatchObject> glossaryMatchObjects = getGlossaryPatterns(getNotDirtyGlossaries());
         for (TaskDetail taskDetail : taskDetails) {
             final String reference = taskDetail.getText().getReference();
-            for (GlossaryMatchObject gmo : GlossaryMatchObject) {
+            for (GlossaryMatchObject gmo : glossaryMatchObjects) {
                 String resultText;
                 gmo.getProcessedString(reference);
                 if (!gmo.isReplaced()) continue;
