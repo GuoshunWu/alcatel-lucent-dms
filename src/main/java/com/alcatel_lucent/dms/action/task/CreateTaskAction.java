@@ -13,16 +13,26 @@ public class CreateTaskAction extends JSONAction {
 	private String name;
 	private String dict;
 	private String language;
+
+    private Long secondaryRefLanguage;
 	
 	@Override
 	protected String performAction() throws Exception {
-		log.info("CreateTaskAction: prod=" + prod + ", app=" + app + ", dict=" + dict + ", language=" + language);
-		taskService.createTask(prod, app, name, toIdList(dict), toIdList(language));
+		log.info("CreateTaskAction: prod=" + prod + ", app=" + app + ", dict=" + dict + ", language=" + language + ", secondaryRefLanguage=" + secondaryRefLanguage);
+		taskService.createTask(prod, app, name, toIdList(dict), toIdList(language), secondaryRefLanguage);
 		setMessage(getText("message.success"));
 		return SUCCESS;
 	}
 
-	public String getDict() {
+    public Long getSecondaryRefLanguage() {
+        return secondaryRefLanguage;
+    }
+
+    public void setSecondaryRefLanguage(Long secondaryRefLanguage) {
+        this.secondaryRefLanguage = secondaryRefLanguage;
+    }
+
+    public String getDict() {
 		return dict;
 	}
 

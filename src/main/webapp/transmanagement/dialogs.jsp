@@ -9,6 +9,11 @@
                             <span id="transTaskErr" style="display: none;color: red">* <s:text
                                     name="transmng.dialogs.transtask.namerequired"/></span>
                         </td>
+
+                        <td>Secondary reference: </td>
+                        <td>
+                            <select id="translationTaskSecondaryReference" style="width: 300px" />
+                        </td>
                     </tr>
                 </table>
             </td>

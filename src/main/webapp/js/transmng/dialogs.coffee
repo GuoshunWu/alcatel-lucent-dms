@@ -111,7 +111,13 @@ define [
       postData = {prop: 'id,name'}
       postData[tableType] = info.rowIds.join(',')
 
-      $.getJSON urls.languages, postData, (languages)=>$(@).append util.generateLanguageTable languages, langFilterTableId if languages.length > 0
+      $.getJSON urls.languages, postData, (languages)=>
+#        append language options in translation task secondary reference
+
+        languageOptions = util.json2Options [{name: '', id: -1}].concat(languages), '', "name"
+        $('#translationTaskSecondaryReference').empty().append languageOptions
+#        append language table
+        $(@).append util.generateLanguageTable languages, langFilterTableId if languages.length > 0
     close: -> $('#transTaskErr').hide()
     buttons: [
       {text: c18n.create
@@ -129,12 +135,16 @@ define [
           ()->@id).get().join ','
         dicts = $(grid.getTotalSelectedRowInfo().rowIds).map(
           ()->@).get().join(',')
-
+        secondaryRefLanguage = parseInt $('#translationTaskSecondaryReference').val()
 
         postData =
           language: langids
           dict: dicts
           name: name
+
+        postData.secondaryRefLanguage = secondaryRefLanguage if secondaryRefLanguage != -1
+
+#        console.log "postData=%o", postData
 
         type = util.getProductTreeInfo().type
         type = 'prod' if 'product' == type
