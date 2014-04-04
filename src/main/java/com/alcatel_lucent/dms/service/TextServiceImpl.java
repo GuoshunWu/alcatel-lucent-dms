@@ -229,7 +229,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
             Map<Long, String> suggestedTranslations = null;
             for (Translation trans : text.getTranslations()) {
                 Translation dbTrans = dbText == null ? null : dbText.getTranslation(trans.getLanguage().getId());
-                if (dbTrans == null) {
+                if (dbTrans == null || dbTrans.getStatus() == Translation.STATUS_UNTRANSLATED) {
                     if (trans.getLanguage().getId() != 0 && trans.getLanguage().getId() != 1L &&
                             trans.getStatus() == Translation.STATUS_UNTRANSLATED &&
                             (trans.getTranslation().equals(text.getReference()) || trans.getTranslation().trim().isEmpty())) {
@@ -258,11 +258,11 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
      * @return
      */
     private Map<Long, String> getSuggestedTranslations(String reference, Long excludedCtxId) {
-        String hql = "from Translation where text.reference=:reference and status=:status and text.context.id<>:excludedCtxId order by text.context.id";
+        String hql = "from Translation where text.reference=:reference and status=:status order by text.context.id";
         Map param = new HashMap();
         param.put("reference", reference);
         param.put("status", Translation.STATUS_TRANSLATED);
-        param.put("excludedCtxId", excludedCtxId);
+//        param.put("excludedCtxId", excludedCtxId);
         Collection<Translation> qr = dao.retrieve(hql, param);
         Map<Long, String> result = new HashMap<Long, String>();
         for (Translation trans : qr) {
@@ -608,7 +608,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
             Text text = iter.next();
             refs.add(text.getReference());
             if (refs.size() >= 100 || !iter.hasNext()) {    // execute query every 100 texts
-                String hql = "from Text where context.id=:ctxId and reference in (:refs)";
+                String hql = "from Text where context.id=:ctxId and reference in (:refs) order by id desc";
                 Map param = new HashMap();
                 param.put("ctxId", ctxId);
                 param.put("refs", refs);
