@@ -380,6 +380,16 @@ public class Label extends BaseEntity implements Cloneable {
         return (null == dl) ? null : getTranslationObject(dl.getLanguageCode());
     }
 
+    public String getTranslation(Language language){
+
+        for (Translation translation : getText().getTranslations()) {
+            if (translation.getLanguage().getId().equals(language.getId())) {
+                return translation.getTranslation();
+            }
+        }
+        return "";
+    }
+
     public Translation getTranslationObject(String langCode) {
         if (StringUtils.isEmpty(langCode) || context.getName().equals(Context.EXCLUSION)){
             return getTransientTranslation(Translation.STATUS_TRANSLATED);
