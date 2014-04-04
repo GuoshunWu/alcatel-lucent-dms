@@ -1,3 +1,12 @@
+V2.15.6 (Apr 4, 2014)
+    * Modify XMLDict parser, give "[LABEL]" context to empty reference
+    * Not to match glossary which has not been applied yet
+    * Fix translation status for TMX dictionary
+
+V2.15.5 (Mar 28, 2014)
+    * New dictionary format support: TMX
+    * Fix issue of glossary matching
+
 V2.15.4 (Mar 20, 2014)
     * Identify "Auto" translation type by translation history
     * Add "Support" link in login page
