@@ -304,6 +304,9 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
         if (!dir.exists()) {
             dir.mkdirs();
         }
+
+        boolean existSecondaryRef = secondaryReferenceLanguage != null;
+
         // convert application name to target file name
         // if names conflict after the convention, add number suffix
         String filename = toFilename(appName);
@@ -366,7 +369,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
 
         sheet.setColumnWidth(rowNum, 40 * WIDTH_BASE);
         createCell(row, rowNum++, headerMap.get(ExcelFileHeader.REFERENCE), styleHead);
-        if (null != secondaryReferenceLanguage) {
+        if (existSecondaryRef) {
             sheet.setColumnWidth(rowNum, 40 * WIDTH_BASE);
             createCell(row, rowNum++, headerMap.get(ExcelFileHeader.SECONDARY_REFERENCE_LANGUAGE), styleHead);
         }
@@ -392,12 +395,18 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
             styleMap.put(OTCExcelCellStyle.GREY, StringUtils.EMPTY, greyStyle);
         }
 
-        boolean existSecondaryRef = secondaryReferenceLanguage != null;
+
         for (TaskDetail td : taskDetails) {
             row = sheet.createRow(rowNo++);
             Label label = td.getLabel();
             String reference = td.getText().getReference();
-            String secondaryReference = existSecondaryRef ? label.getTranslation(secondaryReferenceLanguage) : null;
+            String secondaryReference = null;
+            DictionaryLanguage dictionaryLanguage;
+            if (existSecondaryRef && null != (dictionaryLanguage = label.getDictionary().getDictLanguage(secondaryReferenceLanguage.getId()))) {
+                String translation  = label.getTranslation(dictionaryLanguage.getLanguageCode());
+                secondaryReference = StringUtils.defaultString(translation);
+                log.info("secondary reference ={}", secondaryReference);
+            }
             String translation = td.getNewTranslation() == null ? td.getOrigTranslation() : td.getNewTranslation();
 
             // for VoiceApp dict, add "..." for punctuation when position=begin/middle/end
@@ -441,11 +450,13 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
             String contextStr = context.isSpecial() ? "" : context.getKey();
             createCell(row, rowNum++, contextStr, styleBody);
             if (td.getMaxLength() != null) {
-                createCell(row, rowNum++, td.getMaxLength(), styleBody);
+                createCell(row, rowNum, td.getMaxLength(), styleBody);
             }
+            rowNum++;
             if (td.getDescription() != null) {
-                createCell(row, rowNum++, td.getDescription(), styleBody);
+                createCell(row, rowNum, td.getDescription(), styleBody);
             }
+            rowNum++;
             createCell(row, rowNum++, reference, styleBody);
             // extract secondary for this language and add column
             if (secondaryReference != null) {
