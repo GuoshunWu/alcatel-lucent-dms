@@ -165,6 +165,7 @@ public class StandardExcelDictParser extends DictionaryParser {
         Label label = null;
 
         label = new Label();
+        label.setReference("");
         label.setDictionary(dict);
         label.setSortNo(row.getRowNum());
 

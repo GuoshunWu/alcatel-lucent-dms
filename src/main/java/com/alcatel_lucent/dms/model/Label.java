@@ -266,6 +266,20 @@ public class Label extends BaseEntity implements Cloneable {
             return true;
         }
 
+        if (maxLength.contains("x")) {
+            String[] linesAndColumns = maxLength.split("x");
+            int lines = Integer.parseInt(linesAndColumns[1].trim());
+            if (-1 == lines) lines = Integer.MAX_VALUE;
+            int columns = Integer.parseInt(linesAndColumns[0].trim());
+            if (-1 == columns) columns = Integer.MAX_VALUE;
+
+            if (texts.length > lines) return false;
+            for (String strLine : texts) {
+                if (strLine.length() > columns) return false;
+            }
+            return true;
+        }
+
         String[] lens = maxLength.split(",");
         for (int rowIndex = 0; rowIndex < texts.length; rowIndex++) {
             try {
@@ -273,7 +287,7 @@ public class Label extends BaseEntity implements Cloneable {
                     return false;
                 }
             } catch (NumberFormatException e) {
-                throw new SystemError(e);
+            	log.warn("Invalid maxLength for label " + key + ": " + maxLength);
             } catch (UnsupportedEncodingException e) {
                 throw new SystemError(e);
             }
