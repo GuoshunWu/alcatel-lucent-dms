@@ -1,13 +1,14 @@
 package com.alcatel_lucent.dms.service.parser
 
 import org.apache.commons.io.FileUtils
+import org.apache.commons.io.IOUtils
+import org.intellij.lang.annotations.Language
 import org.junit.*
 import org.junit.runner.RunWith
 
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.test.context.transaction.TransactionConfiguration
-
 
 
 import org.mozilla.javascript.*
@@ -48,15 +49,9 @@ public class ParserTest {
 
     @Test
     void testRhinoJS() throws Exception {
-
-        String filePath = "${System.getenv('NODE_PATH')}/coffee-script/lib/extra/coffee-script.js"
-//        filePath = "${System.getenv('NODE_PATH')}/coffee-script/lib/coffee-script/coffee-script.js"
-        String jsFileStr = FileUtils.readFileToString(new File(filePath), "UTF-8")
-
-        String js2CoffeePath = "${System.getenv('NODE_PATH')}/js2coffee/out/lib/extras/js2coffee.js"
-        String js2CoffeeStr = FileUtils.readFileToString(new File(js2CoffeePath), "UTF-8")
-
-
+        String jsFileStr = IOUtils.toString(getClass().getResourceAsStream("/coffee-script.js"), "UTF-8")
+//        String js2CoffeePath = "${System.getenv('NODE_PATH')}/js2coffee/out/lib/extras/js2coffee.js"
+//        String js2CoffeeStr = FileUtils.readFileToString(new File(js2CoffeePath), "UTF-8")
 
         // Creates and enters a Context. The Context stores information
         // about the execution environment of a script.
@@ -81,16 +76,31 @@ public class ParserTest {
             ScriptableObject coffeeScript = globalScope.get("CoffeeScript", globalScope)
 //            ScriptableObject js2coffee = globalScope.get("js2coffee", globalScope)
 //            println js2coffee
-            String coffeeJSTest ="""
-console.info 'This is my coffee script!'
-"""
+            String coffeeJSTest = """
+              console.info 'This is my coffee script!'
+          """
             //Coffee script compiled java scripts
-            Object result = ((Function)coffeeScript.get("compile")).call ctx, globalScope, coffeeScript, [coffeeJSTest] as Object[]
+
+            // in node:  console.log(c.call(compiler, 'a=5', {bare:true}, function(status, output){ if(status!=0){return} console.log(output); }))
+            @Language("JavaScript 1.6") String jsCode = """
+                function testFun(){
+                    for(var i=0; i< arguments.length; ++i){
+//                        console.info('type of params['+i+']='+(typeof arguments[i])+', params[' + i + '], ='+ arguments[i]);
+                        console.info('params[' + i + '], ='+ arguments[i]);
+
+                    }
+                }
+            """
+            ctx.evaluateString(globalScope, jsCode, "test.js", 2, null)
+            Function fun = globalScope.get("testFun")
+            fun.call ctx, globalScope, null, ['aa', ScriptableObject] as Object[]
+            return
+            Object result = ((Function) coffeeScript.get("compile")).call ctx, globalScope, coffeeScript, [coffeeJSTest, "{bare: true}"] as Object[]
             println "Compiled coffee script(js code)".center(100, '=')
             println ctx.toString(result)
 
             // Run coffee script directly
-            ((Function)coffeeScript.get("run")).call ctx, globalScope, coffeeScript, [coffeeJSTest] as Object[]
+            ((Function) coffeeScript.get("run")).call ctx, globalScope, coffeeScript, [coffeeJSTest] as Object[]
 
         } finally {
             ctx.exit()
@@ -98,7 +108,7 @@ console.info 'This is my coffee script!'
     }
 
 //    @Test
-    void testJAVA6JS(){
+    void testJAVA6JS() {
         String filePath = "${System.getenv('NODE_PATH')}/coffee-script/lib/extra/coffee-script.js"
         String jsFileStr = FileUtils.readFileToString(new File(filePath), "UTF-8")
 
@@ -113,7 +123,7 @@ console.info 'This is my coffee script!'
         Object coffeeScript = engine.get("CoffeeScript")
         Invocable inv = (Invocable) engine
 
-        String coffeeJSTest ="""
+        String coffeeJSTest = """
 #console.log 'This is my coffee script!'
 """
 
