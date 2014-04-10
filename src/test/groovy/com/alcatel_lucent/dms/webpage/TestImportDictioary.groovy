@@ -1,5 +1,6 @@
 package com.alcatel_lucent.dms.webpage
 
+import org.apache.commons.io.IOUtils
 import org.intellij.lang.annotations.Language
 import org.junit.After
 import org.junit.AfterClass
@@ -7,9 +8,13 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 import static org.hamcrest.CoreMatchers.*
-import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasEntry
+import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertEquals;
 import static org.junit.matchers.JUnitMatchers.*;
 
 import org.openqa.selenium.By
@@ -22,6 +27,7 @@ import org.openqa.selenium.support.ui.WebDriverWait
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS
 import static java.util.concurrent.TimeUnit.SECONDS
+import static com.alcatel_lucent.dms.util.CoffeeScript.compile
 
 
 /**
@@ -32,6 +38,9 @@ class TestImportDictionary {
     private static WebDriver driver
     private static JavascriptExecutor jsExecutor
     private static WebElement testApp
+    private static Logger log = LoggerFactory.getLogger(TestImportDictionary)
+
+    public static final String TARGET_URL = "http://localhost:8888/dms"
 
     @BeforeClass
     static void beforeClass() {
@@ -41,6 +50,9 @@ class TestImportDictionary {
 //        driver = new ChromeDriver()
 //        driver = new InternetExplorerDriver()
         driver = new FirefoxDriver()
+
+        driver.manage().timeouts().setScriptTimeout(30, SECONDS)
+
         jsExecutor = driver
         testApp = getTestApp()
     }
@@ -60,8 +72,8 @@ class TestImportDictionary {
      *
      * @return Application tree of the web element
      * */
-    private static WebElement login(String url = "http://localhost:8888/dms",
-                             String userName = "admin", String password = "alcatel123") {
+    private static WebElement login(String url = TARGET_URL,
+                                    String userName = "admin", String password = "alcatel123") {
         driver.get url
         driver.findElement(By.id('idLoginName')).sendKeys(userName)
         WebElement pwdBtn = driver.findElement(By.id('idPassword'))
@@ -127,7 +139,8 @@ class TestImportDictionary {
         new WebDriverWait(driver, 60 * 3).until(
                 ExpectedConditions.visibilityOfElementLocated(By.id("dictionaryGridList"))
         )
-        List<List<Object>> dictionaryNames = jsExecutor.executeScript("return \$('#dictionaryGridList').getRowData().map(function(item,index,array){return item.name})")
+        @Language("JavaScript 1.6") String jsCode = "return \$('#dictionaryGridList').getRowData().map(function(item,index,array){return item.name})";
+        List<List<Object>> dictionaryNames = jsExecutor.executeScript(jsCode)
 //        Expect dictionaries are imported without error.
         Assert.assertThat(dictionaryNames, allOf(
                 hasItem("cmsadministrator_labels_GAE.xml"),
@@ -140,47 +153,70 @@ class TestImportDictionary {
 
         //Upload single file test case
 //        deliverDictionaries(new File("dct_test_files/sampleFiles", "dms-test.xlsx"))
-        @Language("JavaScript 1.6") String jsCode = "return \$('#dictionaryGridList').getRowData().map(function(item,index,array){return item.name})";
+
+//        @Language("CoffeeScript") String coffeeCode = "return (row.name for row in \$('#dictionaryGridList').getRowData())"
+        jsCode = "return \$('#dictionaryGridList').getRowData().map(function(item,index,array){return item.name})";
         dictionaryNames = jsExecutor.executeScript(jsCode)
         String expectedDictName = 'dms-test.xlsx'
         // assert import success
         Assert.assertThat(dictionaryNames, hasItem(expectedDictName))
 //         1. Dictionary "dms-test" contains 8 labels and 6 languages.
+
         jsCode = "return \$('#dictionaryGridList').getRowData().filter(function(item,index,array){return item.name=='dms-test.xlsx'})"
         List<Object> dmsTestRow = jsExecutor.executeScript(jsCode)
 
-//        Assert.assertFalse(dmsTestRow.empty)
         int expectedNum = 8
-        Assert.assertEquals("Dictionary ${expectedDictName} expected ${expectedNum} labels.", expectedNum, Integer.parseInt(dmsTestRow[0]["labelNum"]))
-        expectedNum = 6
-        Assert.assertEquals("Dictionary ${expectedDictName} expected ${expectedNum} languages.",expectedNum, getDictionaryLanguageCount("dms-test.xlsx"))
+        assertEquals("Dictionary ${expectedDictName} expected ${expectedNum} labels.", expectedNum, Integer.parseInt(dmsTestRow[0]["labelNum"]))
+        expectedNum = 7
+        assertEquals("Dictionary ${expectedDictName} expected ${expectedNum} languages.", expectedNum, getDictionaryLanguageCount(expectedDictName))
 
-//        2. Max length and Description of label "DMSTEST1" are correctly saved.
+//      2. Max length and Description of label "DMSTEST1" are correctly saved.
+        String testLabelKey = "DMSTEST1"
+        String expectedMaxLength = "50"
+        String expectDescription = "First label"
+
+        jsCode = getAsyncJSCode("getLabelInDict")
+
+        Map<String,String> labelData = jsExecutor.executeAsyncScript(jsCode, expectedDictName, testLabelKey, 2000)
+        assertEquals("Max length of Label ${testLabelKey} in dictionary ${expectedDictName} expected ${expectedMaxLength}.",
+                expectedMaxLength, labelData['maxLength'])
+        assertEquals("Description of Label ${testLabelKey} in dictionary ${expectedDictName} expected \"${expectDescription}\".",
+                expectDescription, labelData['description'])
+//      3. DMSTEST2/3/4 have different contexts (DEFAULT/DICT/LABEL) and different Chinese translations.
+
     }
 
+
+//    @Test
+    void testJSCompile() {
+        String jsCode = getAsyncJSCode("getLabelInDict")
+        log.debug("jsCode={}", jsCode)
+    }
+
+
     private Object getDictionaryLanguageCount(String dictionaryName, int timeOut = 2000) {
-        @Language("JavaScript 1.6") String jsCode = """
-            if (arguments.length <2) return null;
-            var dictName = arguments[0];
-            var timeOut = arguments[1];
-
-            var dictRows =\$('#dictionaryGridList').getRowData().filter(function(item,index,array){return item.name==dictName});
-            if(dictRows.length <1) return null;
-            var actionStr = dictRows[0].action;
-            var idxLanguageAction = actionStr.indexOf('action_Language_');
-            var endIdxLanguageAction =  actionStr.indexOf('\\" style', idxLanguageAction);
-            var actionLanguageId  = actionStr.substring(idxLanguageAction, endIdxLanguageAction);
-            \$('#'+actionLanguageId, '#dictionaryGridList').click()
-
-            var callback = arguments[arguments.length-1];
-              // waiting for the languageSettingGrid data to load
-            _arguments = arguments
-            setTimeout(function(){
-                 callback(\$('#languageSettingGrid').getRowData().length);
-            }, timeOut)
-        """
+        String jsCode = getAsyncJSCode("dictionaryLanguageCount")
+//        log.debug("jsCode={}", jsCode)
         // waiting for the languageSettingGrid data to load
-        driver.manage().timeouts().setScriptTimeout(30, SECONDS)
         return jsExecutor.executeAsyncScript(jsCode, dictionaryName, timeOut)
+    }
+
+    /**
+     *  Load the external coffee script files and compile the merged files to javascript
+     * @param coffeeFile main coffee script file
+     * @param path coffee script file directory path
+     * @param utilCoffee util coffee script files to merge
+     * @return compiled javascript ready for executeAsyncScript to call
+     * */
+    private String getAsyncJSCode(String coffeeFile, String path = "/com/alcatel_lucent/dms/webpage/js",
+                                  List<String> utilCoffee = ["util"]) {
+        String cs = IOUtils.toString(getClass().getResourceAsStream("${path}/${coffeeFile}.coffee"))
+        String utilPath = '/js/lib'
+        String fileSeparator = '\n#' + "=".center(100, '=') + '\n' * 2
+        cs = (utilCoffee.collect { utilFile ->
+            return IOUtils.toString(getClass().getResourceAsStream("${utilPath}/${utilFile}.coffee"))
+        }).join(fileSeparator) + fileSeparator + cs
+//        log.info("merged cs = \n{}", cs)
+        return compile(cs, true)
     }
 }
