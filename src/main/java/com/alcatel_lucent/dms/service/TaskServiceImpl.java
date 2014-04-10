@@ -459,8 +459,11 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
             rowNum++;
             createCell(row, rowNum++, reference, styleBody);
             // extract secondary for this language and add column
-            if (secondaryReference != null) {
-                createCell(row, rowNum++, secondaryReference, styleBody);
+            if (existSecondaryRef) {
+	            if (secondaryReference != null) {
+	                createCell(row, rowNum, secondaryReference, styleBody);
+	            }
+	            rowNum++;
             }
             createCell(row, rowNum++, translation, styleUnlockedBody);
             createCell(row, rowNum++, lt == null || lt.getComment() == null ? "" : lt.getComment(), styleUnlockedBody);
