@@ -1,3 +1,6 @@
+V2.15.7 (Apr 10, 2014)
+    * Add option "Secondary Reference" to translation task
+
 V2.15.6 (Apr 4, 2014)
     * Modify XMLDict parser, give "[LABEL]" context to empty reference
     * Not to match glossary which has not been applied yet
