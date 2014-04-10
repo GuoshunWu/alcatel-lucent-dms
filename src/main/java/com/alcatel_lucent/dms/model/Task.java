@@ -1,8 +1,5 @@
 package com.alcatel_lucent.dms.model;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Date;
@@ -36,7 +33,19 @@ public class Task extends BaseEntity {
     private int status;
     private User creator;
     private User lastUpdater;
+    private Language secondaryReferenceLanguage;
     private Collection<TaskDetail> details;
+
+
+    @JoinColumn(name = "SECONDARY_REFERENCE_LANGUAGE_ID", nullable = true)
+    @ManyToOne(fetch = FetchType.EAGER)
+    public Language getSecondaryReferenceLanguage() {
+        return secondaryReferenceLanguage;
+    }
+
+    public void setSecondaryReferenceLanguage(Language secondaryReferenceLanguage) {
+        this.secondaryReferenceLanguage = secondaryReferenceLanguage;
+    }
 
     @Column(name = "NAME")
     public String getName() {

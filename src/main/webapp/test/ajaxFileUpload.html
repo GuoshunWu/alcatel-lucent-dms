@@ -2,94 +2,118 @@
 <html>
 <head>
     <title>上传文件</title>
-    <style></style>
+    <style>
+        #progress_bar {
+            width: 500px;
+            height: 25px;
+            border: solid 1px #0000ff;
+        }
+
+        div.percent {
+            float: left;
+        }
+    </style>
 </head>
 
 <body>
 
 <div id="progress_bar">
+    <span id="showCurrent" style="width: 400px; height: 20px; float: right"></span>
+
     <div class="percent">0%</div>
+</div>
 
-    <label for="files">文件：</label><input type="file" id="files" name="files" multiple/>
+<label for="files">文件：</label><input type="file" id="files" name="files" multiple/>
+<script type="text/javascript" src="../js/lib/spark-md5.js" charset="utf-8"></script>
+<!--<script type="text/javascript" src="main.js" charset="utf-8"></script>-->
 
+<script type="text/javascript">
 
-    <script type="text/javascript" src="../js/lib/spark-md5.js" charset="utf-8"></script>
+    function readFileDone(file, md5) {
+        //2. 送文件名和md5至服务端判定文件是否需要上传
+        //3. 1 若需要，则调用文件上传
+        //3. 2 不需要，则显示妙传成功
+        console.log("fileName=%s, fileSize=%d, md5=%s, stamp=%d", file.name, file.size, md5, new Date().getTime());
+        // ajax UploadFile
+        var xhr = new XMLHttpRequest();
+        xhr.open("post", "testServlet", true);
 
-    <script>
-
-        function readFileDone(file, md5) {
-            console.log("fileName=%s, fileSize=%d, md5=%s, stamp=%d", file.name, file.size, md5, new Date().getTime());
+        xhr.onreadystatechange = function (e) {
+            if (xhr.readyState != 4)return;
+            console.log("result = %o", JSON.parse(e.target.responseText));
         }
 
-        var CHUNK_SIZE = 2 * 1024 * 1024; //2M Bytes
-        //上传文件的进度条
-        var progress = document.querySelector('.percent');
-        function updateProgress(evt) {
-            //evt is an ProgressEvent
-            if (evt.lengthComputable) {
-                var percentLoaded = Math.round((evt.loaded / evt.total) * 100);
-                //Increase the progress bar length.
-                if (percentLoaded < 100) {
-                    progress.style.width = percentLoaded + '%';
-                    progress.textContent = percentLoaded + '%';
-                }
+        var postData = new FormData();
+        postData.append("md5", md5);
+        postData.append("file", file);
+        xhr.send(postData);
+    }
+
+    var CHUNK_SIZE = 2 * 1024 * 1024; //2M Bytes
+
+    var currentShow = document.getElementById("showCurrent");
+    var percent = document.querySelector("div.percent");
+
+    //注意此方法引用了SparkMD5库 library:https://github.com/satazor/SparkMD5
+    //监听文本框变化
+
+
+    function readSmallFile(file) {
+        var fileReader = new FileReader();
+        fileReader.readAsBinaryString(file);
+        fileReader.onload = function (e) {
+            var md5 = SparkMD5.hashBinary(e.target.result);
+            readFileDone(file, md5);
+        };
+    }
+
+    function readLargeFile(file, chunkSize) {
+        if (!chunkSize)chunkSize = CHUNK_SIZE;
+        var fileReader = new FileReader();
+        var chunks = Math.ceil(file.size / chunkSize), currentChunk = 0, spark = new SparkMD5();
+
+        fileReader.readAsBinaryString(file.slice(0, chunkSize));
+        var startTime = new Date();
+        fileReader.onload = function (e) {
+            currentShow.innerHTML = "文件" + file.name + "读取第" + (currentChunk + 1) + "块，共" + chunks + "块";
+            var pNum = (currentChunk * chunkSize / file.size * 100).toFixed(2);
+            percent.innerHTML = pNum + "%";
+//            console.log("文件%s读取第", file.name, currentChunk + 1, "块，共", chunks + "块");
+            //每块交由sparkMD5进行计算
+            spark.appendBinary(e.target.result);
+            currentChunk++;
+            //如果文件处理完成计算MD5，如果还有分片继续处理
+            if (currentChunk < chunks) {
+                var start = currentChunk * chunkSize , end = start + chunkSize;
+                if (end > file.size) end = file.size;
+                fileReader.readAsBinaryString(file.slice(start, end));
+            } else {
+                var endTime = new Date();
+                currentShow.innerHTML = "分块文件读取完毕，总共使用" + (endTime.getTime() - startTime.getTime()) / 1000 + "秒。";
+                percent.innerHTML = 100.0.toFixed(2) + "%";
+                console.log("分块文件读取完毕，总共使用%f秒。", (endTime.getTime() - startTime.getTime()) / 1000);
+                var md5 = spark.end();
+                readFileDone(file, md5);
+            }
+        };
+
+    }
+
+    document.getElementById("files").addEventListener("change", function (e) {
+//        console.log("file changed....%o", e);
+        var files = e.target.files;
+        for (var i = 0; i < files.length; ++i) {
+            var file = files[i];
+            console.log('i=%d, fileName=%s, fileSize=%d', i, file.name, file.size);
+            if (file.size < CHUNK_SIZE) {
+                readSmallFile(file);
+            } else {
+                readLargeFile(file);
             }
         }
-        //注意此方法引用了SparkMD5库 library:https://github.com/satazor/SparkMD5
-        //监听文本框变化
-        document.getElementById("files").addEventListener("change", function () {  //声明必要的变量
 
-            var files = document.getElementById("files").files;
-            for (var i = 0; i< files.length; i++) {
-                var file = files[i];
-                console.log('i=%d, fileName=%s, fileSize=%d', i, file.name, file.size);
-
-                var fileReader = new FileReader();
-                if (file.size < CHUNK_SIZE) {
-                    fileReader.readAsBinaryString(file);
-                    fileReader.onload = function(e){
-                        readFileDone(file, SparkMD5.hashBinary(e.target.result));
-                    }
-                } else {
-//                onProgress(fileReader);
-                    //文件分割方法（注意兼容性）
-                    var blobSlice = File.prototype.mozSlice || File.prototype.webkitSlice || File.prototype.slice,
-                            file,
-                        //文件每块分割2M，计算分割详情
-                            chunks = Math.ceil(file.size / CHUNK_SIZE),
-                            currentChunk = 0,
-                        //创建md5对象（基于SparkMD5）
-                            spark = new SparkMD5();
-                    //每块文件读取完毕之后的处理
-                    fileReader.onload = function (e) {
-
-                        console.log("读取第", currentChunk + 1, "块，共", chunks + "块");
-                        //每块交由sparkMD5进行计算
-                        spark.appendBinary(e.target.result);
-                        currentChunk++;
-                        //如果文件处理完成计算MD5，如果还有分片继续处理
-                        if (currentChunk < chunks) {
-                            loadNext();
-                        } else {
-                            var md5 = spark.end();
-                            console.log("分块文件读取完毕");
-
-                            readFileDone(file, md5);
-                       }
-                    };
-
-                    //处理单片文件的上传
-                    function loadNext() {
-                        var start = currentChunk * CHUNK_SIZE, end = start + CHUNK_SIZE >= file.size ? file.size : start + CHUNK_SIZE;
-                        fileReader.readAsBinaryString(blobSlice.call(file, start, end));
-                    }
-
-                    loadNext();
-                }
-            }
-        });
-    </script>
-
+    });
+</script>
 
 </body>
 </html>

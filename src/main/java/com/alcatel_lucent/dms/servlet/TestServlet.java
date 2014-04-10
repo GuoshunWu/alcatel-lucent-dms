@@ -1,5 +1,10 @@
 package com.alcatel_lucent.dms.servlet;
 
+import com.google.common.collect.ImmutableMap;
+import net.sf.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -15,13 +20,24 @@ import java.io.PrintWriter;
  */
 
 @WebServlet(name = "TestServlet", urlPatterns = {"/test/testServlet"}, asyncSupported = true)
-@MultipartConfig(location = "/tmp/upload", fileSizeThreshold = 2 * 1024 * 1024)
+@MultipartConfig(fileSizeThreshold = 2 * 1024 * 1024)
 public class TestServlet extends HttpServlet {
+
+    private static Logger log = LoggerFactory.getLogger(TestServlet.class);
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/plain;charset=utf-8");
+        response.setContentType("application/json;charset=utf-8");
         PrintWriter out = response.getWriter();
+
         Part part = request.getPart("file");
+        String md5 = request.getParameter("md5");
+
+        log.info("partName={}, fileName={}, partSize ={}, md5={}", part.getName(),part.getSize(), md5);
+
+        out.println(JSONObject.fromObject(ImmutableMap.of(
+                "status", 0,
+                "msg", "call success"
+        )).toString(4));
     }
 }

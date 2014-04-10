@@ -139,6 +139,7 @@ public class Label extends BaseEntity implements Cloneable {
     public void setAnnotation3(String annotation3) {
         this.annotation3 = annotation3;
     }
+
     @Column(name = "ANNOTATION4")
     @Type(type = "text")
     public String getAnnotation4() {
@@ -393,9 +394,8 @@ public class Label extends BaseEntity implements Cloneable {
     public Translation getTranslationObject(DictionaryLanguage dl) {
         return (null == dl) ? null : getTranslationObject(dl.getLanguageCode());
     }
-
     public Translation getTranslationObject(String langCode) {
-        if (StringUtils.isEmpty(langCode) || context.getName().equals(Context.EXCLUSION)){
+        if (StringUtils.isEmpty(langCode) || context.getName().equals(Context.EXCLUSION)) {
             return getTransientTranslation(Translation.STATUS_TRANSLATED);
         }
 
@@ -412,11 +412,11 @@ public class Label extends BaseEntity implements Cloneable {
         return getTransientTranslation(Translation.STATUS_UNTRANSLATED);
     }
 
-    private Translation getTransientTranslation(int status){
+    private Translation getTransientTranslation(int status) {
         return getTransientTranslation(status, null);
     }
 
-    private Translation getTransientTranslation(int status, String translation){
+    private Translation getTransientTranslation(int status, String translation) {
         Translation tempTrans = new Translation();
         tempTrans.setId(-1L);  //virtual id < 0, indicating a non-existing translation object
         tempTrans.setStatus(status);
@@ -431,11 +431,11 @@ public class Label extends BaseEntity implements Cloneable {
      * @return
      */
     public String getTranslation(String langCode) {
-       return  getTranslationObject(langCode).getTranslation();
+        return getTranslationObject(langCode).getTranslation();
     }
 
     public int getTranslationStatus(String langCode) {
-        return  getTranslationObject(langCode).getStatus();
+        return getTranslationObject(langCode).getStatus();
     }
 
     /**
