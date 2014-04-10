@@ -10,7 +10,7 @@
                                     name="transmng.dialogs.transtask.namerequired"/></span>
                         </td>
 
-                        <td>Secondary reference: </td>
+                        <td><s:text name="transmng.dialogs.transtask.secondaryref"/></td>
                         <td>
                             <select id="translationTaskSecondaryReference" style="width: 300px" />
                         </td>
