@@ -3,6 +3,7 @@ Created by IntelliJ IDEA.
 User: Guoshun Wu
 ###
 define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
+
   #    prototype enhancement
   String:: format = -> args = arguments; @replace /\{(\d+)\}/g, (m, i) ->args[i]
 
