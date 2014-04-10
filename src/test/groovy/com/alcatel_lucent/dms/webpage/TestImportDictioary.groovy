@@ -2,21 +2,11 @@ package com.alcatel_lucent.dms.webpage
 
 import org.apache.commons.io.IOUtils
 import org.intellij.lang.annotations.Language
-import org.junit.After
 import org.junit.AfterClass
 import org.junit.Assert
-import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-
-import static org.hamcrest.CoreMatchers.*
-import static org.hamcrest.Matchers.hasEntry
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertEquals;
-import static org.junit.matchers.JUnitMatchers.*;
-
+import org.junit.runner.RunWith
 import org.openqa.selenium.By
 import org.openqa.selenium.JavascriptExecutor
 import org.openqa.selenium.WebDriver
@@ -24,23 +14,39 @@ import org.openqa.selenium.WebElement
 import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.WebDriverWait
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
+import org.springframework.test.context.transaction.TransactionConfiguration
+import org.springframework.transaction.annotation.Transactional
 
+import static com.alcatel_lucent.dms.util.CoffeeScript.compile
 import static java.util.concurrent.TimeUnit.MILLISECONDS
 import static java.util.concurrent.TimeUnit.SECONDS
-import static com.alcatel_lucent.dms.util.CoffeeScript.compile
+import static org.hamcrest.CoreMatchers.allOf
+import static org.junit.Assert.assertEquals
+import static org.junit.matchers.JUnitMatchers.hasItem
 
 
 /**
  * Created by Guoshun on 14-1-12.
  * Reference: http://docs.seleniumhq.org/docs/03_webdriver.jsp#internet-explorer-driver
  */
+
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(locations = ["/spring.xml"])
+//@Transactional //Important, or the transaction control will be invalid
+//@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
+
 class TestImportDictionary {
     private static WebDriver driver
     private static JavascriptExecutor jsExecutor
     private static WebElement testApp
     private static Logger log = LoggerFactory.getLogger(TestImportDictionary)
 
-    public static final String TARGET_URL = "http://localhost:8888/dms"
+//    public static final String TARGET_URL = "http://localhost:8888/dms"
+    public static final String TARGET_URL = "http://135.251.222.54:8888/dms"
 
     @BeforeClass
     static void beforeClass() {
@@ -96,6 +102,8 @@ class TestImportDictionary {
                 ExpectedConditions.presenceOfElementLocated(By.partialLinkText(testProductName)
                 )
         )
+        // test if test product and application exists, if not create them
+
         //expand the test product
         testProd.findElement(By.xpath("preceding-sibling::ins")).click()
         String xPathOfTestApp = "//div[@id='appTree']/descendant::a[contains(.,'${testProductName}')]/" +
@@ -134,7 +142,7 @@ class TestImportDictionary {
         MILLISECONDS.sleep(500)
         testApp.click()
         //Upload multiple file test case(default parameter)
-//        deliverDictionaries()
+        deliverDictionaries()
 
         new WebDriverWait(driver, 60 * 3).until(
                 ExpectedConditions.visibilityOfElementLocated(By.id("dictionaryGridList"))
@@ -152,7 +160,7 @@ class TestImportDictionary {
         ))
 
         //Upload single file test case
-//        deliverDictionaries(new File("dct_test_files/sampleFiles", "dms-test.xlsx"))
+        deliverDictionaries(new File("dct_test_files/sampleFiles", "dms-test.xlsx"))
 
 //        @Language("CoffeeScript") String coffeeCode = "return (row.name for row in \$('#dictionaryGridList').getRowData())"
         jsCode = "return \$('#dictionaryGridList').getRowData().map(function(item,index,array){return item.name})";
