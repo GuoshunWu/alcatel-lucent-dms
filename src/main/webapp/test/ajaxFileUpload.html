@@ -6,11 +6,15 @@
         #progress_bar {
             width: 500px;
             height: 25px;
-            border: solid 1px #0000ff;
+            /*border: solid 1px #0000ff;*/
         }
 
         div.percent {
             float: left;
+            z-index: 2;
+            background: lightblue;
+            width: 0%;
+            height: 100%;
         }
     </style>
 </head>
@@ -18,14 +22,17 @@
 <body>
 
 <div id="progress_bar">
-    <span id="showCurrent" style="width: 400px; height: 20px; float: right"></span>
+    <!--<span id="showCurrent" style="width: 400px; height: 20px; float: right"></span>-->
 
     <div class="percent">0%</div>
 </div>
 
 <label for="files">文件：</label><input type="file" id="files" name="files" multiple/>
 <script type="text/javascript" src="../js/lib/spark-md5.js" charset="utf-8"></script>
+<script type="text/javascript" src="../js/lib/jquery-1.11.0.min.js" charset="utf-8"></script>
+
 <!--<script type="text/javascript" src="main.js" charset="utf-8"></script>-->
+
 
 <script type="text/javascript">
 
@@ -43,16 +50,23 @@
             console.log("result = %o", JSON.parse(e.target.responseText));
         }
 
+        xhr.upload.onprogress = function (e) {
+            if (!e.lengthComputable) return;
+            var percent = (e.position / e.totalSize * 100).toFixed(2) + '%';
+            $("div.percent").html(percent).width(percent);
+            console.log("Received " + e.position + " of " + e.totalSize + " bytes");
+        }
+
         var postData = new FormData();
         postData.append("md5", md5);
         postData.append("file", file);
         xhr.send(postData);
     }
 
-    var CHUNK_SIZE = 2 * 1024 * 1024; //2M Bytes
+    var CHUNK_SIZE = 10 * 1024 * 1024; //2M Bytes
 
-    var currentShow = document.getElementById("showCurrent");
-    var percent = document.querySelector("div.percent");
+    var currentShow = $("#showCurrent");
+    var percent = $("div.percent");
 
     //注意此方法引用了SparkMD5库 library:https://github.com/satazor/SparkMD5
     //监听文本框变化
@@ -61,10 +75,15 @@
     function readSmallFile(file) {
         var fileReader = new FileReader();
         fileReader.readAsBinaryString(file);
+        var start = 0;
         fileReader.onload = function (e) {
+            var end = new Date().getTime();
+            console.log("on load, now = %d, %d milliseconds escaped.", end, end - start);
             var md5 = SparkMD5.hashBinary(e.target.result);
             readFileDone(file, md5);
         };
+
+
     }
 
     function readLargeFile(file, chunkSize) {
@@ -75,10 +94,10 @@
         fileReader.readAsBinaryString(file.slice(0, chunkSize));
         var startTime = new Date();
         fileReader.onload = function (e) {
-            currentShow.innerHTML = "文件" + file.name + "读取第" + (currentChunk + 1) + "块，共" + chunks + "块";
-            var pNum = (currentChunk * chunkSize / file.size * 100).toFixed(2);
-            percent.innerHTML = pNum + "%";
-//            console.log("文件%s读取第", file.name, currentChunk + 1, "块，共", chunks + "块");
+            currentShow.html("文件" + file.name + "读取第" + (currentChunk + 1) + "块，共" + chunks + "块");
+//            var pNum = (currentChunk * chunkSize / file.size * 100).toFixed(1);
+//            percent.html(pNum + "%").width(pNum + '%');
+            console.log("文件%s读取第", file.name, currentChunk + 1, "块，共", chunks + "块");
             //每块交由sparkMD5进行计算
             spark.appendBinary(e.target.result);
             currentChunk++;
@@ -89,13 +108,21 @@
                 fileReader.readAsBinaryString(file.slice(start, end));
             } else {
                 var endTime = new Date();
-                currentShow.innerHTML = "分块文件读取完毕，总共使用" + (endTime.getTime() - startTime.getTime()) / 1000 + "秒。";
-                percent.innerHTML = 100.0.toFixed(2) + "%";
+                currentShow.html("分块文件读取完毕，总共使用" + (endTime.getTime() - startTime.getTime()) / 1000 + "秒。");
+                percent.html(100.0.toFixed(1) + "%");
+                percent.width('100%');
                 console.log("分块文件读取完毕，总共使用%f秒。", (endTime.getTime() - startTime.getTime()) / 1000);
                 var md5 = spark.end();
                 readFileDone(file, md5);
             }
         };
+
+        fileReader.onprogress = function (e) {
+            if (!e.lengthComputable)return;
+            var pNum = ((currentChunk * chunkSize + e.loaded) / file.size * 100).toFixed(1);
+            percent.html(pNum + "%").width(pNum + '%');
+        }
+
 
     }
 
