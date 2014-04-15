@@ -1,5 +1,5 @@
 # Implement the navigation tree on the east
-define ['require','jqtree', 'jqmsgbox', 'dms-util', 'dms-urls', 'i18n!nls/common'], (require , $, msgbox, util, urls, c18n)->
+define ['require','jqtree', 'jqmsgbox', 'dms-util', 'dms-urls', 'i18n!nls/common'], (require , jqtree, $, util, urls, c18n)->
 
   appTree = null
   getNodeInfo = util.getProductTreeInfo
@@ -33,7 +33,6 @@ define ['require','jqtree', 'jqmsgbox', 'dms-util', 'dms-urls', 'i18n!nls/common
         "_disabled": (util.urlname2Action urls.app.del) in param.forbiddenPrivileges
         action: removeNode
 
-
   $.jstree._themes = "css/jstree/themes/"
 
   #  single click node event
@@ -43,7 +42,7 @@ define ['require','jqtree', 'jqmsgbox', 'dms-util', 'dms-urls', 'i18n!nls/common
     $("#appTree").jstree(
       json_data: {data: treeInfo}
       ui: {select_limit: 1}, themes: {}, core: {initially_open: ["-1"]}, contextmenu: {items: (node)->nodeCtxMenu[node.attr('type')]}
-      plugins: [ "themes", "json_data", "ui", "core", "crrm", "contextmenu"]
+      plugins: [ "themes", "json_data", "ui", "core", "crrm", "contextmenu", "search"]
     ).bind('create.jstree',
       (event, data)->
         appTree = data.inst

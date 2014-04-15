@@ -32,8 +32,9 @@ public class TestServlet extends HttpServlet {
 
         Part part = request.getPart("file");
         String md5 = request.getParameter("md5");
-
-        log.info("partName={}, fileName={}, partSize ={}, md5={}", part.getName(),part.getSize(), md5);
+        String fileName = request.getParameter("fileName");
+//        part.getSubmittedFileName();
+        log.info("partName={}, fileName={}, partSize ={}, md5={}", part.getName(), fileName,part.getSize(), md5);
 
         out.println(JSONObject.fromObject(ImmutableMap.of(
                 "status", 0,

@@ -13,6 +13,7 @@ require.config
 #    jqgrid: 'jqgridlib/jquery.jqGrid.min'
     jqgrid: 'jquery.jqGrid.min'
     jqtree: 'jquery.jstree'
+#    jqtree: 'jstree3.0'
     jqlayout: 'jquery.layout-latest.min'
     jqmsgbox: 'jquery.msgBox.v1'
     blockui: 'jquery.blockUI.min'
@@ -20,6 +21,8 @@ require.config
     iframetransport: 'jsfileuploader/jquery.iframe-transport'
     hchart: 'highcharts'
     hchart_exp: 'exporting'
+
+    testcases: 'dmstestcases'
 
     requireLib: 'require'
 

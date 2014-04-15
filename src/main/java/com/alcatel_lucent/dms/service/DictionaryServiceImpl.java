@@ -485,7 +485,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             }
         }
 
-
         param = new HashMap();
         param.put("version", version);
         param.put("baseId", baseDBDict.getId());
