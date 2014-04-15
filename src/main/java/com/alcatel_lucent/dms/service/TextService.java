@@ -75,7 +75,8 @@ public interface TextService {
 	 * The method is invoked for importing dictionaries, receiving tasks and updating reference of labels.
 	 * @param ctxId context id
 	 * @param texts texts with their translations to update in the context
-	 * @param mode importing mode, see DictionaryService.importDictionary()
+	 * @param mode importing mode
+     *         @see DictionaryService#importDictionaries(Long, java.util.Collection, com.alcatel_lucent.dms.Constants.ImportingMode)
 	 * @param operationType operation type defined in TranslationHistory
 	 * @return map of persistent text objects indexed by reference.
 	 */

@@ -6,7 +6,6 @@ import org.junit.AfterClass
 import org.junit.Assert
 import org.junit.BeforeClass
 import org.junit.Test
-import org.junit.runner.RunWith
 import org.openqa.selenium.By
 import org.openqa.selenium.JavascriptExecutor
 import org.openqa.selenium.WebDriver
@@ -16,10 +15,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.WebDriverWait
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
-import org.springframework.test.context.transaction.TransactionConfiguration
-import org.springframework.transaction.annotation.Transactional
 
 import static com.alcatel_lucent.dms.util.CoffeeScript.compile
 import static java.util.concurrent.TimeUnit.MILLISECONDS
@@ -27,7 +22,6 @@ import static java.util.concurrent.TimeUnit.SECONDS
 import static org.hamcrest.CoreMatchers.allOf
 import static org.junit.Assert.assertEquals
 import static org.junit.matchers.JUnitMatchers.hasItem
-
 
 /**
  * Created by Guoshun on 14-1-12.
@@ -137,7 +131,7 @@ class TestImportDictionary {
     /**
      * Deliver dictionaries test
      * */
-    @Test
+//    @Test
     void testDeliverDictionaries() {
         MILLISECONDS.sleep(500)
         testApp.click()
@@ -185,7 +179,7 @@ class TestImportDictionary {
 
         jsCode = getAsyncJSCode("getLabelInDict")
 
-        Map<String,String> labelData = jsExecutor.executeAsyncScript(jsCode, expectedDictName, testLabelKey, 2000)
+        Map<String, String> labelData = jsExecutor.executeAsyncScript(jsCode, expectedDictName, testLabelKey, 2000)
         assertEquals("Max length of Label ${testLabelKey} in dictionary ${expectedDictName} expected ${expectedMaxLength}.",
                 expectedMaxLength, labelData['maxLength'])
         assertEquals("Description of Label ${testLabelKey} in dictionary ${expectedDictName} expected \"${expectDescription}\".",
@@ -195,10 +189,14 @@ class TestImportDictionary {
     }
 
 
-//    @Test
-    void testJSCompile() {
-        String jsCode = getAsyncJSCode("getLabelInDict")
-        log.debug("jsCode={}", jsCode)
+    @Test
+    void testTemp() {
+//        String jsCode = getAsyncJSCode("getLabelInDict")
+//        log.debug("jsCode={}", jsCode)
+
+        String jsCode = getAsyncJSCode("dictionaryLanguageCount")
+        Object object = jsExecutor.executeAsyncScript(jsCode, dictionaryName, timeOut)
+//        log.info( )
     }
 
 

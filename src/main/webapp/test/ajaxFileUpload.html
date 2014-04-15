@@ -23,7 +23,6 @@
 
 <div id="progress_bar">
     <!--<span id="showCurrent" style="width: 400px; height: 20px; float: right"></span>-->
-
     <div class="percent">0%</div>
 </div>
 
@@ -60,6 +59,7 @@
         var postData = new FormData();
         postData.append("md5", md5);
         postData.append("file", file);
+        postData.append("fileName", file.name);
         xhr.send(postData);
     }
 
@@ -76,14 +76,15 @@
         var fileReader = new FileReader();
         fileReader.readAsBinaryString(file);
         var start = 0;
-        fileReader.onload = function (e) {
+        $(fileReader).on('loadstart', function (e) {
+            console.log("on load start....");
+            start = new Date().getTime();
+        }).on("load", function (e) {
             var end = new Date().getTime();
-            console.log("on load, now = %d, %d milliseconds escaped.", end, end - start);
+            console.log("on load, %d milliseconds elapsed.", end - start);
             var md5 = SparkMD5.hashBinary(e.target.result);
             readFileDone(file, md5);
-        };
-
-
+        });
     }
 
     function readLargeFile(file, chunkSize) {

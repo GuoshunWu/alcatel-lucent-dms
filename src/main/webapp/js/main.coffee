@@ -12,6 +12,8 @@ define [
   'ctxmng/main'
   'admin/main'
   'commons/dialogs'
+
+  'testcases'
 ], (
   $
   blockui
@@ -23,9 +25,11 @@ define [
   appmngPanel
   transmngPanel
   taskmngPanel
-  ctxmngPanel,
-  adminPanel,
+  ctxmngPanel
+  adminPanel
   cdialogs
+
+  testcases
 )->
   isFirst = true
   ready = (param)->
