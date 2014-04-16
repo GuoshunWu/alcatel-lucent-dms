@@ -11,6 +11,7 @@ import org.openqa.selenium.JavascriptExecutor
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
 import org.openqa.selenium.firefox.FirefoxDriver
+import org.openqa.selenium.interactions.Actions
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.WebDriverWait
 import org.slf4j.Logger
@@ -21,6 +22,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS
 import static java.util.concurrent.TimeUnit.SECONDS
 import static org.hamcrest.CoreMatchers.allOf
 import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertNotNull
 import static org.junit.matchers.JUnitMatchers.hasItem
 
 /**
@@ -39,8 +41,8 @@ class TestImportDictionary {
     private static WebElement testApp
     private static Logger log = LoggerFactory.getLogger(TestImportDictionary)
 
-//    public static final String TARGET_URL = "http://localhost:8888/dms"
-    public static final String TARGET_URL = "http://135.251.222.54:8888/dms"
+    public static final String TARGET_URL = "http://localhost:8888/dms"
+//    public static final String TARGET_URL = "http://127.0.0.1:8888/dms"
 
     @BeforeClass
     static void beforeClass() {
@@ -59,7 +61,7 @@ class TestImportDictionary {
 
     @AfterClass
     static void afterClass() {
-        driver.quit()
+//        driver.quit()
         jsExecutor = driver = null
         testApp = null
     }
@@ -92,10 +94,8 @@ class TestImportDictionary {
      * */
     private static WebElement getTestApp(String testProductName = "TestProd", String testApplicationName = "TestApp") {
         WebElement appTree = login()
-        final WebElement testProd = new WebDriverWait(driver, 10).until(
-                ExpectedConditions.presenceOfElementLocated(By.partialLinkText(testProductName)
-                )
-        )
+        final WebElement testProd = getWebElement(By.partialLinkText(testProductName))
+
         // test if test product and application exists, if not create them
 
         //expand the test product
@@ -117,6 +117,7 @@ class TestImportDictionary {
         // sleep 1 second to wait for upload button loaded
         SECONDS.sleep(1)
         uploadButton.sendKeys(file.absolutePath)
+        getWebElement(By.id("dictListPreviewDialog"), previewTimeOut)
         new WebDriverWait(driver, previewTimeOut).until(
                 ExpectedConditions.visibilityOfElementLocated(By.id("dictListPreviewDialog"))
         )
@@ -137,10 +138,7 @@ class TestImportDictionary {
         testApp.click()
         //Upload multiple file test case(default parameter)
         deliverDictionaries()
-
-        new WebDriverWait(driver, 60 * 3).until(
-                ExpectedConditions.visibilityOfElementLocated(By.id("dictionaryGridList"))
-        )
+        getWebElement(By.id("dictionaryGridList"), 60 * 3)
         @Language("JavaScript 1.6") String jsCode = "return \$('#dictionaryGridList').getRowData().map(function(item,index,array){return item.name})";
         List<List<Object>> dictionaryNames = jsExecutor.executeScript(jsCode)
 //        Expect dictionaries are imported without error.
@@ -188,14 +186,55 @@ class TestImportDictionary {
 
     }
 
+    private static WebElement getWebElement(By by, int timeOut = 10, visible = true) {
+        if (visible) {
+            return new WebDriverWait(driver, timeOut).until(
+                    ExpectedConditions.visibilityOfElementLocated(by)
+            )
+        }
+
+        return new WebDriverWait(driver, timeOut).until(
+                ExpectedConditions.presenceOfElementLocated(by)
+        )
+    }
+
+    private WebElement getWebElementByJQuerySelector(String selector){
+        @Language("JavaScript 1.6")String jsCode = """
+          var elements = \$("${selector}");
+          if(elements.length)return elements[0];
+          return null;
+       """
+        return jsExecutor.executeScript(jsCode)
+    }
 
     @Test
     void testTemp() {
+        // right click products
+        new Actions(driver).contextClick(getWebElement(By.partialLinkText("Products"))).perform()
+        //create new product
+        String productName = "WgsTestProduct"
+        getWebElement(By.partialLinkText("New product")).click()
+        driver.switchTo().activeElement().sendKeys("${productName}\n")
+
+        getWebElement(By.partialLinkText(productName)).click()
+
+        // create version for product
+        getWebElement(By.id("newVersion")).click()
+
+        getWebElement(By.id("versionName")).sendKeys("1.0")
+        WebElement okButton =getWebElementByJQuerySelector("#newProductReleaseDialog + div button:contains('OK')")
+        assertNotNull(okButton)
+        okButton.click()
+
+        //create new application for Product
+
+
 //        String jsCode = getAsyncJSCode("getLabelInDict")
 //        log.debug("jsCode={}", jsCode)
 
-        String jsCode = getAsyncJSCode("dictionaryLanguageCount")
-        Object object = jsExecutor.executeAsyncScript(jsCode, dictionaryName, timeOut)
+//        String jsCode = getAsyncJSCode("dictionaryLanguageCount")
+//        Object object = jsExecutor.executeAsyncScript(jsCode, dictionaryName, timeOut)
+
 //        log.info( )
     }
 
