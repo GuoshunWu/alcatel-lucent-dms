@@ -1,4 +1,5 @@
 define ['dms-urls', 'dms-util'], (urls, util)->
+
   window.wgsTest = ()->
 
     longRun = (msg, status, sucCallBack=((msg)->console.log "Success, hello "+ msg),failCallBack=(msg)->console.log "Fail, hello " + msg)->

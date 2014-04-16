@@ -92,16 +92,59 @@ class TestImportDictionary {
      * @param testProductName test product name
      * @param testApplicationName test application name
      * */
-    private static WebElement getTestApp(String testProductName = "TestProd", String testApplicationName = "TestApp") {
+    private static WebElement getTestApp(String productName = "DMSTestCases", String appName = "DMSTestApp") {
         WebElement appTree = login()
-        final WebElement testProd = getWebElement(By.partialLinkText(testProductName))
-
         // test if test product and application exists, if not create them
 
-        //expand the test product
-        testProd.findElement(By.xpath("preceding-sibling::ins")).click()
-        String xPathOfTestApp = "//div[@id='appTree']/descendant::a[contains(.,'${testProductName}')]/" +
-                "following-sibling::ul/descendant::a[contains(.,'${testApplicationName}')]"
+        //if product not found create new product
+        WebElement productElement = getWebElementByJQuerySelector("li[type='product']:contains('${productName}')")
+        Actions actions = new Actions(driver)
+
+        if (null == productElement) {
+            // right click products
+            actions.contextClick(getWebElement(By.partialLinkText("Products"))).perform()
+
+            getWebElement(By.partialLinkText("New product")).click()
+            driver.switchTo().activeElement().sendKeys("${productName}\n")
+
+            getWebElement(By.partialLinkText(productName)).click()
+
+            // create version for product
+            getWebElement(By.id("newVersion")).click()
+
+            getWebElement(By.id("versionName")).sendKeys("1.0")
+            WebElement okButton = getWebElementByJQuerySelector("#newProductReleaseDialog + div button:contains('OK')")
+            assertNotNull(okButton)
+            okButton.click()
+        } else {
+            //expand product element
+            final WebElement testProd = getWebElement(By.partialLinkText(productName)).findElement(By.xpath("preceding-sibling::ins")).click()
+        }
+
+        //create new application for Product
+        WebElement testApp = getWebElementByJQuerySelector("li[type='product']:contains('${productName}') a:contains('${appName}')")
+        if (null == testApp) {
+            actions.contextClick(getWebElement(By.partialLinkText(productName))).perform()
+            getWebElement(By.partialLinkText("New application")).click()
+            driver.switchTo().activeElement().sendKeys("${appName}\n")
+            getWebElement(By.partialLinkText(appName)).click()
+
+            // create version for product
+            getWebElement(By.id("newAppVersion")).click()
+            getWebElement(By.id("appVersionName")).sendKeys("1.0")
+            WebElement okForAppVersion = getWebElementByJQuerySelector("#newApplicationVersionDialog + div button:contains('OK')")
+            assertNotNull(okForAppVersion)
+            okForAppVersion.click()
+            //wait for addNewApplicationVersionToProductVersionDialog to show
+            getWebElement(By.id("addNewApplicationVersionToProductVersionDialog"))
+            getWebElementByJQuerySelector("#addNewApplicationVersionToProductVersionDialog + div button:contains('OK')").click()
+        } else {
+            getWebElement(By.partialLinkText(appName)).click()
+        }
+
+        String xPathOfTestApp = "//div[@id='appTree']/descendant::a[contains(.,'${productName}')]/" +
+                "following-sibling::ul/descendant::a[contains(.,'${appName}')]"
+
         return new WebDriverWait(driver, 10).until(ExpectedConditions.elementToBeClickable(By.xpath(xPathOfTestApp)))
     }
 
@@ -132,7 +175,7 @@ class TestImportDictionary {
     /**
      * Deliver dictionaries test
      * */
-//    @Test
+    @Test
     void testDeliverDictionaries() {
         MILLISECONDS.sleep(500)
         testApp.click()
@@ -198,8 +241,8 @@ class TestImportDictionary {
         )
     }
 
-    private WebElement getWebElementByJQuerySelector(String selector){
-        @Language("JavaScript 1.6")String jsCode = """
+    private static WebElement getWebElementByJQuerySelector(String selector) {
+        @Language("JavaScript 1.6") String jsCode = """
           var elements = \$("${selector}");
           if(elements.length)return elements[0];
           return null;
@@ -209,25 +252,8 @@ class TestImportDictionary {
 
     @Test
     void testTemp() {
-        // right click products
-        new Actions(driver).contextClick(getWebElement(By.partialLinkText("Products"))).perform()
-        //create new product
-        String productName = "WgsTestProduct"
-        getWebElement(By.partialLinkText("New product")).click()
-        driver.switchTo().activeElement().sendKeys("${productName}\n")
-
-        getWebElement(By.partialLinkText(productName)).click()
-
-        // create version for product
-        getWebElement(By.id("newVersion")).click()
-
-        getWebElement(By.id("versionName")).sendKeys("1.0")
-        WebElement okButton =getWebElementByJQuerySelector("#newProductReleaseDialog + div button:contains('OK')")
-        assertNotNull(okButton)
-        okButton.click()
-
-        //create new application for Product
-
+        String productName = "DMSTestCases"
+        String appName = "DMSTestApp"
 
 //        String jsCode = getAsyncJSCode("getLabelInDict")
 //        log.debug("jsCode={}", jsCode)
@@ -246,13 +272,13 @@ class TestImportDictionary {
         return jsExecutor.executeAsyncScript(jsCode, dictionaryName, timeOut)
     }
 
-    /**
-     *  Load the external coffee script files and compile the merged files to javascript
-     * @param coffeeFile main coffee script file
-     * @param path coffee script file directory path
-     * @param utilCoffee util coffee script files to merge
-     * @return compiled javascript ready for executeAsyncScript to call
-     * */
+/**
+ *  Load the external coffee script files and compile the merged files to javascript
+ * @param coffeeFile main coffee script file
+ * @param path coffee script file directory path
+ * @param utilCoffee util coffee script files to merge
+ * @return compiled javascript ready for executeAsyncScript to call
+ * */
     private String getAsyncJSCode(String coffeeFile, String path = "/com/alcatel_lucent/dms/webpage/js",
                                   List<String> utilCoffee = ["util"]) {
         String cs = IOUtils.toString(getClass().getResourceAsStream("${path}/${coffeeFile}.coffee"))
@@ -264,4 +290,5 @@ class TestImportDictionary {
 //        log.info("merged cs = \n{}", cs)
         return compile(cs, true)
     }
+
 }
