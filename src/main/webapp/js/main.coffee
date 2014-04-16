@@ -13,7 +13,7 @@ define [
   'admin/main'
   'commons/dialogs'
 
-  'testcases'
+#  'testcases'
 ], (
   $
   blockui
@@ -29,7 +29,7 @@ define [
   adminPanel
   cdialogs
 
-  testcases
+#  testcases
 )->
   isFirst = true
   ready = (param)->
