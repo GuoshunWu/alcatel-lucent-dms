@@ -18,6 +18,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 import static com.alcatel_lucent.dms.util.CoffeeScript.compile
+import static java.util.concurrent.TimeUnit.MICROSECONDS
 import static java.util.concurrent.TimeUnit.MILLISECONDS
 import static java.util.concurrent.TimeUnit.SECONDS
 import static org.hamcrest.CoreMatchers.allOf
@@ -61,7 +62,7 @@ class TestImportDictionary {
 
     @AfterClass
     static void afterClass() {
-//        driver.quit()
+        driver.quit()
         jsExecutor = driver = null
         testApp = null
     }
@@ -96,6 +97,8 @@ class TestImportDictionary {
         WebElement appTree = login()
         // test if test product and application exists, if not create them
 
+        String productVersion = "1.0"
+        String appVersion = "1.0"
         //if product not found create new product
         WebElement productElement = getWebElementByJQuerySelector("li[type='product']:contains('${productName}')")
         Actions actions = new Actions(driver)
@@ -112,13 +115,24 @@ class TestImportDictionary {
             // create version for product
             getWebElement(By.id("newVersion")).click()
 
-            getWebElement(By.id("versionName")).sendKeys("1.0")
+            getWebElement(By.id("versionName")).sendKeys(productVersion)
             WebElement okButton = getWebElementByJQuerySelector("#newProductReleaseDialog + div button:contains('OK')")
             assertNotNull(okButton)
             okButton.click()
         } else {
             //expand product element
             final WebElement testProd = getWebElement(By.partialLinkText(productName)).findElement(By.xpath("preceding-sibling::ins")).click()
+            MICROSECONDS.sleep(500)
+            if (null == getWebElementByJQuerySelector("#selVersion > option:contains('${productVersion}')")) {
+                // create version for product
+                getWebElement(By.id("newVersion")).click()
+
+                getWebElement(By.id("versionName")).sendKeys(productVersion)
+                WebElement okButton = getWebElementByJQuerySelector("#newProductReleaseDialog + div button:contains('OK')")
+                assertNotNull(okButton)
+                okButton.click()
+            }
+
         }
 
         //create new application for Product
@@ -131,7 +145,7 @@ class TestImportDictionary {
 
             // create version for product
             getWebElement(By.id("newAppVersion")).click()
-            getWebElement(By.id("appVersionName")).sendKeys("1.0")
+            getWebElement(By.id("appVersionName")).sendKeys(appVersion)
             WebElement okForAppVersion = getWebElementByJQuerySelector("#newApplicationVersionDialog + div button:contains('OK')")
             assertNotNull(okForAppVersion)
             okForAppVersion.click()
@@ -140,6 +154,17 @@ class TestImportDictionary {
             getWebElementByJQuerySelector("#addNewApplicationVersionToProductVersionDialog + div button:contains('OK')").click()
         } else {
             getWebElement(By.partialLinkText(appName)).click()
+            if (null == getWebElementByJQuerySelector("#selAppVersion > option:contains('${appVersion}')")) {
+                // create version for product
+                getWebElement(By.id("newAppVersion")).click()
+                getWebElement(By.id("appVersionName")).sendKeys(appVersion)
+                WebElement okForAppVersion = getWebElementByJQuerySelector("#newApplicationVersionDialog + div button:contains('OK')")
+                assertNotNull(okForAppVersion)
+                okForAppVersion.click()
+                //wait for addNewApplicationVersionToProductVersionDialog to show
+                getWebElement(By.id("addNewApplicationVersionToProductVersionDialog"))
+                getWebElementByJQuerySelector("#addNewApplicationVersionToProductVersionDialog + div button:contains('OK')").click()
+            }
         }
 
         String xPathOfTestApp = "//div[@id='appTree']/descendant::a[contains(.,'${productName}')]/" +
@@ -252,12 +277,6 @@ class TestImportDictionary {
 
     @Test
     void testTemp() {
-        String productName = "DMSTestCases"
-        String appName = "DMSTestApp"
-
-//        String jsCode = getAsyncJSCode("getLabelInDict")
-//        log.debug("jsCode={}", jsCode)
-
 //        String jsCode = getAsyncJSCode("dictionaryLanguageCount")
 //        Object object = jsExecutor.executeAsyncScript(jsCode, dictionaryName, timeOut)
 
