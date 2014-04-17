@@ -13,7 +13,7 @@ define [
   'admin/main'
   'commons/dialogs'
 
-#  'testcases'
+  'testcases'
 ], (
   $
   blockui
@@ -28,7 +28,6 @@ define [
   ctxmngPanel
   adminPanel
   cdialogs
-
 #  testcases
 )->
   isFirst = true

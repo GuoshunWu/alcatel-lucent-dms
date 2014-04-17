@@ -1,5 +1,12 @@
 define ['dms-urls', 'dms-util'], (urls, util)->
 
+  getDictActionIds = (dictName)->
+    dictRows = (dictRow for dictRow in $('#dictionaryGridList').getRowData() when dictRow.name is dictName)
+    return {} unless dictRows.length
+    actionStr = dictRows[0].action
+    [strId, langId] = ($(atag).attr 'id' for atag in actionStr.split(/(?:&nbsp;)+/))
+    strId: strId, langId: langId
+
   window.wgsTest = ()->
 
     longRun = (msg, status, sucCallBack=((msg)->console.log "Success, hello "+ msg),failCallBack=(msg)->console.log "Fail, hello " + msg)->
@@ -18,39 +25,35 @@ define ['dms-urls', 'dms-util'], (urls, util)->
 
     wrapper().done((result)->)
 
-  window.testCreateApp = (testProductName = 'TestProduct', testAppName = 'TestApp')->
+
+  ###
+
+  ###
+  window.testCreateApp = (dictName = 'dms-test.xlsx')->
     console.log "================================Start auto create=============================="
+    # call the external util function
+    actIds =  getDictActionIds(dictName)
+    $('#' + actIds.strId, '#dictionaryGridList').click()
 
-    ###
-      product node is not found
-    ###
+    labelKeys = ['DMSTEST2', 'DMSTEST3', 'DMSTEST4']
+    setTimeout(()->
+      result = {}
+      stringSettingsGrid = $('#stringSettingsGrid')
+      sstd = $('stringSettingsTranslationDialog')
 
-    appTree = $('#appTree').on("search.jstree", (e, data)->
-      if data.args[0] == testProductName
-        if(data.rslt.nodes.length < 1)
-          productsNode = $("li#-1[type='products'] > a", '#appTree')
+      result[row.key] = context: row.context for row in stringSettingsGrid.getRowData() when row.key in labelKeys
+        result[row.key] = context: row.context
+        # check translation
+        stringSettingsGrid.find("tr td[title='DMSTEST2'] ~ td[aria-describedby='stringSettingsGrid_t > a']").click()
+        # waiting for translation load
+        setTimeout( ->
+          translations = $("#stringSettingsTranslationGrid").getRowData()
+          result[row.key] = translations: translations
+          sstd.dialog 'close'
+        , 1000)
 
-          # test product not found, create new test product
-          data.inst.create(productsNode, 'last', {data: testProductName, attr: {type: 'product', id: null}}, (->
-            createdNode = $("li[type='product'].jstree-last > a", "#appTree")
-            createdNode.trigger 'click'
-            createVersionDialog = $("#newApplicationVersionDialog").dialog "open"
-            $('#appVersionName', createVersionDialog).val "1.0"
-            createVersionDialog.next("div.ui-dialog-buttonpane").find("button:contains('OK')").click()
-
-#           data.inst.search testAppName
-          ), true)
-        else
-          data.inst.search testAppName
-      return
-
-      if data.args[0] == testAppName
-        if(data.rslt.nodes.length)
-          $(data.rslt.nodes[0]).trigger 'click'
-        else
-          console.log "create " + testAppName
-        data.inst.clear_search
-    ).jstree('search', testProductName)
+      $('#stringSettingsDialog').dialog 'close'
+    , 2000)
 
 
 
