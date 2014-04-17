@@ -13,6 +13,7 @@ import org.openqa.selenium.WebElement
 import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.interactions.Actions
 import org.openqa.selenium.support.ui.ExpectedConditions
+import org.openqa.selenium.support.ui.Select
 import org.openqa.selenium.support.ui.WebDriverWait
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -62,7 +63,7 @@ class TestImportDictionary {
 
     @AfterClass
     static void afterClass() {
-        driver.quit()
+//        driver.quit()
         jsExecutor = driver = null
         testApp = null
     }
@@ -120,10 +121,12 @@ class TestImportDictionary {
             assertNotNull(okButton)
             okButton.click()
         } else {
-            //expand product element
-            final WebElement testProd = getWebElement(By.partialLinkText(productName)).findElement(By.xpath("preceding-sibling::ins")).click()
+            getWebElement(By.partialLinkText(productName)).click() //select product
             MICROSECONDS.sleep(500)
-            if (null == getWebElementByJQuerySelector("#selVersion > option:contains('${productVersion}')")) {
+            Select select = new Select(getWebElement(By.id("selVersion")))
+            select.selectByVisibleText(productVersion)
+            String verText = select.getFirstSelectedOption().text
+            if (verText == null || !verText.equals(productVersion)) {
                 // create version for product
                 getWebElement(By.id("newVersion")).click()
 
@@ -132,9 +135,7 @@ class TestImportDictionary {
                 assertNotNull(okButton)
                 okButton.click()
             }
-
         }
-
         //create new application for Product
         WebElement testApp = getWebElementByJQuerySelector("li[type='product']:contains('${productName}') a:contains('${appName}')")
         if (null == testApp) {
@@ -153,8 +154,16 @@ class TestImportDictionary {
             getWebElement(By.id("addNewApplicationVersionToProductVersionDialog"))
             getWebElementByJQuerySelector("#addNewApplicationVersionToProductVersionDialog + div button:contains('OK')").click()
         } else {
+            MICROSECONDS.sleep(500)
+            //expand product element
+            final WebElement testProd = getWebElement(By.partialLinkText(productName)).findElement(By.xpath("preceding-sibling::ins")).click()
             getWebElement(By.partialLinkText(appName)).click()
-            if (null == getWebElementByJQuerySelector("#selAppVersion > option:contains('${appVersion}')")) {
+
+            Select select = new Select(getWebElement(By.id("selAppVersion")))
+            select.selectByVisibleText(appVersion)
+            String verText = select.getFirstSelectedOption().text
+
+            if (null == verText || !verText.equals(appVersion)) {
                 // create version for product
                 getWebElement(By.id("newAppVersion")).click()
                 getWebElement(By.id("appVersionName")).sendKeys(appVersion)
@@ -190,7 +199,7 @@ class TestImportDictionary {
                 ExpectedConditions.visibilityOfElementLocated(By.id("dictListPreviewDialog"))
         )
         jsExecutor.executeScript("\$('#dictListPreviewDialog').next().find(\"button\").click()")
-        new WebDriverWait(driver, 60 * 3).until(
+        new WebDriverWait(driver, 60 * 30).until(
                 ExpectedConditions.visibilityOfElementLocated(By.id("importReportDialog"))
         )
         SECONDS.sleep(2)
@@ -200,8 +209,8 @@ class TestImportDictionary {
     /**
      * Deliver dictionaries test
      * */
-    @Test
-    void testDeliverDictionaries() {
+//    @Test
+    void testDeliverMultipleDictionaries() {
         MILLISECONDS.sleep(500)
         testApp.click()
         //Upload multiple file test case(default parameter)
@@ -218,18 +227,20 @@ class TestImportDictionary {
                 hasItem("cmsldapserver_labels_GAE.xml"),
                 hasItem("cmsuser_labels_GAE.xml"),
         ))
+    }
 
+//    @Test
+    void testDeliveredSingleDictionary() {
         //Upload single file test case
         deliverDictionaries(new File("dct_test_files/sampleFiles", "dms-test.xlsx"))
 
-//        @Language("CoffeeScript") String coffeeCode = "return (row.name for row in \$('#dictionaryGridList').getRowData())"
-        jsCode = "return \$('#dictionaryGridList').getRowData().map(function(item,index,array){return item.name})";
-        dictionaryNames = jsExecutor.executeScript(jsCode)
+        //        @Language("CoffeeScript") String coffeeCode = "return (row.name for row in \$('#dictionaryGridList').getRowData())"
+        String jsCode = "return \$('#dictionaryGridList').getRowData().map(function(item,index,array){return item.name})";
+        List<List<Object>> dictionaryNames = jsExecutor.executeScript(jsCode)
         String expectedDictName = 'dms-test.xlsx'
         // assert import success
         Assert.assertThat(dictionaryNames, hasItem(expectedDictName))
 //         1. Dictionary "dms-test" contains 8 labels and 6 languages.
-
         jsCode = "return \$('#dictionaryGridList').getRowData().filter(function(item,index,array){return item.name=='dms-test.xlsx'})"
         List<Object> dmsTestRow = jsExecutor.executeScript(jsCode)
 
@@ -252,6 +263,57 @@ class TestImportDictionary {
                 expectDescription, labelData['description'])
 //      3. DMSTEST2/3/4 have different contexts (DEFAULT/DICT/LABEL) and different Chinese translations.
 
+        println getLabelDataInDict(expectedDictName)
+
+    }
+
+
+    private Map<String, Object> getLabelDataInDict(String dictName) {
+        //Get Dictionary action buttons
+        List<WebElement> actions = getWebElementsByJQuerySelector("#dictionaryGridList tr td[title='${dictName}'] ~ td[aria-describedby='dictionaryGridList_action'] > a")
+        actions[0].click()
+        //collect Label Data
+        Map<String, Object> labels = [:]
+//        String selector = "#stringSettingsGrid tr:has(td[title='DMSTEST2']), #stringSettingsGrid tr:has(td[title='DMSTEST3']), #stringSettingsGrid tr:has(td[title='DMSTEST4'])"
+        String stringSettingsGridId = "stringSettingsGrid"
+        String selector = "#${stringSettingsGridId} tr:not(.jqgfirstrow)"
+
+        List<WebElement> rows = getWebElementsByJQuerySelector(selector)
+        for (WebElement row : rows) {
+            WebElement contentCell = row.findElement(By.cssSelector("td[aria-describedby='${stringSettingsGridId}_context']"))
+            WebElement keyCell = row.findElement(By.cssSelector("td[aria-describedby='${stringSettingsGridId}_key']"))
+
+
+            Map<String, Object> label = labels.get(keyCell.text)
+            if (null == label) {
+                label = [:]
+                labels[keyCell.text] = label
+            }
+            label['context'] = contentCell.text
+//          populate label translation
+
+            List<WebElement> transActs = row.findElements(By.cssSelector("td[aria-describedby='${stringSettingsGridId}_t'] > a"))
+            if (transActs.size() > 0) {
+                new WebDriverWait(driver, 30).until(ExpectedConditions.elementToBeClickable(transActs[0]))
+                transActs[0].click()
+
+
+//                WebElement transDialogClose = getWebElementByJQuerySelector("#stringSettingsTranslationDialog + div button:contains('Close')")
+//                if (null != transDialogClose) transDialogClose.click()
+            }
+            //close dialog
+            getWebElementByJQuerySelector("#stringSettingsDialog + div button:contains('Close')").click()
+        }
+        return labels
+    }
+
+    @Test
+    void testTemp() {
+//        String jsCode = getAsyncJSCode("dictionaryLanguageCount")
+//        Object object = jsExecutor.executeAsyncScript(jsCode, dictionaryName, timeOut)
+
+        String expectedDictName = 'dms-test.xlsx'
+        println getLabelDataInDict(expectedDictName)
     }
 
     private static WebElement getWebElement(By by, int timeOut = 10, visible = true) {
@@ -267,20 +329,18 @@ class TestImportDictionary {
     }
 
     private static WebElement getWebElementByJQuerySelector(String selector) {
-        @Language("JavaScript 1.6") String jsCode = """
-          var elements = \$("${selector}");
-          if(elements.length)return elements[0];
-          return null;
-       """
-        return jsExecutor.executeScript(jsCode)
+        List<WebElement> webElements = getWebElementsByJQuerySelector(selector)
+        if (webElements.size() > 0) return webElements.get(0)
+        return null
     }
 
-    @Test
-    void testTemp() {
-//        String jsCode = getAsyncJSCode("dictionaryLanguageCount")
-//        Object object = jsExecutor.executeAsyncScript(jsCode, dictionaryName, timeOut)
-
-//        log.info( )
+    private static List<WebElement> getWebElementsByJQuerySelector(String selector) {
+        @Language("JavaScript 1.6") String jsCode = """
+          var elements = \$("${selector}");
+          if(elements.length)return elements.get();
+          return [];
+       """
+        return jsExecutor.executeScript(jsCode)
     }
 
 
