@@ -33,27 +33,6 @@ define ['dms-urls', 'dms-util'], (urls, util)->
     console.log "================================Start auto create=============================="
     # call the external util function
     actIds =  getDictActionIds(dictName)
-    $('#' + actIds.strId, '#dictionaryGridList').click()
-
-    labelKeys = ['DMSTEST2', 'DMSTEST3', 'DMSTEST4']
-    setTimeout(()->
-      result = {}
-      stringSettingsGrid = $('#stringSettingsGrid')
-      sstd = $('stringSettingsTranslationDialog')
-
-      result[row.key] = context: row.context for row in stringSettingsGrid.getRowData() when row.key in labelKeys
-        result[row.key] = context: row.context
-        # check translation
-        stringSettingsGrid.find("tr td[title='DMSTEST2'] ~ td[aria-describedby='stringSettingsGrid_t > a']").click()
-        # waiting for translation load
-        setTimeout( ->
-          translations = $("#stringSettingsTranslationGrid").getRowData()
-          result[row.key] = translations: translations
-          sstd.dialog 'close'
-        , 1000)
-
-      $('#stringSettingsDialog').dialog 'close'
-    , 2000)
 
 
 

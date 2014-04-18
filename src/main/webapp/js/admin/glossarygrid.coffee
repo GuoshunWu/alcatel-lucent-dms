@@ -109,9 +109,9 @@ define [
       grid = $(@)
   )
   .navGrid("#{hGridId}Pager", {add: false, search: false, edit: false}, {},{},deleteOptions)
-  .navButtonAdd("#{hGridId}Pager", {id: "custom_add_#{hGridId}", caption: "", buttonicon: "ui-icon-plus", position: "first", onClickButton: ()->
+  .navButtonAdd("#{hGridId}Pager", {id: "custom_add_#{gridId}", caption: "", buttonicon: "ui-icon-plus", position: "first", onClickButton: ()->
     createGlossaryDialog.dialog 'open'
-  }).navButtonAdd("#{hGridId}Pager", {id: "custom_apply_#{hGridId}", caption: i18n.glossary.apply, buttonicon: "ui-icon-note", position: "last", onClickButton: ()->
+  }).navButtonAdd("#{hGridId}Pager", {id: "custom_apply_#{gridId}", caption: i18n.glossary.apply, buttonicon: "ui-icon-note", position: "last", onClickButton: ()->
     $.blockUI(message: '')
     pb = util.genProgressBar()
     util.updateProgress(urls.glossary.apply, {oper: 'consistentGlossaries'}, (json)->
