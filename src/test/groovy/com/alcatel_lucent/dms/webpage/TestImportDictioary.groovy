@@ -88,7 +88,10 @@ class TestImportDictionary {
         WebElement pwdBtn = driver.findElement(By.id('idPassword'))
         pwdBtn.sendKeys(password)
         pwdBtn.submit()
-
+        // close tip of day dialog
+        SECONDS.sleep(1)
+        WebElement tipOfDayClose = getWebElementByJQuerySelector("#tipOfTheDayDialog + div button:contains('Close')")
+        if (null != tipOfDayClose) tipOfDayClose.click()
         return new WebDriverWait(driver, 10).
                 until(ExpectedConditions.presenceOfElementLocated(By.id("appTree")))
     }
@@ -307,18 +310,18 @@ class TestImportDictionary {
         String glossaryGridId = "glossaryGrid"
         String selector = "#${glossaryGridId} tr:not(.jqgfirstrow) td[aria-describedby='glossaryGrid_text']"
         List<WebElement> glossaryElements = getWebElementsByJQuerySelector(selector)
-        boolean glossaryExists =glossaryElements.collect({it.text}).contains(glossary)
+        boolean glossaryExists = glossaryElements.collect({ it.text }).contains(glossary)
         if (glossaryExists) {
             log.info("Glossary ${glossary} exists, skip creation.")
             return
         }
-        new WebDriverWait(driver, 1).until(ExpectedConditions.elementToBeClickable(By.id("custom_add_glossaryGrid"))).click()
+        new WebDriverWait(driver, 3).until(ExpectedConditions.elementToBeClickable(By.id("custom_add_glossaryGrid"))).click()
 
         getWebElement(By.id("glossaryText")).sendKeys(glossary)
         getWebElement(By.id("glossaryDescription")).sendKeys("Test glossary for DMS test cases.")
         getWebElementByJQuerySelector("#createGlossaryDialog + div button:contains('OK')").click()
 
-        if(autoApply){
+        if (autoApply) {
             //apply glossary
             getWebElement(By.id("custom_apply_glossaryGrid")).click()
             //until dialog
@@ -342,7 +345,7 @@ class TestImportDictionary {
         String transSelector = "#${stringSettingsTranslationGridId} tr:not(.jqgfirstrow)"
 
         List<WebElement> rows = getWebElementsByJQuerySelector(selector)
-        for (WebElement row : rows) {
+        rows.each { row ->
             WebElement contentCell = row.findElement(By.cssSelector("td[aria-describedby='${stringSettingsGridId}_context']"))
             WebElement keyCell = row.findElement(By.cssSelector("td[aria-describedby='${stringSettingsGridId}_key']"))
             WebElement refCell = row.findElement(By.cssSelector("td[aria-describedby='${stringSettingsGridId}_reference']"))
@@ -363,21 +366,53 @@ class TestImportDictionary {
                 transActs[0].click()
                 List<WebElement> transRows = getWebElementsByJQuerySelector(transSelector)
                 label['translation'] = [:]
-                for (WebElement transRow : transRows) {
+                transRows.each { transRow ->
                     Map translation = [:]
                     WebElement transCode = transRow.findElement(By.cssSelector("td[aria-describedby='${stringSettingsTranslationGridId}_code']"))
                     WebElement translationElem = transRow.findElement(By.cssSelector("td[aria-describedby='${stringSettingsTranslationGridId}_ct.translation']"))
 //                    WebElement languageElem = row.findElement(By.cssSelector("td[aria-describedby='${stringSettingsTranslationGridId}_language']"))
-                    label['translation'][transCode.text] = translationElem.text
+                    label.translation[transCode.text] = translationElem.text
+
+                    //obtain translation history
+                    label.translation[transCode.text + "_histories"] = getTranslationHistories(transRow)
                 }
                 WebElement transDialogClose = getWebElementByJQuerySelector("#stringSettingsTranslationDialog + div button:contains('Close')")
                 if (null != transDialogClose) transDialogClose.click()
             }
         }
-
         //close dialog
         getWebElementByJQuerySelector("#stringSettingsDialog + div button:contains('Close')").click()
         return labels
+    }
+
+    private List getTranslationHistories(WebElement transRow, String stringSettingsTranslationGridId = "stringSettingsTranslationGrid") {
+        WebElement translationElem = transRow.findElement(By.cssSelector("td[aria-describedby='${stringSettingsTranslationGridId}_history'] > img"))
+        translationElem.click()
+
+        String gridId = "stringSettingsTranslationHistoryGrid"
+        String historySelector = "#${gridId} tr:not(.jqgfirstrow)"
+        List<WebElement> histories = getWebElementsByJQuerySelector(historySelector)
+        List result = []
+        histories.each { historyRow ->
+            Map history = [:]
+            WebElement tempElement =historyRow.findElement(By.cssSelector("td[aria-describedby='${gridId}_operationTime']"))
+            history.operationTime = tempElement.text
+            tempElement =historyRow.findElement(By.cssSelector("td[aria-describedby='${gridId}_operationType']"))
+            history.operationType = tempElement.text
+            tempElement =historyRow.findElement(By.cssSelector("td[aria-describedby='${gridId}_translation']"))
+            history.translation = tempElement.text
+            tempElement =historyRow.findElement(By.cssSelector("td[aria-describedby='${gridId}_status']"))
+            history.status = tempElement.text
+            tempElement =historyRow.findElement(By.cssSelector("td[aria-describedby='${gridId}_memo']"))
+            history.memo = tempElement.text
+
+            result.add(history)
+        }
+
+
+        WebElement historyDialogClose = getWebElementByJQuerySelector("#stringSettingsTranslationHistoryDialog + div button:contains('Close')")
+        if(null != historyDialogClose) historyDialogClose.click()
+        return result
     }
 
 //    @Test
@@ -386,7 +421,7 @@ class TestImportDictionary {
 //        Object object = jsExecutor.executeAsyncScript(jsCode, dictionaryName, timeOut)
 //        String expectedDictName = 'dms-test.xlsx'
 //        println getLabelDataInDict(expectedDictName)
-        createGlossary("VoIP")
+
     }
 
     private static WebElement getWebElement(By by, int timeOut = 10, visible = true) {
