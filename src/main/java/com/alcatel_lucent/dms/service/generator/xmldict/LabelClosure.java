@@ -35,7 +35,7 @@ public class LabelClosure implements Closure {
     private final Collection<DictionaryLanguage> dictLanguages;
     private int labelCounter = 0;
 
-    private Collection<String> noCDataDictionaries = Arrays.asList("objsysopt");
+//    private Collection<String> noCDataDictionaries = Arrays.asList("objsysopt");
 
     public LabelClosure(Element xmlDict, int totalLabel, Collection<DictionaryLanguage> dictLanguages) {
         this.xmlDict = xmlDict;
@@ -43,6 +43,9 @@ public class LabelClosure implements Closure {
         this.dictLanguages = dictLanguages;
     }
 
+    /**
+     * Write a label element
+     * */
     public void execute(Object input) {
         final Label label = (Label) input;
         log.trace(center("Writing label " + label.getKey(), 100, '='));
@@ -95,14 +98,12 @@ public class LabelClosure implements Closure {
             for (String st : sts) {
                 Element staticToken = xmlKey.addElement(elemName);
                 if (StringUtils.isNotBlank(st)) {
-                    String dictName = label.getDictionary().getName();
-                    if (noCDataDictionaries.contains(dictName))
-                        staticToken.addText(st);
-                    else
-                        staticToken.addCDATA(st);
+                    staticToken.addText(st);
                 }
             }
         }
+
+        // write label translation element
         writeElement("TRANSLATION", xmlKey, label);
     }
 
@@ -141,12 +142,10 @@ public class LabelClosure implements Closure {
             if (elemName.equals("CONTEXT") && !isContext) continue;
 
             Element element = xmlKey.addElement(elemName);
-            if(StringUtils.isNotBlank(elemTextValue)){
-                if(noCDataDictionaries.contains(label.getDictionary().getName())){
-                    element.addText(elemTextValue);
-                } else{
-                    element.addCDATA(elemTextValue);
-                }
+            if(elemName.equals("HELP")){
+                element.addCDATA(elemTextValue);
+            }else  if (StringUtils.isNotBlank(elemTextValue)) {
+                element.addText(elemTextValue);
             }
 
             String followUp = labelProp.get("follow_up");
@@ -158,9 +157,9 @@ public class LabelClosure implements Closure {
                     String origStatus = lt.getValueFromField("follow_up", LabelTranslation.ANNOTATION1);
                     if (translationStatus == Translation.STATUS_TRANSLATED) {    // "no_translate", "to_validate" or "validated"
                         followUp = "validated";
-	            		if (origStatus.equals("to_validate")) {
-	            			followUp = origStatus;
-	            		}
+                        if (origStatus.equals("to_validate")) {
+                            followUp = origStatus;
+                        }
                         if (origStatus.equals("no_translate")) {
                             followUp = origStatus;
                         }
