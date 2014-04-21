@@ -63,7 +63,8 @@ public class WebPageUtil {
      * @param uploadButton the web upload button
      * */
     public
-    static void deliverDictionaries(File file = new File("dct_test_files/sampleFiles", "cms-sample.zip"), int previewTimeOut = 60 * 2) {
+    static void deliverDictionaries(String resourceFilePath = "/sampleFiles/cms-sample.zip", Map<String, String> dictRenameTo = [:], int previewTimeOut = 60 * 2) {
+        File file = new File(this.getClass().getResource(resourceFilePath).toURI())
         JavascriptExecutor jsExecutor = driver
 //        if (null == testApp) testApp = getTestApp()
 //        testApp.click()
@@ -75,13 +76,31 @@ public class WebPageUtil {
         new WebDriverWait(driver, previewTimeOut).until(
                 ExpectedConditions.visibilityOfElementLocated(By.id("dictListPreviewDialog"))
         )
-        jsExecutor.executeScript("\$('#dictListPreviewDialog').next().find(\"button\").click()")
+        // rename the dictionary name for each rename entry
+        String gridId = "dictListPreviewGrid"
+        dictRenameTo.each { oldName, newName ->
+            String selector = "#${gridId} tr:not(.jqgfirstrow) td[aria-describedby='${gridId}_name']"
+            List<WebElement> elements = driver.findElements(By.cssSelector(selector))
+            elements.each { element ->
+                log.info("Rename dictionary from ${oldName} to ${newName}")
+                if (null != dictRenameTo[element.text]){
+                    element.click()
+                    WebElement currentElem = driver.switchTo().activeElement()
+                    currentElem.clear()
+                    currentElem.sendKeys("${newName}\n")
+                }
+            }
+            MICROSECONDS.sleep(100)
+        }
+        //execute
+        getWebElementByJQuerySelector("#dictListPreviewDialog + div button").click()
         new WebDriverWait(driver, 60 * 30).until(
                 ExpectedConditions.visibilityOfElementLocated(By.id("importReportDialog"))
         )
         SECONDS.sleep(2)
         jsExecutor.executeScript("\$('#importReportDialog').dialog(\"close\")")
     }
+
 
     /**
      * Login target test system
@@ -221,7 +240,7 @@ public class WebPageUtil {
 
         //check if glossary already exists
         String glossaryGridId = "glossaryGrid"
-        String selector = "#${glossaryGridId} tr:not(.jqgfirstrow) td[aria-describedby='glossaryGrid_text']"
+        String selector = "#${glossaryGridId} tr:not(.jqgfirstrow) td[aria-describedby='${glossaryGridId}_text']"
         List<WebElement> glossaryElements = getWebElementsByJQuerySelector(selector)
         boolean glossaryExists = glossaryElements.collect({ it.text }).contains(glossary)
         if (glossaryExists) {
