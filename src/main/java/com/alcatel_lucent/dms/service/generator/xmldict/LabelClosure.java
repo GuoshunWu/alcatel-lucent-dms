@@ -142,9 +142,7 @@ public class LabelClosure implements Closure {
             if (elemName.equals("CONTEXT") && !isContext) continue;
 
             Element element = xmlKey.addElement(elemName);
-            if(elemName.equals("HELP")){
-                element.addCDATA(elemTextValue);
-            }else  if (StringUtils.isNotBlank(elemTextValue)) {
+            if (StringUtils.isNotBlank(elemTextValue)) {
                 element.addText(elemTextValue);
             }
 
