@@ -1,17 +1,14 @@
 package com.alcatel_lucent.dms.util
 
 import org.apache.commons.io.IOUtils
-import org.hibernate.jdbc.Expectations
 import org.intellij.lang.annotations.Language
 import org.openqa.selenium.By
 import org.openqa.selenium.JavascriptExecutor
+import org.openqa.selenium.Keys
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
-import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.interactions.Actions
-import org.openqa.selenium.remote.DesiredCapabilities
-import org.openqa.selenium.remote.RemoteWebDriver
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.Select
 import org.openqa.selenium.support.ui.WebDriverWait
@@ -83,7 +80,7 @@ public class WebPageUtil {
             List<WebElement> elements = driver.findElements(By.cssSelector(selector))
             elements.each { element ->
                 log.info("Rename dictionary from ${oldName} to ${newName}")
-                if (null != dictRenameTo[element.text]){
+                if (null != dictRenameTo[element.text]) {
                     element.click()
                     WebElement currentElem = driver.switchTo().activeElement()
                     currentElem.clear()
@@ -101,6 +98,30 @@ public class WebPageUtil {
         jsExecutor.executeScript("\$('#importReportDialog').dialog(\"close\")")
     }
 
+    /**
+     * Add a label and return the label info collection from web UI
+     * */
+    public static Map addLabel(String dictName, String newLabelKey, String newLabelReference, String newLabelContext) {
+
+        String gridId = "stringSettingsGrid"
+        WebElement lockElem = getWebElementToBeClickable(By.id("custom_lock_${gridId}"))
+
+        if (lockElem.text.contains("Unlock")) {
+            lockElem.click()
+        }
+
+        getWebElementToBeClickable(By.id("custom_add_${gridId}")).click()
+        String dialogId = "addLabelDialog"
+
+        getWebElement(By.cssSelector("#${dialogId} #key")).sendKeys(newLabelKey)
+        getWebElement(By.cssSelector("#${dialogId} #reference")).sendKeys(newLabelReference)
+        WebElement contextInput = getWebElement(By.cssSelector("#${dialogId} #context"))
+        // contextInput.sendKeys  Keys.chord(Keys.CONTROL, "a", newLabelContext)
+
+        getWebElementByJQuerySelector("#${dialogId} + div.ui-dialog-buttonpane button:contains('Add & Close')").click()
+
+        return getLabelDataInDict(dictName, [newLabelKey], false)[newLabelKey]
+    }
 
     /**
      * Login target test system
@@ -110,8 +131,8 @@ public class WebPageUtil {
      *
      * @return Application tree of the web element
      * */
-    private static WebElement login(String url,
-                                    String userName = "admin", String password = "alcatel123") {
+    public static WebElement login(String url,
+                                   String userName = "admin", String password = "alcatel123") {
         driver.get url
         driver.findElement(By.id('idLoginName')).sendKeys(userName)
         WebElement pwdBtn = driver.findElement(By.id('idPassword'))
@@ -207,7 +228,14 @@ public class WebPageUtil {
         return new WebDriverWait(driver, 10).until(ExpectedConditions.elementToBeClickable(By.xpath(xPathOfTestApp)))
     }
 
-    private static WebElement getWebElement(By by, int timeOut = 10, visible = true) {
+    public static WebElement getWebElementToBeClickable(By by, int timeOut = 10) {
+        return new WebDriverWait(driver, timeOut).until(
+                ExpectedConditions.elementToBeClickable(by)
+        )
+    }
+
+
+    public static WebElement getWebElement(By by, int timeOut = 10, visible = true) {
         if (visible) {
             return new WebDriverWait(driver, timeOut).until(
                     ExpectedConditions.visibilityOfElementLocated(by)
@@ -219,13 +247,13 @@ public class WebPageUtil {
         )
     }
 
-    private static WebElement getWebElementByJQuerySelector(String selector) {
+    public static WebElement getWebElementByJQuerySelector(String selector) {
         List<WebElement> webElements = getWebElementsByJQuerySelector(selector)
         if (webElements.size() > 0) return webElements.get(0)
         return null
     }
 
-    private static List<WebElement> getWebElementsByJQuerySelector(String selector) {
+    public static List<WebElement> getWebElementsByJQuerySelector(String selector) {
         @Language("JavaScript 1.6") String jsCode = """
           var elements = \$("${selector}");
           if(elements.length)return elements.get();
@@ -287,15 +315,51 @@ public class WebPageUtil {
         return compile(cs, true)
     }
 
-    public static Map<String, Object> getLabelDataInDict(String dictName) {
+    public static void openDictionaryStringsDialog(String dictName, String dictGridId = "dictionaryGridList") {
         //Get Dictionary action buttons
         WebElement action = new WebDriverWait(driver, 10).until(
                 ExpectedConditions.elementToBeClickable(
-                        By.cssSelector("#dictionaryGridList tr td[title='${dictName}'] ~ td[aria-describedby='dictionaryGridList_action'] > a"
+                        By.cssSelector("#${dictGridId} tr td[title='${dictName}'] ~ td[aria-describedby='${dictGridId}_action'] > a"
                         )
                 )
         )
         action.click()
+    }
+
+    /**
+     * Collect data in dictionary dictName, if labelKeyInclude is not empty, only those
+     * label key in the list will be collected.
+     *
+     * @param dictName dictionary name to collect
+     * @param labelKeyInclude collect label key in this list only if this list is not empty
+     *
+     * @return a JSON style map include labels data
+     *    example:
+     *{
+     *        labelKey1:
+     *{
+     *            reference: reference
+     *            context: context
+     *            description: description
+     *            translation:
+     *{
+     *                 langCode1: translation1
+     *                 langCode2: translation2
+     *}*            translation_histories: [
+     *{
+     *                  operationTime: operationTime
+     *                  translation: translation
+     *                  status: status
+     *                  memo: memo
+     *}*            ]
+     *
+     *}*        labelKey2:
+     *{
+     *             ....
+     *}*}* */
+    public
+    static Map<String, Object> getLabelDataInDict(String dictName, List labelKeyInclude = [], boolean autoCloseStringDialog = true) {
+        openDictionaryStringsDialog(dictName)
         //collect Label Data
         Map<String, Object> labels = [:]
         String stringSettingsGridId = "stringSettingsGrid"
@@ -305,8 +369,10 @@ public class WebPageUtil {
         String transSelector = "#${stringSettingsTranslationGridId} tr:not(.jqgfirstrow)"
         MILLISECONDS.sleep(500)
         List<WebElement> rows = getWebElementsByJQuerySelector(selector)
-        rows.each { row ->
+
+        for (WebElement row : rows) {
             WebElement keyCell = row.findElement(By.cssSelector("td[aria-describedby='${stringSettingsGridId}_key']"))
+            if (!labelKeyInclude.isEmpty() && !labelKeyInclude.contains(keyCell.text)) continue
             Map<String, Object> label = labels.get(keyCell.text)
             if (null == label) {
                 label = [:]
@@ -338,8 +404,9 @@ public class WebPageUtil {
                 if (null != transDialogClose) transDialogClose.click()
             }
         }
+
         //close dialog
-        getWebElementByJQuerySelector("#stringSettingsDialog + div button:contains('Close')").click()
+        if (autoCloseStringDialog) getWebElementByJQuerySelector("#stringSettingsDialog + div button:contains('Close')").click()
         return labels
     }
 
