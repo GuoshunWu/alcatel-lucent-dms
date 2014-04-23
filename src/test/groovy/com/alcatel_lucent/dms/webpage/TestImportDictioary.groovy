@@ -2,11 +2,10 @@ package com.alcatel_lucent.dms.webpage
 
 import com.alcatel_lucent.dms.util.WebPageUtil
 import com.google.common.base.Predicate
-import org.junit.AfterClass
-import org.junit.Assert
-import org.junit.BeforeClass
-import org.junit.Test
+import org.junit.*
+import org.junit.runners.MethodSorters
 import org.openqa.selenium.By
+import org.openqa.selenium.Keys
 import org.openqa.selenium.WebElement
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -14,11 +13,10 @@ import org.slf4j.LoggerFactory
 import static com.alcatel_lucent.dms.util.WebPageUtil.*
 import static com.google.common.collect.Collections2.filter
 import static java.util.concurrent.TimeUnit.*
-import static org.hamcrest.CoreMatchers.allOf
-import static org.hamcrest.CoreMatchers.not
+import static org.hamcrest.CoreMatchers.*
 import static org.hamcrest.Matchers.hasKey
 import static org.junit.Assert.*
-import static org.junit.matchers.JUnitMatchers.hasItem
+
 
 /**
  * Created by Guoshun on 14-1-12.
@@ -29,13 +27,12 @@ import static org.junit.matchers.JUnitMatchers.hasItem
 //@ContextConfiguration(locations = ["/spring.xml"])
 //@Transactional //Important, or the transaction control will be invalid
 //@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
-
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class TestImportDictionary {
     private static WebElement testApp
     private static Logger log = LoggerFactory.getLogger(TestImportDictionary)
 
-    public static final String TARGET_URL = "http://localhost:8888/dms"
-//    public static final String TARGET_URL = "http://127.0.0.1:8888/dms"
+    public static final String TARGET_URL = "http://127.0.0.1:8888/dms"
 
     @BeforeClass
     static void beforeClass() {
@@ -53,6 +50,8 @@ class TestImportDictionary {
         if (null == testApp) {
             testApp = getTestApp()
         }
+        getWebElement(By.id("naviappmngTab")).click()
+        SECONDS.sleep(1)
         testApp.click()
     }
 
@@ -60,8 +59,7 @@ class TestImportDictionary {
      * Deliver dictionaries test
      * */
     @Test
-    void testDeliverMultipleDictionaries() {
-        getWebElement(By.id("naviappmngTab")).click()
+    void test001DeliverMultipleDictionaries() {
         clickTestApp()
         MILLISECONDS.sleep(500)
 
@@ -82,15 +80,13 @@ class TestImportDictionary {
     }
 
     @Test
-    void testDeliveredSingleDictionary() {
+    void test002DeliveredSingleDictionary() {
         //Upload single file test case
         // create glossary before import dictionary
         String glossaryVoIP = 'VoIP'
         createGlossary(glossaryVoIP)
 
         //switch back to application management panel
-        getWebElement(By.id("naviappmngTab")).click()
-        SECONDS.sleep(2)
         clickTestApp()
         MICROSECONDS.sleep(500)
 
@@ -165,16 +161,14 @@ class TestImportDictionary {
     }
 
     @Test
-    void testRepeatDeliverSingleDictionary() {
+    void test003RepeatDeliverSingleDictionary() {
         //switch back to application management panel
-        getWebElement(By.id("naviappmngTab")).click()
-        SECONDS.sleep(1)
         clickTestApp()
         MICROSECONDS.sleep(500)
         deliverDictionaries "/sampleFiles/dms-test-repeat.xlsx", ['dms-test-repeat.xlsx': 'dms-test.xlsx']
 
         String dictName = 'dms-test.xlsx'
-        Map labels = getLabelDataInDict dictName
+        Map labels = getLabelDataInDict dictName, ['DMSTEST7', 'DMSTEST8']
         String expectTranslation = "重复导入二"
         // 1. Chinese translation of DMSTEST7 is modified as "重复导入二".
         assertEquals expectTranslation, labels.DMSTEST7.translation['Chinese (China)']
@@ -185,8 +179,50 @@ class TestImportDictionary {
         assertNull labels.DMSTEST8.translation
     }
 
-//    @Test
+    @Test
+    void test004AddLabel() {
+        clickTestApp()
+
+        String dictName = "dms-test.xlsx"
+        openDictionaryStringsDialog(dictName)
+
+        String newLabelKey = "DMSTEST9"
+        String newLabelReference = "Test: new label"
+        String newLabelContext = "[DEFAULT]"
+
+        Map label = addLabel(dictName, newLabelKey, newLabelReference, newLabelContext)
+
+        // Label is created without error.
+        assertNotNull label
+        assertEquals newLabelReference, label.reference
+        assertEquals newLabelContext, label.context
+
+        // test glossary apply
+        newLabelKey = "DMSTEST10"
+        newLabelReference = "Test: voip"
+        label = addLabel(dictName, newLabelKey, newLabelReference, newLabelContext)
+        // 1. Label is created without error.
+        assertNotNull label
+//        2. Reference is changed to "Test: VoIP"
+        assertEquals "Test: VoIP", label.reference
+
+        // test auto translation
+        newLabelKey = "DMSTEST11"
+        newLabelReference = "General"
+        label = addLabel(dictName, newLabelKey, newLabelReference, newLabelContext)
+        // 1. Label is created without error.
+        assertNotNull label
+//        2. Some languages are translated.
+        assertNotNull label.translation
+        assertFalse label.translation.empty as boolean
+
+        //close string settings dialog
+        getWebElementByJQuerySelector("#stringSettingsDialog + div.ui-dialog-buttonpane button:contains('Close')").click()
+    }
+
+    @Test
     void testTemp() {
+
 
     }
 }

@@ -13,7 +13,7 @@ import org.junit.runners.Suite
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses([TestImportDictionary.class])
-class DeliverDictionariesSuite{
+class DMSTestSuite{
 
     @BeforeClass public static void setUpClass() {
         // Common initialization done once for Test1 + Test2
