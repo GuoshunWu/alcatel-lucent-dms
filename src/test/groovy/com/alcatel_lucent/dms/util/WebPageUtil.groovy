@@ -128,22 +128,33 @@ public class WebPageUtil {
      * @param url the target test system url
      * @param userName userName to login
      * @param password password to login
+     * @param validCredential is valid credential
      *
-     * @return Application tree of the web element
+     * @return Application tree of the web element or error message web element if valid credential is false
      * */
     public static WebElement login(String url,
-                                   String userName = "admin", String password = "alcatel123") {
+                                   String userName = "admin", String password = "alcatel123", boolean validCredential = true) {
+//        log.info "userName={}, password={}, validCredential={}", userName, password, validCredential
         driver.get url
         driver.findElement(By.id('idLoginName')).sendKeys(userName)
         WebElement pwdBtn = driver.findElement(By.id('idPassword'))
         pwdBtn.sendKeys(password)
         pwdBtn.submit()
+        if (!validCredential) {
+            //return login fail WebElement
+            return getWebElement(By.cssSelector("div#loginStatus li > span"))
+        }
         // close tip of day dialog
         SECONDS.sleep(1)
         WebElement tipOfDayClose = getWebElementByJQuerySelector("#tipOfTheDayDialog + div button:contains('Close')")
         if (null != tipOfDayClose) tipOfDayClose.click()
-        return new WebDriverWait(driver, 10).
-                until(ExpectedConditions.presenceOfElementLocated(By.id("appTree")))
+
+        return getWebElement(By.id("appTree"))
+    }
+
+    public static WebElement logout() {
+        getWebElementToBeClickable(By.cssSelector("a[href\$='logout.action']")).click()
+        return getWebElement(By.id("loginForm"))
     }
 
     /**
@@ -264,7 +275,7 @@ public class WebPageUtil {
 
     public static void createGlossary(String glossary, autoApply = true) {
         getWebElement(By.id("naviadminTab")).click()
-        new WebDriverWait(driver, 1).until(ExpectedConditions.elementToBeClickable(By.cssSelector("div#adminTabs li[aria-controls='glossary'] > a"))).click()
+        getWebElementToBeClickable(By.cssSelector("div#adminTabs li[aria-controls='glossary'] > a")).click()
 
         //check if glossary already exists
         String glossaryGridId = "glossaryGrid"
@@ -275,7 +286,7 @@ public class WebPageUtil {
             log.info("Glossary ${glossary} exists, skip creation.")
             return
         }
-        new WebDriverWait(driver, 3).until(ExpectedConditions.elementToBeClickable(By.id("custom_add_glossaryGrid"))).click()
+        getWebElementToBeClickable(By.id("custom_add_glossaryGrid")).click()
 
         getWebElement(By.id("glossaryText")).sendKeys(glossary)
         getWebElement(By.id("glossaryDescription")).sendKeys("Test glossary for DMS test cases.")
@@ -287,6 +298,25 @@ public class WebPageUtil {
             //until dialog
             getWebElement(By.id("msgBoxHiddenDiv"), 30)
             getWebElementByJQuerySelector("#msgBoxHiddenDiv ~ div.ui-dialog-buttonpane button:contains('OK')").click()
+        }
+    }
+
+    /**
+     * Collect grid data as a List
+     * @param gridId grid id
+     * @param filter if it is not empty, only the row match all entries in the filter will be added in the result list
+     *
+     * @return result list
+     * */
+
+    public static List<Map> getGridRowData(String gridId, Map filter = []) {
+        String selector = "#${gridId} tr:not(.jqgfirstrow)"
+        List<WebElement> rows = getWebElementsByJQuerySelector(selector)
+        boolean isFilterEmpty = filter.isEmpty()
+        for(WebElement row: rows){
+            filter.each {key, value->
+                return
+            }
         }
     }
 
@@ -356,7 +386,7 @@ public class WebPageUtil {
      *}*        labelKey2:
      *{
      *             ....
-     *}*}* */
+     *}*}*   */
     public
     static Map<String, Object> getLabelDataInDict(String dictName, List labelKeyInclude = [], boolean autoCloseStringDialog = true) {
         openDictionaryStringsDialog(dictName)
