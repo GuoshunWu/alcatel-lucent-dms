@@ -12,7 +12,7 @@ import org.junit.runners.Suite
  */
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses([TestImportDictionary.class])
+@Suite.SuiteClasses([TestOthers, TestImportDictionary])
 class DMSTestSuite{
 
     @BeforeClass public static void setUpClass() {

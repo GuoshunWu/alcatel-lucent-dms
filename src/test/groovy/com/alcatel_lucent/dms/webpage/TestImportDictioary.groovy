@@ -2,6 +2,8 @@ package com.alcatel_lucent.dms.webpage
 
 import com.alcatel_lucent.dms.util.WebPageUtil
 import com.google.common.base.Predicate
+import groovy.time.TimeCategory
+import groovy.time.TimeDuration
 import org.junit.*
 import org.junit.runners.MethodSorters
 import org.openqa.selenium.By
@@ -9,6 +11,8 @@ import org.openqa.selenium.Keys
 import org.openqa.selenium.WebElement
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+
+import java.text.SimpleDateFormat
 
 import static com.alcatel_lucent.dms.util.WebPageUtil.*
 import static com.google.common.collect.Collections2.filter
@@ -36,7 +40,7 @@ class TestImportDictionary {
 
     @BeforeClass
     static void beforeClass() {
-        login TARGET_URL, "admin", "alcatel123"
+        login TARGET_URL
     }
 
     @AfterClass
@@ -55,11 +59,79 @@ class TestImportDictionary {
         testApp.click()
     }
 
+    @Test
+    void test001Login() {
+        WebElement errElement = login(TARGET_URL, "admin", "1234", false)
+        String expectedErrMessage = "Login name or password is incorrect!"
+        // 1. Login failed with message "Login name or password is incorrect!"
+        assertEquals expectedErrMessage, errElement.text
+
+        //user login, logout case, use local user due to user credential
+//        1. Login successfully and display desktop.
+        assertNotNull login(TARGET_URL, "admin", "alcatel123")
+        // logout
+        assertNotNull logout()
+
+        //local user test
+        String userName = "admin"
+        String password = "alcatel123"
+        //1. Login successfully and display desktop.
+        assertNotNull login(TARGET_URL, userName, password)
+
+        //2. User "allany" is created as role "APPLICATION_OWNER + TRANSLATION_MANAGER" (skip)
+        //3.Last login time of "admin" are updated.
+        getWebElement(By.id("naviadminTab")).click()
+        getWebElementToBeClickable(By.cssSelector("div#adminTabs li[aria-controls='userAdmin'] > a")).click()
+        String gridId = "userGrid"
+        String selector = "#${gridId} tr:not(.jqgfirstrow)"
+        List<WebElement> rows = driver.findElements(By.cssSelector(selector))
+        rows.each { row ->
+            WebElement loginName = row.findElement(By.cssSelector("td[aria-describedby='${gridId}_loginName']"))
+            if (userName == loginName.text) {
+                WebElement onLine = row.findElement(By.cssSelector("td[aria-describedby='${gridId}_onLine']"))
+                assertTrue onLine.text.contains("online")
+                WebElement lastLoginTime = row.findElement(By.cssSelector("td[aria-describedby='${gridId}_lastLoginTime']"))
+                TimeDuration duration = TimeCategory.minus(new Date(), new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(lastLoginTime.text))
+                assertTrue duration.seconds < 40
+            }
+        }
+    }
+
+    @Test
+    void test002AddGlossary() {
+        String glossaryVoIP = 'VoIP'
+        getWebElement(By.id("naviadminTab")).click()
+//        1. Operation succeeded.
+        getWebElementToBeClickable(By.cssSelector("div#adminTabs li[aria-controls='glossary'] > a")).click()
+        String gridId = "glossaryGrid"
+
+        getWebElementToBeClickable(By.id("custom_add_${gridId}")).click()
+
+        getWebElement(By.id("glossaryText")).sendKeys(glossaryVoIP)
+        getWebElement(By.id("glossaryDescription")).sendKeys("Test glossary for DMS test cases.")
+        getWebElementByJQuerySelector("#createGlossaryDialog + div button:contains('OK')").click()
+
+        WebElement glossaryElem = getWebElementByJQuerySelector("#${gridId} tr:not(.jqgfirstrow):has(td[aria-describedby='${gridId}_text'])")
+//      2. "Applied" flag of the new glossary is "false" on creation
+        assertEquals "false", glossaryElem.findElement(By.cssSelector("td[aria-describedby='${gridId}_dirty']")).text
+
+        //apply glossary
+        getWebElement(By.id("custom_apply_glossaryGrid")).click()
+        //until dialog
+        getWebElement(By.id("msgBoxHiddenDiv"), 30)
+        getWebElementByJQuerySelector("#msgBoxHiddenDiv ~ div.ui-dialog-buttonpane button:contains('OK')").click()
+        //3. "Applied" flag is changed to "true" after applying glossary
+
+        glossaryElem = getWebElementByJQuerySelector("#${gridId} tr:not(.jqgfirstrow):has(td[aria-describedby='${gridId}_text'])")
+//      2. "Applied" flag of the new glossary is "false" on creation
+        assertEquals "true", glossaryElem.findElement(By.cssSelector("td[aria-describedby='${gridId}_dirty']")).text
+    }
+
     /**
      * Deliver dictionaries test
      * */
     @Test
-    void test001DeliverMultipleDictionaries() {
+    void test003DeliverMultipleDictionaries() {
         clickTestApp()
         MILLISECONDS.sleep(500)
 
@@ -80,11 +152,9 @@ class TestImportDictionary {
     }
 
     @Test
-    void test002DeliveredSingleDictionary() {
+    void test004DeliveredSingleDictionary() {
         //Upload single file test case
         // create glossary before import dictionary
-        String glossaryVoIP = 'VoIP'
-        createGlossary(glossaryVoIP)
 
         //switch back to application management panel
         clickTestApp()
@@ -161,7 +231,7 @@ class TestImportDictionary {
     }
 
     @Test
-    void test003RepeatDeliverSingleDictionary() {
+    void test005RepeatDeliverSingleDictionary() {
         //switch back to application management panel
         clickTestApp()
         MICROSECONDS.sleep(500)
@@ -180,7 +250,7 @@ class TestImportDictionary {
     }
 
     @Test
-    void test004AddLabel() {
+    void test006AddLabel() {
         clickTestApp()
 
         String dictName = "dms-test.xlsx"
@@ -218,6 +288,14 @@ class TestImportDictionary {
 
         //close string settings dialog
         getWebElementByJQuerySelector("#stringSettingsDialog + div.ui-dialog-buttonpane button:contains('Close')").click()
+    }
+
+    @Test
+    void test007AddLanguage() {
+        clickTestApp()
+        String dictName = "dms-test.xlsx"
+        openDictionaryStringsDialog(dictName)
+
     }
 
     @Test
