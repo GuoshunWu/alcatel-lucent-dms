@@ -31,8 +31,6 @@ class TestOthers {
     @AfterClass
     static void afterClass() {
         WebPageUtil.driver.quit()
-        WebPageUtil.driver = null
-
     }
 
     @Test

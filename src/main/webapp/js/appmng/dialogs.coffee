@@ -455,6 +455,13 @@ define [
   addLanguage = $('#addLanguageDialog').dialog(
     autoOpen: false
     create: (event, ui)->
+      # fill in charset
+      $.getJSON urls.charsets, {prop: 'id,name'}, (charsets)=>
+        $('#charset', @)
+        .append("<option value='-1'>#{c18n.selecttip}</option>")
+        .append(util.json2Options charsets, false, 'name')
+
+
       $('#languageName', @).change (e)=>
         postData =
           prop: 'languageCode,charset.id'
@@ -464,11 +471,6 @@ define [
         $.post 'rest/preferredCharset', postData, (json)=>
           $('#addLangCode', @).val json.languageCode
           $('#charset', @).val json['charset.id']
-
-        $.getJSON urls.charsets, {prop: 'id,name'}, (charsets)=>$('#charset', @)
-          .append("<option value='-1'>#{c18n.selecttip}</option>")
-          .append(util.json2Options charsets, false, 'name')
-
 
     open: (event, ui)->
       $.getJSON urls.languages, {prop: 'id,name'}, (languages)=>
