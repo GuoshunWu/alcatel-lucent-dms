@@ -9,6 +9,9 @@ import org.junit.runners.MethodSorters
 import org.openqa.selenium.By
 import org.openqa.selenium.Keys
 import org.openqa.selenium.WebElement
+import org.openqa.selenium.support.ui.ExpectedConditions
+import org.openqa.selenium.support.ui.Select
+import org.openqa.selenium.support.ui.WebDriverWait
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -40,21 +43,20 @@ class TestImportDictionary {
 
     @BeforeClass
     static void beforeClass() {
-        login TARGET_URL
+//        WebPageUtil.login TARGET_URL
     }
 
     @AfterClass
     static void afterClass() {
         WebPageUtil.driver.quit()
-        WebPageUtil.driver = null
         testApp = null
     }
 
     private static clickTestApp() {
+        getWebElement(By.id("naviappmngTab")).click()
         if (null == testApp) {
             testApp = getTestApp()
         }
-        getWebElement(By.id("naviappmngTab")).click()
         SECONDS.sleep(1)
         testApp.click()
     }
@@ -110,18 +112,19 @@ class TestImportDictionary {
         getWebElement(By.id("glossaryText")).sendKeys(glossaryVoIP)
         getWebElement(By.id("glossaryDescription")).sendKeys("Test glossary for DMS test cases.")
         getWebElementByJQuerySelector("#createGlossaryDialog + div button:contains('OK')").click()
-
+        // wait for grid refreshed
+        SECONDS.sleep(1)
         WebElement glossaryElem = getWebElementByJQuerySelector("#${gridId} tr:not(.jqgfirstrow):has(td[aria-describedby='${gridId}_text'])")
 //      2. "Applied" flag of the new glossary is "false" on creation
         assertEquals "false", glossaryElem.findElement(By.cssSelector("td[aria-describedby='${gridId}_dirty']")).text
 
         //apply glossary
         getWebElement(By.id("custom_apply_glossaryGrid")).click()
-        //until dialog
+        //until dialog show
         getWebElement(By.id("msgBoxHiddenDiv"), 30)
         getWebElementByJQuerySelector("#msgBoxHiddenDiv ~ div.ui-dialog-buttonpane button:contains('OK')").click()
-        //3. "Applied" flag is changed to "true" after applying glossary
 
+        //3. "Applied" flag is changed to "true" after applying glossary
         glossaryElem = getWebElementByJQuerySelector("#${gridId} tr:not(.jqgfirstrow):has(td[aria-describedby='${gridId}_text'])")
 //      2. "Applied" flag of the new glossary is "false" on creation
         assertEquals "true", glossaryElem.findElement(By.cssSelector("td[aria-describedby='${gridId}_dirty']")).text
@@ -134,7 +137,6 @@ class TestImportDictionary {
     void test003DeliverMultipleDictionaries() {
         clickTestApp()
         MILLISECONDS.sleep(500)
-
         //Upload multiple file test case(default parameter)
         deliverDictionaries()
         getWebElement(By.id("dictionaryGridList"), 60 * 3)
@@ -215,6 +217,7 @@ class TestImportDictionary {
         println '-' * titleLength
 
         println "${index++}. Glossary \"voip\" in DMSTEST5 is replaced by \"VoIP\" for both reference and Chinese and Polish translations".padRight(titleLength, '=')
+        String glossaryVoIP = "VoIP"
 
         assertTrue labels.DMSTEST5.reference.contains(glossaryVoIP)
         assertTrue labels.DMSTEST5.translation['Chinese (China)'].contains(glossaryVoIP)
@@ -292,15 +295,55 @@ class TestImportDictionary {
 
     @Test
     void test007AddLanguage() {
+
         clickTestApp()
         String dictName = "dms-test.xlsx"
-        openDictionaryStringsDialog(dictName)
+        SECONDS.sleep(1)
+        String dictId = "dictionaryGridList"
+//        open language dialog
+        getWebElementByJQuerySelector("#${dictId} td[title='${dictName}'] ~ td[aria-describedby='${dictId}_action'] a:last").click()
+        getWebElementToBeClickable(By.id("custom_add_languageSettingGrid")).click()
+//        until add language dialog open
+        WebElement addLangDialog = getWebElement(By.id("addLanguageDialog"))
+        Select select = new Select(addLangDialog.findElement(By.id("languageName")))
+
+        String newLanguage = "French (France)"
+        select.selectByVisibleText(newLanguage)
+//        wait for charset to load
+        MICROSECONDS.sleep(500)
+        getWebElementByJQuerySelector("#addLanguageDialog + div.ui-dialog-buttonpane button:contains('Add')").click()
+        //until dialog show
+        getWebElement(By.id("msgBoxHiddenDiv"), 30)
+        getWebElementByJQuerySelector("#msgBoxHiddenDiv ~ div.ui-dialog-buttonpane button:contains('OK')").click()
+
+        String langSettingGridId = "languageSettingGrid"
+
+        List<Map> languages = getGridRowData(langSettingGridId)
+        Map language = languages.find { Map lang -> newLanguage == lang.languageId }
+//        1. Language is created without error.
+        assertNotNull language
+
+        //close dialog
+        getWebElementByJQuerySelector("#languageSettingsDialog + div.ui-dialog-buttonpane button:contains('Close')").click()
+        MICROSECONDS.sleep(500)
+
+//        2. Label DMSTEST6 and DMSTEST11 are translated.
+        Map labels = getLabelDataInDict(dictName, ['DMSTEST6', 'DMSTEST11'])
+        assertNotNull labels.DMSTEST6.translation[language.code]
+        assertNotNull labels.DMSTEST11.translation[language.code]
+    }
+
+    @Test
+    void test008ChangeReference() {
 
     }
 
     @Test
     void testTemp() {
-
-
+//        clickTestApp()
+//        //wait until data refreshed
+//        SECONDS.sleep(2)
+//        List<Map> rows = getGridRowData("dictionaryGridList", ["name", "version"])
+//        println rows
     }
 }

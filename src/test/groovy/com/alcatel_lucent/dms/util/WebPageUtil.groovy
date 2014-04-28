@@ -26,8 +26,9 @@ import static org.junit.Assert.assertNotNull
  */
 public class WebPageUtil {
 
-    private static WebDriver driver
+    private static WebDriver driver = new FirefoxDriver()
     public static final String HISTORY_SUFFIX = "_histories"
+    public static final String TD_COLUMN_FILTER = "aria-describedby"
 
     static WebDriver getDriver() {
         return driver
@@ -43,7 +44,6 @@ public class WebPageUtil {
 //        driver = new ChromeDriver()
 //        driver = new RemoteWebDriver(new URL("http://localhost:9515"), DesiredCapabilities.chrome())
 //        driver = new InternetExplorerDriver()
-        driver = new FirefoxDriver()
         driver.manage().timeouts().setScriptTimeout(30, SECONDS)
     }
 
@@ -134,7 +134,7 @@ public class WebPageUtil {
      * */
     public static WebElement login(String url,
                                    String userName = "admin", String password = "alcatel123", boolean validCredential = true) {
-//        log.info "userName={}, password={}, validCredential={}", userName, password, validCredential
+        log.info "userName={}, password={}, validCredential={}", userName, password, validCredential
         driver.get url
         driver.findElement(By.id('idLoginName')).sendKeys(userName)
         WebElement pwdBtn = driver.findElement(By.id('idPassword'))
@@ -164,9 +164,9 @@ public class WebPageUtil {
      * @param testApplicationName test application name
      * */
     public
-    static WebElement getTestApp(String productName = "DMSTestCases", String appName = "DMSTestApp") {
+    static WebElement getTestApp(String productName = "DMS", String appName = "TestSuite") {
         // test if test product and application exists, if not create them
-        String productVersion = "1.0"
+        String productVersion = "V2"
         String appVersion = "1.0"
         //if product not found create new product
         WebElement productElement = getWebElementByJQuerySelector("li[type='product']:contains('${productName}')")
@@ -309,15 +309,22 @@ public class WebPageUtil {
      * @return result list
      * */
 
-    public static List<Map> getGridRowData(String gridId, Map filter = []) {
+    public static List<Map> getGridRowData(String gridId) {
         String selector = "#${gridId} tr:not(.jqgfirstrow)"
+        List<Map> result = []
         List<WebElement> rows = getWebElementsByJQuerySelector(selector)
-        boolean isFilterEmpty = filter.isEmpty()
-        for(WebElement row: rows){
-            filter.each {key, value->
-                return
+        for (WebElement row : rows) {
+            Map mapRow = [:]
+            List<WebElement> columns = row.findElements(By.cssSelector("td"))
+            for (WebElement column : columns) {
+                String text = column.text
+                String colName = column.getAttribute(TD_COLUMN_FILTER).substring(gridId.length() + 1)
+                if ("cb" == colName) continue
+                mapRow[colName] = text
             }
+            result.add(mapRow)
         }
+        result
     }
 
 
@@ -386,7 +393,7 @@ public class WebPageUtil {
      *}*        labelKey2:
      *{
      *             ....
-     *}*}*   */
+     *}*}*       */
     public
     static Map<String, Object> getLabelDataInDict(String dictName, List labelKeyInclude = [], boolean autoCloseStringDialog = true) {
         openDictionaryStringsDialog(dictName)
