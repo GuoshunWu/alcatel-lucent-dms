@@ -76,7 +76,7 @@ public class WebPageUtil {
         // rename the dictionary name for each rename entry
         String gridId = "dictListPreviewGrid"
         dictRenameTo.each { oldName, newName ->
-            String selector = "#${gridId} tr:not(.jqgfirstrow) td[aria-describedby='${gridId}_name']"
+            String selector = "#${gridId} tr:not(.jqgfirstrow) td[${TD_COLUMN_FILTER}='${gridId}_name']"
             List<WebElement> elements = driver.findElements(By.cssSelector(selector))
             elements.each { element ->
                 log.info("Rename dictionary from ${oldName} to ${newName}")
@@ -245,6 +245,12 @@ public class WebPageUtil {
         )
     }
 
+    public static boolean clickButtonOnDialog(String dialogId, String buttonText) {
+        WebElement button = getWebElementByJQuerySelector("#${dialogId} + div.ui-dialog-buttonpane button:contains('${buttonText}')")
+        if(null == button) return false
+        button.click()
+        return true
+    }
 
     public static WebElement getWebElement(By by, int timeOut = 10, visible = true) {
         if (visible) {
@@ -279,7 +285,7 @@ public class WebPageUtil {
 
         //check if glossary already exists
         String glossaryGridId = "glossaryGrid"
-        String selector = "#${glossaryGridId} tr:not(.jqgfirstrow) td[aria-describedby='${glossaryGridId}_text']"
+        String selector = "#${glossaryGridId} tr:not(.jqgfirstrow) td[${TD_COLUMN_FILTER}='${glossaryGridId}_text']"
         List<WebElement> glossaryElements = getWebElementsByJQuerySelector(selector)
         boolean glossaryExists = glossaryElements.collect({ it.text }).contains(glossary)
         if (glossaryExists) {
@@ -356,7 +362,7 @@ public class WebPageUtil {
         //Get Dictionary action buttons
         WebElement action = new WebDriverWait(driver, 10).until(
                 ExpectedConditions.elementToBeClickable(
-                        By.cssSelector("#${dictGridId} tr td[title='${dictName}'] ~ td[aria-describedby='${dictGridId}_action'] > a"
+                        By.cssSelector("#${dictGridId} tr td[title='${dictName}'] ~ td[${TD_COLUMN_FILTER}='${dictGridId}_action'] > a"
                         )
                 )
         )
@@ -393,7 +399,7 @@ public class WebPageUtil {
      *}*        labelKey2:
      *{
      *             ....
-     *}*}*       */
+     *}*}*        */
     public
     static Map<String, Object> getLabelDataInDict(String dictName, List labelKeyInclude = [], boolean autoCloseStringDialog = true) {
         openDictionaryStringsDialog(dictName)
@@ -408,20 +414,20 @@ public class WebPageUtil {
         List<WebElement> rows = getWebElementsByJQuerySelector(selector)
 
         for (WebElement row : rows) {
-            WebElement keyCell = row.findElement(By.cssSelector("td[aria-describedby='${stringSettingsGridId}_key']"))
+            WebElement keyCell = row.findElement(By.cssSelector("td[${TD_COLUMN_FILTER}='${stringSettingsGridId}_key']"))
             if (!labelKeyInclude.isEmpty() && !labelKeyInclude.contains(keyCell.text)) continue
             Map<String, Object> label = labels.get(keyCell.text)
             if (null == label) {
                 label = [:]
                 labels[keyCell.text] = label
             }
-            label['context'] = row.findElement(By.cssSelector("td[aria-describedby='${stringSettingsGridId}_context']")).text
-            label['reference'] = row.findElement(By.cssSelector("td[aria-describedby='${stringSettingsGridId}_reference']")).text
-            label['maxLength'] = row.findElement(By.cssSelector("td[aria-describedby='${stringSettingsGridId}_maxLength']")).text
-            label['description'] = row.findElement(By.cssSelector("td[aria-describedby='${stringSettingsGridId}_description']")).text
+            label['context'] = row.findElement(By.cssSelector("td[${TD_COLUMN_FILTER}='${stringSettingsGridId}_context']")).text
+            label['reference'] = row.findElement(By.cssSelector("td[${TD_COLUMN_FILTER}='${stringSettingsGridId}_reference']")).text
+            label['maxLength'] = row.findElement(By.cssSelector("td[${TD_COLUMN_FILTER}='${stringSettingsGridId}_maxLength']")).text
+            label['description'] = row.findElement(By.cssSelector("td[${TD_COLUMN_FILTER}='${stringSettingsGridId}_description']")).text
 
 //          populate label translation
-            List<WebElement> transActs = row.findElements(By.cssSelector("td[aria-describedby='${stringSettingsGridId}_t'] > a"))
+            List<WebElement> transActs = row.findElements(By.cssSelector("td[${TD_COLUMN_FILTER}='${stringSettingsGridId}_t'] > a"))
             if (transActs.size() > 0) {
                 new WebDriverWait(driver, 30).until(ExpectedConditions.elementToBeClickable(transActs[0]))
                 transActs[0].click()
@@ -429,9 +435,9 @@ public class WebPageUtil {
                 label['translation'] = [:]
                 transRows.each { transRow ->
                     Map translation = [:]
-                    WebElement transCode = transRow.findElement(By.cssSelector("td[aria-describedby='${stringSettingsTranslationGridId}_code']"))
-                    WebElement translationElem = transRow.findElement(By.cssSelector("td[aria-describedby='${stringSettingsTranslationGridId}_ct.translation']"))
-//                    WebElement languageElem = row.findElement(By.cssSelector("td[aria-describedby='${stringSettingsTranslationGridId}_language']"))
+                    WebElement transCode = transRow.findElement(By.cssSelector("td[${TD_COLUMN_FILTER}='${stringSettingsTranslationGridId}_code']"))
+                    WebElement translationElem = transRow.findElement(By.cssSelector("td[${TD_COLUMN_FILTER}='${stringSettingsTranslationGridId}_ct.translation']"))
+//                    WebElement languageElem = row.findElement(By.cssSelector("td[${TD_COLUMN_FILTER}='${stringSettingsTranslationGridId}_language']"))
                     label.translation[transCode.text] = translationElem.text
 
                     //obtain translation history
@@ -450,7 +456,7 @@ public class WebPageUtil {
 
     private
     static List getTranslationHistories(WebElement transRow, String stringSettingsTranslationGridId = "stringSettingsTranslationGrid") {
-        WebElement translationElem = transRow.findElement(By.cssSelector("td[aria-describedby='${stringSettingsTranslationGridId}_history'] > img"))
+        WebElement translationElem = transRow.findElement(By.cssSelector("td[${TD_COLUMN_FILTER}='${stringSettingsTranslationGridId}_history'] > img"))
         translationElem.click()
 
         String gridId = "stringSettingsTranslationHistoryGrid"
@@ -459,15 +465,15 @@ public class WebPageUtil {
         List result = []
         histories.each { historyRow ->
             Map history = [:]
-            WebElement tempElement = historyRow.findElement(By.cssSelector("td[aria-describedby='${gridId}_operationTime']"))
+            WebElement tempElement = historyRow.findElement(By.cssSelector("td[${TD_COLUMN_FILTER}='${gridId}_operationTime']"))
             history.operationTime = tempElement.text
-            tempElement = historyRow.findElement(By.cssSelector("td[aria-describedby='${gridId}_operationType']"))
+            tempElement = historyRow.findElement(By.cssSelector("td[${TD_COLUMN_FILTER}='${gridId}_operationType']"))
             history.operationType = tempElement.text
-            tempElement = historyRow.findElement(By.cssSelector("td[aria-describedby='${gridId}_translation']"))
+            tempElement = historyRow.findElement(By.cssSelector("td[${TD_COLUMN_FILTER}='${gridId}_translation']"))
             history.translation = tempElement.text
-            tempElement = historyRow.findElement(By.cssSelector("td[aria-describedby='${gridId}_status']"))
+            tempElement = historyRow.findElement(By.cssSelector("td[${TD_COLUMN_FILTER}='${gridId}_status']"))
             history.status = tempElement.text
-            tempElement = historyRow.findElement(By.cssSelector("td[aria-describedby='${gridId}_memo']"))
+            tempElement = historyRow.findElement(By.cssSelector("td[${TD_COLUMN_FILTER}='${gridId}_memo']"))
             history.memo = tempElement.text
 
             result.add(history)

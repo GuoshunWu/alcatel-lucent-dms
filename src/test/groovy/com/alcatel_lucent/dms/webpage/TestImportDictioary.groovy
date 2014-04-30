@@ -88,11 +88,11 @@ class TestImportDictionary {
         String selector = "#${gridId} tr:not(.jqgfirstrow)"
         List<WebElement> rows = driver.findElements(By.cssSelector(selector))
         rows.each { row ->
-            WebElement loginName = row.findElement(By.cssSelector("td[aria-describedby='${gridId}_loginName']"))
+            WebElement loginName = row.findElement(By.cssSelector("td[${TD_COLUMN_FILTER}='${gridId}_loginName']"))
             if (userName == loginName.text) {
-                WebElement onLine = row.findElement(By.cssSelector("td[aria-describedby='${gridId}_onLine']"))
+                WebElement onLine = row.findElement(By.cssSelector("td[${TD_COLUMN_FILTER}='${gridId}_onLine']"))
                 assertTrue onLine.text.contains("online")
-                WebElement lastLoginTime = row.findElement(By.cssSelector("td[aria-describedby='${gridId}_lastLoginTime']"))
+                WebElement lastLoginTime = row.findElement(By.cssSelector("td[${TD_COLUMN_FILTER}='${gridId}_lastLoginTime']"))
                 TimeDuration duration = TimeCategory.minus(new Date(), new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(lastLoginTime.text))
                 assertTrue duration.seconds < 40
             }
@@ -114,9 +114,9 @@ class TestImportDictionary {
         getWebElementByJQuerySelector("#createGlossaryDialog + div button:contains('OK')").click()
         // wait for grid refreshed
         SECONDS.sleep(1)
-        WebElement glossaryElem = getWebElementByJQuerySelector("#${gridId} tr:not(.jqgfirstrow):has(td[aria-describedby='${gridId}_text'])")
+        WebElement glossaryElem = getWebElementByJQuerySelector("#${gridId} tr:not(.jqgfirstrow):has(td[${TD_COLUMN_FILTER}='${gridId}_text'])")
 //      2. "Applied" flag of the new glossary is "false" on creation
-        assertEquals "false", glossaryElem.findElement(By.cssSelector("td[aria-describedby='${gridId}_dirty']")).text
+        assertEquals "false", glossaryElem.findElement(By.cssSelector("td[${TD_COLUMN_FILTER}='${gridId}_dirty']")).text
 
         //apply glossary
         getWebElement(By.id("custom_apply_glossaryGrid")).click()
@@ -125,9 +125,9 @@ class TestImportDictionary {
         getWebElementByJQuerySelector("#msgBoxHiddenDiv ~ div.ui-dialog-buttonpane button:contains('OK')").click()
 
         //3. "Applied" flag is changed to "true" after applying glossary
-        glossaryElem = getWebElementByJQuerySelector("#${gridId} tr:not(.jqgfirstrow):has(td[aria-describedby='${gridId}_text'])")
+        glossaryElem = getWebElementByJQuerySelector("#${gridId} tr:not(.jqgfirstrow):has(td[${TD_COLUMN_FILTER}='${gridId}_text'])")
 //      2. "Applied" flag of the new glossary is "false" on creation
-        assertEquals "true", glossaryElem.findElement(By.cssSelector("td[aria-describedby='${gridId}_dirty']")).text
+        assertEquals "true", glossaryElem.findElement(By.cssSelector("td[${TD_COLUMN_FILTER}='${gridId}_dirty']")).text
     }
 
     /**
@@ -301,7 +301,7 @@ class TestImportDictionary {
         SECONDS.sleep(1)
         String dictId = "dictionaryGridList"
 //        open language dialog
-        getWebElementByJQuerySelector("#${dictId} td[title='${dictName}'] ~ td[aria-describedby='${dictId}_action'] a:last").click()
+        getWebElementByJQuerySelector("#${dictId} td[title='${dictName}'] ~ td[${TD_COLUMN_FILTER}='${dictId}_action'] a:last").click()
         getWebElementToBeClickable(By.id("custom_add_languageSettingGrid")).click()
 //        until add language dialog open
         WebElement addLangDialog = getWebElement(By.id("addLanguageDialog"))
@@ -311,10 +311,10 @@ class TestImportDictionary {
         select.selectByVisibleText(newLanguage)
 //        wait for charset to load
         MICROSECONDS.sleep(500)
-        getWebElementByJQuerySelector("#addLanguageDialog + div.ui-dialog-buttonpane button:contains('Add')").click()
+        clickButtonOnDialog('addLanguageDialog', 'Add')
         //until dialog show
         getWebElement(By.id("msgBoxHiddenDiv"), 30)
-        getWebElementByJQuerySelector("#msgBoxHiddenDiv ~ div.ui-dialog-buttonpane button:contains('OK')").click()
+        clickButtonOnDialog('msgBoxHiddenDiv', 'OK')
 
         String langSettingGridId = "languageSettingGrid"
 
@@ -324,7 +324,7 @@ class TestImportDictionary {
         assertNotNull language
 
         //close dialog
-        getWebElementByJQuerySelector("#languageSettingsDialog + div.ui-dialog-buttonpane button:contains('Close')").click()
+        clickButtonOnDialog('languageSettingsDialog', 'Close')
         MICROSECONDS.sleep(500)
 
 //        2. Label DMSTEST6 and DMSTEST11 are translated.
@@ -335,6 +335,146 @@ class TestImportDictionary {
 
     @Test
     void test008ChangeReference() {
+//        clickTestApp()
+        String dictName = "dms-test.xlsx"
+        openDictionaryStringsDialog(dictName)
+
+        String gridId = "stringSettingsGrid"
+        WebElement lockElem = getWebElementToBeClickable(By.id("custom_lock_${gridId}"))
+
+        if (lockElem.text.contains("Unlock")) {
+            lockElem.click()
+        }
+        String labelKey = "DMSTEST9"
+        By refSelector = By.cssSelector("#${gridId} tr:not(.jqgfirstrow) td[${TD_COLUMN_FILTER}='${gridId}_key'][title=${labelKey}] + td")
+        WebElement refElement = getWebElementToBeClickable(refSelector)
+        refElement.click()
+        refElement = driver.switchTo().activeElement()
+        String newRef = "Test: changed new label"
+        refElement.clear();
+        refElement.sendKeys(newRef + "\n")
+        MILLISECONDS.sleep(500)
+//      1. Reference text is changed without error.
+        assertEquals newRef, getWebElement(refSelector).text
+
+        labelKey = "DMSTEST10"
+        refSelector = By.cssSelector("#${gridId} tr:not(.jqgfirstrow) td[${TD_COLUMN_FILTER}='${gridId}_key'][title=${labelKey}] + td")
+        newRef = "Test: voip in new label"
+        refElement = getWebElementToBeClickable(refSelector)
+        refElement.click()
+        refElement = driver.switchTo().activeElement()
+        refElement.clear();
+        refElement.sendKeys(newRef + "\n")
+        MILLISECONDS.sleep(500)
+//        1. Reference text is changed to "Test: VoIP in new label"
+        String expectRef = "Test: VoIP in new label"
+        assertEquals expectRef, getWebElement(refSelector).text
+
+//        2. Translations are same than the reference.
+        Map labels = getLabelDataInDict(dictName, [labelKey], false)
+        if (null != labels[labelKey].translation) {
+            labels[labelKey].translation.each { String langCode, String trans ->
+                if (!langCode.endsWith(HISTORY_SUFFIX)) {
+                    assertEquals expectRef, trans
+                }
+            }
+        }
+
+        labelKey = "DMSTEST9"
+        labels = getLabelDataInDict(dictName, [labelKey], false)
+        int translatedNum = null == labels[labelKey].translation ? 0 :
+                (labels[labelKey].translation.findAll { String k, v -> !k.endsWith(HISTORY_SUFFIX) }).size()
+
+        refSelector = By.cssSelector("#${gridId} tr:not(.jqgfirstrow) td[${TD_COLUMN_FILTER}='${gridId}_key'][title=${labelKey}] + td")
+        refElement = getWebElementToBeClickable(refSelector)
+        refElement.click()
+        refElement = driver.switchTo().activeElement()
+        newRef = "call record"
+        refElement.clear();
+        refElement.sendKeys(newRef + "\n")
+        MILLISECONDS.sleep(1000)
+//        1. Reference text is changed without error.
+        assertEquals newRef, getWebElement(refSelector).text
+
+        labels = getLabelDataInDict(dictName, [labelKey])
+//        2. 3 languages are translated.
+        Map lblTranslations = labels[labelKey].translation.findAll { String k, v -> !k.endsWith(HISTORY_SUFFIX) }
+        assertEquals 3, lblTranslations.size() - translatedNum
+    }
+
+    @Test
+    void test009ChangeContext() {
+//        clickTestApp()
+
+        String dictName = "dms-test.xlsx"
+        openDictionaryStringsDialog(dictName)
+
+        String gridId = "stringSettingsGrid"
+        WebElement lockElem = getWebElementToBeClickable(By.id("custom_lock_${gridId}"))
+
+        if (lockElem.text.contains("Unlock")) {
+            lockElem.click()
+        }
+
+        String labelKey = "DMSTEST7"
+        By refSelector = By.cssSelector("#${gridId} tr:not(.jqgfirstrow) td[${TD_COLUMN_FILTER}='${gridId}_key'][title=${labelKey}] ~ td[${TD_COLUMN_FILTER}='${gridId}_context']")
+        WebElement refElement = getWebElementToBeClickable(refSelector)
+        refElement.click()
+        refElement = driver.switchTo().activeElement()
+        String newCtx = "[DEFAULT]"
+        refElement.clear();
+        refElement.sendKeys(newCtx + "\n")
+        MILLISECONDS.sleep(500)
+//        1. Context is changed without error.
+        assertEquals newCtx, getWebElement(refSelector).text
+        Map labels = getLabelDataInDict(dictName, [labelKey], false)
+        Map lblTranslations = labels[labelKey].translation.findAll { String k, v -> !k.endsWith(HISTORY_SUFFIX) }
+//        2. Chinese translation is changed to "重复导入"
+        String langCode = "Chinese (China)"
+        String expectedTranslation = "重复导入"
+
+        assertEquals expectedTranslation, lblTranslations[langCode]
+    }
+
+    @Test
+    void test010Capitalize() {
+//        clickTestApp()
+//        wait for dictionary grid to reload
+//        SECONDS.sleep(1)
+        String dictGridId = "dictionaryGridList"
+        String dictName = "dms-test.xlsx"
+        String selector = "#${dictGridId} tr:not(.jqgfirstrow):has(td[${TD_COLUMN_FILTER}='${dictGridId}_name'][title='${dictName}']) > td:first > input:checkbox"
+        WebElement element = getWebElementByJQuerySelector(selector)
+        MICROSECONDS.sleep 100
+        if (!element.selected) element.click()
+        getWebElementToBeClickable(By.id("dictCapitalize")).click()
+        MICROSECONDS.sleep(200)
+
+        getWebElementByJQuerySelector("#dictCapitalizeMenu > li > a:contains('all words in lower case')").click()
+
+        getWebElement(By.id("capitalizationDialog"))
+        clickButtonOnDialog("capitalizationDialog", 'OK')
+
+        //until dialog show
+        getWebElement(By.id("msgBoxHiddenDiv"), 30)
+        clickButtonOnDialog('msgBoxHiddenDiv', 'OK')
+
+//        1. All strings of reference and translation are changed to lower case except "VoIP" in DMSTEST5 and DMSTEST10
+        List exceptLabelKeys = ['DMSTEST5', 'DMSTEST10']
+
+        Map labels = getLabelDataInDict(dictName)
+        //collect translations
+        exceptLabelKeys.each { labelKey -> labels.remove(labelKey) }
+
+        labels.each { String labelKey, label ->
+            assertEquals label.reference, label.reference.toLowerCase()
+            if (null != label.translation) {
+                Map lblTranslations = label.translation.findAll { String k, v -> !k.endsWith(HISTORY_SUFFIX) }
+                lblTranslations.each { langCode, trans ->
+                    assertEquals trans, trans.toLowerCase()
+                }
+            }
+        }
 
     }
 
