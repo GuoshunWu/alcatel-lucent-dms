@@ -7,11 +7,8 @@ import groovy.time.TimeDuration
 import org.junit.*
 import org.junit.runners.MethodSorters
 import org.openqa.selenium.By
-import org.openqa.selenium.Keys
 import org.openqa.selenium.WebElement
-import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.Select
-import org.openqa.selenium.support.ui.WebDriverWait
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -23,7 +20,6 @@ import static java.util.concurrent.TimeUnit.*
 import static org.hamcrest.CoreMatchers.*
 import static org.hamcrest.Matchers.hasKey
 import static org.junit.Assert.*
-
 
 /**
  * Created by Guoshun on 14-1-12.
@@ -290,12 +286,11 @@ class TestImportDictionary {
         assertFalse label.translation.empty as boolean
 
         //close string settings dialog
-        getWebElementByJQuerySelector("#stringSettingsDialog + div.ui-dialog-buttonpane button:contains('Close')").click()
+        clickButtonOnDialog('stringSettingsDialog', 'Close')
     }
 
     @Test
     void test007AddLanguage() {
-
         clickTestApp()
         String dictName = "dms-test.xlsx"
         SECONDS.sleep(1)
@@ -335,7 +330,8 @@ class TestImportDictionary {
 
     @Test
     void test008ChangeReference() {
-//        clickTestApp()
+        clickTestApp()
+        SECONDS.sleep(1)
         String dictName = "dms-test.xlsx"
         openDictionaryStringsDialog(dictName)
 
@@ -404,8 +400,9 @@ class TestImportDictionary {
 
     @Test
     void test009ChangeContext() {
-//        clickTestApp()
-
+        clickTestApp()
+//        wait for dictionary grid to reload
+        SECONDS.sleep(1)
         String dictName = "dms-test.xlsx"
         openDictionaryStringsDialog(dictName)
 
@@ -427,7 +424,9 @@ class TestImportDictionary {
         MILLISECONDS.sleep(500)
 //        1. Context is changed without error.
         assertEquals newCtx, getWebElement(refSelector).text
-        Map labels = getLabelDataInDict(dictName, [labelKey], false)
+
+//        auto close string settings dialog after obtain label datas
+        Map labels = getLabelDataInDict(dictName, [labelKey])
         Map lblTranslations = labels[labelKey].translation.findAll { String k, v -> !k.endsWith(HISTORY_SUFFIX) }
 //        2. Chinese translation is changed to "重复导入"
         String langCode = "Chinese (China)"
@@ -438,9 +437,9 @@ class TestImportDictionary {
 
     @Test
     void test010Capitalize() {
-//        clickTestApp()
+        clickTestApp()
 //        wait for dictionary grid to reload
-//        SECONDS.sleep(1)
+        SECONDS.sleep(1)
         String dictGridId = "dictionaryGridList"
         String dictName = "dms-test.xlsx"
         String selector = "#${dictGridId} tr:not(.jqgfirstrow):has(td[${TD_COLUMN_FILTER}='${dictGridId}_name'][title='${dictName}']) > td:first > input:checkbox"
@@ -459,6 +458,9 @@ class TestImportDictionary {
         getWebElement(By.id("msgBoxHiddenDiv"), 30)
         clickButtonOnDialog('msgBoxHiddenDiv', 'OK')
 
+        //Waiting for the grid refresh
+        SECONDS.sleep(1)
+
 //        1. All strings of reference and translation are changed to lower case except "VoIP" in DMSTEST5 and DMSTEST10
         List exceptLabelKeys = ['DMSTEST5', 'DMSTEST10']
 
@@ -467,7 +469,7 @@ class TestImportDictionary {
         exceptLabelKeys.each { labelKey -> labels.remove(labelKey) }
 
         labels.each { String labelKey, label ->
-            assertEquals label.reference, label.reference.toLowerCase()
+            assertEquals label.reference.toLowerCase(),label.reference
             if (null != label.translation) {
                 Map lblTranslations = label.translation.findAll { String k, v -> !k.endsWith(HISTORY_SUFFIX) }
                 lblTranslations.each { langCode, trans ->
@@ -475,15 +477,23 @@ class TestImportDictionary {
                 }
             }
         }
-
     }
 
-    @Test
+//    @Test
+//    void test011UpdateTranslation() {
+//
+//    }
+//
+//    @Test
+//    void test012UpdateStatus() {
+//
+//    }
+
+
+
+//    @Test
     void testTemp() {
-//        clickTestApp()
-//        //wait until data refreshed
-//        SECONDS.sleep(2)
-//        List<Map> rows = getGridRowData("dictionaryGridList", ["name", "version"])
-//        println rows
+        login TARGET_URL
+        test010Capitalize()
     }
 }

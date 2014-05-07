@@ -9,8 +9,8 @@ define [
 
   lastEditedCell = null
 
-  lockLabels = (lock = true, grid=$('#stringSettingsGrid'), btn = $('#custom_lock_stringSettingsGrid > div.ui-pg-div'))->
-
+  lockLabels = (lock = true)->
+    grid=$('#stringSettingsGrid')
     icon = 'ui-icon-'
     text = unText = 'lock'
     if lock
@@ -25,6 +25,12 @@ define [
 
     icon += "#{text}ed"
     text = i18n.dialog.stringsettings[unText]
+#    console.log "string settings grid lock Labels, lock =#{lock}, icon=#{icon}, text=#{text}."
+
+#    btnInnerSpan = $('#custom_lock_stringSettingsGrid span')
+#    btnInnerSpan.parent().empty().append($("</span>").addClass("ui-icon #{icon}").after(text))
+
+    btn = $('#custom_lock_stringSettingsGrid > div.ui-pg-div')
     btn.html "<span class=\"ui-icon #{icon}\"></span>#{text}"
 
   dicGrid = $('#stringSettingsGrid').jqGrid(
