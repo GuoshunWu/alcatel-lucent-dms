@@ -48,7 +48,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring.version>3.1.1.RELEASE</spring.version>
+        <!--<spring.version>3.1.1.RELEASE</spring.version>-->
+        <spring.version>4.0.4.RELEASE</spring.version>
         <hibernate.version>3.6.10.Final</hibernate.version>
         <!--<hibernate.version>4.1.6.Final</hibernate.version>-->
         <gmavenVersion>1.5</gmavenVersion>
@@ -99,13 +100,32 @@
     </properties>
 
 
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-framework-bom</artifactId>
+                <version>${spring.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
 
-        <dependency>
-            <groupId>javax.websocket</groupId>
-            <artifactId>javax.websocket-api</artifactId>
-            <version>1.0</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.springframework</groupId>-->
+            <!--<artifactId>springloaded</artifactId>-->
+            <!--<version>1.2.0.RELEASE</version>-->
+        <!--</dependency>-->
+
+        <!--<dependency>-->
+            <!--<groupId>javax.websocket</groupId>-->
+            <!--<artifactId>javax.websocket-api</artifactId>-->
+            <!--<version>1.0</version>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -161,7 +181,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>${spring.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>commons-logging</groupId>
@@ -174,13 +193,16 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>${spring.version}</version>
         </dependency>
+
+        <!--<dependency>-->
+            <!--<groupId>org.springframework</groupId>-->
+            <!--<artifactId>spring-websocket</artifactId>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>
-            <version>${spring.version}</version>
         </dependency>
 
         <dependency>
@@ -192,7 +214,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
-            <version>${spring.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>commons-logging</groupId>
@@ -204,7 +225,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
-            <version>${spring.version}</version>
         </dependency>
 
         <dependency>
@@ -225,34 +245,29 @@
         </dependency>
 
         <!--<dependency>-->
-        <!--<groupId>org.springframework</groupId>-->
-        <!--<artifactId>spring-web</artifactId>-->
-        <!--<version>${spring.version}</version>-->
+            <!--<groupId>org.springframework</groupId>-->
+            <!--<artifactId>spring-web</artifactId>-->
         <!--</dependency>-->
 
         <!--<dependency>-->
         <!--<groupId>org.springframework</groupId>-->
         <!--<artifactId>spring-jdbc</artifactId>-->
-        <!--<version>${spring.version}</version>-->
         <!--</dependency>-->
 
 
         <!--<dependency>-->
         <!--<groupId>org.springframework.security</groupId>-->
         <!--<artifactId>spring-security-core</artifactId>-->
-        <!--<version>3.1.2.RELEASE</version>-->
         <!--</dependency>-->
 
         <!--<dependency>-->
         <!--<groupId>org.springframework.security</groupId>-->
         <!--<artifactId>spring-security-config</artifactId>-->
-        <!--<version>3.1.2.RELEASE</version>-->
         <!--</dependency>-->
 
         <!--<dependency>-->
         <!--<groupId>org.springframework.security</groupId>-->
         <!--<artifactId>spring-security-web</artifactId>-->
-        <!--<version>3.1.2.RELEASE</version>-->
         <!--</dependency>-->
 
 
@@ -590,7 +605,7 @@
     </dependencies>
 
     <build>
-        <defaultGoal>org.apache.tomcat.maven:tomcat7-maven-plugin:2.1:run</defaultGoal>
+        <defaultGoal>org.apache.tomcat.maven:tomcat7-maven-plugin:2.2:run</defaultGoal>
 
         <plugins>
             <plugin>
@@ -735,17 +750,17 @@
             <!--</executions>-->
 
             <!--<configuration>-->
-            <!--&lt;!&ndash; path to optimizer json config file &ndash;&gt;-->
+            <!-- path to optimizer json config file -->
             <!--<configFile>-->
             <!--${basedir}/src/main/webapp/js/app.build.js-->
             <!--</configFile>-->
-            <!--&lt;!&ndash; optional path to optimizer executable &ndash;&gt;-->
+            <!-- optional path to optimizer executable -->
             <!--<optimizerFile>-->
             <!--${basedir}/src/main/webapp/tools/r.js-->
             <!--</optimizerFile>-->
-            <!--&lt;!&ndash; whether or not to process config with maven filters &ndash;&gt;-->
+            <!-- whether or not to process config with maven filters -->
             <!--<filterConfig>true</filterConfig>-->
-            <!--&lt;!&ndash; Skip requirejs optimization if true &ndash;&gt;-->
+            <!-- Skip requirejs optimization if true -->
             <!--</configuration>-->
             <!--</plugin>-->
 

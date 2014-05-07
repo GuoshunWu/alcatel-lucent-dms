@@ -13,10 +13,8 @@
         	</generator>
 		</id>
 
-		<property name="origTranslation" type="string" column="ORIG_TRANSLATION"
-			length="1024" />
-		<property name="newTranslation" type="string" column="NEW_TRANSLATION"
-			length="1024" />
+		<property name="origTranslation" type="text" column="ORIG_TRANSLATION"/>
+		<property name="newTranslation" type="text" column="NEW_TRANSLATION" />
 		<property name="labelKey" type="string" column="LABEL_KEY" />
 		<property name="maxLength" type="string" column="MAX_LENGTH" />
 		<property name="description" type="string" column="DESCRIPTION" />

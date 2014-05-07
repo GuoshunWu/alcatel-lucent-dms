@@ -118,9 +118,8 @@ public class WebPageUtil {
         WebElement contextInput = getWebElement(By.cssSelector("#${dialogId} #context"))
         // contextInput.sendKeys  Keys.chord(Keys.CONTROL, "a", newLabelContext)
 
-        getWebElementByJQuerySelector("#${dialogId} + div.ui-dialog-buttonpane button:contains('Add & Close')").click()
-
-        return getLabelDataInDict(dictName, [newLabelKey], false)[newLabelKey]
+        clickButtonOnDialog(dialogId, 'Add & Close');
+         return getLabelDataInDict(dictName, [newLabelKey], false)[newLabelKey]
     }
 
     /**
@@ -246,7 +245,7 @@ public class WebPageUtil {
     }
 
     public static boolean clickButtonOnDialog(String dialogId, String buttonText) {
-        WebElement button = getWebElementByJQuerySelector("#${dialogId} + div.ui-dialog-buttonpane button:contains('${buttonText}')")
+        WebElement button = getWebElementByJQuerySelector("#${dialogId} ~ div.ui-dialog-buttonpane button:contains('${buttonText}')")
         if(null == button) return false
         button.click()
         return true
@@ -443,13 +442,13 @@ public class WebPageUtil {
                     //obtain translation history
                     label.translation[transCode.text + HISTORY_SUFFIX] = getTranslationHistories(transRow)
                 }
-                WebElement transDialogClose = getWebElementByJQuerySelector("#stringSettingsTranslationDialog + div button:contains('Close')")
-                if (null != transDialogClose) transDialogClose.click()
+                getWebElement(By.id("stringSettingsTranslationDialog"))
+                clickButtonOnDialog('stringSettingsTranslationDialog', 'Close')
             }
         }
 
         //close dialog
-        if (autoCloseStringDialog) getWebElementByJQuerySelector("#stringSettingsDialog + div button:contains('Close')").click()
+        if (autoCloseStringDialog) clickButtonOnDialog('stringSettingsDialog', 'Close')
         return labels
     }
 
