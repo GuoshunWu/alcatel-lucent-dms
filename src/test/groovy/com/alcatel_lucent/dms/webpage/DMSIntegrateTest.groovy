@@ -8,10 +8,14 @@ import org.junit.*
 import org.junit.runners.MethodSorters
 import org.openqa.selenium.By
 import org.openqa.selenium.WebElement
+import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.Select
+import org.openqa.selenium.support.ui.WebDriverWait
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
+import java.awt.Robot
+import java.awt.event.KeyEvent
 import java.text.SimpleDateFormat
 
 import static com.alcatel_lucent.dms.util.WebPageUtil.*
@@ -354,7 +358,7 @@ class DMSIntegrateTest {
         String newRef = "Test: changed new label"
         refElement.clear();
         refElement.sendKeys(newRef + "\n")
-        MILLISECONDS.sleep(500)
+        SECONDS.sleep(1)
 //      1. Reference text is changed without error.
         assertEquals newRef, getWebElement(refSelector).text
 
@@ -720,20 +724,46 @@ class DMSIntegrateTest {
 
     @Test
     void test013ExportTranslationSummary() {
-//        getWebElementToBeClickable(By.id('exportExcel')).click()
+        clickTestApp()
+//      wait for dictionary grid to reload
+        SECONDS.sleep(1)
+        String fileName = "translation_report.xls"
+        //      1. Excel file "translation_report.xls" is downloaded.
+        assertTrue downloadFileCheck(fileName, {
+            getWebElement(By.id("navitransmngTab")).click()
+            String selector = populateGridCellSelector('transGrid', 'application', APP_NAME)
+            // waiting for the translation data load
+            getWebElement(By.cssSelector(selector), 20)
+            getWebElementToBeClickable(By.id('exportExcel')).click()
+            new WebDriverWait(driver, 20).until(
+                    ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("div.blockOverlay")
+                    )
+            )
+        })
     }
 
     @Test
     void test014ExportTranslationDetail() {
-//        String selector = populateGridCellSelector 'transGrid', 'dictionary', 'dms-test.xlsx'
-//        getWebElementToBeClickable(By.cssSelector(selector)).click()
+        String selector = populateGridCellSelector 'transGrid', 'dictionary', 'dms-test.xlsx'
+        getWebElementToBeClickable(By.cssSelector(selector)).click()
 
+        String fileName = "translation_details.xls"
+        assertTrue downloadFileCheck(fileName, {
+            getWebElementToBeClickable(By.id("exportTranslation")).click()
 
+            getWebElement(By.id("ExportTranslationsDialog"))
+            clickButtonOnDialog('ExportTranslationsDialog', 'Export')
+            new WebDriverWait(driver, 20).until(
+                    ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("div.blockOverlay")
+                    )
+            )
+        })
     }
 
 //    @Test
     void testTemp() {
         login TARGET_URL
-        test012UpdateStatus()
+        test013ExportTranslationSummary()
+        test014ExportTranslationDetail()
     }
 }
