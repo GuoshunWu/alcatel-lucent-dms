@@ -7,6 +7,7 @@ import org.openqa.selenium.JavascriptExecutor
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
 import org.openqa.selenium.firefox.FirefoxDriver
+import org.openqa.selenium.firefox.FirefoxProfile
 import org.openqa.selenium.interactions.Actions
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.Select
@@ -15,6 +16,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 import static com.alcatel_lucent.dms.util.CoffeeScript.compile
+import static com.alcatel_lucent.dms.util.WebPageUtil.getDOWNLOAD_DIR
 import static java.util.concurrent.TimeUnit.MICROSECONDS
 import static java.util.concurrent.TimeUnit.MILLISECONDS
 import static java.util.concurrent.TimeUnit.SECONDS
@@ -23,12 +25,12 @@ import static org.junit.Assert.assertNotNull
 /**
  * Created by Administrator on 2014/4/19 0019.
  */
-public class WebPageUtil {
+class WebPageUtil {
 
     private static WebDriver driver
-    public static final String HISTORY_SUFFIX = "_histories"
-    public static final String TD_COLUMN_FILTER = "aria-describedby"
-
+    static final String HISTORY_SUFFIX = "_histories"
+    static final String TD_COLUMN_FILTER = "aria-describedby"
+    static final String DOWNLOAD_DIR =  "d:\\tmp"
     static WebDriver getDriver() {
         return driver
     }
@@ -43,24 +45,54 @@ public class WebPageUtil {
 //        driver = new ChromeDriver()
 //        driver = new RemoteWebDriver(new URL("http://localhost:9515"), DesiredCapabilities.chrome())
 //        driver = new InternetExplorerDriver()
-        driver = new FirefoxDriver()
+
+        FirefoxProfile profile = new FirefoxProfile();
+        profile.setPreference("browser.download.dir", DOWNLOAD_DIR);
+        profile.setPreference("browser.download.folderList", 2);
+        profile.setPreference("browser.download.manager.showWhenStarting", false);
+
+        profile.setPreference("browser.helperApps.alwaysAsk.force", false);
+        profile.setPreference("browser.helperApps.neverAsk.saveToDisk", "text/plain, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+
+        profile.enableNativeEvents = true
+        driver = new FirefoxDriver(profile);
+
 //        driver = new RemoteWebDriver(new URL("http://localhost:9515"), DesiredCapabilities.chrome())
         driver.manage().timeouts().setScriptTimeout(30, SECONDS)
     }
 
-    public static List getDictionariesInDictGrid() {
+    /**
+     * Check whether a file named fileName download successful.
+     * @param fileName fileName to download
+     * @param downloadClosure closure to download the file
+     *
+     * @return whether the downloaded file is download is exist
+     * */
+    static boolean downloadFileCheck(String fileName, Closure downloadClosure){
+
+        File downloadFile = new File(DOWNLOAD_DIR, fileName)
+        //clear result
+        if(downloadFile.exists()){
+            if(!downloadFile.delete())
+                log.warn("Remove old downloaded file {} fail, test result may inaccurate.", downloadFile)
+        }
+        downloadClosure()
+        downloadFile.exists()
+    }
+
+    static List getDictionariesInDictGrid() {
         @Language("JavaScript 1.6") String jsCode = "return \$('#dictionaryGridList').getRowData()";
         return (driver as JavascriptExecutor).executeScript(jsCode)
     }
 
-    public static void openTranslationDetailDialog(String dictName, String languageName, String status) {
+    static void openTranslationDetailDialog(String dictName, String languageName, String status) {
         String transGridId = "transGrid"
         String selector = "#${transGridId} tr:not(.jqgfirstrow) td[${TD_COLUMN_FILTER}='${transGridId}_dictionary'][title='${dictName}'] ~" +
                 " td[${TD_COLUMN_FILTER}='${transGridId}_${languageName}.${status}'] > a"
         getWebElementToBeClickable(By.cssSelector(selector)).click()
     }
 
-    public static String populateGridCellSelector(String gridId, String columnName = null, String title = null,
+    static String populateGridCellSelector(String gridId, String columnName = null, String title = null,
                                                   String siblingColumnName = null, String siblingTitle = null,
                                                   String childTag = null) {
         String selector = "#${gridId} tr:not(.jqgfirstrow)"
@@ -73,7 +105,7 @@ public class WebPageUtil {
         selector
     }
 
-    public static List<Map> getHistoriesInTranslationDetail(String reference, boolean autoCloseDialog = true) {
+    static List<Map> getHistoriesInTranslationDetail(String reference, boolean autoCloseDialog = true) {
         String transGridDetailId = "transDetailGridList"
 
         String historyGridId = "detailViewTranslationHistoryGrid"
@@ -140,7 +172,7 @@ public class WebPageUtil {
     /**
      * Add a label and return the label info collection from web UI
      * */
-    public static Map addLabel(String dictName, String newLabelKey, String newLabelReference, String newLabelContext) {
+    static Map addLabel(String dictName, String newLabelKey, String newLabelReference, String newLabelContext) {
 
         String gridId = "stringSettingsGrid"
         WebElement lockElem = getWebElementToBeClickable(By.id("custom_lock_${gridId}"))
@@ -170,7 +202,7 @@ public class WebPageUtil {
      *
      * @return Application tree of the web element or error message web element if valid credential is false
      * */
-    public static WebElement login(String url,
+    static WebElement login(String url,
                                    String userName = "admin", String password = "alcatel123", boolean validCredential = true) {
         log.info "userName={}, password={}, validCredential={}", userName, password, validCredential
         driver.get url
@@ -190,7 +222,7 @@ public class WebPageUtil {
         return getWebElement(By.id("appTree"))
     }
 
-    public static WebElement logout() {
+    static WebElement logout() {
         getWebElementToBeClickable(By.cssSelector("a[href\$='logout.action']")).click()
         return getWebElement(By.id("loginForm"))
     }
@@ -277,20 +309,20 @@ public class WebPageUtil {
         return new WebDriverWait(driver, 10).until(ExpectedConditions.elementToBeClickable(By.xpath(xPathOfTestApp)))
     }
 
-    public static WebElement getWebElementToBeClickable(By by, int timeOut = 10) {
+    static WebElement getWebElementToBeClickable(By by, int timeOut = 10) {
         return new WebDriverWait(driver, timeOut).until(
                 ExpectedConditions.elementToBeClickable(by)
         )
     }
 
-    public static boolean clickButtonOnDialog(String dialogId, String buttonText) {
+    static boolean clickButtonOnDialog(String dialogId, String buttonText) {
         WebElement button = getWebElementByJQuerySelector("#${dialogId} ~ div.ui-dialog-buttonpane button:contains('${buttonText}')")
         if (null == button) return false
         button.click()
         return true
     }
 
-    public static WebElement getWebElement(By by, int timeOutInSeconds = 10, visible = true) {
+    static WebElement getWebElement(By by, int timeOutInSeconds = 10, visible = true) {
         if (visible) {
             return new WebDriverWait(driver, timeOutInSeconds).until(
                     ExpectedConditions.visibilityOfElementLocated(by)
@@ -302,13 +334,13 @@ public class WebPageUtil {
         )
     }
 
-    public static WebElement getWebElementByJQuerySelector(String selector) {
+    static WebElement getWebElementByJQuerySelector(String selector) {
         List<WebElement> webElements = getWebElementsByJQuerySelector(selector)
         if (webElements.size() > 0) return webElements.get(0)
         return null
     }
 
-    public static List<WebElement> getWebElementsByJQuerySelector(String selector) {
+    static List<WebElement> getWebElementsByJQuerySelector(String selector) {
         @Language("JavaScript 1.6") String jsCode = """
           var elements = \$("${selector}");
           if(elements.length)return elements.get();
@@ -317,7 +349,7 @@ public class WebPageUtil {
         return (driver as JavascriptExecutor).executeScript(jsCode)
     }
 
-    public static void createGlossary(String glossary, autoApply = true) {
+    static void createGlossary(String glossary, autoApply = true) {
         getWebElement(By.id("naviadminTab")).click()
         getWebElementToBeClickable(By.cssSelector("div#adminTabs li[aria-controls='glossary'] > a")).click()
 
@@ -353,7 +385,7 @@ public class WebPageUtil {
      * @return result list
      * */
 
-    public static List<Map> getGridRowData(String gridId) {
+    static List<Map> getGridRowData(String gridId) {
         String selector = "#${gridId} tr:not(.jqgfirstrow)"
         List<Map> result = []
         List<WebElement> rows = getWebElementsByJQuerySelector(selector)
@@ -372,7 +404,7 @@ public class WebPageUtil {
     }
 
 
-    public static Object getDictionaryLanguageCount(String dictionaryName, int timeOut = 2000) {
+    static Object getDictionaryLanguageCount(String dictionaryName, int timeOut = 2000) {
         String jsCode = getAsyncJSCode("dictionaryLanguageCount")
         return (driver as JavascriptExecutor).executeAsyncScript(jsCode, dictionaryName, timeOut)
     }
@@ -384,7 +416,7 @@ public class WebPageUtil {
      * @param utilCoffee util coffee script files to merge
      * @return compiled javascript ready for executeAsyncScript to call
      * */
-    public static String getAsyncJSCode(String coffeeFile, String path = "/com/alcatel_lucent/dms/webpage/js",
+    static String getAsyncJSCode(String coffeeFile, String path = "/com/alcatel_lucent/dms/webpage/js",
                                         List<String> utilCoffee = ["util"]) {
         String cs = IOUtils.toString(getClass().getResourceAsStream("${path}/${coffeeFile}.coffee"))
         String utilPath = '/js/lib'
@@ -396,7 +428,7 @@ public class WebPageUtil {
         return compile(cs, true)
     }
 
-    public static void openDictionaryStringsDialog(String dictName, String dictGridId = "dictionaryGridList") {
+    static void openDictionaryStringsDialog(String dictName, String dictGridId = "dictionaryGridList") {
         //Get Dictionary action buttons
         WebElement action = new WebDriverWait(driver, 10).until(
                 ExpectedConditions.elementToBeClickable(
@@ -437,7 +469,7 @@ public class WebPageUtil {
      *}*        labelKey2:
      *{
      *             ....
-     *}*}*                        */
+     *}*}*                         */
     public
     static Map<String, Object> getLabelDataInDict(String dictName, List labelKeyInclude = [], boolean autoCloseStringDialog = true) {
         openDictionaryStringsDialog(dictName)
