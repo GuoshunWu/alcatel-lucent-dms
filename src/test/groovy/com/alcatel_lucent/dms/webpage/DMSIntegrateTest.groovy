@@ -31,11 +31,15 @@ import static org.junit.Assert.*
 //@Transactional //Important, or the transaction control will be invalid
 //@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-class TestImportDictionary {
+class DMSIntegrateTest {
     private static WebElement testApp
-    private static Logger log = LoggerFactory.getLogger(TestImportDictionary)
+    private static Logger log = LoggerFactory.getLogger(DMSIntegrateTest)
 
     public static final String TARGET_URL = "http://127.0.0.1:8888/dms"
+
+    public static final String APP_NAME = "TestSuite"
+    public static final String PROD_NAME = "DMS"
+
 
     @BeforeClass
     static void beforeClass() {
@@ -51,7 +55,7 @@ class TestImportDictionary {
     private static clickTestApp() {
         getWebElement(By.id("naviappmngTab")).click()
         if (null == testApp) {
-            testApp = getTestApp()
+            testApp = getTestApp PROD_NAME, APP_NAME
         }
         SECONDS.sleep(1)
         testApp.click()
@@ -237,6 +241,7 @@ class TestImportDictionary {
         deliverDictionaries "/sampleFiles/dms-test-repeat.xlsx", ['dms-test-repeat.xlsx': 'dms-test.xlsx']
 
         String dictName = 'dms-test.xlsx'
+        SECONDS.sleep 1
         Map labels = getLabelDataInDict dictName, ['DMSTEST7', 'DMSTEST8']
         String expectTranslation = "重复导入二"
         // 1. Chinese translation of DMSTEST7 is modified as "重复导入二".
@@ -459,7 +464,7 @@ class TestImportDictionary {
         clickButtonOnDialog('msgBoxHiddenDiv', 'OK')
 
         //Waiting for the grid refresh
-        SECONDS.sleep(1)
+        SECONDS.sleep(2)
 
 //        1. All strings of reference and translation are changed to lower case except "VoIP" in DMSTEST5 and DMSTEST10
         List exceptLabelKeys = ['DMSTEST5', 'DMSTEST10']
@@ -469,7 +474,7 @@ class TestImportDictionary {
         exceptLabelKeys.each { labelKey -> labels.remove(labelKey) }
 
         labels.each { String labelKey, label ->
-            assertEquals label.reference.toLowerCase(),label.reference
+            assertEquals label.reference.toLowerCase(), label.reference
             if (null != label.translation) {
                 Map lblTranslations = label.translation.findAll { String k, v -> !k.endsWith(HISTORY_SUFFIX) }
                 lblTranslations.each { langCode, trans ->
@@ -479,21 +484,256 @@ class TestImportDictionary {
         }
     }
 
-//    @Test
-//    void test011UpdateTranslation() {
+    @Test
+    void test011UpdateTranslation() {
+        //Switch to Translation view
+        clickTestApp()
+        //        wait for dictionary grid to reload
+        SECONDS.sleep(1)
+        getWebElement(By.id("navitransmngTab")).click()
+        String transGridId = "transGrid"
+
+        String selector = populateGridCellSelector(transGridId, 'application', APP_NAME)
+        // waiting for the translation data load
+        getWebElement(By.cssSelector(selector), 20)
+
+        String dictName = 'dms-test.xlsx'
+        String languageName = 'Chinese (China)'
+        String status = 'T'
+
+        String reference = "general"
+        String changedToTranslation = "总体"
+        String transGridDetailId = "transDetailGridList"
+
+        //Find and open 8 translated Chinese string of dictionary "dms-test.xlsx"
+        openTranslationDetailDialog dictName, languageName, status
+
+        //get label histories first
+        selector = populateGridCellSelector(transGridDetailId, 'reflang', reference, 'history', null, "img")
+        WebElement historyImg = getWebElementToBeClickable(By.cssSelector(selector))
+        historyImg.click()
+
+        String historyGridId = "detailViewTranslationHistoryGrid"
+        // select page size to 100
+        Select select = new Select(getWebElement(By.cssSelector("#${historyGridId}Pager_center select.ui-pg-selbox")))
+        select.selectByValue(100 + "")
+
+        selector = populateGridCellSelector(historyGridId, 'operationType', 'INPUT')
+//        waiting for histories record load
+        MICROSECONDS.sleep(500)
+        int currentInputHistorySize = getWebElementsByJQuerySelector(selector).size()
+        clickButtonOnDialog('translationHistoryDialogInDetailView', 'Close')
+
+        //Modify translation of "General" from "常规" to "总体"
+
+        selector = populateGridCellSelector(transGridDetailId, 'reflang', reference, 'translation')
+        WebElement transCellElement = getWebElementToBeClickable(By.cssSelector(selector))
+        transCellElement.click()
+        transCellElement = driver.switchTo().activeElement()
+        transCellElement.clear()
+        transCellElement.sendKeys(changedToTranslation + "\n")
 //
-//    }
-//
-//    @Test
-//    void test012UpdateStatus() {
-//
-//    }
+//        //wait until apply other dialog open
+        String transUpdateDialogId = "transmngTranslationUpdate"
+        getWebElement(By.id(transUpdateDialogId))
+        //collect used dictionaries and chose yes and close the dialog
+        List<String> usedDictionaries = getWebElementsByJQuerySelector("#${transUpdateDialogId} ul > li").collect { WebElement element -> element.text }
+        log.info("Used dictionaries: {}", usedDictionaries)
+        clickButtonOnDialog(transUpdateDialogId, 'Yes')
+        //=================================Check apply to all other labels result ======================================
+//        for the grid to reload
+        SECONDS.sleep 1
+        selector = populateGridCellSelector(transGridDetailId, 'reflang', reference, 'translation')
+//        1. Translation is changed to "总体"
+        assertEquals changedToTranslation, getWebElement(By.cssSelector(selector)).text
+//        2. "Trans. Src" is changed to "Manual"
+        selector = populateGridCellSelector(transGridDetailId, 'translation', changedToTranslation, 'transtype')
+        assertEquals "Manual", getWebElement(By.cssSelector(selector)).text
+//      3. "Last updated" is renewed
+        selector = populateGridCellSelector(transGridDetailId, 'translation', changedToTranslation, 'lastUpdate')
+        String lastUpdatedString = getWebElement(By.cssSelector(selector)).text
+        TimeDuration duration = TimeCategory.minus(new Date(), new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(lastUpdatedString))
+        assertTrue duration.minutes < 1
+//      4. Click history icon of the translation and find an entry of type "INPUT" added.
+        selector = populateGridCellSelector(transGridDetailId, 'reflang', reference, 'history', null, "img")
+        historyImg = getWebElementToBeClickable(By.cssSelector(selector))
+        historyImg.click()
+
+        select = new Select(getWebElement(By.cssSelector("#${historyGridId}Pager_center select.ui-pg-selbox")))
+        select.selectByValue(100 + "")
+
+        //        waiting for histories record load
+        MICROSECONDS.sleep(500)
+        selector = populateGridCellSelector(historyGridId, 'operationType', 'INPUT')
+        assertEquals 1, getWebElementsByJQuerySelector(selector).size() - currentInputHistorySize
+        currentInputHistorySize = getWebElementsByJQuerySelector(selector).size()
+        clickButtonOnDialog('translationHistoryDialogInDetailView', 'Close')
+
+        String transDetailDialogId = 'translationDetailDialog'
+
+        clickButtonOnDialog(transDetailDialogId, 'Close')
+
+//        5. "General" are also translated to "总体" in other dictionaries
+        //get reference language for other dictionaries check
 
 
+        usedDictionaries.each { String usedDictName ->
+            openTranslationDetailDialog usedDictName, languageName, status
+            MICROSECONDS.sleep 500
+            String translationSelector = populateGridCellSelector(transGridDetailId, 'reflang', reference, 'translation')
+            assertEquals changedToTranslation, getWebElement(By.cssSelector(translationSelector)).text
+            clickButtonOnDialog(transDetailDialogId, 'Close')
+        }
+
+        //-----------------------------------apply to current label only  case-----------------------------------------
+        openTranslationDetailDialog dictName, languageName, status
+
+        //get label histories first
+        selector = populateGridCellSelector(transGridDetailId, 'reflang', reference, 'history', null, "img")
+        historyImg = getWebElementToBeClickable(By.cssSelector(selector))
+        historyImg.click()
+
+        // select page size to 100
+        select = new Select(getWebElement(By.cssSelector("#${historyGridId}Pager_center select.ui-pg-selbox")))
+        select.selectByValue(100 + "")
+
+        selector = populateGridCellSelector(historyGridId, 'operationType', 'INPUT')
+//        waiting for histories record load
+        MICROSECONDS.sleep(500)
+        currentInputHistorySize = getWebElementsByJQuerySelector(selector).size()
+        clickButtonOnDialog('translationHistoryDialogInDetailView', 'Close')
+
+        changedToTranslation = "常规"
+        selector = populateGridCellSelector(transGridDetailId, 'reflang', reference, 'translation')
+
+        transCellElement = getWebElementToBeClickable(By.cssSelector(selector))
+        transCellElement.click()
+        transCellElement = driver.switchTo().activeElement()
+        transCellElement.clear()
+        transCellElement.sendKeys(changedToTranslation + "\n")
+//
+//        //wait until apply other dialog open
+        getWebElement(By.id(transUpdateDialogId))
+        //collect used dictionaries and chose yes and close the dialog
+        usedDictionaries = getWebElementsByJQuerySelector("#${transUpdateDialogId} ul > li").collect { WebElement element -> element.text }
+        log.info("Used dictionaries: {}", usedDictionaries)
+        clickButtonOnDialog(transUpdateDialogId, 'No')
+
+        //===================================Check apply to current label only result =======================================
+//        wait for grid reload
+        SECONDS.sleep 1
+//        1. Translation is changed to "常规"
+        selector = populateGridCellSelector(transGridDetailId, 'reflang', reference, 'translation')
+        WebElement referenceElem = getWebElement(By.cssSelector(selector))
+        assertEquals changedToTranslation, referenceElem.text
+//        2. Context of the label is changed to "[LABEL]"
+        WebElement ctxElem = referenceElem.findElement(By.xpath("preceding-sibling::td[@aria-describedby='${transGridDetailId}_context']"))
+        assertEquals "[LABEL]", ctxElem.text
+//      3. "Trans. Src" is changed to "Manual"
+        selector = populateGridCellSelector(transGridDetailId, 'translation', changedToTranslation, 'transtype')
+        assertEquals "Manual", getWebElement(By.cssSelector(selector)).text
+//        4. "Last updated" is renewed
+        selector = populateGridCellSelector(transGridDetailId, 'translation', changedToTranslation, 'lastUpdate')
+        lastUpdatedString = getWebElement(By.cssSelector(selector)).text
+        duration = TimeCategory.minus(new Date(), new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(lastUpdatedString))
+        assertTrue duration.minutes < 1
+
+//      5. Click history icon of the translation and find an entry of type "INPUT" added.
+        selector = populateGridCellSelector(transGridDetailId, 'reflang', reference, 'history', null, "img")
+        historyImg = getWebElementToBeClickable(By.cssSelector(selector))
+        historyImg.click()
+
+        select = new Select(getWebElement(By.cssSelector("#${historyGridId}Pager_center select.ui-pg-selbox")))
+        select.selectByValue(100 + "")
+
+        //        waiting for histories record load
+        MICROSECONDS.sleep(500)
+        selector = populateGridCellSelector(historyGridId, 'operationType', 'INPUT')
+//        because the new created label, here must be 1
+        assertEquals 1, getWebElementsByJQuerySelector(selector).size()
+        clickButtonOnDialog('translationHistoryDialogInDetailView', 'Close')
+
+        clickButtonOnDialog(transDetailDialogId, 'Close')
+//      6. "General" are still translated as "总体" in other dictionaries
+        usedDictionaries.each { String usedDictName ->
+            openTranslationDetailDialog usedDictName, languageName, status
+            MICROSECONDS.sleep 500
+            String translationSelector = populateGridCellSelector(transGridDetailId, 'reflang', reference, 'translation')
+            assertEquals '总体', getWebElement(By.cssSelector(translationSelector)).text
+            clickButtonOnDialog(transDetailDialogId, 'Close')
+        }
+    }
+
+    @Test
+    void test012UpdateStatus() {
+//        clickTestApp()
+//        //        wait for dictionary grid to reload
+//        SECONDS.sleep(1)
+        getWebElement(By.id("navitransmngTab")).click()
+
+        String transDetailDialogId = 'translationDetailDialog'
+        String dictName = 'dms-test.xlsx'
+        String languageName = 'Chinese (China)'
+        String status = 'N'
+
+        String transGridDetailId = "transDetailGridList"
+
+        openTranslationDetailDialog dictName, languageName, status
+        SECONDS.sleep 1
+//      Modify 3 Chinese strings of status "N" to "T"
+        //remember the 3 chinese string reference
+        List references = getWebElementsByJQuerySelector(populateGridCellSelector(transGridDetailId, 'reflang')).collect({ WebElement elem -> elem.text })
+        log.info("references = {}", references)
+        getWebElementToBeClickable(By.cssSelector("#cb_${transGridDetailId}")).click()
+        MICROSECONDS.sleep 200
+        getWebElementToBeClickable(By.id("makeDetailLabelTranslateStatus")).click()
+        MICROSECONDS.sleep 200
+        getWebElementByJQuerySelector("#detailTranslationStatus a:contains('Translated')").click()
+        clickButtonOnDialog(transDetailDialogId, 'Close')
+        MICROSECONDS.sleep 500
+//      1. Translation status are changed without error.
+        String selector = populateGridCellSelector('transGrid', 'dictionary', dictName, "${languageName}.N")
+        Assert.assertEquals "", getWebElement(By.cssSelector(selector)).text.trim()
+
+//      2. Click history icon of the translation and find an entry of type "STATUS" added
+        openTranslationDetailDialog dictName, languageName, 'T'
+        references.each { String reference ->
+            List histories = getHistoriesInTranslationDetail(reference).collect { Map history -> 'STATUS' == history.operationType }
+            assertTrue histories.size() > 0
+        }
+        clickButtonOnDialog(transDetailDialogId, 'Close')
+        String transGridId = "transGrid"
+        selector = populateGridCellSelector transGridId, 'dictionary', dictName
+        getWebElementToBeClickable(By.cssSelector(selector)).click()
+        MICROSECONDS.sleep 200
+        getWebElementToBeClickable(By.id("makeLabelTranslateStatus")).click()
+        getWebElementByJQuerySelector("#translationStatus a:contains('Not translated')").click()
+
+        // until message dialog show
+        getWebElement(By.id("msgBoxHiddenDiv"))
+        clickButtonOnDialog('msgBoxHiddenDiv', 'OK')
+//      1. All Chinese strings are set to Not Translated
+
+        selector = populateGridCellSelector(transGridId, 'dictionary', dictName, "${languageName}.T")
+        Assert.assertEquals "", getWebElement(By.cssSelector(selector)).text.trim()
+    }
+
+    @Test
+    void test013ExportTranslationSummary() {
+//        getWebElementToBeClickable(By.id('exportExcel')).click()
+    }
+
+    @Test
+    void test014ExportTranslationDetail() {
+//        String selector = populateGridCellSelector 'transGrid', 'dictionary', 'dms-test.xlsx'
+//        getWebElementToBeClickable(By.cssSelector(selector)).click()
+
+
+    }
 
 //    @Test
     void testTemp() {
         login TARGET_URL
-        test010Capitalize()
+        test012UpdateStatus()
     }
 }

@@ -9,7 +9,7 @@ define ['jqgrid', 'dms-util'], ($, util)->
     width: 800, height: 300
     pager: '#historyGridPager'
     editurl: ""
-    rowNum: 10, rowList: [10, 20, 30]
+    rowNum: 20, rowList: [20, 50, 100]
     sortorder: 'asc'
     viewrecords: true
     gridview: true, multiselect: false, cellEdit: false

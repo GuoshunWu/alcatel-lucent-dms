@@ -1,7 +1,5 @@
 package com.alcatel_lucent.dms.webpage
 
-import junit.framework.Test
-import junit.framework.TestSuite
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.runner.RunWith
@@ -12,7 +10,7 @@ import org.junit.runners.Suite
  */
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses([TestImportDictionary])
+@Suite.SuiteClasses([DMSIntegrateTest])
 class DMSTestSuite{
 
     @BeforeClass public static void setUpClass() {
@@ -21,5 +19,4 @@ class DMSTestSuite{
     @AfterClass public static void tearDownClass() {
         // Common cleanup for all tests
     }
-
 }
