@@ -39,7 +39,7 @@ define [
         ]
       }
       {name: 'appVersion', index: 'version', width: 90, editable: false, align: 'left', frozen: true, search: false}
-      {name: 'numOfString', index: 'labelNum', width: 80, align: 'right', frozen: true, search: false}
+      {name: 'numOfString', index: 'labelNum', width: 80, align: 'right', frozen: true, search: false, firstsortorder: 'desc'}
     ]
 
   grid =

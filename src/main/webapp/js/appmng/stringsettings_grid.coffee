@@ -46,15 +46,15 @@ define [
     colModel: [
       {name: 'key', index: 'key', width: 100, editable: false, align: 'left', search:false}
       {name: 'reference', index: 'reference', width: 200, edittype:'textarea', editable: false, align: 'left',search:false}
-      {name: 't', index: 't', sortable: true, width: 15, align: 'right', formatter: 'showlink',search:false, search:false
+      {name: 't', index: 't', sortable: true, firstsortorder: 'desc', width: 15, align: 'right', formatter: 'showlink',search:false, search:false
       formatoptions:
         baseLinkUrl: '#', addParam: encodeURI("&status=2")
       }
-      {name: 'n', index: 'n', formatter: 'showlink', sortable: true, width: 15, align: 'right',search:false
+      {name: 'n', index: 'n', formatter: 'showlink', sortable: true, firstsortorder: 'desc', width: 15, align: 'right',search:false
       formatoptions:
         baseLinkUrl: '#', addParam: encodeURI("&status=0")
       }
-      {name: 'i', index: 'i', formatter: 'showlink', sortable: true, width: 15, align: 'right',search:false
+      {name: 'i', index: 'i', formatter: 'showlink', sortable: true, firstsortorder: 'desc', width: 15, align: 'right',search:false
       formatoptions:
         baseLinkUrl: '#', addParam: encodeURI("&status=1")
       }

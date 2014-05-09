@@ -3,14 +3,20 @@ package com.alcatel_lucent.dms.rest;
 import com.alcatel_lucent.dms.model.Application;
 import com.alcatel_lucent.dms.model.ApplicationBase;
 import com.alcatel_lucent.dms.service.TranslationService;
+import com.alcatel_lucent.dms.util.ObjectComparator;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -67,6 +73,18 @@ public class ApplicationREST extends BaseREST {
     	if (app != null && !app.isEmpty()) {
     		appId = Long.valueOf(app);
     	}
+    	String hSQL, countHSQL;
+    	Map<String, Long> params = new HashMap<String, Long>();
+    	if (appId != null) {
+			hSQL = "select app from Application app where app.id=:id";
+        	countHSQL = "select count(*) from Application where id=:id";
+	        params.put("id", appId);
+    	} else {
+			hSQL = "select app from Product p join p.applications app where p.id=:id";
+        	countHSQL = "select p.applications.size from Product p where p.id=:id";
+	        params.put("id", prodId);
+    	}
+
     	String sidx = requestMap.get("sidx");
     	String sord = requestMap.get("sord");
         if (Arrays.asList("name", "dictNum").contains(sidx)) {
@@ -78,29 +96,16 @@ public class ApplicationREST extends BaseREST {
     	if (sord == null) {
     		sord = "ASC";
     	}
-    	String hSQL, countHSQL;
-    	Map<String, Long> params = new HashMap<String, Long>();
-    	if (appId != null) {
-    		if (sidx.equals("labelNum")) {
-    			hSQL = "select app from Application app join app.dictionaries d where app.id=:id" +
-    					" group by app order by sum(d.labels.size) " + sord;
-    		} else {
-    			hSQL = "select app from Application app where app.id=:id order by app." + sidx + " " + sord;
-    		}
-        	countHSQL = "select count(*) from Application where id=:id";
-	        params.put("id", appId);
-    	} else {
-    		if (sidx.equals("labelNum")) {
-    			hSQL = "select app from Product p join p.applications app join app.dictionaries d where p.id=:id" +
-    				" group by app order by sum(d.labels.size) " + sord;
-    		} else {
-    			hSQL = "select app from Product p join p.applications app where p.id=:id order by app." + sidx + " " + sord;
-    		}
-        	countHSQL = "select p.applications.size from Product p where p.id=:id";
-	        params.put("id", prodId);
+    	
+    	Comparator<Application> comparator = null;
+    	Collection<Application> resultSet = null;
+    	if (sidx.startsWith("s(") || sidx.equals("labelNum")) {	// sort in memory for field T/N/I
+    		comparator = new ObjectComparator<Application>(sidx, sord);
+    		resultSet = dao.retrieve(hSQL, params);
+    	} else {	// otherwise, sort in HQL
+    		hSQL += " order by app." + sidx + " " + sord;
+    		resultSet = retrieve(hSQL, params, countHSQL, params, requestMap);
     	}
-
-        Collection<Application> resultSet = retrieve(hSQL, params, countHSQL, params, requestMap);
         
 		// additional properties
     	String prop = requestMap.get("prop");
@@ -121,6 +126,12 @@ public class ApplicationREST extends BaseREST {
 				appli.setS(appSummary);
 			}
 		}
+		
+    	if (comparator != null) {	// if sort in memory, do sort and page filter
+    		resultSet = new ArrayList<Application>(resultSet);
+    		Collections.sort((ArrayList<Application>) resultSet, comparator);
+    		resultSet = pageFilter((ArrayList<Application>) resultSet, requestMap);
+    	}
 
         return toJSON(resultSet, requestMap);
     }

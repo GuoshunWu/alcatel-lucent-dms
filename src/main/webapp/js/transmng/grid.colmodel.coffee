@@ -37,7 +37,7 @@ define ['jqgrid'], ($)->
       (index, elem)->
         model = {
         name: "#{language.name}.#{@}",
-        sortable: false, index: "s(#{language.id})[#{index}]",
+        sortable: true, firstsortorder: 'desc', index: "s(#{language.id})[#{index}]",
         width: 40, align: 'right',
         search: false, editable: false
         }

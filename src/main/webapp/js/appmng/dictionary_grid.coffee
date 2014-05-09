@@ -89,7 +89,7 @@ define [
     align: 'left'}
     {name: 'encoding', index: 'base.encoding', width: 40, editable: true, edittype: 'select',
     editoptions: {value: c18n.dictencodings}, align: 'left'}
-    {name: 'labelNum', index: 'labelNum', width: 20, align: 'right'}
+    {name: 'labelNum', index: 'labelNum', width: 20, align: 'right', firstsortorder: 'desc'}
     {name: 'action', index: 'action', width: 70, editable: false, align: 'center', sortable: false
     formatter: (cellvalue, options, rowObject)->
       $.map(handlers,

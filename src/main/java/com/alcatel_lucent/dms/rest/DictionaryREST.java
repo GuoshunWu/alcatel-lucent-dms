@@ -2,6 +2,8 @@ package com.alcatel_lucent.dms.rest;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Component;
 import com.alcatel_lucent.dms.model.Application;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.service.TranslationService;
+import com.alcatel_lucent.dms.util.ObjectComparator;
 
 /**
  * Dictionary REST service.
@@ -105,14 +108,22 @@ public class DictionaryREST extends BaseREST {
     	if (sord == null) {
     		sord = "ASC";
     	}
-    	String orderBy = toFieldName(sidx);
-    	if (sidx.equals("labelNum")) {
-    		orderBy = "obj.labels.size";
-    	}
-    	hql += " order by " + orderBy + " " + sord;
-    	Collection result = retrieve(hql, param, countHql, param, requestMap);
     	
-    	Collection<Dictionary> dictionaries = new ArrayList<Dictionary>();
+    	Comparator<Dictionary> comparator = null;
+    	Collection result = null;
+    	if (sidx.startsWith("s(")) {	// sort in memory for field T/N/I
+    		comparator = new ObjectComparator<Dictionary>(sidx, sord);
+    		result = dao.retrieve(hql, param);
+    	} else {	// otherwise, sort in HQL
+	    	String orderBy = toFieldName(sidx);
+	    	if (sidx.equals("labelNum")) {
+	    		orderBy = "obj.labels.size";
+	    	}
+	    	hql += " order by " + orderBy + " " + sord;
+	    	result = retrieve(hql, param, countHql, param, requestMap);
+    	}
+    	
+    	ArrayList<Dictionary> dictionaries = new ArrayList<Dictionary>();
     	if (slibingId != null) {
     		dictionaries.addAll(result);
     	} else {	// if filtered by prod and app, add app information
@@ -142,7 +153,12 @@ public class DictionaryREST extends BaseREST {
 				dict.setS(dictSummary);
 			}
 		}
-		
+
+    	if (comparator != null) {	// if sort in memory, do sort and page filter
+    		Collections.sort(dictionaries, comparator);
+    		dictionaries = (ArrayList<Dictionary>) pageFilter(dictionaries, requestMap);
+    	}
+
     	return toJSON(dictionaries, requestMap);
     }
     

@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory
 import java.text.SimpleDateFormat
 
 import static com.alcatel_lucent.dms.util.WebPageUtil.*
-import static com.alcatel_lucent.dms.webpage.TestImportDictionary.TARGET_URL
 import static org.junit.Assert.*
 
 /**
