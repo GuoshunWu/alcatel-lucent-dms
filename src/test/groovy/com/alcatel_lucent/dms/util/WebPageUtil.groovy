@@ -4,7 +4,6 @@ import org.apache.commons.io.IOUtils
 import org.intellij.lang.annotations.Language
 import org.openqa.selenium.By
 import org.openqa.selenium.JavascriptExecutor
-import org.openqa.selenium.Keys
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
 import org.openqa.selenium.firefox.FirefoxDriver
@@ -26,7 +25,7 @@ import static org.junit.Assert.assertNotNull
  */
 public class WebPageUtil {
 
-    private static WebDriver driver = new FirefoxDriver()
+    private static WebDriver driver
     public static final String HISTORY_SUFFIX = "_histories"
     public static final String TD_COLUMN_FILTER = "aria-describedby"
 
@@ -40,16 +39,56 @@ public class WebPageUtil {
 
         // Create a new instance of the Firefox driver
         // Notice that the remainder of the code relies on the interface,
-        // not the implementation.
+        // not the implementation.     see: http://chromedriver.storage.googleapis.com/index.html
 //        driver = new ChromeDriver()
 //        driver = new RemoteWebDriver(new URL("http://localhost:9515"), DesiredCapabilities.chrome())
 //        driver = new InternetExplorerDriver()
+        driver = new FirefoxDriver()
+//        driver = new RemoteWebDriver(new URL("http://localhost:9515"), DesiredCapabilities.chrome())
         driver.manage().timeouts().setScriptTimeout(30, SECONDS)
     }
 
     public static List getDictionariesInDictGrid() {
         @Language("JavaScript 1.6") String jsCode = "return \$('#dictionaryGridList').getRowData()";
         return (driver as JavascriptExecutor).executeScript(jsCode)
+    }
+
+    public static void openTranslationDetailDialog(String dictName, String languageName, String status) {
+        String transGridId = "transGrid"
+        String selector = "#${transGridId} tr:not(.jqgfirstrow) td[${TD_COLUMN_FILTER}='${transGridId}_dictionary'][title='${dictName}'] ~" +
+                " td[${TD_COLUMN_FILTER}='${transGridId}_${languageName}.${status}'] > a"
+        getWebElementToBeClickable(By.cssSelector(selector)).click()
+    }
+
+    public static String populateGridCellSelector(String gridId, String columnName = null, String title = null,
+                                                  String siblingColumnName = null, String siblingTitle = null,
+                                                  String childTag = null) {
+        String selector = "#${gridId} tr:not(.jqgfirstrow)"
+        if (null != columnName) selector += " td[${TD_COLUMN_FILTER}='${gridId}_${columnName}']"
+        if (null != title) selector += "[title='${title}']"
+        if (null != siblingColumnName) selector += " ~ td[${TD_COLUMN_FILTER}='${gridId}_${siblingColumnName}']"
+        if (null != siblingTitle) selector += "[${TD_COLUMN_FILTER}='${siblingTitle}']"
+        if (null != childTag) selector += " > ${childTag}"
+//        log.info("selector = {}", selector)
+        selector
+    }
+
+    public static List<Map> getHistoriesInTranslationDetail(String reference, boolean autoCloseDialog = true) {
+        String transGridDetailId = "transDetailGridList"
+
+        String historyGridId = "detailViewTranslationHistoryGrid"
+
+        String selector = populateGridCellSelector(transGridDetailId, 'reflang', reference, 'history', null, "img")
+        WebElement historyImg = getWebElementToBeClickable(By.cssSelector(selector))
+        historyImg.click()
+
+        // select page size to 100
+        Select select = new Select(getWebElement(By.cssSelector("#${historyGridId}Pager_center select.ui-pg-selbox")))
+        select.selectByValue(100 + "")
+        MICROSECONDS.sleep(200)
+        List<Map> histories = getGridRowData(historyGridId)
+        if (autoCloseDialog) clickButtonOnDialog('translationHistoryDialogInDetailView', 'Close')
+        histories
     }
 
     /**
@@ -119,7 +158,7 @@ public class WebPageUtil {
         // contextInput.sendKeys  Keys.chord(Keys.CONTROL, "a", newLabelContext)
 
         clickButtonOnDialog(dialogId, 'Add & Close');
-         return getLabelDataInDict(dictName, [newLabelKey], false)[newLabelKey]
+        return getLabelDataInDict(dictName, [newLabelKey], false)[newLabelKey]
     }
 
     /**
@@ -246,19 +285,19 @@ public class WebPageUtil {
 
     public static boolean clickButtonOnDialog(String dialogId, String buttonText) {
         WebElement button = getWebElementByJQuerySelector("#${dialogId} ~ div.ui-dialog-buttonpane button:contains('${buttonText}')")
-        if(null == button) return false
+        if (null == button) return false
         button.click()
         return true
     }
 
-    public static WebElement getWebElement(By by, int timeOut = 10, visible = true) {
+    public static WebElement getWebElement(By by, int timeOutInSeconds = 10, visible = true) {
         if (visible) {
-            return new WebDriverWait(driver, timeOut).until(
+            return new WebDriverWait(driver, timeOutInSeconds).until(
                     ExpectedConditions.visibilityOfElementLocated(by)
             )
         }
 
-        return new WebDriverWait(driver, timeOut).until(
+        return new WebDriverWait(driver, timeOutInSeconds).until(
                 ExpectedConditions.presenceOfElementLocated(by)
         )
     }
@@ -398,7 +437,7 @@ public class WebPageUtil {
      *}*        labelKey2:
      *{
      *             ....
-     *}*}*        */
+     *}*}*                        */
     public
     static Map<String, Object> getLabelDataInDict(String dictName, List labelKeyInclude = [], boolean autoCloseStringDialog = true) {
         openDictionaryStringsDialog(dictName)
