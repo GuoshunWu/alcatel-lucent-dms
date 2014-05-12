@@ -91,9 +91,6 @@ public class GlossaryMatchObject {
     private boolean replaced = false;
     private String glossaryText;
 
-    private Matcher matcher;
-    private String matchingText = "";
-
     public Glossary getGlossary() {
         return glossary;
     }
@@ -104,13 +101,6 @@ public class GlossaryMatchObject {
 
     public String getGlossaryText() {
         return glossaryText;
-    }
-
-    private Matcher getMatcher(String text) {
-        if (text.equals(matchingText)) return matcher;
-        this.matcher = pattern.matcher(text);
-        matchingText = text;
-        return matcher;
     }
 
     /*
@@ -141,10 +131,10 @@ public class GlossaryMatchObject {
     public String getProcessedString(String originalText) {
     	replaced = false;
     	if (StringUtils.isEmpty(originalText)) return originalText;
-        Matcher latestMatcher = getMatcher(originalText);
+        Matcher matcher = pattern.matcher(originalText);
         StringBuffer sb = new StringBuffer();
-        while (latestMatcher.find()) {
-            processMatchInExceptions(latestMatcher, originalText, sb);
+        while (matcher.find()) {
+            processMatchInExceptions(matcher, originalText, sb);
         }
         matcher.appendTail(sb);
         return sb.toString();
