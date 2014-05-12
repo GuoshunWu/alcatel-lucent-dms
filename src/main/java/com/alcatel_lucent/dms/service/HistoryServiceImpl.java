@@ -6,6 +6,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jetty.util.log.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.alcatel_lucent.dms.UserContext;
@@ -21,6 +24,7 @@ import com.alcatel_lucent.dms.model.User;
 public class HistoryServiceImpl extends BaseServiceImpl implements HistoryService {
 	
 	private static ThreadLocal<Collection<TranslationHistory>> historyQueue = new ThreadLocal<Collection<TranslationHistory>>();
+	private static final Logger log = LoggerFactory.getLogger(HistoryServiceImpl.class);
 
 	@Override
 	public DictionaryHistory logDelivery(Dictionary dictionary, String tempPath) {
@@ -108,6 +112,7 @@ public class HistoryServiceImpl extends BaseServiceImpl implements HistoryServic
 	public void flushHistoryQueue() {
 		Collection<TranslationHistory> queue = historyQueue.get();
 		if (queue != null) {
+			log.info("Creating " + queue.size() + " history logs...");
 			dao.createArray(queue.toArray());
 			queue.clear();
 		}
