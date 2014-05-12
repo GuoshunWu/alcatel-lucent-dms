@@ -222,30 +222,35 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
      * @param dbTextMap
      */
     private void suggestTranslations(Long ctxId, Collection<Text> texts, Map<String, Text> dbTextMap) {
+    	Collection<Translation> transNeedSuggestion = new ArrayList<Translation>();
+    	HashSet<String> refNeedSuggestion = new HashSet<String>();
         for (Text text : texts) {
             if (org.springframework.util.CollectionUtils.isEmpty(text.getTranslations())) continue;
 
             Text dbText = dbTextMap.get(text.getReference());
-            Map<Long, String> suggestedTranslations = null;
             for (Translation trans : text.getTranslations()) {
+            	trans.setText(text);		// text is null in some case
                 Translation dbTrans = dbText == null ? null : dbText.getTranslation(trans.getLanguage().getId());
                 if (dbTrans == null || dbTrans.getStatus() == Translation.STATUS_UNTRANSLATED) {
                     if (trans.getLanguage().getId() != 0 && trans.getLanguage().getId() != 1L &&
                             trans.getStatus() == Translation.STATUS_UNTRANSLATED &&
                             (trans.getTranslation().equals(text.getReference()) || trans.getTranslation().trim().isEmpty())) {
-                        if (suggestedTranslations == null) {
-                            suggestedTranslations = getSuggestedTranslations(text.getReference(), ctxId);
-                        }
-                        String suggestedTranslation = suggestedTranslations.get(trans.getLanguage().getId());
-                        if (suggestedTranslation != null) {
-                            log.info("Auto translate \"" + text.getReference() + "\" to \"" + suggestedTranslation + "\" in " + trans.getLanguage().getName() + ".");
-                            trans.setTranslation(suggestedTranslation);
-                            trans.setStatus(Translation.STATUS_TRANSLATED);
-                            trans.setTranslationType(Translation.TYPE_AUTO);
-
-
-                        }
+                    	transNeedSuggestion.add(trans);
+                    	refNeedSuggestion.add(text.getReference());
                     }
+                }
+            }
+        }
+        Map<String, Map<Long, String>> suggestion = getSuggestedTranslations(refNeedSuggestion);
+        for (Translation trans : transNeedSuggestion) {
+        	Map<Long, String> suggestionMap = suggestion.get(trans.getText().getReference());
+        	if (suggestionMap != null) {
+                String suggestedTranslation = suggestionMap.get(trans.getLanguage().getId());
+                if (suggestedTranslation != null) {
+                    log.info("Auto translate \"" + trans.getText().getReference() + "\" to \"" + suggestedTranslation + "\" in " + trans.getLanguage().getName() + ".");
+                    trans.setTranslation(suggestedTranslation);
+                    trans.setStatus(Translation.STATUS_TRANSLATED);
+                    trans.setTranslationType(Translation.TYPE_AUTO);
                 }
             }
         }
@@ -257,18 +262,30 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
      * @param reference
      * @return
      */
-    private Map<Long, String> getSuggestedTranslations(String reference, Long excludedCtxId) {
-        String hql = "from Translation where text.reference=:reference and status=:status order by text.context.id";
-        Map param = new HashMap();
-        param.put("reference", reference);
-        param.put("status", Translation.STATUS_TRANSLATED);
-//        param.put("excludedCtxId", excludedCtxId);
-        Collection<Translation> qr = dao.retrieve(hql, param);
-        Map<Long, String> result = new HashMap<Long, String>();
-        for (Translation trans : qr) {
-            if (!result.containsKey(trans.getLanguage().getId()) &&
-                    !trans.getText().getContext().getName().equals(Context.EXCLUSION)) {
-                result.put(trans.getLanguage().getId(), trans.getTranslation());
+    private Map<String, Map<Long, String>> getSuggestedTranslations(Collection<String> references) {
+    	Map<String, Map<Long, String>> result = new HashMap<String, Map<Long, String>>();
+        Collection<String> refs = new ArrayList<String>();
+        for (Iterator<String> iter = references.iterator(); iter.hasNext(); ) {
+            String reference = iter.next();
+            refs.add(reference);
+            if (refs.size() >= 100 || !iter.hasNext()) {    // execute query every 100 texts
+                String hql = "from Translation where text.reference in(:reference) and status=:status order by text.context.id";
+                Map param = new HashMap();
+                param.put("status", Translation.STATUS_TRANSLATED);
+                param.put("reference", refs);
+                Collection<Translation> qr = dao.retrieve(hql, param);
+                for (Translation trans : qr) {
+                	Map<Long, String> suggestMap = result.get(trans.getText().getReference());
+                	if (suggestMap == null) {
+                		suggestMap = new HashMap<Long, String>();
+                		result.put(trans.getText().getReference(), suggestMap);
+                	}
+                    if (!suggestMap.containsKey(trans.getLanguage().getId()) &&
+                            !trans.getText().getContext().getName().equals(Context.EXCLUSION)) {
+                    	suggestMap.put(trans.getLanguage().getId(), trans.getTranslation());
+                    }
+                }
+                refs.clear();
             }
         }
         return result;

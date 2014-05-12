@@ -639,7 +639,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             if (dbLabel == null) {
             	label.setDictionary(dbDict);
             	label.setContext(defaultCtx);	// temporarily set an default value when create, it will be updated after updating translation
-            	dbLabel = (Label) dao.create(label);
+            	dbLabel = (Label) dao.create(label, false);
             	dbDict.addLabel(dbLabel);
             	newLabel = true;
             }
