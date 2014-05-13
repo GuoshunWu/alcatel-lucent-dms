@@ -16,10 +16,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 import static com.alcatel_lucent.dms.util.CoffeeScript.compile
-import static com.alcatel_lucent.dms.util.WebPageUtil.getDOWNLOAD_DIR
-import static java.util.concurrent.TimeUnit.MICROSECONDS
-import static java.util.concurrent.TimeUnit.MILLISECONDS
-import static java.util.concurrent.TimeUnit.SECONDS
+import static java.util.concurrent.TimeUnit.*
 import static org.junit.Assert.assertNotNull
 
 /**
@@ -30,7 +27,8 @@ class WebPageUtil {
     private static WebDriver driver
     static final String HISTORY_SUFFIX = "_histories"
     static final String TD_COLUMN_FILTER = "aria-describedby"
-    static final String DOWNLOAD_DIR =  "d:\\tmp"
+    static final String DOWNLOAD_DIR = "d:\\tmp"
+
     static WebDriver getDriver() {
         return driver
     }
@@ -52,7 +50,9 @@ class WebPageUtil {
         profile.setPreference("browser.download.manager.showWhenStarting", false);
 
         profile.setPreference("browser.helperApps.alwaysAsk.force", false);
-        profile.setPreference("browser.helperApps.neverAsk.saveToDisk", "text/plain, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        profile.setPreference("browser.helperApps.neverAsk.saveToDisk", "text/plain, application/zip, " +
+                "application/octet-stream, application/vnd.ms-excel, " +
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 
         profile.enableNativeEvents = true
         driver = new FirefoxDriver(profile);
@@ -68,15 +68,19 @@ class WebPageUtil {
      *
      * @return whether the downloaded file is download is exist
      * */
-    static boolean downloadFileCheck(String fileName, Closure downloadClosure){
+    static boolean downloadFileCheck(String fileName, Closure downloadClosure) {
 
         File downloadFile = new File(DOWNLOAD_DIR, fileName)
         //clear result
-        if(downloadFile.exists()){
-            if(!downloadFile.delete())
+        if (downloadFile.exists()) {
+            if (!downloadFile.delete())
                 log.warn("Remove old downloaded file {} fail, test result may inaccurate.", downloadFile)
         }
         downloadClosure()
+        new WebDriverWait(driver, 20).until(
+                ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("div.blockOverlay")
+                )
+        )
         downloadFile.exists()
     }
 
@@ -93,24 +97,25 @@ class WebPageUtil {
     }
 
     static String populateGridCellSelector(String gridId, String columnName = null, String title = null,
-                                                  String siblingColumnName = null, String siblingTitle = null,
-                                                  String childTag = null) {
+                                           String siblingColumnName = null, String siblingTitle = null,
+                                           String childTag = null) {
         String selector = "#${gridId} tr:not(.jqgfirstrow)"
         if (null != columnName) selector += " td[${TD_COLUMN_FILTER}='${gridId}_${columnName}']"
         if (null != title) selector += "[title='${title}']"
         if (null != siblingColumnName) selector += " ~ td[${TD_COLUMN_FILTER}='${gridId}_${siblingColumnName}']"
         if (null != siblingTitle) selector += "[${TD_COLUMN_FILTER}='${siblingTitle}']"
-        if (null != childTag) selector += " > ${childTag}"
+        if (null != childTag) selector += " ${childTag}"
 //        log.info("selector = {}", selector)
         selector
     }
 
-    static List<Map> getHistoriesInTranslationDetail(String reference, boolean autoCloseDialog = true) {
+    static List<Map> getHistoriesInTranslationDetail(String reference, boolean autoCloseDialog = true, String type = "reference") {
         String transGridDetailId = "transDetailGridList"
 
         String historyGridId = "detailViewTranslationHistoryGrid"
+        String columnName = "reference" == type ? "reflang" : "key"
 
-        String selector = populateGridCellSelector(transGridDetailId, 'reflang', reference, 'history', null, "img")
+        String selector = populateGridCellSelector(transGridDetailId, columnName, reference, 'history', null, "img")
         WebElement historyImg = getWebElementToBeClickable(By.cssSelector(selector))
         historyImg.click()
 
@@ -130,7 +135,6 @@ class WebPageUtil {
      * @param file the file to deliver
      * @param uploadButton the web upload button
      * */
-    public
     static void deliverDictionaries(String resourceFilePath = "/sampleFiles/cms-sample.zip", Map<String, String> dictRenameTo = [:], int previewTimeOut = 60 * 2) {
         File file = new File(this.getClass().getResource(resourceFilePath).toURI())
         JavascriptExecutor jsExecutor = driver
@@ -150,7 +154,7 @@ class WebPageUtil {
             String selector = "#${gridId} tr:not(.jqgfirstrow) td[${TD_COLUMN_FILTER}='${gridId}_name']"
             List<WebElement> elements = driver.findElements(By.cssSelector(selector))
             elements.each { element ->
-                log.info("Rename dictionary from ${oldName} to ${newName}")
+//                log.info("Rename dictionary from ${oldName} to ${newName}")
                 if (null != dictRenameTo[element.text]) {
                     element.click()
                     WebElement currentElem = driver.switchTo().activeElement()
@@ -203,8 +207,8 @@ class WebPageUtil {
      * @return Application tree of the web element or error message web element if valid credential is false
      * */
     static WebElement login(String url,
-                                   String userName = "admin", String password = "alcatel123", boolean validCredential = true) {
-        log.info "userName={}, password={}, validCredential={}", userName, password, validCredential
+                            String userName = "admin", String password = "alcatel123", boolean validCredential = true) {
+//        log.info "userName={}, password={}, validCredential={}", userName, password, validCredential
         driver.get url
         driver.findElement(By.id('idLoginName')).sendKeys(userName)
         WebElement pwdBtn = driver.findElement(By.id('idPassword'))
@@ -233,7 +237,7 @@ class WebPageUtil {
      * @param testProductName test product name
      * @param testApplicationName test application name
      * */
-    public
+
     static WebElement getTestApp(String productName = "DMS", String appName = "TestSuite") {
         // test if test product and application exists, if not create them
         String productVersion = "V2"
@@ -316,6 +320,7 @@ class WebPageUtil {
     }
 
     static boolean clickButtonOnDialog(String dialogId, String buttonText) {
+        getWebElement(By.id(dialogId))
         WebElement button = getWebElementByJQuerySelector("#${dialogId} ~ div.ui-dialog-buttonpane button:contains('${buttonText}')")
         if (null == button) return false
         button.click()
@@ -417,7 +422,7 @@ class WebPageUtil {
      * @return compiled javascript ready for executeAsyncScript to call
      * */
     static String getAsyncJSCode(String coffeeFile, String path = "/com/alcatel_lucent/dms/webpage/js",
-                                        List<String> utilCoffee = ["util"]) {
+                                 List<String> utilCoffee = ["util"]) {
         String cs = IOUtils.toString(getClass().getResourceAsStream("${path}/${coffeeFile}.coffee"))
         String utilPath = '/js/lib'
         String fileSeparator = '\n#' + "=".center(100, '=') + '\n' * 2
@@ -469,8 +474,7 @@ class WebPageUtil {
      *}*        labelKey2:
      *{
      *             ....
-     *}*}*                         */
-    public
+     *}*}*                               */
     static Map<String, Object> getLabelDataInDict(String dictName, List labelKeyInclude = [], boolean autoCloseStringDialog = true) {
         openDictionaryStringsDialog(dictName)
         //collect Label Data

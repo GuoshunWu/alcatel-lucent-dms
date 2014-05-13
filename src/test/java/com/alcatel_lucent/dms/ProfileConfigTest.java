@@ -2,37 +2,25 @@ package com.alcatel_lucent.dms;
 
 
 import com.alcatel_lucent.dms.service.parser.NOEStrParser;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.MapMaker;
-import junit.framework.Assert;
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.commons.lang3.text.translate.*;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
-import java.util.*;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.TimeUnit;
+import java.util.Properties;
 
 /**
  * Created by IntelliJ IDEA.
@@ -115,7 +103,7 @@ public class ProfileConfigTest {
 
     }
 
-//    @Test
+    @Test
     public void testGuava() throws InterruptedException {
     }
 
