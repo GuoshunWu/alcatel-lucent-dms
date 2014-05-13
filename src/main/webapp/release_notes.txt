@@ -1,5 +1,6 @@
 V2.15.8
     * Allows to sort by T/N/I columns in Translation summary view
+    * Optimize performance for importing dictionaries and adding languages
 
 V2.15.7 (Apr 10, 2014)
     * Add option "Secondary Reference" to translation task
