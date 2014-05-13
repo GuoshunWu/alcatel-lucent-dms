@@ -5,7 +5,7 @@
 
     <groupId>com.alcatel_lucent.dms</groupId>
     <artifactId>dms</artifactId>
-    <version>2.15.7</version>
+    <version>2.15.8</version>
     <packaging>war</packaging>
     <name>Dictionary Management System</name>
     <url>http://localhost:8080/dms</url>
