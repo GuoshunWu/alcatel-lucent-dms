@@ -60,13 +60,13 @@ class DMSIntegrateTest {
     public TestRule watcher = new TestWatcher() {
         @Override
         void starting(Description description) {
-            log.info("Starting test ${description.methodName}".center(100, '='))
+            log.info("Starting test ${description.methodName}".padRight(100, '='))
         }
     }
 
     @AfterClass
     static void afterClass() {
-//        WebPageUtil.driver.quit()
+        WebPageUtil.driver.quit()
         testApp = null
     }
 
