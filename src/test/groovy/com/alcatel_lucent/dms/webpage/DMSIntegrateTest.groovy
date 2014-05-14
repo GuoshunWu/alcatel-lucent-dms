@@ -199,7 +199,7 @@ class DMSIntegrateTest {
         assertEquals("Dictionary ${expectedDictName} expected ${expectedNum} labels.", expectedNum, Integer.parseInt(dmsTestRow[0]["labelNum"]))
         expectedNum = 7
         assertEquals("Dictionary ${expectedDictName} expected ${expectedNum} languages.", expectedNum, getDictionaryLanguageCount(expectedDictName))
-        SECONDS.sleep(2)
+        SECONDS.sleep 2
         Map labels = getLabelDataInDict expectedDictName
 //        log.info("Labels info=>{}", labels)
 
