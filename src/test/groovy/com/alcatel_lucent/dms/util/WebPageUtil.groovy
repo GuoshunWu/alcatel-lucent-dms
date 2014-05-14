@@ -6,6 +6,7 @@ import org.openqa.selenium.By
 import org.openqa.selenium.JavascriptExecutor
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
+import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.firefox.FirefoxProfile
 import org.openqa.selenium.interactions.Actions
@@ -36,28 +37,37 @@ class WebPageUtil {
     private static Logger log = LoggerFactory.getLogger(WebPageUtil)
 
     static {
+        FirefoxProfile profile = new FirefoxProfile()
+        profile.setPreference("browser.download.dir", DOWNLOAD_DIR)
+        profile.setPreference("browser.download.folderList", 2)
+        profile.setPreference("browser.download.manager.showWhenStarting", false)
 
+        /*
+          0: Direct connection, no proxy. (Default in Windows and Mac previous to 1.9.2.4 /Firefox 3.6.4)
+          1: Manual proxy configuration.
+          2: Proxy auto-configuration (PAC).
+          4: Auto-detect proxy settings.
+          5: Use system proxy settings. (Default in Linux; default for all platforms, starting in 1.9.2.4 /Firefox 3.6.4)
+        */
+        profile.setPreference("network.proxy.type", 0)
+//        profile.setPreference("network.proxy.http", "localhost")
+//        profile.setPreference("network.proxy.http_port", 3128)
+
+        profile.setPreference("browser.helperApps.alwaysAsk.force", false)
+        profile.setPreference("browser.helperApps.neverAsk.saveToDisk", "text/plain, application/zip, " +
+                "application/octet-stream, application/vnd.ms-excel, " +
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+
+        profile.enableNativeEvents = true
+        driver = new FirefoxDriver(profile)
+
+        System.setProperty("webdriver.chrome.driver", new File(WebPageUtil.getResource("/chromedriver.exe").toURI()).absolutePath)
         // Create a new instance of the Firefox driver
         // Notice that the remainder of the code relies on the interface,
         // not the implementation.     see: http://chromedriver.storage.googleapis.com/index.html
-//        driver = new ChromeDriver()
-//        driver = new RemoteWebDriver(new URL("http://localhost:9515"), DesiredCapabilities.chrome())
-//        driver = new InternetExplorerDriver()
+        //driver = new ChromeDriver()
+        //driver = new InternetExplorerDriver()
 
-        FirefoxProfile profile = new FirefoxProfile();
-        profile.setPreference("browser.download.dir", DOWNLOAD_DIR);
-        profile.setPreference("browser.download.folderList", 2);
-        profile.setPreference("browser.download.manager.showWhenStarting", false);
-
-        profile.setPreference("browser.helperApps.alwaysAsk.force", false);
-        profile.setPreference("browser.helperApps.neverAsk.saveToDisk", "text/plain, application/zip, " +
-                "application/octet-stream, application/vnd.ms-excel, " +
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-
-        profile.enableNativeEvents = true
-        driver = new FirefoxDriver(profile);
-
-//        driver = new RemoteWebDriver(new URL("http://localhost:9515"), DesiredCapabilities.chrome())
         driver.manage().timeouts().setScriptTimeout(30, SECONDS)
     }
 
@@ -85,7 +95,7 @@ class WebPageUtil {
     }
 
     static List getDictionariesInDictGrid() {
-        @Language("JavaScript 1.6") String jsCode = "return \$('#dictionaryGridList').getRowData()";
+        @Language("JavaScript 1.6") String jsCode = "return \$('#dictionaryGridList').getRowData()"
         return (driver as JavascriptExecutor).executeScript(jsCode)
     }
 
@@ -193,7 +203,7 @@ class WebPageUtil {
         WebElement contextInput = getWebElement(By.cssSelector("#${dialogId} #context"))
         // contextInput.sendKeys  Keys.chord(Keys.CONTROL, "a", newLabelContext)
 
-        clickButtonOnDialog(dialogId, 'Add & Close');
+        clickButtonOnDialog(dialogId, 'Add & Close')
         return getLabelDataInDict(dictName, [newLabelKey], false)[newLabelKey]
     }
 
@@ -244,20 +254,23 @@ class WebPageUtil {
         String appVersion = "1.0"
         //if product not found create new product
         WebElement productElement = getWebElementByJQuerySelector("li[type='product']:contains('${productName}')")
+
         Actions actions = new Actions(driver)
 
         boolean createProductVersion = true
         if (null == productElement) {
             // right click products
-            actions.contextClick(getWebElement(By.partialLinkText("Products"))).perform()
+            WebElement rootProductsElem = getWebElement(By.partialLinkText("Products"))
+            MICROSECONDS.sleep 1000
+            actions.contextClick(rootProductsElem).perform()
 
-            getWebElement(By.partialLinkText("New product")).click()
+            getWebElementToBeClickable(By.partialLinkText("New product")).click()
             driver.switchTo().activeElement().sendKeys("${productName}\n")
-
+            MICROSECONDS.sleep 500
             getWebElement(By.partialLinkText(productName)).click()
         } else {
             getWebElement(By.partialLinkText(productName)).click() //select product
-            MICROSECONDS.sleep(500)
+            SECONDS.sleep 3
             Select select = new Select(getWebElement(By.id("selVersion")))
             select.selectByVisibleText(productVersion)
             String verText = select.getFirstSelectedOption().text
@@ -281,13 +294,14 @@ class WebPageUtil {
             actions.contextClick(getWebElement(By.partialLinkText(productName))).perform()
             getWebElement(By.partialLinkText("New application")).click()
             driver.switchTo().activeElement().sendKeys("${appName}\n")
+            MICROSECONDS.sleep 500
             getWebElement(By.partialLinkText(appName)).click()
         } else {
             MICROSECONDS.sleep(500)
             //expand product element
             WebElement testProd = getWebElement(By.partialLinkText(productName)).findElement(By.xpath("preceding-sibling::ins")).click()
-            getWebElement(By.partialLinkText(appName)).click()
-
+            getWebElementToBeClickable(By.partialLinkText(appName)).click()
+            SECONDS.sleep 3
             Select select = new Select(getWebElement(By.id("selAppVersion")))
             select.selectByVisibleText(appVersion)
             String verText = select.getFirstSelectedOption().text
@@ -339,6 +353,11 @@ class WebPageUtil {
         )
     }
 
+    static WebElement getWebElementPresence(By by, int timeOutInSeconds = 10) {
+        return getWebElement(by, timeOutInSeconds, false)
+    }
+
+
     static WebElement getWebElementByJQuerySelector(String selector) {
         List<WebElement> webElements = getWebElementsByJQuerySelector(selector)
         if (webElements.size() > 0) return webElements.get(0)
@@ -347,9 +366,9 @@ class WebPageUtil {
 
     static List<WebElement> getWebElementsByJQuerySelector(String selector) {
         @Language("JavaScript 1.6") String jsCode = """
-          var elements = \$("${selector}");
-          if(elements.length)return elements.get();
-          return [];
+          var elements = \$("${selector}")
+          if(elements.length)return elements.get()
+          return []
        """
         return (driver as JavascriptExecutor).executeScript(jsCode)
     }
@@ -474,7 +493,7 @@ class WebPageUtil {
      *}*        labelKey2:
      *{
      *             ....
-     *}*}*                               */
+     *}*}*                                    */
     static Map<String, Object> getLabelDataInDict(String dictName, List labelKeyInclude = [], boolean autoCloseStringDialog = true) {
         openDictionaryStringsDialog(dictName)
         //collect Label Data
@@ -505,9 +524,9 @@ class WebPageUtil {
             if (transActs.size() > 0) {
                 new WebDriverWait(driver, 30).until(ExpectedConditions.elementToBeClickable(transActs[0]))
                 transActs[0].click()
-				MILLISECONDS.sleep 1000
-				label['translation'] = [:]
-				List<WebElement> transRows = getWebElementsByJQuerySelector(transSelector)
+                MILLISECONDS.sleep 1000
+                label['translation'] = [:]
+                List<WebElement> transRows = getWebElementsByJQuerySelector(transSelector)
                 transRows.each { transRow ->
                     Map translation = [:]
                     WebElement transCode = transRow.findElement(By.cssSelector("td[${TD_COLUMN_FILTER}='${stringSettingsTranslationGridId}_code']"))

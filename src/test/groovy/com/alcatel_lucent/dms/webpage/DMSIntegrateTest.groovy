@@ -46,10 +46,12 @@ class DMSIntegrateTest {
     private static WebElement testApp
     private static Logger log = LoggerFactory.getLogger(DMSIntegrateTest)
 
-    public static final String TARGET_URL = "http://127.0.0.1:8888/dms"
+    static final String TARGET_URL = "http://127.0.0.1:8888/dms"
+    // Test another target
+//    static final String TARGET_URL = "http://135.251.222.71:8888/dms"
 
-    public static final String APP_NAME = "TestSuite"
-    public static final String PROD_NAME = "DMS"
+    static final String APP_NAME = "TestSuite"
+    static final String PROD_NAME = "DMS"
 
 
     @BeforeClass
@@ -68,6 +70,7 @@ class DMSIntegrateTest {
         protected void failed(Throwable e, Description description) {
             log.error("test ${description.methodName} failed.")
             e.printStackTrace()
+//            WebPageUtil.driver.quit()
             exit(-1)
         }
     }
@@ -120,7 +123,7 @@ class DMSIntegrateTest {
                 assertTrue onLine.text.contains("online")
                 WebElement lastLoginTime = row.findElement(By.cssSelector("td[${TD_COLUMN_FILTER}='${gridId}_lastLoginTime']"))
                 TimeDuration duration = TimeCategory.minus(new Date(), new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(lastLoginTime.text))
-                assertTrue duration.seconds < 40
+                assertTrue duration.seconds < 60
             }
         }
     }
@@ -132,28 +135,25 @@ class DMSIntegrateTest {
 //        1. Operation succeeded.
         getWebElementToBeClickable(By.cssSelector("div#adminTabs li[aria-controls='glossary'] > a")).click()
         String gridId = "glossaryGrid"
-
+        SECONDS.sleep 1
         getWebElementToBeClickable(By.id("custom_add_${gridId}")).click()
 
         getWebElement(By.id("glossaryText")).sendKeys(glossaryVoIP)
         getWebElement(By.id("glossaryDescription")).sendKeys("Test glossary for DMS test cases.")
-        getWebElementByJQuerySelector("#createGlossaryDialog + div button:contains('OK')").click()
+        clickButtonOnDialog('createGlossaryDialog', 'OK')
         // wait for grid refreshed
-        SECONDS.sleep(1)
-        WebElement glossaryElem = getWebElementByJQuerySelector("#${gridId} tr:not(.jqgfirstrow):has(td[${TD_COLUMN_FILTER}='${gridId}_text'])")
+        WebElement glossaryDirtyElem = getWebElement(By.cssSelector(populateGridCellSelector(gridId, 'text', glossaryVoIP, 'dirty')))
 //      2. "Applied" flag of the new glossary is "false" on creation
-        assertEquals "false", glossaryElem.findElement(By.cssSelector("td[${TD_COLUMN_FILTER}='${gridId}_dirty']")).text
+        assertEquals "false", glossaryDirtyElem.text
 
         //apply glossary
         getWebElement(By.id("custom_apply_glossaryGrid")).click()
         //until dialog show
-        getWebElement(By.id("msgBoxHiddenDiv"), 30)
-        getWebElementByJQuerySelector("#msgBoxHiddenDiv ~ div.ui-dialog-buttonpane button:contains('OK')").click()
-
+        clickButtonOnDialog('msgBoxHiddenDiv', 'OK')
         //3. "Applied" flag is changed to "true" after applying glossary
-        glossaryElem = getWebElementByJQuerySelector("#${gridId} tr:not(.jqgfirstrow):has(td[${TD_COLUMN_FILTER}='${gridId}_text'])")
+        glossaryDirtyElem = getWebElement(By.cssSelector(populateGridCellSelector(gridId, 'text', glossaryVoIP, 'dirty')))
 //      2. "Applied" flag of the new glossary is "false" on creation
-        assertEquals "true", glossaryElem.findElement(By.cssSelector("td[${TD_COLUMN_FILTER}='${gridId}_dirty']")).text
+        assertEquals "true", glossaryDirtyElem.text
     }
 
     /**
@@ -368,20 +368,20 @@ class DMSIntegrateTest {
 
         String dictName = "dms-test.xlsx"
         openDictionaryStringsDialog(dictName)
-		MILLISECONDS.sleep 500
+        MILLISECONDS.sleep 500
         String gridId = "stringSettingsGrid"
         WebElement lockElem = getWebElementToBeClickable(By.id("custom_lock_${gridId}"))
 
         if (lockElem.text.contains("Unlock")) {
             lockElem.click()
         }
+        MILLISECONDS.sleep 500
         String labelKey = "DMSTEST9"
         By refSelector = By.cssSelector("#${gridId} tr:not(.jqgfirstrow) td[${TD_COLUMN_FILTER}='${gridId}_key'][title=${labelKey}] + td")
-		String newRef = "Test: changed new label"
-		WebElement refElement = getWebElementToBeClickable(refSelector)
+        String newRef = "Test: changed new label"
+        WebElement refElement = getWebElementToBeClickable(refSelector)
         refElement.click()
         refElement = driver.switchTo().activeElement()
-		MILLISECONDS.sleep 100
         refElement.clear()
         refElement.sendKeys(newRef + "\n")
         SECONDS.sleep(1)
@@ -650,7 +650,6 @@ class DMSIntegrateTest {
             searchElement.clear()
             searchElement.sendKeys(reference + "\n")
             SECONDS.sleep 1
-
             String translationSelector = populateGridCellSelector(transGridDetailId, 'reflang', reference, 'translation')
             List<WebElement> allTranslations = getWebElementsByJQuerySelector(translationSelector)
             allTranslations.every { WebElement translationElement ->
@@ -731,12 +730,12 @@ class DMSIntegrateTest {
 //      6. "General" are still translated as "总体" in other dictionaries
         usedDictionaries.each { String usedDictName ->
             openTranslationDetailDialog usedDictName, languageName, status
-            MICROSECONDS.sleep 500
+            SECONDS.sleep 1
             WebElement searchElement = getWebElement(By.id("transDetailSearchText"))
             searchElement.clear()
             searchElement.sendKeys(reference + "\n")
-            MICROSECONDS.sleep 500
             String translationSelector = populateGridCellSelector(transGridDetailId, 'reflang', reference, 'translation')
+            SECONDS.sleep 1
             List<WebElement> allTranslations = getWebElementsByJQuerySelector(translationSelector)
             allTranslations.every { WebElement translationElement ->
                 assertEquals '总体', translationElement.text
@@ -1045,11 +1044,11 @@ class DMSIntegrateTest {
             if (dictName == chkDictName) return
 
             openTranslationDetailDialog chkDictName, languageName, 'T'
-            MICROSECONDS.sleep 500
+            SECONDS.sleep 1
             WebElement searchElement = getWebElement(By.id("transDetailSearchText"))
             searchElement.clear()
             searchElement.sendKeys(reference + "\n")
-            MICROSECONDS.sleep 500
+            SECONDS.sleep 1
             String translationSelector = populateGridCellSelector(transGridDetailId, 'reflang', reference, 'translation')
             List<WebElement> allTranslations = getWebElementsByJQuerySelector(translationSelector)
             allTranslations.every { WebElement translationElement ->
@@ -1065,9 +1064,16 @@ class DMSIntegrateTest {
         login TARGET_URL
         clickTestApp()
         SECONDS.sleep 2
-//        getWebElement(By.id("navitransmngTab")).click()
-        getWebElement(By.id("navitaskmngTab")).click()
+        test012UpdateStatus()
+        test013ExportTranslationSummary()
+        test014ExportTranslationDetail()
+        test015ImportTranslation()
+        test016CreateTask()
+        test017DownloadTask()
         test018ReceiveTask()
+//        getWebElement(By.id("navitransmngTab")).click()
+//        getWebElement(By.id("navitaskmngTab")).click()
+//        test018ReceiveTask()
     }
 
 
