@@ -60,15 +60,16 @@ class WebPageUtil {
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 
         profile.enableNativeEvents = true
+        // Create a new instance of the Firefox driver
+        // Notice that the remainder of the code relies on the interface,
+        // not the implementation.
         driver = new FirefoxDriver(profile)
 
         System.setProperty("webdriver.chrome.driver", new File(WebPageUtil.getResource("/chromedriver.exe").toURI()).absolutePath)
         System.setProperty("webdriver.ie.driver", new File(WebPageUtil.getResource("/IEDriverServer.exe").toURI()).absolutePath)
 
-        // Create a new instance of the Firefox driver
-        // Notice that the remainder of the code relies on the interface,
-        // not the implementation.     see: http://code.google.com/p/selenium/wiki/ChromeDriver
-//        driver = new ChromeDriver()
+        //   see: http://code.google.com/p/selenium/wiki/ChromeDriver
+//           driver = new ChromeDriver()
 
         //https://code.google.com/p/selenium/wiki/InternetExplorerDriver
 //        driver = new InternetExplorerDriver()
@@ -257,7 +258,7 @@ class WebPageUtil {
         String productVersion = "V2"
         String appVersion = "1.0"
         //if product not found create new product
-        WebElement productElement = getWebElementByJQuerySelector("li[type='product']:contains('${productName}')")
+        WebElement productElement = getWebElementByJQuerySelector("li[type='product']:contains('${productName}')", 0)
 
         Actions actions = new Actions(driver)
 
@@ -337,12 +338,9 @@ class WebPageUtil {
         )
     }
 
-    static boolean clickButtonOnDialog(String dialogId, String buttonText) {
+    static void clickButtonOnDialog(String dialogId, String buttonText) {
         getWebElement(By.id(dialogId))
-        WebElement button = getWebElementByJQuerySelector("#${dialogId} ~ div.ui-dialog-buttonpane button:contains('${buttonText}')")
-        if (null == button) return false
-        button.click()
-        return true
+        getWebElementByJQuerySelector("#${dialogId} ~ div.ui-dialog-buttonpane button:contains('${buttonText}')").click()
     }
 
     static WebElement getWebElement(By by, int timeOutInSeconds = 10, visible = true) {
@@ -362,10 +360,17 @@ class WebPageUtil {
     }
 
 
-    static WebElement getWebElementByJQuerySelector(String selector) {
-        List<WebElement> webElements = getWebElementsByJQuerySelector(selector)
-        if (webElements.size() > 0) return webElements.get(0)
-        return null
+    static WebElement getWebElementByJQuerySelector(String selector, int timeOutInSeconds = 10) {
+        long waitMicroseconds = timeOutInSeconds * 1000
+        int WAIT_INTERVAL = 100
+        while (true) {
+            List<WebElement> webElements = getWebElementsByJQuerySelector(selector)
+            if (webElements.size() != 0) return webElements.get(0)
+            MICROSECONDS.sleep(WAIT_INTERVAL)
+            waitMicroseconds -= WAIT_INTERVAL
+            if (waitMicroseconds <= 0) break
+        }
+        null
     }
 
     static List<WebElement> getWebElementsByJQuerySelector(String selector) {
@@ -374,7 +379,7 @@ class WebPageUtil {
           if(elements.length)return elements.get()
           return []
        """
-        return (driver as JavascriptExecutor).executeScript(jsCode)
+        (driver as JavascriptExecutor).executeScript(jsCode)
     }
 
     static void createGlossary(String glossary, autoApply = true) {
@@ -497,7 +502,7 @@ class WebPageUtil {
      *}*        labelKey2:
      *{
      *             ....
-     *}*}*                                    */
+     *}*}*                                               */
     static Map<String, Object> getLabelDataInDict(String dictName, List labelKeyInclude = [], boolean autoCloseStringDialog = true) {
         openDictionaryStringsDialog(dictName)
         //collect Label Data
