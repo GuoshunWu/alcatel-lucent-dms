@@ -368,7 +368,7 @@ class DMSIntegrateTest {
 
         String dictName = "dms-test.xlsx"
         openDictionaryStringsDialog(dictName)
-
+		MILLISECONDS.sleep 500
         String gridId = "stringSettingsGrid"
         WebElement lockElem = getWebElementToBeClickable(By.id("custom_lock_${gridId}"))
 
@@ -377,11 +377,12 @@ class DMSIntegrateTest {
         }
         String labelKey = "DMSTEST9"
         By refSelector = By.cssSelector("#${gridId} tr:not(.jqgfirstrow) td[${TD_COLUMN_FILTER}='${gridId}_key'][title=${labelKey}] + td")
-        WebElement refElement = getWebElementToBeClickable(refSelector)
+		String newRef = "Test: changed new label"
+		WebElement refElement = getWebElementToBeClickable(refSelector)
         refElement.click()
         refElement = driver.switchTo().activeElement()
-        String newRef = "Test: changed new label"
-        refElement.clear();
+		MILLISECONDS.sleep 100
+        refElement.clear()
         refElement.sendKeys(newRef + "\n")
         SECONDS.sleep(1)
 //      1. Reference text is changed without error.

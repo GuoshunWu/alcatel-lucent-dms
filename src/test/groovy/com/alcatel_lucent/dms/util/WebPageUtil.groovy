@@ -484,7 +484,7 @@ class WebPageUtil {
 
         String selector = "#${stringSettingsGridId} tr:not(.jqgfirstrow)"
         String transSelector = "#${stringSettingsTranslationGridId} tr:not(.jqgfirstrow)"
-        MILLISECONDS.sleep(500)
+        MILLISECONDS.sleep 500
         List<WebElement> rows = getWebElementsByJQuerySelector(selector)
 
         for (WebElement row : rows) {
@@ -505,8 +505,9 @@ class WebPageUtil {
             if (transActs.size() > 0) {
                 new WebDriverWait(driver, 30).until(ExpectedConditions.elementToBeClickable(transActs[0]))
                 transActs[0].click()
-                List<WebElement> transRows = getWebElementsByJQuerySelector(transSelector)
-                label['translation'] = [:]
+				MILLISECONDS.sleep 1000
+				label['translation'] = [:]
+				List<WebElement> transRows = getWebElementsByJQuerySelector(transSelector)
                 transRows.each { transRow ->
                     Map translation = [:]
                     WebElement transCode = transRow.findElement(By.cssSelector("td[${TD_COLUMN_FILTER}='${stringSettingsTranslationGridId}_code']"))
