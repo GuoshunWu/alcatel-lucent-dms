@@ -24,6 +24,7 @@ import java.util.zip.ZipFile
 
 import static com.alcatel_lucent.dms.util.WebPageUtil.*
 import static com.google.common.collect.Collections2.filter
+import static java.lang.System.exit
 import static java.util.concurrent.TimeUnit.*
 import static org.hamcrest.CoreMatchers.allOf
 import static org.hamcrest.CoreMatchers.not
@@ -61,6 +62,13 @@ class DMSIntegrateTest {
         @Override
         void starting(Description description) {
             log.info("Starting test ${description.methodName}".padRight(100, '='))
+        }
+
+        @Override
+        protected void failed(Throwable e, Description description) {
+            log.error("test ${description.methodName} failed.")
+            e.printStackTrace()
+            exit(-1)
         }
     }
 
