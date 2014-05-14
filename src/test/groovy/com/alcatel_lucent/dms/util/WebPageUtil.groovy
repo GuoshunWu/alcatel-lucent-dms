@@ -532,9 +532,11 @@ class WebPageUtil {
     static List getTranslationHistories(WebElement transRow, String stringSettingsTranslationGridId = "stringSettingsTranslationGrid") {
         WebElement translationElem = transRow.findElement(By.cssSelector("td[${TD_COLUMN_FILTER}='${stringSettingsTranslationGridId}_history'] > img"))
         translationElem.click()
-
+        //wait for histories to refresh
+        MICROSECONDS.sleep 500
         String gridId = "stringSettingsTranslationHistoryGrid"
         String historySelector = "#${gridId} tr:not(.jqgfirstrow)"
+
         List<WebElement> histories = getWebElementsByJQuerySelector(historySelector)
         List result = []
         histories.each { historyRow ->
