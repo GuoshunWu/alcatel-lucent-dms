@@ -135,7 +135,7 @@ class DMSIntegrateTest {
 //        1. Operation succeeded.
         getWebElementToBeClickable(By.cssSelector("div#adminTabs li[aria-controls='glossary'] > a")).click()
         String gridId = "glossaryGrid"
-        SECONDS.sleep 1
+        SECONDS.sleep 2
         getWebElementToBeClickable(By.id("custom_add_${gridId}")).click()
 
         getWebElement(By.id("glossaryText")).sendKeys(glossaryVoIP)

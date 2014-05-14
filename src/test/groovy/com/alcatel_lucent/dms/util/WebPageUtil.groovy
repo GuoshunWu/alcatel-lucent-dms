@@ -9,6 +9,7 @@ import org.openqa.selenium.WebElement
 import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.firefox.FirefoxProfile
+import org.openqa.selenium.ie.InternetExplorerDriver
 import org.openqa.selenium.interactions.Actions
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.Select
@@ -62,12 +63,15 @@ class WebPageUtil {
         driver = new FirefoxDriver(profile)
 
         System.setProperty("webdriver.chrome.driver", new File(WebPageUtil.getResource("/chromedriver.exe").toURI()).absolutePath)
+        System.setProperty("webdriver.ie.driver", new File(WebPageUtil.getResource("/IEDriverServer.exe").toURI()).absolutePath)
+
         // Create a new instance of the Firefox driver
         // Notice that the remainder of the code relies on the interface,
-        // not the implementation.     see: http://chromedriver.storage.googleapis.com/index.html
-        //driver = new ChromeDriver()
-        //driver = new InternetExplorerDriver()
+        // not the implementation.     see: http://code.google.com/p/selenium/wiki/ChromeDriver
+//        driver = new ChromeDriver()
 
+        //https://code.google.com/p/selenium/wiki/InternetExplorerDriver
+//        driver = new InternetExplorerDriver()
         driver.manage().timeouts().setScriptTimeout(30, SECONDS)
     }
 
