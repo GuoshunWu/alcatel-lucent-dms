@@ -100,7 +100,6 @@
     </properties>
 
 
-
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -116,21 +115,33 @@
     <dependencies>
 
         <!--<dependency>-->
-            <!--<groupId>org.springframework</groupId>-->
-            <!--<artifactId>springloaded</artifactId>-->
-            <!--<version>1.2.0.RELEASE</version>-->
+        <!--<groupId>org.springframework</groupId>-->
+        <!--<artifactId>springloaded</artifactId>-->
+        <!--<version>1.2.0.RELEASE</version>-->
+        <!--</dependency>-->
+
+        <!-- for jsr 367-->
+        <!--<dependency>-->
+        <!--<groupId>javax.websocket</groupId>-->
+        <!--<artifactId>javax.websocket-api</artifactId>-->
+        <!--<version>1.0</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+        <!--<groupId>org.glassfish.tyrus</groupId>-->
+        <!--<artifactId>tyrus-server</artifactId>-->
+        <!--<version>1.6</version>-->
         <!--</dependency>-->
 
         <!--<dependency>-->
-            <!--<groupId>javax.websocket</groupId>-->
-            <!--<artifactId>javax.websocket-api</artifactId>-->
-            <!--<version>1.0</version>-->
+        <!--<groupId>org.glassfish.tyrus</groupId>-->
+        <!--<artifactId>tyrus-container-grizzly-server</artifactId>-->
+        <!--<version>1.6</version>-->
         <!--</dependency>-->
 
         <!--<dependency>-->
-            <!--<groupId>org.apache.ant</groupId>-->
-            <!--<artifactId>ant-compress</artifactId>-->
-            <!--<version>1.4</version>-->
+        <!--<groupId>org.apache.ant</groupId>-->
+        <!--<artifactId>ant-compress</artifactId>-->
+        <!--<version>1.4</version>-->
         <!--</dependency>-->
 
         <dependency>
@@ -201,10 +212,14 @@
             <artifactId>spring-test</artifactId>
         </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>org.springframework</groupId>-->
-            <!--<artifactId>spring-websocket</artifactId>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-websocket</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
@@ -251,8 +266,8 @@
         </dependency>
 
         <!--<dependency>-->
-            <!--<groupId>org.springframework</groupId>-->
-            <!--<artifactId>spring-web</artifactId>-->
+        <!--<groupId>org.springframework</groupId>-->
+        <!--<artifactId>spring-web</artifactId>-->
         <!--</dependency>-->
 
         <!--<dependency>-->
@@ -603,7 +618,7 @@
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-core</artifactId>
-            <version>7.0.30</version>
+            <version>7.0.47</version>
             <scope>provided</scope>
         </dependency>
 

@@ -36,7 +36,7 @@ public class DMSContextLoadListener implements ServletContextListener {
         // print internal state
 //        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 //        StatusPrinter.print(lc);
-        ServletContext context = sce.getServletContext();
+        final ServletContext context = sce.getServletContext();
         SessionCookieConfig scc = context.getSessionCookieConfig();
         String path = context.getContextPath();
         if (!path.endsWith("/")) path += "/";
