@@ -83,7 +83,7 @@
             <param-value>
                 /entry\.action\?login\.jsp,/login\.action.*,/api/.*,
                 /login/forward-to-https,
-                /test/.*,/scripts/.*,/json/.*,/manual/.*,/release_notes.txt,.*\.js,.*\.map,.*\.coffee,.*\.css,.*images.*,.*\.ico
+                /test/.*, /hello/.*, /scripts/.*,/json/.*,/manual/.*,/release_notes.txt,.*\.js,.*\.map,.*\.coffee,.*\.css,.*images.*,.*\.ico
             </param-value>
         </init-param>
         <init-param>

@@ -1,24 +1,16 @@
 package com.alcatel_lucent.dms.service;
 
+import com.alcatel_lucent.dms.UserContext;
+import com.alcatel_lucent.dms.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.eclipse.jetty.util.log.Log;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
-import com.alcatel_lucent.dms.UserContext;
-import com.alcatel_lucent.dms.model.Dictionary;
-import com.alcatel_lucent.dms.model.DictionaryHistory;
-import com.alcatel_lucent.dms.model.Label;
-import com.alcatel_lucent.dms.model.Task;
-import com.alcatel_lucent.dms.model.Translation;
-import com.alcatel_lucent.dms.model.TranslationHistory;
-import com.alcatel_lucent.dms.model.User;
 
 @Service("historyService")
 public class HistoryServiceImpl extends BaseServiceImpl implements HistoryService {

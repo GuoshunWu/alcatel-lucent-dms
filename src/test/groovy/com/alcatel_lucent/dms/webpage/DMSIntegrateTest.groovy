@@ -853,7 +853,6 @@ class DMSIntegrateTest {
         String translationSelector = populateGridCellSelector(transGridDetailId, 'key', labelKey, 'translation')
         assertEquals "不保留", getWebElement(By.cssSelector(translationSelector)).text
 
-
         clickButtonOnDialog('translationDetailDialog', 'Close')
 
     }
