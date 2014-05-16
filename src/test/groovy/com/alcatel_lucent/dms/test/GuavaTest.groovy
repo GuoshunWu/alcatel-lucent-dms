@@ -1,14 +1,9 @@
 package com.alcatel_lucent.dms.test
 
-import com.google.common.util.concurrent.FutureCallback
-import com.google.common.util.concurrent.Futures
-import com.google.common.util.concurrent.ListenableFuture
-import com.google.common.util.concurrent.ListenableFutureTask
-import com.google.common.util.concurrent.ListeningExecutorService
-import com.google.common.util.concurrent.MoreExecutors
-import org.junit.Test
+import com.google.common.util.concurrent.*
 
-import javax.annotation.Nullable
+//import org.glassfish.tyrus.client.ClientManager
+//import org.glassfish.tyrus.server.Server
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 
@@ -36,7 +31,6 @@ class GuavaTest {
         ListenableFutureTask lft = ListenableFutureTask.create({
             return "Future task"
         } as Callable<String>)
-
-
     }
+
 }
