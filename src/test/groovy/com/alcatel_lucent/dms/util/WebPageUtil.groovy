@@ -452,7 +452,7 @@ class WebPageUtil {
     static String getAsyncJSCode(String coffeeFile, String path = "/com/alcatel_lucent/dms/webpage/js",
                                  List<String> utilCoffee = ["util"]) {
         String cs = IOUtils.toString(getClass().getResourceAsStream("${path}/${coffeeFile}.coffee"))
-        String utilPath = '/js/lib'
+        String utilPath = path + '/lib'
         String fileSeparator = '\n#' + "=".center(100, '=') + '\n' * 2
         cs = (utilCoffee.collect { utilFile ->
             return IOUtils.toString(getClass().getResourceAsStream("${utilPath}/${utilFile}.coffee"))
@@ -502,7 +502,7 @@ class WebPageUtil {
      *}*        labelKey2:
      *{
      *             ....
-     *}*}*                                               */
+     *}*}*                                                */
     static Map<String, Object> getLabelDataInDict(String dictName, List labelKeyInclude = [], boolean autoCloseStringDialog = true) {
         openDictionaryStringsDialog(dictName)
         //collect Label Data

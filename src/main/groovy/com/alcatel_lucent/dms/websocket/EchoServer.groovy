@@ -7,6 +7,8 @@ import javax.websocket.*
 import javax.websocket.server.ServerEndpoint
 
 /**
+ * This is a web socket example for chrome browser client, tomcat above 7.0.47
+ * socket= new WebSocket("ws://localhost:8888/dms/test/echo");
  * Created by guoshunw on 2014/5/16.
  */
 @ServerEndpoint("/test/echo")

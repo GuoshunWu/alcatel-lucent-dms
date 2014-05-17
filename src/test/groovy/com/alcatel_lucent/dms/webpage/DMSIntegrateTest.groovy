@@ -34,29 +34,27 @@ import static org.junit.Assert.*
 
 /**
  * Created by Guoshun on 14-1-12.
- * Reference: http://docs.seleniumhq.org/docs/03_webdriver.jsp#internet-explorer-driver
  */
-
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(locations = ["/spring.xml"])
-//@Transactional //Important, or the transaction control will be invalid
-//@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class DMSIntegrateTest {
     private static WebElement testApp
     private static Logger log = LoggerFactory.getLogger(DMSIntegrateTest)
 
-    static final String TARGET_URL = "http://127.0.0.1:8888/dms"
-    // Test another target
-//    static final String TARGET_URL = "http://135.251.222.71:8888/dms"
+    static final String TARGET_URL
 
-    static final String APP_NAME = "TestSuite"
-    static final String PROD_NAME = "DMS"
+    static final String APP_NAME
+    static final String PROD_NAME
 
+    static {
+        ConfigObject config = new ConfigSlurper().parse(DMSIntegrateTest.class.getResource("itConfig.groovy"))
+        APP_NAME = config.appName
+        PROD_NAME = config.productName
+        TARGET_URL = config.url
+    }
 
     @BeforeClass
     static void beforeClass() {
-//        WebPageUtil.login TARGET_URL
+        WebPageUtil.login TARGET_URL
     }
 
     @Rule
@@ -90,7 +88,7 @@ class DMSIntegrateTest {
         testApp.click()
     }
 
-    @Test
+//    @Test
     void test001Login() {
         WebElement errElement = login(TARGET_URL, "admin", "1234", false)
         String expectedErrMessage = "Login name or password is incorrect!"
