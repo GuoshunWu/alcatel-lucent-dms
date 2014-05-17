@@ -29,10 +29,10 @@
     <!--</context-param>-->
 
     <!-- Load Spring -->
-    <context-param>
-        <param-name>contextConfigLocation</param-name>
-        <param-value>classpath:spring.xml</param-value>
-    </context-param>
+    <!--<context-param>-->
+        <!--<param-name>contextConfigLocation</param-name>-->
+        <!--<param-value>classpath:spring.xml</param-value>-->
+    <!--</context-param>-->
 
 
     <!--<filter>-->
@@ -137,9 +137,9 @@
     </listener>
 
     <!--Listening Spring-->
-    <listener>
-        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-    </listener>
+    <!--<listener>-->
+        <!--<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>-->
+    <!--</listener>-->
 
     <listener>
         <listener-class>com.alcatel_lucent.dms.listeners.DMSContextLoadListener</listener-class>

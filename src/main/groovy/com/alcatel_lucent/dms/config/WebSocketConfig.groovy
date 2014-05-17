@@ -4,8 +4,11 @@ package com.alcatel_lucent.dms.config
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.web.servlet.config.annotation.EnableWebMvc
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketHandler
+import org.springframework.web.socket.WebSocketMessage
 import org.springframework.web.socket.WebSocketSession
 import org.springframework.web.socket.config.annotation.EnableWebSocket
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer
@@ -18,6 +21,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler
 
 @Configuration
 @EnableWebSocket
+@EnableWebMvc
 class WebSocketConfig implements WebSocketConfigurer {
 
     static final log = LoggerFactory.getLogger(WebSocketConfig)
@@ -29,10 +33,11 @@ class WebSocketConfig implements WebSocketConfigurer {
 
     @Bean
     WebSocketHandler myHandler() {
-        return new TextWebSocketHandler(){
+        return new TextWebSocketHandler() {
             @Override
             protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
                 log.info("session.id=${session.id}, message=${message}")
+                session.sendMessage(new TextMessage("Hello, world."))
             }
         }
     }
