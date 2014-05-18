@@ -8,16 +8,18 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 class DMSWebApplicationInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return [WebConfig]
+        [AppConfig]
     }
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return [WebSocketConfig]
+        [WebConfig]
     }
 
     @Override
     protected String[] getServletMappings() {
-        return ["/test/myHandler"]
+//        ["*.ctrl", "*.sock"]
+//        ["/test/webmvc/*"]
+        ["/"]
     }
 }
