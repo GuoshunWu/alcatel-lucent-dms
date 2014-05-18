@@ -54,7 +54,7 @@ class DMSIntegrateTest {
 
     @BeforeClass
     static void beforeClass() {
-        WebPageUtil.login TARGET_URL
+//        WebPageUtil.login TARGET_URL
     }
 
     @Rule
@@ -88,7 +88,7 @@ class DMSIntegrateTest {
         testApp.click()
     }
 
-//    @Test
+    @Test
     void test001Login() {
         WebElement errElement = login(TARGET_URL, "admin", "1234", false)
         String expectedErrMessage = "Login name or password is incorrect!"

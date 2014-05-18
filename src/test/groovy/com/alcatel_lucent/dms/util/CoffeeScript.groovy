@@ -29,7 +29,7 @@ public class CoffeeScript {
     }
 
     private static void init() {
-        wrappedJs = IOUtils.toString(getClass().getResourceAsStream("/js/lib/coffee-script.js"), "UTF-8")
+        wrappedJs = IOUtils.toString(getClass().getResourceAsStream("/com/alcatel_lucent/dms/webpage/js/lib/coffee-script.js"), "UTF-8")
         ctx = Context.enter()
         try {
             /**
