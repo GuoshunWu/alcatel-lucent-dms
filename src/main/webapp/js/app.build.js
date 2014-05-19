@@ -10,8 +10,8 @@
 
     appDir: "../",
     mainConfigFile: "config.js",
-//    optimize: "uglify2",
-    optimize: "none",
+    optimize: "uglify2",
+//    optimize: "none",
 
     preserveLicenseComments: false,
     generateSourceMaps: false,
@@ -32,8 +32,8 @@
         mangle: true
     },
     fileExclusionRegExp: "^(.*\.(coffee|map|src|cmd|build\.js)|.*r(.min)?.js)$",
-//    optimizeCss: "standard.keepLines",
-    optimizeCss: "none",
+    optimizeCss: "standard.keepLines",
+//    optimizeCss: "none",
 
     pragmasOnSave: {
         excludeCoffeeScript: true
