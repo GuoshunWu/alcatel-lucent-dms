@@ -10,7 +10,8 @@
 
     appDir: "../",
     mainConfigFile: "config.js",
-    optimize: "uglify2",
+//    optimize: "uglify2",
+    optimize: "none",
 
     preserveLicenseComments: false,
     generateSourceMaps: false,
@@ -31,7 +32,9 @@
         mangle: true
     },
     fileExclusionRegExp: "^(.*\.(coffee|map|src|cmd|build\.js)|.*r(.min)?.js)$",
-    optimizeCss: "standard.keepLines",
+//    optimizeCss: "standard.keepLines",
+    optimizeCss: "none",
+
     pragmasOnSave: {
         excludeCoffeeScript: true
     },
@@ -59,11 +62,11 @@
     modules: [
         {
             name: "../loginEntry",
-            include: ['requireLib','login/main']
+            include: ['requireLib', 'login/main']
         },
         {
             name: "../entry",
-            include: ['requireLib','main']
+            include: ['requireLib', 'main']
         }
     ]
 })

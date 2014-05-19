@@ -36,9 +36,9 @@ import static org.junit.Assert.*
  * Created by Guoshun on 14-1-12.
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-class DMSIntegrateTest {
+class DMSIT {
     private static WebElement testApp
-    private static Logger log = LoggerFactory.getLogger(DMSIntegrateTest)
+    private static Logger log = LoggerFactory.getLogger(DMSIT)
 
     static final String TARGET_URL
 
@@ -46,7 +46,7 @@ class DMSIntegrateTest {
     static final String PROD_NAME
 
     static {
-        ConfigObject config = new ConfigSlurper().parse(DMSIntegrateTest.class.getResource("itConfig.groovy"))
+        ConfigObject config = new ConfigSlurper().parse(DMSIT.getResource("itConfig.groovy"))
         APP_NAME = config.appName
         PROD_NAME = config.productName
         TARGET_URL = config.url
@@ -55,6 +55,14 @@ class DMSIntegrateTest {
     @BeforeClass
     static void beforeClass() {
 //        WebPageUtil.login TARGET_URL
+        println "Start DMS integration test".center(100, '=')
+    }
+
+    @AfterClass
+    static void afterClass() {
+        WebPageUtil.driver.quit()
+        testApp = null
+        println "Start DMS integration test".center(100, '=')
     }
 
     @Rule
@@ -73,11 +81,6 @@ class DMSIntegrateTest {
         }
     }
 
-    @AfterClass
-    static void afterClass() {
-        WebPageUtil.driver.quit()
-        testApp = null
-    }
 
     private static clickTestApp() {
         getWebElement(By.id("naviappmngTab")).click()
