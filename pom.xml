@@ -545,6 +545,7 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
+            <!--<version>3.1.0</version>-->
             <version>3.0.1</version>
             <scope>provided</scope>
         </dependency>
@@ -1126,7 +1127,7 @@
                         <groupId>org.apache.tomcat.maven</groupId>
                         <artifactId>tomcat7-maven-plugin</artifactId>
                         <configuration>
-                            <url>http://135.117.180.165:9999/manager/text</url>
+                            <url>http://135.117.180.165:80/manager/text</url>
                         </configuration>
                     </plugin>
                 </plugins>

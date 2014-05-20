@@ -53,7 +53,7 @@ appender("FILE", RollingFileAppender) {
     }
 }
 
-logger("com.alcatel_lucent.dms.filters",DEBUG, ["STDOUT"])
+//logger("com.alcatel_lucent.dms.filters",DEBUG, ["STDOUT"])
 //logger("org.hibernate.type", TRACE)
 //logger("org.hibernate.SQL", DEBUG)
 
