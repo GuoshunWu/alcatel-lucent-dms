@@ -2,9 +2,27 @@
     <div id="layout-container">
         <div class="ui-layout-center">
             <table border="0" width="100%" height="100%">
+                <tr>
+                    <td>
+                           <span class="show-label" id="typeLabel">
+                                <s:text name="product"/>
+                            </span>
+
+                            <span class="show-label" id="versionTypeLabel">
+                                <s:text name="context.prod"/>
+                            </span>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                            <span class="show-label">
+                            <s:text name="version"/>
+                            </span>
+                        <s:select theme="simple" id="selVersion" list="products" listKey="id"
+                                  listValue="version"
+                                  cssStyle="width:200px" headerKey="-1"
+                                  value="curProductId"/>
+                    </td>
+                </tr>
                 <tr style="height: 25px">
                     <td>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <select id="contextSelector"></select>
                         <s:text name="searchtext"/><input id="contextSearchText"/>
                         <button id="contextSearchAction"></button>

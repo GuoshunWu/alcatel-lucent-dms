@@ -26,6 +26,7 @@ define
     message: 'Message'
     create: 'Create'
     prod: 'product'
+    products: 'all products'
     app: 'application'
     dict: 'dictionary'
     label: 'label'

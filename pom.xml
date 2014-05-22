@@ -96,7 +96,7 @@
         <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
         <db.dialect>org.hibernate.dialect.H2Dialect</db.dialect>
         <!-- none, create, create-drop, update, validate -->
-        <db.hbm2ddl.auto>create</db.hbm2ddl.auto>
+        <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
         <dms.luceneindex.dir>${dms.temp}/dms/lucene/indexes/h2</dms.luceneindex.dir>
 
         <!-- use UTF-8 for everything -->
@@ -124,24 +124,6 @@
         <!--<groupId>org.springframework</groupId>-->
         <!--<artifactId>springloaded</artifactId>-->
         <!--<version>1.2.0.RELEASE</version>-->
-        <!--</dependency>-->
-
-        <!-- for jsr 367-->
-        <!--<dependency>-->
-        <!--<groupId>javax.websocket</groupId>-->
-        <!--<artifactId>javax.websocket-api</artifactId>-->
-        <!--<version>1.0</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-        <!--<groupId>org.glassfish.tyrus</groupId>-->
-        <!--<artifactId>tyrus-server</artifactId>-->
-        <!--<version>1.6</version>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-        <!--<groupId>org.glassfish.tyrus</groupId>-->
-        <!--<artifactId>tyrus-container-grizzly-server</artifactId>-->
-        <!--<version>1.6</version>-->
         <!--</dependency>-->
 
         <!--<dependency>-->
@@ -308,26 +290,6 @@
             <version>${hibernate.version}</version>
             <!--<version>4.0.0.Final</version>-->
         </dependency>
-
-        <!--<dependency>-->
-        <!--<groupId>com.cloudhopper.proxool</groupId>-->
-        <!--<artifactId>proxool</artifactId>-->
-        <!--<version>0.9.1</version>-->
-        <!--<exclusions>-->
-        <!--<exclusion>-->
-        <!--<groupId>commons-logging</groupId>-->
-        <!--<artifactId>commons-logging</artifactId>-->
-        <!--</exclusion>-->
-        <!--<exclusion>-->
-        <!--<groupId>log4j</groupId>-->
-        <!--<artifactId>log4j</artifactId>-->
-        <!--</exclusion>-->
-        <!--<exclusion>-->
-        <!--<groupId>javax.servlet</groupId>-->
-        <!--<artifactId>servlet-api</artifactId>-->
-        <!--</exclusion>-->
-        <!--</exclusions>-->
-        <!--</dependency>-->
 
 
         <dependency>
@@ -583,7 +545,8 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>3.1.0</version>
+            <!--<version>3.1.0</version>-->
+            <version>3.0.1</version>
             <scope>provided</scope>
         </dependency>
 
@@ -1164,7 +1127,7 @@
                         <groupId>org.apache.tomcat.maven</groupId>
                         <artifactId>tomcat7-maven-plugin</artifactId>
                         <configuration>
-                            <url>http://135.117.180.165:9999/manager/text</url>
+                            <url>http://135.117.180.165:80/manager/text</url>
                         </configuration>
                     </plugin>
                 </plugins>

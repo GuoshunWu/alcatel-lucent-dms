@@ -469,7 +469,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
             createCell(row, rowNum++, lt == null || lt.getComment() == null ? "" : lt.getComment(), styleUnlockedBody);
             if (label.getDictionary().getFormat().equals(Constants.DictionaryFormat.OTC_EXCEL.toString())) {
                 String strMergeNum = Util.string2Map(label.getAnnotation1()).get("displayCheckMergeNum");
-                if (StringUtils.isNotBlank(strMergeNum)) {
+                if (StringUtils.isNotBlank(strMergeNum) && OTCExcelDisplayInfo != null) {
                     Cell cell = OTCPCGenerator.drawDisplayCheckColumns(row, rowNum, 7, Integer.parseInt(strMergeNum), OTCExcelDisplayInfo.length, greyStyle);
                     OTCPCGenerator.setDisplayCheckCellStyle(cell, label, styleMap);
                     rowNum += 7;
