@@ -192,4 +192,19 @@ public interface TextService {
 	 */
 	void deleteText(Long id);
 
+	/**
+	 * Find texts with same reference but in different contexts
+	 * @param textId
+	 * @return
+	 */
+	Collection<Text> getDiffTexts(Long textId);
+
+	/**
+	 * Compare two texts and retrieve different translations
+	 * @param textId1
+	 * @param textId2
+	 * @return
+	 */
+	Collection<Translation[]> findDiffTranslations(Long textId1, Long textId2);
+
 }

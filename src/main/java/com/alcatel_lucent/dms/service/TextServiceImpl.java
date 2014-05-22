@@ -22,7 +22,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.*;
-import java.util.regex.Matcher;
 
 @Service("textService")
 @SuppressWarnings("unchecked")
@@ -847,4 +846,54 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
         }
         dao.delete(Text.class, textId);
     }
+
+
+	@Override
+	public Collection<Text> getDiffTexts(Long textId) {
+		Text text = (Text) dao.retrieve(Text.class, textId);
+		String hql = "from Text where reference=:ref and context.id<>:contextId";
+		Map param = new HashMap();
+		param.put("ref", text.getReference());
+		param.put("contextId", text.getContext().getId());
+		Collection<Text> qr = dao.retrieve(hql, param);
+		for (Text diffText : qr) {
+			diffText.setDiff(countDiffTranslations(text, diffText));
+		}
+		return qr;
+	}
+
+
+	private int countDiffTranslations(Text text1, Text text2) {
+		int count = 0;
+		if (text1.getTranslations() != null) {
+			for (Translation trans1 : text1.getTranslations()) {
+				Translation trans2 = text2.getTranslation(trans1.getLanguage().getId());
+				if (trans2 != null && (
+						!trans1.getTranslation().equals(trans2.getTranslation()) 
+						|| trans1.getStatus() != trans2.getStatus())) {
+					count++;
+				}
+			}
+		}
+		return count;
+	}
+
+
+	@Override
+	public Collection<Translation[]> findDiffTranslations(Long textId1, Long textId2) {
+		Text text1 = (Text) dao.retrieve(Text.class, textId1);
+		Text text2 = (Text) dao.retrieve(Text.class, textId2);
+		Collection<Translation[]> result = new ArrayList<Translation[]>();
+		if (text1.getTranslations() != null) {
+			for (Translation trans1 : text1.getTranslations()) {
+				Translation trans2 = text2.getTranslation(trans1.getLanguage().getId());
+				if (trans2 != null && (
+						!trans1.getTranslation().equals(trans2.getTranslation()) 
+						|| trans1.getStatus() != trans2.getStatus())) {
+					result.add(new Translation[] {trans1, trans2});
+				}
+			}
+		}
+		return result;
+	}
 }

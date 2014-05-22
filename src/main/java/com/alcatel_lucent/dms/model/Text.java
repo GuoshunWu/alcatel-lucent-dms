@@ -112,6 +112,7 @@ public class Text extends BaseEntity {
     private Integer n;
     private Integer i;
     private Integer refs;
+    private Integer diff;
     
     public Integer getT() {
 		return t;
@@ -143,6 +144,14 @@ public class Text extends BaseEntity {
 
 	public void setRefs(Integer refs) {
 		this.refs = refs;
+	}
+
+	public Integer getDiff() {
+		return diff;
+	}
+
+	public void setDiff(Integer diff) {
+		this.diff = diff;
 	}
 
 	public void populateTranslationSummary() {
