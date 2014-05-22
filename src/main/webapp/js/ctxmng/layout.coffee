@@ -1,13 +1,9 @@
 define ['jqlayout'], ($)->
   init = ()->
-    gridMap =
-      'center': 'contextGrid'
-      'south' : 'compareContextGrid'
-
     $('#layout-container', "#ctxmng").layout(
       onresize: (name, element, state, options, layoutname)->
-        return if !gridMap[name]
-        $("##{gridMap[name]}").setGridWidth(element.width() - 50).setGridHeight(element.height() - 70)
+       $('#contextGrid').setGridWidth(element.width() - 25).setGridHeight(element.height() - 150) if 'center' == name
+       $('#compareContextGrid').setGridWidth(element.width() - 25).setGridHeight(element.height() - 50) if 'south' == name
 
       defaults:
         size: 'auto'
@@ -17,7 +13,6 @@ define ['jqlayout'], ($)->
         togglerLength_closed: 35
         hideTogglerOnSlide: true
 #      south:
-
     )
   layout = init()
   ready = (param)->
