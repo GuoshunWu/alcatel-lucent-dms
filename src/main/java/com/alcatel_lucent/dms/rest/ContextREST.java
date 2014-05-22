@@ -54,7 +54,7 @@ public class ContextREST extends BaseREST {
         @Language("HQL") String countHql = "select count(*) from Context ";
         Map<String, Object> params = new HashMap<String, Object>();
         if (prodId != null) {
-            filterHql = " where id in (select distinct l.context.id c from Label l join l.dictionary dct join dct.applications app join app.products prod where prod.id =:prodId)";
+            filterHql = " where id in (select distinct l.context.id from Label l join l.dictionary dct join dct.applications app join app.products prod where prod.id =:prodId)";
             params.put("prodId", prodId);
         } else if (appId != null) {
             filterHql = " where id in (select distinct l.context.id from Label l join l.context join l.dictionary dct join dct.applications app where app.id= :appId)";

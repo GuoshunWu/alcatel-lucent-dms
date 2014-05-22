@@ -29,11 +29,10 @@ define [
     url: urls.text.texts
     datatype: 'local', mtype: 'post'
     postData: {format:'grid', prop: 'reference, languageNum, t, n, i, refs'}
-#    pager: "#{hGridId}Pager"
-#    rowNum: 999, loadonce: false
-#    sortname: 'reference',  sortorder: 'asc'
-#    viewrecords: true, gridview: true
-#    caption: 'Text in context statistics'
+    pager: "#{hGridId}Pager" , rowNum: 15, rowList: [15, 50, 100]
+    sortname: 'reference',  sortorder: 'asc'
+    viewrecords: true, gridview: true
+    caption: 'Text in Context'
     colNames: ['Reference text', 'Languages', 'T', 'N', 'I', 'Refs', 'Del']
     colModel: [
       {name: 'reference', index: 'reference', width: 700, editable:false, align: 'left'}
@@ -55,6 +54,14 @@ define [
         divStr
       }
     ]
+
+    onSelectRow: (rowid, status, e)->
+#      console.log "rowid=", rowid, "status=", status, "e=", e
+      compareGrid = $('#compareContextGrid')
+      postData = compareGrid.getGridParam 'postData'
+      postData.text=rowid
+
+      compareGrid.trigger 'reloadGrid'
 
     gridComplete: ->
       grid = $(@)

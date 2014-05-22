@@ -98,6 +98,8 @@ define (require)->
 
   text:
     texts: getURL('texts', 'rest/')
+    diff_texts: getURL('diff/texts', 'rest/')
+    diff_text_translations: getURL('diff/text/translations', 'rest/')
     refs: getURL('text/refs', 'rest/')
     translations: getURL('text/translations', 'rest/')
   glossaries: getURL('glossaries', 'rest/')

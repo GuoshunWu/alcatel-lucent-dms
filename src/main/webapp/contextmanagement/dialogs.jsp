@@ -41,9 +41,6 @@
 <div id="ctxDifferencesDialog" title="<s:text name='ctxmng.dialogs.differences.title'/> ">
     <table>
         <tr>
-            <td><s:text name="ctxmng.dialogs.differences.diff"/> <span id="diffRefText"></span></td>
-        </tr>
-        <tr>
             <td>
                 <table id="diffLinkGrid">
                     <tr>
@@ -53,12 +50,6 @@
                 <div id="diffLinkGridPager"></div>
             </td>
         </tr>
-        <%--<tr>--%>
-            <%--<td>--%>
-                <%--<button id="allTakeLeft">All Take Left</button>--%>
-                <%--<button id="allTakeRight">All Take Right</button>--%>
-            <%--</td>--%>
-        <%--</tr>--%>
     </table>
 </div>
 

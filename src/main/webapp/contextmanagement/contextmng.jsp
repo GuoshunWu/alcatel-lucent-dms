@@ -1,9 +1,9 @@
 <div class="dms-panel" id="ctxmng" style="height: 100%">
     <div id="layout-container">
-        <div class="ui-layout-center">
+        <div class="ui-layout-center" style="border-left: none; border-right: none; border-top: none ">
             <table border="0" width="100%" height="100%">
                 <tr>
-                    <td>
+                    <td style="padding-left: 8px">
                            <span class="show-label" id="typeLabel">
                                 <s:text name="product"/>
                             </span>
@@ -22,7 +22,7 @@
                     </td>
                 </tr>
                 <tr style="height: 25px">
-                    <td>
+                    <td style="padding-left: 8px">
                         <select id="contextSelector"></select>
                         <s:text name="searchtext"/><input id="contextSearchText"/>
                         <button id="contextSearchAction"></button>
@@ -30,7 +30,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td align='center' valign='top'>
+                    <td align='center' valign="top">
                         <table id="contextGrid">
                             <tr>
                                 <td></td>
@@ -42,17 +42,17 @@
             </table>
         </div>
 
-        <div class="ui-layout-south">
+        <div class="ui-layout-south" style="border:none">
             <table border="0" width="100%" height="100%">
-                <tr style="height: 25px">
-                    <td align="left">
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <s:text name="ctxmng.comparewithctx"/>
-                        <select id="compareWithContextSelector"></select>
-                        <button id="contextShowDiff"><s:text name="ctxmng.showdiff"/></button>
-                        <button id="contextMerge"><s:text name="ctxmng.merge"/></button>
-                    </td>
-                </tr>
+                <%--<tr style="height: 25px">--%>
+                <%--<td align="left">--%>
+                <%--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--%>
+                <%--<s:text name="ctxmng.comparewithctx"/>--%>
+                <%--<select id="compareWithContextSelector"></select>--%>
+                <%--<button id="contextShowDiff"><s:text name="ctxmng.showdiff"/></button>--%>
+                <%--<button id="contextMerge"><s:text name="ctxmng.merge"/></button>--%>
+                <%--</td>--%>
+                <%--</tr>--%>
                 <tr>
                     <td align='center' valign='top'>
                         <table id="compareContextGrid">

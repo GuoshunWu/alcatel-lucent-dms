@@ -19,12 +19,15 @@ define [
   This will be invoked when the navigate tree node selected
   ###
   nodeSelectHandler = (node, nodeInfo)->
-    console.log "in node select handler: nodeInfo=", nodeInfo
+#    console.log "in node select handler: nodeInfo=", nodeInfo
     $("#typeLabel","div[id='ctxmng']").text "#{c18n[nodeInfo.type].capitalize()}: "
     $('#versionTypeLabel',"div[id='ctxmng']").text "#{nodeInfo.text}"
     verSel = $('#selVersion',"div[id='ctxmng']").empty()
-    if 'products' == nodeInfo
-      console.log "all the products"
+    if 'products' == nodeInfo.type
+      # Load all the contexts in all product versions
+      $.post urls.contexts, {prop: 'id, key', sidx: 'key'}, (json)->
+        options = util.json2Options(json, false, 'key')
+        $('#contextSelector', '#ctxmng').empty().append(options).trigger 'change'
       return
 
     url = if 'prod' == nodeInfo.type then urls.prod_versions else urls.app_versions1
@@ -50,7 +53,7 @@ define [
         prop: 'id, key'
         sidx: 'key'
       postData[nodeInfo.type] = @value unless 'products' == nodeInfo.type
-      console.log "postData=", postData
+#      console.log "postData=", postData
       $.post urls.contexts, postData, (json)->
         options = util.json2Options(json, false, 'key')
         $('#contextSelector', '#ctxmng').empty().append(options).trigger 'change'
@@ -58,15 +61,17 @@ define [
 
     ctxSelector = $('#contextSelector', '#ctxmng').change(->
       ctxgrid.grid.clearGridData()
-      return unless @value
       nodeInfo = util.getProductTreeInfo()
+      ver =  $('#selVersion option:selected', "div[id='ctxmng']").text()
+      ctxgrid.grid.setCaption "Texts in Context: #{$('option:selected', @).text()} of #{c18n[nodeInfo.type]} version #{ver}"
+      return unless @value
 
       postData = ctxgrid.grid.getGridParam('postData')
       delete postData.prod
       delete postData.app
       postData[nodeInfo.type] = nodeInfo.id unless 'products' == nodeInfo.type
       postData.context = @value
-      console.log "in context selector, postData=", postData
+#      console.log "in context selector, postData=", postData
       ctxgrid.grid.trigger 'reloadGrid'
     )
 

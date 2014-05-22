@@ -19,6 +19,7 @@ define
     add: 'Add'
     no: 'No'
     required: '{0} is required!'
+    save: 'Save'
     close: 'Close'
     error: 'Error'
     warning: 'Warning'
