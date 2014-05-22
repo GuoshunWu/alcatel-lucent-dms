@@ -41,25 +41,25 @@ define [
     cdialogs.tipOfDayDialog.dialog 'open' if window.param.currentUser.showTips
 
   panelSwitchHandler = (oldpnl, newpnl)->
-    # we need keep the panels to be informed if current product base changed
+    # The panels need to be informed if current product base changed
 #    console?.log "oldpnl= #{oldpnl}, newpnl= #{newpnl}."
     if 'admin' == oldpnl or 'admin' == newpnl
       $('#adminTabs').tabs 'option', 'active', 2  if isFirst
       isFirst = false
       return
-    return if 'ctxmng' == oldpnl or 'ctxmng' == newpnl
 
     treeSelectedNode=$("#appTree").jstree 'get_selected'
     nodeInfo = util.getProductTreeInfo()
     return if !nodeInfo or '-1' == nodeInfo.id
     type = nodeInfo.type
 
-    tmp=type
-    tmp= 'product' if 'prod' == tmp
-    tmp+='Id'
+    tmp = type
+    tmp = 'product' if 'prod' == tmp
+    tmp += 'Id'
     window.param.currentSelected[tmp]= $('#selVersion', "div[id='#{oldpnl}']").val()
 
-    if 'appmng' == newpnl
+    if newpnl in ['appmng']
+      # trigger the js tree select node event
       $("#appTree").jstree('select_node', $("#appTree").jstree('get_selected'), true)
     else
       options = $('#selVersion option', "div[id='#{oldpnl}']").clone()
@@ -69,7 +69,7 @@ define [
         value = $('#selAppVersion', "div[id='#{oldpnl}']").val()
       $('#selVersion', "div[id='#{newpnl}']").empty().append(options).val(value).trigger 'change'
 
-      if newpnl in ['transmng', 'taskmng']
+      if newpnl in ['transmng', 'taskmng','ctxmng']
 
         $('#versionTypeLabel', "div[id='#{newpnl}']").text nodeInfo.text
         $('#typeLabel',"div[id='#{newpnl}']").text "#{c18n[type].capitalize()}: "
@@ -86,13 +86,12 @@ define [
 #        console?.log "currentPanel=#{currentPanel}, dmsPanels.currentPanel=#{dmsPanels.currentPanel}."
         return if currentPanel == dmsPanels.currentPanel
 
-        if currentPanel in ['admin', 'ctxmng']
+        if currentPanel in ['admin']
           glayout.layout.hide('west')
         else
           glayout.layout.show('west')
         padding = if currentPanel == 'ctxmng' then 0 else 10
         # special setting for context
-#        $('#globalUILayoutContent').css('padding': padding)
 
         $("#pageNavigator").val "#{currentPanel}.jsp"
         $('span.page-title').text $("#pageNavigator>option[value='#{currentPanel}.jsp']").text()

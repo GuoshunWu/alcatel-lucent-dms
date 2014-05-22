@@ -21,7 +21,6 @@
                                       listValue="version"
                                       cssStyle="width:200px" headerKey="-1"
                                       value="curProductId"/>
-                            <%--headerValue="%{getText('product.version.select.head')}"--%>
 
                         </td>
                         <td rowspan="2" align="right">
