@@ -25,10 +25,8 @@ class WebSocketConfig implements WebSocketConfigurer {
             @Override
             protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
                 log.info("session.id=${session.id}, message=${message}")
-                session.sendMessage(new TextMessage("Hello, web socket."))
+                session.sendMessage(new TextMessage("Hello ${message.payload}."))
             }
         }, "/test/webmvc/ws")
     }
-
-
 }
