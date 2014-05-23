@@ -44,9 +44,9 @@ define [
       {name: 'take', index: 'take', editable:false, width: 40, align: 'center'
       unformat: (cellvalue, options, cell) ->cellvalue
       formatter: (cellvalue, options, rowObject)->
-          "<a href=\"javascript:void(0);\" title='A' id=\"act_#{options.rowId}_#{options.colModel.name}_#{options.pos}_A\" style='color:blue'>A</a>
+          "<a href='javascript:void(0);' title='A' id=\"act_#{options.rowId}_#{options.colModel.name}_#{options.pos}_A\" style='color:blue'>A</a>
           &nbsp;&nbsp;
-          <a href=\"javascript:void(0);\" title='B' id=\"act_#{options.rowId}_#{options.colModel.name}_#{options.pos}_B\" style='color:blue'>B</a>
+          <a href='javascript:void(0);' title='B' id=\"act_#{options.rowId}_#{options.colModel.name}_#{options.pos}_B\" style='color:blue'>B</a>
           "
       }
     ]
