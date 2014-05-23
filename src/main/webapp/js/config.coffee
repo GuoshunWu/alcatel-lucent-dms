@@ -10,8 +10,8 @@ require.config
     formvalidate: 'formValidator-4.0.1.min'
     formvalreg: 'formValidatorRegex'
     jqform: 'jquery.form'
-#    jqgrid: 'jqgridlib/jquery.jqGrid.min'
-    jqgrid: 'jquery.jqGrid.min'
+    jqgrid: 'jqgridlib/jquery.jqGrid.min'
+#    jqgrid: 'jquery.jqGrid.min'
     jqtree: 'jquery.jstree'
 #    jqtree: 'jstree3.0'
     jqlayout: 'jquery.layout-latest.min'
@@ -78,7 +78,8 @@ require.config
       deps: ['jquery']
       exports: 'jQuery'
     'jqgrid':
-      deps: ['jqueryui','jquery.migrate', if param? then param.i18ngridfile else 'i18n/grid.locale-en']
+#      deps: ['jqueryui','jquery.migrate', if param? then param.i18ngridfile else 'i18n/grid.locale-en']
+      deps: ['jqueryui','jquery.migrate', if param? then param.i18ngridfile else 'jqgridlib/i18n/grid.locale-en']
       exports: 'jQuery'
     'jqtree':
       deps: ['jquery']

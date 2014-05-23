@@ -26,7 +26,7 @@ define ['jqgrid'], ($)->
     newGrid = $(@getId()).jqGrid gridParam
     #    save search tool bar status before recreate the grid
     #    console.log $("#transGrid").jqGrid 'getGridParam', 'searchvalue'
-    @getGridParam('afterCreate') newGrid
+    newGrid.getGridParam('afterCreate') newGrid
     newGrid
 
 
