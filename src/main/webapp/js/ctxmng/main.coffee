@@ -61,6 +61,7 @@ define [
 
     ctxSelector = $('#contextSelector', '#ctxmng').change(->
       ctxgrid.grid.clearGridData()
+      comparectxgrid.grid.clearGridData()
       nodeInfo = util.getProductTreeInfo()
       ver =  $('#selVersion option:selected', "div[id='ctxmng']").text()
       ctxgrid.grid.setCaption "Texts in Context: #{$('option:selected', @).text()} of #{c18n[nodeInfo.type]} version #{ver}"

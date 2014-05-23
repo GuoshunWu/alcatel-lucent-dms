@@ -30,7 +30,7 @@ define [
     colModel: [
       # text a id is the row id
       {name: 'textb.id', index: 'textb.id', width: 140, editable:false, align: 'left', hidden: true}
-      {name: 'language', index: 'language', width: 140, editable:false, align: 'center'}
+      {name: 'language', index: 'language', width: 140, editable:false, align: 'left'}
       {name: 'translationA', index: 'translationA', width: 220, editable:false, align: 'left'}
       {name: 'statusA', index: 'statusA', editable:false, width: 60, align: 'center'
       formatter: 'select', stype: 'select', searchoptions: {value: c18n.translation.values}
@@ -45,9 +45,9 @@ define [
       unformat: (cellvalue, options, cell) ->cellvalue
       formatter: (cellvalue, options, rowObject)->
           "<a href=\"javascript:void(0);\" title='A' id=\"act_#{options.rowId}_#{options.colModel.name}_#{options.pos}_A\" style='color:blue'>A</a>
-                         &nbsp;&nbsp;
-                         <a href=\"javascript:void(0);\" title='B' id=\"act_#{options.rowId}_#{options.colModel.name}_#{options.pos}_B\" style='color:blue'>B</a>
-                        "
+          &nbsp;&nbsp;
+          <a href=\"javascript:void(0);\" title='B' id=\"act_#{options.rowId}_#{options.colModel.name}_#{options.pos}_B\" style='color:blue'>B</a>
+          "
       }
     ]
     gridComplete: ->
