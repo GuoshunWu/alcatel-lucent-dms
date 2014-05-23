@@ -70,7 +70,7 @@ define [
       postData = ctxgrid.grid.getGridParam('postData')
       delete postData.prod
       delete postData.app
-      postData[nodeInfo.type] = nodeInfo.id unless 'products' == nodeInfo.type
+      postData[nodeInfo.type] =  $('#selVersion', "div[id='ctxmng']").val() unless 'products' == nodeInfo.type
       postData.context = @value
 #      console.log "in context selector, postData=", postData
       ctxgrid.grid.trigger 'reloadGrid'

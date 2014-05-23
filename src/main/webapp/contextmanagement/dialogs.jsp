@@ -38,6 +38,22 @@
 </div>
 
 
+<div id="ctxLanguagesDialog" title="<s:text name='ctxmng.dialogs.languages.title'/> ">
+    <table>
+        <tr>
+            <td>
+                <table id="languagesLinkGrid">
+                    <tr>
+                        <td></td>
+                    </tr>
+                </table>
+                <div id="languagesLinkGridPager"></div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+
 <div id="ctxDifferencesDialog" title="<s:text name='ctxmng.dialogs.differences.title'/> ">
     <table>
         <tr>

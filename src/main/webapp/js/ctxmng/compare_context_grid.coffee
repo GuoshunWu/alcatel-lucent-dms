@@ -53,9 +53,7 @@ define [
         dlg = "Translation" if name in ['t', 'n', 'i']
         dlg = "Reference" if name in ['refs']
         dlg = "Difference" if name in ['diff']
-        if name == 'languageNum'
-          alert 'not implemented.'
-          return
+        dlg = 'Language' if name == 'languageNum'
 
         dialogId = "#ctx#{dlg}sDialog"
         $(dialogId).data('params', colname: name, id: rowid, rowData: rowData).dialog 'open'

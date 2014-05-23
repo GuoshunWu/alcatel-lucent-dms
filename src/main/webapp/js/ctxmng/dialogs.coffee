@@ -13,18 +13,34 @@ define [
   'ctxmng/difflink_grid'
   'ctxmng/reflink_grid'
   'ctxmng/translink_grid'
+  'ctxmng/language_grid'
 
-], ($, jqui, blockui, jqmsgbox, c18n, i18n, urls, util, diffGrid, refGrid, transGrid)->
+], ($, jqui, blockui, jqmsgbox, c18n, i18n, urls, util, diffGrid, refGrid, transGrid, langGrid)->
   refGrid  = refGrid.grid
   diffGrid = diffGrid.grid
   transGrid = transGrid.grid
+  langGrid = langGrid.grid
 
   init = ()->
 
   ready = ()->
+    $('#ctxLanguagesDialog', '#ctxmng').dialog(
+      autoOpen: false
+      width : 600
+      buttons: [
+        {text: c18n.close, click: ->$(@).dialog('close')}
+      ]
+      create: ()->
+      open: ()->
+        params = $(@).data 'params'
+        $('#transRefText', @).text params.rowData.reference
+        langGrid.setGridParam(postData: {text: params.id}).trigger 'reloadGrid'
+    )
+
     $('#ctxReferencesDialog', '#ctxmng').dialog(
       autoOpen: false
-      width : 700
+      width : 1010
+
       buttons: [
         {text: c18n.close, click: ->$(@).dialog('close')}
       ]
@@ -37,7 +53,7 @@ define [
 
     $('#ctxTranslationsDialog', '#ctxmng').dialog(
       autoOpen: false
-      width: 650
+      width: 840
       buttons: [
         {text: c18n.close, click: ->$(@).dialog('close')}
       ]
