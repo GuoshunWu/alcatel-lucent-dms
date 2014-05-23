@@ -29,7 +29,7 @@ define [
     colNames: ['Reference text', 'Context', 'Languages', 'T', 'N', 'I', 'Refs', 'Diff', 'Merge']
     colModel: [
       {name: 'reference', index: 'reference', width: 700, editable: false, align: 'left', hidden: true}
-      {name: 'context', index: 'context.key', width: 700, editable: false, align: 'center'}
+      {name: 'context', index: 'context.key', width: 700, editable: false, align: 'left'}
       $.extend {}, {name: 'languageNum', index: 'languageNum', sortable: false, width: 100, editable: false, align: 'right'}, modelLinkerFmt
       $.extend {}, {name: 't', index: 't', sortable: false, width: 20, editable: false, align: 'right'}, modelLinkerFmt
       $.extend {}, {name: 'n', index: 'n', sortable: false, width: 20, editable: false, align: 'right'}, modelLinkerFmt
