@@ -78,7 +78,6 @@ require.config
       deps: ['jquery']
       exports: 'jQuery'
     'jqgrid':
-#      deps: ['jqueryui','jquery.migrate', if param? then param.i18ngridfile else 'i18n/grid.locale-en']
       deps: ['jqueryui','jquery.migrate', if param? then param.i18ngridfile else 'jqgridlib/i18n/grid.locale-en']
       exports: 'jQuery'
     'jqtree':
