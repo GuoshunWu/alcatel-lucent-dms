@@ -26,7 +26,7 @@ define [
   ready = ()->
     $('#ctxLanguagesDialog', '#ctxmng').dialog(
       autoOpen: false
-      width : 600
+      width : 840
       buttons: [
         {text: c18n.close, click: ->$(@).dialog('close')}
       ]
@@ -82,7 +82,7 @@ define [
       create: ()->
       open:()->
         params = $(@).data 'params'
-        console.log params
+#        console.log params
         toCompareTextId = ($('#compareContextGrid').getGridParam 'postData').text
         postData = diffGrid.getGridParam 'postData'
         postData.text1 = toCompareTextId
