@@ -13,6 +13,8 @@
 
     <%@include file="common/env.jsp" %>
     <link rel="stylesheet" type="text/css" href="${base}css/main.css?v=<s:property value="buildNumber"/>"/>
+    <script type="text/javascript" data-main="js/entry" async="async" src="js/lib/require.js"></script>
+
 </head>
 <body>
 
@@ -40,6 +42,5 @@
     <%--<div class="footer">A test footer</div>--%>
     </div>
 </div>
-<script type="text/javascript" data-main="js/entry" src="js/lib/require.js"></script>
 </body>
 </html>
