@@ -96,7 +96,7 @@
         <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
         <db.dialect>org.hibernate.dialect.H2Dialect</db.dialect>
         <!-- none, create, create-drop, update, validate -->
-        <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
+        <db.hbm2ddl.auto>create</db.hbm2ddl.auto>
         <dms.luceneindex.dir>${dms.temp}/dms/lucene/indexes/h2</dms.luceneindex.dir>
 
         <!-- use UTF-8 for everything -->
@@ -142,6 +142,18 @@
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>13.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.junrar</groupId>
+            <artifactId>junrar</artifactId>
+            <version>0.7</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!--<dependency>-->

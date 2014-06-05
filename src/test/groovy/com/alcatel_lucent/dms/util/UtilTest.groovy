@@ -1,6 +1,7 @@
 package com.alcatel_lucent.dms.util
 
 import com.alcatel_lucent.dms.model.Glossary
+import com.github.junrar.extract.ExtractArchive
 import junit.framework.Assert
 import org.apache.commons.collections.*
 import org.apache.commons.collections.functors.EqualPredicate
@@ -8,9 +9,12 @@ import org.apache.commons.io.FileUtils
 import org.apache.commons.io.IOUtils
 import org.apache.commons.io.input.AutoCloseInputStream
 import org.apache.commons.io.input.BOMInputStream
+import org.apache.commons.logging.LogFactory
 import org.junit.Ignore
 import org.junit.Test
+import org.slf4j.LoggerFactory
 
+import java.nio.file.Files
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -121,6 +125,16 @@ public class UtilTest {
 
 //    @Test
     void testAsyncServlet() {
+
+    }
+
+    @Test
+    void testUnRar(){
+        File f = new File("D:/test/Documents.rar")
+        if(!f.exists()) return
+        File destDir = new File("D:/test/unrar")
+        FileUtils.forceMkdir(destDir)
+        new ExtractArchive(logger: LogFactory.getLog("unRarUtil")).extractArchive(f, destDir)
 
     }
 }
