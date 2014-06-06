@@ -9,9 +9,15 @@ import java.util.Map;
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.LabelTranslation;
+import com.alcatel_lucent.dms.rest.TranslationPair;
 
 public interface TranslationService {
 
+    /**
+     *  Take translation for each pair in the translation pairs
+     *  @param pairs translation paris
+     * */
+    void takeTranslations(Collection<TranslationPair> pairs);
     /**
      * Calculate translation summary in dictionary level
      * @param prodId product id

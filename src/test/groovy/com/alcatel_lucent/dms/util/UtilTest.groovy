@@ -1,24 +1,20 @@
 package com.alcatel_lucent.dms.util
 
-import com.alcatel_lucent.dms.model.Glossary
 import com.github.junrar.extract.ExtractArchive
-import junit.framework.Assert
 import org.apache.commons.collections.*
 import org.apache.commons.collections.functors.EqualPredicate
-import org.apache.commons.io.FileUtils
+import org.apache.commons.compress.archivers.ArchiveInputStream
+import org.apache.commons.compress.archivers.ArchiveStreamFactory
+import org.apache.commons.compress.archivers.sevenz.SevenZArchiveEntry
+import org.apache.commons.compress.archivers.sevenz.SevenZFile
+import org.apache.commons.compress.archivers.sevenz.SevenZMethodConfiguration
 import org.apache.commons.io.IOUtils
 import org.apache.commons.io.input.AutoCloseInputStream
 import org.apache.commons.io.input.BOMInputStream
 import org.apache.commons.logging.LogFactory
-import org.junit.Ignore
 import org.junit.Test
 import org.slf4j.LoggerFactory
-
 import java.nio.file.Files
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Created by IntelliJ IDEA.
@@ -130,11 +126,17 @@ public class UtilTest {
 
     @Test
     void testUnRar(){
+        String file = "D:/dms/xz-5.0.5-windows.7z"
+        SevenZFile sevenZFile = new SevenZFile(new File(file))
+        int BUF_SIZE = 1024
+        SevenZArchiveEntry entry
+        int offset = 0
         File f = new File("D:/test/Documents.rar")
-        if(!f.exists()) return
-        File destDir = new File("D:/test/unrar")
-        FileUtils.forceMkdir(destDir)
-        new ExtractArchive(logger: LogFactory.getLog("unRarUtil")).extractArchive(f, destDir)
-
+            println entry.name.center(100, '=')
+                // read the content of a entry
+                while (offset += sevenZFile.read(content, offset, content.length - offset)) {
+                    println new String(content, "UTF-8")
+            }
+        }
     }
 }

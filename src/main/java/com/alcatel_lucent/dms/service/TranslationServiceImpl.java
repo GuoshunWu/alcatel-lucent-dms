@@ -5,6 +5,9 @@ import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
+import com.alcatel_lucent.dms.rest.TranslationPair;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
 import org.apache.poi.hssf.usermodel.HSSFDataFormatter;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
@@ -40,26 +43,57 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     @Autowired
     private GlossaryService glossaryService;
 
-    /*
-    public Map<Long, int[]> getDictTranslationSummary(Long dictId) {
-        Map<Long, int[]> result = new HashMap<Long, int[]>();
-        Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
-        String hql = "select ot.language.id" +
-                ",sum(case when ot.needTranslation=false or t.status=" + Translation.STATUS_TRANSLATED + " then 1 else 0 end) " +
-                ",sum(case when ot.needTranslation=true and t.status=" + Translation.STATUS_UNTRANSLATED + " then 1 else 0 end) " +
-                ",sum(case when ot.needTranslation=true and t.status=" + Translation.STATUS_IN_PROGRESS + " then 1 else 0 end) " +
-                " from Dictionary d join d.labels l join l.origTranslations ot join l.text.translations t" +
-                " where d.id=:dictId and ot.language=t.language" +
-                " group by ot.language.id";
-        Map param = new HashMap();
-        param.put("dictId", dictId);
-        Collection<Object[]> qr = dao.retrieve(hql, param);
-        for (Object[] row : qr) {
-            result.put((Long) row[0], new int[] {((Number)row[1]).intValue(), ((Number)row[2]).intValue(), ((Number)row[3]).intValue()});
+    private Translation findTranslationById(Collection<Translation> translations, Long Id) {
+        for (Translation trans : translations) {
+            if (trans.getId().equals(Id)) return trans;
         }
-        return result;
+        return null;
     }
-*/
+
+
+    @Override
+    public void takeTranslations(Collection<TranslationPair> pairs) {
+        HashSet<Long> translationIds = Sets.newHashSet();
+        for (TranslationPair pair : pairs) {
+            translationIds.add(pair.getA().getId());
+            translationIds.add(pair.getB().getId());
+        }
+        @org.intellij.lang.annotations.Language("HQL") String hql = "from Translation where id in :transIds";
+//        retrieve translations in a batch
+        List<Translation> translations = dao.retrieve(hql, ImmutableMap.of("transIds", translationIds));
+        for (TranslationPair pair : pairs) {
+            pair.setA(findTranslationById(translations, pair.getA().getId()));
+            pair.setB(findTranslationById(translations, pair.getB().getId()));
+            boolean isTakeA = pair.getTake().equals(TranslationPair.A);
+            Translation takenTrans = isTakeA ? pair.getA() : pair.getB();
+            Translation overrideTrans = isTakeA ? pair.getB() : pair.getA();
+
+            overrideTrans.setStatus(takenTrans.getStatus());
+            overrideTrans.setTranslation(takenTrans.getTranslation());
+        }
+
+    }
+
+    /*
+        public Map<Long, int[]> getDictTranslationSummary(Long dictId) {
+            Map<Long, int[]> result = new HashMap<Long, int[]>();
+            Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
+            String hql = "select ot.language.id" +
+                    ",sum(case when ot.needTranslation=false or t.status=" + Translation.STATUS_TRANSLATED + " then 1 else 0 end) " +
+                    ",sum(case when ot.needTranslation=true and t.status=" + Translation.STATUS_UNTRANSLATED + " then 1 else 0 end) " +
+                    ",sum(case when ot.needTranslation=true and t.status=" + Translation.STATUS_IN_PROGRESS + " then 1 else 0 end) " +
+                    " from Dictionary d join d.labels l join l.origTranslations ot join l.text.translations t" +
+                    " where d.id=:dictId and ot.language=t.language" +
+                    " group by ot.language.id";
+            Map param = new HashMap();
+            param.put("dictId", dictId);
+            Collection<Object[]> qr = dao.retrieve(hql, param);
+            for (Object[] row : qr) {
+                result.put((Long) row[0], new int[] {((Number)row[1]).intValue(), ((Number)row[2]).intValue(), ((Number)row[3]).intValue()});
+            }
+            return result;
+        }
+    */
 /*
  * aborted due to HQL left join issue
     public Map<Long, Map<Long, int[]>> getDictTranslationSummary(Long prodId) {
@@ -822,7 +856,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
             createCell(headRow, 11, "Label ID", null);
             sheet.setColumnWidth(2, 0);
             sheet.setColumnWidth(6, 0);
-            sheet.setColumnWidth(11,  0);
+            sheet.setColumnWidth(11, 0);
             int r = 1;
             for (Long dictId : dictIds) {
                 Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
@@ -882,9 +916,9 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
                     String newTranslation = formatter.formatCellValue(row.getCell(7));
                     Long refLabelId = null;
                     try {
-                    	refLabelId = (long) row.getCell(11).getNumericCellValue();
+                        refLabelId = (long) row.getCell(11).getNumericCellValue();
                     } catch (Exception e) {
-                    	log.warn("Error reading Column 'Label ID', maybe an excel of previous version.");
+                        log.warn("Error reading Column 'Label ID', maybe an excel of previous version.");
                     }
 
 
@@ -906,7 +940,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
                         }
                         Text text = textMap.get(reference);
                         if (text == null) {
-                        	Label label = refLabelId == null ? null : (Label) dao.retrieve(Label.class, refLabelId);
+                            Label label = refLabelId == null ? null : (Label) dao.retrieve(Label.class, refLabelId);
                             text = new Text();
                             text.setReference(reference);
                             text.setRefLabel(label);
@@ -1007,34 +1041,34 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
                 label.setCt(ct);
             }
         }
-        
+
         // find out auto-translated translations and change translationType to "auto"
         HashSet<Long> notAutoIds = new HashSet<Long>();
         Date firstDeliveryTime = getFirstDeliveryTime(dictId);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date historySince = null;
-		try {
-			historySince = sdf.parse("2014-01-29");
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+        try {
+            historySince = sdf.parse("2014-01-29");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         boolean needCalculateAuto = firstDeliveryTime != null && firstDeliveryTime.after(historySince);
         if (needCalculateAuto) {
-	        hql = "select distinct l.id from Label l join l.text.translations ct" +
-	        		",TranslationHistory his,Label refLabel" +
-	        		" where his.parent=ct and his.refLabelId=refLabel.id" +
-	        		" and l.dictionary.id=:dictId and ct.language.id=:langId" +
-	        		" and refLabel.dictionary.id=:dictId" +
-	        		" and (his.status=" + Translation.STATUS_TRANSLATED + " or his.translation=ct.translation)" +
-	        		" and his.operationType not in (" + 
-	        		TranslationHistory.TRANS_OPER_GLOSSARY + "," + 
-	        		TranslationHistory.TRANS_OPER_CAPITALIZE + "," + 
-	        		TranslationHistory.TRANS_OPER_SUGGEST + "," + 
-	        		TranslationHistory.TRANS_OPER_STATUS + ")";
-	        Collection<Long> ids = dao.retrieve(hql, param);
-	        for (Long id : ids) {
-	        	notAutoIds.add(id);
-	        }
+            hql = "select distinct l.id from Label l join l.text.translations ct" +
+                    ",TranslationHistory his,Label refLabel" +
+                    " where his.parent=ct and his.refLabelId=refLabel.id" +
+                    " and l.dictionary.id=:dictId and ct.language.id=:langId" +
+                    " and refLabel.dictionary.id=:dictId" +
+                    " and (his.status=" + Translation.STATUS_TRANSLATED + " or his.translation=ct.translation)" +
+                    " and his.operationType not in (" +
+                    TranslationHistory.TRANS_OPER_GLOSSARY + "," +
+                    TranslationHistory.TRANS_OPER_CAPITALIZE + "," +
+                    TranslationHistory.TRANS_OPER_SUGGEST + "," +
+                    TranslationHistory.TRANS_OPER_STATUS + ")";
+            Collection<Long> ids = dao.retrieve(hql, param);
+            for (Long id : ids) {
+                notAutoIds.add(id);
+            }
         }
 
         // populate default ct and ot values
@@ -1054,20 +1088,20 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
                 ct.setStatus(Translation.STATUS_UNTRANSLATED);
                 label.setCt(ct);
             } else {
-            	if (needCalculateAuto &&
-            			label.getCt().getStatus() == Translation.STATUS_TRANSLATED && 
-            			!label.getCt().getTranslation().equals(label.getReference()) &&
-            			!notAutoIds.contains(label.getId())) {
+                if (needCalculateAuto &&
+                        label.getCt().getStatus() == Translation.STATUS_TRANSLATED &&
+                        !label.getCt().getTranslation().equals(label.getReference()) &&
+                        !notAutoIds.contains(label.getId())) {
                     // duplicate an in-memory object to avoid database update
-            		log.info("Set translationType of label " + label.getKey() + " to AUTO");
+                    log.info("Set translationType of label " + label.getKey() + " to AUTO");
                     Translation ct = new Translation();
                     ct.setId(label.getCt().getId());
                     ct.setTranslation(label.getCt().getTranslation());
-                    ct.setTranslationType(Translation.TYPE_AUTO);	// set type to AUTO
+                    ct.setTranslationType(Translation.TYPE_AUTO);    // set type to AUTO
                     ct.setLastUpdateTime(label.getCt().getLastUpdateTime());
                     ct.setStatus(label.getCt().getStatus());
                     label.setCt(ct);
-            	}
+                }
             }
             // set status to Translated if no translation needed
             if (!label.getOt().isNeedTranslation() || label.getContext().getName().equals(Context.EXCLUSION)) {
@@ -1083,14 +1117,14 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     }
 
     private Date getFirstDeliveryTime(Long dictId) {
-		String hql = "SELECT MIN(obj.operationTime) FROM DictionaryHistory obj WHERE obj.dictionary.id=:dictId";
-		Map param = new HashMap();
-		param.put("dictId", dictId);
-		Timestamp firstTime = (Timestamp) dao.retrieveOne(hql, param);
-		return firstTime == null ? null : new Date(firstTime.getTime());
-	}
+        String hql = "SELECT MIN(obj.operationTime) FROM DictionaryHistory obj WHERE obj.dictionary.id=:dictId";
+        Map param = new HashMap();
+        param.put("dictId", dictId);
+        Timestamp firstTime = (Timestamp) dao.retrieveOne(hql, param);
+        return firstTime == null ? null : new Date(firstTime.getTime());
+    }
 
-	public Collection<Label> searchLabelsWithTranslation(Long prodId,
+    public Collection<Label> searchLabelsWithTranslation(Long prodId,
                                                          Long appId, Long dictId, Long langId, String text) {
         text = text.toUpperCase();
         String hql;

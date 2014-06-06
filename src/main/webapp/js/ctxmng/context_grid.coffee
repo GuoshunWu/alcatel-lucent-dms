@@ -43,7 +43,7 @@ define [
       $.extend {}, {name: 'refs', index: 'refs', editable:false, sortable:false, width: 50, align: 'right'}, modelLinkerFmt
       {name: 'del', index: 'del', sortable:false, width: 50, editable:false, align: 'center'
       formatter: (cellvalue, options, rowObject)->
-        return "" if rowObject[options.pos - 1]
+        return "" if rowObject[options.pos - 1] && "0" != rowObject[options.pos - 1]
 
         divStr =  "<div id=\"delAct_#{options.rowId}\" style=\"float:left;margin-left:5px;\""
         divStr += "class='ui-pg-div ui-inline-del'"

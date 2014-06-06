@@ -69,4 +69,20 @@
     </table>
 </div>
 
+<div id="ctxMergesDialog" title="<s:text name='ctxmng.dialogs.merge.title'/> ">
+    <form>
+          <fieldset id="contexts">
+              <legend>Which context do you want to merge? </legend>
+              <div style="float: left">
+                  <label id="ctxALabel" for="contextA" style="vertical-align: middle"></label>
+                  <input id="contextA" checked type="radio" name="contextGrp" style="vertical-align: middle"/>
+              </div>
+              <div style="float: right">
+                  <label id="ctxBLabel" for="contextB" style="vertical-align: middle"></label>
+                  <input id="contextB" type="radio" name="contextGrp" style="vertical-align: middle"/>
+              </div>
+          </fieldset>
+    </form>
+</div>
+
 
