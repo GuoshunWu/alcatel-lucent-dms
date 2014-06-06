@@ -12,6 +12,8 @@ define [
   gridId = 'diffLinkGrid'
   hGridId = "##{gridId}"
 
+  _takeTranslationResult = {}
+
   deleteOptions = {
   msg: 'Delete selected text?'
   afterShowForm: (formid)->
@@ -53,10 +55,33 @@ define [
     gridComplete: ->
       grid = $(@)
       $("a[id^='act']", @).click(->
-        alert 'To be implemented.'
+        [_, id, name, pos, which] = @id.split '_'
+        takeTranslation id, which
       )
   ).setGridParam(datatype: 'json')
   .navGrid("#{hGridId}Pager", {edit: false, add: false, del: false, search: false, view: false},{},{},{})
+
+
+  takeTranslation =(textId, selectedText)->
+    rowData = grid.getRowData(textId)
+#    console.log("textAId=", textId, ", textBId=", rowData['textb.id'], ", selectedText=", selectedText)
+    grid.setCell(textId, "translation#{selectedText}", '', {'text-decoration':'initial'})
+    grid.setCell(textId, "status#{selectedText}", '', {'text-decoration':'initial'})
+    otherColumn = if 'A' == selectedText then 'B' else 'A'
+    grid.setCell(textId, "translation#{otherColumn}", '', {'text-decoration':'line-through'})
+    grid.setCell(textId, "status#{otherColumn}", '', {'text-decoration':'line-through'})
+
+    _takeTranslationResult[textId] = other: rowData['textb.id'], selected: selectedText
+#    console.log "takeTranslation =", _takeTranslationResult
+
+  _takeForAll= (selectedText)->
+    return unless selectedText in ['A', 'B']
+    $.each grid.getDataIDs(), (rowIndex, rowId)->takeTranslation(rowId, selectedText)
+
+  setTakeTranslationResult: (content={})-> _takeTranslationResult = content
+  getTakeTranslationResult: ()-> _takeTranslationResult
+
+  takeForAll: _takeForAll
 
   grid: grid
 

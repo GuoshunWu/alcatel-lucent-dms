@@ -15,7 +15,7 @@
 
 		<property name="origTranslation" type="text" column="ORIG_TRANSLATION"/>
 		<property name="newTranslation" type="text" column="NEW_TRANSLATION" />
-		<property name="labelKey" type="string" column="LABEL_KEY" />
+		<property name="labelKey" type="string" column="LABEL_KEY" length="1024" />
 		<property name="maxLength" type="string" column="MAX_LENGTH" />
 		<property name="description" type="string" column="DESCRIPTION" />
 			

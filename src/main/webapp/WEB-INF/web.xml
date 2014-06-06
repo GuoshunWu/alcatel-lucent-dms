@@ -122,6 +122,7 @@
         <url-pattern>/task/*</url-pattern>
         <url-pattern>/login/*</url-pattern>
         <url-pattern>/admin/*</url-pattern>
+        <url-pattern>/context/*</url-pattern>
         <url-pattern>/api/*</url-pattern>
         <url-pattern>*.action</url-pattern>
         <url-pattern>*.jsp</url-pattern>

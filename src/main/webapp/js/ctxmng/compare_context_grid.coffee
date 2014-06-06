@@ -39,24 +39,24 @@ define [
 
       {name: 'merge', index: 'merge', editable:false, width: 40, align: 'center', unformat: (cellvalue, options, cell) ->cellvalue
       formatter: (cellvalue, options, rowObject)->
-          return "" if rowObject[options.pos - 1]
+          return "" if "0" != rowObject[options.pos - 1] || !rowObject[options.pos - 1]
           "<a href=\"javascript:void(0);\" title='M' id=\"act_#{options.rowId}_#{options.colModel.name}_#{options.pos}_M\" style='color:blue'>M</a>"
       }
     ]
 
     gridComplete: ->
       grid = $(@)
-      #handlers = grid.getGridParam 'cellactionhandlers'
       $("a[id^='act']", @).click(->
         [_,rowid, name, pos] = @id.split('_')
         rowData = grid.getRowData(rowid)
-        dlg = "Translation" if name in ['t', 'n', 'i']
-        dlg = "Reference" if name in ['refs']
-        dlg = "Difference" if name in ['diff']
-        dlg = 'Language' if name == 'languageNum'
-
-        dialogId = "#ctx#{dlg}sDialog"
-        $(dialogId).data('params', colname: name, id: rowid, rowData: rowData).dialog 'open'
+        dialogMap = {
+          'refs': 'Reference'
+          'diff': 'Difference'
+          'languageNum': 'Language'
+          'merge': 'Merge'
+        }
+        dlg = if name in ['t', 'n', 'i'] then "Translation" else dialogMap[name]
+        $("#ctx#{dlg}sDialog").data('params', colname: name, id: rowid, rowData: rowData).dialog 'open'
       )
   ).setGridParam(datatype: 'json')
   .navGrid "#{hGridId}Pager", {edit: false, add: false, del: false, search: false, view: false}
