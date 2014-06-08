@@ -59,16 +59,16 @@ public class ProcessDictAction extends ProgressAction {
         File upload = new File(filename);
         log.info("upload={}, filename={}, targetdir={}, appId={}", new Object[]{upload, filename, deliverDestDir, appId});
 
-        if (Util.isZipFile(filename)) {
+        if (Util.isArchiveFile(filename)) {
             log.info("decompress file " + upload + " to " + deliverDestDir.getAbsolutePath());
-            ProgressQueue.setProgress("Decompressing zip package...", -1);
-            Util.unzip(upload, deliverDestDir.getAbsolutePath());
+            ProgressQueue.setProgress("Decompressing archive package...", -1);
+            Util.decompressArchive(upload.getPath(), deliverDestDir.getAbsolutePath());
 
-            //move and rename zip file to deliver dest dir
+            //move and rename archive file to deliver dest dir
             FileUtils.moveFile(upload, new File(deliverDir, tempName + ".zip"));
 
         } else {
-            log.info("deliver normal(not zip) file.");
+            log.info("deliver normal(not archive) file.");
             File destFile = new File(deliverDestDir, upload.getName());
             FileUtils.moveFile(upload, destFile);
 

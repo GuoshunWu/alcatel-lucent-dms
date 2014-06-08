@@ -1,6 +1,6 @@
 package com.alcatel_lucent.dms.config
 
-import org.slf4j.LoggerFactory
+import groovy.util.logging.Slf4j
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
@@ -15,9 +15,11 @@ import org.springframework.web.socket.handler.TextWebSocketHandler
 
 @Configuration
 @EnableWebSocket
+
+// groovy Logging ref: http://groovy.codehaus.org/Logging
+@Slf4j
 class WebSocketConfig implements WebSocketConfigurer {
 
-    static final log = LoggerFactory.getLogger(WebSocketConfig)
 
     @Override
     void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {

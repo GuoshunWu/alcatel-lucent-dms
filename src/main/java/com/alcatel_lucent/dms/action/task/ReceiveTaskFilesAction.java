@@ -75,11 +75,11 @@ public class ReceiveTaskFilesAction extends JSONAction {
         if (!dir.exists()) dir.mkdirs();
 
         boolean fileCreateSuccess = true;
-        if (Util.isZipFile(filename)) {
+        if (Util.isArchiveFile(filename)) {
             log.info("decompress file " + upload + " to " + dir.getAbsolutePath());
-            Util.unzip(upload, dir.getAbsolutePath());
+            Util.decompressArchive(upload.getAbsolutePath(), dir.getAbsolutePath());
         } else {
-            log.info("deliver normal(not zip) file.");
+            log.info("deliver normal(not archive) file.");
             fileCreateSuccess = upload.renameTo(new File(dir, filename));
             if (!fileCreateSuccess) {
                 log.warn("move file fail.");

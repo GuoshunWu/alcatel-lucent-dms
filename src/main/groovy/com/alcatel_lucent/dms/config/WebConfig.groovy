@@ -1,5 +1,6 @@
 package com.alcatel_lucent.dms.config
 
+import groovy.util.logging.Slf4j
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
@@ -20,9 +21,8 @@ import org.springframework.web.servlet.view.velocity.VelocityViewResolver
 @EnableWebMvc
 @ComponentScan("com.alcatel_lucent.dms.controller")
 //@Import(WebSocketConfig)
+@Slf4j
 class WebConfig extends WebMvcConfigurerAdapter {
-
-    static final log = LoggerFactory.getLogger(WebConfig)
 
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
