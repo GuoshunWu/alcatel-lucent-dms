@@ -5,6 +5,10 @@ package com.alcatel_lucent.dms.util;
 
 import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.model.Glossary;
+import net.sf.sevenzipjbinding.ISevenZipInArchive;
+import net.sf.sevenzipjbinding.SevenZip;
+import net.sf.sevenzipjbinding.SevenZipException;
+import net.sf.sevenzipjbinding.impl.RandomAccessFileInStream;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
@@ -13,13 +17,13 @@ import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.io.ByteOrderMark;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.AutoCloseInputStream;
 import org.apache.commons.io.input.BOMInputStream;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Attribute;
-import org.dom4j.Element;
 import org.dom4j.tree.DefaultAttribute;
 import org.mozilla.intl.chardet.HtmlCharsetDetector;
 import org.mozilla.intl.chardet.nsDetector;
@@ -42,6 +46,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
+
 import static org.apache.commons.collections.MapUtils.typedMap;
 import static org.apache.commons.lang3.ArrayUtils.toMap;
 
@@ -54,6 +59,14 @@ public class Util {
     private static String zipFileExtsPattern = ".(?:zip)|(?:jar)";
     private static String mdcFileExtsPattern = ".conf";
     private static Logger log = LoggerFactory.getLogger(Util.class);
+
+    private static List<String> SUPPORTED_ARCHIVES = Arrays.asList(
+            "7z", "Arj", "BZip2", "Cab", "Chm",
+            "Cpio", "Deb", "Gzip", "Iso", "Lzh",
+            "Lzma", "Nsis", "Rar", "Rpm", "Tar",
+            "Udf", "Wim", "Xar", "Z", "Zip",
+            "Tgz", "gz", "apk"
+    );
 
     /**
      * <p>
@@ -179,6 +192,14 @@ public class Util {
         return isSpecificFile(fileName, zipFileExtsPattern);
     }
 
+    public static boolean isArchiveFile(String fileName) {
+        String ext = FilenameUtils.getExtension(fileName);
+        for (String extension : SUPPORTED_ARCHIVES) {
+            if (extension.equalsIgnoreCase(ext)) return true;
+        }
+        return false;
+    }
+
     public static boolean isDCTFile(File file) {
         return isDCTFile(file.getName());
     }
@@ -225,6 +246,9 @@ public class Util {
     }
 
 
+    /**
+     * @deprecated use decompressArchive instead
+     */
     public static void unzip(File zip, String unzipFilePath) throws Exception {
         if (!zip.exists()) return;
         ZipFile zipFile = new ZipFile(zip);
@@ -246,6 +270,57 @@ public class Util {
             }
         }
         zipFile.close();
+    }
+
+
+    /**
+     * Decompress the archive at archivePath into destDir.
+     * Archive format supported list:
+     * Format	Implementation	Test	value
+     * 7z	    X	            X	    SEVEN_ZIP
+     * Arj	    X	            X	    ARJ
+     * BZip2	X	            X	    BZIP2
+     * Cab	    X	            X	    CAB
+     * Chm  	X	            X	    CHM
+     * Cpio	    X	            X	    CPIO
+     * Deb	    X	            X	    DEB
+     * GZip	    X	            X	    GZIP
+     * Iso	    X	            X	    ISO
+     * Lzh	    X	            X	    LZH
+     * Lzma	    X	            X	    LZMA
+     * Nsis	    X	            X	    NSIS
+     * Rar	    X	            X	    RAR
+     * Rpm	    X	            X	    RAR
+     * Tar	    X	            X	    TAR
+     * Udf	    X	            X	    UDF
+     * Wim	    X	            X	    WIM
+     * Xar	    X	            X	    XAR
+     * Z	    X	            X	    Z
+     * Zip	    X	            X	    ZIP
+     *
+     * @param archivePath the path of the archive
+     * @param destDir     the destination directory to decompress the archive
+     */
+    public static void decompressArchive(String archivePath, String destDir) {
+        RandomAccessFile randomAccessFile = null;
+        ISevenZipInArchive inArchive = null;
+        try {
+            randomAccessFile = new RandomAccessFile(archivePath, "r");
+            inArchive = SevenZip.openInArchive(null, new RandomAccessFileInStream(randomAccessFile));
+            File destFile = new File(destDir);
+            FileUtils.forceMkdir(destFile);
+
+            inArchive.extract(null, false, new ExtractCallback(inArchive, destDir));
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (null != inArchive) try {
+                inArchive.close();
+            } catch (SevenZipException e) {
+                e.printStackTrace();
+            }
+            IOUtils.closeQuietly(randomAccessFile);
+        }
     }
 
     public static void unzip(String zipFilePath, String unzipFilePath) throws Exception {

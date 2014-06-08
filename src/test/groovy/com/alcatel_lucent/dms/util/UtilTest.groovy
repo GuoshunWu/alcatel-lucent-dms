@@ -1,20 +1,11 @@
 package com.alcatel_lucent.dms.util
 
-import com.github.junrar.extract.ExtractArchive
 import org.apache.commons.collections.*
 import org.apache.commons.collections.functors.EqualPredicate
-import org.apache.commons.compress.archivers.ArchiveInputStream
-import org.apache.commons.compress.archivers.ArchiveStreamFactory
-import org.apache.commons.compress.archivers.sevenz.SevenZArchiveEntry
-import org.apache.commons.compress.archivers.sevenz.SevenZFile
-import org.apache.commons.compress.archivers.sevenz.SevenZMethodConfiguration
 import org.apache.commons.io.IOUtils
 import org.apache.commons.io.input.AutoCloseInputStream
 import org.apache.commons.io.input.BOMInputStream
-import org.apache.commons.logging.LogFactory
 import org.junit.Test
-import org.slf4j.LoggerFactory
-import java.nio.file.Files
 
 /**
  * Created by IntelliJ IDEA.
@@ -25,16 +16,6 @@ import java.nio.file.Files
  */
 //@Ignore
 public class UtilTest {
-
-//    @Test
-    void testUnzip() throws Exception {
-        Util.unzip("D:/test/dms.zip", "d:/tmp");
-    }
-
-//    @Test
-    void testCreateZip() throws Exception {
-        Util.createZip(new File("D:/tmp/MyTest").listFiles(), new File("D:/test/myTest.zip"));
-    }
 
 //    @Test
     void testPredicate() {
@@ -124,19 +105,37 @@ public class UtilTest {
 
     }
 
+//    @Test
+    void testUnzip() throws Exception {
+        Util.unzip("D:/tmp/中文包.zip", "d:/tmp/11");
+    }
+
+//    @Test
+    void testCreateZip() throws Exception {
+        Util.createZip(new File("D:/tmp/").listFiles(), new File("D:/test/myTest.zip"));
+    }
+
+//    @Test
+    void testUnCompress() {
+
+
+//        ArchiveInputStream input = new ArchiveStreamFactory().createArchiveInputStream(new BufferedInputStream(new FileInputStream(file)))
+
+    }
+
     @Test
-    void testUnRar(){
-        String file = "D:/dms/xz-5.0.5-windows.7z"
-        SevenZFile sevenZFile = new SevenZFile(new File(file))
-        int BUF_SIZE = 1024
-        SevenZArchiveEntry entry
-        int offset = 0
-        File f = new File("D:/test/Documents.rar")
-            println entry.name.center(100, '=')
-                // read the content of a entry
-                while (offset += sevenZFile.read(content, offset, content.length - offset)) {
-                    println new String(content, "UTF-8")
-            }
-        }
+    void testDeCompressSevenZip() {
+        String destFile = "D:/tmp/testDecompress"
+
+        String file = "D:/tmp/LocationInMotion.tar.gz"
+        file = "D:/tmp/dms-中.zip"
+        file = "D:/tmp/BaiduYunSetup_web_2T.apk"
+        file = "d:/tmp/LocationInMotion.tar"
+        file = "D:/tmp/中文包.zip"
+//        file = "D:/tmp/LocationInMotion.7z"
+        file = "D:/tmp/Documents.rar"
+
+        Util.decompressArchive(file, destFile)
+
     }
 }

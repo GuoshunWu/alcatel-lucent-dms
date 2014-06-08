@@ -6,6 +6,17 @@ define
     transcontext: '[DEFAULT]:[DEFAULT];[EXCLUSION]:[EXCLUSION];[LABEL]:[LABEL];[DICT]:[DICT];[APP]:[APP];[PROD]:[PROD];Other:Other'
     dictencodings: 'ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE'
     transoptype: '1:DELIVER;2:RECEIVE;3:NEW;4:INPUT;5:CAPITALIZE;6:GLOSSARY;7:SUGGEST;8:STATUS'
+
+    ###
+            "7z", "Arj", "BZip2", "Cab", "Chm",
+            "Cpio", "Deb", "Gzip", "Iso", "Lzh",
+            "Lzma", "Nsis", "Rar", "Rpm", "Tar",
+            "Udf", "Wim", "Xar", "Z", "Zip",
+            "Tgz", "gz", "apk"
+    ###
+    supportedarchives: '.zip,.rar,.7z,.tgz,.Z,.gz,.cpio,.cab,.rpm,.tar,.gzip,.deb,.bzip2,.arj'
+
+
     history:
       'caption': "History for translation '{0}'"
       'nohistory': 'No translation history to display.'
