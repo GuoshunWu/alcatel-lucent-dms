@@ -109,6 +109,9 @@ public class BusinessException extends RuntimeException {
 
     static public final int NESTED_IOS_RESOURCE_ERROR = 801;
 
+    // archive decompress
+    public static final int DECOMPRESS_ARCHIVE_ERROR = 901;
+
     
     private int errorCode;
     private String errorMessage;

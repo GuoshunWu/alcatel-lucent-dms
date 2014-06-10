@@ -3,6 +3,7 @@
  */
 package com.alcatel_lucent.dms.util;
 
+import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.model.Glossary;
 import net.sf.sevenzipjbinding.ISevenZipInArchive;
@@ -301,7 +302,7 @@ public class Util {
      * @param archivePath the path of the archive
      * @param destDir     the destination directory to decompress the archive
      */
-    public static void decompressArchive(String archivePath, String destDir) {
+    public static void decompressArchive(String archivePath, String destDir){
         RandomAccessFile randomAccessFile = null;
         ISevenZipInArchive inArchive = null;
         try {
@@ -310,9 +311,9 @@ public class Util {
             File destFile = new File(destDir);
             FileUtils.forceMkdir(destFile);
 
-            inArchive.extract(null, false, new ExtractCallback(inArchive, destDir));
+            inArchive.extract(null, false, new ExtractCallback(inArchive, destDir, new File(archivePath)));
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new BusinessException(e.getMessage());
         } finally {
             if (null != inArchive) try {
                 inArchive.close();
