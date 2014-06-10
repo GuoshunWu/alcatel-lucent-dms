@@ -2,6 +2,8 @@ package com.alcatel_lucent.dms.util
 
 import org.apache.commons.collections.*
 import org.apache.commons.collections.functors.EqualPredicate
+import org.apache.commons.compress.archivers.sevenz.SevenZArchiveEntry
+import org.apache.commons.compress.archivers.sevenz.SevenZFile
 import org.apache.commons.io.IOUtils
 import org.apache.commons.io.input.AutoCloseInputStream
 import org.apache.commons.io.input.BOMInputStream
@@ -116,24 +118,28 @@ public class UtilTest {
     }
 
 //    @Test
-    void testUnCompress() {
+    void testDecompress() {
+//        def file = "D:/tmp/居住证办理.7z"
+        def file = "D:/tmp/dict.7z"
 
-
-//        ArchiveInputStream input = new ArchiveStreamFactory().createArchiveInputStream(new BufferedInputStream(new FileInputStream(file)))
-
+        SevenZFile sevenZFile = new SevenZFile(new File(file))
+        SevenZArchiveEntry entry
+        while (null != (entry = sevenZFile.nextEntry)) {
+            println entry.name
+        }
     }
 
     @Test
-    void testDeCompressSevenZip() {
+    void testDecompressSevenZip() {
         String destFile = "D:/tmp/testDecompress"
 
         String file = "D:/tmp/LocationInMotion.tar.gz"
         file = "D:/tmp/dms-中.zip"
         file = "D:/tmp/BaiduYunSetup_web_2T.apk"
         file = "d:/tmp/LocationInMotion.tar"
-        file = "D:/tmp/中文包.zip"
-//        file = "D:/tmp/LocationInMotion.7z"
-        file = "D:/tmp/Documents.rar"
+        file = "D:/tmp/居住证办理.7z"
+//        file = "D:/tmp/dict.7z"
+
 
         Util.decompressArchive(file, destFile)
 
