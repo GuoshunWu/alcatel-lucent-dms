@@ -3,8 +3,8 @@ package com.alcatel_lucent.dms.util;
 import com.alcatel_lucent.dms.BusinessException;
 import com.google.common.io.Files;
 import net.sf.sevenzipjbinding.*;
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,11 +25,13 @@ public class ExtractCallback implements IArchiveExtractCallback {
 
     private ISevenZipInArchive inArchive;
     private File archiveFile;
-    private String destDir;
+    private File destinationDir;
 
-    public ExtractCallback(ISevenZipInArchive inArchive, String destDir, File archiveFile) {
+    private BufferedOutputStream bos;
+
+    public ExtractCallback(ISevenZipInArchive inArchive, File destinationDir, File archiveFile) {
         this.inArchive = inArchive;
-        this.destDir = destDir;
+        this.destinationDir = destinationDir;
         this.archiveFile = archiveFile;
     }
 
@@ -41,32 +43,44 @@ public class ExtractCallback implements IArchiveExtractCallback {
         if (extractAskMode != ExtractAskMode.EXTRACT) {
             return null;
         }
-        final File destFile = new File(destDir, inArchive.getStringProperty(index, PropID.PATH));
+        String archivePath = (String) inArchive.getProperty(index, PropID.PATH);
 
         if ((Boolean) inArchive.getProperty(index, PropID.IS_FOLDER)) {
             try {
-                FileUtils.forceMkdir(destFile);
+                FileUtils.forceMkdir(destinationDir);
             } catch (IOException e) {
                 e.printStackTrace();
+                throw new BusinessException(DECOMPRESS_ARCHIVE_ERROR, archivePath, archiveFile.getAbsolutePath());
             }
             return null;
         }
 
-        return new ISequentialOutStream() {
+        File destinationFile = new File(destinationDir, archivePath);
+        try {
+            Files.createParentDirs(destinationFile);
+            bos = new BufferedOutputStream(new FileOutputStream(destinationFile));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if(null == bos){
+            log.error("Create file {} error", destinationFile);
+            return null;
+        }
+        final BufferedOutputStream finalBos = bos;
+        ISequentialOutStream outStream = new ISequentialOutStream() {
+            @Override
             public int write(byte[] data) throws SevenZipException {
-                BufferedOutputStream bos = null;
                 try {
-                    Files.createParentDirs(destFile);
-                    bos = new BufferedOutputStream(new FileOutputStream(destFile));
-                    IOUtils.write(data, bos);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    IOUtils.closeQuietly(bos);
+                    finalBos.write(data);
+                } catch (Exception e) {
+                    throw new SevenZipException("Error writing output file", e);
                 }
-                return data.length; // Return amount of proceed data
+                return data.length;
             }
         };
+
+        return outStream;
     }
 
 
@@ -79,21 +93,19 @@ public class ExtractCallback implements IArchiveExtractCallback {
         } else {
             log.info("Extraction {}...", inArchive.getProperty(index, PropID.PATH));
         }
+        IOUtils.closeQuietly(bos);
     }
 
     @Override
     public void prepareOperation(ExtractAskMode extractAskMode) throws SevenZipException {
-
     }
 
     @Override
     public void setTotal(long total) throws SevenZipException {
-
     }
 
     @Override
     public void setCompleted(long completeValue) throws SevenZipException {
-
     }
 }
 

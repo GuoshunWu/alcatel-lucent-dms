@@ -6,6 +6,7 @@ package com.alcatel_lucent.dms.util;
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.model.Glossary;
+import net.sf.sevenzipjbinding.IArchiveExtractCallback;
 import net.sf.sevenzipjbinding.ISevenZipInArchive;
 import net.sf.sevenzipjbinding.SevenZip;
 import net.sf.sevenzipjbinding.SevenZipException;
@@ -308,10 +309,12 @@ public class Util {
         try {
             randomAccessFile = new RandomAccessFile(archivePath, "r");
             inArchive = SevenZip.openInArchive(null, new RandomAccessFileInStream(randomAccessFile));
+
             File destFile = new File(destDir);
             FileUtils.forceMkdir(destFile);
+            ExtractCallback callback = new ExtractCallback(inArchive, new File(destDir), new File(archivePath));
 
-            inArchive.extract(null, false, new ExtractCallback(inArchive, destDir, new File(archivePath)));
+            inArchive.extract(null, false, callback);
         } catch (Exception e) {
             throw new BusinessException(e.getMessage());
         } finally {

@@ -138,6 +138,7 @@ public class UtilTest {
         file = "D:/tmp/BaiduYunSetup_web_2T.apk"
         file = "d:/tmp/LocationInMotion.tar"
         file = "D:/tmp/居住证办理.7z"
+//        file = "D:/tmp/OTC-PC_2.0.1_20140603.zip"
 //        file = "D:/tmp/dict.7z"
 
 
