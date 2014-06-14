@@ -140,9 +140,9 @@
 
 
         <!--<dependency>-->
-            <!--<groupId>org.apache.ant</groupId>-->
-            <!--<artifactId>ant-compress</artifactId>-->
-            <!--<version>1.4</version>-->
+        <!--<groupId>org.apache.ant</groupId>-->
+        <!--<artifactId>ant-compress</artifactId>-->
+        <!--<version>1.4</version>-->
         <!--</dependency>-->
 
 
@@ -159,15 +159,15 @@
         </dependency>
 
         <!--<dependency>-->
-            <!--<groupId>com.github.junrar</groupId>-->
-            <!--<artifactId>junrar</artifactId>-->
-            <!--<version>0.7</version>-->
-            <!--<exclusions>-->
-                <!--<exclusion>-->
-                    <!--<groupId>commons-logging</groupId>-->
-                    <!--<artifactId>commons-logging</artifactId>-->
-                <!--</exclusion>-->
-            <!--</exclusions>-->
+        <!--<groupId>com.github.junrar</groupId>-->
+        <!--<artifactId>junrar</artifactId>-->
+        <!--<version>0.7</version>-->
+        <!--<exclusions>-->
+        <!--<exclusion>-->
+        <!--<groupId>commons-logging</groupId>-->
+        <!--<artifactId>commons-logging</artifactId>-->
+        <!--</exclusion>-->
+        <!--</exclusions>-->
         <!--</dependency>-->
 
         <dependency>
@@ -652,6 +652,40 @@
         <defaultGoal>org.apache.tomcat.maven:tomcat7-maven-plugin:2.2:run</defaultGoal>
 
         <plugins>
+
+
+            <!-- ref: http://zeroturnaround.com/software/jrebel/learn/maven/ -->
+            <plugin>
+                <groupId>org.zeroturnaround</groupId>
+                <artifactId>jrebel-maven-plugin</artifactId>
+                <version>1.1.5</version>
+                <executions>
+                    <execution>
+                        <id>generate-rebel-xml</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+                <configuration>
+                    <!--
+     If your project uses custom packaging that is not recognized
+     set this to jar or war.
+     -->
+                    <packaging>war</packaging>
+                    <classpath>
+                        <fallback>default</fallback>
+                        <resources>
+                            <resource>
+
+                            </resource>
+                        </resources>
+                    </classpath>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -836,7 +870,7 @@
                     <uriEncoding>utf-8</uriEncoding>
                     <url>http://localhost:8888/manager/text</url>
                     <port>8888</port>
-                    <contextReloadable>true</contextReloadable>
+                    <contextReloadable>false</contextReloadable>
                     <path>/</path>
                     <!--<update>true</update>-->
                     <username>admin</username>

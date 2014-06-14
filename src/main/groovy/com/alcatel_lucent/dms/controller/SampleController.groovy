@@ -16,6 +16,7 @@ class SampleController {
     @RequestMapping("/greeting")
     String greeting(Model model) {
         model.addAttribute("message", "Hello World.")
+        println "Hello, world."
         "hello"
     }
 
