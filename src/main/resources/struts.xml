@@ -69,13 +69,13 @@
     <constant name="struts.multipart.maxSize" value="1073741824"/>
     <constant name="struts.multipart.saveDir" value="tmp"/>
 
-    <constant name="struts.devMode" value="true"/>
+    <!--<constant name="struts.devMode" value="true"/>-->
     <!--<constant name="struts.class.reloading.watchList" value="WEB-INF/classes, ../../../target/classes"/>-->
     <!--<constant name="struts.class.reloading.acceptClasses" value="com\.alcatel_lucent\.dms\.action\..*"/>-->
 
-    <constant name="struts.configuration.xml.reload" value="true"/>
-    <constant name="struts.convention.classes.reload" value="true"/>
+    <!--<constant name="struts.configuration.xml.reload" value="true"/>-->
+    <!--<constant name="struts.convention.classes.reload" value="true"/>-->
 
-    <constant name="struts.i18n.reload" value="true"/>
+    <!--<constant name="struts.i18n.reload" value="true"/>-->
 
 </struts>
