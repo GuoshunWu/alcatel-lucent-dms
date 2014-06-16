@@ -56,6 +56,8 @@ define (require)->
     export_translation_details: getURL('export-translation-details', 'trans/')
     import_translation_details: getURL('import-translation-details', 'trans/')
 
+  context:
+    merge: getURL('merge-context', 'context/')
     take_translations: getURL('take-translations', 'context/')
   charset:
     update: getURL('charset', 'admin/')

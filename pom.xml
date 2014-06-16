@@ -620,18 +620,6 @@
             </exclusions>
         </dependency>
 
-        <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
-            <version>2.3.0</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>jline</groupId>
-                    <artifactId>jline</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
         <!--<dependency>-->
         <!--<groupId>org.apache.ant</groupId>-->
         <!--<artifactId>ant</artifactId>-->
@@ -643,6 +631,12 @@
             <artifactId>tomcat-embed-core</artifactId>
             <version>7.0.47</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>2.3.3</version>
         </dependency>
 
 
@@ -725,9 +719,22 @@
                         <artifactId>jline</artifactId>
                         <version>2.5</version>
                     </dependency>
+
                 </dependencies>
             </plugin>
 
+            <!--<plugin>-->
+            <!--<groupId>org.codehaus.gmaven</groupId>-->
+            <!--<artifactId>groovy-maven-plugin</artifactId>-->
+            <!--<version>2.0</version>-->
+            <!--<dependencies>-->
+            <!--<dependency>-->
+            <!--<groupId>org.codehaus.groovy</groupId>-->
+            <!--<artifactId>groovy-all</artifactId>-->
+            <!--<version>2.3.3</version>-->
+            <!--</dependency>-->
+            <!--</dependencies>-->
+            <!--</plugin>-->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
