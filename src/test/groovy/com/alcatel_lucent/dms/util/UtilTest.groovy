@@ -129,7 +129,7 @@ public class UtilTest {
         }
     }
 
-    @Test
+//    @Test
     void testDecompressSevenZip() {
         String destFile = "D:/tmp/testDecompress"
 
