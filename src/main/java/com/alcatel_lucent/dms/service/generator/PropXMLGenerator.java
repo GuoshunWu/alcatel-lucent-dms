@@ -169,7 +169,7 @@ public class PropXMLGenerator extends DictionaryGenerator {
             if (!targetFile.getParentFile().exists()) {
                 targetFile.getParentFile().mkdirs();
             }
-            output = new XMLWriter(new FileWriter(targetFile), format);
+            output = new XMLPropWriter(new FileWriter(targetFile), format);
             if (processingInstructions != null) {
                 String[] piList = processingInstructions.split("\n");
                 for (String pi : piList) {
@@ -193,4 +193,19 @@ public class PropXMLGenerator extends DictionaryGenerator {
     }
 
 
+}
+
+/**
+ * Customized XMLWriter, which forces to escape some special characters (apostrophe char)
+ * @author allany
+ *
+ */
+class XMLPropWriter extends XMLWriter {
+	public XMLPropWriter(FileWriter fileWriter, OutputFormat format) {
+		super(fileWriter, format);
+	}
+
+	protected boolean shouldEncodeChar(char c) {
+		return c == '\u2032' ? true : super.shouldEncodeChar(c);
+	}
 }
