@@ -1,4 +1,4 @@
-V2.15.9 (Jun 18, 2014)
+V2.16.0 (Jun 18, 2014)
     * New API "deliver-dict" for delivering dictionaries into DMS
     * Support most popular archive formats including zip, 7z, rar, gzip and etc.
     * Escape apostrophe char in generated XML property dictionaries
