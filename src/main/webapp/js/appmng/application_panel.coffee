@@ -69,7 +69,7 @@ define [
 
   dctFileUpload = 'dctFileUpload'
   #  create upload filebutton
-  console.log c18n.supportedarchives
+#  console.log c18n.supportedarchives
   $(uploadBrowserId).button(label: i18n.browse).attr('privilegeName', urls.app.deliver_dict).css(overflow: 'hidden').append $(
     "<input type='file' id='#{dctFileUpload}' name='upload' title='#{i18n.choosefile}' accept='#{c18n.supportedarchives}' multiple/>").css(
     position: 'absolute', top: -3, right: -3, border: '1px solid', borderWidth: '10px 180px 40px 20px',

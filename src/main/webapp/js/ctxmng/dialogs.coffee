@@ -84,12 +84,17 @@ define [
       buttons: [
         {text: c18n.ok, click: ->
           params = $(@).data 'params'
-          result =
-            ctxA: $('#contextA', @).val()
-            ctxB: $('#contextB', @).val()
-            selected: $("input:radio[name=contextGrp]:checked", @).val()
-          console.log result
-          alert(JSON.stringify result)
+          compareGrid = $('#compareContextGrid')
+          postData =
+            contextAId: $('#contextA', @).val()
+            contextBId: $('#contextB', @).val()
+            mergedToContextId: $("input:radio[name=contextGrp]:checked", @).val()
+            reference: params.rowData.reference
+
+          $.post urls.context.merge, postData , (json)->
+            console.log "return json=", json
+            compareGrid.trigger 'reloadGrid'
+
           $(@).dialog('close')
         }
       ]
@@ -111,7 +116,7 @@ define [
             textA: textAId, textB: val.other, take: val.selected
           console.log results
 
-          $.post urls.trans.take_translations, translationPairs: JSON.stringify(results), (json)->
+          $.post urls.context.take_translations, translationPairs: JSON.stringify(results), (json)->
             console.log "back data=", json
             diffGrid.grid.trigger 'reloadGrid'
             $('#compareContextGrid').trigger 'reloadGrid'
