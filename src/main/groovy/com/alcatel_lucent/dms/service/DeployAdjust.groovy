@@ -24,7 +24,7 @@ class DeployAdjust {
 
         println "Adjust file: ${file.name}".center(100, '=')
         String pattern = "(.*)(\\s*<script.*)(data-main=\\\"(.*)\\\"\\s*)(src=\\\")(js/lib/require\\.js)(\\\">\\s*</script>\\s*)(.*)"
-        String replacedFileText = file.text.replaceAll pattern, "\$1\$2\$5\$4.js?dust=${buildNumber}\$7\$8"
+        String replacedFileText = file.text.replaceAll pattern, "\$1\$2\$5\$6\$4.js?dust=123123232\$8\$9"
         file.withPrintWriter { out ->
             out.print replacedFileText
         }
