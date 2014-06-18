@@ -1495,4 +1495,17 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         param.put("ver", ver);
         return dao.retrieve(hql, param);
     }
+
+	@Override
+	public Application findApplication(String prod, String app, String ver) {
+        String hql = "from Application obj" +
+                " where obj.base.productBase.name=:prod" +
+                " and obj.base.name=:app" +
+                " and obj.version=:ver";
+        Map param = new HashMap();
+        param.put("prod", prod);
+        param.put("app", app);
+        param.put("ver", ver);
+        return (Application) dao.retrieveOne(hql, param);
+	}
 }

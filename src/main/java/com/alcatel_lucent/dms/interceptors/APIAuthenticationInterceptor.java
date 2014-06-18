@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.alcatel_lucent.dms.UserContext;
+import com.alcatel_lucent.dms.model.User;
 import com.alcatel_lucent.dms.service.AuthenticationService;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
@@ -37,10 +39,12 @@ public class APIAuthenticationInterceptor extends AbstractInterceptor {
     	if (userPass.length < 2) {
     		return "401";
     	} else {
-    		if (null == authenticationService.login(userPass[0], userPass[1])) {
+    		User user = authenticationService.login(userPass[0], userPass[1]);
+    		if (null == user) {
     			return "403";
     		}
         	log.info("[API] " + userPass[0] + " - " + invocation.getAction().getClass().getSimpleName());
+            UserContext.setUserContext(new UserContext(ActionContext.getContext().getLocale(), user, null));
         	return invocation.invoke();
     	}
 	}

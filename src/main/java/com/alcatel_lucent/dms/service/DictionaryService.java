@@ -3,6 +3,7 @@ package com.alcatel_lucent.dms.service;
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.Constants;
+import com.alcatel_lucent.dms.model.Application;
 import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryLanguage;
@@ -313,4 +314,13 @@ public interface DictionaryService {
      * @return
      */
     Collection<Dictionary> findDictionaries(String prod, String app, String ver);
+
+    /**
+     * Find application by prod, app and version
+     * @param prod
+     * @param app
+     * @param ver
+     * @return
+     */
+	Application findApplication(String prod, String app, String ver);
 }

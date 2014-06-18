@@ -1,4 +1,8 @@
-V2.15.8
+V2.15.9 (Jun 18, 2014)
+    * New API "deliver-dict" for delivering dictionaries into DMS
+    * Support most popular archive formats including zip, 7z, rar, gzip and etc.
+
+V2.15.8 (May 19, 2014)
     * Allows to sort by T/N/I columns in Translation summary view
     * Optimize performance for importing dictionaries and adding languages
 
