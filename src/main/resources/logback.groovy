@@ -32,7 +32,8 @@ context.resetJUL = true
 
 appender("STDOUT", ConsoleAppender) {
     encoder(PatternLayoutEncoder) {
-        pattern = "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+        pattern = "%d{yyyy/MM/dd-HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+//        pattern = "%d{yyyy/MM/dd-HH:mm:ss} [%thread] %-5level %logger{36} %caller{1} - %msg%n"
     }
     filter(ThresholdFilter){
         level = ${logger.filter}

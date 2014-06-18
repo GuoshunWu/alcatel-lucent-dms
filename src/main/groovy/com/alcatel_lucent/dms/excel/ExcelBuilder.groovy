@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse
 /**
  * Created by Administrator on 2014/5/18 0018.
  */
+
 class ExcelBuilder extends AbstractExcelView {
 
     /**
@@ -29,7 +30,7 @@ class ExcelBuilder extends AbstractExcelView {
         HSSFCell cell = getCell(sheet, 0, 0)
         setText(cell, "Spring-Excel test")
 
-        (model.get("wordList") as List<String>).eachWithIndex { String word, int index ->
+        (model.get("wordList") as List<String>).eachWithIndex { String word, Integer index ->
             setText(getCell(sheet, 2 + index, 0), word)
         }
     }
