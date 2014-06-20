@@ -169,7 +169,8 @@ public class PropXMLGenerator extends DictionaryGenerator {
             if (!targetFile.getParentFile().exists()) {
                 targetFile.getParentFile().mkdirs();
             }
-            output = new XMLPropWriter(new FileWriter(targetFile), format);
+//            output = new XMLPropWriter(new FileWriter(targetFile), format);
+            output = new XMLWriter(new FileWriter(targetFile), format);
             if (processingInstructions != null) {
                 String[] piList = processingInstructions.split("\n");
                 for (String pi : piList) {
