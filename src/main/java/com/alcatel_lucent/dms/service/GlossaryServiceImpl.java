@@ -370,4 +370,15 @@ public class GlossaryServiceImpl implements GlossaryService {
         return CollectionUtils.select(glossaries, PredicateUtils.invokerPredicate("isDirty"));
     }
 
+	@Override
+	public String consistentGlossariesInString(
+			Collection<GlossaryMatchObject> glossaryMatchObjects,
+			String text) {
+        for (GlossaryMatchObject gmo : glossaryMatchObjects) {
+            text = gmo.getProcessedString(text);
+        }
+		return text;
+	}
+
+
 }
