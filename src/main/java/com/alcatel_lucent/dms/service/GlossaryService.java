@@ -61,7 +61,18 @@ public interface GlossaryService {
 
     Collection<Glossary> getAllGlossaries();
     Collection<GlossaryMatchObject> getGlossaryPatterns();
+    Collection<GlossaryMatchObject> getGlossaryPatterns(Collection<Glossary> glossaries);
 
     Collection<GlossaryMatchObject> getNotDirtyGlossaryPatterns();
     Collection<Glossary> getNotDirtyGlossaries();
+    
+    /**
+     * Replace glossaries in a single string.
+     * @param glossaryMatchObjects
+     * @param reference
+     * @return
+     */
+	String consistentGlossariesInString(
+			Collection<GlossaryMatchObject> glossaryMatchObjects,
+			String reference);
 }
