@@ -188,16 +188,25 @@ public class TMXGenerator extends DictionaryGenerator {
                 } else {
                     LabelTranslation lt = label.getOrigTranslation(dctLanguage.getLanguageCode());
                     String tuvXmlString = lt == null ? null : lt.getAnnotation1();
-                    if (StringUtils.isBlank(tuvXmlString)) continue;
-                    try {
-                        tuv = DocumentHelper.parseText(tuvXmlString).getRootElement();
-                    } catch (DocumentException e) {
-                        e.printStackTrace();
+                    Element propStatus = null;
+                    if (!StringUtils.isBlank(tuvXmlString)) {
+	                    try {
+	                        tuv = DocumentHelper.parseText(tuvXmlString).getRootElement();
+//	                      //get original translation status in tmx file
+	                        propStatus = (Element) tuv.selectSingleNode("prop[@type='status']");
+	                    } catch (DocumentException e) {
+	                        e.printStackTrace();
+	                    }
+                    }
+                    if (tuv == null) {	// not original language, create default tuv tag
+                    	tuv = DocumentHelper.createElement("tuv");
+                    	tuv.addAttribute("xml:lang", dctLanguage.getLanguageCode());
+                    	propStatus = tuv.addElement("prop");
+                    	propStatus.addAttribute("type", "status");
+                    	propStatus.setText(NOT_TRANSLATED);
                     }
 
 
-//                    //get original translation status in tmx file
-                    Element propStatus = (Element) tuv.selectSingleNode("prop[@type='status']");
                     int statusDMS = label.getTranslationStatus(dctLanguage.getLanguageCode());
 
                     if (null != propStatus) {
@@ -207,11 +216,17 @@ public class TMXGenerator extends DictionaryGenerator {
                             propStatus.setText(TRANSLATED);
                         }
                     }
-                    Boolean isMixedContent = Boolean.parseBoolean(Util.string2Map(lt.getAnnotation2()).get("mixedContent"));
+                    Boolean isMixedContent = null;
+                    if (lt != null && !StringUtils.isBlank(lt.getAnnotation2())) {
+                    	String strMixedContent = Util.string2Map(lt.getAnnotation2()).get("mixedContent");
+                    	if (!StringUtils.isBlank(strMixedContent)) {
+                    		isMixedContent = Boolean.parseBoolean(strMixedContent);
+                    	}
+                    }
                     Element seg;
 
                     String translation = label.getTranslation(dctLanguage.getLanguageCode());
-                    if (isMixedContent) {
+                    if (isMixedContent != null && isMixedContent) {
                         try {
                             seg = DocumentHelper.parseText(lt.getOrigTranslation()).getRootElement();
                             seg.setText(translation);
