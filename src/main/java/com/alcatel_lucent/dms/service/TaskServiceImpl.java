@@ -690,6 +690,8 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
      */
     private Map<String, Map<String, String>> receiveTaskFile(Task task, Language language, File taskFile) {
         log.info("Receiving task file " + taskFile + " ...");
+        Collection<Glossary> glossaries = glossaryService.getNotDirtyGlossaries();
+        Collection<GlossaryMatchObject> glossaryMatchObjects = glossaryService.getGlossaryPatterns(glossaries);
         //file is excel file
         FileInputStream inp = null;
         Map<String, Map<String, String>> result = new HashMap<String, Map<String, String>>();
@@ -726,6 +728,11 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
                     transMap = new HashMap<String, String>();
                     result.put(context, transMap);
                 }
+                
+                // glossaries may be added after the task file sent for translation
+                // so we match glossaries again when receive the task file
+                reference = glossaryService.consistentGlossariesInString(glossaryMatchObjects, reference);
+                
                 transMap.put(reference, translation);
             }
             return result;
