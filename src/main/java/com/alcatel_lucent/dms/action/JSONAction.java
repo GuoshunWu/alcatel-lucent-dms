@@ -40,6 +40,7 @@ abstract public class JSONAction extends BaseAction {
         try {
             return performAction();
         } catch (Exception e) {
+        	log.error(e.getMessage(), e);
             e.printStackTrace();
             setStatus(-1);
             setMessage(e.toString());
