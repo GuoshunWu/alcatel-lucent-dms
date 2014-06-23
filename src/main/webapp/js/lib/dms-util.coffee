@@ -414,7 +414,7 @@ define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
 
 #    if ':last' == selectedValue
 
-  afterInitilized: (context)->
+  afterInitialized: (context)->
     # center progressbar
     $('div.progressbar').position(my: 'center', at: 'center',of: window)
     #    check all buttons' privilege

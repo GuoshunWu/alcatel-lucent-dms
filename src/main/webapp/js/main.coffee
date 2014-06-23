@@ -13,7 +13,7 @@ define [
   'admin/main'
   'commons/dialogs'
 
-  'testcases'
+#  'testcases'
 ], (
   $
   blockui
@@ -35,7 +35,7 @@ define [
 #    console?.log "page ready..."
 
     $.blockUI.defaults.message = '<h1><img src="images/busy.gif" />&nbsp;Please wait...</h1>'
-    util.afterInitilized(@)
+    util.afterInitialized(@)
     $('#loading-container').fadeOut 'slow', ()->$(@).remove()
 
     cdialogs.tipOfDayDialog.dialog 'open' if window.param.currentUser.showTips
