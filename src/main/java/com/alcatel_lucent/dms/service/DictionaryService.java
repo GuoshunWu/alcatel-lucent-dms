@@ -8,6 +8,7 @@ import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryLanguage;
 import com.alcatel_lucent.dms.model.Label;
+import com.alcatel_lucent.dms.service.generator.GeneratorSettings;
 
 import java.io.File;
 import java.util.Collection;
@@ -93,6 +94,7 @@ public interface DictionaryService {
      * @param dictIds the collection of the ids for the dictionary to be generated.
      */
     void generateDictFiles(String dir, Collection<Long> dictIds);
+    void generateDictFiles(String dir, Collection<Long> dtIds, GeneratorSettings settings);
 
     /**
      * Get the latest version of a dictionary

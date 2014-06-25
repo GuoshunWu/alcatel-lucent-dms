@@ -42,7 +42,7 @@ public class XmlHelpGenerator extends DictionaryGenerator {
     private DaoService dao;
 
     @Override
-    public void generateDict(File targetDir, Long dictId) throws BusinessException {
+    public void generateDict(File targetDir, Long dictId, GeneratorSettings settings) throws BusinessException {
 //        Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
 //        Improving performance
         long begin = System.currentTimeMillis();

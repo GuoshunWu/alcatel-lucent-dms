@@ -52,7 +52,7 @@ public class OTCPCGenerator extends DictionaryGenerator {
     }
 
     @Override
-    public void generateDict(File targetDir, Long dictId) throws BusinessException {
+    public void generateDict(File targetDir, Long dictId, GeneratorSettings settings) throws BusinessException {
         Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
         File targetFile = new File(targetDir, dict.getName());
 

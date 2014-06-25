@@ -27,7 +27,7 @@ public class IOSGenerator extends DictionaryGenerator {
     private DaoService dao;
 
     @Override
-    public void generateDict(File target, Long dictId) throws BusinessException {
+    public void generateDict(File target, Long dictId, GeneratorSettings settings) throws BusinessException {
         Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
         File dictDir = new File(target, dict.getName());
         try {
