@@ -41,7 +41,7 @@ public class AndroidXMLGenerator extends DictionaryGenerator {
     private DaoService dao;
 
     @Override
-    public void generateDict(File target, Long dictId) throws BusinessException {
+    public void generateDict(File target, Long dictId, GeneratorSettings settings) throws BusinessException {
         if (target.exists()) {
             if (target.isFile()) {
                 throw new BusinessException(BusinessException.TARGET_IS_NOT_DIRECTORY, target.getAbsolutePath());

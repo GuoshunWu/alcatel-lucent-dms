@@ -39,7 +39,7 @@ public class XMLDictGeneratorTest {
 
         int i = 0
         dictionaries.each { dict ->
-            xmlDictGenerator.generateDict(new File("D:/testxdct/test"), dict)
+            xmlDictGenerator.generateDict(new File("D:/testxdct/test"), dict, null)
             ++i
         }
     }

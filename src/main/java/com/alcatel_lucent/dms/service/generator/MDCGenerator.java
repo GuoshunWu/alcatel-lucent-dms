@@ -35,7 +35,7 @@ public class MDCGenerator extends DictionaryGenerator {
 	private DaoService dao;
 
 	@Override
-	public void generateDict(File targetDir, Long dictId) throws BusinessException {
+	public void generateDict(File targetDir, Long dictId, GeneratorSettings settings) throws BusinessException {
         Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
         if (null == dict) {
             log.warn("ID for " + dictId

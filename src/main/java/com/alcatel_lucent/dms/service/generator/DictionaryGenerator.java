@@ -11,6 +11,7 @@ import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.action.ProgressQueue;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryLanguage;
+
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +23,7 @@ public abstract class DictionaryGenerator {
 
     protected Logger log = LoggerFactory.getLogger(getClass());
 
-    public void generateDict(File target, Collection<Dictionary> dictList) throws BusinessException {
+    public void generateDict(File target, Collection<Dictionary> dictList, GeneratorSettings settings) throws BusinessException {
         int totalLabels = 0;
         int curLabels = 0;
         int totalDict = dictList.size();
@@ -33,13 +34,13 @@ public abstract class DictionaryGenerator {
         for (Dictionary dict : dictList) {
             int percent = (int) Math.round(curLabels * 100.0 / totalLabels + .5);
             ProgressQueue.setProgress("Generating " + dict.getFormat() + " (" + curDict + "/" + totalDict + ") " + dict.getName(), percent);
-            generateDict(target, dict.getId());
+            generateDict(target, dict.getId(), settings);
             curLabels += dict.getLabelNum();
             curDict++;
         }
     }
 
-    abstract public void generateDict(File target, Long dictId) throws BusinessException;
+    abstract public void generateDict(File target, Long dictId, GeneratorSettings settings) throws BusinessException;
 
     abstract public Constants.DictionaryFormat getFormat();
 

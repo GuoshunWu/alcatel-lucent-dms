@@ -7,6 +7,7 @@ import com.alcatel_lucent.dms.action.app.CapitalizeAction;
 import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.service.generator.DictionaryGenerator;
+import com.alcatel_lucent.dms.service.generator.GeneratorSettings;
 import com.alcatel_lucent.dms.service.parser.DictionaryParser;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.io.FileUtils;
@@ -390,6 +391,10 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
      * @param dtIds the collection of the id for dictionary to be generated.
      */
     public void generateDictFiles(String dir, Collection<Long> dtIds) {
+    	generateDictFiles(dir, dtIds, new GeneratorSettings());
+    }
+    
+    public void generateDictFiles(String dir, Collection<Long> dtIds, GeneratorSettings settings) {
         ProgressQueue.setProgress("Preparing data...", -1);
         if (dtIds.isEmpty()) return;
         File target = new File(dir);
@@ -412,7 +417,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         }
         for (String format : formatGroup.keySet()) {
             DictionaryGenerator generator = getGenerator(format);
-            generator.generateDict(target, formatGroup.get(format));
+            generator.generateDict(target, formatGroup.get(format), settings);
         }
     }
 

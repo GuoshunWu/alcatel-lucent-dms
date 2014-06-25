@@ -7,6 +7,7 @@ import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.DictionaryLanguage;
 import com.alcatel_lucent.dms.service.DaoService;
 import com.alcatel_lucent.dms.service.generator.DictionaryGenerator;
+import com.alcatel_lucent.dms.service.generator.GeneratorSettings;
 import com.alcatel_lucent.dms.util.Util;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -42,7 +43,7 @@ public class XMLDictGenerator extends DictionaryGenerator {
     private DaoService dao;
 
     @Override
-    public void generateDict(File target, Collection<Dictionary> dictList) throws BusinessException {
+    public void generateDict(File target, Collection<Dictionary> dictList, GeneratorSettings settings) throws BusinessException {
     	// generate xdcp file
     	try {
 			generateXdcp(target, dictList);
@@ -51,11 +52,11 @@ public class XMLDictGenerator extends DictionaryGenerator {
 			log.error(e.getMessage());
 			throw new SystemError(e);
 		}
-    	super.generateDict(target, dictList);
+    	super.generateDict(target, dictList, settings);
     }
 
 	@Override
-    public void generateDict(File targetDir, Long dictId) throws BusinessException {
+    public void generateDict(File targetDir, Long dictId, GeneratorSettings settings) throws BusinessException {
 //        Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
 //        Improving performance
         long begin = System.currentTimeMillis();

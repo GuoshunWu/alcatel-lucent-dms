@@ -90,7 +90,7 @@ public class VLEExcelDictGeneratorTest {
         File file = new File("D:/MyDocuments/Alcatel_LucentSBell/DMS/DMSFiles/VLEDict/test")
         ArrayList<Dictionary> dictionaries = VLEExcelDictParser.parse('D:/MyDocuments/Alcatel_LucentSBell/DMS/DMSFiles/VLEDict/test', file, [] as Collection<File>)
         dictionaries.each { dict ->
-            VLEExcelGenerator.generateDict(new File("E:/test"), dict)
+            VLEExcelGenerator.generateDict(new File("E:/test"), dict, null)
         }
 
     }
