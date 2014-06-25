@@ -28,7 +28,7 @@ public class PropXMLGenerator extends DictionaryGenerator {
     private DaoService dao;
 
     @Override
-    public void generateDict(File target, Long dictId) throws BusinessException {
+    public void generateDict(File target, Long dictId, GeneratorSettings settings) throws BusinessException {
         if (target.exists()) {
             if (target.isFile()) {
                 throw new BusinessException(BusinessException.TARGET_IS_NOT_DIRECTORY, target.getAbsolutePath());
@@ -41,7 +41,7 @@ public class PropXMLGenerator extends DictionaryGenerator {
         Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
 
         // create reference language file
-        generatePropXML(target, dict, null);
+        generatePropXML(target, dict, null, settings);
 
         // generate for each language
         HashSet<String> langCodeSet = null;
@@ -51,7 +51,7 @@ public class PropXMLGenerator extends DictionaryGenerator {
                 if (langCodeSet != null && !langCodeSet.contains(langCode)) {
                     continue;
                 }
-                generatePropXML(target, dict, dl);
+                generatePropXML(target, dict, dl, settings);
             }
         }
     }
@@ -67,7 +67,7 @@ public class PropXMLGenerator extends DictionaryGenerator {
      * @param dict
      * @param dl dictionar language, null for reference
      */
-    private void generatePropXML(File targetDir, Dictionary dict, DictionaryLanguage dl) {
+    private void generatePropXML(File targetDir, Dictionary dict, DictionaryLanguage dl, GeneratorSettings settings) {
     	String refLangCode = "en";
     	if (dict.getDictLanguage("GAE") != null) {
     		refLangCode = "GAE";
@@ -169,8 +169,11 @@ public class PropXMLGenerator extends DictionaryGenerator {
             if (!targetFile.getParentFile().exists()) {
                 targetFile.getParentFile().mkdirs();
             }
-//            output = new XMLPropWriter(new FileWriter(targetFile), format);
-            output = new XMLWriter(new FileWriter(targetFile), format);
+            if (settings.isEscapeApostrophe()) {
+            	output = new XMLPropWriter(new FileWriter(targetFile), format);
+            } else {
+            	output = new XMLWriter(new FileWriter(targetFile), format);
+            }
             if (processingInstructions != null) {
                 String[] piList = processingInstructions.split("\n");
                 for (String pi : piList) {
