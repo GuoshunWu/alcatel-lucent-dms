@@ -1058,13 +1058,15 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
                     ",TranslationHistory his,Label refLabel" +
                     " where his.parent=ct and his.refLabelId=refLabel.id" +
                     " and l.dictionary.id=:dictId and ct.language.id=:langId" +
-                    " and refLabel.dictionary.id=:dictId" +
+                    " and refLabel.dictionary.base.id=:baseId" +
                     " and (his.status=" + Translation.STATUS_TRANSLATED + " or his.translation=ct.translation)" +
                     " and his.operationType not in (" +
                     TranslationHistory.TRANS_OPER_GLOSSARY + "," +
                     TranslationHistory.TRANS_OPER_CAPITALIZE + "," +
                     TranslationHistory.TRANS_OPER_SUGGEST + "," +
                     TranslationHistory.TRANS_OPER_STATUS + ")";
+            Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
+            param.put("baseId", dict.getBase().getId());
             Collection<Long> ids = dao.retrieve(hql, param);
             for (Long id : ids) {
                 notAutoIds.add(id);
