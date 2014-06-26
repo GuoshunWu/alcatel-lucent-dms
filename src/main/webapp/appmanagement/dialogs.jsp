@@ -545,3 +545,17 @@
         </tr>
     </table>
 </div>
+
+
+<div id="XMLPropertiesDictionaryExportOptionsDialog" title="<s:text name="appmng.dialogs.exportdictoptions.title"/>">
+    <table border="0" width="100%">
+        <tr>
+            <td>
+                <label for="XMLPropertiesDictEscapeApostrophe">
+                    <s:text name="appmng.dialogs.exportdictoptions.escape_apostrophe_char"/>
+                </label>
+                <input type="checkbox"  id="XMLPropertiesDictEscapeApostrophe"/>
+            </td>
+        </tr>
+    </table>
+</div>

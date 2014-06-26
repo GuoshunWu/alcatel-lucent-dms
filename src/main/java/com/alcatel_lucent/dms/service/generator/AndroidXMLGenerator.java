@@ -3,17 +3,19 @@ package com.alcatel_lucent.dms.service.generator;
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.SystemError;
-import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
+import com.alcatel_lucent.dms.model.DictionaryLanguage;
+import com.alcatel_lucent.dms.model.Label;
+import com.alcatel_lucent.dms.model.LabelTranslation;
 import com.alcatel_lucent.dms.service.DaoService;
 import com.alcatel_lucent.dms.service.parser.AndroidXMLParser;
+import com.alcatel_lucent.dms.util.Util;
+import com.google.common.base.Strings;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.collections.PredicateUtils;
-import org.apache.commons.collections.Transformer;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -157,9 +159,10 @@ public class AndroidXMLGenerator extends DictionaryGenerator {
 
 
     private boolean isArrayOrPluralLabel(Label label) {
-        String lblKey = label.getKey();
-        String[] tokens = lblKey.split(AndroidXMLParser.KEY_SEPARATOR);
-        return 3 == tokens.length && (lblKey.startsWith(AndroidXMLParser.ELEMENT_STRING_ARRAY) || lblKey.startsWith(AndroidXMLParser.ELEMENT_PLURALS));
+        String annotation3 = label.getAnnotation3();
+        if (Strings.isNullOrEmpty(annotation3)) return false;
+        String isArrayOrPluralLabel = Util.string2Map(annotation3).get("isMultipleElement");
+        return !Strings.isNullOrEmpty(isArrayOrPluralLabel) && Boolean.parseBoolean(isArrayOrPluralLabel);
     }
 
     /**
@@ -257,7 +260,8 @@ public class AndroidXMLGenerator extends DictionaryGenerator {
 
         // string array or quantity string
         String elemName = tokens[0];
-        String key = tokens[1];
+        String key = StringUtils.join(Arrays.copyOfRange(tokens, 1, tokens.length - 1), AndroidXMLParser.KEY_SEPARATOR);
+
 
         //get array element items
         String arrayName = elemName + AndroidXMLParser.KEY_SEPARATOR + key;
