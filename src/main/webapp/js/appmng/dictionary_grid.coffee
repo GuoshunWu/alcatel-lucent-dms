@@ -189,23 +189,34 @@ define [
     if !dicts || dicts.length == 0
       $.msgBox (c18n.selrow.format c18n.dict), null, {title: c18n.warning}
       return
+    #Popup a dialog  "Generate options" when export dictionary of type "XML properties".
+    checkType = "XML properties"
+    dictTypes = (dicGrid.getRowData(id).format for id in dicts when dicGrid.getRowData(id).format is checkType)
+#    console.log("dictType=%o", dictTypes)
 
-    filename = "#{$('#appDispAppName').text()}_#{$('#selAppVersion option:selected').text()}_#{new Date().format 'yyyyMMdd_hhmm'}.zip"
+    d = $.Deferred()
+    if(dictTypes.length > 0)
+      $('#XMLPropertiesDictionaryExportOptionsDialog').data('param', d).dialog 'open'
+    else
+      d.resolve(escape: false)
 
-    $(@).button 'disable'
-    oldLabel = $(@).button 'option', 'label'
-    $(@).button 'option', 'label', i18n.generating
+    d.done (param)=>
+      filename = "#{$('#appDispAppName').text()}_#{$('#selAppVersion option:selected').text()}_#{new Date().format 'yyyyMMdd_hhmm'}.zip"
 
-    me=$(@)
-    pb = util.genProgressBar()
-    util.updateProgress(urls.app.generate_dict, {dicts: dicts.join(','), filename: filename}, (json)->
-      pb.parent().remove()
-      me.button 'option', 'label', oldLabel
-      me.button 'enable'
-      dowloadURL = urls.getURL(urls.app.download_app_dict,'',fileLoc:json.event.msg, filename: filename)
-#      console?.log dowloadURL
-      window.location.href = dowloadURL
-    , pb)
+      $(@).button 'disable'
+      oldLabel = $(@).button 'option', 'label'
+      $(@).button 'option', 'label', i18n.generating
+
+      me=$(@)
+      pb = util.genProgressBar()
+      util.updateProgress(urls.app.generate_dict, {dicts: dicts.join(','), filename: filename, escapeApostrophe: param.escape}, (json)->
+        pb.parent().remove()
+        me.button 'option', 'label', oldLabel
+        me.button 'enable'
+        dowloadURL = urls.getURL(urls.app.download_app_dict,'',fileLoc:json.event.msg, filename: filename)
+  #      console?.log dowloadURL
+        window.location.href = dowloadURL
+      , pb)
 
 
   $('#batchAddLanguage').button().attr('privilegeName', util.urlname2Action urls.app.add_dict_language).click ->

@@ -5,7 +5,14 @@ public class GeneratorSettings {
 	// whether escape Apostrophe character (0x2032) into sequence in XML properties
 	private boolean escapeApostrophe = false;
 
-	public boolean isEscapeApostrophe() {
+    public GeneratorSettings() {
+    }
+
+    public GeneratorSettings(boolean escapeApostrophe) {
+        this.escapeApostrophe = escapeApostrophe;
+    }
+
+    public boolean isEscapeApostrophe() {
 		return escapeApostrophe;
 	}
 

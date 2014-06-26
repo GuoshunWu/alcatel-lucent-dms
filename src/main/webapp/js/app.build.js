@@ -64,9 +64,16 @@
             name: "../loginEntry",
             include: ['requireLib', 'login/main']
         },
+
+//        {
+//            name: "../entry",
+//            include: ['main', 'almond']
+//        }
         {
             name: "../entry",
             include: ['requireLib', 'main']
         }
+
+
     ]
 })

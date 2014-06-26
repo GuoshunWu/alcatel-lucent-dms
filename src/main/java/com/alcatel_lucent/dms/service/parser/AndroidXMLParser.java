@@ -9,6 +9,7 @@ import com.alcatel_lucent.dms.service.LanguageService;
 import com.alcatel_lucent.dms.service.generator.DictionaryGenerator;
 import com.alcatel_lucent.dms.util.NoOpEntityResolver;
 import com.alcatel_lucent.dms.util.Util;
+import com.google.common.collect.ImmutableMap;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -264,7 +265,7 @@ public class AndroidXMLParser extends DictionaryParser {
                 return Pair.of(StringUtils.join(lines, "\n"), node);
             }
             String text = node.getStringValue();
-            if (!text.startsWith(DictionaryGenerator.GEN_SIGN)) {
+            if (!text.contains(DictionaryGenerator.GEN_SIGN)) {
                 String comment = node.getStringValue();
                 if (node.getNodeType() == Node.COMMENT_NODE) {
                     comment = StringEscapeUtils.escapeJava(comment);
@@ -339,7 +340,7 @@ public class AndroidXMLParser extends DictionaryParser {
         int sortNo = 1;
 
         Iterator<Node> nodeIterator = root.nodeIterator();
-        HashSet<String> keys = new HashSet<String>();
+
         while (nodeIterator.hasNext()) {
             Pair<String, Node> pair = readCommentsAboveNode(nodeIterator);
             String comments = pair.getLeft();
@@ -353,12 +354,6 @@ public class AndroidXMLParser extends DictionaryParser {
 
             Element element = (Element) node;
             String key = element.attributeValue(getKeyAttributeName());
-            if (keys.contains(key)) {
-                // add this type of warning only for label
-                warnings.add(new BusinessWarning(BusinessWarning.DUPLICATE_LABEL_KEY, 0, key));
-                continue;
-            }
-            keys.add(key);
 
             // precess label according to different element type
             int size = 0;
@@ -372,6 +367,10 @@ public class AndroidXMLParser extends DictionaryParser {
     }
 
     private int readElement(Dictionary dict, Element element, String key, String comments, int sortNo, DictionaryLanguage dl, Collection<BusinessWarning> warnings) {
+        return this.readElement(dict, element, key, comments, sortNo, dl, warnings, false);
+    }
+
+    private int readElement(Dictionary dict, Element element, String key, String comments, int sortNo, DictionaryLanguage dl, Collection<BusinessWarning> warnings, boolean isMultipleElement) {
         boolean isReference = dl.getLanguageCode().equals(REFERENCE_LANG_CODE);
         String nodeAttributes = elemAttributeToString(element);
 
@@ -381,6 +380,9 @@ public class AndroidXMLParser extends DictionaryParser {
             label.setReference(element.getStringValue().trim());
             label.setAnnotation1(nodeAttributes);
             label.setAnnotation2(comments);
+            if(isMultipleElement){
+                label.setAnnotation3(Util.map2String(ImmutableMap.of("isMultipleElement", "true")));
+            }
             label.setSortNo(sortNo);
             label.setOrigTranslations(new ArrayList<LabelTranslation>());
 
@@ -448,7 +450,7 @@ public class AndroidXMLParser extends DictionaryParser {
             if (0 == num) {
                 subNodeComments = base64Encoding(comments) + ";" + base64Encoding(subNodeComments);
             }
-            num += readElement(dict, item, subKey, subNodeComments, sortNo, dl, warnings);
+            num += readElement(dict, item, subKey, subNodeComments, sortNo, dl, warnings, true);
         }
         return num;
     }

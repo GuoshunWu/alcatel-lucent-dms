@@ -22,6 +22,19 @@ define [
 
   #  console?.log "module appmng/dialogs loading."
 
+  $('#XMLPropertiesDictionaryExportOptionsDialog').dialog(
+    autoOpen: false, model: true
+    width: 450, height: 200
+    buttons: [
+      {text: c18n.ok, click: ->
+        $(@).data('param').resolve(
+          escape: $('#XMLPropertiesDictEscapeApostrophe', @).prop('checked')
+        )
+        $(@).dialog "close"
+      }
+#      {text: c18n.cancel, click: -> $(@).dialog "close"}
+    ]
+  )
 
   capitalizationDialog = $('#capitalizationDialog').dialog(
     autoOpen: false, modal: true
