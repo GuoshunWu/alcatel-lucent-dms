@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.alcatel_lucent.dms.model">
+
+	<class name="Language" table="LANGUAGE">
+		<id column="ID" name="id">
+			<!--<generator class="native">-->
+                <!--<param name="sequence">ID_LANGUAGE</param>-->
+			<!--</generator>-->
+
+            <generator class="org.hibernate.id.enhanced.SequenceStyleGenerator">
+                <param name="sequence_name">ID_LANGUAGE</param>
+                <param name="initial_value">2000</param>
+            </generator>
+		</id>
+
+		<property name="name" type="string" column="NAME" />
+		<property name="defaultCharset" type="string" column="DEFAULT_CHARSET" />
+		
+		<set name="isoCodes" inverse="true">
+			<key column="LANGUAGE_ID" />
+			<one-to-many class="ISOLanguageCode" />
+		</set>
+
+	</class>
+
+</hibernate-mapping>
