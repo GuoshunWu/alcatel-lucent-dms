@@ -244,7 +244,7 @@ public class AndroidXMLGenerator extends DictionaryGenerator {
         }
 
         if (!isArrayOrPlurals) { // normal label
-            // create label
+            // Skip the labels with no translation(specific requirement from user)
             if (null != dl && !label.isTranslated(dl)) return false;
             addCommentsForElement(lastComment, eleLabels);
             Element eleLabel = eleLabels.addElement("string");
