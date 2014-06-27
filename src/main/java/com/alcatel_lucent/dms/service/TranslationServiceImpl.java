@@ -1008,13 +1008,13 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     }
 
     public Collection<Label> getLabelsWithTranslation(Long dictId, Long langId) {
-        String hql = "select obj from Label obj where obj.dictionary.id=:dictId and obj.removed=false order by obj.sortNo";
+        String hql = "select obj from Label obj where obj.dictionary.id=:dictId order by obj.sortNo";
         Map param = new HashMap();
         param.put("dictId", dictId);
         Collection<Label> labels = dao.retrieve(hql, param);
         Map<Long, Label> labelMap = new HashMap<Long, Label>();
         for (Label label : labels) {
-            labelMap.put(label.getId(), label);
+        	if (!label.isRemoved()) labelMap.put(label.getId(), label);
         }
         hql = "select l.id,ot" +
                 " from Label l join l.origTranslations ot" +
