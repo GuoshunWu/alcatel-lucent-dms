@@ -112,6 +112,8 @@ public class BusinessException extends RuntimeException {
     // archive decompress
     public static final int DECOMPRESS_ARCHIVE_ERROR = 901;
 
+    public static final int LDAP_CONNECTION_ERROR = 1001;
+
     
     private int errorCode;
     private String errorMessage;
