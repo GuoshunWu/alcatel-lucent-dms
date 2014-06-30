@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>JSON test</title>
+
+    <link rel="stylesheet" type="text/css" media="screen" href="../css/jqselectlist/selectlist.css">
+    <script type="text/javascript" src="../js/lib/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="../js/lib/jquery.selectlist.pack.js"></script>
+
+    <script type="text/javascript">
+
+        $(function () {
+            $("select").selectList({sort:true});
+        });
+    </script>
+</head>
+<body>
+URL:<input id="url" value=""/>
+
+<select id="dType" multiple="multiple" size="">
+    <option value="json">JSON</option>
+    <option value="xml">XML</option>
+</select>
+
+<button>
+    Test
+</button>
+<textarea rows="15" cols="80"></textarea>
+<script type="text/javascript">
+    $(function () {
+        var num = 0;
+        var timeFunName = null;
+        $("button").bind("click",
+                function () {
+                    // 取消上次延时未执行的方法
+                    clearTimeout(timeFunName);
+                    // 延时300毫秒执行单击
+                    timeFunName = setTimeout(function () {
+                        num++;
+                        $("textarea").val($("textarea").val() + "第" + num + "次事件，事件名：单击\n");
+                    }, 300);
+                }).bind("dblclick", function () {
+                    // 取消上次延时未执行的方法
+                    clearTimeout(timeFunName);
+                    num++;
+                    $("textarea").val($("textarea").val() + "第" + num + "次事件，事件名：双击\n");
+                });
+    })
+
+</script>
+
+</body>
+</html>
