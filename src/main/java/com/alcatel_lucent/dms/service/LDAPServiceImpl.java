@@ -1,5 +1,6 @@
 package com.alcatel_lucent.dms.service;
 
+import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.model.User;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -21,6 +22,8 @@ public class LDAPServiceImpl implements LDAPService {
     private static final Logger log = LoggerFactory.getLogger(LDAPServiceImpl.class);
     @Autowired
     private LdapTemplate ldapTemplate;
+
+    private static final int TRY_COUNT = 3;
 
     private AndFilter buildUserFilter(Filter filter) {
         AndFilter andFilter = new AndFilter().and(new EqualsFilter("objectclass", "person")).
@@ -64,7 +67,18 @@ public class LDAPServiceImpl implements LDAPService {
                         or(new EqualsFilter("cn", username)).
                         or(new EqualsFilter("cil", username))
         ).encode();
-        return ldapTemplate.authenticate(DistinguishedName.EMPTY_PATH, filter, password);
+        int tryCount = TRY_COUNT;
+
+        BusinessException businessException = null;
+        while (tryCount-- > 0) {
+            try {
+                return ldapTemplate.authenticate(DistinguishedName.EMPTY_PATH, filter, password);
+            } catch (org.springframework.ldap.ServiceUnavailableException e) {
+                log.error("Ldap exception: {}", e);
+                businessException = new BusinessException(BusinessException.LDAP_CONNECTION_ERROR, e.getMessage());
+            }
+        }
+        throw businessException;
     }
 
     public List<User> findUsers(String filter) {
