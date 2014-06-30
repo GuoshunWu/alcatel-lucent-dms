@@ -66,18 +66,19 @@ define [
           $.msgBox (i18n.msgbox.createtranstask.msg.format c18n.language), null, title: (c18n.warning)
           return
 
-        langids = $(languages).map(
-          ()->@id).get().join ','
-        dicts = $(grid.getTotalSelectedRowInfo().rowIds).map(
-          ()->@).get().join(',')
-        $.blockUI()
-        $.post urls.trans.generate_translation_details, {dict:dicts, lang: langids}, (json)->
-          $.unblockUI()
-          if(json.status !=0)
-            $.msgBox json.message, null, title: (c18n.error)
-            return
-          window.location.href = urls.getURL(urls.trans.export_translation_details,'',{translationDetailId: json.translationDetailId})
+        langIds = $(languages).map(()->@id).get().join ','
+        dictIds = $(grid.getTotalSelectedRowInfo().rowIds).map(()->@).get().join(',')
+
         $(@).dialog 'close'
+
+        pb = util.genProgressBar()
+        util.updateProgress(urls.trans.generate_translation_details, {dict: dictIds, lang: langIds}, (json)->
+          pb.parent().remove()
+          console.log(json);
+          downloadURL = urls.getURL(urls.trans.export_translation_details,'',translationDetailId: json.event.msg)
+#          console?.log downloadURL
+          location.href = downloadURL
+        , pb)
       }
       {text: c18n.cancel, click: ->$(@).dialog 'close'}
     ]

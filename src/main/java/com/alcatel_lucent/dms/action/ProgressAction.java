@@ -41,7 +41,11 @@ abstract public class ProgressAction extends JSONAction implements SessionAware 
         this.session = session;
     }
 
-	// input
+    public Map<String, Object> getSession() {
+        return session;
+    }
+
+    // input
 	private String pqCmd;
 	
 	// input & output

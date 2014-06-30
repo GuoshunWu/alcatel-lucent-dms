@@ -3,6 +3,7 @@ package com.alcatel_lucent.dms.service;
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.SystemError;
+import com.alcatel_lucent.dms.action.ProgressQueue;
 import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.rest.TranslationPair;
@@ -838,7 +839,17 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     public void exportTranslations(Collection<Long> dictIds, Collection<Long> langIds, OutputStream output) {
         Workbook wb = new HSSFWorkbook();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        @org.intellij.lang.annotations.Language("HQL") String hql = "select count(*) from Label where dictionary.id in (:dictIds)";
+        Long total = (Long) dao.retrieveOne(hql, ImmutableMap.of("dictIds", dictIds));
+        total *= langIds.size();
+
+        ProgressQueue.setProgress("Preparing data...", -1);
+        long currentLabelCount = 0;
+
+        int langIndex = 0;
+
         for (Long langId : langIds) {
+            langIndex++;
             Language language = (Language) dao.retrieve(Language.class, langId);
             Sheet sheet = wb.createSheet(language.getName());
             Row headRow = sheet.createRow(0);
@@ -858,9 +869,12 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
             sheet.setColumnWidth(6, 0);
             sheet.setColumnWidth(11, 0);
             int r = 1;
+
+            int dictIndex = 1;
             for (Long dictId : dictIds) {
                 Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
                 Collection<Label> labels = getLabelsWithTranslation(dictId, langId);
+                dictIndex++;
                 for (Label label : labels) {
                     Row row = sheet.createRow(r++);
                     createCell(row, 0, dict.getName(), null);
@@ -879,6 +893,10 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
                         createCell(row, 10, sdf.format(label.getCt().getLastUpdateTime()), null);
                     }
                     createCell(row, 11, label.getId(), null);
+                    ProgressQueue.setProgress(String.format("Language: [%d/%d], dictionary: [%d/%d]<br/>\n" +
+                                            "Generating dictionary %s for language %s",
+                                    langIndex, langIds.size(), dictIndex, dictIds.size(), dict.getName(), language.getName()),
+                            (int) (currentLabelCount++ / (double) total * 100));
                 }
             }
         }
@@ -1014,7 +1032,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
         Collection<Label> labels = dao.retrieve(hql, param);
         Map<Long, Label> labelMap = new HashMap<Long, Label>();
         for (Label label : labels) {
-        	if (!label.isRemoved()) labelMap.put(label.getId(), label);
+            if (!label.isRemoved()) labelMap.put(label.getId(), label);
         }
         hql = "select l.id,ot" +
                 " from Label l join l.origTranslations ot" +
