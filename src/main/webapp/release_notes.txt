@@ -1,4 +1,4 @@
-V2.16.1
+V2.16.1 (Jun 30, 2014)
     * Add escaping options when generate dictionary
     * Fix issues of XML Android dictionary
     * Updated user guide
