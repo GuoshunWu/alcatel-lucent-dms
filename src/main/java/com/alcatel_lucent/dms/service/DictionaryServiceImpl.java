@@ -703,7 +703,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     // if not specified in DictionaryLanguage, then take value from langCharset parameter
                     String langCode = trans.getLanguageCode();
                     DictionaryLanguage dl = dict.getDictLanguage(langCode);
-                    trans.setLabel(label);
                     trans.setLanguage(dl.getLanguage());    // update language in LabelTranslation by dl
                     String charsetName = dl.getCharset().getName();
                     boolean invalidText = false;
@@ -845,6 +844,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 dbLabel.setReference(label.getReference());
                 dbLabel.setAnnotation1(label.getAnnotation1());
                 dbLabel.setAnnotation2(label.getAnnotation2());
+                dbLabel.setAnnotation3(label.getAnnotation3());
+                dbLabel.setAnnotation4(label.getAnnotation4());
                 dbLabel.setFontName(label.getFontName());
                 dbLabel.setFontSize(label.getFontSize());
                 dbLabel.setSortNo(label.getSortNo());
