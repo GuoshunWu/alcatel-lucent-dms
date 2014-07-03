@@ -14,7 +14,8 @@ public class Constants {
     public enum ImportingMode {
         DELIVERY,			// take translated strings only, with overwrite, used when import dictionary, add language, update context
         TRANSLATION,		// take all translations, overwrite, used when import translation, receive task, manual update translation
-        SUPPLEMENT			// take translated strings only, no overwrite, used when supply DEFAULT context automatically 
+        SUPPLEMENT,			// take translated strings only, no overwrite, used when supply DEFAULT context automatically
+        TEST				// same as DELIVERY except that all changes will be rolled back at the end of transaction
     }
 
     // dictionary format

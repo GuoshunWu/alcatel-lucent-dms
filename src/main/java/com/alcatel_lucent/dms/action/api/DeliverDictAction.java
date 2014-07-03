@@ -14,6 +14,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.struts2.convention.annotation.Result;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.UnexpectedRollbackException;
 
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
@@ -39,6 +40,7 @@ public class DeliverDictAction extends APIAction {
     private File upload;
     private String filename;
 	private Boolean autoCreateLang;
+	private Boolean test;
 
     private int status = 0;
     private String message = "success";
@@ -98,7 +100,8 @@ public class DeliverDictAction extends APIAction {
 	        
 	        // import dictionaries
 			Collection<Dictionary> dictList = deliveringDictPool.getDictionaries(handler);
-			report = importDictionaries(application.getId(), dictList, Constants.ImportingMode.DELIVERY);
+			Constants.ImportingMode mode = test != null && test.booleanValue() ? Constants.ImportingMode.TEST : Constants.ImportingMode.DELIVERY;
+			report = importDictionaries(application.getId(), dictList, mode);
 			report.setWarningMap(null);
 			deliveringDictPool.removeHandler(handler);
 
@@ -128,7 +131,15 @@ public class DeliverDictAction extends APIAction {
             }
             Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
             ProgressQueue.setProgress("[" + cur + "/" + total + "] Importing " + dict.getName(), 0);
-            dictionaryService.importDictionary(appId, dict, dict.getVersion(), mode, null, langCharset, autoCreateLang, warnings, report);
+            try {
+            	dictionaryService.importDictionary(appId, dict, dict.getVersion(), mode, null, langCharset, autoCreateLang, warnings, report);
+            } catch (UnexpectedRollbackException e) {
+            	if (mode == Constants.ImportingMode.TEST) {
+            		log.info("Rolled back all changes of importing because of TEST mode");
+            	} else {
+            		throw e;
+            	}
+            }
             warningMap.put(dict.getName(), warnings);
             cur++;
         }
@@ -230,6 +241,14 @@ public class DeliverDictAction extends APIAction {
 
 	public void setAutoCreateLang(Boolean autoCreateLang) {
 		this.autoCreateLang = autoCreateLang;
+	}
+
+	public Boolean getTest() {
+		return test;
+	}
+
+	public void setTest(Boolean test) {
+		this.test = test;
 	}
 
 }

@@ -14,6 +14,8 @@ import com.alcatel_lucent.dms.service.JSONService;
 
 import java.util.*;
 
+import org.springframework.transaction.UnexpectedRollbackException;
+
 @SuppressWarnings("serial")
 public class DeliverDictAction extends ProgressAction {
 	
@@ -65,7 +67,15 @@ public class DeliverDictAction extends ProgressAction {
             }
             Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
             ProgressQueue.setProgress("[" + cur + "/" + total + "] Importing " + dict.getName(), 0);
-            dictionaryService.importDictionary(appId, dict, dict.getVersion(), mode, null, langCharset, autoCreateLang, warnings, report);
+            try {
+            	dictionaryService.importDictionary(appId, dict, dict.getVersion(), mode, null, langCharset, autoCreateLang, warnings, report);
+            } catch (UnexpectedRollbackException e) {
+            	if (mode == Constants.ImportingMode.TEST) {
+            		log.info("Rolled back all changes of importing because of TEST mode");
+            	} else {
+            		throw e;
+            	}
+            }
             warningMap.put(dict.getName(), warnings);
             cur++;
         }

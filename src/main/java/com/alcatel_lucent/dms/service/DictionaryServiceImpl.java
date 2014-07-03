@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -433,7 +434,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                                        Collection<BusinessWarning> warnings, DeliveryReport report) {
         log.info("Start importing dictionary in " + mode + " mode");
         if (null == dict) return null;
-
+        
+        if (mode == Constants.ImportingMode.TEST) {
+        	dao.setRollbackOnly();
+        	mode = Constants.ImportingMode.DELIVERY;
+        }
         BusinessException nonBreakExceptions = new BusinessException(
                 BusinessException.NESTED_DCT_PARSE_ERROR, dict.getName());
         User user = UserContext.getInstance().getUser();
@@ -943,7 +948,15 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 }
             }
             Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
-            importDictionary(appId, dict, dict.getVersion(), mode, null, langCharset, null, warnings, report);
+            try {
+            	importDictionary(appId, dict, dict.getVersion(), mode, null, langCharset, null, warnings, report);
+            } catch (UnexpectedRollbackException e) {
+            	if (mode == Constants.ImportingMode.TEST) {
+            		log.info("Rolled back all changes of importing because of TEST mode");
+            	} else {
+            		throw e;
+            	}
+            }
             warningMap.put(dict.getName(), warnings);
         }
         report.setWarningMap(warningMap);

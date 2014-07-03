@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.SessionFactoryUtils;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.servlet.SessionCookieConfig;
 import java.io.IOException;
@@ -431,6 +432,10 @@ public class DaoServiceImpl implements DaoService {
             log.info("result records count: " + result + " time used: " + (ts2 - ts1) + "ms");
         }
         return result;
+    }
+    
+    public void setRollbackOnly() {
+    	TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
     }
 
 }
