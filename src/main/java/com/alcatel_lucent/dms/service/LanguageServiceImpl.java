@@ -15,6 +15,7 @@ import com.alcatel_lucent.dms.model.Charset;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.ISOLanguageCode;
 import com.alcatel_lucent.dms.model.Language;
+import com.alcatel_lucent.dms.model.NOELanguageCode;
 
 @Service(value = "languageService")
 @SuppressWarnings("unchecked")
@@ -301,4 +302,12 @@ public class LanguageServiceImpl extends BaseServiceImpl implements LanguageServ
         }
         return Locale.ENGLISH;    // default ENGLISH for unknown locales
     }
+
+	@Override
+	public NOELanguageCode getNOELanguageCode(String code) {
+		String hql = "from NOELanguageCode where code=:code";
+		Map param = new HashMap();
+		param.put("code", code);
+		return (NOELanguageCode) dao.retrieveOne(hql, param);
+	}
 }
