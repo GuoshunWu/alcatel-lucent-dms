@@ -5,7 +5,7 @@
 
 <hibernate-mapping package="com.alcatel_lucent.dms.model">
 
-    <class name="NOELanguageCode" table="NOE_LANGUAGE_CODE">
+    <class name="AlcatelLanguageCode" table="ALCATEL_LANGUAGE_CODE">
         <id name="code" type="string" column="CODE"/>
 
         <property name="defaultCode" type="boolean" column="DEFAULT_CODE"/>

@@ -8,6 +8,7 @@ import com.alcatel_lucent.dms.model.AlcatelLanguageCode;
 import com.alcatel_lucent.dms.model.Charset;
 import com.alcatel_lucent.dms.model.ISOLanguageCode;
 import com.alcatel_lucent.dms.model.Language;
+import com.alcatel_lucent.dms.model.NOELanguageCode;
 
 public interface LanguageService {
 	Map<String, ISOLanguageCode> getISOLanguageCodes();
@@ -21,6 +22,8 @@ public interface LanguageService {
 	AlcatelLanguageCode getAlcatelLanguageCode(String code);
 	
 	ISOLanguageCode getISOLanguageCode(String code);
+	
+	NOELanguageCode getNOELanguageCode(String code);
 	
 	Map<Long, Language> getLanguages();
 
