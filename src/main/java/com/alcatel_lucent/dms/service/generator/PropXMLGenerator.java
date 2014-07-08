@@ -210,6 +210,6 @@ class XMLPropWriter extends XMLWriter {
 	}
 
 	protected boolean shouldEncodeChar(char c) {
-		return c == '\u2032' ? true : super.shouldEncodeChar(c);
+		return c == '\'' || c == '\u2032' || c == '\u2018'? true : super.shouldEncodeChar(c);
 	}
 }
