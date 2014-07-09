@@ -29,19 +29,22 @@ public class DeliveryReport {
 	private int translatedWC;		// word count of translated strings
 	private int matchedNum;			// number of auto-matched strings
 	private int matchedWC;			// word count of auto-matched strings
+	private int diffLabelNum;		// number of new or changed label
+	private int diffTranslationNum;	// number of different translations in dictionary
+	private int diffTranslatedNum;	// number of newly translated strings in dictionary
 	
 	private HashSet<String> dictNames = new HashSet<String>();
 	// key=<context_name>~~<langId>~~<reference>
 	private HashSet<String> translatedSet = new HashSet<String>();
 	private HashSet<String> untranslatedSet = new HashSet<String>();
 	
-	private Map<String, Collection<BusinessWarning>> warningMap;
+	private Map<String, Collection<String>> warningMap;
 
-	public Map<String, Collection<BusinessWarning>> getWarningMap() {
+	public Map<String, Collection<String>> getWarningMap() {
 		return warningMap;
 	}
 
-	public void setWarningMap(Map<String, Collection<BusinessWarning>> warningMap) {
+	public void setWarningMap(Map<String, Collection<String>> warningMap) {
 		this.warningMap = warningMap;
 	}
 
@@ -158,6 +161,7 @@ public class DeliveryReport {
 			Text text = textMap.get(label.getReference());
 			int labelWC = Util.countWords(label.getReference());
 			translationWC += labelWC * languageNum;
+			diffTranslationNum += text.getDiff() == null ? 0 : text.getDiff();
 			for (DictionaryLanguage dl : dict.getDictLanguages()) {
 				if (dl.isReference()) continue;	// ignore reference language
 				LabelTranslation lt = label.getOrigTranslation(dl.getLanguageCode());
@@ -205,6 +209,9 @@ public class DeliveryReport {
 		StringBuffer s = new StringBuffer("DELIVERY REPORT\n\n");
 		s.append("Dictionaries: ").append(dictNum).append("\n");
 		s.append("Labels: ").append(labelNum).append("\n");
+		s.append("Diff labels: ").append(diffLabelNum).append("\n");
+		s.append("Diff translations: ").append(diffTranslationNum).append("\n");
+		s.append("Diff translated: ").append(diffTranslatedNum).append("\n");
 		s.append("Total translations: ").append(translationNum).append(" (").append(translationWC).append(" in words)\n");
 		s.append("Distinct translations: ").append(distinctTranslationNum).append(" (").append(distinctTranslationWC).append(" in words)\n");
 		if (translationNum > 0 && translationWC > 0) {
@@ -238,6 +245,42 @@ public class DeliveryReport {
 	
 	public String toHTML() {
 		return "<div style='text-align:left'>" + toString().replace("\n", "<br/>") + "</div>";
+	}
+
+	public int getDiffTranslationNum() {
+		return diffTranslationNum;
+	}
+
+	public void setDiffTranslationNum(int diffTranslationNum) {
+		this.diffTranslationNum = diffTranslationNum;
+	}
+
+	public void addDiffTranslationNum(int addNum) {
+		this.diffTranslationNum += addNum;
+	}
+	
+	public int getDiffLabelNum() {
+		return diffLabelNum;
+	}
+
+	public void setDiffLabelNum(int diffLabelNum) {
+		this.diffLabelNum = diffLabelNum;
+	}
+	
+	public void addDiffLabelNum(int addNum) {
+		this.diffLabelNum += addNum;
+	}
+
+	public int getDiffTranslatedNum() {
+		return diffTranslatedNum;
+	}
+
+	public void setDiffTranslatedNum(int diffTranslatedNum) {
+		this.diffTranslatedNum = diffTranslatedNum;
+	}
+	
+	public void addDiffTranslatedNum(int addNum) {
+		this.diffTranslatedNum += addNum;
 	}
 	
 }

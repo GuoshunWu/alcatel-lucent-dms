@@ -154,6 +154,10 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                         }
                         trans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
                         dbTrans = addTranslation(dbText, trans);
+                        // count diff translation
+                        if (!trans.getTranslation().equals(text.getReference())) {
+                        	dbText.addDiff(1);
+                        }
                         dbText.addTranslation(dbTrans);        // the dbText will be used in next invoke, so add translations in-memory
                         historyService.addTranslationHistory(
                                 dbTrans,
@@ -162,6 +166,10 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                                 null);
                     } else if (mode == Constants.ImportingMode.TRANSLATION) { // update translations in TRANSLATION_MODE
                         if (trans.getTranslation() != null) {
+                            // count diff translation
+                        	if (!trans.getTranslation().equals(dbTrans.getTranslation())) {
+                        		dbText.addDiff(1);
+                        	}
                             dbTrans.setTranslation(trans.getTranslation());
                         }
                         dbTrans.setStatus(trans.getStatus());
@@ -181,6 +189,10 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 //	                	}
                         // update translation if got translated in delivered dict
                         if (trans.getStatus() == Translation.STATUS_TRANSLATED) {
+                            // count diff translation
+                        	if (!trans.getTranslation().equals(dbTrans.getTranslation())) {
+                        		dbText.addDiff(1);
+                        	}
                             int translationType = trans.getTranslationType() == null ? Translation.TYPE_DICT : trans.getTranslationType();
                             dbTrans.setTranslation(trans.getTranslation());
                             dbTrans.setStatus(Translation.STATUS_TRANSLATED);
@@ -195,6 +207,10 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                     } else {    // supplement mode
                         if (dbTrans.getStatus() != Translation.STATUS_TRANSLATED &&
                                 trans.getStatus() == Translation.STATUS_TRANSLATED) {
+                            // count diff translation
+                        	if (!trans.getTranslation().equals(dbTrans.getTranslation())) {
+                        		dbText.addDiff(1);
+                        	}
                             dbTrans.setTranslation(trans.getTranslation());
                             dbTrans.setStatus(Translation.STATUS_TRANSLATED);
                             dbTrans.setTranslationType(trans.getTranslationType() != null ?

@@ -178,4 +178,11 @@ public class Text extends BaseEntity {
 		this.refLabel = label;
 	}
 
+	public void addDiff(int j) {
+		if (diff != null) 
+			diff += i; 
+		else 
+			diff = i;
+	}
+
 }
