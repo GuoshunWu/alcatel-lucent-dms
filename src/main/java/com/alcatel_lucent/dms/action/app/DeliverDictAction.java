@@ -35,7 +35,7 @@ public class DeliverDictAction extends ProgressAction {
 			Collection<Dictionary> dictList = deliveringDictPool.getDictionaries(handler);
 			report = importDictionaries(app, dictList, Constants.ImportingMode.DELIVERY);
 			String json = jsonService.toJSONString(report, 
-					"dictNum,labelNum,translationNum,translationWC" +
+					"dictNum,labelNum,diffLabelNum,diffTranslationNum,diffTranslatedNum,translationNum,translationWC" +
 					",distinctTranslationNum,distinctTranslationWC" +
 					",untranslatedNum,untranslatedWC,translatedNum,translatedWC" +
 					",matchedNum,matchedWC");
@@ -50,7 +50,6 @@ public class DeliverDictAction extends ProgressAction {
 
     private DeliveryReport importDictionaries(Long appId, Collection<Dictionary> dictList, Constants.ImportingMode mode) throws BusinessException {
         DeliveryReport report = new DeliveryReport();
-        Map<String, Collection<BusinessWarning>> warningMap = new TreeMap<String, Collection<BusinessWarning>>();
         int total = dictList.size();
         int cur = 1;
         Iterator<Dictionary> dictionaryIterator = dictList.iterator();
@@ -76,10 +75,9 @@ public class DeliverDictAction extends ProgressAction {
             		throw e;
             	}
             }
-            warningMap.put(dict.getName(), warnings);
             cur++;
         }
-        report.setWarningMap(warningMap);
+//        report.setWarningMap(warningMap);
         log.info(report.toString());
         return report;
     }

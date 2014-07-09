@@ -630,6 +630,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 //        }
         Context defaultCtx = textService.getContextByExpression(Context.DEFAULT, (Dictionary) null);
         int sortNo = 1;
+        int diffLabel = 0;			// number of new or changed label 
+        int diffTranslation = 0;	// number of different translations in dictionary
+        int diffTranslated = 0;		// number of newly translated strings in dictionary
         for (Label label : dict.getLabels()) {
         	Context ctx = label.getContext();
             label.setSortNo(sortNo++);
@@ -643,6 +646,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 lastLabel = lastDict.getLabel(label.getKey());
             }
             
+            // count diffLabel
+            if (lastLabel != null && !lastLabel.getReference().equals(label.getReference())) {
+            	diffLabel++;
+            }
+            
             // persist label first, it's needed by translation history
             boolean newLabel = false;	// used to determine if LabelTranslation needs persistence
             Label dbLabel = dbDict.getLabel(label.getKey());
@@ -652,30 +660,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             	dbLabel = (Label) dao.create(label, false);
             	dbDict.addLabel(dbLabel);
             	newLabel = true;
-            }
-            // create or update LabelTranslation
-            if (label.getOrigTranslations() != null) {
-                for (LabelTranslation trans : label.getOrigTranslations()) {
-                	LabelTranslation dbLabelTrans = null;
-                	if (!newLabel) {
-                        dbLabelTrans = dbLabel.getOrigTranslation(trans.getLanguageCode());
-                	}
-                    if (newLabel || dbLabelTrans == null) {
-                        trans.setLabel(dbLabel);
-                        trans.setLanguage((Language) dao.retrieve(Language.class, trans.getLanguage().getId()));
-                        dbLabelTrans = (LabelTranslation) dao.create(trans, false);
-                    } else {
-                        dbLabelTrans.setOrigTranslation(trans.getOrigTranslation());
-                        dbLabelTrans.setAnnotation1(trans.getAnnotation1());
-                        dbLabelTrans.setAnnotation2(trans.getAnnotation2());
-                        dbLabelTrans.setComment(trans.getComment());
-                        dbLabelTrans.setWarnings(trans.getWarnings());
-                        dbLabelTrans.setNeedTranslation(trans.isNeedTranslation());
-                        dbLabelTrans.setRequestTranslation(trans.getRequestTranslation());
-                        dbLabelTrans.setLanguageCode(trans.getLanguageCode());
-                        dbLabelTrans.setSortNo(trans.getSortNo());
-                    }
-                }
             }
             
             Text text = new Text();
@@ -706,6 +690,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 for (LabelTranslation trans : label.getOrigTranslations()) {
                     // determine charset, first take value from DictionaryLanguage
                     // if not specified in DictionaryLanguage, then take value from langCharset parameter
+                	trans.setLabel(dbLabel);
                     String langCode = trans.getLanguageCode();
                     DictionaryLanguage dl = dict.getDictLanguage(langCode);
                     trans.setLanguage(dl.getLanguage());    // update language in LabelTranslation by dl
@@ -751,6 +736,14 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                         nonBreakExceptions.addNestedException(new BusinessException(
                                 BusinessException.CHARSET_NOT_FOUND, charsetName));
                     }
+                    
+                    // count diff translation
+                    String currentTranslation = lastLabel == null ? label.getReference() : lastLabel.getTranslation(langCode);
+                    boolean diff = false;
+                    if (!currentTranslation.equals(trans.getOrigTranslation())) {
+                    	diffTranslation++;
+                    	diff = true;
+                    }
 
                     // read needTranslation flag from parser
                     // trans.setNeedTranslation(true);
@@ -793,7 +786,35 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                         t.setStatus(populateTranslationStatus(trans));
                     }
                     text.addTranslation(t);
-                } //for
+                    
+                    // count diff translated
+                    if (diff && t.getStatus() == Translation.STATUS_TRANSLATED) {
+                    	diffTranslated++;
+                    }
+                    
+                } //for each labelTranslation
+                
+                // create or update LabelTranslation
+                for (LabelTranslation trans : label.getOrigTranslations()) {
+                	LabelTranslation dbLabelTrans = null;
+                	if (!newLabel) {
+                        dbLabelTrans = dbLabel.getOrigTranslation(trans.getLanguageCode());
+                	}
+                    if (newLabel || dbLabelTrans == null) {
+                        trans.setLanguage((Language) dao.retrieve(Language.class, trans.getLanguage().getId()));
+                        dbLabelTrans = (LabelTranslation) dao.create(trans, false);
+                    } else {
+                        dbLabelTrans.setOrigTranslation(trans.getOrigTranslation());
+                        dbLabelTrans.setAnnotation1(trans.getAnnotation1());
+                        dbLabelTrans.setAnnotation2(trans.getAnnotation2());
+                        dbLabelTrans.setComment(trans.getComment());
+                        dbLabelTrans.setWarnings(trans.getWarnings());
+                        dbLabelTrans.setNeedTranslation(trans.isNeedTranslation());
+                        dbLabelTrans.setRequestTranslation(trans.getRequestTranslation());
+                        dbLabelTrans.setLanguageCode(trans.getLanguageCode());
+                        dbLabelTrans.setSortNo(trans.getSortNo());
+                    }
+                }	// for each labelTranslation
             }
 
             // align translations with dictLanguages in purpose of getting translation suggestion
@@ -807,7 +828,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     text.addTranslation(t);
                 }
             }
-        }
+        }	// for each label
 
         // merge duplicate texts
         mergeDuplicateTexts(textMap);
@@ -857,6 +878,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             }
             report.addData(context, dict, labels, dbTextMap);
         }
+        report.addDiffLabelNum(diffLabel);
+        report.addDiffTranslationNum(diffTranslation);
+        report.addDiffTranslatedNum(diffTranslated);
 
         if (nonBreakExceptions.hasNestedException()) {
             throw nonBreakExceptions;
@@ -939,7 +963,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     @Deprecated
     public DeliveryReport importDictionaries(Long appId, Collection<Dictionary> dictList, Constants.ImportingMode mode) throws BusinessException {
         DeliveryReport report = new DeliveryReport();
-        Map<String, Collection<BusinessWarning>> warningMap = new TreeMap<String, Collection<BusinessWarning>>();
         for (Dictionary dict : dictList) {
             Map<String, String> langCharset = new HashMap<String, String>();
             if (dict.getDictLanguages() != null) {
@@ -957,9 +980,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             		throw e;
             	}
             }
-            warningMap.put(dict.getName(), warnings);
         }
-        report.setWarningMap(warningMap);
+//        report.setWarningMap(warningMap);
         log.info(report.toString());
         return report;
     }
