@@ -10,8 +10,10 @@ import com.alcatel_lucent.dms.model.Dictionary;
 import net.sf.json.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.TransformerUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,25 +122,31 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 
     public Map<String, Text> updateTranslations(Long ctxId, Collection<Text> texts, Constants.ImportingMode mode, int operationType) {
         Map<String, Text> result = new HashMap<String, Text>();
-        Map<String, Text> dbTextMap = getTextsAsMap(ctxId, texts);
-        Context context = (Context) dao.retrieve(Context.class, ctxId);
-        log.info("Updating translations in context " + context.getName());
+        Map<String, Text> dbTextMap = ctxId != null ? getTextsAsMap(ctxId, texts) : getTextsAsMapForLabelContext(texts);
+        Context context = ctxId != null ? (Context) dao.retrieve(Context.class, ctxId) : null;
         // In delivery mode, try to translate labels in context "DEFAULT" and "DICT" automatically
         // by searching existing translation from other contexts
-        if (mode == Constants.ImportingMode.DELIVERY &&
-                (context.getName().equals(Context.DEFAULT) || context.getName().equals(Context.DICT) ||
-                        context.getName().equals(Context.LABEL))) {
-            suggestTranslations(ctxId, texts, dbTextMap);
+        if (ctxId != null) {
+            log.info("Updating translations in context " + context.getName());
         }
+    	if (mode == Constants.ImportingMode.DELIVERY &&
+            (ctxId == null || context.getName().equals(Context.DEFAULT) || context.getName().equals(Context.DICT) ||
+                    context.getName().equals(Context.LABEL))) {
+    		suggestTranslations(texts, dbTextMap, ctxId == null);
+    	}
         for (Text text : texts) {
-            if (result.containsKey(text.getReference())) {
-                // ignore same reference
+            if (ctxId != null && result.containsKey(text.getReference())) {
+                // ignore same reference for single context
                 continue;
             }
+            if (ctxId == null) {	// for LABEL context, context and dbTextMap is populated for each context
+            	context = text.getContext();
+            }
+            
             Text dbText = dbTextMap.get(text.getReference());
 //            Text dbText = getText(ctxId, text.getReference());
             if (dbText == null) {
-                dbText = addText(ctxId, text.getReference());
+                dbText = addText(context.getId(), text.getReference());
             }
             HashSet<Long> langSet = new HashSet<Long>();
             if (text.getTranslations() != null) {
@@ -206,7 +214,8 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                         }
                     } else {    // supplement mode
                         if (dbTrans.getStatus() != Translation.STATUS_TRANSLATED &&
-                                trans.getStatus() == Translation.STATUS_TRANSLATED) {
+                                trans.getStatus() == Translation.STATUS_TRANSLATED &&
+                                !StringUtils.isBlank(trans.getTranslation())) {
                             // count diff translation
                         	if (!trans.getTranslation().equals(dbTrans.getTranslation())) {
                         		dbText.addDiff(1);
@@ -222,7 +231,11 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                     langSet.add(trans.getLanguage().getId());
                 }
             }
-            result.put(text.getReference(), dbText);
+            if (ctxId != null) {	// for single context, take reference as index
+            	result.put(text.getReference(), dbText);
+            } else {	// for multiple LABEL context, take context key as index
+            	result.put(context.getKey(), dbText);
+            }
         }
         historyService.flushHistoryQueue();
         return result;
@@ -232,17 +245,16 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
      * For new un-translated translation entries, try to match existing translation by searching text across all contexts
      * If matched, set status to T, translation type to "Auto" and translation text to the matched result
      *
-     * @param ctxId
      * @param texts
      * @param dbTextMap
      */
-    private void suggestTranslations(Long ctxId, Collection<Text> texts, Map<String, Text> dbTextMap) {
+    private void suggestTranslations(Collection<Text> texts, Map<String, Text> dbTextMap, boolean labelContext) {
     	Collection<Translation> transNeedSuggestion = new ArrayList<Translation>();
     	HashSet<String> refNeedSuggestion = new HashSet<String>();
         for (Text text : texts) {
             if (org.springframework.util.CollectionUtils.isEmpty(text.getTranslations())) continue;
 
-            Text dbText = dbTextMap.get(text.getReference());
+            Text dbText = dbTextMap.get(labelContext ? text.getContext().getKey() : text.getReference());
             for (Translation trans : text.getTranslations()) {
             	trans.setText(text);		// text is null in some case
                 Translation dbTrans = dbText == null ? null : dbText.getTranslation(trans.getLanguage().getId());
@@ -290,6 +302,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                 param.put("reference", refs);
                 Collection<Translation> qr = dao.retrieve(hql, param);
                 for (Translation trans : qr) {
+                	if (StringUtils.isBlank(trans.getTranslation())) continue;	// don't match empty translation even if it's marked as T
                 	Map<Long, String> suggestMap = result.get(trans.getText().getReference());
                 	if (suggestMap == null) {
                 		suggestMap = new HashMap<Long, String>();
@@ -653,26 +666,57 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
         }
         return result;
     }
+    
+    /**
+     * Get all text objects of specified transient texts in LABEL context as a map, indexed by context key
+     * @param texts
+     * @return
+     */
+    private Map<String, Text> getTextsAsMapForLabelContext(Collection<Text> texts) {
+    	Map<String, Text> result = new HashMap<String, Text>();
+    	Collection<Long> ctxIds = new ArrayList<Long>();
+    	for (Iterator<Text> iter = texts.iterator(); iter.hasNext();) {
+    		Text text = iter.next();
+    		ctxIds.add(text.getContext().getId());
+    		if (ctxIds.size() >= 100 || !iter.hasNext()) {
+    			String hql = "from Text where context.id in(:ctxIds) order by id desc";
+    			Map param = new HashMap();
+    			param.put("ctxIds", ctxIds);
+    			Collection<Text> qr = dao.retrieve(hql, param);
+    			for (Text t : qr) {
+    				result.put(text.getContext().getKey(), t);
+    			}
+    			ctxIds.clear();
+    		}
+    	}
+    	return result;
+    }
+
+    @Override
+    public String getContextKeyByExpressionForLabel(String contextExp, Long dictId) {
+        int index = contextExp.indexOf("[") + 1;
+        return new StringBuffer(contextExp).insert(index, "DICT-" + dictId + "-").toString();
+    }
 
     @Override
     public Context getContextByExpressionForLabel(String contextExp, Long dictId) {
-        int index = contextExp.indexOf("[") + 1;
-        String contextKey = new StringBuffer(contextExp).insert(index, "DICT-" + dictId + "-").toString();
+        String contextKey = getContextKeyByExpressionForLabel(contextExp, dictId);
         Context context = getContextByKey(contextKey);
         if (context == null) {
             context = new Context();
             context.setKey(contextKey);
             context.setName(Context.LABEL);
-            context = (Context) dao.create(context);
+            context = (Context) dao.create(context, false);
         }
         return context;
     }
 
-    private Context createContext(String name, String key) {
+    @Override
+    public Context createContext(String name, String key) {
         Context context = new Context();
         context.setKey(key);
         context.setName(name);
-        context = (Context) dao.create(context);
+        context = (Context) dao.create(context, false);
         return context;
     }
 

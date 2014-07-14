@@ -70,15 +70,15 @@ public interface TextService {
 	Text addTranslations(Long textId, Map<Long, String> translations);
 	
 	/**
-	 * Update text and translation in a context.
+	 * Update text and translation in a context or several LABEL contexts
 	 * Insert or update text and translation entities in a batch.
 	 * The method is invoked for importing dictionaries, receiving tasks and updating reference of labels.
-	 * @param ctxId context id
+	 * @param ctxId context id, ctxId can be null for updating multiple LABEL contexts, each Text in parameter texts must contain context value in this case
 	 * @param texts texts with their translations to update in the context
 	 * @param mode importing mode
      *         @see DictionaryService#importDictionaries(Long, java.util.Collection, com.alcatel_lucent.dms.Constants.ImportingMode)
 	 * @param operationType operation type defined in TranslationHistory
-	 * @return map of persistent text objects indexed by reference.
+	 * @return map of persistent text objects indexed by reference, in case of multiple LABEL contexts, the context key is used as index
 	 */
 	Map<String, Text> updateTranslations(Long ctxId, Collection<Text> texts, Constants.ImportingMode mode, int operationType);
 
@@ -206,5 +206,9 @@ public interface TextService {
 	 * @return
 	 */
 	Collection<Translation[]> findDiffTranslations(Long textId1, Long textId2);
+
+	String getContextKeyByExpressionForLabel(String contextExp, Long dictId);
+
+	Context createContext(String name, String key);
 
 }
