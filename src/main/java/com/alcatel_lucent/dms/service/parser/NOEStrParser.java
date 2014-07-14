@@ -332,12 +332,8 @@ public class NOEStrParser extends DictionaryParser {
                     String labelKey = line.trim();
                     String translation = null;
 
-                    while (it.hasNext() && translation == null) {
+                    if (it.hasNext()) {
                         line = it.nextLine();
-                        if (line.trim().isEmpty()) {
-                            lineNo++;
-                            continue;
-                        }
                         translation = line.trim();
                     }
 
