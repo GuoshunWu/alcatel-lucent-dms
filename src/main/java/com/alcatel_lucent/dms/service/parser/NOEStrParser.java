@@ -249,7 +249,7 @@ public class NOEStrParser extends DictionaryParser {
         Pair<String, String> namePair = getDictNamePair(rootDir, docFile);
         dictBase.setPath(namePair.getRight());
         dictBase.setName(FilenameUtils.getBaseName(namePair.getLeft()));
-        dictBase.setEncoding(DEFAULT_ENCODING);
+        dictBase.setEncoding(dictBase.getName().endsWith("_stu") ? "UTF-8" :  DEFAULT_ENCODING);
         dictBase.setFormat(DictionaryFormat.NOE_STRING.toString());
 
         Dictionary dictionary = new Dictionary();
@@ -282,11 +282,11 @@ public class NOEStrParser extends DictionaryParser {
             dl.setLanguageCode(langCode);
             dl.setSortNo(sortNo++);
 
-            String transCode = langCode.equals(REFERENCE_CODE) ? "GAE" : langCode;
-            Language language = languageService.getLanguage(transCode);
+            NOELanguageCode nlc = languageService.getNOELanguageCode(langCode.toUpperCase());
+            Language language = nlc == null ? null : nlc.getLanguage();
 
             dl.setLanguage(language);
-            dl.setCharset(new Charset(DEFAULT_ENCODING));
+            dl.setCharset(new Charset(dictBase.getEncoding()));
 
             dl.setDictionary(dictionary);
             dictionary.getDictLanguages().add(dl);
@@ -332,12 +332,8 @@ public class NOEStrParser extends DictionaryParser {
                     String labelKey = line.trim();
                     String translation = null;
 
-                    while (it.hasNext() && translation == null) {
+                    if (it.hasNext()) {
                         line = it.nextLine();
-                        if (line.trim().isEmpty()) {
-                            lineNo++;
-                            continue;
-                        }
                         translation = line.trim();
                     }
 

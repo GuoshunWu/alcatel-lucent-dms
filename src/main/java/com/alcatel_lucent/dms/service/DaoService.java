@@ -126,4 +126,10 @@ public interface DaoService {
      * @return number of the entities deleted
      */
     int delete(String deleteStr, Map paramMap);
+    
+    /**
+     * Mark current transaction as rollback-only, no change will be applied to database
+     * NOTE: An UnexpectedRollbackException will be thrown at commitment of transaction.
+     */
+    void setRollbackOnly();
 }

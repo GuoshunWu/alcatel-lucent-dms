@@ -14,6 +14,8 @@ import com.alcatel_lucent.dms.service.JSONService;
 
 import java.util.*;
 
+import org.springframework.transaction.UnexpectedRollbackException;
+
 @SuppressWarnings("serial")
 public class DeliverDictAction extends ProgressAction {
 	
@@ -33,7 +35,7 @@ public class DeliverDictAction extends ProgressAction {
 			Collection<Dictionary> dictList = deliveringDictPool.getDictionaries(handler);
 			report = importDictionaries(app, dictList, Constants.ImportingMode.DELIVERY);
 			String json = jsonService.toJSONString(report, 
-					"dictNum,labelNum,translationNum,translationWC" +
+					"dictNum,labelNum,diffLabelNum,diffTranslationNum,diffTranslatedNum,translationNum,translationWC" +
 					",distinctTranslationNum,distinctTranslationWC" +
 					",untranslatedNum,untranslatedWC,translatedNum,translatedWC" +
 					",matchedNum,matchedWC");
@@ -48,7 +50,6 @@ public class DeliverDictAction extends ProgressAction {
 
     private DeliveryReport importDictionaries(Long appId, Collection<Dictionary> dictList, Constants.ImportingMode mode) throws BusinessException {
         DeliveryReport report = new DeliveryReport();
-        Map<String, Collection<BusinessWarning>> warningMap = new TreeMap<String, Collection<BusinessWarning>>();
         int total = dictList.size();
         int cur = 1;
         Iterator<Dictionary> dictionaryIterator = dictList.iterator();
@@ -65,11 +66,18 @@ public class DeliverDictAction extends ProgressAction {
             }
             Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
             ProgressQueue.setProgress("[" + cur + "/" + total + "] Importing " + dict.getName(), 0);
-            dictionaryService.importDictionary(appId, dict, dict.getVersion(), mode, null, langCharset, autoCreateLang, warnings, report);
-            warningMap.put(dict.getName(), warnings);
+            try {
+            	dictionaryService.importDictionary(appId, dict, dict.getVersion(), mode, null, langCharset, autoCreateLang, warnings, report);
+            } catch (UnexpectedRollbackException e) {
+            	if (mode == Constants.ImportingMode.TEST) {
+            		log.info("Rolled back all changes of importing because of TEST mode");
+            	} else {
+            		throw e;
+            	}
+            }
             cur++;
         }
-        report.setWarningMap(warningMap);
+//        report.setWarningMap(warningMap);
         log.info(report.toString());
         return report;
     }

@@ -14,6 +14,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.struts2.convention.annotation.Result;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.UnexpectedRollbackException;
 
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
@@ -32,6 +33,8 @@ import com.alcatel_lucent.dms.util.Util;
 @SuppressWarnings("serial")
 @Result(type="json", params={"noCache","true","ignoreHierarchy","false","includeProperties","status,message,report.*"})
 public class DeliverDictAction extends APIAction {
+	
+	private static final int MAX_WARNINGS = 100;
 
     private String prod;
     private String app;
@@ -39,6 +42,7 @@ public class DeliverDictAction extends APIAction {
     private File upload;
     private String filename;
 	private Boolean autoCreateLang;
+	private Boolean test;
 
     private int status = 0;
     private String message = "success";
@@ -98,8 +102,8 @@ public class DeliverDictAction extends APIAction {
 	        
 	        // import dictionaries
 			Collection<Dictionary> dictList = deliveringDictPool.getDictionaries(handler);
-			report = importDictionaries(application.getId(), dictList, Constants.ImportingMode.DELIVERY);
-			report.setWarningMap(null);
+			Constants.ImportingMode mode = test != null && test.booleanValue() ? Constants.ImportingMode.TEST : Constants.ImportingMode.DELIVERY;
+			report = importDictionaries(application.getId(), dictList, mode);
 			deliveringDictPool.removeHandler(handler);
 
         } catch (BusinessException e) {
@@ -111,9 +115,7 @@ public class DeliverDictAction extends APIAction {
 
     private DeliveryReport importDictionaries(Long appId, Collection<Dictionary> dictList, Constants.ImportingMode mode) throws BusinessException {
         DeliveryReport report = new DeliveryReport();
-        Map<String, Collection<BusinessWarning>> warningMap = new TreeMap<String, Collection<BusinessWarning>>();
-        int total = dictList.size();
-        int cur = 1;
+        Map<String, Collection<String>> warningMap = new TreeMap<String, Collection<String>>();
         Iterator<Dictionary> dictionaryIterator = dictList.iterator();
         while(dictionaryIterator.hasNext()){
             Dictionary dict = dictionaryIterator.next();
@@ -126,11 +128,29 @@ public class DeliverDictAction extends APIAction {
                     langCharset.put(dl.getLanguageCode(), dl.getCharset().getName());
                 }
             }
-            Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
-            ProgressQueue.setProgress("[" + cur + "/" + total + "] Importing " + dict.getName(), 0);
-            dictionaryService.importDictionary(appId, dict, dict.getVersion(), mode, null, langCharset, autoCreateLang, warnings, report);
-            warningMap.put(dict.getName(), warnings);
-            cur++;
+            ArrayList<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
+            try {
+            	dictionaryService.importDictionary(appId, dict, dict.getVersion(), mode, null, langCharset, autoCreateLang, warnings, report);
+            } catch (UnexpectedRollbackException e) {
+            	if (mode == Constants.ImportingMode.TEST) {
+            		log.info("Rolled back all changes of importing because of TEST mode");
+            	} else {
+            		throw e;
+            	}
+            }
+            if (warnings.size() > 0) {
+            	ArrayList<String> warnMessages = new ArrayList<String>();
+            	int count = 0;
+            	for (BusinessWarning warning : warnings) {
+            		if (count == MAX_WARNINGS) {
+            			warnMessages.add(new BusinessWarning(BusinessWarning.MORE, warnings.size() - MAX_WARNINGS).toString());
+            			break;
+            		}
+            		warnMessages.add(warning.toString());
+            		count++;
+            	}
+            	warningMap.put(dict.getName(), warnMessages);
+            }
         }
         report.setWarningMap(warningMap);
         log.info(report.toString());
@@ -230,6 +250,14 @@ public class DeliverDictAction extends APIAction {
 
 	public void setAutoCreateLang(Boolean autoCreateLang) {
 		this.autoCreateLang = autoCreateLang;
+	}
+
+	public Boolean getTest() {
+		return test;
+	}
+
+	public void setTest(Boolean test) {
+		this.test = test;
 	}
 
 }
