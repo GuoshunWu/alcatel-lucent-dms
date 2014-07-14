@@ -4,6 +4,7 @@ import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.model.Label;
+import com.alcatel_lucent.dms.model.Translation;
 import com.alcatel_lucent.dms.service.DaoService;
 import com.alcatel_lucent.dms.service.parser.NOEStrParser;
 import org.apache.commons.io.FileUtils;
@@ -51,7 +52,7 @@ public class NOEStrGenerator extends DictionaryGenerator {
 
             for (String langCode : langSet) {
                 targetFile = new File(targetDir, dict.getName() + "." + langCode);
-                FileUtils.writeStringToFile(targetFile, getLanguageFileString(langCode, dict));
+                FileUtils.writeStringToFile(targetFile, getLanguageFileString(langCode, dict), dict.getEncoding());
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -68,17 +69,25 @@ public class NOEStrGenerator extends DictionaryGenerator {
         PrintWriter out = new PrintWriter(sw);
 
         for (Label label : labels) {
-            String text = langCode.equals(REFERENCE_CODE) ? label.getReference() : label.getTranslation(langCode);
+        	Translation trans = label.getTranslationObject(langCode);
+            String text = langCode.equals(REFERENCE_CODE) ? label.getReference() : trans.getTranslation();
             out.println(LABEL_KEY_PREFIX + label.getKey());
             String translation = escapeNOEString(text);
 
-            // ignore character great than '\u0080'
+            
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < translation.length(); ++i) {
-                char ch = translation.charAt(i);
-                sb.append(ch > '\u0080' ? '?' : ch);
+            if (dictionary.getEncoding().equals(NOEStrParser.DEFAULT_ENCODING)) { // in case of noe_str, ignore character great than '\u0080'
+	            for (int i = 0; i < translation.length(); ++i) {
+	                char ch = translation.charAt(i);
+	                if (ch <= '\u0080') sb.append(ch);
+	            }
+            } else {
+            	sb.append(translation);
             }
-            out.println(LABEL_TRANS_PREFIX + sb.toString());
+            if (langCode.equals(REFERENCE_CODE) || trans.getStatus() != Translation.STATUS_TRANSLATED) {
+            	out.print(LABEL_TRANS_PREFIX);
+            }
+            out.println(sb.toString());
         }
 
         out.close();

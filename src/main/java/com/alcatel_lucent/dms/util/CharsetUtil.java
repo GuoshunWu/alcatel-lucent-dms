@@ -43,7 +43,7 @@ public class CharsetUtil {
 	public static boolean isValid(char c, String lang) {
 		String ub = getUnicodeBlock(c);
 		if (ub == null) return false;
-		if (ub.equals("BASIC_LATIN") || ub.equals("GENERAL_PUNCTUATION")) return true;
+		if (ub.equals("BASIC_LATIN") || ub.equals("GENERAL_PUNCTUATION") || ub.equals("LATIN_1_SUPPLEMENT")) return true;
 		if (lang.startsWith("Chinese")) {
 			return ub.startsWith("CJK_") || ub.equals("HALFWIDTH_AND_FULLWIDTH_FORMS");
 		} else if (lang.equals("Korean")) {

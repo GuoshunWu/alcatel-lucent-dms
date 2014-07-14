@@ -1,3 +1,8 @@
+V2.16.2 (Jul 9, 2014)
+    * Add "test" option for API "deliver-dict"
+    * Add statistics and warnings in response of API "deliver-dict"
+    * Add two more characters for escaping option
+
 V2.16.1 (Jun 30, 2014)
     * Add escaping options when generate dictionary
     * Fix issues of XML Android dictionary
