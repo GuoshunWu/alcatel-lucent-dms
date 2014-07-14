@@ -989,6 +989,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
      */
     private void mergeDuplicateTexts(MultiValueMap<String, Text> textMap) {
         for (String ctx : textMap.keySet()) {
+        	if (ctx.equals(Context.LABEL)) continue;	// allow same reference for LABEL context
             Collection<Text> texts = textMap.get(ctx);
             Map<String, Text> refMap = new HashMap<String, Text>();
 
