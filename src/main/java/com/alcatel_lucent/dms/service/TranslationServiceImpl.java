@@ -870,7 +870,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
             sheet.setColumnWidth(11, 0);
             int r = 1;
 
-            int dictIndex = 1;
+            int dictIndex = 0;
             for (Long dictId : dictIds) {
                 Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
                 Collection<Label> labels = getLabelsWithTranslation(dictId, langId);
