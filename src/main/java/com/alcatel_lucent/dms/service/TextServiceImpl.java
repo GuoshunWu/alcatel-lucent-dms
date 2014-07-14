@@ -143,7 +143,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
             	context = text.getContext();
             }
             
-            Text dbText = dbTextMap.get(text.getReference());
+            Text dbText = dbTextMap.get(ctxId != null ? text.getReference() : context.getKey());
 //            Text dbText = getText(ctxId, text.getReference());
             if (dbText == null) {
                 dbText = addText(context.getId(), text.getReference());
