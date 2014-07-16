@@ -159,9 +159,13 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     if (dbDict != null) {
                         DictionaryLanguage dbDl = dbDict.getDictLanguage(dl.getLanguageCode());
                         if (dbDl != null) {
-                            dl.setLanguage(dbDl.getLanguage());
-                            dl.setCharset(dbDl.getCharset());
-                            dict.updateLanguage(dl.getLanguageCode(), dbDl.getLanguage());
+                        	if (dl.getCharset() == null) {
+                        		dl.setCharset(dbDl.getCharset());
+                        	}
+                        	if (dl.getLanguage() == null) {
+                        		dl.setLanguage(dbDl.getLanguage());
+                                dict.updateLanguage(dl.getLanguageCode(), dbDl.getLanguage());
+                        	}
                         }
                     }
                 }
