@@ -10,6 +10,7 @@ import com.alcatel_lucent.dms.service.generator.DictionaryGenerator;
 import com.alcatel_lucent.dms.service.generator.GeneratorSettings;
 import com.alcatel_lucent.dms.service.parser.DictionaryParser;
 import org.apache.commons.collections.Transformer;
+import org.apache.commons.collections.map.MultiKeyMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -226,8 +227,16 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         Context exclusionCtx = new Context(Context.EXCLUSION);
         Context dbDefaultCtx = textService.getContextByExpression(Context.DEFAULT, (Dictionary) null);
 //        Context dbExclusionCtx = textService.getContextByExpression(Context.EXCLUSION, null);
-        Map<String, Text> textMap = dbDefaultCtx == null ? new HashMap<String, Text>() :
-                textService.getTextsAsMap(dbDefaultCtx.getId());
+        Collection<String> references = new ArrayList<String>();
+        for (Dictionary dict : dictList) {
+        	if (dict.getLabels() == null) continue;
+        	for (Label label : dict.getLabels()) {
+        		references.add(label.getReference());
+        	}
+        }
+        MultiKeyMap translationMap = dbDefaultCtx == null ? new MultiKeyMap() : 
+        		textService.getTranslationsAsMap(dbDefaultCtx.getId(), references);
+        references = null;	// release memory
 //        Map<String, Text> exclusionMap = textService.getTextsAsMap(dbExclusionCtx.getId());
         Collection<Glossary> glossaryObjects = glossaryService.getNotDirtyGlossaries();
         HashSet<String> glossaries = new HashSet<String>();
@@ -236,9 +245,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         		glossaries.add(glossary.getText());
         	}
         }
-        Map<String, Text> unsavedTextMap = new HashMap<String, Text>();
+        MultiKeyMap unsavedTranslationMap = new MultiKeyMap();
         // save dict context text map
-        Map<String, Text> dictTextMap = new HashMap<String, Text>();
+        MultiKeyMap dictTranslationMap = new MultiKeyMap();
 
         for (Dictionary dict : dictList) {
             boolean langError = false;
@@ -280,11 +289,12 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
                 // check for each language, if translation in any language is conflict (either translation or status)
                 // with Default context, set the label to dictionary context
-                if (isConflict(dict, label, textMap) || isConflict(dict, label, unsavedTextMap)) {
-                    label.setContext(dictCtx);
-                    updateTextMap(dict, label, dictTextMap);
-                    if (isConflict(dict, label, dictTextMap)) {
+                if (isConflict(dict, label, translationMap) || isConflict(dict, label, unsavedTranslationMap)) {
+                    if (isConflict(dict, label, dictTranslationMap)) {
                         label.setContext(labelCtx);
+                    } else {
+                        label.setContext(dictCtx);
+                        updateTranslationMap(dict, label, dictTranslationMap);
                     }
                     continue;
                 }
@@ -293,7 +303,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
                     // temporarily add in-memory LabelTranslations to unsaved Default context text map
                     // to ensure no conflict translation in scope of current delivery are put into DEFAULT context
-                    updateTextMap(dict, label, unsavedTextMap);
+                    updateTranslationMap(dict, label, unsavedTranslationMap);
                 }
             }
         }
@@ -304,18 +314,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
      *
      * @param label Label
      */
-    private Text updateTextMap(Dictionary dict, Label label, Map<String, Text> unsavedTextMap) {
-        Text text = unsavedTextMap.get(label.getReference());
-        if (null == text) {
-            text = new Text();
-            text.setReference(label.getReference());
-            unsavedTextMap.put(label.getReference(), text);
-        }
+    private void updateTranslationMap(Dictionary dict, Label label, MultiKeyMap translationMap) {
 
         if (CollectionUtils.isEmpty(label.getOrigTranslations())) {
-            return text;
+            return;
         }
-
 
         // add Translations for text
         for (LabelTranslation lt : label.getOrigTranslations()) {
@@ -323,7 +326,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             //skip if original translation equals reference
             if (null == lt.getLanguage() || lt.getOrigTranslation().equals(label.getReference())) continue;
 
-            Translation trans = text.getTranslation(lt.getLanguage().getId());
+            Translation trans = (Translation) translationMap.get(label.getReference(), lt.getLanguage().getId());
             String translation = lt.getOrigTranslation();
             DictionaryLanguage dl = dict.getDictLanguage(lt.getLanguageCode());
             if (dl != null && dl.getCharset() != null && dict.getEncoding() != null) {
@@ -338,12 +341,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 trans.setLanguage(lt.getLanguage());
                 trans.setTranslation(translation);
                 trans.setStatus(populateTranslationStatus(lt));
-                text.addTranslation(trans);
+                translationMap.put(label.getReference(), lt.getLanguage().getId(), trans);
             } else if (trans.getTranslation().equals(label.getReference()) && !translation.equals(label.getReference())) { //?
                 trans.setTranslation(translation);
             }
         }
-        return text;
     }
 
     /**
@@ -355,14 +357,12 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
      * @param textMap all the texts in DB with reference as key, text as value.
      * @return
      */
-    private boolean isConflict(Dictionary dict, Label label, Map<String, Text> textMap) {
+    private boolean isConflict(Dictionary dict, Label label, MultiKeyMap translationMap) {
         if (null == label.getOrigTranslations()) return false;
 
         for (LabelTranslation lt : label.getOrigTranslations()) {
             if (lt.getLanguage() == null || lt.getOrigTranslation().equals(label.getReference())) continue;
-            Text text = textMap.get(label.getReference());
-            if (null == text) continue;
-            Translation trans = text.getTranslation(lt.getLanguage().getId());
+            Translation trans = (Translation) translationMap.get(label.getReference(), lt.getLanguage().getId());
             if (null == trans) continue;
             // compare converted label translation with context translation
             String translation = lt.getOrigTranslation();
