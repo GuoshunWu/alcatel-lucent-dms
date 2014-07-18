@@ -3,6 +3,8 @@ package com.alcatel_lucent.dms.service;
 import java.util.Collection;
 import java.util.Map;
 
+import org.apache.commons.collections.map.MultiKeyMap;
+
 import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Dictionary;
@@ -122,18 +124,12 @@ public interface TextService {
 	void updateTranslationStatusByLabel(Collection<Long> labelIds, int transStatus);
 
     /**
-     * Get translation details by context
+     * Get all translation objects of specified texts in a context as map.
      * @param ctxId context id
-     * @return map of text objects indexed by reference.
+     * @param references reference strings
+     * @return multi-key map with (reference, languageId) as key, Translation object as value 
      */
-    Map<String, Text> getTextsAsMap(Long ctxId);
-
-    /**
-     * Get translation details by context in a dictionary, return all if dict is null
-     * @param ctxId context id
-     * @return map of text objects indexed by reference.
-     */
-    Map<String, Text> getTextAsMapForDict(Long ctxId, Dictionary dict);
+    MultiKeyMap getTranslationsAsMap(Long ctxId, Collection<String> references);
 
     /**
      * Populate context name and get the Context instance, create one if not exists.
