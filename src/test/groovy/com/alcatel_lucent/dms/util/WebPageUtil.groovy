@@ -17,6 +17,8 @@ import org.openqa.selenium.support.ui.WebDriverWait
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
+import java.util.concurrent.TimeUnit
+
 import static com.alcatel_lucent.dms.util.CoffeeScript.compile
 import static java.util.concurrent.TimeUnit.*
 import static org.junit.Assert.assertNotNull
@@ -85,7 +87,7 @@ class WebPageUtil {
      * */
     static boolean downloadFileCheck(String fileName, Closure downloadClosure) {
 
-        File downloadFile = new File(DOWNLOAD_DIR, fileName)
+        File downloadFile = new File(WebPageUtil.DOWNLOAD_DIR, fileName)
         //clear result
         if (downloadFile.exists()) {
             if (!downloadFile.delete())
@@ -96,6 +98,8 @@ class WebPageUtil {
                 ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("div.blockOverlay")
                 )
         )
+//        MICROSECONDS.sleep(500)
+        log.info("Is downloadFile {} exist: {}", downloadFile, downloadFile.exists())
         downloadFile.exists()
     }
 

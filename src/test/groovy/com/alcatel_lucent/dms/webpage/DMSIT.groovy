@@ -19,6 +19,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 import java.text.SimpleDateFormat
+import java.util.concurrent.TimeUnit
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 
@@ -31,6 +32,7 @@ import static org.hamcrest.CoreMatchers.not
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.hasKey
 import static org.junit.Assert.*
+import static org.junit.Assert.assertTrue
 
 /**
  * Created by Guoshun on 14-1-12.
@@ -800,9 +802,6 @@ class DMSIT {
 
     @Test
     void test013ExportTranslationSummary() {
-//        clickTestApp()
-//      wait for dictionary grid to reload
-//        SECONDS.sleep(1)
         String fileName = "translation_report.xls"
         //      1. Excel file "translation_report.xls" is downloaded.
         assertTrue downloadFileCheck(fileName, {
@@ -816,15 +815,17 @@ class DMSIT {
 
     @Test
     void test014ExportTranslationDetail() {
-        String selector = populateGridCellSelector 'transGrid', 'dictionary', 'dms-test.xlsx'
-        getWebElementToBeClickable(By.cssSelector(selector)).click()
-
         String fileName = "translation_details.xls"
-        assertTrue downloadFileCheck(fileName, {
-            getWebElementToBeClickable(By.id("exportTranslation")).click()
 
+        boolean result = downloadFileCheck(fileName, {
+            String selector = populateGridCellSelector 'transGrid', 'dictionary', 'dms-test.xlsx'
+            getWebElementToBeClickable(By.cssSelector(selector)).click()
+
+            getWebElementToBeClickable(By.id("exportTranslation")).click()
             clickButtonOnDialog('ExportTranslationsDialog', 'Export')
         })
+
+        assertTrue result
     }
 
     @Test
@@ -1064,13 +1065,11 @@ class DMSIT {
         login TARGET_URL
         clickTestApp()
         SECONDS.sleep 2
-        test012UpdateStatus()
-        test013ExportTranslationSummary()
         test014ExportTranslationDetail()
-        test015ImportTranslation()
-        test016CreateTask()
-        test017DownloadTask()
-        test018ReceiveTask()
+//        test015ImportTranslation()
+//        test016CreateTask()
+//        test017DownloadTask()
+//        test018ReceiveTask()
 //        getWebElement(By.id("navitransmngTab")).click()
 //        getWebElement(By.id("navitaskmngTab")).click()
 //        test018ReceiveTask()
