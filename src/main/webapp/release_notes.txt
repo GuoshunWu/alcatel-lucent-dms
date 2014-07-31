@@ -1,3 +1,7 @@
+V2.16.4 (Jul 18, 2014)
+    * Optimize performance of previewing dictionary
+    * Fix charset issue of Text properties dictionary
+
 V2.16.3 (Jul 14, 2014)
     * Add progress bar during option "Export translations..."
     * Optimize performance of importing dictionary
