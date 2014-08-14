@@ -1065,6 +1065,7 @@ class DMSIT {
         login TARGET_URL
         clickTestApp()
         SECONDS.sleep 2
+        getWebElement(By.id("navitransmngTab")).click()
         test014ExportTranslationDetail()
 //        test015ImportTranslation()
 //        test016CreateTask()

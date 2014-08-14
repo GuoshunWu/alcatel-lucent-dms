@@ -98,7 +98,7 @@ class WebPageUtil {
                 ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("div.blockOverlay")
                 )
         )
-//        MICROSECONDS.sleep(500)
+        SECONDS.sleep(3)
         log.info("Is downloadFile {} exist: {}", downloadFile, downloadFile.exists())
         downloadFile.exists()
     }
