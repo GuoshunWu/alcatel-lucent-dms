@@ -13,12 +13,11 @@
     <!--<aop:aspectj-autoproxy/>-->
     <!--<bean class="org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator"/>-->
 
-    <context:component-scan base-package="com.alcatel_lucent.dms"/>
+    <!--<context:component-scan base-package="com.alcatel_lucent.dms"/>-->
 
     <!-- Core -->
     <import resource="spring-core.xml"/>
     <import resource="spring-service.xml"/>
-    <!--<import resource="spring-websocket.xml"/>-->
     <!--<import resource="spring-security.xml"/>-->
 
     <!-- Struts -->

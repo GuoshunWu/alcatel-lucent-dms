@@ -2,12 +2,14 @@ package com.alcatel_lucent.dms.model;
 
 import com.alcatel_lucent.dms.SystemError;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.solr.analysis.*;
+import org.apache.solr.analysis.LowerCaseFilterFactory;
+import org.apache.solr.analysis.StandardFilterFactory;
+import org.apache.solr.analysis.StandardTokenizerFactory;
+import org.apache.solr.analysis.StopFilterFactory;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.*;
-import org.hibernate.search.annotations.Parameter;
 
 import javax.persistence.*;
 import java.io.UnsupportedEncodingException;
@@ -288,7 +290,7 @@ public class Label extends BaseEntity implements Cloneable {
                     return false;
                 }
             } catch (NumberFormatException e) {
-            	log.warn("Invalid maxLength for label " + key + ": " + maxLength);
+                log.warn("Invalid maxLength for label " + key + ": " + maxLength);
             } catch (UnsupportedEncodingException e) {
                 throw new SystemError(e);
             }
@@ -394,12 +396,16 @@ public class Label extends BaseEntity implements Cloneable {
     public Translation getTranslationObject(DictionaryLanguage dl) {
         return (null == dl) ? null : getTranslationObject(dl.getLanguageCode());
     }
+
     public Translation getTranslationObject(String langCode) {
         if (StringUtils.isEmpty(langCode) || context.getName().equals(Context.EXCLUSION)) {
             return getTransientTranslation(Translation.STATUS_TRANSLATED);
         }
 
+        //TODO: null == dl need to be fixed
         DictionaryLanguage dl = this.getDictionary().getDictLanguage(langCode);
+        if(null == dl) return null;
+
         LabelTranslation lt = getOrigTranslation(langCode);
         if (lt != null && (!lt.isNeedTranslation())) {
             return getTransientTranslation(Translation.STATUS_TRANSLATED, lt.getOrigTranslation());
@@ -431,6 +437,8 @@ public class Label extends BaseEntity implements Cloneable {
      * @return
      */
     public String getTranslation(String langCode) {
+        Translation translation = getTranslationObject(langCode);
+        if (null == translation) return reference;
         return getTranslationObject(langCode).getTranslation();
     }
 

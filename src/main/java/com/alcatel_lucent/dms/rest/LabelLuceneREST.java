@@ -4,6 +4,7 @@ import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.service.DictionaryService;
 import com.alcatel_lucent.dms.service.TranslationService;
 import com.alcatel_lucent.dms.util.ObjectComparator;
+import com.google.common.base.Strings;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.PredicateUtils;
 import org.apache.commons.collections.comparators.ComparatorChain;
@@ -114,7 +115,7 @@ public class LabelLuceneREST extends BaseREST {
             sord = "ASC";
         }
 
-        Long langId = requestMap.get("language") == null ? null : Long.valueOf(requestMap.get("language"));
+        Long langId = Strings.isNullOrEmpty(requestMap.get("language")) ? null : Long.valueOf(requestMap.get("language"));
         Collection<Label> labels;
         String[] orders = sidx.split("\\s*,\\s*");
 

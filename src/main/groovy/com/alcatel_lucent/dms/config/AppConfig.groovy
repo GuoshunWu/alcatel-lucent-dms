@@ -12,7 +12,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc
 @Configuration
 @ImportResource("classpath:spring.xml")
 @ComponentScan("com.alcatel_lucent.dms")
-//@PropertySource("classpath:config.properties")
 class AppConfig {
 
 }

@@ -40,6 +40,7 @@ public class Constants {
         VITAL_SUITE("Vital Suite"),
         NOE_STRING("NOE String"),
         IOS_RESOURCE("iOS Resource"),
+        TS("TS"),
         TMX("TMX");
 
 

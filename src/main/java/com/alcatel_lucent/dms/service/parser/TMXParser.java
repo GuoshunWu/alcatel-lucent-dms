@@ -1,11 +1,10 @@
-package com.alcatel_lucent.dms.service;
+package com.alcatel_lucent.dms.service.parser;
 
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.Constants.DictionaryFormat;
 import com.alcatel_lucent.dms.model.*;
-import com.alcatel_lucent.dms.service.generator.TMXGenerator;
-import com.alcatel_lucent.dms.service.parser.DictionaryParser;
+import com.alcatel_lucent.dms.service.LanguageService;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
@@ -34,7 +33,7 @@ import java.util.List;
 import static com.alcatel_lucent.dms.service.generator.TMXGenerator.*;
 import static org.apache.commons.lang3.StringUtils.center;
 
-@Component("TMXParser")
+@Component("com.alcatel_lucent.dms.service.parser.TMXParser")
 @SuppressWarnings("unchecked")
 public class TMXParser extends DictionaryParser {
 

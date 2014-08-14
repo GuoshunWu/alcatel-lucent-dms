@@ -22,7 +22,10 @@ public class BusinessWarning {
     public static final int ANDROID_LABEL_KEY_BLANK = 213;
 
     public static final int OTC_WEB_DEFINE_NOT_FOUND = 223;
-    
+
+    public static final int TS_REFERENCE_UNFINISHED = 301;
+
+
     public static final int MORE = 999;
 
 
