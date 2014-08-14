@@ -41,7 +41,7 @@ public class DictEntry {
         return null != file.getParentFile() && getLangCode().equalsIgnoreCase(OTCWebParser.REFERENCE_LANG_CODE);
     }
 
-    public boolean isOTEWebFile() {
+    public boolean isOTCWebFile() {
         return null != getLangCode() && getLangCode().matches(OTCWebParser.LANG_PATTERN);
     }
 

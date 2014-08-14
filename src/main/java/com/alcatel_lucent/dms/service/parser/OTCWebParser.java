@@ -92,7 +92,7 @@ public class OTCWebParser extends DictionaryParser {
         if (null == refEntry) {
             throw new BusinessException(BusinessException.NO_REFERENCE_LANGUAGE);
         }
-        //
+
         Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
 
         Dictionary dict = readReferenceFile(refEntry, warnings);
@@ -122,7 +122,6 @@ public class OTCWebParser extends DictionaryParser {
 
         Collection<DictionaryLanguage> dictLanguages = new ArrayList<DictionaryLanguage>();
         dictionary.setDictLanguages(dictLanguages);
-        dictionary.setReferenceLanguage(refEntry.getLangCode());
 
         readLabels(refEntry, dictionary, 0, warnings);
         return dictionary;
@@ -252,7 +251,7 @@ public class OTCWebParser extends DictionaryParser {
         MultiValueMap<String, DictEntry> dictionariesGroups = new LinkedMultiValueMap<String, DictEntry>();
         for (File subFile : files) {
             DictEntry entry = new DictEntry(subFile);
-            if (!entry.isOTEWebFile()) continue;
+            if (!entry.isOTCWebFile()) continue;
             dictionariesGroups.add(entry.getFileName(), entry);
         }
         return dictionariesGroups;

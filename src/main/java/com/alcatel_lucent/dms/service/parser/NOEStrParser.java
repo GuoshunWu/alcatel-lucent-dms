@@ -15,7 +15,10 @@ import org.apache.commons.io.IOCase;
 import org.apache.commons.io.LineIterator;
 import org.apache.commons.io.filefilter.*;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.text.translate.*;
+import org.apache.commons.lang3.text.translate.AggregateTranslator;
+import org.apache.commons.lang3.text.translate.CharSequenceTranslator;
+import org.apache.commons.lang3.text.translate.EntityArrays;
+import org.apache.commons.lang3.text.translate.LookupTranslator;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +58,9 @@ public class NOEStrParser extends DictionaryParser {
             // TODO: complement UA code mapping
             {"\u03c6", "\\x03"},    //φ
             {"\u00b0", "\\x04"},    //°
+
+            {"\u2192", "\\Hc7"},
+            {"\u2190", "\\Hc8"},
     };
 
     static {
@@ -67,12 +73,8 @@ public class NOEStrParser extends DictionaryParser {
 
     public static final CharSequenceTranslator ESCAPE_NOE_STRING =
             new LookupTranslator(
-                    new String[][]{
-                            {"\"", "\\\""},
-                            {"\\", "\\\\"},
-                    }
             ).with(
-                    new LookupTranslator(NOEStrParser.NOE_STRING_ESCAPE()))
+                    new LookupTranslator(NOE_STRING_ESCAPE))
                     .with(
                             new LookupTranslator(EntityArrays.JAVA_CTRL_CHARS_ESCAPE())
                     )
@@ -86,7 +88,7 @@ public class NOEStrParser extends DictionaryParser {
 //                    new OctalUnescaper(),     // .between('\1', '\377'),
 //                    new UnicodeUnescaper(),
                     new LookupTranslator(EntityArrays.JAVA_CTRL_CHARS_UNESCAPE()),
-                    new LookupTranslator(NOEStrParser.NOE_STRING_UNESCAPE()),
+                    new LookupTranslator(EntityArrays.invert(NOE_STRING_ESCAPE)),
                     new LookupTranslator(
                             new String[][]{
                                     //many to one mappings
@@ -96,10 +98,8 @@ public class NOEStrParser extends DictionaryParser {
 //                                    {"\\x02","\u03c6" },        //φ
 //                                    {"\\Lphi-","\u03c6" },      //φ
 
-                                    {"\\\\", "\\"},
-//                                    {"\\\"", "\""},
-//                                    {"\\'", "'"},
-                                    {"\\", ""}
+//                                    {"\\\\", "\\"},
+//                                    {"\\", ""}
                             })
             );
 
@@ -165,14 +165,6 @@ public class NOEStrParser extends DictionaryParser {
         String escapeString = "\\a" + escapeLetter + vowelLetter;
         log.debug("{}: {}", accentLetter, escapeString);
         return new String[]{accentLetter + "", escapeString};
-    }
-
-    public static String[][] NOE_STRING_ESCAPE() {
-        return NOE_STRING_ESCAPE.clone();
-    }
-
-    public static String[][] NOE_STRING_UNESCAPE() {
-        return EntityArrays.invert(NOE_STRING_ESCAPE);
     }
 
     public static String escapeNOEString(String input) {
@@ -249,7 +241,7 @@ public class NOEStrParser extends DictionaryParser {
         Pair<String, String> namePair = getDictNamePair(rootDir, docFile);
         dictBase.setPath(namePair.getRight());
         dictBase.setName(FilenameUtils.getBaseName(namePair.getLeft()));
-        dictBase.setEncoding(dictBase.getName().endsWith("_stu") ? "UTF-8" :  DEFAULT_ENCODING);
+        dictBase.setEncoding(dictBase.getName().endsWith("_stu") ? "UTF-8" : DEFAULT_ENCODING);
         dictBase.setFormat(DictionaryFormat.NOE_STRING.toString());
 
         Dictionary dictionary = new Dictionary();

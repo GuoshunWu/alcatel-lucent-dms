@@ -292,7 +292,6 @@ public class LabelXMLParser extends DictionaryParser {
 			dict.setAnnotation4(piStr.substring(0, piStr.length() - 1));
 		}
 		
-		List<Element> nodes = root.elements();
 		int sortNo = 1;
 		StringBuffer comments = new StringBuffer();
 		Iterator<Node> iter = root.nodeIterator();

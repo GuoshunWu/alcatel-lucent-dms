@@ -2,6 +2,7 @@ package com.alcatel_lucent.dms.service
 
 import com.alcatel_lucent.dms.Constants
 import com.alcatel_lucent.dms.UserContext
+import com.alcatel_lucent.dms.config.AppConfig
 import com.alcatel_lucent.dms.model.User
 import com.alcatel_lucent.dms.util.Util
 import org.apache.commons.io.ByteOrderMark
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.test.context.transaction.TransactionConfiguration
+import org.springframework.test.context.web.WebAppConfiguration
 import org.springframework.transaction.annotation.Transactional
 import org.xml.sax.EntityResolver
 import org.xml.sax.InputSource
@@ -29,9 +31,11 @@ import javax.annotation.Resource
  * To change this template use File | Settings | File Templates.
  */
 
-@Ignore
+//@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = ["/spring.xml"])
+@WebAppConfiguration()
+@ContextConfiguration(classes = [AppConfig])
+
 @Transactional //Important, or the transaction control will be invalid
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 
@@ -81,11 +85,11 @@ public class DictionaryServiceTest {
 //    @Test
     void testMe(){}
 
-    @Test
+//    @Test
 //    @Rollback(false)
     void testDictionaryProcess() {
         String targetDir = "D:/test/dictgenerate/"
-        String srcPath = 'Test/TMX'
+        String srcPath = 'Test/ts'
 
         File f = new File("${testFileRoot}/${srcPath}")
 

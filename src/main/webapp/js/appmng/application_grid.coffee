@@ -12,7 +12,7 @@ define ['jqgrid', 'i18n!nls/appmng', 'dms-urls', 'dms-util'],($, i18n, urls, uti
     height: '100%'
     pager: '#pager', rowNum: 20, rowList: [10, 20, 30], multiselect: true
     sortname: 'name', sortorder: 'asc'
-    viewrecords: true, gridview: true, altRows: true
+    viewrecords: true, gridview: true
     caption: i18n.grid.appsforprod
     colNames: ['ID', 'Application', 'Version', 'Dict. Num.']
 
