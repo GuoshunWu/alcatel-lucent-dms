@@ -13,6 +13,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.text.translate.NumericEntityEscaper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,7 +89,12 @@ public class VitalSuiteDictGenerator extends DictionaryGenerator {
                         out.println(lt.getAnnotation1());
                     }
                     // populate translation result
-                    text = StringEscapeUtils.escapeJava(label.getTranslation(dl.getLanguageCode()));
+                    StringBuffer escaped = new StringBuffer();
+                    // escape non-unicode characters if necessary
+                    for (char c : label.getTranslation(dl.getLanguageCode()).toCharArray()) {
+                    	escaped.append(c > 0x7f ? c : StringEscapeUtils.escapeJava("" + c)); 
+                    }
+                    text = escaped.toString();
                 }
                 out.println(String.format("    %s{\"%s\"}", label.getKey(), text));
             }
