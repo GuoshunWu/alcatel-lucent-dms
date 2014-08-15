@@ -1,0 +1,4423 @@
+--?000 #CHECKSUM=6996043#
+
+--? ---------------------------------------------------------------
+--Dictionnaire de l'application Instant COmmmunicator pour les options
+--------------------------------------------------------------------
+--Creation date : 13/02/2007
+--Last Modification Date :
+
+-- Supported languages
+
+LANGUAGES {CHK, GAE, FR0, EN0, DE0, IT0, PT0, ES0, US0, PL0, KO0, NO0, NL0, RU0, CH0, FI0, ES1, CS0, HU0, CH1, SV0, AR0, DA0, HE0}
+
+-- Structure of the dictionary:
+
+-- First, you can see commentary lines, precedeed by two minus signs "--". these comments are not
+-- interpreted by the dictionary tool.
+
+-- For each translation needed, you will find:
+-- An entry key string in upper case, followed by a colon ":".
+-- This key is used by the software to associate a text field in the application with a set of
+-- translations
+-- Each translation associated with this key enholds:
+-- - a language code (FR0 for French for instance)
+-- - a text between brackets for the translation
+-- - a comma to delimit the end of the translation for this language
+-- the comma is replaced by a semicolon ";" to end the list of translations for a specific key
+
+-- NOTA 1: The CHK (Czech) language is used for indicating the maximum width of a text field.
+-- This indication stands only if you visualize the present dictionary with the proper
+-- font (as used in the application). Then, whichever characters you are using
+-- (W can be wider than i) the translations in the different languages  must not exeed the text width
+-- (undependantly to the characters amount) indicated in the CHK field
+-- Texts that are to be displayed in a popup window (OK popup, yes-no popup...) can consist
+-- of more than one line:
+-- "This text will be displayed""on two lines"
+-- Each line must not exceed the width indicated in the CHK field
+-- Texts that are to be displayed in a temporised popup (also called timed popup) can consist of :
+-- One (long) line (with automatic wrap of text on the following 3 lines),
+-- Or several lines ("First line"Second line"...up to "Forth line")
+-- In any case, you are limited to 256 caracters.
+
+-- General syntax:
+-- WC_xxxx : Window caption (title of the window)
+-- ME_xxxx : element of a menu
+-- BU_xxxx : name of a button
+-- CB_xxxx : element of a combo-box
+-- TQ_xxxx : text of a question
+-- TI_xxxx : text of an information, a warning, a problem
+-- ST_xxxx : static text before a variable field or others....
+-- EN_xxxx : for enumered types
+-- TT_xxxx : tool tips
+
+-- General rules:
+-- the "%s" inserted in a string will be replaced by a text at execution;
+-- the "%d" inserted in a string will be replaced by a number;
+-- all the translation for a string including a %s or a %d must keep those key characters, or an error occurs.
+-- The translations being presented in two string ("like" "this") will be displayed on two lines;
+-- you are not allowed to translate on two lines a text which is in one line in the English translation.
+
+-- Text displayed if the translation is not found
+-- nota: Sometimes the default text is included in English in the source code, beginning with "?"
+
+-- --------------------------------------
+-- Options groups
+-- --------------------------------------
+
+GENERAL:
+  CHK "General0123456",
+  GAE "General",
+
+  EN0 "General",
+
+
+
+
+  US0 "General", --!!! 
+
+
+
+
+
+  CH0 "常规",
+
+
+
+
+
+
+
+
+  HE0 "General"; --???
+
+START:
+  CHK "Start0123456",
+  GAE "Start",
+
+  EN0 "Start",
+
+
+
+
+  US0 "Start", --!!! 
+
+
+
+
+
+  CH0 "开始", 
+
+
+
+
+
+
+
+
+  HE0 "Start"; --???
+
+TOAST:
+  CHK "Desktop alert 0123456789",
+  GAE "Desktop alert",
+
+  EN0 "Desktop alert",
+
+
+
+
+  US0 "Desktop alert", --!!! 
+
+
+
+
+
+  CH0 "桌面告警",
+
+
+
+
+
+
+
+
+  HE0 "Desktop alert"; --???
+
+BALLOON:
+  CHK "Notifications window 012345",
+  GAE "Notifications window",
+
+  EN0 "Notifications window",
+
+
+
+
+  US0 "Notifications window", --!!! 
+
+
+
+
+
+  CH0 "通告窗口",
+
+
+
+
+
+
+
+
+  HE0 "Notifications window"; --???
+
+-- crms00114863
+
+COMMUNICATION_BY:
+  CHK "Search/Call box 01234567890123456789",
+  GAE "Search/Call box",
+
+  EN0 "Search/Call box",
+
+
+
+
+  US0 "Search/Call box", --!!! 
+
+
+
+
+
+  CH0 "搜索/呼叫框",
+
+
+
+
+
+
+
+
+  HE0 "Search/Call box"; --???
+
+APPLICATION:
+  CHK "Softphone application 0123456789",
+  GAE "Softphone application",
+
+  EN0 "Softphone application",
+
+
+
+
+  US0 "Softphone application", --!!! 
+
+
+
+
+
+  CH0 "Softphone应用程序",
+
+
+
+
+
+
+
+
+  HE0 "Softphone application"; --???
+
+NUMBERING:
+  CHK "New current number 012345",
+  GAE "New current number",
+
+  EN0 "New current number",
+
+
+
+
+  US0 "New current number", --!!! 
+
+
+
+
+
+  CH0 "新当前号码",
+
+
+
+
+
+
+
+
+  HE0 "New current number"; --???
+
+FORWARD_SETTINGS:
+  CHK "Call settings 012345678901234567890123456",
+  GAE "Call settings",
+
+  EN0 "Call settings",
+
+
+
+
+  US0 "Call settings",  
+
+
+
+
+
+  CH0 "呼叫设置", 
+
+
+
+
+
+
+
+
+  HE0 "Call settings"; --???
+
+-- --------------------------------------
+-- Options names
+-- --------------------------------------
+
+AUTO_START:
+  CHK "Automatically run My Instant Communicator0123456789",
+  GAE "Automatically run My Instant Communicator",
+
+  EN0 "Automatically run My Instant Communicator",
+
+
+
+
+  US0 "Run My Instant Communicator", --!!! 
+
+
+
+  NL0 "My Instant Communicator autom.", -- translation incomplete; box is too short
+
+  CH0 "自动运行My Instant Communicator",
+
+
+
+
+
+
+
+
+  HE0 "Automatically run My Instant Communicator"; --???
+
+-- crms00099388
+-- crms00114863
+
+AUTO_SIGN_IN:
+  CHK "Automatically sign in to the application0123456789",
+  GAE "Automatically sign in to the application",
+
+  EN0 "Automatically sign in to the application",
+
+
+
+
+  US0 "Automatically sign in to the application",
+
+
+
+
+
+  CH0 "自动登录到应用程序",
+
+
+
+
+
+
+
+
+  HE0 "Automatically sign in to the application"; --???
+
+TOAST_TIMEOUT:
+  CHK "Duration (seconds):0123456789",
+  GAE "Duration (seconds):",
+
+  EN0 "Duration (seconds):",
+
+
+
+
+  US0 "Duration (seconds):", --!!! 
+
+
+
+
+
+  CH0 "持续时间 (秒)：",
+
+
+
+
+
+
+
+
+  HE0 "Duration (seconds):"; --???
+
+BALLOON_TIMEOUT:
+  CHK "Duration (seconds):0123456789",
+  GAE "Duration (seconds):",
+
+  EN0 "Duration (seconds):",
+
+
+
+
+  US0 "Duration (seconds):", --!!! 
+
+
+
+
+
+  CH0 "持续时间 (秒)：",
+
+
+
+
+
+
+
+
+  HE0 "Duration (seconds):"; --???
+
+-- crms00114863
+
+AUTO_OPEN_COMM_AREA:
+  CHK "Automatically show the Search/Call box0123456789012345678901",
+  GAE "Automatically show the Search/Call box", --!!! 
+
+  EN0 "Automatically show the Search/Call box",
+
+
+
+
+  US0 "Automatically show the Search/Call box", --!!! 
+
+
+
+
+
+  CH0 "自动显示搜索/呼叫框", 
+
+
+
+
+
+
+
+
+  HE0 "Automatically show the Search/Call box"; --???
+
+MY_PHONE_APP_4980:
+  CHK "4980 Softphone",
+  GAE "4980 Softphone",
+
+  EN0 "4980 Softphone",
+
+
+
+
+  US0 "4980 Softphone",
+
+
+
+
+
+  CH0 "4980 软电话",
+
+
+
+
+
+
+
+
+  HE0 "4980 Softphone"; --???
+
+MY_PHONE_APP_WSP:
+  CHK "Web Softphone",
+  GAE "Web Softphone",
+
+  EN0 "Web Softphone",
+
+
+
+
+  US0 "Web Softphone",
+
+
+
+
+
+  CH0 "Web 软电话",
+
+
+
+
+
+
+
+
+  HE0 "Web Softphone"; --???
+
+MYPROFILE:
+  CHK "My Profile012345678",
+  GAE "My Profile",
+
+  EN0 "My Profile",
+
+
+
+
+  US0 "My Profile",
+
+
+
+
+
+  CH0 "个人配置",
+
+
+
+
+
+
+
+
+  HE0 "My Profile"; --???
+
+-- --------------------------------------
+-- Options titles
+-- --------------------------------------
+
+AUTO_START_TITLE:
+  CHK "When I log on to Windows 0123456789",
+  GAE "When I log on to Windows",
+
+  EN0 "When I log on to Windows",
+
+
+
+
+  US0 "When I log on to Windows", --!!! 
+
+
+
+
+
+  CH0 "当我登录windows时",
+
+
+
+
+
+
+
+
+  HE0 "When I log on to Windows"; --???
+
+AUTO_SIGN_IN_TITLE:
+  CHK "When My Instant Communicator starts 0123456789",
+  GAE "When My Instant Communicator starts",
+
+  EN0 "When My Instant Communicator starts",
+
+
+
+
+  US0 "When My Instant Communicator starts", --!!! 
+
+
+
+
+
+  CH0 "当My Instant Communicator启动时",
+
+
+
+
+
+
+
+
+  HE0 "When My Instant Communicator starts"; --???
+
+TOAST_TIMEOUT_TITLE:
+  CHK "Settings 01234567890123456789",
+  GAE "Settings",
+
+  EN0 "Display settings",
+
+
+
+
+  US0 "Settings", --!!! 
+
+
+
+
+
+  CH0 "设置",
+
+
+
+
+
+
+
+
+  HE0 "Display settings"; --???
+
+BALLOON_TIMEOUT_TITLE:
+  CHK "Settings 01234567890123456789",
+  GAE "Settings",
+
+  EN0 "Display settings",
+
+
+
+
+  US0 "Settings", --!!! 
+
+
+
+
+
+  CH0 "设置", --!!! 
+
+
+
+
+
+
+
+
+  HE0 "Display settings"; --???
+
+AUTO_OPEN_COMM_AREA_TITLE:
+  CHK "When I start My Instant Communicator 0123456789",
+  GAE "When I start My Instant Communicator",
+
+  EN0 "When I start My Instant Communicator",
+
+
+
+
+  US0 "When I start My Instant Communicator", --!!! 
+
+
+
+
+
+  CH0 "当我启动My Instant Communicator时", --!!! 
+
+
+
+
+
+
+
+
+  HE0 "When I start My Instant Communicator"; --???
+
+MY_PHONE_APP:
+  CHK "Select your default Softphone application 01213456789",
+  GAE "Select your default Softphone application",
+
+  EN0 "Select your default Softphone application",
+
+
+
+
+  US0 "Select your default Softphone application", --!!! 
+
+
+
+
+
+  CH0 "选择您默认的Softphone应用程序",
+
+
+
+
+
+
+
+
+  HE0 "Select your default Softphone application"; --???
+
+-- crms00114863
+
+SKINS:
+  CHK "Themes 0123456789",
+  GAE "Themes",
+
+  EN0 "Themes",
+
+
+
+
+  US0 "Themes", --!!! 
+
+
+
+
+
+  CH0 "主题",
+
+
+
+
+
+
+
+
+  HE0 "Themes"; --???
+
+SKIN_TYPE:
+  CHK "Select the theme of My Instant Communicator 0123456789",
+  GAE "Select the theme of My Instant Communicator",
+
+  EN0 "Select the theme of My Instant Communicator",
+
+
+
+
+  US0 "Select the theme of My Instant Communicator", --!!! 
+
+
+
+
+
+  CH0 "选择My Instant Communicator主题",
+
+
+
+
+
+
+
+
+  HE0 "Select the theme of My Instant Communicator"; --???
+
+SKIN_WARN:
+  CHK "Your modifications will be applied after relaunching the application 0123456789",
+  GAE "Your modifications will be applied after relaunching the application",
+
+  EN0 "Your modifications will be applied after relaunching the application",
+
+
+
+
+  US0 "Your modifications will be applied after restarting the application.", --!!! 
+
+
+
+
+
+  CH0 "您进行的修改将重启应用程序后生效。",
+
+
+
+
+
+
+
+
+  HE0 "Your modifications will be applied after relaunching the application"; --???
+
+SKIN_WARN_TITLE:
+  CHK "Warning 0123456789",
+  GAE "Warning",
+
+  EN0 "Warning",
+
+
+
+
+  US0 "Warning", --!!! 
+
+
+
+
+
+  CH0 "警告",
+
+
+
+
+
+
+
+
+  HE0 "Warning"; --???
+
+BUTTON_OK:
+  CHK "OK 01234567",
+  GAE "OK",
+
+  EN0 "OK",
+
+
+
+
+  US0 "OK",
+
+
+
+
+
+  CH0 "确定",
+
+
+
+
+
+
+
+
+  HE0 "OK"; --???
+
+BUTTON_CANCEL:
+  CHK "Annuler 012",
+  GAE "Cancel",
+
+  EN0 "Cancel",
+
+
+
+
+  US0 "Cancel",
+
+
+
+
+
+  CH0 "取消",
+
+
+
+
+
+
+
+
+  HE0 "Cancel"; --???
+
+BUTTON_APPLY:
+  CHK "Appliquer 0",
+  GAE "Apply",
+
+  EN0 "Apply",
+
+
+
+
+  US0 "Apply",
+
+
+
+
+
+  CH0 "应用",
+
+
+
+
+
+
+
+
+  HE0 "Apply"; --???
+
+SERVER_ADDRESS:
+  CHK "Hostname: 0123456789",
+  GAE "Hostname:",
+
+  EN0 "Hostname:",
+
+
+
+
+  US0 "Host name: ", --!!! 
+
+
+
+
+
+  CH0 "主机名称：",
+
+
+
+
+
+
+
+
+  HE0 "Hostname:"; --???
+
+SERVER_ADDRESS_TITLE:
+  CHK "Server information01234567890123456789",
+  GAE "Server information",
+
+  EN0 "Server information",
+
+
+
+
+  US0 "Server information", --!!! 
+
+
+
+
+
+  CH0 "服务器信息",
+
+
+
+
+
+
+
+
+  HE0 "Server information"; --???
+
+FREE_NUMBER:
+  CHK "Phone number : 0123456",
+  GAE "Phone number :",
+
+  EN0 "Phone number :",
+
+
+
+
+  US0 "Phone number:", --!!! 
+
+
+
+
+
+  CH0 "电话号码：",
+
+
+
+
+
+
+
+
+  HE0 "Phone number :"; --???
+
+FREE_NUMBER_TITLE:
+  CHK "Specify a new phone number as your current phone number0123456789012345689",
+  GAE "Specify a new phone number as your current phone number",
+
+  EN0 "Specify a new phone number as your current phone number",
+
+
+
+
+  US0 "Specify a new current phone number", --!!! 
+
+
+
+
+
+  CH0 "为当前电话指定一个新电话号码",
+
+
+
+
+
+
+
+
+  HE0 "Specify a new phone number as your current phone number"; --???
+
+-- --------------------------------------
+-- To add in Desktop alert tab
+-- --------------------------------------
+
+CONF_POPUP:
+  CHK "When the conference starts or someone joins the conference0123456789",
+  GAE "When the conference starts or someone joins the conference",
+
+  EN0 "When the conference starts or someone joins the conference",
+
+
+
+
+  US0 "When the conference starts or someone joins the conference",
+
+
+
+
+
+  CH0 "当会议启动或某人加入会议时", 
+
+
+
+
+
+
+
+
+  HE0 "When the conference starts or someone joins the conference"; --???
+
+JOINCONF_POPUP:
+  CHK "When someone joins the conference0123456789",
+  GAE "When someone joins the conference",
+
+  EN0 "When someone joins the conference",
+
+
+
+
+  US0 "When someone joins the conference",
+
+
+
+
+
+  CH0 "当某人加入会议时", 
+
+
+
+
+
+
+
+
+  HE0 "When someone joins the conference"; --???
+
+IM_POPUP:
+  CHK "When you receive an instant message0123456789",
+  GAE "When you receive an instant message",
+
+  EN0 "When you receive an instant message",
+
+
+
+
+  US0 "When you receive an instant message",
+
+
+
+
+
+  CH0 "当您接收即时消息时", 
+
+
+
+
+
+
+
+
+  HE0 "When you receive an instant message"; --???
+
+CALL_POPUP:
+  CHK "When you receive a call0123456789",
+  GAE "When you receive a call",
+
+  EN0 "When you receive a call",
+
+
+
+
+  US0 "When you receive a call",
+
+
+
+
+
+  CH0 "当您接收呼叫时", 
+
+
+
+
+
+
+
+
+  HE0 "When you receive a call"; --???
+
+CONTACT_POPUP_TITLE:
+  CHK "Display a desktop alert 0123456789",
+  GAE "Display a desktop alert",
+
+  EN0 "Display a desktop alert",
+
+
+
+
+  US0 "Display a desktop alert", --!!! 
+
+
+
+
+
+  CH0 "显示桌面告警",
+
+
+
+
+
+
+
+
+  HE0 "Display a desktop alert"; --???
+
+CONTACT_POPUP:
+  CHK "When a contact signs in 0123456789",
+  GAE "When a contact signs in",
+
+  EN0 "When a contact signs in",
+
+
+
+
+  US0 "When a contact signs in", --!!! 
+
+
+
+
+
+  CH0 "当联系人登录时",
+
+
+
+
+
+
+
+
+  HE0 "When a contact signs in"; --???
+
+UPDATE:
+  CHK "Mise ?jour0123456789",
+  GAE "Update",
+
+  EN0 "Update",
+
+
+
+
+  US0 "Update", --!!! 
+
+
+
+
+
+  CH0 "更新",
+
+
+
+
+
+
+
+
+  HE0 "Update"; --???
+
+-- XTScf02328 (JEL:09/08/2007) +   
+
+UPDATE_MODE:
+  CHK "Lorsqu抲ne mise ?jour est disponible pour My Instant Communicator0123456789",
+  GAE "When an update is available for My Instant Communicator",
+
+  EN0 "When an update is available for My Instant Communicator",
+
+
+
+
+  US0 "When an update is available for My Instant Communicator", --!!! 
+
+
+
+
+
+  CH0 "当My Instant Communicator有更新时",
+
+
+
+
+
+
+
+
+  HE0 "When an update is available for My Instant Communicator"; --???
+
+-- crms00176668 +
+
+UPDATE_MODE_TAG:
+  CHK "Lorsqu抲ne mise ?jour est disponible pour My Instant Communicator0123456789",
+  GAE "When an update is available for My Instant Communicator",
+
+  EN0 "When an update is available for My Instant Communicator",
+
+
+
+
+  US0 "When an update is available for My Instant Communicator", --!!! 
+
+
+
+
+
+  CH0 "当My Instant Communicator有更新时",
+
+
+
+
+
+
+
+
+  HE0 "When an update is available for My Instant Communicator"; --???
+
+-- crms00176668 -
+
+UPDATE_ALWAYS:
+  CHK "Automatically install the update0123456789",
+  GAE "Automatically install the update",
+
+  EN0 "Automatically install the update",
+
+
+
+
+  US0 "Automatically install the update", --!!! 
+
+
+
+
+
+  CH0 "自动安装更新应用程序",
+
+
+
+
+
+
+
+
+  HE0 "Automatically install the update"; --???
+
+UPDATE_ASK_USER:
+  CHK "M抋vertir avant d抜nstaller la mise ?jour0123456789",
+  GAE "Ask me before installing the update",
+
+  EN0 "Ask me before installing the update",
+
+
+
+
+  US0 "Ask me before installing the update", --!!! 
+
+
+
+
+
+  CH0 "安装更新应用程序之前询问我",
+
+
+
+
+
+
+
+
+  HE0 "Ask me before installing the update"; --???
+
+UPDATE_NEVER:
+  CHK "Ne pas installer la mise ?jour0123456789",
+  GAE "Don抰 install the update",
+
+  EN0 "Don抰 install the update",
+
+
+
+
+  US0 "Do not install the update", --!!! 
+
+
+
+
+
+  CH0 "不安装更新应用程序",
+
+
+
+
+
+
+
+
+  HE0 "Don抰 install the update"; --???
+
+-- XTScf02328 (JEL:09/08/2007) -   
+
+MYPROFILE_TAG:
+  CHK "Modify my profile...012345678",
+  GAE "Modify my profile...",
+
+  EN0 "Modify my profile...",
+
+
+
+
+  US0 "Modify my profile...",
+
+
+
+
+
+  CH0 "修改个人配置...",
+
+
+
+
+
+
+
+
+  HE0 "Modify my profile..."; --???
+
+-- crms00136568 +  
+
+BALLOON_AUTODISPLAY_TITLE:
+  CHK "When a communication starts0123456789",
+  GAE "When a communication starts",
+
+  EN0 "When a communication starts",
+
+
+
+
+  US0 "When a communication starts",
+
+
+
+
+
+  CH0 "开始通信时", 
+
+
+
+
+
+
+
+
+  HE0 "When a communication starts"; --???
+
+BALLOON_AUTODISPLAY:
+  CHK "Automatically display the conversations window0123456789",
+  GAE "Automatically display the conversations window",
+
+  EN0 "Automatically display the conversations window",
+
+
+
+
+  US0 "Automatically display the conversation window",
+
+
+
+
+
+  CH0 "自动显示会话窗口", 
+
+
+
+
+
+
+
+
+  HE0 "Automatically display the conversations window"; --???
+
+TYPE_USER_TITLE:
+  CHK "User type0123456789",
+  GAE "User type",
+
+  EN0 "User type",
+
+
+
+
+  US0 "User type",
+
+
+
+
+
+  CH0 "用户类型", 
+
+
+
+
+
+
+
+
+  HE0 "User type"; --???
+
+TYPE_USER:
+  CHK "User type0123456789",
+  GAE "User type",
+
+  EN0 "User type",
+
+
+
+
+  US0 "User type",
+
+
+
+
+
+  CH0 "用户类型", 
+
+
+
+
+
+
+
+
+  HE0 "User type"; --???
+
+USER_NAME_TITLE:
+  CHK "User name01234567890123",
+  GAE "User name",
+
+  EN0 "User name",
+
+
+
+
+  US0 "User name",
+
+
+
+
+
+  CH0 "用户姓名", 
+
+
+
+
+
+
+
+
+  HE0 "User name"; --???
+
+DISPLAY_NAME_TITLE:
+  CHK "Display name0123456789",
+  GAE "Display name",
+
+  EN0 "Display name",
+
+
+
+
+  US0 "Display name",
+
+
+
+
+
+  CH0 "显示名称", 
+
+
+
+
+
+
+
+
+  HE0 "Display name"; --???
+
+LOGIN_NAME_TITLE:
+  CHK "Login name0123456789",
+  GAE "Login name",
+
+  EN0 "Login name",
+
+
+
+
+  US0 "Login name",
+
+
+
+
+
+  CH0 "登录名", 
+
+
+
+
+
+
+
+
+  HE0 "Login name"; --???
+
+USER_PASSWORD_TITLE:
+  CHK "User password012345678901234",
+  GAE "User password",
+
+  EN0 "User password",
+
+
+
+
+  US0 "User password",
+
+
+
+
+
+  CH0 "用户密码", 
+
+
+
+
+
+
+
+
+  HE0 "User password"; --???
+
+USER_DOMAIN_TITLE:
+  CHK "User domain0123456789",
+  GAE "User domain",
+
+  EN0 "User domain",
+
+
+
+
+  US0 "User domain name",
+
+
+
+
+
+  CH0 "用户域名", 
+
+
+
+
+
+
+
+
+  HE0 "User domain"; --???
+
+OUTBOUND_PROXY_ADDRESS_TITLE:
+  CHK "Outbound proxy address0123456789",
+  GAE "Outbound proxy address",
+
+  EN0 "Outbound proxy address",
+
+
+
+
+  US0 "Outbound proxy address",
+
+
+
+
+
+  CH0 "出局代理地址", 
+
+
+
+
+
+
+
+
+  HE0 "Outbound proxy address"; --???
+
+SIP_PORT_TITLE:
+  CHK "Sip port0123456789",
+  GAE "SIP port", -- CMU
+
+  EN0 "Sip port",
+
+
+
+
+  US0 "SIP port",
+
+
+
+
+
+  CH0 "Sip 端口", 
+
+
+
+
+
+
+
+
+  HE0 "Sip port"; --???
+
+SIP_PORT:
+  CHK "Sip port0123456789",
+  GAE "SIP port", -- CMU
+
+  EN0 "Sip port",
+
+
+
+
+  US0 "SIP Port",
+
+
+
+
+
+  CH0 "Sip 端口", 
+
+
+
+
+
+
+
+
+  HE0 "Sip port"; --???
+
+PROTOCOL_TITLE:
+  CHK "Transport protocol0123456789",
+  GAE "Transport protocol",
+
+  EN0 "Transport protocol",
+
+
+
+
+  US0 "Transport protocol",
+
+
+
+
+
+  CH0 "传输协议", 
+
+
+
+
+
+
+
+
+  HE0 "Transport protocol"; --???
+
+USE_RPORT_TITLE:
+  CHK "Use rport0123456789",
+  GAE "Use rport",
+
+  EN0 "Utilisation rport",
+
+
+
+
+  US0 "Utilization report",
+
+
+
+
+
+  CH0 "使用 rport", 
+
+
+
+
+
+
+
+
+  HE0 "Utilisation rport"; --???
+
+USE_KEEPALIVE_TITLE:
+  CHK "Use keep alive0123456789",
+  GAE "Use keep alive",
+
+  EN0 "Use keep alive",
+
+
+
+
+  US0 "Use Keep Alive",
+
+
+
+
+
+  CH0 "使用‘保活’", 
+
+
+
+
+
+
+
+
+  HE0 "Use keep alive"; --???
+
+USE_SESSION_TIMER_TITLE:
+  CHK "Use session timer01234567890123456",
+  GAE "Use session timer",
+
+  EN0 "Use session timer",
+
+
+
+
+  US0 "Use session timer",
+
+
+
+
+
+  CH0 "使用会话计时器", 
+
+
+
+
+
+
+
+
+  HE0 "Use session timer"; --???
+
+REGISTER_DURATION_TITLE:
+  CHK "Register duration0123456789",
+  GAE "Register duration",
+
+  EN0 "Register duration",
+
+
+
+
+  US0 "Register duration",
+
+
+
+
+
+  CH0 "注册时长", 
+
+
+
+
+
+
+
+
+  HE0 "Register duration"; --???
+
+RTP_AUDIO_CODECS_TITLE:
+  CHK "Audio codecs0123456789",
+  GAE "Audio codecs",
+
+  EN0 "Audio codecs",
+
+
+
+
+  US0 "Audio codecs",
+
+
+
+
+
+  CH0 "音频编解码器", 
+
+
+
+
+
+
+
+
+  HE0 "Audio codecs"; --???
+
+VAD_TITLE:
+  CHK "Voice activity detection0123456789",
+  GAE "Voice activity detection",
+
+  EN0 "Voice activity detection",
+
+
+
+
+  US0 "Voice activity detection",
+
+
+
+
+
+  CH0 "语音活动检测", 
+
+
+
+
+
+
+
+
+  HE0 "Voice activity detection"; --???
+
+VAD:
+  CHK "Voice activity detection0123456789",
+  GAE "Voice activity detection",
+
+  EN0 "Voice activity detection",
+
+
+
+
+  US0 "Voice activity detection",
+
+
+
+
+
+  CH0 "语音活动检测", 
+
+
+
+
+
+
+
+
+  HE0 "Voice activity detection"; --???
+
+DTMF_PAYLOAD_TYPE_TITLE:
+  CHK "DTMF Payload type0123456789",
+  GAE "DTMF Payload type",
+
+  EN0 "DTMF Payload type",
+
+
+
+
+  US0 "DTMF Payload type",
+
+
+
+
+
+  CH0 "DTMF 有效载荷类型", 
+
+
+
+
+
+
+
+
+  HE0 "DTMF Payload type"; --???
+
+SIP_ADVANCED:
+  CHK "SIP advanced parameters0123456789",
+  GAE "Advanced SIP settings",
+
+  EN0 "SIP advanced parameters",
+
+
+
+
+  US0 "SIP Advanced parameters",
+
+
+
+
+
+  CH0 "SIP 高级参数", 
+
+
+
+
+
+
+
+
+  HE0 "SIP advanced parameters"; --???
+
+QOS_GENERAL:
+  CHK "QoS general options0123456789",
+  GAE "QoS general options",
+
+  EN0 "QoS general options",
+
+
+
+
+  US0 "QoS General options",
+
+
+
+
+
+  CH0 "QoS 通用选项", 
+
+
+
+
+
+
+
+
+  HE0 "QoS general options"; --???
+
+SIP_IP_TOS_TITLE:
+  CHK "Type Of Service SIP0123456789",
+  GAE "Type Of Service SIP",
+
+  EN0 "Type Of Service SIP",
+
+
+
+
+  US0 "SIP Type Of Service",
+
+
+
+
+
+  CH0 "SIP 服务类型", 
+
+
+
+
+
+
+
+
+  HE0 "Type Of Service SIP"; --???
+
+SIP_IP_TOS:
+  CHK "Type Of Service SIP0123456789",
+  GAE "Type Of Service SIP",
+
+  EN0 "Type Of Service SIP",
+
+
+
+
+  US0 "SIP Type Of Service",
+
+
+
+
+
+  CH0 "SIP 服务类型", 
+
+
+
+
+
+
+
+
+  HE0 "Type Of Service SIP"; --???
+
+RTP_IP_TOS_TITLE:
+  CHK "Type Of Service Audio0123456789",
+  GAE "Type Of Service Audio",
+
+  EN0 "Type Of Service Audio",
+
+
+
+
+  US0 "Audio Type Of Service",
+
+
+
+
+
+  CH0 "音频服务类型", 
+
+
+
+
+
+
+
+
+  HE0 "Type Of Service Audio"; --???
+
+RTP_IP_TOS:
+  CHK "Type Of Service Audio0123456789",
+  GAE "Type Of Service Audio",
+
+  EN0 "Type Of Service Audio",
+
+
+
+
+  US0 "Audio Type Of Service",
+
+
+
+
+
+  CH0 "音频服务类型", 
+
+
+
+
+
+
+
+
+  HE0 "Type Of Service Audio"; --???
+
+VIDEO_IP_TOS_TITLE:
+  CHK "Type Of Service Video0123456789",
+  GAE "Type Of Service Video",
+
+  EN0 "Type Of Service Video",
+
+
+
+
+  US0 "Video Type Of Service",
+
+
+
+
+
+  CH0 "视频服务类型", 
+
+
+
+
+
+
+
+
+  HE0 "Type Of Service Video"; --???
+
+VIDEO_IP_TOS:
+  CHK "Type Of Service Video0123456789",
+  GAE "Type Of Service Video",
+
+  EN0 "Type Of Service Video",
+
+
+
+
+  US0 "Video Type Of Service",
+
+
+
+
+
+  CH0 "视频服务类型", 
+
+
+
+
+
+
+
+
+  HE0 "Type Of Service Video"; --???
+
+PROFILE_RESULT_ERROR:
+  CHK "Error0123456789",
+  GAE "Erreur",
+
+  EN0 "Error",
+
+
+
+
+  US0 "Error", --!!! 
+
+
+
+
+
+  CH0 "错误", 
+
+
+
+
+
+
+
+
+  HE0 "Error"; --???
+
+CONFIRM_PASSWORD:
+  CHK "Confirm0123456789",
+  GAE "Confirm",
+
+  EN0 "Confirm",
+
+
+
+
+  US0 "Confirm", --!!! 
+
+
+
+
+
+  CH0 "确认", 
+
+
+
+
+
+
+
+
+  HE0 "Confirm"; --???
+
+INVALID_FIELDS:
+  CHK "Some fields are invalid. Modifications can't be applied.012345678901234567890123456789",
+  GAE "Some fields are invalid. Modifications can't be applied.",
+
+  EN0 "Some fields are invalid. Modifications can't be applied.",
+
+
+
+
+  US0 "Some fields are invalid. Modifications cannot be applied.", --!!! 
+
+
+
+
+
+  CH0 "一些字段无效。不应用修改。", 
+
+
+
+
+
+
+
+
+  HE0 "Some fields are invalid. Modifications can't be applied."; --???
+
+AUDIO_WIZARD_CATEGORY:
+  CHK "Audio wizard0123456789",
+  GAE "Audio wizard",
+
+  EN0 "Audio wizard",
+
+
+
+
+  US0 "Audio wizard", --!!! 
+
+
+
+
+
+  CH0 "音频向导", 
+
+
+
+
+
+
+
+
+  HE0 "Audio wizard"; --???
+
+AUDIO_WIZARD_TITLE:
+  CHK "Audio wizard0123456789",
+  GAE "Audio wizard",
+
+  EN0 "Audio wizard",
+
+
+
+
+  US0 "Audio Wizard", --!!! 
+
+
+
+
+
+  CH0 "音频向导", 
+
+
+
+
+
+
+
+
+  HE0 "Audio wizard"; --???
+
+AUDIO_WIZARD:
+  CHK "Open Audio wizard01234567890123",
+  GAE "Open Audio wizard",
+
+  EN0 "Open Audio wizard",
+
+
+
+
+  US0 "Open Audio Wizard", --!!! 
+
+
+
+
+
+  CH0 "打开音频向导", 
+
+
+
+
+
+
+
+
+  HE0 "Open Audio wizard"; --???
+
+SIP_EMBEDDED:
+  CHK "SIP embedded0123456789",
+  GAE "SIP embedded",
+
+  EN0 "SIP embedded",
+
+
+
+
+  US0 "SIP embedded",
+
+
+
+
+
+  CH0 "SIP 嵌入式", 
+
+
+
+
+
+
+
+
+  HE0 "SIP embedded"; --???
+
+USER_NAME:
+  CHK "Username0123456789",
+  GAE "Username",
+
+  EN0 "Username",
+
+
+
+
+  US0 "Username",
+
+
+
+
+
+  CH0 "用户名", 
+
+
+
+
+
+
+
+
+  HE0 "Username"; --???
+
+DISPLAY_NAME:
+  CHK "Display name0123456789",
+  GAE "Display name",
+
+  EN0 "Display name",
+
+
+
+
+  US0 "Display name",
+
+
+
+
+
+  CH0 "显示名称", 
+
+
+
+
+
+
+
+
+  HE0 "Display name"; --???
+
+LOGIN_NAME:
+  CHK "Authorization user0123456789",
+  GAE "Authorization user",
+
+  EN0 "Authorization user",
+
+
+
+
+  US0 "Authorization user",
+
+
+
+
+
+  CH0 "授权用户", 
+
+
+
+
+
+
+
+
+  HE0 "Authorization user"; --???
+
+USER_PASSWORD:
+  CHK "Password0123456789",
+  GAE "Password",
+
+  EN0 "Password",
+
+
+
+
+  US0 "Password",
+
+
+
+
+
+  CH0 "密码", 
+
+
+
+
+
+
+
+
+  HE0 "Password"; --???
+
+USER_DOMAIN:
+  CHK "Domain0123456789",
+  GAE "Domain",
+
+  EN0 "Domain",
+
+
+
+
+  US0 "Domain",
+
+
+
+
+
+  CH0 "域", 
+
+
+
+
+
+
+
+
+  HE0 "Domain"; --???
+
+OUTBOUND_PROXY_TITLE:
+  CHK "Outbound proxy0123456789",
+  GAE "Outbound proxy",
+
+  EN0 "Outbound proxy",
+
+
+
+
+  US0 "Outbound proxy",
+
+
+
+
+
+  CH0 "出局代理", 
+
+
+
+
+
+
+
+
+  HE0 "Outbound proxy"; --???
+
+OUTBOUND_PROXY_ADDRESS:
+  CHK "Outbound proxy address0123456789",
+  GAE "Outbound proxy address",
+
+  EN0 "Outbound proxy address",
+
+
+
+
+  US0 "Outbound proxy address",
+
+
+
+
+
+  CH0 "出局代理地址", 
+
+
+
+
+
+
+
+
+  HE0 "Outbound proxy address"; --???
+
+OUTBOUND_PROXY_PORT:
+  CHK "Outbound proxy port0123456789",
+  GAE "Outbound proxy port",
+
+  EN0 "Outbound proxy port",
+
+
+
+
+  US0 "Outbound proxy port",
+
+
+
+
+
+  CH0 "出局代理端口", 
+
+
+
+
+
+
+
+
+  HE0 "Outbound proxy port"; --???
+
+PROTOCOL:
+  CHK "Preferred transport method0123456789",
+  GAE "Preferred transport method",
+
+  EN0 "Preferred transport method",
+
+
+
+
+  US0 "Preferred transport method",
+
+
+
+
+
+  CH0 "首选传输方式", 
+
+
+
+
+
+
+
+
+  HE0 "Preferred transport method"; --???
+
+USE_RPORT:
+  CHK "Use SIP rport0123456789",
+  GAE "Use SIP rport",
+
+  EN0 "Use SIP rport",
+
+
+
+
+  US0 "Use SIP report",
+
+
+
+
+
+  CH0 "使用 SIP rport", 
+
+
+
+
+
+
+
+
+  HE0 "Use SIP rport"; --???
+
+USE_KEEPALIVE:
+  CHK "Keep alive mechanism01234567890123456789",
+  GAE "Keep alive mechanism",
+
+  EN0 "Keep alive mechanism",
+
+
+
+
+  US0 "Keep Alive mechanism",
+
+
+
+
+
+  CH0 "‘保活’机制", 
+
+
+
+
+
+
+
+
+  HE0 "Keep alive mechanism"; --???
+
+USE_SESSION_TIMER:
+  CHK "Session timer0123456789",
+  GAE "Session timer",
+
+  EN0 "Session timer",
+
+
+
+
+  US0 "Session timer",
+
+
+
+
+
+  CH0 "会话定时器", 
+
+
+
+
+
+
+
+
+  HE0 "Session timer"; --???
+
+REGISTER_DURATION:
+  CHK "Register expire time (sec.)01234567890123456789",
+  GAE "Register expire time (sec.)",
+
+  EN0 "Register expire time (sec.)",
+
+
+
+
+  US0 "Register expire time (seconds)",
+
+
+
+
+
+  CH0 "注册到期时间（单位：秒）", 
+
+
+
+
+
+
+
+
+  HE0 "Register expire time (sec.)"; --???
+
+DTMF_PAYLOAD_TYPE:
+  CHK "DTMF Payload type01234567890123456789",
+  GAE "DTMF Payload type",
+
+  EN0 "DTMF Payload type",
+
+
+
+
+  US0 "DTMF Payload type",
+
+
+
+
+
+  CH0 "DTMF 有效载荷类型", 
+
+
+
+
+
+
+
+
+  HE0 "DTMF Payload type"; --???
+
+SIP_GENERAL:
+  CHK "General SIP settings0123456789",
+  GAE "General SIP settings",
+
+  EN0 "General SIP settings",
+
+
+
+
+  US0 "General SIP settings",
+
+
+
+
+
+  CH0 "通用 SIP 设置", 
+
+
+
+
+
+
+
+
+  HE0 "General SIP settings"; --???
+
+USER_DETAILS_TITLE:
+  CHK "User account0123456789",
+  GAE "User account",
+
+  EN0 "User account",
+
+
+
+
+  US0 "User account", --!!! 
+
+
+
+
+
+  CH0 "用户账户", 
+
+
+
+
+
+
+
+
+  HE0 "User account"; --???
+
+MEDIA_SETTINGS_TITLE:
+  CHK "Media settings0123456789",
+  GAE "Media settings",
+
+  EN0 "Media settings",
+
+
+
+
+  US0 "Media settings", --!!! 
+
+
+
+
+
+  CH0 "媒体设置", 
+
+
+
+
+
+
+
+
+  HE0 "Media settings"; --???
+
+QOS_SETTINGS_TITLE:
+  CHK "QoS settings012345678901234567890123456789",
+  GAE "QoS settings",
+
+  EN0 "QoS settings",
+
+
+
+
+  US0 "QoS settings", --!!! 
+
+
+
+
+
+  CH0 "QoS 设置", 
+
+
+
+
+
+
+
+
+  HE0 "QoS settings"; --???
+
+SIP_ADVANCED_TITLE:
+  CHK "SIP advanced parameters0123456789",
+  GAE "SIP advanced parameters",
+
+  EN0 "SIP advanced parameters",
+
+
+
+
+  US0 "SIP Advanced parameters",
+
+
+
+
+
+  CH0 "SIP 高级参数", 
+
+
+
+
+
+
+
+
+  HE0 "SIP advanced parameters"; --???
+
+RTP_GENERAL:
+  CHK "Media and Qos settings01234567890123456789",
+  GAE "Media and Qos settings",
+
+  EN0 "Media and Qos settings",
+
+
+
+
+  US0 "Media and QoS settings",
+
+
+
+
+
+  CH0 "媒体与 Qos 设置", 
+
+
+
+
+
+
+
+
+  HE0 "Media and Qos settings"; --???
+
+PRIMARY_DNS_ADDRESS:
+  CHK "Primary DNS address123456789",
+  GAE "Primary DNS address",
+
+  EN0 "Primary DNS address",
+
+
+
+
+  US0 "Primary DNS address", --!!! 
+
+
+
+
+
+  CH0 "主用 DNS 地址", 
+
+
+
+
+
+
+
+
+  HE0 "Primary DNS address"; --???
+
+SECONDARY_DNS_ADDRESS:
+  CHK "Secondary DNS address123456789",
+  GAE "Secondary DNS address",
+
+  EN0 "Secondary DNS address",
+
+
+
+
+  US0 "Secondary DNS address", --!!! 
+
+
+
+
+
+  CH0 "备用 DNS 地址", 
+
+
+
+
+
+
+
+
+  HE0 "Secondary DNS address"; --???
+
+PRIMARY_DNS_TYPE:
+  CHK "Primary DNS type0123456789",
+  GAE "Primary DNS type",
+
+  EN0 "Primary DNS type",
+
+
+
+
+  US0 "Primary DNS type", --!!! 
+
+
+
+
+
+  CH0 "主用 DNS 类型", 
+
+
+
+
+
+
+
+
+  HE0 "Primary DNS type"; --???
+
+SECONDARY_DNS_TYPE:
+  CHK "Secondary DNS type0123456789",
+  GAE "SecondaryDNS type",
+
+  EN0 "Secondary DNS type",
+
+
+
+
+  US0 "Secondary DNS type", --!!! 
+
+
+
+
+
+  CH0 "备用 DNS 类型", 
+
+
+
+
+
+
+
+
+  HE0 "Secondary DNS type"; --???
+
+DNS_SETTINGS_TITLE:
+  CHK "DNS parameters0123456789",
+  GAE "DNS parameters",
+
+  EN0 "DNS parameters",
+
+
+
+
+  US0 "DNS Parameters", --!!! 
+
+
+
+
+
+  CH0 "DNS 参数", 
+
+
+
+
+
+
+
+
+  HE0 "DNS parameters"; --???
+
+DLIST_AVAILABLE:
+  CHK "Available0123456789",
+  GAE "Available",
+
+  EN0 "Available",
+
+
+
+
+  US0 "Available", --!!! 
+
+
+
+
+
+  CH0 "可用的", 
+
+
+
+
+
+
+
+
+  HE0 "Available"; --???
+
+DLIST_SELECTED:
+  CHK "Selected0123456789",
+  GAE "Selected",
+
+  EN0 "Selected",
+
+
+
+
+  US0 "Selected", --!!! 
+
+
+
+
+
+  CH0 "所选的", 
+
+
+
+
+
+
+
+
+  HE0 "Selected"; --???
+
+RTP_AUDIO_CODECS:
+  CHK "Codecs available/Codecs selected0123456789",
+  GAE "Codecs available/Codecs selected",
+
+  EN0 "Codecs available/Codecs selected",
+
+
+
+
+  US0 "Codecs available/Codecs selected", --!!! 
+
+
+
+
+
+  CH0 "可用的编解码器/所选的编解码器", 
+
+
+
+
+
+
+
+
+  HE0 "Codecs available/Codecs selected"; --???
+
+OPTIONS:
+  CHK "Options0123456789",
+  GAE "Options",
+
+  EN0 "Options",
+
+
+
+
+  US0 "Options", --!!! 
+
+
+
+
+
+  CH0 "选项", 
+
+
+
+
+
+
+
+
+  HE0 "Options"; --???
+
+FORWARD_FREE_NUMBER:
+  CHK "To a number other than your professional and personal numbers0123456789",
+  GAE "To a number other than your professional and personal numbers",
+
+  EN0 "To a number other than your professional and personal numbers",
+
+
+
+
+  US0 "To a number other than your professional and personal numbers", --!!! 
+
+
+
+
+
+  CH0 "转到您的工作与个人号码以外的号码", 
+
+
+
+
+
+
+
+
+  HE0 "To a number other than your professional and personal numbers"; --???
+
+FORWARD_CALL_TITLE:
+  CHK "Forwarding calls0123456789",
+  GAE "Forwarding calls",
+
+  EN0 "Forwarding calls",
+
+
+
+
+
+  US0 "Forwarding calls", --!!! 
+
+
+
+
+
+  CH0 "转移呼叫", 
+
+
+
+
+
+
+
+  HE0 "Forwarding calls"; --???
+
+FORWARD_TYPE:
+  CHK "Condition of call forwarding0123456678",
+  GAE "Condition of call forwarding",
+
+  EN0 "Condition of call forwarding",
+
+
+
+
+
+  US0 "Condition of call forwarding", --!!! 
+
+
+
+
+
+  CH0 "呼叫转移条件", 
+
+
+
+
+
+
+
+  HE0 "Condition of call forwarding"; --???
+
+OVERFLOW_TITLE:
+-- beware!! In our case, you talk about associated and NOT about colleague. This is not the same
+  CHK "Call overflow on my associated0123456789",
+  GAE "Call overflow on my associated",
+
+  EN0 "Call overflow on my associated",
+
+
+
+
+
+  US0 "Call overflow to my associate", --!!! 
+
+
+
+
+
+  CH0 "呼叫溢出我的关联", 
+
+
+
+
+
+
+
+  HE0 "Call overflow on my associated"; --???
+
+ASSOCIATED_NUMBER:
+-- beware!! In our case, you talk about associated and NOT about colleague. This is not the same
+  CHK "Phone number of the associated0123456789",
+  GAE "Phone number of the associated",
+
+  EN0 "Phone number of the associated",
+
+
+
+
+
+  US0 "Phone number of the associate", --!!! 
+
+
+
+
+
+  CH0 "关联的电话号码", 
+
+
+
+
+
+
+
+  HE0 "Phone number of the associated"; --???
+
+OVERFLOW_TYPE:
+  CHK "Condition of call overflow012345678999",
+  GAE "Condition of call overflow",
+
+  EN0 "Condition of call overflow",
+
+
+
+
+
+  US0 "Condition of call overflow", --!!! 
+
+
+
+
+
+  CH0 "呼叫溢出的条件", 
+
+
+
+
+
+
+
+  HE0 "Condition of call overflow"; --???
+
+-- DLM 07052009 crms00174791 +
+
+IMMEDIATE:
+  CHK "Without condition0123456789",
+  GAE "Without condition",
+
+  EN0 "Without condition",
+
+
+
+
+
+  US0 "Without condition", --!!! 
+
+
+
+
+
+  CH0 "无条件", 
+
+
+
+
+
+
+
+  HE0 "Without condition"; --???
+
+ON_BUSY:
+  CHK "Phone is busy012345678",
+  GAE "Phone is busy",
+
+  EN0 "Phone is busy",
+
+
+
+
+
+  US0 "Phone is busy", --!!! 
+
+
+
+
+
+  CH0 "电话占线", 
+
+
+
+
+
+
+
+  HE0 "Phone is busy"; --???
+
+ON_NO_ANSWER:
+  CHK "No reply012345689",
+  GAE "No reply",
+
+  EN0 "No reply",
+
+
+
+
+
+  US0 "No reply", --!!! 
+
+
+
+
+
+  CH0 "无应答", 
+
+
+
+
+
+
+
+  HE0 "No reply"; --???
+
+ON_BUSY_OR_NO_ANSWER:
+  CHK "Phone is busy or No reply0123456789",
+  GAE "Phone is busy or No reply",
+
+  EN0 "Phone is busy or No reply",
+
+
+
+
+
+  US0 "Phone is busy or no reply", --!!! 
+
+
+
+
+
+  CH0 "电话占线或无应答", 
+
+
+
+
+
+
+
+  HE0 "Phone is busy or No reply"; --???
+
+USE_AUTOANSWER:
+  CHK "Autoanswer0123456789",
+  GAE "Auto-answer", -- CMU
+
+  EN0 "Autoanswer",
+
+
+
+
+  US0 "Auto-answer",
+
+
+
+
+
+  CH0 "自动应答", 
+
+
+
+
+
+
+
+
+  HE0 "Autoanswer"; --???
+
+PLAY_AUDIO_LOCAL:
+  CHK "Play local ringing0123456789000000000000000",
+  GAE "Play a local ringback tone", -- CMU
+
+  EN0 "Play local ringing",
+
+
+
+
+  US0 "Play local alert tone",
+
+
+
+
+
+  CH0 "播放本地振铃", 
+
+
+
+
+
+
+
+
+  HE0 "Play local ringing"; --???
+
+ADV_SETTINGS_TITLE:
+  CHK "Advanced settings0123456789",
+  GAE "Advanced settings",
+
+  EN0 "Advanced settings",
+
+
+
+
+  US0 "Advanced settings",
+
+
+
+
+
+  CH0 "高级设置", 
+
+
+
+
+
+
+
+
+  HE0 "Advanced settings"; --???
+
+FORWARD_APPLY_WARN:
+  CHK "Specify a number and/or a condition of call forwarding, then validate to activate your modifications0123456789012345678901234567890123456789012345678901234567890123456789",
+  GAE "Specify a number and/or a condition of call forwarding, then validate to activate your modifications", -- CMU
+
+  EN0 "Specify a number and/or a condition of call forwarding, then validate to activate your modifications",
+
+
+
+
+  US0 "Specify a number and/or a condition for call forwarding, then validate to activate your modification.", --!!! 
+
+
+
+
+
+  CH0 "指定呼叫转移号码和/或条件，然后验证激活修改", 
+
+
+
+
+
+
+
+
+  HE0 "Specify a number and/or a condition of call forwarding, then validate to activate your modifications"; --???
+
+START_FLOATING_SEARCHBAND:
+  CHK "Search/Call bar as floating bar0000000000000", --!!! 
+  GAE "Floating Search/Call box", --!!! -- CMU
+
+  EN0 "Floating Search/Call box",
+
+
+
+
+  US0 "Floating Search/Call box", --!!! 
+
+
+
+
+
+  CH0 "浮动搜索/呼叫框", 
+
+
+
+
+
+
+
+
+  HE0 "Floating Search/Call box"; --???
+
+HOT_KEY_SEARCHBAND:
+  CHK "Use the hot key sequence012345678900000000",
+  GAE "Use the hot key sequence", --!!! 
+
+  EN0 "Use the hot key sequence",
+
+
+
+
+  US0 "Use the hot key sequence", --!!! 
+
+
+
+
+
+  CH0 "使用热键序列", 
+
+
+
+
+
+
+
+
+  HE0 "Use the hot key sequence"; --???
+
+HOT_KEY_SEARCHBAND_TITLE:
+  CHK "Show or hide the Search/Call box on the desktop012345678911111111111111111",
+  GAE "Show or hide the Search/Call box on the desktop",
+
+  EN0 "Show or hide the Search/Call box on the desktop",
+
+
+
+
+  US0 "Show or hide the Search/Call box on the desktop", --!!! 
+
+
+
+
+
+  CH0 "显示或隐藏桌面上的搜索/呼叫框", 
+
+
+
+
+
+
+
+
+  HE0 "Show or hide the Search/Call box on the desktop"; --???
+
+SIP_SECURITY:
+  CHK "Sip security parameters0123456789",
+  GAE "SIP security parameters", -- CMU
+
+  EN0 "Sip security parameters",
+
+
+
+
+  US0 "SIP Security parameters", --!!! 
+
+
+
+
+
+  CH0 "Sip 安全参数", 
+
+
+
+
+
+
+
+
+  HE0 "Sip security parameters"; --???
+
+CIPHER_PARAM_TITLE:
+  CHK "Cipher collections0123456789",
+  GAE "Ciphering settings", -- CMU
+
+  EN0 "Ciphering collections",
+
+
+
+
+  US0 "Ciphering selection", --!!! 
+
+
+
+
+
+  CH0 "加密收集", 
+
+
+
+
+
+
+
+
+  HE0 "Ciphering collections"; --???
+
+PRIVATE_CONFIGURATION_TITLE:
+  CHK "Local configuration012345678901111111111111111111111111111",
+  GAE "Local configuration (without Session Border Controller)", --!!! CMU
+
+  EN0 "Local configuration",
+
+
+
+
+  US0 "Local configuration", --!!! 
+
+
+  NO0 "Lok. konf. (u. 鴎tskontroll)", --!!! Severly low character limit.
+
+
+  CH0 "本地配置", 
+
+
+  CS0 "M韘tn?konfig. (bez SBC)", --!!! Not enough space for full translation within length limit!
+
+
+
+
+
+  HE0 "Local configuration"; --???
+
+PRIVATE_PROTOCOL:
+  CHK "Transport protocol level0123456789",
+  GAE "Transport protocol", -- CMU
+
+  EN0 "Transport protocol level",
+
+
+
+
+  US0 "Transport protocol level", --!!! 
+
+
+
+
+
+  CH0 "传输协议水平", 
+
+
+
+
+
+
+
+
+  HE0 "Transport protocol level"; --???
+
+DIRECT_PROTOCOL:
+  CHK "Transport protocol level0123456789",
+  GAE "Transport protocol", -- CMU
+
+  EN0 "Transport protocol level",
+
+
+
+
+  US0 "Transport protocol level", --!!! 
+
+
+
+
+
+  CH0 "传输协议水平", 
+
+
+
+
+
+
+
+
+  HE0 "Transport protocol level"; --???
+
+NOT_USED:
+  CHK "Not used (General SIP settings / protocol parameter used)0123456789",
+  GAE "Not used", -- CMU
+
+  EN0 "Not used",
+
+
+
+
+  US0 "Not used", --!!! 
+
+
+
+
+
+  CH0 "未使用", 
+
+
+
+
+
+
+
+
+  HE0 "Not used"; --???
+
+PRIVATE_SECURITY_LEVEL:
+  CHK "Media encryption0123456789",
+  GAE "Media encryption", -- CMU
+
+  EN0 "Media encryption",
+
+
+
+
+  US0 "Media encryption", --!!! 
+
+
+
+
+
+  CH0 "媒体加密", 
+
+
+
+
+
+
+
+
+  HE0 "Media encryption"; --???
+
+DIRECT_SECURITY_LEVEL:
+  CHK "Media encryption0123456789",
+  GAE "Media encryption", -- CMU
+
+  EN0 "Media encryption",
+
+
+
+
+  US0 "Media encryption", --!!! 
+
+
+
+
+
+  CH0 "媒体加密", 
+
+
+
+
+
+
+
+
+  HE0 "Media encryption"; --???
+
+LEVEL_0:
+  CHK "Do not allow encrypted communications0123456789",
+  GAE "Do not allow encrypted communications", -- CMU
+
+  EN0 "Do not allow encrypted communications",
+
+
+
+
+  US0 "Do not allow encrypted communications", --!!! 
+
+
+
+
+
+  CH0 "不允许加密通信", 
+
+
+
+
+
+
+
+
+  HE0 "Do not allow encrypted communications"; --???
+
+LEVEL_1:
+  CHK "Accept encrypted and non encrypted communications0123456789",
+  GAE "Accept encrypted and non encrypted communications", -- CMU
+
+  EN0 "Accept encrypted and non encrypted communications",
+
+
+
+
+  US0 "Accept encrypted and non-encrypted communications", --!!! 
+
+
+
+
+
+  CH0 "接受加密和非加密通信", 
+
+
+
+
+
+
+
+
+  HE0 "Accept encrypted and non encrypted communications"; --???
+
+LEVEL_2:
+  CHK "Encrypted communication only0123456789000000000000000",
+  GAE "Accept only encrypted communications", -- CMU
+
+  EN0 "Accept only encrypted communications",
+
+
+
+
+  US0 "Accept only encrypted communications", --!!! 
+
+
+
+
+
+  CH0 "仅接受加密通信", 
+
+
+
+
+
+
+
+
+  HE0 "Accept only encrypted communications"; --???
+
+SBC_CONFIGURATION_TITLE:
+  CHK "Session Border Controller configuration0123456789",
+  GAE "Session Border Controller configuration",
+
+  EN0 "Session Border Controller configuration",
+
+
+
+
+  US0 "Session Border Controller configuration", --!!! 
+
+
+
+
+
+  CH0 "会话边界控制器配置", 
+
+
+
+
+
+
+
+
+  HE0 "Session Border Controller configuration"; --???
+
+SBC_ADDRESS:
+  CHK "Address0123456789",
+  GAE "Address", -- CMU
+
+  EN0 "Address",
+
+
+
+
+  US0 "Address", --!!! 
+
+
+
+
+
+  CH0 "地址", 
+
+
+
+
+
+
+
+
+  HE0 "Address"; --???
+
+SBC_PORT:
+  CHK "Session Border Controller port0123456789",
+  GAE "Port", -- CMU
+
+  EN0 "Port",
+
+
+
+
+  US0 "Port", --!!! 
+
+
+
+
+
+  CH0 "端口", 
+
+
+
+
+
+
+
+
+  HE0 "Port"; --???
+
+SBC_PROTOCOL:
+  CHK "Session Border Controller transport level0123456789",
+  GAE "Transport protocol", -- CMU
+
+  EN0 "Transport protocol",
+
+
+
+
+  US0 "Transport protocol", --!!! 
+
+
+
+
+
+  CH0 "传输协议", 
+
+
+
+
+
+
+
+
+  HE0 "Transport protocol"; --???
+
+SBC_SECURITY_LEVEL:
+  CHK "Media encryption0123456789",
+  GAE "Media encryption", -- CMU
+
+  EN0 "Media encryption",
+
+
+
+
+  US0 "Media encryption", --!!! 
+
+
+
+
+
+  CH0 "媒体加密", 
+
+
+
+
+
+
+
+
+  HE0 "Media encryption"; --???
+
+SBC_SRTP_AUTHENTICATION:
+  CHK "Control the signing of SRTP packets0123456789",
+  GAE "Control the signing of SRTP packets", -- CMU
+
+  EN0 "Control the signing of SRTP packets",
+
+
+
+
+  US0 "Control the signature for SRTP packets", --!!! 
+
+
+
+
+
+  CH0 "控制 SRTP 数据包签名", 
+
+
+
+
+
+
+
+
+  HE0 "Control the signing of SRTP packets"; --???
+
+PRIVATE_SRTP_AUTHENTICATION:
+  CHK "Control the signing of SRTP packets0123456789",
+  GAE "Control the signing of SRTP packets", -- CMU
+
+  EN0 "Control the signing of SRTP packets",
+
+
+
+
+  US0 "Control the signature for SRTP packets", --!!! 
+
+
+
+
+
+  CH0 "控制 SRTP 数据包签名", 
+
+
+
+
+
+
+
+
+  HE0 "Control the signing of SRTP packets"; --???
+
+AUDIO_CRYPTO_SUITE:
+  CHK "Cipher suite available/Cipher suite selected012345678900000000000000000",
+  GAE "Cipher suite available/Cipher suite selected",
+
+  EN0 "Cipher suite available/Cipher suite selected",
+
+
+
+
+  US0 "Cipher suite available/Cipher suite selected", --!!! 
+
+
+
+
+
+  CH0 "加密可用套件/加密选定套件", 
+
+
+
+
+
+
+
+
+  HE0 "Cipher suite available/Cipher suite selected"; --???
+
+PCMU:
+  CHK "ITU G.711 ulaw0123456789",
+  GAE "ITU G.711 ulaw",
+
+  EN0 "ITU G.711 ulaw",
+
+
+
+
+  US0 "ITU G.711 ulaw", --!!! 
+
+
+
+
+
+  CH0 "ITU G.711 u律", 
+
+
+
+
+
+
+
+
+  HE0 "ITU G.711 ulaw"; --???
+
+PCMA:
+  CHK "ITU G.711 alaw0123456789",
+  GAE "ITU G.711 alaw",
+
+  EN0 "ITU G.711 alaw",
+
+
+
+
+  US0 "ITU G.711 alaw", --!!! 
+
+
+
+
+
+  CH0 "ITU G.711 a律", 
+
+
+
+
+
+
+
+
+  HE0 "ITU G.711 alaw"; --???
+
+G723:
+  CHK "ITU G.723.1 0123456789",
+  GAE "ITU G.723.1 ",
+
+  EN0 "ITU G.723.1 ",
+
+
+
+
+  US0 "ITU G.723.1 ", --!!! 
+
+
+
+
+
+  CH0 "ITU G.723.1 ", 
+
+
+
+
+
+
+
+
+  HE0 "ITU G.723.1 "; --???
+
+G729:
+  CHK "ITU G.729 0123456789",
+  GAE "ITU G.729 ",
+
+  EN0 "ITU G.729 ",
+
+
+
+
+  US0 "ITU G.729 ", --!!! 
+
+
+
+
+
+  CH0 "ITU G.7.729 ", 
+
+
+
+
+
+
+
+
+  HE0 "ITU G.729 "; --???
+
+AMRWB:
+  CHK "ITU G.722.2 0123456789",
+  GAE "ITU G.722.2 ",
+
+  EN0 "ITU G.722.2 ",
+
+
+
+
+  US0 "ITU G.722.2 ", --!!! 
+
+
+
+
+
+  CH0 "ITU G.722.2 ", 
+
+
+
+
+
+
+
+
+  HE0 "ITU G.722.2 "; --???
+
+USER_DOMAIN_PORT_TLS:
+  CHK "User domain port01234567890000",
+  GAE "User domain port",
+
+  EN0 "User domain port",
+
+
+
+
+  US0 "User domain port", --!!! 
+
+
+
+
+
+  CH0 "用户域端口", 
+
+
+
+
+
+
+
+
+  HE0 "User domain port"; --???
+
+USER_DOMAIN_PORT:
+  CHK "User domain port01234567890000",
+  GAE "User domain port",
+
+  EN0 "User domain port",
+
+
+
+
+  US0 "User domain port", --!!! 
+
+
+
+
+
+  CH0 "用户域端口", 
+
+
+
+
+
+
+
+
+  HE0 "User domain port"; --???
+
+CONTACT_TITLE:
+  CHK "Contacts0123456789",
+  GAE "Contacts",
+
+  EN0 "Contacts",
+
+
+
+
+  US0 "Contacts", --!!! 
+
+
+
+
+
+  CH0 "联系人", 
+
+
+
+
+
+
+
+
+  HE0 "Contacts"; --???
+
+DISPLAY_PICTURE:
+  CHK "Always display a contact picture0123456789",
+  GAE "Always display a contact picture",
+
+  EN0 "Always display a contact picture",
+
+
+
+
+  US0 "Always display a contact picture",
+
+
+
+
+
+  CH0 "始终显示联系人图片", 
+
+
+
+
+
+
+
+
+  HE0 "Always display a contact picture"; --???
+
+GUILANGUAGE_WARN_TITLE:
+--SIZECHAR 1024;
+  CHK "Warning 0123456789",
+  GAE "Warning",
+
+  EN0 "Warning",
+
+
+
+
+  US0 "Warning", --!!! 
+
+
+
+
+
+  CH0 "警告",
+
+
+
+
+
+
+
+
+  HE0 "Warning"; --???
+
+GUILANGUAGE_WARN:
+--SIZECHAR 1024;
+  CHK "Modification of the display language will be applied after relaunching the application",
+  GAE "Modification of the display language will be applied after relaunching the application",
+
+  EN0 "Modification of the display language will be applied after relaunching the application",
+
+
+
+
+  US0 "Modification of the display language will be applied after restarting the application.", --!!! 
+
+
+
+
+
+  CH0 "重启应用程序后，将适用显示语言的修改", 
+
+
+
+
+
+
+
+
+  HE0 "Modification of the display language will be applied after relaunching the application"; --???
+
+GUILANGUAGE:
+--SIZECHAR 1024;
+  CHK "Langue",
+  GAE "Language",
+
+  EN0 "Language",
+
+
+
+
+  US0 "Language",
+
+
+
+
+
+  CH0 "语言",
+
+
+
+  HU0 "Nyelv", -- KMHUN
+
+
+
+
+  HE0 "Language"; --???
+
+GUILANGUAGE_TITLE:
+--SIZECHAR 1024;
+  CHK "Langue",
+  GAE "Language",
+
+  EN0 "Language",
+
+
+
+
+  US0 "Language",
+
+
+
+
+
+  CH0 "语言",
+
+
+
+  HU0 "Nyelv", -- KMHUN
+
+
+
+
+  HE0 "Language"; --???
+
+HOT_KEY_SEARCHBAND_ENABLE:
+--SIZECHAR 1024;
+  CHK "Activate 0",
+  GAE "Activate",
+
+  EN0 "Activate",
+
+
+
+
+  US0 "Apply", --!!! 
+
+
+
+
+
+  CH0 "激活", 
+
+
+
+
+
+
+
+
+  HE0 "Activate"; --???
+
+SIP_RESULT_ERROR_TITLE:
+--SIZECHAR 1024;
+  CHK "Error",
+  GAE "Error",
+
+  EN0 "Error",
+
+
+
+
+  US0 "Error", --!!! 
+
+
+
+
+
+  CH0 "错误", 
+
+
+
+
+
+
+
+
+  HE0 "Error"; --???
+
+SIP_RESULT_ERROR:
+--SIZECHAR 1024;
+  CHK "Activate 0",
+  GAE "Ongoing call. Unable to apply SIP settings",
+
+  EN0 "Ongoing call. Unable to apply SIP settings",
+
+
+
+
+  US0 "Ongoing call. Unable to apply SIP settings.", --!!! 
+
+
+
+
+
+  CH0 "正在进行的呼叫。无法适用 SIP 设置", 
+
+
+
+
+
+
+
+
+  HE0 "Ongoing call. Unable to apply SIP settings"; --???
+
+SIP_KEEP_ALIVE_TIMEOUT:
+--SIZECHAR 1024;
+  CHK "SIP Keep Alive Timer",
+  GAE "SIP Keep Alive Timer",
+
+  EN0 "SIP Keep Alive Timer",
+
+
+
+
+  US0 "SIP Keep Alive Timer", --???
+
+
+
+
+
+  CH0 "SIP 保活定时器", 
+
+
+
+
+
+
+
+  HE0 "SIP Keep Alive Timer"; --???
+
+OPEN_DTMF_PAD:
+  CHK "Automatically open the DTMF pad while in a call 01234567890123456789012345678901",
+  GAE "Automatically open the DTMF pad while in a call",
+
+  EN0 "Automatically open the DTMF pad while in a call",
+
+
+
+
+  US0 "Automatically open the DTMF pad while in a call", --???
+
+
+
+
+
+  CH0 "呼叫时自动打开 DTMF 键盘", 
+
+
+
+
+
+
+
+  HE0 "Automatically open the DTMF pad while in a call"; --???
+
+DTMF_DIALER_TITLE:
+  CHK "DTMF dialer 012345678901234567890",
+  GAE "DTMF dialer",
+
+  EN0 "DTMF dialer",
+
+
+
+
+  US0 "DTMF dialer",
+
+
+
+
+
+  CH0 "DTMF 拨号盘", 
+
+
+
+
+
+
+
+  HE0 "DTMF dialer"; --???
+
+

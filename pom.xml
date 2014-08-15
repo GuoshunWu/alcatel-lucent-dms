@@ -1,0 +1,1268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.alcatel_lucent.dms</groupId>
+    <artifactId>dms</artifactId>
+    <version>2.16.4</version>
+    <packaging>war</packaging>
+    <name>Dictionary Management System</name>
+    <url>http://localhost:8080/dms</url>
+
+
+    <developers>
+        <developer>
+            <id>allany</id>
+            <name>Allan Yang</name>
+            <email>Allany.YANG@alcatel-lucent.com</email>
+            <roles>
+                <role>architect</role>
+                <role>developer</role>
+            </roles>
+            <timezone>+8</timezone>
+        </developer>
+
+        <developer>
+            <id>guoshunw</id>
+            <name>Guoshun Wu</name>
+            <email>Guoshun.WU@alcatel-sbell.com.cn</email>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>+8</timezone>
+        </developer>
+    </developers>
+
+    <issueManagement>
+        <system>JIRA</system>
+        <url>http://aww.rdcsbu.bsf.alcatel.fr/tools/dms</url>
+    </issueManagement>
+
+    <!--http://maven.apache.org/scm/mercurial.html-->
+    <!--<scm>-->
+    <!--<connection>scm:hg:http://</connection>-->
+    <!--<developerConnection></developerConnection>-->
+    <!--<tag>HEAD</tag>-->
+    <!--<url></url>-->
+    <!--</scm>-->
+
+    <properties>
+
+        <!-- Only unit tests are run by default. -->
+        <!--<skip.integration.tests>true</skip.integration.tests>-->
+        <!--<skip.unit.tests>false</skip.unit.tests>-->
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!--<spring.version>3.1.1.RELEASE</spring.version>-->
+        <spring.version>4.0.4.RELEASE</spring.version>
+        <hibernate.version>3.6.10.Final</hibernate.version>
+        <!--<hibernate.version>4.1.6.Final</hibernate.version>-->
+        <gmavenVersion>1.5</gmavenVersion>
+        <!--<jerseyVersion>1.13</jerseyVersion>-->
+        <jerseyVersion>1.17.1</jerseyVersion>
+        <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
+        <buildNumber>${maven.build.timestamp}</buildNumber>
+
+        <ldap.url>ldap://ldap-emea.app.alcatel-lucent.com:2791</ldap.url>
+        <ldap.url2>ldaps://ldap-emea.app.alcatel-lucent.com:2793</ldap.url2>
+
+        <ldap.dirbase>dc=internal,dc=users,dc=root</ldap.dirbase>
+        <ldap.bind>uid=reader.Web_SHA,dc=Web_SHA,dc=apps,dc=root</ldap.bind>
+        <ldap.password>Pass_123</ldap.password>
+
+
+        <!--Default console log filer -->
+        <logger.filter>WARN</logger.filter>
+
+
+        <dms.temp></dms.temp>
+
+        <dms.deliver.dir>${dms.temp}/dms/deliver</dms.deliver.dir>
+        <dms.generate.dir>${dms.temp}/dms/generate</dms.generate.dir>
+        <dms.send.dir>${dms.temp}/dms/send</dms.send.dir>
+        <dms.receive.dir>${dms.temp}/dms/receive</dms.receive.dir>
+        <dms.luceneindex.dir>${dms.temp}/dms/lucene/indexes</dms.luceneindex.dir>
+
+        <!--Use dev database as default-->
+        <db.driver>org.h2.Driver</db.driver>
+        <db.urlparam>AUTO_SERVER=TRUE;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS DMS;SCHEMA=DMS;</db.urlparam>
+        <db.url>
+            <!--jdbc:h2:tcp://localhost/dms;${db.urlparam}-->
+            jdbc:h2:~/dms;${db.urlparam}
+        </db.url>
+        <db.user>dms</db.user>
+        <db.password>alcatel123</db.password>
+        <db.house-keeping-test-sql>select CURRENT_DATE from dual</db.house-keeping-test-sql>
+        <db.dialect>org.hibernate.dialect.H2Dialect</db.dialect>
+        <!-- none, create, create-drop, update, validate -->
+        <db.hbm2ddl.auto>create</db.hbm2ddl.auto>
+        <dms.luceneindex.dir>${dms.temp}/dms/lucene/indexes/h2</dms.luceneindex.dir>
+
+        <!-- use UTF-8 for everything -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+    </properties>
+
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-framework-bom</artifactId>
+                <version>${spring.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+
+        <!--<dependency>-->
+        <!--<groupId>org.springframework</groupId>-->
+        <!--<artifactId>springloaded</artifactId>-->
+        <!--<version>1.2.0.RELEASE</version>-->
+        <!--</dependency>-->
+
+        <!--<dependency>-->
+        <!--<groupId>org.apache.ant</groupId>-->
+        <!--<artifactId>ant-compress</artifactId>-->
+        <!--<version>1.4</version>-->
+        <!--</dependency>-->
+
+        <dependency>
+            <groupId>com.carrotgarden.jwrapper</groupId>
+            <artifactId>jwrapper-7zip-jbinding</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+
+        <!--<dependency>-->
+        <!--<groupId>org.apache.ant</groupId>-->
+        <!--<artifactId>ant-compress</artifactId>-->
+        <!--<version>1.4</version>-->
+        <!--</dependency>-->
+
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>1.8.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.tukaani</groupId>
+            <artifactId>xz</artifactId>
+            <version>1.5</version>
+        </dependency>
+
+        <!--<dependency>-->
+        <!--<groupId>com.github.junrar</groupId>-->
+        <!--<artifactId>junrar</artifactId>-->
+        <!--<version>0.7</version>-->
+        <!--<exclusions>-->
+        <!--<exclusion>-->
+        <!--<groupId>commons-logging</groupId>-->
+        <!--<artifactId>commons-logging</artifactId>-->
+        <!--</exclusion>-->
+        <!--</exclusions>-->
+        <!--</dependency>-->
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>16.0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>13.0</version>
+        </dependency>
+
+        <!--<dependency>-->
+        <!--<groupId>net.sourceforge.findbugs</groupId>-->
+        <!--<artifactId>jsr305</artifactId>-->
+        <!--<version>1.3.7</version>-->
+        <!--</dependency>-->
+
+
+        <!-- for web page test -->
+
+        <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+            <version>1.4.01</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>2.39.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!--<dependency>-->
+        <!--<groupId>org.seleniumhq.selenium</groupId>-->
+        <!--<artifactId>selenium-server</artifactId>-->
+        <!--<version>2.39.0</version>-->
+        <!--</dependency>-->
+
+        <dependency>
+            <groupId>org.mozilla</groupId>
+            <artifactId>rhino</artifactId>
+            <version>1.7R4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>juli</artifactId>
+            <version>6.0.39</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-websocket</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.7.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity</artifactId>
+            <version>1.7</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+        </dependency>
+
+        <!--<dependency>-->
+        <!--<groupId>commons-pool</groupId>-->
+        <!--<artifactId>commons-pool</artifactId>-->
+        <!--<version>1.6</version>-->
+        <!--</dependency>-->
+
+        <dependency>
+            <groupId>org.springframework.ldap</groupId>
+            <artifactId>spring-ldap-core</artifactId>
+            <version>1.3.2.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.ldap</groupId>
+            <artifactId>spring-ldap-core-tiger</artifactId>
+            <version>1.3.2.RELEASE</version>
+        </dependency>
+
+        <!--<dependency>-->
+        <!--<groupId>org.springframework</groupId>-->
+        <!--<artifactId>spring-web</artifactId>-->
+        <!--</dependency>-->
+
+        <!--<dependency>-->
+        <!--<groupId>org.springframework</groupId>-->
+        <!--<artifactId>spring-jdbc</artifactId>-->
+        <!--</dependency>-->
+
+
+        <!--<dependency>-->
+        <!--<groupId>org.springframework.security</groupId>-->
+        <!--<artifactId>spring-security-core</artifactId>-->
+        <!--</dependency>-->
+
+        <!--<dependency>-->
+        <!--<groupId>org.springframework.security</groupId>-->
+        <!--<artifactId>spring-security-config</artifactId>-->
+        <!--</dependency>-->
+
+        <!--<dependency>-->
+        <!--<groupId>org.springframework.security</groupId>-->
+        <!--<artifactId>spring-security-web</artifactId>-->
+        <!--</dependency>-->
+
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-proxool</artifactId>
+            <version>${hibernate.version}</version>
+            <!--<version>4.0.0.Final</version>-->
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${hibernate.version}</version>
+
+            <exclusions>
+
+                <exclusion>
+                    <groupId>commons-collections</groupId>
+                    <artifactId>commons-collections</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>4.3.0.Final</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-oscache</artifactId>
+            <version>3.6.9.Final</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-queryparser</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-search</artifactId>
+            <version>3.4.2.Final</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+
+        <!-- This dependency is used in spring, see "spring-framework-reference page41- Using SLF4j" -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>1.7.5</version>
+        </dependency>
+
+        <!--<dependency>-->
+        <!--<groupId>log4j</groupId>-->
+        <!--<artifactId>log4j</artifactId>-->
+        <!--<version>1.2.17</version>-->
+        <!--</dependency>-->
+
+        <!--<dependency>-->
+        <!--<groupId>org.slf4j</groupId>-->
+        <!--<artifactId>log4j-over-slf4j</artifactId>-->
+        <!--<version>1.7.5</version>-->
+        <!--</dependency>-->
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+            <version>1.7.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.0.13</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>2.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.20</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.1-901.jdbc4</version>
+            <scope>runtime</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-all</artifactId>
+            <version>1.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.json-lib</groupId>
+            <artifactId>json-lib</artifactId>
+            <version>2.4</version>
+            <classifier>jdk15</classifier>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.3.167</version>
+            <scope>runtime</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>net.sourceforge.jchardet</groupId>
+            <artifactId>jchardet</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>1.6.1</version>
+        </dependency>
+
+        <!-- for xpath support -->
+        <dependency>
+            <groupId>jaxen</groupId>
+            <artifactId>jaxen</artifactId>
+            <version>1.1.6</version>
+        </dependency>
+
+        <!-- Jersey libs -->
+
+        <dependency>
+            <groupId>com.sun.jersey.contribs</groupId>
+            <artifactId>jersey-spring</artifactId>
+            <version>${jerseyVersion}</version>
+            <exclusions>
+
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-aop</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-context</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-beans</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>spring-web</artifactId>
+                    <groupId>org.springframework</groupId>
+                </exclusion>
+
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-bundle</artifactId>
+            <version>1.9</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>3.9</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>3.9</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.apache.struts</groupId>
+            <artifactId>struts2-core</artifactId>
+            <version>2.3.4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.struts</groupId>
+            <artifactId>struts2-convention-plugin</artifactId>
+            <version>2.3.4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.struts</groupId>
+            <artifactId>struts2-json-plugin</artifactId>
+            <version>2.3.4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.struts</groupId>
+            <artifactId>struts2-spring-plugin</artifactId>
+            <version>2.3.4.1</version>
+        </dependency>
+        <!--<dependency>-->
+        <!--<groupId>org.apache.struts</groupId>-->
+        <!--<artifactId>struts2-rest-plugin</artifactId>-->
+        <!--<version>2.3.4.1</version>-->
+        <!--</dependency>-->
+
+        <!--<dependency>-->
+        <!--<groupId>org.apache.struts</groupId>-->
+        <!--<artifactId>struts2-junit-plugin</artifactId>-->
+        <!--<version>2.3.4.1</version>-->
+        <!--<scope>test</scope>-->
+        <!--</dependency>-->
+
+        <!--<dependency>-->
+        <!--<groupId>com.google.javascript</groupId>-->
+        <!--<artifactId>closure-compiler</artifactId>-->
+        <!--<version>v20131014</version>-->
+        <!--</dependency>-->
+
+        <dependency>
+            <groupId>com.sun</groupId>
+            <artifactId>tools</artifactId>
+            <version>1.5.0</version>
+            <scope>system</scope>
+            <systemPath>${java.home}/../lib/tools.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <!--<version>3.1.0</version>-->
+            <version>3.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>jsp-api</artifactId>
+            <version>2.2</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+            <!--<scope>provided</scope>-->
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.gmaven.runtime</groupId>
+            <artifactId>gmaven-runtime-2.0</artifactId>
+            <version>${gmavenVersion}</version>
+
+            <exclusions>
+                <exclusion>
+                    <groupId>org.sonatype.gossip</groupId>
+                    <artifactId>gossip</artifactId>
+                </exclusion>
+
+                <exclusion>
+                    <groupId>org.apache.ant</groupId>
+                    <artifactId>ant</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!--<dependency>-->
+        <!--<groupId>org.apache.ant</groupId>-->
+        <!--<artifactId>ant</artifactId>-->
+        <!--<version>1.8.3</version>-->
+        <!--</dependency>-->
+
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+            <version>7.0.47</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>2.3.3</version>
+        </dependency>
+
+
+    </dependencies>
+
+    <build>
+        <defaultGoal>org.apache.tomcat.maven:tomcat7-maven-plugin:2.2:run</defaultGoal>
+
+        <plugins>
+
+
+            <!-- ref: http://zeroturnaround.com/software/jrebel/learn/maven/ -->
+            <plugin>
+                <groupId>org.zeroturnaround</groupId>
+                <artifactId>jrebel-maven-plugin</artifactId>
+                <version>1.1.5</version>
+                <executions>
+                    <execution>
+                        <id>generate-rebel-xml</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+                <configuration>
+                    <!--
+     If your project uses custom packaging that is not recognized
+     set this to jar or war.
+     -->
+                    <packaging>war</packaging>
+                    <classpath>
+                        <fallback>default</fallback>
+                        <resources>
+                            <resource>
+
+                            </resource>
+                        </resources>
+                    </classpath>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <encoding>UTF-8</encoding>
+                    <verbose>false</verbose>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.gmaven</groupId>
+                <artifactId>gmaven-plugin</artifactId>
+                <version>${gmavenVersion}</version>
+                <configuration>
+                    <providerSelection>1.8</providerSelection>
+                    <sourceEncoding>UTF-8</sourceEncoding>
+                    <!-- 用maven编译时需要加encoding：mvn -Dfile.encoding=UTF-8 compile -->
+                    <source/>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generateStubs</goal>
+                            <goal>compile</goal>
+                            <goal>generateTestStubs</goal>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>org.sonatype.jline</groupId>
+                        <artifactId>jline</artifactId>
+                        <version>2.5</version>
+                    </dependency>
+
+                </dependencies>
+            </plugin>
+
+            <!--<plugin>-->
+            <!--<groupId>org.codehaus.gmaven</groupId>-->
+            <!--<artifactId>groovy-maven-plugin</artifactId>-->
+            <!--<version>2.0</version>-->
+            <!--<dependencies>-->
+            <!--<dependency>-->
+            <!--<groupId>org.codehaus.groovy</groupId>-->
+            <!--<artifactId>groovy-all</artifactId>-->
+            <!--<version>2.3.3</version>-->
+            <!--</dependency>-->
+            <!--</dependencies>-->
+            <!--</plugin>-->
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.4</version>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>exploded</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- https://maven.apache.org/plugins/maven-war-plugin/war-mojo.html#warSourceDirectory -->
+                    <packagingExcludes>%regex[js/(?!(?:(?:login)?[Ee]ntry\.js|lib)).*$]</packagingExcludes>
+                    <warSourceExcludes>%regex[(js/.*\.(coffee|map|cmd|orig)$|tools/.*)]</warSourceExcludes>
+                    <useCache>true</useCache>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+
+            </plugin>
+
+            <plugin>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>8.1.5.v20120716</version>
+                <configuration>
+                    <stopKey>foo</stopKey>
+                    <stopPort>9999</stopPort>
+                    <scanIntervalSeconds>0</scanIntervalSeconds>
+
+                    <systemProperties>
+                        <systemProperty>
+                            <name>org.eclipse.jetty.server.Request.queryEncoding</name>
+                            <value>utf-8</value>
+                        </systemProperty>
+                    </systemProperties>
+
+                    <!--<connectors>-->
+                    <!--<connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">-->
+                    <!--<port>8888</port>-->
+                    <!--<maxIdleTime>60000</maxIdleTime>-->
+                    <!--</connector>-->
+                    <!--</connectors>-->
+
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>exec</goal>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>com.alcatel_lucent.dms.service.DeployAdjust</mainClass>
+                    <executable>node</executable>
+                    <arguments>
+                        <argument>src/main/webapp/tools/r.min.js</argument>
+                        <argument>-o</argument>
+                        <argument>src/main/webapp/js/app.build.js</argument>
+                        <argument>dir=${project.build.directory}/${project.build.finalName}</argument>
+                    </arguments>
+                    <systemProperties>
+                        <systemProperty>
+                            <key>main.jsp</key>
+                            <value>${project.build.directory}/${project.build.finalName}/main.jsp</value>
+                        </systemProperty>
+                        <systemProperty>
+                            <key>login.jsp</key>
+                            <value>${project.build.directory}/${project.build.finalName}/login.jsp</value>
+                        </systemProperty>
+                        <systemProperty>
+                            <key>buildNumber</key>
+                            <value>${maven.build.timestamp}</value>
+                        </systemProperty>
+                    </systemProperties>
+                </configuration>
+            </plugin>
+
+            <!--<plugin>-->
+            <!--<groupId>com.github.mcheely</groupId>-->
+            <!--<artifactId>requirejs-maven-plugin</artifactId>-->
+            <!--<version>1.0.3</version>-->
+            <!--<executions>-->
+            <!--<execution>-->
+            <!--<goals>-->
+            <!--<goal>optimize</goal>-->
+            <!--</goals>-->
+            <!--</execution>-->
+            <!--</executions>-->
+
+            <!--<configuration>-->
+            <!-- path to optimizer json config file -->
+            <!--<configFile>-->
+            <!--${basedir}/src/main/webapp/js/app.build.js-->
+            <!--</configFile>-->
+            <!-- optional path to optimizer executable -->
+            <!--<optimizerFile>-->
+            <!--${basedir}/src/main/webapp/tools/r.js-->
+            <!--</optimizerFile>-->
+            <!-- whether or not to process config with maven filters -->
+            <!--<filterConfig>true</filterConfig>-->
+            <!-- Skip requirejs optimization if true -->
+            <!--</configuration>-->
+            <!--</plugin>-->
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.17</version>
+                <executions>
+                    <execution>
+                        <id>integration-test</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>verify</id>
+                        <goals>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <uriEncoding>utf-8</uriEncoding>
+                    <url>http://localhost:8888/manager/text</url>
+                    <port>8888</port>
+                    <contextReloadable>false</contextReloadable>
+                    <path>/</path>
+                    <!--<update>true</update>-->
+                    <username>admin</username>
+                    <password>alcatel123</password>
+                    <httpsPort>8443</httpsPort>
+                    <keystoreFile>conf/.keystore</keystoreFile>
+                    <keystorePass>changeit</keystorePass>
+                    <systemProperties>
+                        <java.util.logging.config.file>conf/logging.properties</java.util.logging.config.file>
+                        <java.util.logging.SimpleFormatter.format>[%4$s] %1$tH:%1$tM:%1$tS.%1$tL %2$s - %5$s %n
+                        </java.util.logging.SimpleFormatter.format>
+                    </systemProperties>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <id>tomcat-run</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <phase>pre-integration-test</phase>
+                        <configuration>
+                            <fork>true</fork>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>tomcat-shutdown</id>
+                        <goals>
+                            <goal>shutdown</goal>
+                        </goals>
+                        <phase>post-integration-test</phase>
+                    </execution>
+                </executions>
+
+                <!--<dependencies>-->
+                <!--<dependency>-->
+                <!--<groupId>ch.qos.logback</groupId>-->
+                <!--<artifactId>logback-classic</artifactId>-->
+                <!--<version>1.0.13</version>-->
+                <!--<scope>runtime</scope>-->
+                <!--</dependency>-->
+                <!--</dependencies>-->
+            </plugin>
+
+            <plugin>
+                <inherited>false</inherited>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <configuration>
+                    <target>
+                        <echo message="Stopping test server ..."/>
+                        <sshexec host="172.24.190.236" trust="true" port="22" username="dmsadmin" password="alcatel123"
+                                 command="ls -la"/>
+                        <!--<sleep seconds="10"/>-->
+                        <!--<echo message="Copying WAR to test server ..."/>-->
+                    </target>
+                </configuration>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.ant</groupId>
+                        <artifactId>ant-jsch</artifactId>
+                        <version>1.9.2</version>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>com.jcraft</groupId>
+                        <artifactId>jsch</artifactId>
+                        <version>0.1.50</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+
+        <resources>
+            <!--
+            Warning: Do not filter files with binary content like images! This will most likely result in corrupt output.
+            If you have both text files and binary files as resources, you need to declare two mutually exclusive resource sets.
+            The first resource set defines the files to be filtered and the other resource set defines the files to copy unaltered as illustrated below.
+            -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*.xml</include>
+                    <include>**/*.properties</include>
+                    <include>**/*.js</include>
+                    <include>**/*.groovy</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>**/*.xml</exclude>
+                    <exclude>**/*.properties</exclude>
+                    <exclude>**/*.js</exclude>
+                    <exclude>**/*.groovy</exclude>
+                </excludes>
+            </resource>
+        </resources>
+
+    </build>
+
+    <profiles>
+
+        <profile>
+            <id>127.0.0.1_PostGreSQL</id>
+            <properties>
+                <db.driver>org.postgresql.Driver</db.driver>
+                <db.url>jdbc:postgresql://127.0.0.1:5432/dms</db.url>
+                <db.user>dms</db.user>
+                <db.password>alcatel123</db.password>
+                <db.house-keeping-test-sql>select CURRENT_DATE</db.house-keeping-test-sql>
+                <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
+                <db.hbm2ddl.auto>create</db.hbm2ddl.auto>
+                <dms.luceneindex.dir>${dms.temp}/dms/lucene/indexes/Local_PostGreSQL</dms.luceneindex.dir>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>MySQL199</id>
+            <properties>
+                <db.driver>com.mysql.jdbc.Driver</db.driver>
+                <db.url>
+                    jdbc:MySQL://172.24.191.199:3306/dms?characterEncoding=utf8&amp;useCursorFetch=true&amp;useUnicode=true
+                </db.url>
+                <db.user>dms</db.user>
+                <db.password>alcatel123</db.password>
+                <db.house-keeping-test-sql>select CURRENT_DATE</db.house-keeping-test-sql>
+                <db.dialect>org.hibernate.dialect.MySQL5InnoDBDialect</db.dialect>
+                <!-- none, create, create-drop, update, validate -->
+                <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
+                <dms.luceneindex.dir>${dms.temp}/dms/lucene/indexes/MySQL199</dms.luceneindex.dir>
+            </properties>
+        </profile>
+        <profile>
+            <id>qa-db</id>
+            <properties>
+                <db.driver>org.postgresql.Driver</db.driver>
+                <db.url>jdbc:postgresql://135.117.180.165:5432/dms_qa</db.url>
+                <db.user>dms</db.user>
+                <db.password>alcatel123</db.password>
+                <db.house-keeping-test-sql>select CURRENT_DATE</db.house-keeping-test-sql>
+                <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
+                <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
+                <dms.luceneindex.dir>${dms.temp}/dms/lucene/indexes/qa_db</dms.luceneindex.dir>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod-db</id>
+            <properties>
+                <db.driver>org.postgresql.Driver</db.driver>
+                <db.url>jdbc:postgresql://135.117.180.165:5432/dms_prod</db.url>
+                <!--                <db.url>jdbc:postgresql://172.24.190.236:5432/dms_prod</db.url>-->
+                <db.user>dms</db.user>
+                <db.password>alcatel123</db.password>
+                <db.house-keeping-test-sql>select CURRENT_DATE</db.house-keeping-test-sql>
+                <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
+                <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
+                <dms.luceneindex.dir>${dms.temp}/dms/lucene/indexes/prod_db</dms.luceneindex.dir>
+            </properties>
+        </profile>
+        <profile>
+            <id>local-qa3-db</id>
+            <properties>
+                <db.driver>org.postgresql.Driver</db.driver>
+                <db.url>jdbc:postgresql://172.24.190.236:5432/dms_qa3</db.url>
+                <db.user>dms</db.user>
+                <db.password>alcatel123</db.password>
+                <db.house-keeping-test-sql>select CURRENT_DATE</db.house-keeping-test-sql>
+                <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
+                <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
+                <dms.luceneindex.dir>${dms.temp}/dms/lucene/indexes/qa3_db</dms.luceneindex.dir>
+            </properties>
+        </profile>
+        <profile>
+            <id>local-qa-db</id>
+            <properties>
+                <db.driver>org.postgresql.Driver</db.driver>
+                <db.url>jdbc:postgresql://172.24.190.236:5432/dms_qa</db.url>
+                <!--<db.url>jdbc:postgresql://172.24.190.236:5432/dms_131118</db.url>-->
+                <db.user>dms</db.user>
+                <db.password>alcatel123</db.password>
+                <db.house-keeping-test-sql>select CURRENT_DATE</db.house-keeping-test-sql>
+                <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
+                <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
+                <dms.luceneindex.dir>${dms.temp}/dms/lucene/indexes/local_qa_db</dms.luceneindex.dir>
+            </properties>
+        </profile>
+        <profile>
+            <id>local-qa2-db</id>
+            <properties>
+                <db.driver>org.postgresql.Driver</db.driver>
+                <db.url>jdbc:postgresql://172.24.190.236:5432/dms_qa2</db.url>
+                <db.user>dms</db.user>
+                <db.password>alcatel123</db.password>
+                <db.house-keeping-test-sql>select CURRENT_DATE</db.house-keeping-test-sql>
+                <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
+                <db.hbm2ddl.auto>update</db.hbm2ddl.auto>
+                <dms.luceneindex.dir>${dms.temp}/dms/lucene/indexes/local_qa2_db</dms.luceneindex.dir>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>dev</id>
+            <!-- set MAVEN_OPTS="-XX:MaxPermSize=256M" -->
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <dms.temp>D:/tmp</dms.temp>
+                <httpPort>8888</httpPort>
+                <httpsPort>8443</httpsPort>
+                <logger.filter>INFO</logger.filter>
+                <buildNumber>(new Date()).getTime()</buildNumber>
+            </properties>
+
+            <build>
+                <defaultGoal>tomcat7:run</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.tomcat.maven</groupId>
+                        <artifactId>tomcat7-maven-plugin</artifactId>
+                        <configuration>
+                            <path>/dms</path>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>qa</id>
+            <properties>
+                <httpPort>8888</httpPort>
+                <httpsPort>8443</httpsPort>
+            </properties>
+            <build>
+                <defaultGoal>tomcat7:deploy</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.tomcat.maven</groupId>
+                        <artifactId>tomcat7-maven-plugin</artifactId>
+                        <configuration>
+                            <url>http://135.117.180.165:8888/manager/text</url>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+
+        </profile>
+        <profile>
+            <id>local-qa</id>
+            <properties>
+                <httpPort>8888</httpPort>
+                <httpsPort>8443</httpsPort>
+            </properties>
+            <build>
+                <defaultGoal>tomcat7:deploy</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.tomcat.maven</groupId>
+                        <artifactId>tomcat7-maven-plugin</artifactId>
+                        <configuration>
+                            <url>http://172.24.190.236:8888/manager/text</url>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+
+        </profile>
+        <profile>
+            <id>local-qa2</id>
+            <properties>
+                <httpPort>9999</httpPort>
+                <httpsPort>9443</httpsPort>
+            </properties>
+            <build>
+                <defaultGoal>tomcat7:deploy</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.tomcat.maven</groupId>
+                        <artifactId>tomcat7-maven-plugin</artifactId>
+                        <configuration>
+                            <url>http://172.24.190.236:9999/manager/text</url>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+
+        </profile>
+
+        <profile>
+            <id>temp-qa</id>
+            <properties>
+                <httpPort>7777</httpPort>
+                <httpsPort>7443</httpsPort>
+            </properties>
+            <build>
+                <defaultGoal>tomcat7:deploy</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.tomcat.maven</groupId>
+                        <artifactId>tomcat7-maven-plugin</artifactId>
+                        <configuration>
+                            <!--<url>http://135.117.177.136:7777/manager/text</url>-->
+                            <url>http://frcolv10lin237.pqa-collab.fr.alcatel-lucent.com:7777/manager/text</url>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+
+        </profile>
+
+        <profile>
+            <id>prod</id>
+            <properties>
+                <httpPort>80</httpPort>
+                <httpsPort>443</httpsPort>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.tomcat.maven</groupId>
+                        <artifactId>tomcat7-maven-plugin</artifactId>
+                        <configuration>
+                            <url>http://135.117.180.165:80/manager/text</url>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+
+        </profile>
+    </profiles>
+
+    <repositories>
+        <repository>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+
+            <id>ShanghaiRepo</id>
+            <name>Alcatel lucent repository in Shanghai</name>
+            <url>http://repository.all.alcatel-lucent.com/nexus/content/groups/reference-cache</url>
+        </repository>
+
+        <repository>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+
+            <id>GlobalRepo</id>
+            <name>Alcatel lucent repository for global</name>
+            <url>http://shrdwin014.cn.alcatel-lucent.com:8200/nexus/content/groups/reference-cache</url>
+        </repository>
+    </repositories>
+
+
+    <distributionManagement>
+
+        <repository>
+            <id>releases</id>
+            <name>Internal Releases</name>
+            <url>file://d:/test/release</url>
+        </repository>
+
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Internal Snapshots</name>
+            <url>file://d:/test/snapshot</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+</project>
