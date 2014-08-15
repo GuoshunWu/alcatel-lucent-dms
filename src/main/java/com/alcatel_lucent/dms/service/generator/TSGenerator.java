@@ -100,7 +100,6 @@ public class TSGenerator extends DictionaryGenerator {
                     source.setText(label.getKey().substring(contextName.length() + TSParser.CONTEXT_KEY_SEPARATOR.length()));
 
                     Element translation = msgElem.addElement("translation");
-                    translation.setText(label.getTranslation(langCode));
 
                     if (isReferenceFile) {
                         if (null != label.getAnnotation3() && null != (annotation3 = Util.string2Map(label.getAnnotation3()))) {
@@ -109,6 +108,7 @@ public class TSGenerator extends DictionaryGenerator {
                                 translation.addAttribute("type", annotation3.get("type"));
                             }
                         }
+                        translation.setText(label.getReference());
                     } else {
                         if (null != (lt = label.getOrigTranslation(langCode)) && null != lt.getAnnotation2()) {
                             translatorComment = Util.string2Map(lt.getAnnotation2()).get("translatorcomment");
@@ -116,6 +116,7 @@ public class TSGenerator extends DictionaryGenerator {
                         if (label.getTranslationStatus(langCode) != Translation.STATUS_TRANSLATED) {
                             translation.addAttribute("type", "unfinished");
                         }
+                        translation.setText(label.getTranslation(langCode));
                     }
                     if (!Strings.isNullOrEmpty(translatorComment)) {
                         msgElem.addElement("translatorcomment").setText(translatorComment);
