@@ -361,7 +361,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         if (null == label.getOrigTranslations()) return false;
 
         for (LabelTranslation lt : label.getOrigTranslations()) {
-            if (lt.getLanguage() == null || lt.getOrigTranslation().equals(label.getReference())) continue;
+            if (lt.getLanguage() == null || 
+            		lt.getOrigTranslation().equals(label.getReference()) 
+            		&& (lt.getStatus() == null || lt.getStatus() != Translation.STATUS_TRANSLATED)) continue;
             Translation trans = (Translation) translationMap.get(label.getReference(), lt.getLanguage().getId());
             if (null == trans) continue;
             // compare converted label translation with context translation
