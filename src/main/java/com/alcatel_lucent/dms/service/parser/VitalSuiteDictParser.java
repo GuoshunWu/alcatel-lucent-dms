@@ -39,7 +39,7 @@ public class VitalSuiteDictParser extends DictionaryParser {
     private static final Collection<String> REFERENCE_CODE = Arrays.asList("EN", "EN-EN");
     private FileFilter textFilter = new OrFileFilter(new SuffixFileFilter(Arrays.asList(".txt")), DirectoryFileFilter.INSTANCE);
 
-    private static final Pattern linePattern = Pattern.compile("^([A-Za-z0-9-\\.]+)\\s*\\{\"(.*?)\"\\}$");
+    private static final Pattern linePattern = Pattern.compile("^([A-Za-z0-9_\\.]+)\\s*\\{\"(.*?)\"\\}$");
     private static final Pattern filePattern = Pattern.compile("^((?://.*\\s*)*\\s*[a-zA-Z]{2}(?:[-_][a-zA-Z]{2})?\\s*(?://.*\\s)*)\\s*\\{([\\s\\S]*)\\}\\s*(?://.*\\s*)*$");
 
     /**

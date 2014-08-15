@@ -10,6 +10,7 @@ import com.alcatel_lucent.dms.model.Dictionary;
 import net.sf.json.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.TransformerUtils;
+import org.apache.commons.collections.map.MultiKeyMap;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
@@ -598,48 +599,6 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
     }
 
     /**
-     * Get all text objects in a context as map, indexed by reference.
-     *
-     * @param ctxId context id
-     * @return text map with reference as key
-     */
-    public Map<String, Text> getTextsAsMap(Long ctxId) {
-        return getTextAsMapForDict(ctxId, null);
-    }
-
-    private Map<String, Text> textCollectionToMap(Collection<Text> texts) {
-        Map<String, Text> result = new HashMap<String, Text>();
-        if (org.springframework.util.CollectionUtils.isEmpty(texts)) return result;
-        for (Text text : texts) {
-            result.put(text.getReference(), text);
-        }
-        return result;
-    }
-
-    public Map<String, Text> getTextAsMapForDict(Long ctxId, Dictionary dict) {
-        String hql = "from Text where context.id=:ctxId";
-        Map param = new HashMap();
-        param.put("ctxId", ctxId);
-        if (null == dict) {
-            return textCollectionToMap(dao.retrieve(hql, param));
-        }
-
-        // dict is not null
-        Map<String, Text> result = new HashMap<String, Text>();
-        hql += " and reference in :references";
-        int subListSize = 200;
-        List<String> dictReferences = new ArrayList<String>(new HashSet<String>(CollectionUtils.collect(dict.getLabels(),
-                TransformerUtils.invokerTransformer("getText"))));
-        for (int fromIndex = 0; fromIndex < dictReferences.size(); fromIndex += subListSize) {
-            int toIndex = fromIndex + subListSize;
-            if (toIndex > dictReferences.size()) toIndex = dictReferences.size();
-            param.put("references", dictReferences.subList(fromIndex, toIndex));
-            result.putAll(textCollectionToMap(dao.retrieve(hql, param)));
-        }
-        return result;
-    }
-
-    /**
      * Get all text objects of specified texts in a context as map, indexed by reference.
      *
      * @param ctxId context id
@@ -652,7 +611,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
         for (Iterator<Text> iter = texts.iterator(); iter.hasNext(); ) {
             Text text = iter.next();
             refs.add(text.getReference());
-            if (refs.size() >= 100 || !iter.hasNext()) {    // execute query every 100 texts
+            if (refs.size() >= 1000 || !iter.hasNext()) {    // execute query every 1000 texts
                 String hql = "from Text where context.id=:ctxId and reference in (:refs) order by id desc";
                 Map param = new HashMap();
                 param.put("ctxId", ctxId);
@@ -667,6 +626,33 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
         return result;
     }
     
+    /**
+     * Get all translation objects of specified texts in a context as map.
+     * @param ctxId context id
+     * @param references reference strings
+     * @return multi-key map with (reference, languageId) as key, Translation object as value 
+     */
+    public MultiKeyMap getTranslationsAsMap(Long ctxId, Collection<String> references) {
+        MultiKeyMap result = new MultiKeyMap();
+        Collection<String> refs = new ArrayList<String>();
+        for (Iterator<String> iter = references.iterator(); iter.hasNext(); ) {
+            String reference = iter.next();
+            refs.add(reference);
+            if (refs.size() >= 1000 || !iter.hasNext()) {    // execute query every 1000 texts
+                String hql = "from Translation where text.context.id=:ctxId and text.reference in (:refs) order by id desc";
+                Map param = new HashMap();
+                param.put("ctxId", ctxId);
+                param.put("refs", refs);
+                Collection<Translation> qr = dao.retrieve(hql, param);
+                for (Translation t : qr) {
+                    result.put(t.getText().getReference(), t.getLanguage().getId(), t);
+                }
+                refs.clear();
+            }
+        }
+        return result;
+    }
+
     /**
      * Get all text objects of specified transient texts in LABEL context as a map, indexed by context key
      * @param texts

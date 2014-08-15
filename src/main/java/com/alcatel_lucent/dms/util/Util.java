@@ -445,7 +445,7 @@ public class Util {
             char[] buf = new char[65536];
             while ((chars = reader.read(buf)) >= 0) {
                 for (int i = 0; i < chars; i++) {
-                    if (buf[i] < 0x20 || buf[i] > 0x7e)
+                    if (buf[i] > 0x7e)
                         return false;
                 }
             }
