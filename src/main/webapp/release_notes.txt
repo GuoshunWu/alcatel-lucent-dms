@@ -1,3 +1,9 @@
+V2.16.5
+    * Fix unicode escape issue of VitalSuite dictionary
+    * Fix parse issue of VitalSuite dictionary
+    * Fix issue of populating default context
+    * New dictionary format: TS (for Qt resource strings)
+
 V2.16.4 (Jul 18, 2014)
     * Optimize performance of previewing dictionary
     * Fix charset issue of Text properties dictionary
