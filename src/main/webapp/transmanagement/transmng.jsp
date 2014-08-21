@@ -34,8 +34,11 @@
                                     </option>
                                 </select>
                                 <button id="transSearchAction"></button>
+                                &nbsp;&nbsp;&nbsp;
+                                <button id="transHistories" title="<s:text name="transmng.translation.history"/>"></button>
                             </span>
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </td>
+                        <td style="width: 25px">
                         </td>
                     </tr>
                     <tr>
@@ -54,7 +57,11 @@
                             </div>
                         </td>
                         </td>
-                        <td><a id="exportExcel" href="#"><img src="images/excel.gif"/><s:text name="export"/></a></td>
+                        <td>
+                            <a id="exportExcel" href="Javascript:void(0);">
+                                <img src="images/excel.gif"/> <s:text name="export"/>
+                            </a>
+                        </td>
                         <td>
                             <a style="display: none" id="exportPDF" href="#">PDF
                                 <form id="exportForm" method="post" action="trans/export-translation-report">
@@ -71,11 +78,7 @@
         </tr>
         <tr>
             <td valign="top" align="center" class="transGrid_parent">
-                <table id="transGrid">
-                    <tr>
-                        <td></td>
-                    </tr>
-                </table>
+                <table id="transGrid"></table>
                 <div id="transPager"/>
             </td>
         </tr>
@@ -89,7 +92,7 @@
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             <button id="exportTranslation"><s:text name="button.exporttranslation"/></button>
                         </td>
-                        <td  style="width: 170px">
+                        <td style="width: 170px">
                             <span id="importTranslation"></span>
                         </td>
                         <td align="left">

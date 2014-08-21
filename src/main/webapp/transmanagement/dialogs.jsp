@@ -12,7 +12,7 @@
 
                         <td><s:text name="transmng.dialogs.transtask.secondaryref"/></td>
                         <td>
-                            <select id="translationTaskSecondaryReference" style="width: 300px" />
+                            <select id="translationTaskSecondaryReference" style="width: 300px"/>
                         </td>
                     </tr>
                 </table>
@@ -160,6 +160,30 @@
                     </tr>
                 </table>
                 <div id="transMatchTextGridPager"/>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="transHistoriesDialog" title="<s:text name="transmng.translation.history"/>">
+    <table border="0" width="100%">
+        <tr>
+            <td>
+                <table width="100%" id="transHistoriesGrid">
+                </table>
+                <div id="transHistoriesDialogSearchToolBar">
+                    <table width="100%">
+                        <tr>
+                            <td align="center" tabindex="1">
+                                Operation time from
+                                <input id="operationTimeBegin" style="text-align: center" />
+                                to
+                                <input id="operationTimeEnd" style="text-align: center" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div id="transHistoriesGridPager"/>
             </td>
         </tr>
     </table>

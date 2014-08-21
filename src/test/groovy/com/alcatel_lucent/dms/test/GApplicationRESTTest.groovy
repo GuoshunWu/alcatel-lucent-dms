@@ -1,12 +1,16 @@
 package com.alcatel_lucent.dms.test
 
+import com.alcatel_lucent.dms.config.AppConfig
+import com.alcatel_lucent.dms.rest.AppTranslationHistoryREST
 import org.junit.BeforeClass
 import org.junit.Test
-import com.alcatel_lucent.dms.model.ProductBase
-import com.alcatel_lucent.dms.model.ApplicationBase
-import com.alcatel_lucent.dms.model.Application
-import com.alcatel_lucent.dms.rest.ApplicationREST
-import org.junit.Ignore
+import org.junit.runner.RunWith
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
+import org.springframework.test.context.transaction.TransactionConfiguration
+import org.springframework.test.context.web.WebAppConfiguration
+import org.springframework.transaction.annotation.Transactional
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,10 +19,18 @@ import org.junit.Ignore
  * Time: 下午10:03
  * To change this template use File | Settings | File Templates.
  */
-@Ignore
-class GApplicationRESTTest {
+//@Ignore
+@RunWith(SpringJUnit4ClassRunner.class)
+@WebAppConfiguration()
+@ContextConfiguration(classes = [AppConfig])
 
-    ApplicationREST appRest=new ApplicationREST()
+@Transactional //Important, or the transaction control will be invalid
+@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
+class RESTTest {
+
+
+    @Autowired
+    private AppTranslationHistoryREST appTransHistoryREST
 
     @BeforeClass
     static void setUpBeforeClass() throws Exception {
@@ -26,10 +38,7 @@ class GApplicationRESTTest {
     }
 
     @Test
-    void testRetrieveAllProductByProductBaseId(){
-        ProductBase productBase=new ProductBase(id: 1,name: 'ISC')
-        ApplicationBase appBase=new ApplicationBase(productBase: productBase,name: "TestApp1")
-        Application app=new Application(base: appBase,version: 1,dictionaries: [new com.alcatel_lucent.dms.model.Dictionary()]);
+    void testTranslationHistories(){
 
     }
 }
