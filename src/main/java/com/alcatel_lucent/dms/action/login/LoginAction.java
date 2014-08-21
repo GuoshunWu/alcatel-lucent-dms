@@ -98,7 +98,6 @@ public class LoginAction extends BaseAction implements SessionAware {
             log.debug("user: " + user);
             log.debug("redirect to " + getLocation());
 
-
 //          Tomcat will create new session id if there is no JSESSIONID cookie when https jump to http
             HttpServletResponse response = ServletActionContext.getResponse();
             SessionCookieConfig scc = ServletActionContext.getServletContext().getSessionCookieConfig();

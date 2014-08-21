@@ -289,10 +289,13 @@ define [
     autoOpen: false, width: 1020, height: 'auto', modal: true
     open: ()->
       params = $(@).data "params"
-      $('#transHistoriesGrid').setCaption(params.caption).setGridParam("postData":{
+      grid = $('#transHistoriesGrid')
+      grid.setCaption(params.caption).setGridParam("postData":{
         appId: params.id, page: 1
         from: $('#operationTimeBegin').val(), to: $('#operationTimeEnd').val()
-      }).trigger "reloadGrid"
+      })
+      sgrid = grid[0]
+      sgrid.clearToolbar()
 
     close: ()->
     buttons: [

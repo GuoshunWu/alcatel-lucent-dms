@@ -2,6 +2,8 @@ package com.alcatel_lucent.dms.rest;
 
 import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.TranslationHistory;
+import com.google.common.base.Strings;
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.intellij.lang.annotations.Language;
 import org.springframework.stereotype.Component;
@@ -52,7 +54,6 @@ public class AppTranslationHistoryREST extends BaseREST {
         @Language("HQL") String countHql = "select count(*) " + baseSQL;
         Map<String, Object> param = new HashMap();
         param.put("appId", appId);
-        //
 
         Map<String, String> filters = getGridFilters(requestMap);
         int i = 0;
@@ -80,12 +81,12 @@ public class AppTranslationHistoryREST extends BaseREST {
 
         String from = requestMap.get("from");
         String to = requestMap.get("to");
-        if (null != from && null != to) {
+        if (!Strings.isNullOrEmpty(from) && !Strings.isNullOrEmpty(to)) {
             hqlWhere += " and h.operationTime >=" + ":p" + i;
             param.put("p" + i, dFmt.parse(from));
             i++;
             hqlWhere += " and h.operationTime <:p" + i;
-            param.put("p" + i, dFmt.parse(to));
+            param.put("p" + i, DateUtils.addDays(dFmt.parse(to), 1));
         }
 
         hql += hqlWhere;

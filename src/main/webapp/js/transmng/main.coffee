@@ -126,7 +126,7 @@ define [
 
       $('#transHistoriesDialog').data(
         "params", id: selVer.val(),
-        "caption": "Translation histories in Application #{nodeInfo.text} #{selVer.val()}"
+        "caption": "Translation histories in Application #{nodeInfo.text} #{$("option:selected", selVer).text()}"
       ).dialog 'open'
     ).height(20).width(20)
 

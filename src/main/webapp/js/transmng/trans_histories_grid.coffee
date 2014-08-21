@@ -98,7 +98,9 @@ define [
   #init toolbar for the grid
   $("#operationTimeBegin, #operationTimeEnd").datepicker(
     autoOpen:false, dateFormat: "yy-mm-dd"
-  ).prop("readonly", true).width(80).change(()->
+  )
+#  .prop("readonly", false)
+  .width(80).change(()->
     grid.setGridParam(
       postData: {from: $('#operationTimeBegin').val(), to: $('#operationTimeEnd').val()}
     ).trigger 'reloadGrid'
