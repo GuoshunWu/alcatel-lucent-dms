@@ -3,7 +3,7 @@ define ['jqgrid', 'i18n!nls/appmng', 'dms-urls', 'dms-util'],($, i18n, urls, uti
 #  console?.log "module appmng/application_grid loading."
 
   appGrid = $('#applicationGridList').jqGrid(
-    datatype: 'local'
+    datatype: 'local', mtype: 'post', url: urls.apps
     editurl: "app/create-or-add-application"
     cellurl: 'app/change-application-version'
     cellactionurl: 'app/add-application'
@@ -61,6 +61,6 @@ define ['jqgrid', 'i18n!nls/appmng', 'dms-urls', 'dms-util'],($, i18n, urls, uti
   productChanged: (param)->
     appGrid.setCaption "Applications for Product #{param.base.text} version #{param.product.version}"
     postData = {prod: param.product.id, format: 'grid', prop: 'id,name,version,dictNum'}
-    appGrid.setGridParam(url: urls.apps, postData: postData).trigger("reloadGrid")
+    appGrid.setGridParam(postData: postData).trigger("reloadGrid")
 
 

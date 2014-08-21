@@ -38,6 +38,7 @@ define (require)->
     process_dict: getURL('process-dict', 'app/')
     download_app_dict: getURL('download-app-dict', 'app/')
     capitalize: getURL('capitalize', 'app/')
+
   label:
     del: getURL('delete-label', 'app/')
     create: getURL('add-label', 'app/')
@@ -97,6 +98,7 @@ define (require)->
 
   translations: getURL('luceneTranslations', 'rest/')
   translation_histories: getURL('translationHistory', 'rest/')
+  app_translation_histories: getURL('appTranslationHistory', 'rest/')
   users: getURL('users', 'rest/')
   ldapuser: getURL('users/ldapUser', 'rest/')
 

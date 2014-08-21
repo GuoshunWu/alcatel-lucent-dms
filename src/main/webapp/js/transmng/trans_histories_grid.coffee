@@ -8,37 +8,44 @@ define [
 ], ($, msgbox, i18n, c18n, util, urls)->
 
   lastEditedCell = null
+  gridId = 'transHistoriesGrid'
+  hGridID = "##{gridId}"
+  pagerId = "##{gridId}Pager"
 
-  grid = $("#transSearchTextGrid").jqGrid(
-    mtype: 'post', datatype: 'local', url: urls.labels
-    width: 'auto', height: 300
+  grid = $("#{hGridID}").jqGrid(
+    mtype: 'post', datatype: 'local', url: urls.app_translation_histories
+    width: 'auto', height: 460
     rownumbers: true
-    pager: '#transSearchTextGridPager', rowNum: 20, rowList: [20, 50, 100, 200]
+    pager: pagerId, rowNum: 20, rowList: [20, 50, 100, 500]
     viewrecords: true, gridview: true, multiselect: false
     cellEdit: true, cellurl: urls.trans.update_status
     postData: {
       format: 'grid',
-      prop : 'app.name,dictionary.name,key,maxLength,context.name,reference,ct.translation,ct.status,ct.id'
+      prop : 'historyLabel.dictionary.name, historyLabel.key, parent.text.context.name , parent.text.reference, operationTime, operationType, operator.name, translation, status, memo'
     }
-    caption: 'result'
-    colNames: ['Application','Dictionary','Label', 'Max Length', 'Context', 'Reference language', 'Translation', 'Status','TransId']
+    toolbar: [true, 'top']
+    sortorder: 'desc'
+    colNames: ['Dictionary','Label', 'Context', 'Reference', 'Operation Time', 'Operation Type','Operator', 'Translation', 'Status', 'Memo']
     colModel: [
-      {name: 'app', index: 'app.name', width: 50, editable: false, stype: 'select', align: 'left', frozen: true}
-      {name: 'dict', index: 'dictionary.base.name', width: 150, editable: false, align: 'left', frozen: true, search: false}
-      {name: 'key', index: 'key', width: 150, editable: false, stype: 'select', align: 'left', frozen: true}
-      {name: 'maxlen', index: 'maxLength', width: 70, editable: false, align: 'right', frozen: true, search: false}
-      {name: 'context', index: 'context.name', width: 80, align: 'left', frozen: true, search: false}
-      {name: 'reference', index: 'reference', width: 160, align: 'left', frozen: true, search: false}
-      {name: 'translation', index: 'ct.translation', width: 160, align: 'left', edittype:'textarea', editable: true, classes: 'editable-column', search: false}
-      {name: 'transStatus', index: 'ct.status', width: 100, align: 'left', editable: true,search: true, classes: 'editable-column',
-      edittype: 'select', editoptions: {value: "0:#{i18n.trans.nottranslated};1:#{i18n.trans.inprogress};2:#{i18n.trans.translated}"},
-      formatter: 'select',
+      {name: 'dict', index: 'l.dictionary.base.name', width: 110, editable: false, align: 'left', frozen: true, search: true}
+      {name: 'key', index: 'l.key', width: 155, editable: false, align: 'left', frozen: true, search: true}
+      {name: 'context', index: 'h.parent.text.context.name', width: 70, align: 'left', frozen: true, search: true
+      stype: 'select', searchoptions:value: ":All;#{c18n.transcontext}"
+      }
+      {name: 'reference', index: 'h.parent.text.reference', width: 110, align: 'left', frozen: true, search: true}
+      {name: 'operationTime', index: 'h.operationTime', width: 125, editable: false, align: 'left', search: false}
+      {name: 'operationType', index: 'h.operationType', width: 60, editable: false, align: 'left', formatter: 'select',
+      stype: 'select', searchoptions: {value:":#{c18n.all};#{c18n.transoptype}"}, editoptions:{value: c18n.transoptype}}
+      {name: 'operator.name', index: 'h.operator.name', width: 80, editable: true, align: 'left'}
+      {name: 'translation', index: 'h.translation', width: 110, align: 'left'}
+      {name: 'status', index: 'h.status', width: 90, formatter: 'select', editoptions:{value: c18n.translation.values}, align: 'left'
       stype: 'select', searchoptions: {value: ":#{c18n.all};0:#{i18n.trans.nottranslated};1:#{i18n.trans.inprogress};2:#{i18n.trans.translated}"}
       }
-      {name: 'transId', index: 'ct.id', width: 150, align: 'left', hidden:true, search: false}
+      {name: 'memo', index: 'h.memo', width: 70, editable: true, align: 'left', hidden:true}
     ]
     afterEditCell: (rowid, cellname, val, iRow, iCol)->
-      lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
+      lastEditedCell = {iRow: iRow, iCol: iCol, name: cellname, val: val}
+
 
     beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
 #      console?.log "rowid=#{rowid}, cellname=#{cellname}, value=#{value}, iRow=#{iRow}, iCol=#{iCol}"
@@ -84,7 +91,23 @@ define [
       [true, json.message]
   )
   .setGridParam('datatype':'json')
-  .navGrid('#transSearchTextGridPager', {edit: false, add: false, del: false, search: false, view: false})
+  .navGrid(pagerId, {edit: false, add: false, del: false, search: false, view: false})
+  .filterToolbar {stringResult: true, searchOnEnter: false}
+
+
+  #init toolbar for the grid
+  $("#operationTimeBegin, #operationTimeEnd").datepicker(
+    autoOpen:false, dateFormat: "yy-mm-dd"
+  ).prop("readonly", true).width(80).change(()->
+    grid.setGridParam(
+      postData: {from: $('#operationTimeBegin').val(), to: $('#operationTimeEnd').val()}
+    ).trigger 'reloadGrid'
+  )
+
+  $("#operationTimeBegin").datepicker("setDate", "-7d")
+  $("#operationTimeEnd").datepicker("setDate", "+0d")
+
+  $("#transHistoriesDialogSearchToolBar").appendTo("#t_#{gridId}")
 
   saveLastEditedCell: ()->
     return unless lastEditedCell

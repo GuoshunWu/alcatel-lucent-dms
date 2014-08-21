@@ -86,25 +86,49 @@ define [
 
       nodeInfo = util.getProductTreeInfo()
 
-      if -1 == nodeInfo.parent
+      if not nodeInfo or -1 == nodeInfo.parent
         $.msgBox 'Please select product or application.'
         return
 
+      typeText = if 'prod' == nodeInfo.type then 'Product' else 'Application'
       unless selVer.val()
-        typeText = if 'prod' == nodeInfo.type then 'Product' else 'Application'
+
         $.msgBox "#{typeText.capitalize()} \"#{nodeInfo.text}\" has no version."
         return
+
+
+
       dialogs.showSearchResult(
           text: $('#transSearchText', '#transmng').val()
           version:
             id: selVer.val()
             text: $("option:selected", selVer).text()
           language:
-            id: selLang.val()
+            id: if selLang.val() then selLang.val() else "0"
             text: $("option:selected", selLang).text()
         )
     ).height(20).width(20).position(my: 'left center', at: 'right center', of: '#transSearchTextLanguage')
 
+    transHistoriesBtn = $("#transHistories", "#transmng").button(text:false, icons:{
+      primary: "ui-icon-bookmark"}).click(()=>
+      selVer = $('#selVersion', '#transmng')
+      nodeInfo = util.getProductTreeInfo()
+
+      if not nodeInfo or -1 == nodeInfo.parent or nodeInfo.type != 'app'
+        $.msgBox 'Please select application.'
+        return
+
+      unless selVer.val()
+        $.msgBox "Application \"#{nodeInfo.text}\" has no version."
+        return
+
+      # show translation histories dialog
+
+      $('#transHistoriesDialog').data(
+        "params", id: selVer.val(),
+        "caption": "Translation histories in Application #{nodeInfo.text} #{selVer.val()}"
+      ).dialog 'open'
+    ).height(20).width(20)
 
     $('#transSearchText', '#transmng').keydown (e)=>
       return true if e.which != 13

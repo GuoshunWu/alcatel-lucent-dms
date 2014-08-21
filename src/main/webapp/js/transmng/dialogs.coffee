@@ -10,7 +10,10 @@ define [
   'transmng/trans_searchtext_grid'
   'transmng/trans_matchtext_grid'
   'transmng/translation_history_grid_detail_view'
-], ($, i18n, c18n, util, urls, grid, detailgrid, searchgrid, matchgrid, historygrid)->
+
+  'transmng/trans_histories_grid'
+
+], ($, i18n, c18n, util, urls, grid, detailgrid, searchgrid, matchgrid, historygrid, historiesGrid)->
   transGrid = grid
   refreshGrid = (languageTrigger = false, grid = transGrid)->
     nodeInfo=util.getProductTreeInfo()
@@ -251,23 +254,26 @@ define [
     open: ()->
       params = $(@).data 'params'
       transSearchGrid =  $("#transSearchTextGrid")
-      node=util.getProductTreeInfo()
-      typeText = if 'prod' == node.type then 'product' else 'application'
+      node = util.getProductTreeInfo()
+
+      caption = i18n.searchtext.caption.format(
+        params.text,
+        if 'prod' == node.type then 'product' else 'application',
+        unless -1 == node.parent then node.text else $('#versionTypeLabel').text(),
+        params.version.text,
+        params.language.text)
 
       postData = transSearchGrid.getGridParam('postData')
 
-      postData.format = 'grid'
       postData.text = params.text
       postData.language = params.language.id
-      postData.prop = 'app.name,dictionary.name,key,maxLength,context.name,reference,ct.translation,ct.status,ct.id'
-
-      delete postData.app
-      delete postData.prod
-
       postData[node.type] = params.version.id
-      name = unless -1 == node.parent then node.text else $('#versionTypeLabel').text()
-      transSearchGrid.setCaption(i18n.searchtext.caption.format params.text, typeText, name, params.version.text, params.language.text)
-        .setGridParam(url: urls.labels).trigger 'reloadGrid'
+
+#      console.log("postData=", postData)
+      transSearchGrid.setGridParam page: 1
+
+      transSearchGrid.setCaption(caption).trigger 'reloadGrid'
+
     close: ()->
       searchgrid.saveLastEditedCell()
     buttons: [
@@ -278,6 +284,24 @@ define [
   )
 
   showSearchResult = (params)->transSearchText.data('params', params).dialog 'open'
+
+  transHistoriesDialog = $('#transHistoriesDialog').dialog(
+    autoOpen: false, width: 1020, height: 'auto', modal: true
+    open: ()->
+      params = $(@).data "params"
+      $('#transHistoriesGrid').setCaption(params.caption).setGridParam("postData":{
+        appId: params.id, page: 1
+        from: $('#operationTimeBegin').val(), to: $('#operationTimeEnd').val()
+      }).trigger "reloadGrid"
+
+    close: ()->
+    buttons: [
+      {text: c18n.close, click: ()->
+        $(@).dialog 'close'
+      }
+    ]
+
+  )
 
   transMatchText = $('#transmngMatchTextDialog').dialog(
     autoOpen: false
@@ -347,16 +371,5 @@ define [
   languageFilterDialog: languageFilterDialog,
   transDetailDialog: transDetailDialog
   exportTranslationDialog: exportTranslationDialog
-
   refreshGrid: refreshGrid
-#  showTransDetailDialog: (param)->
-#    #    refresh dialog
-#    $('#dictionaryName', transDetailDialog).html param.dict.name
-#    $('#detailLanguageSwitcher', transDetailDialog).empty().append (util.json2Options param.languages, param.language.id, 'name')
-#
-#    map = 'N': '0', 'I': '1', 'T': '2'
-#    status = param.language.name.split('.')[1]
-#
-#    transDetailDialog.data('param', {dict: param.dict, searchStatus: map[status]}, transsrc: '').dialog "open"
-
   showSearchResult: showSearchResult

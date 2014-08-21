@@ -27,16 +27,16 @@ define [
     postData.labelId = labelId
     postData.prop = 'reference, translation, score'
 
-    grid.setGridParam(url: urls.translations, page: 1).trigger 'reloadGrid'
+    grid.setGridParam(page: 1).trigger 'reloadGrid'
 
   transDetailGrid = $("#transDetailGridList").jqGrid(
-    mtype: 'POST', postData: {}, editurl: "", datatype: 'local'
+    mtype: 'POST', postData: {}, editurl: "", datatype: 'local', url: urls.translations
     width: 'auto', height: 200, shrinkToFit: false
     rownumbers: true
     pager: '#transDetailsPager', rowNum: 100, rowList: [20,50,100,200,500]
     viewrecords: true, gridview: true, multiselect: true
     cellEdit: true, cellurl: urls.trans.update_status, ajaxCellOptions: {async: false}
-    colNames: ['Label', 'Max Len.', 'Context', 'Reference language', 'Translation', 'Status','TransId', 'Trans.Src', 'Last updated','Match','History']
+    colNames: ['Label', 'Max Len.', 'Context', 'Reference', 'Translation', 'Status','TransId', 'Trans.Src', 'Last updated','Match','History']
     colModel: [
       {name: 'key', index: 'key', width: 120, editable: false, stype: 'select', align: 'left', frozen: true}
       {name: 'maxlen', index: 'maxLength', width: 60, editable: false, align: 'right', frozen: true, search: false}

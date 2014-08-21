@@ -1,5 +1,6 @@
 package com.alcatel_lucent.dms.model;
 
+import javax.persistence.Transient;
 import java.sql.Timestamp;
 
 @SuppressWarnings("serial")
@@ -24,7 +25,18 @@ public class TranslationHistory extends BaseEntity {
 	private User operator;
 	private String memo;
 
-	public Translation getParent() {
+    private Label historyLabel;
+
+    @Transient
+    public Label getHistoryLabel() {
+        return historyLabel;
+    }
+
+    public void setHistoryLabel(Label historyLabel) {
+        this.historyLabel = historyLabel;
+    }
+
+    public Translation getParent() {
 		return parent;
 	}
 	public void setParent(Translation parent) {
