@@ -5,24 +5,11 @@ import com.alcatel_lucent.dms.service.DictionaryService;
 import com.alcatel_lucent.dms.service.TranslationService;
 import com.alcatel_lucent.dms.util.ObjectComparator;
 import com.google.common.base.Strings;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.PredicateUtils;
 import org.apache.commons.collections.comparators.ComparatorChain;
-import org.apache.commons.lang.NotImplementedException;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.lucene.analysis.StopAnalyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
-import org.apache.lucene.util.Version;
-import org.hibernate.annotations.OrderBy;
-import org.hibernate.search.FullTextQuery;
-import org.hibernate.search.FullTextSession;
-import org.hibernate.search.Search;
-import org.hibernate.search.query.dsl.BooleanJunction;
-import org.hibernate.search.query.dsl.QueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,7 +118,7 @@ public class LabelLuceneREST extends BaseREST {
             } else if (prodId != null) {
                 keywords.put("dictionary.applications.products.id", prodId);
             }
-            float minimumSimilarity = fuzzy ?  0.8f :0.99f;
+            float minimumSimilarity = fuzzy ? 0.8f : 0.99f;
             if (StringUtils.isNotEmpty(text)) {
                 fuzzyKeywords.put("reference", text);
             }
@@ -166,7 +153,7 @@ public class LabelLuceneREST extends BaseREST {
             labels = (text == null && dictId != null) ?
                     new ArrayList<Label>(translationService.getLabelsWithTranslation(dictId, langId)) :
                     new ArrayList<Label>(translationService.searchLabelsWithTranslation(prodId, appId, dictId, langId, text));
-            Collections.sort((ArrayList<Label>) labels, orders2Comparator(orders, sord));
+            Collections.sort((ArrayList<Label>) labels, orders2Comparator(orders, sord, false));
 
             Map<String, String> filters = getGridFilters(requestMap);
             if (filters != null) {    // filter by status
@@ -254,7 +241,7 @@ public class LabelLuceneREST extends BaseREST {
         for (String order : orders) {
             String[] idxOrder = order.split("\\s+");
             sidx = idxOrder[0];
-            if ("reference".equals(sidx)) sidx += "_forSort";
+            if ("reference".equals(sidx) ) sidx += "_forSort";
             String tmpOrd = idxOrder.length > 1 ? idxOrder[1] : sord;
             sortFields.add(new SortField(sidx, SortField.STRING, tmpOrd.equalsIgnoreCase("asc")));
         }
@@ -262,12 +249,15 @@ public class LabelLuceneREST extends BaseREST {
     }
 
     private ComparatorChain orders2Comparator(String[] orders, String sord) {
+        return orders2Comparator(orders, sord, true);
+    }
+    private ComparatorChain orders2Comparator(String[] orders, String sord, boolean isLuceneOrder) {
         ComparatorChain comparator = new ComparatorChain();
         String sidx;
         for (String order : orders) {
             String[] idxOrder = order.split("\\s+");
             sidx = idxOrder[0];
-            if ("reference".equals(sidx)) sidx += "_forSort";
+            if ("reference".equals(sidx) && isLuceneOrder) sidx += "_forSort";
             String tmpOrd = idxOrder.length > 1 ? idxOrder[1] : sord;
             comparator.addComparator(new ObjectComparator(sidx, tmpOrd));
         }
