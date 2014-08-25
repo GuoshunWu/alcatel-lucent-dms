@@ -81,10 +81,12 @@ public class AppTranslationHistoryREST extends BaseREST {
 
         String from = requestMap.get("from");
         String to = requestMap.get("to");
-        if (!Strings.isNullOrEmpty(from) && !Strings.isNullOrEmpty(to)) {
+        if (!Strings.isNullOrEmpty(from) ) {
             hqlWhere += " and h.operationTime >=" + ":p" + i;
             param.put("p" + i, dFmt.parse(from));
             i++;
+        }
+        if(!Strings.isNullOrEmpty(to)){
             hqlWhere += " and h.operationTime <:p" + i;
             param.put("p" + i, DateUtils.addDays(dFmt.parse(to), 1));
         }
