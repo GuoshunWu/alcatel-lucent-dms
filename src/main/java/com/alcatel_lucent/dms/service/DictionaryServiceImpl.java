@@ -1400,6 +1400,27 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             label.setText(textMap.get(label.getReference()));
         }
     }
+    
+    public void updateLabelContextWithTranslations(Context context, Label label) {
+    	label.setContext(context);
+        Collection<Text> texts = new ArrayList<Text>();
+    	Text text = new Text();
+    	text.setRefLabel(label);
+    	text.setReference(label.getReference());
+    	for (DictionaryLanguage dl : label.getDictionary().getDictLanguages()) {
+        	if (dl.isReference()) continue;
+    		Translation translation = label.getTranslationObject(dl);
+    		Translation trans = new Translation();
+    		trans.setTranslation(translation.getTranslation());
+    		trans.setLanguage(dl.getLanguage());
+    		trans.setStatus(translation.getStatus());
+    		trans.setTranslationType(translation.getTranslationType());
+    		text.addTranslation(trans);
+    	}
+    	texts.add(text);
+        Map<String, Text> textMap = textService.updateTranslations(context.getId(), texts, Constants.ImportingMode.TRANSLATION, TranslationHistory.TRANS_OPER_NEW);
+        label.setText(textMap.get(label.getReference()));
+    }
 
     public void deleteLabels(Collection<Long> labelIds) {
         for (Long id : labelIds) {

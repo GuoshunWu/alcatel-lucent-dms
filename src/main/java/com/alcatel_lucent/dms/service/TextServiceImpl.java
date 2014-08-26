@@ -3,6 +3,7 @@ package com.alcatel_lucent.dms.service;
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.Constants;
+import com.alcatel_lucent.dms.Constants.ImportingMode;
 import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
@@ -789,57 +790,40 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
             if (!gmo.isReplaced()) continue;
             translation = gmo.getProcessedString(translation);
         }
-
-        if (confirmAll != null && confirmAll) {    // confirm to update translation for all reference
-            trans.setTranslation(translation);
-            trans.setTranslationType(Translation.TYPE_MANUAL);
-            trans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
-            historyService.addTranslationHistory(trans, label, TranslationHistory.TRANS_OPER_INPUT, null);
-        } else if (confirmAll != null && !confirmAll) {
-            // change context to [LABEL] first
-            Context context = getContextByExpressionForLabel("[LABEL-" + label.getKey() + "]", label.getDictionary().getId());
-            Collection<Label> labels = new ArrayList<Label>();
-            labels.add(label);
-            dictionaryService.updateLabelContext(context, labels);
-
-            Text text = getText(context.getId(), label.getReference());
-            Translation newTrans = text.getTranslation(trans.getLanguage().getId());
-            if (newTrans == null) {
-                newTrans = new Translation();
-                newTrans.setLanguage(trans.getLanguage());
-                newTrans.setTranslation(translation);
-                newTrans.setStatus(trans.getStatus());
-                newTrans.setTranslationType(Translation.TYPE_MANUAL);
-                newTrans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
-                newTrans = addTranslation(text, newTrans);
-            } else {
-                newTrans.setTranslation(translation);
-                newTrans.setTranslationType(Translation.TYPE_MANUAL);
-                newTrans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
-            }
-            historyService.addTranslationHistory(newTrans, label, TranslationHistory.TRANS_OPER_INPUT, null);
-        } else {    // no confirm
+        
+        if ((confirmAll == null || !confirmAll) && 
+        		!label.getContext().getName().equals(Context.DICT) &&
+        		!label.getContext().getName().equals(Context.LABEL)) {	// check if the translation is shared with other dictionary
             Dictionary dict = label.getDictionary();
             String hql = "select distinct d from Dictionary d join d.labels l join d.dictLanguages dl" +
-                    " where dl.language.id=:langId and l.text.id=:textId and l.context.name<>:exclusion and d.id<>:dictId";
+                    " where dl.language.id=:langId and l.text.id=:textId and l.context.name<>:exclusion and d.base.id<>:dictBaseId";
             Map param = new HashMap();
             param.put("langId", trans.getLanguage().getId());
             param.put("textId", label.getText().getId());
             param.put("exclusion", Context.EXCLUSION);
-            param.put("dictId", dict.getId());
+            param.put("dictBaseId", dict.getBase().getId());
             Collection<Dictionary> dictList = dao.retrieve(hql, param);
             for (Dictionary otherDict : dictList) {
                 result.add(otherDict.getName());
             }
-            if (result.isEmpty()) {    // no confirmation needed, update translation directly
-                trans.setTranslation(translation);
-                trans.setTranslationType(Translation.TYPE_MANUAL);
-                trans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
-                historyService.addTranslationHistory(trans, label, TranslationHistory.TRANS_OPER_INPUT, null);
-            } else {
-                return result;
-            }
         }
+        
+        if (!result.isEmpty() && confirmAll == null) {	// no confirm
+        	return result;
+        }
+        
+        if (confirmAll != null && !confirmAll && !result.isEmpty()) {	// change context to [LABEL] first
+            Context context = getContextByExpressionForLabel("[LABEL-" + label.getKey() + "]", label.getDictionary().getId());
+            dictionaryService.updateLabelContextWithTranslations(context, label);
+            trans = label.getText().getTranslation(langId);
+        }
+
+        // update translation
+        trans.setTranslation(translation);
+        trans.setTranslationType(Translation.TYPE_MANUAL);
+        trans.setLastUpdateTime(new Timestamp(System.currentTimeMillis()));
+        historyService.addTranslationHistory(trans, label, TranslationHistory.TRANS_OPER_INPUT, null);
+
         // set needTranslation to true if translation text is manually updated
         if (label.getOrigTranslations() != null) {
             for (LabelTranslation lt : label.getOrigTranslations()) {

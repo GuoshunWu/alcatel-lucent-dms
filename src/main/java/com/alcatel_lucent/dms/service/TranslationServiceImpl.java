@@ -37,7 +37,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 
     @Autowired
     private LanguageService languageService;
-
+    
     @Autowired
     private TextService textService;
 
@@ -865,6 +865,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
             createCell(headRow, 9, "Translation Source", null);
             createCell(headRow, 10, "Last Updated", null);
             createCell(headRow, 11, "Label ID", null);
+            createCell(headRow, 12, "Status", null);
             sheet.setColumnWidth(2, 0);
             sheet.setColumnWidth(6, 0);
             sheet.setColumnWidth(11, 0);
@@ -893,6 +894,15 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
                         createCell(row, 10, sdf.format(label.getCt().getLastUpdateTime()), null);
                     }
                     createCell(row, 11, label.getId(), null);
+                    String status = null;
+                    if (label.getCt().getStatus() == Translation.STATUS_UNTRANSLATED) {
+                    	status = "Not translated";
+                    } else if (label.getCt().getStatus() == Translation.STATUS_IN_PROGRESS) {
+                    	status = "In progress";
+                    } else {
+                    	status = "Translated";
+                    }
+                    createCell(row, 12, status, null);
                     ProgressQueue.setProgress(String.format("Language: [%d/%d], dictionary: [%d/%d]<br/>\n" +
                                             "Generating dictionary %s for language %s",
                                     langIndex, langIds.size(), dictIndex, dictIds.size(), dict.getName(), language.getName()),
@@ -936,52 +946,17 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
                     try {
                         refLabelId = (long) row.getCell(11).getNumericCellValue();
                     } catch (Exception e) {
-                        log.warn("Error reading Column 'Label ID', maybe an excel of previous version.");
+                    	log.error("Error reading Column 'Label ID', maybe an excel of previous version.");
+                        throw new BusinessException("Error reading Column 'Label ID', maybe an excel of previous version.");
                     }
 
 
                     if (!origTranslation.equals(newTranslation)) {
                         log.info(languageName + " translation of \"" + reference + "\" was changed, update it into DMS.");
-                        //consistent glossaries
-
-                        Collection<GlossaryMatchObject> GlossaryMatchObjects = glossaryService.getNotDirtyGlossaryPatterns();
-                        for (GlossaryMatchObject gmo : GlossaryMatchObjects) {
-                            gmo.getProcessedString(reference);
-                            if (!gmo.isReplaced()) continue;
-                            newTranslation = gmo.getProcessedString(newTranslation);
-                        }
-
-                        Map<String, Text> textMap = contextMap.get(contextKey);
-                        if (textMap == null) {
-                            textMap = new HashMap<String, Text>();
-                            contextMap.put(contextKey, textMap);
-                        }
-                        Text text = textMap.get(reference);
-                        if (text == null) {
-                            Label label = refLabelId == null ? null : (Label) dao.retrieve(Label.class, refLabelId);
-                            text = new Text();
-                            text.setReference(reference);
-                            text.setRefLabel(label);
-                            textMap.put(reference, text);
-                        }
-                        Translation trans = new Translation();
-                        trans.setLanguage(lang);
-                        trans.setTranslation(newTranslation);
-                        trans.setStatus(Translation.STATUS_TRANSLATED);
-                        trans.setTranslationType(Translation.TYPE_MANUAL);
-                        text.addTranslation(trans);
+                        textService.updateTranslation(refLabelId, -lang.getId(), newTranslation, false);
                         count++;
                     }
                 }
-            }
-            for (String contextKey : contextMap.keySet()) {
-                Context context = textService.getContextByKey(contextKey);
-                if (context == null) {
-                    throw new BusinessException(BusinessException.INVALID_CONTEXT_KEY, contextKey);
-                }
-                Map<String, Text> textMap = contextMap.get(contextKey);
-                log.info("### context key:" + contextKey + " text num: " + textMap.size());
-                textService.updateTranslations(context.getId(), textMap.values(), Constants.ImportingMode.TRANSLATION, TranslationHistory.TRANS_OPER_INPUT);
             }
             return count;
         } catch (BusinessException e) {
