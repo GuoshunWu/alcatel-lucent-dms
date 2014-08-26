@@ -156,7 +156,7 @@ public interface TextService {
 	 * If the translation is referred by other dictionaries:
 	 *   do nothing and return name of the dictionaries if confirmAll is empty
 	 *   update translation result if confirmAll is true
-	 *   change context of the label to [DICT] and update translation result if confirmAll is false
+	 *   change context of the label to [LABEL] and update translation result if confirmAll is false
 	 * @param labelId label id
 	 * @param translationId translation id
 	 * @param translation translation result

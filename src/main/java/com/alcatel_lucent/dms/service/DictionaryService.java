@@ -240,6 +240,13 @@ public interface DictionaryService {
     void updateLabelContext(Context context, Collection<Label> labels);
     
     /**
+     * Update label context and copy translations of current context to the new one
+     * @param context
+     * @param label
+     */
+    void updateLabelContextWithTranslations(Context context, Label label);
+    
+    /**
      * Update a label key
      *
      * @param labelId label id

@@ -24,6 +24,7 @@ public class UpdateTranslationAction extends JSONAction {
 	@Override
 	protected String performAction() throws Exception {
 		log.info("UpdateTranslationAction: id=" + id + ", ctid=" + ctid + ", translation=" + translation + ", confirm=" + confirm);
+		/*
 		Collection<String> dictList = textService.updateTranslation(id, ctid, translation, confirm);
 		// check if need confirm
 		// return status=1 if confirmation is needed
@@ -35,6 +36,12 @@ public class UpdateTranslationAction extends JSONAction {
 			setMessage(getText("message.success"));
 			return SUCCESS;
 		}
+		*/
+		
+		// always DO NOT change translation in other dictionary
+		textService.updateTranslation(id, ctid, translation, false);
+		setMessage(getText("message.success"));
+		return SUCCESS;
 	}
 
 	public Long getId() {
