@@ -1,3 +1,8 @@
+V2.16.6 (Aug 27, 2014)
+    * Add "Translation changelog search" feature
+    * Change label to context [LABEL] when modified translation is shared with other applications
+    * Add "Status" column in exported translation details.
+
 V2.16.5 (Aug 15, 2014)
     * Fix unicode escape issue of VitalSuite dictionary
     * Fix parse issue of VitalSuite dictionary
