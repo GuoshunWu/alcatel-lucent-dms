@@ -13,7 +13,7 @@
         <property name="translation" type="text" column="TRANSLATION"/>
         <property name="status" type="integer" column="STATUS"/>
         <property column="OPERATION_TYPE" name="operationType" not-null="false" type="integer"/>
-        <property column="OPERATION_TIME" name="operationTime" not-null="false" type="timestamp"/>
+        <property column="OPERATION_TIME" name="operationTime" not-null="false" type="timestamp" index="I_TRANSLATION_HISTORY_TIME"/>
         <property column="REF_LABEL_ID" name="refLabelId" not-null="false" type="long"/>
         <property column="MEMO" name="memo" not-null="false" type="text"/>
 
