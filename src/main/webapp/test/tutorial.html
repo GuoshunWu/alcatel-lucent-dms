@@ -1,0 +1,269 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <!--<meta http-equiv="X-UA-Compatible" content="IE=6" >-->
+</head>
+<body>
+<!-- for DMS guides -->
+<style type="text/css">
+    .preview {
+        /*height: 100px;*/
+        font-weight: bolder;
+        font-size: 10px;
+        text-align: left;
+    }
+
+    .playerFont {
+        font-family: Lucida Grande, Lucida Sans, Arial, Helvetica, sans-serif, '宋体' !important;
+        font-size: 12px !important;
+    }
+
+    .ui-menu {
+        font-size: 12px !important;
+        /*width: 150px;*/
+    }
+
+    .item-text {
+        font-size: 13px;
+        cursor: pointer;
+    }
+
+    .guide-title {
+        background-color: lightblue;
+    }
+</style>
+<table id="guidesArea" border="0" style="border: solid 1px #000000; width: 260px">
+    <thead></thead>
+    <tbody></tbody>
+</table>
+
+<div id="playerDialog" style="padding: 0px;">
+    <table style="height: 100%; width: 100%" border="0">
+        <tr>
+            <td>
+                <div class="playerContent"></div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+<script type="text/javascript">
+
+(function (window) {
+    var tmpAddress = location.toString();
+    tmpAddress = tmpAddress.substring(0, tmpAddress.lastIndexOf('/'));
+    tmpAddress = tmpAddress.substring(0, tmpAddress.lastIndexOf('/') + 1);
+    var removeServerAddress = tmpAddress;
+
+    if (location.hostname == 'aww.rdcsbu.bsf.alcatel.fr')
+        removeServerAddress = "//frcolv10lin237.pqa-collab.fr.alcatel-lucent.com/"
+
+    var scriptsDir = removeServerAddress + "js/lib/"
+            , cssDir = removeServerAddress + "css/"
+            , swfBasePath = removeServerAddress + "manual/"
+            , imageBasePath = removeServerAddress + "images/"
+    //user JSONP for cross domain
+            , swfJSONP = removeServerAddress + "scripts/tutorialsJSON.groovy?callback=?"
+            , guideTitle = "Video Tutorial"
+            ;
+
+    /**
+     * Dynamically load java script from remote url and call the call back when complete
+     * */
+    function loadJS(url, callback) {
+        var head = document.head
+                || document.getElementsByTagName("head")[0]
+                || document.documentElement;
+//            var urls = typeof url == "string" ? [url]: url;
+
+        var script = document.createElement("script");
+        script.onload = script.onreadystatechange = script.onerror = function () {
+            if (script && script.readyState && /^(?!(?:loaded|complete)$)/.test(script.readyState)) {
+                //console.log(script.readyState);
+                return;
+            }
+            script.onload = script.onreadystatechange = script.onerror = null;
+            script.src = '';
+            script.parentNode.removeChild(script);
+            script = null;
+            if (callback && "function" == typeof callback) {
+                callback();
+            }
+        }
+
+        script.type = "text/javascript";
+        script.charset = "UTF-8";
+        script.src = url;
+
+        try {
+            head.appendChild(script);
+        } catch (exp) {
+            if (typeof console !== "undefined" && console !== null) {
+                console.log("load script error.");
+            }
+        }
+    }
+
+    loadJS(scriptsDir + "require.js", function () {
+        require.config({
+            baseUrl: scriptsDir,
+            paths: {
+                jquery: 'jquery-1.7.2.min',
+                "jquery.migrate": 'jquery-migrate-1.2.1.min',
+//                    jqueryui: 'jquery-ui-1.10.3.custom.min'
+                jqueryui: 'jquery-ui-1.8.22.custom.min'
+            },
+            map: {
+                '*': {
+//                        jqueryuicss: cssDir + 'jqueryUI/1.10.3/themes/smoothness/jquery-ui-1.10.3.custom.min'
+                    jqueryuicss: cssDir + 'jqueryUI/themes/base/jquery.ui.all'
+
+                }
+            },
+            shim: {
+                'jquery.migrate': {
+                    deps: ['jquery'],
+                    exports: 'jQuery'
+                },
+                'jqueryui': {
+                    deps: ['jquery', 'css!jqueryuicss'],
+                    exports: 'jQuery'
+                }
+            },
+            urlArgs: "bust=" + +(new Date()).getTime(),
+            waitSeconds: 60
+        });
+        require(['jqueryui', 'domReady!'], function ($) {
+
+            var defaultPlayer = $("div#playerDialog").dialog({
+                autoOpen: false, resizable: false, draggable: false,
+                dialogClass: 'playerFont',
+                width: 1133, height: "auto",
+                close: function (event, ui) {
+                    $("div.playerContent", this).empty();
+                }
+            });
+
+
+            function showTutorial(swf, title, player) {
+                if (!player) player = defaultPlayer;
+                var width = 1126, height = 667,
+                        embed = '<' + 'EMBED ' + 'SRC="' + swf + '" width= ' + width + ' height=' + height + ' qulity=low loop=false wmode=transparent ';
+                embed += "type='application/x-shockwave-flash' ";
+                embed += 'pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash"' + '>';
+                embed += "<" + '/EMBED' + '>';
+
+                $("div.playerContent", player).html(embed);
+
+                player.dialog("option", "title", title).dialog("open");
+            }
+
+            function initPreviewTable(container, swfFiles, playIcon, playIconSize, colNum) {
+                if (!colNum) colNum = 2;
+                $('thead', container).append($("<" + "tr" + ">").append($("<" + "th" + ">").addClass('guide-title').prop({'colspan': colNum}).text(guideTitle)));
+                var rowNum = Math.ceil(swfFiles.length / colNum),
+                        swfIndex = 0,
+                        imgFileName = playIcon ? playIcon : "play/2.png",
+                        imgSize = playIconSize ? playIconSize : 64;
+
+
+                for (var row = 0; row < rowNum; ++row) {
+                    //create tr
+                    var trRow = $("<" + "tr" + ">");
+                    for (var col = 0; col < colNum; ++col) {
+                        if (swfIndex >= swfFiles.length)break;
+                        var fileEntry = swfFiles[swfIndex++]
+                                , preview = $("<" + "div" + ">").addClass("preview").prop("id", fileEntry.filename)
+                                        .append(
+                                                $("<" + "span" + ">").append(
+                                                        $("<" + "img" + ">").prop("src", imageBasePath + imgFileName).width(imgSize).height(imgSize)
+                                                ).css({'vertical-align': '-5px', cursor: 'pointer'})
+                                        )
+                                        .append(
+                                                $("<" + "a" + ">").append(fileEntry.title).addClass("item-text")
+                                        );
+
+                        preview.on("mouseover", function (e) {
+                            $(this).addClass('ui-state-hover');
+                        })
+                                .on("mouseout", function (e) {
+                                    $(this).removeClass('ui-state-hover');
+                                })
+                                .on("click", function (e) {
+                                    var swf = swfBasePath + this.id + ".swf";
+                                    if (!swf) return;
+                                    var title = $.trim($(this).text());
+                                    if (typeof console !== "undefined" && console !== null) {
+                                        console.log("swf=" + swf + ", title=" + title);
+                                    }
+                                    showTutorial(swf, title);
+                                });
+                        trRow.append($("<" + "td" + ">").append(preview)).height(28);
+                    }
+                    $("tbody", container).append(trRow);
+                }
+            }
+
+            function initPreviewList(container, swfFiles, playIcon, playIconSize) {
+                var swfIndex = 0,
+                        imgFileName = playIcon ? playIcon : "play/2.png",
+                        imgSize = playIconSize ? playIconSize : '64px',
+                        tHead = $('thead', container);
+                if (!tHead.find("tr").length) {
+                    tHead.append($("<" + "tr" + ">").append($("<" + "th" + ">").addClass('guide-title').text(guideTitle)));
+                }
+                var trRow = $("<" + "tr" + ">"),
+                        preview = $("<" + "ul id='menu1'" + ">");
+
+
+                for (var i = 0; i < swfFiles.length; ++i) {
+                    var fileEntry = swfFiles[swfIndex++];
+                    // for IE compatibility
+                    var playIcon = $("<" + "span" + ">").addClass('ui-icon').css({
+                        'display': 'block',
+                        'background-image': 'url(' + imageBasePath + imgFileName + ')',
+                        'background-position': 'center'
+                    });
+
+
+                    var a = $("<" + "a" + ">").prop({'name': fileEntry.filename, 'href': 'javascript:void(0)'}).append(playIcon).append(fileEntry.title);
+                    $("<" + "li" + ">")
+                            .append(a).appendTo(preview);
+
+                }
+                preview.menu({select: function (event, ui) {
+//                        var swf = swfBasePath + $('a', ui.item).prop('name') + '.swf';
+//                        var title = ui.item.text();
+//                        showTutorial(swf, title);
+                }}).find("li").on('click', function (e) {
+                            var swf = swfBasePath + e.target.name + '.swf';
+                            var title = e.target.parentElement.innerText;
+                            if (typeof console !== "undefined" && console !== null) {
+                                console.log("swf=" + swf + ", title=" + title);
+                            }
+                            showTutorial(swf, title);
+                        });
+
+
+                trRow.append($("<" + "td" + ">").append(preview));
+                $("tbody", container).append(trRow);
+            }
+
+            var test = $.getJSON(swfJSONP, function (json) {
+                var container = $("#guidesArea");
+                var imgName = 'play/5.png';
+                initPreviewTable(container, json, imgName, '20px', 1);
+//                initPreviewList(container, json, imgName, '20px');
+            });
+        });
+    });
+
+})(window);
+
+</script>
+
+<!-- for DMS guides ends -->
+</body>
+</html>
