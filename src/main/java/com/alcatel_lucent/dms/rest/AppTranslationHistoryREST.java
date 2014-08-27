@@ -50,8 +50,8 @@ public class AppTranslationHistoryREST extends BaseREST {
     String doGetOrPost(Map<String, String> requestMap) throws Exception {
         Long appId = Long.valueOf(requestMap.get("appId"));
         @Language("HQL") String baseSQL = "from Application as a join a.dictionaries as d join d.labels as l join l.text as labelText join labelText.translations as t join t.histories as h where a.id = :appId";
-        @Language("HQL") String hql = "select l,h " + baseSQL;
-        @Language("HQL") String countHql = "select count(*) " + baseSQL;
+        @Language("HQL") String hql = "select distinct l,h " + baseSQL;
+        @Language("HQL") String countHql = "select distinct count(*) " + baseSQL;
         Map<String, Object> param = new HashMap();
         param.put("appId", appId);
 

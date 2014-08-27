@@ -21,7 +21,7 @@ define [
       prop : 'app.name,dictionary.name,key,maxLength,context.name,reference,ct.translation,ct.status,ct.id'
     }
     caption: 'result'
-    colNames: ['Application','Dictionary','Label', 'Max Length', 'Context', 'Reference language', 'Translation', 'Status','TransId']
+    colNames: ['Application','Dictionary','Label', 'Max Length', 'Context', 'Reference', 'Translation', 'Status','TransId']
     colModel: [
       {name: 'app', index: 'app.name', width: 50, editable: false, stype: 'select', align: 'left', frozen: true}
       {name: 'dict', index: 'dictionary.base.name', width: 150, editable: false, align: 'left', frozen: true, search: false}

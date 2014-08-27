@@ -288,9 +288,22 @@ define [
   transHistoriesDialog = $('#transHistoriesDialog').dialog(
     autoOpen: false, width: 1020, height: 'auto', modal: true
     open: ()->
-      params = $(@).data "params"
+      me = $(@)
+      params = me.data "params"
       grid = $('#transHistoriesGrid')
-      grid.setCaption(params.caption).setGridParam("postData":{
+      #      resize size according to screen size
+      jWindow = $(window)
+      adjustWidth = 100
+      adjustHeight = 50
+      me.dialog( "option", "width", jWindow.width() - adjustWidth)
+      .dialog("option", "height", jWindow.height() - adjustHeight).position(of : jWindow)
+
+
+#      console.log("width=%o, height=%o", me.width(), me.height())
+
+      grid.setGridWidth(jWindow.width() - adjustWidth - 50)
+      .setGridHeight(jWindow.height() - adjustHeight - 240)
+      .setCaption(params.caption).setGridParam("postData":{
         appId: params.id, page: 1
         from: $('#operationTimeBegin').val(), to: $('#operationTimeEnd').val()
       })

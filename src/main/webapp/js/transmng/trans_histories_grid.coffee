@@ -21,11 +21,11 @@ define [
     cellEdit: true, cellurl: urls.trans.update_status
     postData: {
       format: 'grid',
-      prop : 'historyLabel.dictionary.name, historyLabel.key, parent.text.context.name , parent.text.reference, operationTime, operationType, operator.name, translation, status, memo'
+      prop : 'historyLabel.dictionary.name, historyLabel.key, parent.text.context.name , parent.text.reference, operationTime, operationType, operator.name, parent.language.name, translation, status, memo'
     }
     toolbar: [true, 'top']
     sortorder: 'desc'
-    colNames: ['Dictionary','Label', 'Context', 'Reference', 'Operation Time', 'Operation Type','Operator', 'Translation', 'Status', 'Memo']
+    colNames: ['Dictionary','Label', 'Context', 'Reference', 'Operation Time', 'Operation Type','Operator', 'Language', 'Translation', 'Status', 'Memo']
     colModel: [
       {name: 'dict', index: 'l.dictionary.base.name', width: 110, editable: false, align: 'left', frozen: true, search: true}
       {name: 'key', index: 'l.key', width: 155, editable: false, align: 'left', frozen: true, search: true}
@@ -36,7 +36,8 @@ define [
       {name: 'operationTime', index: 'h.operationTime', width: 125, editable: false, align: 'left', search: false}
       {name: 'operationType', index: 'h.operationType', width: 60, editable: false, align: 'left', formatter: 'select',
       stype: 'select', searchoptions: {value:":#{c18n.all};#{c18n.transoptype}"}, editoptions:{value: c18n.transoptype}}
-      {name: 'operator.name', index: 'h.operator.name', width: 80, editable: true, align: 'left'}
+      {name: 'operator.name', index: 'h.operator.name', width: 80, editable: false, align: 'left'}
+      {name: 'language', index: 'h.parent.language.name', width: 80, editable: false, align: 'left'}
       {name: 'translation', index: 'h.translation', width: 110, align: 'left'}
       {name: 'status', index: 'h.status', width: 90, formatter: 'select', editoptions:{value: c18n.translation.values}, align: 'left'
       stype: 'select', searchoptions: {value: ":#{c18n.all};0:#{i18n.trans.nottranslated};1:#{i18n.trans.inprogress};2:#{i18n.trans.translated}"}

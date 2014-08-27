@@ -19,7 +19,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 import java.text.SimpleDateFormat
-import java.util.concurrent.TimeUnit
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 
@@ -32,7 +31,6 @@ import static org.hamcrest.CoreMatchers.not
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.hasKey
 import static org.junit.Assert.*
-import static org.junit.Assert.assertTrue
 
 /**
  * Created by Guoshun on 14-1-12.
@@ -64,7 +62,7 @@ class DMSIT {
     static void afterClass() {
         WebPageUtil.driver.quit()
         testApp = null
-        println "Start DMS integration test".center(100, '=')
+        println "End DMS integration test".center(100, '=')
     }
 
     @Rule
@@ -575,6 +573,7 @@ class DMSIT {
         String changedToTranslation = "总体"
         String transGridDetailId = "transDetailGridList"
 
+
         //Find and open 8 translated Chinese string of dictionary "dms-test.xlsx"
         openTranslationDetailDialog dictName, languageName, status
 
@@ -603,19 +602,24 @@ class DMSIT {
         transCellElement.clear()
         transCellElement.sendKeys(changedToTranslation + "\n")
 //
-//        //wait until apply other dialog open
+//        //wait until apply other dialog open (no dialog open anymore due to auto context change)
+        /*
         String transUpdateDialogId = "transmngTranslationUpdate"
         getWebElement(By.id(transUpdateDialogId))
         //collect used dictionaries and chose yes and close the dialog
         List<String> usedDictionaries = getWebElementsByJQuerySelector("#${transUpdateDialogId} ul > li").collect { WebElement element -> element.text }
-//        log.info("Used dictionaries: {}", usedDictionaries)
+        log.info("Used dictionaries: {}", usedDictionaries)
         clickButtonOnDialog(transUpdateDialogId, 'Yes')
+        */
         //=================================Check apply to all other labels result ======================================
 //        for the grid to reload
         SECONDS.sleep 1
         selector = populateGridCellSelector(transGridDetailId, 'reflang', reference, 'translation')
 //        1. Translation is changed to "总体"
         assertEquals changedToTranslation, getWebElement(By.cssSelector(selector)).text
+//        TODO: 2. Context of the label is changed to "[LABEL]"
+        selector = populateGridCellSelector(transGridDetailId, 'key', "DMSTEST11", 'context')
+        assertEquals "[LABEL]", getWebElement(By.cssSelector(selector)).text
 //        2. "Trans. Src" is changed to "Manual"
         selector = populateGridCellSelector(transGridDetailId, 'translation', changedToTranslation, 'transtype')
         assertEquals "Manual", getWebElement(By.cssSelector(selector)).text
@@ -643,9 +647,9 @@ class DMSIT {
 
         clickButtonOnDialog(transDetailDialogId, 'Close')
 
-//        5. "General" are also translated to "总体" in other dictionaries
+//        5. General" are still translated as "常规" in other dictionaries
         //get reference language for other dictionaries check
-
+        List<String> usedDictionaries = ["cmscallserver_labels_GAE.xml", "cmsadministrator_labels_GAE.xml"]
         usedDictionaries.each { String usedDictName ->
             openTranslationDetailDialog usedDictName, languageName, status
             SECONDS.sleep 1
@@ -656,12 +660,13 @@ class DMSIT {
             String translationSelector = populateGridCellSelector(transGridDetailId, 'reflang', reference, 'translation')
             List<WebElement> allTranslations = getWebElementsByJQuerySelector(translationSelector)
             allTranslations.every { WebElement translationElement ->
-                assertEquals '总体', translationElement.text
+                assertEquals '常规', translationElement.text
             }
             clickButtonOnDialog(transDetailDialogId, 'Close')
         }
 
         //-----------------------------------apply to current label only  case-----------------------------------------
+        /*
         openTranslationDetailDialog dictName, languageName, status
 
         //get label histories first
@@ -688,14 +693,17 @@ class DMSIT {
         transCellElement.clear()
         transCellElement.sendKeys(changedToTranslation + "\n")
 //
-//        //wait until apply other dialog open
+//        //wait until apply other dialog open (no dialog open anymore due to auto context change)
         getWebElement(By.id(transUpdateDialogId))
         //collect used dictionaries and chose yes and close the dialog
         usedDictionaries = getWebElementsByJQuerySelector("#${transUpdateDialogId} ul > li").collect { WebElement element -> element.text }
 //        log.info("Used dictionaries: {}", usedDictionaries)
         clickButtonOnDialog(transUpdateDialogId, 'No')
 
+
+
         //===================================Check apply to current label only result =======================================
+        openTranslationDetailDialog dictName, languageName, status
 //        wait for grid reload
         SECONDS.sleep 1
 //        1. Translation is changed to "常规"
@@ -745,6 +753,7 @@ class DMSIT {
             }
             clickButtonOnDialog(transDetailDialogId, 'Close')
         }
+        */
     }
 
     @Test
@@ -846,12 +855,13 @@ class DMSIT {
 
         String dictName = 'dms-test.xlsx'
         String languageName = 'Chinese (China)'
-        String labelKey = "DMSTEST8"
 
-        openTranslationDetailDialog dictName, languageName, 'T'
+
+        openTranslationDetailDialog dictName, languageName, 'N'
         SECONDS.sleep 1
 //        1. Chinese translation of label "DMSTEST8" is changed to "不保留"
         String transGridDetailId = "transDetailGridList"
+        String labelKey = "DMSTEST8"
         String translationSelector = populateGridCellSelector(transGridDetailId, 'key', labelKey, 'translation')
         assertEquals "不保留", getWebElement(By.cssSelector(translationSelector)).text
 
@@ -1030,11 +1040,12 @@ class DMSIT {
 //        7. Click history icon of DMSTEST11 and find an entry of type "RECEIVE" added
 
         openTranslationDetailDialog dictName, languageName, 'T'
+        MICROSECONDS.sleep(2000)
         List<Map> histories = getHistoriesInTranslationDetail("DMSTEST11", true, "key")
         assertNotNull(histories.find { Map row -> 'RECEIVE' == row.operationType })
         clickButtonOnDialog('translationDetailDialog', 'Close')
 
-//        8. "General" are still translated as "总体" in other dictionaries
+//        8. "General" are still translated as "常规" in other dictionaries
         String reference = "General"
 
         WebElement dictionaryNameElements = getWebElement(By.cssSelector(populateGridCellSelector(transGridId, 'dictionary')))
@@ -1053,7 +1064,7 @@ class DMSIT {
             String translationSelector = populateGridCellSelector(transGridDetailId, 'reflang', reference, 'translation')
             List<WebElement> allTranslations = getWebElementsByJQuerySelector(translationSelector)
             allTranslations.every { WebElement translationElement ->
-                assertEquals '总体', translationElement.text
+                assertEquals '常规', translationElement.text
             }
             clickButtonOnDialog(transDetailDialogId, 'Close')
         }
@@ -1066,7 +1077,8 @@ class DMSIT {
         clickTestApp()
         SECONDS.sleep 2
         getWebElement(By.id("navitransmngTab")).click()
-        test014ExportTranslationDetail()
+        test011UpdateTranslation()
+//        test014ExportTranslationDetail()
 //        test015ImportTranslation()
 //        test016CreateTask()
 //        test017DownloadTask()
