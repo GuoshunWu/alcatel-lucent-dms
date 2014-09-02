@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.filter.*;
+import org.springframework.ldap.support.LdapUtils;
 import org.springframework.stereotype.Service;
 
 import javax.naming.NamingException;
@@ -71,7 +72,7 @@ public class LDAPServiceImpl implements LDAPService {
         BusinessException businessException = null;
         while (tryCount-- > 0) {
             try {
-                return ldapTemplate.authenticate("", filter, password);
+                return ldapTemplate.authenticate(LdapUtils.emptyLdapName(), filter, password);
             } catch (org.springframework.ldap.ServiceUnavailableException e) {
                 log.error("Ldap exception: {}", e);
                 businessException = new BusinessException(BusinessException.LDAP_CONNECTION_ERROR, e.getMessage());
@@ -83,7 +84,7 @@ public class LDAPServiceImpl implements LDAPService {
     public List<User> findUsers(String filter) {
         @SuppressWarnings("unchecked")
 
-        List<User> users = ldapTemplate.search("", filter, UserAttributesMapper.getInstance());
+        List<User> users = ldapTemplate.search(LdapUtils.emptyLdapName(), filter, UserAttributesMapper.getInstance());
         return users;
     }
 

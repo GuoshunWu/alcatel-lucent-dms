@@ -2,6 +2,8 @@ package com.alcatel_lucent.dms.test
 
 import com.alcatel_lucent.dms.config.AppConfig
 import com.alcatel_lucent.dms.rest.AppTranslationHistoryREST
+import com.alcatel_lucent.dms.service.DaoService
+import org.intellij.lang.annotations.Language
 import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -31,6 +33,8 @@ class RESTTest {
 
     @Autowired
     private AppTranslationHistoryREST appTransHistoryREST
+    
+    @Autowired DaoService dao
 
     @BeforeClass
     static void setUpBeforeClass() throws Exception {
@@ -39,6 +43,17 @@ class RESTTest {
 
     @Test
     void testTranslationHistories(){
+        Long appId = 1L
+        @Language("HQL") String baseSQL = "from Application as a join a.dictionaries as d join d.labels as l join l.text as labelText join labelText.translations as t join t.histories as h where a.id = :appId"
+        @Language("HQL") String hql = "select distinct l,h " + baseSQL
+        @Language("HQL") String countHql = "select count(*) from (" + hql +") as z"
+        Map<String, Object> param = new HashMap()
+        param.put("appId", appId)
 
+
+        List data = dao.retrieve(hql, param)
+
+        Number records = (Number) dao.retrieveOne(countHql, param);
+        println "Data size= ${data.size()}, records=${records}"
     }
 }

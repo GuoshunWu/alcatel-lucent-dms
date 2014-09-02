@@ -51,7 +51,7 @@ public class AppTranslationHistoryREST extends BaseREST {
         Long appId = Long.valueOf(requestMap.get("appId"));
         @Language("HQL") String baseSQL = "from Application as a join a.dictionaries as d join d.labels as l join l.text as labelText join labelText.translations as t join t.histories as h where a.id = :appId";
         @Language("HQL") String hql = "select distinct l,h " + baseSQL;
-        @Language("HQL") String countHql = "select distinct count(*) " + baseSQL;
+        @Language("HQL") String countHql = "select count(*) " + baseSQL;
         Map<String, Object> param = new HashMap();
         param.put("appId", appId);
 
@@ -107,8 +107,18 @@ public class AppTranslationHistoryREST extends BaseREST {
         for (Object[] row : data) {
             Label l = (Label) row[0];
             TranslationHistory t = (TranslationHistory) row[1];
-            t.setHistoryLabel(l);
-            result.add(t);
+
+            TranslationHistory temp = new TranslationHistory();
+            temp.setTranslation(t.getTranslation());
+            temp.setStatus(t.getStatus());
+            temp.setParent(t.getParent());
+            temp.setOperationTime(t.getOperationTime());
+            temp.setMemo(t.getMemo());
+            temp.setOperationType(t.getOperationType());
+            temp.setOperator(t.getOperator());
+
+            temp.setHistoryLabel(l);
+            result.add(temp);
         }
         return result;
     }
