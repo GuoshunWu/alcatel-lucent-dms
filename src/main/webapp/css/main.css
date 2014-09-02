@@ -3,6 +3,10 @@
 @import "jqueryUI/1.10.3/themes/smoothness/jquery-ui-1.10.3.custom.min.css";
 @import "jqgrid/ui.jqgrid.css";
 @import "jqueryLayout/layout.css";
+@import "select2/select2.css";
+
+/*@import "jquery.multiselect.css";*/
+@import "multipleSelect/multiple-select.css";
 
 /*@import "jstree/themes3.0/default/style.min.css";*/
 /*@import "jstree/themes/apple/style.css";*/

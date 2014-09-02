@@ -301,7 +301,7 @@ define [
 
 #      console.log("width=%o, height=%o", me.width(), me.height())
 
-      grid.setGridWidth(jWindow.width() - adjustWidth - 50)
+      grid.setGridWidth(jWindow.width() - adjustWidth - 30)
       .setGridHeight(jWindow.height() - adjustHeight - 240)
       .setCaption(params.caption).setGridParam("postData":{
         appId: params.id, page: 1

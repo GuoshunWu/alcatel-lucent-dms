@@ -1,16 +1,23 @@
 define [
   'jqgrid'
   'jqmsgbox'
+#  'select2'
+#  'multiselect'
   'i18n!nls/transmng'
   'i18n!nls/common'
   'dms-util'
   'dms-urls'
-], ($, msgbox, i18n, c18n, util, urls)->
+], ($, msgbox,
+#    select2
+#    multiselect
+    i18n, c18n, util, urls)->
 
   lastEditedCell = null
   gridId = 'transHistoriesGrid'
   hGridID = "##{gridId}"
   pagerId = "##{gridId}Pager"
+  selectColumns = ['context', 'operationType' , 'status']
+  selectElements = {}
 
   grid = $("#{hGridID}").jqGrid(
     mtype: 'post', datatype: 'local', url: urls.app_translation_histories
@@ -21,33 +28,36 @@ define [
     cellEdit: true, cellurl: urls.trans.update_status
     postData: {
       format: 'grid',
-      prop : 'historyLabel.dictionary.name, historyLabel.key, parent.text.context.name , parent.text.reference, operationTime, operationType, operator.name, parent.language.name, translation, status, memo'
+      prop : 'historyLabel.dictionary.name, historyLabel.dictionary.version, historyLabel.key, parent.text.context.name , parent.text.reference, operationTime, operationType, operator.name, parent.language.name, translation, status, memo'
     }
     toolbar: [true, 'top']
     sortorder: 'desc'
-    colNames: ['Dictionary','Label', 'Context', 'Reference', 'Operation Time', 'Operation Type','Operator', 'Language', 'Translation', 'Status', 'Memo']
+    colNames: ['Dictionary', 'Version', 'Label', 'Context', 'Reference', 'Operation Time', 'Operation Type','Operator', 'Language', 'Translation', 'Status', 'Memo']
     colModel: [
       {name: 'dict', index: 'l.dictionary.base.name', width: 110, editable: false, align: 'left', frozen: true, search: true}
+      {name: 'dictVersion', index: 'l.dictionary.version', width: 60, editable: false, align: 'left', frozen: true, search: true}
       {name: 'key', index: 'l.key', width: 155, editable: false, align: 'left', frozen: true, search: true}
-      {name: 'context', index: 'h.parent.text.context.name', width: 70, align: 'left', frozen: true, search: true
-      stype: 'select', searchoptions:value: ":All;#{c18n.transcontext}"
-      }
+      {name: 'context', index: 'h.parent.text.context.name', width: 70, align: 'left', frozen: true, search: true}
       {name: 'reference', index: 'h.parent.text.reference', width: 110, align: 'left', frozen: true, search: true}
       {name: 'operationTime', index: 'h.operationTime', width: 125, editable: false, align: 'left', search: false}
-      {name: 'operationType', index: 'h.operationType', width: 60, editable: false, align: 'left', formatter: 'select',
-      stype: 'select', searchoptions: {value:":#{c18n.all};#{c18n.transoptype}"}, editoptions:{value: c18n.transoptype}}
+      {name: 'operationType', index: 'h.operationType', width: 60, editable: false, align: 'left', formatter: 'select',editoptions:{value: c18n.transoptype}}
       {name: 'operator.name', index: 'h.operator.name', width: 80, editable: false, align: 'left'}
       {name: 'language', index: 'h.parent.language.name', width: 80, editable: false, align: 'left'}
       {name: 'translation', index: 'h.translation', width: 110, align: 'left'}
-      {name: 'status', index: 'h.status', width: 90, formatter: 'select', editoptions:{value: c18n.translation.values}, align: 'left'
-      stype: 'select', searchoptions: {value: ":#{c18n.all};0:#{i18n.trans.nottranslated};1:#{i18n.trans.inprogress};2:#{i18n.trans.translated}"}
-      }
+      {name: 'status', index: 'h.status', width: 90, formatter: 'select', editoptions:{value: c18n.translation.values}, align: 'left'}
       {name: 'memo', index: 'h.memo', width: 70, editable: true, align: 'left', hidden:true}
     ]
+
+    loadComplete: (data)->
+      return unless selectColumns.length
+      $.each(selectElements, (colName, select)->
+        return unless select
+        currentSelected = select.val()
+        select.empty().append(buildSearchSelectValues(colName, currentSelected))
+      )
+
     afterEditCell: (rowid, cellname, val, iRow, iCol)->
       lastEditedCell = {iRow: iRow, iCol: iCol, name: cellname, val: val}
-
-
     beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
 #      console?.log "rowid=#{rowid}, cellname=#{cellname}, value=#{value}, iRow=#{iRow}, iCol=#{iCol}"
       ctid = $(@).getRowData(rowid).transId
@@ -93,8 +103,63 @@ define [
   )
   .setGridParam('datatype':'json')
   .navGrid(pagerId, {edit: false, add: false, del: false, search: false, view: false})
-  .filterToolbar {stringResult: true, searchOnEnter: false}
 
+  string2Options = (stringValue)->
+    opt = {}
+    return opt unless stringValue
+    for option in stringValue.split(";")
+      entry = option .split ":"
+      opt[entry[0]]=entry[1]
+    opt
+
+  buildSearchSelectValues = (colName, selectedValue = false)->
+    # single column name
+    colProps = grid.jqGrid('getColProp', colName)
+    defaultSelectText = colProps.editoptions?.value
+    mapValue = string2Options(defaultSelectText)
+    uniqueValues = grid.jqGrid('getCol', colName).unique()
+
+    "<option value=''>All</option>" + uniqueValues.map((elem)->
+      display  = if mapValue[elem] then mapValue[elem] else elem
+      isSelected = ""
+      isSelected = "selected" if selectedValue and elem + "" == selectedValue
+      "<option #{isSelected} value='#{elem}'>#{display}</option>"
+    ).join("\n")
+
+
+  setSearchSelect = (colName)->
+    #if colName is array, set select one by one in it
+    (setSearchSelect(name) for name in colName; return) if $.isArray colName
+
+    # single column name
+    grid.jqGrid('setColProp', colName, {
+      stype: 'select'
+      searchoptions: {
+#        clearSearch: false
+        value: ":All"
+#        attr: {mutiple: 'multiple', size: 2}
+        dataInit:(elem)->
+#          console.log "Column #{colName} select init, elem=%o.", elem
+          selectElements[colName] = $(elem)
+#          .multiselect()
+#          .width(122)
+#          ref: http://stackoverflow.com/questions/19395680/using-bootstrap-select2-with-jqgrid-form/19404013#19404013
+#               http://stackoverflow.com/questions/5328072/can-jqgrid-support-dropdowns-in-the-toolbar-filter-fields
+#          .select2(
+#            dropdownCssClass: "ui-widget ui-jqdialog"
+#          )
+
+        dataEvents:[
+          {type: "change", fn:(e)->
+#            console.log "Column #{colName} select change event, elem=%o., seleElements=%o", e.target, selectElements[colName]
+          }
+        ]
+      }
+    })
+#    console.log("column =%o, changed search options=%o", colName, grid.getColProp(colName).searchoptions)
+
+  setSearchSelect selectColumns
+  grid.filterToolbar {stringResult: true}
 
   #init toolbar for the grid
   $("#operationTimeBegin, #operationTimeEnd").datepicker(
