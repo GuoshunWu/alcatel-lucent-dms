@@ -19,6 +19,10 @@ require.config
     jqmsgbox: 'jquery.msgBox.v1'
     blockui: 'jquery.blockUI.min'
     jqupload: 'jsfileuploader/jquery.fileupload'
+    select2: 'select2/select2.min'
+    multiselect: 'jquery.multiselect.min'
+#    multiselect: 'jquery.multiple.select'
+
     iframetransport: 'jsfileuploader/jquery.iframe-transport'
     hchart: 'highcharts'
     hchart_exp: 'exporting'
@@ -50,6 +54,9 @@ require.config
       init: ()->
         QUnit.config.autoload =  QUnit.config.autostart = false
 
+    'select2':
+      deps: ['jquery']
+      exports: 'jQuery'
     'jquery.migrate':
       deps: ['jquery']
       exports: 'jQuery'
@@ -76,6 +83,9 @@ require.config
       deps: ['jquery']
       exports: 'jQuery'
     'ui.multiselect':
+      deps: ['jqueryui']
+      exports: 'jQuery'
+    'multiselect':
       deps: ['jquery']
       exports: 'jQuery'
     'jqgridI18n':

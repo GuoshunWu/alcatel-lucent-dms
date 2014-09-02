@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ldap.core.AttributesMapper;
-import org.springframework.ldap.core.DistinguishedName;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.filter.*;
 import org.springframework.stereotype.Service;
@@ -72,7 +71,7 @@ public class LDAPServiceImpl implements LDAPService {
         BusinessException businessException = null;
         while (tryCount-- > 0) {
             try {
-                return ldapTemplate.authenticate(DistinguishedName.EMPTY_PATH, filter, password);
+                return ldapTemplate.authenticate("", filter, password);
             } catch (org.springframework.ldap.ServiceUnavailableException e) {
                 log.error("Ldap exception: {}", e);
                 businessException = new BusinessException(BusinessException.LDAP_CONNECTION_ERROR, e.getMessage());
@@ -83,7 +82,8 @@ public class LDAPServiceImpl implements LDAPService {
 
     public List<User> findUsers(String filter) {
         @SuppressWarnings("unchecked")
-        List<User> users = ldapTemplate.search(DistinguishedName.EMPTY_PATH, filter, UserAttributesMapper.getInstance());
+
+        List<User> users = ldapTemplate.search("", filter, UserAttributesMapper.getInstance());
         return users;
     }
 
