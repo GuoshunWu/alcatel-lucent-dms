@@ -2,7 +2,17 @@
 Created by IntelliJ IDEA.
 User: Guoshun Wu
 ###
-define ['jqueryui',"jqtree", "i18n!nls/common"], ($, jqtree, c18n)->
+define ['jqueryui'
+  'jqgrid'
+  "jqtree"
+  "i18n!nls/common"
+], ($
+    jqgrid
+    jqtree
+c18n)->
+
+  # Here we set the jqgrid options globally
+  $.extend($.jgrid.defaults,  loadui:"block")
 
   #    prototype enhancement
   String:: format = -> args = arguments; @replace /\{(\d+)\}/g, (m, i) ->args[i]
