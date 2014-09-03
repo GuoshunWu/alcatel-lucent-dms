@@ -24,7 +24,7 @@ define ['jqgrid', 'dms-util', 'i18n!nls/common'], ($, util, c18n)->
     gridComplete: ->
 
 
-    afterEditCell: (rowid, cellname, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
+    afterEditCell: (rowid, name, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
   ).setGridParam(datatype: 'json')
   saveLastEditedCell: ()->grid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
 

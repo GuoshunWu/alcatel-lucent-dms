@@ -79,7 +79,7 @@ define [
         $('#stringSettingsTranslationDialog').data(param: param).dialog 'open'
         false
 
-    afterEditCell: (rowid, cellname, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
+    afterEditCell: (rowid, name, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
     afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
       json = $.parseJSON(serverresponse.responseText)
       setTimeout (->
