@@ -112,6 +112,8 @@ define [
     # appmng panel as the current page on init
     $("span[id^='nav'][value='appmng']").trigger 'click'
 
+
+
   ################################################## Initilaized #####################################################
   init()
   ready(@)
