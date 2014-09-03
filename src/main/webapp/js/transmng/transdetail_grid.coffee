@@ -99,7 +99,7 @@ define [
         $(@).removeClass('ui-state-hover')
       )
 
-    afterEditCell: (rowid, cellname, val, iRow, iCol)->
+    afterEditCell: (rowid, name, val, iRow, iCol)->
       lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
     beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
 #      console?.log "rowid=#{rowid}, cellname=#{cellname}, value=#{value}, iRow=#{iRow}, iCol=#{iCol}"

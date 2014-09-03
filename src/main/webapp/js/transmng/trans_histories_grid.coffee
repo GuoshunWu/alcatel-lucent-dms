@@ -56,8 +56,8 @@ define [
         select.empty().append(buildSearchSelectValues(colName, currentSelected))
       )
 
-    afterEditCell: (rowid, cellname, val, iRow, iCol)->
-      lastEditedCell = {iRow: iRow, iCol: iCol, name: cellname, val: val}
+    afterEditCell: (rowid, name, val, iRow, iCol)->
+      lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
     beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
 #      console?.log "rowid=#{rowid}, cellname=#{cellname}, value=#{value}, iRow=#{iRow}, iCol=#{iCol}"
       ctid = $(@).getRowData(rowid).transId

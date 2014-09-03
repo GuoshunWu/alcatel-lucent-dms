@@ -37,7 +37,7 @@ define [
       }
       {name: 'transId', index: 'ct.id', width: 150, align: 'left', hidden:true, search: false}
     ]
-    afterEditCell: (rowid, cellname, val, iRow, iCol)->
+    afterEditCell: (rowid, name, val, iRow, iCol)->
       lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
 
     beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->

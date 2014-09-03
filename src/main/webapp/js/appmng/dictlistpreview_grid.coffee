@@ -46,7 +46,7 @@ define ['jqgrid', 'jqmsgbox', 'jqueryui', 'i18n!nls/appmng', 'i18n!nls/common'],
   caption: i18n.grid.dictlistpreview.caption
   colNames: ['LangRefCode', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels', 'Error', 'Warning', 'Action']
   colModel: colModel
-  afterEditCell: (rowid, cellname, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
+  afterEditCell: (rowid, name, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
   ondblClickRow: (rowid, iRow, iCol, e)->
 
   beforeProcessing: (data, status, xhr)->

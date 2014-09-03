@@ -28,7 +28,7 @@ define ['jqgrid'], ($)->
       $.getJSON 'rest/charsets', {prop: 'id,name'}, (charsets)->
         langSettingGrid.setColProp 'charsetId', editoptions: {value: ($(charsets).map ()->"#{@id}:#{@name}").get().join(';')}
 
-    afterEditCell: (rowid, cellname, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
+    afterEditCell: (rowid, name, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
     beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
       postData = $(@).getGridParam 'postData'
       dict: postData.dict, handler: postData.handler

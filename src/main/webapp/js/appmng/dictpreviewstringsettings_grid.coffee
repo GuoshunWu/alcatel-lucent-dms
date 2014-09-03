@@ -29,7 +29,7 @@ define ['jqgrid'], ($)->
       {name: 'description', index: 'description', width: 40,  edittype:'textarea', classes: 'editable-column', editable: true, align: 'left'}
     ]
 
-    afterEditCell: (rowid, cellname, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
+    afterEditCell: (rowid, name, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
     beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
       postData = $(@).getGridParam 'postData'
       handler: postData.handler, dict: postData.dict
