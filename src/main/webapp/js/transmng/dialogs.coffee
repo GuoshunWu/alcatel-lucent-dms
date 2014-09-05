@@ -176,13 +176,12 @@ define [
       {text: c18n.cancel, click: -> $(@).dialog "close"}
     ]
   )
-
   transDetailDialog = $('#translationDetailDialog').dialog(
     autoOpen: false, width: 860, height: 'auto'
 
     open: ()->
       me= $(@)
-      util.adjustDialogAndInnerGridSize(me, $("#transDetailGridList"), {width: 100, height: 50}, {width: 40, height: 270})
+      util.adjustDialogAndInnerGridSize(me, $("#transDetailGridList"), {width: 100, height: 50}, {width: 50, height: 270})
 
       $('#transDetailSearchAction',@).position(my: 'left center', at: 'right center', of: '#transDetailSearchText')
       param = $(@).data "param"
