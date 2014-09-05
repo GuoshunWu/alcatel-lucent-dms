@@ -439,7 +439,7 @@ public class Label extends BaseEntity implements Cloneable {
     public String getTranslation(String langCode) {
         Translation translation = getTranslationObject(langCode);
         if (null == translation) return reference;
-        return getTranslationObject(langCode).getTranslation();
+        return translation.getTranslation();
     }
 
     public int getTranslationStatus(String langCode) {

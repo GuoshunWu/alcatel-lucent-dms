@@ -5,6 +5,7 @@ require.config
 #    jquery: '//code.jquery.com/jquery-1.10.1'
     "jquery.migrate": 'jquery-migrate-1.2.1.min'
     jqueryui: 'jquery-ui-1.10.3.custom.min'
+    'edialog': 'jquery.dialogextend.min'
 #    jqueryui: 'jquery-ui'
     qunit: 'qunit-1.13.0'
     formvalidate: 'formValidator-4.0.1.min'
@@ -56,6 +57,9 @@ require.config
 
     'select2':
       deps: ['jquery']
+      exports: 'jQuery'
+    'edialog':
+      deps: ['jqueryui']
       exports: 'jQuery'
     'jquery.migrate':
       deps: ['jquery']

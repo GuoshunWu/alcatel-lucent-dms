@@ -92,7 +92,6 @@ define [
     rownumbers: true, shrinkToFit: false
     pager: '#transPager',
     rowNum: 50, rowList: [50,100,500,9999]
-#    rowNum: 2, rowList: [2,5,10,50]
     sortname: 'app.base.name', sortorder: 'asc'
     colNames: grid.dictionary.colNames, colModel: grid.dictionary.colModel
     #  customed option for save the toolbar search value and group headers
@@ -141,7 +140,9 @@ define [
           searchStatus: map[status]
           language:language
           transsrc: ''
-        $('#translationDetailDialog').data(param: param).dialog "open"
+        transDialog = $('#translationDetailDialog')
+        transDialog.dialog "close" if(transDialog.dialog( "isOpen" ))
+        transDialog.data(param: param).dialog "open"
         e.preventDefault()
       ) if $("input:radio:checked[name='viewOption']").val() == 'dict'
       if isSelectAllReload
