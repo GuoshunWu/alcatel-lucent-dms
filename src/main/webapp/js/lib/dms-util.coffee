@@ -491,9 +491,10 @@ c18n)->
     # resize size according to screen size
     jWindow = $(window)
     dialog.dialog( "option", "width", jWindow.width() - adjust.width)
-    .dialog("option", "height", jWindow.height() - adjust.height).position(of : jWindow)
+    .dialog("option", "height", jWindow.height() - adjust.height)
+    .dialog("option", "position", of : window)
 
-#    console.log("dialog %o width=%o, height=%o", dialog.attr("id"), dialog.width(), dialog.height())
+    console.log("dialog %o width=%o, height=%o", dialog.attr("id"), dialog.width(), dialog.height())
     return if(!grid || !grid.length)
     # adjust grid
     grid.setGridWidth(jWindow.width() - adjust.width - adjustGrid.width)
