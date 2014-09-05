@@ -1,7 +1,6 @@
 package com.alcatel_lucent.dms.service;
 
 import com.alcatel_lucent.dms.BusinessException;
-import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.action.ProgressQueue;
 import com.alcatel_lucent.dms.model.*;
@@ -37,7 +36,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 
     @Autowired
     private LanguageService languageService;
-    
+
     @Autowired
     private TextService textService;
 
@@ -896,11 +895,11 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
                     createCell(row, 11, label.getId(), null);
                     String status = null;
                     if (label.getCt().getStatus() == Translation.STATUS_UNTRANSLATED) {
-                    	status = "Not translated";
+                        status = "Not translated";
                     } else if (label.getCt().getStatus() == Translation.STATUS_IN_PROGRESS) {
-                    	status = "In progress";
+                        status = "In progress";
                     } else {
-                    	status = "Translated";
+                        status = "Translated";
                     }
                     createCell(row, 12, status, null);
                     ProgressQueue.setProgress(String.format("Language: [%d/%d], dictionary: [%d/%d]<br/>\n" +
@@ -946,7 +945,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
                     try {
                         refLabelId = (long) row.getCell(11).getNumericCellValue();
                     } catch (Exception e) {
-                    	log.error("Error reading Column 'Label ID', maybe an excel of previous version.");
+                        log.error("Error reading Column 'Label ID', maybe an excel of previous version.");
                         throw new BusinessException("Error reading Column 'Label ID', maybe an excel of previous version.");
                     }
 
@@ -1122,6 +1121,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     public Collection<Label> searchLabelsWithTranslation(Long prodId,
                                                          Long appId, Long dictId, Long langId, String text) {
         text = text.toUpperCase();
+        boolean isTextEmpty = text.isEmpty();
         String hql;
         Map param = new HashMap();
 
@@ -1138,8 +1138,8 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
         } else {
             hql = "select obj,0,a from Application a join a.dictionaries d join d.labels obj where obj.removed=false";
         }
-        hql += " and upper(obj.reference) like :text";
-        param.put("text", "%" + text + "%");
+        hql += " and upper(obj.reference) " + (isTextEmpty ? "=" : "like") + " :text";
+        param.put("text", isTextEmpty ? text : "%" + text + "%");
         Collection<Object[]> result1 = dao.retrieve(hql, param);
 
         // search text in original translation
@@ -1158,8 +1158,8 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
         } else {
             hql = "select obj,lt,a from Application a join a.dictionaries d join d.labels obj join obj.origTranslation lt where lt.language.id=:languageId and lt.needTranslation=false and obj.removed=false and obj.context.name<>:exclusion";
         }
-        hql += " and lt.needTranslation=true and upper(lt.origTranslation) like :text";
-        param.put("text", "%" + text + "%");
+        hql += " and lt.needTranslation=true and upper(lt.origTranslation) "+ (isTextEmpty ? "=" : "like") +" :text";
+        param.put("text", isTextEmpty ? text : "%" + text + "%");
         Collection<Object[]> result2 = dao.retrieve(hql, param);
 
 
@@ -1179,8 +1179,10 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
         } else {
             hql = "select obj,t,a from Application a join a.dictionaries d join d.labels obj,Translation t where obj.text=t.text and t.language.id=:languageId and obj.removed=false and obj.context.name<>:exclusion";
         }
-        hql += " and upper(t.translation) like :text";
-        param.put("text", "%" + text + "%");
+
+        hql += " and upper(t.translation) " + (isTextEmpty ? "=" : "like") + " :text";
+        param.put("text", isTextEmpty ? text : "%" + text + "%");
+
         Collection<Object[]> result3 = dao.retrieve(hql, param);
         // filter out those needTranslation==false
         for (Iterator<Object[]> iter = result3.iterator(); iter.hasNext(); ) {

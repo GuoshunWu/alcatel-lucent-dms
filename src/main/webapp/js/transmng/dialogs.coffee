@@ -1,4 +1,5 @@
 define [
+  'edialog'
   'jqmsgbox'
   'i18n!nls/transmng'
   'i18n!nls/common'
@@ -13,8 +14,9 @@ define [
 
   'transmng/trans_histories_grid'
 
-], ($, i18n, c18n, util, urls, grid, detailgrid, searchgrid, matchgrid, historygrid, historiesGrid)->
+], ($, msgbox, i18n, c18n, util, urls, grid, detailgrid, searchgrid, matchgrid, historygrid, historiesGrid)->
   transGrid = grid
+
   refreshGrid = (languageTrigger = false, grid = transGrid)->
     nodeInfo=util.getProductTreeInfo()
     type = nodeInfo.type
@@ -176,9 +178,12 @@ define [
   )
 
   transDetailDialog = $('#translationDetailDialog').dialog(
-    autoOpen: false, width: 860, height: 'auto', modal: true
+    autoOpen: false, width: 860, height: 'auto'
 
     open: ()->
+      me= $(@)
+      util.adjustDialogAndInnerGridSize(me, $("#transDetailGridList"), {width: 100, height: 50}, {width: 40, height: 270})
+
       $('#transDetailSearchAction',@).position(my: 'left center', at: 'right center', of: '#transDetailSearchText')
       param = $(@).data "param"
       $('#dictionaryName', @).html param.dict.name
@@ -222,6 +227,11 @@ define [
         $(@).dialog 'close'
       }
     ]
+  ).dialogExtend(
+#    "maximizable" : true
+    "minimizable" : true
+#    "collapsable" : true
+#    "dblclick" : "collapse"
   )
 
 
@@ -252,8 +262,12 @@ define [
   transSearchText = $('#transmngSearchTextDialog').dialog(
     autoOpen: false, width: 1020, height: 'auto', modal: true
     open: ()->
-      params = $(@).data 'params'
+      me=$(@)
       transSearchGrid =  $("#transSearchTextGrid")
+
+      util.adjustDialogAndInnerGridSize(me, transSearchGrid, {width: 100, height: 50}, {width: 30, height: 190})
+
+      params = me.data 'params'
       node = util.getProductTreeInfo()
 
       caption = i18n.searchtext.caption.format(
@@ -291,19 +305,9 @@ define [
       me = $(@)
       params = me.data "params"
       grid = $('#transHistoriesGrid')
-      #      resize size according to screen size
-      jWindow = $(window)
-      adjustWidth = 100
-      adjustHeight = 50
-      me.dialog( "option", "width", jWindow.width() - adjustWidth)
-      .dialog("option", "height", jWindow.height() - adjustHeight).position(of : jWindow)
+      util.adjustDialogAndInnerGridSize(me, grid)
 
-
-#      console.log("width=%o, height=%o", me.width(), me.height())
-
-      grid.setGridWidth(jWindow.width() - adjustWidth - 30)
-      .setGridHeight(jWindow.height() - adjustHeight - 240)
-      .setCaption(params.caption).setGridParam("postData":{
+      grid.setCaption(params.caption).setGridParam("postData":{
         appId: params.id, page: 1
         from: $('#operationTimeBegin').val(), to: $('#operationTimeEnd').val()
       })

@@ -19,14 +19,15 @@ define ['jqgrid'], ($)->
     gridParam.url = url
     gridParam.postData = postData if postData
 
-    #    console.log "recreate grid, gridpostData="
-    #    console.log  gridParam.postData
+#    console.log "recreate grid, grid rowNum =", gridParam.rowNum
     delete gridParam.selarrrow
     #    delete gridParam.selrow
+    gridParam.rowNum = parseInt gridParam.rowNum
     newGrid = $(@getId()).jqGrid gridParam
+
     #    save search tool bar status before recreate the grid
-    #    console.log $("#transGrid").jqGrid 'getGridParam', 'searchvalue'
     newGrid.getGridParam('afterCreate') newGrid
+
     newGrid
 
 

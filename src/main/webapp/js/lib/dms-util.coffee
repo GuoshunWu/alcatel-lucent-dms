@@ -487,4 +487,17 @@ c18n)->
     )
 
 
+  adjustDialogAndInnerGridSize :(dialog, grid, adjust = {width: 100, height: 50}, adjustGrid = {width: 30, height: 240}) ->
+    # resize size according to screen size
+    jWindow = $(window)
+    dialog.dialog( "option", "width", jWindow.width() - adjust.width)
+    .dialog("option", "height", jWindow.height() - adjust.height).position(of : jWindow)
+
+#    console.log("dialog %o width=%o, height=%o", dialog.attr("id"), dialog.width(), dialog.height())
+    return if(!grid || !grid.length)
+    # adjust grid
+    grid.setGridWidth(jWindow.width() - adjust.width - adjustGrid.width)
+    .setGridHeight(jWindow.height() - adjust.height - adjustGrid.height)
+
+
 

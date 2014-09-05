@@ -82,15 +82,23 @@ public class LabelLuceneREST extends BaseREST {
         Boolean fuzzy = Boolean.valueOf(requestMap.get("fuzzy"));
         String text = requestMap.get("text");
 
+        String tOperator = null;
+        String tValue = null;
+
+        if (null != text) {
+            if (text.isEmpty()) {
+                tOperator = "=";
+                tValue = text;
+            } else {
+                tOperator = "like";
+                tValue = "%" + text + "%";
+            }
+        }
+
         Integer firstResult = null;
         Integer maxResult = requestMap.get("rows") == null ? null : Integer.valueOf(requestMap.get("rows"));
         if (null != requestMap.get("page")) {
             firstResult = (Integer.parseInt(requestMap.get("page")) - 1) * maxResult;
-        }
-
-        if (text != null) {
-            text = text.trim();
-            text = text.isEmpty() ? null : text.toUpperCase();
         }
 
         String sidx = requestMap.get("sidx");
@@ -119,8 +127,13 @@ public class LabelLuceneREST extends BaseREST {
                 keywords.put("dictionary.applications.products.id", prodId);
             }
             float minimumSimilarity = fuzzy ? 0.8f : 0.99f;
+
+            if (text != null) {
+                text = text.trim();
+            }
+
             if (StringUtils.isNotEmpty(text)) {
-                fuzzyKeywords.put("reference", text);
+                fuzzyKeywords.put("reference", text.toUpperCase());
             }
 
 
@@ -148,65 +161,69 @@ public class LabelLuceneREST extends BaseREST {
                 labels = pageFilter(labels, requestMap);
             }
 
-        } else {
-            // add ot and ct information if a specific language was specified
-            labels = (text == null && dictId != null) ?
-                    new ArrayList<Label>(translationService.getLabelsWithTranslation(dictId, langId)) :
-                    new ArrayList<Label>(translationService.searchLabelsWithTranslation(prodId, appId, dictId, langId, text));
-            Collections.sort((ArrayList<Label>) labels, orders2Comparator(orders, sord, false));
+            return toJSON(labels, requestMap);
+        }
 
-            Map<String, String> filters = getGridFilters(requestMap);
-            if (filters != null) {    // filter by status
-                String statusParam = filters.get("ct.status");
-                if (statusParam != null && !statusParam.isEmpty()) {
-                    int statusFilter = Integer.parseInt(statusParam);
-                    // apply status filter
-                    Iterator<Label> iter = labels.iterator();
-                    while (iter.hasNext()) {
-                        Label label = iter.next();
-                        if (statusFilter != label.getCt().getStatus()) {
-                            iter.remove();
-                        }
-                    }
-                }
-                String typeParam = filters.get("ct.translationType");
-                if (typeParam != null && !typeParam.isEmpty()) {
-                    int typeFilter = Integer.parseInt(typeParam);
-                    // apply type filter
-                    Iterator<Label> iter = labels.iterator();
-                    while (iter.hasNext()) {
-                        Label label = iter.next();
-                        if (typeFilter != label.getCt().getTranslationType()) {
-                            iter.remove();
-                        }
-                    }
-                }
-            }
+//        langId is null
+        // add ot and ct information if a specific language was specified
+        labels = (text == null && dictId != null) ?
+                new ArrayList<Label>(translationService.getLabelsWithTranslation(dictId, langId)) :
+                new ArrayList<Label>(translationService.searchLabelsWithTranslation(prodId, appId, dictId, langId, null == text ? "" : text));
+        Collections.sort((ArrayList<Label>) labels, orders2Comparator(orders, sord, false));
 
-            // filter by nodiff flag
-            String nodiffStr = requestMap.get("nodiff");
-            boolean nodiff = nodiffStr != null && nodiffStr.equalsIgnoreCase("true");
-            if (nodiff) {
+        Map<String, String> filters = getGridFilters(requestMap);
+        if (filters != null) {    // filter by status
+            String statusParam = filters.get("ct.status");
+            if (statusParam != null && !statusParam.isEmpty()) {
+                int statusFilter = Integer.parseInt(statusParam);
+                // apply status filter
                 Iterator<Label> iter = labels.iterator();
                 while (iter.hasNext()) {
                     Label label = iter.next();
-                    if (!label.getReference().equals(label.getCt().getTranslation())) {
+                    if (statusFilter != label.getCt().getStatus()) {
                         iter.remove();
                     }
                 }
             }
-            requestMap.put("records", "" + labels.size());
-            // filter by page
-            labels = pageFilter(labels, requestMap);
+            String typeParam = filters.get("ct.translationType");
+            if (typeParam != null && !typeParam.isEmpty()) {
+                int typeFilter = Integer.parseInt(typeParam);
+                // apply type filter
+                Iterator<Label> iter = labels.iterator();
+                while (iter.hasNext()) {
+                    Label label = iter.next();
+                    if (typeFilter != label.getCt().getTranslationType()) {
+                        iter.remove();
+                    }
+                }
+            }
         }
 
+        // filter by nodiff flag
+        String nodiffStr = requestMap.get("nodiff");
+        boolean nodiff = nodiffStr != null && nodiffStr.equalsIgnoreCase("true");
+        if (nodiff) {
+            Iterator<Label> iter = labels.iterator();
+            while (iter.hasNext()) {
+                Label label = iter.next();
+                if (!label.getReference().equals(label.getCt().getTranslation())) {
+                    iter.remove();
+                }
+            }
+        }
+        requestMap.put("records", "" + labels.size());
+        // filter by page
+        labels = pageFilter(labels, requestMap);
         return toJSON(labels, requestMap);
+
+
     }
 
 
     /**
      * return true if orders contained compute order
      */
+
     private boolean isContainComputeOrder(String[] orders) {
         List<String> computeField = Arrays.asList("t", "n", "i");
         for (String order : orders) {
@@ -241,7 +258,7 @@ public class LabelLuceneREST extends BaseREST {
         for (String order : orders) {
             String[] idxOrder = order.split("\\s+");
             sidx = idxOrder[0];
-            if ("reference".equals(sidx) ) sidx += "_forSort";
+            if ("reference".equals(sidx)) sidx += "_forSort";
             String tmpOrd = idxOrder.length > 1 ? idxOrder[1] : sord;
             sortFields.add(new SortField(sidx, SortField.STRING, tmpOrd.equalsIgnoreCase("asc")));
         }
@@ -251,6 +268,7 @@ public class LabelLuceneREST extends BaseREST {
     private ComparatorChain orders2Comparator(String[] orders, String sord) {
         return orders2Comparator(orders, sord, true);
     }
+
     private ComparatorChain orders2Comparator(String[] orders, String sord, boolean isLuceneOrder) {
         ComparatorChain comparator = new ComparatorChain();
         String sidx;
