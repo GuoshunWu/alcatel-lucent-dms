@@ -9,28 +9,8 @@ define [
 
   lastEditedCell = null
 
-  ###
-    find the labels which reference resemblant to the text and display in a modal dialog
-  ###
-  matchAction = (refText, transId, labelId) ->
-    # +_hibernate_class:com.alcatel_lucent.dms.model.Translation +text.reference:text~0.8 + status:2 + language.id:46
-    languageId = $('#detailLanguageSwitcher').val()
-
-    $('#transmngMatchTextDialog').dialog('open')
-    grid = $("#transMatchTextGrid")
-    postData = grid.getGridParam('postData')
-    postData.language = languageId
-    postData.text = refText
-    postData.format = 'grid'
-    postData.fuzzy = true
-    postData.transId = transId
-    postData.labelId = labelId
-    postData.prop = 'reference, translation, score'
-
-    grid.setGridParam(page: 1).trigger 'reloadGrid'
-
   transDetailGrid = $("#transDetailGridList").jqGrid(
-    mtype: 'POST', postData: {}, editurl: "", datatype: 'local', url: urls.translations
+    mtype: 'POST', postData: {}, editurl: "", datatype: 'local', url: urls.labels_normal
     width: 'auto', height: 200, shrinkToFit: false
     rownumbers: true
     pager: '#transDetailsPager', rowNum: 100, rowList: [20,50,100,200,500]
@@ -73,9 +53,15 @@ define [
     gridComplete: ->
       grid = $(@)
       $('div[id^=matchAct]', @).click(()->
-        [_, id, ref,transId]=@id.split('_')
-        grid.getRowData()
-        matchAction(ref, transId, id)
+        [_, id, ref,transId] = @id.split('_')
+        data =
+          transId: transId,
+          labelId: id,
+          refText: ref
+
+#        find the labels which reference resemblant to the text and display in a modal dialog
+        $('#transmngMatchTextDialog').data("param", data).dialog('open')
+
       ).on('mouseover',()->
         $(@).addClass('ui-state-hover')
       ).on('mouseout', ()->
@@ -165,11 +151,9 @@ define [
 
   languageChanged: (param)->
     transDetailGrid = $("#transDetailGridList")
-    url = urls.labels_normal
     prop = "key,maxLength,context.name,reference,ct.translation,ct.status,ct.id,ct.translationType,ct.lastUpdateTime"
 #    idprop: 'ct.id'
-    transDetailGrid.setGridParam url: url, datatype: "json", postData: {dict: param.dict.id, language: param.language.id, format: 'grid', prop: prop}
-
+    transDetailGrid.setGridParam postData: {dict: param.dict.id, language: param.language.id, format: 'grid', prop: prop}
     #   set search tool bar status
     options = transDetailGrid.getColProp('transStatus').searchoptions
     options.defaultValue = param.searchStatus
@@ -178,7 +162,6 @@ define [
     $('select#gs_transStatus','#translationDetailDialog').val param.searchStatus
     $('select#gs_transtype','#translationDetailDialog').val param.transsrc
     transDetailGrid[0].triggerToolbar()
-
 
   saveLastEditedCell: ()->
     transDetailGrid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell

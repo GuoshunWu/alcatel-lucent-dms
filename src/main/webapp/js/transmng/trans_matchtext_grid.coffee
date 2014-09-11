@@ -9,7 +9,7 @@ define [
 
 
   grid = $("#transMatchTextGrid").jqGrid(
-    mtype: 'POST', datatype: 'local'
+    mtype: 'POST', datatype: 'local', url: urls.translations
     width: 'auto', height: 350
     rownumbers: true
     pager: '#transMatchTextGridPager', rowNum: 200, rowList: [100, 200,500]
