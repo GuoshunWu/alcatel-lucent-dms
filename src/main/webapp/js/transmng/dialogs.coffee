@@ -182,7 +182,6 @@ define [
     open: ()->
       me= $(@)
       util.adjustDialogAndInnerGridSize(me, $("#transDetailGridList"), {width: 100, height: 50}, {width: 50, height: 270})
-
       $('#transDetailSearchAction',@).position(my: 'left center', at: 'right center', of: '#transDetailSearchText')
       param = $(@).data "param"
       $('#dictionaryName', @).html param.dict.name
@@ -324,13 +323,33 @@ define [
 
   transMatchText = $('#transmngMatchTextDialog').dialog(
     autoOpen: false
+    open: ->
+      transMatchGrid = $("#transMatchTextGrid")
+#      $(":button:contains('#{c18n.ok}')", $(this).next('div.ui-dialog-buttonpane')).prop("disabled", !hasData)
+      param = $(@).data('param')
+      # +_hibernate_class:com.alcatel_lucent.dms.model.Translation +text.reference:text~0.8 + status:2 + language.id:46
+      languageId = $('#detailLanguageSwitcher').val()
+
+      postData = transMatchGrid.getGridParam('postData')
+      postData.language = languageId
+      postData.text = param.refText
+      postData.format = 'grid'
+      postData.fuzzy = true
+      postData.transId = param.transId
+      postData.labelId = param.labelId
+      postData.prop = 'reference, translation, score'
+
+      transMatchGrid.setGridParam(page: 1).trigger 'reloadGrid'
+
     width: 1000, height: 'auto', modal: true
 
     buttons: [
       {text: c18n.ok, click: ()->
         grid = $("#transMatchTextGrid")
         selId = grid.getGridParam('selrow')
-        if grid.getRowData().length > 0 and not selId
+        hasData = grid.getRowData().length > 0
+
+        if hasData or not selId
           $.msgBox('Please select translation to apply.', null, title: c18n.error)
           return
         rowData=grid.getRowData(selId)
