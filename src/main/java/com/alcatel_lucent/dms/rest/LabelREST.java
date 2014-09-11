@@ -86,7 +86,7 @@ public class LabelREST extends BaseREST {
                 tValue = text;
             } else {
                 tOperator = "like";
-                tValue = "%" + text + "%";
+                tValue = "%" + text.toUpperCase() + "%";
             }
         }
 
