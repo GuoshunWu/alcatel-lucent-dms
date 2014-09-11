@@ -31,7 +31,7 @@ import javax.annotation.Resource
  * To change this template use File | Settings | File Templates.
  */
 
-//@Ignore
+@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration()
 @ContextConfiguration(classes = [AppConfig])

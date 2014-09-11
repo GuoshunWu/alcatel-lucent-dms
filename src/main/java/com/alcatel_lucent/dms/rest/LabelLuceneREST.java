@@ -82,18 +82,6 @@ public class LabelLuceneREST extends BaseREST {
         Boolean fuzzy = Boolean.valueOf(requestMap.get("fuzzy"));
         String text = requestMap.get("text");
 
-        String tOperator = null;
-        String tValue = null;
-
-        if (null != text) {
-            if (text.isEmpty()) {
-                tOperator = "=";
-                tValue = text;
-            } else {
-                tOperator = "like";
-                tValue = "%" + text + "%";
-            }
-        }
 
         Integer firstResult = null;
         Integer maxResult = requestMap.get("rows") == null ? null : Integer.valueOf(requestMap.get("rows"));
