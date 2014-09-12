@@ -93,6 +93,9 @@ define [
 
           $.post urls.context.merge, postData , (json)->
             console.log "return json=", json
+            if(-1 == json.status)
+              $.msgBox json.message, null, {title: c18n.error}
+              return
             compareGrid.trigger 'reloadGrid'
 
           $(@).dialog('close')
