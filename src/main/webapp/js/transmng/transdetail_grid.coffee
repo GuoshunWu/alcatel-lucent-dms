@@ -40,7 +40,7 @@ define [
       {name: 'action', index: 'action', width: 50, align:'center', search: false, sortable: false
 #      hidden: true
       formatter: (cellvalue, options, rowObject)->
-        ret ="<div id='matchAct_#{options.rowId}_#{rowObject[3]}_#{rowObject[6]}' style='display:inline-block' title=\"Match\" class=\"ui-state-default ui-corner-all\">"
+        ret ="<div id='matchAct_#{options.rowId}' style='display:inline-block' title=\"Match\" class=\"ui-state-default ui-corner-all\">"
         ret +="<span class=\"ui-icon ui-icon-search\"></span></div>"
         ret
       unformat:(cellvalue, options)->""
@@ -53,11 +53,12 @@ define [
     gridComplete: ->
       grid = $(@)
       $('div[id^=matchAct]', @).click(()->
-        [_, id, ref,transId] = @id.split('_')
+        [_, id] = @id.split('_')
+        rowData = grid.getRowData id
         data =
-          transId: transId,
+          transId: rowData.transId,
           labelId: id,
-          refText: ref
+          refText: rowData.reflang
 
 #        find the labels which reference resemblant to the text and display in a modal dialog
         $('#transmngMatchTextDialog').data("param", data).dialog('open')

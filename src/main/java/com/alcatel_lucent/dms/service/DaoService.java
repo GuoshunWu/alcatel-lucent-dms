@@ -89,6 +89,15 @@ public interface DaoService {
     Object update(Object entity, String[] propertyNames);
 
     /**
+     * Update entities by hql.
+     * @param hql hql
+     * @param paramMap hql parameters
+     * @return numbers of effected entities
+     *
+     * */
+    int update(String hql, Map paramMap);
+
+    /**
      * Create or update an entity.
      * The operation is decided by whether identifier is null.
      * @param entity entity to be created or updated
