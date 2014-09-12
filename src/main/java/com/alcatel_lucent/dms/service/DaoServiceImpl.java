@@ -302,11 +302,6 @@ public class DaoServiceImpl implements DaoService {
         return returns;
     }
 
-    public int update(String hql, Map<String, Object> param){
-        Session session = getSession();
-        return 0;
-    }
-
     public Object update(Object obj) {
         return update(obj, null);
     }
@@ -354,6 +349,10 @@ public class DaoServiceImpl implements DaoService {
         } catch (HibernateException ex) {
             throw ex;
         }
+    }
+
+    public int update(String hql, Map paramMap){
+        return delete(hql, paramMap);
     }
 
     public Object createOrUpdate(Object obj) {
