@@ -24,9 +24,9 @@ define [
   grid = $(hGridId).jqGrid(
     url: urls.text.diff_texts
     datatype: 'local', mtype: 'post'
-    postData: {format: 'grid', prop: 'reference, context.key, languageNum, t, n, i, refs, diff'}
+    postData: {format: 'grid', prop: 'reference, context.key, languageNum, t, n, i, refs, diff, context.id'}
     caption: i18n.compareGridTitle
-    colNames: ['Reference text', 'Context', 'Languages', 'T', 'N', 'I', 'Refs', 'Diff', 'Merge']
+    colNames: ['Reference text', 'Context', 'Languages', 'T', 'N', 'I', 'Refs', 'Diff',  'Context ID', 'Merge',]
     colModel: [
       {name: 'reference', index: 'reference', width: 700, editable: false, align: 'left', hidden: true}
       {name: 'context', index: 'context.key', width: 700, editable: false, align: 'left'}
@@ -36,10 +36,10 @@ define [
       $.extend {}, {name: 'i', index: 'i', sortable: false, width: 20, editable: false, align: 'right'}, modelLinkerFmt
       $.extend {}, {name: 'refs', index: 'refs', editable: false, sortable: false, width: 50, align: 'right'}, modelLinkerFmt
       $.extend {}, {name: 'diff', index: 'diff', sortable: false, width: 50, editable: false, align: 'right'}, modelLinkerFmt
-
+      {name: 'contextId', index: 'context.id', width: 700, editable: false, align: 'left', hidden: true}
       {name: 'merge', index: 'merge', editable:false, width: 40, align: 'center', unformat: (cellvalue, options, cell) ->cellvalue
       formatter: (cellvalue, options, rowObject)->
-          return "" if "0" != rowObject[options.pos - 1] || !rowObject[options.pos - 1]
+          return "" if "0" != rowObject[options.pos - 2] || !rowObject[options.pos - 2]
           "<a href=\"javascript:void(0);\" title='M' id=\"act_#{options.rowId}_#{options.colModel.name}_#{options.pos}_M\" style='color:blue'>M</a>"
       }
     ]

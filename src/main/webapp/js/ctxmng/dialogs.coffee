@@ -68,36 +68,48 @@ define [
       autoOpen: false
       width: 650
       open:()->
-        grid = diffGrid.grid
         params = $(@).data 'params'
-        option = $('#contextSelector > option:selected', "#ctxmng")
         params.rowData.context
 
-        $('#ctxALabel', @).text option.text()
-        # bound to textA id
-        $('#contextA', @).val($('#contextGrid').getGridParam('selrow')).prop('checked', '[DEFAULT]' == option.text())
-        $('#ctxBLabel', @).text params.rowData.context
-        # bound to textB id
-        $('#contextB', @).val(params.id).prop('checked', '[DEFAULT]' == params.rowData.context)
+        option = $('#contextSelector > option:selected', "#ctxmng")
 
-        $('#contextA', @).prop('checked',true) unless $("input:radio[name=contextGrp]:checked", @).length
+        # bound to textA id
+        $('#ctxALabel', @).text option.text()
+        $('#contextA', @).val(option.val()).prop('checked', '[DEFAULT]' == option.text())
+        $('#contextA', @).prop("checked", true) unless $("input:radio[name=contextGrp]:checked", @).length
+
+        $('#ctxBLabel', @).text params.rowData.context
+        $('#contextB', @).val(params.rowData.contextId).prop('checked', '[DEFAULT]' == params.rowData.context)
+        # bound to textB id
       buttons: [
         {text: c18n.ok, click: ->
           params = $(@).data 'params'
-          compareGrid = $('#compareContextGrid')
+
           postData =
             contextAId: $('#contextA', @).val()
+            contextATextId: $('#contextGrid').getGridParam('selrow')
             contextBId: $('#contextB', @).val()
+            contextBTextId: params.id
             mergedToContextId: $("input:radio[name=contextGrp]:checked", @).val()
             reference: params.rowData.reference
 
+#          console.log "postData=", postData
+
+          compareGrid = $('#compareContextGrid')
           $.post urls.context.merge, postData , (json)->
-            console.log "return json=", json
+#            console.log "return json=", json
             if(-1 == json.status)
               $.msgBox json.message, null, {title: c18n.error}
               return
-            compareGrid.trigger 'reloadGrid'
+            if(1 == json.status)
+              $.msgBox json.message, (keyPressed)->
+                $('#selVersion',"div[id='ctxmng']").trigger 'change'
+                compareGrid.clearGridData()
+              , {title: c18n.message}, [c18n.ok]
+              return
 
+            $('#contextGrid').trigger 'reloadGrid'
+            compareGrid.clearGridData()
           $(@).dialog('close')
         }
       ]
@@ -117,10 +129,9 @@ define [
           # convert take translation result to array
           results = for textAId, val of diffGrid.getTakeTranslationResult()
             textA: textAId, textB: val.other, take: val.selected
-          console.log results
 
           $.post urls.context.take_translations, translationPairs: JSON.stringify(results), (json)->
-            console.log "back data=", json
+#            console.log "back data=", json
             diffGrid.grid.trigger 'reloadGrid'
             $('#compareContextGrid').trigger 'reloadGrid'
         }
