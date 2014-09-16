@@ -20,20 +20,97 @@ public class ContextServiceImpl extends BaseServiceImpl implements ContextServic
 
     @Override
     @SuppressWarnings("unchecked")
-    public void mergeContext(Long ctxAId, Long ctxBId, Long mergedToId) {
-        log.info("Merge context A(id={}), context B(id={}) into context(id={})", ctxAId, ctxBId, mergedToId);
-        Long beMergeId = ctxAId.equals(mergedToId) ? ctxBId : ctxAId;
+    public Context mergeContext(Long ctxAId, Long ctxATextId, Long ctxBId, Long ctxBTextId, Long mergedToCtxId) {
+        return mergeTextInContext(ctxAId, ctxATextId, ctxBId, ctxBTextId, mergedToCtxId);
+    }
+
+
+    /**
+     * Merge text a in context a into text b in context b or vice versa
+     */
+    private Context mergeTextInContext(Long ctxAId, Long ctxATextId, Long ctxBId, Long ctxBTextId, Long mergedToCtxId) {
+        //default context a merged to context b
+        Text textA = (Text) dao.retrieve(Text.class, ctxATextId);
+        Text textB = (Text) dao.retrieve(Text.class, ctxBTextId);
+
+        Context ctxA = (Context) dao.retrieve(Context.class, ctxAId);
+        Context ctxB = (Context) dao.retrieve(Context.class, ctxBId);
+
+        // if merged to a, swap context a and b
+        if (mergedToCtxId.equals(ctxAId)) {
+            Text tempText = textA;
+            textA = textB;
+            textB = tempText;
+
+            Context tempCtx = ctxA;
+            ctxA = ctxB;
+            ctxB = tempCtx;
+        }
+
+        @Language("HQL") String hql = "from Label where text.id = :textId";
+        List<Label> labels = dao.retrieve(hql, ImmutableMap.of("textId", textA.getId()));
+
+        // update labels
+        for (Label label : labels) {
+            label.setText(textB);
+            label.setContext(ctxB);
+        }
+
+        Collection<Translation> translations = textA.getTranslations();
+        for (Translation translation : translations) {
+            Translation correspondingTranslation = textB.getTranslation(translation.getLanguage().getId());
+            if (null == correspondingTranslation) {
+                translation.setText(textB);
+                continue;
+            }
+
+            if (correspondingTranslation.getStatus() == Translation.STATUS_UNTRANSLATED && Translation.STATUS_TRANSLATED == translation.getStatus()) {
+                translation.setText(textB);
+            }
+            dao.delete(correspondingTranslation, false);
+        }
+
+        // update task detail
+        hql = "from TaskDetail td where text.id = :textId";
+        List<TaskDetail> taskDetails = dao.retrieve(hql, ImmutableMap.of("textId", textA.getId()));
+        for (TaskDetail td : taskDetails) {
+            td.setText(textB);
+        }
+        dao.delete(textA, false);
+
+        //if context a is empty then delete context a
+        hql = "select count(t) from Text t where context.id = :ctxId";
+        Long textsInTextA = (Long) dao.retrieveOne(hql, ImmutableMap.of("ctxId", ctxA.getId()));
+        if (textsInTextA > 0L) {
+            return null;
+        }
+
+        dao.delete(ctxA, false);
+        return ctxA;
+    }
+
+    /**
+     * Merge text a in context a into text b in context b or vice versa
+     */
+
+    private void mergeContextAtoContextB(Long ctxAId, Long ctxBId, Long mergedToCtxId) {
+        Long beMergeId = ctxAId.equals(mergedToCtxId) ? ctxBId : ctxAId;
 
         // Now merge be merged id to mergedTo id
-        // TODO:
         // 1. Set all the texts and labels which context id is beMergedId to context which id is mergedToId
-        Context toContext = (Context) dao.retrieve(Context.class, mergedToId);
-        @Language("HQL") String hql = "from Text where id = :ctxId";
+        Context toContext = (Context) dao.retrieve(Context.class, mergedToCtxId);
+        Context beMergedContext = (Context) dao.retrieve(Context.class, beMergeId);
+
+        // query textA and textB
+
+        log.info("Merge context {}, context {} into context{}", beMergedContext, toContext, toContext);
+
+        @Language("HQL") String hql = "from Text where context.id = :ctxId";
         Map params = ImmutableMap.of("ctxId", beMergeId);
 
         List<Text> beMergedTextList = dao.retrieve(hql, params);
 
-        params = ImmutableMap.of("ctxId", mergedToId);
+        params = ImmutableMap.of("ctxId", mergedToCtxId);
         List<Text> mergedToTextList = dao.retrieve(hql, params);
         // convert to map
         Map<String, Text> textMap = new HashMap<String, Text>();
@@ -42,10 +119,18 @@ public class ContextServiceImpl extends BaseServiceImpl implements ContextServic
         }
 
         for (Text text : beMergedTextList) {
+
+            hql = "from Label where text.id = :textId";
+            List<Label> labels = dao.retrieve(hql, ImmutableMap.of("textId", text.getId()));
+
             Text correspondingText = textMap.get(text.getReference());
             // if no corresponding text exists
             if (null == correspondingText) {
                 text.setContext(toContext);
+                // update labels
+                for (Label label : labels) {
+                    label.setContext(toContext);
+                }
                 continue;
             }
             Collection<Translation> translations = text.getTranslations();
@@ -58,35 +143,28 @@ public class ContextServiceImpl extends BaseServiceImpl implements ContextServic
                 }
 
                 if (correspondingTranslation.getStatus() == Translation.STATUS_UNTRANSLATED && Translation.STATUS_TRANSLATED == translation.getStatus()) {
-                    correspondingTranslation.setTranslation(translation.getTranslation());
-                    correspondingTranslation.setStatus(translation.getStatus());
-
-                    if (null != translation.getHistories() && !translation.getHistories().isEmpty()) {
-                        Collection<TranslationHistory> histories = correspondingTranslation.getHistories();
-                        if (null == histories) {
-                            histories = new ArrayList<TranslationHistory>();
-                        }
-                        histories.addAll(translation.getHistories());
-                    }
+                    translation.setText(correspondingText);
                 }
-                dao.delete(translation);
+                dao.delete(translation, false);
             }
             // update labels
-            hql = "from Label where text.id = :textId";
-            List<Label> labels = dao.retrieve(hql, ImmutableMap.of("textId", text.getId()));
             for (Label label : labels) {
                 label.setText(correspondingText);
+                label.setContext(correspondingText.getContext());
             }
 
             // update task detail
-            hql = "update TaskDetail set text=:text where text.id = :textId";
-            dao.update(hql, ImmutableMap.of("text", correspondingText, "textId", text.getId()));
-            dao.delete(text);
-//            dao.delete("delete Text where id=:textId", (Map) ImmutableMap.of("textId", text.getId()));
+            hql = "from TaskDetail td where text.id = :textId";
+            List<TaskDetail> taskDetails = dao.retrieve(hql, ImmutableMap.of("textId", text.getId()));
+            for (TaskDetail td : taskDetails) {
+                td.setText(correspondingText);
+            }
+            dao.delete(text, false);
         }
 
         // 4. Remove the none referenced context
-        dao.delete(Context.class, beMergeId);
-
+        dao.delete(beMergedContext, false);
     }
+
+
 }

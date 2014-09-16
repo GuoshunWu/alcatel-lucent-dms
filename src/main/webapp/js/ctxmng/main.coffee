@@ -99,13 +99,6 @@ define [
       comparectxgrid.grid.trigger 'reloadGrid'
     )
 
-    $('#contextShowDiff', '#ctxmng').button(
-    ).click(-> alert("to be implemented."))
-
-    $('#contextMerge', '#ctxmng').button(
-
-    ).click(-> alert("to be implemented."))
-
   init()
   ready()
 

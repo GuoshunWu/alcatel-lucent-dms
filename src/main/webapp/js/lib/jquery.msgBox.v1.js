@@ -3,7 +3,6 @@
  * User: Guoshun Wu
  * Date: 12-9-7
  * Time: 下午4:30
- * To change this template use File | Settings | File Templates.
  */
 
 //==========================================================================
@@ -65,7 +64,7 @@
     {
 
         height:'auto',
-        width:300,
+        width: 550,
 //        maxWidth:1200,
 //        maxHeight:600,
         title:"Message",

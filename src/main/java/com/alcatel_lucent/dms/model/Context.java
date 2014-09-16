@@ -1,5 +1,6 @@
 package com.alcatel_lucent.dms.model;
 
+import com.google.common.base.Objects;
 import org.apache.commons.lang3.ArrayUtils;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
@@ -75,7 +76,11 @@ public class Context extends BaseEntity {
 
     @Override
     public String toString() {
-        return String.format("Context [name=%s]", name);
+        return Objects.toStringHelper(this)
+                .add("id", getId())
+                .add("key", key)
+                .add("name", name)
+                .toString();
     }
 
     @Override
@@ -111,5 +116,6 @@ public class Context extends BaseEntity {
     public void setKey(String key) {
         this.key = key;
     }
+
 
 }
