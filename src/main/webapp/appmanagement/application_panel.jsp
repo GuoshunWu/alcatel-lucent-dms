@@ -1,9 +1,8 @@
 <div id="DMS_applicationPanel" class="dms_appmng_panel">
-
     <table border="0" style="width: 100%; height:100%;">
         <tr style="height: 20px">
             <td>
-                <span class="show-label"><s:text name="application"/></span>
+                <span class="show-label" id="typeLabel"><s:text name="application"/></span>
                 <span class="show-label" id="appDispAppName"></span>
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <span class="show-label"><s:text name="version"/></span>

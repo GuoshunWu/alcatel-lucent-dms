@@ -39,10 +39,12 @@ define [
     $('#loading-container').fadeOut 'slow', ()->$(@).remove()
 
     cdialogs.tipOfDayDialog.dialog 'open' if window.param.currentUser.showTips
+  window.param.currentPanel = 'appmng'
 
   panelSwitchHandler = (oldpnl, newpnl)->
     # The panels need to be informed if current product base changed
 #    console?.log "oldpnl= #{oldpnl}, newpnl= #{newpnl}."
+    window.param.currentPanel = newpnl
     if 'admin' == oldpnl or 'admin' == newpnl
       $('#adminTabs').tabs 'option', 'active', 2  if isFirst
       isFirst = false
@@ -56,7 +58,24 @@ define [
     tmp = type
     tmp = 'product' if 'prod' == tmp
     tmp += 'Id'
+
+    selSelector = if 'appmng'== oldpnl and type=='app' then '#selAppVersion' else '#selVersion'
+    oldVersion = $("#{selSelector}", "div[id='#{oldpnl}']")
+
+    selSelector = if 'appmng'== newpnl and type=='app' then '#selAppVersion' else '#selVersion'
+    newVersion = $("#{selSelector}", "div[id='#{newpnl}']")
+
+    ###
+     if the product or application version not changed when switch to new panel, then
+     event should not be triggered.
+    ###
+
+    newTypeSaver = $("##{newpnl}")
+    console.log "type=%o version = %o , new type= %o version= %o", type, oldVersion.val(), newTypeSaver.attr('type'), newVersion.val()
+    return if oldVersion.val() == newVersion.val() && type == newTypeSaver.attr('type')
+
     window.param.currentSelected[tmp]= $('#selVersion', "div[id='#{oldpnl}']").val()
+
 
     if newpnl in ['appmng']
       # trigger the js tree select node event
@@ -74,8 +93,10 @@ define [
         $('#versionTypeLabel', "div[id='#{newpnl}']").text nodeInfo.text
         $('#typeLabel',"div[id='#{newpnl}']").text "#{c18n[type].capitalize()}: "
 
-
-
+  # update current panel node type when application or product version changed
+  $("select[id='selVersion'], select[id='selAppVersion']").change(->
+    $("##{window.param.currentPanel}").attr('type', util.getProductTreeInfo().type)
+  )
   ################################################## Initilaize #####################################################
   init = ()->
     dmsPanels = new util.PanelGroup('div.dms-panel', 'none', panelSwitchHandler)
