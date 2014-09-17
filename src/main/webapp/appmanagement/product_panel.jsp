@@ -3,7 +3,7 @@
     <table border="0" style="width: 100%; height: 100%">
         <tr style="height:20px;">
             <td>
-                <span class="show-label"><s:text name="product"/></span>
+                <span class="show-label" id="typeLabel"><s:text name="product"/></span>
                 <span class="show-label" id="dispProductName"></span>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <label class="show-label" for="selVersion"><s:text name="version"/></label>
