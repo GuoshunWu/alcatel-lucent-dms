@@ -75,13 +75,15 @@ public class LabelREST extends BaseREST {
         Long prodId = requestMap.get("prod") == null ? null : Long.valueOf(requestMap.get("prod"));
         Long appId = requestMap.get("app") == null ? null : Long.valueOf(requestMap.get("app"));
         Long dictId = requestMap.get("dict") == null ? null : Long.valueOf(requestMap.get("dict"));
+
+        boolean exact = requestMap.get("exact") != null && Boolean.parseBoolean(requestMap.get("exact"));
         String text = requestMap.get("text");
         // empty indicate that search exactly empty text
         String tOperator = null;
         String tValue = null;
 
         if (null != text) {
-            if (text.isEmpty()) {
+            if (text.isEmpty() || exact) {
                 tOperator = "=";
                 tValue = text;
             } else {

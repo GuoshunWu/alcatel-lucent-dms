@@ -24,7 +24,10 @@
 
                         </td>
                         <td rowspan="2" align="right">
-                            <span class="translation-search-text">
+
+                            <fieldset style="width: 580px">
+                                <legend align="center"><s:text name="searchtext"/></legend>
+                                <span class="translation-search-text">
                                 <label for="transSearchText"><s:text name="searchtext"/></label>
                                 <input id="transSearchText"/>
                                 <s:text name="transmng.in"/>
@@ -34,9 +37,17 @@
                                     </option>
                                 </select>
                                 <button id="transSearchAction"></button>
-                                &nbsp;&nbsp;&nbsp;
-                                <button id="transHistories" title="<s:text name="transmng.translation.history"/>"></button>
-                            </span>
+                                &nbsp;
+                                <div style="display: inline">
+                                    <s:text name="exact"/>: <input style="vertical-align: middle" type="checkbox"
+                                                  id="transSearchText_exact"/>
+                                </div>
+                                &nbsp;
+                                <button id="transHistories"
+                                        title="<s:text name="transmng.translation.history"/>"></button>
+                                </span>
+                            </fieldset>
+
                         </td>
                         <td style="width: 25px">
                         </td>

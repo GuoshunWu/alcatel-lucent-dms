@@ -71,7 +71,7 @@ define [
     ###
 
     newTypeSaver = $("##{newpnl}")
-    console.log "type=%o version = %o , new type= %o version= %o", type, oldVersion.val(), newTypeSaver.attr('type'), newVersion.val()
+#    console.log "type=%o version = %o , new type= %o version= %o", type, oldVersion.val(), newTypeSaver.attr('type'), newVersion.val()
     return if oldVersion.val() == newVersion.val() && type == newTypeSaver.attr('type')
 
     window.param.currentSelected[tmp]= $('#selVersion', "div[id='#{oldpnl}']").val()
@@ -132,8 +132,6 @@ define [
 
     # appmng panel as the current page on init
     $("span[id^='nav'][value='appmng']").trigger 'click'
-
-
 
   ################################################## Initilaized #####################################################
   init()

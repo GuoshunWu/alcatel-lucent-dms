@@ -122,7 +122,7 @@ public class POGenerator extends DictionaryGenerator {
 
 	/**
 	 * Split lines by \n
-	 * @param annotation1
+	 * @param s
 	 * @return
 	 */
 	private String formatStr(String s) {

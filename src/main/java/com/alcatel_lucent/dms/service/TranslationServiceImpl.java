@@ -1119,9 +1119,19 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
     }
 
     public Collection<Label> searchLabelsWithTranslation(Long prodId,
-                                                         Long appId, Long dictId, Long langId, String text) {
+                                                         Long appId, Long dictId, Long langId, String text){
+        return searchLabelsWithTranslation(prodId, appId, dictId, langId, text, false);
+    }
+
+    public Collection<Label> searchLabelsWithTranslation(Long prodId,
+                                                         Long appId, Long dictId, Long langId, String text, boolean isExact) {
         text = text.toUpperCase();
-        boolean isTextEmpty = text.isEmpty();
+        String tOperator = "like";
+        String tValue = "%" + text + "%";
+        if (text.isEmpty() || isExact) {
+            tOperator = "=";
+            tValue = text;
+        }
         String hql;
         Map param = new HashMap();
 
@@ -1138,8 +1148,8 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
         } else {
             hql = "select obj,0,a from Application a join a.dictionaries d join d.labels obj where obj.removed=false";
         }
-        hql += " and upper(obj.reference) " + (isTextEmpty ? "=" : "like") + " :text";
-        param.put("text", isTextEmpty ? text : "%" + text + "%");
+        hql += " and upper(obj.reference) " + tOperator + " :text";
+        param.put("text", tValue);
         Collection<Object[]> result1 = dao.retrieve(hql, param);
 
         // search text in original translation
@@ -1158,8 +1168,8 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
         } else {
             hql = "select obj,lt,a from Application a join a.dictionaries d join d.labels obj join obj.origTranslation lt where lt.language.id=:languageId and lt.needTranslation=false and obj.removed=false and obj.context.name<>:exclusion";
         }
-        hql += " and lt.needTranslation=true and upper(lt.origTranslation) "+ (isTextEmpty ? "=" : "like") +" :text";
-        param.put("text", isTextEmpty ? text : "%" + text + "%");
+        hql += " and lt.needTranslation=true and upper(lt.origTranslation) " + tOperator + " :text";
+        param.put("text", tValue);
         Collection<Object[]> result2 = dao.retrieve(hql, param);
 
 
@@ -1180,8 +1190,8 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
             hql = "select obj,t,a from Application a join a.dictionaries d join d.labels obj,Translation t where obj.text=t.text and t.language.id=:languageId and obj.removed=false and obj.context.name<>:exclusion";
         }
 
-        hql += " and upper(t.translation) " + (isTextEmpty ? "=" : "like") + " :text";
-        param.put("text", isTextEmpty ? text : "%" + text + "%");
+        hql += " and upper(t.translation) " + tOperator+ " :text";
+        param.put("text", tValue);
 
         Collection<Object[]> result3 = dao.retrieve(hql, param);
         // filter out those needTranslation==false
