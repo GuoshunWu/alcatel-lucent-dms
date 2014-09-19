@@ -82,7 +82,6 @@ public class LabelLuceneREST extends BaseREST {
         Boolean fuzzy = Boolean.valueOf(requestMap.get("fuzzy"));
         String text = requestMap.get("text");
 
-
         Integer firstResult = null;
         Integer maxResult = requestMap.get("rows") == null ? null : Integer.valueOf(requestMap.get("rows"));
         if (null != requestMap.get("page")) {
@@ -148,15 +147,16 @@ public class LabelLuceneREST extends BaseREST {
                 // filter by page
                 labels = pageFilter(labels, requestMap);
             }
-
             return toJSON(labels, requestMap);
         }
+
+        boolean exact = requestMap.get("exact") != null && Boolean.parseBoolean(requestMap.get("exact"));
 
 //        langId is null
         // add ot and ct information if a specific language was specified
         labels = (text == null && dictId != null) ?
                 new ArrayList<Label>(translationService.getLabelsWithTranslation(dictId, langId)) :
-                new ArrayList<Label>(translationService.searchLabelsWithTranslation(prodId, appId, dictId, langId, null == text ? "" : text));
+                new ArrayList<Label>(translationService.searchLabelsWithTranslation(prodId, appId, dictId, langId, (null == text ? "" : text), exact));
         Collections.sort((ArrayList<Label>) labels, orders2Comparator(orders, sord, false));
 
         Map<String, String> filters = getGridFilters(requestMap);

@@ -127,12 +127,26 @@ public interface TranslationService {
 	 * @param appId application id, ignored if dictId is specified
 	 * @param dictId dictionary id
 	 * @param langId language id
-	 * @param text search text (case insensitave)
+	 * @param text search text (case insensitive)
 	 * @return collection of labels, translation information is contained in ct and ot properties
 	 */
 	Collection<Label> searchLabelsWithTranslation(Long prodId,
 			Long appId, Long dictId, Long langId, String text);
 
+
+    /**
+     * Retrieve label information with translation of specific language by search of text
+     * @param prodId product id, ignored if appId or dictId is specified
+     * @param appId application id, ignored if dictId is specified
+     * @param dictId dictionary id
+     * @param langId language id
+     * @param text search text (case insensitive)
+     * @param isExact weather use exact equal instead of containing search
+     * @return collection of labels, translation information is contained in ct and ot properties
+     */
+
+    Collection<Label> searchLabelsWithTranslation(Long prodId,
+                                                  Long appId, Long dictId, Long langId, String text, boolean isExact);
 
 
 	/**

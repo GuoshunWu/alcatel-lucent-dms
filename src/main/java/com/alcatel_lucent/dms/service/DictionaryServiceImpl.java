@@ -354,7 +354,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
      *
      * @param dict
      * @param label
-     * @param textMap all the texts in DB with reference as key, text as value.
+     * @param translationMap all the texts in DB with reference as key, text as value.
      * @return
      */
     private boolean isConflict(Dictionary dict, Label label, MultiKeyMap translationMap) {
@@ -1465,7 +1465,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
      * An auto-match of translation action will be performed.
      *
      * @param label          new label or the label whose reference text was changed
-     * @param translationMap existing translations to be updated, null if no translation
      * @return text object linked to the label
      */
     private Text updateLabelTranslations(Label label) {
