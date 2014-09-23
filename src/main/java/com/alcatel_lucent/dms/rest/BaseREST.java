@@ -1,30 +1,17 @@
 package com.alcatel_lucent.dms.rest;
 
-import java.util.*;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.CacheControl;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-
+import com.alcatel_lucent.dms.service.DaoService;
+import com.alcatel_lucent.dms.service.JSONService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.alcatel_lucent.dms.service.DaoService;
-import com.alcatel_lucent.dms.service.JSONService;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
+import java.util.*;
 
 @Produces({MediaType.APPLICATION_JSON + ";CHARSET=UTF-8", MediaType.TEXT_HTML + ";CHARSET=UTF-8"})
 public abstract class BaseREST {
@@ -120,8 +107,8 @@ public abstract class BaseREST {
             Integer rows = requestMap.get("rows") == null ? null : Integer.valueOf(requestMap.get("rows"));
             Integer page = requestMap.get("page") == null ? null : Integer.valueOf(requestMap.get("page"));
             Integer records = requestMap.get("records") == null ? null : Integer.valueOf(requestMap.get("records"));
-            JSONObject json = jsonService.toGridJSON((Collection<?>) data, rows, page, records, idprop == null ? "id" : idprop, prop);
-            return json.toString();
+            String json = jsonService.toGridJSONIncludeJSONString((Collection<?>) data, rows, page, records, idprop == null ? "id" : idprop, prop);
+            return json;
         } else if (format.trim().equals("tree")) {
             String idProps = requestMap.get("idProps");
             String types = requestMap.get("types");

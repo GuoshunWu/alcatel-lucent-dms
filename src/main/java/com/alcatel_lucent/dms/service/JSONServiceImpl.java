@@ -1,7 +1,12 @@
 package com.alcatel_lucent.dms.service;
 
 import com.alcatel_lucent.dms.UserContext;
-import com.opensymphony.xwork2.ActionContext;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -28,6 +33,14 @@ public class JSONServiceImpl implements JSONService {
 
     private static Logger log = LoggerFactory.getLogger(JSONServiceImpl.class);
     private static final DateFormat dFmt = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
+
+
+    // Create the node factory that gives us nodes.
+    private JsonNodeFactory factory = new JsonNodeFactory(false);
+
+    // create a json factory to write the treenode as json.
+    private JsonFactory jsonFactory = new JsonFactory();
+    private ObjectMapper mapper = new ObjectMapper();  //reuse
 
     public String toJSONString(Object entity, String propExp) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         return toJSON(entity, propExp).toString(4);
@@ -125,7 +138,7 @@ public class JSONServiceImpl implements JSONService {
                     } else {
                         value = StringEscapeUtils.escapeHtml(value.toString());
                     }
-                }else{
+                } else {
                     value = StringUtils.EMPTY;
                 }
                 jsonCell.add(value);
@@ -152,6 +165,66 @@ public class JSONServiceImpl implements JSONService {
 
         log.debug(jsonGrid.toString(4));
         return jsonGrid;
+    }
+
+    @Override
+    public String toGridJSONIncludeJSONString(Collection<?> entities, Integer rows, Integer page, Integer records, String idProp, String cellProps)
+            throws JsonProcessingException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+
+        ArrayNode jsonArrayGrid = factory.arrayNode();
+        ObjectNode jsonGrid = factory.objectNode();
+
+        for (Object entity : entities) {
+            ObjectNode jsonRow = factory.objectNode();
+            if (idProp != null) {
+                jsonRow.put("id", PropertyUtils.getProperty(entity, idProp.trim()).toString());
+            }
+            ArrayNode jsonCell = factory.arrayNode();
+            String[] propArray = cellProps.split(",");
+            for (String prop : propArray) {
+                Object value = null;
+                try {
+                    value = PropertyUtils.getProperty(entity, prop.trim());
+                } catch (Exception e) {
+                    log.error(e.toString());
+                }
+                if (value != null) {    // escape html tags in grid result
+                    if (value instanceof Date) {
+                        UserContext uc = UserContext.getInstance();
+                        TimeZone timeZone = null == uc ? TimeZone.getDefault() : uc.getTimeZone();
+                        String strTmp = null == uc ? "server" : "client";
+                        dFmt.setTimeZone(timeZone);
+                        log.debug("format Date with {} time zone {}", strTmp, timeZone);
+                        value = dFmt.format((Date) value);
+                    } else {
+                        value = StringEscapeUtils.escapeHtml(value.toString());
+                    }
+                } else {
+                    value = StringUtils.EMPTY;
+                }
+                jsonCell.add((String) value);
+            }
+            jsonRow.set("cell", jsonCell);
+            jsonArrayGrid.add(jsonRow);
+        }
+
+        if (rows != null && page != null) {
+            int totalPages = (records != null && records > 0) ? (int) ceil(records / (float) rows) : 0;
+            if (page > totalPages) page = totalPages;
+
+            jsonGrid.put("page", page);
+            jsonGrid.put("total", totalPages);
+            jsonGrid.put("records", records);
+
+        } else {
+            jsonGrid.put("records", entities.size());
+        }
+        jsonGrid.set("rows", jsonArrayGrid);
+
+//        ObjectNode userData=factory.objectNode();
+//        jsonGrid.set("userData",userData);
+
+        return mapper.writeValueAsString(jsonGrid);
     }
 
     public JSONArray toTreeJSON2(Object entity, Map<String, Collection<String>> propFilter, Map<Class, Map<String, String>>... vpropRename) {

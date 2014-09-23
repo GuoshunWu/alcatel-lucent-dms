@@ -1,7 +1,16 @@
 package com.alcatel_lucent.dms.test
 
 import com.alcatel_lucent.dms.service.parser.NOEStrParser
+import com.fasterxml.jackson.core.JsonFactory
+import com.fasterxml.jackson.core.JsonGenerator
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.node.ArrayNode
+import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.google.common.util.concurrent.*
+import net.sf.json.JSON
+import net.sf.json.JSONSerializer
+import org.apache.commons.lang.StringEscapeUtils
 import org.apache.http.HttpEntity
 import org.apache.http.HttpHost
 import org.apache.http.HttpResponse
@@ -57,7 +66,7 @@ class GuavaTest {
 
     }
 
-    @Test
+//    @Test
     void microsoftTranslatorTest() {
         String url = "http://api.microsofttranslator.com/v2/ajax.svc/TranslateArray2"
         HttpHost proxy = new HttpHost("151.98.66.13", 8000, "http")
@@ -80,6 +89,39 @@ class GuavaTest {
         httpResponse.close()
 
         httpClient.close()
+    }
+
+//    @Test
+    void testJsonArray() {
+        String str1 = "[<timestamp>]"
+        String cStr1 = StringEscapeUtils.escapeHtml(str1.toString())
+
+        println "str1=$str1"
+        println "cStr1=$cStr1"
+        JSON js = JSONSerializer.toJSON(cStr1)
+        println js.toString(4)
+    }
+
+//    @Test
+    void testJackson() {
+        String str1 = "\"[<timestamp>]"
+        String cStr1 = StringEscapeUtils.escapeHtml(str1.toString())
+
+        // Create the node factory that gives us nodes.
+        JsonNodeFactory factory = new JsonNodeFactory(false);
+
+        // create a json factory to write the treenode as json. for the example
+        // we just write to console
+        JsonFactory jsonFactory = new JsonFactory();
+        ObjectMapper mapper = new ObjectMapper();
+
+        // the root node - album
+        ArrayNode links = factory.arrayNode()
+
+        links.add(cStr1)
+        JsonGenerator generator = jsonFactory.createGenerator(System.out);
+        mapper.writeTree(generator, links)
+        println mapper.writeValueAsString(links)
     }
 
 }
