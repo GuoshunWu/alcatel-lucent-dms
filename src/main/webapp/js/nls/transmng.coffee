@@ -12,7 +12,7 @@ define
       transstatus:
         msg: 'Change translation status successful.'
     searchtext:
-      caption: 'Text "{0}" in the {1} "{2}" found in version {3} of the {4} language'
+      caption: 'Text "{0}" found in the {1} "{2}" version {3} of the {4} language'
     trans:
       nottranslated: 'Not translated',
       inprogress: 'In progress',

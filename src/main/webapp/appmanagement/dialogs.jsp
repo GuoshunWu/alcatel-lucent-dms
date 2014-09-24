@@ -220,7 +220,7 @@
         </tr>
         <tr>
             <td>
-                &nbsp;&nbsp; <input type="checkbox" id="isAutoCreateLanguage"/><s:text
+                &nbsp;&nbsp; <input type="checkbox" checked id="isAutoCreateLanguage"/><s:text
                     name="appmng.dialogs.dictpreview.autocreatelanguage"/>
             </td>
         </tr>

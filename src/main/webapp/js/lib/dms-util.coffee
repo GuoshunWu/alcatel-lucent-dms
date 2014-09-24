@@ -12,7 +12,13 @@ define ['jqueryui'
 c18n)->
 
   # Here we set the jqgrid options globally
-  $.extend($.jgrid.defaults,  loadui:"block")
+  $.extend($.jgrid.defaults,
+    loadui:"block"
+    mtype: 'post'
+    beforeRequest: ->
+      $(@).clearGridData()
+      # console.log "Grid #{@.id} has cleared old data, now loading new data..."
+  )
 
   #    prototype enhancement
   String:: format = -> args = arguments; @replace /\{(\d+)\}/g, (m, i) ->args[i]

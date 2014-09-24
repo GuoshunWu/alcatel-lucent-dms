@@ -2,11 +2,9 @@ package com.alcatel_lucent.dms.test
 
 import com.alcatel_lucent.dms.service.parser.NOEStrParser
 import com.fasterxml.jackson.core.JsonFactory
-import com.fasterxml.jackson.core.JsonGenerator
-import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.node.ArrayNode
-import com.fasterxml.jackson.databind.node.JsonNodeFactory
+import com.google.common.base.Strings
 import com.google.common.util.concurrent.*
 import net.sf.json.JSON
 import net.sf.json.JSONSerializer
@@ -21,6 +19,7 @@ import org.apache.http.impl.client.HttpClients
 import org.apache.http.util.EntityUtils
 import org.junit.Test
 
+import java.nio.charset.Charset
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 
@@ -91,37 +90,57 @@ class GuavaTest {
         httpClient.close()
     }
 
-//    @Test
+    @Test
     void testJsonArray() {
-        String str1 = "[<timestamp>]"
-        String cStr1 = StringEscapeUtils.escapeHtml(str1.toString())
+        List<Object> temp = Arrays.asList("测试", "Study", "How", 123)
+        ObjectMapper mapper = new ObjectMapper()
 
-        println "str1=$str1"
-        println "cStr1=$cStr1"
-        JSON js = JSONSerializer.toJSON(cStr1)
-        println js.toString(4)
+        println mapper.writeValueAsString(temp)
+
     }
 
 //    @Test
     void testJackson() {
-        String str1 = "\"[<timestamp>]"
-        String cStr1 = StringEscapeUtils.escapeHtml(str1.toString())
+        String host = "151.98.66.13"
+//        host = "135.251.33.16"
+        String port = "8000"
+//        port = "8080"
+        String domain = "AD4"
+        String user = "guoshunw"
+        String password = ""
 
-        // Create the node factory that gives us nodes.
-        JsonNodeFactory factory = new JsonNodeFactory(false);
+        setProxy(host, port, user, password, domain)
 
-        // create a json factory to write the treenode as json. for the example
-        // we just write to console
-        JsonFactory jsonFactory = new JsonFactory();
-        ObjectMapper mapper = new ObjectMapper();
-
-        // the root node - album
-        ArrayNode links = factory.arrayNode()
-
-        links.add(cStr1)
-        JsonGenerator generator = jsonFactory.createGenerator(System.out);
-        mapper.writeTree(generator, links)
-        println mapper.writeValueAsString(links)
+        URL url1 = new URL("http://www.163.com")
+        String contentType = url1.openConnection().getHeaderField("Content-Type")
+        String charset = Charset.defaultCharset().name()
+        int charsetPos = -1
+        if (!Strings.isNullOrEmpty(contentType) && -1!=(charsetPos = contentType.indexOf("charset"))) {
+            charset = contentType.substring(charsetPos).split("=")[1]
+        }
+        url1.readLines(charset).each { String line ->
+            println line
+        }
     }
 
+    private void setProxy(String host, String port, String user = "", String password = "", String domain = "") {
+        System.setProperty("proxySet", "true")
+        System.setProperty("http.proxyHost", host)
+        System.setProperty("http.proxyPort", port)
+
+        System.setProperty("https.proxyHost", host)
+        System.setProperty("https.proxyPort", port)
+        if (password.empty) {
+            return
+        }
+
+        Authenticator.default = new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                if (!domain.empty) user = "${domain}//${user}"
+                return new PasswordAuthentication(user, password.toCharArray())
+            }
+        }
+
+    }
 }
