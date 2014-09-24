@@ -116,6 +116,7 @@ public class AppTranslationHistoryREST extends BaseREST {
             temp.setMemo(t.getMemo());
             temp.setOperationType(t.getOperationType());
             temp.setOperator(t.getOperator());
+            temp.setId(t.getId());
 
             temp.setHistoryLabel(l);
             result.add(temp);

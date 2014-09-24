@@ -267,6 +267,7 @@ define [
       util.adjustDialogAndInnerGridSize(me, transSearchGrid, {width: 100, height: 50}, {width: 30, height: 190})
 
       params = me.data 'params'
+#      console.log "params= ", params
       node = util.getProductTreeInfo()
 
       caption = i18n.searchtext.caption.format(
@@ -282,6 +283,8 @@ define [
       postData.exact = $('#transSearchText_exact').prop('checked')
       postData.text = params.text
       postData.language = params.language.id
+      delete postData.app
+      delete postData.prod
       postData[node.type] = params.version.id
 
 #      console.log("postData=", postData)
