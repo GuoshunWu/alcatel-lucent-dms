@@ -1535,6 +1535,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         Map<Long, Collection<Text>> contextMap = new HashMap<Long, Collection<Text>>();
         Map<Long, Collection<Label>> labelMap = new HashMap<Long, Collection<Label>>();
         for (Label label : labels) {
+            label.setCapitalization(style);
             String oldReference = label.getReference();
             label.setReference(capitalizeText(oldReference, style, Locale.ENGLISH));
             Collection<GlossaryMatchObject> GlossaryMatchObjects = glossaryService.consistentGlossariesInLabelRef(label);
@@ -1604,14 +1605,14 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     private String capitalizeText(String text, int style, Locale locale) {
         if (StringUtils.isBlank(text)) return text;
 
-        if (style == CapitalizeAction.CAPITALIZATION_ALL_UPPER_CASE) return text.toUpperCase(locale);
-        if (style == CapitalizeAction.CAPITALIZATION_ALL_LOWER_CASE) return text.toLowerCase(locale);
+        if (style == Label.CAPITALIZATION_ALL_UPPER_CASE) return text.toUpperCase(locale);
+        if (style == Label.CAPITALIZATION_ALL_LOWER_CASE) return text.toLowerCase(locale);
 
-        if (style == CapitalizeAction.CAPITALIZATION_FIRST_CAPITALIZED_ONLY) {
+        if (style == Label.CAPITALIZATION_FIRST_CAPITALIZED_ONLY) {
 
             return String.valueOf(text.charAt(0)).toUpperCase(locale) + text.substring(1);
         }
-        if (style == CapitalizeAction.CAPITALIZATION_FIRST_CAPITALIZED) {
+        if (style == Label.CAPITALIZATION_FIRST_CAPITALIZED) {
             text = text.toLowerCase(locale);
             for (int i = 0; i < text.length(); i++) {
                 if (!isWordBoundary(text.charAt(i))) {
@@ -1620,7 +1621,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 }
             }
         }
-        if (style == CapitalizeAction.CAPITALIZATION_ALL_CAPITALIZED) {
+        if (style == Label.CAPITALIZATION_ALL_CAPITALIZED) {
             text = text.toLowerCase(locale);
             boolean inWord = false;
             for (int i = 0; i < text.length(); i++) {

@@ -10,12 +10,6 @@ import java.util.Collection;
 @SuppressWarnings("serial")
 public class CapitalizeAction extends ProgressAction {
 
-    public static final int CAPITALIZATION_ALL_UPPER_CASE = 1;
-    public static final int CAPITALIZATION_ALL_CAPITALIZED = 2;
-    public static final int CAPITALIZATION_FIRST_CAPITALIZED = 3;
-    public static final int CAPITALIZATION_FIRST_CAPITALIZED_ONLY = 4;
-    public static final int CAPITALIZATION_ALL_LOWER_CASE = 5;
-
     private DictionaryService dictionaryService;
 
     private String dict;    // dict id list
