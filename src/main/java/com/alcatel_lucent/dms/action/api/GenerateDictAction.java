@@ -13,6 +13,7 @@ import org.apache.struts2.convention.annotation.Result;
 import org.springframework.beans.factory.annotation.Value;
 import com.alcatel_lucent.dms.model.Dictionary;
 import com.alcatel_lucent.dms.service.DictionaryService;
+import com.alcatel_lucent.dms.service.generator.GeneratorSettings;
 import com.alcatel_lucent.dms.util.Util;
 
 @SuppressWarnings("serial")
@@ -24,6 +25,7 @@ public class GenerateDictAction extends APIAction {
     private String prod;
     private String app;
     private String ver;
+    private Boolean escapeApostrophe;
 
     @Value("${dms.generate.dir}")
     private String tmpDownload;
@@ -45,7 +47,7 @@ public class GenerateDictAction extends APIAction {
     	for (Dictionary dict : dictList) {
     		idList.add(dict.getId());
     	}
-    	dictionaryService.generateDictFiles(downTmpPath, idList);
+    	dictionaryService.generateDictFiles(downTmpPath, idList, new GeneratorSettings(escapeApostrophe));
         File zipFile = new File(tmpDownload, zipFilename);
         Util.createZip(new File(downTmpPath).listFiles(), zipFile);
 		inStream = new FileInputStream(zipFile);
@@ -78,5 +80,13 @@ public class GenerateDictAction extends APIAction {
 
 	public void setVer(String ver) {
 		this.ver = ver;
+	}
+
+	public Boolean getEscapeApostrophe() {
+		return escapeApostrophe;
+	}
+
+	public void setEscapeApostrophe(Boolean escapeApostrophe) {
+		this.escapeApostrophe = escapeApostrophe;
 	}
 }
