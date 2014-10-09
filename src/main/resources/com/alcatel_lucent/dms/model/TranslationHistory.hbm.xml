@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.alcatel_lucent.dms.model">
+    <class name="TranslationHistory" table="TRANSLATION_HISTORY">
+        <id column="ID" name="id">
+            <generator class="native">
+                <param name="sequence">ID_TRANSLATION_HISTORY</param>
+            </generator>
+        </id>
+
+        <property name="translation" type="text" column="TRANSLATION"/>
+        <property name="status" type="integer" column="STATUS"/>
+        <property column="OPERATION_TYPE" name="operationType" not-null="false" type="integer"/>
+        <property column="OPERATION_TIME" name="operationTime" not-null="false" type="timestamp" index="I_TRANSLATION_HISTORY_TIME"/>
+        <property column="REF_LABEL_ID" name="refLabelId" not-null="false" type="long"/>
+        <property column="MEMO" name="memo" not-null="false" type="text"/>
+
+        <many-to-one name="parent" column="PARENT_ID"/>
+        <many-to-one name="operator" column="OPERATOR"/>
+    </class>
+</hibernate-mapping>

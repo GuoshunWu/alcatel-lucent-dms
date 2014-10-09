@@ -1,0 +1,7 @@
+<select>
+    <option value="">All</option>
+    <option value="DCT">DCT</option>
+    <option value="Dictionary conf">Dictionary conf</option>
+    <option value="Text properties">Text properties</option>
+    <option value="XML labels">XML labels</option>
+</select>
