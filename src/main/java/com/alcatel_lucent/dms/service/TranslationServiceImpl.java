@@ -1307,6 +1307,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
                 LabelTranslation lt = label.getOrigTranslation(dl.getLanguageCode());
                 if (lt == null) {
                     lt = new LabelTranslation();
+                    lt.setId(labelId * 1000 + dl.getLanguage().getId());	// fake id
                     lt.setLabel(label);
                     lt.setOrigTranslation(label.getReference());
                     lt.setNeedTranslation(true);
