@@ -129,6 +129,8 @@ public class DictionaryREST extends BaseREST {
     	} else {	// if filtered by prod and app, add app information
 	    	for (Object[] row : (Collection<Object[]>) result) {
 	    		Dictionary dict = (Dictionary) row[0];
+                // populate validation results
+                dict.validate();
 	    		dictionaries.add(dict);
 	    		dict.setApp((Application) row[1]);
 	    	}

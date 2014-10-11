@@ -23,25 +23,29 @@
                                       value="curProductId"/>
 
                         </td>
+
                         <td rowspan="2" align="right">
 
-                            <fieldset style="width: 580px">
+                            <fieldset style="width: 620px">
                                 <legend align="center"><s:text name="searchtext"/></legend>
                                 <span class="translation-search-text">
                                 <label for="transSearchText"><s:text name="searchtext"/></label>
                                 <input id="transSearchText"/>
                                 <s:text name="transmng.in"/>
-                                <select id="transSearchTextLanguage" style="width:160px;">
+                                <select id="transSearchTextLanguage" >
                                     <option value="1">
                                         <s:text name="transmng.ref"/>
                                     </option>
                                 </select>
-                                <button id="transSearchAction"></button>
                                 &nbsp;
+
                                 <div style="display: inline">
                                     <s:text name="exact"/>: <input style="vertical-align: middle" type="checkbox"
                                                   id="transSearchText_exact"/>
                                 </div>
+
+                                <button id="transSearchAction"></button>
+
                                 &nbsp;
                                 <button id="transHistories"
                                         title="<s:text name="transmng.translation.history"/>"></button>
@@ -90,7 +94,6 @@
         <tr>
             <td valign="top" align="center" class="transGrid_parent">
                 <table id="transGrid"></table>
-                <div id="transPager"/>
             </td>
         </tr>
         <tr style="height:20px;">
@@ -104,7 +107,7 @@
                             <button id="exportTranslation"><s:text name="button.exporttranslation"/></button>
                         </td>
                         <td style="width: 170px">
-                            <span id="importTranslation"></span>
+                            <div id="importTranslation"></div>
                         </td>
                         <td align="left">
                             <ul id="translationStatus">

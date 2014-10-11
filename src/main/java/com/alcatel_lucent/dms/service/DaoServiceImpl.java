@@ -13,7 +13,6 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.FuzzyQuery;
 import org.apache.lucene.search.Sort;
 import org.hibernate.*;
-import org.hibernate.criterion.Projections;
 import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
@@ -27,7 +26,6 @@ import org.springframework.orm.hibernate3.SessionFactoryUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
-import javax.servlet.SessionCookieConfig;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Serializable;

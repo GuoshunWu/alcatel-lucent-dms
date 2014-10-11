@@ -17,22 +17,6 @@ define [
 ], ($, msgbox, i18n, c18n, util, urls, grid, detailgrid, searchgrid, matchgrid, historygrid, historiesGrid)->
   transGrid = grid
 
-  refreshGrid = (languageTrigger = false, grid = transGrid)->
-    nodeInfo=util.getProductTreeInfo()
-    type = nodeInfo.type
-    param =
-      release:
-        {id: $('#selVersion', "div[id='transmng']").val(), version: $("#selVersion option:selected", "div[id='transmng']").text()}
-      level: $("input:radio:checked[name='viewOption']").val()
-      type: type
-      name: nodeInfo.text
-    checkboxes = $("#languageFilterDialog input:checkbox[name='languages']")
-    param.languages = checkboxes.map(
-      ()-> return {id: @id, name: @value} if @checked).get()
-    param.languageTrigger = languageTrigger
-    param.release.id = -1 unless param.release.id
-    grid.updateGrid param
-
 
   ################################################ Create Dialogs #################################################
   languageFilterDialog = $("<div title='#{i18n.select.languagefilter.title}' id='languageFilterDialog'>").dialog(
@@ -42,7 +26,7 @@ define [
     buttons: [
       { text: c18n.ok, click: ()->
         $(@).dialog "close"
-        refreshGrid(true)
+        transGrid.refresh(true)
       }
       {text: c18n.cancel, click: ()->$(@).dialog "close"}
     ]
@@ -267,9 +251,10 @@ define [
       util.adjustDialogAndInnerGridSize(me, transSearchGrid, {width: 100, height: 50}, {width: 30, height: 190})
 
       params = me.data 'params'
-#      console.log "params= ", params
+      console.log "params= ", params
       node = util.getProductTreeInfo()
 
+#      construct languages
       caption = i18n.searchtext.caption.format(
         params.text,
         if 'prod' == node.type then 'product' else 'application',
@@ -415,5 +400,4 @@ define [
   languageFilterDialog: languageFilterDialog,
   transDetailDialog: transDetailDialog
   exportTranslationDialog: exportTranslationDialog
-  refreshGrid: refreshGrid
   showSearchResult: showSearchResult

@@ -11,6 +11,7 @@ define [
   'transmng/dialogs'
   'ptree'
 ], (c18n, i18n, util, urls, upload, iframetrans, grid, dialogs, ptree)->
+  transGrid = grid
   nodeSelectHandler = (node, nodeInfo)->
     type=node.attr('type')
     return if 'products' == type
@@ -32,7 +33,7 @@ define [
 
   onShow = ()->
     gridParent = $('.transGrid_parent')
-    $('#transGrid').setGridWidth(gridParent.width() - 10).setGridHeight(gridParent.height() - 110)
+    $('#transGrid').setGridWidth(gridParent.width() - 10).setGridHeight(gridParent.height() - 150)
 
     # init product or application
 
@@ -61,7 +62,6 @@ define [
   init = ()->
 #    console?.log "transmng panel init..."
 
-
     $('#selVersion', "div[id='transmng']").change ->
       nodeInfo = util.getProductTreeInfo()
 #      console?.log nodeInfo
@@ -74,10 +74,12 @@ define [
 
         # for search text
 #        languages.unshift(id: 1, name: 'Reference')
-        $('#transSearchTextLanguage', "#transmng").empty().append util.json2Options(languages, false, "name")
-
+        $('#transSearchTextLanguage', "#transmng").empty()
+        .append util.json2Options(languages, false, "name")
+#        .multiselect('refresh')
       }
-      dialogs.refreshGrid(false, grid)
+
+      transGrid.refresh(false, grid)
 
     searchActionBtn = $('#transSearchAction','#transmng').attr('title', 'Search').button(text: false, icons:
       {primary: "ui-icon-search"}).click(()=>
@@ -98,16 +100,21 @@ define [
 
 
 
+      # for multiple language select
+#      languages = (checked.value for checked in selLang.multiselect("getChecked").get())
+#      languages = if languages.length then languages.join(',') else 0
+      languages = if selLang.val() then selLang.val() else "0"
+
       dialogs.showSearchResult(
           text: $('#transSearchText', '#transmng').val()
           version:
             id: selVer.val()
             text: $("option:selected", selVer).text()
           language:
-            id: if selLang.val() then selLang.val() else "0"
+            id: languages
             text: $("option:selected", selLang).text()
         )
-    ).height(20).width(20).position(my: 'left center', at: 'right center', of: '#transSearchTextLanguage')
+    ).height(20).width(20)
 
     transHistoriesBtn = $("#transHistories", "#transmng").button(text:false, icons:{
       primary: "ui-icon-bookmark"}).click(()=>
@@ -134,75 +141,6 @@ define [
       return true if e.which != 13
       searchActionBtn.trigger 'click'
       false
-
-    # Create buttons
-    $("#create",'#transmng').button()
-      .attr('privilegeName', util.urlname2Action 'task/create-task')
-      .click ->
-        info = grid.getTotalSelectedRowInfo()
-        if !info.rowIds.length
-          $.msgBox (c18n.selrow.format c18n[grid.getTableType()]), null, title: c18n.warning
-          return
-        dialogs.taskDialog.dialog "open"
-
-    $('#languageFilter','#transmng').button().click ()->dialogs.languageFilterDialog.dialog "open"
-    #    for view level
-    $(':radio[name=viewOption]').change ->dialogs.refreshGrid(false, grid)
-
-    $("#exportTranslation",'#transmng').button()
-      .attr('privilegeName', util.urlname2Action 'trans/export-translation-details')
-      .click ->
-        info = grid.getTotalSelectedRowInfo()
-        if !info.rowIds.length
-          $.msgBox (c18n.selrow.format c18n[grid.getTableType()]), null, title: c18n.warning
-          return
-        dialogs.exportTranslationDialog.dialog 'open'
-
-    importTranslationId = "#importTranslation"
-    transFileUpload = 'transFileUpload'
-
-    #  create upload filebutton
-    $(importTranslationId).button(label: i18n.transupload).attr('privilegeName', urls.trans.import_translation_details).css(overflow: 'hidden')
-    .append $(
-      "<input type='file' id='#{transFileUpload}' name='upload' accept='application/zip' multiple/>").css(
-      position: 'absolute', top: -3, right: -3, border: '1px solid', borderWidth: '10px 180px 40px 20px',
-      opacity: 0, filter: 'alpha(opacity=0)',
-      cursor: 'pointer'
-    )
-
-    $("##{transFileUpload}").fileupload {
-      type: 'POST', dataType: 'json'
-      url: urls.trans.import_translation_details
-
-    #  forceIframeTransport:true
-      add: (e, data)->
-        $.each data.files, (index, file) ->
-        data.submit()
-        @pb=util.genProgressBar() if !$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10
-        $(importTranslationId).button 'disable'
-      progressall: (e, data) ->
-        return if $.browser.msie && parseInt($.browser.version.split('\.')[0]) < 10
-        progress = data.loaded / data.total * 100
-        @pb.progressbar "value", progress
-      done: (e, data)->
-        $(importTranslationId).button 'enable'
-        @pb.parent().remove() if !$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10
-        #    request handler
-        jsonFromServer = data.result
-#        console?.log jsonFromServer
-        if(0 != jsonFromServer.status)
-          $.msgBox jsonFromServer.message, null, {title: c18n.error}
-          return
-        $("#transGrid").trigger 'reloadGrid'
-        $.msgBox jsonFromServer.message, null, {title: c18n.info}
-
-#        pb = util.genProgressBar()
-#        util.updateProgress(urls.app.process_dict, jsonFromServer, (json)->
-#          pb.parent().remove()
-#          filename = json.event.msg
-#          console?.log filename
-#        , pb)
-    }
 
     #    add action for export
 

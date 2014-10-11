@@ -1,7 +1,6 @@
 package com.alcatel_lucent.dms.service;
 
 import com.alcatel_lucent.dms.*;
-import com.alcatel_lucent.dms.Constants.ImportingMode;
 import com.alcatel_lucent.dms.action.ProgressQueue;
 import com.alcatel_lucent.dms.action.app.CapitalizeAction;
 import com.alcatel_lucent.dms.model.*;
@@ -24,12 +23,12 @@ import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import views.JQGrid;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
 import java.util.*;
-import java.util.regex.Matcher;
 
 import static org.apache.commons.collections.CollectionUtils.collect;
 import static org.apache.commons.collections.CollectionUtils.subtract;
@@ -160,13 +159,13 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     if (dbDict != null) {
                         DictionaryLanguage dbDl = dbDict.getDictLanguage(dl.getLanguageCode());
                         if (dbDl != null) {
-                        	if (dl.getCharset() == null) {
-                        		dl.setCharset(dbDl.getCharset());
-                        	}
-                        	if (dl.getLanguage() == null) {
-                        		dl.setLanguage(dbDl.getLanguage());
+                            if (dl.getCharset() == null) {
+                                dl.setCharset(dbDl.getCharset());
+                            }
+                            if (dl.getLanguage() == null) {
+                                dl.setLanguage(dbDl.getLanguage());
                                 dict.updateLanguage(dl.getLanguageCode(), dbDl.getLanguage());
-                        	}
+                            }
                         }
                     }
                 }
@@ -229,21 +228,21 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 //        Context dbExclusionCtx = textService.getContextByExpression(Context.EXCLUSION, null);
         Collection<String> references = new ArrayList<String>();
         for (Dictionary dict : dictList) {
-        	if (dict.getLabels() == null) continue;
-        	for (Label label : dict.getLabels()) {
-        		references.add(label.getReference());
-        	}
+            if (dict.getLabels() == null) continue;
+            for (Label label : dict.getLabels()) {
+                references.add(label.getReference());
+            }
         }
-        MultiKeyMap translationMap = dbDefaultCtx == null ? new MultiKeyMap() : 
-        		textService.getTranslationsAsMap(dbDefaultCtx.getId(), references);
-        references = null;	// release memory
+        MultiKeyMap translationMap = dbDefaultCtx == null ? new MultiKeyMap() :
+                textService.getTranslationsAsMap(dbDefaultCtx.getId(), references);
+        references = null;    // release memory
 //        Map<String, Text> exclusionMap = textService.getTextsAsMap(dbExclusionCtx.getId());
         Collection<Glossary> glossaryObjects = glossaryService.getNotDirtyGlossaries();
         HashSet<String> glossaries = new HashSet<String>();
         for (Glossary glossary : glossaryObjects) {
-        	if (!glossary.getTranslate()) {
-        		glossaries.add(glossary.getText());
-        	}
+            if (!glossary.getTranslate()) {
+                glossaries.add(glossary.getText());
+            }
         }
         MultiKeyMap unsavedTranslationMap = new MultiKeyMap();
         // save dict context text map
@@ -273,17 +272,17 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     label.setContext(exclusionCtx);
                     continue;
                 }
-                
+
                 // if contained label translation is empty and status is T, force context to be LABEL
                 Context labelCtx = new Context(textService.populateContextKey(Context.LABEL, label), Context.LABEL);
                 if (label.getOrigTranslations() != null) {
-                	for (LabelTranslation lt : label.getOrigTranslations()) {
-                		if (lt.getStatus() != null && lt.getStatus() == Translation.STATUS_TRANSLATED 
-                				&& StringUtils.isBlank(lt.getOrigTranslation())) {
-                			label.setContext(labelCtx);
-                			break;
-                		}
-                	}
+                    for (LabelTranslation lt : label.getOrigTranslations()) {
+                        if (lt.getStatus() != null && lt.getStatus() == Translation.STATUS_TRANSLATED
+                                && StringUtils.isBlank(lt.getOrigTranslation())) {
+                            label.setContext(labelCtx);
+                            break;
+                        }
+                    }
                 }
                 if (label.getContext() != null) continue;
 
@@ -361,9 +360,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         if (null == label.getOrigTranslations()) return false;
 
         for (LabelTranslation lt : label.getOrigTranslations()) {
-            if (lt.getLanguage() == null || 
-            		lt.getOrigTranslation().equals(label.getReference()) 
-            		&& (lt.getStatus() == null || lt.getStatus() != Translation.STATUS_TRANSLATED)) continue;
+            if (lt.getLanguage() == null ||
+                    lt.getOrigTranslation().equals(label.getReference())
+                            && (lt.getStatus() == null || lt.getStatus() != Translation.STATUS_TRANSLATED)) continue;
             Translation trans = (Translation) translationMap.get(label.getReference(), lt.getLanguage().getId());
             if (null == trans) continue;
             // compare converted label translation with context translation
@@ -412,9 +411,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
      * @param dtIds the collection of the id for dictionary to be generated.
      */
     public void generateDictFiles(String dir, Collection<Long> dtIds) {
-    	generateDictFiles(dir, dtIds, new GeneratorSettings());
+        generateDictFiles(dir, dtIds, new GeneratorSettings());
     }
-    
+
     public void generateDictFiles(String dir, Collection<Long> dtIds, GeneratorSettings settings) {
         ProgressQueue.setProgress("Preparing data...", -1);
         if (dtIds.isEmpty()) return;
@@ -454,10 +453,10 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                                        Collection<BusinessWarning> warnings, DeliveryReport report) {
         log.info("Start importing dictionary in " + mode + " mode");
         if (null == dict) return null;
-        
+
         if (mode == Constants.ImportingMode.TEST) {
-        	dao.setRollbackOnly();
-        	mode = Constants.ImportingMode.DELIVERY;
+            dao.setRollbackOnly();
+            mode = Constants.ImportingMode.DELIVERY;
         }
         BusinessException nonBreakExceptions = new BusinessException(
                 BusinessException.NESTED_DCT_PARSE_ERROR, dict.getName());
@@ -650,59 +649,59 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 //        }
         Context defaultCtx = textService.getContextByExpression(Context.DEFAULT, (Dictionary) null);
         int sortNo = 1;
-        int diffLabel = 0;			// number of new or changed label 
-        int diffTranslation = 0;	// number of different translations in dictionary
-        int diffTranslated = 0;		// number of newly translated strings in dictionary
+        int diffLabel = 0;            // number of new or changed label
+        int diffTranslation = 0;    // number of different translations in dictionary
+        int diffTranslated = 0;        // number of newly translated strings in dictionary
         Collection<Label> labelsToCreate = new ArrayList<Label>();
         Collection<LabelTranslation> labelTranslationsToCreate = new ArrayList<LabelTranslation>();
-        
+
         // populate context
         for (Label label : dict.getLabels()) {
-        	Context ctx = label.getContext();
-             String contextName = label.getContext().getName();
+            Context ctx = label.getContext();
+            String contextName = label.getContext().getName();
             if (Context.LABEL.equals(contextName)) {// distinct label context
                 String actualContextName = textService.populateContextKey(Context.LABEL, label);
-            	// create context first, and then texts in LABEL context will be processed separately
-            	String contextKey = textService.getContextKeyByExpressionForLabel(actualContextName, dbDict.getId());
+                // create context first, and then texts in LABEL context will be processed separately
+                String contextKey = textService.getContextKeyByExpressionForLabel(actualContextName, dbDict.getId());
                 ctx = textService.getContextByKey(contextKey);
                 if (ctx == null) {
-                	ctx= textService.createContext(Context.LABEL, contextKey);
+                    ctx = textService.createContext(Context.LABEL, contextKey);
                 }
             } else {
                 ctx = textService.getContextByExpression(contextName, dbDict);
             }
             label.setContext(ctx);
         }
-        
+
         for (Label label : dict.getLabels()) {
-        	Context ctx = label.getContext();
+            Context ctx = label.getContext();
             label.setSortNo(sortNo++);
             label.setRemoved(false);
             Label lastLabel = null;
             if (lastDict != null) {
                 lastLabel = lastDict.getLabel(label.getKey());
             }
-            
+
             // count diffLabel
             if (lastLabel != null && !lastLabel.getReference().equals(label.getReference())) {
-            	diffLabel++;
+                diffLabel++;
             }
-            
+
             Label dbLabel = dbDict.getLabel(label.getKey());
-            if (dbLabel == null) {	// ready for creation
-            	label.setId(null);
-            	label.setDictionary(dbDict);
-            	labelsToCreate.add(label);
-            	dbLabel = label;
-            	dbDict.addLabel(dbLabel);
-            	// make sure all LabelTranslation objects under the new label are marked as NEW
-            	if (label.getOrigTranslations() != null) {
-            		for (LabelTranslation trans : label.getOrigTranslations()) {
-            			trans.setId(null);
-            		}
-            	}
+            if (dbLabel == null) {    // ready for creation
+                label.setId(null);
+                label.setDictionary(dbDict);
+                labelsToCreate.add(label);
+                dbLabel = label;
+                dbDict.addLabel(dbLabel);
+                // make sure all LabelTranslation objects under the new label are marked as NEW
+                if (label.getOrigTranslations() != null) {
+                    for (LabelTranslation trans : label.getOrigTranslations()) {
+                        trans.setId(null);
+                    }
+                }
             }
-            
+
             Text text = new Text();
             text.setContext(label.getContext());
             text.setRefLabel(dbLabel);
@@ -732,7 +731,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 for (LabelTranslation trans : label.getOrigTranslations()) {
                     // determine charset, first take value from DictionaryLanguage
                     // if not specified in DictionaryLanguage, then take value from langCharset parameter
-                	trans.setLabel(dbLabel);
+                    trans.setLabel(dbLabel);
                     String langCode = trans.getLanguageCode();
                     DictionaryLanguage dl = dict.getDictLanguage(langCode);
                     trans.setLanguage(dl.getLanguage());    // update language in LabelTranslation by dl
@@ -778,13 +777,13 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                         nonBreakExceptions.addNestedException(new BusinessException(
                                 BusinessException.CHARSET_NOT_FOUND, charsetName));
                     }
-                    
+
                     // count diff translation
                     String currentTranslation = lastLabel == null ? label.getReference() : lastLabel.getTranslation(langCode);
                     boolean diff = false;
                     if (!currentTranslation.equals(trans.getOrigTranslation())) {
-                    	diffTranslation++;
-                    	diff = true;
+                        diffTranslation++;
+                        diff = true;
                     }
 
                     // read needTranslation flag from parser
@@ -828,12 +827,12 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                         t.setStatus(populateTranslationStatus(trans));
                     }
                     text.addTranslation(t);
-                    
+
                     // count diff translated
                     if (diff && t.getStatus() == Translation.STATUS_TRANSLATED) {
-                    	diffTranslated++;
+                        diffTranslated++;
                     }
-                    
+
                 } //for each labelTranslation
             }
 
@@ -848,7 +847,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     text.addTranslation(t);
                 }
             }
-        }	// for each label
+        }    // for each label
 
         // merge duplicate texts
         mergeDuplicateTexts(textMap);
@@ -859,46 +858,46 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         dao.createArray(labelsToCreate.toArray(new Label[0]));
 
         ProgressQueue.setProgress(30);
-        
+
         // process LABEL contexts
         int ctxStep = 0;
         if (textMap.containsKey(Context.LABEL)) {
-        	Collection<Label> labels = labelMap.get(Context.LABEL);
-        	Collection<Text> texts = textMap.get(Context.LABEL);
-	        log.info("Importing data into context " + Context.LABEL);
-	        Map<String, Text> dbTextMap = textService.updateTranslations(
-	                null, texts, mode, TranslationHistory.TRANS_OPER_DELIVER);
-	        // update DEFAULT context from each LABEL context, so the DEFAULT context would be a union of all translations
-	        textService.updateTranslations(defaultCtx.getId(), texts, Constants.ImportingMode.SUPPLEMENT, TranslationHistory.TRANS_OPER_SUGGEST);
-	        if (mode == Constants.ImportingMode.DELIVERY) {
-		        for (Label label : labels) {
-		            // update label
-		            Label dbLabel = dbDict.getLabel(label.getKey());
-		            Text dbText = dbTextMap.get(label.getContext().getKey());	// key of dbTextMap is context key in this case
-		            dbLabel.setContext(label.getContext());
-		            dbLabel.setText(dbText);
-		            dbLabel.setKey(label.getKey());
-		            dbLabel.setDescription(label.getDescription());
-		            dbLabel.setMaxLength(label.getMaxLength());
-		            dbLabel.setReference(label.getReference());
-		            dbLabel.setAnnotation1(label.getAnnotation1());
-		            dbLabel.setAnnotation2(label.getAnnotation2());
-		            dbLabel.setAnnotation3(label.getAnnotation3());
-		            dbLabel.setAnnotation4(label.getAnnotation4());
-		            dbLabel.setFontName(label.getFontName());
-		            dbLabel.setFontSize(label.getFontSize());
-		            dbLabel.setSortNo(label.getSortNo());
-		            
-		            Collection<Label> oneLabel = new ArrayList<Label>();
-		            oneLabel.add(label);
-		            Map<String, Text> oneTextMap = new HashMap<String, Text>();
-		            oneTextMap.put(label.getReference(), dbText);
-		            report.addData(label.getContext(), dict, oneLabel, oneTextMap);
-		        }
-	        }
-	        ProgressQueue.setProgress(30 + (int) Math.round(++ctxStep * 50.0 / textMap.size()));
+            Collection<Label> labels = labelMap.get(Context.LABEL);
+            Collection<Text> texts = textMap.get(Context.LABEL);
+            log.info("Importing data into context " + Context.LABEL);
+            Map<String, Text> dbTextMap = textService.updateTranslations(
+                    null, texts, mode, TranslationHistory.TRANS_OPER_DELIVER);
+            // update DEFAULT context from each LABEL context, so the DEFAULT context would be a union of all translations
+            textService.updateTranslations(defaultCtx.getId(), texts, Constants.ImportingMode.SUPPLEMENT, TranslationHistory.TRANS_OPER_SUGGEST);
+            if (mode == Constants.ImportingMode.DELIVERY) {
+                for (Label label : labels) {
+                    // update label
+                    Label dbLabel = dbDict.getLabel(label.getKey());
+                    Text dbText = dbTextMap.get(label.getContext().getKey());    // key of dbTextMap is context key in this case
+                    dbLabel.setContext(label.getContext());
+                    dbLabel.setText(dbText);
+                    dbLabel.setKey(label.getKey());
+                    dbLabel.setDescription(label.getDescription());
+                    dbLabel.setMaxLength(label.getMaxLength());
+                    dbLabel.setReference(label.getReference());
+                    dbLabel.setAnnotation1(label.getAnnotation1());
+                    dbLabel.setAnnotation2(label.getAnnotation2());
+                    dbLabel.setAnnotation3(label.getAnnotation3());
+                    dbLabel.setAnnotation4(label.getAnnotation4());
+                    dbLabel.setFontName(label.getFontName());
+                    dbLabel.setFontSize(label.getFontSize());
+                    dbLabel.setSortNo(label.getSortNo());
+
+                    Collection<Label> oneLabel = new ArrayList<Label>();
+                    oneLabel.add(label);
+                    Map<String, Text> oneTextMap = new HashMap<String, Text>();
+                    oneTextMap.put(label.getReference(), dbText);
+                    report.addData(label.getContext(), dict, oneLabel, oneTextMap);
+                }
+            }
+            ProgressQueue.setProgress(30 + (int) Math.round(++ctxStep * 50.0 / textMap.size()));
         }
-        
+
         // process non-LABEL contexts
         for (String contextName : textMap.keySet()) {
             Collection<Text> texts = textMap.get(contextName);
@@ -942,44 +941,44 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 dbLabel.setSortNo(label.getSortNo());
             }
             report.addData(context, dict, labels, dbTextMap);
-	        ProgressQueue.setProgress(30 + (int) Math.round(++ctxStep * 50.0 / textMap.size()));
+            ProgressQueue.setProgress(30 + (int) Math.round(++ctxStep * 50.0 / textMap.size()));
         }
-        
+
         if (nonBreakExceptions.hasNestedException()) {
             throw nonBreakExceptions;
         }
-        
+
         report.addDiffLabelNum(diffLabel);
         report.addDiffTranslationNum(diffTranslation);
         report.addDiffTranslatedNum(diffTranslated);
 
         historyService.logDelivery(dbDict, dbDict.getPath());
-        
+
         // insert or update LabelTranslation objects
         log.info("Updating LabelTranslation objects...");
         for (Label label : dict.getLabels()) {
             // create or update LabelTranslation
-        	Label dbLabel = dbDict.getLabel(label.getKey());
-        	if (label.getOrigTranslations() != null) {
-	            for (LabelTranslation trans : label.getOrigTranslations()) {
-	            	LabelTranslation dbLabelTrans = dbLabel.getOrigTranslation(trans.getLanguageCode());
-	                if (dbLabelTrans == null || dbLabelTrans.getId() == null) {
-	                	trans.setLabel(dbLabel);
-	                    trans.setLanguage((Language) dao.retrieve(Language.class, trans.getLanguage().getId()));
-	                    labelTranslationsToCreate.add(trans);
-	                } else {
-	                    dbLabelTrans.setOrigTranslation(trans.getOrigTranslation());
-	                    dbLabelTrans.setAnnotation1(trans.getAnnotation1());
-	                    dbLabelTrans.setAnnotation2(trans.getAnnotation2());
-	                    dbLabelTrans.setComment(trans.getComment());
-	                    dbLabelTrans.setWarnings(trans.getWarnings());
-	                    dbLabelTrans.setNeedTranslation(trans.isNeedTranslation());
-	                    dbLabelTrans.setRequestTranslation(trans.getRequestTranslation());
-	                    dbLabelTrans.setLanguageCode(trans.getLanguageCode());
-	                    dbLabelTrans.setSortNo(trans.getSortNo());
-	                }
-	            }	// for each labelTranslation
-        	}
+            Label dbLabel = dbDict.getLabel(label.getKey());
+            if (label.getOrigTranslations() != null) {
+                for (LabelTranslation trans : label.getOrigTranslations()) {
+                    LabelTranslation dbLabelTrans = dbLabel.getOrigTranslation(trans.getLanguageCode());
+                    if (dbLabelTrans == null || dbLabelTrans.getId() == null) {
+                        trans.setLabel(dbLabel);
+                        trans.setLanguage((Language) dao.retrieve(Language.class, trans.getLanguage().getId()));
+                        labelTranslationsToCreate.add(trans);
+                    } else {
+                        dbLabelTrans.setOrigTranslation(trans.getOrigTranslation());
+                        dbLabelTrans.setAnnotation1(trans.getAnnotation1());
+                        dbLabelTrans.setAnnotation2(trans.getAnnotation2());
+                        dbLabelTrans.setComment(trans.getComment());
+                        dbLabelTrans.setWarnings(trans.getWarnings());
+                        dbLabelTrans.setNeedTranslation(trans.isNeedTranslation());
+                        dbLabelTrans.setRequestTranslation(trans.getRequestTranslation());
+                        dbLabelTrans.setLanguageCode(trans.getLanguageCode());
+                        dbLabelTrans.setSortNo(trans.getSortNo());
+                    }
+                }    // for each labelTranslation
+            }
         }
         dao.createArray(labelTranslationsToCreate.toArray(new LabelTranslation[0]));
         log.info("Import dictionary finish");
@@ -995,7 +994,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
      */
     private void mergeDuplicateTexts(MultiValueMap<String, Text> textMap) {
         for (String ctx : textMap.keySet()) {
-        	if (ctx.equals(Context.LABEL)) continue;	// allow same reference for LABEL context
+            if (ctx.equals(Context.LABEL)) continue;    // allow same reference for LABEL context
             Collection<Text> texts = textMap.get(ctx);
             Map<String, Text> refMap = new HashMap<String, Text>();
 
@@ -1069,13 +1068,13 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             }
             Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
             try {
-            	importDictionary(appId, dict, dict.getVersion(), mode, null, langCharset, null, warnings, report);
+                importDictionary(appId, dict, dict.getVersion(), mode, null, langCharset, null, warnings, report);
             } catch (UnexpectedRollbackException e) {
-            	if (mode == Constants.ImportingMode.TEST) {
-            		log.info("Rolled back all changes of importing because of TEST mode");
-            	} else {
-            		throw e;
-            	}
+                if (mode == Constants.ImportingMode.TEST) {
+                    log.info("Rolled back all changes of importing because of TEST mode");
+                } else {
+                    throw e;
+                }
             }
         }
 //        report.setWarningMap(warningMap);
@@ -1400,24 +1399,24 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             label.setText(textMap.get(label.getReference()));
         }
     }
-    
+
     public void updateLabelContextWithTranslations(Context context, Label label) {
-    	label.setContext(context);
+        label.setContext(context);
         Collection<Text> texts = new ArrayList<Text>();
-    	Text text = new Text();
-    	text.setRefLabel(label);
-    	text.setReference(label.getReference());
-    	for (DictionaryLanguage dl : label.getDictionary().getDictLanguages()) {
-        	if (dl.isReference()) continue;
-    		Translation translation = label.getTranslationObject(dl);
-    		Translation trans = new Translation();
-    		trans.setTranslation(translation.getTranslation());
-    		trans.setLanguage(dl.getLanguage());
-    		trans.setStatus(translation.getStatus());
-    		trans.setTranslationType(translation.getTranslationType());
-    		text.addTranslation(trans);
-    	}
-    	texts.add(text);
+        Text text = new Text();
+        text.setRefLabel(label);
+        text.setReference(label.getReference());
+        for (DictionaryLanguage dl : label.getDictionary().getDictLanguages()) {
+            if (dl.isReference()) continue;
+            Translation translation = label.getTranslationObject(dl);
+            Translation trans = new Translation();
+            trans.setTranslation(translation.getTranslation());
+            trans.setLanguage(dl.getLanguage());
+            trans.setStatus(translation.getStatus());
+            trans.setTranslationType(translation.getTranslationType());
+            text.addTranslation(trans);
+        }
+        texts.add(text);
         Map<String, Text> textMap = textService.updateTranslations(context.getId(), texts, Constants.ImportingMode.TRANSLATION, TranslationHistory.TRANS_OPER_NEW);
         label.setText(textMap.get(label.getReference()));
     }
@@ -1435,7 +1434,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             throw new BusinessException(BusinessException.DUPLICATE_LABEL_KEY, key);
         }
         if (maxLength != null && maxLength.trim().isEmpty()) {
-        	maxLength = null;
+            maxLength = null;
         }
         Label label = new Label();
         label.setDictionary(dict);
@@ -1464,7 +1463,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
      * The method is invoked when a new label was added or reference text of a label is changed.
      * An auto-match of translation action will be performed.
      *
-     * @param label          new label or the label whose reference text was changed
+     * @param label new label or the label whose reference text was changed
      * @return text object linked to the label
      */
     private Text updateLabelTranslations(Label label) {
@@ -1475,12 +1474,12 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         texts.add(text);
         if (label.getDictionary().getDictLanguages() != null) {
             for (DictionaryLanguage dl : label.getDictionary().getDictLanguages()) {
-            	if (label.getDictionary().getReferenceLanguage().equals(dl.getLanguageCode()))
-            		continue;
-        		Translation trans = new Translation();
-	        	trans.setTranslation(label.getReference());
-	        	trans.setLanguage(dl.getLanguage());
-	        	trans.setStatus(Translation.STATUS_UNTRANSLATED);
+                if (label.getDictionary().getReferenceLanguage().equals(dl.getLanguageCode()))
+                    continue;
+                Translation trans = new Translation();
+                trans.setTranslation(label.getReference());
+                trans.setLanguage(dl.getLanguage());
+                trans.setStatus(Translation.STATUS_UNTRANSLATED);
                 text.addTranslation(trans);
             }
         }
@@ -1597,7 +1596,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 label.setText(textMap.get(label.getReference()));
             }
         }
-        
+
         historyService.flushHistoryQueue();
     }
 
@@ -1654,8 +1653,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         return dao.retrieve(hql, param);
     }
 
-	@Override
-	public Application findApplication(String prod, String app, String ver) {
+    @Override
+    public Application findApplication(String prod, String app, String ver) {
         String hql = "from Application obj" +
                 " where obj.base.productBase.name=:prod" +
                 " and obj.base.name=:app" +
@@ -1665,5 +1664,14 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         param.put("app", app);
         param.put("ver", ver);
         return (Application) dao.retrieveOne(hql, param);
-	}
+    }
+
+    @Override
+    public Collection<ValidationInfo> findDictionaryValidations(Long dictId, String type) {
+        Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
+        if (null == dict) return Arrays.asList();
+        dict.validate();
+        Collection validations = type.equals("errors") ? dict.getDictErrors() : dict.getDictWarnings();
+        return validations;
+    }
 }

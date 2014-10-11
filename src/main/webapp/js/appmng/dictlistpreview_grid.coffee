@@ -1,4 +1,18 @@
-define ['jqgrid', 'jqmsgbox', 'jqueryui', 'i18n!nls/appmng', 'i18n!nls/common'], ($, msgbox, ui, i18n, c18n)->
+define [
+  'jqgrid'
+  'jqmsgbox'
+  'jqueryui'
+  'i18n!nls/appmng'
+  'i18n!nls/common'
+  'dms-urls'
+], (
+  $
+  msgbox
+  ui
+  i18n
+  c18n
+  urls
+)->
 
 #  console?.log "module appmng/dictlistpreview_grid loading."
 
@@ -36,12 +50,14 @@ define ['jqgrid', 'jqmsgbox', 'jqueryui', 'i18n!nls/appmng', 'i18n!nls/common'],
   ]
   $(colModel).each (index, colModel)->colModel.classes = 'editable-column' if colModel.editable
 
+  prop = 'languageReferenceCode,base.name,version,base.format,base.encoding,labelNum,errorCount,warningCount'
   dicGrid = $('#dictListPreviewGrid').jqGrid({
-  url: 'json/dummy.json', datatype: 'local', editurl: "", mtype: 'POST'
+  url: urls.deliver_dict, datatype: 'local', editurl: ""
   width: 1000, minHeight: 200, height: 240
+  postData: { format: 'grid', prop: prop}
   pager: '#dictListPreviewPager', rowNum: 100
   sortname: 'base.name', sortorder: 'asc'
-  viewrecords: true, cellEdit: true, cellurl: 'app/deliver-update-dict', ajaxCellOptions: {async: false}
+  viewrecords: true, cellEdit: true, cellurl: urls.app.deliver_update_dict, ajaxCellOptions: {async: false}
   gridview: true, multiselect: false
   caption: i18n.grid.dictlistpreview.caption
   colNames: ['LangRefCode', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels', 'Error', 'Warning', 'Action']
@@ -124,9 +140,6 @@ define ['jqgrid', 'jqmsgbox', 'jqueryui', 'i18n!nls/appmng', 'i18n!nls/common'],
 
   }).setGridParam(datatype: 'json')
   .jqGrid('navGrid', '#dictListPreviewPager', {add: false, edit: false, search: false, del: false}, {}, {}, {})
-  gridHasErrors: ()->
-    hasError = false
-    $($('#dictListPreviewGrid').getRowData()).each (index, row) ->
-      hasError = parseInt(row.errors) > 0
-      return false if hasError
-    hasError
+  gridHasErrors: (grid = $('#dictListPreviewGrid'))->
+    return true for row in grid.getRowData() when parseInt(row.errors) > 0
+    false

@@ -67,16 +67,14 @@ define [
     [1 == jsonFromServer.status, jsonFromServer.message]
   }
 
+  openDialogHandler = (rowData, dialogId)->
+    $("##{dialogId}").data("param", rowData).dialog 'open'
+
   handlers =
     'String':
-      url: ''
-      title: i18n.dialog.stringsettings.title, handler: (rowData)->
-      #        grid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
-        $('#stringSettingsDialog').data("param", rowData).dialog 'open'
+      handler: (rowData)->openDialogHandler(rowData, 'stringSettingsDialog')
     'Language':
-      url: ''
-      title: i18n.dialog.languagesettings.title, handler: (rowData)->
-        $('#languageSettingsDialog').data("param", rowData).dialog 'open'
+      handler: (rowData)->openDialogHandler(rowData, 'languageSettingsDialog')
 
   lastEditedCell = null
 
@@ -84,16 +82,20 @@ define [
     {name: 'langrefcode', index: 'langrefcode', width: 55, align: 'left', hidden: true}
     {name: 'name', index: 'base.name', width: 200, editable: false, align: 'left'}
     {name: 'version', index: 'version', width: 25, editable: true, classes: 'editable-column', edittype: 'select', editoptions: {value: {}}, align: 'left'}
-    {name: 'format', index: 'base.format', width: 60, editable: true, edittype: 'select',
+    {name: 'format', index: 'base.format', width: 60, editable: true, edittype: 'select', align: 'left'
     editoptions: {value: c18n.dictformats},
-    align: 'left'}
+    }
     {name: 'encoding', index: 'base.encoding', width: 40, editable: true, edittype: 'select',
     editoptions: {value: c18n.dictencodings}, align: 'left'}
     {name: 'labelNum', index: 'labelNum', width: 20, align: 'right', firstsortorder: 'desc'}
+    {name: 'errors', index: 'errorCount', width: 20, align: 'right'
+#      unformat:(cellvalue, options, cell)->$('a', cell).text()
+    }
+    {name: 'warnings', index: 'warningCount', width: 20, align: 'right'}
     {name: 'action', index: 'action', width: 70, editable: false, align: 'center', sortable: false
     formatter: (cellvalue, options, rowObject)->
       $.map(handlers,
-        (value, index)->"<A id='action_#{index}_#{options.rowId}' style='color:blue' title='#{value.title}'href='javascript:void(0)'>#{index}</A>"
+        (value, index)->"<A id='action_#{index}_#{options.rowId}' style='color:blue' title='#{index} Settings'href='javascript:void(0)'>#{index}</A>"
       ).join('&nbsp;&nbsp;&nbsp;&nbsp;')
     }
     {name: 'history', index: 'history', width: 25, editable: false, align: 'center', sortable: false,formatter: (cellvalue, options, rowObject)->
@@ -105,25 +107,42 @@ define [
   ]
   $(colModel).each (index, colModel)->colModel.classes = 'editable-column' if colModel.editable
 
-
+  prop = "languageReferenceCode,base.name,version,base.format,base.encoding,labelNum, errorCount, warningCount"
   dicGrid = $('#' + dictGridId).jqGrid({
-  url: 'json/dummy.json'
+  url: urls.dicts
+  postData: {format: 'grid', prop: prop}
   datatype: 'local'
   width: 1000
   height: 320
-  cellactionhandlers: handlers
   pager: '#dictPager'
-  editurl: "app/create-or-add-application"
-  cellactionurl: 'app/remove-dict'
+  editurl: urls.app.add_app
+  cellactionurl: urls.app.remove_dict
   rowNum: 999, loadonce: false
   sortname: 'base.name'
   sortorder: 'asc'
-  viewrecords: true, cellEdit: true, cellurl: 'app/update-dict', ajaxCellOptions: {async: false}
+  viewrecords: true, cellEdit: true, cellurl: urls.app.update_dict, ajaxCellOptions: {async: false}
   gridview: true, multiselect: true
   caption: i18n.grid.dictsforapp
-  colNames: ['LangRefCode', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels', 'Action','History', 'Del']
+  colNames: ['LangRefCode', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels', 'Error', 'Warning', 'Action','History', 'Del']
   colModel: colModel
   beforeProcessing: (data, status, xhr)->
+    grid = $(@)
+
+    [actIdx, warningIdx, errorIdx]=[
+      $.inArray 'Action', grid.getGridParam('colNames')
+      $.inArray 'Warning', grid.getGridParam('colNames')
+      $.inArray 'Error', grid.getGridParam('colNames')
+    ]
+
+    (--actIdx; --warningIdx; --errorIdx) if grid.getGridParam('multiselect')
+
+    actions = []
+    actions.push k for k,v of handlers
+
+    $(data.rows).each (index, rowData)->
+      @cell[warningIdx] = "<a id='warnAndErr_warnings_#{rowData.id}' title='details' href='javascript:void(0);'>#{@cell[warningIdx]}</a>"
+      @cell[errorIdx] = "<a id='warnAndErr_errors_#{rowData.id}' title='details' href='javascript:void(0);'>#{@cell[errorIdx]}</a>"
+
   afterEditCell: (id, name, val, iRow, iCol)->
     lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
     grid = @
@@ -142,7 +161,6 @@ define [
 
   gridComplete: ->
     grid = $(@)
-    handlers = grid.getGridParam 'cellactionhandlers'
     $('a[id^=action_]', @).click ()->
       [a, action, rowid]=@id.split('_')
       #      save grid edit before get data
@@ -152,6 +170,25 @@ define [
       delete rowData.action
 
       handlers[action].handler rowData
+
+    $('a', @).css 'color', 'blue'
+
+    $('a[id^=warnAndErr_]', @).click ()->
+      [_, name, rowid]=@id.split '_'
+      value = $(@).text()
+      return if parseInt(value) == 0
+      # open the dialog to show errors or warnings
+      rowData = grid.getRowData(rowid)
+      rowData.id = rowid
+      rowData.type = name
+      $("#dictValidationDialog").data("param", rowData).dialog 'open'
+
+    #      high light error rows
+    $("tr[class!='jqgfirstrow']", @).each (index, row)->
+      rowData = grid.getRowData(row.id)
+
+      $(row).css 'background', '#FFFFAA' if parseInt($(rowData.warnings).text()) > 0
+      $(row).css 'background', '#FFD2D2' if parseInt($(rowData.errors).text()) > 0
 
     $('img.historyAct', @).click(()->
       grid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
@@ -255,7 +292,6 @@ define [
 
 
   appChanged: (param)->
-    prop = "languageReferenceCode,base.name,version,base.format,base.encoding,labelNum"
-    dicGrid.setGridParam(url: 'rest/dict', postData: {app: param.app.id, format: 'grid', prop: prop}).trigger "reloadGrid"
+    dicGrid.setGridParam(postData: {app: param.app.id}).trigger "reloadGrid"
     dicGrid.setCaption "Dictionaries for Application #{param.base.text} version #{param.app.version}"
 

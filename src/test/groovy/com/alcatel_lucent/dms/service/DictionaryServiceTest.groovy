@@ -8,8 +8,6 @@ import com.alcatel_lucent.dms.util.Util
 import org.apache.commons.io.ByteOrderMark
 import org.apache.commons.io.IOUtils
 import org.apache.commons.io.input.BOMInputStream
-import org.dom4j.Document
-import org.dom4j.io.SAXReader
 import org.junit.*
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,8 +16,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.test.context.transaction.TransactionConfiguration
 import org.springframework.test.context.web.WebAppConfiguration
 import org.springframework.transaction.annotation.Transactional
-import org.xml.sax.EntityResolver
-import org.xml.sax.InputSource
 
 import javax.annotation.Resource
 
@@ -36,7 +32,8 @@ import javax.annotation.Resource
 @WebAppConfiguration()
 @ContextConfiguration(classes = [AppConfig])
 
-@Transactional //Important, or the transaction control will be invalid
+@Transactional
+//Important, or the transaction control will be invalid
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 
 public class DictionaryServiceTest {
@@ -72,18 +69,14 @@ public class DictionaryServiceTest {
 
 //    @Test
     void tempTest() {
-        SAXReader saxReader = new SAXReader(true)
+        com.alcatel_lucent.dms.model.Dictionary dict = daoService.retrieve(com.alcatel_lucent.dms.model.Dictionary, 1L)
+        dict.validate()
 
-        saxReader.entityResolver = { String publicId, String systemId ->
-            new InputSource(getClass().getResourceAsStream("/dtds/XmlHelp.dtd"))
-        } as EntityResolver
-
-        Document doc = saxReader.read(new File("D:\\Documents\\Alcatel_Lucent\\DMS\\exampleFiles\\XMLHelp\\test\\help-example.xhlp"))
-        println doc
+        println dict.dictWarnings
     }
 
 //    @Test
-    void testMe(){}
+    void testMe() {}
 
 //    @Test
 //    @Rollback(false)

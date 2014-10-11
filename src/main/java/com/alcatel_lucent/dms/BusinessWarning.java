@@ -1,10 +1,12 @@
 package com.alcatel_lucent.dms;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-public class BusinessWarning {
+public class BusinessWarning implements ValidationInfo{
     public static final int UNCLOSED_QUOTA = 200;
     public static final int UNCLOSED_LABEL = 201;
     public static final int UNCLOSED_LABEL_ENTRY = 202;
@@ -45,7 +47,23 @@ public class BusinessWarning {
         return msgFmt.format(parameters);
     }
 
+    @JsonProperty("code")
+    public int getCode(){
+        return warningCode;
+    }
+
+    @Override
+    public Long getId() {
+        return toString().hashCode() + System.currentTimeMillis();
+    }
+
+    public String getMessage(){
+        return toString();
+    }
+
     public String toString() {
-        return toString(UserContext.getInstance().getLocale());
+        UserContext context = UserContext.getInstance();
+        Locale locale = null != context ? context.getLocale() : Locale.getDefault();
+        return toString(locale);
     }
 }

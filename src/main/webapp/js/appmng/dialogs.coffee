@@ -18,9 +18,13 @@ define [
   'appmng/searchtext_grid'
   'appmng/stringsettings_translation_history_grid'
 
+  'appmng/dict_validation_grid'
+
 ], ($, jqgrid, blockui, msgbox, c18n, i18n, urls, util, previewgrid, stgrid, chart, shistorygrid)->
 
   #  console?.log "module appmng/dialogs loading."
+  dialogDefaultOptions = $.ui.dialog.prototype.options
+
 
   $('#XMLPropertiesDictionaryExportOptionsDialog').dialog(
     autoOpen: false, model: true
@@ -402,17 +406,15 @@ define [
       }
     ]
     open: ->
-      $('#isAutoCreateLanguage', @).attr("checked", false)
+      $('#isAutoCreateLanguage', @).attr("checked", true)
       #    param need to be initilize before the dialog open
       param = $(@).data 'param'
       return if !param
 
       postData =
         appId: param.appId
-        format: 'grid',
         handler: param.handler
-        prop: 'languageReferenceCode,base.name,version,base.format,base.encoding,labelNum,errorCount,warningCount'
-      $('#dictListPreviewGrid').setGridParam(url: 'rest/delivery/dict', page: 1, postData: postData).trigger 'reloadGrid'
+      $('#dictListPreviewGrid').setGridParam(page: 1, postData: postData).trigger 'reloadGrid'
   )
 
   dictPreviewStringSettings = $('#dictPreviewStringSettingsDialog').dialog(
@@ -774,6 +776,24 @@ define [
         $(@).dialog 'close'
       }
     ]
+  )
+
+  dictValidationDialog = $('#dictValidationDialog').dialog(
+    open: ()->
+      me = $(@)
+      grid = $("table.ui-jqgrid-btable", @)
+      util.adjustDialogAndInnerGridSize(me, grid, {width: 200, height: 100}, {width: 37, height: 180})
+      param = $(@).data('param')
+      grid.setCaption("Dictionary #{param.name} version #{param.version} #{param.type}(s)")
+      .setGridParam(postData: {dict: param.id, type: param.type})
+      .trigger 'reloadGrid'
+
+
+    buttons: $.merge([
+      {text: c18n.ok, click: (e)->
+        $(@).dialog 'close'
+      }
+    ] ,dialogDefaultOptions.buttons)
   )
 
   showSearchResult = (params)->searchResult.data('params', params).dialog 'open'
