@@ -80,6 +80,8 @@ public abstract class BaseEntity implements Serializable {
         }
     }
 
+
+
     public void setAnnotation1(Map<String, String> mapAnnotation) {
         setAnnotation(1, mapAnnotation);
     }

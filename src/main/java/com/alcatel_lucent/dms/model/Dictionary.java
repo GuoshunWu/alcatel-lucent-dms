@@ -7,6 +7,9 @@ import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.util.Util;
 import net.sf.json.JSONObject;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.collections.TransformerUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.Parameter;
@@ -358,28 +361,33 @@ public class Dictionary extends BaseEntity {
 
     @Transient
     public Collection<String> getWarnings() {
-        Collection<String> result = new ArrayList<String>();
-        if (parseWarnings != null) {
-            for (BusinessWarning warning : parseWarnings) {
-                result.add(warning.toString());
-            }
-        }
-        if (importWarnings != null) {
-            for (BusinessWarning warning : importWarnings) {
-                result.add(warning.toString());
-            }
+        return CollectionUtils.collect(getDictWarnings(), TransformerUtils.invokerTransformer("toString"));
+    }
+
+    @Transient
+    public Collection<String> getErrors() {
+        return CollectionUtils.collect(getDictErrors(), TransformerUtils.invokerTransformer("toString"));
+    }
+
+    @Transient
+    public Collection<BusinessException> getDictErrors() {
+        Collection<BusinessException> result = new ArrayList<BusinessException>();
+        if (previewErrors != null) {
+            result.addAll(previewErrors);
         }
         return result;
     }
 
     @Transient
-    public Collection<String> getErrors() {
-        Collection<String> result = new ArrayList<String>();
-        if (previewErrors != null) {
-            for (BusinessException e : previewErrors) {
-                result.add(e.toString());
-            }
+    public Collection<BusinessWarning> getDictWarnings() {
+        Collection<BusinessWarning> result = new ArrayList<BusinessWarning>();
+        if (parseWarnings != null) {
+            result.addAll(parseWarnings);
         }
+        if (importWarnings != null) {
+            result.addAll(importWarnings);
+        }
+
         return result;
     }
 

@@ -26,14 +26,17 @@ define (require)->
     create_version: getURL('create-product-release', 'app/')
   app:
     create: getURL('create-application-base', 'app/')
+    add_app: getURL('create-or-add-application', 'app/')
     add_dict_language: getURL('add-dict-language', 'app/')
     remove_dict_language: getURL('remove-dict-language', 'app/')
     del: getURL('remove-application-base', 'app/')
     create_version: getURL('create-application', 'app/')
     generate_dict: getURL('generate-dict','app/')
+    update_dict: getURL('update_dict','app/')
     remove_dict: getURL('remove-dict', 'app/')
     remove_version: getURL('remove-application', 'app/')
     deliver_dict: getURL('deliver-dict', 'app/')
+    deliver_update_dict: getURL('deliver-update-dict', 'app/')
     deliver_app_dict: getURL('deliver-app-dict', 'app/')
     process_dict: getURL('process-dict', 'app/')
     download_app_dict: getURL('download-app-dict', 'app/')
@@ -84,6 +87,8 @@ define (require)->
 
   apps: getURL('applications', 'rest/')
   dicts: getURL('dict', 'rest/')
+  dict_validation: getURL('dictValidation', 'rest/')
+  deliver_dict: getURL('delivery/dict', 'rest/')
   tasks: getURL('tasks', 'rest/')
 
   charsets: getURL('charsets', 'rest/')

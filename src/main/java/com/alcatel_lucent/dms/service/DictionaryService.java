@@ -3,6 +3,7 @@ package com.alcatel_lucent.dms.service;
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.Constants;
+import com.alcatel_lucent.dms.ValidationInfo;
 import com.alcatel_lucent.dms.model.Application;
 import com.alcatel_lucent.dms.model.Context;
 import com.alcatel_lucent.dms.model.Dictionary;
@@ -332,4 +333,12 @@ public interface DictionaryService {
      * @return
      */
 	Application findApplication(String prod, String app, String ver);
+
+    /**
+     * Find dictionary validation result as a collection
+     * @param dictId dictionary id
+     * @param type type of the validation type, include "errors" and "warnings"
+     * @return the BusinessException or BusinessWarning validation collection
+     * */
+    Collection<ValidationInfo> findDictionaryValidations(Long dictId, String type);
 }

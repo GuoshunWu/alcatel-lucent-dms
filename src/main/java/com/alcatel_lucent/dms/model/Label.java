@@ -312,17 +312,29 @@ public class Label extends BaseEntity implements Cloneable {
         this.origTranslations = origTranslations;
     }
 
+
     @OneToMany
     public Collection<LabelTranslation> getOrigTranslations() {
         return origTranslations;
     }
 
+    public LabelTranslation getOrigTranslation(Long languageId) {
+        if (origTranslations == null) return null;
+        for (LabelTranslation trans : origTranslations) {
+            if (trans.getLanguage().getId().equals(languageId)) return trans;
+        }
+        return null;
+    }
+
+    public LabelTranslation getOrigTranslation(Language language) {
+        return getOrigTranslation(language.getId());
+    }
+
     public LabelTranslation getOrigTranslation(String languageCode) {
-        if (origTranslations != null) {
-            for (LabelTranslation trans : origTranslations) {
-                if (trans.getLanguageCode().equals(languageCode)) {
-                    return trans;
-                }
+        if (origTranslations == null) return null;
+        for (LabelTranslation trans : origTranslations) {
+            if (trans.getLanguageCode().equals(languageCode)) {
+                return trans;
             }
         }
         return null;
@@ -404,7 +416,7 @@ public class Label extends BaseEntity implements Cloneable {
 
         //TODO: null == dl need to be fixed
         DictionaryLanguage dl = this.getDictionary().getDictLanguage(langCode);
-        if(null == dl) return null;
+        if (null == dl) return null;
 
         LabelTranslation lt = getOrigTranslation(langCode);
         if (lt != null && (!lt.isNeedTranslation())) {

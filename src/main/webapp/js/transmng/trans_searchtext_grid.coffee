@@ -18,10 +18,10 @@ define [
     cellEdit: true, cellurl: urls.trans.update_status
     postData: {
       format: 'grid',
-      prop : 'app.name,dictionary.name,key,maxLength,context.name,reference,ct.translation,ct.status,ct.id'
+      prop : 'app.name,dictionary.name,key,maxLength,context.name,reference,ct.translation,ct.status,ct.language.name, ct.id'
     }
     caption: 'result'
-    colNames: ['Application','Dictionary','Label', 'Max Length', 'Context', 'Reference', 'Translation', 'Status','TransId']
+    colNames: ['Application','Dictionary','Label', 'Max Length', 'Context', 'Reference', 'Translation', 'Status',  'Language', 'TransId']
     colModel: [
       {name: 'app', index: 'app.name', width: 50, editable: false, stype: 'select', align: 'left', frozen: true}
       {name: 'dict', index: 'dictionary.base.name', width: 150, editable: false, align: 'left', frozen: true, search: false}
@@ -35,6 +35,7 @@ define [
       formatter: 'select',
       stype: 'select', searchoptions: {value: ":#{c18n.all};0:#{i18n.trans.nottranslated};1:#{i18n.trans.inprogress};2:#{i18n.trans.translated}"}
       }
+      {name: 'language', index: 'ct.language.name', width: 160, align: 'left', search: false}
       {name: 'transId', index: 'ct.id', width: 150, align: 'left', hidden:true, search: false}
     ]
     afterEditCell: (rowid, name, val, iRow, iCol)->

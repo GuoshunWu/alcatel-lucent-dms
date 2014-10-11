@@ -220,7 +220,7 @@
         </tr>
         <tr>
             <td>
-                &nbsp;&nbsp; <input type="checkbox" checked id="isAutoCreateLanguage"/><s:text
+                &nbsp;&nbsp; <input type="checkbox" id="isAutoCreateLanguage"/><s:text
                     name="appmng.dialogs.dictpreview.autocreatelanguage"/>
             </td>
         </tr>
@@ -555,6 +555,17 @@
                     <s:text name="appmng.dialogs.exportdictoptions.escape_apostrophe_char"/>
                 </label>
                 <input type="checkbox"  id="XMLPropertiesDictEscapeApostrophe"/>
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+<div id="dictValidationDialog" title="<s:text name="appmng.dialogs.dictvalidation.title"/>">
+    <table border="0" width="100%">
+        <tr>
+            <td>
+                <table id="dictValidationGrid"></table>
             </td>
         </tr>
     </table>

@@ -116,22 +116,59 @@ public interface TranslationService {
     /**
      * Retrieve label information with translation of specific language.
      * @param dictId dictionary id
-     * @param langId language id
+     * @param langIds language id collection
      * @return collection of labels, translation information is contained in ct and ot properties.
      */
-	Collection<Label> getLabelsWithTranslation(Long dictId, Long langId);
+	Collection<Label> getLabelsWithTranslation(Long dictId, Collection<Long> langIds);
 	
 	/**
 	 * Retrieve label information with translation of specific language by search of text 
 	 * @param prodId product id, ignored if appId or dictId is specified
 	 * @param appId application id, ignored if dictId is specified
 	 * @param dictId dictionary id
-	 * @param langId language id
+     * @param langIds language id collection
 	 * @param text search text (case insensitive)
 	 * @return collection of labels, translation information is contained in ct and ot properties
 	 */
 	Collection<Label> searchLabelsWithTranslation(Long prodId,
-			Long appId, Long dictId, Long langId, String text);
+			Long appId, Long dictId, Collection<Long> langIds, String text);
+
+
+    /**
+     * Retrieve label information with translation of specific language by search of text
+     * @param prodId product id, ignored if appId or dictId is specified
+     * @param appId application id, ignored if dictId is specified
+     * @param dictId dictionary id
+     * @param langIds language id collection
+     * @param text search text (case insensitive)
+     * @param isExact weather use exact equal instead of containing search
+     * @return collection of labels, translation information is contained in ct and ot properties
+     */
+
+    Collection<Label> searchLabelsWithTranslation(Long prodId,
+                                                  Long appId, Long dictId, Collection<Long> langIds, String text,
+                                                  boolean isExact);
+
+
+    /**
+     * Retrieve label information with translation of specific language.
+     * @param dictId dictionary id
+     * @param langId language id
+     * @return collection of labels, translation information is contained in ct and ot properties.
+     */
+    Collection<Label> getLabelsWithTranslation(Long dictId, Long langId);
+
+    /**
+     * Retrieve label information with translation of specific language by search of text
+     * @param prodId product id, ignored if appId or dictId is specified
+     * @param appId application id, ignored if dictId is specified
+     * @param dictId dictionary id
+     * @param langId language id
+     * @param text search text (case insensitive)
+     * @return collection of labels, translation information is contained in ct and ot properties
+     */
+    Collection<Label> searchLabelsWithTranslation(Long prodId,
+                                                  Long appId, Long dictId, Long langId, String text);
 
 
     /**
@@ -146,8 +183,8 @@ public interface TranslationService {
      */
 
     Collection<Label> searchLabelsWithTranslation(Long prodId,
-                                                  Long appId, Long dictId, Long langId, String text, boolean isExact);
-
+                                                  Long appId, Long dictId, Long langId, String text,
+                                                  boolean isExact);
 
 	/**
 	 * Retrieve label translations data for specified label.

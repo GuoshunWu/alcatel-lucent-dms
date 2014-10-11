@@ -9,7 +9,7 @@ import java.util.ResourceBundle;
 /**
  * Author: Allan YANG Date: 2008-11-13
  */
-public class BusinessException extends RuntimeException {
+public class BusinessException extends RuntimeException implements ValidationInfo {
     // general
     static public final int ACCESS_DENIED = 100;
     static public final int NESTED_ERROR = 101;
@@ -93,7 +93,7 @@ public class BusinessException extends RuntimeException {
     public static final int TEXT_NOT_FOUND = 505;
     static public final int INVALID_CONTEXT_KEY = 506;
     static public final int INVALID_TRANSLATION_FILE = 507;
-    
+
     // administration
     static public final int LANGUAGE_ALREADY_EXISTS = 601;
     static public final int LANGUAGE_IS_IN_USE = 602;
@@ -103,7 +103,7 @@ public class BusinessException extends RuntimeException {
     public static final int USER_NOT_FOUND = 606;
 
     public static final int GLOSSARY_ALREADY_EXISTS = 607;
-    
+
     // context management
     public static final int TEXT_HAS_REFS = 701;
 
@@ -114,7 +114,7 @@ public class BusinessException extends RuntimeException {
 
     public static final int LDAP_CONNECTION_ERROR = 1001;
 
-    
+
     private int errorCode;
     private String errorMessage;
     private Object[] parameters;
@@ -178,6 +178,11 @@ public class BusinessException extends RuntimeException {
         return result.toString();
     }
 
+    @Override
+    public Long getId() {
+        return toString().hashCode() + System.currentTimeMillis();
+    }
+
     /**
      * Display error message including nested exceptions.
      */
@@ -194,9 +199,14 @@ public class BusinessException extends RuntimeException {
     public void setNested(Collection<BusinessException> nested) {
         this.nested = nested;
     }
-    
+
     @Override
     public String getMessage() {
-    	return toString();
+        return toString();
     }
+
+    public int getCode() {
+        return errorCode;
+    }
+
 }

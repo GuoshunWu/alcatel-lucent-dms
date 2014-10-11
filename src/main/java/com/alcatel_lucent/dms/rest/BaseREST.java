@@ -65,7 +65,7 @@ public abstract class BaseREST {
             return response.build();
         } catch (Exception e) {
             e.printStackTrace();
-            log.error(e.toString());
+            log.error(e.getMessage(), e);
             throw new RESTException(e);
         }
     }

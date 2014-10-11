@@ -1,4 +1,5 @@
 define [
+  'defaultValues'
   'jqlayout'
   'blockui'
   'dms-util'
@@ -15,6 +16,7 @@ define [
 
 #  'testcases'
 ], (
+  defaultValues
   $
   blockui
   util

@@ -10,16 +10,6 @@ define ['jqueryui'
     jqgrid
     jqtree
 c18n)->
-
-  # Here we set the jqgrid options globally
-  $.extend($.jgrid.defaults,
-    loadui:"block"
-    mtype: 'post'
-    beforeRequest: ->
-      $(@).clearGridData()
-      # console.log "Grid #{@.id} has cleared old data, now loading new data..."
-  )
-
   #    prototype enhancement
   String:: format = -> args = arguments; @replace /\{(\d+)\}/g, (m, i) ->args[i]
 
@@ -270,8 +260,6 @@ c18n)->
 
   newOption = (text, value, selected)->"<option #{if selected then 'selected ' else ''}value='#{value}'>#{text}</option>"
   urlname2Action = (urlname = '', suffix = 'Action')->urlname.split('/').pop().capitalize().split('-').join('') + suffix
-
-  $.ajaxSetup {timeout: 1000 * 60 * 30, cache: false}
 
   #  Ajax event for all pages
   sessionCheck = ()->

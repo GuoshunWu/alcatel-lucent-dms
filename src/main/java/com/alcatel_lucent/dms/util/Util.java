@@ -6,7 +6,6 @@ package com.alcatel_lucent.dms.util;
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.model.Glossary;
-import net.sf.sevenzipjbinding.IArchiveExtractCallback;
 import net.sf.sevenzipjbinding.ISevenZipInArchive;
 import net.sf.sevenzipjbinding.SevenZip;
 import net.sf.sevenzipjbinding.SevenZipException;
@@ -48,7 +47,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
-
 import static org.apache.commons.collections.MapUtils.typedMap;
 import static org.apache.commons.lang3.ArrayUtils.toMap;
 
@@ -69,7 +67,6 @@ public class Util {
             "Udf", "Wim", "Xar", "Z", "Zip",
             "Tgz", "gz", "apk"
     );
-
 
 
     /**
@@ -101,6 +98,24 @@ public class Util {
             propertiesList.add(value);
         }
         return propertiesList;
+    }
+
+    /**
+     * Convert a collection to map with object key prop as map key
+     * @param objects
+     * @param keyProp object property as key
+     * @return map
+     * */
+    public static <KT,T> Map<KT,T> collection2Map(Collection<T> objects, String keyProp) {
+        Map objMap = new HashMap();
+        try {
+            for (Object obj : objects) {
+                objMap.put(PropertyUtils.getProperty(obj, keyProp), obj);
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        return objMap;
     }
 
     /**
@@ -305,7 +320,7 @@ public class Util {
      * @param archivePath the path of the archive
      * @param destDir     the destination directory to decompress the archive
      */
-    public static void decompressArchive(String archivePath, String destDir){
+    public static void decompressArchive(String archivePath, String destDir) {
         RandomAccessFile randomAccessFile = null;
         ISevenZipInArchive inArchive = null;
         try {

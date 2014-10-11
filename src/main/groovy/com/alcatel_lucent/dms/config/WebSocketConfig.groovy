@@ -20,7 +20,6 @@ import org.springframework.web.socket.handler.TextWebSocketHandler
 @Slf4j
 class WebSocketConfig implements WebSocketConfigurer {
 
-
     @Override
     void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(new TextWebSocketHandler() {

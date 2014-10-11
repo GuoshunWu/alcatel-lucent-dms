@@ -4,9 +4,7 @@ import com.alcatel_lucent.dms.UserContext;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -19,6 +17,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import views.JQGrid;
 
 import java.lang.reflect.InvocationTargetException;
 import java.text.DateFormat;
@@ -171,15 +170,9 @@ public class JSONServiceImpl implements JSONService {
     public String toGridJSONIncludeJSONString(Collection<?> entities, Integer rows, Integer page, Integer records, String idProp, String cellProps)
             throws JsonProcessingException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
 
-        ArrayNode jsonArrayGrid = factory.arrayNode();
-        ObjectNode jsonGrid = factory.objectNode();
-
+        JQGrid grid = new JQGrid();
         for (Object entity : entities) {
-            ObjectNode jsonRow = factory.objectNode();
-            if (idProp != null) {
-                jsonRow.put("id", PropertyUtils.getProperty(entity, idProp.trim()).toString());
-            }
-            ArrayNode jsonCell = factory.arrayNode();
+            List<String> cells = new ArrayList<String>();
             String[] propArray = cellProps.split(",");
             for (String prop : propArray) {
                 Object value = null;
@@ -202,26 +195,25 @@ public class JSONServiceImpl implements JSONService {
                 } else {
                     value = StringUtils.EMPTY;
                 }
-                jsonCell.add((String) value);
+                cells.add((String) value);
             }
-            jsonRow.set("cell", jsonCell);
-            jsonArrayGrid.add(jsonRow);
+            Map<String, Object> row = grid.addRow(cells);
+            if (idProp != null) {
+                String id = PropertyUtils.getProperty(entity, idProp.trim()).toString();
+                row.put(idProp, id);
+            }
         }
 
         if (rows != null && page != null) {
             int totalPages = (records != null && records > 0) ? (int) ceil(records / (float) rows) : 0;
             if (page > totalPages) page = totalPages;
-
-            jsonGrid.put("page", page).put("total", totalPages).put("records", records);
+            grid.setPage(page);
+            grid.setTotal(totalPages);
+            grid.setRecords(records);
         } else {
-            jsonGrid.put("records", entities.size());
+            grid.setRecords(entities.size());
         }
-        jsonGrid.set("rows", jsonArrayGrid);
-
-//        ObjectNode userData=factory.objectNode();
-//        jsonGrid.set("userData",userData);
-
-        return mapper.writeValueAsString(jsonGrid);
+        return mapper.writeValueAsString(grid);
     }
 
     public JSONArray toTreeJSON2(Object entity, Map<String, Collection<String>> propFilter, Map<Class, Map<String, String>>... vpropRename) {

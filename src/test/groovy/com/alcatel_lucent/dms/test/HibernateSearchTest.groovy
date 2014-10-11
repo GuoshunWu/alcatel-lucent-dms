@@ -63,6 +63,8 @@ class HibernateSearchTest {
 
     }
 
+
+
 //    @Test
     void testM2MSearch() {
         long start = System.currentTimeMillis()
