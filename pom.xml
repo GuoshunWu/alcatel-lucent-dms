@@ -5,7 +5,7 @@
 
     <groupId>com.alcatel_lucent.dms</groupId>
     <artifactId>dms</artifactId>
-    <version>2.16.8</version>
+    <version>2.16.9</version>
     <packaging>war</packaging>
     <name>Dictionary Management System</name>
     <url>http://localhost:8080/dms</url>
@@ -464,7 +464,6 @@
             <artifactId>jackson-core</artifactId>
             <version>2.4.2</version>
         </dependency>
-
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
