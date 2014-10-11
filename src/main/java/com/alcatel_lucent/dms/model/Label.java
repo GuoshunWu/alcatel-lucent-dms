@@ -47,6 +47,14 @@ public class Label extends BaseEntity implements Cloneable {
      *
      */
     private static final long serialVersionUID = -4086873912554236932L;
+    
+    // Capitalization styles
+    public static final int CAPITALIZATION_ALL_UPPER_CASE = 1;
+    public static final int CAPITALIZATION_ALL_CAPITALIZED = 2;
+    public static final int CAPITALIZATION_FIRST_CAPITALIZED = 3;
+    public static final int CAPITALIZATION_FIRST_CAPITALIZED_ONLY = 4;
+    public static final int CAPITALIZATION_ALL_LOWER_CASE = 5;
+
 
     @Id
     @GeneratedValue(generator = "LABEL_GEN")
@@ -84,6 +92,7 @@ public class Label extends BaseEntity implements Cloneable {
 
     private String fontName;
     private String fontSize;
+    private Integer capitalization;
 
     private String annotation1;
     private String annotation2;
@@ -505,4 +514,12 @@ public class Label extends BaseEntity implements Cloneable {
     public void setProd(Product prod) {
         this.prod = prod;
     }
+
+	public Integer getCapitalization() {
+		return capitalization;
+	}
+
+	public void setCapitalization(Integer capitalization) {
+		this.capitalization = capitalization;
+	}
 }

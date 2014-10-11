@@ -1,3 +1,8 @@
+V2.16.9 (Oct 9, 2014)
+    * Add option "escapeApostrophe" to API "generate-dict"
+    * Fix display issue of special characters
+    * Fix issue of search text
+
 V2.16.8 (Sep 19, 2014)
     * Avoid unnecessary refresh when switch among views
     * Add a "Match whole" option in translation view to enable whole text search
