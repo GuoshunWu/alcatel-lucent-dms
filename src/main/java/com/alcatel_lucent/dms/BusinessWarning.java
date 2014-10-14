@@ -27,6 +27,8 @@ public class BusinessWarning implements ValidationInfo{
 
     public static final int TS_REFERENCE_UNFINISHED = 301;
 
+    public static final int PARAMETERS_INCORRECT = 401;
+    public static final int BR_INCONSISTENT = 402;
 
     public static final int MORE = 999;
 

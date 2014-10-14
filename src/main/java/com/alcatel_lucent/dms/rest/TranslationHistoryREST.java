@@ -33,7 +33,7 @@ import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
  *   rows		(optional) number of records to be retrieved, only be used when format is grid
  *   page		(optional) current page, only be used when format is grid
  *   		
- * @author allany
+ * @author Guoshun Wu
  *
  */
 @Path("translationHistory")

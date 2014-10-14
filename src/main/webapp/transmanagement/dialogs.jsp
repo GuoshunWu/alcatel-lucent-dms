@@ -176,9 +176,9 @@
                         <tr>
                             <td align="center" tabindex="1">
                                 Operation time from
-                                <input id="operationTimeBegin" style="text-align: center" />
+                                <input id="operationTimeBegin" style="text-align: center"/>
                                 to
-                                <input id="operationTimeEnd" style="text-align: center" />
+                                <input id="operationTimeEnd" style="text-align: center"/>
                             </td>
                         </tr>
                     </table>
@@ -199,6 +199,17 @@
                     </tr>
                 </table>
                 <div id="detailViewTranslationHistoryGridPager"></div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+<div id="transmngTranslationCheckDialog" title="<s:text name="transmng.chktrans"/>">
+    <table border="0" width="100%">
+        <tr>
+            <td>
+                <table width="100%" id="transCheckGrid"></table>
             </td>
         </tr>
     </table>

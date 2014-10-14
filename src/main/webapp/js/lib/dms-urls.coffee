@@ -103,6 +103,7 @@ define (require)->
 
   translations: getURL('luceneTranslations', 'rest/')
   translation_histories: getURL('translationHistory', 'rest/')
+  translation_check: getURL('translationCheck', 'rest/')
   app_translation_histories: getURL('appTranslationHistory', 'rest/')
   users: getURL('users', 'rest/')
   ldapuser: getURL('users/ldapUser', 'rest/')

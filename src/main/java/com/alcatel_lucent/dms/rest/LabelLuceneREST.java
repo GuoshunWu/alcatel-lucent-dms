@@ -4,6 +4,7 @@ import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.service.DictionaryService;
 import com.alcatel_lucent.dms.service.TranslationService;
 import com.alcatel_lucent.dms.util.ObjectComparator;
+import com.alcatel_lucent.dms.util.Util;
 import com.google.common.base.Strings;
 import org.apache.commons.collections.comparators.ComparatorChain;
 import org.apache.commons.lang3.StringUtils;
@@ -160,32 +161,7 @@ public class LabelLuceneREST extends BaseREST {
         Collections.sort((ArrayList<Label>) labels, orders2Comparator(orders, sord, false));
 
         Map<String, String> filters = getGridFilters(requestMap);
-        if (filters != null) {    // filter by status
-            String statusParam = filters.get("ct.status");
-            if (statusParam != null && !statusParam.isEmpty()) {
-                int statusFilter = Integer.parseInt(statusParam);
-                // apply status filter
-                Iterator<Label> iter = labels.iterator();
-                while (iter.hasNext()) {
-                    Label label = iter.next();
-                    if (statusFilter != label.getCt().getStatus()) {
-                        iter.remove();
-                    }
-                }
-            }
-            String typeParam = filters.get("ct.translationType");
-            if (typeParam != null && !typeParam.isEmpty()) {
-                int typeFilter = Integer.parseInt(typeParam);
-                // apply type filter
-                Iterator<Label> iter = labels.iterator();
-                while (iter.hasNext()) {
-                    Label label = iter.next();
-                    if (typeFilter != label.getCt().getTranslationType()) {
-                        iter.remove();
-                    }
-                }
-            }
-        }
+        labels = Util.filterCollection(labels, filters);
 
         // filter by nodiff flag
         String nodiffStr = requestMap.get("nodiff");

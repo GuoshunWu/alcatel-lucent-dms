@@ -4,7 +4,7 @@
             <td>
                 <table border="0" width="100%">
                     <tr>
-                        <td colspan="5">
+                        <td width="480px">
                             <span class="show-label" id="typeLabel">
                                 <s:text name="product"/>
                             </span>
@@ -19,14 +19,13 @@
 
                             <s:select theme="simple" id="selVersion" list="products" listKey="id"
                                       listValue="version"
-                                      cssStyle="width:200px" headerKey="-1"
+                                      cssStyle="width:150px" headerKey="-1"
                                       value="curProductId"/>
 
                         </td>
 
-                        <td rowspan="2" align="right">
-
-                            <fieldset style="width: 620px">
+                        <td  align="right">
+                          <fieldset style="width: 590px">
                                 <legend align="center"><s:text name="searchtext"/></legend>
                                 <span class="translation-search-text">
                                 <label for="transSearchText"><s:text name="searchtext"/></label>
@@ -50,18 +49,17 @@
                                 <button id="transHistories"
                                         title="<s:text name="transmng.translation.history"/>"></button>
                                 </span>
+
                             </fieldset>
 
-                        </td>
-                        <td style="width: 25px">
+
                         </td>
                     </tr>
                     <tr>
-                        <td style="width: 130px">
+                        <td  colspan="2">
                             <button id="languageFilter"><s:text name="transmng.summarypanel.languagefilter"/></button>
-                        </td>
-                        <td style="width: 250px">
-                            <div style="border: none;width: 280px;text-align: center">
+
+                            <fieldset style="border:none;width: 280px;text-align: center; display: inline">
                                 <input type="radio" id="applicationView" name="viewOption" value="app"><label
                                     for="applicationView"><s:text
                                     name="transmng.summarypanel.viewoption.applicationlevel"/></label>&nbsp;&nbsp;&nbsp;&nbsp;
@@ -69,15 +67,14 @@
                                        value="dict"><label
                                     for="dictionaryView"><s:text
                                     name="transmng.summarypanel.viewoption.dictionarylevel"/></label>
-                            </div>
-                        </td>
-                        </td>
-                        <td>
+                            </fieldset>
+
+                            <button id="checkTranslations" style="margin-right: 3em"><s:text name="transmng.chktrans"/></button>
+
                             <a id="exportExcel" href="Javascript:void(0);">
                                 <img src="images/excel.gif"/> <s:text name="export"/>
                             </a>
-                        </td>
-                        <td>
+
                             <a style="display: none" id="exportPDF" href="#">PDF
                                 <form id="exportForm" method="post" action="trans/export-translation-report">
                                     <input type="hidden" name="prod"/>

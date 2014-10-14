@@ -14,6 +14,8 @@ define [
 
   'transmng/trans_histories_grid'
 
+  'transmng/trans_check_grid'
+
 ], ($, msgbox, i18n, c18n, util, urls, grid, detailgrid, searchgrid, matchgrid, historygrid, historiesGrid)->
   transGrid = grid
 
@@ -251,7 +253,6 @@ define [
       util.adjustDialogAndInnerGridSize(me, transSearchGrid, {width: 100, height: 50}, {width: 30, height: 190})
 
       params = me.data 'params'
-      console.log "params= ", params
       node = util.getProductTreeInfo()
 
 #      construct languages
@@ -388,6 +389,34 @@ define [
         $(@).dialog 'close'
       }
     ]
+  )
+
+  transCheckDialog = $("#transmngTranslationCheckDialog").dialog(
+    autoOpen: false, modal: true
+    width: 845
+
+    open: (event, ui)->
+      me=$(@)
+      transCheckGrid =  $("#transCheckGrid")
+      util.adjustDialogAndInnerGridSize(me, transCheckGrid, {width: 100, height: 50}, {width: 30, height: 215})
+      param = $(@).data('param')
+      return unless param
+#      console.log "param=", param
+      transCheckGrid
+      .setCaption param.caption
+      .setGridParam(
+        page: 1
+        postData: {appId: param.id}
+      )
+      .trigger 'reloadGrid'
+
+
+    buttons: [
+      {text: c18n.close, click: (e)->
+        $(@).dialog 'close'
+      }
+    ]
+
   )
 
 

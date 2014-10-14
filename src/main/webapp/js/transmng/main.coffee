@@ -98,8 +98,6 @@ define [
         $.msgBox "#{typeText.capitalize()} \"#{nodeInfo.text}\" has no version."
         return
 
-
-
       # for multiple language select
 #      languages = (checked.value for checked in selLang.multiselect("getChecked").get())
 #      languages = if languages.length then languages.join(',') else 0
@@ -116,11 +114,8 @@ define [
         )
     ).height(20).width(20)
 
-    transHistoriesBtn = $("#transHistories", "#transmng").button(text:false, icons:{
-      primary: "ui-icon-bookmark"}).click(()=>
+    getAppVersion = (nodeInfo = util.getProductTreeInfo(), selVer = $('#selVersion', '#transmng'))->
       selVer = $('#selVersion', '#transmng')
-      nodeInfo = util.getProductTreeInfo()
-
       if not nodeInfo or -1 == nodeInfo.parent or nodeInfo.type != 'app'
         $.msgBox 'Please select application.'
         return
@@ -129,11 +124,20 @@ define [
         $.msgBox "Application \"#{nodeInfo.text}\" has no version."
         return
 
+      selVer.val()
+
+    transHistoriesBtn = $("#transHistories", "#transmng").button(text:false, icons:{
+      primary: "ui-icon-bookmark"}).click(()=>
+      nodeInfo = util.getProductTreeInfo()
+      selVer = $('#selVersion', '#transmng')
+      appVersion = getAppVersion(nodeInfo, selVer)
       # show translation histories dialog
 
       $('#transHistoriesDialog').data(
-        "params", id: selVer.val(),
-        "caption": "Translation changelog in Application #{nodeInfo.text} #{$("option:selected", selVer).text()}"
+        "params", {
+          id: appVersion,
+          "caption": "Translation changelog in Application #{nodeInfo.text} #{$("option:selected", selVer).text()}"
+        }
       ).dialog 'open'
     ).height(20).width(20)
 
@@ -146,6 +150,17 @@ define [
 
     $("#exportExcel", '#transmng').click ()->exportAppOrDicts 'excel'
     $("#exportPDF", '#transmng').click ()->exportAppOrDicts 'pdf'
+
+    $('#checkTranslations', '#transmng').button().click ()->
+      # get product
+      nodeInfo = util.getProductTreeInfo()
+      selVer = $('#selVersion', '#transmng')
+      appVersion = getAppVersion(nodeInfo, selVer)
+      $('#transmngTranslationCheckDialog').data(
+        'param', {
+          id: appVersion,
+          "caption": "Translation check result in Application #{nodeInfo.text} #{$("option:selected", selVer).text()}"}
+      ).dialog('open')
 
 
 

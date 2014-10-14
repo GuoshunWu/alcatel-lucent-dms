@@ -102,11 +102,12 @@ public class Util {
 
     /**
      * Convert a collection to map with object key prop as map key
+     *
      * @param objects
      * @param keyProp object property as key
      * @return map
-     * */
-    public static <KT,T> Map<KT,T> collection2Map(Collection<T> objects, String keyProp) {
+     */
+    public static <KT, T> Map<KT, T> collection2Map(Collection<T> objects, String keyProp) {
         Map objMap = new HashMap();
         try {
             for (Object obj : objects) {
@@ -119,21 +120,70 @@ public class Util {
     }
 
     /**
+     * Filter a collection by object property in it
+     *
+     * @param collection   collection to filter
+     * @param filters      filters key is property name, and value is the value to match
+     * @param isStringLike if match contain for string properties
+     */
+
+    public static <T> Collection<T> filterCollection(Collection<T> collection, Map<String, String> filters, final boolean isStringLike) {
+        if (null == filters) return collection;
+        Set<Map.Entry<String, String>> filterEntries = filters.entrySet();
+        for (final Map.Entry<String, String> filterEntry : filterEntries) {
+            final String property = filterEntry.getKey();
+            final String value = filterEntry.getValue();
+            if (null == property) continue;
+
+            CollectionUtils.filter(collection, new Predicate() {
+                @Override
+                public boolean evaluate(Object object) {
+                    T t = (T) object;
+                    try {
+                        Object propValue = PropertyUtils.getProperty(t, property);
+                        Object convertedValue = value;
+                        if (propValue instanceof String) {
+                            if (isStringLike) return ((String) propValue).contains(value);
+                        } else if (propValue instanceof Integer) {
+                            convertedValue = Integer.valueOf(value);
+                        } else if (propValue instanceof Long) {
+                            convertedValue = Long.valueOf(value);
+                        } else if (propValue instanceof Collection) {
+                            return ((Collection) propValue).contains(value);
+                        } else if (null == propValue) {
+                            return null == value;
+                        }
+                        return propValue.equals(convertedValue);
+
+                    } catch (Exception e) {
+                        // no such properties
+                        return true;
+                    }
+                }
+            });
+        }
+        return collection;
+    }
+
+    private static String repeat(String str, int count) {
+        if (count <= 0) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < count; i++) {
+            sb.append(str);
+        }
+        return str;
+    }
+
+    /**
      * Generate the specified number of space as a String.
      *
      * @param count the number of spaces.
      * @return String of the concatenated space
      */
     public static String generateSpace(int count) {
-        if (count < 0) {
-            throw new IllegalArgumentException(
-                    "count must be greater than or equal 0.");
-        }
-        char[] chs = new char[count];
-        for (int i = 0; i < count; i++) {
-            chs[i] = ' ';
-        }
-        return new String(chs);
+        return repeat(" ", count);
     }
 
     /**
@@ -561,6 +611,7 @@ public class Util {
             throw new SystemError(e);
         }
     }
+
 
     /**
      * Convert a to map to string by separators

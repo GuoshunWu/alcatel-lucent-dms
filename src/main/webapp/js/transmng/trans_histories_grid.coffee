@@ -19,8 +19,9 @@ define [
   selectColumns = ['context', 'operationType' , 'status']
   selectElements = {}
 
-  grid = $("#{hGridID}").jqGrid(
+  grid = $(hGridID).jqGrid(
     mtype: 'post', datatype: 'local', url: urls.app_translation_histories
+    cellEdit: true, cellurl: urls.trans.update_status, ajaxCellOptions: {async: false}
     width: 'auto', height: 460
     rownumbers: true
     pager: pagerId, rowNum: 20, rowList: [20, 50, 100, 500]
@@ -50,10 +51,11 @@ define [
 
     loadComplete: (data)->
       return unless selectColumns.length
+      grid = $(@)
       $.each(selectElements, (colName, select)->
         return unless select
         currentSelected = select.val()
-        select.empty().append(buildSearchSelectValues(colName, currentSelected))
+        select.empty().append(util.buildSearchSelectValues(grid, colName, currentSelected))
       )
 
     afterEditCell: (rowid, name, val, iRow, iCol)->
@@ -104,61 +106,8 @@ define [
   .setGridParam('datatype':'json')
   .navGrid(pagerId, {edit: false, add: false, del: false, search: false, view: false})
 
-  string2Options = (stringValue)->
-    opt = {}
-    return opt unless stringValue
-    for option in stringValue.split(";")
-      entry = option .split ":"
-      opt[entry[0]]=entry[1]
-    opt
+  selectElements = util.setSearchSelect grid, selectColumns, selectElements
 
-  buildSearchSelectValues = (colName, selectedValue = false)->
-    # single column name
-    colProps = grid.jqGrid('getColProp', colName)
-    defaultSelectText = colProps.editoptions?.value
-    mapValue = string2Options(defaultSelectText)
-    uniqueValues = grid.jqGrid('getCol', colName).unique()
-
-    "<option value=''>All</option>" + uniqueValues.map((elem)->
-      display  = if mapValue[elem] then mapValue[elem] else elem
-      isSelected = ""
-      isSelected = "selected" if selectedValue and elem + "" == selectedValue
-      "<option #{isSelected} value='#{elem}'>#{display}</option>"
-    ).join("\n")
-
-
-  setSearchSelect = (colName)->
-    #if colName is array, set select one by one in it
-    (setSearchSelect(name) for name in colName; return) if $.isArray colName
-
-    # single column name
-    grid.jqGrid('setColProp', colName, {
-      stype: 'select'
-      searchoptions: {
-#        clearSearch: false
-        value: ":All"
-#        attr: {mutiple: 'multiple', size: 2}
-        dataInit:(elem)->
-#          console.log "Column #{colName} select init, elem=%o.", elem
-          selectElements[colName] = $(elem)
-#          .multiselect()
-#          .width(122)
-#          ref: http://stackoverflow.com/questions/19395680/using-bootstrap-select2-with-jqgrid-form/19404013#19404013
-#               http://stackoverflow.com/questions/5328072/can-jqgrid-support-dropdowns-in-the-toolbar-filter-fields
-#          .select2(
-#            dropdownCssClass: "ui-widget ui-jqdialog"
-#          )
-
-        dataEvents:[
-          {type: "change", fn:(e)->
-#            console.log "Column #{colName} select change event, elem=%o., seleElements=%o", e.target, selectElements[colName]
-          }
-        ]
-      }
-    })
-#    console.log("column =%o, changed search options=%o", colName, grid.getColProp(colName).searchoptions)
-
-  setSearchSelect selectColumns
   grid.filterToolbar {stringResult: true}
 
   #init toolbar for the grid
