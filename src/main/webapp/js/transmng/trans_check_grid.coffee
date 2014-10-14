@@ -157,7 +157,7 @@ define [
   .navGrid(hPagerId, {edit: false, add: false, del: false, search: false, view: false})
 
   selectElements = util.setSearchSelect grid, selectColumns, selectElements
-  grid.filterToolbar {stringResult: true, searchOnEnter: false}
+  grid.filterToolbar {stringResult: true, searchOnEnter: true}
 
 
 

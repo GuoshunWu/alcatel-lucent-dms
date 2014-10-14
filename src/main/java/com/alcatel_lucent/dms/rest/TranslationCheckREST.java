@@ -87,19 +87,6 @@ public class TranslationCheckREST extends BaseREST {
         return labels;
     }
 
-
-    private ComparatorChain orders2Comparator(String[] orders, String sord) {
-        ComparatorChain comparator = new ComparatorChain();
-        String sidx;
-        for (String order : orders) {
-            String[] idxOrder = order.split("\\s+");
-            sidx = idxOrder[0];
-            String tmpOrd = idxOrder.length > 1 ? idxOrder[1] : sord;
-            comparator.addComparator(new ObjectComparator(sidx, tmpOrd));
-        }
-        return comparator;
-    }
-
     @Override
     Class getEntityClass() {
         return TranslationHistory.class;
