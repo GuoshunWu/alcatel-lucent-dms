@@ -165,5 +165,8 @@ define [
     transDetailGrid[0].triggerToolbar()
 
   saveLastEditedCell: ()->
-    transDetailGrid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
+    if lastEditedCell
+#      console.log "saving last modified cell %o", lastEditedCell
+      transDetailGrid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol)
     $("#transGrid").trigger 'reloadGrid' if transDetailGrid.getChangedCells('dirty').length > 0
+

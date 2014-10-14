@@ -189,6 +189,8 @@ public class JSONServiceImpl implements JSONService {
                         dFmt.setTimeZone(timeZone);
                         log.debug("format Date with {} time zone {}", strTmp, timeZone);
                         value = dFmt.format((Date) value);
+                    } else if (value instanceof Collection) {
+                        value = mapper.writeValueAsString(value);
                     } else {
                         value = StringEscapeUtils.escapeHtml(value.toString());
                     }

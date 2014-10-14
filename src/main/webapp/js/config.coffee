@@ -90,7 +90,7 @@ require.config
       deps: ['jqueryui']
       exports: 'jQuery'
     'multiselect':
-      deps: ['jquery']
+      deps: ['jqueryui']
       exports: 'jQuery'
     'jqgridI18n':
       deps : ['jqueryui','jquery.migrate']

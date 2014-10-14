@@ -1,15 +1,20 @@
 package com.alcatel_lucent.dms.model;
 
-import java.sql.Timestamp;
-import java.util.Collection;
-
+import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.util.CharsetUtil;
+import com.google.common.collect.ImmutableMap;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.search.annotations.*;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 //@Entity
 
@@ -51,6 +56,11 @@ public class Translation extends BaseEntity {
     private Timestamp lastUpdateTime;
     private Integer verifyStatus;
     private Collection<TranslationHistory> histories;
+
+    private Collection<BusinessWarning> transWarnings = new ArrayList<BusinessWarning>();
+
+    private static final Pattern paramPattern = Pattern.compile("%[dscf]");
+    private static final Pattern BRPattern = Pattern.compile("<br\\s*>", Pattern.CASE_INSENSITIVE);
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -105,6 +115,61 @@ public class Translation extends BaseEntity {
         return true;
     }
 
+    @Transient
+    public Collection<Map> getTransWarnings() {
+        Collection<Map> errors = new ArrayList<Map>();
+        for (BusinessWarning error : this.transWarnings) {
+            errors.add(ImmutableMap.of("code", error.getCode(), "message", error.getMessage()));
+        }
+        return errors;
+    }
+
+    public Collection<BusinessWarning> validate(Label label) {
+        transWarnings.clear();
+        //check max length
+        String dictName = label.getDictionary().getName();
+        String labelKey = label.getKey();
+        String languageName = language.getName();
+
+        if (!label.checkLength(translation)) {
+            transWarnings.add(new BusinessWarning(BusinessWarning.EXCEED_MAX_LENGTH, dictName, labelKey));
+        }
+        //check translation parameters
+        if (!isTranslationParametersCorrect(label.getReference())) {
+            transWarnings.add(new BusinessWarning(BusinessWarning.PARAMETERS_INCORRECT, dictName, labelKey, languageName));
+        }
+        // check br consistent
+        if (!patternCheck(label.getReference(), BRPattern)) {
+            transWarnings.add(new BusinessWarning(BusinessWarning.BR_INCONSISTENT, dictName, labelKey, languageName));
+        }
+
+        return transWarnings;
+    }
+
+    private boolean patternCheck(String reference, Pattern pattern) {
+        Matcher refMatcher = pattern.matcher(reference);
+        Matcher translationMatcher = pattern.matcher(translation);
+
+        while (refMatcher.find()) {
+            String refMathParameter = refMatcher.group();
+            //corresponding translation parameter cannot be found
+            if (!translationMatcher.find()) {
+                return false;
+            }
+            String translationMathParameter = translationMatcher.group();
+            if (!refMathParameter.equals(translationMathParameter)) return false;
+        }
+        if (translationMatcher.find()) {
+            // extra parameter found in translation
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isTranslationParametersCorrect(String reference) {
+        return patternCheck(reference, paramPattern);
+    }
+
     public void setStatus(int status) {
         this.status = status;
     }
@@ -148,12 +213,12 @@ public class Translation extends BaseEntity {
         this.verifyStatus = verifyStatus;
     }
 
-	public Collection<TranslationHistory> getHistories() {
-		return histories;
-	}
+    public Collection<TranslationHistory> getHistories() {
+        return histories;
+    }
 
-	public void setHistories(Collection<TranslationHistory> histories) {
-		this.histories = histories;
-	}
+    public void setHistories(Collection<TranslationHistory> histories) {
+        this.histories = histories;
+    }
 
 }

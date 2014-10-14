@@ -1213,7 +1213,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
                     + " " + label.getDictionary().getName() + " " + label.getDictionary().getVersion() + " "
                     + label.getSortNo() + " " + label.getId();
 
-            if(sortMap.containsKey(sortKey)) continue;
+            if (sortMap.containsKey(sortKey)) continue;
             label = fillUpLabel(label, ot, ct, app, langId);
             sortMap.put(sortKey, label);
         }
@@ -1406,12 +1406,11 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
         for (Iterator<Object[]> iter = result3.iterator(); iter.hasNext(); ) {
             Object[] row = iter.next();
             Label label = (Label) row[0];
-            for (Long langId : langIds) {
-                LabelTranslation lt = label.getOrigTranslation(langId);
-                if (null != lt && !lt.isNeedTranslation()) {
-                    iter.remove();
-                    break;
-                }
+            Translation trans = (Translation) row[1];
+            LabelTranslation lt = label.getOrigTranslation(trans.getLanguage());
+            if (null != lt && !lt.isNeedTranslation()) {
+                iter.remove();
+                break;
             }
         }
 
@@ -1492,6 +1491,35 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
         return searchLabelsWithTranslation(prodId, appId, dictId, langIds, text, false);
     }
 
+    public Collection<Label> getLabelTranslationCheckResultByApp(Long appId) {
+        @org.intellij.lang.annotations.Language("HQL") String hql =
+                "select obj,t,a from Application a join a.dictionaries d join d.labels obj,Translation t " +
+                        "where obj.text=t.text and obj.removed=false and t.status =:status and obj.context.name<>:exclusion and a.id=:appId";
+
+        Collection<Object[]> result = dao.retrieve(hql, ImmutableMap.of("appId", appId, "exclusion", Context.EXCLUSION, "status", Translation.STATUS_TRANSLATED));
+        Collection<Label> labels = new ArrayList<Label>();
+
+        //fillUpLabel
+        for (Object[] row : result) {
+            Label label = (Label) row[0];
+            Translation trans = (Translation) row[1];
+            Application app = (Application) row[2];
+            // skip those needTranslation==false
+            LabelTranslation lt = label.getOrigTranslation(trans.getLanguage());
+            if (null != lt && !lt.isNeedTranslation()) continue;
+
+            Collection<BusinessException> errors = trans.validate(label);
+            //skip no errors
+            if (errors.isEmpty()) continue;
+
+            label.setApp(app);
+            label.setCt(trans);
+            labels.add(label);
+        }
+
+        return labels;
+    }
+
 
     private Cell createCell(Row row, int column, Object value, CellStyle style) {
         Cell cell = row.createCell(column);
@@ -1520,7 +1548,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
                 LabelTranslation lt = label.getOrigTranslation(dl.getLanguageCode());
                 if (lt == null) {
                     lt = new LabelTranslation();
-                    lt.setId(labelId * 1000 + dl.getLanguage().getId());	// fake id
+                    lt.setId(labelId * 1000 + dl.getLanguage().getId());    // fake id
                     lt.setLabel(label);
                     lt.setOrigTranslation(label.getReference());
                     lt.setNeedTranslation(true);

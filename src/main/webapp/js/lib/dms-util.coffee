@@ -6,138 +6,22 @@ define ['jqueryui'
   'jqgrid'
   "jqtree"
   "i18n!nls/common"
-], ($
-    jqgrid
-    jqtree
-c18n)->
-  #    prototype enhancement
-  String:: format = -> args = arguments; @replace /\{(\d+)\}/g, (m, i) ->args[i]
-
-  String:: endWith = (str) ->
-    return false  if !str or str.length > @length
-    @substring(@length - str.length) is str
-
-  String:: startWith = (str) ->
-    return false  if !str or str.length > @length
-    @substr(0, str.length) is str
-  String:: capitalize = () ->@toLowerCase().replace(/\b[a-z]/g, (letter)->letter.toUpperCase())
-
-  String:: repeat = (num)->
-    i = 0
-    buf = ''
-    buf += this while i++ < num
-    buf
-  String:: center = (width, padding = ' ')->
-    return this if this.length >= width
-    padding = padding[..0]
-    len = width - this.length
-    remain = if 0 == len % 2 then "" else padding
-    pads = padding.repeat(parseInt(len / 2))
-    pads + this + pads + remain
-  ###
-    Dateformat
-  ###
-  Date:: format = (format)->
-    o =
-      'M+': @getMonth() + 1, #month
-      "d+": @getDate(), #day
-      "h+": @getHours(), #hour
-      "m+": @getMinutes(), #minute
-      "s+": @getSeconds(), #second
-      "q+": Math.floor((@getMonth() + 3) / 3), #quarter
-      "S": @getMilliseconds()
-    #millisecond
-    format = format.replace(RegExp.$1, @getFullYear()).substr(4 - RegExp.$1.length) if /(y+)/.test format
-    for k,v of o
-      format = format.replace(RegExp.$1, if RegExp.$1.length == 1 then v else "00#{v}".substr("#{v}".length)) if new RegExp("(#{k})").test(format)
-    format
-
-  ###
-  insert elem at pos in array.
-  ###
-  Array:: insert = (pos, elem) ->
-    newarray = @slice(0, pos)
-    if($.isArray(elem))
-      newarray = newarray.concat elem.slice 0
-    else
-      newarray.push(elem)
-    newarray = newarray.concat(@slice(pos, @length))
-    @length = 0
-    @push(elem) for elem in newarray
-    @
-
-  ###
-  remove the element at pos in array, return the removed element.
-  ###
-  Array:: remove = (start, len) ->
-    len = 1 if !len
-    newarray = @slice(0, start)
-    newarray = newarray.concat(@slice(start + len, @length))
-    delElem = if len > 1 then @slice start, start + len else @[start]
-    @length = 0
-    @push(elem) for elem in newarray
-    delElem
-
-  Array::unique=()->
-    output = {}
-    output[@[key]] = @[key] for key in [0...@length]
-    value for key, value of output
-
-#  window.onbeforeunload = ->
-#    $.post 'login/logout', {'navigator': navigator.userAgent, 'time': new Date().getTime()}
-#    undefined
-  ###
-  format json string to pretty.
-  ###
-  formatJonString = (jsonString) ->
-    str = jsonString
-    pos = i = 0
-    indentStr = "  "
-    newLine = "\n"
-    retval = ''
-
-    while i < str.length
-      char = str.substring(i, i + 1)
-      if char is "}" or char is "]"
-        retval += newLine
-        --pos
-        j = 0
-
-        while j < pos
-          retval += indentStr
-          j++
-      retval += char
-
-      if char is "{" or char is "[" or char is ","
-        retval += newLine
-        ++pos if char is "{" or char is "["
-        k = 0
-        while k < pos
-          retval += indentStr
-          k++
-      i++
-    retval
-
-  (
-    window.console=
-      log:->
-      warn:->
-      info:->
-  )unless window.console
-
-  randomStr = (length = 10, alphbet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz')->
-    rstr = ''
-    for ch in alphbet
-      rstr += alphbet[Math.floor Math.random() * alphbet.length]
-      length--
-      break if 0 == length
-    rstr
+  "prototype-util",
+  "common-util",
+], (
+  $
+  jqgrid
+  jqtree
+  c18n
+  protoType
+  commonUtil
+)->
 
   ###
     generate a progress bar
   ###
   genProgressBar = (autoDispaly = true, autoRemoveWhenCompleted = false)->
-    randStr = randomStr(5)
+    randStr = commonUtil.randomStr(5)
     pbContainer=$("""
                   <div id="pb_container_#{randStr}"  class="progressbar-container">
                   <div class="progressbar-msg">
@@ -354,6 +238,89 @@ c18n)->
   checkAllGridPrivilege = (grids = $('table.ui-jqgrid-btable'), readonly = true)->$.each grids, (idx, grid)->checkGridPrivilege grid
   sessionCheck()
 
+
+  # update search options value in grid model
+  updateSearchOptionsValue : (url, colModel)->
+    searchProps = $(colModel).map((idx, elem)->elem.name if elem.search).get()
+    $.ajax(url, async: false, data: {prop: searchProps.join(", ")}).done((json, textStatus, jqXHR)->
+      for model in colModel when model.search
+        model.searchoptions =
+          dataEvents: [
+            {
+              type: 'change'
+              fn:((e)->
+                #            console.log(e)
+              )
+            }
+          ] if not model.searchoptions
+        optionsValue = $(json).map((idx,elem)->
+          #        value = if model.name isnt 'status' then elem[model.name] else ''
+          value = elem[model.name]
+          "#{value}:#{value}").get().unique().join(';')
+        optionsValue = ":All;" + optionsValue if optionsValue
+        model.searchoptions.value = optionsValue
+    )
+
+  # a grid edit default value to map
+  string2Options = (stringValue)->
+    opt = {}
+    return opt unless stringValue
+    for option in stringValue.split(";")
+      entry = option .split ":"
+      opt[entry[0]]=entry[1]
+    opt
+
+  setSearchSelect = (grid, colName=[], selectElements={})->
+#    console.log "set search select, colName=%o, selectElements=%o", colName, selectElements
+    return selectElements unless grid
+    #if colName is array, set select one by one in it
+    if $.isArray colName
+      for name in colName
+        setSearchSelect(grid,name, selectElements)
+      return selectElements
+
+    # single column name
+    grid.jqGrid('setColProp', colName, {
+      stype: 'select'
+      searchoptions: {
+#        clearSearch: false
+        value: ":All"
+#        attr: {mutiple: 'multiple', size: 2}
+        dataInit:(elem)->
+#          console.log "Column #{colName} select init, elem=%o.", elem
+          selectElements[colName] = $(elem)
+#          .multiselect()
+#          .width(122)
+#          ref: http://stackoverflow.com/questions/19395680/using-bootstrap-select2-with-jqgrid-form/19404013#19404013
+#               http://stackoverflow.com/questions/5328072/can-jqgrid-support-dropdowns-in-the-toolbar-filter-fields
+#          .select2(
+#            dropdownCssClass: "ui-widget ui-jqdialog"
+#          )
+
+        dataEvents:[
+          {type: "change", fn:(e)->
+#            console.log "Column #{colName} select change event, elem=%o., seleElements=%o", e.target, selectElements[colName]
+          }
+        ]
+      }
+    })
+    # console.log("column =%o, changed search options=%o", colName, grid.getColProp(colName).searchoptions)
+    selectElements
+
+  buildSearchSelectValues = (grid, colName, selectedValue = false)->
+    # single column name
+    colProps = grid.jqGrid('getColProp', colName)
+    defaultSelectText = colProps.editoptions?.value
+    mapValue = string2Options(defaultSelectText)
+    uniqueValues = grid.jqGrid('getCol', colName).unique()
+
+    "<option value=''>All</option>" + uniqueValues.map((elem)->
+      display  = if mapValue[elem] then mapValue[elem] else elem
+      isSelected = ""
+      isSelected = "selected" if selectedValue and elem + "" == selectedValue
+      "<option #{isSelected} value='#{elem}'>#{display}</option>"
+    ).join("\n")
+
   ###
   Test here.
   ###
@@ -384,7 +351,7 @@ c18n)->
     #    check all line
     languageFilterTable.append $('<tr/>').append $("<td colspan='#{colNum}'></td>").append checkedAll
 
-  json2string: (jsonObj)->formatJonString JSON.stringify(jsonObj)
+  json2string: (jsonObj)->commonUtil.formatJonString JSON.stringify(jsonObj)
   getDictLanguagesByDictId: (id, callback)->$.getJSON 'rest/languages', {prop: 'id,name', dict: id}, (languages)=>callback languages
   # expires=date; Setting no expiration date on a cookie causes it to expire when the browser closes. If you set an expiration date in the future, the cookie is saved across browser sessions. If you set an expiration date in the past, the cookie is deleted. Use GMT format to specify the date.
   # domain=domainname; Setting the domain of the cookie allows pages on a domain made up of more than one server to share cookie information.
@@ -432,7 +399,7 @@ c18n)->
     #   check all the grids' privilege
     checkAllGridPrivilege()
 
-  randomNum : (min=0, max=100)->delta = max - min;  Math.floor Math.random() * delta + min
+  randomNum : commonUtil.randomNum
   ajaxStream: ajaxStream
   urlname2Action: urlname2Action
   createLayoutManager: (page = 'appmng.jsp')->createLayoutManager(page)
@@ -458,29 +425,6 @@ c18n)->
 
       @onSwitch oldPanel, @currentPanel if $.isFunction(@onSwitch) and oldPanel != @currentPanel
 
-  # update search options value in grid model
-  updateSearchOptionsValue : (url, colModel)->
-    searchProps = $(colModel).map((idx, elem)->elem.name if elem.search).get()
-    $.ajax(url, async: false, data: {prop: searchProps.join(", ")}).done((json, textStatus, jqXHR)->
-      for model in colModel when model.search
-        model.searchoptions =
-          dataEvents: [
-            {
-              type: 'change'
-              fn:((e)->
-  #            console.log(e)
-              )
-            }
-          ] if not model.searchoptions
-        optionsValue = $(json).map((idx,elem)->
-  #        value = if model.name isnt 'status' then elem[model.name] else ''
-          value = elem[model.name]
-          "#{value}:#{value}").get().unique().join(';')
-        optionsValue = ":All;" + optionsValue if optionsValue
-        model.searchoptions.value = optionsValue
-    )
-
-
   adjustDialogAndInnerGridSize :(dialog, grid, adjust = {width: 100, height: 50}, adjustGrid = {width: 30, height: 240}) ->
     # resize size according to screen size
     jWindow = $(window)
@@ -488,11 +432,17 @@ c18n)->
     .dialog("option", "height", jWindow.height() - adjust.height)
     .dialog("option", "position", of : window)
 
-#    console.log("dialog %o width=%o, height=%o", dialog.attr("id"), dialog.width(), dialog.height())
+
     return if(!grid || !grid.length)
     # adjust grid
     grid.setGridWidth(jWindow.width() - adjust.width - adjustGrid.width)
     .setGridHeight(jWindow.height() - adjust.height - adjustGrid.height)
 
+#    console.log("dialog %o width=%o, height=%o, grid=%o, grid width=%o, grid height=%o",
+#      dialog.attr("id"), dialog.width(), dialog.height(),
+#      grid.prop('id'), grid.getGridParam('width'), grid.getGridParam('height')
+#    )
 
+  setSearchSelect:setSearchSelect
+  buildSearchSelectValues: buildSearchSelectValues
 

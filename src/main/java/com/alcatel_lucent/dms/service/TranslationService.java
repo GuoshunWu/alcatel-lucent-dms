@@ -96,6 +96,13 @@ public interface TranslationService {
      */
     void generateAppTranslationReportByApp(Long appId, Collection<Long> langIds, OutputStream output);
 
+
+    /**
+     * Retrieve label information with translation which has errors.
+     * @param appId application id id
+     * @return collection of labels, translation information is contained in ct
+     */
+    Collection<Label> getLabelTranslationCheckResultByApp(Long appId);
     /**
      * Generat excel details of label translations
      * @param dictIds collection of dictionary id
