@@ -2,9 +2,11 @@ package com.alcatel_lucent.dms.rest;
 
 import com.alcatel_lucent.dms.service.DaoService;
 import com.alcatel_lucent.dms.service.JSONService;
+import com.alcatel_lucent.dms.util.ObjectComparator;
 import com.google.common.collect.ImmutableMap;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.commons.collections.comparators.ComparatorChain;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -208,6 +210,18 @@ public abstract class BaseREST {
             isFirst = false;
         }
         return sb.toString();
+    }
+
+    protected ComparatorChain orders2Comparator(String[] orders, String sord) {
+        ComparatorChain comparator = new ComparatorChain();
+        String sidx;
+        for (String order : orders) {
+            String[] idxOrder = order.split("\\s+");
+            sidx = idxOrder[0];
+            String tmpOrd = idxOrder.length > 1 ? idxOrder[1] : sord;
+            comparator.addComparator(new ObjectComparator(sidx, tmpOrd));
+        }
+        return comparator;
     }
 
 

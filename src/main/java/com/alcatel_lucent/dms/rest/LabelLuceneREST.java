@@ -161,7 +161,7 @@ public class LabelLuceneREST extends BaseREST {
         Collections.sort((ArrayList<Label>) labels, orders2Comparator(orders, sord, false));
 
         Map<String, String> filters = getGridFilters(requestMap);
-        labels = Util.filterCollection(labels, filters);
+        labels = Util.filterCollection(labels, filters, true);
 
         // filter by nodiff flag
         String nodiffStr = requestMap.get("nodiff");
@@ -229,7 +229,7 @@ public class LabelLuceneREST extends BaseREST {
         return new Sort(sortFields.toArray(new SortField[0]));
     }
 
-    private ComparatorChain orders2Comparator(String[] orders, String sord) {
+    protected ComparatorChain orders2Comparator(String[] orders, String sord) {
         return orders2Comparator(orders, sord, true);
     }
 

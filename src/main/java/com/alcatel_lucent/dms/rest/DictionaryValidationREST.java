@@ -2,12 +2,15 @@ package com.alcatel_lucent.dms.rest;
 
 import com.alcatel_lucent.dms.ValidationInfo;
 import com.alcatel_lucent.dms.model.Dictionary;
+import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.service.DictionaryService;
 import com.alcatel_lucent.dms.service.TranslationService;
 import com.alcatel_lucent.dms.util.ObjectComparator;
+import com.alcatel_lucent.dms.util.Util;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.PredicateUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,45 +84,16 @@ public class DictionaryValidationREST extends BaseREST {
 
         Map param = new HashMap();
         Map<String, String> filters = getGridFilters(requestMap);
-        if (filters != null) {
-            Collection<Predicate<ValidationInfo>> predicates = new ArrayList<Predicate<ValidationInfo>>();
-            Set<Map.Entry<String, String>> entries = filters.entrySet();
-            for (final Map.Entry<String, String> entry : entries) {
-                Predicate<ValidationInfo> predicate = new Predicate<ValidationInfo>() {
-                    @Override
-                    public boolean test(ValidationInfo validationInfo) {
-                        try {
-                            return PropertyUtils.getProperty(validationInfo, entry.getKey()).equals(entry.getValue());
-                        } catch (IllegalAccessException e) {
-                            e.printStackTrace();
-                        } catch (InvocationTargetException e) {
-                            e.printStackTrace();
-                        } catch (NoSuchMethodException e) {
-                            e.printStackTrace();
-                        }
-                        return false;
-                    }
-                };
-                predicates.add(predicate);
-            }
-            //filter the result and generate fake id
-            CollectionUtils.filter(validationResult, PredicateUtils.allPredicate(predicates));
-        }
 
-        String sidx = requestMap.get("sidx");
-        String sord = requestMap.get("sord");
-        if (sidx == null || sidx.trim().isEmpty()) {
-            sidx = "code";
-        }
-        if (sord == null) {
-            sord = "ASC";
-        }
+        Util.filterCollection(validationResult, filters, true);
 
+        String sidx = StringUtils.defaultIfBlank(requestMap.get("sidx"), "code");
+        String sord = StringUtils.defaultString(requestMap.get("sord"), "asc");
+
+        String[] orders = sidx.split("\\s*,\\s*");
 
         // sort and pager in memory
-        Comparator<ValidationInfo> comparator = new ObjectComparator<ValidationInfo>(sidx, sord);
-        //filter
-        Collections.sort((List<ValidationInfo>) validationResult, comparator);
+        Collections.sort((List<ValidationInfo>) validationResult, orders2Comparator(orders, sord));
         validationResult = (List<ValidationInfo>) pageFilter(validationResult, requestMap);
 
         return toJSON(validationResult, requestMap);
