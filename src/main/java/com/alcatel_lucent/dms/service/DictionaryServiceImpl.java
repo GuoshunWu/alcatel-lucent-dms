@@ -682,11 +682,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 lastLabel = lastDict.getLabel(label.getKey());
             }
 
-            // count diffLabel
-            if (lastLabel != null && !lastLabel.getReference().equals(label.getReference())) {
-                diffLabel++;
-            }
-
             Label dbLabel = dbDict.getLabel(label.getKey());
             if (dbLabel == null) {    // ready for creation
                 label.setId(null);
@@ -694,12 +689,15 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 labelsToCreate.add(label);
                 dbLabel = label;
                 dbDict.addLabel(dbLabel);
+            	diffLabel++;
                 // make sure all LabelTranslation objects under the new label are marked as NEW
                 if (label.getOrigTranslations() != null) {
                     for (LabelTranslation trans : label.getOrigTranslations()) {
                         trans.setId(null);
                     }
                 }
+            } else if (lastLabel != null && !lastLabel.getReference().equals(label.getReference())) {
+            	diffLabel++;
             }
 
             Text text = new Text();
