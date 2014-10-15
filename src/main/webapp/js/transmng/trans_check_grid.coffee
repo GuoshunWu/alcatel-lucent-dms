@@ -36,7 +36,7 @@ define [
 
   buildErrorsSelectValue = (grid, currentSelected) ->
     uniqueValues = uniqueErrors(grid)
-    console.log "mapping=%o, uniqueValues=%o", mapping, uniqueValues
+#    console.log "mapping=%o, uniqueValues=%o", mapping, uniqueValues
     "<option value=''>All</option>" + uniqueValues.map((error)->
       display  = if mapping[error.code] then mapping[error.code] else error.message
       isSelected = ""
