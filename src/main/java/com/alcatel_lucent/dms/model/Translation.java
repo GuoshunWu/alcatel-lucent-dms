@@ -60,7 +60,7 @@ public class Translation extends BaseEntity {
     private Collection<BusinessWarning> transWarnings = new ArrayList<BusinessWarning>();
 
     private static final Pattern paramPattern = Pattern.compile("%[dscf]");
-    private static final Pattern BRPattern = Pattern.compile("<br\\s*>", Pattern.CASE_INSENSITIVE);
+    private static final Pattern BRPattern = Pattern.compile("<br\\s*/?>", Pattern.CASE_INSENSITIVE);
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
