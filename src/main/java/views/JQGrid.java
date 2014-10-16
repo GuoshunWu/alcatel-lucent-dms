@@ -1,5 +1,8 @@
 package views;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.*;
 
 /**
@@ -13,6 +16,7 @@ public class JQGrid {
     // total record number
     private int records = 0;
 
+    @JsonIgnore
     private String idProp = "id";
 
     private Collection<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();

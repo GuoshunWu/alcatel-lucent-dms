@@ -171,6 +171,9 @@ public class JSONServiceImpl implements JSONService {
             throws JsonProcessingException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
 
         JQGrid grid = new JQGrid();
+        if (idProp != null) {
+            grid.setIdProp(idProp);
+        }
         for (Object entity : entities) {
             List<String> cells = new ArrayList<String>();
             String[] propArray = cellProps.split(",");
@@ -201,8 +204,8 @@ public class JSONServiceImpl implements JSONService {
             }
             Map<String, Object> row = grid.addRow(cells);
             if (idProp != null) {
-                String id = PropertyUtils.getProperty(entity, idProp.trim()).toString();
-                row.put(idProp, id);
+                String id = PropertyUtils.getProperty(entity, grid.getIdProp()).toString();
+                row.put("id", id);
             }
         }
 

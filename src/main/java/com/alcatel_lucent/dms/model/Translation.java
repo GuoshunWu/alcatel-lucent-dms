@@ -61,6 +61,7 @@ public class Translation extends BaseEntity {
 
     private static final Pattern paramPattern = Pattern.compile("%[dscf]");
     private static final Pattern BRPattern = Pattern.compile("<br\\s*/?>", Pattern.CASE_INSENSITIVE);
+    private static final Pattern CNPattern = Pattern.compile("\\n", Pattern.CASE_INSENSITIVE);
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -131,17 +132,22 @@ public class Translation extends BaseEntity {
         String labelKey = label.getKey();
         String languageName = language.getName();
 
+        String reference = label.getReference();
+
         if (!label.checkLength(translation)) {
             transWarnings.add(new BusinessWarning(BusinessWarning.EXCEED_MAX_LENGTH, dictName, labelKey));
         }
         //check translation parameters
-        if (!isTranslationParametersCorrect(label.getReference())) {
+        if (!isTranslationParametersCorrect(reference)) {
             transWarnings.add(new BusinessWarning(BusinessWarning.PARAMETERS_INCORRECT, dictName, labelKey, languageName));
         }
         // check br consistent
-        if (!patternCheck(label.getReference(), BRPattern)) {
+        if (!patternCheck(reference, BRPattern) || !patternCheck(reference, CNPattern)) {
             transWarnings.add(new BusinessWarning(BusinessWarning.BR_INCONSISTENT, dictName, labelKey, languageName));
         }
+
+        // check \n consistent
+
 
         return transWarnings;
     }

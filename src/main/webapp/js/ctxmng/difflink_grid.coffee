@@ -35,7 +35,7 @@ define [
       {name: 'language', index: 'language', width: 140, editable:false, align: 'left'}
       {name: 'translationA', index: 'translationA', width: 220, editable:false, align: 'left'}
       {name: 'statusA', index: 'statusA', editable:false, width: 60, align: 'center'
-      formatter: 'select', stype: 'select', searchoptions: {value: c18n.translation.values}
+      formatter: 'select', stype: 'select', searchoptions: {value: ":All;" + c18n.translation.values}
       edittype: 'select', editoptions: {value: c18n.translation.values}
       }
       {name: 'translationB', index: 'translationB',width: 220, editable:false, align: 'left'}

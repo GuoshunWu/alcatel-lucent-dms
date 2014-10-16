@@ -27,7 +27,7 @@ define [
       {name: 'transStatus', index: 'ct.status', width: 100, align: 'left', editable: true, classes: 'editable-column', search: true,
       edittype: 'select', editoptions: {value: c18n.translation.values},
       formatter: 'select',
-      stype: 'select', searchoptions: {value: c18n.translation.values}
+      stype: 'select', searchoptions: {value: ":All;"+ c18n.translation.values}
       }
       {name: 'transId', index: 'ct.id', width: 50, align: 'left', hidden:true, search: false}
       {name: 'transtype', index: 'ct.translationType', width: 70, align: 'left',
@@ -94,6 +94,8 @@ define [
 
       if 'transStatus' == cellname
         $(@).setGridParam('cellurl': urls.trans.update_status)
+        # flag to reload transGrid when container dialog close
+        $('#translationDetailDialog').data("translationStatusUpdated", true)
         return {type: 'trans', ctid: ctid}
       if 'translation' == cellname
         $(@).setGridParam('cellurl': urls.trans.update_translation)
@@ -114,6 +116,7 @@ define [
           setTimeout (->
             transDetailGrid.trigger 'reloadGrid'
           ), 10
+
         return [true, json.message]
 
       [0 == json.status, json.message]

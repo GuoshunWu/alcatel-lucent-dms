@@ -11,7 +11,6 @@ define [
   c18n, util, urls,
   mapping
 )->
-
   lastEditedCell = null
 
   lastEditedCell = null
@@ -53,10 +52,11 @@ define [
     cellEdit: true, cellurl: urls.trans.update_status
     postData: {
       format: 'grid',
-      prop : 'app.name,dictionary.name,key,maxLength,context.name,reference,ct.translation, ct.status, ct.language.name, ct.transWarnings, ct.id'
+      prop : 'app.name,dictionary.name,key,maxLength,context.name,reference,ct.translation, ct.status, ct.language.name, ct.transWarnings, ct.id, id'
+      idprop: 'ct.id'
     }
     caption: 'result'
-    colNames: ['Application','Dictionary','Label', 'Max Length', 'Context', 'Reference', 'Translation', 'Status', 'Language', 'Warnings', 'TransId']
+    colNames: ['Application','Dictionary','Label', 'Max Length', 'Context', 'Reference', 'Translation', 'Status', 'Language', 'Warnings', 'TransId', 'labelId']
     colModel: [
       {name: 'app', index: 'app.name', hidden: true, width: 50, editable: false, stype: 'select', align: 'left'}
       {name: 'dict', index: 'dictionary.base.name', width: 150, editable: false, align: 'left', search: true}
@@ -64,7 +64,7 @@ define [
       {name: 'maxlen', index: 'maxLength', width: 60, editable: false, align: 'right', search: false}
       {name: 'context', index: 'context.name', width: 80, align: 'left', search: true}
       {name: 'reference', index: 'reference', width: 160, align: 'left', search: true}
-      {name: 'translation', index: 'ct.translation', width: 160, align: 'left', edittype:'textarea', editable: true, classes: 'editable-column', search: true}
+      {name: 'translation', index: 'ct.translation', width: 160, edittype: 'textarea', editable: true, classes: 'editable-column', search: true}
       {name: 'transStatus', index: 'ct.status', width: 100, align: 'left', editable: true,search: true, classes: 'editable-column',
       edittype: 'select', editoptions: {value: "0:#{i18n.trans.nottranslated};1:#{i18n.trans.inprogress};2:#{i18n.trans.translated}"},formatter: 'select',
       stype: 'select', searchoptions: {value: ":#{c18n.all};0:#{i18n.trans.nottranslated};1:#{i18n.trans.inprogress};2:#{i18n.trans.translated}"}
@@ -91,7 +91,8 @@ define [
 #        console.log "cellvalue=%o, options=%o, cell=%o, values=%o", cellvalue, options, cell, values
         values
       }
-      {name: 'transId', index: 'ct.id', width: 150, align: 'left', hidden:true, search: false}
+      {name: 'transId', index: 'ct.id', hidden:true}
+      {name: 'labelId', index: 'id', hidden:true}
     ]
 
     loadComplete: (data)->
@@ -111,25 +112,29 @@ define [
       lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
 
     beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
-#      console?.log "rowid=#{rowid}, cellname=#{cellname}, value=#{value}, iRow=#{iRow}, iCol=#{iCol}"
-      ctid = $(@).getRowData(rowid).transId
+      rowData = $(@).getRowData(rowid)
+#      console?.log "rowid=#{rowid}, cellname=#{cellname}, value=#{value}, iRow=#{iRow}, iCol=#{iCol}, rowData=%o", rowData
 
       if 'transStatus' == cellname
         $(@).setGridParam('cellurl': urls.trans.update_status)
-        return {type: 'trans', ctid: ctid}
+        return {type: 'trans', ctid: rowData.transId}
       if 'translation' == cellname
         $(@).setGridParam('cellurl': urls.trans.update_translation)
-        return {ctid: ctid}
+        return {ctid: rowData.transId, labelId: rowData.labelId}
     afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
       json = $.parseJSON(serverresponse.responseText)
       # edit translation in cell is different from common cell editor
       # other column update
+
+#      console.log "json =%o, cellname=%o", json, cellname
       if 'translation' != cellname
         # currently update translation status need reload the grid, trans grid will be update when the search dialog is closed
         success = 0 == json.status
-#        setTimeout (->
-#          grid.trigger 'reloadGrid'
-#        ), 10  if success
+        setTimeout (->
+          grid.trigger 'reloadGrid'
+        ), 10  if success
+        # flag to reload transGrid when container dialog close
+        $('#transmngTranslationCheckDialog').data("translationStatusUpdated", true)
         return [success, json.message]
 
       # translation column update

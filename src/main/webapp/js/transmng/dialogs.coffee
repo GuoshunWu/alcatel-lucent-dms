@@ -174,6 +174,8 @@ define [
       $('#dictionaryName', @).html param.dict.name
       util.getDictLanguagesByDictId param.dict.id, (languages)=>
         $('#detailLanguageSwitcher', @).empty().append(util.json2Options languages, param.language.id, 'name').trigger 'change'
+
+      $(@).data("translationStatusUpdated", false)
     create: ()->
       $(@).dialog 'option', 'width', $('#transDetailGridList').getGridParam('width') + 60
       transDetailGrid = $("#transDetailGridList")
@@ -198,6 +200,7 @@ define [
         param = $('#translationDetailDialog').data "param"
         language = {id: $(@).val(), name: $("option:selected", @).text()}
         detailgrid.languageChanged {language: language, dict: param.dict, searchStatus: param.searchStatus, transsrc: param.transsrc}
+
     close: (event, ui)->
       detailgrid.saveLastEditedCell()
       postData = $("#transDetailGridList").getGridParam('postData')
@@ -209,6 +212,7 @@ define [
       delete postData.text
     buttons: [
       {text: c18n.close, click: ()->
+        $('#transGrid').trigger('reloadGrid') if $(@).data("translationStatusUpdated")
         $(@).dialog 'close'
       }
     ]
@@ -400,6 +404,7 @@ define [
       transCheckGrid =  $("#transCheckGrid")
       util.adjustDialogAndInnerGridSize(me, transCheckGrid, {width: 100, height: 50}, {width: 30, height: 215})
       param = $(@).data('param')
+      $(@).data("translationStatusUpdated", false)
       return unless param
 #      console.log "param=", param
       transCheckGrid
@@ -413,6 +418,7 @@ define [
 
     buttons: [
       {text: c18n.close, click: (e)->
+        $('#transGrid').trigger('reloadGrid') if $(@).data("translationStatusUpdated")
         $(@).dialog 'close'
       }
     ]

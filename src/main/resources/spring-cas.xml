@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+     http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
+
+    <!--
+      ref: https://wiki.jasig.org/display/CASC/Configuring+the+JA-SIG+CAS+Client+for+Java+using+Spring
+    -->
+
+    <bean name="authenticationFilter"
+          class="org.jasig.cas.client.authentication.AuthenticationFilter"
+          p:casServerLoginUrl="${sso.url}/login"
+          p:renew="false"
+          p:gateway="false"
+          p:service="http://localhost:${httpPort}/dms"
+            />
+
+    <bean name="ticketValidationFilter"
+          class="org.jasig.cas.client.validation.Cas10TicketValidationFilter"
+          p:service="https://localhost:${httpsPort}/cas-client">
+        <property name="ticketValidator">
+            <bean class="org.jasig.cas.client.validation.Cas10TicketValidator"
+                    c:_0="${sso.url}"
+                    />
+        </property>
+    </bean>
+
+
+</beans>

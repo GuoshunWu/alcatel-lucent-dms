@@ -6,6 +6,9 @@ package com.alcatel_lucent.dms.util;
 import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.model.Glossary;
+import com.google.common.collect.ImmutableMap;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import net.sf.sevenzipjbinding.ISevenZipInArchive;
 import net.sf.sevenzipjbinding.SevenZip;
 import net.sf.sevenzipjbinding.SevenZipException;
@@ -117,6 +120,25 @@ public class Util {
             log.error(e.getMessage(), e);
         }
         return objMap;
+    }
+
+    /**
+     * Convert grid filter String to Map
+     *
+     * */
+
+    public static Map<String, String> getGridFilters(String filterStr){
+
+        if (filterStr == null || filterStr.trim().isEmpty()) return ImmutableMap.of();
+        Map<String, String> result = new HashMap<String, String>();
+        JSONObject json = JSONObject.fromObject(filterStr);
+        JSONArray jsonRules = json.getJSONArray("rules");
+        Iterator<JSONObject> iter = jsonRules.iterator();
+        while (iter.hasNext()) {
+            JSONObject rule = iter.next();
+            result.put(rule.getString("field"), rule.getString("data"));
+        }
+        return result;
     }
 
     /**

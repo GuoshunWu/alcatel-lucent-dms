@@ -522,4 +522,16 @@ public class Label extends BaseEntity implements Cloneable {
 	public void setCapitalization(Integer capitalization) {
 		this.capitalization = capitalization;
 	}
+
+
+    @Override
+    public Label clone(){
+        Label label = null;
+        try {
+            label = (Label) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return label;
+    }
 }

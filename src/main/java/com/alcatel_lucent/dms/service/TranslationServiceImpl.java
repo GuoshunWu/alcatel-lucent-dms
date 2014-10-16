@@ -1,6 +1,7 @@
 package com.alcatel_lucent.dms.service;
 
 import com.alcatel_lucent.dms.BusinessException;
+import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.action.ProgressQueue;
 import com.alcatel_lucent.dms.model.*;
@@ -9,6 +10,7 @@ import com.alcatel_lucent.dms.rest.TranslationPair;
 import com.alcatel_lucent.dms.util.Util;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFDataFormatter;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
@@ -1491,29 +1493,83 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
         return searchLabelsWithTranslation(prodId, appId, dictId, langIds, text, false);
     }
 
-    public Collection<Label> getLabelTranslationCheckResultByApp(Long appId) {
+
+    private String generateFilterSQL(Map<String, String> filters, Map param) {
+
+        StringBuilder sb = new StringBuilder();
+        boolean notFirst = false;
+
+        List<String> equalFields = Arrays.asList("context.name", "ct.language.name", "ct.status");
+
+        Set<Map.Entry<String, String>> filterEntries = filters.entrySet();
+        int pKeyIndex = 0;
+        for (final Map.Entry<String, String> filterEntry : filterEntries) {
+            final String property = filterEntry.getKey();
+            final String value = filterEntry.getValue();
+            String operator = " like ";
+            Object matchValue = "%" + value + "%";
+
+            if (equalFields.contains(property)) {
+                operator = " = ";
+                matchValue = StringUtils.isNumeric(value) ? Integer.parseInt(value) : value;
+            }
+
+            if (notFirst) {
+                sb.append(" and ");
+            }
+            String pKey = "p" + pKeyIndex++;
+
+            sb.append(toField(property)).append(operator).append(":" + pKey);
+            param.put(pKey, matchValue);
+            notFirst = true;
+        }
+        return sb.toString();
+    }
+
+    private String toField(String field) {
+        String labelPrefix = "obj.";
+        String transPrefix = "t.";
+
+        if (field.startsWith("ct.")) {
+            return transPrefix + field.substring(3);
+        }
+        return labelPrefix + field;
+    }
+
+    public Collection<Label> getLabelTranslationCheckResultByApp(Long appId, Map<String, String> filters) {
         @org.intellij.lang.annotations.Language("HQL") String hql =
                 "select obj,t,a from Application a join a.dictionaries d join d.labels obj,Translation t " +
                         "where obj.text=t.text and obj.removed=false and t.status =:status and obj.context.name<>:exclusion and a.id=:appId";
+        Map<String, Object> param = new HashMap<String, Object>();
+        param.putAll(ImmutableMap.of("appId", appId, "exclusion", Context.EXCLUSION, "status", Translation.STATUS_TRANSLATED));
+        String filterSQL = generateFilterSQL(filters, param);
 
-        Collection<Object[]> result = dao.retrieve(hql, ImmutableMap.of("appId", appId, "exclusion", Context.EXCLUSION, "status", Translation.STATUS_TRANSLATED));
+        if (StringUtils.isNotEmpty(filterSQL)) {
+            hql += " and " + filterSQL;
+        }
+
+        Collection<Object[]> result = dao.retrieve(hql, param);
         Collection<Label> labels = new ArrayList<Label>();
 
         //fillUpLabel
         for (Object[] row : result) {
             Label label = (Label) row[0];
+            //clone label to avoid one label to many many translation
+            label = label.clone();
+
             Translation trans = (Translation) row[1];
             Application app = (Application) row[2];
+
+            label.setApp(app);
+            label.setCt(trans);
+
             // skip those needTranslation==false
             LabelTranslation lt = label.getOrigTranslation(trans.getLanguage());
             if (null != lt && !lt.isNeedTranslation()) continue;
 
-            Collection<BusinessException> errors = trans.validate(label);
+            Collection<BusinessWarning> errors = trans.validate(label);
             //skip no errors
             if (errors.isEmpty()) continue;
-
-            label.setApp(app);
-            label.setCt(trans);
             labels.add(label);
         }
 
