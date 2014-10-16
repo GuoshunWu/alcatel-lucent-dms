@@ -13,7 +13,8 @@ import com.alcatel_lucent.dms.service.TextService;
 @SuppressWarnings("serial")
 public class UpdateTranslationAction extends JSONAction {
 	
-	private Long id;	// label id
+	private Long id;	// label Id or translation Id
+    private Long labelId; //another label id for client compatible
 	private Long ctid;	// translation id
 	private String translation;
 	private Boolean confirm;	// confirm if apply the change to other dictionaries
@@ -23,6 +24,9 @@ public class UpdateTranslationAction extends JSONAction {
 	
 	@Override
 	protected String performAction() throws Exception {
+        if(null!=labelId){// for
+            id = labelId;
+        }
 		log.info("UpdateTranslationAction: id=" + id + ", ctid=" + ctid + ", translation=" + translation + ", confirm=" + confirm);
 		/*
 		Collection<String> dictList = textService.updateTranslation(id, ctid, translation, confirm);
@@ -91,7 +95,12 @@ public class UpdateTranslationAction extends JSONAction {
 	public void setTextService(TextService textService) {
 		this.textService = textService;
 	}
-	
-	
 
+    public Long getLabelId() {
+        return labelId;
+    }
+
+    public void setLabelId(Long labelId) {
+        this.labelId = labelId;
+    }
 }

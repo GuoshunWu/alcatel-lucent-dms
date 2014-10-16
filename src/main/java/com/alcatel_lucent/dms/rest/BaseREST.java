@@ -3,6 +3,7 @@ package com.alcatel_lucent.dms.rest;
 import com.alcatel_lucent.dms.service.DaoService;
 import com.alcatel_lucent.dms.service.JSONService;
 import com.alcatel_lucent.dms.util.ObjectComparator;
+import com.alcatel_lucent.dms.util.Util;
 import com.google.common.collect.ImmutableMap;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -181,17 +182,7 @@ public abstract class BaseREST {
     }
 
     protected Map<String, String> getGridFilters(Map<String, String> requestMap) {
-        String filterStr = requestMap.get("filters");
-        if (filterStr == null || filterStr.trim().isEmpty()) return ImmutableMap.of();
-        Map<String, String> result = new HashMap<String, String>();
-        JSONObject json = JSONObject.fromObject(filterStr);
-        JSONArray jsonRules = json.getJSONArray("rules");
-        Iterator<JSONObject> iter = jsonRules.iterator();
-        while (iter.hasNext()) {
-            JSONObject rule = iter.next();
-            result.put(rule.getString("field"), rule.getString("data"));
-        }
-        return result;
+        return Util.getGridFilters(requestMap.get("filters"));
     }
 
     protected String populateFiltersSQLFragment(Map<String, String> requestMap, Map<String, Object> params, String whereCause) {

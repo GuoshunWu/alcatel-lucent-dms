@@ -102,7 +102,7 @@ public interface TranslationService {
      * @param appId application id id
      * @return collection of labels, translation information is contained in ct
      */
-    Collection<Label> getLabelTranslationCheckResultByApp(Long appId);
+    Collection<Label> getLabelTranslationCheckResultByApp(Long appId, Map<String, String> filters);
     /**
      * Generat excel details of label translations
      * @param dictIds collection of dictionary id

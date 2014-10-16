@@ -301,16 +301,24 @@
             <version>1.6</version>
         </dependency>
 
+
         <!--<dependency>-->
-        <!--<groupId>org.springframework</groupId>-->
-        <!--<artifactId>spring-web</artifactId>-->
+            <!--<groupId>org.jasig.cas.client</groupId>-->
+            <!--<artifactId>cas-client-integration-tomcat-v7</artifactId>-->
+            <!--<version>3.3.3</version>-->
+            <!--<exclusions>-->
+                <!--<exclusion>-->
+                    <!--<groupId>org.slf4j</groupId>-->
+                    <!--<artifactId>log4j-over-slf4j</artifactId>-->
+                <!--</exclusion>-->
+            <!--</exclusions>-->
         <!--</dependency>-->
+
 
         <!--<dependency>-->
         <!--<groupId>org.springframework</groupId>-->
         <!--<artifactId>spring-jdbc</artifactId>-->
         <!--</dependency>-->
-
 
         <!--<dependency>-->
         <!--<groupId>org.springframework.security</groupId>-->
@@ -666,36 +674,36 @@
 
 
             <!-- ref: http://zeroturnaround.com/software/jrebel/learn/maven/ -->
-            <plugin>
-                <groupId>org.zeroturnaround</groupId>
-                <artifactId>jrebel-maven-plugin</artifactId>
-                <version>1.1.5</version>
-                <executions>
-                    <execution>
-                        <id>generate-rebel-xml</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
+            <!--<plugin>-->
+                <!--<groupId>org.zeroturnaround</groupId>-->
+                <!--<artifactId>jrebel-maven-plugin</artifactId>-->
+                <!--<version>1.1.5</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>generate-rebel-xml</id>-->
+                        <!--<phase>process-resources</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>generate</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
 
-                <configuration>
-                    <!--
-     If your project uses custom packaging that is not recognized
-     set this to jar or war.
-     -->
-                    <packaging>war</packaging>
-                    <classpath>
-                        <fallback>default</fallback>
-                        <resources>
-                            <resource>
+                <!--<configuration>-->
+                    <!--&lt;!&ndash;-->
+     <!--If your project uses custom packaging that is not recognized-->
+     <!--set this to jar or war.-->
+     <!--&ndash;&gt;-->
+                    <!--<packaging>war</packaging>-->
+                    <!--<classpath>-->
+                        <!--<fallback>default</fallback>-->
+                        <!--<resources>-->
+                            <!--<resource>-->
 
-                            </resource>
-                        </resources>
-                    </classpath>
-                </configuration>
-            </plugin>
+                            <!--</resource>-->
+                        <!--</resources>-->
+                    <!--</classpath>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -892,14 +900,14 @@
                 <version>2.2</version>
                 <configuration>
                     <uriEncoding>utf-8</uriEncoding>
-                    <url>http://localhost:8888/manager/text</url>
-                    <port>8888</port>
+                    <url>http://localhost:${httpPort}/manager/text</url>
+                    <port>${httpPort}</port>
+                    <httpsPort>${httpsPort}</httpsPort>
                     <contextReloadable>false</contextReloadable>
                     <path>/</path>
                     <!--<update>true</update>-->
                     <username>admin</username>
                     <password>alcatel123</password>
-                    <httpsPort>8443</httpsPort>
                     <keystoreFile>conf/.keystore</keystoreFile>
                     <keystorePass>changeit</keystorePass>
                     <systemProperties>
@@ -1108,8 +1116,8 @@
             </activation>
             <properties>
                 <dms.temp>D:/tmp</dms.temp>
-                <httpPort>8888</httpPort>
-                <httpsPort>8443</httpsPort>
+                <httpPort>80</httpPort>
+                <httpsPort>443</httpsPort>
                 <logger.filter>INFO</logger.filter>
                 <buildNumber>(new Date()).getTime()</buildNumber>
             </properties>
@@ -1121,7 +1129,7 @@
                         <groupId>org.apache.tomcat.maven</groupId>
                         <artifactId>tomcat7-maven-plugin</artifactId>
                         <configuration>
-                            <path>/dms</path>
+                            <!--<path>/dms</path>-->
                         </configuration>
                     </plugin>
                 </plugins>

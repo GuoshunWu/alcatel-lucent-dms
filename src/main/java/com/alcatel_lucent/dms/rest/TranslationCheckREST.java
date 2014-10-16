@@ -3,11 +3,8 @@ package com.alcatel_lucent.dms.rest;
 import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.TranslationHistory;
 import com.alcatel_lucent.dms.service.TranslationService;
-import com.alcatel_lucent.dms.util.ObjectComparator;
-import com.alcatel_lucent.dms.util.Util;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
-import org.apache.commons.collections.comparators.ComparatorChain;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -51,29 +48,35 @@ public class TranslationCheckREST extends BaseREST {
     @Override
     String doGetOrPost(Map<String, String> requestMap) throws Exception {
         Long appId = Long.valueOf(requestMap.get("appId"));
-        Collection<Label> labels = translationService.getLabelTranslationCheckResultByApp(appId);
+        Map<String, String> filters = getGridFilters(requestMap);
+
+
+        String errorsFilter = filters.get("ct.transWarnings");
+        if (null != errorsFilter) {
+            filters.remove("ct.transWarnings");
+        }
+
+        Collection<Label> labels = translationService.getLabelTranslationCheckResultByApp(appId, filters);
+        // page and filter in memory
+        labels = filterCTErrors(labels, errorsFilter);
+        // other filters were did in database level
+//        labels = Util.filterCollection(labels, filters, true);
+        requestMap.put("records", "" + labels.size());
 
         String sidx = StringUtils.defaultIfBlank(requestMap.get("sidx"), "sortNo");
-        String sord = StringUtils.defaultString(requestMap.get("sord"), "asc");
-
+        String sord = StringUtils.defaultString(requestMap.get("sord"));
         String[] orders = sidx.split("\\s*,\\s*");
-
         Collections.sort((ArrayList<Label>) labels, orders2Comparator(orders, sord));
-
-        Map<String, String> filters = getGridFilters(requestMap);
-        //filter ct errors first
-        labels = filterCTErrors(labels, filters);
-        labels = Util.filterCollection(labels, filters, true);
-        requestMap.put("records", "" + labels.size());
         // filter by page
         labels = pageFilter(labels, requestMap);
+
         return toJSON(labels, requestMap);
     }
 
-    private Collection<Label> filterCTErrors(Collection<Label> labels, Map<String, String> filters) {
-        if (null == filters.get("ct.transWarnings")) return labels;
-        final Integer errorCode = Integer.valueOf(filters.get("ct.transWarnings"));
-        filters.remove("ct.transWarnings");
+
+    private Collection<Label> filterCTErrors(Collection<Label> labels, String filterValue) {
+        if (null == filterValue) return labels;
+        final Integer errorCode = Integer.valueOf(filterValue);
         CollectionUtils.filter(labels, new Predicate() {
             @Override
             public boolean evaluate(Object object) {

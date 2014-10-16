@@ -14,6 +14,22 @@
     <session-config>
         <session-timeout>60</session-timeout>
     </session-config>
+
+    <!--<filter>-->
+        <!--<filter-name>CAS Authentication Filter</filter-name>-->
+        <!--<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>-->
+
+        <!--<init-param>-->
+            <!--<param-name>targetBeanName</param-name>-->
+            <!--<param-value>authenticationFilter</param-value>-->
+        <!--</init-param>-->
+    <!--</filter>-->
+
+    <!--<filter-mapping>-->
+        <!--<filter-name>CAS Authentication Filter</filter-name>-->
+        <!--<url-pattern>/*</url-pattern>-->
+    <!--</filter-mapping>-->
+
     <!--
     The Spring plugin can be configured to automatically reload classes that change in the file system.
     This feature will enable code changes to be "hot deployed" without having to restart the web container.
@@ -70,7 +86,7 @@
 
     <!--login check-->
     <filter>
-        <filter-name>authenticationFilter</filter-name>
+        <filter-name>DMSAuthenticationFilter</filter-name>
         <filter-class>com.alcatel_lucent.dms.filters.AuthenticationFilter</filter-class>
         <async-supported>true</async-supported>
         <!-- exclude patterns URL, which are regular expression separated by comma-->
@@ -104,7 +120,7 @@
     </filter>
 
     <filter-mapping>
-        <filter-name>authenticationFilter</filter-name>
+        <filter-name>DMSAuthenticationFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
