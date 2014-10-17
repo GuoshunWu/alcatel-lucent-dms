@@ -59,7 +59,7 @@ public class LoginAction extends BaseAction implements SessionAware {
     }
 
     public String getLocation() {
-        return "http://" + request.getServerName() + ":" + httpPort + request.getContextPath() + "/entry.action?naviTo=main.jsp";
+        return buildNavigateURL("http", httpPort, "main.jsp");
     }
 
     public void setLoginname(String loginname) {
@@ -98,16 +98,23 @@ public class LoginAction extends BaseAction implements SessionAware {
             log.debug("user: " + user);
             log.debug("redirect to " + getLocation());
 
-//          Tomcat will create new session id if there is no JSESSIONID cookie when https jump to http
-            HttpServletResponse response = ServletActionContext.getResponse();
-            SessionCookieConfig scc = ServletActionContext.getServletContext().getSessionCookieConfig();
-            Cookie cookie = new Cookie(scc.getName(), request.getSession().getId());
-            cookie.setPath(scc.getPath());
-            response.addCookie(cookie);
+
+            // configTomcatCookie();  // disabled because it mess up cas session cookie
+
             return SUCCESS;
         }
         addActionError(getText("message.loginfail"));
         return INPUT;
+    }
+
+    public void configTomcatCookie() {
+//          Tomcat will create new session id if there is no JSESSIONID cookie when https jump to http
+        HttpServletResponse response = ServletActionContext.getResponse();
+        SessionCookieConfig scc = ServletActionContext.getServletContext().getSessionCookieConfig();
+        Cookie cookie = new Cookie(scc.getName(), request.getSession().getId());
+        cookie.setPath(scc.getPath());
+        response.addCookie(cookie);
+
     }
 
     public AuthenticationService getAuthenticationService() {

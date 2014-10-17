@@ -26,6 +26,7 @@ import ch.qos.logback.core.rolling.TimeBasedRollingPolicy
 import static ch.qos.logback.classic.Level.INFO
 import static ch.qos.logback.classic.Level.WARN
 import static ch.qos.logback.classic.Level.DEBUG
+import static ch.qos.logback.classic.Level.TRACE
 
 context = new LevelChangePropagator()
 context.resetJUL = true
@@ -54,7 +55,10 @@ appender("FILE", RollingFileAppender) {
     }
 }
 
-//logger("com.alcatel_lucent.dms.filters",DEBUG, ["STDOUT"])
+//logger("com.alcatel_lucent.dms.filters",DEBUG)
+//logger("org.jasig.cas.client",TRACE)
+
+
 //logger("org.hibernate.type", TRACE)
 //logger("org.hibernate.SQL", DEBUG)
 
