@@ -1,10 +1,19 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <meta content="0;url=entry.action?naviTo=main.jsp" http-equiv="refresh">
-    <!--<meta content="0;url=entry.action?naviTo=test/start/myIndex.jsp" http-equiv="refresh">-->
+    <!--<meta content="0;url=entry.action?naviTo=main.jsp" http-equiv="refresh">-->
 </head>
 <body>
+<!--<h1>Hello, index page.</h1>-->
+<script type="text/javascript">
+    !function (global) {
+        var navigateTo = "entry.action?naviTo=main.jsp";
+        if ("" !== location.search) {
+            navigateTo += "&" + location.search.substring(1);
+        }
+        window.location.href = navigateTo;
+    }.call(this);
+</script>
 </body>
 </html>

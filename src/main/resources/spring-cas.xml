@@ -15,12 +15,12 @@
           p:casServerLoginUrl="${sso.url}/login"
           p:renew="false"
           p:gateway="false"
-          p:service="http://localhost:${httpPort}/dms"
+          p:service="http://localhost:${httpPort}"
             />
 
     <bean name="ticketValidationFilter"
           class="org.jasig.cas.client.validation.Cas10TicketValidationFilter"
-          p:service="https://localhost:${httpsPort}/cas-client">
+          p:service="http://localhost:${httpPort}">
         <property name="ticketValidator">
             <bean class="org.jasig.cas.client.validation.Cas10TicketValidator"
                     c:_0="${sso.url}"

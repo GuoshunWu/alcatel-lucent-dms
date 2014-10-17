@@ -2,6 +2,7 @@ package com.alcatel_lucent.dms.filters;
 
 import com.alcatel_lucent.dms.UserContext;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,30 +23,11 @@ import static com.alcatel_lucent.dms.util.Util.anyMatch;
  * Time: 下午2:23
  */
 
-//@WebFilter(filterName = "authenticationFilter", urlPatterns = {"/*"}, asyncSupported = true, initParams = {
-//        @WebInitParam(description = "This parameter include the pattern list separated by comma, the uri in which will not be ignored by this filter.",
-//                name = "excludePatterns",
-//                value = "/entry\\.action\\?login\\.jsp,/login\\.action,\n" +
-//                        "/login/forward-to-https,\n" +
-//                        "/test/.*,/scripts/.*,/json/.*,/manual/.*,/release_notes.txt,.*js,.*map,.*coffee,.*css,.*images.*,.*ico"
-//        ),
-//        @WebInitParam(description = "This parameter include the pattern list separated by comma, the uri in which will send specific response to client",
-//                name = "ajaxURIs",
-//                value = "/test/.*,/rest/.*,/app/.*,/trans/.*,/task/.*,/admin/.*"
-//        ),
-//        @WebInitParam(name = "authURL",
-//                value = "/login/forward-to-https",
-//                description = "This parameter include the pattern list separated by comma, the uri in which will send specific response to client"
-//        )}
-//)
 public class AuthenticationFilter implements Filter {
     protected Logger log = LoggerFactory.getLogger(AuthenticationFilter.class);
     private List<String> excludePatterns;
     private List<String> ajaxURIs;
     private String authURL = "/login/forward-to-https";
-
-
-
 
     public void destroy() {
 
@@ -56,38 +38,38 @@ public class AuthenticationFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) resp;
 
         HttpSession session = request.getSession();
-        log.debug("session.id="+session.getId());
+        log.debug("session.id=" + session.getId());
 
         String uri = request.getRequestURI();
 
         UserContext uc = (UserContext) session.getAttribute(UserContext.SESSION_USER_CONTEXT);
         UserContext.setUserContext(uc);
         try {
-	        uri = uri.replace(request.getContextPath(), "");
-	        if (uri.endsWith("entry.action")) uri += '?' + request.getParameter("naviTo");
-	        log.debug("uri=" + uri);
-	        if (anyMatch(uri, excludePatterns)) {
-	            log.debug("uri " + uri + " in the exclude pattern list, ignore.");
-	            chain.doFilter(req, resp);
-	            return;
-	        }
-	
-	        if (null != uc) {
-	            chain.doFilter(req, resp);
-	            return;
-	        }
-	
-	        if (anyMatch(uri, ajaxURIs)) {
-	            log.debug("uri " + uri + " in the ajax uri pattern list, response json.");
-	            ajaxResponse(response);
-	            return;
-	        }
-	
-	
-	//        Normal JSP response
-	        response.sendRedirect(request.getContextPath() + authURL);
+            uri = uri.substring(request.getContextPath().length());
+            if (uri.endsWith("entry.action")) uri += '?' + request.getParameter("naviTo");
+            log.debug("uri=" + uri);
+            if (anyMatch(uri, excludePatterns)) {
+                log.debug("uri " + uri + " in the exclude pattern list, ignore.");
+                chain.doFilter(req, resp);
+                return;
+            }
+
+            if (null != uc) {
+                chain.doFilter(req, resp);
+                return;
+            }
+
+            if (anyMatch(uri, ajaxURIs)) {
+                log.debug("uri " + uri + " in the ajax uri pattern list, response json.");
+                ajaxResponse(response);
+                return;
+            }
+
+
+            //        Normal JSP response
+            response.sendRedirect(request.getContextPath() + authURL + StringUtils.defaultString("?" + request.getQueryString()));
         } finally {
-        	UserContext.removeUserContext();
+            UserContext.removeUserContext();
         }
     }
 

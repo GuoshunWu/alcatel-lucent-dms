@@ -56,6 +56,7 @@
                 </tr>
                 <tr>
                     <td colspan="3">
+                        <s:hidden name="ticket" value="%{#parameters.ticket}"/>
                         <s:hidden id="idTimeZoneOffset" name="timeZoneOffset"/>
                         <s:submit id="idSubmit" value="%{getText('login.login')}" cssClass="button"/>
                         <s:reset value="%{getText('login.reset')}" cssClass="button"/>

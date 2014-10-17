@@ -97,6 +97,7 @@
             </description>
             <param-name>excludePatterns</param-name>
             <param-value>
+                /,
                 /entry\.action\?login\.jsp,/login\.action.*,/api/.*,
                 /login/forward-to-https,
                 /test/.*, /hello/.*, /scripts/.*,/json/.*,/manual/.*,/release_notes.txt,.*\.js,.*\.map,.*\.coffee,.*\.css,.*images.*,.*\.ico

@@ -141,12 +141,12 @@ public class Translation extends BaseEntity {
         if (!isTranslationParametersCorrect(reference)) {
             transWarnings.add(new BusinessWarning(BusinessWarning.PARAMETERS_INCORRECT, dictName, labelKey, languageName));
         }
-        // check br consistent
+        // check br and \n consistent
         if (!patternCheck(reference, BRPattern) || !patternCheck(reference, CNPattern)) {
             transWarnings.add(new BusinessWarning(BusinessWarning.BR_INCONSISTENT, dictName, labelKey, languageName));
         }
 
-        // check \n consistent
+
 
 
         return transWarnings;

@@ -36,11 +36,18 @@ public class DMSContextLoadListener implements ServletContextListener {
         // print internal state
 //        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 //        StatusPrinter.print(lc);
-        final ServletContext context = sce.getServletContext();
+
+
+        // disabled because it mess up cas session cookies
+        // configSessionCookie(sce.getServletContext());
+
+    }
+
+    private void configSessionCookie(ServletContext context) {
         SessionCookieConfig scc = context.getSessionCookieConfig();
         String path = context.getContextPath();
         if (!path.endsWith("/")) path += "/";
-        scc.setName("DMS_JSESSIONID");
+        scc.setName("JSESSIONID");
         scc.setPath(path);
     }
 
