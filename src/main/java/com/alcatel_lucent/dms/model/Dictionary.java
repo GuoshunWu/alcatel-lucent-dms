@@ -447,7 +447,7 @@ public class Dictionary extends BaseEntity {
                     for (LabelTranslation lt : label.getOrigTranslations()) {
                         String langCode = lt.getLanguageCode();
                         DictionaryLanguage dl = getDictLanguage(langCode);
-                        if (dl.getCharset() == null) continue;
+                        if (dl == null || dl.getCharset() == null) continue;
                         String charsetName = dl.getCharset().getName();
                         String encodedTranslation = lt.getOrigTranslation();
                         boolean invalidText = false;
