@@ -20,6 +20,7 @@ import java.util.Map;
  * URL: /rest/translationCheck
  * Filter parameters:
  * appId		(required) application id
+ * dict			(required) dictionar id list
  * <p/>
  * Sort parameters:
  * sidx		(optional) sort by, default is "operationTime" (desc)
@@ -48,6 +49,7 @@ public class TranslationCheckREST extends BaseREST {
     @Override
     String doGetOrPost(Map<String, String> requestMap) throws Exception {
         Long appId = Long.valueOf(requestMap.get("appId"));
+        Collection<Long> dictIds = toIdList(requestMap.get("dict"));
         Map<String, String> filters = getGridFilters(requestMap);
 
 
@@ -56,7 +58,7 @@ public class TranslationCheckREST extends BaseREST {
             filters.remove("ct.transWarnings");
         }
 
-        Collection<Label> labels = translationService.getLabelTranslationCheckResultByApp(appId, filters);
+        Collection<Label> labels = translationService.getLabelTranslationCheckResultByApp(appId, dictIds, filters);
         // page and filter in memory
         labels = filterCTErrors(labels, errorsFilter);
         // other filters were did in database level

@@ -408,10 +408,10 @@ define [
       return unless param
 #      console.log "param=", param
       transCheckGrid
-      .setCaption param.caption
+      .setCaption(param.caption)
       .setGridParam(
         page: 1
-        postData: {appId: param.id}
+        postData: {appId: param.id, dict: param.dict}
       )
       .trigger 'reloadGrid'
 

@@ -1536,12 +1536,13 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
         return labelPrefix + field;
     }
 
-    public Collection<Label> getLabelTranslationCheckResultByApp(Long appId, Map<String, String> filters) {
+    public Collection<Label> getLabelTranslationCheckResultByApp(Long appId, Collection<Long> dictIds, Map<String, String> filters) {
         @org.intellij.lang.annotations.Language("HQL") String hql =
                 "select obj,t,a from Application a join a.dictionaries d join d.labels obj,Translation t " +
-                        "where obj.text=t.text and obj.removed=false and t.status =:status and obj.context.name<>:exclusion and a.id=:appId";
+                        "where obj.text=t.text and obj.removed=false and t.status =:status and obj.context.name<>:exclusion" +
+                        " and a.id=:appId and d.id in (:dictIds)";
         Map<String, Object> param = new HashMap<String, Object>();
-        param.putAll(ImmutableMap.of("appId", appId, "exclusion", Context.EXCLUSION, "status", Translation.STATUS_TRANSLATED));
+        param.putAll(ImmutableMap.of("appId", appId, "dictIds", dictIds, "exclusion", Context.EXCLUSION, "status", Translation.STATUS_TRANSLATED));
         String filterSQL = generateFilterSQL(filters, param);
 
         if (StringUtils.isNotEmpty(filterSQL)) {

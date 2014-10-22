@@ -100,9 +100,10 @@ public interface TranslationService {
     /**
      * Retrieve label information with translation which has errors.
      * @param appId application id id
+     * @param dictIds dictionary id list
      * @return collection of labels, translation information is contained in ct
      */
-    Collection<Label> getLabelTranslationCheckResultByApp(Long appId, Map<String, String> filters);
+    Collection<Label> getLabelTranslationCheckResultByApp(Long appId, Collection<Long> dictIds, Map<String, String> filters);
     /**
      * Generat excel details of label translations
      * @param dictIds collection of dictionary id
