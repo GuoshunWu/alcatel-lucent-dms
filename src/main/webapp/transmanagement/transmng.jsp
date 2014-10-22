@@ -45,9 +45,6 @@
 
                                 <button id="transSearchAction"></button>
 
-                                &nbsp;
-                                <button id="transHistories"
-                                        title="<s:text name="transmng.translation.history"/>"></button>
                                 </span>
 
                             </fieldset>
@@ -55,8 +52,10 @@
 
                         </td>
                     </tr>
+                </table>
+                <table border="0" width="100%">
                     <tr>
-                        <td  colspan="2">
+                        <td>
                             <button id="languageFilter"><s:text name="transmng.summarypanel.languagefilter"/></button>
 
                             <fieldset style="border:none;width: 280px;text-align: center; display: inline">
@@ -69,10 +68,8 @@
                                     name="transmng.summarypanel.viewoption.dictionarylevel"/></label>
                             </fieldset>
 
-                            <button id="checkTranslations" style="margin-right: 3em"><s:text name="transmng.chktrans"/></button>
-
                             <a id="exportExcel" href="Javascript:void(0);">
-                                <img src="images/excel.gif"/> <s:text name="export"/>
+                                <img src="images/excel.gif"/> <s:text name="report"/>
                             </a>
 
                             <a style="display: none" id="exportPDF" href="#">PDF
@@ -83,6 +80,10 @@
                                     <input type="hidden" name="ftype"/>
                                 </form>
                             </a>
+                        </td>
+                        <td align="right">
+                            <button id="transHistories"
+                                    title="<s:text name="transmng.translation.history"/>"></button>
                         </td>
                     </tr>
                 </table>
@@ -95,24 +96,28 @@
         </tr>
         <tr style="height:20px;">
             <td>
-                <table width="100%" border="0" style="border-color: blue">
+                <table border="0" style="border-color: blue">
                     <tr>
                         <td style="width: 15px"/>
-                        <td style="width: 370px">
-                            <button id="create"><s:text name="button.translationtask"/></button>
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <button id="exportTranslation"><s:text name="button.exporttranslation"/></button>
+                        <td>
+                            <button id="create" style="width: 170px"><s:text name="button.translationtask"/></button>
                         </td>
-                        <td style="width: 170px">
-                            <div id="importTranslation"></div>
+                        <td>
+                            <button id="exportTranslation" style="width:160px"><s:text name="button.exporttranslation"/></button>
+                        </td>
+                        <td>
+                            <div id="importTranslation" style="width: 160px"></div>
                         </td>
                         <td align="left">
                             <ul id="translationStatus">
                                 <li><a name="2" href="#"><s:text name="status.translated"/></a></li>
                                 <li><a name="0" href="#"><s:text name="status.nottranslated"/></a></li>
                             </ul>
-                            <button id='makeLabelTranslateStatus'><s:text
+                            <button id='makeLabelTranslateStatus' style="width: 200px"><s:text
                                     name="transmng.summarypanel.makelabelas"/></button>
+                        </td>
+                        <td>
+                            <button id="checkTranslations" style="width: 160px"><s:text name="transmng.chktrans"/>...</button>
                         </td>
                         <td style="width: 15px"/>
                     </tr>

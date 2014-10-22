@@ -337,8 +337,7 @@ define [
   $('#makeLabelTranslateStatus').attr('privilegeName', util.urlname2Action urls.trans.update_status)
   .button(
     icons:
-      primary: "ui-icon-triangle-1-n"
-      secondary: "ui-icon-gear"
+      secondary: "ui-icon-triangle-1-n"
   )
   .click (e)->
     menu = $('#translationStatus').show().width($(@).width() - 3).position(my: "left bottom", at: "left top", of: @)
