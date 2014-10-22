@@ -130,9 +130,9 @@ define [
       if 'translation' != cellname
         # currently update translation status need reload the grid, trans grid will be update when the search dialog is closed
         success = 0 == json.status
-        setTimeout (->
-          grid.trigger 'reloadGrid'
-        ), 10  if success
+#        setTimeout (->
+#          grid.trigger 'reloadGrid'
+#        ), 10  if success
         # flag to reload transGrid when container dialog close
         $('#transmngTranslationCheckDialog').data("translationStatusUpdated", true)
         return [success, json.message]
@@ -155,7 +155,7 @@ define [
 
       # this request is ok json.status = 1 would make a popup error dialog
       # reload the grid to indicate the change
-      setTimeout (->grid.trigger 'reloadGrid'), 10
+      #setTimeout (->grid.trigger 'reloadGrid'), 10
       [true, json.message]
   )
   .setGridParam('datatype':'json')
