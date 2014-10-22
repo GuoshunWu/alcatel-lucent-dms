@@ -421,7 +421,7 @@ public class Dictionary extends BaseEntity {
 
             HashSet<String> labelKeys = new HashSet<String>();
 
-            for (Label label : labels) {
+            for (Label label : getAvailableLabels()) {
                 if (labelKeys.contains(label.getKey())) {
                     previewErrors.add(new BusinessException(BusinessException.DUPLICATE_LABEL_KEY, label.getKey()));
                 }
@@ -442,7 +442,7 @@ public class Dictionary extends BaseEntity {
 
             // sort malformed character warnings
             TreeMap<String, Collection<BusinessWarning>> malformWarnings = new TreeMap<String, Collection<BusinessWarning>>();
-            for (Label label : labels) {
+            for (Label label : getAvailableLabels()) {
                 if (label.getOrigTranslations() != null) {
                     for (LabelTranslation lt : label.getOrigTranslations()) {
                         String langCode = lt.getLanguageCode();
@@ -490,7 +490,7 @@ public class Dictionary extends BaseEntity {
             for (Collection<BusinessWarning> warnings : malformWarnings.values()) {
                 importWarnings.addAll(warnings);
             }
-            for (Label label : labels) {
+            for (Label label : getAvailableLabels()) {
                 if (!label.checkLength(label.getReference())) {
                     importWarnings.add(new BusinessWarning(
                             BusinessWarning.EXCEED_MAX_LENGTH, "Reference", label.getKey()));

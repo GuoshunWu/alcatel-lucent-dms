@@ -449,7 +449,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
     @Override
     public Dictionary importDictionary(Long appId, Dictionary dict, String version, Constants.ImportingMode mode, String[] langCodes,
-                                       Map<String, String> langCharset, Boolean autoCreateLang,
+                                       Map<String, String> langCharset, ImportSettings settings,
                                        Collection<BusinessWarning> warnings, DeliveryReport report) {
         log.info("Start importing dictionary in " + mode + " mode");
         if (null == dict) return null;
@@ -572,7 +572,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         }
         // update dictionary languages in delivery mode
         boolean noLanguage = dict.hasNoLanguage();    // whether the imported dictionary contains no language other than ref language
-        boolean needAppendLanguage = autoCreateLang != null && autoCreateLang.booleanValue() && noLanguage;
+        boolean needAppendLanguage = settings.isAutoCreateLang() && noLanguage;
         if (mode == Constants.ImportingMode.DELIVERY) {
             if (needAppendLanguage) {    // GAE-only dictionary and need auto creating languages
                 // if the dictionary is new, copy languages from any other existing dictionary in the application
@@ -673,10 +673,12 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             label.setContext(ctx);
         }
 
+        HashSet<String> labelKeys = new HashSet<String>();
         for (Label label : dict.getLabels()) {
             Context ctx = label.getContext();
             label.setSortNo(sortNo++);
             label.setRemoved(false);
+            labelKeys.add(label.getKey());
             Label lastLabel = null;
             if (lastDict != null) {
                 lastLabel = lastDict.getLabel(label.getKey());
@@ -940,6 +942,17 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             }
             report.addData(context, dict, labels, dbTextMap);
             ProgressQueue.setProgress(30 + (int) Math.round(++ctxStep * 50.0 / textMap.size()));
+        }
+        
+        // process old labels which is removed in the dictionary file being imported
+        for (Label label : dbDict.getAvailableLabels()) {
+        	if (!labelKeys.contains(label.getKey())) {
+        		if (settings.isRemoveOldLabels()) {	// remove the label
+        			label.setRemoved(true);
+        		} else {	// put the label to the end of dictionary
+        			label.setSortNo(sortNo++);
+        		}
+        	}
         }
 
         if (nonBreakExceptions.hasNestedException()) {
