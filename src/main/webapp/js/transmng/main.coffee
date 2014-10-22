@@ -156,9 +156,14 @@ define [
       nodeInfo = util.getProductTreeInfo()
       selVer = $('#selVersion', '#transmng')
       appVersion = getAppVersion(nodeInfo, selVer)
+      transGrid = $("#transGrid")
+      selectedRowIds = transGrid.getGridParam('selarrrow').join(',')
+      ($.msgBox (c18n.selrow.format c18n.dict), null, title: c18n.warning; return) unless selectedRowIds
+      
       $('#transmngTranslationCheckDialog').data(
         'param', {
           id: appVersion,
+          dict: selectedRowIds,
           "caption": "Translation check result in Application #{nodeInfo.text} #{$("option:selected", selVer).text()}"}
       ).dialog('open')
 
