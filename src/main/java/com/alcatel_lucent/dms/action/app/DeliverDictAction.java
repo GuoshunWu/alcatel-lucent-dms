@@ -10,6 +10,7 @@ import com.alcatel_lucent.dms.model.DictionaryLanguage;
 import com.alcatel_lucent.dms.service.DeliveringDictPool;
 import com.alcatel_lucent.dms.service.DeliveryReport;
 import com.alcatel_lucent.dms.service.DictionaryService;
+import com.alcatel_lucent.dms.service.ImportSettings;
 import com.alcatel_lucent.dms.service.JSONService;
 
 import java.util.*;
@@ -22,6 +23,7 @@ public class DeliverDictAction extends ProgressAction {
 	private String handler;
 	private Long app;
 	private Boolean autoCreateLang;
+	private Boolean removeOldLabels;
 	
 	private DeliveringDictPool deliveringDictPool;
 	private DictionaryService dictionaryService;
@@ -67,7 +69,14 @@ public class DeliverDictAction extends ProgressAction {
             Collection<BusinessWarning> warnings = new ArrayList<BusinessWarning>();
             ProgressQueue.setProgress("[" + cur + "/" + total + "] Importing " + dict.getName(), 0);
             try {
-            	dictionaryService.importDictionary(appId, dict, dict.getVersion(), mode, null, langCharset, autoCreateLang, warnings, report);
+            	ImportSettings settings = new ImportSettings();
+            	if (autoCreateLang != null) {
+            		settings.setAutoCreateLang(autoCreateLang);
+            	}
+            	if (removeOldLabels != null) {
+            		settings.setRemoveOldLabels(removeOldLabels);
+            	}
+            	dictionaryService.importDictionary(appId, dict, dict.getVersion(), mode, null, langCharset, settings, warnings, report);
             } catch (UnexpectedRollbackException e) {
             	if (mode == Constants.ImportingMode.TEST) {
             		log.info("Rolled back all changes of importing because of TEST mode");
@@ -136,6 +145,14 @@ public class DeliverDictAction extends ProgressAction {
 
 	public void setAutoCreateLang(Boolean autoCreateLang) {
 		this.autoCreateLang = autoCreateLang;
+	}
+
+	public Boolean getRemoveOldLabels() {
+		return removeOldLabels;
+	}
+
+	public void setRemoveOldLabels(Boolean removeOldLabels) {
+		this.removeOldLabels = removeOldLabels;
 	}
 
 }

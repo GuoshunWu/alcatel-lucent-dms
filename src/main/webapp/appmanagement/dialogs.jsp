@@ -219,9 +219,15 @@
             </td>
         </tr>
         <tr>
-            <td>
+            <td title="<s:text name="appmng.dialogs.dictpreview.autocreatelanguage.help"/>">
                 &nbsp;&nbsp; <input type="checkbox" id="isAutoCreateLanguage"/><s:text
                     name="appmng.dialogs.dictpreview.autocreatelanguage"/>
+            </td>
+        </tr>
+        <tr>
+            <td title="<s:text name="appmng.dialogs.dictpreview.removeoldlabels.help"/>">
+                &nbsp;&nbsp; <input type="checkbox" id="isRemoveOldLabels"/><s:text
+                    name="appmng.dialogs.dictpreview.removeoldlabels"/>
             </td>
         </tr>
     </table>

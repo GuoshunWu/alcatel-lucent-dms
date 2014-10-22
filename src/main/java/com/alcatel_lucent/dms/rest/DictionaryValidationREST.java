@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 import javax.ws.rs.Path;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.function.Predicate;
 
 /**
  * Dictionary error REST service.
