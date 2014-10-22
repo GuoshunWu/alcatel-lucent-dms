@@ -154,7 +154,7 @@ define [
         # this request is ok, and leave other things to the dialog
 
       # this request is ok json.status = 1 would make a popup error dialog
-      # reload the grid to indicate the change
+      # reload the grid to indicate the change in other cells of the same row
       #setTimeout (->grid.trigger 'reloadGrid'), 10
       [true, json.message]
   )

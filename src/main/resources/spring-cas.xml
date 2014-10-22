@@ -8,7 +8,10 @@
 
     <!--
       ref: https://wiki.jasig.org/display/CASC/Configuring+the+JA-SIG+CAS+Client+for+Java+using+Spring
+
+      http://www.kafeitu.me/sso/2010/11/05/sso-cas-full-course.html
     -->
+
 
     <bean name="authenticationFilter"
           class="org.jasig.cas.client.authentication.AuthenticationFilter"
@@ -18,15 +21,24 @@
           p:service="http://localhost:${httpPort}"
             />
 
+
     <bean name="ticketValidationFilter"
           class="org.jasig.cas.client.validation.Cas10TicketValidationFilter"
           p:service="http://localhost:${httpPort}">
         <property name="ticketValidator">
             <bean class="org.jasig.cas.client.validation.Cas10TicketValidator"
-                    c:_0="${sso.url}"
+                  c:_0="${sso.url}"
                     />
         </property>
     </bean>
+
+
+    <bean name="singleSignOutFilter"
+          class="org.jasig.cas.client.session.SingleSignOutFilter"
+          p:casServerUrlPrefix=""
+            />
+
+
 
 
 </beans>

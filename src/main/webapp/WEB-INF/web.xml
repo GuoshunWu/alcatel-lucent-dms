@@ -15,6 +15,7 @@
         <session-timeout>60</session-timeout>
     </session-config>
 
+    <!--&lt;!&ndash; 该过滤器负责用户的认证工作，必须启用它 &ndash;&gt;-->
     <!--<filter>-->
         <!--<filter-name>CAS Authentication Filter</filter-name>-->
         <!--<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>-->
@@ -27,6 +28,51 @@
 
     <!--<filter-mapping>-->
         <!--<filter-name>CAS Authentication Filter</filter-name>-->
+        <!--<url-pattern>/*</url-pattern>-->
+    <!--</filter-mapping>-->
+
+    <!--&lt;!&ndash; 该过滤器负责对Ticket的校验工作，必须启用它 &ndash;&gt;-->
+    <!--<filter>-->
+        <!--<filter-name>CAS Validation Filter</filter-name>-->
+        <!--<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>-->
+
+        <!--<init-param>-->
+            <!--<param-name>targetBeanName</param-name>-->
+            <!--<param-value>ticketValidationFilter</param-value>-->
+        <!--</init-param>-->
+    <!--</filter>-->
+
+    <!--<filter-mapping>-->
+        <!--<filter-name>CAS Validation Filter</filter-name>-->
+        <!--<url-pattern>/*</url-pattern>-->
+    <!--</filter-mapping>-->
+
+
+    <!--&lt;!&ndash;-->
+        <!--该过滤器负责实现HttpServletRequest请求的包裹，-->
+        <!--比如允许开发者通过HttpServletRequest的getRemoteUser()方法获得SSO登录用户的登录名，可选配置。-->
+    <!--&ndash;&gt;-->
+    <!--<filter>-->
+        <!--<filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>-->
+        <!--<filter-class>-->
+            <!--org.jasig.cas.client.util.HttpServletRequestWrapperFilter-->
+        <!--</filter-class>-->
+    <!--</filter>-->
+    <!--<filter-mapping>-->
+        <!--<filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>-->
+        <!--<url-pattern>/*</url-pattern>-->
+    <!--</filter-mapping>-->
+
+    <!--&lt;!&ndash;-->
+    <!--该过滤器使得开发者可以通过org.jasig.cas.client.util.AssertionHolder来获取用户的登录名。-->
+        <!--比如AssertionHolder.getAssertion().getPrincipal().getName()。-->
+    <!--&ndash;&gt;-->
+    <!--<filter>-->
+        <!--<filter-name>CAS Assertion Thread Local Filter</filter-name>-->
+        <!--<filter-class>org.jasig.cas.client.util.AssertionThreadLocalFilter</filter-class>-->
+    <!--</filter>-->
+    <!--<filter-mapping>-->
+        <!--<filter-name>CAS Assertion Thread Local Filter</filter-name>-->
         <!--<url-pattern>/*</url-pattern>-->
     <!--</filter-mapping>-->
 
@@ -46,8 +92,8 @@
 
     <!-- Load Spring -->
     <!--<context-param>-->
-        <!--<param-name>contextConfigLocation</param-name>-->
-        <!--<param-value>classpath:spring.xml</param-value>-->
+    <!--<param-name>contextConfigLocation</param-name>-->
+    <!--<param-value>classpath:spring.xml</param-value>-->
     <!--</context-param>-->
 
 
@@ -100,7 +146,8 @@
                 /,
                 /entry\.action\?login\.jsp,/login\.action.*,/api/.*,
                 /login/forward-to-https,
-                /test/.*, /hello/.*, /scripts/.*,/json/.*,/manual/.*,/release_notes.txt,.*\.js,.*\.map,.*\.coffee,.*\.css,.*images.*,.*\.ico
+                /test/.*, /hello/.*,
+                /scripts/.*,/json/.*,/manual/.*,/release_notes.txt,.*\.js,.*\.map,.*\.coffee,.*\.css,.*images.*,.*\.ico
             </param-value>
         </init-param>
         <init-param>
@@ -125,7 +172,7 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-       <!--for hibernate keep session open in view-->
+    <!--for hibernate keep session open in view-->
     <filter>
         <filter-name>openSessionInView</filter-name>
         <filter-class>org.springframework.orm.hibernate3.support.OpenSessionInViewFilter</filter-class>
@@ -158,7 +205,7 @@
 
     <!-- Listening Log4j -->
     <!--<listener>-->
-        <!--<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>-->
+    <!--<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>-->
     <!--</listener>-->
 
     <listener>
@@ -167,7 +214,7 @@
 
     <!--Listening Spring-->
     <!--<listener>-->
-        <!--<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>-->
+    <!--<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>-->
     <!--</listener>-->
 
     <listener>
