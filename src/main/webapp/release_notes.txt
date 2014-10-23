@@ -1,3 +1,9 @@
+V2.17.0 (Oct 23, 2014)
+    * Display count of errors & warnings with detail link in Dictionary view 
+    * Add "Validate" feature in Translation view
+    * Add option "Remove old labels" for importing dictionary and API
+    * Fix unstable order of exported labels
+
 V2.16.9 (Oct 9, 2014)
     * Add option "escapeApostrophe" to API "generate-dict"
     * Fix display issue of special characters
