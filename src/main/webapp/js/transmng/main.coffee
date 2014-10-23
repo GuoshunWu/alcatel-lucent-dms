@@ -10,8 +10,7 @@ define [
   'transmng/trans_grid'
   'transmng/dialogs'
   'ptree'
-], (c18n, i18n, util, urls, upload, iframetrans, grid, dialogs, ptree)->
-  transGrid = grid
+], (c18n, i18n, util, urls, upload, iframetrans, transGridModule, dialogs, ptree)->
   nodeSelectHandler = (node, nodeInfo)->
     type=node.attr('type')
     return if 'products' == type
@@ -79,7 +78,7 @@ define [
 #        .multiselect('refresh')
       }
 
-      transGrid.refresh(false, grid)
+      transGridModule.refresh(false)
 
     searchActionBtn = $('#transSearchAction','#transmng').attr('title', 'Search').button(text: false, icons:
       {primary: "ui-icon-search"}).click(()=>
@@ -156,8 +155,7 @@ define [
       nodeInfo = util.getProductTreeInfo()
       selVer = $('#selVersion', '#transmng')
       appVersion = getAppVersion(nodeInfo, selVer)
-      transGrid = $("#transGrid")
-      selectedRowIds = transGrid.getGridParam('selarrrow').join(',')
+      selectedRowIds = $("#transGrid").getGridParam('selarrrow').join(',')
       ($.msgBox (c18n.selrow.format c18n.dict), null, title: c18n.warning; return) unless selectedRowIds
       
       $('#transmngTranslationCheckDialog').data(
