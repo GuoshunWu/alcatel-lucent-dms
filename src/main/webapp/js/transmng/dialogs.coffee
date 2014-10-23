@@ -148,13 +148,12 @@ define [
           if(json.status != 0)
             $.msgBox json.message, null, {title: c18n.error}
             return
+          # refresh taskGrid and transGrid
           $('#taskGrid').trigger 'reloadGrid'
+          $("#transGrid").trigger 'reloadGrid'
           $.msgBox i18n.msgbox.createtranstask.confirm, ((keyPressed)->
-            #            navigate form is in common/pagenavigator.jsp
-            if c18n.yes != keyPressed
-              $("#transGrid").trigger 'reloadGrid'
-              return
-            # refresh taskGrid
+            return if c18n.yes != keyPressed
+            #  navigate form is in common/pagenavigator.jsp
             $("span[id^='nav'][value='taskmng']").trigger('click')
           ), {title: c18n.confirm}, [c18n.yes, c18n.no]
 

@@ -68,8 +68,6 @@ define [
     $('#addLanguageDialog').dialog "open"
   }
 
-
-
   saveLastEditedCell: ()->langSettingGrid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
 
 

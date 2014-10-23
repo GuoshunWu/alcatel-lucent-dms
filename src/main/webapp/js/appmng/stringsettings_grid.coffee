@@ -82,6 +82,7 @@ define [
     afterEditCell: (rowid, name, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
     afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
       json = $.parseJSON(serverresponse.responseText)
+      window.param.dirty = true
       setTimeout (->
         dicGrid.trigger 'reloadGrid'
       ), 10 if 'reference' == cellname and 0== json.status
@@ -103,7 +104,9 @@ define [
     if(rowIds = $(@).getGridParam('selarrrow')).length == 0
       $.msgBox (c18n.selrow.format c18n.label), null, {title: c18n.warning}
       return
-    dicGrid.jqGrid 'delGridRow', rowIds, {msg: i18n.dialog.delete.delmsg.format(c18n.label), url: urls.label.del}
+    dicGrid.jqGrid 'delGridRow', rowIds, {
+      msg: i18n.dialog.delete.delmsg.format(c18n.label), url: urls.label.del, afterSubmit: (response, postdata)->window.param.dirty = true
+    }
   }
   ).navSeparatorAdd("#stringSettingsPager",{sepclass : "ui-separator",sepcontent: ''})
   .navButtonAdd('#stringSettingsPager', {

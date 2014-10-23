@@ -58,12 +58,13 @@ define [
               $('#' + dictGridId).trigger 'reloadGrid'
               return
             $.msgBox json.message, null, {title: c18n.info}
+            window.param.dirty = true
         else
           $('#' + dictGridId).trigger 'reloadGrid'
 
       ),{title: c18n.confirm, width: 510}, [c18n.yes, c18n.no]
       return [true, jsonFromServer.message]
-
+    window.param.dirty = true
     [1 == jsonFromServer.status, jsonFromServer.message]
   }
 

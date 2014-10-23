@@ -155,7 +155,7 @@ define [
       nodeInfo = util.getProductTreeInfo()
       selVer = $('#selVersion', '#transmng')
       appVersion = getAppVersion(nodeInfo, selVer)
-      selectedRowIds = $("#transGrid").getGridParam('selarrrow').join(',')
+      selectedRowIds =  $("#transGrid").getGridParam('selarrrow').join(',')
       ($.msgBox (c18n.selrow.format c18n.dict), null, title: c18n.warning; return) unless selectedRowIds
       
       $('#transmngTranslationCheckDialog').data(

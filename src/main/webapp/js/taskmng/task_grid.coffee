@@ -139,6 +139,7 @@ define [
             if(0 != jsonFromServer.status)
               $.msgBox jsonFromServer.message, null, {title: c18n.error}
               return
+            window.param.dirty = true
             dialogs.transReport.data 'param', {id: rowid}
             dialogs.transReport.dialog 'open'
           }

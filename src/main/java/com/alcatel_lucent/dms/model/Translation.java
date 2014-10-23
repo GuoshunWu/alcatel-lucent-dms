@@ -146,9 +146,6 @@ public class Translation extends BaseEntity {
             transWarnings.add(new BusinessWarning(BusinessWarning.BR_INCONSISTENT, dictName, labelKey, languageName));
         }
 
-
-
-
         return transWarnings;
     }
 

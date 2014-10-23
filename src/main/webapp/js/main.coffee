@@ -42,6 +42,7 @@ define [
 
     cdialogs.tipOfDayDialog.dialog 'open' if window.param.currentUser.showTips
   window.param.currentPanel = 'appmng'
+  window.param.dirty = false
 
   panelSwitchHandler = (oldpnl, newpnl)->
     # The panels need to be informed if current product base changed
@@ -74,8 +75,18 @@ define [
 
     newTypeSaver = $("##{newpnl}")
 #    console.log "type=%o version = %o , new type= %o version= %o", type, oldVersion.val(), newTypeSaver.attr('type'), newVersion.val()
-    return if oldVersion.val() == newVersion.val() && type == newTypeSaver.attr('type')
 
+    ###
+      window.param.dirty need to be set to true
+      if dictionary deleted, language updated, or string update in dictionary view
+    ###
+    return if (
+      oldVersion.val() == newVersion.val() and
+      type == newTypeSaver.attr('type') and
+      !window.param.dirty
+    )
+
+    window.param.dirty = false
     window.param.currentSelected[tmp]= $('#selVersion', "div[id='#{oldpnl}']").val()
 
 

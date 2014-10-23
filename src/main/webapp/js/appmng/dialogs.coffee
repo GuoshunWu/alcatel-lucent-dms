@@ -522,6 +522,7 @@ define [
           $.unblockUI()
           ($.msgBox(json.message, null, {title: c18n.error});return) if json.status != 0
           $('#languageSettingGrid').trigger("reloadGrid") if -1 == postData.dicts.indexOf(',')
+          window.param.dirty = true
           $.msgBox i18n.dialog.addlanguage.successtip.format $('#languageName option:selected').text(), null, {title: c18n.info}
       },
       {text: c18n.cancel, click: (e)->$(@).dialog 'close'}
@@ -624,6 +625,7 @@ define [
         $.post urls.label.create, postData, (json)->
           ($.msgBox json.message, null, {title: c18n.error}; return) if json.status != 0
           $('#stringSettingsGrid').trigger("reloadGrid")
+          window.param.dirty = true
 
         $('#errMsg', me).empty()
         $('#' + ['key', 'reference', 'maxLength', 'description'].join(', #'), me).val('')

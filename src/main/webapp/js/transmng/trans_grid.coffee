@@ -24,7 +24,7 @@ define [
 
     {rowIds: selectedRowIds, totalLabels: count}
 
-  refreshGrid = (languageTrigger = false, grid = $(hGridId))->
+  refreshGrid = (languageTrigger = false)->
     nodeInfo = util.getProductTreeInfo()
     type = nodeInfo.type
     param =
