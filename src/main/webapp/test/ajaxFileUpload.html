@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>上传文件</title>
+    <style>
+        #progress_bar {
+            width: 500px;
+            height: 25px;
+            /*border: solid 1px #0000ff;*/
+        }
+
+        div.percent {
+            float: left;
+            z-index: 2;
+            background: lightblue;
+            width: 0%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="progress_bar">
+    <!--<span id="showCurrent" style="width: 400px; height: 20px; float: right"></span>-->
+    <div class="percent">0%</div>
+</div>
+
+<label for="files">文件：</label><input type="file" id="files" name="files" multiple/>
+<script type="text/javascript" src="../js/lib/spark-md5.js" charset="utf-8"></script>
+<script type="text/javascript" src="../js/lib/jquery-1.11.0.min.js" charset="utf-8"></script>
+
+<!--<script type="text/javascript" src="main.js" charset="utf-8"></script>-->
+
+
+<script type="text/javascript">
+
+    function readFileDone(file, md5) {
+        //2. 送文件名和md5至服务端判定文件是否需要上传
+        //3. 1 若需要，则调用文件上传
+        //3. 2 不需要，则显示妙传成功
+        console.log("fileName=%s, fileSize=%d, md5=%s, stamp=%d", file.name, file.size, md5, new Date().getTime());
+        // ajax UploadFile
+        var xhr = new XMLHttpRequest();
+        xhr.open("post", "testServlet", true);
+
+        xhr.onreadystatechange = function (e) {
+            if (xhr.readyState != 4)return;
+            console.log("result = %o", JSON.parse(e.target.responseText));
+        }
+
+        xhr.upload.onprogress = function (e) {
+            if (!e.lengthComputable) return;
+            var percent = (e.position / e.totalSize * 100).toFixed(2) + '%';
+            $("div.percent").html(percent).width(percent);
+            console.log("Received " + e.position + " of " + e.totalSize + " bytes");
+        }
+
+        var postData = new FormData();
+        postData.append("md5", md5);
+        postData.append("file", file);
+        postData.append("fileName", file.name);
+        xhr.send(postData);
+    }
+
+    var CHUNK_SIZE = 10 * 1024 * 1024; //2M Bytes
+
+    var currentShow = $("#showCurrent");
+    var percent = $("div.percent");
+
+    //注意此方法引用了SparkMD5库 library:https://github.com/satazor/SparkMD5
+    //监听文本框变化
+
+
+    function readSmallFile(file) {
+        var fileReader = new FileReader();
+        fileReader.readAsBinaryString(file);
+        var start = 0;
+        $(fileReader).on('loadstart', function (e) {
+            console.log("on load start....");
+            start = new Date().getTime();
+        }).on("load", function (e) {
+            var end = new Date().getTime();
+            console.log("on load, %d milliseconds elapsed.", end - start);
+            var md5 = SparkMD5.hashBinary(e.target.result);
+            readFileDone(file, md5);
+        });
+    }
+
+    function readLargeFile(file, chunkSize) {
+        if (!chunkSize)chunkSize = CHUNK_SIZE;
+        var fileReader = new FileReader();
+        var chunks = Math.ceil(file.size / chunkSize), currentChunk = 0, spark = new SparkMD5();
+
+        fileReader.readAsBinaryString(file.slice(0, chunkSize));
+        var startTime = new Date();
+        fileReader.onload = function (e) {
+            currentShow.html("文件" + file.name + "读取第" + (currentChunk + 1) + "块，共" + chunks + "块");
+//            var pNum = (currentChunk * chunkSize / file.size * 100).toFixed(1);
+//            percent.html(pNum + "%").width(pNum + '%');
+            console.log("文件%s读取第", file.name, currentChunk + 1, "块，共", chunks + "块");
+            //每块交由sparkMD5进行计算
+            spark.appendBinary(e.target.result);
+            currentChunk++;
+            //如果文件处理完成计算MD5，如果还有分片继续处理
+            if (currentChunk < chunks) {
+                var start = currentChunk * chunkSize , end = start + chunkSize;
+                if (end > file.size) end = file.size;
+                fileReader.readAsBinaryString(file.slice(start, end));
+            } else {
+                var endTime = new Date();
+                currentShow.html("分块文件读取完毕，总共使用" + (endTime.getTime() - startTime.getTime()) / 1000 + "秒。");
+                percent.html(100.0.toFixed(1) + "%");
+                percent.width('100%');
+                console.log("分块文件读取完毕，总共使用%f秒。", (endTime.getTime() - startTime.getTime()) / 1000);
+                var md5 = spark.end();
+                readFileDone(file, md5);
+            }
+        };
+
+        fileReader.onprogress = function (e) {
+            if (!e.lengthComputable)return;
+            var pNum = ((currentChunk * chunkSize + e.loaded) / file.size * 100).toFixed(1);
+            percent.html(pNum + "%").width(pNum + '%');
+        }
+
+
+    }
+
+    document.getElementById("files").addEventListener("change", function (e) {
+//        console.log("file changed....%o", e);
+        var files = e.target.files;
+        for (var i = 0; i < files.length; ++i) {
+            var file = files[i];
+            console.log('i=%d, fileName=%s, fileSize=%d', i, file.name, file.size);
+            if (file.size < CHUNK_SIZE) {
+                readSmallFile(file);
+            } else {
+                readLargeFile(file);
+            }
+        }
+
+    });
+</script>
+
+</body>
+</html>
