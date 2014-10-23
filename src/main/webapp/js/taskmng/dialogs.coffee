@@ -56,7 +56,7 @@ define [
       $.post(urls.task.apply, {id: param.id}, (json)->
         $.unblockUI()
         ($.msgBox json.message, null, {title: c18n.error};return) if json.status != 0
-
+        window.param.dirty = true
         $.msgBox i18n.task.confirmmsg, ((keyPressed)->
           if c18n.no == keyPressed
             $.blockUI()

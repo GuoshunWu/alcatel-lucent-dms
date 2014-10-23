@@ -3,6 +3,7 @@ V2.17.0 (Oct 23, 2014)
     * Add "Validate" feature in Translation view
     * Add option "Remove old labels" for importing dictionary and API
     * Fix unstable order of exported labels
+    * Fix grid refresh issue among different views
 
 V2.16.9 (Oct 9, 2014)
     * Add option "escapeApostrophe" to API "generate-dict"
