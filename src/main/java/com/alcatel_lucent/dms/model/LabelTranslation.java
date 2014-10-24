@@ -140,14 +140,14 @@ public class LabelTranslation extends BaseEntity {
     @Transient
     public boolean isValidText() {
         if (origTranslation != null) {
-            return CharsetUtil.isValid(origTranslation, language.getName());
+            return CharsetUtil.isValid(origTranslation, language.getName()) == null;
         }
         return true;
     }
 
     public boolean isValidText(String text) {
         if (text != null) {
-            return CharsetUtil.isValid(text, language.getName());
+            return CharsetUtil.isValid(text, language.getName()) == null;
         }
         return true;
     }

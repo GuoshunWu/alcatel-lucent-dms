@@ -1,5 +1,6 @@
 package com.alcatel_lucent.dms.model;
 
+import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.util.CharsetUtil;
 import com.google.common.collect.ImmutableMap;
@@ -9,8 +10,11 @@ import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.search.annotations.*;
 
 import javax.persistence.*;
+
+import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -111,7 +115,7 @@ public class Translation extends BaseEntity {
     @Transient
     public boolean isValidText() {
         if (translation != null) {
-            return CharsetUtil.isValid(translation, language.getName());
+            return CharsetUtil.isValid(translation, language.getName())== null;
         }
         return true;
     }
@@ -128,7 +132,8 @@ public class Translation extends BaseEntity {
     public Collection<BusinessWarning> validate(Label label) {
         transWarnings.clear();
         //check max length
-        String dictName = label.getDictionary().getName();
+        Dictionary dict = label.getDictionary();
+        String dictName = dict.getName();
         String labelKey = label.getKey();
         String languageName = language.getName();
 
@@ -145,7 +150,14 @@ public class Translation extends BaseEntity {
         if (!patternCheck(reference, BRPattern) || !patternCheck(reference, CNPattern)) {
             transWarnings.add(new BusinessWarning(BusinessWarning.BR_INCONSISTENT, dictName, labelKey, languageName));
         }
-
+        // check uncertain unicode character
+        String invalidChars = CharsetUtil.isValid(translation, language.getName());
+        if (invalidChars != null) {
+        	transWarnings.add(new BusinessWarning(
+                                    BusinessWarning.SUSPICIOUS_CHARACTER,
+                                    invalidChars, label.getDictionary().getEncoding(),
+                                    language.getName(), label.getKey()));
+        }
         return transWarnings;
     }
 

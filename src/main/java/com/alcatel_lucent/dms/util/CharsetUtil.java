@@ -22,16 +22,17 @@ public class CharsetUtil {
 	 * Check all characters in a string is valid in specified language.
 	 * @param text text
 	 * @param lang language name
-	 * @return valid or not
+	 * @return invalid characters, null if valid
 	 */
-	public static boolean isValid(String text, String lang) {
+	public static String isValid(String text, String lang) {
+		StringBuffer invalidChars = new StringBuffer();
 		for (Character c : text.toCharArray()) {
 			if (!isValid(c, lang)) {
 				//System.out.println("###Invalid char: '" + c + "', ub:" + getUnicodeBlock(c) + " for language " + lang);
-				return false;
+				invalidChars.append(c);
 			}
 		}
-		return true;
+		return invalidChars.length() == 0 ? null : invalidChars.toString();
 	}
 	
 	/**
