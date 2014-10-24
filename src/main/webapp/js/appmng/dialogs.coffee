@@ -71,6 +71,7 @@ define [
           pb.parent().remove()
           msg = json.event.msg
           $.msgBox msg, null, {title: c18n.info, width: 300, height: 'auto'}
+          window.param.dirty = true
           $('#stringSettingsGrid').trigger 'reloadGrid' if postData.label
         , pb)
 
@@ -278,7 +279,7 @@ define [
         $.post urls.label.update_status, {type: 'trans', transStatus: e.target.name, id: ids}, (json)->
           ($.msgBox json.message, null, title: c18n.warning; return) unless json.status == 0
           grid.trigger 'reloadGrid'
-
+          window.param.dirty = true
       capitalizeId = '#stringCapitalize'
 
       menu = $(capitalizeId + 'Menu').hide().menu(
@@ -344,6 +345,7 @@ define [
 #    return
     $.post urls.label.update, {id: labelids.join(','), context: context}, (json)->
       ($.msgBox json.message, null, {title: c18n.error}; return) if json.status != 0
+      window.param.dirty = true
       $('#stringSettingsGrid').trigger 'reloadGrid'
 
   $('#customContext').dialog(
