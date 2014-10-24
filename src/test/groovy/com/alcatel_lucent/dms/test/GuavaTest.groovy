@@ -3,7 +3,6 @@ package com.alcatel_lucent.dms.test
 import com.alcatel_lucent.dms.BusinessWarning
 import com.alcatel_lucent.dms.service.parser.NOEStrParser
 import com.fasterxml.jackson.core.JsonFactory
-import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.fasterxml.jackson.databind.node.ObjectNode
@@ -58,7 +57,7 @@ class GuavaTest {
     }
 
 
-    @Test
+//    @Test
     void testJsonArray() {
         List<Object> temp = Arrays.asList("测试2", "Study", "How", 123, new BusinessWarning(BusinessWarning.DUPLICATE_LABEL_KEY, 357, "aaa"))
 
@@ -116,6 +115,9 @@ class GuavaTest {
                 return new PasswordAuthentication(user, password.toCharArray())
             }
         }
+    }
 
+//    @Test
+    void testWaffle(){
     }
 }
