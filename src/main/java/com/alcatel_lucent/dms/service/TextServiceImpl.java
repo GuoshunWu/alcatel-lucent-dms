@@ -289,7 +289,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
     /**
      * Search text having translation by reference for all languages
      *
-     * @param reference
+     * @param references
      * @return
      */
     private Map<String, Map<Long, String>> getSuggestedTranslations(Collection<String> references) {
