@@ -6,11 +6,11 @@ import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.UserContext;
 import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
-import com.alcatel_lucent.dms.model.Language;
 import com.alcatel_lucent.dms.service.generator.OTCExcelCellStyle;
 import com.alcatel_lucent.dms.service.generator.OTCPCGenerator;
 import com.alcatel_lucent.dms.service.parser.OTCPCParser;
 import com.alcatel_lucent.dms.util.Util;
+import com.google.common.collect.ImmutableMap;
 import org.apache.commons.collections.map.MultiKeyMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -20,7 +20,6 @@ import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellUtil;
 import org.apache.poi.util.IOUtils;
-import org.intellij.lang.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -403,7 +402,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
             String secondaryReference = null;
             DictionaryLanguage dictionaryLanguage;
             if (existSecondaryRef && null != (dictionaryLanguage = label.getDictionary().getDictLanguage(secondaryReferenceLanguage.getId()))) {
-                String translation  = label.getTranslation(dictionaryLanguage.getLanguageCode());
+                String translation = label.getTranslation(dictionaryLanguage.getLanguageCode());
                 secondaryReference = StringUtils.defaultString(translation);
                 log.info("secondary reference ={}", secondaryReference);
             }
@@ -460,10 +459,10 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
             createCell(row, rowNum++, reference, styleBody);
             // extract secondary for this language and add column
             if (existSecondaryRef) {
-	            if (secondaryReference != null) {
-	                createCell(row, rowNum, secondaryReference, styleBody);
-	            }
-	            rowNum++;
+                if (secondaryReference != null) {
+                    createCell(row, rowNum, secondaryReference, styleBody);
+                }
+                rowNum++;
             }
             createCell(row, rowNum++, translation, styleUnlockedBody);
             createCell(row, rowNum++, lt == null || lt.getComment() == null ? "" : lt.getComment(), styleUnlockedBody);
@@ -728,11 +727,11 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
                     transMap = new HashMap<String, String>();
                     result.put(context, transMap);
                 }
-                
+
                 // glossaries may be added after the task file sent for translation
                 // so we match glossaries again when receive the task file
                 reference = glossaryService.consistentGlossariesInString(glossaryMatchObjects, reference);
-                
+
                 transMap.put(reference, translation);
             }
             return result;
@@ -771,7 +770,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
     }
 
     private Collection<Context> getTaskContexts(Long taskId) {
-        String hql = "select distinct obj.text.context from TaskDetail obj where obj.task.id=:taskId";
+        @org.intellij.lang.annotations.Language("HQL") String hql = "select distinct obj.text.context from TaskDetail obj where obj.task.id=:taskId ";
         Map param = new HashMap();
         param.put("taskId", taskId);
         return dao.retrieve(hql, param);
@@ -785,11 +784,9 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
      * @return number of translations applied
      */
     private int applyTask(Task task, Context context, boolean markAllTranslated) {
-        String hql = "from TaskDetail where task.id=:taskId and text.context.id=:contextId";
-        Map param = new HashMap();
-        param.put("taskId", task.getId());
-        param.put("contextId", context.getId());
-        Collection<TaskDetail> details = dao.retrieve(hql, param);
+        @org.intellij.lang.annotations.Language("HQL") String hql = "from TaskDetail where task.id=:taskId and text.context.id=:contextId";
+        Collection<TaskDetail> details = dao.retrieve(hql, ImmutableMap.of("taskId", task.getId(), "contextId", context.getId()));
+
         Map<String, Text> textMap = new HashMap<String, Text>();
         int count = 0;
         for (TaskDetail td : details) {
@@ -820,6 +817,7 @@ public class TaskServiceImpl extends BaseServiceImpl implements TaskService {
                 Context defaultCtx = textService.getContextByExpression(Context.DEFAULT, (Dictionary) null);
                 textService.updateTranslations(defaultCtx.getId(), textMap.values(), Constants.ImportingMode.SUPPLEMENT, TranslationHistory.TRANS_OPER_SUGGEST);
             }
+            // what if context.getName() equals Context.Label  ?
         }
         return count;
     }

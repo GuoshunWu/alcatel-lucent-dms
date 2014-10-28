@@ -56,14 +56,13 @@ define [
       $.post(urls.task.apply, {id: param.id}, (json)->
         $.unblockUI()
         ($.msgBox json.message, null, {title: c18n.error};return) if json.status != 0
-        window.param.dirty = true
+        $('#transGrid').trigger 'reloadGrid'
         $.msgBox i18n.task.confirmmsg, ((keyPressed)->
           if c18n.no == keyPressed
             $.blockUI()
             $.post urls.task.close, {id: param.id}, (json)->
               $.unblockUI()
               ($.msgBox json.message, null, {title: c18n.error}; return)if json.status != 0
-              $("#taskGrid").trigger 'reloadGrid'
         ), {title: c18n.confirm}, [c18n.yes, c18n.no]
       )
       $(@).dialog "close"

@@ -48,7 +48,7 @@ define [
           if json.status != 0
             $.msgBox json.message, null, {title: c18n.error}
             return
-          $("#taskGrid").trigger 'reloadGrid'
+          $("#taskGrid, #transGrid").trigger 'reloadGrid'
     'Upload':
       title: 'Upload'
       url: urls.task.receive_task_files
@@ -139,6 +139,7 @@ define [
             if(0 != jsonFromServer.status)
               $.msgBox jsonFromServer.message, null, {title: c18n.error}
               return
+            $("#taskGrid").trigger 'reloadGrid'
             dialogs.transReport.data 'param', {id: rowid}
             dialogs.transReport.dialog 'open'
           }
