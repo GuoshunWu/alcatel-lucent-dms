@@ -148,6 +148,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
             Text dbText = dbTextMap.get(ctxId != null ? text.getReference() : context.getKey());
 //            Text dbText = getText(ctxId, text.getReference());
             if (dbText == null) {
+            	log.info("### create text for context " + context.getKey() + " reference '" + text.getReference() + "'");
                 dbText = addText(context.getId(), text.getReference());
             }
             HashSet<Long> langSet = new HashSet<Long>();
@@ -671,7 +672,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
     			param.put("ctxIds", ctxIds);
     			Collection<Text> qr = dao.retrieve(hql, param);
     			for (Text t : qr) {
-    				result.put(text.getContext().getKey(), t);
+    				result.put(t.getContext().getKey(), t);
     			}
     			ctxIds.clear();
     		}
