@@ -10,7 +10,8 @@ define ['jqgrid', 'dms-util'], ($, util)->
     pager: '#historyGridPager'
     editurl: ""
     rowNum: 20, rowList: [20, 50, 100]
-    sortorder: 'asc'
+    sortorder: 'desc'
+    sortname: 'operationTime'
     viewrecords: true
     gridview: true, multiselect: false, cellEdit: false
     colNames: ['Operation Time', 'Operation Type', 'Task Name', 'Operator']
