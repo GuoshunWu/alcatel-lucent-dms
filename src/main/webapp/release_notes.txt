@@ -1,4 +1,5 @@
 V2.17.2 (Oct 30, 2014)
+    * Translation of labels in [LABEL] context are shared between different versions of the same dictionary
     * Fix issue of translation not imported from dict in case of LABEL context
     * Refresh Translation view after creating or uploading a task
 
