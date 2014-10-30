@@ -789,7 +789,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                     // read needTranslation flag from parser
                     // trans.setNeedTranslation(true);
 
-                    if (lastLabel != null && ctx.getName().equals(lastLabel.getContext().getName())) {
+                    if (lastLabel != null && ctx.getKey().equals(lastLabel.getContext().getKey())) {
                         // get the original translation in latest version
                         LabelTranslation lastTranslation = lastLabel.getOrigTranslation(trans.getLanguageCode());
                         if (label.getReference().equals(lastLabel.getReference())) {    // reference is not changed
