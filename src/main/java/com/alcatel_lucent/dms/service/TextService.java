@@ -144,11 +144,11 @@ public interface TextService {
      * Populate context name and get the Context instance, create one if not exists.
      * @param contextExp context expression, which like [LABEL-labelKey], this method is used in
      *                   DictionaryServiceImpl.updateLabels and DictionaryServiceImpl.importDictionary
-     * @param dictId dictionary id
+     * @param dict dictionary
      * @return Context instance
 
      */
-    public Context getContextByExpressionForLabel(String contextExp, Long dictId);
+    public Context getContextByExpressionForLabel(String contextExp, Dictionary dict);
 
 	/**
 	 * Update one translation
@@ -203,7 +203,7 @@ public interface TextService {
 	 */
 	Collection<Translation[]> findDiffTranslations(Long textId1, Long textId2);
 
-	String getContextKeyByExpressionForLabel(String contextExp, Long dictId);
+	String getContextKeyByExpressionForLabel(String contextExp, Dictionary dict);
 
 	Context createContext(String name, String key);
 

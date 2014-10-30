@@ -681,14 +681,14 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
     }
 
     @Override
-    public String getContextKeyByExpressionForLabel(String contextExp, Long dictId) {
+    public String getContextKeyByExpressionForLabel(String contextExp, Dictionary dict) {
         int index = contextExp.indexOf("[") + 1;
-        return new StringBuffer(contextExp).insert(index, "DICT-" + dictId + "-").toString();
+        return new StringBuffer(contextExp).insert(index, "DICT-" + dict.getBase().getId() + "-").toString();
     }
 
     @Override
-    public Context getContextByExpressionForLabel(String contextExp, Long dictId) {
-        String contextKey = getContextKeyByExpressionForLabel(contextExp, dictId);
+    public Context getContextByExpressionForLabel(String contextExp, Dictionary dict) {
+        String contextKey = getContextKeyByExpressionForLabel(contextExp, dict);
         Context context = getContextByKey(contextKey);
         if (context == null) {
             context = new Context();
@@ -814,7 +814,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
         }
         
         if (confirmAll != null && !confirmAll && !result.isEmpty()) {	// change context to [LABEL] first
-            Context context = getContextByExpressionForLabel("[LABEL-" + label.getKey() + "]", label.getDictionary().getId());
+            Context context = getContextByExpressionForLabel("[LABEL-" + label.getKey() + "]", label.getDictionary());
             dictionaryService.updateLabelContextWithTranslations(context, label);
             trans = label.getText().getTranslation(langId);
         }

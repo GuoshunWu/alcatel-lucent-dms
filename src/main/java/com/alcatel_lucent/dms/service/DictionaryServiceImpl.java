@@ -662,7 +662,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             if (Context.LABEL.equals(contextName)) {// distinct label context
                 String actualContextName = textService.populateContextKey(Context.LABEL, label);
                 // create context first, and then texts in LABEL context will be processed separately
-                String contextKey = textService.getContextKeyByExpressionForLabel(actualContextName, dbDict.getId());
+                String contextKey = textService.getContextKeyByExpressionForLabel(actualContextName, dbDict);
                 ctx = textService.getContextByKey(contextKey);
                 if (ctx == null) {
                     ctx = textService.createContext(Context.LABEL, contextKey);
@@ -1371,7 +1371,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
                 if (ctx == null) {
                     if (contextExp.equals(Context.LABEL)) {
                         String expression = textService.populateContextKey(contextExp, label);
-                        ctx = textService.getContextByExpressionForLabel(expression, label.getDictionary().getId());
+                        ctx = textService.getContextByExpressionForLabel(expression, label.getDictionary());
                     } else {
                         ctx = textService.getContextByExpression(contextExp, label.getDictionary());
                     }
