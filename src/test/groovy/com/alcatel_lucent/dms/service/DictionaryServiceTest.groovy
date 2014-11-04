@@ -95,7 +95,7 @@ public class DictionaryServiceTest {
         daoService.session.clear()
 
 //        There may be dictionaries transWarnings need to be adjust manually here
-        List dictNames = Util.getObjectProperiesList(dicts, 'name')
+        List dictNames = Util.getObjectPropertiesList(dicts, 'name')
 //        List dictNames = Arrays.asList(
 ////                'OTC-Android_languages-v2.0.30.0.xls',
 //                'Test2'

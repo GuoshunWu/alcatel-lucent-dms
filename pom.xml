@@ -1116,8 +1116,8 @@
             </activation>
             <properties>
                 <dms.temp>D:/tmp</dms.temp>
-                <httpPort>80</httpPort>
-                <httpsPort>443</httpsPort>
+                <httpPort>8888</httpPort>
+                <httpsPort>8443</httpsPort>
                 <logger.filter>INFO</logger.filter>
                 <buildNumber>(new Date()).getTime()</buildNumber>
             </properties>
