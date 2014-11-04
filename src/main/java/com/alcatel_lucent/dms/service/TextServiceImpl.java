@@ -7,15 +7,11 @@ import com.alcatel_lucent.dms.Constants.ImportingMode;
 import com.alcatel_lucent.dms.SystemError;
 import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.model.Dictionary;
-
 import net.sf.json.JSONObject;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.TransformerUtils;
 import org.apache.commons.collections.map.MultiKeyMap;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
-import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,24 +127,24 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
         if (ctxId != null) {
             log.info("Updating translations in context " + context.getName());
         }
-    	if (mode == Constants.ImportingMode.DELIVERY &&
-            (ctxId == null || context.getName().equals(Context.DEFAULT) || context.getName().equals(Context.DICT) ||
-                    context.getName().equals(Context.LABEL))) {
-    		suggestTranslations(texts, dbTextMap, ctxId == null);
-    	}
+        if (mode == Constants.ImportingMode.DELIVERY &&
+                (ctxId == null || context.getName().equals(Context.DEFAULT) || context.getName().equals(Context.DICT) ||
+                        context.getName().equals(Context.LABEL))) {
+            suggestTranslations(texts, dbTextMap, ctxId == null);
+        }
         for (Text text : texts) {
             if (ctxId != null && result.containsKey(text.getReference())) {
                 // ignore same reference for single context
                 continue;
             }
-            if (ctxId == null) {	// for LABEL context, context and dbTextMap is populated for each context
-            	context = text.getContext();
+            if (ctxId == null) {    // for LABEL context, context and dbTextMap is populated for each context
+                context = text.getContext();
             }
-            
+
             Text dbText = dbTextMap.get(ctxId != null ? text.getReference() : context.getKey());
 //            Text dbText = getText(ctxId, text.getReference());
             if (dbText == null) {
-            	log.info("### create text for context " + context.getKey() + " reference '" + text.getReference() + "'");
+                log.info("### create text for context " + context.getKey() + " reference '" + text.getReference() + "'");
                 dbText = addText(context.getId(), text.getReference());
             }
             HashSet<Long> langSet = new HashSet<Long>();
@@ -167,7 +163,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                         dbTrans = addTranslation(dbText, trans);
                         // count diff translation
                         if (!trans.getTranslation().equals(text.getReference())) {
-                        	dbText.addDiff(1);
+                            dbText.addDiff(1);
                         }
                         dbText.addTranslation(dbTrans);        // the dbText will be used in next invoke, so add translations in-memory
                         historyService.addTranslationHistory(
@@ -178,9 +174,9 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                     } else if (mode == Constants.ImportingMode.TRANSLATION) { // update translations in TRANSLATION_MODE
                         if (trans.getTranslation() != null) {
                             // count diff translation
-                        	if (!trans.getTranslation().equals(dbTrans.getTranslation())) {
-                        		dbText.addDiff(1);
-                        	}
+                            if (!trans.getTranslation().equals(dbTrans.getTranslation())) {
+                                dbText.addDiff(1);
+                            }
                             dbTrans.setTranslation(trans.getTranslation());
                         }
                         dbTrans.setStatus(trans.getStatus());
@@ -201,9 +197,9 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                         // update translation if got translated in delivered dict
                         if (trans.getStatus() == Translation.STATUS_TRANSLATED) {
                             // count diff translation
-                        	if (!trans.getTranslation().equals(dbTrans.getTranslation())) {
-                        		dbText.addDiff(1);
-                        	}
+                            if (!trans.getTranslation().equals(dbTrans.getTranslation())) {
+                                dbText.addDiff(1);
+                            }
                             int translationType = trans.getTranslationType() == null ? Translation.TYPE_DICT : trans.getTranslationType();
                             dbTrans.setTranslation(trans.getTranslation());
                             dbTrans.setStatus(Translation.STATUS_TRANSLATED);
@@ -220,9 +216,9 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                                 trans.getStatus() == Translation.STATUS_TRANSLATED &&
                                 !StringUtils.isBlank(trans.getTranslation())) {
                             // count diff translation
-                        	if (!trans.getTranslation().equals(dbTrans.getTranslation())) {
-                        		dbText.addDiff(1);
-                        	}
+                            if (!trans.getTranslation().equals(dbTrans.getTranslation())) {
+                                dbText.addDiff(1);
+                            }
                             dbTrans.setTranslation(trans.getTranslation());
                             dbTrans.setStatus(Translation.STATUS_TRANSLATED);
                             dbTrans.setTranslationType(trans.getTranslationType() != null ?
@@ -234,10 +230,10 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                     langSet.add(trans.getLanguage().getId());
                 }
             }
-            if (ctxId != null) {	// for single context, take reference as index
-            	result.put(text.getReference(), dbText);
-            } else {	// for multiple LABEL context, take context key as index
-            	result.put(context.getKey(), dbText);
+            if (ctxId != null) {    // for single context, take reference as index
+                result.put(text.getReference(), dbText);
+            } else {    // for multiple LABEL context, take context key as index
+                result.put(context.getKey(), dbText);
             }
         }
         historyService.flushHistoryQueue();
@@ -252,29 +248,29 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
      * @param dbTextMap
      */
     private void suggestTranslations(Collection<Text> texts, Map<String, Text> dbTextMap, boolean labelContext) {
-    	Collection<Translation> transNeedSuggestion = new ArrayList<Translation>();
-    	HashSet<String> refNeedSuggestion = new HashSet<String>();
+        Collection<Translation> transNeedSuggestion = new ArrayList<Translation>();
+        HashSet<String> refNeedSuggestion = new HashSet<String>();
         for (Text text : texts) {
             if (org.springframework.util.CollectionUtils.isEmpty(text.getTranslations())) continue;
 
             Text dbText = dbTextMap.get(labelContext ? text.getContext().getKey() : text.getReference());
             for (Translation trans : text.getTranslations()) {
-            	trans.setText(text);		// text is null in some case
+                trans.setText(text);        // text is null in some case
                 Translation dbTrans = dbText == null ? null : dbText.getTranslation(trans.getLanguage().getId());
                 if (dbTrans == null || dbTrans.getStatus() == Translation.STATUS_UNTRANSLATED) {
                     if (trans.getLanguage().getId() != 0 && trans.getLanguage().getId() != 1L &&
                             trans.getStatus() == Translation.STATUS_UNTRANSLATED &&
                             (trans.getTranslation().equals(text.getReference()) || trans.getTranslation().trim().isEmpty())) {
-                    	transNeedSuggestion.add(trans);
-                    	refNeedSuggestion.add(text.getReference());
+                        transNeedSuggestion.add(trans);
+                        refNeedSuggestion.add(text.getReference());
                     }
                 }
             }
         }
         Map<String, Map<Long, String>> suggestion = getSuggestedTranslations(refNeedSuggestion);
         for (Translation trans : transNeedSuggestion) {
-        	Map<Long, String> suggestionMap = suggestion.get(trans.getText().getReference());
-        	if (suggestionMap != null) {
+            Map<Long, String> suggestionMap = suggestion.get(trans.getText().getReference());
+            if (suggestionMap != null) {
                 String suggestedTranslation = suggestionMap.get(trans.getLanguage().getId());
                 if (suggestedTranslation != null) {
                     log.info("Auto translate \"" + trans.getText().getReference() + "\" to \"" + suggestedTranslation + "\" in " + trans.getLanguage().getName() + ".");
@@ -293,7 +289,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
      * @return
      */
     private Map<String, Map<Long, String>> getSuggestedTranslations(Collection<String> references) {
-    	Map<String, Map<Long, String>> result = new HashMap<String, Map<Long, String>>();
+        Map<String, Map<Long, String>> result = new HashMap<String, Map<Long, String>>();
         Collection<String> refs = new ArrayList<String>();
         for (Iterator<String> iter = references.iterator(); iter.hasNext(); ) {
             String reference = iter.next();
@@ -305,15 +301,16 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                 param.put("reference", refs);
                 Collection<Translation> qr = dao.retrieve(hql, param);
                 for (Translation trans : qr) {
-                	if (StringUtils.isBlank(trans.getTranslation())) continue;	// don't match empty translation even if it's marked as T
-                	Map<Long, String> suggestMap = result.get(trans.getText().getReference());
-                	if (suggestMap == null) {
-                		suggestMap = new HashMap<Long, String>();
-                		result.put(trans.getText().getReference(), suggestMap);
-                	}
+                    if (StringUtils.isBlank(trans.getTranslation()))
+                        continue;    // don't match empty translation even if it's marked as T
+                    Map<Long, String> suggestMap = result.get(trans.getText().getReference());
+                    if (suggestMap == null) {
+                        suggestMap = new HashMap<Long, String>();
+                        result.put(trans.getText().getReference(), suggestMap);
+                    }
                     if (!suggestMap.containsKey(trans.getLanguage().getId()) &&
                             !trans.getText().getContext().getName().equals(Context.EXCLUSION)) {
-                    	suggestMap.put(trans.getLanguage().getId(), trans.getTranslation());
+                        suggestMap.put(trans.getLanguage().getId(), trans.getTranslation());
                     }
                 }
                 refs.clear();
@@ -627,12 +624,13 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
         }
         return result;
     }
-    
+
     /**
      * Get all translation objects of specified texts in a context as map.
-     * @param ctxId context id
+     *
+     * @param ctxId      context id
      * @param references reference strings
-     * @return multi-key map with (reference, languageId) as key, Translation object as value 
+     * @return multi-key map with (reference, languageId) as key, Translation object as value
      */
     public MultiKeyMap getTranslationsAsMap(Long ctxId, Collection<String> references) {
         MultiKeyMap result = new MultiKeyMap();
@@ -657,27 +655,29 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
 
     /**
      * Get all text objects of specified transient texts in LABEL context as a map, indexed by context key
+     *
      * @param texts
      * @return
      */
     private Map<String, Text> getTextsAsMapForLabelContext(Collection<Text> texts) {
-    	Map<String, Text> result = new HashMap<String, Text>();
-    	Collection<Long> ctxIds = new ArrayList<Long>();
-    	for (Iterator<Text> iter = texts.iterator(); iter.hasNext();) {
-    		Text text = iter.next();
-    		ctxIds.add(text.getContext().getId());
-    		if (ctxIds.size() >= 100 || !iter.hasNext()) {
-    			String hql = "from Text where context.id in(:ctxIds) order by id desc";
-    			Map param = new HashMap();
-    			param.put("ctxIds", ctxIds);
-    			Collection<Text> qr = dao.retrieve(hql, param);
-    			for (Text t : qr) {
-    				result.put(t.getContext().getKey(), t);
-    			}
-    			ctxIds.clear();
-    		}
-    	}
-    	return result;
+
+        Map<String, Text> result = new HashMap<String, Text>();
+        Collection<Long> ctxIds = new ArrayList<Long>();
+        for (Iterator<Text> iter = texts.iterator(); iter.hasNext(); ) {
+            Text text = iter.next();
+            ctxIds.add(text.getContext().getId());
+            if (ctxIds.size() >= 100 || !iter.hasNext()) {
+                String hql = "from Text where context.id in(:ctxIds) order by id desc";
+                Map param = new HashMap();
+                param.put("ctxIds", ctxIds);
+                Collection<Text> qr = dao.retrieve(hql, param);
+                for (Text t : qr) {
+                    result.put(t.getContext().getKey(), t);
+                }
+                ctxIds.clear();
+            }
+        }
+        return result;
     }
 
     @Override
@@ -791,10 +791,10 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
             if (!gmo.isReplaced()) continue;
             translation = gmo.getProcessedString(translation);
         }
-        
-        if ((confirmAll == null || !confirmAll) && 
-        		!label.getContext().getName().equals(Context.DICT) &&
-        		!label.getContext().getName().equals(Context.LABEL)) {	// check if the translation is shared with other dictionary
+
+        if ((confirmAll == null || !confirmAll) &&
+                !label.getContext().getName().equals(Context.DICT) &&
+                !label.getContext().getName().equals(Context.LABEL)) {    // check if the translation is shared with other dictionary
             Dictionary dict = label.getDictionary();
             String hql = "select distinct d from Dictionary d join d.labels l join d.dictLanguages dl" +
                     " where dl.language.id=:langId and l.text.id=:textId and l.context.name<>:exclusion and d.base.id<>:dictBaseId";
@@ -808,12 +808,12 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
                 result.add(otherDict.getName());
             }
         }
-        
-        if (!result.isEmpty() && confirmAll == null) {	// no confirm
-        	return result;
+
+        if (!result.isEmpty() && confirmAll == null) {    // no confirm
+            return result;
         }
-        
-        if (confirmAll != null && !confirmAll && !result.isEmpty()) {	// change context to [LABEL] first
+
+        if (confirmAll != null && !confirmAll && !result.isEmpty()) {    // change context to [LABEL] first
             Context context = getContextByExpressionForLabel("[LABEL-" + label.getKey() + "]", label.getDictionary());
             dictionaryService.updateLabelContextWithTranslations(context, label);
             trans = label.getText().getTranslation(langId);
@@ -879,52 +879,52 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
     }
 
 
-	@Override
-	public Collection<Text> getDiffTexts(Long textId) {
-		Text text = (Text) dao.retrieve(Text.class, textId);
-		String hql = "from Text where reference=:ref and context.id<>:contextId";
-		Map param = new HashMap();
-		param.put("ref", text.getReference());
-		param.put("contextId", text.getContext().getId());
-		Collection<Text> qr = dao.retrieve(hql, param);
-		for (Text diffText : qr) {
-			diffText.setDiff(countDiffTranslations(text, diffText));
-		}
-		return qr;
-	}
+    @Override
+    public Collection<Text> getDiffTexts(Long textId) {
+        Text text = (Text) dao.retrieve(Text.class, textId);
+        String hql = "from Text where reference=:ref and context.id<>:contextId";
+        Map param = new HashMap();
+        param.put("ref", text.getReference());
+        param.put("contextId", text.getContext().getId());
+        Collection<Text> qr = dao.retrieve(hql, param);
+        for (Text diffText : qr) {
+            diffText.setDiff(countDiffTranslations(text, diffText));
+        }
+        return qr;
+    }
 
 
-	private int countDiffTranslations(Text text1, Text text2) {
-		int count = 0;
-		if (text1.getTranslations() != null) {
-			for (Translation trans1 : text1.getTranslations()) {
-				Translation trans2 = text2.getTranslation(trans1.getLanguage().getId());
-				if (trans2 != null && (
-						!trans1.getTranslation().equals(trans2.getTranslation()) 
-						|| trans1.getStatus() != trans2.getStatus())) {
-					count++;
-				}
-			}
-		}
-		return count;
-	}
+    private int countDiffTranslations(Text text1, Text text2) {
+        int count = 0;
+        if (text1.getTranslations() != null) {
+            for (Translation trans1 : text1.getTranslations()) {
+                Translation trans2 = text2.getTranslation(trans1.getLanguage().getId());
+                if (trans2 != null && (
+                        !trans1.getTranslation().equals(trans2.getTranslation())
+                                || trans1.getStatus() != trans2.getStatus())) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
 
 
-	@Override
-	public Collection<Translation[]> findDiffTranslations(Long textId1, Long textId2) {
-		Text text1 = (Text) dao.retrieve(Text.class, textId1);
-		Text text2 = (Text) dao.retrieve(Text.class, textId2);
-		Collection<Translation[]> result = new ArrayList<Translation[]>();
-		if (text1.getTranslations() != null) {
-			for (Translation trans1 : text1.getTranslations()) {
-				Translation trans2 = text2.getTranslation(trans1.getLanguage().getId());
-				if (trans2 != null && (
-						!trans1.getTranslation().equals(trans2.getTranslation()) 
-						|| trans1.getStatus() != trans2.getStatus())) {
-					result.add(new Translation[] {trans1, trans2});
-				}
-			}
-		}
-		return result;
-	}
+    @Override
+    public Collection<Translation[]> findDiffTranslations(Long textId1, Long textId2) {
+        Text text1 = (Text) dao.retrieve(Text.class, textId1);
+        Text text2 = (Text) dao.retrieve(Text.class, textId2);
+        Collection<Translation[]> result = new ArrayList<Translation[]>();
+        if (text1.getTranslations() != null) {
+            for (Translation trans1 : text1.getTranslations()) {
+                Translation trans2 = text2.getTranslation(trans1.getLanguage().getId());
+                if (trans2 != null && (
+                        !trans1.getTranslation().equals(trans2.getTranslation())
+                                || trans1.getStatus() != trans2.getStatus())) {
+                    result.add(new Translation[]{trans1, trans2});
+                }
+            }
+        }
+        return result;
+    }
 }

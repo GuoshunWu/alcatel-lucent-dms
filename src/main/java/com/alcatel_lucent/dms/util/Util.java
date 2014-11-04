@@ -84,8 +84,8 @@ public class Util {
      * @return the property name collection
      */
     @SuppressWarnings("unchecked")
-    public static List getObjectProperiesList(Collection collection,
-                                              String propertyName) {
+    public static List getObjectPropertiesList(Collection collection,
+                                               String propertyName) {
         List propertiesList = new ArrayList<Object>();
         for (Object obj : collection) {
             Object value = null;
