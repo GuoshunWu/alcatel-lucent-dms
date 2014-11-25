@@ -753,7 +753,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
         return exp;
     }
 
-
+/*
     @Override
     public Collection<String> updateTranslation(Long labelId,
                                                 Long translationId, String translation, Boolean confirmAll) {
@@ -836,7 +836,7 @@ public class TextServiceImpl extends BaseServiceImpl implements TextService {
         historyService.flushHistoryQueue();
         return result;
     }
-
+*/
 
     @Override
     public void populateTranslationSummary(Collection<Text> texts) {

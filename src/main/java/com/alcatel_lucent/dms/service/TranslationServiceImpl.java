@@ -42,6 +42,9 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 
     @Autowired
     private TextService textService;
+    
+    @Autowired
+    private DictionaryService dictionaryService;
 
     @Autowired
     private GlossaryService glossaryService;
@@ -955,7 +958,7 @@ public class TranslationServiceImpl extends BaseServiceImpl implements
 
                     if (!origTranslation.equals(newTranslation)) {
                         log.info(languageName + " translation of \"" + reference + "\" was changed, update it into DMS.");
-                        textService.updateTranslation(refLabelId, -lang.getId(), newTranslation, false);
+                        dictionaryService.updateTranslation(refLabelId, -lang.getId(), newTranslation, false);
                         count++;
                     }
                 }

@@ -163,8 +163,8 @@ public interface TextService {
 	 * @param confirmAll whether to apply same change to other dictionaries
 	 * @return other dictionaries in which the same translation is referred
 	 */
-	Collection<String> updateTranslation(Long labelId, Long translationId,
-			String translation, Boolean confirmAll);
+//	Collection<String> updateTranslation(Long labelId, Long translationId,
+//			String translation, Boolean confirmAll);
 
 	/**
 	 * Populate T/N/I summary of texts.

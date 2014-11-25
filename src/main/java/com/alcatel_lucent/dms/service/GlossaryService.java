@@ -75,4 +75,6 @@ public interface GlossaryService {
 	String consistentGlossariesInString(
 			Collection<GlossaryMatchObject> glossaryMatchObjects,
 			String reference);
+	
+	Collection<GlossaryMatchObject> consistentGlossariesInObject(Object bean, String propertyName, String subCollectionPropertyName, String subObjectPropertyName);
 }

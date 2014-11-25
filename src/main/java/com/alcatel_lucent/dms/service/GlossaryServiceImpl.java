@@ -200,6 +200,10 @@ public class GlossaryServiceImpl implements GlossaryService {
             }
         }
     }
+    
+    public Collection<GlossaryMatchObject> consistentGlossariesInObject(Object bean, String propertyName, String subCollectionPropertyName, String subObjectPropertyName) {
+    	return consistentGlossariesInObject(getNotDirtyGlossaries(), bean, propertyName, subCollectionPropertyName, subObjectPropertyName);
+    }
 
     /**
      * @param glossaries                glossaries used for match, all glossaries will be used if null
