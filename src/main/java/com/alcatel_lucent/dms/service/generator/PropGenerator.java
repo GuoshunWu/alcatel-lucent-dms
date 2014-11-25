@@ -61,13 +61,13 @@ public class PropGenerator extends DictionaryGenerator {
                     new FileOutputStream(file)), true, outputEncoding);
             out.println("# " + getDMSGenSign());
             for (Label label : dict.getAvailableLabels()) {
-                if (dl.getLanguageCode().equals("en")) {    // reference language
+                if (dl.getLanguageCode().equalsIgnoreCase("en") || dl.getLanguageCode().equalsIgnoreCase("en-en")) {    // reference language
                     if (label.getAnnotation1() != null) {
                         out.println(label.getAnnotation1());
                     }
-                    out.print(escape(label.getKey(), true));
+                    out.print(escape(label.getKey(), true, false));
                     out.print("=");
-                    out.println(escape(label.getReference(), false));
+                    out.println(escape(label.getReference(), false, "ISO-8859-1".equals(outputEncoding)));
                 } else {
                     LabelTranslation lt = label.getOrigTranslation(dl.getLanguageCode());
                     if (lt != null && lt.getAnnotation1() != null) {
@@ -75,9 +75,9 @@ public class PropGenerator extends DictionaryGenerator {
                     }
                     // populate translation result
                     String text = label.getTranslation(dl.getLanguageCode());
-                    out.print(escape(label.getKey(), true));
+                    out.print(escape(label.getKey(), true, false));
                     out.print("=");
-                    String translation = "ISO-8859-1".equals(outputEncoding) ? escape(text, false) : text;
+                    String translation =  escape(text, false, "ISO-8859-1".equals(outputEncoding));	// convert to \\uxxxx in case of ISO-8859-1
                     out.println(translation);
                 }
             }
@@ -109,7 +109,7 @@ public class PropGenerator extends DictionaryGenerator {
      *  see http://docs.oracle.com/javase/1.5.0/docs/api/java/util/Properties.html#store%28java.io.OutputStream,%20java.lang.String%29
      *  see http://commons.apache.org/lang/api-release/index.html  StringEscapeUtils
      */
-    private String escape(String text, boolean isKey) {
+    private String escape(String text, boolean isKey, boolean allowNonAscii) {
         StringBuffer result = new StringBuffer();
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
@@ -125,7 +125,7 @@ public class PropGenerator extends DictionaryGenerator {
                 result.append("\\r");
             } else if (c == '\f') {
                 result.append("\\f");
-            } else if (c < 0x20 || c > 0x7e) {
+            } else if (c < 0x20 || (c > 0x7e && !allowNonAscii)) {
                 String hex = Integer.toHexString(c);
                 while (hex.length() < 4) {
                     hex = "0" + hex;
