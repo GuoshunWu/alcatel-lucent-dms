@@ -415,28 +415,39 @@ public class Label extends BaseEntity implements Cloneable {
 
 
     public Translation getTranslationObject(DictionaryLanguage dl) {
-        return (null == dl) ? null : getTranslationObject(dl.getLanguageCode());
-    }
-
-    public Translation getTranslationObject(String langCode) {
-        if (StringUtils.isEmpty(langCode) || context.getName().equals(Context.EXCLUSION)) {
+        if (context.getName().equals(Context.EXCLUSION)) {
             return getTransientTranslation(Translation.STATUS_TRANSLATED);
         }
 
-        //TODO: null == dl need to be fixed
-        DictionaryLanguage dl = this.getDictionary().getDictLanguage(langCode);
-        if (null == dl) return null;
-
-        LabelTranslation lt = getOrigTranslation(langCode);
+        LabelTranslation lt = getOrigTranslation(dl.getLanguageCode());
         if (lt != null && (!lt.isNeedTranslation())) {
             return getTransientTranslation(Translation.STATUS_TRANSLATED, lt.getOrigTranslation());
         }
-        for (Translation translation : getText().getTranslations()) {
-            if (translation.getLanguage().getId().equals(dl.getLanguage().getId())) {
-                return translation;
-            }
+        Translation trans = getText().getTranslation(dl.getLanguage().getId());
+        if (trans == null) {
+        	trans = getTransientTranslation(Translation.STATUS_UNTRANSLATED);
         }
-        return getTransientTranslation(Translation.STATUS_UNTRANSLATED);
+        return trans;
+    }
+
+    public Translation getTranslationObject(String langCode) {
+        //TODO: null == dl need to be fixed
+        DictionaryLanguage dl = this.getDictionary().getDictLanguage(langCode);
+        if (null == dl) return null;
+        return getTranslationObject(dl);
+    }
+    
+    public Translation getTranslationObject(Long languageId) {
+    	DictionaryLanguage dl = this.getDictionary().getDictLanguage(languageId);
+    	if (dl != null) {
+    		return getTranslationObject(dl);
+    	} else {	// although the language doesn't exist in the dictionary, return corresponding Translation object
+            Translation trans = getText().getTranslation(languageId);
+            if (trans == null) {
+            	trans = getTransientTranslation(Translation.STATUS_UNTRANSLATED);
+            }
+            return trans;
+    	}
     }
 
     private Translation getTransientTranslation(int status) {

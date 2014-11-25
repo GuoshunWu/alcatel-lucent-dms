@@ -340,4 +340,19 @@ public interface DictionaryService {
      * @return the BusinessException or BusinessWarning validation collection
      * */
     Collection<ValidationInfo> findDictionaryValidations(Long dictId, String type);
+    
+	/**
+	 * Update one translation
+	 * Update translation result of a label.
+	 * If the translation is referred by other dictionaries:
+	 *   do nothing and return name of the dictionaries if confirmAll is empty
+	 *   update translation result if confirmAll is true
+	 *   change context of the label to [LABEL] and update translation result if confirmAll is false
+	 * @param labelId label id
+	 * @param translationId translation id
+	 * @param translation translation result
+	 * @param confirmAll whether to apply same change to other dictionaries
+	 * @return other dictionaries in which the same translation is referred
+	 */
+    public Collection<String> updateTranslation(Long labelId, Long translationId, String translation, Boolean confirmAll);
 }

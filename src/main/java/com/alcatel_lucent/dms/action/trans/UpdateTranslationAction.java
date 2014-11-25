@@ -6,7 +6,7 @@ import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 
 import com.alcatel_lucent.dms.action.JSONAction;
-import com.alcatel_lucent.dms.service.TextService;
+import com.alcatel_lucent.dms.service.DictionaryService;
 
 @ParentPackage("dms-json")
 @Result(type="json", params={"noCache","true","ignoreHierarchy","false","includeProperties","status,message,id,ctid,translation,dicts.*"})
@@ -20,7 +20,7 @@ public class UpdateTranslationAction extends JSONAction {
 	private Boolean confirm;	// confirm if apply the change to other dictionaries
 	private String[] dicts;	// other dictionaries in which the translation is also referred to
 	
-	private TextService textService;
+	private DictionaryService dictionaryService;
 	
 	@Override
 	protected String performAction() throws Exception {
@@ -43,7 +43,7 @@ public class UpdateTranslationAction extends JSONAction {
 		*/
 		
 		// always DO NOT change translation in other dictionary
-		textService.updateTranslation(id, ctid, translation, false);
+		dictionaryService.updateTranslation(id, ctid, translation, false);
 		setMessage(getText("message.success"));
 		return SUCCESS;
 	}
@@ -88,14 +88,6 @@ public class UpdateTranslationAction extends JSONAction {
 		this.dicts = dicts;
 	}
 
-	public TextService getTextService() {
-		return textService;
-	}
-
-	public void setTextService(TextService textService) {
-		this.textService = textService;
-	}
-
     public Long getLabelId() {
         return labelId;
     }
@@ -103,4 +95,12 @@ public class UpdateTranslationAction extends JSONAction {
     public void setLabelId(Long labelId) {
         this.labelId = labelId;
     }
+
+	public DictionaryService getDictionaryService() {
+		return dictionaryService;
+	}
+
+	public void setDictionaryService(DictionaryService dictionaryService) {
+		this.dictionaryService = dictionaryService;
+	}
 }

@@ -1,6 +1,7 @@
 package com.alcatel_lucent.dms.service;
 
 import com.alcatel_lucent.dms.*;
+import com.alcatel_lucent.dms.Constants.ImportingMode;
 import com.alcatel_lucent.dms.action.ProgressQueue;
 import com.alcatel_lucent.dms.action.app.CapitalizeAction;
 import com.alcatel_lucent.dms.model.*;
@@ -1335,6 +1336,10 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
     public Label updateLabelReference(Long labelId, String reference) {
         Label label = (Label) dao.retrieve(Label.class, labelId);
+        updateLabelReferenceAndTranslations(labelId, reference, null, false, false);
+        return label;
+
+/*        
         String oldReference = label.getReference();
         label.setReference(reference);
         Collection<GlossaryMatchObject> GlossaryMatchObjects = glossaryService.consistentGlossariesInLabelRef(label);
@@ -1353,6 +1358,141 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
             }
         }
         return label;
+*/        
+    }
+    
+    /**
+     * Update label reference and translation(s) manually
+     * 
+     * @param labelId label id
+     * @param reference new reference text
+     * @param translationMap map of translations to be updated indexed by language id, 
+     * 			it can be empty or null for updating reference text only
+     * @param updateOthers this option is only available when translationMap is not empty and 
+     * 			the translation is shared by other dictionary. It specifies whether or not to 
+     * 			update shared text of other dictionary
+     * 			if set to true, translations of the shared text will be directly updated
+     * 			if set to false, context of current label will be changed to [LABEL] in order to avoid impacting other dictionary
+     * 			if set to null and no other dictionary shares the same text, same as true
+     * 			if set to null and there is any other dictionary sharing the same text, 
+     * 				the method will report name of the dictionaries and do not update anything 
+     * @param keepTranslations this option is only available when reference text is changed
+     * 			if set to true, all translations in other languages out of translationMap for this label will be kept
+     * 			if set to false, all translations in other languages out of translationMap will be discarded and then got an auto match
+     * @return
+     */
+    private Collection<String> updateLabelReferenceAndTranslations(Long labelId, String reference, Map<Long, String> translationMap, Boolean updateOthers, boolean keepTranslations) {
+    	Collection<String> result = new ArrayList<String>();	// names of other dictionaries sharing the same Text
+    	if (translationMap == null) {
+    		translationMap = new HashMap<Long, String>();
+    	}
+        Label label = (Label) dao.retrieve(Label.class, labelId);
+        Dictionary dict = label.getDictionary();
+    	Text text = new Text();
+    	text.setReference(reference);
+    	text.setRefLabel(label);
+    	for (Long langId : translationMap.keySet()) {
+    		Translation dbTrans = label.getTranslationObject(langId);	// get current Translation object
+    		Translation trans = new Translation();
+    		trans.setLanguage((Language) dao.retrieve(Language.class, langId));
+    		trans.setTranslation(translationMap.get(langId));
+    		trans.setTranslationType(Translation.TYPE_MANUAL);
+    		trans.setStatus(dbTrans.getStatus());	// do not change status, so copy current status
+    		text.addTranslation(trans);
+    	}
+    	// glossary consistent before preceeding
+        glossaryService.consistentGlossariesInObject(text, "reference", "translations", "translation");
+        reference = text.getReference();
+        
+        boolean newText = label.getText() == null || !reference.equals(label.getReference());
+        if (!newText && label.getContext().getName().equals(Context.EXCLUSION)) {
+            throw new BusinessException(BusinessException.CANNOT_UPDATE_EXCLUSION);
+        }
+
+        // update reference
+        label.setReference(reference);
+        
+        // check if the translation is shared with other dictionary 
+        if ((updateOthers == null || !updateOthers) && 
+        		!translationMap.isEmpty() &&
+                !label.getContext().getName().equals(Context.DICT) &&
+                !label.getContext().getName().equals(Context.LABEL) &&
+                !label.getContext().getName().equals(Context.EXCLUSION)) {
+            String hql = "select distinct d from Dictionary d join d.labels l join d.dictLanguages dl" +
+                    " where dl.language.id in(:langIds) and l.context.id=:ctxId and l.reference=:reference and d.base.id<>:dictBaseId";
+            Map param = new HashMap();
+            param.put("langIds", translationMap.keySet());
+            param.put("ctxId", label.getContext().getId());
+            param.put("reference", reference);
+            param.put("dictBaseId", dict.getBase().getId());
+            Collection<Dictionary> dictList = dao.retrieve(hql, param);
+            for (Dictionary otherDict : dictList) {
+                result.add(otherDict.getName());
+            }
+            if (!result.isEmpty() && updateOthers == null) {    // no confirm, report conflicts and do nothing
+                return result;
+            }
+        }
+        if (updateOthers != null && !updateOthers && !result.isEmpty()) {    // change context to [LABEL] first
+            Context context = textService.getContextByExpressionForLabel("[LABEL-" + label.getKey() + "]", label.getDictionary());
+            label.setContext(context);
+            newText = true;
+            keepTranslations = true;	// if context is changed, force to copy current translations
+        }
+        
+        // append current translations to new text
+        if (newText && keepTranslations && label.getText() != null) {
+	        for (DictionaryLanguage dl : label.getDictionary().getDictLanguages()) {
+	            if (dl.isReference()) continue;
+	            if (translationMap.containsKey(dl.getLanguage().getId())) continue;
+	            Translation translation = label.getTranslationObject(dl);
+	            if (translation.getId() < 0) continue;	// skip transient translations
+	            Translation trans = new Translation();
+	            trans.setLanguage(dl.getLanguage());
+                trans.setTranslation(translation.getTranslation());
+                trans.setStatus(translation.getStatus());
+                trans.setTranslationType(translation.getTranslationType());
+	            text.addTranslation(trans);
+	        }
+        }
+
+        // update translations if necessary and associate the label to dbText
+        if (text.getTranslations() != null) {
+	        Collection<Text> texts = new ArrayList<Text>();
+	        texts.add(text);
+	        Map<String, Text> dbTextMap = textService.updateTranslations(label.getContext().getId(), texts, ImportingMode.TRANSLATION, TranslationHistory.TRANS_OPER_INPUT);
+	        label.setText(dbTextMap.get(reference));
+        }
+        
+        // auto match translations and associate the label to dbText for languages which don't exist in translationMap
+        // or just set the association if no translation is updated
+        if (newText && (!keepTranslations || text.getTranslations() == null)) {
+        	text.setTranslations(null);
+	        for (DictionaryLanguage dl : label.getDictionary().getDictLanguages()) {
+	            if (dl.isReference()) continue;
+	            if (translationMap.containsKey(dl.getLanguage().getId())) continue;
+	            Translation trans = new Translation();
+	            trans.setLanguage(dl.getLanguage());
+                trans.setTranslation(reference);
+                trans.setStatus(Translation.STATUS_UNTRANSLATED);
+	            text.addTranslation(trans);
+	        }
+	        Collection<Text> texts = new ArrayList<Text>();
+	        texts.add(text);
+	        Map<String, Text> dbTextMap = textService.updateTranslations(label.getContext().getId(), texts, ImportingMode.DELIVERY, TranslationHistory.TRANS_OPER_NEW);
+	        label.setText(dbTextMap.get(reference));
+        }
+        
+        // set needTranslation to true if translation text is manually updated
+        if (label.getOrigTranslations() != null && !translationMap.isEmpty()) {
+            for (LabelTranslation lt : label.getOrigTranslations()) {
+                if (translationMap.containsKey(lt.getLanguage().getId())) {
+                    lt.setNeedTranslation(true);
+                }
+            }
+        }
+        
+        return result;
     }
 
     public void updateLabels(Collection<Long> idList, String maxLength,
@@ -1454,18 +1594,16 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         label.setMaxLength(maxLength);
         label.setDescription(description);
 
-
-//        label.setText(text);
         label.setSortNo(dict.getMaxLabelSortNo() + 1);
         label.setRemoved(false);
         Context context = textService.getContextByExpression(contextExp, dict);
         label.setContext(context);
 
-        glossaryService.consistentGlossariesInLabelRef(label);
+//        glossaryService.consistentGlossariesInLabelRef(label);
         label = (Label) dao.create(label);
 
-        Text text = updateLabelTranslations(label);
-        label.setText(text);
+        updateLabelReferenceAndTranslations(label.getId(), reference, null, false, false);
+        
         return label;
     }
 
@@ -1476,6 +1614,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
      *
      * @param label new label or the label whose reference text was changed
      * @return text object linked to the label
+     * @deprecated see updateLabelReferenceAndTranslations
      */
     private Text updateLabelTranslations(Label label) {
         Collection<Text> texts = new ArrayList<Text>();
@@ -1685,5 +1824,22 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         dict.validate();
         Collection validations = type.equals("errors") ? dict.getDictErrors() : dict.getDictWarnings();
         return validations;
+    }
+    
+    @Override
+    public Collection<String> updateTranslation(Long labelId,
+                                                Long translationId, String translation, Boolean confirmAll) {
+    	Map<Long, String> translationMap = new HashMap<Long, String>();
+    	Label label = (Label) dao.retrieve(Label.class, labelId);
+        Long languageId = null;
+        if (translationId < 0) {    // proceed virtual id, create translation if necessary
+            translationId = -translationId;
+            languageId = translationId % 1000;
+        } else {
+            Translation trans = (Translation) dao.retrieve(Translation.class, translationId);
+            languageId = trans.getLanguage().getId();
+        }
+    	translationMap.put(languageId, translation);
+    	return updateLabelReferenceAndTranslations(labelId, label.getReference(), translationMap, confirmAll, false);
     }
 }
