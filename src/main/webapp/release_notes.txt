@@ -1,3 +1,8 @@
+V2.17.3 (Nov 27, 2014)
+    * Fix escaping issue of Prop generator
+    * Adjust XMLDict parser to adapt to 8770 dictionary
+    * Remove "Incorrect character encoding" warning in Dictionary view
+
 V2.17.2 (Oct 30, 2014)
     * Translation of labels in [LABEL] context are shared between different versions of the same dictionary
     * Fix issue of translation not imported from dict in case of LABEL context
