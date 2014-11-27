@@ -166,7 +166,8 @@ public class XMLDictParser extends DictionaryParser {
         dictLanguage.setDictionary(dict);
 
         dictLanguage.setLanguageCode(xLanguage.getId());
-        dictLanguage.setLanguage(languageService.getLanguage(xLanguage.getId()));
+        // "zh" is regarded as "Simplified Chinese" for XmlDict
+        dictLanguage.setLanguage(languageService.getLanguage(xLanguage.getId().equals("zh") ? "zh_CN" : xLanguage.getId()));
         dictLanguage.setCharset(languageService.getCharset(dict.getEncoding()));
 
         dictLanguage.setAnnotation1(String.format("is_reference=%s;is_context=%s", xLanguage.isIs_reference(), xLanguage.isIs_context()));
@@ -184,6 +185,7 @@ public class XMLDictParser extends DictionaryParser {
         Label label = dict.getLabel(name);
         if (null == label) {
             label = new Label();
+            label.setReference("");		// set empty reference to avoid NPE
             label.setOrigTranslations(new ArrayList<LabelTranslation>());
             label.setKey(name);
             dict.addLabel(label);
