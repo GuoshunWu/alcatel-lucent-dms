@@ -45,7 +45,7 @@ public class DeliverUpdateLabelAction extends JSONAction {
 						break;
 					}
 				}
-				dictionary.validate();
+				dictionary.validate(true);
 			}
 	    } catch (BusinessException e) {
 			setMessage(e.toString());

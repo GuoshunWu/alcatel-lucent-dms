@@ -45,7 +45,7 @@ public class DeliverUpdateDictLanguageAction extends JSONAction {
 						break;
 					}
 				}
-				dictionary.validate();
+				dictionary.validate(true);
 			}
 			// populate default context again because the context may empty if language code was not recognized at the beginning
 			Collection<Dictionary> tempDictList = new ArrayList<Dictionary>();

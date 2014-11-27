@@ -75,7 +75,7 @@ public class DictionaryValidationREST extends BaseREST {
         List validationResult = new ArrayList();
         if (null != dictId) {
             Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
-            dict.validate();
+            dict.validate(false);
             validationResult = new ArrayList(
                     requestMap.get("type") == null || requestMap.get("type").equals("warnings")
                             ? dict.getDictWarnings() : dict.getDictErrors());
