@@ -70,7 +70,7 @@ public class DictionaryServiceTest {
 //    @Test
     void tempTest() {
         com.alcatel_lucent.dms.model.Dictionary dict = daoService.retrieve(com.alcatel_lucent.dms.model.Dictionary, 1L)
-        dict.validate()
+        dict.validate(false)
 
         println dict.dictWarnings
     }

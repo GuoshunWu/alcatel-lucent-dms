@@ -395,7 +395,7 @@ public class Dictionary extends BaseEntity {
      * Validate dictionary before importing.
      * The method will refresh "previewErrors" and "importWarnings" properties.
      */
-    public void validate() {
+    public void validate(boolean isPreview) {
         previewErrors = new ArrayList<BusinessException>();
         importWarnings = new ArrayList<BusinessWarning>();
         if (getName() == null || getName().trim().isEmpty()) {
@@ -451,7 +451,8 @@ public class Dictionary extends BaseEntity {
                         String charsetName = dl.getCharset().getName();
                         String encodedTranslation = lt.getOrigTranslation();
                         boolean invalidText = false;
-                        if (!getEncoding().equals(charsetName)) {
+                        // Incorrect character encoding warning is only applicable during preview phase
+                        if (isPreview && !getEncoding().equals(charsetName)) {
                             try {
                                 byte[] source = lt.getOrigTranslation().getBytes(getEncoding());
                                 encodedTranslation = new String(source, charsetName);

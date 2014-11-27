@@ -208,7 +208,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
 
         for (Dictionary dict : result) {
             // populate additional errors and warnings
-            dict.validate();
+            dict.validate(true);
         }
 
         return result;
@@ -1821,7 +1821,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
     public Collection<ValidationInfo> findDictionaryValidations(Long dictId, String type) {
         Dictionary dict = (Dictionary) dao.retrieve(Dictionary.class, dictId);
         if (null == dict) return Arrays.asList();
-        dict.validate();
+        dict.validate(false);
         Collection validations = type.equals("errors") ? dict.getDictErrors() : dict.getDictWarnings();
         return validations;
     }

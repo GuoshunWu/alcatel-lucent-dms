@@ -130,7 +130,7 @@ public class DictionaryREST extends BaseREST {
 	    	for (Object[] row : (Collection<Object[]>) result) {
 	    		Dictionary dict = (Dictionary) row[0];
                 // populate validation results
-                dict.validate();
+                dict.validate(false);
 	    		dictionaries.add(dict);
 	    		dict.setApp((Application) row[1]);
 	    	}
