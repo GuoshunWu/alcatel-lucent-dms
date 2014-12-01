@@ -2,29 +2,34 @@ define ['jqgrid', 'i18n!nls/common'], ($, c18n)->
 #  console?.log "module appmng/langsetting_translation_grid loading."
   lastEditedCell = null
 
-  langSettingGrid = $('#stringSettingsTranslationGrid').jqGrid(
-    mtype: 'post', datatype: 'local'
+  gridId = 'stringSettingsTranslationGrid'
+  hGridId = '#' + gridId
+  pagerId = gridId + 'Pager'
+  hPagerId = '#' + pagerId
+  langSettingGrid = $(hGridId).after($("<div>").attr("id", pagerId)).jqGrid(
+    mtype: 'post', url: 'rest/label/translation', datatype: 'local'
     width: 800, height: 270
-#  height: $(window).innerHeight() - 200
-    pager: '#stringSettingsTranslationPager'
+    pager: pagerId,
     rowNum: 100
+    postData: {format: 'grid',prop: 'languageCode,language.name,ct.translation,ct.id, language.id'}
     sortname: 'language.name'
     caption: 'Label Translation'
     sortorder: 'asc'
-    viewrecords: true
-  #  ajaxGridOptions:{async:false}
+    viewrecords: true, cellEdit: true, cellsubmit: 'clientArray'
     gridview: true
-    colNames: [ 'Code', 'Language', 'Translation','CtId', 'History']
+    colNames: [ 'Code', 'Language', 'Translation','CtId', 'LanguageId', 'History']
     colModel: [
       {name: 'code', index: 'languageCode', width: 20, editable: false, align: 'left'}
       {name: 'language', index: 'language', width: 40, align: 'left'}
-      {name: 'ct.translation', index: 'ct.translation', width: 100, align: 'left', }
+      {name: 'ct.translation', index: 'ct.translation', width: 100, align: 'left', classes: 'editable-column', editable: true}
       {name: 'ct.id', index: 'ct.id', width: 100, align: 'left', hidden: true}
+      {name: 'language.id', index: 'language.id', width: 40, align: 'left', hidden:true}
       {name: 'history', index: 'history', width: 10, editable: false, align: 'center', sortable: false, search: false, formatter: (cellvalue, options)->
         "<img class='historyAct' id='hisact_#{options.rowId}'  src='images/history.png'>"
       }
     ]
-
+    afterEditCell: (rowid, cellname, value, iRow, iCol)->
+      $(@).data("editedCell", {iRow:iRow, iCol: iCol})
     gridComplete:->
       grid = $(@)
 
@@ -44,8 +49,10 @@ define ['jqgrid', 'i18n!nls/common'], ($, c18n)->
         $(@).removeClass('ui-state-hover')
       )
 
-  ).jqGrid('navGrid', '#stringSettingsTranslationPager',
-    {edit: false, add: false, del: false, search: false}).setGridParam(datatype: 'json')
+  ).setGridParam(datatype: 'json').jqGrid(
+    'navGrid', hPagerId,
+    {edit: false, add: false, del: false, search: false}
+  )
   saveLastEditedCell: ()->
     langSettingGrid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
 

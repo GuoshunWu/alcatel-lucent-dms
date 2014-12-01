@@ -1240,6 +1240,7 @@
         </profile>
     </profiles>
 
+    <!-- internal repository -->
     <repositories>
         <repository>
             <releases>
@@ -1254,27 +1255,10 @@
 
             <id>ShanghaiRepo</id>
             <name>Alcatel lucent repository in Shanghai</name>
-            <url>http://repository.all.alcatel-lucent.com/nexus/content/groups/reference-cache</url>
-        </repository>
-
-        <repository>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-                <checksumPolicy>fail</checksumPolicy>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-                <updatePolicy>never</updatePolicy>
-            </snapshots>
-
-            <id>GlobalRepo</id>
-            <name>Alcatel lucent repository for global</name>
             <url>http://shrdwin014.cn.alcatel-lucent.com:8200/nexus/content/groups/reference-cache</url>
+            <!--<url>http://repository.all.alcatel-lucent.com/nexus/content/groups/reference-cache</url>-->
         </repository>
     </repositories>
-
-
     <distributionManagement>
 
         <repository>
