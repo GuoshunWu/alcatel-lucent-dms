@@ -28,7 +28,7 @@ define
         addandclose: 'Add & Close'
         'dummy': ''
       stringsettingstrans:
-        'caption': "Label key: '{0}'<br/>Ref text: '{1}'"
+        'caption': "Label key: '{0}'"
         'dummy': ''
       languagesettings:
         title: 'Language Settings'

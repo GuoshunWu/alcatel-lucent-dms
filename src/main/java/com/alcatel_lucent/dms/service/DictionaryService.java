@@ -4,20 +4,26 @@ import com.alcatel_lucent.dms.BusinessException;
 import com.alcatel_lucent.dms.BusinessWarning;
 import com.alcatel_lucent.dms.Constants;
 import com.alcatel_lucent.dms.ValidationInfo;
-import com.alcatel_lucent.dms.model.Application;
-import com.alcatel_lucent.dms.model.Context;
-import com.alcatel_lucent.dms.model.Dictionary;
-import com.alcatel_lucent.dms.model.DictionaryLanguage;
-import com.alcatel_lucent.dms.model.Label;
+import com.alcatel_lucent.dms.model.*;
 import com.alcatel_lucent.dms.service.generator.GeneratorSettings;
 
 import java.io.File;
 import java.util.Collection;
 import java.util.Map;
 
-import org.apache.commons.collections.map.MultiKeyMap;
-
 public interface DictionaryService {
+
+
+    /**
+     * Update label reference and translation(s) manually
+     *
+     * @param labelId        label id
+     * @param reference      new reference text
+     * @param translationMap map of translations to be updated indexed by language id,
+     * @return
+     */
+    public void updateLabelReferenceAndTranslations(Long labelId, String reference, Map<Long, String> translationMap);
+
     /**
      * Parse and preview application dictionaries in a folder
      *
@@ -42,34 +48,34 @@ public interface DictionaryService {
     /**
      * Import an application dictionary
      *
-     * @param appId          application id
-     * @param dict           transient Dictionary object
-     * @param version        dictionary version
-     * @param mode           importing mode
-     *                       DELIVERY_MODE: in case application owner delivers a dictionary file
-     *                       overwrite label attributes
-     *                       insert new context translations only, not overwriting existing context translation
-     *                       for new labels or changed reference texts:
-     *                       the translation will use context dictionary
-     *                       set translation status to UNTRANSLATED if reference text = translation
-     *                       or TRANSLATED if reference text <> translation
-     *                       for existing reference texts:
-     *                       if translation is not changed since last version,
-     *                       copy translation from last version
-     *                       if translation has been changed since last version,
-     *                       keep the translation in delivered file, the label will not use context dictionary
-     *                       <p/>
-     *                       TRANSLATION_MODE: in case translation manager imports a translated dictionary
-     *                       update translations in context dictionary only
-     *                       no update to existing label attributes
-     *                       set translation status to UNTRANSLATED if reference text = translation
-     *                       or TRANSLATED if reference text <> translation
-     * @param langCodes      Alcatel code of languages to import, null if all languages
-     *                       should be imported
-     * @param langCharset    mapping of language code and its source charset name
-     *                       There might be a 'DEFAULT' language code indicating default charset name
-     * @param settings settings for import operation
-     * @param warnings       a collection to hold output warnings
+     * @param appId       application id
+     * @param dict        transient Dictionary object
+     * @param version     dictionary version
+     * @param mode        importing mode
+     *                    DELIVERY_MODE: in case application owner delivers a dictionary file
+     *                    overwrite label attributes
+     *                    insert new context translations only, not overwriting existing context translation
+     *                    for new labels or changed reference texts:
+     *                    the translation will use context dictionary
+     *                    set translation status to UNTRANSLATED if reference text = translation
+     *                    or TRANSLATED if reference text <> translation
+     *                    for existing reference texts:
+     *                    if translation is not changed since last version,
+     *                    copy translation from last version
+     *                    if translation has been changed since last version,
+     *                    keep the translation in delivered file, the label will not use context dictionary
+     *                    <p/>
+     *                    TRANSLATION_MODE: in case translation manager imports a translated dictionary
+     *                    update translations in context dictionary only
+     *                    no update to existing label attributes
+     *                    set translation status to UNTRANSLATED if reference text = translation
+     *                    or TRANSLATED if reference text <> translation
+     * @param langCodes   Alcatel code of languages to import, null if all languages
+     *                    should be imported
+     * @param langCharset mapping of language code and its source charset name
+     *                    There might be a 'DEFAULT' language code indicating default charset name
+     * @param settings    settings for import operation
+     * @param warnings    a collection to hold output warnings
      * @return persistent Dictionary object created
      */
     Dictionary importDictionary(Long appId, Dictionary dict, String version, Constants.ImportingMode mode, String[] langCodes,
@@ -94,6 +100,7 @@ public interface DictionaryService {
      * @param dictIds the collection of the ids for the dictionary to be generated.
      */
     void generateDictFiles(String dir, Collection<Long> dictIds);
+
     void generateDictFiles(String dir, Collection<Long> dtIds, GeneratorSettings settings);
 
     /**
@@ -234,18 +241,20 @@ public interface DictionaryService {
 
     /**
      * Update label context
+     *
      * @param context
      * @param labels
      */
     void updateLabelContext(Context context, Collection<Label> labels);
-    
+
     /**
      * Update label context and copy translations of current context to the new one
+     *
      * @param context
      * @param label
      */
     void updateLabelContextWithTranslations(Context context, Label label);
-    
+
     /**
      * Update a label key
      *
@@ -314,9 +323,10 @@ public interface DictionaryService {
      *                 CAPITALIZATION_ALL_LOWER_CASE = 5
      */
     void changeLabelCapitalization(Collection<Long> labelIds, Collection<Long> langIds, int style);
-    
+
     /**
      * Find dictionary by prod, app and version
+     *
      * @param prod
      * @param app
      * @param ver
@@ -326,33 +336,36 @@ public interface DictionaryService {
 
     /**
      * Find application by prod, app and version
+     *
      * @param prod
      * @param app
      * @param ver
      * @return
      */
-	Application findApplication(String prod, String app, String ver);
+    Application findApplication(String prod, String app, String ver);
 
     /**
      * Find dictionary validation result as a collection
+     *
      * @param dictId dictionary id
-     * @param type type of the validation type, include "errors" and "warnings"
+     * @param type   type of the validation type, include "errors" and "warnings"
      * @return the BusinessException or BusinessWarning validation collection
-     * */
+     */
     Collection<ValidationInfo> findDictionaryValidations(Long dictId, String type);
-    
-	/**
-	 * Update one translation
-	 * Update translation result of a label.
-	 * If the translation is referred by other dictionaries:
-	 *   do nothing and return name of the dictionaries if confirmAll is empty
-	 *   update translation result if confirmAll is true
-	 *   change context of the label to [LABEL] and update translation result if confirmAll is false
-	 * @param labelId label id
-	 * @param translationId translation id
-	 * @param translation translation result
-	 * @param confirmAll whether to apply same change to other dictionaries
-	 * @return other dictionaries in which the same translation is referred
-	 */
+
+    /**
+     * Update one translation
+     * Update translation result of a label.
+     * If the translation is referred by other dictionaries:
+     * do nothing and return name of the dictionaries if confirmAll is empty
+     * update translation result if confirmAll is true
+     * change context of the label to [LABEL] and update translation result if confirmAll is false
+     *
+     * @param labelId       label id
+     * @param translationId translation id
+     * @param translation   translation result
+     * @param confirmAll    whether to apply same change to other dictionaries
+     * @return other dictionaries in which the same translation is referred
+     */
     public Collection<String> updateTranslation(Long labelId, Long translationId, String translation, Boolean confirmAll);
 }

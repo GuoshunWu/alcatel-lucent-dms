@@ -87,6 +87,7 @@ define [
       )
 
     afterEditCell: (rowid, name, val, iRow, iCol)->
+#      console.log("I am here rowid=%o", rowid)
       lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
     beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
 #      console?.log "rowid=#{rowid}, cellname=#{cellname}, value=#{value}, iRow=#{iRow}, iCol=#{iCol}"

@@ -1360,6 +1360,10 @@ public class DictionaryServiceImpl extends BaseServiceImpl implements
         return label;
 */        
     }
+
+    public void updateLabelReferenceAndTranslations(Long labelId, String reference, Map<Long, String> translationMap ){
+        this.updateLabelReferenceAndTranslations(labelId, reference, translationMap, false, true);
+    }
     
     /**
      * Update label reference and translation(s) manually

@@ -176,17 +176,16 @@
     <table border="0" width="100%">
         <tr>
             <td>
-                &nbsp;
+                <label for="labelReferenceId"><s:text name="appmng.dialogs.addlabel.reference"/></label>
+                <textarea style="width: 90%;vertical-align: middle" id="labelReferenceId"></textarea>
             </td>
         </tr>
         <tr>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
             <td>
-                <table id="stringSettingsTranslationGrid">
-                    <tr>
-                        <td></td>
-                    </tr>
-                </table>
-                <div id="stringSettingsTranslationPager"></div>
+                <table id="stringSettingsTranslationGrid"></table>
             </td>
         </tr>
     </table>
@@ -560,7 +559,7 @@
                 <label for="XMLPropertiesDictEscapeApostrophe">
                     <s:text name="appmng.dialogs.exportdictoptions.escape_apostrophe_char"/>
                 </label>
-                <input type="checkbox"  id="XMLPropertiesDictEscapeApostrophe"/>
+                <input type="checkbox" id="XMLPropertiesDictEscapeApostrophe"/>
             </td>
         </tr>
     </table>

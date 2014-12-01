@@ -47,6 +47,8 @@ define (require)->
     create: getURL('add-label', 'app/')
     update: getURL('update-label', 'app/')
     update_status: getURL('update-label-status', 'app/')
+    update_ref_translations: getURL('update-label-ref-and-translations', 'app/')
+
   task:
     apply:  getURL('apply-task', 'task/')
     close:  getURL('close-task', 'task/')

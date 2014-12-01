@@ -567,18 +567,40 @@ define [
     width: 840
     #    create: -> $(@).dialog 'option', 'width', $('#stringSettingsTranslationGrid').getGridParam('width') + 40
     open: (event, ui)->
+      $(@).data('saved', false)
       param = $(@).data('param')
       return unless param
-      #      console?.log param
+      console?.log param
+      $('#labelReferenceId',@).val(param.ref)
       $('#stringSettingsTranslationGrid').setGridParam(
-        url: 'rest/label/translation'
         page: 1
-        postData:
-          {label: param.id, format: 'grid', status: param.status, prop: 'languageCode,language.name,ct.translation,ct.id'}
-      ).setCaption(i18n.dialog.stringsettingstrans.caption.format $.jgrid.htmlEncode(param.key), $.jgrid.htmlEncode(param.ref))
+        postData:  {label: param.id, status: param.status }
+      ).setCaption(i18n.dialog.stringsettingstrans.caption.format $.jgrid.htmlEncode(param.key))
         .trigger "reloadGrid"
     buttons: [
+      {text: c18n.save, click: (e)->
+        me = $(@)
+        grid = $('#stringSettingsTranslationGrid')
+        editedCell = grid.data("editedCell")
+        labelParam = $(@).data('param')
+        grid.jqGrid("saveCell", editedCell.iRow, editedCell.iCol) unless($.isEmptyObject(editedCell))
+
+        postData =
+          id: labelParam.id  # label id
+          reference: $('#labelReferenceId',@).val()
+        $.each grid.jqGrid('getChangedCells'), (index, row)-> postData["newTranslations[#{row['language.id']}]"] = row["ct.translation"]
+
+#        console.log "postData=%o", postData
+        blockMe = $(@).parent().block()
+        $.post(urls.label.update_ref_translations, postData).done((json)->
+          blockMe.unblock()
+          ($.msgBox(json.message, null, {title: c18n.error});return) if json.status != 0
+#          console.log "json=%o", json
+          me.data('saved', true)
+        )
+      }
       {text: c18n.close, click: (e)->
+        $('#stringSettingsGrid').trigger 'reloadGrid' if $(@).data 'saved'
         $(@).dialog 'close'
       }
     ]
