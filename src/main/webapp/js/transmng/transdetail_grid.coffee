@@ -47,7 +47,7 @@ define [
       }
 
       {name: 'history', index: 'history', width: 40, editable: false, align: 'center', sortable: false, search: false, formatter: (cellvalue, options)->
-        "<img class='historyAct' id='hisact_#{options.rowId}'  src='images/history.png'>"
+        "<img class='historyAct' id='hisact_#{options.rowId}'  src='images/history.gif'>"
       }
     ]
     gridComplete: ->

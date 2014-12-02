@@ -25,7 +25,7 @@ define ['jqgrid', 'i18n!nls/common'], ($, c18n)->
       {name: 'ct.id', index: 'ct.id', width: 100, align: 'left', hidden: true}
       {name: 'language.id', index: 'language.id', width: 40, align: 'left', hidden:true}
       {name: 'history', index: 'history', width: 10, editable: false, align: 'center', sortable: false, search: false, formatter: (cellvalue, options)->
-        "<img class='historyAct' id='hisact_#{options.rowId}'  src='images/history.png'>"
+        "<img class='historyAct' id='hisact_#{options.rowId}'  src='images/history.gif'>"
       }
     ]
     afterEditCell: (rowid, cellname, value, iRow, iCol)->

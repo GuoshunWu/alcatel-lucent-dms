@@ -100,7 +100,7 @@ define [
       ).join('&nbsp;&nbsp;&nbsp;&nbsp;')
     }
     {name: 'history', index: 'history', width: 25, editable: false, align: 'center', sortable: false,formatter: (cellvalue, options, rowObject)->
-      "<img class='historyAct' id='hisact_#{options.rowId}'  src='images/history.png'>"
+      "<img class='historyAct' id='hisact_#{options.rowId}'  src='images/history.gif'>"
     }
     {name: 'cellaction', index: 'cellaction', width: 20, editable: false, align: 'center', sortable: false, formatter: 'actions'
     formatoptions: {keys: true, delbutton: true, delOptions: deleteOptions, editbutton: false}
