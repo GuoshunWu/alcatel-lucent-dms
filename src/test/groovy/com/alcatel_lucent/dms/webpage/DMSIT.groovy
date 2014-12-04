@@ -430,7 +430,7 @@ class DMSIT {
 
         labels = getLabelDataInDict(dictName, [labelKey])
 //        2. 3 languages are translated.
-        Map lblTranslations = labels[labelKey].translation.findAll { String k, v -> !k.endsWith(HISTORY_SUFFIX) }
+        def lblTranslations = labels[labelKey].translation.findAll { String k, v -> !k.endsWith(HISTORY_SUFFIX) }
         assertEquals 3, lblTranslations.size() - translatedNum
     }
 
@@ -791,6 +791,7 @@ class DMSIT {
         openTranslationDetailDialog dictName, languageName, 'T'
         references.each { String reference ->
             List histories = getHistoriesInTranslationDetail(reference).collect { Map history -> 'STATUS' == history.operationType }
+            MICROSECONDS.sleep(500)
             assertTrue histories.size() > 0
         }
         clickButtonOnDialog(transDetailDialogId, 'Close')
@@ -878,7 +879,6 @@ class DMSIT {
 
         String selector = populateGridCellSelector transGridId, 'dictionary', dictName
         getWebElementToBeClickable(By.cssSelector(selector)).click()
-
         MICROSECONDS.sleep 500
 
         //Click button "Create task…"
@@ -901,13 +901,14 @@ class DMSIT {
         clickButtonOnDialog(dialogId, 'Create')
 //        Click "Yes" to swith to Task view when finish
         String msgDialogId = "msgBoxHiddenDiv"
-
+        SECONDS.sleep 2
         clickButtonOnDialog(msgDialogId, 'Yes')
 
         String taskGridId = "taskGrid"
 
 //        1. Task "dms-test" is created without error.
         selector = populateGridCellSelector(taskGridId, 'name', taskName)
+
         getWebElement(By.cssSelector(selector))
         assertEquals taskName, getWebElement(By.cssSelector(selector)).text
 //        2. The task includes 6 languages, without Turkish.
@@ -991,7 +992,8 @@ class DMSIT {
 //        1. In Translation Report dialog, 7 Chinese strings are in T column
         bySelector = By.cssSelector(populateGridCellSelector(taskGridId, 'name', taskName, 'actions', null, "a[id^='action_View']"))
         getWebElementToBeClickable(bySelector).click()
-
+        // waiting for data load
+        SECONDS.sleep 2
         List<Map> taskReport = getGridRowData("reportGrid")
         Map languages = taskReport.get(0).findAll { it.key.endsWith(".T") }
         assertEquals 7, Integer.valueOf(languages["${languageName}.T"])
@@ -1077,15 +1079,16 @@ class DMSIT {
         clickTestApp()
         SECONDS.sleep 2
         getWebElement(By.id("navitransmngTab")).click()
-        test011UpdateTranslation()
+//        test008ChangeReference()
+//        test011UpdateTranslation()
 //        test014ExportTranslationDetail()
 //        test015ImportTranslation()
-//        test016CreateTask()
-//        test017DownloadTask()
-//        test018ReceiveTask()
-//        getWebElement(By.id("navitransmngTab")).click()
-//        getWebElement(By.id("navitaskmngTab")).click()
-//        test018ReceiveTask()
+        test016CreateTask()
+        test017DownloadTask()
+        test018ReceiveTask()
+        getWebElement(By.id("navitransmngTab")).click()
+        getWebElement(By.id("navitaskmngTab")).click()
+        test018ReceiveTask()
     }
 
 

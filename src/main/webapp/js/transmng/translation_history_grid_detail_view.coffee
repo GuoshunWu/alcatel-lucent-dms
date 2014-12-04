@@ -2,8 +2,6 @@ define ['jqgrid', 'dms-util', 'i18n!nls/common'], ($, util, c18n)->
 
 #  console?.log "module appmng/history_grid loading."
 
-  lastEditedCell = null
-
   grid = $('#detailViewTranslationHistoryGrid').jqGrid(
     url: 'json/dummy.json', mtype: 'post', datatype: 'local'
     width: 800, height: 300
@@ -26,11 +24,7 @@ define ['jqgrid', 'dms-util', 'i18n!nls/common'], ($, util, c18n)->
     ]
     gridComplete: ->
 
-
-    afterEditCell: (rowid, name, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
   ).setGridParam(datatype: 'json')
-  saveLastEditedCell: ()->grid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
-
   grid
 
 

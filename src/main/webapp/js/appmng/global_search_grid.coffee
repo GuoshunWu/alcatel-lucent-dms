@@ -3,8 +3,6 @@ define ['jqgrid',   'i18n!nls/appmng', 'dms-util'], ($, i18n, util)->
   pagerId = "#globalSearchResultGridPager"
 
   #  console?.log "module appmng/history_grid loading."
-  lastEditedCell = null
-
   grid = $('#globalSearchResultGrid').jqGrid(
     url: 'json/dummy.json', mtype: 'post', datatype: 'local'
     width: 800, height: 300

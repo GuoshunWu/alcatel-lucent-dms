@@ -7,8 +7,6 @@ define [
 ], ($, util, urls, c18n, i18n, ltgrid)->
 #  console?.log "module appmng/stringsetting_grid loading."
 
-  lastEditedCell = null
-
   lockLabels = (lock = true)->
     grid=$('#stringSettingsGrid')
     icon = 'ui-icon-'
@@ -29,6 +27,7 @@ define [
 
     btn = $('#custom_lock_stringSettingsGrid > div.ui-pg-div')
     btn.html "<span class=\"ui-icon #{icon}\"></span>#{text}"
+
 
   dicGrid = $('#stringSettingsGrid').jqGrid(
     url: 'json/dummy.json', mtype: 'post', datatype: 'local'
@@ -64,6 +63,7 @@ define [
       }
       {name: 'description', index: 'description', width: 60, editable: true, edittype:'textarea', classes: 'editable-column', align: 'left', search:false}
     ]
+
     gridComplete: ->
       grid = $(@)
       $('a', @).each (index, a)->$(a).before(' ').remove() if '0' == $(a).text()
@@ -75,8 +75,6 @@ define [
 
         $('#stringSettingsTranslationDialog').data(param: param).dialog 'open'
         false
-
-    afterEditCell: (rowid, name, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
     afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
       json = $.parseJSON(serverresponse.responseText)
       window.param.dirty = true
@@ -118,10 +116,6 @@ define [
   .setGroupHeaders(useColSpanStyle: true, groupHeaders: [
     {startColumnName: "t", numberOfColumns: 3, titleText: 'Status'}
   ]).filterToolbar(stringResult: true, searchOnEnter: false)
-
-
-  saveLastEditedCell: ()->dicGrid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
-
   lockLabels: lockLabels
 
 

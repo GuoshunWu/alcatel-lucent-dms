@@ -7,8 +7,6 @@ define [
   'dms-urls'
 ], ($, msgbox, i18n, c18n, util, urls)->
 
-  lastEditedCell = null
-
   grid = $("#transSearchTextGrid").jqGrid(
     mtype: 'post', datatype: 'local', url: urls.labels
     width: 'auto', height: 300
@@ -37,8 +35,6 @@ define [
       }
       {name: 'transId', index: 'ct.id', width: 150, align: 'left', hidden:true, search: false}
     ]
-    afterEditCell: (rowid, name, val, iRow, iCol)->
-      lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
 
     beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
 #      console?.log "rowid=#{rowid}, cellname=#{cellname}, value=#{value}, iRow=#{iRow}, iCol=#{iCol}"
@@ -86,7 +82,3 @@ define [
   .setGridParam('datatype':'json')
   .navGrid('#transSearchTextGridPager', {edit: false, add: false, del: false, search: false, view: false})
 
-  saveLastEditedCell: ()->
-    return unless lastEditedCell
-    grid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
-    $("#transGrid").trigger 'reloadGrid' if grid.getChangedCells('dirty').length > 0
