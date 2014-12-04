@@ -1,6 +1,5 @@
 define ['jqgrid', 'i18n!nls/common'], ($, c18n)->
 #  console?.log "module appmng/langsetting_translation_grid loading."
-  lastEditedCell = null
 
   gridId = 'stringSettingsTranslationGrid'
   hGridId = '#' + gridId
@@ -34,7 +33,6 @@ define ['jqgrid', 'i18n!nls/common'], ($, c18n)->
       grid = $(@)
 
       $('img.historyAct', @).click(()->
-        grid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
         [_, rowid]=@id.split('_')
         rowData = grid.getRowData(rowid)
         rowData.id = rowid
@@ -53,8 +51,6 @@ define ['jqgrid', 'i18n!nls/common'], ($, c18n)->
     'navGrid', hPagerId,
     {edit: false, add: false, del: false, search: false}
   )
-  saveLastEditedCell: ()->
-    langSettingGrid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
 
 
 

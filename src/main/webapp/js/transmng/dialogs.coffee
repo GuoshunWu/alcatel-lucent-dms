@@ -166,6 +166,7 @@ define [
     autoOpen: false, width: 860, height: 'auto'
 
     open: ()->
+      $.ui.dialog.prototype.options.open?.call(this)
       me= $(@)
       util.adjustDialogAndInnerGridSize(me, $("#transDetailGridList"), {width: 100, height: 50}, {width: 50, height: 270})
       $('#transDetailSearchAction',@).position(my: 'left center', at: 'right center', of: '#transDetailSearchText')
@@ -201,7 +202,6 @@ define [
         detailgrid.languageChanged {language: language, dict: param.dict, searchStatus: param.searchStatus, transsrc: param.transsrc}
 
     close: (event, ui)->
-      detailgrid.saveLastEditedCell()
       postData = $("#transDetailGridList").getGridParam('postData')
 
       $('#transSameWithRef', @).attr('checked', false)
@@ -282,7 +282,6 @@ define [
       transSearchGrid.setCaption(caption).trigger 'reloadGrid'
 
     close: ()->
-      searchgrid.saveLastEditedCell()
     buttons: [
       {text: c18n.close, click: ()->
         $(@).dialog 'close'

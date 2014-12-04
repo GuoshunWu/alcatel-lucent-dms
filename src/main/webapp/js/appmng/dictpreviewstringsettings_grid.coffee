@@ -1,6 +1,4 @@
 define ['jqgrid'], ($)->
-  lastEditedCell = null
-
 #  console?.log "module appmng/dictpreviewstringsettings_grid loading."
 
   dicGrid = $('#dictPreviewStringSettingsGrid').jqGrid(
@@ -29,7 +27,6 @@ define ['jqgrid'], ($)->
       {name: 'description', index: 'description', width: 40,  edittype:'textarea', classes: 'editable-column', editable: true, align: 'left'}
     ]
 
-    afterEditCell: (rowid, name, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
     beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
       postData = $(@).getGridParam 'postData'
       handler: postData.handler, dict: postData.dict
@@ -41,5 +38,4 @@ define ['jqgrid'], ($)->
       [success, jsonFromServer.message]
   ).jqGrid('navGrid', '#dictPreviewStringSettingsPager', {edit: false, add: false, del: false, search: false, view: false}).setGridParam(datatype: 'json')
 
-  saveLastEditedCell: ()->dicGrid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
 
