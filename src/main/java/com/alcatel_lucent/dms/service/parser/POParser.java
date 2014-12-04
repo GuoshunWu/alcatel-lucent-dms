@@ -209,7 +209,7 @@ public class POParser extends DictionaryParser {
             		}
             	}
                 if (refLabel == null) {
-                    // TODO handle unexpected labels
+                	warnings.add(new BusinessWarning(BusinessWarning.ANDROID_LABEL_KEY_BLANK, label.getKey(), langCode));
                 } else {
                     LabelTranslation trans = new LabelTranslation();
                     trans.setLanguageCode(langCode);
@@ -232,6 +232,7 @@ public class POParser extends DictionaryParser {
                 dictExceptions.addNestedException(fileExceptions);
             }
         }
+        
         if (dictExceptions.hasNestedException()) {
             throw dictExceptions;
         }
@@ -240,6 +241,21 @@ public class POParser extends DictionaryParser {
 	}
 
 	
+	private void processDuplicateLabelKey(Collection<Label> labels) {
+		HashMap<String, Integer> countKey = new HashMap<String, Integer>();
+		for (Label label : labels) {
+			String key = label.getKey();
+			Integer count = countKey.get(key);
+			if (count != null) {
+				label.setKey(key + "#DMS#" + count);
+				count = count + 1;
+			} else {
+				count = 1;
+			}
+			countKey.put(key, count);
+		}
+	}
+
 	private Collection<Label> readLabels(File file, Dictionary dict, DictionaryLanguage dl,
             Collection<BusinessWarning> warnings, BusinessException exceptions) {
 		ArrayList<Label> result = new ArrayList<Label>();
@@ -256,7 +272,12 @@ public class POParser extends DictionaryParser {
 			StringBuffer msgstrPlural = null;
 			StringBuffer text = null;
 			boolean firstLabel = true;
+			boolean firstLine = true;
 			while ((line = br.readLine()) != null) {
+				if (firstLine && line.startsWith("\u00EF\u00BB\u00BF")) {	// ignore UTF-8 BOM
+					line = line.substring(3);
+				}
+				firstLine = false;
 				if (line.startsWith("#~")) continue;	// ignore obselete lines
 				if (line.trim().isEmpty()) {
 					// end of entry
@@ -333,6 +354,7 @@ public class POParser extends DictionaryParser {
 			if (dl.getCharset() == null) {	// set default charset UTF-8
 				dl.setCharset(languageService.getCharset("UTF-8"));
 			}
+			processDuplicateLabelKey(result);
 		} catch (Exception e) {
 			e.printStackTrace();
 			exceptions.addNestedException(new BusinessException(e.toString()));

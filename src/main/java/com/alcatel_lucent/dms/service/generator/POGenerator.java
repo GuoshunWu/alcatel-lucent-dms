@@ -84,11 +84,11 @@ public class POGenerator extends DictionaryGenerator {
 						out.print("\n");
 					}
 					out.print("msgid ");
-					out.print(formatStr(label.getKey()));
+					out.print(formatStr(removeDMSSuffix(label.getKey())));
 					out.print("\n");
 					if (hasPlural) {
 						out.print("msgid_plural ");
-						out.print(formatStr(nextLabel.getKey()));
+						out.print(formatStr(removeDMSSuffix(nextLabel.getKey())));
 						out.print("\n");
 					}
 					if (hasPlural) {
@@ -118,6 +118,15 @@ public class POGenerator extends DictionaryGenerator {
             }
         }
 		
+	}
+
+	// remove suffix "#DMS#" of key appended by DMS in order to remove duplication
+	private String removeDMSSuffix(String key) {
+		int suffixPos = key.lastIndexOf("#DMS#");
+		if (suffixPos != -1) {
+			return key.substring(0, suffixPos);
+		}
+		return key;
 	}
 
 	/**
