@@ -593,10 +593,13 @@ define [
           ($.msgBox(json.message, null, {title: c18n.error});return) if json.status != 0
 #          console.log "json=%o", json
           me.data('saved', true)
+          $('#stringSettingsGrid').trigger 'reloadGrid'
+          me.dialog 'close'
         )
+
+
       }
-      {text: c18n.close, click: (e)->
-        $('#stringSettingsGrid').trigger 'reloadGrid' if $(@).data 'saved'
+      {text: c18n.cancel, click: (e)->
         $(@).dialog 'close'
       }
     ]
