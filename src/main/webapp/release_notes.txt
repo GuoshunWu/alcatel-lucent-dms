@@ -1,3 +1,8 @@
+V2.17.4 (Dec 8, 2014)
+    * Allows to modify reference along with translations in the Label translation view
+    * Allows to input carriage return in edit cell by press ALT + Enter
+    * Adjust PO parser and generator to adapt to duplicate label and unnecessary UTF8 BOM
+
 V2.17.3 (Nov 27, 2014)
     * Fix escaping issue of Prop generator
     * Adjust XMLDict parser to adapt to 8770 dictionary
