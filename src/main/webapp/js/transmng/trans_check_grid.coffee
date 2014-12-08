@@ -11,9 +11,6 @@ define [
   c18n, util, urls,
   mapping
 )->
-  lastEditedCell = null
-
-  lastEditedCell = null
   gridId = 'transCheckGrid'
   hGridID = "##{gridId}"
   pagerId = "#{gridId}Pager"
@@ -107,10 +104,6 @@ define [
         select.empty().append(newValue)
       ) if selectColumns.length
 
-
-    afterEditCell: (rowid, name, val, iRow, iCol)->
-      lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
-
     beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
       rowData = $(@).getRowData(rowid)
 #      console?.log "rowid=#{rowid}, cellname=#{cellname}, value=#{value}, iRow=#{iRow}, iCol=#{iCol}, rowData=%o", rowData
@@ -163,13 +156,3 @@ define [
 
   selectElements = util.setSearchSelect grid, selectColumns, selectElements
   grid.filterToolbar {stringResult: true, searchOnEnter: true}
-
-
-
-  saveLastEditedCell: ()->
-    return unless lastEditedCell
-    if lastEditedCell
-      console.log "saving last modified cell %o", lastEditedCell
-      grid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol)
-#      if grid.getChangedCells('dirty').length > 0
-      $("#transGrid").trigger 'reloadGrid'

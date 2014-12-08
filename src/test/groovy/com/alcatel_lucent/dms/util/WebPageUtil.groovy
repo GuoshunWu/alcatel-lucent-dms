@@ -141,9 +141,12 @@ class WebPageUtil {
         // select page size to 100
         Select select = new Select(getWebElement(By.cssSelector("#${historyGridId}Pager_center select.ui-pg-selbox")))
         select.selectByValue(100 + "")
-        MICROSECONDS.sleep(200)
+        MICROSECONDS.sleep(500)
         List<Map> histories = getGridRowData(historyGridId)
-        if (autoCloseDialog) clickButtonOnDialog('translationHistoryDialogInDetailView', 'Close')
+        if (autoCloseDialog){
+            clickButtonOnDialog('translationHistoryDialogInDetailView', 'Close')
+            MICROSECONDS.sleep(500)
+        }
         histories
     }
 
@@ -537,6 +540,7 @@ class WebPageUtil {
             if (transActs.size() > 0) {
                 new WebDriverWait(driver, 30).until(ExpectedConditions.elementToBeClickable(transActs[0]))
                 transActs[0].click()
+//                waiting for data load
                 MILLISECONDS.sleep 1000
                 label['translation'] = [:]
                 List<WebElement> transRows = getWebElementsByJQuerySelector(transSelector)
@@ -552,6 +556,7 @@ class WebPageUtil {
                 }
                 getWebElement(By.id("stringSettingsTranslationDialog"))
                 clickButtonOnDialog('stringSettingsTranslationDialog', 'Close')
+                MICROSECONDS.sleep 500
             }
         }
 
@@ -590,7 +595,10 @@ class WebPageUtil {
 
 
         WebElement historyDialogClose = getWebElementByJQuerySelector("#stringSettingsTranslationHistoryDialog + div button:contains('Close')")
-        if (null != historyDialogClose) historyDialogClose.click()
+        if (null != historyDialogClose) {
+            historyDialogClose.click()
+            MICROSECONDS.sleep 500
+        }
         return result
     }
 

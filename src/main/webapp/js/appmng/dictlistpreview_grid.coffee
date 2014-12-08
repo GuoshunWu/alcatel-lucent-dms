@@ -28,8 +28,6 @@ define [
       title: i18n.dialog.languagesettings.title, handler: (rowData)->
         $('#dictPreviewLanguageSettingsDialog').data("param", rowData).dialog 'open'
 
-  lastEditedCell = null
-
   colModel = [
     {name: 'langrefcode', index: 'langrefcode', width: 55, align: 'center', hidden: true}
     {name: 'name', index: 'base.name', width: 200, editable: true, align: 'left'}
@@ -62,7 +60,6 @@ define [
   caption: i18n.grid.dictlistpreview.caption
   colNames: ['LangRefCode', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels', 'Error', 'Warning', 'Action']
   colModel: colModel
-  afterEditCell: (rowid, name, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
   ondblClickRow: (rowid, iRow, iCol, e)->
 
   beforeProcessing: (data, status, xhr)->
@@ -113,9 +110,6 @@ define [
 
     $('a[id^=action_]', @).click ()->
       [a, action, rowid, col]=@id.split('_')
-      #      save grid edit before get data
-      grid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
-
       rowData = grid.getRowData(rowid)
       delete rowData.action
       rowData.id = rowid

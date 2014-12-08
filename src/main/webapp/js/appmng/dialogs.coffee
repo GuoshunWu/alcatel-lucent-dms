@@ -227,7 +227,6 @@ define [
       postData = dict: param.id, format: 'grid', prop: 'languageCode,language.name,charset.name'
       $('#languageSettingGrid').setGridParam(url: 'rest/dictLanguages', page: 1, postData: postData).trigger "reloadGrid"
     close: (event, ui)->
-      (require 'appmng/langsetting_grid').saveLastEditedCell()
     buttons: [
       {text: c18n.close, click: ()->
         $(@).dialog 'close'
@@ -331,7 +330,6 @@ define [
 
       $('#searchText', @).val("")
       delete postData.text
-      (require 'appmng/stringsettings_grid').saveLastEditedCell()
     #  # resize: (event, ui)->$('#stringSettingsGrid').setGridWidth(ui.size.width - 35, true).setGridHeight(ui.size.height - 210, true)
     buttons: [
       text: c18n.close, click: ()->
@@ -440,7 +438,6 @@ define [
 
       $('#dictPreviewStringSettingsGrid').setGridParam(url: 'rest/delivery/labels', page: 1, postData: postData).trigger "reloadGrid"
     close: (event, ui)->
-      (require 'appmng/dictpreviewstringsettings_grid').saveLastEditedCell()
     buttons: [
       {text: c18n.close, click: ()->
         $(@).dialog 'close'
@@ -461,7 +458,6 @@ define [
       postData = handler: param.handler, dict: param.id, format: 'grid', prop: 'languageCode,language.name,charset.name'
       $('#previewLanguageSettingGrid').setGridParam(url: 'rest/delivery/dictLanguages', page: 1, postData: postData).trigger "reloadGrid"
     close: (event, ui)->
-      (require 'appmng/previewlangsetting_grid').saveLastEditedCell()
     buttons: [
       {text: c18n.close, click: ()->
         $(@).dialog 'close'
@@ -570,7 +566,7 @@ define [
       $(@).data('saved', false)
       param = $(@).data('param')
       return unless param
-      console?.log param
+#      console?.log param
       $('#labelReferenceId',@).val(param.ref)
       $('#stringSettingsTranslationGrid').setGridParam(
         page: 1
@@ -597,10 +593,13 @@ define [
           ($.msgBox(json.message, null, {title: c18n.error});return) if json.status != 0
 #          console.log "json=%o", json
           me.data('saved', true)
+          $('#stringSettingsGrid').trigger 'reloadGrid'
+          me.dialog 'close'
         )
+
+
       }
-      {text: c18n.close, click: (e)->
-        $('#stringSettingsGrid').trigger 'reloadGrid' if $(@).data 'saved'
+      {text: c18n.cancel, click: (e)->
         $(@).dialog 'close'
       }
     ]
@@ -612,7 +611,6 @@ define [
     open: (event, ui)->
       param = $(@).data('param')
       return unless param
-
       $('#historyGrid').setGridParam(
         url: 'rest/dictHistory'
         page: 1
@@ -788,14 +786,13 @@ define [
       param = $(@).data('param')
       return unless param
       stringSettingsTransGridCaption  = $('#stringSettingsTranslationGrid').getGridParam('caption')
-      sstgRefText = 'Ref text:'
-      param.gridCaption = stringSettingsTransGridCaption.substring(stringSettingsTransGridCaption.lastIndexOf(sstgRefText)  + sstgRefText.length).trim()
+      param.reference = $('#labelReferenceId', '#stringSettingsTranslationDialog').val()
 #      console.log param
       $('#stringSettingsTranslationHistoryGrid').setGridParam(
         url: urls.translation_histories
         page: 1
         postData: {transId: param['ct.id'], format: 'grid', prop: 'operationTime,operationType,operator.name,translation,status,memo'}
-      ).setCaption(c18n.history.caption.format param.gridCaption).trigger "reloadGrid"
+      ).setCaption(c18n.history.caption.format param.reference).trigger "reloadGrid"
 
     buttons: [
       {text: c18n.close, click: (e)->
