@@ -57,7 +57,11 @@ public class Privileges {
 		addPrivilege(UpdateDictAction.class, User.ROLE_APPLICATION_OWNER | User.ROLE_TRANSLATION_MANAGER);
 		addPrivilege(UpdateDictLanguageAction.class, User.ROLE_APPLICATION_OWNER | User.ROLE_TRANSLATION_MANAGER);
 		addPrivilege(UpdateLabelAction.class, User.ROLE_APPLICATION_OWNER | User.ROLE_TRANSLATION_MANAGER);
-		
+		addPrivilege(UpdateLabelStatusAction.class, User.ROLE_APPLICATION_OWNER | User.ROLE_TRANSLATION_MANAGER);
+		addPrivilege(ImportTranslationDetailsAction.class, User.ROLE_APPLICATION_OWNER | User.ROLE_TRANSLATION_MANAGER);
+
+		addPrivilege(UpdateLabelRefAndTranslationsAction.class, User.ROLE_APPLICATION_OWNER | User.ROLE_TRANSLATION_MANAGER);
+
 		// translation management
 		addPrivilege(UpdateStatusAction.class, User.ROLE_APPLICATION_OWNER | User.ROLE_TRANSLATION_MANAGER);
 		addPrivilege(UpdateTranslationAction.class, User.ROLE_APPLICATION_OWNER | User.ROLE_TRANSLATION_MANAGER);

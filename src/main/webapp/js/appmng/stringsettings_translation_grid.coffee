@@ -1,4 +1,4 @@
-define ['jqgrid', 'i18n!nls/common'], ($, c18n)->
+define ['jqgrid',   'dms-urls', 'i18n!nls/common'], ($, urls, c18n)->
 #  console?.log "module appmng/langsetting_translation_grid loading."
 
   gridId = 'stringSettingsTranslationGrid'
@@ -6,7 +6,7 @@ define ['jqgrid', 'i18n!nls/common'], ($, c18n)->
   pagerId = gridId + 'Pager'
   hPagerId = '#' + pagerId
   langSettingGrid = $(hGridId).after($("<div>").attr("id", pagerId)).jqGrid(
-    mtype: 'post', url: 'rest/label/translation', datatype: 'local'
+    mtype: 'post', url: urls.getTranslations, datatype: 'local'
     width: 800, height: 270
     pager: pagerId,
     rowNum: 100
@@ -14,7 +14,7 @@ define ['jqgrid', 'i18n!nls/common'], ($, c18n)->
     sortname: 'language.name'
     caption: 'Label Translation'
     sortorder: 'asc'
-    viewrecords: true, cellEdit: true, cellsubmit: 'clientArray'
+    viewrecords: true, cellEdit: true, cellsubmit: 'clientArray', cellurl:urls.label.update_ref_translations
     gridview: true
     colNames: [ 'Code', 'Language', 'Translation','CtId', 'LanguageId', 'History']
     colModel: [
