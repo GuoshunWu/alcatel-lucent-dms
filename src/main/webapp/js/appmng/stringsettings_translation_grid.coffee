@@ -20,7 +20,7 @@ define ['jqgrid', 'i18n!nls/common'], ($, c18n)->
     colModel: [
       {name: 'code', index: 'languageCode', width: 20, editable: false, align: 'left'}
       {name: 'language', index: 'language', width: 40, align: 'left'}
-      {name: 'ct.translation', index: 'ct.translation', width: 100, align: 'left', classes: 'editable-column', editable: true}
+      {name: 'ct.translation', index: 'ct.translation', width: 100, align: 'left',edittype:'textarea', classes: 'editable-column', editable: true}
       {name: 'ct.id', index: 'ct.id', width: 100, align: 'left', hidden: true}
       {name: 'language.id', index: 'language.id', width: 40, align: 'left', hidden:true}
       {name: 'history', index: 'history', width: 10, editable: false, align: 'center', sortable: false, search: false, formatter: (cellvalue, options)->
