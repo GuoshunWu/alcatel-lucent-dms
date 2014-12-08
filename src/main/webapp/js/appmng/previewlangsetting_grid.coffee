@@ -1,8 +1,6 @@
 define ['jqgrid'], ($)->
 #  console?.log "module appmng/previewlangsetting_grid loading."
 
-  lastEditedCell = null
-
   langSettingGrid = $('#previewLanguageSettingGrid').jqGrid(
     url: 'json/dummy.json', mtype: 'post', datatype: 'local'
     width: 500, height: 230
@@ -28,7 +26,6 @@ define ['jqgrid'], ($)->
       $.getJSON 'rest/charsets', {prop: 'id,name'}, (charsets)->
         langSettingGrid.setColProp 'charsetId', editoptions: {value: ($(charsets).map ()->"#{@id}:#{@name}").get().join(';')}
 
-    afterEditCell: (rowid, name, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
     beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
       postData = $(@).getGridParam 'postData'
       dict: postData.dict, handler: postData.handler
@@ -39,8 +36,6 @@ define ['jqgrid'], ($)->
       $('#dictListPreviewGrid').trigger 'reloadGrid' if success
       [success, jsonfromServer.message, -1]
   ).setGridParam(datatype: 'json').jqGrid 'navGrid', '#previewLangSettingPager', {edit: false, add: false, del: false, search: false}, {}, {}
-
-  saveLastEditedCell: ()->langSettingGrid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
 
 
 

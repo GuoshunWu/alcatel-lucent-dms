@@ -8,8 +8,6 @@ define [
 ],($, i18n, c18n, urls)->
 #  console?.log "module appmng/langsetting_grid loading."
 
-  lastEditedCell = null
-
   langSettingGrid = $('#languageSettingGrid').jqGrid(
     url: 'json/dummy.json', mtype: 'post', datatype: 'local'
     width: 500, height: 230
@@ -28,7 +26,6 @@ define [
       {name: 'languageId', index: 'language.name', width: 50, editable: true, classes: 'editable-column', edittype: 'select', align: 'left'}
       {name: 'charsetId', index: 'charset.name', width: 40, editable: true, classes: 'editable-column', edittype: 'select', align: 'left'}
     ]
-    afterEditCell: (rowid, name, val, iRow, iCol)->lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
     gridComplete: ()->
       #    console?.log $('#languageSettingGrid').getGridParam('postData').dict
       #    query all the languages
@@ -67,8 +64,6 @@ define [
     $('#addLanguageDialog').data 'param', dicts: [$('#languageSettingGrid').getGridParam('postData').dict]
     $('#addLanguageDialog').dialog "open"
   }
-
-  saveLastEditedCell: ()->langSettingGrid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
 
 
 

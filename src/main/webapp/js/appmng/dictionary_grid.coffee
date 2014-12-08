@@ -76,9 +76,6 @@ define [
       handler: (rowData)->openDialogHandler(rowData, 'stringSettingsDialog')
     'Language':
       handler: (rowData)->openDialogHandler(rowData, 'languageSettingsDialog')
-
-  lastEditedCell = null
-
   colModel = [
     {name: 'langrefcode', index: 'langrefcode', width: 55, align: 'left', hidden: true}
     {name: 'name', index: 'base.name', width: 200, editable: false, align: 'left'}
@@ -145,7 +142,6 @@ define [
       @cell[errorIdx] = "<a id='warnAndErr_errors_#{rowData.id}' title='details' href='javascript:void(0);'>#{@cell[errorIdx]}</a>"
 
   afterEditCell: (id, name, val, iRow, iCol)->
-    lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
     grid = @
     if name == 'version'
       $.ajax {url: "rest/dict?slibing=#{id}&prop=id,version", async: false, dataType: 'json', success: (json)->
@@ -164,8 +160,6 @@ define [
     grid = $(@)
     $('a[id^=action_]', @).click ()->
       [a, action, rowid]=@id.split('_')
-      #      save grid edit before get data
-      grid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
       rowData = grid.getRowData(rowid)
       rowData.id = rowid
       delete rowData.action
@@ -192,7 +186,6 @@ define [
       $(row).css 'background', '#FFD2D2' if parseInt($(rowData.errors).text()) > 0
 
     $('img.historyAct', @).click(()->
-      grid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
       [_, rowid]=@id.split('_')
       rowData = grid.getRowData(rowid)
       rowData.id = rowid

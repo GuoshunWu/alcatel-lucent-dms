@@ -7,8 +7,6 @@ define [
   'dms-urls'
 ], ($, msgbox, i18n, c18n, util, urls)->
 
-  lastEditedCell = null
-
   transDetailGrid = $("#transDetailGridList").jqGrid(
     mtype: 'POST', postData: {}, editurl: "", datatype: 'local', url: urls.labels_normal
     width: 'auto', height: 200, shrinkToFit: false
@@ -70,7 +68,6 @@ define [
       )
 
       $('img.historyAct', @).click(()->
-        grid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
         [_, rowid]=@id.split('_')
         rowData = grid.getRowData(rowid)
         delete rowData.action
@@ -85,10 +82,6 @@ define [
       ).on('mouseout', ()->
         $(@).removeClass('ui-state-hover')
       )
-
-    afterEditCell: (rowid, name, val, iRow, iCol)->
-#      console.log("I am here rowid=%o", rowid)
-      lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
     beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
 #      console?.log "rowid=#{rowid}, cellname=#{cellname}, value=#{value}, iRow=#{iRow}, iCol=#{iCol}"
       ctid = $(@).getRowData(rowid).transId
@@ -167,10 +160,4 @@ define [
     $('select#gs_transStatus','#translationDetailDialog').val param.searchStatus
     $('select#gs_transtype','#translationDetailDialog').val param.transsrc
     transDetailGrid[0].triggerToolbar()
-
-  saveLastEditedCell: ()->
-    if lastEditedCell
-#      console.log "saving last modified cell %o", lastEditedCell
-      transDetailGrid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol)
-    $("#transGrid").trigger 'reloadGrid' if transDetailGrid.getChangedCells('dirty').length > 0
 

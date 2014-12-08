@@ -12,7 +12,6 @@ define [
 #    multiselect
     i18n, c18n, util, urls)->
 
-  lastEditedCell = null
   gridId = 'transHistoriesGrid'
   hGridID = "##{gridId}"
   pagerId = "##{gridId}Pager"
@@ -57,9 +56,6 @@ define [
         currentSelected = select.val()
         select.empty().append(util.buildSearchSelectValues(grid, colName, currentSelected))
       )
-
-    afterEditCell: (rowid, name, val, iRow, iCol)->
-      lastEditedCell = {iRow: iRow, iCol: iCol, name: name, val: val}
     beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
 #      console?.log "rowid=#{rowid}, cellname=#{cellname}, value=#{value}, iRow=#{iRow}, iCol=#{iCol}"
       ctid = $(@).getRowData(rowid).transId
@@ -126,7 +122,3 @@ define [
 
   $("#transHistoriesDialogSearchToolBar").appendTo("#t_#{gridId}")
 
-  saveLastEditedCell: ()->
-    return unless lastEditedCell
-    grid.saveCell(lastEditedCell.iRow, lastEditedCell.iCol) if lastEditedCell
-    $("#transGrid").trigger 'reloadGrid' if grid.getChangedCells('dirty').length > 0
