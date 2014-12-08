@@ -32,7 +32,8 @@ define (require)->
     del: getURL('remove-application-base', 'app/')
     create_version: getURL('create-application', 'app/')
     generate_dict: getURL('generate-dict','app/')
-    update_dict: getURL('update_dict','app/')
+    update_dict: getURL('update-dict','app/')
+    change_dict_version: getURL('change-dict-version', 'app/')
     remove_dict: getURL('remove-dict', 'app/')
     remove_version: getURL('remove-application', 'app/')
     deliver_dict: getURL('deliver-dict', 'app/')
@@ -104,6 +105,7 @@ define (require)->
 
 
   translations: getURL('luceneTranslations', 'rest/')
+  getTranslations: getURL('label/translation', 'rest/')
   translation_histories: getURL('translationHistory', 'rest/')
   translation_check: getURL('translationCheck', 'rest/')
   app_translation_histories: getURL('appTranslationHistory', 'rest/')

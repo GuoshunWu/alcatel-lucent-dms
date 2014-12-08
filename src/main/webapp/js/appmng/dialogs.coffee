@@ -561,7 +561,12 @@ define [
   stringSettingsTranslation = $('#stringSettingsTranslationDialog').dialog(
     autoOpen: false, modal: true
     width: 840
-    #    create: -> $(@).dialog 'option', 'width', $('#stringSettingsTranslationGrid').getGridParam('width') + 40
+    create: ->
+#      $(@).dialog 'option', 'width', $('#stringSettingsTranslationGrid').getGridParam('width') + 40
+      $('#labelReferenceId', @).attr('privilegeName', util.urlname2Action urls.label.update_ref_translations)
+      $(@).next('div.ui-dialog-buttonpane').find("button.ui-button:contains(#{c18n.save})")
+      .attr('privilegeName', util.urlname2Action urls.label.update_ref_translations)
+
     open: (event, ui)->
       $(@).data('saved', false)
       param = $(@).data('param')

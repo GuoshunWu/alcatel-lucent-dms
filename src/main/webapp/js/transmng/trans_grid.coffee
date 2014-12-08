@@ -296,7 +296,7 @@ define [
 
   importTranslationId = "#importTranslation"
   #  create upload filebutton
-  $(importTranslationId).button(label: i18n.transupload).attr('privilegeName', urls.trans.import_translation_details)
+  $(importTranslationId).button(label: i18n.transupload).attr('privilegeName', util.urlname2Action urls.trans.import_translation_details)
   .css(overflow: 'hidden')
   .append $(
     "<input type='file' id='#{transFileUpload}' name='upload' multiple/>").css(

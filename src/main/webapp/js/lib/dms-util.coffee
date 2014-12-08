@@ -177,20 +177,9 @@ define ['jqueryui'
 
 
   checkGridPrivilege = (grid)->
-    # console?.log "check the privilege of grid '#{grid.id}'."
+#    console.log "check the privilege of grid '#{grid.id}'."
     gridParam = $(grid).jqGrid 'getGridParam'
     return unless gridParam
-    # add event
-    ###
-    It is unnecessary to clear all the grid data before new data loaded,
-    this action only need to be applied to translation grid.
-    ###
-#    gridParam._originalBeforeRequest = gridParam.beforeRequest
-#    gridParam.beforeRequest=()->
-#      gridParam._originalBeforeRequest?()
-#      console?.log "#{@id} before load...."
-#      $(@).clearGridData()
-
 #    console.log($(grid).attr("id") + ", cellurl=" + gridParam.cellurl)
     forbiddenTab =
       cellurl: urlname2Action(gridParam.cellurl) in param.forbiddenPrivileges
@@ -202,7 +191,7 @@ define ['jqueryui'
       $.each gridParam.colModel, (idx, obj) ->
         if $.isPlainObject(obj) and obj.name and obj.editable
           obj.editable = false
-          obj.classes = obj.classes.replace('editable-column', '')
+          obj.classes = obj.classes.replace('editable-column', '') if obj.classes
 
     #    for the grid  navigatebar, ['view', 'search', 'refresh'] are readonly operation, enabled
     $.each ['add', 'edit', 'del', 'lock'], (index, value)->
@@ -386,18 +375,22 @@ define ['jqueryui'
 #    if ':last' == selectedValue
 
   afterInitialized: (context)->
+    #   check all the grids' privilege
+    checkAllGridPrivilege()
     # center progressbar
     $('div.progressbar').position(my: 'center', at: 'center',of: window)
     #    check all buttons' privilege
-    $('[role=button][privilegeName]').each (index, button)->
-      if $(button).attr('privilegeName') in param.forbiddenPrivileges
-        $(button).button 'disable'
-#        console?.log "Button: #{button.id} which privilegeName=#{$(button).attr('privilegeName')} is disabled."
-#      else
-#        console?.warn "Button: #{button.id} which privilegeName=#{$(button).attr('privilegeName')} is not disabled."
+    $('[role=button][privilegeName]').each ()->
+      forbidden = $(@).attr('privilegeName') in param.forbiddenPrivileges
+      console.log "Button: #{@id} which privilegeName=#{$(@).attr('privilegeName')} forbidden: #{forbidden}."
+      return true unless forbidden
+      $(@).button 'disable'
 
-    #   check all the grids' privilege
-    checkAllGridPrivilege()
+    $('input[privilegeName],textarea[privilegeName]').each ()->
+      forbidden = $(@).attr('privilegeName') in param.forbiddenPrivileges
+      console.log "textarea or input: #{@id} which privilegeName=#{$(@).attr('privilegeName')} forbidden: #{forbidden}."
+      return true unless forbidden
+      $(@).prop 'disabled', true
 
   randomNum : commonUtil.randomNum
   ajaxStream: ajaxStream

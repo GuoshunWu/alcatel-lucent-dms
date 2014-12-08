@@ -144,12 +144,11 @@ define [
   afterEditCell: (id, name, val, iRow, iCol)->
     grid = @
     if name == 'version'
-      $.ajax {url: "rest/dict?slibing=#{id}&prop=id,version", async: false, dataType: 'json', success: (json)->
+      $.post(urls.dicts, {slibing: id, prop: 'id, version'}).done (json)->
         $("##{iRow}_version", grid).append util.json2Options json, val
-      }
   beforeSubmitCell: (rowid, cellname, value, iRow, iCol)->
     isVersion = cellname == 'version'
-    $(@).setGridParam cellurl: if isVersion then 'app/change-dict-version' else 'app/update-dict'
+    $(@).setGridParam cellurl: if isVersion then urls.change_dict_version else urls.app.update_dict
     if isVersion then {appId: $("#selAppVersion").val(), newDictId: value} else {}
 
   afterSubmitCell: (serverresponse, rowid, cellname, value, iRow, iCol)->
