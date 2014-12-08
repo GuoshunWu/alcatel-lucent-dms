@@ -27,8 +27,6 @@ define ['jqgrid',   'dms-urls', 'i18n!nls/common'], ($, urls, c18n)->
         "<img class='historyAct' id='hisact_#{options.rowId}'  src='images/history.gif'>"
       }
     ]
-    afterEditCell: (rowid, cellname, value, iRow, iCol)->
-      $(@).data("editedCell", {iRow:iRow, iCol: iCol})
     gridComplete:->
       grid = $(@)
 
@@ -36,9 +34,7 @@ define ['jqgrid',   'dms-urls', 'i18n!nls/common'], ($, urls, c18n)->
         [_, rowid]=@id.split('_')
         rowData = grid.getRowData(rowid)
         rowData.id = rowid
-
         ($.msgBox c18n.history.nohistory, null, {title: c18n.error} ;return) unless rowData['ct.id']? and parseInt(rowData['ct.id']) > 0
-
         $('#stringSettingsTranslationHistoryDialog').data('param', rowData).dialog 'open'
 
       ).on('mouseover',()->

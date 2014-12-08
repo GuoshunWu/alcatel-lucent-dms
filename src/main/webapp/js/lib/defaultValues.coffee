@@ -25,7 +25,9 @@ define [
     afterEditCell: (rowid, cellname, value, iRow, iCol)->
       grid = $(@)
       # remove original keydown handler and install a new one
-      editElem = $('#'+"#{iRow}_#{cellname}").off("keydown")
+      elemId = iRow + "_#{cellname}"
+      #// cellname may include dot, which jquery considered a class selector
+      editElem = $(document.getElementById(elemId)).off("keydown")
       originalValue = editElem.val()
       editElem.on('keydown', (e)->
         if $.ui.keyCode.ESCAPE == e.which
