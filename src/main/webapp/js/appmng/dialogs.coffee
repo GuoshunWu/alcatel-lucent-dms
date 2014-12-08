@@ -579,7 +579,7 @@ define [
       ).setCaption(i18n.dialog.stringsettingstrans.caption.format $.jgrid.htmlEncode(param.key))
         .trigger "reloadGrid"
     buttons: [
-      {text: c18n.save, click: (e)->
+      {text: c18n.save, attr: {id: 'saveLabelAndTranslations'}, click: (e)->
         me = $(@)
         grid = $('#stringSettingsTranslationGrid')
         editedCell = grid.data("editedCell")

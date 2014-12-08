@@ -382,13 +382,13 @@ define ['jqueryui'
     #    check all buttons' privilege
     $('[role=button][privilegeName]').each ()->
       forbidden = $(@).attr('privilegeName') in param.forbiddenPrivileges
-      console.log "Button: #{@id} which privilegeName=#{$(@).attr('privilegeName')} forbidden: #{forbidden}."
+#      console.log "Button: #{@id} which privilegeName=#{$(@).attr('privilegeName')} forbidden: #{forbidden}."
       return true unless forbidden
       $(@).button 'disable'
 
     $('input[privilegeName],textarea[privilegeName]').each ()->
       forbidden = $(@).attr('privilegeName') in param.forbiddenPrivileges
-      console.log "textarea or input: #{@id} which privilegeName=#{$(@).attr('privilegeName')} forbidden: #{forbidden}."
+#      console.log "textarea or input: #{@id} which privilegeName=#{$(@).attr('privilegeName')} forbidden: #{forbidden}."
       return true unless forbidden
       $(@).prop 'disabled', true
 
