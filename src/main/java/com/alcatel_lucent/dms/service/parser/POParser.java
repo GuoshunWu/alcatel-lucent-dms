@@ -240,7 +240,7 @@ public class POParser extends DictionaryParser {
         return dictionary;
 	}
 
-	
+	// msgid in PO may be duplicate, so add distinct suffix to label key to remove duplication
 	private void processDuplicateLabelKey(Collection<Label> labels) {
 		HashMap<String, Integer> countKey = new HashMap<String, Integer>();
 		for (Label label : labels) {
