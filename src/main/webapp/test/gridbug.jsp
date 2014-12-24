@@ -20,11 +20,11 @@
     </style>
 
     <link rel="stylesheet" type="text/css" href="../css/jqueryUI/themes/base/jquery.ui.all.css">
-    <link rel="stylesheet" type="text/css" href="../css/jqgrid/ui.jqgrid.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/jqgrid/4.7/ui.jqgrid.css"/>
 
-    <script type="text/javascript" src="../js/lib/jquery-1.7.2.min.js"></script>
-    <script type="text/javascript" src="../js/lib/i18n/grid.locale-en.js"></script>
-    <script type="text/javascript" src="../js/lib/jquery.jqGrid.min.js"></script>
+    <script type="text/javascript" src="../js/lib/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../js/lib/jqgrid4.7.0/i18n/grid.locale-en.js"></script>
+    <script type="text/javascript" src="../js/lib/jqgrid4.7.0/jquery.jqGrid.src.js"></script>
     <%--<script type="text/javascript" src="js/lib/ui.multiselect.js"></script>--%>
 
     <script type="text/javascript">
