@@ -65,5 +65,6 @@
         param.buildNumber = '-1';
         paramWarn('buildNumber', param.buildNumber);
     }
-    param.i18ngridfile = 'jqgridlib/i18n/grid.locale-' + (gridI18NMap[param.locale] ? gridI18NMap[param.locale] : param.locale);
+//    param.i18ngridfile = 'jqgridlib/i18n/grid.locale-' + (gridI18NMap[param.locale] ? gridI18NMap[param.locale] : param.locale);
+    param.i18ngridfile = 'jqgrid4.7.0/i18n/grid.locale-' + (gridI18NMap[param.locale] ? gridI18NMap[param.locale] : param.locale);
 </script>
