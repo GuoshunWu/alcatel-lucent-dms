@@ -21,11 +21,11 @@ define [
     # enable cell edit input html text
     afterRestoreCell:(rowid, value, iRow, iCol)->
       $(this).jqGrid("setCell", rowid, iCol, $.jgrid.htmlEncode(value), false, false, true);
-    beforeSaveCell: (rowid, cellname, value, iRow, iCol)->
-      cellsubmit = $(this).jqGrid('getGridParam', 'cellsubmit')
-      if "clientArray" == cellsubmit then $.jgrid.htmlEncode(value) else value
-#    formatCell: (rowid, cellname, value, iRow, iCol)->
-#      $.jgrid.htmlDecode(value)
+    afterSaveCell: (rowid, cellname, value, iRow, iCol)->
+      $(this).jqGrid("setCell", rowid, iCol, $.jgrid.htmlEncode(value), false, false, true);
+#      if "clientArray" == cellsubmit then $.jgrid.htmlEncode(value) else value
+    formatCell: (rowid, cellname, value, iRow, iCol)->
+      $.jgrid.htmlDecode(value)
 
 
 
