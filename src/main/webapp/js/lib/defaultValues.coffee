@@ -25,7 +25,8 @@ define [
       $(this).jqGrid("setCell", rowid, iCol, $.jgrid.htmlEncode(value), false, false, true);
 #      if "clientArray" == cellsubmit then $.jgrid.htmlEncode(value) else value
     formatCell: (rowid, cellname, value, iRow, iCol)->
-      $.jgrid.htmlDecode(value)
+      # this is not need for value may contain encoded html string
+#      $.jgrid.htmlDecode(value)
 
 
 
