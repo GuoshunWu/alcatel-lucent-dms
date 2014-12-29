@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+<meta http-equiv="Pragma" content="no-cache">
+
+<title>Translation Management Grid Test</title>
+
+<link rel="stylesheet" href="../css/jqueryUI/themes/base/jquery.ui.all.css">
+<link rel="stylesheet" type="text/css" href="../css/jqgrid/4.7/ui.jqgrid.css">
+<link rel="stylesheet" type="text/css" href="../css/multipleSelect/multiple-select.css">
+
+<script src="../js/lib/jquery-1.10.1.min.js"></script>
+<script src="../js/lib/jquery-ui-1.10.3.custom.min.js"></script>
+
+<script src="../js/lib/jqgridlib/i18n/grid.locale-en.js"></script>
+<script src="../js/lib/jqgridlib/jquery.jqGrid.min.js"></script>
+
+<script src="../js/lib/jquery.multiple.select.js"></script>
+
+<style type="text/css">
+    .html, body {
+        font-family: 'Verdana', '宋体';
+        font-size: 10px;
+    }
+
+    .ui-menu {
+        width: 150px;
+    }
+
+    .ui-icon-custom {
+        /*width: 32px;*/
+        /*height: 32px;*/
+        background-size: contain;
+        background-image: url(../images/navigator/icon_admin.png) !important;
+    }
+
+    /* Overwrite css multiple-select plugin, to be compatible with jqGrid filter toolbar */
+    .ms-choice {
+        height: 17px;
+    }
+
+    .ms-choice > span {
+        top: -3px;
+    }
+
+    .ms-parent {
+        width: 80px;
+    }
+
+    .ms-choice > div {
+        position: absolute !important;
+        top: -3px;
+        right: -3px;
+    }
+
+    .ms-drop {
+        position: fixed !important;
+        top: auto !important;
+        height: auto !important;
+        width: auto !important;
+        text-align: left !important;
+    }
+</style>
+
+<script>
+
+
+    $(function () {
+
+        function getSelectColModel(name, width, editOptions, editable) {
+            if (editable == null) editable = true;
+            return {
+                name: name,
+                index: name,
+                width: width,
+                classes: editable ? '' : 'col-readonly',
+                sortable: editable,
+                editable: editable,
+                editoptions: {
+                    dataInit: function (elem) {
+                        $(elem).autocomplete({source: editOptions, minLength: 0});
+                    },
+                    dataEvents: [
+                        {
+                            type: 'focus',
+                            fn: function (e) {
+                                $(e.target).select();
+                                $(e.target).autocomplete('search', '');
+                            }
+                        },
+                        {
+                            type: 'autocompleteselect',
+                            fn: function (e) {
+                                autocompleteselected = true;
+                            }  // mark select operation
+                        },
+                        {
+                            type: 'autocompleteclose',
+                            fn: function (e) {
+                                if (autocompleteselected)     // commit only triggered on select operation
+//                                        grid.saveCell(curRow, curCol);
+                                    autocompleteselected = false;
+                            }
+                        },
+                    ]
+                },
+                search: editable,
+                stype: 'select',
+                searchoptions: {
+                    dataInit: function (elem) {
+//                            $(elem)[0].multiple = 'multiple';
+                        $(elem).multipleSelect({
+//                                placeholder: 'All',
+//                                allSelected: 'All',
+//                                minumimCountSelected: 1,
+//                                countSelected: '# selections'
+//                                onClick: triggerToolbar,
+//                                onCheckAll: triggerToolbar,
+//                                onUncheckAll: triggerToolbar
+                        });
+                    },
+                    dataUrl: 'testOptions.txt',
+//                        defaultValue: ''
+                    clearSearch: false
+                }
+            };
+        }
+
+        var colNames = ['ID', 'Application', 'Version', 'Dictionary', 'Version', 'Encoding', 'Format'
+//                , 'Num of String'
+        ];
+        var colModel = [
+            {name: 'id', index: 'id', width: 55, align: 'center', hidden: true, frozen: true},
+            {name: 'application', index: 'base.name', width: 100, editable: false, align: 'left', frozen: true, stype: 'select',
+                searchoptions: { value: ":All", dataEvents: [
+                    {type: 'change', fn: function (e) {
+                    }
+                    }
+                ]
+                }
+            },
+            {name: 'appVersion', index: 'version', width: 90, editable: false, align: 'left', frozen: true, search: false},
+            {name: 'dictionary', index: 'base.name', width: 90, editable: false, align: 'left', frozen: true, search: false},
+            {name: 'dictVersion', index: 'version', width: 90, editable: false, align: 'left', frozen: true, search: false},
+            {name: 'encoding', index: 'base.encoding', width: 90, editable: false, align: 'left', frozen: true, stype: 'select',
+                searchoptions: {
+                    value: ':All;ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE',
+                    dataEvents: [
+                        {
+                            type: 'change', fn: function (e) {
+                        }
+                        }
+                    ]
+                }
+            },
+            {name: 'format', index: 'base.format', width: 90, editable: false, align: 'left', frozen: true,
+                stype: 'select', searchoptions: {
+                value: ":All;DCT:DCT;Dictionary conf:Dictionary conf;Text properties:Text properties;XML labels:XML labels",
+                dataEvents: [
+                    {
+                        type: 'change', fn: function (e) {
+                    }
+                    }
+                ],
+//                    dataUrl: 'testOptions.txt',
+                dataInit: function (elem) {
+                    var jElem = $(elem).multipleSelect();
+                    console.log("e=",$("option",  jElem).get());
+                }
+            }  },
+//                {name: 'numOfString', index: 'labelNum', width: 80, align: 'right', frozen: true, search: false}
+        ];
+
+//        colModel[6] = getSelectColModel('cc', 90, ['DCT', 'Dictionary conf', 'Text properties', 'OPX640', 'XML labels']);
+
+
+        var grid = $('#testGrid').jqGrid({
+            url: '../json/transgrid.json',
+            caption: 'Translation Management Grid Test',
+            mtype: 'post', postData: {}, datatype: 'json',
+            width: $(window).innerWidth() * 0.95, height: 230,
+            rownumbers: true, shrinkToFit: false,
+            pager: '#testPager', rowNum: 60, rowList: [10, 20, 30, 60, 120],
+            sortname: 'base.name', sortorder: 'asc', multiselect: true,
+            colNames: colNames, colModel: colModel, groupHeaders: [],
+            afterCreate: function (grid) {
+                grid.setGroupHeaders({useColSpanStyle: true, groupHeaders: grid.getGridParam('groupHeaders')});
+                grid.filterToolbar({stringResult: true, searchOnEnter: false});
+                grid.navGrid('#testPager', {edit: false, add: false, del: false, search: false, view: false});
+                grid.navGrid('#testPager', {edit: true, add: true, del: false, search: false, view: false});
+                //            grid.setFrozenColumns();
+            }
+        });
+        grid.getGridParam('afterCreate')(grid);
+
+
+        $('#ms').change(function () {
+            console.log($(this).val());
+        }).multipleSelect({
+//                width: '100%'
+        });
+
+    });
+</script>
+</head>
+<body>
+
+<h2 align='center'>JQGrid Test</h2>
+
+<table style="width: 100%" border="0">
+    <tr>
+        <td>
+            <select id="ms" multiple="multiple">
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td align='center'>
+            <table id="testGrid">
+                <tr>
+                    <td></td>
+                </tr>
+            </table>
+            <div id="testPager"/>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>
