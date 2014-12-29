@@ -1,3 +1,8 @@
+V2.17.5 (Dec 29, 2014)
+    * Add access control to new features
+    * Fix issue of editing html code in cell
+    * Fix issue of max length check 
+
 V2.17.4 (Dec 8, 2014)
     * Allows to modify reference along with translations in the Label translation view
     * Allows to input carriage return in edit cell by press ALT + Enter
