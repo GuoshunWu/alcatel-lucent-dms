@@ -259,37 +259,42 @@ public class Label extends BaseEntity implements Cloneable {
      * @return
      */
     public boolean checkLength(String text) {
-        if (StringUtils.isEmpty(maxLength)) {
+        if (StringUtils.isEmpty(maxLength) || text == null) {
             return true;    // no constraint
         }
+        
         String[] texts = text.split("\n");
+        
+        try {
+            if (maxLength.contains("*")) {
+                String[] linesAndColumns = maxLength.split("\\*");
+                int lines = Integer.parseInt(linesAndColumns[0]);
+                if (-1 == lines) lines = Integer.MAX_VALUE;
+                int columns = Integer.parseInt(linesAndColumns[1]);
+                if (-1 == columns) columns = Integer.MAX_VALUE;
 
-        if (maxLength.contains("*")) {
-            String[] linesAndColumns = maxLength.split("\\*");
-            int lines = Integer.parseInt(linesAndColumns[0]);
-            if (-1 == lines) lines = Integer.MAX_VALUE;
-            int columns = Integer.parseInt(linesAndColumns[1]);
-            if (-1 == columns) columns = Integer.MAX_VALUE;
-
-            if (texts.length > lines) return false;
-            for (String strLine : texts) {
-                if (strLine.length() > columns) return false;
+                if (texts.length > lines) return false;
+                for (String strLine : texts) {
+                    if (strLine.length() > columns) return false;
+                }
+                return true;
             }
-            return true;
-        }
 
-        if (maxLength.contains("x")) {
-            String[] linesAndColumns = maxLength.split("x");
-            int lines = Integer.parseInt(linesAndColumns[1].trim());
-            if (-1 == lines) lines = Integer.MAX_VALUE;
-            int columns = Integer.parseInt(linesAndColumns[0].trim());
-            if (-1 == columns) columns = Integer.MAX_VALUE;
+            if (maxLength.contains("x")) {
+                String[] linesAndColumns = maxLength.split("x");
+                int lines = Integer.parseInt(linesAndColumns[1].trim());
+                if (-1 == lines) lines = Integer.MAX_VALUE;
+                int columns = Integer.parseInt(linesAndColumns[0].trim());
+                if (-1 == columns) columns = Integer.MAX_VALUE;
 
-            if (texts.length > lines) return false;
-            for (String strLine : texts) {
-                if (strLine.length() > columns) return false;
+                if (texts.length > lines) return false;
+                for (String strLine : texts) {
+                    if (strLine.length() > columns) return false;
+                }
+                return true;
             }
-            return true;
+        } catch (Exception e) {
+        	log.warn("Unrecognized maxLength: " + maxLength);
         }
 
         String[] lens = maxLength.split(",");
