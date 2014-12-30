@@ -1129,7 +1129,7 @@
                         <groupId>org.apache.tomcat.maven</groupId>
                         <artifactId>tomcat7-maven-plugin</artifactId>
                         <configuration>
-                            <!--<path>/dms</path>-->
+                            <path>/dms</path>
                         </configuration>
                     </plugin>
                 </plugins>

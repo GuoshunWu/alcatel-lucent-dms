@@ -1,17 +1,22 @@
 define [
   'jqgrid'
-  'dms-util'
   'dms-urls'
   'i18n!nls/admin'
-], ($, util, urls, i18n)->
+], ($, urls, i18n)->
 
   afterSubmit = (response, postdata)->
     jsonFromServer = $.parseJSON response.responseText
     [jsonFromServer.status == 0, jsonFromServer.message]
 
-  grid = $('#charsetGrid').jqGrid(
-    url: urls.charsets, postData: {prop: 'name', format: 'grid'}, datatype: 'json'
-    pager: '#charsetPager', mtype: 'post', multiselect: true, rowNum: 15, rowList: [15, 30, 60]
+  gridId = 'charsetGrid'
+  hGridId = '#' + gridId
+  pagerId = gridId + '_' + 'Pager'
+  hPagerId = '#' + pagerId
+
+  grid = $(hGridId).after("<div id='#{pagerId}'>").jqGrid(
+    url: urls.charsets
+    postData: {prop: 'name', format: 'grid'}, datatype: 'json'
+    pager: hPagerId, mtype: 'post', multiselect: true, rowNum: 15, rowList: [15, 30, 60]
     loadtext: 'Loading, please wait...', caption: i18n.charsetgrid.caption
     autowidth: true
     height: '100%'
@@ -27,7 +32,7 @@ define [
       #      formoptions:{elmprefix:"<span style='color:red'>*</span>"}
       editrules: {required: true}}
     ]
-  ).jqGrid('navGrid', '#charsetPager', {search: false, edit: false}, {
+  ).jqGrid('navGrid', hPagerId, {search: false, edit: false}, {
     #      paramAdd
     mtype: 'post', afterSubmit: afterSubmit, ajaxEditOptions: {dataType: 'json'}, closeAfterAdd: true
     beforeShowForm: (form)-> }, {

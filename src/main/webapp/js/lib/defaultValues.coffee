@@ -3,12 +3,10 @@ define [
   'jqueryui'
 
   'i18n!nls/common'
-  'dms-util'
 ], (
   $
   ui
   c18n
-  util
 )->
 
   #ref http://jebaird.com/2010/05/24/setting-new-default-options-for-jquery-ui-widgets.html

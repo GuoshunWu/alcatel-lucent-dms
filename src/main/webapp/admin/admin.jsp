@@ -15,8 +15,8 @@
             <s:if test="#session.user_context.user.role in {4}">
                 <li><a href="#userAdmin"><s:text name="admin.user.title"/></a></li>
                 <li><a href="#sysConfig"><s:text name="admin.sysconfig.title"/></a></li>
-                <li><a href="#glossary"><s:text name="admin.sysconfig.glossary"/></a></li>
             </s:if>
+            <li><a href="#glossary"><s:text name="admin.sysconfig.glossary"/></a></li>
             <li><a href="#preferredTranslation"><s:text name="admin.sysconfig.preftrans"/></a></li>
         <%--<li><a href="#webTests">Web Test Suites</a></li>--%>
         </ul>
@@ -35,10 +35,11 @@
             <div id="sysConfig">
                 <button id="buildLuceneIndex"><s:text name="admin.sysconfig.rebuildindex"/></button>
             </div>
-            <div id="glossary">
-                <%@include file="glossary.jsp" %>
-            </div>
         </s:if>
+
+        <div id="glossary">
+            <%@include file="glossary.jsp" %>
+        </div>
 
         <div id="preferredTranslation" >
             <%@include file="preferredTranslation.jsp"%>

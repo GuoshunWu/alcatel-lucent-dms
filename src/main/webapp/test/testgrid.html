@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Translation Management Grid Test</title>
+
+    <link rel="stylesheet" href="../css/jqueryUI/1.10.3/themes/smoothness/jquery-ui-1.10.3.custom.min.css">
+    <link rel="stylesheet" type="text/css" href="../css/jqgrid/4.7/ui.jqgrid.css"/>
+    <style type="text/css">
+        .html, body {
+            font-family: 'Verdana', '宋体';
+            font-size: 10px;
+        }
+
+        .ui-menu {
+            width: 150px;
+        }
+
+        .ui-icon-custom {
+            /*width: 32px;*/
+            /*height: 32px;*/
+            background-size: contain;
+            background-image: url(../images/navigator/icon_admin.png) !important;
+        }
+    </style>
+
+    <script src="../js/lib/jquery-1.11.0.min.js"></script>
+    <script src="../js/lib/jquery-migrate-1.2.1.min.js"></script>
+    <script src="../js/lib/jquery-ui-1.10.3.custom.min.js"></script>
+    <!--<script src="../js/lib/jquery-1.8.3.js"></script>-->
+    <!--<script src="../js/lib/jquery-ui-1.9.2.custom.min.js"></script>-->
+    <script src="../js/lib/jqgrid4.7.0/i18n/grid.locale-en.js"></script>
+    <script src="../js/lib/jqgrid4.7.0/jquery.jqGrid.src.js"></script>
+    <style>
+
+    </style>
+    <script>
+        $(
+                function () {
+
+                    var __indexOf = [].indexOf || function (item) {
+                                for (var i = 0, l = this.length; i < l; i++) {
+                                    if (i in this && this[i] === item) return i;
+                                }
+                                return -1;
+                            };
+
+                    var colNames = ['ID', 'Application', 'Version', 'Dictionary', 'Version', 'Encoding', 'Format', 'Num of String'];
+                    var colModel = [
+                        {name: 'id', index: 'id', width: 55, align: 'center', hidden: true, frozen: true},
+                        {
+                            name: 'application',
+                            index: 'base.name',
+                            width: 100,
+                            editable: false,
+                            align: 'left',
+                            frozen: true,
+                            stype: 'select',
+                            searchoptions: {
+                                value: ":All", dataEvents: [
+                                    {
+                                        type: 'change', fn: function (e) {
+                                        searchvalue = $("#transGrid").jqGrid('getGridParam', 'searchvalue');
+                                        searchvalue.app = e.target.value;
+                                        $("#transGrid").jqGrid('setGridParam', 'searchvalue', searchvalue);
+                                    }
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            name: 'appVersion',
+                            index: 'version',
+                            width: 90,
+                            editable: false,
+                            align: 'left',
+                            frozen: true,
+                            search: false
+                        },
+                        {
+                            name: 'dictionary',
+                            index: 'base.name',
+                            width: 90,
+                            editable: false,
+                            align: 'left',
+                            frozen: true,
+                            search: false
+                        },
+                        {
+                            name: 'dictVersion',
+                            index: 'version',
+                            width: 90,
+                            editable: false,
+                            align: 'left',
+                            frozen: true,
+                            search: false
+                        },
+                        {
+                            name: 'encoding',
+                            index: 'base.encoding',
+                            width: 90,
+                            editable: false,
+                            align: 'left',
+                            frozen: true,
+                            stype: 'select',
+                            searchoptions: {
+                                value: ':All;ISO-8859-1:ISO-8859-1;UTF-8:UTF-8;UTF-16LE:UTF-16LE;UTF-16BE:UTF-16BE',
+                                dataEvents: [
+                                    {
+                                        type: 'change', fn: function (e) {
+                                        var searchvalue = $("#transGrid").jqGrid('getGridParam', 'searchvalue');
+                                        searchvalue.encoding = e.target.value;
+                                        $("#transGrid").jqGrid('setGridParam', 'searchvalue', searchvalue);
+                                    }
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            name: 'format',
+                            index: 'base.format',
+                            width: 90,
+                            editable: false,
+                            align: 'left',
+                            frozen: true,
+                            stype: 'select',
+                            searchoptions: {
+                                value: ":All;DCT:DCT;Dictionary conf:Dictionary conf;Text properties:Text properties;XML labels:XML labels",
+                                dataEvents: [
+                                    {
+                                        type: 'change', fn: function (e) {
+                                        var searchvalue = $("#transGrid").jqGrid('getGridParam', 'searchvalue');
+                                        searchvalue.format = e.target.value;
+                                        $("#transGrid").jqGrid('setGridParam', 'searchvalue', searchvalue);
+                                    }
+                                    }
+                                ]
+                            }
+                        },
+                        {name: 'numOfString', index: 'labelNum', width: 80, align: 'right', frozen: true, search: false}
+                    ]
+
+                    var grid = $('#testGrid').jqGrid({
+                        url: '../json/transgrid.json',
+                        caption: 'Translation Management Grid Test',
+                        mtype: 'post', postData: {}, datatype: 'json',
+                        width: $(window).innerWidth() * 0.95, height: 230,
+                        rownumbers: true, shrinkToFit: false,
+                        pager: '#testPager', rowNum: 60, rowList: [10, 20, 30, 60, 120],
+                        sortname: 'base.name', sortorder: 'asc', multiselect: true,
+                        colNames: colNames, colModel: colModel, groupHeaders: [],
+                        afterCreate: function (grid) {
+//                    grid.setGroupHeaders({useColSpanStyle:true, groupHeaders:grid.getGridParam('groupHeaders')});
+//                    grid.filterToolbar({stringResult:true, searchOnEnter:false});
+                            grid.navGrid('#testPager', {edit: true, add: true, del: false, search: false, view: false});
+                            //            grid.setFrozenColumns();
+                        }
+                    });
+                    grid.getGridParam('afterCreate')(grid);
+
+                });
+
+        //@sourceURL = testjs.js
+    </script>
+</head>
+<body>
+
+<h2 align='center'>JQGrid Test</h2>
+
+<table style="width: 100%" border="0">
+    <tr>
+        <td></td>
+    </tr>
+    <tr>
+        <td align='center'>
+            <table id="testGrid">
+                <tr>
+                    <td></td>
+                </tr>
+            </table>
+            <div id="testPager"/>
+        </td>
+    </tr>
+
+</table>
+
+</body>
+</html>
