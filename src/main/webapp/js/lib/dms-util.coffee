@@ -194,7 +194,7 @@ define ['jqueryui'
           obj.classes = obj.classes.replace('editable-column', '') if obj.classes
 
     #    for the grid  navigatebar, ['view', 'search', 'refresh'] are readonly operation, enabled
-    $.each ['add', 'edit', 'del', 'lock'], (index, value)->
+    $.each ['add', 'edit', 'del', 'lock', 'apply'], (index, value)->
       # for jqgrid predefined navigate buttons
       btnSelector = "##{value}_#{grid.id}"
       actButton = $ btnSelector

@@ -61,6 +61,8 @@ public class Privileges {
 		addPrivilege(ImportTranslationDetailsAction.class, User.ROLE_APPLICATION_OWNER | User.ROLE_TRANSLATION_MANAGER);
 
 		addPrivilege(UpdateLabelRefAndTranslationsAction.class, User.ROLE_APPLICATION_OWNER | User.ROLE_TRANSLATION_MANAGER);
+		addPrivilege(GlossaryAction.class, User.ROLE_ADMINISTRATOR);
+
 
 		// translation management
 		addPrivilege(UpdateStatusAction.class, User.ROLE_APPLICATION_OWNER | User.ROLE_TRANSLATION_MANAGER);
