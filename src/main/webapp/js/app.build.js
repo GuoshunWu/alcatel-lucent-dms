@@ -71,6 +71,7 @@
 //        }
         {
             name: "../entry",
+
             include: ['requireLib', 'main']
         }
 

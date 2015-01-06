@@ -23,8 +23,8 @@
     <link rel="stylesheet" type="text/css" href="../css/jqgrid/4.7/ui.jqgrid.css"/>
 
     <script type="text/javascript" src="../js/lib/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript" src="../js/lib/jqgrid4.7.0/i18n/grid.locale-en.js"></script>
-    <script type="text/javascript" src="../js/lib/jqgrid4.7.0/jquery.jqGrid.src.js"></script>
+    <script type="text/javascript" src="../js/lib/jqgrid/i18n/grid.locale-en.js"></script>
+    <script type="text/javascript" src="../js/lib/jqgrid/jquery.jqGrid.src.js"></script>
     <%--<script type="text/javascript" src="js/lib/ui.multiselect.js"></script>--%>
 
     <script type="text/javascript">

@@ -10,7 +10,7 @@ define ['jqgrid'], ($)->
     sortname: 'languageCode'
     sortorder: 'asc'
     viewrecords: true
-    gridview: true, cellEdit: true, cellurl: 'app/deliver-update-dict-language'
+    cellEdit: true, cellurl: 'app/deliver-update-dict-language'
     colNames: [ 'Code', 'Language', 'Charset']
     colModel: [
       {name: 'code', index: 'languageCode', width: 40, editable: false, align: 'left'}

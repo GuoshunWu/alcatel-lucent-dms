@@ -42,7 +42,7 @@ define [
         select.empty().append(newValue)
       ) if selectColumns.length
 
-    gridview: true,
+
     pager: pagerId,
     width: 810, height: 400
     colNames: ['Type', 'Message']

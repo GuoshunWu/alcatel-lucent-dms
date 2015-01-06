@@ -13,7 +13,7 @@ define ['jqgrid',   'i18n!nls/appmng', 'dms-util'], ($, i18n, util)->
     viewrecords: true
     caption: 'result'
     viewrecords: true
-    gridview: true, multiselect: false, cellEdit: false
+    multiselect: false, cellEdit: false
     grouping: true
     groupingView: {
       groupField: ['dictionary.base.applicationBase.productBase.name', 'dictionary.base.applicationBase.name', 'dictionary.nameVersion']

@@ -5,7 +5,7 @@ define ['jqgrid'], ($)->
     width: $(window).width() * 0.6, height: 200, shrinkToFit: false
     rownumbers: true, loadonce: false # for reload the colModel
     pager: '#ViewDetailPager', rowNum: 100, rowList: [20,50,100,200,500]
-    sortname: 'labelKey', sortorder: 'asc', viewrecords: true, gridview: true, multiselect: false,
+    sortname: 'labelKey', sortorder: 'asc', viewrecords: true,  multiselect: false,
     cellEdit: true
     colNames: ['Label', 'Max len', 'Context', 'Reference language', 'Translation']
     colModel: [

@@ -7,7 +7,7 @@ define ['jqgrid', 'dms-util', 'i18n!nls/common'], ($, util, c18n)->
     rowNum: 20, rowList: [20, 50, 100]
     sortorder: 'asc'
     viewrecords: true
-    gridview: true, multiselect: false, cellEdit: false
+    multiselect: false, cellEdit: false
     colNames: ['Operation Time', 'Operation Type',  'Operator', 'Translation', 'Status', 'Memo']
     colModel: [
       {name: 'operationTime', index: 'operationTime', width: 60, editable: false, align: 'left'}

@@ -11,7 +11,7 @@ define ['jqgrid', 'dms-util'], ($, util)->
     sortorder: 'desc'
     sortname: 'operationTime'
     viewrecords: true
-    gridview: true, multiselect: false, cellEdit: false
+    multiselect: false, cellEdit: false
     colNames: ['Operation Time', 'Operation Type', 'Task Name', 'Operator']
     colModel: [
       {name: 'operationTime', index: 'operationTime', width: 50, editable: false, align: 'left'}

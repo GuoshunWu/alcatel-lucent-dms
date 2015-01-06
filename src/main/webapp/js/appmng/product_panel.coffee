@@ -1,10 +1,11 @@
 define [
-  'jqmsgbox'
   'i18n!nls/common'
   'dms-urls', 'dms-util'
+
   'appmng/application_grid'
+  'jqmsgbox'
   'appmng/dialogs'
-], ($, c18n, urls, util, grid, dialogs)->
+], (c18n, urls, util,grid, $, dialogs)->
 #  console?.log "module appmng/product_panel loading."
 
   $("#newVersion").button(text: false, label: '&nbsp;', icons:

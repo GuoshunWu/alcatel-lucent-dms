@@ -26,12 +26,7 @@
         <tr>
             <td colspan="2" id="applicationGrid_parent">
                 <div id="applicationGrid">
-                    <table id="applicationGridList">
-                        <tr>
-                            <td></td>
-                        </tr>
-                    </table>
-                    <div id="pager"></div>
+                    <table id="applicationGridList"></table>
                 </div>
             </td>
         </tr>

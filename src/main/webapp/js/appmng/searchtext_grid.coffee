@@ -15,7 +15,7 @@ define [
     sortorder: 'asc'
     caption: 'result'
     viewrecords: true
-    gridview: true, multiselect: false, cellEdit: false
+    multiselect: false, cellEdit: false
 
     colNames: ['Application', 'Dictionary', 'Label', 'Reference Language', 'Max Length', 'Context', 'T', 'N', 'I']
     colModel: [

@@ -45,7 +45,7 @@ define [
     width: 'auto', height: 300
     rownumbers: true
     pager: pagerId, rowNum: 20, rowList: [20, 50, 100, 200]
-    viewrecords: true, gridview: true, multiselect: false
+    viewrecords: true,  multiselect: false
     cellEdit: true, cellurl: urls.trans.update_status
     postData: {
       format: 'grid',

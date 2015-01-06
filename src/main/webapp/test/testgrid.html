@@ -4,8 +4,15 @@
     <meta charset="utf-8">
     <title>Translation Management Grid Test</title>
 
+    <!--[if IE]>
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
+
+    <![endif]-->
+
     <link rel="stylesheet" href="../css/jqueryUI/1.10.3/themes/smoothness/jquery-ui-1.10.3.custom.min.css">
-    <link rel="stylesheet" type="text/css" href="../css/jqgrid/4.7/ui.jqgrid.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/jqgrid/ui.jqgrid.css"/>
     <style type="text/css">
         .html, body {
             font-family: 'Verdana', '宋体';
@@ -25,12 +32,11 @@
     </style>
 
     <script src="../js/lib/jquery-1.11.0.min.js"></script>
-    <script src="../js/lib/jquery-migrate-1.2.1.min.js"></script>
+    <!--<script src="../js/lib/jquery-migrate-1.2.1.min.js"></script>-->
     <script src="../js/lib/jquery-ui-1.10.3.custom.min.js"></script>
-    <!--<script src="../js/lib/jquery-1.8.3.js"></script>-->
-    <!--<script src="../js/lib/jquery-ui-1.9.2.custom.min.js"></script>-->
-    <script src="../js/lib/jqgrid4.7.0/i18n/grid.locale-en.js"></script>
-    <script src="../js/lib/jqgrid4.7.0/jquery.jqGrid.src.js"></script>
+
+    <script src="../js/lib/jqgrid/i18n/grid.locale-en.js"></script>
+    <script src="../js/lib/jqgrid/jquery.jqGrid.src.js"></script>
     <style>
 
     </style>
@@ -148,6 +154,8 @@
                         rownumbers: true, shrinkToFit: false,
                         pager: '#testPager', rowNum: 60, rowList: [10, 20, 30, 60, 120],
                         sortname: 'base.name', sortorder: 'asc', multiselect: true,
+                        viewrecords: true,
+                        gridview: true,
                         colNames: colNames, colModel: colModel, groupHeaders: [],
                         afterCreate: function (grid) {
 //                    grid.setGroupHeaders({useColSpanStyle:true, groupHeaders:grid.getGridParam('groupHeaders')});
