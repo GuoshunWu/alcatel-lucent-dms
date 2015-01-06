@@ -9,6 +9,8 @@ define [
   'dms-util'
 
   'transmng/grid.colmodel'
+
+  'jqupload'
 ], ($, msgbox, blockui, jqgrid, i18n, c18n, urls, util, gmodel)->
   gridId = 'transGrid'
   hGridId = '#' + gridId
@@ -119,7 +121,7 @@ define [
     url: urls.dicts
     mtype: 'post', postData: {}, datatype: 'local'
     width: 1000, height: 300
-    viewrecords: true, gridview: true, multiselect: true
+    viewrecords: true,  multiselect: true
     rownumbers: true, shrinkToFit: false
     pager: pagerId,
     rowNum: 50, rowList: [50, 100, 500, 9999]

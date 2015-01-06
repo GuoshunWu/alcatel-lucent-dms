@@ -1,8 +1,6 @@
-/*@import "jqueryUI/themes/base/jquery.ui.all.css";*/
 /*@import "//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css";*/
 @import "jqueryUI/1.10.3/themes/smoothness/jquery-ui-1.10.3.custom.min.css";
-/*@import "jqgrid/ui.jqgrid.css";*/
-@import "jqgrid/4.7/ui.jqgrid.css";
+@import "jqgrid/ui.jqgrid.css";
 @import "jqueryLayout/layout.css";
 @import "select2/select2.css";
 

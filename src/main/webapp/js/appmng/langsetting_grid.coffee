@@ -19,7 +19,7 @@ define [
     sortorder: 'asc'
     viewrecords: true
     #  ajaxGridOptions:{async:false}
-    gridview: true, multiselect: true, cellEdit: true, cellurl: 'app/update-dict-language'
+    multiselect: true, cellEdit: true, cellurl: 'app/update-dict-language'
     colNames: [ 'Code', 'Language', 'Charset']
     colModel: [
       {name: 'code', index: 'languageCode', width: 40, editable: false, align: 'left'}

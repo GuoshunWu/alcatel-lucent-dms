@@ -9,9 +9,8 @@
     <s:set var="base" scope="page"><s:url value="/"/></s:set>
     <title><s:text name="title"/></title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta http-equiv="Pragma" content="no-cache"/>
     <!--[if IE]>
-    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <![endif]-->
     <%@include file="common/env.jsp" %>
     <link rel="stylesheet" type="text/css" href="${base}css/main.css?v=<s:property value="buildNumber"/>"/>

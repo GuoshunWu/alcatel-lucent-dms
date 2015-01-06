@@ -56,7 +56,7 @@ define [
   pager: '#dictListPreviewPager', rowNum: 100
   sortname: 'base.name', sortorder: 'asc'
   viewrecords: true, cellEdit: true, cellurl: urls.app.deliver_update_dict, ajaxCellOptions: {async: false}
-  gridview: true, multiselect: false
+  multiselect: false
   caption: i18n.grid.dictlistpreview.caption
   colNames: ['LangRefCode', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels', 'Error', 'Warning', 'Action']
   colModel: colModel

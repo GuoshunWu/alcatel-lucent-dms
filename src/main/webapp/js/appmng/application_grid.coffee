@@ -1,8 +1,22 @@
-define ['jqgrid', 'i18n!nls/appmng', 'dms-urls', 'dms-util'],($, i18n, urls, util)->
+define [
+  'i18n!nls/appmng'
+  'dms-urls'
+  'dms-util'
+  'jqgrid'
+],(
+  i18n
+  urls
+  util
+  $
+)->
+  #  console?.log "module appmng/application_grid loading."
 
-#  console?.log "module appmng/application_grid loading."
+  gridId = 'applicationGridList'
+  hGridId = '#' + gridId
+  pagerId =  gridId + '_' + 'Pager'
+  hPagerId = '#' + pagerId
 
-  appGrid = $('#applicationGridList').jqGrid(
+  appGrid = $(hGridId).after("<div id='#{pagerId}'>").jqGrid(
     datatype: 'local', mtype: 'post', url: urls.apps
     editurl: "app/create-or-add-application"
     cellurl: 'app/change-application-version'
@@ -10,18 +24,19 @@ define ['jqgrid', 'i18n!nls/appmng', 'dms-urls', 'dms-util'],($, i18n, urls, uti
     cellsubmit: 'remote', cellEdit: true
     widht: 700
     height: '100%'
-    pager: '#pager', rowNum: 20, rowList: [10, 20, 30], multiselect: true
+    pager: hPagerId, rowNum: 20, rowList: [10, 20, 30], multiselect: true
+    viewrecords: true
+#    gridview: true
+
     sortname: 'name', sortorder: 'asc'
-    viewrecords: true, gridview: true
     caption: i18n.grid.appsforprod
     colNames: ['ID', 'Application', 'Version', 'Dict. Num.']
-
     colModel: [
       {name: 'id', index: 'id', width: 55, align: 'center', editable: false, hidden: true}
       {name: 'name', index: 'name', width: 100, editable: false, align: 'left'}
       {name: 'version', index: 'version', width: 90, editable: true, classes: 'editable-column', align: 'left', edittype: 'select', editoptions: {value: {}}}
       {name: 'dictNum', index: 'dictNum', width: 80, editable: false, align: 'right'}
-    ],
+    ]
     afterEditCell: (id, name, val, iRow, iCol)->
       if name == 'version'
         $.ajax {url: "rest/applications/appssamebase/#{id}", async: false, dataType: 'json', success: (json)->
@@ -35,26 +50,26 @@ define ['jqgrid', 'i18n!nls/appmng', 'dms-urls', 'dms-util'],($, i18n, urls, uti
       jsonFromServer = eval "(#{serverresponse.responseText})"
       [jsonFromServer.status == 0, jsonFromServer.message]
   ).setGridParam(datatype: 'json')
-  .jqGrid('navGrid', '#pager', {edit: false, add: false, del: true, search: false, view: false}, {}, {}, {
+  .jqGrid('navGrid', hPagerId, {edit: false, add: false, del: true, search: false, view: false}, {}, {}, {
     #  delete form properties
-    reloadAfterSubmit: false, url: 'app/remove-application'
-    beforeShowForm: (form)->
-    #    permanent = $('#permanentDeleteSignId', form)
-    #    $("<tr><td>#{i18n.grid.permanenttext}<td><input align='left' type='checkbox' id='permanentDeleteSignId'>")
-    #    .appendTo $("tbody", form) if permanent.length == 0
-    #    permanent?.removeAttr 'checked'
-    onclickSubmit: (params, posdata)->
-      prodpnl = require 'appmng/product_panel'
-      product = prodpnl.getSelectedProduct()
-      #    permanent = Boolean $('#permanentDeleteSignId').attr "checked"
-      {productId: product.id}
-    afterSubmit: (response, postdata)->
-      jsonFromServer = eval "(#{response.responseText})"
-      #remove appbase node from apptree.
-      [0 == jsonFromServer.status, jsonFromServer.message]
+      reloadAfterSubmit: false, url: 'app/remove-application'
+      beforeShowForm: (form)->
+        #    permanent = $('#permanentDeleteSignId', form)
+        #    $("<tr><td>#{i18n.grid.permanenttext}<td><input align='left' type='checkbox' id='permanentDeleteSignId'>")
+        #    .appendTo $("tbody", form) if permanent.length == 0
+        #    permanent?.removeAttr 'checked'
+      onclickSubmit: (params, posdata)->
+        prodpnl = require 'appmng/product_panel'
+        product = prodpnl.getSelectedProduct()
+        #    permanent = Boolean $('#permanentDeleteSignId').attr "checked"
+        {productId: product.id}
+      afterSubmit: (response, postdata)->
+        jsonFromServer = eval "(#{response.responseText})"
+        #remove appbase node from apptree.
+        [0 == jsonFromServer.status, jsonFromServer.message]
     })
 
-  appGrid.navButtonAdd('#pager', {id: "custom_add_#{appGrid.attr 'id'}", caption: "", buttonicon: "ui-icon-plus", position: "first", onClickButton: ()->
+  appGrid.navButtonAdd(hPagerId, {id: "custom_add_#{appGrid.attr 'id'}", caption: "", buttonicon: "ui-icon-plus", position: "first", onClickButton: ()->
     $("#addApplicationDialog").dialog "open"
   })
 

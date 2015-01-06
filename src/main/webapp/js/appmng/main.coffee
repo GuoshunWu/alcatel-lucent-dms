@@ -1,12 +1,13 @@
 define [
-  'jqgrid'
   'dms-util'
-
   'appmng/product_panel'
   'appmng/application_panel'
   'appmng/search_panel'
   'appmng/layout'
-], ($, util, productpnl, apppnl, searchpnl, layout)->
+], (
+  util
+  productpnl, apppnl, searchpnl, layout
+)->
   nodeSelectHandler = (node, nodeInfo)->
     switch node.attr('type')
       when 'products'

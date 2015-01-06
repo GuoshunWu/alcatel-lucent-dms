@@ -64,7 +64,7 @@ define [
     cellactionhandlers: handlers
     rownumbers: true, loadonce: false # for reload the colModel
     pager: '#taskPager', rowNum: 60, rowList: [10, 20, 30, 60, 120]
-    sortname: 'createTime', sortorder: 'desc', viewrecords: true, gridview: true, multiselect: false,
+    sortname: 'createTime', sortorder: 'desc', viewrecords: true,  multiselect: false,
     cellEdit: true, cellurl: ''
     colNames: ['Task', 'Creator', 'Create time', 'Last upload time', 'Status' , 'Actions']
     colModel: [

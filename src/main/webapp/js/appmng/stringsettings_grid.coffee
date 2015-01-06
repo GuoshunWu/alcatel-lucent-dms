@@ -37,7 +37,7 @@ define [
     rowNum: 100, rowList: [20,50,100,200,500]
     sortorder: 'asc'
     viewrecords: true
-    gridview: true, multiselect: true, cellEdit: true, cellurl: urls.label.update
+    multiselect: true, cellEdit: true, cellurl: urls.label.update
     colNames: ['Label', 'Reference Language', 'T', 'N', 'I', 'Max Length', 'Context', 'Description']
     colModel: [
       {name: 'key', index: 'key', width: 100, editable: false, align: 'left', search:false}

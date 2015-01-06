@@ -86,7 +86,7 @@ define [
     pager: "#{hGridId}Pager"
     rowNum: 30, rowList: [15, 30, 60]
     sortname: 'text',  sortorder: 'asc'
-    viewrecords: true, gridview: true, multiselect: true
+    viewrecords: true,  multiselect: true
 
     caption: c18n.glossary.caption
     autowidth: true

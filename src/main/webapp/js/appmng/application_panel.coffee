@@ -8,10 +8,15 @@ define [
   'dms-util'
   'dms-urls'
 
+  'modernizr'
+
   'appmng/dialogs'
   'appmng/dictionary_grid'
-], ($, upload, iframetrans, i18n, c18n, util, urls, dialogs, grid)->
-
+], ($, upload, iframetrans, i18n, c18n
+    util, urls,
+    Modernizr
+    dialogs, grid
+)->
   appInfo = {}
 
   searchActionBtn = $('#appSearchAction', '#appmng').attr('title', 'Search').button(text: false, icons:{primary: "ui-icon-search"})
@@ -77,6 +82,7 @@ define [
     cursor: 'pointer'
   )
 
+  hasFileAPICapability= Modernizr.filereader && Modernizr.filesystem
 
   $("##{dctFileUpload}").fileupload {
   type: 'POST', dataType: 'json'
@@ -92,15 +98,15 @@ define [
       {name: 'appId', value: $("#selAppVersion").val()}
     ]
     data.submit()
-    @pb=util.genProgressBar() if !$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10
+    @pb=util.genProgressBar() if hasFileAPICapability
     $(uploadBrowserId).button 'disable'
   progressall: (e, data) ->
-    return if $.browser.msie && parseInt($.browser.version.split('\.')[0]) < 10
+    return if !hasFileAPICapability
     progress = data.loaded / data.total * 100
     @pb.progressbar "value", progress
   done: (e, data)->
     $(uploadBrowserId).button 'enable'
-    @pb.parent().remove() if !$.browser.msie || parseInt($.browser.version.split('\.')[0]) >= 10
+    @pb.parent().remove() if hasFileAPICapability
     #    request handler
     jsonFromServer = data.result
 

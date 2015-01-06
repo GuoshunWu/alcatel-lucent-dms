@@ -86,7 +86,7 @@ define [
     editurl: urls.user.update
     loadtext: 'Loading, please wait...', caption: i18n.usergrid.caption
     autowidth: true
-    viewrecords: true, gridview: true, multiselect: true
+    viewrecords: true,  multiselect: true
     sortname: 'lastLoginTime', sortorder: 'desc'
     height: '100%'
     colNames: ['Login name', 'Name', 'Email', 'Last login time', 'Enabled', 'Role', 'IsOnLine', 'Login Counter']

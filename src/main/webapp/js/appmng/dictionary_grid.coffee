@@ -119,7 +119,7 @@ define [
   sortname: 'base.name'
   sortorder: 'asc'
   viewrecords: true, cellEdit: true, cellurl: urls.app.update_dict, ajaxCellOptions: {async: false}
-  gridview: true, multiselect: true
+  multiselect: true
   caption: i18n.grid.dictsforapp
   colNames: ['LangRefCode', 'Dictionary', 'Version', 'Format', 'Encoding', 'Labels', 'Error', 'Warning', 'Action','History', 'Del']
   colModel: colModel

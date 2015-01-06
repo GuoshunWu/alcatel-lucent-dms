@@ -1,21 +1,17 @@
 require.config
-#  baseUrl: '../js/lib'
   baseUrl: 'js/lib'
 
   paths:
-    jqueryJS: 'jquery-1.11.0.min'
-    "jquery": 'jquery-migrate-1.2.1.min'
+    jquery: 'jquery-1.11.0.min'
+    "jquery.migrate": 'jquery-migrate-1.2.1.min'
     jqueryui: 'jquery-ui-1.10.3.custom.min'
     'edialog': 'jquery.dialogextend.min'
-#    jqueryui: 'jquery-ui'
     qunit: 'qunit-1.13.0'
     formvalidate: 'formValidator-4.0.1.min'
     formvalreg: 'formValidatorRegex'
     jqform: 'jquery.form'
-    jqgridJS: 'jqgrid4.7.0/jquery.jqGrid.src'
-#    jqgrid: 'jqgridlib/jquery.jqGrid.min'
-    jqgrid: if param? then param.i18ngridfile else 'jqgrid4.7.0/i18n/grid.locale-en'
-#    jqgrid: 'jquery.jqGrid.min'
+    jqgridJS: 'jqgrid/jquery.jqGrid.min'
+    jqgrid: if param? then param.i18ngridfile else 'jqgrid/i18n/grid.locale-en'
     jqtree: 'jquery.jstree'
 #    jqtree: 'jstree3.0'
     jqlayout: 'jquery.layout-latest.min'
@@ -63,12 +59,14 @@ require.config
     'edialog':
       deps: ['jqueryui']
       exports: 'jQuery'
-    'jquery':
-      deps: ['jqueryJS']
+    'jquery.migrate':
+      deps: ['jquery']
       exports: 'jQuery'
     'hchart':
       deps: ['jquery']
       exports: 'jQuery'
+    'modernizr':
+      exports: 'Modernizr'
     'hchart_exp':
       deps: ['hchart']
       exports: 'jQuery'
@@ -83,11 +81,8 @@ require.config
       deps: ['jquery']
       exports: 'jQuery'
     'jqueryui':
-      deps: ['jquery']
+      deps: ['jquery.migrate']
       exports: 'jQuery'
-#    'i18n/grid.locale-en':
-#      deps: ['jquery']
-#      exports: 'jQuery'
     'ui.multiselect':
       deps: ['jqueryui']
       exports: 'jQuery'

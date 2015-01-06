@@ -12,7 +12,7 @@ define [
     width: 'auto', height: 200, shrinkToFit: false
     rownumbers: true
     pager: '#transDetailsPager', rowNum: 100, rowList: [20,50,100,200,500]
-    viewrecords: true, gridview: true, multiselect: true
+    viewrecords: true,  multiselect: true
     cellEdit: true, cellurl: urls.trans.update_status, ajaxCellOptions: {async: false}
     colNames: ['Label', 'Max Len.', 'Context', 'Reference', 'Translation', 'Status','TransId', 'Trans.Src', 'Last updated','Match','History']
     colModel: [
