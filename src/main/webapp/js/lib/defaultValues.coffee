@@ -18,10 +18,14 @@ define [
 
     # enable cell edit input html text
     afterRestoreCell:(rowid, value, iRow, iCol)->
-      $(this).jqGrid("setCell", rowid, iCol, $.jgrid.htmlEncode(value), false, false, true);
+      $(@).jqGrid("setCell", rowid, iCol, $.jgrid.htmlEncode(value), false, false, true);
     afterSaveCell: (rowid, cellname, value, iRow, iCol)->
-      $(this).jqGrid("setCell", rowid, iCol, $.jgrid.htmlEncode(value), false, false, true);
+      grid = $(@)
+      colProp = grid.jqGrid 'getColProp',cellname
+#      console.log "rowid", rowid, cellname, value, iRow, iCol, colProp.edittype
+      grid.jqGrid("setCell", rowid, iCol, $.jgrid.htmlEncode(value), false, false, true) if colProp.edittype isnt 'select'
 #      if "clientArray" == cellsubmit then $.jgrid.htmlEncode(value) else value
+
     formatCell: (rowid, cellname, value, iRow, iCol)->
       # this is not need for value may contain encoded html string
 #      $.jgrid.htmlDecode(value)

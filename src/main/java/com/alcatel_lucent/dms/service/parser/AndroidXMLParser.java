@@ -16,6 +16,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -104,7 +105,8 @@ public class AndroidXMLParser extends DictionaryParser {
             path = FilenameUtils.normalize(parentFile.getParent(), true) + path;
         }
         if (path.startsWith(rootDir)) path = path.substring(rootDir.length() + 1);
-        if (tokens.length > 1) return Pair.of(path + tokens[0], tokens[1]);
+        String langCode = StringUtils.join(ArrayUtils.subarray(tokens, 1, tokens.length), LANG_CODE_SEPARATOR);
+        if (tokens.length > 1) return Pair.of(path + tokens[0], langCode);
         return Pair.of(path + tokens[0], StringUtils.EMPTY);
     }
 
@@ -216,7 +218,14 @@ public class AndroidXMLParser extends DictionaryParser {
     private DictionaryLanguage getDictionaryLanguage(String langCode, int sortNo) {
         DictionaryLanguage dictLanguage = new DictionaryLanguage();
         dictLanguage.setLanguageCode(langCode);
-        dictLanguage.setLanguage(languageService.getLanguage(langCode));
+
+        //if langCode contains country code, remove prefix r to look for Language
+        String normalLangCode = langCode;
+        String[] tokens = langCode.split(LANG_CODE_SEPARATOR);
+        if(tokens.length>1 && tokens[1].startsWith("r")){
+            normalLangCode = tokens[0] + LANG_CODE_SEPARATOR + tokens[1].substring(1);
+        }
+        dictLanguage.setLanguage(languageService.getLanguage(normalLangCode));
         dictLanguage.setCharset(languageService.getCharset("UTF-8"));
         dictLanguage.setSortNo(sortNo);
         return dictLanguage;
