@@ -222,13 +222,17 @@ public class AndroidXMLParser extends DictionaryParser {
         //if langCode contains country code, remove prefix r to look for Language
         String normalLangCode = langCode;
         String[] tokens = langCode.split(LANG_CODE_SEPARATOR);
-        if(tokens.length>1 && tokens[1].startsWith("r")){
+        if (tokens.length > 1 && tokens[1].startsWith("r")) {
             normalLangCode = tokens[0] + LANG_CODE_SEPARATOR + tokens[1].substring(1);
         }
         dictLanguage.setLanguage(languageService.getLanguage(normalLangCode));
         dictLanguage.setCharset(languageService.getCharset("UTF-8"));
         dictLanguage.setSortNo(sortNo);
         return dictLanguage;
+    }
+
+    private String unEscape(String origin) {
+        return origin.replaceAll("\\\\'", "'");
     }
 
     private ArrayList<Dictionary> parse(String rootDir, File file, Collection<File> acceptedFiles, BusinessException exceptions) throws BusinessException {
@@ -386,10 +390,10 @@ public class AndroidXMLParser extends DictionaryParser {
         if (isReference) {
             Label label = new Label();
             label.setKey(key);
-            label.setReference(element.getStringValue().trim());
+            label.setReference(unEscape(element.getStringValue().trim()));
             label.setAnnotation1(nodeAttributes);
             label.setAnnotation2(comments);
-            if(isMultipleElement){
+            if (isMultipleElement) {
                 label.setAnnotation3(Util.map2String(ImmutableMap.of("isMultipleElement", "true")));
             }
             label.setSortNo(sortNo);
@@ -418,7 +422,7 @@ public class AndroidXMLParser extends DictionaryParser {
         String origTranslation = element.getStringValue().trim();
 
         lt.setStatus(Translation.STATUS_TRANSLATED);
-        lt.setOrigTranslation(origTranslation);
+        lt.setOrigTranslation(unEscape(origTranslation));
 
 
         lt.setLabel(label);

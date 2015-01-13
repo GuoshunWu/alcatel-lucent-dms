@@ -1,0 +1,44 @@
+{
+  "name": "DMS",
+  "version": "2.17.5",
+  "authors": [
+    "Guoshun <wuxiude2003@126.com>"
+  ],
+  "description": "A dictionary management tool used for various types of I18n dictionaries and their translation process.",
+  "main": "js/entry.js",
+  "moduleType": [
+    "amd"
+  ],
+  "keywords": [
+    "jquery",
+    "jquery-ui",
+    "maven",
+    "java"
+  ],
+  "license": "MIT",
+  "homepage": "http://frcolv10lin237.pqa-collab.fr.alcatel-lucent.com",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~1",
+    "jquery-ui": "~1",
+    "select2": "~3",
+    "jqgrid": "~4.6"
+  },
+  "install": {
+    "path": "js/bower_lib",
+    "sources": {
+      "jquery-ui": [
+        "bower_components/jquery-ui/themes/smoothness/**",
+        "bower_components/jquery-ui/jquery-ui.js"
+      ],
+      "ignore": []
+    }
+  }
+}
