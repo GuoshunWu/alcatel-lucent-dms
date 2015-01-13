@@ -250,7 +250,8 @@ public class AndroidXMLGenerator extends DictionaryGenerator {
             Element eleLabel = eleLabels.addElement("string");
             eleLabel.addAttribute("name", label.getKey());
             addAttributesForElement(annotation1, eleLabel);
-            eleLabel.addText(text);
+            // apostrophes in strings need to be escaped with a backslash
+            eleLabel.addText(escape(text));
             if (text.indexOf('\n') != -1) {    // preserve line breaks among the text
                 eleLabel.addAttribute(QName.get("space", Namespace.XML_NAMESPACE), "preserve");
             }
@@ -301,10 +302,15 @@ public class AndroidXMLGenerator extends DictionaryGenerator {
                 text = arrayLabel.getTranslation(dl.getLanguageCode());
             }
             addAttributesForElement(annotation1, elemItem);
-            elemItem.addText(text);
+            // apostrophes in strings need to be escaped with a backslash
+            elemItem.addText(escape(text));
             outputtedArrayLabels.add(arrayLabel.getKey());
         }
         return true;
+    }
+
+    private String escape(String origin) {
+        return origin.replaceAll("'", "\\\\'");
     }
 
     private void addCommentsForElement(String strComments, Branch parentBranch) {

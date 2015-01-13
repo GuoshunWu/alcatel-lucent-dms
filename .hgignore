@@ -1,11 +1,15 @@
 # Remove some patch or backup files from SCM
 syntax:regexp
+js/(?!(?:(lib/))).*\.js
 
 syntax:glob
+
+js/lib/dms*.js
+js/lib/common-util.js
+
 *~
 *.orig
 *.rej
-*.js
 *.map
 *.src
 *.py
@@ -26,17 +30,16 @@ hibernate.cfg.xml
 build.gradle
 gradle-app.*
 
-
-
 # Eclipse config files
 .project
 .classpath
 .settings
-syntax: glob
+
 .myhibernatedata
 *.iml
 *.tmp
 rebel.xml
+
 #groovy files
 DumbTest.groovy
 GroovyTest.groovy
@@ -61,4 +64,10 @@ src/main/tomcatconf/certificates/*
 *.ipr
 *.ids
 *.log
+
+#client java script
+node_modules/
+bower_components/
+
+
 

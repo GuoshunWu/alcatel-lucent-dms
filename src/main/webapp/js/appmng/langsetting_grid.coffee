@@ -61,8 +61,8 @@ define [
   #  custom button for add language
   langSettingGrid.navButtonAdd '#langSettingPager', {id: "custom_add_#{langSettingGrid.attr 'id'}", caption: "", buttonicon: "ui-icon-plus", position: "first"
   onClickButton: ()->
-    $('#addLanguageDialog').data 'param', dicts: [$('#languageSettingGrid').getGridParam('postData').dict]
-    $('#addLanguageDialog').dialog "open"
+    langSettingGrid = $('#languageSettingGrid')
+    addLangDialog = $('#addLanguageDialog').data('param', dicts: [langSettingGrid.getGridParam('postData').dict]).dialog "open"
   }
 
 

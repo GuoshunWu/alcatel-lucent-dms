@@ -3,57 +3,37 @@
 <head>
     <meta charset="utf-8">
     <title>Mangled date examples</title>
-    <script>
-        function prettyDate(time){
-            var date = new Date(time || ""),
-                    diff = (((new Date()).getTime() - date.getTime()) / 1000),
-                    day_diff = Math.floor(diff / 86400);
-
-            if ( isNaN(day_diff) || day_diff < 0 || day_diff >= 31 )
-                return;
-
-            return day_diff == 0 && (
-                    diff < 60 && "just now" ||
-                            diff < 120 && "1 minute ago" ||
-                            diff < 3600 && Math.floor( diff / 60 ) +
-                                    " minutes ago" ||
-                            diff < 7200 && "1 hour ago" ||
-                            diff < 86400 && Math.floor( diff / 3600 ) +
-                                    " hours ago") ||
-                    day_diff == 1 && "Yesterday" ||
-                    day_diff < 7 && day_diff + " days ago" ||
-                    day_diff < 31 && Math.ceil( day_diff / 7 ) +
-                            " weeks ago";
-        }
-        window.onload = function() {
-            var links = document.getElementsByTagName("a");
-            for ( var i = 0; i < links.length; i++ ) {
-                if ( links[i].title ) {
-                    var date = prettyDate(links[i].title);
-                    if ( date ) {
-                        links[i].innerHTML = date;
-                    }
-                }
-            }
-        };
-    </script>
 </head>
 <body>
+<h1>Javascript clip board test. </h1>
 
-<ul>
-    <li class="entry">
-        <p>blah blah blah...</p>
-        <small class="extra">
-            Posted <span class="time">
-        <a href="/2008/01/blah/57/" title="2008-01-28T20:24:17Z">
-            <span>January 28th, 2008</span>
-        </a>
-      </span>
-            by <span class="author"><a href="/john/">John Resig</a></span>
-        </small>
-    </li>
-    <!-- more list items -->
-</ul>
+<div id="result"></div>
+
+<script type="text/javascript" src="../js/lib/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="../js/jquery.paster_image_reader.js?=1"></script>
+<script type="text/javascript">
+    $(function ($) {
+        $(document).on("paste", function(){
+            alert("on paste event.");
+        });
+
+        return;
+        $(document).pasteImageReader(function (content) {
+            console.log("content=", content);
+            var dataURL = content.dataURL;
+            if (!dataURL) {
+                console.warn("No data url found.");
+                return;
+            }
+//            var img = $("<img src='" + dataURL + "'/>");
+            var img = document.createElement('img');
+            img.src = dataURL;
+            console.log("img=%o,height=%o, width=%o", img, img.width, img.height);
+            $('#result').css({backgroundImage: "url(" + dataURL + ")"}).width(img.width).height(img.height);
+//            $('#result').append(img);
+        });
+    });
+</script>
 
 </body>
 </html>

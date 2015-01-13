@@ -474,7 +474,6 @@ define [
         .append("<option value='-1'>#{c18n.selecttip}</option>")
         .append(util.json2Options charsets, false, 'name')
 
-
       $('#languageName', @).change (e)=>
         postData =
           prop: 'languageCode,charset.id'
@@ -482,10 +481,21 @@ define [
           dict: $(@).data('param').dicts.join(',')
         # send the selected dictionary list ids, langId to server, expect language code and charset id response from server
         $.post 'rest/preferredCharset', postData, (json)=>
-          $('#addLangCode', @).val json.languageCode
+#         get current selected dictionary row
+          dictRowData = $('#languageSettingsDialog').data('param')
+          languageCode = json.languageCode
+          return unless languageCode
+#          console.log "dictRowData=%o, languageCode=%o", dictRowData, languageCode
+          if 'XML android' == dictRowData.format
+            sep = '-'
+            index = (languageCode.lastIndexOf sep)+1
+            languageCode = languageCode.substring(0 , index) + 'r' + languageCode.substring(index)
+
+          $('#addLangCode', @).val languageCode
           $('#charset', @).val json['charset.id']
 
     open: (event, ui)->
+      $('#addLangCode', @).val ''
       $.getJSON urls.languages, {prop: 'id,name'}, (languages)=>
         $('#languageName', @)
           .append("<option value='-1'>#{c18n.selecttip}</option>")
