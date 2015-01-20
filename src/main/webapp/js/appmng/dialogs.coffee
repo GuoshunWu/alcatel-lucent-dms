@@ -391,7 +391,7 @@ define [
         param = dictListPreview.data "param"
         isAutoCreateLanguage= $('#isAutoCreateLanguage', @).prop("checked")
         postData = handler: param.handler, app: $('#selAppVersion').val(), autoCreateLang: isAutoCreateLanguage
-        ($.msgBox i18n.dialog.dictlistpreview.check, null, {title: c18n.error};return) if previewgrid.gridHasErrors()
+        ($.msgBox(i18n.dialog.dictlistpreview.check, null, {title: c18n.error});return) if previewgrid.gridHasErrors()
         dictListPreview.dialog 'close'
 
         pb = util.genProgressBar()
@@ -488,8 +488,9 @@ define [
 #          console.log "dictRowData=%o, languageCode=%o", dictRowData, languageCode
           if 'XML android' == dictRowData.format
             sep = '-'
+#            console.log "language code=%o", languageCode
             index = (languageCode.lastIndexOf sep)+1
-            languageCode = languageCode.substring(0 , index) + 'r' + languageCode.substring(index)
+            languageCode = languageCode.substring(0 , index) + 'r' + languageCode.substring(index) if index > 0
 
           $('#addLangCode', @).val languageCode
           $('#charset', @).val json['charset.id']
@@ -497,7 +498,7 @@ define [
     open: (event, ui)->
       $('#addLangCode', @).val ''
       $.getJSON urls.languages, {prop: 'id,name'}, (languages)=>
-        $('#languageName', @)
+        $('#languageName', @).empty()
           .append("<option value='-1'>#{c18n.selecttip}</option>")
           .append(util.json2Options languages, false, 'name').trigger 'change'
 
