@@ -3,7 +3,6 @@
 # jquery.paste_image_reader.js.coffee
 (($) ->
   # Make sure paste events get clipboard data
-  console.log "what's the problem?"
   $.event.fix = ((originalFix) ->
     (event) ->
       event = originalFix.apply(@, arguments)
@@ -26,16 +25,19 @@
     options = $.extend({}, $.fn.pasteImageReader.defaults, options)
 
     # Listen to paste events on each element in the selector
+    $this=@
     @on 'paste', (event) ->
-      console.log "paste event."
-      clipboardData = event.clipboardData
+      clipboardData = event.clipboardData || window.clipboardData
 
       # Loop through all types the data can be pasted as until
       # we hit an image type
 #      console.log "begin loop"
+#      guess chrome and IE items
+      items = clipboardData.items || clipboardData.files
+
       for i, type of clipboardData.types when (!options.matchType) or options.matchType and (type.match(options.matchType) or clipboardData.items[i].type.match(options.matchType))
         if type.match matchTypes.text
-          options.callback.call(@, clipboardData.getData('text'))
+          options.callback.call($this, clipboardData.getData('text'))
           continue
 
         type = clipboardData.items[i].type
@@ -46,7 +48,7 @@
             dataURL: evt.target.result,
             file: file
             event: evt
-          options.callback.call(@, data)
+          options.callback.call($this, data)
         reader.readAsDataURL file
 
       event.preventDefault()

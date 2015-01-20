@@ -3,33 +3,36 @@
 <head>
     <meta charset="utf-8">
     <title>Mangled date examples</title>
+    <style type="text/css" media="screen" >
+        #result{
+            width: 400px;
+            height: 300px;
+            border: dashed #6a5acd;
+        }
+    </style>
 </head>
 <body>
 <h1>Javascript clip board test. </h1>
 
-<div id="result"></div>
+<div id='result' contenteditable='true'>Paste</div>
 
 <script type="text/javascript" src="../js/lib/jquery-1.11.0.min.js"></script>
 <script type="text/javascript" src="../js/jquery.paster_image_reader.js?=1"></script>
 <script type="text/javascript">
-    $(function ($) {
-        $(document).on("paste", function(){
-            alert("on paste event.");
-        });
 
-        return;
-        $(document).pasteImageReader(function (content) {
+    $(function ($) {
+
+        $('#result').pasteImageReader(function (content) {
             console.log("content=", content);
             var dataURL = content.dataURL;
             if (!dataURL) {
                 console.warn("No data url found.");
                 return;
             }
-//            var img = $("<img src='" + dataURL + "'/>");
-            var img = document.createElement('img');
+            var img = new Image();
             img.src = dataURL;
-            console.log("img=%o,height=%o, width=%o", img, img.width, img.height);
-            $('#result').css({backgroundImage: "url(" + dataURL + ")"}).width(img.width).height(img.height);
+            console.log("img=%o,height=%o, width=%o, this=%o", img, img.width, img.height, this);
+            this.css({backgroundImage: "url(" + dataURL + ")"}).width(img.width).height(img.height);
 //            $('#result').append(img);
         });
     });
