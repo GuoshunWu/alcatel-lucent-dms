@@ -1,3 +1,4 @@
+<%@ taglib prefix="s" uri="/struts-tags" %>
 <div id="capitalizationDialog" title="<s:text name="appmng.dialogs.capitalize.title"/>">
 </div>
 
@@ -559,9 +560,19 @@
                 <label for="XMLPropertiesDictEscapeApostrophe">
                     <s:text name="appmng.dialogs.exportdictoptions.escape_apostrophe_char"/>
                 </label>
-                <input type="checkbox" id="XMLPropertiesDictEscapeApostrophe"/>
+                <input type="checkbox" checked id="XMLPropertiesDictEscapeApostrophe"/>
+
             </td>
         </tr>
+        <tr>
+            <td>
+                <label for="XMLPropertiesDictApostropheConvert">
+                    <s:text name="appmng.dialogs.exportdictoptions.convert_apostrophe_char"/>
+                </label>
+                <input id="XMLPropertiesDictApostropheConvert" type="checkbox" checked/>
+            </td>
+        </tr>
+
     </table>
 </div>
 

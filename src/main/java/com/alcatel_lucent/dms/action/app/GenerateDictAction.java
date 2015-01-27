@@ -26,6 +26,7 @@ public class GenerateDictAction extends ProgressAction {
     private DictionaryService dictionaryService;
     private SimpleDateFormat dFmt = new SimpleDateFormat("yyyyMMdd_HHmmss");
     private Boolean escapeApostrophe;
+    private Boolean convertApostrophe;
 
     @Value("${dms.generate.dir}")
     private String tmpDownload;
@@ -41,6 +42,14 @@ public class GenerateDictAction extends ProgressAction {
 
     public void setEscapeApostrophe(Boolean escapeApostrophe) {
         this.escapeApostrophe = escapeApostrophe;
+    }
+
+    public Boolean getConvertApostrophe() {
+        return convertApostrophe;
+    }
+
+    public void setConvertApostrophe(Boolean convertApostrophe) {
+        this.convertApostrophe = convertApostrophe;
     }
 
     public String getDicts() {
@@ -70,7 +79,7 @@ public class GenerateDictAction extends ProgressAction {
 
     public String performAction() throws Exception {
         String downTmpPath = tmpDownload + File.separator + UserContext.getInstance().getUser().getName() + "_" + dFmt.format(new Date());
-        dictionaryService.generateDictFiles(downTmpPath, toIdList(dicts), new GeneratorSettings(escapeApostrophe));
+        dictionaryService.generateDictFiles(downTmpPath, toIdList(dicts), new GeneratorSettings(escapeApostrophe, convertApostrophe));
 
         ProgressQueue.setProgress("Compressing...", -1);
         File generatedTaskFiles = new File(downTmpPath);

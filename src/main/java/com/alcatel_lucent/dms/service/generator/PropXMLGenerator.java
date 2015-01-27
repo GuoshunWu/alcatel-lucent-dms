@@ -8,6 +8,7 @@ import com.alcatel_lucent.dms.model.DictionaryLanguage;
 import com.alcatel_lucent.dms.model.Label;
 import com.alcatel_lucent.dms.model.LabelTranslation;
 import com.alcatel_lucent.dms.service.DaoService;
+import org.apache.commons.lang3.text.translate.LookupTranslator;
 import org.dom4j.*;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
@@ -18,12 +19,18 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 
 @Component
 public class PropXMLGenerator extends DictionaryGenerator {
 
     private static Logger log = LoggerFactory.getLogger(PropXMLGenerator.class);
+    private static final LookupTranslator convertTranslator = new LookupTranslator(new String[][]{
+            {"\u0027", "\u2032"},
+    });
+
     @Autowired
     private DaoService dao;
 
@@ -63,18 +70,19 @@ public class PropXMLGenerator extends DictionaryGenerator {
 
     /**
      * Generate a single file
+     *
      * @param targetDir
      * @param dict
-     * @param dl dictionar language, null for reference
+     * @param dl        dictionar language, null for reference
      */
     private void generatePropXML(File targetDir, Dictionary dict, DictionaryLanguage dl, GeneratorSettings settings) {
-    	String refLangCode = "en";
-    	if (dict.getDictLanguage("GAE") != null) {
-    		refLangCode = "GAE";
-    	}
-    	if (dl != null && dl.getLanguageCode().equals(refLangCode)) {	// if dl is reference, set it to null
-    		dl = null;
-    	}
+        String refLangCode = "en";
+        if (dict.getDictLanguage("GAE") != null) {
+            refLangCode = "GAE";
+        }
+        if (dl != null && dl.getLanguageCode().equals(refLangCode)) {    // if dl is reference, set it to null
+            dl = null;
+        }
         Document doc = DocumentHelper.createDocument();
 //        doc.addComment("\n# " + getDMSGenSign() + " using language " + (dl == null ? refLangCode : dl.getLanguageCode()) + ".\n# Labels: " + dict.getLabelNum() + "\n");
         String dictAttributes = (dl == null ? dict.getAnnotation1() : dl.getAnnotation1());
@@ -120,6 +128,10 @@ public class PropXMLGenerator extends DictionaryGenerator {
                 }
                 text = label.getTranslation(dl.getLanguageCode());
             }
+
+            if (settings.isConvertApostrophe()) {
+                text = convertTranslator.translate(text);
+            }
             // add leading comments
             if (annotation2 != null) {
                 String[] comments = annotation2.split("\n");
@@ -163,17 +175,16 @@ public class PropXMLGenerator extends DictionaryGenerator {
         // output
         String filename = getFileName(dict.getName(), dl, "xml");
         OutputFormat format = OutputFormat.createPrettyPrint();
-        XMLWriter output = null;
+        XMLPropWriter output = null;
         try {
             File targetFile = new File(targetDir, filename);
             if (!targetFile.getParentFile().exists()) {
                 targetFile.getParentFile().mkdirs();
             }
-            if (settings.isEscapeApostrophe()) {
-            	output = new XMLPropWriter(new FileWriter(targetFile), format);
-            } else {
-            	output = new XMLWriter(new FileWriter(targetFile), format);
-            }
+
+            output = new XMLPropWriter(new FileWriter(targetFile), format);
+            output.setSettings(settings);
+
             if (processingInstructions != null) {
                 String[] piList = processingInstructions.split("\n");
                 for (String pi : piList) {
@@ -201,15 +212,23 @@ public class PropXMLGenerator extends DictionaryGenerator {
 
 /**
  * Customized XMLWriter, which forces to escape some special characters (apostrophe char)
- * @author allany
  *
+ * @author allany
  */
 class XMLPropWriter extends XMLWriter {
-	public XMLPropWriter(FileWriter fileWriter, OutputFormat format) {
-		super(fileWriter, format);
-	}
 
-	protected boolean shouldEncodeChar(char c) {
-		return c == '\'' || c == '\u2032' || c == '\u2018'? true : super.shouldEncodeChar(c);
-	}
+    private GeneratorSettings settings;
+    private List<Character> escapeCharacters = Arrays.asList('\'', '\u2032', '\u2018');
+
+    public void setSettings(GeneratorSettings settings) {
+        this.settings = settings;
+    }
+
+    public XMLPropWriter(FileWriter fileWriter, OutputFormat format) {
+        super(fileWriter, format);
+    }
+
+    protected boolean shouldEncodeChar(char c) {
+        return settings.isEscapeApostrophe() && escapeCharacters.contains(c) ? true : super.shouldEncodeChar(c);
+    }
 }

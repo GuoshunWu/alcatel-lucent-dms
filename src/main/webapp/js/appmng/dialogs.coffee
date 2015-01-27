@@ -27,12 +27,13 @@ define [
 
 
   $('#XMLPropertiesDictionaryExportOptionsDialog').dialog(
-    autoOpen: false, model: true
+#    autoOpen: true
     width: 450, height: 200
     buttons: [
       {text: c18n.ok, click: ->
         $(@).data('param').resolve(
           escape: $('#XMLPropertiesDictEscapeApostrophe', @).prop('checked')
+          convert: $('#XMLPropertiesDictApostropheConvert', @).prop('checked')
         )
         $(@).dialog "close"
       }
@@ -41,7 +42,6 @@ define [
   )
 
   capitalizationDialog = $('#capitalizationDialog').dialog(
-    autoOpen: false, modal: true
     width: 1100, height: 'auto'
     show: { effect: 'slide', direction: "up" }
 
