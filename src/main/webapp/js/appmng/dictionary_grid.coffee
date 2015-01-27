@@ -228,7 +228,7 @@ define [
     if(dictTypes.length > 0)
       $('#XMLPropertiesDictionaryExportOptionsDialog').data('param', d).dialog 'open'
     else
-      d.resolve(escape: false)
+      d.resolve(escape: false, convert: false)
 
     d.done (param)=>
       filename = "#{$('#appDispAppName').text()}_#{$('#selAppVersion option:selected').text()}_#{new Date().format 'yyyyMMdd_hhmm'}.zip"
@@ -239,7 +239,9 @@ define [
 
       me=$(@)
       pb = util.genProgressBar()
-      util.updateProgress(urls.app.generate_dict, {dicts: dicts.join(','), filename: filename, escapeApostrophe: param.escape}, (json)->
+      util.updateProgress(urls.app.generate_dict, {
+          dicts: dicts.join(','), filename: filename, escapeApostrophe: param.escape, convertApostrophe: param.convert
+        }, (json)->
         pb.parent().remove()
         me.button 'option', 'label', oldLabel
         me.button 'enable'

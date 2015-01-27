@@ -26,6 +26,7 @@ public class GenerateDictAction extends APIAction {
     private String app;
     private String ver;
     private Boolean escapeApostrophe;
+	private Boolean convertApostrophe;
 
     @Value("${dms.generate.dir}")
     private String tmpDownload;
@@ -47,7 +48,7 @@ public class GenerateDictAction extends APIAction {
     	for (Dictionary dict : dictList) {
     		idList.add(dict.getId());
     	}
-    	dictionaryService.generateDictFiles(downTmpPath, idList, new GeneratorSettings(escapeApostrophe));
+    	dictionaryService.generateDictFiles(downTmpPath, idList, new GeneratorSettings(escapeApostrophe, convertApostrophe));
         File zipFile = new File(tmpDownload, zipFilename);
         Util.createZip(new File(downTmpPath).listFiles(), zipFile);
 		inStream = new FileInputStream(zipFile);
@@ -88,5 +89,13 @@ public class GenerateDictAction extends APIAction {
 
 	public void setEscapeApostrophe(Boolean escapeApostrophe) {
 		this.escapeApostrophe = escapeApostrophe;
+	}
+
+	public Boolean getConvertApostrophe() {
+		return convertApostrophe;
+	}
+
+	public void setConvertApostrophe(Boolean convertApostrophe) {
+		this.convertApostrophe = convertApostrophe;
 	}
 }
